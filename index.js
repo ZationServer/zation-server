@@ -1,9 +1,9 @@
-const ZationStarter   = require('./system/main/cationStarter');
+const ZationStarter   = require('./system/main/zationStarter');
 
 //starter
-module.exports.start = (options1,options2) =>
+module.exports.start = (options) =>
 {
-    new ZationStarter(options1,options2);
+    new ZationStarter(options);
 };
 
 //Api Classes

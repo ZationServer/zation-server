@@ -10,5 +10,11 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="@types/node" level="application" />
     <orderEntry type="library" name="@types/socket.io" level="application" />
+    <orderEntry type="library" name="express-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="node-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="slocket-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="socket.io-client-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="socket.io-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="socket.io-parser-DefinitelyTyped" level="application" />
   </component>
 </module>

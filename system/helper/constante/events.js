@@ -1,14 +1,14 @@
 class Event {}
 
-//Cation Events
-Event.CATION_EXPRESS                     = 'express';
-Event.CATION_IS_STARTED                  = 'isStarted';
-Event.CATION_HTTP_SERVER_IS_STARTED      = 'httpServerIsStarted';
-Event.CATION_SOCKET_SERVER_IS_STARTED    = 'socketServerIsStarted';
-Event.CATION_IS_STARTED                  = 'isStarted';
-Event.CATION_BEFORE_ERROR                = 'beforeError';
-Event.CATION_BEFORE_TASK_ERROR           = 'beforeTaskError';
-Event.CATION_BEFORE_TASK_ERROR_BAG       = 'beforeTaskErrorBag';
+//Zation Events
+Event.ZATION_EXPRESS                     = 'express';
+Event.ZATION_IS_STARTED                  = 'isStarted';
+Event.ZATION_HTTP_SERVER_IS_STARTED      = 'httpServerIsStarted';
+Event.ZATION_SOCKET_SERVER_IS_STARTED    = 'socketServerIsStarted';
+Event.ZATION_IS_STARTED                  = 'isStarted';
+Event.ZATION_BEFORE_ERROR                = 'beforeError';
+Event.ZATION_BEFORE_TASK_ERROR           = 'beforeTaskError';
+Event.ZATION_BEFORE_TASK_ERROR_BAG       = 'beforeTaskErrorBag';
 
 //SocketCluster Socket Events
 Event.SOCKET_ERROR                       = 'socketError';

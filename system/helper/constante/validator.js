@@ -31,6 +31,7 @@ ValidatorConst.TYPE_UUID_5           = 'uuid5';
 ValidatorConst.TYPE_LAT_LONG         = 'latLong';
 ValidatorConst.TYPE_BASE64           = 'base64';
 ValidatorConst.TYPE_ASCII            = 'ascii';
+//Not supported
 ValidatorConst.TYPE_FILE             = 'file';
 
 //File Extensions

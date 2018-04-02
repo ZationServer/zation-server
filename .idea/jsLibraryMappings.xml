@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{@types/node, @types/socket.io}" />
+    <file url="PROJECT" libraries="{express-DefinitelyTyped, node-DefinitelyTyped, slocket-DefinitelyTyped, socket.io-DefinitelyTyped, socket.io-client-DefinitelyTyped, socket.io-parser-DefinitelyTyped}" />
+    <includedPredefinedLibrary name="Node.js Core" />
   </component>
 </project>

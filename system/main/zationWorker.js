@@ -8,8 +8,7 @@ const MySql             = require('mysql');
 const NodeMailer        = require('nodemailer');
 const fileUpload        = require('express-fileupload');
 
-const Cation            = require('./zation');
-const EventCation       = require('../../App/Config/event.config');
+const Zation            = require('./zation');
 const CA                = require('../helper/constante/settings');
 const ConfigTools       = require('../helper/tools/configTools');
 const ChannelController = require('../helper/channelSystem/channelController');
@@ -27,9 +26,9 @@ class Worker extends SCWorker
         this.debug = this.options.cationInformation.debug;
 
         //Add Events
-        this.config['events'] = EventCation;
+        this.config['events'] = EventZation;
 
-        this.cation = new Cation(this.config, this.debug);
+        this.zation = new Zation(this.config, this.debug);
 
         this.servieces = {};
 
@@ -78,7 +77,7 @@ class Worker extends SCWorker
 
             socket.on('cationRequest', (data, respond) => {
                 // noinspection JSUnusedLocalSymbols
-                let p = this.cation.run(
+                let p = this.zation.run(
                     {
                         isSocket: true,
                         input: data,
@@ -142,10 +141,10 @@ class Worker extends SCWorker
             (f) => {f({port: this.config[CA.START_CONFIG_PORT]})});
 
         // noinspection JSUnresolvedFunction
-        this.app.all('/cation', (req, res) => {
-            //Run Cation
+        this.app.all('/zation', (req, res) => {
+            //Run Zation
             // noinspection JSUnusedLocalSymbols
-            let p = this.cation.run(
+            let p = this.zation.run(
                 {
                     isSocket: false,
                     res: res,
