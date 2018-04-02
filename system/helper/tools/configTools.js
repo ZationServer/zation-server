@@ -14,16 +14,6 @@ class ConfigTools
         return config;
     }
 
-    static getDefault(input,defaultValue)
-    {
-        let res = input;
-        if(input === undefined)
-        {
-            res = defaultValue;
-        }
-        return res;
-    }
-
     static checkMiddlewareEvent(event,req,next)
     {
         if(event !== undefined && typeof event === 'function')
@@ -61,6 +51,12 @@ class ConfigTools
         {
             howToEmit(func);
         }
+    }
+
+    static emitConfigEvent(config,event,howToEmit)
+    {
+        let func = config['event.config.body'][event];
+        ConfigTools.emitEvent(func,howToEmit);
     }
 }
 

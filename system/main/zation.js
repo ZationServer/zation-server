@@ -1,8 +1,7 @@
 //Import Zation Stuff
 const TaskError       = require('./../api/TaskError');
 const TaskErrorBag    = require('./../api/TaskErrorBag');
-const Events          = require('./../helper/constante/events');
-
+const CEvents          = require('./../helper/constante/events');
 const HttpProcessor   = require('./../helper/processor/httpProcessor');
 const SocketProcessor = require('./../helper/processor/socketProcessor');
 const Returner        = require('./../helper/response/returner');
@@ -11,7 +10,7 @@ let zationSingleton = null;
 
 class Zation
 {
-    constructor(userConfig,debug)
+    constructor(Config,debug)
     {
         if(zationSingleton)
         {
@@ -22,9 +21,9 @@ class Zation
 
         zationSingleton = this;
 
-        this.debug = debug;
-        this.userConfig = userConfig;
-        this.eventConfig = userConfig['events'];
+        this._debug = debug;
+        this._config = userConfig;
+        this.eventSConfig = userConfig['events'];
         this.registerEvents();
     }
 

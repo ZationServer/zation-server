@@ -1,27 +1,26 @@
-const ConfigTools       = require('../helper/tools/configTools');
 const SocketCluster     = require('socketcluster');
 const ConstMainConfig   = require('../helper/constante/mainConfig');
 const ConstStartOptions = require('../helper/constante/startOptions');
 
-const Path          = require('path');
-const Fs            = require('fs');
+const path          = require('path');
+const fs            = require('fs');
+const crypto        = require('crypto');
 
 class ZationStarter
 {
     constructor(options,debug = false)
     {
-        this._config = {};
+        this._config = ZationStarter.generateDefaultConfig();
         this._debug = debug;
-
         this._readStarterOptions(options);
         this._loadUserDataLocations();
         this._loadMainConfig();
-        this._checkMainConfig();
+
+        this._processMainConfig();
 
         if(this._debug)
         {
             console.log('Zation is running in debug Mode!');
-            ZationStarter.checkConfigs();
         }
 
         this.startSocketCluster();
@@ -32,7 +31,7 @@ class ZationStarter
     {
         if(typeof options === 'object')
         {
-            this._config = options;
+            ZationStarter._addConfigs(this._config,options,true);
         }
     }
 
@@ -67,12 +66,13 @@ class ZationStarter
 
    static _getRootPath()
    {
-       return Path.dirname(require.main.filename || process.mainModule.filename);
+       // noinspection JSUnresolvedVariable
+       return path.dirname(require.main.filename || process.mainModule.filename);
    }
 
    _loadMainConfig()
    {
-       let mainConfig = ZationStarter._loadZationConfig
+       let mainConfig = ZationStarter.loadZationConfig
        (
            'main.config',
            this._config[ConstStartOptions.MAIN_CONFIG]
@@ -81,9 +81,9 @@ class ZationStarter
        ZationStarter._addConfigs(this._config,mainConfig);
    }
 
-   static _loadZationConfig(name,path,optional = true)
+   static loadZationConfig(name,path,optional = true)
    {
-       if(Fs.existsSync(path))
+       if(fs.existsSync(path))
        {
            return require(path);
        }
@@ -97,7 +97,7 @@ class ZationStarter
        }
    }
 
-   static _addConfigs(config,toAdd)
+   static _addConfigs(config,toAdd,overwrite = false)
    {
        for(let key in toAdd)
        {
@@ -107,63 +107,31 @@ class ZationStarter
                {
                    config[key] = toAdd[key];
                }
+               else if(overwrite)
+               {
+                   config[key] = toAdd[key];
+               }
            }
        }
    }
 
-    _checkMainConfig()
+   static generateDefaultConfig()
+   {
+       let res = {};
+       res[ConstMainConfig.PORT] = process.env.PORT || 3000;
+       res[ConstMainConfig.POST_KEY_WORD] = 'zation';
+       res[ConstMainConfig.USE_AUTH] = true;
+       res[ConstMainConfig.APP_NAME] = 'AppWithoutName';
+       res[ConstMainConfig.SECURE] = false;
+       res[ConstMainConfig.USE_SOCKET_SERVER] = true;
+       res[ConstMainConfig.USE_HTTP_SERVER] = true;
+       res[ConstMainConfig.USE_PROTOCOL_CHECK] = true;
+       res[ConstMainConfig.SEND_ERRORS_DESC] = false;
+       res[ConstMainConfig.AUTH_KEY] = crypto.randomBytes(32).toString('hex');
+       return res;
+   }
+    _processMainConfig()
     {
-
-        //Check Port
-        this._config[ConstMainConfig.PORT] =
-        ConfigTools.getDefault(this._config[ConstMainConfig.PORT],process.env.PORT || 3000);
-
-        //Check Post Key Word
-        this._config[ConstMainConfig.POST_KEY_WORD] =
-        ConfigTools.getDefault(this._config[ConstMainConfig.POST_KEY_WORD],'zation');
-
-        //Check Use Auth
-        this._config[ConstMainConfig.USE_AUTH] =
-        ConfigTools.getDefault(this._config[ConstMainConfig.USE_AUTH],true);
-
-        //Check Session Config
-        if(this._config[ConstMainConfig.SESSION_CONFIG] === undefined)
-        {
-            //Create Default
-            this._config[ConstMainConfig.SESSION_CONFIG] =
-                {
-                    key       : 'ConstMainConfigTION_ID',
-                    resave    : false,
-                    saveUninitialized : true,
-                };
-        }
-
-        //Check For Session SecretKey
-        let secret = '';
-        if(this._config[ConstMainConfig.SESSION_SECRET_KEY] === undefined)
-        {
-            if (this._config[ConstMainConfig.SESSION_CONFIG]['secret'] === undefined)
-            {
-                if (process.env.SESSION_SECRET !== undefined)
-                {
-                    secret = process.env.SESSION_SECRET;
-                }
-                else
-                {
-                    secret = 'aRandomSecretKey';
-                    if (debug)
-                    {
-                        console.log('ZATION WARNING : SessionSecretKey not set! Use default!')
-                    }
-                }
-            }
-        }
-        else
-        {
-            secret = this._config[ConstMainConfig.SESSION_SECRET_KEY];
-        }
-        this._config[ConstMainConfig.SESSION_CONFIG]['secret'] = secret;
-
         //Workers Default
         this._config[ConstMainConfig.WORKERS] =
             ZationStarter.createValueWithOsAuto(this._config[ConstMainConfig.WORKERS]);
@@ -171,31 +139,6 @@ class ZationStarter
         //Brokers Default
         this._config[ConstMainConfig.BROKERS] =
             ZationStarter.createValueWithOsAuto(this._config[ConstMainConfig.BROKERS]);
-
-        //AppName
-        this._config[ConstMainConfig.APP_NAME] =
-        ConfigTools.getDefault(this._config[ConstMainConfig.APP_NAME],'AppWithoutName');
-
-        //UseCluster
-        this._config[ConstMainConfig.SECURE] =
-        ConfigTools.getDefault(this._config[ConstMainConfig.SECURE],false);
-
-        //UseSocket
-        this._config[ConstMainConfig.USE_SOCKET_SERVER] =
-        ConfigTools.getDefault(this._config[ConstMainConfig.USE_SOCKET_SERVER],true);
-
-        //UseHttpServer
-        this._config[ConstMainConfig.USE_HTTP_SERVER] =
-        ConfigTools.getDefault(this._config[ConstMainConfig.USE_HTTP_SERVER],true);
-
-        //UseProtocolCheck
-        this._config[ConstMainConfig.USE_PROTOCOL_CHECK] =
-            ConfigTools.getDefault(this._config[ConstMainConfig.USE_PROTOCOL_CHECK],true);
-
-        //UseProtocolCheck
-        this._config[ConstMainConfig.SEND_ERRORS_DESC] =
-            ConfigTools.getDefault(this._config[ConstMainConfig.SEND_ERRORS_DESC],false);
-
     }
 
     static createValueWithOsAuto(checkValue)
@@ -216,7 +159,7 @@ class ZationStarter
 
     startSocketCluster()
     {
-        this.socketCluster = new SocketCluster({
+        new SocketCluster({
             workers : this._config[ConstMainConfig.WORKERS],
             brokers : this._config[ConstMainConfig.BROKERS],
             rebootWorkerOnCrash: true,
@@ -226,6 +169,10 @@ class ZationStarter
             port   : this._config[ConstMainConfig.PORT],
             protocol : this._config[ConstMainConfig.SECURE] ? 'https' : 'http',
             protocolOptions: this._config[ConstMainConfig.HTTPS_CONFIG],
+            authKey: this._config[ConstMainConfig.AUTH_KEY],
+            authAlgorithm: this._config[ConstMainConfig.AUTH_ALGORITHM],
+            authPublicKey: this._config[ConstMainConfig.AUTH_PUBLIC_KEY],
+            authPrivateKey: this._config[ConstMainConfig.AUTH_PRIVATE_KEY],
             cationInformation :
                 {
                 config : this._config,
@@ -233,13 +180,5 @@ class ZationStarter
                 }
         });
     }
-
-    static checkConfigs()
-    {
-        //TODO
-       //Implemented later!
-    }
-
-
 }
 module.exports = ZationStarter;
