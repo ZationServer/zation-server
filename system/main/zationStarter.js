@@ -1,6 +1,6 @@
 const SocketCluster     = require('socketcluster');
-const ConstMainConfig   = require('../helper/constante/mainConfig');
-const ConstStartOptions = require('../helper/constante/startOptions');
+const Const             = require('../helper/constante/constWrapper');
+const ZationConfig      = require('./zationConfig');
 
 const path          = require('path');
 const fs            = require('fs');
@@ -10,16 +10,14 @@ class ZationStarter
 {
     constructor(options,debug = false)
     {
-        this._config = ZationStarter.generateDefaultConfig();
-        this._debug = debug;
+        this._config = new ZationConfig(options,debug);
         this._readStarterOptions(options);
         this._loadUserDataLocations();
         this._loadMainConfig();
 
         this._processMainConfig();
 
-        if(this._debug)
-        {
+        if(this._config.isDebug()) {
             console.log('Zation is running in debug Mode!');
         }
 
@@ -37,15 +35,15 @@ class ZationStarter
 
    _loadUserDataLocations()
    {
-       this._loadZationConfigLocation(ConstStartOptions.MAIN_CONFIG,'main.config');
-       this._loadZationConfigLocation(ConstStartOptions.APP_CONFIG,'app.config');
-       this._loadZationConfigLocation(ConstStartOptions.CHANNEL_CONFIG,'channel.config');
-       this._loadZationConfigLocation(ConstStartOptions.ERROR_CONFIG,'error.config');
-       this._loadZationConfigLocation(ConstStartOptions.EVENT_CONFIG,'event.config');
+       this._loadZationConfigLocation(Const.StartOp.MAIN_CONFIG,'main.config');
+       this._loadZationConfigLocation(Const.StartOp.APP_CONFIG,'app.config');
+       this._loadZationConfigLocation(Const.StartOp.CHANNEL_CONFIG,'channel.config');
+       this._loadZationConfigLocation(Const.StartOp.ERROR_CONFIG,'error.config');
+       this._loadZationConfigLocation(Const.StartOp.EVENT_CONFIG,'event.config');
 
-       if(!this._config.hasOwnProperty(ConstStartOptions.CONTROLLER))
+       if(!this._config.hasOwnProperty(Const.StartOp.CONTROLLER))
        {
-           this._config[ConstStartOptions.CONTROLLER] = ZationStarter._getRootPath() + '/controller/';
+           this._config[Const.StartOp.CONTROLLER] = ZationStarter._getRootPath() + '/controller/';
        }
    }
 
@@ -53,9 +51,9 @@ class ZationStarter
    {
        if(!this._config.hasOwnProperty(key))
        {
-           if(this._config.hasOwnProperty(ConstStartOptions.CONFIG))
+           if(this._config.hasOwnProperty(Const.StartOp.CONFIG))
            {
-               this._config[key] =  this._config[ConstStartOptions.CONFIG] + '/' + defaultName;
+               this._config[key] =  this._config[Const.StartOp.CONFIG] + '/' + defaultName;
            }
            else
            {
@@ -75,7 +73,7 @@ class ZationStarter
        let mainConfig = ZationStarter.loadZationConfig
        (
            'main.config',
-           this._config[ConstStartOptions.MAIN_CONFIG]
+           this._config[Const.StartOp.MAIN_CONFIG]
        );
 
        ZationStarter._addConfigs(this._config,mainConfig);
@@ -115,37 +113,22 @@ class ZationStarter
        }
    }
 
-   static generateDefaultConfig()
-   {
-       let res = {};
-       res[ConstMainConfig.PORT] = process.env.PORT || 3000;
-       res[ConstMainConfig.POST_KEY_WORD] = 'zation';
-       res[ConstMainConfig.USE_AUTH] = true;
-       res[ConstMainConfig.APP_NAME] = 'AppWithoutName';
-       res[ConstMainConfig.SECURE] = false;
-       res[ConstMainConfig.USE_SOCKET_SERVER] = true;
-       res[ConstMainConfig.USE_HTTP_SERVER] = true;
-       res[ConstMainConfig.USE_PROTOCOL_CHECK] = true;
-       res[ConstMainConfig.SEND_ERRORS_DESC] = false;
-       res[ConstMainConfig.AUTH_KEY] = crypto.randomBytes(32).toString('hex');
-       return res;
-   }
     _processMainConfig()
     {
         //Workers Default
-        this._config[ConstMainConfig.WORKERS] =
-            ZationStarter.createValueWithOsAuto(this._config[ConstMainConfig.WORKERS]);
+        this._config[Const.Main.WORKERS] =
+            ZationStarter.createValueWithOsAuto(this._config[Const.Main.WORKERS]);
 
         //Brokers Default
-        this._config[ConstMainConfig.BROKERS] =
-            ZationStarter.createValueWithOsAuto(this._config[ConstMainConfig.BROKERS]);
+        this._config[Const.Main.BROKERS] =
+            ZationStarter.createValueWithOsAuto(this._config[Const.Main.BROKERS]);
     }
 
     static createValueWithOsAuto(checkValue)
     {
         let result = 1;
         if(checkValue !== undefined &&
-            checkValue === ConstMainConfig.AUTO)
+            checkValue === Const.Main.AUTO)
         {
             result = require('os').cpus().length;
         }
@@ -160,19 +143,19 @@ class ZationStarter
     startSocketCluster()
     {
         new SocketCluster({
-            workers : this._config[ConstMainConfig.WORKERS],
-            brokers : this._config[ConstMainConfig.BROKERS],
+            workers : this._config[Const.Main.WORKERS],
+            brokers : this._config[Const.Main.BROKERS],
             rebootWorkerOnCrash: true,
-            appName: this._config[ConstMainConfig.APP_NAME],
+            appName: this._config[Const.Main.APP_NAME],
             workerController:__dirname + '/zationWorker.js',
             brokerController:__dirname  + '/zationBroker.js',
-            port   : this._config[ConstMainConfig.PORT],
-            protocol : this._config[ConstMainConfig.SECURE] ? 'https' : 'http',
-            protocolOptions: this._config[ConstMainConfig.HTTPS_CONFIG],
-            authKey: this._config[ConstMainConfig.AUTH_KEY],
-            authAlgorithm: this._config[ConstMainConfig.AUTH_ALGORITHM],
-            authPublicKey: this._config[ConstMainConfig.AUTH_PUBLIC_KEY],
-            authPrivateKey: this._config[ConstMainConfig.AUTH_PRIVATE_KEY],
+            port   : this._config[Const.Main.PORT],
+            protocol : this._config[Const.Main.SECURE] ? 'https' : 'http',
+            protocolOptions: this._config[Const.Main.HTTPS_CONFIG],
+            authKey: this._config[Const.Main.AUTH_KEY],
+            authAlgorithm: this._config[Const.Main.AUTH_ALGORITHM],
+            authPublicKey: this._config[Const.Main.AUTH_PUBLIC_KEY],
+            authPrivateKey: this._config[Const.Main.AUTH_PRIVATE_KEY],
             cationInformation :
                 {
                 config : this._config,
