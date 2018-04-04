@@ -1,5 +1,8 @@
-const Auth = require('../helper/authSystem/auth');
-
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
 
 class Result
 {

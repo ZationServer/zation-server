@@ -1,5 +1,11 @@
-let CON        = require('../helper/constante/settings');
-let ErrorTypes = require('../helper/constante/errorTypes');
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
+let Const      = require('../helper/constante/constWrapper');
+
 class TaskError
 {
     constructor(error = {},info)
@@ -7,7 +13,7 @@ class TaskError
         //defaultValues
         this._name        = 'TaskError';
         this._description = 'No Description define in Error';
-        this._type        = ErrorTypes.NORMAL_ERROR;
+        this._type        = Const.Error.NORMAL_ERROR;
         this._systemError = false;
         this._sendInfo    = false;
         this._info        = {};
@@ -17,7 +23,7 @@ class TaskError
         {
             if (typeof info === 'string' || info instanceof String)
             {
-                this._info[CON.ERROR_INFO_MAIN] = info;
+                this._info[Const.Settings.ERROR_INFO_MAIN] = info;
             }
             else
             {
@@ -25,34 +31,34 @@ class TaskError
             }
         }
 
-        if(error.hasOwnProperty(CON.ERROR_NAME))
+        if(error.hasOwnProperty(Const.Settings.ERROR_NAME))
         {
-            this._name = error[CON.ERROR_NAME];
+            this._name = error[Const.Settings.ERROR_NAME];
         }
 
-        if(error.hasOwnProperty(CON.ERROR_DESCRIPTION))
+        if(error.hasOwnProperty(Const.Settings.ERROR_DESCRIPTION))
         {
-            this._description = error[CON.ERROR_DESCRIPTION];
+            this._description = error[Const.Settings.ERROR_DESCRIPTION];
         }
 
-        if(error.hasOwnProperty(CON.ERROR_TYPE))
+        if(error.hasOwnProperty(Const.Settings.ERROR_TYPE))
         {
-            this._type = error[CON.ERROR_TYPE];
+            this._type = error[Const.Settings.ERROR_TYPE];
         }
 
-        if(error.hasOwnProperty(CON.ERROR_IS_SYSTEM_ERROR))
+        if(error.hasOwnProperty(Const.Settings.ERROR_IS_SYSTEM_ERROR))
         {
-            this._systemError = error[CON.ERROR_IS_SYSTEM_ERROR];
+            this._systemError = error[Const.Settings.ERROR_IS_SYSTEM_ERROR];
         }
 
-        if(error.hasOwnProperty(CON.ERROR_SEND_INFO))
+        if(error.hasOwnProperty(Const.Settings.ERROR_SEND_INFO))
         {
-            this._sendInfo = error[CON.ERROR_SEND_INFO];
+            this._sendInfo = error[Const.Settings.ERROR_SEND_INFO];
         }
 
-        if(error.hasOwnProperty(CON.ERROR_IS_PRIVATE))
+        if(error.hasOwnProperty(Const.Settings.ERROR_IS_PRIVATE))
         {
-            this._isPrivate = error[CON.ERROR_IS_PRIVATE];
+            this._isPrivate = error[Const.Settings.ERROR_IS_PRIVATE];
         }
     }
 
@@ -130,5 +136,7 @@ class TaskError
         return this._systemError;
     }
 }
+
+TaskError.ErrorType = Const.Error;
 
 module.exports = TaskError;

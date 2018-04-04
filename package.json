@@ -15,19 +15,20 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "cluster": "0.7.7",
+    "command-storage": "^0.8.3",
     "connect-mongo": "^2.0.1",
     "connect-redis": "3.3.3",
     "cookie-parser": "1.4.3",
     "express": "4.16.2",
     "express-fileupload": "^0.4.0",
     "express-session": "1.15.6",
+    "hashset": "0.0.6",
+    "jsonwebtoken": "latest",
+    "mysql": "^2.15.0",
     "nodemailer": "^4.6.3",
     "path": "0.12.7",
     "scc-broker-client": "2.1.2",
-    "serve-favicon": "2.4.5",
-    "socket.io": "^2.0.4",
-    "socketcluster": "10.0.1",
-    "validator": "9.4.1",
-    "mysql": "^2.15.0"
+    "socketcluster": "11.1.0",
+    "validator": "9.4.1"
   }
 }

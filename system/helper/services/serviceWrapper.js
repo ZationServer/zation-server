@@ -1,5 +1,11 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 const TaskError       = require('../../api/TaskError');
-const SyErrors        = require('../cationTaskErrors/systemTaskErrors');
+const SyErrors        = require('../zationTaskErrors/systemTaskErrors');
 
 class ServiceWrapper
 {

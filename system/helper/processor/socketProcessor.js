@@ -1,58 +1,62 @@
-const CA                    = require('../constante/settings');
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
+const Const                 = require('../constante/constWrapper');
 const TaskError             = require('../../api/TaskError');
-const SyErrors              = require('../cationTaskErrors/systemTaskErrors');
-const CationReqTools        = require('../tools/cationReqTools');
+const SyErrors              = require('../zationTaskErrors/systemTaskErrors');
+const ZationReqTools        = require('../tools/zationReqTools');
 const SystemVersionChecker  = require('../checker/systemVersionChecker');
 const ControllerTools       = require('../tools/controllerTools');
 const Bag                   = require('../../api/Bag');
-const Auth                  = require('../authSystem/auth');
+const Auth                  = require('../auth/authEngine');
 const ParamChecker          = require('../checker/paramChecker');
-const ChannelController     = require('../channelSystem/channelController');
+const ChannelController     = require('../channel/channelEngine');
 const MainProcessor         = require('./mainProcessor');
 
 
 class SocketProcessor
 {
-    static async runSocketProcess({scServer, services, socket, input, respond, userConfig, debug})
+    static async runSocketProcess({scServer, services, socket, input, respond, zc, debug})
     {
-        let cationReq = input;
+        let zationReq = input;
 
-        if(CationReqTools.checkValidStructure(cationReq))
+        if(ZationReqTools.checkValidStructure(zationReq))
         {
             //Throws Task Exception by Fail!
-            SystemVersionChecker.checkSystemAndVersion(cationReq);
+            SystemVersionChecker.checkSystemAndVersion(zc,zationReq);
 
             //CreateAuthTask
-            cationReq = CationReqTools.createCationAuth(cationReq);
+            zationReq = ZationReqTools.createZationAuth(zc,zationReq);
 
             //process
-            let cationTask = cationReq[CA.INPUT_TASK];
+            let zationTask = zationReq[Const.Settings.INPUT_TASK];
 
-            let useAuth = userConfig[CA.START_CONFIG_USE_AUTH];
+            let useProtocolCheck = zc.getMain(Const.Main.USE_PROTOCOL_CHECK);
 
-            let useProtocolCheck = userConfig[CA.START_CONFIG_USE_PROTOCOL_CHECK];
-
-            let channelController = new ChannelController(scServer,true,socket);
+            let channelController = new ChannelController(scServer,zc,true,socket);
 
             let authController = new Auth(
                 {
                     isSocket : true,
                     socket   : socket,
                     scServer : scServer,
-                    useAuth  : useAuth,
-                    debug    : debug,
+                    zc       : zc,
                     channelController : channelController
                 });
 
 
             //Throws Controller Not found Exception!
-            let controller     = ControllerTools.getControllerConfig(cationTask);
+            let controller     = ControllerTools.getControllerConfigByTask(zc,zationTask);
 
             if((useProtocolCheck && authController.hasServerProtocolAccess(controller)) || !useProtocolCheck)
             {
                 if (authController.hasAccessToController(controller)) {
                     //Access
-                    let paramData = ParamChecker.createParamsAndCheck(cationTask,controller);
+                    //TODO
+                    let paramData = ParamChecker.createParamsAndCheck(zationTask,controller);
 
                     let controllerClass = ControllerTools.getControllerClass(controller,userConfig);
 
@@ -81,7 +85,7 @@ class SocketProcessor
             else
             {
                 throw new TaskError(SyErrors.noAccessToServerProtocol,
-                    {controller : cationTask[CA.INPUT_CONTROLLER] , protocol : authController.getProtocol()});
+                    {controller : zationTask[CA.INPUT_CONTROLLER] , protocol : authController.getProtocol()});
             }
         }
         else

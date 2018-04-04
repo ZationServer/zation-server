@@ -1,93 +1,106 @@
-const CA            = require('../constante/settings');
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+const Const         = require('../constante/constWrapper');
 const TaskError     = require('../../api/TaskError');
-const SyErrors      = require('../cationTaskErrors/systemTaskErrors');
-const cationConfig  = require('../../../App/Config/cation.config');
-const ClientStorage = require('../clientStorage/clientStorage');
+const SyErrors      = require('../zationTaskErrors/systemTaskErrors');
+const ClientStorage = require('../clientStorage/TokenStorage');
 
 
-class Auth
+class AuthEngine
 {
     constructor(data)
     {
-        this.authGroupConfig = cationConfig[CA.CATION_AUTH_GROUPS];
-        this.authGroups      = this.authGroupConfig[CA.AUTH_AUTH_GROUPS];
+        this._zc = data.zc;
+        this._useAuth             = this._zc.getMain(Const.Main.USE_AUTH);
 
-        this.authDefault     = cationConfig[CA.CATION_ACCESS_DEFAULT];
-
-        this.channelController = data['channelController'];
-
-        this.useAuth         = data['useAuth'];
-        this.isSocket        = data['isSocket'];
-
-        this.default         = true;
-        this.debug           = data['debug'];
-
-        this.req             = data['req'];
-        this.res             = data['res'];
-
-        this.socket          = data['socket'];
-        this.scServer        = data['scServer'];
-
-        this.newAuthGroup = undefined;
-        this.newAuthId    = undefined;
-
-        this.group = undefined;
-
-        if(this.isSocket)
+        if(this._useAuth)
         {
-            this.processGroupWithSocket();
-        }
-        else
-        {
-            this.processGroupWithHttp();
-        }
+            this._groupsConfig        = this._zc.getMain(Const.App.GROUPS);
+            this._authGroups          = this._groupsConfig[Const.App.GROUPS_AUTH_GROUPS];
+            this._authDefaultAccess   = this._zc.getApp(Const.App.ACCESS_DEFAULT);
 
+            this._channelController   = data['channelController'];
+
+            this._isSocket            = data['isSocket'];
+            this._socket              = data['socket'];
+
+            this._req                 = data['req'];
+            this._zationReq           = data['zationReq'];
+            this._res                 = data['res'];
+
+            this._scServer            = data['scServer'];
+
+            this._newAuthGroup        = undefined;
+            this._newAuthId           = undefined;
+
+            this._currentDefault      = true;
+            this._currentGroup        = undefined;
+
+            if(this._isSocket)
+            {
+                this._processGroupWithSocket();
+            }
+            else
+            {
+                this._processGroupWithHttp();
+            }
+        }
     }
 
     getNewAuthId()
     {
-        return this.newAuthId;
+        return this._newAuthId;
     }
 
     // noinspection JSUnusedGlobalSymbols
     getNewAuthGroup()
     {
-        return this.newAuthGroup;
+        return this._newAuthGroup;
     }
 
-    processGroupWithHttp()
+    _processGroupWithHttp()
     {
-        if(this.useAuth)
+        if(this._useAuth)
         {
-            if(this.req.session[CA.CLIENT_AUTH_GROUP] === undefined)
+            if(this._zationReq[Const.Settings.INPUT_TOKEN] === undefined)
             {
                 //returnDefault
-                this.group = Auth.getDefaultGroup();
-            }
-            else if(this.checkIsIn(this.req.session[CA.CLIENT_AUTH_GROUP]))
-            {
-                this.group = this.req.session[CA.CLIENT_AUTH_GROUP];
-                this.default = false;
+                this.group = AuthEngine.getDefaultGroup();
             }
             else
             {
-                //saved Auth In Server is not define
-                req.session.destroy();
-                throw new TaskError(SyErrors.savedAuthGroupFromClientDataNotFound,
-                    {
-                        savedAuthGroup : this.req.session[CA.CLIENT_AUTH_GROUP],
-                        authGroupsInCationConfig : this.authGroupConfig[CA.AUTH_AUTH_GROUPS]
-                    });
+
+
+
+                if(this.checkIsIn(this.req.session[CA.CLIENT_AUTH_GROUP]))
+                {
+                    this.group = this.req.session[CA.CLIENT_AUTH_GROUP];
+                    this.default = false;
+                }
+                else
+                {
+                    //saved AuthEngine In Server is not define
+                    req.session.destroy();
+                    throw new TaskError(SyErrors.savedAuthGroupFromClientDataNotFound,
+                        {
+                            savedAuthGroup : this.req.session[CA.CLIENT_AUTH_GROUP],
+                            authGroupsInZationConfig : this._authGroups
+                        });
+                }
             }
         }
     }
 
 
-    processGroupWithSocket()
+    _processGroupWithSocket()
     {
-        if(this.useAuth)
+        if(this._useAuth)
         {
-            let authToken = this.socket.getAuthToken();
+            // noinspection JSUnresolvedFunction
+            let authToken = this._socket.getAuthToken();
             if(authToken !== null)
             {
                 if(authToken[CA.CLIENT_AUTH_GROUP] !== undefined) {
@@ -96,25 +109,26 @@ class Auth
                         this.default = false;
                     }
                     else {
-                        //saved Auth In Server is not define
-                        this.socket.deauthenticate();
+                        //saved AuthEngine In Server is not define
+                        // noinspection JSUnresolvedFunction
+                        this._socket.deauthenticate();
                         throw new TaskError(SyErrors.savedAuthGroupFromClientDataNotFound,
                             {
-                                savedAuthGroup: this.req.session[CA.CLIENT_AUTH_GROUP],
-                                authGroupsInCationConfig: this.authGroupConfig[CA.AUTH_AUTH_GROUPS]
+                                savedAuthGroup: authToken[CA.CLIENT_AUTH_GROUP],
+                                authGroupsInZationConfig: this._authGroups
                             });
                     }
                 }
                 else
                 {
-                    //Auth without auth group!
-                    this.socket.deauthenticate();
+                    //AuthEngine without auth group!
+                    this._socket.deauthenticate();
                     throw new TaskError(SyErrors.tokenWithoutAuthGroup);
                 }
             }
             else
             {
-                this.group = Auth.getDefaultGroup();
+                this.group = AuthEngine.getDefaultGroup();
             }
         }
     }
@@ -177,11 +191,11 @@ class Auth
             let oldAuthGroup =
                 ClientStorage.getClientVariable([CA.CLIENT_AUTH_GROUP],this.isSocket,this.socket,this.req);
 
-            //Update Auth
+            //Update AuthEngine
             this.default = false;
             this.group = group;
 
-            //Update Auth New
+            //Update AuthEngine New
             this.newAuthGroup = group;
 
             let obj = {};
@@ -203,7 +217,7 @@ class Auth
                 }
             }
 
-            //create Auth Token!
+            //create AuthEngine Token!
             ClientStorage.setCationData(obj,this.isSocket,this.socket,this.req,this.channelController,true);
 
             //Kick out from default auth group channel!
@@ -236,7 +250,7 @@ class Auth
 
             suc = true;
 
-            //Update New Auth id
+            //Update New AuthEngine id
             this.newAuthId = id;
 
             if(oldId !== undefined && oldId !== id && this.isSocket)
@@ -254,9 +268,9 @@ class Auth
 
     authOut()
     {
-        //Update Auth
+        //Update AuthEngine
         this.default = true;
-        this.group = Auth.getDefaultGroup();
+        this.group = AuthEngine.getDefaultGroup();
         this.newAuthGroup  = '';
 
         if(this.isSocket)
@@ -316,11 +330,11 @@ class Auth
     {
         let hasAccess = false;
 
-        let keyWord = Auth.getAccessKeyWord(controller);
+        let keyWord = AuthEngine.getAccessKeyWord(controller);
 
         if(keyWord === '')
         {
-            keyWord = Auth.getAccessKeyWord(this.authDefault,true);
+            keyWord = AuthEngine.getAccessKeyWord(this.authDefault,true);
             if(keyWord === '')
             {
                 if(this.debug)
@@ -374,20 +388,20 @@ class Auth
         {
             if(value === CA.ACCESS_ALL)
             {
-                access = Auth.accessKeyWordChanger(key,true);
+                access = AuthEngine.accessKeyWordChanger(key,true);
             }
             else if(value === CA.ACCESS_ALL_AUTH)
             {
-                access = Auth.accessKeyWordChanger(key,this.isAuth());
+                access = AuthEngine.accessKeyWordChanger(key,this.isAuth());
             }
             else if(value === CA.ACCESS_ALL_NOT_AUTH)
             {
-                access = Auth.accessKeyWordChanger(key,this.isDefault());
+                access = AuthEngine.accessKeyWordChanger(key,this.isDefault());
             }
             else if(this.checkIsIn(key))
             {
                 //Group!
-                access = Auth.accessKeyWordChanger(key,this.getGroup() === value);
+                access = AuthEngine.accessKeyWordChanger(key,this.getGroup() === value);
             }
         }
         else if(Array.isArray(value))
@@ -402,7 +416,7 @@ class Auth
                     break;
                 }
             }
-            access = Auth.accessKeyWordChanger(key,imIn);
+            access = AuthEngine.accessKeyWordChanger(key,imIn);
         }
         return access;
     }
@@ -432,4 +446,4 @@ class Auth
     }
 }
 
-module.exports = Auth;
+module.exports = AuthEngine;

@@ -1,7 +1,12 @@
-//Import Zation Stuff
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 const TaskError       = require('./../api/TaskError');
 const TaskErrorBag    = require('./../api/TaskErrorBag');
-const CEvents          = require('./../helper/constante/events');
+const Const           = require('../helper/constante/constWrapper');
 const HttpProcessor   = require('./../helper/processor/httpProcessor');
 const SocketProcessor = require('./../helper/processor/socketProcessor');
 const Returner        = require('./../helper/response/returner');
@@ -10,7 +15,7 @@ let zationSingleton = null;
 
 class Zation
 {
-    constructor(Config,debug)
+    constructor(zc)
     {
         if(zationSingleton)
         {
@@ -21,60 +26,26 @@ class Zation
 
         zationSingleton = this;
 
-        this._debug = debug;
-        this._config = userConfig;
-        this.eventSConfig = userConfig['events'];
-        this.registerEvents();
-    }
-
-    registerEvents()
-    {
-        if(this.eventConfig[Events.ZATION_BEFORE_ERROR] instanceof Function)
-        {
-            this.beforeError(this.eventConfig[Events.ZATION_BEFORE_ERROR]);
-        }
-        if(this.eventConfig[Events.ZATION_BEFORE_TASK_ERROR] instanceof Function)
-        {
-            this.beforeTaskError(this.eventConfig[Events.ZATION_BEFORE_TASK_ERROR]);
-        }
-        if(this.eventConfig[Events.ZATION_BEFORE_TASK_ERROR_BAG] instanceof Function)
-        {
-            this.beforeTaskErrorBag(this.eventConfig[Events.ZATION_BEFORE_TASK_ERROR_BAG]);
-        }
-    }
-
-    beforeError(func)
-    {
-        this.beforeErrorFunc = func;
-    }
-
-    beforeTaskError(func)
-    {
-        this.beforeTaskErrorFunc = func;
-    }
-
-    beforeTaskErrorBag(func)
-    {
-        this.beforeTaskErrorBagFunc = func;
-    }
-
-    static fireEvent(func,param)
-    {
-        if(func && {}.toString.call(func) === '[object Function]')
-        {
-            func(param);
-        }
+        this._zc = zc;
     }
 
     async run(data)
     {
-        data['debug'] = this.debug;
-        data['userConfig'] = this.userConfig;
+        data.zc = this._zc;
 
-        if(this.debug)
+        if(this._zc.isDebug())
         {
-            console.log('ZATION GET REQUEST ->');
-            console.log(data.input);
+
+            if(data.isSocket)
+            {
+                console.log('ZATION GET SOCKET REQUEST ->');
+                console.log(data.input);
+            }
+            else
+            {
+                console.log('ZATION GET HTTP REQUEST ->');
+                console.log(data.req.body[Const.Main.POST_KEY_WORD]);
+            }
         }
 
         let returner = new Returner(data);
@@ -99,19 +70,22 @@ class Zation
                 e = data['e'];
             }
 
-            if(this.debug)
+            if(this._zc.isDebug())
             {
                 console.error(e);
             }
-            Zation.fireEvent(this.beforeErrorFunc,e);
+            this._zc.emitEvent(Const.Event.ZATION_BEFORE_ERROR,
+                (f) => {f(e)});
 
             if(e instanceof  TaskError)
             {
-                Zation.fireEvent(this.beforeTaskErrorFunc,e);
+                this._zc.emitEvent(Const.Event.ZATION_BEFORE_TASK_ERROR,
+                    (f) => {f(e)});
             }
             else if(e instanceof TaskErrorBag)
             {
-                Zation.fireEvent(this.beforeTaskErrorBagFunc,e);
+                this._zc.emitEvent(Const.Event.ZATION_BEFORE_TASK_ERROR_BAG,
+                    (f) => {f(e)});
             }
 
             returner.reactOnError(e,data['authData']);

@@ -1,12 +1,18 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 const Validator       = require('validator');
 const TaskError       = require('../../api/TaskError');
 const TaskErrorBag    = require('../../api/TaskErrorBag');
-const validatorError  = require('../cationTaskErrors/validatorTaskErrors');
-const cationError     = require('../cationTaskErrors/systemTaskErrors');
+const validatorError  = require('../zationTaskErrors/validatorTaskErrors');
+const cationError     = require('../zationTaskErrors/systemTaskErrors');
 const CA              = require('../constante/settings');
 const ValidatorConst  = require('../constante/validator');
 
-class CationValidator
+class ZationValidator
 {
     static isString(data)
     {
@@ -267,7 +273,7 @@ class CationValidator
                     for(let i = 0; i < v.length; i++)
                     {
                         let tempCount = taskErrorBagTemp.getTaskErrorCount();
-                        let maybeInput = CationValidator.validateType(taskErrorBagTemp,v[i],input,errorData);
+                        let maybeInput = ZationValidator.validateType(taskErrorBagTemp,v[i],input,errorData);
                         if(tempCount === taskErrorBagTemp.getTaskErrorCount())
                         {
                             tempInput = maybeInput;
@@ -285,7 +291,7 @@ class CationValidator
                 }
                 else
                 {
-                    input = CationValidator.validateType(taskErrorBag,v,input,errorData);
+                    input = ZationValidator.validateType(taskErrorBag,v,input,errorData);
                 }
             }
             else if(k === ValidatorConst.FUNCTION_REGEX && v !== undefined)
@@ -448,14 +454,14 @@ class CationValidator
     {
         if((v === ValidatorConst.TYPE_STRING))
         {
-            if(!CationValidator.isString(input))
+            if(!ZationValidator.isString(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAString,errorData));
             }
         }
         else if((v === ValidatorConst.TYPE_INT))
         {
-            if(CationValidator.isInt(input))
+            if(ZationValidator.isInt(input))
             {
                 input  = parseInt(input);
             }
@@ -466,7 +472,7 @@ class CationValidator
         }
         else if((v === ValidatorConst.TYPE_FLOAT))
         {
-            if(CationValidator.isFloat(input))
+            if(ZationValidator.isFloat(input))
             {
                 input  = parseFloat(input);
             }
@@ -477,7 +483,7 @@ class CationValidator
         }
         else if((v === ValidatorConst.TYPE_DATE))
         {
-            let date = CationValidator.isDate(input);
+            let date = ZationValidator.isDate(input);
 
             if(date.isDate)
             {
@@ -497,9 +503,9 @@ class CationValidator
         }
         else if((v === ValidatorConst.TYPE_BOOLEAN))
         {
-            if(CationValidator.isBoolean(input))
+            if(ZationValidator.isBoolean(input))
             {
-                input  = CationValidator.stringToBool(input);
+                input  = ZationValidator.stringToBool(input);
             }
             else
             {
@@ -508,154 +514,154 @@ class CationValidator
         }
         else if(v === ValidatorConst.TYPE_SHA512)
         {
-            if(!CationValidator.isSha512(input))
+            if(!ZationValidator.isSha512(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotASha512,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_SHA256)
         {
-            if(!CationValidator.isSha256(input))
+            if(!ZationValidator.isSha256(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotASha256,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_SHA384)
         {
-            if(!CationValidator.isSha384(input))
+            if(!ZationValidator.isSha384(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotASha384,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_SHA1)
         {
-            if(!CationValidator.isSha1(input))
+            if(!ZationValidator.isSha1(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotASha1,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_MD5)
         {
-            if(!CationValidator.isMd5(input))
+            if(!ZationValidator.isMd5(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAMd5,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_HEX_COLOR)
         {
-            if(!CationValidator.isHexColor(input))
+            if(!ZationValidator.isHexColor(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAHexColor,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_HEXADECIMAL)
         {
-            if(!CationValidator.isHexadecimal(input))
+            if(!ZationValidator.isHexadecimal(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAHexadecimal,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_IP_5)
         {
-            if(!CationValidator.isIP5(input))
+            if(!ZationValidator.isIP5(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAIp5,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_IP_6)
         {
-            if(!CationValidator.isIP6(input))
+            if(!ZationValidator.isIP6(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAIp6,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_ISBN_10)
         {
-            if(!CationValidator.isISB10(input))
+            if(!ZationValidator.isISB10(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAIsbn10,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_ISBN_13)
         {
-            if(!CationValidator.isISB13(input))
+            if(!ZationValidator.isISB13(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAIsbn13,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_JSON)
         {
-            if(!CationValidator.isJSON(input))
+            if(!ZationValidator.isJSON(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAJson,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_URL)
         {
-            if(!CationValidator.isUrl(input))
+            if(!ZationValidator.isUrl(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAUrl,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_MIME_TYPE)
         {
-            if(!CationValidator.isMimeType(input))
+            if(!ZationValidator.isMimeType(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAMimeType,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_MAC_ADDRESS)
         {
-            if(!CationValidator.isMACAddress(input))
+            if(!ZationValidator.isMACAddress(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAMacAddress,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_MOBILE_NUMBER)
         {
-            if(!CationValidator.isMobilePhone(input))
+            if(!ZationValidator.isMobilePhone(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAMobileNumber,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_UUID_3)
         {
-            if(!CationValidator.isUUID3(input))
+            if(!ZationValidator.isUUID3(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAUuid3,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_UUID_4)
         {
-            if(!CationValidator.isUUID4(input))
+            if(!ZationValidator.isUUID4(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAUuid4,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_UUID_5)
         {
-            if(!CationValidator.isUUID5(input))
+            if(!ZationValidator.isUUID5(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAUuid5,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_LAT_LONG)
         {
-            if(!CationValidator.isLatLong(input))
+            if(!ZationValidator.isLatLong(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotALatLong,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_BASE64)
         {
-            if(!CationValidator.isBase64(input))
+            if(!ZationValidator.isBase64(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotABase64,errorData));
             }
         }
         else if(v === ValidatorConst.TYPE_ASCII)
         {
-            if(!CationValidator.isAscii(input))
+            if(!ZationValidator.isAscii(input))
             {
                 taskErrorBag.addTaskError(new TaskError(validatorError.paramIsNotAAscii,errorData));
             }
@@ -674,4 +680,4 @@ class CationValidator
 
 
 
-module.exports = CationValidator;
+module.exports = ZationValidator;

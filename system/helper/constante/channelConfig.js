@@ -1,3 +1,9 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 class ChannelConfig {}
 
 //CHANNEL CONFIG

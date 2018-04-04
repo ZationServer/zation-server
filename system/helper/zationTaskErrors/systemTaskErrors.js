@@ -1,3 +1,9 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 let ErrorType = require('../constante/errorTypes');
 
 module.exports = {
@@ -66,13 +72,13 @@ module.exports = {
 
     savedAuthGroupFromClientDataNotFound    : {
         name          : 'savedAuthGroupInSessionNotFound',
-        description   : 'the Auth Group is saved in the Session is not found on the Cation Config',
+        description   : 'the Auth Group is saved in the Session is not found on the Zation Config',
         type          : ErrorType.SYSTEM_ERROR,
         isPrivate     : true,
         sendInfo      : false,
         //INFO
         // savedAuthGroup (the saved auth Group in Session)
-        // authGroupsInCationConfig (auth Groups in the Cation Config)
+        // authGroupsInZationConfig (auth Groups in the Zation Config)
         isSystemError : true
     },
 
@@ -87,7 +93,7 @@ module.exports = {
 
     defaultGroupNotFound    : {
         name          : 'defaultGroupNotFound',
-        description   : 'no default Group is set in the Cation config',
+        description   : 'no default Group is set in the Zation config',
         type          : ErrorType.SYSTEM_ERROR,
         isPrivate     : true,
         sendInfo      : false,
@@ -169,9 +175,9 @@ module.exports = {
         isSystemError : true
     },
 
-    complicatedCationKeys : {
-        name          : 'complicatedCationKeys',
-        description   : 'cant Save Data With Complicated Cation Keys!',
+    zationKeyConflict : {
+        name          : 'zationKeyConflict',
+        description   : 'cant Save Data With conflict with Zation Key!',
         type          : ErrorType.SYSTEM_ERROR,
         sendInfo      : true,
         //INFO

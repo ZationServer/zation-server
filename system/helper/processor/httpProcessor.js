@@ -1,14 +1,20 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 const CA                    = require('../constante/settings');
 const HtmlTools             = require('../tools/htmlTools');
 const TaskError             = require('../../api/TaskError');
-const SyErrors              = require('../cationTaskErrors/systemTaskErrors');
-const CationReqTools        = require('../tools/cationReqTools');
+const SyErrors              = require('../zationTaskErrors/systemTaskErrors');
+const CationReqTools        = require('../tools/zationReqTools');
 const SystemVersionChecker  = require('../checker/systemVersionChecker');
 const ControllerTools       = require('../tools/controllerTools');
 const Bag                   = require('../../api/Bag');
-const Auth                  = require('../authSystem/auth');
+const Auth                  = require('../auth/authEngine');
 const ParamChecker          = require('../checker/paramChecker');
-const ChannelController     = require('../channelSystem/channelController');
+const ChannelController     = require('../channel/channelEngine');
 const MainProcessor         = require('./mainProcessor');
 
 const system   = __dirname + '/../';
@@ -17,7 +23,7 @@ const views    = system + 'views/';
 class HttpProcessor
 {
 
-    static async runHttpProcess({scServer, res, req, services, userConfig, debug})
+    static async runHttpProcess({scServer, res, req, services, zc, debug})
     {
         let cationReq = req.body[userConfig[CA.START_CONFIG_POST_KEY_WORD]];
 
@@ -38,7 +44,7 @@ class HttpProcessor
             );
         }
         else {
-            HtmlTools.writeHtml(res, views + 'cationServer.html');
+            HtmlTools.writeHtml(res, views + 'zationServer.html');
         }
     }
 
@@ -71,6 +77,7 @@ class HttpProcessor
                 isSocket: false,
                 req: req,
                 res: res,
+                zationReq : zationReq,
                 useAuth: useAuth,
                 debug: debug,
                 channelController: channelController

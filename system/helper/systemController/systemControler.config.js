@@ -1,9 +1,14 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
 
 module.exports =
     {
-        cationSystemControllerLogOut :
+        zationSystemControllerLogOut :
             {
-                name   : 'cationSystemControllerLogOut',
+                name   : 'zationSystemControllerLogOut',
                 systemController : true,
                 params : [],
             }

@@ -1,14 +1,21 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 const channelConfig = require('../../../App/Config/channel.config');
 const CA            = require('../constante/settings');
-const ClientStorage = require('../clientStorage/clientStorage');
+const ClientStorage = require('../clientStorage/TokenStorage');
 
-class ChannelController
+class ChannelEngine
 {
-    constructor(scServer,isSocket,socket)
+    constructor(scServer,zc,isSocket,socket)
     {
-        this.scServer = scServer;
-        this.socket = socket;
-        this.isSocket = isSocket;
+        this._zc = zc;
+        this._scServer = scServer;
+        this._socket = socket;
+        this._isSocket = isSocket;
     }
 
     emitToSocket(eventName,data,cb)
@@ -36,7 +43,7 @@ class ChannelController
 
     publish(channel,eventName,data,cb)
     {
-        this.scServer.exchange.publish(channel,ChannelController.buildData(eventName,data),cb);
+        this.scServer.exchange.publish(channel,ChannelEngine.buildData(eventName,data),cb);
     }
 
     publishInUserCh(id,eventName,data,cb)
@@ -170,7 +177,7 @@ class ChannelController
             }
             else
             {
-                info[CA.CHANNEL_PUBLISH] = ChannelController.getChannelDefaultSettings(CA.CHANNEL_PUBLISH);
+                info[CA.CHANNEL_PUBLISH] = ChannelEngine.getChannelDefaultSettings(CA.CHANNEL_PUBLISH);
             }
 
             //Sub
@@ -180,13 +187,13 @@ class ChannelController
             }
             else
             {
-                info[CA.CHANNEL_SUBSCRIBE] = ChannelController.getChannelDefaultSettings(CA.CHANNEL_SUBSCRIBE);
+                info[CA.CHANNEL_SUBSCRIBE] = ChannelEngine.getChannelDefaultSettings(CA.CHANNEL_SUBSCRIBE);
             }
         }
         else
         {
-            info[CA.CHANNEL_PUBLISH] = ChannelController.getChannelDefaultSettings(CA.CHANNEL_PUBLISH);
-            info[CA.CHANNEL_SUBSCRIBE] = ChannelController.getChannelDefaultSettings(CA.CHANNEL_SUBSCRIBE);
+            info[CA.CHANNEL_PUBLISH] = ChannelEngine.getChannelDefaultSettings(CA.CHANNEL_PUBLISH);
+            info[CA.CHANNEL_SUBSCRIBE] = ChannelEngine.getChannelDefaultSettings(CA.CHANNEL_SUBSCRIBE);
         }
         return info;
     }
@@ -222,7 +229,7 @@ class ChannelController
         }
         else if(typeof param === "function")
         {
-            let res = param(ChannelController.generateInfo(socket),ChannelController.getGetSocketDataFunc(socket));
+            let res = param(ChannelEngine.generateInfo(socket),ChannelEngine.getGetSocketDataFunc(socket));
             if(typeof res === 'boolean')
             {
                 access = res;
@@ -240,14 +247,14 @@ class ChannelController
 
     static hasAccessToSubSpecialChannel(socket,channel)
     {
-        let info = ChannelController.getChannelChannelInfo(channel);
-        return ChannelController.hasAccessTo(info[CA.CHANNEL_SUBSCRIBE],socket);
+        let info = ChannelEngine.getChannelChannelInfo(channel);
+        return ChannelEngine.hasAccessTo(info[CA.CHANNEL_SUBSCRIBE],socket);
     }
 
     static hasAccessToPubInSpecialChannel(socket,channel)
     {
-        let info = ChannelController.getChannelChannelInfo(channel);
-        return ChannelController.hasAccessTo(info[CA.CHANNEL_PUBLISH],socket);
+        let info = ChannelEngine.getChannelChannelInfo(channel);
+        return ChannelEngine.hasAccessTo(info[CA.CHANNEL_PUBLISH],socket);
     }
 
 
@@ -261,8 +268,8 @@ class ChannelController
             {
                 if(subs[i].indexOf(CA.SOCKET_SPECIAL_CHANNEL_PREFIX) !== -1)
                 {
-                    let chName = ChannelController.getSpecialChannelName(subs[i]);
-                    if(!ChannelController.hasAccessToSubSpecialChannel(this.socket,chName))
+                    let chName = ChannelEngine.getSpecialChannelName(subs[i]);
+                    if(!ChannelEngine.hasAccessToSubSpecialChannel(this.socket,chName))
                     {
                         // noinspection JSValidateTypes
                         this.socket.kickOut(subs[i]);
@@ -275,4 +282,4 @@ class ChannelController
 
 }
 
-module.exports = ChannelController;
+module.exports = ChannelEngine;

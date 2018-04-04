@@ -1,3 +1,9 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 const appConfig     = require('./appConfig');
 const channelConfig = require('./channelConfig');
 const errorTypes    = require('./errorTypes');

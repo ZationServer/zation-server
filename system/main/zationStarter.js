@@ -1,167 +1,141 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 const SocketCluster     = require('socketcluster');
 const Const             = require('../helper/constante/constWrapper');
 const ZationConfig      = require('./zationConfig');
-
-const path          = require('path');
-const fs            = require('fs');
-const crypto        = require('crypto');
+const HashSet           = require('hashset');
+const CommandStorage    = require('command-storage');
 
 class ZationStarter
 {
     constructor(options,debug = false)
     {
-        this._config = new ZationConfig(options,debug);
-        this._readStarterOptions(options);
-        this._loadUserDataLocations();
-        this._loadMainConfig();
+        this._zc = new ZationConfig(options,debug);
+        this._workerIds = new HashSet();
 
-        this._processMainConfig();
-
-        if(this._config.isDebug()) {
+        if(this._zc.isDebug())
+        {
             console.log('Zation is running in debug Mode!');
         }
 
-        this.startSocketCluster();
-
+        this._startSocketCluster();
+        this._createMasterStorage();
+        this._startBackgroundTasks();
     }
 
-    _readStarterOptions(options)
+    _startSocketCluster()
     {
-        if(typeof options === 'object')
-        {
-            ZationStarter._addConfigs(this._config,options,true);
-        }
-    }
-
-   _loadUserDataLocations()
-   {
-       this._loadZationConfigLocation(Const.StartOp.MAIN_CONFIG,'main.config');
-       this._loadZationConfigLocation(Const.StartOp.APP_CONFIG,'app.config');
-       this._loadZationConfigLocation(Const.StartOp.CHANNEL_CONFIG,'channel.config');
-       this._loadZationConfigLocation(Const.StartOp.ERROR_CONFIG,'error.config');
-       this._loadZationConfigLocation(Const.StartOp.EVENT_CONFIG,'event.config');
-
-       if(!this._config.hasOwnProperty(Const.StartOp.CONTROLLER))
-       {
-           this._config[Const.StartOp.CONTROLLER] = ZationStarter._getRootPath() + '/controller/';
-       }
-   }
-
-   _loadZationConfigLocation(key,defaultName)
-   {
-       if(!this._config.hasOwnProperty(key))
-       {
-           if(this._config.hasOwnProperty(Const.StartOp.CONFIG))
-           {
-               this._config[key] =  this._config[Const.StartOp.CONFIG] + '/' + defaultName;
-           }
-           else
-           {
-               this._config[key] = ZationStarter._getRootPath() + '/config/' + defaultName;
-           }
-       }
-   }
-
-   static _getRootPath()
-   {
-       // noinspection JSUnresolvedVariable
-       return path.dirname(require.main.filename || process.mainModule.filename);
-   }
-
-   _loadMainConfig()
-   {
-       let mainConfig = ZationStarter.loadZationConfig
-       (
-           'main.config',
-           this._config[Const.StartOp.MAIN_CONFIG]
-       );
-
-       ZationStarter._addConfigs(this._config,mainConfig);
-   }
-
-   static loadZationConfig(name,path,optional = true)
-   {
-       if(fs.existsSync(path))
-       {
-           return require(path);
-       }
-       else if(optional)
-       {
-           return {};
-       }
-       else
-       {
-           throw new Error(`Config ${name} not found in path ${path}`);
-       }
-   }
-
-   static _addConfigs(config,toAdd,overwrite = false)
-   {
-       for(let key in toAdd)
-       {
-           if(toAdd.hasOwnProperty(key))
-           {
-               if(!config.hasOwnProperty(key))
-               {
-                   config[key] = toAdd[key];
-               }
-               else if(overwrite)
-               {
-                   config[key] = toAdd[key];
-               }
-           }
-       }
-   }
-
-    _processMainConfig()
-    {
-        //Workers Default
-        this._config[Const.Main.WORKERS] =
-            ZationStarter.createValueWithOsAuto(this._config[Const.Main.WORKERS]);
-
-        //Brokers Default
-        this._config[Const.Main.BROKERS] =
-            ZationStarter.createValueWithOsAuto(this._config[Const.Main.BROKERS]);
-    }
-
-    static createValueWithOsAuto(checkValue)
-    {
-        let result = 1;
-        if(checkValue !== undefined &&
-            checkValue === Const.Main.AUTO)
-        {
-            result = require('os').cpus().length;
-        }
-        else if(checkValue !== undefined)
-        {
-            result = parseInt(checkValue);
-        }
-        return result;
-    }
-
-
-    startSocketCluster()
-    {
-        new SocketCluster({
-            workers : this._config[Const.Main.WORKERS],
-            brokers : this._config[Const.Main.BROKERS],
+        this._master = new SocketCluster({
+            workers : this._zc.getMain(Const.Main.WORKERS),
+            brokers : this._zc.getMain(Const.Main.BROKERS),
             rebootWorkerOnCrash: true,
-            appName: this._config[Const.Main.APP_NAME],
+            appName: this._zc.getMain(Const.Main.APP_NAME),
             workerController:__dirname + '/zationWorker.js',
             brokerController:__dirname  + '/zationBroker.js',
-            port   : this._config[Const.Main.PORT],
-            protocol : this._config[Const.Main.SECURE] ? 'https' : 'http',
-            protocolOptions: this._config[Const.Main.HTTPS_CONFIG],
-            authKey: this._config[Const.Main.AUTH_KEY],
-            authAlgorithm: this._config[Const.Main.AUTH_ALGORITHM],
-            authPublicKey: this._config[Const.Main.AUTH_PUBLIC_KEY],
-            authPrivateKey: this._config[Const.Main.AUTH_PRIVATE_KEY],
-            cationInformation :
-                {
-                config : this._config,
-                debug  : this._debug,
-                }
+            port   : this._zc.getMain(Const.Main.PORT),
+            protocol : this._zc.getMain(Const.Main.SECURE) ? 'https' : 'http',
+            protocolOptions: this._zc.getMain(Const.Main.HTTPS_CONFIG),
+            authKey: this._zc.getMain(Const.Main.AUTH_KEY),
+            authAlgorithm: this._zc.getMain(Const.Main.AUTH_ALGORITHM),
+            authPublicKey: this._zc.getMain(Const.Main.AUTH_PUBLIC_KEY),
+            authPrivateKey: this._zc.getMain(Const.Main.AUTH_PRIVATE_KEY),
+            cationInformation : this._zc
         });
+
+        this._zc.loadOtherConfigs();
+
+        // noinspection JSUnresolvedFunction
+        this._master.on('ready',() =>
+        {
+            this._zc.emitEvent(Const.Event.ZATION_IS_STARTED, (f) =>
+            {
+                f(this._zc.getSomeInformation());
+            });
+        });
+
+        // noinspection JSUnresolvedFunction
+        this._master.on('workerStart', (info) =>
+        {
+            let id = info.id;
+            // noinspection JSUnresolvedFunction
+            if(id  !== undefined && !this._workerIds.contains(id))
+            {
+                // noinspection JSUnresolvedFunction
+                this._workerIds.add(id);
+            }
+        });
+
+        // noinspection JSUnresolvedFunction
+        this._master.on('workerExit', (info) =>
+        {
+            let id = info.id;
+            if(id  !== undefined)
+            {
+                // noinspection JSUnresolvedFunction
+                this._workerIds.remove(id);
+            }
+        });
+    }
+
+    _getRandomWorkerId()
+    {
+        // noinspection JSUnresolvedFunction
+        let array = this._workerIds.toArray();
+        return array[Math.floor(Math.random()*array.length)];
+    }
+
+    //PART BackgroundTasks
+
+    _startBackgroundTasks()
+    {
+        //userBackgroundTasks
+        this._zc.emitEvent(Const.Event.ZATION_BACKGROUND_TASK,(f) =>
+        {
+            let id = 0;
+            f((refreshRate) =>
+            {
+                this._startUserBackgroundTask(refreshRate,id);
+                id++;
+            });
+        });
+
+        //systemBackgroundTask
+        this._startBackgroundTask(
+            this._zc.getMain(Const.Main.SYSTEM_BACKGROUND_TASK_REFRESH_RATE),
+            {systemBackgroundTasks : true}
+        );
+    }
+
+    _startUserBackgroundTask(refreshRate,id)
+    {
+        this._startBackgroundTask(refreshRate,{userBackgroundTask : id});
+    }
+
+    _startBackgroundTask(refreshRate,obj)
+    {
+        setTimeout(() =>
+            {
+                this._master.sendToWorker(this._getRandomWorkerId(),obj)
+            }
+            ,refreshRate);
+    }
+
+    //PART MasterStorage
+    _createMasterStorage()
+    {
+        this._masterStorage = new CommandStorage();
+        // noinspection JSUnresolvedFunction
+        this._master.on('workerMessage',(id,obj,cb) =>
+        {
+            if(data.storage !== undefined)
+            {
+                cb(null,this._masterStorage.do(data.storage));
+            }
+        })
     }
 }
 module.exports = ZationStarter;

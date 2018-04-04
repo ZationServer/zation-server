@@ -1,8 +1,14 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 const CA              = require('../constante/settings');
-const CationValidator = require('../validator/cationValidator');
+const CationValidator = require('../validator/zationValidator');
 const TaskError       = require('../../api/TaskError');
 const TaskErrorBag    = require('../../api/TaskErrorBag');
-const SyErrors        = require('../cationTaskErrors/systemTaskErrors');
+const SyErrors        = require('../zationTaskErrors/systemTaskErrors');
 
 class ParamChecker
 {

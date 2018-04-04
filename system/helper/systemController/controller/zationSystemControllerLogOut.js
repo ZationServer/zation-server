@@ -1,7 +1,13 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 let Controller    = require('../../../api/Controller');
 let Bag           = require('../../../api/Bag');
 
-class CationSystemControllerLogOut extends Controller
+class ZationSystemControllerLogOut extends Controller
 {
     handle(bag)
     {
@@ -12,4 +18,4 @@ class CationSystemControllerLogOut extends Controller
     }
 }
 
-module.exports = CationSystemControllerLogOut;
+module.exports = ZationSystemControllerLogOut;

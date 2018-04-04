@@ -1,33 +1,40 @@
-const CA              = require('../constante/settings');
-const TaskError       = require('../../api/TaskError');
-const SyErrors        = require('../cationTaskErrors/systemTaskErrors');
-const cationConfig    = require('../../../App/Config/cation.config');
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
 
-const systemControllerConfig = require('../systemController/systemControler.config');
+const Const            = require('../constante/constWrapper');
+const TaskError        = require('../../api/TaskError');
+const SyErrors         = require('../zationTaskErrors/systemTaskErrors');
+
+const systemController = require('../systemController/systemControler.config');
 const systemControllerPath   = __dirname + './../systemController/controller';
 
 class ControllerTools
 {
-    static getControllerConfig(task)
+    static getControllerConfigByTask(zc,task)
     {
-        if(cationConfig[CA.CATION_CONTROLLER].hasOwnProperty(task[CA.INPUT_CONTROLLER]))
-        {
-            return cationConfig[CA.CATION_CONTROLLER][task[CA.INPUT_CONTROLLER]];
+        return ControllerTools._getControllerConfig(zc,task[Const.Settings.INPUT_CONTROLLER]);
+    }
+
+    static _getControllerConfig(zc,controllerName)
+    {
+        if (zc.isApp(Const.App.CONTROLLER) && zc.getApp(Const.App.CONTROLLER).hasOwnProperty(controllerName)) {
+            return zc.getApp(Const.App.CONTROLLER)[controllerName];
         }
-        else if(systemControllerConfig.hasOwnProperty(task[CA.INPUT_CONTROLLER]))
-        {
-            return systemControllerConfig[task[CA.INPUT_CONTROLLER]];
+        else if (systemController.hasOwnProperty(controllerName)) {
+            return systemController[controllerName];
         }
-        else
-        {
-            throw new TaskError(SyErrors.controllerNotFound,{controllerName : task[CA.INPUT_CONTROLLER]});
+        else {
+            throw new TaskError(SyErrors.controllerNotFound, {controllerName: controllerName});
         }
     }
 
-    static getControllerFullPath(controllerConfig)
+    static _getControllerFullPath(controllerConfig)
     {
-        let controllerPath = controllerConfig[CA.CONTROLLER_PATH];
-        let controllerName = controllerConfig[CA.CONTROLLER_NAME];
+        let controllerPath = controllerConfig[Const.Settings.CONTROLLER_PATH];
+        let controllerName = controllerConfig[Const.Settings.CONTROLLER_NAME];
 
         if(controllerPath === undefined)
         {
@@ -39,41 +46,41 @@ class ControllerTools
         }
     }
 
-    static getControllerClass(controllerConfig,userConfig)
+    static getControllerClass(zc,controllerConfig)
     {
-        let path = ControllerTools.getControllerFullPath(controllerConfig);
+        let path = ControllerTools._getControllerFullPath(controllerConfig);
 
-        if(controllerConfig[CA.CONTROLLER_SYSTEM_CONTROLLER] !== undefined
-            && controllerConfig[CA.CONTROLLER_SYSTEM_CONTROLLER])
+        if(controllerConfig[Const.Settings.CONTROLLER_SYSTEM_CONTROLLER] !== undefined
+            && controllerConfig[Const.Settings.CONTROLLER_SYSTEM_CONTROLLER])
         {
             return require(systemControllerPath + '/' + path);
         }
         else
         {
-            return require(userConfig[CA.START_CONFIG_CONTROLLER_LOCATION] + '/' + path);
+            return require(zc.getMain(Const.StartOp.CONTROLLER) + '/' + path);
         }
     }
 
     static processBeforeHandleEvents(controllerConfig,bag)
     {
-        let beforeHandle = controllerConfig[CA.CONTROLLER_BEFORE_HANDLE];
+        let beforeHandle = controllerConfig[Const.Settings.CONTROLLER_BEFORE_HANDLE];
         if(beforeHandle !== undefined)
         {
             if(Array.isArray(beforeHandle))
             {
                 for(let i = 0; i < beforeHandle.length; i++)
                 {
-                    ControllerTools.fireBeforeHandleEvent(beforeHandle[i],bag);
+                    ControllerTools._fireBeforeHandleEvent(beforeHandle[i],bag);
                 }
             }
             else
             {
-                ControllerTools.fireBeforeHandleEvent(beforeHandle,bag);
+                ControllerTools._fireBeforeHandleEvent(beforeHandle,bag);
             }
         }
     }
 
-    static fireBeforeHandleEvent(func,bag)
+    static _fireBeforeHandleEvent(func,bag)
     {
         if(typeof func === "function")
         {

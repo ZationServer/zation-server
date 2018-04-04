@@ -1,3 +1,9 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 class Settings {}
 
 Settings.ERROR_NAME                     = 'name';
@@ -15,16 +21,14 @@ Settings.INPUT_TASK                     = 't';
 Settings.INPUT_VERSION                  = 'v';
 Settings.INPUT_SYSTEM                   = 's';
 Settings.INPUT_AUTH                     = 'a';
+Settings.INPUT_TOKEN                    = 'to';
 
 Settings.PARAM_DATA_PARAMS              = 'params';
 Settings.PARAM_DATA_PARAMS_Missing      = 'paramsMissing';
 
-Settings.AUTH_DEFAULT_GROUP             = 'defaultGroup';
-Settings.AUTH_AUTH_GROUPS               = 'authGroups';
-
 Settings.CLIENT_AUTH_GROUP              = 'zationAuthGroup';
 Settings.CLIENT_AUTH_ID                 = 'zationAuthId';
-
+Settings.CLIENT_TOKEN_ID                = 'zationTokenId';
 //ZATION SOCKET CHANNELS
 Settings.SOCKET_USER_CHANNEL_PREFIX     = 'ZATION.USER.';
 Settings.SOCKET_AUTH_GROUP_PREFIX       = 'ZATION.AUTH_GROUP.';
@@ -43,5 +47,11 @@ Settings.CHANNEL_INFO_SOCKET            = 'socket';
 //Zation User Channel Events
 Settings.USER_CHANNEL_AUTH_OUT          = 'zationAuthOut';
 Settings.USER_CHANNEL_RE_AUTH           = 'zationReAuth';
+
+Settings.TOKEN_INFO_STORAGE_KEY         = 'ZATION_TOKEN_INFO';
+
+Settings.TOKEN_INFO_WITH_ID             = 'ID_INFO_TOKEN';
+Settings.TOKEN_INFO_WITHOUT_ID          = 'INFO_TOKEN';
+
 
 module.exports = Settings;

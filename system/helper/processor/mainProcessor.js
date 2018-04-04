@@ -1,3 +1,9 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 const ControllerTools       = require('../tools/controllerTools');
 const Controller            = require('../../api/Controller');
 const Result                = require('../../api/Result');

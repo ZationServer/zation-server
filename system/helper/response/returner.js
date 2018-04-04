@@ -1,8 +1,14 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 const Result          = require('../../api/Result');
 const TaskError       = require('../../api/TaskError');
 const TaskErrorBag    = require('../../api/TaskErrorBag');
 const CA              = require('../constante/settings');
-const SyErrors        = require('../cationTaskErrors/systemTaskErrors');
+const SyErrors        = require('../zationTaskErrors/systemTaskErrors');
 
 class Returner
 {

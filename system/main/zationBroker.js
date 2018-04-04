@@ -1,3 +1,9 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 const SCBroker = require('socketcluster/scbroker');
 const scClusterBrokerClient = require('scc-broker-client');
 

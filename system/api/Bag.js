@@ -1,5 +1,11 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 const CA            = require('../helper/constante/settings');
-const ClientStorage = require('../helper/clientStorage/clientStorage');
+const ClientStorage = require('../helper/clientStorage/TokenStorage');
 const cationConfig  = require('./../App/Config/cation.config');
 const crypto        = require('crypto');
 

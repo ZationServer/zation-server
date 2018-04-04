@@ -1,14 +1,22 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 class AppConfig {}
 
-AppConfig.ZATION_AUTH_CONTROLLER         = 'authController';
-AppConfig.ZATION_CONTROLLER              = 'controller';
-AppConfig.ZATION_AUTH_GROUPS             = 'groups';
-AppConfig.ZATION_VERSION_CONTROL         = 'versionControl';
-AppConfig.ZATION_ACCESS_DEFAULT          = 'accessDefault';
+AppConfig.AUTH_CONTROLLER         = 'authController';
+AppConfig.CONTROLLER              = 'controller';
+AppConfig.GROUPS             = 'groups';
+AppConfig.VERSION_CONTROL         = 'versionControl';
+AppConfig.ACCESS_DEFAULT          = 'accessDefault';
 
-AppConfig.ZATION_SERVER_SOCKET_ACCESS     = 'socketAccess';
-AppConfig.ZATION_SERVER_HTTP_ACCESS       = 'httpAccess';
+AppConfig.SERVER_SOCKET_ACCESS     = 'socketAccess';
+AppConfig.SERVER_HTTP_ACCESS       = 'httpAccess';
 
+AppConfig.GROUPS_DEFAULT_GROUP           = 'defaultGroup';
+AppConfig.GROUPS_AUTH_GROUPS             = 'authGroups';
 
 AppConfig.CONTROLLER_NAME                = 'name';
 AppConfig.CONTROLLER_PATH                = 'path';

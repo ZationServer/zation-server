@@ -1,14 +1,21 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
 class Event {}
 
 //Zation Events
 Event.ZATION_EXPRESS                     = 'express';
-Event.ZATION_IS_STARTED                  = 'isStarted';
+Event.ZATION_WORKER_IS_STARTED           = 'WORKER_IS_STARTED';
 Event.ZATION_HTTP_SERVER_IS_STARTED      = 'httpServerIsStarted';
 Event.ZATION_SOCKET_SERVER_IS_STARTED    = 'socketServerIsStarted';
 Event.ZATION_IS_STARTED                  = 'isStarted';
 Event.ZATION_BEFORE_ERROR                = 'beforeError';
 Event.ZATION_BEFORE_TASK_ERROR           = 'beforeTaskError';
 Event.ZATION_BEFORE_TASK_ERROR_BAG       = 'beforeTaskErrorBag';
+Event.ZATION_BACKGROUND_TASK             = 'backgroundTask';
 
 //SocketCluster Socket Events
 Event.SOCKET_ERROR                       = 'socketError';

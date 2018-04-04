@@ -1,4 +1,10 @@
-let TaskError = require('./TaskError');
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
+const TaskError = require('./TaskError');
 
 class TaskErrorBag
 {
