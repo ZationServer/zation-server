@@ -4,18 +4,21 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const SCWorker            = require('socketcluster/scworker');
-const express             = require('express');
-const cookieParser        = require('cookie-parser');
-const bodyParser          = require('body-parser');
-const mySql               = require('mysql');
-const nodeMailer          = require('nodemailer');
-const fileUpload          = require('express-fileupload');
+const SCWorker              = require('socketcluster/scworker');
+const express               = require('express');
+const cookieParser          = require('cookie-parser');
+const bodyParser            = require('body-parser');
+const mySql                 = require('mysql');
+const nodeMailer            = require('nodemailer');
+const fileUpload            = require('express-fileupload');
 
-const Zation              = require('./zation');
-const Const               = require('../helper/constante/constWrapper');
-const ChannelController   = require('../helper/channel/channelEngine');
-const ServiceWrapper      = require('../helper/services/serviceWrapper');
+const Zation                = require('./zation');
+const Const                 = require('../helper/constante/constWrapper');
+const ChannelController     = require('../helper/channel/channelEngine');
+const ServiceWrapper        = require('../helper/services/serviceWrapper');
+const TokenInfoStorage      = require('../helper/storage/tokenInfoStorage');
+const MasterStorage         = require('../helper/storage/masterStorage');
+const SystemBackgroundTask  = require('../helper/background/systemBackgroundTasks');
 
 class Worker extends SCWorker
 {
@@ -29,14 +32,6 @@ class Worker extends SCWorker
         this._zc.loadOtherConfigs();
 
         this.zation = new Zation(this._zc);
-
-        //Server
-        if (this._zc.getMain(Const.Main.USE_HTTP_SERVER)) {
-            this._startHttpServer();
-        }
-        if (this._zc.getMain(Const.Main.USE_SOCKET_SERVER)) {
-            this._startSocketServer();
-        }
 
         this.servieces = {};
         //Services
@@ -62,12 +57,25 @@ class Worker extends SCWorker
                 );
         }
 
+        if(this._zc.getMain(Const.Main.AUTH_EXTRA_SECURE))
+        {
+            this._initTokenInfoStorage();
+        }
+
+        this._loadUserBackgroundTasks();
         this._registerMasterEvent();
+
+        //Server
+        if (this._zc.getMain(Const.Main.USE_HTTP_SERVER)) {
+            this._startHttpServer();
+        }
+        if (this._zc.getMain(Const.Main.USE_SOCKET_SERVER)) {
+            this._startSocketServer();
+        }
 
         //Fire event is started
         this._zc.emitEvent(Const.Event.ZATION_WORKER_IS_STARTED,
             (f) => {f(this._zc.getSomeInformation())});
-
     }
 
     _startSocketServer()
@@ -97,8 +105,9 @@ class Worker extends SCWorker
                         socket: socket,
                         respond: respond,
                         scServer: this.scServer,
-                        services: this.servieces
-                    });
+                        services: this.servieces,
+                        tokenInfoStorage : this._tokenInfoStorage
+                     });
             });
 
         });
@@ -135,7 +144,8 @@ class Worker extends SCWorker
                     res: res,
                     req: req,
                     scServer: this.scServer,
-                    services: this.servieces
+                    services: this.servieces,
+                    tokenInfoStorage : this._tokenInfoStorage
                 });
         });
 
@@ -450,6 +460,17 @@ class Worker extends SCWorker
         return httpServer;
     }
 
+    _initTokenInfoStorage()
+    {
+        let key = this._zc.getMain(Const.Settings.TOKEN_INFO_STORAGE_KEY);
+        this._tokenInfoStorage = new TokenInfoStorage(new MasterStorage(key,this));
+        this._addSystemBackgroundTask(async() =>
+        {
+            await SystemBackgroundTask.checkTokenInfoStorage(this._tokenInfoStorage)
+        });
+    }
+
+
     _registerMasterEvent()
     {
         this.on('masterMessage',(data,respond) =>
@@ -493,6 +514,19 @@ class Worker extends SCWorker
         {
             task(this);
         }
+    }
+
+    _loadUserBackgroundTasks()
+    {
+        this._zc.emitEvent(Const.Event.ZATION_BACKGROUND_TASK,(f) =>
+        {
+            let id = 0;
+            f((refreshRate,task) =>
+            {
+                this._userBackgroundTasks[id] = task;
+                id++;
+            });
+        });
     }
 
 

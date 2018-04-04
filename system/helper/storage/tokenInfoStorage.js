@@ -48,53 +48,93 @@ class TokenInfoStorage
         return this._as.buildDo(Const.Main.TOKEN_INFO_WITHOUT_ID,req);
     }
 
-    _buildDoInUserId(id,req)
+    _buildDoInAuthId(id,req)
     {
         return this._buildDoInWithId(this._as.buildDo(id,req));
     }
 
-    async _isUserIdIn(id)
+    async _isAuthIdIn(id)
     {
         return await this._as.send(this._buildDoInWithId(this._as.buildCanDo(id)));
     }
 
-    async _createUserId(id)
+    async _createAuthId(id)
     {
         return await this._as.send(this._buildDoInWithId(this._as.buildSet(id)));
     }
 
-    async _createUserTokenInfo(userId,expire)
+    async _createWithoutAuthIdTokenInfo(expire)
     {
-        let isUserIn = await this._isUserIdIn(userId);
+        let uuid = await this._createTokenInfo((req) =>
+        {
+            this._buildDoInWithoutId(req);
+        });
+        await this.setTokenInfo(Const.Settings.TOKEN_INFO_EXPIRE,expire,uuid);
+
+    }
+
+    async _createAuthIdTokenInfo(authId,expire)
+    {
+        let isUserIn = await this._isAuthIdIn(authId);
 
         let buildDo = (req) =>
         {
-            this._buildDoInUserId(userId,req);
-
+            this._buildDoInAuthId(authId,req);
         };
 
-        if(isUserIn)
+        if(!isUserIn)
         {
-            await this._createTokenInfo(buildDo,expire);
+            await this._createAuthId();
         }
-        else
-        {
-            await this._createUserId();
-            await this._createTokenInfo(buildDo,expire);
-        }
+
+        let uuid = await this._createTokenInfo(buildDo);
+        await this.setTokenInfo(Const.Settings.TOKEN_INFO_EXPIRE,expire,uuid,authId);
+        return uuid;
     }
 
-    async _createTokenInfo(buildDo,expire)
+    async _createTokenInfo(buildDo)
     {
-        let uuid = await TokenInfoStorage._generateUniqueUuidIn(async(uuid) =>
+        return await TokenInfoStorage._generateUniqueUuidIn(async(uuid) =>
         {
             return await this._as.send(buildDo(this._as.buildCanDo(uuid)));
         });
+    }
 
-        await this._as.send(buildDo(this._as.buildDo(uuid,this._as.buildSet())))
+    async _isTokeWithAuthIdValid(tokenId,authId)
+    {
+        let isThere = await this._as.send(this._buildDoInWithId(authId,this._as.buildCanDo(tokenId)));
+        if(!isThere)
+        {
+            return true;
+        }
+        else
+        {
+            let req = this._buildDoInWithId(authId,this._as.buildDo(tokenId,this._as.buildGet()));
+            let tokenInfo = await this._as.send(req);
+            return this._checkTokenInfo(tokenInfo);
+        }
+    }
 
+    async _isTokenWithoutAuthIdValid(tokenId)
+    {
+        let isThere = await this._as.send(this._buildDoInWithoutId(this._as.buildCanDo(tokenId)));
+        if(!isThere)
+        {
+            return true;
+        }
+        else
+        {
+            let req = this._buildDoInWithoutId(this._as.buildDo(tokenId,this._as.buildGet()));
+            let tokenInfo = await this._as.send(req);
+            return this._checkTokenInfo(tokenInfo);
+        }
+    }
 
-
+    // noinspection JSMethodCanBeStatic
+    _checkTokenInfo(tokenInfo)
+    {
+        let isBlocked = tokenInfo[Const.Settings.TOKEN_INFO_IS_BLOCKED];
+        return isBlocked === undefined || (isBlocked !== undefined && !isBlocked);
     }
 
     static async _generateUniqueUuidIn(isThere)
@@ -146,19 +186,76 @@ class TokenInfoStorage
         });
     }
 
-    async setUserTokenInfo(userId,tokenId,overwrite = true)
+    async isTokenValid(token)
     {
+        let authId = token[Const.Settings.CLIENT_AUTH_ID];
+        let tokenId = token[Const.Settings.CLIENT_TOKEN_ID];
 
+        if(tokenId !== undefined)
+        {
+            if(authId === undefined)
+            {
+                return await this._isTokeWithAuthIdValid(tokenId,authId);
+            }
+            else
+            {
+                return await this._isTokenWithoutAuthIdValid(tokenId)
+            }
+        }
+        else
+        {
+            return false;
+        }
     }
 
-    async setTokenInfo(tokenId,overwrite = true)
+    async createTokenInfo(expire,authId)
     {
-
-
+        if(authId !== undefined)
+        {
+            return await this._createAuthIdTokenInfo(authId,expire);
+        }
+        else
+        {
+            return await  this._createWithoutAuthIdTokenInfo(expire);
+        }
     }
 
+    async setLastActivity(token)
+    {
+        let authId = token[Const.Settings.CLIENT_AUTH_ID];
+        let tokenId = token[Const.Settings.CLIENT_TOKEN_ID];
+        return await this.setTokenInfo(Const.Settings.TOKEN_LAST_ACTIVITY,Date.now(),tokenId,authId);
+    }
 
-
+    async setTokenInfo(key,value,tokenId,authId)
+    {
+        if(authId !== undefined)
+        {
+            let isThere = await this._as.send(this._buildDoInAuthId(authId,this._as.buildCanDo(tokenId)));
+            if(isThere !== undefined && !isThere)
+            {
+                let req = this._buildDoInAuthId(authId,this._as.buildDo(tokenId,this._as.buildSet(key,value)));
+                return await this._as.send(req);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            let isThere = await this._as.send(this._buildDoInWithoutId(this._as.buildCanDo(tokenId)));
+            if(isThere !== undefined && !isThere)
+            {
+                let req = this._buildDoInWithoutId(this._as.buildDo(tokenId,this._as.buildSet(key,value)));
+                return await this._as.send(req);
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
 }
 
 module.exports = TokenInfoStorage;

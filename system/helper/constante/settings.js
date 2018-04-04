@@ -52,6 +52,8 @@ Settings.TOKEN_INFO_STORAGE_KEY         = 'ZATION_TOKEN_INFO';
 
 Settings.TOKEN_INFO_WITH_ID             = 'ID_INFO_TOKEN';
 Settings.TOKEN_INFO_WITHOUT_ID          = 'INFO_TOKEN';
-
+Settings.TOKEN_INFO_IS_BLOCKED          = 'IS_BLOCKED';
+Settings.TOKEN_INFO_EXPIRE              = 'EXPIRE';
+Settings.TOKEN_LAST_ACTIVITY            = 'LAST_ACTIVITY';
 
 module.exports = Settings;

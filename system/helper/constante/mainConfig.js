@@ -14,7 +14,6 @@ MainConfig.USE_SOCKET_SERVER                   = 'useSocketServer';
 MainConfig.USE_HTTP_SERVER                     = 'useHttpServer';
 MainConfig.SECURE                              = 'secure';
 MainConfig.AUTH_EXTRA_SECURE                   = 'authExtraSecure';
-MainConfig.STORE_CONFIG                        = 'config';
 MainConfig.HTTPS_CONFIG                        = 'httpsConfig';
 MainConfig.POST_KEY_WORD                       = 'postKeyWord';
 MainConfig.USE_AUTH                            = 'useAuth';

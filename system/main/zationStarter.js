@@ -133,7 +133,7 @@ class ZationStarter
         {
             if(data.storage !== undefined)
             {
-                cb(null,this._masterStorage.do(data.storage));
+                cb(null,this._masterStorage.do(data['storage']));
             }
         })
     }

@@ -11,9 +11,9 @@ const SyErrors      = require('../zationTaskErrors/systemTaskErrors');
 
 class TokenEngine
 {
-    constructor(exchange)
+    constructor()
     {
-        this._exchange = exchange;
+
     }
 
     registerToken(token)

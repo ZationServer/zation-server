@@ -6,9 +6,9 @@ GitHub: LucaCode
 
 class SystemBackgroundTasks
 {
-    static async checkTokenInfoStorage(abstractStorage)
+    static async checkTokenInfoStorage(tokenInfoStorage)
     {
-        let tokenInfo = await abstractStorage.get();
+
 
 
 
