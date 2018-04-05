@@ -16,7 +16,7 @@ class TokenEngine
 
     }
 
-    registerToken(token)
+    createToken()
     {
 
 
@@ -24,11 +24,13 @@ class TokenEngine
 
     }
 
-    changedToken(oldToken,newToken)
+    setTokenVariable(key,value,zationAllow = false)
     {
 
+    }
 
-
+    getTokenVariable(key)
+    {
 
     }
 

@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 const Const         = require('./../constante/constWrapper');
-const TokenTools    = require('./../auth/tokenTools');
+const TokenTools    = require('../token/tokenTools');
 
 class ChannelEngine
 {

@@ -9,9 +9,8 @@ const scClusterBrokerClient = require('scc-broker-client');
 
 class Broker extends SCBroker {
     // noinspection JSUnusedGlobalSymbols
-    run() {
-        console.log('   >> Broker PID:', process.pid);
-
+    run()
+    {
         // This is defined in server.js (taken from environment variable SC_CLUSTER_STATE_SERVER_HOST).
         // If this property is defined, the broker will try to attach itself to the SC cluster for
         // automatic horizontal scalability.

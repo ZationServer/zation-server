@@ -10,7 +10,7 @@ class Controller
     {
     }
 
-    handle(bag)
+    async handle(bag)
     {}
 
 }

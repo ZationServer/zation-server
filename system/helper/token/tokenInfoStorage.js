@@ -4,8 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const SystemBackgroundTasks     = require('./../background/systemBackgroundTasks');
-const Const                     = require('./../constante/constWrapper');
+const SystemBackgroundTasks     = require('../background/systemBackgroundTasks');
+const Const                     = require('../constante/constWrapper');
 const AbstractTokenInfoStorage  = require('./abstractTokenInfoStorage');
 
 class TokenInfoStorage extends AbstractTokenInfoStorage

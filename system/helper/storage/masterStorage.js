@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const StorageInterface = require('./abstractStorage');
+const AbstractStorage = require('./abstractStorage');
 
-class MasterStorage extends StorageInterface
+class MasterStorage extends AbstractStorage
 {
     constructor(key,worker)
     {

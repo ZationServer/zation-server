@@ -15,9 +15,8 @@ const systemController  = require('../helper/systemController/systemControler.co
 
 class ZationConfig
 {
-    constructor(starterConfig,debug,workerTransport = false)
+    constructor(starterConfig,workerTransport = false)
     {
-        this._debug = debug;
         this._eventConfig   = {};
         this._appConfig     = {};
         this._channelConfig = {};
@@ -27,6 +26,7 @@ class ZationConfig
         if(!workerTransport)
         {
             //Create Defaults
+            this._mainConfig[Const.Main.DEBUG] = false;
             this._mainConfig[Const.Main.PORT] = process.env.PORT || 3000;
             this._mainConfig[Const.Main.POST_KEY_WORD] = 'zation';
             this._mainConfig[Const.Main.USE_AUTH] = true;
@@ -52,17 +52,17 @@ class ZationConfig
 
     getWorkerTransport()
     {
-        return {mainConfig : this._mainConfig,debug : this._debug};
+        return {mainConfig : this._mainConfig};
     }
 
     isDebug()
     {
-        return this._debug;
+        return this.getMain(Const.Main.DEBUG);
     }
 
     addToMainConfig(toAdd,overwrite)
     {
-        ZationConfig._addConfigs(this._mainConfig,overwrite);
+        ZationConfig._addConfigs(this._mainConfig,toAdd,overwrite);
     }
 
     getMain(key)
@@ -99,10 +99,29 @@ class ZationConfig
     }
 
     // noinspection JSUnusedGlobalSymbols
-    printWarning(txt)
+    printDebugWarning(txt,obj)
     {
-        if (this._debug) {
-            console.log(`CATION WARNING : ${txt}`);
+        if (this.isDebug())
+        {
+            console.log('\x1b[31m%s\x1b[0m','   [WARNING]',txt);
+
+            if(obj !== undefined)
+            {
+                console.log(obj);
+            }
+        }
+    }
+
+    printDebugInfo(txt,obj)
+    {
+        if (this.isDebug())
+        {
+            console.log('\x1b[34m%s\x1b[0m','   [INFO]',txt);
+
+            if(obj !== undefined)
+            {
+                console.log(obj);
+            }
         }
     }
 
@@ -112,26 +131,26 @@ class ZationConfig
         this._eventConfig = ZationConfig.loadZationConfig
         (
             'event.config',
-            this.getMain(Const.StartOp.EVENT_CONFIG),
+            this.getMain(Const.Main.EVENT_CONFIG),
         );
 
         this._channelConfig = ZationConfig.loadZationConfig
         (
             'channel.config',
-            this.getMain(Const.StartOp.CHANNEL_CONFIG),
+            this.getMain(Const.Main.CHANNEL_CONFIG),
         );
 
         this._appConfig = ZationConfig.loadZationConfig
         (
             'app.config',
-            this.getMain(Const.StartOp.APP_CONFIG),
+            this.getMain(Const.Main.APP_CONFIG),
             false
         );
 
         this._errorConfig = ZationConfig.loadZationConfig
         (
             'error.config',
-            this.getMain(Const.StartOp.ERROR_CONFIG),
+            this.getMain(Const.Main.ERROR_CONFIG),
         );
     }
 
@@ -242,15 +261,15 @@ class ZationConfig
 
     _loadUserDataLocations()
     {
-        this._loadZationConfigLocation(Const.StartOp.MAIN_CONFIG,'main.config');
-        this._loadZationConfigLocation(Const.StartOp.APP_CONFIG,'app.config');
-        this._loadZationConfigLocation(Const.StartOp.CHANNEL_CONFIG,'channel.config');
-        this._loadZationConfigLocation(Const.StartOp.ERROR_CONFIG,'error.config');
-        this._loadZationConfigLocation(Const.StartOp.EVENT_CONFIG,'event.config');
+        this._loadZationConfigLocation(Const.Main.MAIN_CONFIG,'main.config');
+        this._loadZationConfigLocation(Const.Main.APP_CONFIG,'app.config');
+        this._loadZationConfigLocation(Const.Main.CHANNEL_CONFIG,'channel.config');
+        this._loadZationConfigLocation(Const.Main.ERROR_CONFIG,'error.config');
+        this._loadZationConfigLocation(Const.Main.EVENT_CONFIG,'event.config');
 
-        if(!this._mainConfig.hasOwnProperty(Const.StartOp.CONTROLLER))
+        if(!this._mainConfig.hasOwnProperty(Const.Main.CONTROLLER))
         {
-            this._mainConfig[Const.StartOp.CONTROLLER] = ZationConfig._getRootPath() + '/controller/';
+            this._mainConfig[Const.Main.CONTROLLER] = ZationConfig._getRootPath() + '/controller/';
         }
     }
 
@@ -258,9 +277,9 @@ class ZationConfig
     {
         if(!this._mainConfig.hasOwnProperty(key))
         {
-            if(this._mainConfig.hasOwnProperty(Const.StartOp.CONFIG))
+            if(this._mainConfig.hasOwnProperty(Const.Main.CONFIG))
             {
-                this._mainConfig[key] =  this._mainConfig[Const.StartOp.CONFIG] + '/' + defaultName;
+                this._mainConfig[key] =  this._mainConfig[Const.Main.CONFIG] + '/' + defaultName;
             }
             else
             {
@@ -274,7 +293,7 @@ class ZationConfig
         let mainConfig = ZationConfig.loadZationConfig
         (
             'main.config',
-            this._mainConfig[Const.StartOp.MAIN_CONFIG]
+            this._mainConfig[Const.Main.MAIN_CONFIG]
         );
 
         ZationConfig._addConfigs(this._mainConfig,mainConfig);

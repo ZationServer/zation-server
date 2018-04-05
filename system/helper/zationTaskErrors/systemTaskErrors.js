@@ -19,6 +19,16 @@ module.exports = {
         isSystemError : true
     },
 
+    controllerIsNotAController : {
+        name          : 'controllerIsNotAController',
+        description   : 'controller is not a object from type Controller',
+        type          : ErrorType.SYSTEM_ERROR,
+        sendInfo      : false,
+        //INFO
+        // controllerName
+        isSystemError : true
+    },
+
     systemNotFound  : {
         name          : 'systemNotFound',
         description   : 'system not found on Server',

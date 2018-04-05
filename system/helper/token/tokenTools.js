@@ -7,7 +7,7 @@ GitHub: LucaCode
 const Const         = require('../constante/constWrapper');
 const TaskError     = require('../../api/TaskError');
 const SyErrors      = require('../zationTaskErrors/systemTaskErrors');
-const TokenBridge   = require('../auth/tokenBridge');
+const TokenBridge   = require('../bridges/tokenBridge');
 const ChEngine      = require('../channel/channelEngine');
 
 class TokenTools

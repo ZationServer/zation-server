@@ -8,7 +8,7 @@ const Const              = require('../constante/constWrapper');
 
 class ZationReqTools
 {
-    static checkValidStructure(zationReq)
+    static isValidStructure(zationReq)
     {
         return zationReq[Const.Settings.INPUT_VERSION] !== undefined &&
             zationReq[Const.Settings.INPUT_SYSTEM] !== undefined &&
@@ -23,7 +23,7 @@ class ZationReqTools
                 ));
     }
 
-    static createZationAuth(zc,zationReq)
+    static checkZationAuth(zc,zationReq)
     {
         if(zationReq[Const.Settings.INPUT_AUTH] !== undefined)
         {

@@ -12,15 +12,15 @@ const CommandStorage    = require('command-storage');
 
 class ZationStarter
 {
-    constructor(options,debug = false)
+    constructor(options)
     {
-        this._zc = new ZationConfig(options,debug);
+        this._version = "0.6.0";
+        this._zc = new ZationConfig(options);
         this._workerIds = new HashSet();
 
-        if(this._zc.isDebug())
-        {
-            console.log('Zation is running in debug Mode!');
-        }
+        console.log('\x1b[33m%s\x1b[0m', '   [BUSY]','Launching Zation');
+
+        this._zc.printDebugInfo('Zation is launching in debug Mode!');
 
         this._startSocketCluster();
         this._createMasterStorage();
@@ -55,6 +55,9 @@ class ZationStarter
             {
                 f(this._zc.getSomeInformation());
             });
+
+           this._printStartedInformation();
+
         });
 
         // noinspection JSUnresolvedFunction
@@ -79,6 +82,17 @@ class ZationStarter
                 this._workerIds.remove(id);
             }
         });
+    }
+
+    _printStartedInformation()
+    {
+        console.log('\x1b[32m%s\x1b[0m', '   [ACTIVE]','Zation started');
+        console.log(`            Version: ${this._version}`);
+        console.log(`            Port: ${this._zc.getMain(Const.Main.PORT)}`);
+        console.log(`            Your App: ${this._zc.getMain(Const.Main.APP_NAME)}`);
+        console.log(`            Worker Count: ${this._master.options.workers}`);
+        console.log(`            Broker Count: ${this._master.options.brokers}`);
+        console.log('            GitHub: https://github.com/ZationServer');
     }
 
     _getRandomWorkerId()

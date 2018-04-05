@@ -57,11 +57,11 @@ class ControllerTools
         }
         else
         {
-            return require(zc.getMain(Const.StartOp.CONTROLLER) + '/' + path);
+            return require(zc.getMain(Const.Main.CONTROLLER) + '/' + path);
         }
     }
 
-    static processBeforeHandleEvents(controllerConfig,bag)
+    static async processBeforeHandleEvents(controllerConfig,bag)
     {
         let beforeHandle = controllerConfig[Const.Settings.CONTROLLER_BEFORE_HANDLE];
         if(beforeHandle !== undefined)
@@ -70,21 +70,21 @@ class ControllerTools
             {
                 for(let i = 0; i < beforeHandle.length; i++)
                 {
-                    ControllerTools._fireBeforeHandleEvent(beforeHandle[i],bag);
+                    await ControllerTools._fireBeforeHandleEvent(beforeHandle[i],bag);
                 }
             }
             else
             {
-                ControllerTools._fireBeforeHandleEvent(beforeHandle,bag);
+                await ControllerTools._fireBeforeHandleEvent(beforeHandle,bag);
             }
         }
     }
 
-    static _fireBeforeHandleEvent(func,bag)
+    static async _fireBeforeHandleEvent(func,bag)
     {
         if(typeof func === "function")
         {
-            func(bag);
+            await func(bag);
         }
     }
 }

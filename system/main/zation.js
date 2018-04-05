@@ -17,6 +17,8 @@ class Zation
     {
         this._zc = worker.getZationConfig();
         this._worker = worker;
+        this._httpReqCount = 0;
+        this._socketReqCount = 0;
     }
 
     async run(data)
@@ -24,18 +26,26 @@ class Zation
         data.worker = this._worker;
         data.zc = this._zc;
 
-        if(this._zc.isDebug())
+        if(data.isSocket)
         {
+            this._zc.printDebugInfo(`ZATION SOCKET REQUEST: ${this._socketReqCount} ->`
+                ,data.input);
 
-            if(data.isSocket)
+            if(this._zc.isDebug())
             {
-                console.log('ZATION GET SOCKET REQUEST ->');
-                console.log(data.input);
+                data.reqId = this._socketReqCount;
+                this._socketReqCount++;
             }
-            else
+        }
+        else
+        {
+            this._zc.printDebugInfo(`ZATION HTTP REQUEST: ${this._httpReqCount} ->`,
+                data.req.body[Const.Main.POST_KEY_WORD]);
+
+            if(this._zc.isDebug())
             {
-                console.log('ZATION GET HTTP REQUEST ->');
-                console.log(data.req.body[Const.Main.POST_KEY_WORD]);
+                data.reqId = this._httpReqCount;
+                this._httpReqCount++;
             }
         }
 
@@ -61,10 +71,6 @@ class Zation
                 e = data['e'];
             }
 
-            if(this._zc.isDebug())
-            {
-                console.error(e);
-            }
             this._zc.emitEvent(Const.Event.ZATION_BEFORE_ERROR,
                 (f) => {f(e)});
 
@@ -78,6 +84,8 @@ class Zation
                 this._zc.emitEvent(Const.Event.ZATION_BEFORE_TASK_ERROR_BAG,
                     (f) => {f(e)});
             }
+
+            this._zc.printDebugWarning('EXCEPTION ON SERVER ->',e);
 
             returner.reactOnError(e,data['authData']);
         }

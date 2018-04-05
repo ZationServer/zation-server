@@ -7,7 +7,7 @@ GitHub: LucaCode
 const Result          = require('../../api/Result');
 const TaskError       = require('../../api/TaskError');
 const TaskErrorBag    = require('../../api/TaskErrorBag');
-const CA              = require('../constante/settings');
+const Const           = require('../constante/constWrapper');
 const SyErrors        = require('../zationTaskErrors/systemTaskErrors');
 
 class Returner
@@ -15,41 +15,42 @@ class Returner
 
     constructor(data)
     {
-        this.isSocket = data['isSocket'];
-        this.respond  = data['respond'];
-        this.res      = data['res'];
-        this.req      = data['req'];
-        this.userConfig = data['userConfig'];
-        this.debug    = data['debug'];
+        this._isSocket = data['isSocket'];
+        this._respond  = data['respond'];
+        this._res      = data['res'];
+        this._req      = data['req'];
+        this._zc       = data['zc'];
+        this._reqId    = data['reqId'];
 
-        this.sendErrorDesc = this.userConfig[CA.START_CONFIG_SEND_ERRORS_DESC];
-
+        this.sendErrorDesc = this._zc.getMain(Const.Main.SEND_ERRORS_DESC);
     }
 
-    getResultAndReact({result,authData})
+    getResultAndReact(data)
     {
-        this.sendBack(Returner.createResult(result,authData));
-    }
-
-    sendBack(resObj)
-    {
-        if(this.debug)
+        if(data !== undefined)
         {
-            console.log('\x1b[36m%s\x1b[0m', `CATION RETURN RESULT:\n ${JSON.stringify(resObj)}`);
+            this._sendBack(Returner._createResult(data.result,data.authData));
         }
+    }
 
-        if(this.isSocket)
+    _sendBack(resObj)
+    {
+        if(this._isSocket)
         {
-            this.respond(null,resObj);
+            this._zc.printDebugInfo(`ZATION RETURN SOCKET REQUEST RESULT: ${this._reqId} ->`,resObj);
+
+            this._respond(null,resObj);
         }
         else
         {
-            this.res.write(JSON.stringify(resObj));
-            this.res.end();
+            this._zc.printDebugInfo(`ZATION RETURN HTTP REQUEST RESULT: ${this._reqId} ->`,resObj);
+
+            this._res.write(JSON.stringify(resObj));
+            this._res.end();
         }
     }
 
-    static createResult(res,authData,errors = [])
+    static _createResult(res,authData,errors = [])
     {
         let obj = {};
         if(res instanceof Result)
@@ -87,17 +88,17 @@ class Returner
 
         if(err instanceof TaskError)
         {
-            errors = [err._getJsonObj(this.sendErrorDesc || this.debug)];
+            errors = [err._getJsonObj(this.sendErrorDesc || this._zc.isDebug())];
         }
         else if(err instanceof TaskErrorBag)
         {
-            errors = err._getJsonObj(this.sendErrorDesc || this.debug);
+            errors = err._getJsonObj(this.sendErrorDesc || this._zc.isDebug());
         }
         else
         {
             let info = {};
 
-            if(this.debug)
+            if(this._zc.isDebug())
             {
                 info['info'] = err.toString();
             }
@@ -107,7 +108,7 @@ class Returner
             errors = [error._getJsonObj()];
         }
 
-        this.sendBack(Returner.createResult('',authData,errors));
+        this._sendBack(Returner._createResult('',authData,errors));
     }
 
 

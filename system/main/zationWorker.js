@@ -17,7 +17,7 @@ const ZationConfig          = require('./zationConfig');
 const Const                 = require('../helper/constante/constWrapper');
 const ChannelEngine         = require('../helper/channel/channelEngine');
 const ServiceWrapper        = require('../helper/services/serviceWrapper');
-const TokenInfoStorage      = require('../helper/storage/tokenInfoStorage');
+const TokenInfoStorage      = require('../helper/token/tokenInfoStorage');
 const MasterStorage         = require('../helper/storage/masterStorage');
 const SystemBackgroundTask  = require('../helper/background/systemBackgroundTasks');
 
@@ -26,15 +26,13 @@ class Worker extends SCWorker
     // noinspection JSUnusedGlobalSymbols
     async run()
     {
-        console.log('   >> Worker PID:', process.pid);
-
         //BackgroundStuff
         this._systemBackgroundTasks = [];
         this._userBackgroundTasks = {};
 
         let zcOptions = this.options.zationConfigWorkerTransport;
 
-        this._zc = new ZationConfig(zcOptions.mainConfig,zcOptions.debug,true);
+        this._zc = new ZationConfig(zcOptions.mainConfig,true);
         this._zc.loadOtherConfigs();
 
         this._servieces = {};
@@ -97,10 +95,7 @@ class Worker extends SCWorker
             this._zc.emitEvent(Const.Event.SC_SERVER_CONNECTION,
                 (f) => {f(socket);});
 
-            if (this._zc.isDebug())
-            {
-                console.log(`Socket with id: ${socket.id} is connected!`);
-            }
+            this._zc.printDebugInfo(`Socket with id: ${socket.id} is connected!`);
 
             socket.on('zationRequest', (data, respond) => {
                 // noinspection JSUnusedLocalSymbols

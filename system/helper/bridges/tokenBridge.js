@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const tokenEngine = require('./tokenTools');
+const tokenEngine = require('../token/tokenTools');
 const Jwt         = require('jsonwebtoken');
 
 class TokenBridge

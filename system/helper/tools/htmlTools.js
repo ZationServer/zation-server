@@ -8,13 +8,9 @@ const path           = require('path');
 
 class HtmlTool
 {
-    static writeHtml(res,pathToHtml,endRes = true)
+    static writeHtml(res,pathToHtml)
     {
         res.sendFile(path.resolve(pathToHtml));
-        if(endRes)
-        {
-            res.end();
-        }
     }
 }
 
