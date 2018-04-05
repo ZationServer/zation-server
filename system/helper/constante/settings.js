@@ -38,12 +38,6 @@ Settings.SOCKET_ALL                     = 'ZATION.ALL';
 Settings.SOCKET_SPECIAL_CHANNEL_PREFIX  = 'ZATION.SPECIAL_CHANNEL.';
 Settings.SOCKET_SPECIAL_CHANNEL_ID      = '.CH_ID.';
 
-//Generate Info to check Access for specialChannels
-Settings.CHANNEL_INFO_AUTH_GROUP        = 'authGroup';
-Settings.CHANNEL_INFO_IS_AUTH_IN        = 'authIn';
-Settings.CHANNEL_INFO_ID                = 'id';
-Settings.CHANNEL_INFO_SOCKET            = 'socket';
-
 //Zation User Channel Events
 Settings.USER_CHANNEL_AUTH_OUT          = 'zationAuthOut';
 Settings.USER_CHANNEL_RE_AUTH           = 'zationReAuth';

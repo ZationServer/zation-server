@@ -2,15 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/zation-server.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/zation-server.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/auth/tokenEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/auth/tokenEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/background/systemBackgroundTasks.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/background/systemBackgroundTasks.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/constante/mainConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/constante/mainConfig.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/helper/storage/abstractTokenInfoStorage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/api/Bag.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/api/Bag.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/helper/auth/authEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/auth/authEngine.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/helper/auth/tokenBridge.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/auth/tokenBridge.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/helper/auth/tokenTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/auth/tokenTools.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/helper/channel/channelEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/channel/channelEngine.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/helper/constante/channelConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/constante/channelConfig.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/helper/constante/events.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/constante/events.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/helper/constante/settings.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/constante/settings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/storage/abstractTokenInfoStorage.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/helper/processor/httpProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/processor/httpProcessor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/helper/storage/abstractStorage.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/storage/abstractStorage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/helper/storage/masterStorage.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/storage/masterStorage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/helper/storage/tokenInfoStorage.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/storage/tokenInfoStorage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/main/zation.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/main/zation.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/main/zationConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/main/zationConfig.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/main/zationStarter.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/main/zationStarter.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/main/zationWorker.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/main/zationWorker.js" afterDir="false" />
     </list>
@@ -29,29 +36,17 @@
       <file leaf-file-name="zationStarter.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/main/zationStarter.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="102" column="15" lean-forward="true" selection-start-line="97" selection-start-column="12" selection-end-line="102" selection-end-column="15" />
+            <state relative-caret-position="712">
+              <caret line="138" column="5" lean-forward="true" selection-start-line="138" selection-start-column="5" selection-end-line="138" selection-end-column="5" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mainConfig.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/system/helper/constante/mainConfig.js">
+      <file leaf-file-name="events.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/system/helper/constante/events.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="176">
-              <caret line="15" column="67" selection-start-line="15" selection-start-column="67" selection-end-line="15" selection-end-column="67" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="zationWorker.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/system/main/zationWorker.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3066">
-              <caret line="150" lean-forward="true" selection-start-line="150" selection-end-line="150" />
+            <state relative-caret-position="714">
+              <caret line="41" column="66" lean-forward="true" selection-start-line="41" selection-start-column="66" selection-end-line="41" selection-end-column="66" />
             </state>
           </provider>
         </entry>
@@ -59,31 +54,56 @@
       <file leaf-file-name="tokenInfoStorage.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/helper/storage/tokenInfoStorage.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="148">
-              <caret line="13" selection-start-line="13" selection-end-line="14" />
+            <state>
+              <caret line="4" column="3" lean-forward="true" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="3" />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="masterStorage.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/helper/storage/masterStorage.js">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file leaf-file-name="systemBackgroundTasks.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/system/helper/background/systemBackgroundTasks.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="10" selection-start-line="10" selection-end-line="10" />
+            <state relative-caret-position="399">
+              <caret line="19" column="42" selection-start-line="19" selection-start-column="42" selection-end-line="19" selection-end-column="42" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tokenEngine.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/system/helper/auth/tokenEngine.js">
+      <file leaf-file-name="abstractStorage.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/helper/storage/abstractStorage.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="189">
-              <caret line="13" column="16" selection-start-line="13" selection-start-column="16" selection-end-line="13" selection-end-column="16" />
+            <state relative-caret-position="210">
+              <caret line="10" selection-start-line="10" selection-end-line="10" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="abstractTokenInfoStorage.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/helper/storage/abstractTokenInfoStorage.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="357">
+              <caret line="17" selection-start-line="17" selection-end-line="17" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="zationConfig.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/main/zationConfig.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="775">
+              <caret line="50" column="5" lean-forward="true" selection-start-line="50" selection-start-column="5" selection-end-line="50" selection-end-column="5" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -91,8 +111,8 @@
       <file leaf-file-name="tokenTools.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/helper/auth/tokenTools.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2569">
-              <caret line="127" column="5" selection-start-line="127" selection-start-column="4" selection-end-line="127" selection-end-column="5" />
+            <state relative-caret-position="21">
+              <caret line="100" column="5" selection-start-line="100" selection-start-column="5" selection-end-line="100" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -100,16 +120,18 @@
       <file leaf-file-name="authEngine.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/system/helper/auth/authEngine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="14" column="5" lean-forward="true" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
+            <state relative-caret-position="63">
+              <caret line="7" column="70" selection-start-line="7" selection-start-column="70" selection-end-line="7" selection-end-column="70" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tokenBridge.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/system/helper/auth/tokenBridge.js">
+      <file leaf-file-name="zationWorker.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/main/zationWorker.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-812" />
+            <state relative-caret-position="252">
+              <caret line="34" column="27" lean-forward="true" selection-start-line="34" selection-start-column="27" selection-end-line="34" selection-end-column="27" />
+            </state>
           </provider>
         </entry>
       </file>
@@ -136,12 +158,13 @@
       <find>CSettings</find>
       <find>this._config</find>
       <find>authType</find>
-      <find>CATION</find>
       <find>cationReq</find>
       <find>cation</find>
       <find>Cation</find>
       <find>compli</find>
       <find>UserId</find>
+      <find>ChannelController</find>
+      <find>CATION</find>
     </findStrings>
     <replaceStrings>
       <replace>AppConfig</replace>
@@ -155,9 +178,10 @@
       <replace>Const.</replace>
       <replace>Const.Settings</replace>
       <replace>group</replace>
-      <replace>Zation</replace>
       <replace>zationReq</replace>
       <replace>AuthId</replace>
+      <replace>ChannelEngine</replace>
+      <replace>Zation</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -166,18 +190,12 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/system/helper/systemController/controller/cationSystemControllerLogOut.js" />
-        <option value="$PROJECT_DIR$/system/helper/systemController/controller/zationSystemControllerLogOut.js" />
-        <option value="$PROJECT_DIR$/system/helper/systemController/systemControler.config.js" />
-        <option value="$PROJECT_DIR$/system/helper/tools/controllerTools.js" />
         <option value="$PROJECT_DIR$/system/helper/tools/htmlTools.js" />
         <option value="$PROJECT_DIR$/system/helper/tools/zationReqTools.js" />
         <option value="$PROJECT_DIR$/system/helper/validator/zationValidator.js" />
         <option value="$PROJECT_DIR$/system/helper/zationTaskErrors/reactTaskErrors.js" />
         <option value="$PROJECT_DIR$/system/helper/zationTaskErrors/validatorTaskErrors.js" />
-        <option value="$PROJECT_DIR$/system/main/zation.js" />
         <option value="$PROJECT_DIR$/system/main/zationBroker.js" />
-        <option value="$PROJECT_DIR$/system/api/Bag.js" />
         <option value="$PROJECT_DIR$/system/api/Controller.js" />
         <option value="$PROJECT_DIR$/system/helper/views/zationFail.html" />
         <option value="$PROJECT_DIR$/system/helper/views/zationServer.html" />
@@ -188,35 +206,41 @@
         <option value="$PROJECT_DIR$/system/ZATION_INFO" />
         <option value="$PROJECT_DIR$/index.js" />
         <option value="$PROJECT_DIR$/system/helper/authSystem/authEngine.js" />
-        <option value="$PROJECT_DIR$/system/helper/processor/httpProcessor.js" />
         <option value="$PROJECT_DIR$/system/helps.js" />
-        <option value="$PROJECT_DIR$/system/helper/auth/authEngine.js" />
         <option value="$PROJECT_DIR$/system/helper/zationTaskErrors/systemTaskErrors.js" />
         <option value="$PROJECT_DIR$/system/helper/clientStorage/clientStorage.js" />
         <option value="$PROJECT_DIR$/system/helper/auth/tokenSecureEngine.css" />
         <option value="$PROJECT_DIR$/system/helper/clientStorage/TokenStorage.js" />
-        <option value="$PROJECT_DIR$/system/helper/auth/tokenBridge.js" />
         <option value="$PROJECT_DIR$/system/helper/auth/tokenSecurityEngine.js" />
-        <option value="$PROJECT_DIR$/system/helper/auth/tokenTools.js" />
         <option value="$PROJECT_DIR$/system/helper/storage/brokerExchangeStorage.js" />
         <option value="$PROJECT_DIR$/system/helper/storage/storageInterface.js" />
         <option value="$PROJECT_DIR$/system/helper/storage/storageAbstract.js" />
         <option value="$PROJECT_DIR$/system/helper/storage/tokenStorage.js" />
-        <option value="$PROJECT_DIR$/system/helper/constante/events.js" />
-        <option value="$PROJECT_DIR$/system/main/zationConfig.js" />
         <option value="$PROJECT_DIR$/system/helper/storage/commandStorage.js" />
         <option value="$PROJECT_DIR$/system/helper/storage/exchangeStorage.js" />
         <option value="$PROJECT_DIR$/package.json" />
-        <option value="$PROJECT_DIR$/system/helper/storage/abstractStorage.js" />
-        <option value="$PROJECT_DIR$/system/helper/storage/masterStorage.js" />
-        <option value="$PROJECT_DIR$/system/helper/storage/abstractTokenInfoStorage.js" />
-        <option value="$PROJECT_DIR$/system/helper/constante/settings.js" />
-        <option value="$PROJECT_DIR$/system/helper/storage/tokenInfoStorage.js" />
         <option value="$PROJECT_DIR$/system/helper/constante/mainConfig.js" />
         <option value="$PROJECT_DIR$/system/helper/auth/tokenEngine.js" />
         <option value="$PROJECT_DIR$/system/helper/background/systemBackgroundTasks.js" />
-        <option value="$PROJECT_DIR$/system/main/zationStarter.js" />
+        <option value="$PROJECT_DIR$/system/helper/constante/settings.js" />
+        <option value="$PROJECT_DIR$/system/helper/constante/channelConfig.js" />
+        <option value="$PROJECT_DIR$/system/helper/auth/tokenBridge.js" />
+        <option value="$PROJECT_DIR$/system/helper/auth/tokenTools.js" />
+        <option value="$PROJECT_DIR$/system/helper/storage/abstractTokenInfoStorage.js" />
+        <option value="$PROJECT_DIR$/system/helper/channel/channelEngine.js" />
+        <option value="$PROJECT_DIR$/system/main/zation.js" />
+        <option value="$PROJECT_DIR$/system/helper/processor/httpProcessor.js" />
+        <option value="$PROJECT_DIR$/test/test.js" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/system/api/Bag.js" />
+        <option value="$PROJECT_DIR$/system/helper/auth/authEngine.js" />
+        <option value="$PROJECT_DIR$/system/helper/storage/tokenInfoStorage.js" />
+        <option value="$PROJECT_DIR$/system/helper/storage/masterStorage.js" />
+        <option value="$PROJECT_DIR$/system/helper/storage/abstractStorage.js" />
+        <option value="$PROJECT_DIR$/system/main/zationConfig.js" />
         <option value="$PROJECT_DIR$/system/main/zationWorker.js" />
+        <option value="$PROJECT_DIR$/system/main/zationStarter.js" />
+        <option value="$PROJECT_DIR$/system/helper/constante/events.js" />
       </list>
     </option>
   </component>
@@ -236,16 +260,17 @@
     <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="732" />
-    <option name="y" value="145" />
-    <option name="width" value="979" />
-    <option name="height" value="1040" />
+    <option name="x" value="-9" />
+    <option name="y" value="-13" />
+    <option name="width" value="978" />
+    <option name="height" value="1039" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -379,13 +404,12 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="9.5.0" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../test-zation" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.prettier" value="true" />
     <property name="node.js.path.for.package.prettier" value="project" />
@@ -429,22 +453,23 @@
       <workItem from="1522665811603" duration="1697000" />
       <workItem from="1522753986808" duration="43610000" />
       <workItem from="1522809920412" duration="5637000" />
+      <workItem from="1522842688539" duration="13767000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="69479000" />
+    <option name="totallyTimeSpent" value="83246000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="33" width="1550" height="838" extended-state="6" />
+    <frame x="-8" y="22" width="1936" height="1066" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1784534" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1780822" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32763532" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32763532" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -457,6 +482,25 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3286638" />
     </layout>
+    <layout-to-restore>
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1780822" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32763532" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3286638" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" order="10" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -470,37 +514,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/system/helper/constante/validator.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="30" column="50" lean-forward="true" selection-start-line="30" selection-start-column="50" selection-end-line="30" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/helper/processor/mainProcessor.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/helper/processor/socketProcessor.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-42">
-          <caret line="4" column="3" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/helper/response/returner.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret line="4" column="3" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="3" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/helper/services/serviceWrapper.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="84">
@@ -554,23 +567,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/api/Bag.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/helper/constante/channelConfig.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="4" column="3" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/helper/constante/constWrapper.js" />
     <entry file="file://$PROJECT_DIR$/system/helper/checker/paramChecker.js">
       <provider selected="true" editor-type-id="text-editor">
@@ -612,55 +608,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/helper/channel/channelEngine.js" />
     <entry file="file://$PROJECT_DIR$/system/helper/zationTaskErrors/validatorTaskErrors.js" />
     <entry file="file://$PROJECT_DIR$/system/helper/zationTaskErrors/reactTaskErrors.js" />
     <entry file="file://$PROJECT_DIR$/system/helps.js" />
-    <entry file="file://$PROJECT_DIR$/system/helper/processor/httpProcessor.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-105">
-          <caret line="34" column="62" lean-forward="true" selection-start-line="34" selection-start-column="62" selection-end-line="34" selection-end-column="62" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/main/zation.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-357">
-          <caret line="24" column="9" selection-start-line="24" selection-start-column="9" selection-end-line="24" selection-end-column="9" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/helper/zationTaskErrors/systemTaskErrors.js" />
-    <entry file="file://$PROJECT_DIR$/system/main/zationConfig.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="693">
-          <caret line="48" column="27" selection-start-line="48" selection-start-column="27" selection-end-line="48" selection-end-column="27" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/helper/constante/events.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="29" column="58" selection-start-line="29" selection-start-column="58" selection-end-line="29" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/system/helper/storage/commandStorage.js" />
-    <entry file="file://$PROJECT_DIR$/system/helper/storage/abstractStorage.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package-lock.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/command-storage/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="292">
@@ -678,16 +630,44 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/system/helper/background/systemBackgroundTasks.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/system/helper/constante/settings.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="58" column="26" lean-forward="true" selection-start-line="58" selection-start-column="26" selection-end-line="58" selection-end-column="26" />
+        <state relative-caret-position="460">
+          <caret line="38" column="52" selection-start-line="38" selection-start-column="52" selection-end-line="38" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/helper/constante/channelConfig.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="40" lean-forward="true" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/helper/auth/tokenBridge.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="21">
+          <caret line="21" column="5" lean-forward="true" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/helper/channel/channelEngine.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4459">
+          <caret line="234" column="9" lean-forward="true" selection-start-line="234" selection-start-column="9" selection-end-line="234" selection-end-column="9" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/system/helper/constante/mainConfig.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
+        <state relative-caret-position="315">
           <caret line="15" column="67" selection-start-line="15" selection-start-column="67" selection-end-line="15" selection-end-column="67" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
@@ -695,26 +675,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/helper/storage/abstractTokenInfoStorage.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/helper/auth/authEngine.js">
+    <entry file="file://$PROJECT_DIR$/system/helper/processor/mainProcessor.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="5" lean-forward="true" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
+        <state relative-caret-position="-2">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
         </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/helper/auth/tokenTools.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2569">
-          <caret line="127" column="5" selection-start-line="127" selection-start-column="4" selection-end-line="127" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/helper/auth/tokenBridge.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-812" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/system/helper/auth/tokenEngine.js">
@@ -724,34 +689,145 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/helper/background/systemBackgroundTasks.js">
+    <entry file="file://$PROJECT_DIR$/system/helper/processor/socketProcessor.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1008">
+          <caret line="4" column="3" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/main/zation.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="24" column="27" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="27" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/helper/processor/httpProcessor.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="483">
+          <caret line="47" column="9" lean-forward="true" selection-start-line="47" selection-start-column="9" selection-end-line="47" selection-end-column="9" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../test-zation/test/test.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
+          <caret line="6" column="21" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="13" selection-start-column="13" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/api/Bag.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="336">
+          <caret line="16" column="34" lean-forward="true" selection-start-line="16" selection-start-column="34" selection-end-line="16" selection-end-column="34" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/helper/constante/startOptions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/helper/auth/authEngine.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="63">
+          <caret line="7" column="70" selection-start-line="7" selection-start-column="70" selection-end-line="7" selection-end-column="70" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/helper/auth/tokenTools.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="21">
+          <caret line="100" column="5" selection-start-line="100" selection-start-column="5" selection-end-line="100" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/helper/storage/abstractStorage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
           <caret line="10" selection-start-line="10" selection-end-line="10" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/helper/storage/abstractTokenInfoStorage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/helper/storage/masterStorage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="399">
+          <caret line="19" column="42" selection-start-line="19" selection-start-column="42" selection-end-line="19" selection-end-column="42" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/system/helper/storage/tokenInfoStorage.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="148">
-          <caret line="13" selection-start-line="13" selection-end-line="14" />
+        <state>
+          <caret line="4" column="3" lean-forward="true" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="3" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/system/helper/storage/masterStorage.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/system/main/zationStarter.js">
+    <entry file="file://$PROJECT_DIR$/system/main/zationConfig.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="102" column="15" lean-forward="true" selection-start-line="97" selection-start-column="12" selection-end-line="102" selection-end-column="15" />
+        <state relative-caret-position="775">
+          <caret line="50" column="5" lean-forward="true" selection-start-line="50" selection-start-column="5" selection-end-line="50" selection-end-column="5" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/system/main/zationWorker.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3066">
-          <caret line="150" lean-forward="true" selection-start-line="150" selection-end-line="150" />
+        <state relative-caret-position="252">
+          <caret line="34" column="27" lean-forward="true" selection-start-line="34" selection-start-column="27" selection-end-line="34" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/main/zationStarter.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="712">
+          <caret line="138" column="5" lean-forward="true" selection-start-line="138" selection-start-column="5" selection-end-line="138" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/helper/constante/events.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="714">
+          <caret line="41" column="66" lean-forward="true" selection-start-line="41" selection-start-column="66" selection-end-line="41" selection-end-column="66" />
         </state>
       </provider>
     </entry>

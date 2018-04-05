@@ -11,26 +11,17 @@ const HttpProcessor   = require('./../helper/processor/httpProcessor');
 const SocketProcessor = require('./../helper/processor/socketProcessor');
 const Returner        = require('./../helper/response/returner');
 
-let zationSingleton = null;
-
 class Zation
 {
-    constructor(zc)
+    constructor(worker)
     {
-        if(zationSingleton)
-        {
-            let errorMessage = 'The Zation master object is a singleton,' +
-                'it can only be instantiated once per process';
-            throw new Error(errorMessage);
-        }
-
-        zationSingleton = this;
-
-        this._zc = zc;
+        this._zc = worker.getZationConfig();
+        this._worker = worker;
     }
 
     async run(data)
     {
+        data.worker = this._worker;
         data.zc = this._zc;
 
         if(this._zc.isDebug())

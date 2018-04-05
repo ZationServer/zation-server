@@ -8,7 +8,7 @@ class Event {}
 
 //Zation Events
 Event.ZATION_EXPRESS                     = 'express';
-Event.ZATION_WORKER_IS_STARTED           = 'WORKER_IS_STARTED';
+Event.ZATION_WORKER_IS_STARTED           = 'workerIsStarted';
 Event.ZATION_HTTP_SERVER_IS_STARTED      = 'httpServerIsStarted';
 Event.ZATION_SOCKET_SERVER_IS_STARTED    = 'socketServerIsStarted';
 Event.ZATION_IS_STARTED                  = 'isStarted';

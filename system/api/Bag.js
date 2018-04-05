@@ -5,8 +5,6 @@ GitHub: LucaCode
  */
 
 const CA            = require('../helper/constante/settings');
-const ClientStorage = require('../helper/clientStorage/TokenStorage');
-const cationConfig  = require('./../App/Config/cation.config');
 const crypto        = require('crypto');
 
 class Bag
@@ -94,7 +92,7 @@ class Bag
     // noinspection JSUnusedGlobalSymbols
     reAuthAllClientsWithId(id)
     {
-        this._channelController. reAuthAllClientsWithId(id);
+        this._channelController.reAuthAllClientsWithId(id);
     }
 
     // noinspection JSUnusedGlobalSymbols

@@ -5,6 +5,7 @@ GitHub: LucaCode
  */
 
 const tokenEngine = require('./tokenTools');
+const Jwt         = require('jsonwebtoken');
 
 class TokenBridge
 {
@@ -18,6 +19,11 @@ class TokenBridge
     isSocket()
     {
         return this._isSocket;
+    }
+
+    getSocket()
+    {
+        return this._socket;
     }
 
     tokenIsThere()

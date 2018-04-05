@@ -4,14 +4,15 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const Jwt           = require('jsonwebtoken');
 const Const         = require('../constante/constWrapper');
 const TaskError     = require('../../api/TaskError');
 const SyErrors      = require('../zationTaskErrors/systemTaskErrors');
+const TokenBridge   = require('../auth/tokenBridge');
+const ChEngine      = require('../channel/channelEngine');
 
 class TokenTools
 {
-    static _changeToken(data,tokenBridge,chController,ignoreZationKeys = false,updateOnly = true)
+    static _changeToken(data,tokenBridge,ignoreZationKeys = false,updateOnly = true)
     {
         let suc = false;
 
@@ -25,7 +26,7 @@ class TokenTools
 
                 if(tokenBridge.isSocket())
                 {
-                    chController.checkSocketChannelAccess();
+                    ChEngine.checkSocketSpecialChAccess(tokenBridge.getSocket());
                 }
 
                 suc = true;
@@ -38,6 +39,11 @@ class TokenTools
             if(ignoreZationKeys)
             {
                 setToken();
+
+                if(tokenBridge.isSocket())
+                {
+                    ChEngine.checkSocketZationChAccess(tokenBridge.getSocket());
+                }
             }
             else if(data.hasOwnProperty(Const.Settings.CLIENT_AUTH_GROUP))
             {
@@ -91,24 +97,44 @@ class TokenTools
         }
     }
 
-    static setTokenVariable(data,tokenBridge,chController)
+    static  getSocketTokenVariable(key,socket)
     {
-        return TokenTools._changeToken(data,tokenBridge,chController);
+        // noinspection JSUnresolvedFunction
+        let token = socket.getAuthToken();
+
+        if(token !== undefined)
+        {
+            return token[key];
+        }
+        else
+        {
+            return undefined;
+        }
     }
 
-    static setZationData(data,tokenBridge,tokenEngine,chController)
+    static setTokenVariable(data,tokenBridge)
+    {
+        return TokenTools._changeToken(data,tokenBridge);
+    }
+
+    static setSocketTokenVariable(data,socket)
+    {
+        return TokenTools._changeToken(data,new TokenBridge(true,socket));
+    }
+
+    static setZationData(data,tokenBridge,tokenEngine)
     {
         let oldToken = tokenBridge.getToken();
-        let suc = TokenTools._changeToken(data,tokenBridge,chController,true);
+        let suc = TokenTools._changeToken(data,tokenBridge,true);
         if(suc) {
             tokenEngine.changedToken(oldToken, tokenBridge.getToken());
         }
         return suc;
     }
 
-    static createToken(data,tokenBridge,tokenEngine,chController)
+    static createToken(data,tokenBridge,tokenEngine)
     {
-        let suc = TokenTools._changeToken(data,tokenBridge,chController,true,false);
+        let suc = TokenTools._changeToken(data,tokenBridge,true,false);
         if(suc)
         {
             tokenEngine.registerToken(tokenBridge.getToken());

@@ -4,14 +4,20 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const SystemBackgroundTasks = require('./../background/systemBackgroundTasks');
-const Const                 = require('./../constante/constWrapper');
+const SystemBackgroundTasks     = require('./../background/systemBackgroundTasks');
+const Const                     = require('./../constante/constWrapper');
+const AbstractTokenInfoStorage  = require('./abstractTokenInfoStorage');
 
-class TokenInfoStorage
+class TokenInfoStorage extends AbstractTokenInfoStorage
 {
-    async constructor(abstractStorage)
+    constructor(abstractStorage)
     {
+        super();
         this._as = abstractStorage;
+    }
+
+    async init()
+    {
         await this._generateMainStructure();
     }
 
@@ -225,6 +231,15 @@ class TokenInfoStorage
         let authId = token[Const.Settings.CLIENT_AUTH_ID];
         let tokenId = token[Const.Settings.CLIENT_TOKEN_ID];
         return await this.setTokenInfo(Const.Settings.TOKEN_LAST_ACTIVITY,Date.now(),tokenId,authId);
+    }
+
+    setTokenInfoForAuthIds(key,value,authIds,exceptTokenIds)
+    {
+
+
+
+
+
     }
 
     async setTokenInfo(key,value,tokenId,authId)

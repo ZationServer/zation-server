@@ -15,7 +15,7 @@ const systemController  = require('../helper/systemController/systemControler.co
 
 class ZationConfig
 {
-    constructor(starterConfig,debug)
+    constructor(starterConfig,debug,workerTransport = false)
     {
         this._debug = debug;
         this._eventConfig   = {};
@@ -24,24 +24,35 @@ class ZationConfig
         this._errorConfig   = {};
         this._mainConfig    = {};
 
-        //Create Defaults
-        this._mainConfig[Const.Main.PORT] = process.env.PORT || 3000;
-        this._mainConfig[Const.Main.POST_KEY_WORD] = 'zation';
-        this._mainConfig[Const.Main.USE_AUTH] = true;
-        this._mainConfig[Const.Main.APP_NAME] = 'AppWithoutName';
-        this._mainConfig[Const.Main.SECURE] = false;
-        this._mainConfig[Const.Main.USE_SOCKET_SERVER] = true;
-        this._mainConfig[Const.Main.USE_HTTP_SERVER] = true;
-        this._mainConfig[Const.Main.USE_PROTOCOL_CHECK] = true;
-        this._mainConfig[Const.Main.SEND_ERRORS_DESC] = false;
-        this._mainConfig[Const.Main.AUTH_KEY] = crypto.randomBytes(32).toString('hex');
-        this._mainConfig[Const.Main.AUTH_EXTRA_SECURE] = true;
-        this._mainConfig[Const.Main.SYSTEM_BACKGROUND_TASK_REFRESH_RATE] = 600000;
+        if(!workerTransport)
+        {
+            //Create Defaults
+            this._mainConfig[Const.Main.PORT] = process.env.PORT || 3000;
+            this._mainConfig[Const.Main.POST_KEY_WORD] = 'zation';
+            this._mainConfig[Const.Main.USE_AUTH] = true;
+            this._mainConfig[Const.Main.APP_NAME] = 'AppWithoutName';
+            this._mainConfig[Const.Main.SECURE] = false;
+            this._mainConfig[Const.Main.USE_SOCKET_SERVER] = true;
+            this._mainConfig[Const.Main.USE_HTTP_SERVER] = true;
+            this._mainConfig[Const.Main.USE_PROTOCOL_CHECK] = true;
+            this._mainConfig[Const.Main.SEND_ERRORS_DESC] = false;
+            this._mainConfig[Const.Main.AUTH_KEY] = crypto.randomBytes(32).toString('hex');
+            this._mainConfig[Const.Main.AUTH_EXTRA_SECURE] = true;
+            this._mainConfig[Const.Main.SYSTEM_BACKGROUND_TASK_REFRESH_RATE] = 600000;
 
-        this.addToMainConfig(starterConfig,true);
-        this._loadUserDataLocations();
-        this._loadMainConfig();
+            this.addToMainConfig(starterConfig,true);
+            this._loadUserDataLocations();
+            this._loadMainConfig();
+        }
+        else
+        {
+            this._mainConfig = starterConfig;
+        }
+    }
 
+    getWorkerTransport()
+    {
+        return {mainConfig : this._mainConfig,debug : this._debug};
     }
 
     isDebug()
@@ -150,7 +161,7 @@ class ZationConfig
 
     static loadZationConfig(name,path,optional = true)
     {
-        if(fs.existsSync(path))
+        if(fs.existsSync(path+'.js'))
         {
             return require(path);
         }

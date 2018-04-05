@@ -43,7 +43,7 @@ class ZationStarter
             authAlgorithm: this._zc.getMain(Const.Main.AUTH_ALGORITHM),
             authPublicKey: this._zc.getMain(Const.Main.AUTH_PUBLIC_KEY),
             authPrivateKey: this._zc.getMain(Const.Main.AUTH_PRIVATE_KEY),
-            cationInformation : this._zc
+            zationConfigWorkerTransport : this._zc.getWorkerTransport()
         });
 
         this._zc.loadOtherConfigs();
@@ -129,7 +129,7 @@ class ZationStarter
     {
         this._masterStorage = new CommandStorage();
         // noinspection JSUnresolvedFunction
-        this._master.on('workerMessage',(id,obj,cb) =>
+        this._master.on('workerMessage',(id,data,cb) =>
         {
             if(data.storage !== undefined)
             {

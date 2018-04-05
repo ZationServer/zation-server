@@ -6,6 +6,10 @@ GitHub: LucaCode
 
 class AbstractStorage
 {
+    async init()
+    {
+
+    }
     send(req)
     {
 

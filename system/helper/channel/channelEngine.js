@@ -4,9 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const channelConfig = require('../../../App/Config/channel.config');
-const CA            = require('../constante/settings');
-const ClientStorage = require('../clientStorage/TokenStorage');
+const Const         = require('./../constante/constWrapper');
+const TokenTools    = require('./../auth/tokenTools');
 
 class ChannelEngine
 {
@@ -203,33 +202,38 @@ class ChannelEngine
     {
         let info = {};
 
-        let type = ClientStorage.getClientVariable([CA.CLIENT_AUTH_GROUP],true,socket);
-        info[CA.CHANNEL_INFO_AUTH_GROUP] = type;
+        let type = ClientStorage.getClientVariable([Const.Settings.CLIENT_AUTH_GROUP],true,socket);
+        info[Const.Channel.CHANNEL_INFO_AUTH_GROUP] = type;
 
-        info[CA.CHANNEL_INFO_ID] = ClientStorage.getClientVariable([CA.CLIENT_AUTH_ID],true,socket);
-        info[CA.CHANNEL_INFO_SOCKET] = socket;
+        info[Const.Channel.CHANNEL_INFO_ID] =
+            ClientStorage.getClientVariable([Const.Settings.CLIENT_AUTH_ID],true,socket);
 
-        info[CA.CHANNEL_INFO_IS_AUTH_IN] = type !== undefined;
+        info[Const.Channel.CHANNEL_INFO_SOCKET] = socket;
+
+        info[Const.Channel.CHANNEL_INFO_TOKEN_ID] =
+            ClientStorage.getClientVariable([Const.Settings.CLIENT_TOKEN_ID],true,socket);
+
+        info[Const.Channel.CHANNEL_INFO_IS_AUTH_IN] = type !== undefined;
 
         return info;
     }
 
-    static getGetSocketDataFunc(socket)
+    static _getGetSocketDataFunc(socket)
     {
+        //TODO
         return (key) => {ClientStorage.getClientVariable(key,true,socket)};
     }
 
-    static hasAccessTo(param,socket)
+    static _hasAccessTo(param,socket)
     {
         let access = false;
-
         if(typeof param === 'boolean')
         {
             access = param;
         }
         else if(typeof param === "function")
         {
-            let res = param(ChannelEngine.generateInfo(socket),ChannelEngine.getGetSocketDataFunc(socket));
+            let res = param(ChannelEngine.generateInfo(socket),ChannelEngine._getGetSocketDataFunc(socket));
             if(typeof res === 'boolean')
             {
                 access = res;
@@ -240,43 +244,51 @@ class ChannelEngine
 
     static getSpecialChannelName(ch)
     {
-        ch = ch.replace(CA.SOCKET_SPECIAL_CHANNEL_PREFIX,'');
-        ch = ch.substring(0,ch.indexOf(CA.SOCKET_SPECIAL_CHANNEL_ID));
+        ch = ch.replace(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX,'');
+        ch = ch.substring(0,ch.indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_ID));
         return ch;
     }
 
     static hasAccessToSubSpecialChannel(socket,channel)
     {
         let info = ChannelEngine.getChannelChannelInfo(channel);
-        return ChannelEngine.hasAccessTo(info[CA.CHANNEL_SUBSCRIBE],socket);
+        return ChannelEngine._hasAccessTo(info[Const.Channel.CHANNEL_SUBSCRIBE],socket);
     }
 
     static hasAccessToPubInSpecialChannel(socket,channel)
     {
         let info = ChannelEngine.getChannelChannelInfo(channel);
-        return ChannelEngine.hasAccessTo(info[CA.CHANNEL_PUBLISH],socket);
+        return ChannelEngine._hasAccessTo(info[Const.Channel.CHANNEL_PUBLISH],socket);
     }
 
 
-    checkSocketChannelAccess()
+    static checkSocketSpecialChAccess(socket)
     {
-        if(this.isSocket)
+        if(socket !== undefined)
         {
-            let subs = this.socket.subscriptions();
+            let subs = socket.subscriptions();
 
             for(let i = 0; i < subs.length; i++)
             {
-                if(subs[i].indexOf(CA.SOCKET_SPECIAL_CHANNEL_PREFIX) !== -1)
+                if(subs[i].indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX) !== -1)
                 {
-                    let chName = ChannelEngine.getSpecialChannelName(subs[i]);
-                    if(!ChannelEngine.hasAccessToSubSpecialChannel(this.socket,chName))
+                    let chName = ChannelEngine._getSpecialChannelName(subs[i]);
+                    if(!ChannelEngine._hasAccessToSubSpecialChannel(socket,chName))
                     {
-                        // noinspection JSValidateTypes
-                        this.socket.kickOut(subs[i]);
+                        // noinspection JSUnresolvedFunction
+                        socket.kickOut(subs[i]);
                     }
                 }
             }
         }
+    }
+
+    static checkSocketZationChAccess(socket)
+    {
+
+
+
+
     }
 
 

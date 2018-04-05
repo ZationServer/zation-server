@@ -8,11 +8,15 @@ const StorageInterface = require('./abstractStorage');
 
 class MasterStorage extends StorageInterface
 {
-    async constructor(key,worker)
+    constructor(key,worker)
     {
         super();
         this._key = key;
         this._worker = worker;
+    }
+
+    async init()
+    {
         await this._createMainStructure();
     }
 

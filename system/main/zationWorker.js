@@ -13,8 +13,9 @@ const nodeMailer            = require('nodemailer');
 const fileUpload            = require('express-fileupload');
 
 const Zation                = require('./zation');
+const ZationConfig          = require('./zationConfig');
 const Const                 = require('../helper/constante/constWrapper');
-const ChannelController     = require('../helper/channel/channelEngine');
+const ChannelEngine         = require('../helper/channel/channelEngine');
 const ServiceWrapper        = require('../helper/services/serviceWrapper');
 const TokenInfoStorage      = require('../helper/storage/tokenInfoStorage');
 const MasterStorage         = require('../helper/storage/masterStorage');
@@ -23,20 +24,23 @@ const SystemBackgroundTask  = require('../helper/background/systemBackgroundTask
 class Worker extends SCWorker
 {
     // noinspection JSUnusedGlobalSymbols
-    run()
+    async run()
     {
         console.log('   >> Worker PID:', process.pid);
+
+        //BackgroundStuff
         this._systemBackgroundTasks = [];
         this._userBackgroundTasks = {};
-        this._zc = this.options.cationInformation;
+
+        let zcOptions = this.options.zationConfigWorkerTransport;
+
+        this._zc = new ZationConfig(zcOptions.mainConfig,zcOptions.debug,true);
         this._zc.loadOtherConfigs();
 
-        this.zation = new Zation(this._zc);
-
-        this.servieces = {};
+        this._servieces = {};
         //Services
         if (this._zc.isMain(Const.Main.SERVICES_MYSQL_POOL)) {
-            this.servieces['mySqlPoolWrapper'] =
+            this._servieces['mySqlPoolWrapper'] =
                 new ServiceWrapper
                 (
                     mySql.createPool
@@ -47,7 +51,7 @@ class Worker extends SCWorker
         }
 
         if (this._zc.isMain(Const.Main.SERVICES_NODE_MAILER)) {
-            this.servieces['nodeMailerWrapper'] =
+            this._servieces['nodeMailerWrapper'] =
                 new ServiceWrapper
                 (
                     nodeMailer.createTransport
@@ -59,11 +63,13 @@ class Worker extends SCWorker
 
         if(this._zc.getMain(Const.Main.AUTH_EXTRA_SECURE))
         {
-            this._initTokenInfoStorage();
+            await this._initTokenInfoStorage();
         }
 
         this._loadUserBackgroundTasks();
         this._registerMasterEvent();
+
+        this.zation = new Zation(this);
 
         //Server
         if (this._zc.getMain(Const.Main.USE_HTTP_SERVER)) {
@@ -80,13 +86,13 @@ class Worker extends SCWorker
 
     _startSocketServer()
     {
-        this.initSocketMiddleware();
-        this.initScServerEvents();
+        this._initSocketMiddleware();
+        this._initScServerEvents();
 
         //START SOCKET SERVER
         this.scServer.on('connection', (socket) => {
 
-            this.initSocketEvents(socket);
+            this._initSocketEvents(socket);
 
             this._zc.emitEvent(Const.Event.SC_SERVER_CONNECTION,
                 (f) => {f(socket);});
@@ -104,9 +110,6 @@ class Worker extends SCWorker
                         input: data,
                         socket: socket,
                         respond: respond,
-                        scServer: this.scServer,
-                        services: this.servieces,
-                        tokenInfoStorage : this._tokenInfoStorage
                      });
             });
 
@@ -118,24 +121,24 @@ class Worker extends SCWorker
 
     _startHttpServer()
     {
-        this.app = express();
+        this._app = express();
         //startCookieParser
         // noinspection JSUnresolvedFunction
-        this.app.use(cookieParser());
+        this._app.use(cookieParser());
         //FileParser
         // noinspection JSUnresolvedFunction
-        this.app.use(fileUpload());
+        this._app.use(fileUpload());
         //BodyParser
         // noinspection JSUnresolvedFunction
-        this.app.use(bodyParser.json());
+        this._app.use(bodyParser.json());
         // noinspection JSUnresolvedFunction
-        this.app.use(bodyParser.urlencoded({extended: true}));
+        this._app.use(bodyParser.urlencoded({extended: true}));
 
         //Set Server
-        this.httpServer.on('request', this.app);
+        this.httpServer.on('request', this._app);
 
         // noinspection JSUnresolvedFunction
-        this.app.all('/zation', (req, res) => {
+        this._app.all('/zation', (req, res) => {
             //Run Zation
             // noinspection JSUnusedLocalSymbols
             let p = this.zation.run(
@@ -143,9 +146,6 @@ class Worker extends SCWorker
                     isSocket: false,
                     res: res,
                     req: req,
-                    scServer: this.scServer,
-                    services: this.servieces,
-                    tokenInfoStorage : this._tokenInfoStorage
                 });
         });
 
@@ -154,10 +154,10 @@ class Worker extends SCWorker
 
         //loading express func
         this._zc.emitEvent(Const.Event.ZATION_EXPRESS,
-            (f) => {f(this.app);});
+            (f) => {f(this._app);});
     }
 
-    initSocketMiddleware()
+    _initSocketMiddleware()
     {
         //BLOCK SUBSCRIBE FROM OTHER USER CHANNELS
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_SUBSCRIBE, (req, next) => {
@@ -198,8 +198,8 @@ class Worker extends SCWorker
                             next(err); //Block!
                     }
                     else if (channel.indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX) !== -1) {
-                        let chName = ChannelController.getSpecialChannelName(channel);
-                        if (ChannelController.hasAccessToSubSpecialChannel(req.socket, chName)) {
+                        let chName = ChannelEngine.getSpecialChannelName(channel);
+                        if (ChannelEngine.hasAccessToSubSpecialChannel(req.socket, chName)) {
                             next();
                         }
                         else {
@@ -227,8 +227,8 @@ class Worker extends SCWorker
                         next();
                     }
                     else if (channel.indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX) !== -1) {
-                        let chName = ChannelController.getSpecialChannelName(channel);
-                        if (ChannelController.hasAccessToSubSpecialChannel(req.socket, chName)) {
+                        let chName = ChannelEngine.getSpecialChannelName(channel);
+                        if (ChannelEngine.hasAccessToSubSpecialChannel(req.socket, chName)) {
                             next();
                         }
                         else {
@@ -270,8 +270,8 @@ class Worker extends SCWorker
                     next(err); //Block!
                 }
                 else if (req.channel.indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX) !== -1) {
-                    let chName = ChannelController.getSpecialChannelName(req.channel);
-                    if (ChannelController.hasAccessToPubInSpecialChannel(req.socket, chName)) {
+                    let chName = ChannelEngine.getSpecialChannelName(req.channel);
+                    if (ChannelEngine.hasAccessToPubInSpecialChannel(req.socket, chName)) {
                         next();
                     }
                     else {
@@ -324,7 +324,7 @@ class Worker extends SCWorker
 
     }
 
-    initScServerEvents()
+    _initScServerEvents()
     {
         this.scServer.on('error', (err) =>
         {
@@ -383,7 +383,7 @@ class Worker extends SCWorker
 
     }
 
-    initSocketEvents(socket)
+    _initSocketEvents(socket)
     {
         socket.on('error', (err) =>
         {
@@ -460,13 +460,14 @@ class Worker extends SCWorker
         return httpServer;
     }
 
-    _initTokenInfoStorage()
+    async _initTokenInfoStorage()
     {
         let key = this._zc.getMain(Const.Settings.TOKEN_INFO_STORAGE_KEY);
-        this._tokenInfoStorage = new TokenInfoStorage(new MasterStorage(key,this));
+        this._tokenInfoStorage = new TokenInfoStorage(await new MasterStorage(key,this));
+        await this._tokenInfoStorage.init();
         this._addSystemBackgroundTask(async() =>
         {
-            await SystemBackgroundTask.checkTokenInfoStorage(this._tokenInfoStorage)
+            await SystemBackgroundTask.checkTokenInfoStorage(this._tokenInfoStorage);
         });
     }
 
@@ -529,7 +530,21 @@ class Worker extends SCWorker
         });
     }
 
+    getTokenInfoStorage()
+    {
+        return this._tokenInfoStorage;
+    }
 
+    getZationConfig()
+    {
+        return this._zc;
+    }
+
+    getServices()
+    {
+        return this._servieces;
+    }
+    
 }
 
 new Worker();
