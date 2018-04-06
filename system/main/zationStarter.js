@@ -9,6 +9,7 @@ const Const             = require('../helper/constante/constWrapper');
 const ZationConfig      = require('./zationConfig');
 const HashSet           = require('hashset');
 const CommandStorage    = require('command-storage');
+const TimeTools         = require('./../helper/tools/timeTools');
 
 class ZationStarter
 {
@@ -89,9 +90,11 @@ class ZationStarter
         console.log('\x1b[32m%s\x1b[0m', '   [ACTIVE]','Zation started');
         console.log(`            Version: ${this._version}`);
         console.log(`            Port: ${this._zc.getMain(Const.Main.PORT)}`);
-        console.log(`            Your App: ${this._zc.getMain(Const.Main.APP_NAME)}`);
-        console.log(`            Worker Count: ${this._master.options.workers}`);
-        console.log(`            Broker Count: ${this._master.options.brokers}`);
+        console.log(`            Your app: ${this._zc.getMain(Const.Main.APP_NAME)}`);
+        console.log(`            Time: ${TimeTools.getMoment(this._zc)}`);
+        console.log(`            Time zone: ${this._zc.getMain(Const.Main.TIME_ZONE)}`);
+        console.log(`            Worker count: ${this._master.options.workers}`);
+        console.log(`            Broker count: ${this._master.options.brokers}`);
         console.log('            GitHub: https://github.com/ZationServer');
     }
 
@@ -110,32 +113,78 @@ class ZationStarter
         this._zc.emitEvent(Const.Event.ZATION_BACKGROUND_TASK,(f) =>
         {
             let id = 0;
-            f((refreshRate) =>
-            {
-                this._startUserBackgroundTask(refreshRate,id);
+            f((time) => {
+                this._setEveryBackgroundTask(id,time);
+                id++;
+            }
+            ,(time) => {
+                this._setAtBackgroundTask(id,time);
                 id++;
             });
         });
 
         //systemBackgroundTask
-        this._startBackgroundTask(
-            this._zc.getMain(Const.Main.SYSTEM_BACKGROUND_TASK_REFRESH_RATE),
-            {systemBackgroundTasks : true}
-        );
+        setInterval(() =>
+        {
+            this._sendToRandomWorker({systemBackgroundTasks : true});
+        }
+        ,this._zc.getMain(Const.Main.SYSTEM_BACKGROUND_TASK_REFRESH_RATE));
     }
 
-    _startUserBackgroundTask(refreshRate,id)
+    _setEveryBackgroundTask(id,time)
     {
-        this._startBackgroundTask(refreshRate,{userBackgroundTask : id});
+        if(Number.isInteger(time))
+        {
+            setInterval(() => {
+                this._startUserBackgroundTask(id);
+            },time);
+        }
+        else if(typeof time === 'object')
+        {
+            let set = () => {
+                let tillTime = TimeTools.processTaskTriggerTime(time,this._zc);
+                setTimeout(() => {
+                    this._startUserBackgroundTask(id);
+                    set();
+                },tillTime)
+            };
+            set();
+        }
     }
 
-    _startBackgroundTask(refreshRate,obj)
+    _setAtBackgroundTask(id,time)
     {
-        setTimeout(() =>
-            {
-                this._master.sendToWorker(this._getRandomWorkerId(),obj)
-            }
-            ,refreshRate);
+        if(Number.isInteger(time))
+        {
+            setTimeout(() => {
+                this._startUserBackgroundTask(id);
+            },time);
+        }
+        else if(typeof time === 'object')
+        {
+            let tillTime = TimeTools.processTaskTriggerTime(time,this._zc);
+            setTimeout(() => {
+                this._startUserBackgroundTask(id);
+            },tillTime);
+        }
+    }
+
+    _startUserBackgroundTask(id)
+    {
+        this._sendToRandomWorker({userBackgroundTask : id});
+    }
+
+    _sendToRandomWorker(obj)
+    {
+        let workerId = this._getRandomWorkerId();
+
+        this._zc.printDebugInfo
+        (`Worker with id: ${workerId}, start to invoke background task number: ${obj.userBackgroundTask}`);
+
+        if(workerId !== undefined)
+        {
+            this._master.sendToWorker(workerId,obj)
+        }
     }
 
     //PART MasterStorage
@@ -149,7 +198,7 @@ class ZationStarter
             {
                 cb(null,this._masterStorage.do(data['storage']));
             }
-        })
+        });
     }
 }
 module.exports = ZationStarter;

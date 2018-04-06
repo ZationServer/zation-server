@@ -24,6 +24,8 @@
     "express-session": "1.15.6",
     "hashset": "0.0.6",
     "jsonwebtoken": "latest",
+    "moment": "^2.22.0",
+    "moment-timezone": "^0.5.14",
     "mysql": "^2.15.0",
     "nodemailer": "^4.6.3",
     "path": "0.12.7",

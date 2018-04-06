@@ -59,7 +59,7 @@ class Worker extends SCWorker
                 );
         }
 
-        if(this._zc.getMain(Const.Main.AUTH_EXTRA_SECURE))
+        if(this._zc.isExtraSecureAuth())
         {
             await this._initTokenInfoStorage();
         }
@@ -517,11 +517,20 @@ class Worker extends SCWorker
         this._zc.emitEvent(Const.Event.ZATION_BACKGROUND_TASK,(f) =>
         {
             let id = 0;
-            f((refreshRate,task) =>
-            {
-                this._userBackgroundTasks[id] = task;
-                id++;
-            });
+            f(
+                //EveryTask
+                (time,task) =>
+                {
+                    this._userBackgroundTasks[id] = task;
+                    id++;
+                },
+                //AtTask
+                (time,task) =>
+                {
+                    this._userBackgroundTasks[id] = task;
+                    id++;
+                }
+            );
         });
     }
 
@@ -535,6 +544,7 @@ class Worker extends SCWorker
         return this._zc;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getServices()
     {
         return this._servieces;

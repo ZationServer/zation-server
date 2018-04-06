@@ -111,7 +111,7 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
         let isThere = await this._as.send(this._buildDoInWithId(authId,this._as.buildCanDo(tokenId)));
         if(!isThere)
         {
-            return true;
+            return false;
         }
         else
         {
@@ -126,7 +126,7 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
         let isThere = await this._as.send(this._buildDoInWithoutId(this._as.buildCanDo(tokenId)));
         if(!isThere)
         {
-            return true;
+            return false;
         }
         else
         {

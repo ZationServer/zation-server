@@ -37,8 +37,11 @@ class ZationConfig
             this._mainConfig[Const.Main.USE_PROTOCOL_CHECK] = true;
             this._mainConfig[Const.Main.SEND_ERRORS_DESC] = false;
             this._mainConfig[Const.Main.AUTH_KEY] = crypto.randomBytes(32).toString('hex');
-            this._mainConfig[Const.Main.AUTH_EXTRA_SECURE] = true;
-            this._mainConfig[Const.Main.SYSTEM_BACKGROUND_TASK_REFRESH_RATE] = 600000;
+            this._mainConfig[Const.Main.AUTH_PUBLIC_KEY] = null;
+            this._mainConfig[Const.Main.AUTH_PRIVATE_KEY] = null;
+            this._mainConfig[Const.Main.EXTRA_SECURE_AUTH] = true;
+            this._mainConfig[Const.Main.SYSTEM_BACKGROUND_TASK_REFRESH_RATE] = 1800000;
+            this._mainConfig[Const.Main.TIME_ZONE] = 'Europe/Berlin';
 
             this.addToMainConfig(starterConfig,true);
             this._loadUserDataLocations();
@@ -88,6 +91,35 @@ class ZationConfig
     getApp(key)
     {
         return this._appConfig[key];
+    }
+
+    getVerifyKey()
+    {
+        if(this.getMain(Const.Main.AUTH_PUBLIC_KEY) !== null)
+        {
+            return this.getMain(Const.Main.AUTH_PUBLIC_KEY);
+        }
+        else
+        {
+            return this.getMain(Const.Main.AUTH_KEY);
+        }
+    }
+
+    getSignKey()
+    {
+        if(this.getMain(Const.Main.AUTH_PRIVATE_KEY) !== null)
+        {
+            return this.getMain(Const.Main.AUTH_PRIVATE_KEY);
+        }
+        else
+        {
+            return this.getMain(Const.Main.AUTH_KEY);
+        }
+    }
+
+    isExtraSecureAuth()
+    {
+        return this.getMain(Const.Main.EXTRA_SECURE_AUTH);
     }
 
     getSomeInformation()

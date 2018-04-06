@@ -37,13 +37,13 @@ class Returner
     {
         if(this._isSocket)
         {
-            this._zc.printDebugInfo(`ZATION RETURN SOCKET REQUEST RESULT: ${this._reqId} ->`,resObj);
+            this._zc.printDebugInfo(`Socket request result with id: ${this._reqId} ->`,resObj);
 
             this._respond(null,resObj);
         }
         else
         {
-            this._zc.printDebugInfo(`ZATION RETURN HTTP REQUEST RESULT: ${this._reqId} ->`,resObj);
+            this._zc.printDebugInfo(`Http request result with id: ${this._reqId} ->`,resObj);
 
             this._res.write(JSON.stringify(resObj));
             this._res.end();

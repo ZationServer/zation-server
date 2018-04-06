@@ -42,7 +42,7 @@ class TokenBridge
         else
         {
             // noinspection JSUnresolvedVariable
-            return this._req.zationAuthToken;
+            return this._req.zationToken;
         }
     }
 

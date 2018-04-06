@@ -197,7 +197,7 @@ module.exports = {
 
     tryToUseNotConfiguredService : {
         name          : 'tryToUseNotConfiguredService',
-        description   : 'Try to use not configured service!',
+        description   : 'try to use not configured service!',
         type          : ErrorType.SYSTEM_ERROR,
         sendInfo      : true,
         //INFO
@@ -207,7 +207,7 @@ module.exports = {
 
     unknownSystemError : {
         name          : 'unknownSystemError',
-        description   : 'Look in Info for more Detail! To see run in Debug!',
+        description   : 'look in info for more detail! To see run in debug!',
         type          : ErrorType.SYSTEM_ERROR,
         sendInfo      : true,
         //INFO
@@ -215,14 +215,43 @@ module.exports = {
         isSystemError : true
     },
 
+    unknownTokenVerifyError : {
+        name          : 'unknownTokenVerifyError',
+        description   : 'look in info for more detail!',
+        type          : ErrorType.SYSTEM_ERROR,
+        sendInfo      : false,
+        //INFO
+        isSystemError : true
+    },
 
+    tokenExpiredError : {
+        name          : 'tokenExpiredError',
+        description   : 'jwt expired',
+        type          : ErrorType.SYSTEM_ERROR,
+        sendInfo      : true,
+        //INFO
+        // expiredAt
+        isSystemError : true
+    },
 
+    jsonWebTokenError : {
+        name          : 'jsonWebTokenError',
+        description   : 'json web token error',
+        type          : ErrorType.SYSTEM_ERROR,
+        sendInfo      : true,
+        //INFO
+        // message
+        isSystemError : true
+    },
 
-
-
-
-
-
-
+    tokenIsBlocked : {
+        name          : 'tokenIsBlocked',
+        description   : 'token is blocked',
+        type          : ErrorType.SYSTEM_ERROR,
+        sendInfo      : true,
+        //INFO
+        // token
+        isSystemError : true
+    },
 
 };

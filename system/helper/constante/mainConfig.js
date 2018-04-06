@@ -8,13 +8,14 @@ class MainConfig {}
 
 MainConfig.PORT                                = 'port';
 MainConfig.DEBUG                               = 'debug';
+MainConfig.TIME_ZONE                           = 'timeZone';
 MainConfig.WORKERS                             = 'workers';
 MainConfig.BROKERS                             = 'brokers';
 MainConfig.APP_NAME                            = 'appName';
 MainConfig.USE_SOCKET_SERVER                   = 'useSocketServer';
 MainConfig.USE_HTTP_SERVER                     = 'useHttpServer';
 MainConfig.SECURE                              = 'secure';
-MainConfig.AUTH_EXTRA_SECURE                   = 'authExtraSecure';
+MainConfig.EXTRA_SECURE_AUTH                   = 'extraSecureAuth';
 MainConfig.HTTPS_CONFIG                        = 'httpsConfig';
 MainConfig.POST_KEY_WORD                       = 'postKeyWord';
 MainConfig.USE_AUTH                            = 'useAuth';
@@ -31,7 +32,6 @@ MainConfig.MAIN_CONFIG            = 'main.config';
 MainConfig.ERROR_CONFIG           = 'error.config';
 MainConfig.EVENT_CONFIG           = 'event.config';
 
-MainConfig.AUTH_KEY               = 'authKey';
 MainConfig.AUTH_KEY               = 'authKey';
 MainConfig.AUTH_DEFAULT_EXPIRY    = 'authDefaultExpiry';
 MainConfig.AUTH_ALGORITHM         = 'authAlgorithm';

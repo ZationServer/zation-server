@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const CA              = require('../constante/settings');
+const Const           = require('../constante/constWrapper');
 const CationValidator = require('../validator/zationValidator');
 const TaskError       = require('../../api/TaskError');
 const TaskErrorBag    = require('../../api/TaskErrorBag');
@@ -13,7 +13,7 @@ const SyErrors        = require('../zationTaskErrors/systemTaskErrors');
 class ParamChecker
 {
 
-    static checkParamsWithObjectInput(paramData,
+    static _checkParamsWithObjectInput(paramData,
                                       {
                                           controllerParams,
                                           controllerParamsCount,
@@ -21,25 +21,23 @@ class ParamChecker
                                       })
     {
         let taskErrorBag = new TaskErrorBag();
-        let foundCount = 0;
         let params = {};
 
         for(let i = 0; i < controllerParamsCount; i++)
         {
-            let inputParamTemp = inputParams[controllerParams[i][CA.PARAMS_NAME]];
+            let inputParamTemp = inputParams[controllerParams[i][Const.App.PARAMS_NAME]];
             if(inputParamTemp !== undefined)
             {
-                    foundCount++;
-                    params[controllerParams[i][CA.PARAMS_NAME]] =
+                    params[controllerParams[i][Const.App.PARAMS_NAME]] =
                         CationValidator.validateThis(controllerParams[i], inputParamTemp, taskErrorBag);
             }
         }
         taskErrorBag.throwMeIfHaveError();
 
-        paramData[CA.PARAM_DATA_PARAMS] = params;
+        paramData[Const.Settings.PARAM_DATA_PARAMS] = params;
     }
 
-    static checkParamsWithArrayInput(paramData,
+    static _checkParamsWithArrayInput(paramData,
                                      {
                                          controllerParams,
                                          controllerParamsCount,
@@ -51,21 +49,21 @@ class ParamChecker
         let taskErrorBag = new TaskErrorBag();
         for(let i = 0; i < inputParamsCount; i++)
         {
-            params[controllerParams[i][CA.PARAMS_NAME]] =
+            params[controllerParams[i][Const.App.PARAMS_NAME]] =
                 CationValidator.validateThis(controllerParams[i],inputParams[i],taskErrorBag);
         }
         taskErrorBag.throwMeIfHaveError();
-        paramData[CA.PARAM_DATA_PARAMS] = params;
+        paramData[Const.Settings.PARAM_DATA_PARAMS] = params;
     }
 
-    static getParamsMissingFromArray(params,controllerParams,optionalToo = false)
+    static _getParamsMissingFromArray(params,controllerParams,optionalToo = false)
     {
         let arrayNotFound = [];
         let paramsLength = params.length;
 
         for(let i = paramsLength; i < controllerParams.length; i++)
         {
-            if(controllerParams[i][CA.PARAMS_IS_OPTIONAL])
+            if(controllerParams[i][Const.App.PARAMS_IS_OPTIONAL])
             {
                 if(optionalToo)
                 {
@@ -80,12 +78,12 @@ class ParamChecker
         return arrayNotFound;
     }
 
-    static getParamsMissingFromObject(params,controllerParams,optionalToo = false)
+    static _getParamsMissingFromObject(params,controllerParams,optionalToo = false)
     {
         let arrayNotFound = [];
         for(let i = 0; i < controllerParams.length; i++)
         {
-            if(params[controllerParams[i][CA.PARAMS_NAME]] === undefined)
+            if(params[controllerParams[i][Const.App.PARAMS_NAME]] === undefined)
             {
                 if(optionalToo)
                 {
@@ -93,7 +91,7 @@ class ParamChecker
                 }
                 else
                 {
-                    if(!controllerParams[i][CA.PARAMS_IS_OPTIONAL])
+                    if(!controllerParams[i][Const.App.PARAMS_IS_OPTIONAL])
                     {
                         arrayNotFound.push(controllerParams[i]);
                     }
@@ -107,15 +105,15 @@ class ParamChecker
     {
         let paramData = {};
 
-        let controllerParams = controller.hasOwnProperty(CA.CONTROLLER_PARAMS) ?
-            controller[CA.CONTROLLER_PARAMS] : [];
+        let controllerParams = controller.hasOwnProperty(Const.App.CONTROLLER_PARAMS) ?
+            controller[Const.App.CONTROLLER_PARAMS] : [];
 
-        let controllerParamsCount = controller.hasOwnProperty(CA.CONTROLLER_PARAMS) ?
-            controller[CA.CONTROLLER_PARAMS].length : 0;
+        let controllerParamsCount = controller.hasOwnProperty(Const.App.CONTROLLER_PARAMS) ?
+            controller[Const.App.CONTROLLER_PARAMS].length : 0;
 
-        let inputParams = task[CA.INPUT_PARAMS];
+        let inputParams = task[Const.Settings.INPUT_PARAMS];
         let isArray     = Array.isArray(inputParams);
-        let inputParamsCount = isArray ? inputParams.length : ParamChecker.objectSize(inputParams);
+        let inputParamsCount = isArray ? inputParams.length : ParamChecker._objectSize(inputParams);
 
 
         if(controllerParamsCount < inputParamsCount)
@@ -128,11 +126,11 @@ class ParamChecker
         }
         else
         {
-            let paramsCanMissing = controller.hasOwnProperty(CA.CONTROLLER_PARAMS_CAN_MISSING)
-                ? controller[CA.CONTROLLER_PARAMS_CAN_MISSING] : false;
+            let paramsCanMissing = controller.hasOwnProperty(Const.App.CONTROLLER_PARAMS_CAN_MISSING)
+                ? controller[Const.App.CONTROLLER_PARAMS_CAN_MISSING] : false;
 
-            let paramsMissing = isArray ? ParamChecker.getParamsMissingFromArray(inputParams,controllerParams,false) :
-                ParamChecker.getParamsMissingFromObject(inputParams,controllerParams,false);
+            let paramsMissing = isArray ? ParamChecker._getParamsMissingFromArray(inputParams,controllerParams,false) :
+                ParamChecker._getParamsMissingFromObject(inputParams,controllerParams,false);
 
             if(paramsMissing.length !== 0 && !paramsCanMissing)
             {
@@ -144,7 +142,7 @@ class ParamChecker
             else
             {
 
-                paramData[CA.PARAM_DATA_PARAMS_Missing] = paramsMissing.length !== 0;
+                paramData[Const.App.CONTROLLER_PARAMS_CAN_MISSING] = paramsMissing.length !== 0;
 
                 let processData =
                     {
@@ -157,18 +155,18 @@ class ParamChecker
 
                 if(isArray)
                 {
-                    ParamChecker.checkParamsWithArrayInput(paramData,processData);
+                    ParamChecker._checkParamsWithArrayInput(paramData,processData);
                 }
                 else
                 {
-                    ParamChecker.checkParamsWithObjectInput(paramData,processData);
+                    ParamChecker._checkParamsWithObjectInput(paramData,processData);
                 }
             }
         }
         return paramData;
     }
 
-    static objectSize(obj)
+    static _objectSize(obj)
     {
         let size = 0;
         for(let k in obj)

@@ -8,6 +8,7 @@ const Const                 = require('../constante/constWrapper');
 const HtmlTools             = require('../tools/htmlTools');
 const MainProcessor         = require('./mainProcessor');
 const SHBridge              = require('../bridges/shBridge');
+const TokenEngine           = require('../token/tokenEngine');
 
 const helper   = __dirname + '/../';
 const views    = helper + 'views/';
@@ -29,6 +30,8 @@ class HttpProcessor
             res.setHeader('Access-Control-Allow-Credentials', true);
 
             let zationData = await JSON.parse(req.body[zc.getMain(Const.Main.POST_KEY_WORD)]);
+
+            req.zationToken = await TokenEngine.verifyToken(zationData[Const.Settings.INPUT_TOKEN],zc);
 
             let shBridge = new SHBridge(
                 {

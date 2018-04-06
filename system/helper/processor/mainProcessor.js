@@ -21,6 +21,23 @@ class MainProcessor
 {
     static async process(shBridge,zc,worker)
     {
+        //EXTRA SECURE AUTH LAYER
+        if(zc.isExtraSecureAuth())
+        {
+            let tokenInfoStorage = worker.getTokenInfoStorage();
+            let token = shBridge.getTokenBridge().getToken();
+
+            let valid = await tokenInfoStorage.isTokenValid(token);
+
+            if(!valid)
+            {
+                throw new TaskError(SyErrors.tokenIsBlocked,{token : token});
+            }
+
+            await tokenInfoStorage.setLastActivity(token);
+        }
+        //END EXTRA SECURE AUTH LAYER
+
         let reqData = shBridge.getZationData();
 
         if(ZationReqTools.isValidStructure(reqData))

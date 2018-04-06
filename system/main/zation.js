@@ -28,7 +28,7 @@ class Zation
 
         if(data.isSocket)
         {
-            this._zc.printDebugInfo(`ZATION SOCKET REQUEST: ${this._socketReqCount} ->`
+            this._zc.printDebugInfo(`Socket request with id: ${this._socketReqCount} ->`
                 ,data.input);
 
             if(this._zc.isDebug())
@@ -39,7 +39,7 @@ class Zation
         }
         else
         {
-            this._zc.printDebugInfo(`ZATION HTTP REQUEST: ${this._httpReqCount} ->`,
+            this._zc.printDebugInfo(`Http request with id: ${this._httpReqCount} ->`,
                 data.req.body[Const.Main.POST_KEY_WORD]);
 
             if(this._zc.isDebug())

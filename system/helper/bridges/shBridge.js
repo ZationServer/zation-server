@@ -4,6 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+const TokenBridge = require('./tokenBridge');
+
 //Socket and Http Bridge
 class SHBridge
 {
@@ -16,6 +18,8 @@ class SHBridge
         this._httpRes = httpRes;
         this._httpReq = httpReq;
         this._httpData = httpData;
+
+        this._tokenBridge = new TokenBridge(isSocket,socket,req);
     }
 
     getZationData()
@@ -29,6 +33,13 @@ class SHBridge
             return this._httpData;
         }
     }
+
+    getTokenBridge()
+    {
+        return this._tokenBridge;
+    }
+
+
 }
 
 module.exports = SHBridge;

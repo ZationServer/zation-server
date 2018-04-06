@@ -19,9 +19,9 @@ class ChannelEngine
 
     emitToSocket(eventName,data,cb)
     {
-        if(this.isSocket)
+        if(this._isSocket)
         {
-            this.socket.emit(eventName,data,cb);
+            this._socket.emit(eventName,data,cb);
             return true;
         }
         else
