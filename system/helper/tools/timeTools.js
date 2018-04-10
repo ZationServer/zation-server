@@ -15,71 +15,67 @@ class TimeTools
         return moment().tz(zc.getMain(Const.Main.TIME_ZONE));
     }
 
-    static processTaskTriggerTime({hour,minute,second,millisecond},zc)
+    static processTaskTriggerTime({hour,minute,second,millisecond},zc,forNext = false)
     {
         let now = TimeTools.getMoment(zc);
 
-        let fireMillisecond = now.millisecond();
-        let fireSecond = now.second();
+        let isHour = hour !== undefined;
+        let isMinute = minute !== undefined;
+        let isSecond = second !== undefined;
+        let isMillisecond = millisecond !== undefined;
+
+        let fireMillisecond = 0;
+        let fireSecond = 0;
         let fireMinute = now.minute();
         let fireHour = now.hour();
         let day = now.date();
         let month = now.month();
         let year = now.year();
 
-        if(millisecond !== undefined)
+        if(isMillisecond)
         {
             fireMillisecond = millisecond;
         }
-        else
-        {
-            fireMillisecond = 0;
-        }
-        if(second !== undefined)
+
+        if(isSecond)
         {
             fireSecond = second;
         }
-        else
+        else  if(millisecond <= now.millisecond() && isMillisecond)
         {
-            if(millisecond <= now.millisecond() && millisecond !== undefined)
-            {
-                fireSecond++;
-            }
-            else
-            {
-                fireSecond = 0;
-            }
+            fireSecond++;
         }
-        if(minute !== undefined)
+
+        if(isMinute)
         {
             fireMinute = minute;
         }
         else
         {
-            if(second <= now.second() && second !== undefined)
+            if(second <= now.second() && isSecond)
             {
                 fireMinute++;
             }
-            else if(millisecond === undefined)
+            else if(isMillisecond)
             {
                 fireMinute = 0;
             }
         }
-        if(hour !== undefined)
+        if(isHour)
         {
             fireHour = hour;
         }
         else {
-            if(minute <= now.minute() && minute !== undefined)
+            if(minute <= now.minute() && isMinute)
             {
                 fireHour++;
             }
-            else if(second === undefined && millisecond === undefined)
+            else if(!isSecond && !isMillisecond)
             {
                 fireHour = 0;
             }
         }
-        if(hour <= now.hour() && hour !== undefined)
+        if(hour <= now.hour() && isHour && !isMinute)
         {
             day++;
         }

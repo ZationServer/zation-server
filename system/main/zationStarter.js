@@ -142,7 +142,7 @@ class ZationStarter
         else if(typeof time === 'object')
         {
             let set = () => {
-                let tillTime = TimeTools.processTaskTriggerTime(time,this._zc);
+                let tillTime = TimeTools.processTaskTriggerTime(time,this._zc,true);
                 setTimeout(() => {
                     this._startUserBackgroundTask(id);
                     set();
