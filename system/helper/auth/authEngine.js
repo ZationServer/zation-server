@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 const Const         = require('../constante/constWrapper');
 const TaskError     = require('../../api/TaskError');
-const SyErrors      = require('../zationTaskErrors/systemTaskErrors');
+const MainErrors      = require('../zationTaskErrors/mainTaskErrors');
 
 
 class AuthEngine
@@ -83,7 +83,7 @@ class AuthEngine
                 {
                     //saved AuthEngine In Server is not define
                     req.session.destroy();
-                    throw new TaskError(SyErrors.savedAuthGroupFromClientDataNotFound,
+                    throw new TaskError(MainErrors.savedAuthGroupFromClientDataNotFound,
                         {
                             savedAuthGroup : this.req.session[CA.CLIENT_AUTH_GROUP],
                             authGroupsInZationConfig : this._authGroups
@@ -111,7 +111,7 @@ class AuthEngine
                         //saved AuthEngine In Server is not define
                         // noinspection JSUnresolvedFunction
                         this._socket.deauthenticate();
-                        throw new TaskError(SyErrors.savedAuthGroupFromClientDataNotFound,
+                        throw new TaskError(MainErrors.savedAuthGroupFromClientDataNotFound,
                             {
                                 savedAuthGroup: authToken[CA.CLIENT_AUTH_GROUP],
                                 authGroupsInZationConfig: this._authGroups
@@ -122,7 +122,7 @@ class AuthEngine
                 {
                     //AuthEngine without auth group!
                     this._socket.deauthenticate();
-                    throw new TaskError(SyErrors.tokenWithoutAuthGroup);
+                    throw new TaskError(MainErrors.tokenWithoutAuthGroup);
                 }
             }
             else
@@ -154,7 +154,7 @@ class AuthEngine
         let defaultGroup = cationConfig[CA.CATION_AUTH_GROUPS][CA.AUTH_DEFAULT_GROUP];
         if(defaultGroup === undefined)
         {
-            throw new TaskError(SyErrors.defaultGroupNotFound);
+            throw new TaskError(MainErrors.defaultGroupNotFound);
         }
         return defaultGroup;
     }
@@ -260,7 +260,7 @@ class AuthEngine
         }
         else
         {
-            throw new TaskError(SyErrors.cantSetUndefinedId);
+            throw new TaskError(MainErrors.cantSetUndefinedId);
         }
         return suc;
     }
@@ -362,7 +362,7 @@ class AuthEngine
 
         if(notAccess !== undefined && access !== undefined)
         {
-            throw new TaskError(SyErrors.doubleAccessKeyWord, {isInController : !isDefault});
+            throw new TaskError(MainErrors.doubleAccessKeyWord, {isInController : !isDefault});
         }
         else
         {

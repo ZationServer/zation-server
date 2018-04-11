@@ -8,7 +8,7 @@ const Const           = require('../constante/constWrapper');
 const CationValidator = require('../validator/zationValidator');
 const TaskError       = require('../../api/TaskError');
 const TaskErrorBag    = require('../../api/TaskErrorBag');
-const SyErrors        = require('../zationTaskErrors/systemTaskErrors');
+const MainErrors        = require('../zationTaskErrors/mainTaskErrors');
 
 class ParamChecker
 {
@@ -118,7 +118,7 @@ class ParamChecker
 
         if(controllerParamsCount < inputParamsCount)
         {
-            throw new TaskError(SyErrors.toManyParams,
+            throw new TaskError(MainErrors.toManyParams,
                 {
                     sendParams : inputParams,
                     expectedParams : controllerParams
@@ -134,7 +134,7 @@ class ParamChecker
 
             if(paramsMissing.length !== 0 && !paramsCanMissing)
             {
-                throw new TaskError(SyErrors.paramsMissing,
+                throw new TaskError(MainErrors.paramsMissing,
                     {
                         paramsMissing : paramsMissing
                     });

@@ -460,9 +460,10 @@ class Worker extends SCWorker
         let key = this._zc.getMain(Const.Settings.TOKEN_INFO_STORAGE_KEY);
         this._tokenInfoStorage = new TokenInfoStorage(await new MasterStorage(key,this));
         await this._tokenInfoStorage.init();
+
         this._addSystemBackgroundTask(async() =>
         {
-            await SystemBackgroundTask.checkTokenInfoStorage(this._tokenInfoStorage);
+            await SystemBackgroundTask.checkTokenInfoStorage(this._tokenInfoStorage,this._zc);
         });
     }
 

@@ -4,9 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const SystemBackgroundTasks     = require('../background/systemBackgroundTasks');
 const Const                     = require('../constante/constWrapper');
 const AbstractTokenInfoStorage  = require('./abstractTokenInfoStorage');
+const TaskError                 = require('./../../api/TaskError');
+const MainErrors                = require('./../zationTaskErrors/mainTaskErrors');
 
 class TokenInfoStorage extends AbstractTokenInfoStorage
 {
@@ -75,7 +76,7 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
         {
             this._buildDoInWithoutId(req);
         });
-        await this.setTokenInfo(Const.Settings.TOKEN_INFO_EXPIRE,expire,uuid);
+        await this._setTokenInfo(Const.Settings.TOKEN_INFO_EXPIRE,expire,uuid,true);
 
     }
 
@@ -94,13 +95,13 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
         }
 
         let uuid = await this._createTokenInfo(buildDo);
-        await this.setTokenInfo(Const.Settings.TOKEN_INFO_EXPIRE,expire,uuid,authId);
+        await this._setTokenInfo(Const.Settings.TOKEN_INFO_EXPIRE,expire,uuid,authId,true);
         return uuid;
     }
 
     async _createTokenInfo(buildDo)
     {
-        return await TokenInfoStorage._generateUniqueUuidIn(async(uuid) =>
+        return await this._generateUniqueUuidIn(async(uuid) =>
         {
             return await this._as.send(buildDo(this._as.buildCanDo(uuid)));
         });
@@ -143,7 +144,7 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
         return isBlocked === undefined || (isBlocked !== undefined && !isBlocked);
     }
 
-    static async _generateUniqueUuidIn(isThere)
+    async _generateUniqueUuidIn(isThere)
     {
         return new Promise(async(resolve, reject) =>
         {
@@ -164,7 +165,7 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
                 }
                 if(tryCount === 3)
                 {
-                    await SystemBackgroundTasks.checkTokenInfoStorage();
+                    await this.checkTokenInfoStorage();
                 }
 
                 if(tryCount > 10)
@@ -230,31 +231,72 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
     {
         let authId = token[Const.Settings.CLIENT_AUTH_ID];
         let tokenId = token[Const.Settings.CLIENT_TOKEN_ID];
-        return await this.setTokenInfo(Const.Settings.TOKEN_LAST_ACTIVITY,Date.now(),tokenId,authId);
+        return await this._setTokenInfo(Const.Settings.TOKEN_INFO_LAST_ACTIVITY,Date.now(),tokenId,authId,true);
     }
 
-    setTokenInfoForAuthIds(key,value,authIds,exceptTokenIds)
+    async getLastActivity(token)
     {
-
-
-
-
-
+        let authId = token[Const.Settings.CLIENT_AUTH_ID];
+        let tokenId = token[Const.Settings.CLIENT_TOKEN_ID];
+        return await this.getTokenInfo(Const.Settings.TOKEN_INFO_LAST_ACTIVITY,tokenId,authId);
     }
 
     async setTokenInfo(key,value,tokenId,authId)
+    {
+        return await this._setTokenInfo(key,value,tokenId,authId,false);
+    }
+
+    async _setTokenInfo(key,value,tokenId,authId,ignoreZationData = false)
+    {
+        if(ignoreZationData ||
+            (key !== Const.Settings.TOKEN_INFO_LAST_ACTIVITY && key !== Const.Settings.TOKEN_INFO_EXPIRE))
+        {
+            if(authId !== undefined)
+            {
+                let isThere = await this._as.send(this._buildDoInAuthId(authId,this._as.buildCanDo(tokenId)));
+                if(isThere !== undefined && !isThere)
+                {
+                    let req = this._buildDoInAuthId(authId,this._as.buildDo(tokenId,this._as.buildSet(key,value)));
+                    return await this._as.send(req);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                let isThere = await this._as.send(this._buildDoInWithoutId(this._as.buildCanDo(tokenId)));
+                if(isThere !== undefined && !isThere)
+                {
+                    let req = this._buildDoInWithoutId(this._as.buildDo(tokenId,this._as.buildSet(key,value)));
+                    return await this._as.send(req);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            throw new TaskError(MainErrors.zationKeyConflict,{key : key});
+        }
+    }
+
+    async getTokenInfo(key,tokenId,authId)
     {
         if(authId !== undefined)
         {
             let isThere = await this._as.send(this._buildDoInAuthId(authId,this._as.buildCanDo(tokenId)));
             if(isThere !== undefined && !isThere)
             {
-                let req = this._buildDoInAuthId(authId,this._as.buildDo(tokenId,this._as.buildSet(key,value)));
+                let req = this._buildDoInAuthId(authId,this._as.buildDo(tokenId,this._as.buildGet(key)));
                 return await this._as.send(req);
             }
             else
             {
-                return false;
+                return undefined;
             }
         }
         else
@@ -262,15 +304,189 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
             let isThere = await this._as.send(this._buildDoInWithoutId(this._as.buildCanDo(tokenId)));
             if(isThere !== undefined && !isThere)
             {
-                let req = this._buildDoInWithoutId(this._as.buildDo(tokenId,this._as.buildSet(key,value)));
+                let req = this._buildDoInWithoutId(this._as.buildDo(tokenId,this._as.buildGet(key)));
                 return await this._as.send(req);
             }
             else
             {
-                return false;
+                return undefined;
             }
         }
     }
+
+    async _forEachUser(func)
+    {
+        let users = await this._as.send(this._buildDoInWithId(this._as.buildGet()));
+        for(let userId in users)
+        {
+            if(users.hasOwnProperty(userId))
+            {
+                await func(userId);
+            }
+        }
+    }
+
+    async checkTokenInfoStorage()
+    {
+        let promises = [];
+        let timeStamp = Math.floor(Date.now() / 1000);
+        //check with AuthId
+        await this._forEachUser(async(id) =>
+        {
+            let userTokens = await this._as.send(this._buildDoInAuthId(id,this._as.buildGet()));
+            for(let tokenId in userTokens)
+            {
+                if(userTokens.hasOwnProperty(tokenId))
+                {
+                    let req = this._buildDoInAuthId(id,this._as.buildDo(tokenId,this._as.buildGet()));
+                    let token = await this._as.send(req);
+
+                    if(TokenInfoStorage._isExpireInfoToken(token,timeStamp))
+                    {
+                        promises.push(this._as.send(this._buildDoInAuthId(id,this._as.buildRemove(tokenId))));
+                    }
+                }
+            }
+        });
+
+        //check without AuthId
+        let tokensWithOutId = await this._as.send(this._buildDoInWithoutId(this._as.buildGet()));
+        for(let tokenId in tokensWithOutId)
+        {
+            if(tokensWithOutId.hasOwnProperty(tokenId))
+            {
+                let req = this._buildDoInWithoutId(this._as.buildDo(tokenId,this._as.buildGet()));
+                let token = await this._as.send(req);
+
+                if(TokenInfoStorage._isExpireInfoToken(token,timeStamp))
+                {
+                    promises.push(this._as.send(this._buildDoInWithoutId(this._as.buildRemove(tokenId))));
+                }
+            }
+        }
+        await Promise.all(promises);
+        return promises.length;
+    }
+
+    static _isExpireInfoToken(token,timeStamp)
+    {
+        let tokenExp = token[Const.Settings.TOKEN_INFO_EXPIRE];
+        return timeStamp >= tokenExp;
+    }
+
+    static _isBlocked(token)
+    {
+        return token[Const.Settings.TOKEN_INFO_IS_BLOCKED];
+    }
+
+    static _isInTime(token,checkValue)
+    {
+        let lastActivity = token[Const.Settings.TOKEN_INFO_LAST_ACTIVITY];
+        return lastActivity >= checkValue;
+    }
+
+    static _isActive(token,timeStamp)
+    {
+        return !TokenInfoStorage._isBlocked(token) && !TokenInfoStorage._isExpireInfoToken(timeStamp);
+    }
+
+    static _isOnline(token,checkValue,timeStamp)
+    {
+        return TokenInfoStorage._isActive(token,timeStamp) && TokenInfoStorage._isInTime(token,checkValue);
+    }
+
+    async onlineUserCount(lastMs = 600000)
+    {
+        let count = 0;
+        let checkValue = Date.now() - lastMs;
+        let timeStamp = Math.floor(Date.now() / 1000);
+
+        await this._forEachUser(async (id) =>
+        {
+            let userTokens = await this._as.send(this._buildDoInAuthId(id,this._as.buildGet()));
+            for(let tokenId in userTokens)
+            {
+                if(userTokens.hasOwnProperty(tokenId))
+                {
+                    let req = this._buildDoInAuthId(id,this._as.buildDo(tokenId,this._as.buildGet()));
+                    let token = await this._as.send(req);
+
+                    if(TokenInfoStorage._isOnline(token,checkValue,timeStamp))
+                    {
+                        count++;
+                        break;
+                    }
+                }
+            }
+        });
+        return count;
+    }
+
+    async userOnlineTokenCount(id,lastMs = 600000)
+    {
+        let count = 0;
+        let checkValue = Date.now() - lastMs;
+        let timeStamp = Math.floor(Date.now() / 1000);
+
+        let req = this._buildDoInAuthId(id,this._as.buildGet());
+        let tokens = await this._as.send(req);
+        for(let tokenId in tokens)
+        {
+            if(tokens.hasOwnProperty(tokenId))
+            {
+                let req = this._buildDoInAuthId(id,this._as.buildDo(tokenId,this._as.buildGet()));
+                let token = await this._as.send(req);
+
+                if(TokenInfoStorage._isOnline(token,checkValue,timeStamp))
+                {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    async tokensWithIdCount()
+    {
+        let count = 0;
+        await this._forEachUser(async(id) =>
+        {
+            let userTokens = await this._as.send(this._buildDoInAuthId(id,this._as.buildGet()));
+            for(let tokenId in userTokens)
+            {
+                if(userTokens.hasOwnProperty(tokenId))
+                {
+                    count++;
+                }
+            }
+        });
+        return count;
+    }
+
+    async tokensWithoutIdCount()
+    {
+        let count = 0;
+        let tokensWithOutId = await this._as.send(this._buildDoInWithoutId(this._as.buildGet()));
+        for(let tokenId in tokensWithOutId)
+        {
+            if(tokensWithOutId.hasOwnProperty(tokenId))
+            {
+               count++;
+            }
+        }
+        return count;
+    }
+
+    async userCount()
+    {
+        let count = 0;
+        await this._forEachUser(() =>
+        {
+            count++;
+        });
+        return count;
+    }
+
 }
 
 module.exports = TokenInfoStorage;

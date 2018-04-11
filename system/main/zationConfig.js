@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 const Const             = require('../helper/constante/constWrapper');
-const SyErrors          = require('../helper/zationTaskErrors/systemTaskErrors');
+const MainErrors          = require('../helper/zationTaskErrors/mainTaskErrors');
 
 const path              = require('path');
 const fs                = require('fs');
@@ -71,6 +71,11 @@ class ZationConfig
     getMain(key)
     {
         return this._mainConfig[key];
+    }
+
+    getChannel(key)
+    {
+        return this._channelConfig[key];
     }
 
     isMain(key)

@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 const Const         = require('../constante/constWrapper');
 const TaskError     = require('../../api/TaskError');
-const SyErrors      = require('../zationTaskErrors/systemTaskErrors');
+const MainErrors      = require('../zationTaskErrors/mainTaskErrors');
 const TokenBridge   = require('../bridges/tokenBridge');
 const ChEngine      = require('../channel/channelEngine');
 
@@ -47,15 +47,15 @@ class TokenTools
             }
             else if(data.hasOwnProperty(Const.Settings.CLIENT_AUTH_GROUP))
             {
-                throw new TaskError(SyErrors.zationKeyConflict, {key: Const.Settings.CLIENT_AUTH_GROUP});
+                throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.CLIENT_AUTH_GROUP});
             }
             else if(data.hasOwnProperty(Const.Settings.CLIENT_AUTH_ID))
             {
-                throw new TaskError(SyErrors.zationKeyConflict, {key: Const.Settings.CLIENT_AUTH_ID});
+                throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.CLIENT_AUTH_ID});
             }
             else if(data.hasOwnProperty(Const.Settings.CLIENT_TOKEN_ID))
             {
-                throw new TaskError(SyErrors.zationKeyConflict, {key: Const.Settings.CLIENT_TOKEN_ID});
+                throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.CLIENT_TOKEN_ID});
             }
             else
             {

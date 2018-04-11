@@ -25,53 +25,10 @@ class TimeTools
         let isSecond = second !== undefined;
         let isMillisecond = millisecond !== undefined;
 
-
-        if(isMillisecond)
-        {
-            fireMoment.set({ms : millisecond});
-        }
-
-        if(isSecond)
-        {
-            fireMoment.set({s : second});
-        }
-        else if(fireMoment.millisecond() <= now.millisecond())
-        {
-            TimeTools._increaseSecond(fireMoment,isMinute,isHour);
-        }
-
-        if(isMinute)
-        {
-            fireMoment.set({m : minute});
-        }
-        else if(fireMoment.second() < now.second() && isSecond||
-            (fireMoment.second() === now.second() && fireMoment.millisecond() <= now.millisecond() && isMillisecond) ||
-            (fireMoment.second() === now.second() && !isMillisecond))
-        {
-            console.log(fireMoment.second());
-            console.log(now.second());
-
-           TimeTools._increaseMinute(fireMoment,isHour);
-        }
-
-        if(isHour)
-        {
-            fireMoment.set({h : hour});
-        }
-        else if(minute < now.minute() && isMinute||
-            (fireMoment.minute() === now.minute() && fireMoment.second() <= now.second() && isSecond) ||
-            (fireMoment.minute() === now.minute() && !isSecond))
-        {
-            fireMoment.add(1,'hours');
-        }
-
-        if(fireMoment.hour() < now.hour() && isHour||
-            (fireMoment.hour() === now.hour() && isMinute && fireMoment.minute() <= now.minute()) ||
-            (fireMoment.hour() === now.hour && !isMinute))
-        {
-            fireMoment.add(1,'days');
-        }
-
+        if(isMillisecond) {fireMoment.set({ms : millisecond});}
+        if(isSecond) {fireMoment.set({s : second});}
+        if(isMinute) {fireMoment.set({m : minute});}
+        if(isHour) {fireMoment.set({h : hour});}
 
         //Zero setter
         if(isHour)
@@ -90,60 +47,28 @@ class TimeTools
             if(!isMillisecond) {fireMoment.set({ms : 0});}
         }
 
+
+        if(isHour && hour <= now.hour())
+        {
+            fireMoment.add(1,'days');
+        }
+        else if(isMinute && minute <= now.minute())
+        {
+            fireMoment.add(1,'hours');
+        }
+        else if(isSecond && second <= now.second())
+        {
+            fireMoment.add(1,'minutes')
+        }
+        else if(isMillisecond && millisecond <= now.millisecond())
+        {
+            fireMoment.add(1,'seconds');
+        }
         zc.printDebugInfo(`Background Task is planed to -> ${fireMoment.format('dddd, MMMM Do YYYY, k:mm:ss:SSSS ')}`);
 
         // noinspection JSUnresolvedFunction
         return moment.duration(fireMoment.diff(now)).asMilliseconds();
     }
-
-    static _increaseSecond(moment,isMinute,isHour)
-    {
-        if(moment.seconds() === 59)
-        {
-            if(!isMinute)
-            {
-                TimeTools._increaseMinute(moment,isHour);
-            }
-            else
-            {
-                TimeTools._increaseHour(moment,isHour);
-            }
-
-            moment.set({s : 0});
-        }
-        else
-        {
-            moment.add(1,'seconds');
-        }
-    }
-
-    static _increaseMinute(moment,isHour)
-    {
-        if(moment.minute() === 59)
-        {
-            TimeTools._increaseHour(moment,isHour);
-            moment.set({m : 0});
-        }
-        else
-        {
-            moment.add(1,'minutes');
-        }
-    }
-
-    static _increaseHour(moment,isHour)
-    {
-        if(isHour)
-        {
-            moment.add(1,'days');
-        }
-        else
-        {
-            moment.add(1,'hours');
-        }
-    }
-
-
-
 }
 
 module.exports = TimeTools;

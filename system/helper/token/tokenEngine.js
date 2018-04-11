@@ -7,7 +7,7 @@ GitHub: LucaCode
 const Jwt           = require('jsonwebtoken');
 const Const         = require('../constante/constWrapper');
 const TaskError     = require('../../api/TaskError');
-const SyErrors      = require('../zationTaskErrors/systemTaskErrors');
+const MainErrors      = require('../zationTaskErrors/mainTaskErrors');
 
 class TokenEngine
 {
@@ -28,15 +28,15 @@ class TokenEngine
                 {
                     if(err.name === 'TokenExpiredError')
                     {
-                        reject(new TaskError(SyErrors.tokenExpiredError,{expiredAt : err.expiredAt}))
+                        reject(new TaskError(MainErrors.tokenExpiredError,{expiredAt : err.expiredAt}))
                     }
                     else if(err.name === 'JsonWebTokenError')
                     {
-                        reject(new TaskError(SyErrors.jsonWebTokenError,err))
+                        reject(new TaskError(MainErrors.jsonWebTokenError,err))
                     }
                     else
                     {
-                        reject(new TaskError(SyErrors.unknownTokenVerifyError,err))
+                        reject(new TaskError(MainErrors.unknownTokenVerifyError,err))
                     }
                 }
                 else

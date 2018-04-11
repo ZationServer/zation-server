@@ -11,11 +11,26 @@ class AbstractTokenInfoStorage
 
     async createTokenInfo(expire,authId) {}
 
-    async setTokenInfo(key,value,tokenId,authId) {}
-
     async setLastActivity(token) {}
 
+    async getLastActivity(token) {}
 
+    async setTokenInfo(key,value,tokenId,authId) {}
+
+    async getTokenInfo(key,tokenId,authId) {}
+
+    async checkTokenInfoStorage() {}
+
+
+    async onlineUserCount(lastMs) {}
+
+    async userOnlineTokenCount(id,lastMs) {}
+
+    async userCount() {}
+
+    async tokensWithIdCount() {}
+
+    async tokensWithoutIdCount() {}
 
 }
 

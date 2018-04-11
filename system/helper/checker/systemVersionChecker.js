@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 const Const           = require('../constante/constWrapper');
 const TaskError       = require('../../api/TaskError');
-const SyErrors        = require('../zationTaskErrors/systemTaskErrors');
+const MainErrors        = require('../zationTaskErrors/mainTaskErrors');
 
 class SystemVersionChecker
 {
@@ -22,12 +22,12 @@ class SystemVersionChecker
 
                 if(serverMinVersion > parseFloat(zationReq[Const.Settings.INPUT_VERSION]))
                 {
-                    throw new TaskError(SyErrors.versionToOld,{minVersion : serverMinVersion});
+                    throw new TaskError(MainErrors.versionToOld,{minVersion : serverMinVersion});
                 }
             }
             else
             {
-                throw new TaskError(SyErrors.systemNotFound,{systemName : zationReq[Const.Settings.INPUT_SYSTEM]});
+                throw new TaskError(MainErrors.systemNotFound,{systemName : zationReq[Const.Settings.INPUT_SYSTEM]});
             }
         }
     }

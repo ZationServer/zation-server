@@ -8,7 +8,7 @@ const Const                 = require('../constante/constWrapper');
 const ControllerTools       = require('../tools/controllerTools');
 const Controller            = require('../../api/Controller');
 const Result                = require('../../api/Result');
-const SyErrors              = require('../zationTaskErrors/systemTaskErrors');
+const MainErros              = require('../zationTaskErrors/mainTaskErrors');
 const TaskError             = require('../../api/TaskError');
 const ZationReqTools        = require('../tools/zationReqTools');
 const SystemVersionChecker  = require('../checker/systemVersionChecker');
@@ -31,7 +31,7 @@ class MainProcessor
 
             if(!valid)
             {
-                throw new TaskError(SyErrors.tokenIsBlocked,{token : token});
+                throw new TaskError(MainErros.tokenIsBlocked,{token : token});
             }
 
             await tokenInfoStorage.setLastActivity(token);
@@ -86,7 +86,7 @@ class MainProcessor
             }
             else
             {
-                throw new TaskError(SyErrors.noAccessToServerProtocol,
+                throw new TaskError(MainErros.noAccessToServerProtocol,
                     {
                         controller: task[Const.Settings.INPUT_CONTROLLER],
                         protocol: authEngine.getProtocol()
@@ -95,7 +95,7 @@ class MainProcessor
         }
         else
         {
-            throw new TaskError(SyErrors.wrongInputData);
+            throw new TaskError(MainErros.wrongInputData);
         }
     }
 
@@ -126,7 +126,7 @@ class MainProcessor
         }
         else
         {
-            throw new TaskError(SyErrors.controllerIsNotAController,
+            throw new TaskError(MainErros.controllerIsNotAController,
                 {controllerName : controllerConfig[Const.Settings.CONTROLLER_NAME]});
         }
     }

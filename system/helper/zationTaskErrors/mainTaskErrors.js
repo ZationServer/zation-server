@@ -80,22 +80,22 @@ module.exports = {
         isSystemError : true
     },
 
-    savedAuthGroupFromClientDataNotFound    : {
-        name          : 'savedAuthGroupInSessionNotFound',
-        description   : 'the Auth Group is saved in the Session is not found on the Zation Config',
-        type          : ErrorType.SYSTEM_ERROR,
+    savedAuthGroupInTokenNotFound    : {
+        name          : 'savedAuthGroupInTokenNotFound',
+        description   : 'the auth group is saved in the token is not found on the zation Config',
+        type          : ErrorType.TOKEN_ERROR,
         isPrivate     : true,
         sendInfo      : false,
         //INFO
-        // savedAuthGroup (the saved auth Group in Session)
-        // authGroupsInZationConfig (auth Groups in the Zation Config)
+        // savedAuthGroup (the saved auth group in token)
+        // authGroupsInZationConfig (auth groups in the zation config)
         isSystemError : true
     },
 
     tokenWithoutAuthGroup   : {
         name          : 'tokenWithoutAuthGroup',
-        description   : 'Token without AuthGroup!',
-        type          : ErrorType.SYSTEM_ERROR,
+        description   : 'Token without auth group!',
+        type          : ErrorType.TOKEN_ERROR,
         isPrivate     : true,
         sendInfo      : false,
         isSystemError : true
@@ -103,7 +103,7 @@ module.exports = {
 
     defaultGroupNotFound    : {
         name          : 'defaultGroupNotFound',
-        description   : 'no default Group is set in the Zation config',
+        description   : 'no default group is set in the zation config',
         type          : ErrorType.SYSTEM_ERROR,
         isPrivate     : true,
         sendInfo      : false,
@@ -157,7 +157,7 @@ module.exports = {
     wrongInputData : {
         name          : 'wrongInputData',
         description   : 'wrong input data with missing object fields!',
-        type          : ErrorType.SYSTEM_ERROR,
+        type          : ErrorType.INPUT_ERROR,
         isPrivate     : true,
         sendInfo      : false,
         //INFO
@@ -168,7 +168,7 @@ module.exports = {
     noAccessToServerProtocol  : {
         name          : 'noAccessToServerProtocol',
         description   : 'you have no access to this controller with this server protocol!',
-        type          : ErrorType.INPUT_ERROR,
+        type          : ErrorType.PROTOCOL_ERROR,
         sendInfo      : true,
         //INFO
         // protocol   (The protocol you request with)
@@ -218,7 +218,7 @@ module.exports = {
     unknownTokenVerifyError : {
         name          : 'unknownTokenVerifyError',
         description   : 'look in info for more detail!',
-        type          : ErrorType.SYSTEM_ERROR,
+        type          : ErrorType.TOKEN_ERROR,
         sendInfo      : false,
         //INFO
         isSystemError : true
@@ -227,7 +227,7 @@ module.exports = {
     tokenExpiredError : {
         name          : 'tokenExpiredError',
         description   : 'jwt expired',
-        type          : ErrorType.SYSTEM_ERROR,
+        type          : ErrorType.TOKEN_ERROR,
         sendInfo      : true,
         //INFO
         // expiredAt
@@ -237,7 +237,7 @@ module.exports = {
     jsonWebTokenError : {
         name          : 'jsonWebTokenError',
         description   : 'json web token error',
-        type          : ErrorType.SYSTEM_ERROR,
+        type          : ErrorType.TOKEN_ERROR,
         sendInfo      : true,
         //INFO
         // message
@@ -247,7 +247,7 @@ module.exports = {
     tokenIsBlocked : {
         name          : 'tokenIsBlocked',
         description   : 'token is blocked',
-        type          : ErrorType.SYSTEM_ERROR,
+        type          : ErrorType.TOKEN_ERROR,
         sendInfo      : true,
         //INFO
         // token

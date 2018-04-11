@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 const TaskError       = require('../../api/TaskError');
-const SyErrors        = require('../zationTaskErrors/systemTaskErrors');
+const MainErrors        = require('../zationTaskErrors/mainTaskErrors');
 
 class ServiceWrapper
 {
@@ -24,7 +24,7 @@ class ServiceWrapper
         }
         else
         {
-            throw new TaskError(SyErrors.tryToUseNotConfiguredService, {service : this.serviceName});
+            throw new TaskError(MainErrors.tryToUseNotConfiguredService, {service : this.serviceName});
         }
     }
 

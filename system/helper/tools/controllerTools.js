@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 const Const            = require('../constante/constWrapper');
 const TaskError        = require('../../api/TaskError');
-const SyErrors         = require('../zationTaskErrors/systemTaskErrors');
+const MainErrors         = require('../zationTaskErrors/mainTaskErrors');
 
 const systemController = require('../systemController/systemControler.config');
 const systemControllerPath   = __dirname + './../systemController/controller';
@@ -27,7 +27,7 @@ class ControllerTools
             return systemController[controllerName];
         }
         else {
-            throw new TaskError(SyErrors.controllerNotFound, {controllerName: controllerName});
+            throw new TaskError(MainErrors.controllerNotFound, {controllerName: controllerName});
         }
     }
 

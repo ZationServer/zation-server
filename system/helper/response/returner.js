@@ -8,7 +8,7 @@ const Result          = require('../../api/Result');
 const TaskError       = require('../../api/TaskError');
 const TaskErrorBag    = require('../../api/TaskErrorBag');
 const Const           = require('../constante/constWrapper');
-const SyErrors        = require('../zationTaskErrors/systemTaskErrors');
+const MainErrors        = require('../zationTaskErrors/mainTaskErrors');
 
 class Returner
 {
@@ -103,7 +103,7 @@ class Returner
                 info['info'] = err.toString();
             }
 
-            let error = new TaskError(SyErrors.unknownSystemError,info);
+            let error = new TaskError(MainErrors.unknownSystemError,info);
 
             errors = [error._getJsonObj()];
         }
