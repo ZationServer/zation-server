@@ -19,7 +19,7 @@ class SHBridge
         this._httpReq = httpReq;
         this._httpData = httpData;
 
-        this._tokenBridge = new TokenBridge(isSocket,socket,req);
+        this._tokenBridge = new TokenBridge(isSocket,socket,httpReq);
     }
 
     getZationData()

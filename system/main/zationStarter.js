@@ -142,11 +142,18 @@ class ZationStarter
         else if(typeof time === 'object')
         {
             let set = () => {
-                let tillTime = TimeTools.processTaskTriggerTime(time,this._zc,true);
-                setTimeout(() => {
-                    this._startUserBackgroundTask(id);
-                    set();
-                },tillTime)
+                let tillTime = TimeTools.processTaskTriggerTime(time,this._zc);
+                if(typeof tillTime === 'number' && tillTime > 0)
+                {
+                    setTimeout(() => {
+                        this._startUserBackgroundTask(id);
+                        set();
+                    },tillTime);
+                }
+                else
+                {
+                    throw Error(`Planed every background task with id ${id} goes wrong`);
+                }
             };
             set();
         }
@@ -163,9 +170,16 @@ class ZationStarter
         else if(typeof time === 'object')
         {
             let tillTime = TimeTools.processTaskTriggerTime(time,this._zc);
-            setTimeout(() => {
-                this._startUserBackgroundTask(id);
-            },tillTime);
+            if(typeof tillTime === 'number' && tillTime > 0)
+            {
+                setTimeout(() => {
+                    this._startUserBackgroundTask(id);
+                },tillTime);
+            }
+            else
+            {
+                throw Error(`Planed at background task with id ${id} goes wrong`);
+            }
         }
     }
 
