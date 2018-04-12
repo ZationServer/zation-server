@@ -7,15 +7,15 @@ GitHub: LucaCode
 class Event {}
 
 //Zation Events
-Event.ZATION_EXPRESS                     = 'express';
-Event.ZATION_WORKER_IS_STARTED           = 'workerIsStarted';
-Event.ZATION_HTTP_SERVER_IS_STARTED      = 'httpServerIsStarted';
-Event.ZATION_SOCKET_SERVER_IS_STARTED    = 'socketServerIsStarted';
-Event.ZATION_IS_STARTED                  = 'isStarted';
-Event.ZATION_BEFORE_ERROR                = 'beforeError';
-Event.ZATION_BEFORE_TASK_ERROR           = 'beforeTaskError';
-Event.ZATION_BEFORE_TASK_ERROR_BAG       = 'beforeTaskErrorBag';
-Event.ZATION_BACKGROUND_TASK             = 'backgroundTask';
+Event.ZATION_EXPRESS                     = 'express'; //SmallBag + Express
+Event.ZATION_WORKER_IS_STARTED           = 'workerIsStarted'; //SmallBag + workerInformationObj
+Event.ZATION_HTTP_SERVER_IS_STARTED      = 'httpServerIsStarted'; // infoObj
+Event.ZATION_SOCKET_SERVER_IS_STARTED    = 'socketServerIsStarted'; // infoObj
+Event.ZATION_IS_STARTED                  = 'isStarted'; // infoObj
+Event.ZATION_BEFORE_ERROR                = 'beforeError'; //SmallBag + Error
+Event.ZATION_BEFORE_TASK_ERROR           = 'beforeTaskError'; //SmallBag + Error
+Event.ZATION_BEFORE_TASK_ERROR_BAG       = 'beforeTaskErrorBag'; //SmallBag + Error
+Event.ZATION_BACKGROUND_TASK             = 'backgroundTask'; //SmallBag
 
 //SocketCluster Socket Events
 Event.SOCKET_ERROR                       = 'socketError';

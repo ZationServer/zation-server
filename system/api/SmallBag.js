@@ -4,22 +4,36 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+const Const         = require('./../helper/constante/constWrapper');
 const crypto        = require('crypto');
+const ExchangeEngine= require('./../helper/channel/chExchangeEngine');
 
 class SmallBag
 {
-    //Part Auth
-
-    // noinspection JSUnusedGlobalSymbols
-    authOutAllClientsWithId(id)
+    constructor(exchangeEngine,serviceEngine,zc)
     {
-        this._channelController.authOutAllClientsWithId(id);
+        this._exchangeEngine = exchangeEngine;
+        this._serviceEngine = serviceEngine;
+        this._zc = zc;
+    }
+
+    static getSmallBagFromWorker(worker)
+    {
+        let exchangeEngine = new ExchangeEngine(worker.scServer);
+        return new SmallBag(exchangeEngine,worker.getServiceEngine(),worker.getZationConfig());
+    }
+
+    //Part Auth
+    // noinspection JSUnusedGlobalSymbols
+    publishAuthOut(id)
+    {
+        this._exchangeEngine.publishAuthOut(id);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    reAuthAllClientsWithId(id)
+    publishReAuth(id)
     {
-        this._channelController.reAuthAllClientsWithId(id);
+        this._exchangeEngine.publishReAuth(id);
     }
 
     //Part Crypto
@@ -54,37 +68,37 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     publishToSpecifyUser(id,eventName,data,cb)
     {
-        this._channelController.publishInUserCh(id,eventName,data,cb);
+        this._exchangeEngine.publishInUserCh(id,eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
     publishToSpecifyUsers(ids,eventName,data,cb)
     {
-        this._channelController.publishInUserChannels(ids,eventName,data,cb);
+        this._exchangeEngine.publishInUserChannels(ids,eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
     publishToAll(eventName,data,cb)
     {
-        this._channelController.publishInAllCh(eventName,data,cb);
+        this._exchangeEngine.publishInAllCh(eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
     publishToAuthGroup(authGroup,eventName,data,cb)
     {
-        this._channelController.publishInAuthGroupCh(authGroup,eventName,data,cb);
+        this._exchangeEngine.publishInAuthGroupCh(authGroup,eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
     publishToDefaultGroup(eventName,data,cb)
     {
-        this._channelController.publishInDefaultGroupCh(eventName,data,cb);
+        this._exchangeEngine.publishInDefaultGroupCh(eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
     publishToAllAuthGroups(eventName,data,cb)
     {
-        let groups = cationConfig[CA.CATION_AUTH_GROUPS][CA.AUTH_AUTH_GROUPS];
+        let groups = this._zc.getApp(Const.App.GROUPS)[Const.App.GROUPS_AUTH_GROUPS];
         for(let k in groups)
         {
             if(groups.hasOwnProperty(k))
@@ -97,43 +111,41 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     publishInSpecialChannel(channel,id,eventName,data,cb)
     {
-        this._channelController.publishInSpecialChannel(channel,id,eventName,data,cb);
+        this._exchangeEngine.publishInSpecialChannel(channel,id,eventName,data,cb);
     }
 
     //Part Database -> MySql
 
     // noinspection JSUnusedGlobalSymbols
-    mySqlQuery(query,func)
+    mySqlQuery(query,func,serviceKey = 'default')
     {
-        this._mySqlPoolWrapper.getService().query(query,func);
+        this._serviceEngine.getMySQLService(serviceKey).query(query,func);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    mySqlPrepareQuery(query,inserts)
+    mySqlPrepareQuery(query,inserts,serviceKey = 'default')
     {
-        return this._mySqlPoolWrapper.getService().format(query,inserts);
+        return this._serviceEngine.getMySQLService(serviceKey).format(query,inserts);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getMySqlPool()
+    getMySqlPool(serviceKey = 'default')
     {
-        return this._mySqlPoolWrapper.getService();
+        return this._serviceEngine.getMySQLService(serviceKey);
     }
 
     //Part NodeMailer
 
     // noinspection JSUnusedGlobalSymbols
-    sendMail(mailOptions,func)
+    sendMail(mailOptions,func,serviceKey = 'default')
     {
-        this._nodeMailerWrapper.getService().sendMail(mailOptions,func);
+        this._serviceEngine.getNodeMailerService(serviceKey).sendMail(mailOptions,func);
     }
     // noinspection JSUnusedGlobalSymbols
-    getMailTransport()
+    getMailTransport(serviceKey = 'default')
     {
-        return this._nodeMailerWrapper.getService();
+        return this._serviceEngine.getNodeMailerService(serviceKey);
     }
-
-
 
 }
 

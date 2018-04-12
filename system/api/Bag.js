@@ -4,33 +4,27 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const CA            = require('../helper/constante/settings');
+const Const         = require('./../helper/constante/constWrapper');
+const ChannelEngine = require('./../helper/channel/channelEngine');
 const SmallBag      = require('./SmallBag');
+
 
 class Bag extends SmallBag
 {
 
-    constructor({authController,paramData,channelController,worker,zc})
+    constructor(shBridge,worker,authEngine,tokenEngine,inputWrapper)
     {
-        super(worker,zc,channelController);
+        let channelEngine = new ChannelEngine(worker.scServer,shBridge,worker.getZationConfig());
+
+        super(channelEngine,worker.getServiceEngine());
 
         this._bagVariables = {};
 
-        this._isSocket = isSocket;
-        this._authController = authController;
-        this._req = req;
-        this._res = res;
-        this._socket = socket;
-        this._scServer = scServer;
-        this._paramData  = paramData;
-        this._channelController = channelController;
-        this._services = services;
-
-        this._mySqlPoolWrapper = this._services['mySqlPoolWrapper'];
-        this._nodeMailerWrapper = this._services['nodeMailerWrapper'];
-
-        this._params = this._paramData[CA.PARAM_DATA_PARAMS];
-        this._paramsMissing = this._paramData[CA.PARAM_DATA_PARAMS_Missing];
+        this._shBridge = shBridge;
+        this._authEngine = authEngine;
+        this._channelEngine = channelEngine;
+        this._tokenEngine = tokenEngine;
+        this._inputWrapper = inputWrapper;
     }
 
     //Part Bag Variable
@@ -62,19 +56,19 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     getParam(name)
     {
-        return this._params[name];
+        return this._inputWrapper.getParams()[name];
     }
 
     // noinspection JSUnusedGlobalSymbols
     isParam(name)
     {
-        return this._params[name] !== undefined;
+        return this._inputWrapper.getParams()[name] !== undefined;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    isAParamMissing()
+    isParamMissing()
     {
-        return this._paramsMissing;
+        return this._inputWrapper.isParamMissing();
     }
 
     //Part Auth 2
@@ -82,61 +76,61 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     isAuth()
     {
-        return this._authController.isAuth();
+        return this._authEngine.isAuth();
     }
 
     // noinspection JSUnusedGlobalSymbols
     getAuthGroup()
     {
-        return this._authController.getAuthGroup();
+        return this._authEngine.getAuthGroup();
     }
 
     // noinspection JSUnusedGlobalSymbols
     getGroup()
     {
-        return this._authController.getGroup();
+        return this._authEngine.getGroup();
     }
 
     // noinspection JSUnusedGlobalSymbols
     authTo(group,id,clientData = {})
     {
-        this._authController.authTo(group,id,clientData);
+        this._authEngine.authTo(group,id,clientData);
     }
 
     // noinspection JSUnusedGlobalSymbols
     setClientId(id)
     {
-        this._authController.setClientId(id);
+        this._authEngine.setClientId(id);
     }
 
     // noinspection JSUnusedGlobalSymbols
     getClientId()
     {
-        this._authController.getClientId();
+        this._authEngine.getClientId();
     }
 
     // noinspection JSUnusedGlobalSymbols
     authOut()
     {
-        this._authController.authOut();
+        this._authEngine.authOut();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getAuthController()
+    getAuthEngine()
     {
-        return this._authController;
+        return this._authEngine;
     }
 
     // noinspection JSUnusedGlobalSymbols
     isDefault()
     {
-        return this._authController.isDefault();
+        return this._authEngine.isDefault();
     }
 
     // noinspection JSUnusedGlobalSymbols
     isUseAuth()
     {
-        return this._authController.isUseAuth();
+        return this._authEngine.isUseAuth();
     }
 
     //Part Cookie
@@ -187,29 +181,29 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     getResponse()
     {
-        return this._res;
+        return this._shBridge.getResponse();
     }
 
     // noinspection JSUnusedGlobalSymbols
     getRequest()
     {
-        return this._req;
+        return this._shBridge.getRequest();
     }
 
-    //Part Client Storage
+    //Part Token
 
     // noinspection JSUnusedGlobalSymbols
-    setClientVariable(key,value)
+    setTokenVariable(key,value)
     {
-       let obj = {};
-       obj[key] = value;
-       ClientStorage.setClientData(obj,this._isSocket,this._socket,this._req,this._channelController);
+        //TODO
+
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getClientVariable(key)
+    getTokenVariable(key)
     {
-        return ClientStorage.getClientVariable(key,this._isSocket,this._socket,this._req);
+        //TODO
+
     }
 
     //Part Socket
@@ -217,19 +211,26 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     getSocketId()
     {
-        return this._socket.id;
+        if(this._shBridge.isSocket)
+        {
+            return this._shBridge.getSocket().id;
+        }
+        else
+        {
+            return undefined;
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols
     getSocket()
     {
-        return this._socket;
+        return this._shBridge.getSocket();
     }
 
     // noinspection JSUnusedGlobalSymbols
     getScServer()
     {
-        return this._scServer;
+        return this._worker.scServer;
     }
 
     //Part Protocol
@@ -237,20 +238,21 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     getProtocol()
     {
-        return this._authController.getProtocol();
+        return this._shBridge.isSocket() ? 'socket' : 'http';
     }
 
     // noinspection JSUnusedGlobalSymbols
     isSocketProtocol()
     {
-        return this._isSocket();
+        return this._shBridge.isSocket();
     }
+
     //Part Socket Channel
 
     // noinspection JSUnusedGlobalSymbols
     emitToThisClient(eventName,data,cb)
     {
-        return this._channelController.emitToSocket(eventName,data,cb);
+        return this._channelEngine.emitToSocket(eventName,data,cb);
     }
 
     //Part Amazon s3
@@ -258,12 +260,14 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     uploadFileToBucket()
     {
+        //TODO
 
     }
 
     // noinspection JSUnusedGlobalSymbols
     getFileFromBucket()
     {
+        //TODO
 
     }
 

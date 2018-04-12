@@ -39,8 +39,9 @@ MainConfig.AUTH_PRIVATE_KEY       = 'authPrivateKey';
 MainConfig.AUTH_PUBLIC_KEY        = 'authPublicKey';
 
 //Services
-MainConfig.SERVICES_MYSQL_POOL    = 'mySqlPool';
-MainConfig.SERVICES_NODE_MAILER   = 'nodeMailer';
+MainConfig.SERVICES              = 'services';
+MainConfig.SERVICES_MYSQL        = 'mySql';
+MainConfig.SERVICES_NODE_MAILER  = 'nodeMailer';
 
 MainConfig.AUTO                   = 'auto';
 

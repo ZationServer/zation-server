@@ -39,6 +39,27 @@ class SHBridge
         return this._tokenBridge;
     }
 
+    getSocket()
+    {
+        return this._socket;
+    }
+
+    getResponse()
+    {
+        return this._httpRes;
+    }
+
+    getRequest()
+    {
+        return this._httpReq;
+    }
+
+    isSocket()
+    {
+        return this._isSocket;
+    }
+
+
 
 }
 

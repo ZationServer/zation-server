@@ -202,6 +202,7 @@ module.exports = {
         sendInfo      : true,
         //INFO
         // service (service name)
+        // key (optional)
         isSystemError : true
     },
 

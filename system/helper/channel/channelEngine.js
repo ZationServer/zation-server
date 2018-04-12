@@ -15,14 +15,19 @@ const ChExchangeEngine  = require('./chExchangeEngine');
 
 class ChannelEngine extends ChExchangeEngine
 {
-    constructor()
+    constructor(scServer,shBridge)
     {
         super(scServer);
+        this._socket = shBridge.getSocket();
+        this._isSocket = shBridge.isSocket();
     }
 
     emitToSocket(eventName,data,cb)
     {
-        this._socket.emit(eventName,data,cb);
+        if(this._isSocket)
+        {
+            this._socket.emit(eventName,data,cb);
+        }
     }
 }
 

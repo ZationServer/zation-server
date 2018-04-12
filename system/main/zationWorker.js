@@ -8,18 +8,17 @@ const SCWorker              = require('socketcluster/scworker');
 const express               = require('express');
 const cookieParser          = require('cookie-parser');
 const bodyParser            = require('body-parser');
-const mySql                 = require('mysql');
-const nodeMailer            = require('nodemailer');
 const fileUpload            = require('express-fileupload');
 
 const Zation                = require('./zation');
 const ZationConfig          = require('./zationConfig');
 const Const                 = require('../helper/constante/constWrapper');
-const ChannelEngine         = require('../helper/channel/channelEngine');
-const ServiceWrapper        = require('../helper/services/serviceWrapper');
+const ChAccessEngine        = require('../helper/channel/chAccessEngine');
+const ServiceEngine         = require('../helper/services/serviceEngine');
 const TokenInfoStorage      = require('../helper/token/tokenInfoStorage');
 const MasterStorage         = require('../helper/storage/masterStorage');
 const SystemBackgroundTask  = require('../helper/background/systemBackgroundTasks');
+const SmallBag              = require('../api/SmallBag');
 
 class Worker extends SCWorker
 {
@@ -35,29 +34,8 @@ class Worker extends SCWorker
         this._zc = new ZationConfig(zcOptions.mainConfig,true);
         this._zc.loadOtherConfigs();
 
-        this._servieces = {};
+        this._servieceEngine = new ServiceEngine(this._zc);
         //Services
-        if (this._zc.isMain(Const.Main.SERVICES_MYSQL_POOL)) {
-            this._servieces['mySqlPoolWrapper'] =
-                new ServiceWrapper
-                (
-                    mySql.createPool
-                    (
-                        this._zc.getMain(Const.Main.SERVICES_MYSQL_POOL)
-                    ),'MySqlPool'
-                );
-        }
-
-        if (this._zc.isMain(Const.Main.SERVICES_NODE_MAILER)) {
-            this._servieces['nodeMailerWrapper'] =
-                new ServiceWrapper
-                (
-                    nodeMailer.createTransport
-                    (
-                        this._zc.getMain(Const.Main.SERVICES_NODE_MAILER)
-                    ),'nodeMailer'
-                );
-        }
 
         if(this._zc.isExtraSecureAuth())
         {
@@ -501,7 +479,7 @@ class Worker extends SCWorker
     {
         if(task !== undefined && typeof task === 'function')
         {
-            task(this);
+            task(SmallBag.getSmallBagFromWorker(this));
         }
     }
 
@@ -546,9 +524,9 @@ class Worker extends SCWorker
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getServices()
+    getServiceEngine()
     {
-        return this._servieces;
+        return this._serviceEngine;
     }
     
 }
