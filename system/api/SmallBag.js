@@ -117,29 +117,43 @@ class SmallBag
     //Part Database -> MySql
 
     // noinspection JSUnusedGlobalSymbols
-    mySqlQuery(query,func,serviceKey = 'default')
+    mySqlQuery(query,serviceKey = 'default')
     {
-        this._serviceEngine.getMySQLService(serviceKey).query(query,func);
+        return new Promise((resolve, reject) =>
+        {
+            this._serviceEngine.getMySqlService(serviceKey).query(query,(error, results, fields) =>
+            {
+                if(error) {reject(error);}
+                else{resolve({results : results, fields : fields});}
+            });
+        });
     }
 
     // noinspection JSUnusedGlobalSymbols
     mySqlPrepareQuery(query,inserts,serviceKey = 'default')
     {
-        return this._serviceEngine.getMySQLService(serviceKey).format(query,inserts);
+        return this._serviceEngine.getMySqlService(serviceKey).format(query,inserts);
     }
 
     // noinspection JSUnusedGlobalSymbols
     getMySqlPool(serviceKey = 'default')
     {
-        return this._serviceEngine.getMySQLService(serviceKey);
+        return this._serviceEngine.getMySqlService(serviceKey);
     }
 
     //Part NodeMailer
 
     // noinspection JSUnusedGlobalSymbols
-    sendMail(mailOptions,func,serviceKey = 'default')
+    sendMail(mailOptions,serviceKey = 'default')
     {
-        this._serviceEngine.getNodeMailerService(serviceKey).sendMail(mailOptions,func);
+        return new Promise((resolve, reject) =>
+        {
+            this._serviceEngine.getNodeMailerService(serviceKey).sendMail(mailOptions,(error,info) =>
+            {
+                if(error) {reject(error);}
+                else {resolve(info);}
+            });
+        });
     }
     // noinspection JSUnusedGlobalSymbols
     getMailTransport(serviceKey = 'default')

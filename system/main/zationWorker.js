@@ -34,8 +34,9 @@ class Worker extends SCWorker
         this._zc = new ZationConfig(zcOptions.mainConfig,true);
         this._zc.loadOtherConfigs();
 
-        this._servieceEngine = new ServiceEngine(this._zc);
         //Services
+        this._servieceEngine = new ServiceEngine(this._zc);
+        await this._servieceEngine.init();
 
         if(this._zc.isExtraSecureAuth())
         {
@@ -55,9 +56,16 @@ class Worker extends SCWorker
             this._startSocketServer();
         }
 
+        //Fire ExpressEvent
+        if (this._zc.getMain(Const.Main.USE_HTTP_SERVER))
+        {
+            this._zc.emitEvent(Const.Event.ZATION_EXPRESS,
+                (f) => {f(SmallBag.getSmallBagFromWorker(this),this._app);});
+        }
+
         //Fire event is started
         this._zc.emitEvent(Const.Event.ZATION_WORKER_IS_STARTED,
-            (f) => {f(this._zc.getSomeInformation())});
+            (f) => {f(SmallBag.getSmallBagFromWorker(this),this._zc.getSomeInformation(),this)});
     }
 
     _startSocketServer()
@@ -124,10 +132,6 @@ class Worker extends SCWorker
 
         this._zc.emitEvent(Const.Event.ZATION_HTTP_SERVER_IS_STARTED,
             (f) => {f(this._zc.getSomeInformation())});
-
-        //loading express func
-        this._zc.emitEvent(Const.Event.ZATION_EXPRESS,
-            (f) => {f(this._app);});
     }
 
     _initSocketMiddleware()

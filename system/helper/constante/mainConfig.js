@@ -42,6 +42,7 @@ MainConfig.AUTH_PUBLIC_KEY        = 'authPublicKey';
 MainConfig.SERVICES              = 'services';
 MainConfig.SERVICES_MYSQL        = 'mySql';
 MainConfig.SERVICES_NODE_MAILER  = 'nodeMailer';
+MainConfig.SERVICES_POSTGRES_SQL = 'postgresSql';
 
 MainConfig.AUTO                   = 'auto';
 

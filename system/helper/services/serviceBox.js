@@ -13,10 +13,16 @@ class ServiceBox
     {
         this._services = {};
         this._serviceName = serviceName;
-        this._initService(config,howToCreate);
+        this._config = config;
+        this._howToCreate = howToCreate;
     }
 
-    _initService(config,howToCreate)
+    async init()
+    {
+        await this._initService(this._config,this._howToCreate);
+    }
+
+    async _initService(config,howToCreate)
     {
         if(config !== undefined && typeof config === 'object')
         {
@@ -24,7 +30,7 @@ class ServiceBox
             {
                 if(config.hasOwnProperty(k))
                 {
-                    this._services[k] = howToCreate(config[k]);
+                    this._services[k] = await howToCreate(config[k]);
                 }
             }
         }
