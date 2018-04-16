@@ -25,7 +25,6 @@ class ZationStarter
 
         this._startSocketCluster();
         this._createMasterStorage();
-        this._startBackgroundTasks();
     }
 
     _startSocketCluster()
@@ -52,6 +51,8 @@ class ZationStarter
         // noinspection JSUnresolvedFunction
         this._master.on('ready',() =>
         {
+            this._startBackgroundTasks();
+
             this._zc.emitEvent(Const.Event.ZATION_IS_STARTED, (f) =>
             {
                 f(this._zc.getSomeInformation());
@@ -192,11 +193,11 @@ class ZationStarter
     {
         let workerId = this._getRandomWorkerId();
 
-        this._zc.printDebugInfo
-        (`Worker with id: ${workerId}, start to invoke background task number: ${obj.userBackgroundTask}`);
-
         if(workerId !== undefined)
         {
+            this._zc.printDebugInfo
+            (`Worker with id: ${workerId}, start to invoke background task number: ${obj.userBackgroundTask}`);
+
             this._master.sendToWorker(workerId,obj)
         }
     }

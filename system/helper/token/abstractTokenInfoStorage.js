@@ -11,7 +11,7 @@ class AbstractTokenInfoStorage
 
     async createTokenInfo(expire,authId) {}
 
-    async updateTokenInfo(oldToken,newToken);
+    async updateTokenInfo(oldToken,newToken) {}
 
     async setLastActivity(token) {}
 

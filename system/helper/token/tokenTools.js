@@ -125,7 +125,7 @@ class TokenTools
         let suc = await TokenTools._changeToken(data,tokenBridge,true);
         if(suc)
         {
-            TokenInfoStorage.
+
 
         }
         return suc;
