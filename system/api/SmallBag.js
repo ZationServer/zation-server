@@ -136,9 +136,25 @@ class SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getMySqlPool(serviceKey = 'default')
+    getMySql(serviceKey = 'default')
     {
         return this._serviceEngine.getMySqlService(serviceKey);
+    }
+
+    //Part Database -> PostgreSql
+
+    // noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
+    getPostgreSql(serviceKey = 'default')
+    {
+        return this._serviceEngine.getPostgresSqlService(serviceKey);
+    }
+
+    //Part Database -> MongoDb
+
+    // noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
+    getMongoDb(serviceKey = 'default')
+    {
+        return this._serviceEngine.getMongoDbService(serviceKey);
     }
 
     //Part NodeMailer
@@ -156,7 +172,7 @@ class SmallBag
         });
     }
     // noinspection JSUnusedGlobalSymbols
-    getMailTransport(serviceKey = 'default')
+    getNodeMailer(serviceKey = 'default')
     {
         return this._serviceEngine.getNodeMailerService(serviceKey);
     }

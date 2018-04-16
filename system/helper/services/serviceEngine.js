@@ -10,6 +10,7 @@ const ServiceBox      = require('./serviceBox');
 const mySql                 = require('mysql');
 const nodeMailer            = require('nodemailer');
 const postgresSql           = require('pg-pool');
+const mongo                 = require('mongodb-pool');
 
 class ServiceEngine
 {
@@ -45,6 +46,14 @@ class ServiceEngine
             });
         promises.add(this._postgresSqlBox.init());
 
+        this._mongoDbBox =
+            new ServiceBox(Const.Main.SERVICES_MONGO_DB,this._sc[Const.Main.SERVICES_MONGO_DB],async (c) =>
+            {
+                // noinspection JSUnresolvedFunction
+                return await mongo.getConnection(c.url,c);
+            });
+        promises.add(this._mongoDbBox.init());
+
         await Promise.all(promises);
     }
 
@@ -58,9 +67,14 @@ class ServiceEngine
         this._nodeMailerServiceBox.getService(key);
     }
 
-    getPostgresSql(key)
+    getPostgresSqlService(key)
     {
         this._postgresSqlBox.getService(key);
+    }
+
+    getMongoDbService(key)
+    {
+        this._mongoDbBox.getService(key);
     }
 
 }

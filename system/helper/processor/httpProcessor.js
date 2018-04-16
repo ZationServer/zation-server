@@ -8,7 +8,7 @@ const Const                 = require('../constante/constWrapper');
 const HtmlTools             = require('../tools/htmlTools');
 const MainProcessor         = require('./mainProcessor');
 const SHBridge              = require('../bridges/shBridge');
-const TokenEngine           = require('../token/tokenEngine');
+const TokenTools            = require('../token/tokenTools');
 
 const helper   = __dirname + '/../';
 const views    = helper + 'views/';
@@ -31,7 +31,7 @@ class HttpProcessor
 
             let zationData = await JSON.parse(req.body[zc.getMain(Const.Main.POST_KEY_WORD)]);
 
-            req.zationToken = await TokenEngine.verifyToken(zationData[Const.Settings.INPUT_TOKEN],zc);
+            req.zationToken = await TokenTools.verifyToken(zationData[Const.Settings.INPUT_TOKEN],zc);
 
             let shBridge = new SHBridge(
                 {

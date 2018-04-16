@@ -4,29 +4,31 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const Const         = require('../constante/constWrapper');
-const TaskError     = require('../../api/TaskError');
-const MainErrors      = require('../zationTaskErrors/mainTaskErrors');
-const TokenBridge   = require('../bridges/tokenBridge');
-const ChEngine      = require('../channel/channelEngine');
+const Const            = require('../constante/constWrapper');
+const TaskError        = require('../../api/TaskError');
+const MainErrors       = require('../zationTaskErrors/mainTaskErrors');
+const TokenBridge      = require('../bridges/tokenBridge');
+const ChAccessEngine   = require('../channel/chAccessEngine');
+const Jwt              = require('jsonwebtoken');
+const TokenInfoStorage = require('./tokenInfoStorage');
 
 class TokenTools
 {
-    static _changeToken(data,tokenBridge,ignoreZationKeys = false,updateOnly = true)
+    static async _changeToken(data,tokenBridge,ignoreZationKeys = false,updateOnly = true)
     {
         let suc = false;
 
-        let setToken = () =>
+        let setToken = async () =>
         {
             let token = tokenBridge.getToken();
 
             if((token !== undefined && token !== null) || (!updateOnly))
             {
-                tokenBridge.setToken(TokenTools._bringAuthTokenTogether(token,data));
+                await tokenBridge.setToken(TokenTools._bringAuthTokenTogether(token,data));
 
                 if(tokenBridge.isSocket())
                 {
-                    ChEngine.checkSocketSpecialChAccess(tokenBridge.getSocket());
+                    ChAccessEngine.checkSocketSpecialChAccess(tokenBridge.getSocket());
                 }
 
                 suc = true;
@@ -38,11 +40,11 @@ class TokenTools
         {
             if(ignoreZationKeys)
             {
-                setToken();
+                await setToken();
 
                 if(tokenBridge.isSocket())
                 {
-                    ChEngine.checkSocketZationChAccess(tokenBridge.getSocket());
+                    ChAccessEngine.checkSocketZationChAccess(tokenBridge.getSocket());
                 }
             }
             else if(data.hasOwnProperty(Const.Settings.CLIENT_AUTH_GROUP))
@@ -59,7 +61,7 @@ class TokenTools
             }
             else
             {
-                setToken();
+                await setToken();
             }
         }
         return suc;
@@ -97,7 +99,7 @@ class TokenTools
         }
     }
 
-    static  getSocketTokenVariable(key,socket)
+    static getSocketTokenVariable(key,socket)
     {
         // noinspection JSUnresolvedFunction
         let token = socket.getAuthToken();
@@ -112,45 +114,52 @@ class TokenTools
         }
     }
 
-    static setTokenVariable(data,tokenBridge)
+    static async setTokenVariable(data,tokenBridge)
     {
-        return TokenTools._changeToken(data,tokenBridge);
+        return await TokenTools._changeToken(data,tokenBridge);
     }
 
-    static setSocketTokenVariable(data,socket)
-    {
-        return TokenTools._changeToken(data,new TokenBridge(true,socket));
-    }
-
-    static setZationData(data,tokenBridge,tokenEngine)
+    static async setZationData(data,tokenBridge,tokenEngine)
     {
         let oldToken = tokenBridge.getToken();
-        let suc = TokenTools._changeToken(data,tokenBridge,true);
-        if(suc) {
-            tokenEngine.changedToken(oldToken, tokenBridge.getToken());
-        }
-        return suc;
-    }
-
-    static createToken(data,tokenBridge,tokenEngine)
-    {
-        let suc = TokenTools._changeToken(data,tokenBridge,true,false);
+        let suc = await TokenTools._changeToken(data,tokenBridge,true);
         if(suc)
         {
-            tokenEngine.registerToken(tokenBridge.getToken());
+            TokenInfoStorage.
+
         }
         return suc;
     }
 
-    static verifyToken(signedToken,zc)
+    static async verifyToken(token,zc)
     {
+        return new Promise((resolve, reject) =>
+        {
+            let algorithm = zc.getMain(Const.Settings.AUTH_ALGORITHM);
 
-    }
-
-    static signToken(token, key, options, callback)
-    {
-
-
+            Jwt.verify(token,zc.getVerifyKey(),{algorithm : algorithm},(err,decoded) =>
+            {
+                if(err)
+                {
+                    if(err.name === 'TokenExpiredError')
+                    {
+                        reject(new TaskError(MainErrors.tokenExpiredError,{expiredAt : err.expiredAt}))
+                    }
+                    else if(err.name === 'JsonWebTokenError')
+                    {
+                        reject(new TaskError(MainErrors.jsonWebTokenError,err))
+                    }
+                    else
+                    {
+                        reject(new TaskError(MainErrors.unknownTokenVerifyError,err))
+                    }
+                }
+                else
+                {
+                    resolve(decoded);
+                }
+            });
+        });
     }
 
 }

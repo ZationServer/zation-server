@@ -11,6 +11,8 @@ class AbstractTokenInfoStorage
 
     async createTokenInfo(expire,authId) {}
 
+    async updateTokenInfo(oldToken,newToken);
+
     async setLastActivity(token) {}
 
     async getLastActivity(token) {}
@@ -21,7 +23,6 @@ class AbstractTokenInfoStorage
 
     async checkTokenInfoStorage() {}
 
-
     async onlineUserCount(lastMs) {}
 
     async userOnlineTokenCount(id,lastMs) {}
@@ -31,6 +32,7 @@ class AbstractTokenInfoStorage
     async tokensWithIdCount() {}
 
     async tokensWithoutIdCount() {}
+
 
 }
 

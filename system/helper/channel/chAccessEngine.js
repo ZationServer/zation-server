@@ -128,7 +128,7 @@ class ChAccessEngine
 
     //Part changedToken
 
-    static getSpecialChannelName(ch)
+    static _getSpecialChannelName(ch)
     {
         ch = ch.replace(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX,'');
         ch = ch.substring(0,ch.indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_ID));
@@ -145,8 +145,8 @@ class ChAccessEngine
             {
                 if(subs[i].indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX) !== -1)
                 {
-                    let chName = ChannelEngine._getSpecialChannelName(subs[i]);
-                    if(!ChannelEngine._hasAccessToSubSpecialChannel(socket,chName))
+                    let chName = ChAccessEngine._getSpecialChannelName(subs[i]);
+                    if(!ChAccessEngine.hasAccessToSubSpecialChannel(socket,chName))
                     {
                         // noinspection JSUnresolvedFunction
                         socket.kickOut(subs[i]);
@@ -166,4 +166,4 @@ class ChAccessEngine
 
 }
 
-module.exports = ChannelEngine;
+module.exports = ChAccessEngine;

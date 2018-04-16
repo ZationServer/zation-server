@@ -78,6 +78,7 @@ class ChExchangeEngine
         this.publish(channelFullName,eventName,data,cb);
     }
 
+    // noinspection JSUnusedGlobalSymbols
     destroyChannel(channel)
     {
         // noinspection JSValidateTypes

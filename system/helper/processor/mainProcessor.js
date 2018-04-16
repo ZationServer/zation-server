@@ -8,7 +8,7 @@ const Const                 = require('../constante/constWrapper');
 const ControllerTools       = require('../tools/controllerTools');
 const Controller            = require('../../api/Controller');
 const Result                = require('../../api/Result');
-const MainErros              = require('../zationTaskErrors/mainTaskErrors');
+const MainErrors              = require('../zationTaskErrors/mainTaskErrors');
 const TaskError             = require('../../api/TaskError');
 const ZationReqTools        = require('../tools/zationReqTools');
 const SystemVersionChecker  = require('../checker/systemVersionChecker');
@@ -31,7 +31,7 @@ class MainProcessor
 
             if(!valid)
             {
-                throw new TaskError(MainErros.tokenIsBlocked,{token : token});
+                throw new TaskError(MainErrors.tokenIsBlocked,{token : token});
             }
 
             await tokenInfoStorage.setLastActivity(token);
@@ -50,13 +50,12 @@ class MainProcessor
 
             let task = reqData[Const.Settings.INPUT_TASK];
 
-            let channelEngine = new ChannelEngine(shBridge);
+            let channelEngine = new ChannelEngine(worker.scServer,shBridge);
 
             let authEngine = new AuthEngine(
                 {
                     shBridge : shBridge,
                     zc : zc,
-                    channelEngine: channelEngine
                 });
 
             let useProtocolCheck = zc.getMain(Const.Main.USE_PROTOCOL_CHECK);
@@ -86,7 +85,7 @@ class MainProcessor
             }
             else
             {
-                throw new TaskError(MainErros.noAccessToServerProtocol,
+                throw new TaskError(MainErrors.noAccessToServerProtocol,
                     {
                         controller: task[Const.Settings.INPUT_CONTROLLER],
                         protocol: authEngine.getProtocol()
@@ -95,7 +94,7 @@ class MainProcessor
         }
         else
         {
-            throw new TaskError(MainErros.wrongInputData);
+            throw new TaskError(MainErrors.wrongInputData);
         }
     }
 
@@ -126,7 +125,7 @@ class MainProcessor
         }
         else
         {
-            throw new TaskError(MainErros.controllerIsNotAController,
+            throw new TaskError(MainErrors.controllerIsNotAController,
                 {controllerName : controllerConfig[Const.Settings.CONTROLLER_NAME]});
         }
     }

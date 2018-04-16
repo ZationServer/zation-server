@@ -26,9 +26,11 @@
     "jsonwebtoken": "latest",
     "moment": "^2.22.0",
     "moment-timezone": "^0.5.14",
+    "mongodb-pool": "^2.0.3",
     "mysql": "^2.15.0",
     "nodemailer": "^4.6.3",
     "path": "0.12.7",
+    "pg-pool": "^2.0.3",
     "scc-broker-client": "2.1.2",
     "socketcluster": "11.1.0",
     "validator": "9.4.1"

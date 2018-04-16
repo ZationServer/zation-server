@@ -43,6 +43,7 @@ MainConfig.SERVICES              = 'services';
 MainConfig.SERVICES_MYSQL        = 'mySql';
 MainConfig.SERVICES_NODE_MAILER  = 'nodeMailer';
 MainConfig.SERVICES_POSTGRES_SQL = 'postgresSql';
+MainConfig.SERVICES_MONGO_DB     = 'mongoDb';
 
 MainConfig.AUTO                   = 'auto';
 

@@ -14,6 +14,7 @@ module.exports.start = (options) =>
 
 //Api Classes
 module.exports.Bag = require('./system/api/Bag');
+module.exports.SmallBag = require('./system/api/SmallBag');
 module.exports.Controller = require('./system/api/Controller');
 module.exports.Result = require('./system/api/Result');
 module.exports.TaskError = require('./system/api/TaskError');
