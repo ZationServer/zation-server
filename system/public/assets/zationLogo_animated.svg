@@ -1,0 +1,120 @@
+<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 -10 105.48 106.212"><defs>
+    <style>
+    .cls-1,.cls-1-top,.cls-1-font,.cls-1-left,.cls-1-right
+    {fill:#3299bb;}
+        
+    .cls-2,.cls-2-top,.cls-2-font,.cls-2-left,.cls-2-right
+    {fill:#424242;}
+    
+    @keyframes animation-right
+    {
+    from {transform : translateX(0);}
+    to {transform : translateX(5%);}
+    }
+    
+    @keyframes animation-left
+    {
+    from {transform : translateX(0);}
+    to {transform : translateX(-5%);}
+    }
+        
+    @keyframes animation-top-left
+    {
+    from {transform : translateX(0) translateY(0);}
+    to {transform : translateX(-5%) translateY(-5%);}
+    }
+        
+    @keyframes animation-top-right
+    {
+    from {transform : translateX(0) translateY(0);}
+    to {transform : translateX(5%) translateY(-5%);}
+    }
+        
+    @keyframes animation-full-top-right
+    {
+    from {transform : translateX(0) translateY(0);}
+    to {transform : translateX(2%) translateY(-7%);}
+    }
+        
+    @keyframes animation-full-top-left
+    {
+    from {transform : translateX(0) translateY(0);}
+    to {transform : translateX(-2%) translateY(-7%);}
+    }
+         
+    @keyframes animation-opacity
+    {
+    from {opacity:1;}
+    to {opacity:0.9;}
+    }
+        
+    .cls-1-font,.cls-2-font
+    {
+        animation-name: animation-opacity;
+        animation-duration : 1s;
+        animation-timing-function : ease-in-out;
+        animation-direction : alternate;
+        animation-iteration-count: infinite;
+    }
+        
+    
+    .cls-1-left
+    {
+        animation-name: animation-left;
+        animation-duration : 1s;
+        animation-timing-function : ease-in-out;
+        animation-direction : alternate;
+        animation-iteration-count: infinite;
+    }
+        
+     .cls-1-right
+    {
+        animation-name: animation-right;
+        animation-duration : 1s;
+        animation-timing-function : ease-in-out;
+        animation-direction : alternate;
+        animation-iteration-count: infinite;
+    }
+        
+    .cls-2-right
+    {
+        animation-name: animation-top-right;
+        animation-duration : 1s;
+        animation-timing-function : ease-in-out;
+        animation-direction : alternate;
+        animation-iteration-count: infinite;
+    }
+        
+    .cls-2-left
+    {
+        animation-name: animation-top-left;
+        animation-duration : 1s;
+        animation-timing-function : ease-in-out;
+        animation-direction : alternate;
+        animation-iteration-count: infinite;
+    }
+        
+    .cls-2-top
+    {
+        animation-name: animation-full-top-right;
+        animation-duration : 1s;
+        animation-timing-function : ease-in-out;
+        animation-direction : alternate;
+        animation-iteration-count: infinite;
+    }
+        
+    .cls-1-top
+    {
+        animation-name: animation-full-top-left;
+        animation-duration : 1s;
+        animation-timing-function : ease-in-out;
+        animation-direction : alternate;
+        animation-iteration-count: infinite;
+    }
+    
+    
+    </style>
+    
+    
+    
+    </defs><title>zationLogo</title><polygon class="cls-1-left" points="40.07 58.13 40.07 42.38 26.45 34.61 26.45 50.29 40.07 58.13"/><polygon class="cls-2-left" points="26.45 34.61 40.07 26.63 53.69 34.61 40.07 42.52 26.45 34.61"/><polygon class="cls-1-right" points="67.31 58.13 67.31 42.38 80.94 34.61 80.94 50.29 67.31 58.13"/><polygon class="cls-2-right" points="80.94 34.61 67.31 26.63 53.69 34.61 67.31 42.52 80.94 34.61"/><polygon class="cls-1-right" points="83.62 48.72 83.62 32.97 97.24 25.2 97.24 40.88 83.62 48.72"/><polygon class="cls-2-right" points="97.24 25.2 83.62 17.23 69.99 25.2 83.62 33.11 97.24 25.2"/><polygon class="cls-1-left" points="23.66 48.83 23.66 33.08 10.03 25.31 10.03 40.99 23.66 48.83"/><polygon class="cls-2-left" points="10.03 25.31 23.66 17.33 37.28 25.31 23.66 33.22 10.03 25.31"/><path class="cls-1" d="M76.89,88.46" transform="translate(-6.8 -12.81)"/><path class="cls-2" d="M90.46,64.9" transform="translate(-6.8 -12.81)"/><polygon class="cls-2-top" points="67.25 23.6 53.64 15.69 53.77 0 67.32 7.88 67.25 23.6"/><polygon class="cls-1-top" points="53.77 0 40.02 7.77 40.06 23.55 53.75 15.75 53.77 0"/><path class="cls-2-font" d="M7.13,75.59H26.49v2.23L13.43,96.29H26.49v4.5H6.8V98.05l12.78-18H7.13Z" transform="translate(-6.8 -12.81)"/><path class="cls-2-font" d="M43.88,83h4.21v17.75H44l-.21-2.6c-1,2.09-3.78,3.1-5.76,3.14-5.26,0-9.15-3.21-9.15-9.44s4.07-9.32,9.25-9.28a6.51,6.51,0,0,1,5.66,2.88ZM33.23,91.89a5.08,5.08,0,0,0,5.25,5.4c6.91,0,6.91-10.76,0-10.76A5.05,5.05,0,0,0,33.23,91.89Z" transform="translate(-6.8 -12.81)"/><path class="cls-2-font" d="M57.24,78v5h4.89v3.77H57.2v7.67A2.21,2.21,0,0,0,59.5,97a4.94,4.94,0,0,0,2.13-.54l1.22,3.75a9.74,9.74,0,0,1-3.63.75c-3.85.15-6.37-2-6.37-6.48V86.85H49.53V83.08h3.32V78.5Z" transform="translate(-6.8 -12.81)"/><path class="cls-2-font" d="M70.2,78c0,3.42-5.19,3.42-5.19,0S70.2,74.62,70.2,78ZM65.41,83v17.82H69.8V83Z" transform="translate(-6.8 -12.81)"/><path class="cls-2-font" d="M91.79,91.93a8.86,8.86,0,0,1-9.25,9.25c-5.76,0-9.21-4.14-9.21-9.25a9.23,9.23,0,1,1,18.46,0Zm-14.07,0c0,2.7,1.62,5.22,4.82,5.22s4.83-2.52,4.83-5.22a5,5,0,0,0-4.83-5.25C79.38,86.68,77.72,89.27,77.72,91.93Z" transform="translate(-6.8 -12.81)"/><path class="cls-2-font" d="M107.89,100.79V91.5c0-2.7-1.48-4.75-4.29-4.75a4.66,4.66,0,0,0-4.53,5v9.08H94.71V83h3.93l.28,2.42a8,8,0,0,1,5.84-2.67c4.17,0,7.52,3.13,7.52,8.71v9.33Z" transform="translate(-6.8 -12.81)"/></svg>

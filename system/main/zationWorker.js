@@ -119,6 +119,18 @@ class Worker extends SCWorker
         this.httpServer.on('request', this._app);
 
         // noinspection JSUnresolvedFunction
+        this._app.use('/zation/assets', express.static(__dirname + '/../public/assets'));
+
+        // noinspection JSUnresolvedFunction
+        this._app.use('/zation/css', express.static(__dirname + '/../public/css'));
+
+        // noinspection JSUnresolvedFunction
+        this._app.use('/zation/client', express.static(__dirname + '/../public/client'));
+
+        // noinspection JSUnresolvedFunction
+        this._app.use('/zation/panel', express.static(__dirname + '/../public/panel'));
+
+        // noinspection JSUnresolvedFunction
         this._app.all('/zation', (req, res) => {
             //Run Zation
             // noinspection JSUnusedLocalSymbols
