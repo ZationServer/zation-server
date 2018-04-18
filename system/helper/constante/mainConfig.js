@@ -12,16 +12,23 @@ MainConfig.TIME_ZONE                           = 'timeZone';
 MainConfig.WORKERS                             = 'workers';
 MainConfig.BROKERS                             = 'brokers';
 MainConfig.APP_NAME                            = 'appName';
-MainConfig.USE_SOCKET_SERVER                   = 'useSocketServer';
-MainConfig.USE_HTTP_SERVER                     = 'useHttpServer';
 MainConfig.SECURE                              = 'secure';
 MainConfig.EXTRA_SECURE_AUTH                   = 'extraSecureAuth';
 MainConfig.HTTPS_CONFIG                        = 'httpsConfig';
-MainConfig.POST_KEY_WORD                       = 'postKeyWord';
 MainConfig.USE_AUTH                            = 'useAuth';
 MainConfig.USE_PROTOCOL_CHECK                  = 'useProtocolCheck';
 MainConfig.SEND_ERRORS_DESC                    = 'sendErrorDescription';
 MainConfig.SYSTEM_BACKGROUND_TASK_REFRESH_RATE = 'systemBackgroundTaskRefreshRate';
+
+MainConfig.USE_PANEL                           = 'userPanel';
+MainConfig.PANEL_USER                          = 'panelUser';
+MainConfig.CLIENT_JS_PREPARE                   = 'clientJsPrepare';
+
+
+//ADVANCE
+MainConfig.USE_SOCKET_SERVER                   = 'useSocketServer';
+MainConfig.USE_HTTP_SERVER                     = 'useHttpServer';
+MainConfig.POST_KEY_WORD                       = 'postKeyWord';
 
 MainConfig.CONTROLLER             = 'controller';
 MainConfig.CONFIG                 = 'configs';

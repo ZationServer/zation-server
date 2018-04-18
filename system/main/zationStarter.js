@@ -195,8 +195,16 @@ class ZationStarter
 
         if(workerId !== undefined)
         {
-            this._zc.printDebugInfo
-            (`Worker with id: ${workerId}, start to invoke background task number: ${obj.userBackgroundTask}`);
+            if(obj.userBackgroundTask !== undefined)
+            {
+                this._zc.printDebugInfo
+                (`Worker with id: ${workerId}, start to invoke background task number: ${obj.userBackgroundTask}`);
+            }
+            else if(obj.systemBackgroundTasks !== undefined && obj.systemBackgroundTasks)
+            {
+                this._zc.printDebugInfo
+                (`Worker with id: ${workerId}, start to invoke system background tasks`);
+            }
 
             this._master.sendToWorker(workerId,obj)
         }

@@ -333,7 +333,7 @@ class ZationConfig
             this._mainConfig[Const.Main.MAIN_CONFIG]
         );
 
-        ZationConfig._addConfigs(this._mainConfig,mainConfig);
+        ZationConfig._addConfigs(this._mainConfig,mainConfig,true);
         this._processMainConfig();
     }
 

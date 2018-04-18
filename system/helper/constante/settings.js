@@ -29,6 +29,8 @@ Settings.PARAM_DATA_PARAMS_Missing      = 'paramsMissing';
 Settings.CLIENT_AUTH_GROUP              = 'zationAuthGroup';
 Settings.CLIENT_AUTH_ID                 = 'zationAuthId';
 Settings.CLIENT_TOKEN_ID                = 'zationTokenId';
+Settings.CLIENT_PANEL_USER              = 'zationPanelUser';
+
 //ZATION SOCKET CHANNELS
 Settings.SOCKET_USER_CHANNEL_PREFIX     = 'ZATION.USER.';
 Settings.SOCKET_AUTH_GROUP_PREFIX       = 'ZATION.AUTH_GROUP.';

@@ -118,6 +118,8 @@ class Worker extends SCWorker
         //Set Server
         this.httpServer.on('request', this._app);
 
+        //PUBLIC FOLDER
+
         // noinspection JSUnresolvedFunction
         this._app.use('/zation/assets', express.static(__dirname + '/../public/assets'));
 
@@ -125,10 +127,15 @@ class Worker extends SCWorker
         this._app.use('/zation/css', express.static(__dirname + '/../public/css'));
 
         // noinspection JSUnresolvedFunction
+        this._app.use('/zation/js', express.static(__dirname + '/../public/js'));
+
+        // noinspection JSUnresolvedFunction
         this._app.use('/zation/client', express.static(__dirname + '/../public/client'));
 
         // noinspection JSUnresolvedFunction
         this._app.use('/zation/panel', express.static(__dirname + '/../public/panel'));
+
+        //REQUEST
 
         // noinspection JSUnresolvedFunction
         this._app.all('/zation', (req, res) => {
@@ -466,7 +473,7 @@ class Worker extends SCWorker
     {
         this.on('masterMessage',(data,respond) =>
         {
-            if(data['systemBackgroundTask'] !== undefined && data['systemBackgroundTask'])
+            if(data['systemBackgroundTasks'] !== undefined && data['systemBackgroundTasks'])
             {
                 for(let i = 0; i < this._systemBackgroundTasks.length; i++)
                 {
