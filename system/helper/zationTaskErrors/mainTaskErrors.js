@@ -15,8 +15,7 @@ module.exports = {
         sendInfo      : false,
         //INFO
         // controllerName (From missing Controller)
-
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     controllerIsNotAController : {
@@ -26,7 +25,7 @@ module.exports = {
         sendInfo      : false,
         //INFO
         // controllerName
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     systemNotFound  : {
@@ -36,7 +35,7 @@ module.exports = {
         sendInfo      : false,
         //INFO
         // systemName (From missing system)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     versionToOld    : {
@@ -46,7 +45,7 @@ module.exports = {
         sendInfo      : true,
         //INFO
         // minVersion (Version you need min)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramsMissing    : {
@@ -56,7 +55,7 @@ module.exports = {
         sendInfo      : true,
         //INFO
         // paramsMissing[] (All params are missing in array)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramsMissingInObject    : {
@@ -66,7 +65,7 @@ module.exports = {
         sendInfo      : true,
         //INFO
         // paramsMissing[] (All params are missing in array)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     toManyParams    : {
@@ -77,7 +76,7 @@ module.exports = {
         //INFO
         // sendParams[] (All params are send (valueOnly))
         // expectedParams[] (All params are expected (from Config))
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     savedAuthGroupInTokenNotFound    : {
@@ -89,7 +88,7 @@ module.exports = {
         //INFO
         // savedAuthGroup (the saved auth group in token)
         // authGroupsInZationConfig (auth groups in the zation config)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     tokenWithoutAuthGroup   : {
@@ -98,7 +97,7 @@ module.exports = {
         type          : ErrorType.TOKEN_ERROR,
         isPrivate     : true,
         sendInfo      : false,
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     defaultGroupNotFound    : {
@@ -107,7 +106,7 @@ module.exports = {
         type          : ErrorType.SYSTEM_ERROR,
         isPrivate     : true,
         sendInfo      : false,
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     doubleAccessKeyWord  : {
@@ -118,7 +117,7 @@ module.exports = {
         sendInfo      : false,
         //INFO
         // isInController (show if it is in a Controller, if not it is in Default)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     noAccessToController  : {
@@ -129,7 +128,7 @@ module.exports = {
         //INFO
         // authIn (show if you auth in system)
         // authType (your auth type)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     noValidatorTypeValue : {
@@ -140,7 +139,7 @@ module.exports = {
         sendInfo      : false,
         //INFO
         //
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     notValidValidatorTypeValue : {
@@ -151,7 +150,7 @@ module.exports = {
         sendInfo      : false,
         //INFO
         //  value (ValidatorTyp Value)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     wrongInputData : {
@@ -162,7 +161,7 @@ module.exports = {
         sendInfo      : false,
         //INFO
         //
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     noAccessToServerProtocol  : {
@@ -173,7 +172,7 @@ module.exports = {
         //INFO
         // protocol   (The protocol you request with)
         // controller (The controller you request)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     cantSetUndefinedId : {
@@ -182,7 +181,7 @@ module.exports = {
         type          : ErrorType.SYSTEM_ERROR,
         sendInfo      : true,
         //INFO
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     zationKeyConflict : {
@@ -192,7 +191,7 @@ module.exports = {
         sendInfo      : true,
         //INFO
         // key (key like to Set)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     tryToUseNotConfiguredService : {
@@ -203,7 +202,7 @@ module.exports = {
         //INFO
         // service (service name)
         // key (optional)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     unknownSystemError : {
@@ -213,7 +212,7 @@ module.exports = {
         sendInfo      : true,
         //INFO
         // info (info from Exception only in Debug Mode!)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     unknownTokenVerifyError : {
@@ -222,7 +221,7 @@ module.exports = {
         type          : ErrorType.TOKEN_ERROR,
         sendInfo      : false,
         //INFO
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     tokenExpiredError : {
@@ -232,7 +231,7 @@ module.exports = {
         sendInfo      : true,
         //INFO
         // expiredAt
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     jsonWebTokenError : {
@@ -242,7 +241,7 @@ module.exports = {
         sendInfo      : true,
         //INFO
         // message
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     tokenIsBlocked : {
@@ -252,7 +251,7 @@ module.exports = {
         sendInfo      : true,
         //INFO
         // token
-        isSystemError : true
+        isFromZationSystem : true
     },
 
 };

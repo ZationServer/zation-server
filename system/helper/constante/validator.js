@@ -43,6 +43,8 @@ ValidatorConst.TYPE_FILE             = 'file';
 //File Extensions
 
 //VALIDATOR FUNCTIONS
+ValidatorConst.FUNCTION_ENUM                 = 'enum';
+ValidatorConst.FUNCTION_PRIVATE_ENUM         = 'privateEnum';
 ValidatorConst.FUNCTION_MIN_LENGTH           = 'minLength';
 ValidatorConst.FUNCTION_MAX_LENGTH           = 'maxLength';
 ValidatorConst.FUNCTION_LENGTH               = 'length';

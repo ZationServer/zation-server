@@ -13,6 +13,6 @@ module.exports = {
         description: 'The client should auth out!',
         type: ErrorType.REACT,
         sendInfo: false,
-        isSystemError: false
+        isFromZationSystem : true
     }
 };

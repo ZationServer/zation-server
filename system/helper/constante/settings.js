@@ -10,7 +10,7 @@ Settings.ERROR_NAME                     = 'name';
 Settings.ERROR_DESCRIPTION              = 'description';
 Settings.ERROR_TYPE                     = 'type';
 Settings.ERROR_SEND_INFO                = 'sendInfo';
-Settings.ERROR_IS_SYSTEM_ERROR          = 'isSystemError';
+Settings.ERROR_IS_FROM_ZATION_SYSTEM    = 'isFromZationSystem';
 Settings.ERROR_IS_PRIVATE               = 'isPrivate';
 
 Settings.ERROR_INFO_MAIN                = 'main';

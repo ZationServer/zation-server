@@ -16,7 +16,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAInt : {
@@ -27,7 +27,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAFloat : {
@@ -38,7 +38,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotADate : {
@@ -49,7 +49,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAEmail : {
@@ -60,7 +60,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotABoolean : {
@@ -71,7 +71,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotASha512 : {
@@ -82,7 +82,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotASha256 : {
@@ -93,7 +93,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotASha384 : {
@@ -104,7 +104,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotASha1 : {
@@ -115,7 +115,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAMd5 : {
@@ -126,7 +126,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAHexColor : {
@@ -137,7 +137,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAHexadecimal : {
@@ -148,7 +148,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAIp5 : {
@@ -159,7 +159,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAIp6 : {
@@ -170,7 +170,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAIsbn10 : {
@@ -181,7 +181,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAIsbn13 : {
@@ -192,7 +192,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAJson : {
@@ -203,7 +203,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAUrl : {
@@ -214,7 +214,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAMimeType : {
@@ -225,7 +225,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAMacAddress : {
@@ -236,7 +236,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAMobileNumber : {
@@ -247,7 +247,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAUuid3 : {
@@ -258,7 +258,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAUuid4 : {
@@ -269,7 +269,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAUuid5 : {
@@ -280,7 +280,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotALatLong : {
@@ -291,7 +291,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotABase64 : {
@@ -302,7 +302,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotAAscii : {
@@ -313,7 +313,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramNotMatchWithMinLength : {
@@ -325,7 +325,7 @@ module.exports = {
         // paramValue (paramValue)
         // paramName (paramName)
         // minLength (minLength)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramNotMatchWithMaxLength : {
@@ -337,7 +337,7 @@ module.exports = {
         // paramValue (paramValue)
         // paramName (paramName)
         // maxLength (maxLength)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramNotMatchWithLength : {
@@ -349,7 +349,7 @@ module.exports = {
         // paramValue (paramValue)
         // paramName (paramName)
         // length (length)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotUppercase : {
@@ -360,7 +360,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotLowercase : {
@@ -371,7 +371,7 @@ module.exports = {
         //INFO
         // paramValue (paramValue)
         // paramName (paramName)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramNotMatchWithContains : {
@@ -383,7 +383,7 @@ module.exports = {
         // paramValue (paramValue)
         // paramName (paramName)
         // shouldContain (shouldContain)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotEquals : {
@@ -395,7 +395,7 @@ module.exports = {
         // paramValue (paramValue)
         // paramName (paramName)
         // shouldEqual (shouldEqual)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotBiggerThan : {
@@ -407,7 +407,7 @@ module.exports = {
         // paramValue (paramValue)
         // paramName (paramName)
         // shouldBiggerThan (shouldBiggerThan)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotLesserThan : {
@@ -419,7 +419,7 @@ module.exports = {
         // paramValue (paramValue)
         // paramName (paramName)
         // shouldLesserThan (shouldLesserThan)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotMatchWithRegex : {
@@ -431,7 +431,7 @@ module.exports = {
         // paramValue (paramValue)
         // paramName (paramName)
         // regex (regex)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotStartsWith : {
@@ -443,7 +443,7 @@ module.exports = {
         // paramValue (paramValue)
         // paramName (paramName)
         // shouldStartsWith (shouldStartsWith)
-        isSystemError : true
+        isFromZationSystem : true
     },
 
     paramIsNotEndsWith : {
@@ -455,7 +455,30 @@ module.exports = {
         // paramValue (paramValue)
         // paramName (paramName)
         // shouldEndsWith (shouldEndsWith)
-        isSystemError : true
+        isFromZationSystem : true
+    },
+
+    paramIsNotMatchWithEnum : {
+        name          : 'paramIsNotMatchWithEnum',
+        description   : 'Param is not match with enum!',
+        type          : ErrorType.VALIDATOR_ERROR,
+        sendInfo      : true,
+        //INFO
+        // paramValue (paramValue)
+        // paramName (paramName)
+        // enum (Enum Array)
+        isFromZationSystem : true
+    },
+
+    paramIsNotMatchWithPrivateEnum : {
+        name          : 'paramIsNotMatchWithPrivateEnum',
+        description   : 'Param is not match with private enum!',
+        type          : ErrorType.VALIDATOR_ERROR,
+        sendInfo      : true,
+        //INFO
+        // paramValue (paramValue)
+        // paramName (paramName)
+        isFromZationSystem : true
     },
 
 };

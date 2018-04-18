@@ -14,10 +14,10 @@ class TaskError
         this._name        = 'TaskError';
         this._description = 'No Description define in Error';
         this._type        = Const.Error.NORMAL_ERROR;
-        this._systemError = false;
         this._sendInfo    = false;
         this._info        = {};
         this._isPrivate   = false;
+        this._isFromZationSystem = false;
 
         if(info !== undefined)
         {
@@ -46,11 +46,6 @@ class TaskError
             this._type = error[Const.Settings.ERROR_TYPE];
         }
 
-        if(error.hasOwnProperty(Const.Settings.ERROR_IS_SYSTEM_ERROR))
-        {
-            this._systemError = error[Const.Settings.ERROR_IS_SYSTEM_ERROR];
-        }
-
         if(error.hasOwnProperty(Const.Settings.ERROR_SEND_INFO))
         {
             this._sendInfo = error[Const.Settings.ERROR_SEND_INFO];
@@ -60,11 +55,16 @@ class TaskError
         {
             this._isPrivate = error[Const.Settings.ERROR_IS_PRIVATE];
         }
+
+        if(error.hasOwnProperty(Const.Settings.ERROR_IS_FROM_ZATION_SYSTEM))
+        {
+            this._isFromZationSystem = error[Const.Settings.ERROR_IS_FROM_ZATION_SYSTEM];
+        }
     }
 
     toString()
     {
-        return `TaskError  Name: ${this._name}  Description: ${this._description}  Type: ${this._type}  Info: ${JSON.stringify(this._info)}  isSystemError:${this._systemError}  isPrivate:${this._isPrivate}`;
+        return `TaskError  Name: ${this._name}  Description: ${this._description}  Type: ${this._type}  Info: ${JSON.stringify(this._info)}  isPrivate:${this._isPrivate}  isFromZationSystem:${this._isFromZationSystem}`;
     }
 
     _getJsonObj(withDesc)
@@ -80,7 +80,7 @@ class TaskError
         {
             obj['n'] = this._name;
             obj['t'] = this._type;
-            obj['se'] = this._systemError;
+            obj['zs'] = this._isFromZationSystem;
 
             if(withDesc)
             {
@@ -131,9 +131,11 @@ class TaskError
         return this._info;
     }
 
-    isSystemError()
+
+    // noinspection JSUnusedGlobalSymbols
+    isFromZationSystem()
     {
-        return this._systemError;
+        return this._isFromZationSystem;
     }
 }
 

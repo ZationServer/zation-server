@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 const Const           = require('../constante/constWrapper');
-const CationValidator = require('../validator/zationValidator');
+const CationValidator = require('../validator/validatorEngine');
 const TaskError       = require('../../api/TaskError');
 const TaskErrorBag    = require('../../api/TaskErrorBag');
 const MainErrors        = require('../zationTaskErrors/mainTaskErrors');
