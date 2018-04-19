@@ -215,16 +215,36 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
         }
     }
 
-    async createTokenInfo(expire,authId)
+    async createTokenInfo(expiry,authId)
     {
+
         if(authId !== undefined)
         {
-            return await this._createAuthIdTokenInfo(authId,expire);
+            return await this._createAuthIdTokenInfo(authId,expiry);
         }
         else
         {
-            return await  this._createWithoutAuthIdTokenInfo(expire);
+            return await  this._createWithoutAuthIdTokenInfo(expiry);
         }
+    }
+
+    async updateTokenInfo(oldToken,newToken)
+    {
+        if(oldToken[Const.Settings.CLIENT_AUTH_ID] !== newToken[Const.Settings.CLIENT_AUTH_ID])
+        {
+            let oldAuthId = oldToken[Const.Settings.CLIENT_AUTH_ID];
+            let oldTokenId = oldToken[Const.Settings.CLIENT_TOKEN_ID];
+            await this.blockToken(oldTokenId,oldAuthId);
+            let newAuthId = newToken[Const.Settings.CLIENT_AUTH_ID];
+            newToken[Const.Settings.CLIENT_TOKEN_ID] = await this.createTokenInfo(newToken['exp'],newAuthId);
+        }
+
+        return newToken;
+    }
+
+    async blockToken(tokenId,authId)
+    {
+        return await this._setTokenInfo(Const.Settings.TOKEN_INFO_IS_BLOCKED,true,tokenId,authId,true);
     }
 
     async setLastActivity(token)
@@ -249,7 +269,8 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
     async _setTokenInfo(key,value,tokenId,authId,ignoreZationData = false)
     {
         if(ignoreZationData ||
-            (key !== Const.Settings.TOKEN_INFO_LAST_ACTIVITY && key !== Const.Settings.TOKEN_INFO_EXPIRE))
+            (key !== Const.Settings.TOKEN_INFO_LAST_ACTIVITY && key !== Const.Settings.TOKEN_INFO_EXPIRE &&
+            key !== Const.Settings.TOKEN_INFO_IS_BLOCKED))
         {
             if(authId !== undefined)
             {

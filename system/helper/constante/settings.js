@@ -29,7 +29,7 @@ Settings.PARAM_DATA_PARAMS_Missing      = 'paramsMissing';
 Settings.CLIENT_AUTH_GROUP              = 'zationAuthGroup';
 Settings.CLIENT_AUTH_ID                 = 'zationAuthId';
 Settings.CLIENT_TOKEN_ID                = 'zationTokenId';
-Settings.CLIENT_PANEL_USER              = 'zationPanelUser';
+Settings.CLIENT_PANEL_ACCESS            = 'zationPanelAccess';
 
 //ZATION SOCKET CHANNELS
 Settings.SOCKET_USER_CHANNEL_PREFIX     = 'ZATION.USER.';
@@ -50,6 +50,6 @@ Settings.TOKEN_INFO_WITH_ID             = 'ID_INFO_TOKEN';
 Settings.TOKEN_INFO_WITHOUT_ID          = 'INFO_TOKEN';
 Settings.TOKEN_INFO_IS_BLOCKED          = 'IS_BLOCKED';
 Settings.TOKEN_INFO_EXPIRE              = 'EXPIRE';
-Settings.TOKEN_INFO_LAST_ACTIVITY        = 'LAST_ACTIVITY';
+Settings.TOKEN_INFO_LAST_ACTIVITY       = 'LAST_ACTIVITY';
 
 module.exports = Settings;

@@ -39,7 +39,7 @@ class HttpProcessor
                     httpRes : res,
                     httpReq : req,
                     httpData : zationData
-            });
+            },zc);
 
             return await MainProcessor.process(shBridge,zc,worker)
         }

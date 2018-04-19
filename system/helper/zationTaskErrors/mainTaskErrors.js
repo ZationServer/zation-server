@@ -224,6 +224,15 @@ module.exports = {
         isFromZationSystem : true
     },
 
+    unknownTokenSignError : {
+        name          : 'unknownTokenSignError',
+        description   : 'look in info for more detail!',
+        type          : ErrorType.TOKEN_ERROR,
+        sendInfo      : false,
+        //INFO
+        isFromZationSystem : true
+    },
+
     tokenExpiredError : {
         name          : 'tokenExpiredError',
         description   : 'jwt expired',

@@ -13,6 +13,8 @@ class AbstractTokenInfoStorage
 
     async updateTokenInfo(oldToken,newToken) {}
 
+    async blockToken(tokenId,authId) {}
+
     async setLastActivity(token) {}
 
     async getLastActivity(token) {}
@@ -32,7 +34,6 @@ class AbstractTokenInfoStorage
     async tokensWithIdCount() {}
 
     async tokensWithoutIdCount() {}
-
 
 }
 

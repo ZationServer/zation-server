@@ -43,6 +43,7 @@ class ZationStarter
             authAlgorithm: this._zc.getMain(Const.Main.AUTH_ALGORITHM),
             authPublicKey: this._zc.getMain(Const.Main.AUTH_PUBLIC_KEY),
             authPrivateKey: this._zc.getMain(Const.Main.AUTH_PRIVATE_KEY),
+            authDefaultExpiry: this._zc.getMain(Const.Main.AUTH_DEFAULT_EXPIRY),
             zationConfigWorkerTransport : this._zc.getWorkerTransport()
         });
 

@@ -18,7 +18,7 @@ class SocketProcessor
                 socketData : input,
                 socketRespond : respond,
                 socket : socket
-            });
+            },zc);
 
         return await MainProcessor.process(shBridge,zc,worker);
     }

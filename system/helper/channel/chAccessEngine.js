@@ -12,6 +12,7 @@ token is changed.
  */
 
 const Const         = require('./../constante/constWrapper');
+const TokenTools    = require('./../token/tokenTools');
 
 class ChAccessEngine
 {
@@ -55,35 +56,36 @@ class ChAccessEngine
             else
             {
                 info[Const.Channel.CHANNEL_SUBSCRIBE] =
-                    ChAccessEngine.getChannelDefaultSettings(Const.Channel.CHANNEL_SUBSCRIBE,zc);
+                    ChAccessEngine._getChannelDefaultSettings(Const.Channel.CHANNEL_SUBSCRIBE,zc);
             }
         }
         else
         {
             info[Const.Channel.CHANNEL_PUBLISH] =
-                ChAccessEngine.getChannelDefaultSettings(Const.Channel.CHANNEL_PUBLISH,zc);
+                ChAccessEngine._getChannelDefaultSettings(Const.Channel.CHANNEL_PUBLISH,zc);
 
             info[Const.Channel.CHANNEL_SUBSCRIBE] =
-                ChAccessEngine.getChannelDefaultSettings(Const.Channel.CHANNEL_SUBSCRIBE,zc);
+                ChAccessEngine._getChannelDefaultSettings(Const.Channel.CHANNEL_SUBSCRIBE,zc);
         }
         return info;
     }
 
 
-    static generateInfo(socket)
+    static _generateInfo(socket)
     {
         let info = {};
 
-        let type = ClientStorage.getClientVariable([Const.Settings.CLIENT_AUTH_GROUP],true,socket);
+        let type = TokenTools.getSocketTokenVariable([Const.Settings.CLIENT_AUTH_GROUP],socket);
+
         info[Const.Channel.CHANNEL_INFO_AUTH_GROUP] = type;
 
         info[Const.Channel.CHANNEL_INFO_ID] =
-            ClientStorage.getClientVariable([Const.Settings.CLIENT_AUTH_ID],true,socket);
+            TokenTools.getSocketTokenVariable([Const.Settings.CLIENT_AUTH_ID],socket);
 
         info[Const.Channel.CHANNEL_INFO_SOCKET] = socket;
 
         info[Const.Channel.CHANNEL_INFO_TOKEN_ID] =
-            ClientStorage.getClientVariable([Const.Settings.CLIENT_TOKEN_ID],true,socket);
+            TokenTools.getSocketTokenVariable([Const.Settings.CLIENT_TOKEN_ID],socket);
 
         info[Const.Channel.CHANNEL_INFO_IS_AUTH_IN] = type !== undefined;
 
@@ -92,7 +94,7 @@ class ChAccessEngine
 
     static _getGetSocketDataFunc(socket)
     {
-        return (key) => {ClientStorage.getClientVariable(key,true,socket)};
+        return (key) => {TokenTools.getSocketTokenVariable(key,socket);};
     }
 
     static _hasAccessTo(param,socket)
@@ -104,7 +106,7 @@ class ChAccessEngine
         }
         else if(typeof param === "function")
         {
-            let res = param(ChannelEngine.generateInfo(socket),ChannelEngine._getGetSocketDataFunc(socket));
+            let res = param(ChAccessEngine._generateInfo(socket),ChAccessEngine._getGetSocketDataFunc(socket));
             if(typeof res === 'boolean')
             {
                 access = res;
@@ -115,20 +117,20 @@ class ChAccessEngine
 
     static hasAccessToSubSpecialChannel(socket,channel)
     {
-        let info = ChannelEngine.getChannelChannelInfo(channel);
-        return ChannelEngine._hasAccessTo(info[Const.Channel.CHANNEL_SUBSCRIBE],socket);
+        let info = ChAccessEngine._getChannelChannelInfo(channel);
+        return ChAccessEngine._hasAccessTo(info[Const.Channel.CHANNEL_SUBSCRIBE],socket);
     }
 
     static hasAccessToPubInSpecialChannel(socket,channel)
     {
-        let info = ChannelEngine.getChannelChannelInfo(channel);
-        return ChannelEngine._hasAccessTo(info[Const.Channel.CHANNEL_PUBLISH],socket);
+        let info = ChAccessEngine._getChannelChannelInfo(channel);
+        return ChAccessEngine._hasAccessTo(info[Const.Channel.CHANNEL_PUBLISH],socket);
     }
 
 
     //Part changedToken
 
-    static _getSpecialChannelName(ch)
+    static getSpecialChannelName(ch)
     {
         ch = ch.replace(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX,'');
         ch = ch.substring(0,ch.indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_ID));
@@ -145,7 +147,7 @@ class ChAccessEngine
             {
                 if(subs[i].indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX) !== -1)
                 {
-                    let chName = ChAccessEngine._getSpecialChannelName(subs[i]);
+                    let chName = ChAccessEngine.getSpecialChannelName(subs[i]);
                     if(!ChAccessEngine.hasAccessToSubSpecialChannel(socket,chName))
                     {
                         // noinspection JSUnresolvedFunction

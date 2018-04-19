@@ -94,6 +94,16 @@ class Worker extends SCWorker
                      });
             });
 
+            socket.on('zationHeartbeat', async (data,respond) =>
+            {
+                let token = socket.getToken();
+                if(token !== null)
+                {
+                    await this._tokenInfoStorage.setLastActivity(token);
+                    respond();
+                }
+            })
+
         });
 
         this._zc.emitEvent(Const.Event.ZATION_SOCKET_SERVER_IS_STARTED,
@@ -194,8 +204,8 @@ class Worker extends SCWorker
                             next(err); //Block!
                     }
                     else if (channel.indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX) !== -1) {
-                        let chName = ChannelEngine.getSpecialChannelName(channel);
-                        if (ChannelEngine.hasAccessToSubSpecialChannel(req.socket, chName)) {
+                        let chName = ChAccessEngine.getSpecialChannelName(channel);
+                        if (ChAccessEngine.hasAccessToSubSpecialChannel(req.socket, chName)) {
                             next();
                         }
                         else {
@@ -223,8 +233,8 @@ class Worker extends SCWorker
                         next();
                     }
                     else if (channel.indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX) !== -1) {
-                        let chName = ChannelEngine.getSpecialChannelName(channel);
-                        if (ChannelEngine.hasAccessToSubSpecialChannel(req.socket, chName)) {
+                        let chName = ChAccessEngine.getSpecialChannelName(channel);
+                        if (ChAccessEngine.hasAccessToSubSpecialChannel(req.socket, chName)) {
                             next();
                         }
                         else {
@@ -266,8 +276,8 @@ class Worker extends SCWorker
                     next(err); //Block!
                 }
                 else if (req.channel.indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX) !== -1) {
-                    let chName = ChannelEngine.getSpecialChannelName(req.channel);
-                    if (ChannelEngine.hasAccessToPubInSpecialChannel(req.socket, chName)) {
+                    let chName = ChAccessEngine.getSpecialChannelName(req.channel);
+                    if (ChAccessEngine.hasAccessToPubInSpecialChannel(req.socket, chName)) {
                         next();
                     }
                     else {

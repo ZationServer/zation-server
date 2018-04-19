@@ -7,10 +7,8 @@ GitHub: LucaCode
 const Const            = require('../constante/constWrapper');
 const TaskError        = require('../../api/TaskError');
 const MainErrors       = require('../zationTaskErrors/mainTaskErrors');
-const TokenBridge      = require('../bridges/tokenBridge');
 const ChAccessEngine   = require('../channel/chAccessEngine');
 const Jwt              = require('jsonwebtoken');
-const TokenInfoStorage = require('./tokenInfoStorage');
 
 class TokenTools
 {
@@ -58,6 +56,10 @@ class TokenTools
             else if(data.hasOwnProperty(Const.Settings.CLIENT_TOKEN_ID))
             {
                 throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.CLIENT_TOKEN_ID});
+            }
+            else if(data.hasOwnProperty(Const.Settings.CLIENT_PANEL_ACCESS))
+            {
+                throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.CLIENT_PANEL_ACCESS});
             }
             else
             {
@@ -143,20 +145,46 @@ class TokenTools
                 {
                     if(err.name === 'TokenExpiredError')
                     {
-                        reject(new TaskError(MainErrors.tokenExpiredError,{expiredAt : err.expiredAt}))
+                        reject(new TaskError(MainErrors.tokenExpiredError,{expiredAt : err.expiredAt}));
                     }
                     else if(err.name === 'JsonWebTokenError')
                     {
-                        reject(new TaskError(MainErrors.jsonWebTokenError,err))
+                        reject(new TaskError(MainErrors.jsonWebTokenError,err));
                     }
                     else
                     {
-                        reject(new TaskError(MainErrors.unknownTokenVerifyError,err))
+                        reject(new TaskError(MainErrors.unknownTokenVerifyError,err));
                     }
                 }
                 else
                 {
                     resolve(decoded);
+                }
+            });
+        });
+    }
+
+    static async signToken(data,zc)
+    {
+        return new Promise((resolve, reject) =>
+        {
+            let options = {};
+            options.algorithm = zc.getMain(Const.Settings.AUTH_ALGORITHM);
+
+            if(data.exp === undefined)
+            {
+                options.expiresIn = zc.getMain(Const.Settings.AUTH_DEFAULT_EXPIRY);
+            }
+
+            Jwt.verify(data,zc.getSignKey(),options,(err,signedToken) =>
+            {
+                if(err)
+                {
+                    reject(new TaskError(MainErrors.unknownTokenSignError,err));
+                }
+                else
+                {
+                    resolve(signedToken);
                 }
             });
         });

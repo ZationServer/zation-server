@@ -4,12 +4,13 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const TokenBridge = require('./tokenBridge');
+const TokenBridge   = require('./tokenBridge');
+const TokenTools    = require('./../token/tokenTools');
 
 //Socket and Http Bridge
 class SHBridge
 {
-    constructor({isSocket,socketData,socketRespond,socket,httpRes,httpReq,httpData})
+    constructor({isSocket,socketData,socketRespond,socket,httpRes,httpReq,httpData},zc)
     {
         this._isSocket = isSocket;
         this._socketData = socketData;
@@ -18,8 +19,9 @@ class SHBridge
         this._httpRes = httpRes;
         this._httpReq = httpReq;
         this._httpData = httpData;
+        this._zc = zc;
 
-        this._tokenBridge = new TokenBridge(isSocket,socket,httpReq);
+        this._tokenBridge = new TokenBridge(isSocket,socket,httpReq,zc);
     }
 
     getZationData()
@@ -57,6 +59,11 @@ class SHBridge
     isSocket()
     {
         return this._isSocket;
+    }
+
+    getTokenVariable(key)
+    {
+        return TokenTools.getTokenVariable(key,this.getTokenBridge());
     }
 
 

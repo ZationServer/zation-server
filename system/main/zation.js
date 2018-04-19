@@ -29,24 +29,34 @@ class Zation
 
         if(data.isSocket)
         {
-            this._zc.printDebugInfo(`Socket request with id: ${this._socketReqCount} ->`
+            this._zc.printDebugInfo(`Socket request with id: ${this._worker.id}-${this._socketReqCount} ->`
                 ,data.input);
 
-            if(this._zc.isDebug())
+            if(this._zc.isDebug() || this._zc.isUsePanel())
             {
-                data.reqId = this._socketReqCount;
+                data.reqId = `${this._worker.id}-${this._socketReqCount}`;
                 this._socketReqCount++;
+
+                if(this._socketReqCount >= Number.MAX_SAFE_INTEGER)
+                {
+                    this._socketReqCount = 0;
+                }
             }
         }
         else
         {
-            this._zc.printDebugInfo(`Http request with id: ${this._httpReqCount} ->`,
+            this._zc.printDebugInfo(`Http request with id: ${this._worker.id}-${this._httpReqCount} ->`,
                 data.req.body[Const.Main.POST_KEY_WORD]);
 
-            if(this._zc.isDebug())
+            if(this._zc.isDebug() || this._zc.isUsePanel())
             {
-                data.reqId = this._httpReqCount;
+                data.reqId = `${this._worker.id}-${this._httpReqCount}`;
                 this._httpReqCount++;
+
+                if(this._httpReqCount >= Number.MAX_SAFE_INTEGER)
+                {
+                    this._httpReqCount = 0;
+                }
             }
         }
 

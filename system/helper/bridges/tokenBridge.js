@@ -4,16 +4,16 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const tokenEngine = require('../token/tokenTools');
-const Jwt         = require('jsonwebtoken');
+const TokenTools  = require('../token/tokenTools');
 
 class TokenBridge
 {
-    constructor(isSocket,socket,req)
+    constructor(isSocket,socket,req,zc)
     {
         this._isSocket = isSocket;
         this._socket = socket;
         this._req = req;
+        this._zc = zc;
     }
 
     isSocket()
@@ -46,7 +46,7 @@ class TokenBridge
         }
     }
 
-    setToken(data)
+    async setToken(data)
     {
         if(this._isSocket)
         {
@@ -55,16 +55,8 @@ class TokenBridge
         }
         else
         {
-            try
-            {
+            await this._res.signedToken = TokenTools.signToken(data,this._zc);
 
-
-
-            }
-            catch(e)
-            {
-
-            }
         }
     }
 

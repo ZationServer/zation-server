@@ -39,6 +39,7 @@ class ZationConfig
             this._mainConfig[Const.Main.AUTH_KEY] = crypto.randomBytes(32).toString('hex');
             this._mainConfig[Const.Main.AUTH_PUBLIC_KEY] = null;
             this._mainConfig[Const.Main.AUTH_PRIVATE_KEY] = null;
+            this._mainConfig[Const.Main.AUTH_DEFAULT_EXPIRY] = 86400;
             this._mainConfig[Const.Main.EXTRA_SECURE_AUTH] = true;
             this._mainConfig[Const.Main.SYSTEM_BACKGROUND_TASK_REFRESH_RATE] = 1800000;
             this._mainConfig[Const.Main.TIME_ZONE] = 'Europe/Berlin';
@@ -61,6 +62,11 @@ class ZationConfig
     isDebug()
     {
         return this.getMain(Const.Main.DEBUG);
+    }
+
+    isUsePanel()
+    {
+        return this.getMain(Const.Main.USE_PANEL);
     }
 
     addToMainConfig(toAdd,overwrite)
@@ -126,7 +132,6 @@ class ZationConfig
     {
         return this.getMain(Const.Main.EXTRA_SECURE_AUTH);
     }
-
     getSomeInformation()
     {
         let obj = {};
