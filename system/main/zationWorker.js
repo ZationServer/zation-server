@@ -178,8 +178,8 @@ class Worker extends SCWorker
                     let id = authToken[Const.Settings.CLIENT_AUTH_ID];
                     let group = authToken[Const.Settings.CLIENT_AUTH_GROUP];
 
-                    if (id !== undefined && channel.indexOf(Const.Settings.SOCKET_USER_CHANNEL_PREFIX) !== -1) {
-                        if (Const.Settings.SOCKET_USER_CHANNEL_PREFIX + id === channel) {
+                    if (id !== undefined && channel.indexOf(Const.Settings.CHANNEL_USER_CHANNEL_PREFIX) !== -1) {
+                        if (Const.Settings.CHANNEL_USER_CHANNEL_PREFIX + id === channel) {
                             next();
                         }
                         else {
@@ -188,8 +188,8 @@ class Worker extends SCWorker
                             next(err); //Block!
                         }
                     }
-                    else if (group !== undefined && channel.indexOf(Const.Settings.SOCKET_AUTH_GROUP_PREFIX) !== -1) {
-                        if (Const.Settings.SOCKET_AUTH_GROUP_PREFIX + group === channel) {
+                    else if (group !== undefined && channel.indexOf(Const.Settings.CHANNEL_AUTH_GROUP_PREFIX) !== -1) {
+                        if (Const.Settings.CHANNEL_AUTH_GROUP_PREFIX + group === channel) {
                             next();
                         }
                         else {
@@ -198,12 +198,12 @@ class Worker extends SCWorker
                             next(err); //Block!
                         }
                     }
-                    else if (group !== undefined && channel === Const.Settings.SOCKET_DEFAULT_GROUP) {
+                    else if (group !== undefined && channel === Const.Settings.CHANNEL_DEFAULT_GROUP) {
                             let err = new Error('Auth User can\' subscribe default User Group Channel!');
                             err.code = 4523;
                             next(err); //Block!
                     }
-                    else if (channel.indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX) !== -1) {
+                    else if (channel.indexOf(Const.Settings.CHANNEL_SPECIAL_CHANNEL_PREFIX) !== -1) {
                         let chName = ChAccessEngine.getSpecialChannelName(channel);
                         if (ChAccessEngine.hasAccessToSubSpecialChannel(req.socket, chName)) {
                             next();
@@ -219,20 +219,20 @@ class Worker extends SCWorker
                     }
                 }
                 else {
-                    if (channel.indexOf(Const.Settings.SOCKET_USER_CHANNEL_PREFIX) !== -1) {
+                    if (channel.indexOf(Const.Settings.CHANNEL_USER_CHANNEL_PREFIX) !== -1) {
                         let err = new Error('anonymous user can\'t subscribe a User Channel!');
                         err.code = 4501;
                         next(err); //Block!
                     }
-                    else if (channel.indexOf(Const.Settings.SOCKET_AUTH_GROUP_PREFIX) !== -1) {
+                    else if (channel.indexOf(Const.Settings.CHANNEL_AUTH_GROUP_PREFIX) !== -1) {
                         let err = new Error('anonymous user can\'t subscribe a User Group Channel!');
                         err.code = 4511;
                         next(err); //Block!
                     }
-                    else if (channel === Const.Settings.SOCKET_DEFAULT_GROUP) {
+                    else if (channel === Const.Settings.CHANNEL_DEFAULT_GROUP) {
                         next();
                     }
-                    else if (channel.indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX) !== -1) {
+                    else if (channel.indexOf(Const.Settings.CHANNEL_SPECIAL_CHANNEL_PREFIX) !== -1) {
                         let chName = ChAccessEngine.getSpecialChannelName(channel);
                         if (ChAccessEngine.hasAccessToSubSpecialChannel(req.socket, chName)) {
                             next();
@@ -255,27 +255,27 @@ class Worker extends SCWorker
 
             if(this._zc.checkMiddlewareEvent(Const.Event.MIDDLEWARE_PUBLISH_IN,req,next))
             {
-                if (req.channel.indexOf(Const.Settings.SOCKET_USER_CHANNEL_PREFIX) !== -1) {
+                if (req.channel.indexOf(Const.Settings.CHANNEL_USER_CHANNEL_PREFIX) !== -1) {
                     let err = new Error('User can\'t publish in a User Channel!');
                     err.code = 4503;
                     next(err); //Block!
                 }
-                else if (req.channel.indexOf(Const.Settings.SOCKET_AUTH_GROUP_PREFIX) !== -1) {
+                else if (req.channel.indexOf(Const.Settings.CHANNEL_AUTH_GROUP_PREFIX) !== -1) {
                     let err = new Error('User can\'t publish in a User Group Channel!');
                     err.code = 4504;
                     next(err); //Block!
                 }
-                else if (req.channel === Const.Settings.SOCKET_ALL) {
+                else if (req.channel === Const.Settings.CHANNEL_ALL) {
                     let err = new Error('User can\'t publish in a all Channel!');
                     err.code = 4505;
                     next(err); //Block!
                 }
-                else if (req.channel === Const.Settings.SOCKET_DEFAULT_GROUP) {
+                else if (req.channel === Const.Settings.CHANNEL_DEFAULT_GROUP) {
                     let err = new Error('User can\'t publish in default user Group Channel!');
                     err.code = 4506;
                     next(err); //Block!
                 }
-                else if (req.channel.indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX) !== -1) {
+                else if (req.channel.indexOf(Const.Settings.CHANNEL_SPECIAL_CHANNEL_PREFIX) !== -1) {
                     let chName = ChAccessEngine.getSpecialChannelName(req.channel);
                     if (ChAccessEngine.hasAccessToPubInSpecialChannel(req.socket, chName)) {
                         next();

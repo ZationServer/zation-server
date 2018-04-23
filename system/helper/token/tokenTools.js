@@ -12,7 +12,7 @@ const Jwt              = require('jsonwebtoken');
 
 class TokenTools
 {
-    static async _changeToken(data,tokenBridge,ignoreZationKeys = false,updateOnly = true)
+    static async _changeToken(data,tokenBridge,zc,ignoreZationKeys = false,updateOnly = true)
     {
         let suc = false;
 
@@ -26,7 +26,7 @@ class TokenTools
 
                 if(tokenBridge.isSocket())
                 {
-                    ChAccessEngine.checkSocketSpecialChAccess(tokenBridge.getSocket());
+                    ChAccessEngine.checkSocketSpecialChAccess(tokenBridge.getSocket(),zc);
                 }
 
                 suc = true;
@@ -42,7 +42,7 @@ class TokenTools
 
                 if(tokenBridge.isSocket())
                 {
-                    ChAccessEngine.checkSocketZationChAccess(tokenBridge.getSocket());
+                    ChAccessEngine.checkSocketZationChAccess(tokenBridge.getSocket(),zc);
                 }
             }
             else if(data.hasOwnProperty(Const.Settings.CLIENT_AUTH_GROUP))
@@ -116,21 +116,26 @@ class TokenTools
         }
     }
 
-    static async setTokenVariable(data,tokenBridge)
+    static async setTokenVariable(data,tokenBridge,zc)
     {
-        return await TokenTools._changeToken(data,tokenBridge);
+        return await TokenTools._changeToken(data,tokenBridge,zc);
     }
 
-    static async setZationData(data,tokenBridge,tokenEngine)
+    static async setZationData(data,tokenBridge,tokenEngine,zc)
     {
         let oldToken = tokenBridge.getToken();
-        let suc = await TokenTools._changeToken(data,tokenBridge,true);
+        let suc = await TokenTools._changeToken(data,tokenBridge,zc,true);
         if(suc)
         {
-
-
+            let newToken = tokenBridge.getToken();
+            await tokenEngine.getWorker().getTokenInfoStorage().updateTokenInfo(oldToken,newToken);
         }
         return suc;
+    }
+
+    static async createNewToken(data,tokenBridge,zc)
+    {
+        return await TokenTools._changeToken(data,tokenBridge,zc,true,false);
     }
 
     static async verifyToken(token,zc)

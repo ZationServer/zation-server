@@ -19,6 +19,7 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
 
     async init()
     {
+        await this._as.init();
         await this._generateMainStructure();
     }
 
@@ -26,33 +27,33 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
     {
         let canDoWithId = await this._as.send
         (
-            this._as.buildCanDo(Const.Main.TOKEN_INFO_WITH_ID)
+            this._as.buildCanDo(Const.Settings.TOKEN_INFO_WITH_ID)
         );
 
         let canDoWithoutId = await this._as.send
         (
-            this._as.buildCanDo(Const.Main.TOKEN_INFO_WITHOUT_ID)
+            this._as.buildCanDo(Const.Settings.TOKEN_INFO_WITHOUT_ID)
         );
 
         if(!canDoWithId)
         {
-            await this._as.send(this._as.buildSet(Const.Main.TOKEN_INFO_WITH_ID));
+            await this._as.send(this._as.buildSet(Const.Settings.TOKEN_INFO_WITH_ID));
         }
 
         if(!canDoWithoutId)
         {
-            await this._as.send(this._as.buildSet(Const.Main.TOKEN_INFO_WITHOUT_ID));
+            await this._as.send(this._as.buildSet(Const.Settings.TOKEN_INFO_WITHOUT_ID));
         }
     }
 
     _buildDoInWithId(req)
     {
-        return this._as.buildDo(Const.Main.TOKEN_INFO_WITH_ID,req);
+        return this._as.buildDo(Const.Settings.TOKEN_INFO_WITH_ID,req);
     }
 
     _buildDoInWithoutId(req)
     {
-        return this._as.buildDo(Const.Main.TOKEN_INFO_WITHOUT_ID,req);
+        return this._as.buildDo(Const.Settings.TOKEN_INFO_WITHOUT_ID,req);
     }
 
     _buildDoInAuthId(id,req)
@@ -86,12 +87,12 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
 
         let buildDo = (req) =>
         {
-            this._buildDoInAuthId(authId,req);
+            return this._buildDoInAuthId(authId,req);
         };
 
         if(!isUserIn)
         {
-            await this._createAuthId();
+            await this._createAuthId(authId);
         }
 
         let uuid = await this._createTokenInfo(buildDo);
@@ -101,22 +102,26 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
 
     async _createTokenInfo(buildDo)
     {
-        return await this._generateUniqueUuidIn(async(uuid) =>
+        let uuid = await this._generateUniqueUuidIn(async(uuid) =>
         {
             return await this._as.send(buildDo(this._as.buildCanDo(uuid)));
         });
+
+        await this._as.send(buildDo(this._as.buildSet(uuid)));
+
+        return uuid;
     }
 
     async _isTokeWithAuthIdValid(tokenId,authId)
     {
-        let isThere = await this._as.send(this._buildDoInWithId(authId,this._as.buildCanDo(tokenId)));
+        let isThere = await this._as.send(this._buildDoInAuthId(authId,this._as.buildCanDo(tokenId)));
         if(!isThere)
         {
             return false;
         }
         else
         {
-            let req = this._buildDoInWithId(authId,this._as.buildDo(tokenId,this._as.buildGet()));
+            let req = this._buildDoInAuthId(authId,this._as.buildDo(tokenId,this._as.buildGet()));
             let tokenInfo = await this._as.send(req);
             return this._checkTokenInfo(tokenInfo);
         }
@@ -140,8 +145,15 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
     // noinspection JSMethodCanBeStatic
     _checkTokenInfo(tokenInfo)
     {
-        let isBlocked = tokenInfo[Const.Settings.TOKEN_INFO_IS_BLOCKED];
-        return isBlocked === undefined || (isBlocked !== undefined && !isBlocked);
+        if(tokenInfo !== undefined && tokenInfo !== false)
+        {
+            let isBlocked = tokenInfo[Const.Settings.TOKEN_INFO_IS_BLOCKED];
+            return isBlocked === undefined || (isBlocked !== undefined && !isBlocked);
+        }
+        else
+        {
+            return false;
+        }
     }
 
     async _generateUniqueUuidIn(isThere)
@@ -154,9 +166,8 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
 
             while(keyNotFound)
             {
-                tryCount++;
                 uuid = TokenInfoStorage._generateUUID();
-                let isAvailable = ! await isThere(uuid);
+                let isAvailable = ! (await isThere(uuid));
 
                 if(isAvailable)
                 {
@@ -200,7 +211,7 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
 
         if(tokenId !== undefined)
         {
-            if(authId === undefined)
+            if(authId !== undefined)
             {
                 return await this._isTokeWithAuthIdValid(tokenId,authId);
             }
@@ -274,29 +285,13 @@ class TokenInfoStorage extends AbstractTokenInfoStorage
         {
             if(authId !== undefined)
             {
-                let isThere = await this._as.send(this._buildDoInAuthId(authId,this._as.buildCanDo(tokenId)));
-                if(isThere !== undefined && !isThere)
-                {
-                    let req = this._buildDoInAuthId(authId,this._as.buildDo(tokenId,this._as.buildSet(key,value)));
-                    return await this._as.send(req);
-                }
-                else
-                {
-                    return false;
-                }
+                let req = this._buildDoInAuthId(authId,this._as.buildDo(tokenId,this._as.buildSet(key,value)));
+                return await this._as.send(req);
             }
             else
             {
-                let isThere = await this._as.send(this._buildDoInWithoutId(this._as.buildCanDo(tokenId)));
-                if(isThere !== undefined && !isThere)
-                {
-                    let req = this._buildDoInWithoutId(this._as.buildDo(tokenId,this._as.buildSet(key,value)));
-                    return await this._as.send(req);
-                }
-                else
-                {
-                    return false;
-                }
+                let req = this._buildDoInWithoutId(this._as.buildDo(tokenId,this._as.buildSet(key,value)));
+                return await this._as.send(req);
             }
         }
         else

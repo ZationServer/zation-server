@@ -67,7 +67,7 @@ class TaskError
         return `TaskError  Name: ${this._name}  Description: ${this._description}  Type: ${this._type}  Info: ${JSON.stringify(this._info)}  isPrivate:${this._isPrivate}  isFromZationSystem:${this._isFromZationSystem}`;
     }
 
-    _getJsonObj(withDesc)
+    getJsonObj(withDesc)
     {
         let obj = {};
 

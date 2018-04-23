@@ -142,7 +142,7 @@ class ParamChecker
             else
             {
 
-                paramData[Const.App.CONTROLLER_PARAMS_CAN_MISSING] = paramsMissing.length !== 0;
+                paramData[Const.Settings.PARAM_DATA_PARAMS_MISSING] = paramsMissing.length !== 0;
 
                 let processData =
                     {

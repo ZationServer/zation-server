@@ -33,8 +33,8 @@ class ControllerTools
 
     static _getControllerFullPath(controllerConfig)
     {
-        let controllerPath = controllerConfig[Const.Settings.CONTROLLER_PATH];
-        let controllerName = controllerConfig[Const.Settings.CONTROLLER_NAME];
+        let controllerPath = controllerConfig[Const.App.CONTROLLER_PATH];
+        let controllerName = controllerConfig[Const.App.CONTROLLER_NAME];
 
         if(controllerPath === undefined)
         {
@@ -50,8 +50,8 @@ class ControllerTools
     {
         let path = ControllerTools._getControllerFullPath(controllerConfig);
 
-        if(controllerConfig[Const.Settings.CONTROLLER_SYSTEM_CONTROLLER] !== undefined
-            && controllerConfig[Const.Settings.CONTROLLER_SYSTEM_CONTROLLER])
+        if(controllerConfig[Const.App.CONTROLLER_SYSTEM_CONTROLLER] !== undefined
+            && controllerConfig[Const.App.CONTROLLER_SYSTEM_CONTROLLER])
         {
             return require(systemControllerPath + '/' + path);
         }
@@ -63,7 +63,7 @@ class ControllerTools
 
     static async processBeforeHandleEvents(controllerConfig,bag)
     {
-        let beforeHandle = controllerConfig[Const.Settings.CONTROLLER_BEFORE_HANDLE];
+        let beforeHandle = controllerConfig[Const.App.CONTROLLER_BEFORE_HANDLE];
         if(beforeHandle !== undefined)
         {
             if(Array.isArray(beforeHandle))

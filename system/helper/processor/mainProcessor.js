@@ -8,21 +8,22 @@ const Const                 = require('../constante/constWrapper');
 const ControllerTools       = require('../tools/controllerTools');
 const Controller            = require('../../api/Controller');
 const Result                = require('../../api/Result');
-const F            = require('../zationTaskErrors/mainTaskErrors');
+const MainErrors            = require('../zationTaskErrors/mainTaskErrors');
 const TaskError             = require('../../api/TaskError');
 const ZationReqTools        = require('../tools/zationReqTools');
 const SystemVersionChecker  = require('../checker/systemVersionChecker');
-const ChannelEngine         = require('../channel/channelEngine');
 const ParamChecker          = require('../checker/paramChecker');
 const AuthEngine            = require('../auth/authEngine');
 const Bag                   = require('../../api/Bag');
+const TokenEngine           = require('./../token/tokenEngine');
+const InputWrapper          = require('./../checker/inputWrapper');
 
 class MainProcessor
 {
     static async process(shBridge,zc,worker)
     {
         //EXTRA SECURE AUTH LAYER
-        if(zc.isExtraSecureAuth())
+        if(zc.isExtraSecureAuth() && shBridge.getTokenBridge().hasToken())
         {
             let tokenInfoStorage = worker.getTokenInfoStorage();
             let token = shBridge.getTokenBridge().getToken();
@@ -50,13 +51,16 @@ class MainProcessor
 
             let task = reqData[Const.Settings.INPUT_TASK];
 
-            let channelEngine = new ChannelEngine(worker.scServer,shBridge);
+            let tokenEngine = new TokenEngine(shBridge,worker,zc);
 
             let authEngine = new AuthEngine(
                 {
+                    tokenEngine : tokenEngine,
                     shBridge : shBridge,
                     zc : zc,
                 });
+
+            await authEngine.init();
 
             let useProtocolCheck = zc.getMain(Const.Main.USE_PROTOCOL_CHECK);
             let controllerConfig = ControllerTools.getControllerConfigByTask(zc,task);
@@ -67,20 +71,14 @@ class MainProcessor
 
                 if(!useAuth || authEngine.hasAccessToController(controllerConfig))
                 {
-                    let paramData = ParamChecker.createParamsAndCheck(task,controllerConfig);
+                    let paramData  = ParamChecker.createParamsAndCheck(task,controllerConfig);
                     let controllerClass = ControllerTools.getControllerClass(zc,controllerConfig);
 
-                    let bag = new Bag(
-                        {
-                        paramData: paramData,
-                        worker : worker,
-                        authEngine: authEngine,
-                        channelEngine: channelEngine,
-                        shBridge : shBridge,
-                        zc : zc
-                    });
+                    let inputWrapper = new InputWrapper(paramData);
 
-                    return await MainProcessor.processController(controllerClass,controllerConfig,bag);
+                    let bag = new Bag(shBridge,worker,authEngine,tokenEngine,inputWrapper);
+
+                    return await MainProcessor.processController(controllerClass,controllerConfig,bag,shBridge.getTokenBridge());
                 }
             }
             else
@@ -99,9 +97,9 @@ class MainProcessor
     }
 
     //LAYER 10
-    static async processController(controllerClass,controllerConfig,bag)
+    static async processController(controllerClass,controllerConfig,bag,tb)
     {
-        if (controllerClass instanceof Controller)
+        if (controllerClass.prototype instanceof Controller)
         {
             try
             {
@@ -116,17 +114,18 @@ class MainProcessor
                     result = new Result(result);
                 }
 
-                return {result : result, authData : bag.getAuthController()._getNewAuthData()};
+                return {result : result,tb : tb};
             }
             catch(e)
             {
-                throw {e : e,authData : bag.getAuthController()._getNewAuthData()};
+                throw {e : e,tb : tb};
             }
         }
         else
         {
+            console.log(controllerClass);
             throw new TaskError(MainErrors.controllerIsNotAController,
-                {controllerName : controllerConfig[Const.Settings.CONTROLLER_NAME]});
+                {controllerName : controllerConfig[Const.App.CONTROLLER_NAME]});
         }
     }
 

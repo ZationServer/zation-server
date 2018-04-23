@@ -102,7 +102,16 @@ module.exports = {
 
     defaultGroupNotFound    : {
         name          : 'defaultGroupNotFound',
-        description   : 'no default group is set in the zation config',
+        description   : 'Default group is not set in the app config',
+        type          : ErrorType.SYSTEM_ERROR,
+        isPrivate     : true,
+        sendInfo      : false,
+        isFromZationSystem : true
+    },
+
+    groupsConfigNotFound    : {
+        name          : 'groupsConfigNotFound',
+        description   : 'Groups config is not found in the app config',
         type          : ErrorType.SYSTEM_ERROR,
         isPrivate     : true,
         sendInfo      : false,

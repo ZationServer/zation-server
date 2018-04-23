@@ -44,11 +44,11 @@ class TaskErrorBag
         }
     }
 
-    _getJsonObj(withDesc)
+    getJsonObj(withDesc)
     {
         let obj = [];
         for(let i = 0; i < this._taskErrors.length; i++) {
-            obj.push(this._taskErrors[i]._getJsonObj(withDesc));
+            obj.push(this._taskErrors[i].getJsonObj(withDesc));
         }
         return obj;
     }

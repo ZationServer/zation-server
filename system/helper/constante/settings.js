@@ -24,7 +24,7 @@ Settings.INPUT_AUTH                     = 'a';
 Settings.INPUT_TOKEN                    = 'to';
 
 Settings.PARAM_DATA_PARAMS              = 'params';
-Settings.PARAM_DATA_PARAMS_Missing      = 'paramsMissing';
+Settings.PARAM_DATA_PARAMS_MISSING      = 'paramsMissing';
 
 Settings.CLIENT_AUTH_GROUP              = 'zationAuthGroup';
 Settings.CLIENT_AUTH_ID                 = 'zationAuthId';
@@ -32,13 +32,14 @@ Settings.CLIENT_TOKEN_ID                = 'zationTokenId';
 Settings.CLIENT_PANEL_ACCESS            = 'zationPanelAccess';
 
 //ZATION SOCKET CHANNELS
-Settings.SOCKET_USER_CHANNEL_PREFIX     = 'ZATION.USER.';
-Settings.SOCKET_AUTH_GROUP_PREFIX       = 'ZATION.AUTH_GROUP.';
-Settings.SOCKET_DEFAULT_GROUP           = 'ZATION.DEFAULT_GROUP';
-Settings.SOCKET_ALL                     = 'ZATION.ALL';
+Settings.CHANNEL_USER_CHANNEL_PREFIX     = 'ZATION.USER.';
+Settings.CHANNEL_AUTH_GROUP_PREFIX       = 'ZATION.AUTH_GROUP.';
+Settings.CHANNEL_DEFAULT_GROUP           = 'ZATION.DEFAULT_GROUP';
+Settings.CHANNEL_ALL                     = 'ZATION.ALL';
+Settings.CHANNEL_PANNEL                  = 'ZATION.PANEL';
 
-Settings.SOCKET_SPECIAL_CHANNEL_PREFIX  = 'ZATION.SPECIAL_CHANNEL.';
-Settings.SOCKET_SPECIAL_CHANNEL_ID      = '.CH_ID.';
+Settings.CHANNEL_SPECIAL_CHANNEL_PREFIX  = 'ZATION.SPECIAL_CHANNEL.';
+Settings.CHANNEL_SPECIAL_CHANNEL_ID      = '.CH_ID.';
 
 //Zation User Channel Events
 Settings.USER_CHANNEL_AUTH_OUT          = 'zationAuthOut';

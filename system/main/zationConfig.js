@@ -43,6 +43,7 @@ class ZationConfig
             this._mainConfig[Const.Main.EXTRA_SECURE_AUTH] = true;
             this._mainConfig[Const.Main.SYSTEM_BACKGROUND_TASK_REFRESH_RATE] = 1800000;
             this._mainConfig[Const.Main.TIME_ZONE] = 'Europe/Berlin';
+            this._mainConfig[Const.Settings.TOKEN_INFO_STORAGE_KEY] = 'tokenInfoStorage';
 
             this.addToMainConfig(starterConfig,true);
             this._loadUserDataLocations();
@@ -311,7 +312,7 @@ class ZationConfig
 
         if(!this._mainConfig.hasOwnProperty(Const.Main.CONTROLLER))
         {
-            this._mainConfig[Const.Main.CONTROLLER] = ZationConfig._getRootPath() + '/controller/';
+            this._mainConfig[Const.Main.CONTROLLER] = ZationConfig._getRootPath() + '/controller';
         }
     }
 

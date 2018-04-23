@@ -14,6 +14,10 @@ class TokenBridge
         this._socket = socket;
         this._req = req;
         this._zc = zc;
+
+        this._hasNewToken = false;
+
+        this._plainTokenTemp = {};
     }
 
     isSocket()
@@ -32,6 +36,20 @@ class TokenBridge
         return token !== undefined && token !== null;
     }
 
+    deauthenticate()
+    {
+        if(this._isSocket)
+        {
+            this._socket.deauthenticate();
+        }
+    }
+
+    hasToken()
+    {
+        let token = this.getToken();
+        return  token !== undefined && token !== null;
+    }
+
     getToken()
     {
         if(this._isSocket)
@@ -42,12 +60,22 @@ class TokenBridge
         else
         {
             // noinspection JSUnresolvedVariable
-            return this._req.zationToken;
+            if(this._hasNewToken)
+            {
+                return this._plainTokenTemp;
+            }
+            else
+            {
+                return this._req.zationToken;
+            }
         }
     }
 
-    async setToken(data)
+    setToken(data)
     {
+
+        this._hasNewToken = true;
+
         if(this._isSocket)
         {
             // noinspection JSUnresolvedFunction
@@ -55,11 +83,24 @@ class TokenBridge
         }
         else
         {
-            await this._res.signedToken = TokenTools.signToken(data,this._zc);
-
+            this._plainTokenTemp = data;
         }
     }
 
+    async getSignedToken()
+    {
+        return await TokenTools.signToken(this._plainTokenTemp,this._zc);
+    }
 
+    getPlainToken()
+    {
+        return this._plainTokenTemp;
+    }
 
+    hasNewToken()
+    {
+        return this._hasNewToken;
+    }
 }
+
+module.exports = TokenBridge;

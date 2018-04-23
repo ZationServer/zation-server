@@ -22,10 +22,10 @@ class MasterStorage extends AbstractStorage
 
     async _createMainStructure()
     {
-        let csMain = await this._send({command : 'canDo' , key : this._key});
+        let csMain = await this.send({command : 'canDo' , key : this._key},false);
         if(!csMain)
         {
-            await this._send({command : 'set', key : this._key});
+            await this.send({command : 'set', key : this._key},false);
         }
     }
 
@@ -40,73 +40,62 @@ class MasterStorage extends AbstractStorage
             };
     }
 
-    // noinspection JSMethodCanBeStatic
-    _getCommand(command)
+    static _getCommand(command)
     {
-        return {storage : command};
+        return {
+            storage : command
+        };
     }
 
     buildSet(key,value)
     {
-        return this._getCommandInKey(
-            {
+        return {
                 command : 'set',
                 key : key,
                 value : value
-            }
-        )
+            };
     }
 
     buildGet(key)
     {
-        return this._getCommandInKey(
-            {
+        return{
                 command : 'get',
                 key : key
-            }
-        )
+            };
     }
 
     buildRemove(key)
     {
-        return this._getCommandInKey(
-            {
+        return{
                 command : 'remove',
                 key : key
-            }
-        )
+            };
     }
 
     buildCanDo(key)
     {
-        return this._getCommandInKey(
-            {
+        return{
                 command : 'canDo',
                 key : key
-            }
-        )
+            };
     }
 
     buildDo(key,req)
     {
-        return this._getCommandInKey(
-            {
-                command : 'canDo',
+        return{
+                command : 'do',
                 key : key,
                 value : req
-            }
-        )
+            };
     }
 
 
-    async send(obj)
+    async send(obj,inStorage = true)
     {
         return new Promise((resolve, reject) =>
         {
-            this._worker.sendToMaster(
-
-                this._getCommand(obj)
-                ,
+            let sendObj = inStorage ?  this._getCommandInKey(obj) : MasterStorage._getCommand(obj);
+            this._worker.sendToMaster( sendObj ,
                 (err,data) =>
                 {
                     if(err)

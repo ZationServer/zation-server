@@ -8,7 +8,7 @@ class AppConfig {}
 
 AppConfig.AUTH_CONTROLLER         = 'authController';
 AppConfig.CONTROLLER              = 'controller';
-AppConfig.GROUPS             = 'groups';
+AppConfig.GROUPS                  = 'groups';
 AppConfig.VERSION_CONTROL         = 'versionControl';
 AppConfig.ACCESS_DEFAULT          = 'accessDefault';
 

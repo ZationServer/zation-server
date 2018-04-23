@@ -132,12 +132,19 @@ class ChAccessEngine
 
     static getSpecialChannelName(ch)
     {
-        ch = ch.replace(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX,'');
-        ch = ch.substring(0,ch.indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_ID));
+        ch = ch.replace(Const.Settings.CHANNEL_SPECIAL_CHANNEL_PREFIX,'');
+        ch = ch.substring(0,ch.indexOf(Const.Settings.CHANNEL_SPECIAL_CHANNEL_ID));
         return ch;
     }
 
-    static checkSocketSpecialChAccess(socket)
+    static _kickOut(socket,channel,zc)
+    {
+        // noinspection JSUnresolvedFunction
+        socket.kickOut(channel);
+        zc.printDebugInfo(`Socket with id: ${socket.id} is kick out from channel ${channel}`);
+    }
+
+    static checkSocketSpecialChAccess(socket,zc)
     {
         if(socket !== undefined)
         {
@@ -145,25 +152,75 @@ class ChAccessEngine
 
             for(let i = 0; i < subs.length; i++)
             {
-                if(subs[i].indexOf(Const.Settings.SOCKET_SPECIAL_CHANNEL_PREFIX) !== -1)
+                if(subs[i].indexOf(Const.Settings.CHANNEL_SPECIAL_CHANNEL_PREFIX) !== -1)
                 {
                     let chName = ChAccessEngine.getSpecialChannelName(subs[i]);
                     if(!ChAccessEngine.hasAccessToSubSpecialChannel(socket,chName))
                     {
-                        // noinspection JSUnresolvedFunction
-                        socket.kickOut(subs[i]);
+                        ChAccessEngine._kickOut(socket,subs[i],zc);
                     }
                 }
             }
         }
     }
 
-    static checkSocketZationChAccess(socket)
+    static checkSocketZationChAccess(socket,zc)
     {
+        if(socket !== undefined)
+        {
+            // noinspection JSUnresolvedFunction
+            let token = socket.getAuthToken();
+            let subs = socket.subscriptions();
 
+            let authGroup = undefined;
+            let authId = undefined;
+            let panelAccess = undefined;
 
+            if(token !== undefined && token !== null)
+            {
+                authGroup = token[Const.Settings.CLIENT_AUTH_GROUP];
+                authId = token[Const.Settings.CLIENT_AUTH_ID];
+                panelAccess = token[Const.Settings.CLIENT_PANEL_ACCESS]
+            }
 
+            for(let i = 0; i < subs.length; i++)
+            {
+                //Default group channel
+                if(subs[i] === Const.Settings.CHANNEL_DEFAULT_GROUP
+                    && authGroup !== ''
+                    && authGroup !== undefined)
+                {
+                    this._kickOut(socket,Const.Settings.CHANNEL_DEFAULT_GROUP,zc);
+                }
 
+                //Auth Group
+                if(subs[i].indexOf(Const.Settings.CHANNEL_AUTH_GROUP_PREFIX) !== -1)
+                {
+                    let authGroupSub = subs[i].replace(Const.Settings.CHANNEL_AUTH_GROUP_PREFIX,'');
+                    if(authGroup !== authGroupSub)
+                    {
+                        this._kickOut(socket,subs[i],zc);
+                    }
+                }
+
+                //User Channel
+                if(subs[i].indexOf(Const.Settings.CHANNEL_USER_CHANNEL_PREFIX) !== -1)
+                {
+                    let userIdSub = subs[i].replace(Const.Settings.CHANNEL_USER_CHANNEL_PREFIX,'');
+                    if(authId !== userIdSub)
+                    {
+                        this._kickOut(socket,subs[i],zc);
+                    }
+                }
+
+                //Panel Channel
+                if(subs[i] === Const.Settings.CHANNEL_PANNEL && !panelAccess)
+                {
+                    this._kickOut(socket,subs[i],zc);
+                }
+
+            }
+        }
     }
 
 }

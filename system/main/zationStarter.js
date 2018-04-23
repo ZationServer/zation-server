@@ -222,6 +222,10 @@ class ZationStarter
             {
                 cb(null,this._masterStorage.do(data['storage']));
             }
+            else
+            {
+                cb(false);
+            }
         });
     }
 }

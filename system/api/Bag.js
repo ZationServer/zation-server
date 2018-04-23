@@ -4,7 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const Const         = require('./../helper/constante/constWrapper');
 const ChannelEngine = require('./../helper/channel/channelEngine');
 const SmallBag      = require('./SmallBag');
 
@@ -92,15 +91,15 @@ class Bag extends SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
-    authTo(group,id,clientData = {})
+    async authTo(group,id,clientData = {})
     {
-        this._authEngine.authTo(group,id,clientData);
+        await this._authEngine.authTo(group,id,clientData);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    setClientId(id)
+    async setClientId(id)
     {
-        this._authEngine.setClientId(id);
+        await this._authEngine.setClientId(id);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -110,9 +109,9 @@ class Bag extends SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
-    authOut()
+    async authOut()
     {
-        this._authEngine.authOut();
+        await this._authEngine.authOut();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -270,7 +269,6 @@ class Bag extends SmallBag
         //TODO
 
     }
-
 
 }
 

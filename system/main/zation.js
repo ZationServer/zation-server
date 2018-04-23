@@ -66,18 +66,18 @@ class Zation
         {
             if(data.isSocket)
             {
-                returner.getResultAndReact(await SocketProcessor.runSocketProcess(data));
+                await returner.reactOnResult(await SocketProcessor.runSocketProcess(data));
             }
             else
             {
-                returner.getResultAndReact(await HttpProcessor.runHttpProcess(data));
+                await returner.reactOnResult(await HttpProcessor.runHttpProcess(data));
             }
         }
         catch(data)
         {
             let e = data;
 
-            if(data['authData'] !== undefined)
+            if(data['tb'] !== undefined)
             {
                 e = data['e'];
             }
@@ -87,18 +87,25 @@ class Zation
 
             if(e instanceof  TaskError)
             {
+                this._zc.printDebugInfo('TASK ERROR ->',e);
+
                 this._zc.emitEvent(Const.Event.ZATION_BEFORE_TASK_ERROR,
                     (f) => {f(SmallBag.getSmallBagFromWorker(this._worker),e)});
             }
             else if(e instanceof TaskErrorBag)
             {
+                this._zc.printDebugInfo('TASK ERROR BAG ->',e);
+
                 this._zc.emitEvent(Const.Event.ZATION_BEFORE_TASK_ERROR_BAG,
                     (f) => {f(SmallBag.getSmallBagFromWorker(this._worker),e)});
             }
+            else
+            {
+                this._zc.printDebugWarning('EXCEPTION ON SERVER ->',e);
+            }
 
-            this._zc.printDebugWarning('EXCEPTION ON SERVER ->',e);
 
-            returner.reactOnError(e,data['authData']);
+            await returner.reactOnError(e,data['tb']);
         }
     }
 

@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 const Const         = require('../constante/constWrapper');
 const TaskError     = require('../../api/TaskError');
-const MainErrors      = require('../zationTaskErrors/mainTaskErrors');
+const MainErrors    = require('../zationTaskErrors/mainTaskErrors');
 
 
 class AuthEngine
@@ -17,103 +17,65 @@ class AuthEngine
 
         if(this._useAuth)
         {
-            this._groupsConfig        = this._zc.getMain(Const.App.GROUPS);
-            this._authGroups          = this._groupsConfig[Const.App.GROUPS_AUTH_GROUPS];
+            this._groupsConfig        = this._zc.getApp(Const.App.GROUPS);
             this._authDefaultAccess   = this._zc.getApp(Const.App.ACCESS_DEFAULT);
 
-            this._channelController   = data['channelController'];
-
-            this._isSocket            = data['isSocket'];
-            this._socket              = data['socket'];
-
-            this._req                 = data['req'];
-            this._zationReq           = data['zationReq'];
-            this._res                 = data['res'];
-
-            this._scServer            = data['scServer'];
-
-            this._newAuthGroup        = undefined;
-            this._newAuthId           = undefined;
-
-            this._currentDefault      = true;
-            this._currentGroup        = undefined;
-
-            if(this._isSocket)
+            if(this._groupsConfig !== undefined)
             {
-                this._processGroupWithSocket();
-            }
-            else
-            {
-                this._processGroupWithHttp();
-            }
-        }
-    }
-
-    getNewAuthId()
-    {
-        return this._newAuthId;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    getNewAuthGroup()
-    {
-        return this._newAuthGroup;
-    }
-
-    _processGroupWithHttp()
-    {
-        if(this._useAuth)
-        {
-            if(this._zationReq[Const.Settings.INPUT_TOKEN] === undefined)
-            {
-                //returnDefault
-                this.group = AuthEngine.getDefaultGroup();
-            }
-            else
-            {
-
-
-
-                if(this.checkIsIn(this.req.session[CA.CLIENT_AUTH_GROUP]))
+                this._authGroups          = this._groupsConfig[Const.App.GROUPS_AUTH_GROUPS];
+                let defaultGroup = this._groupsConfig[Const.App.GROUPS_DEFAULT_GROUP];
+                if(defaultGroup === undefined)
                 {
-                    this.group = this.req.session[CA.CLIENT_AUTH_GROUP];
-                    this.default = false;
+                    throw new TaskError(MainErrors.defaultGroupNotFound);
                 }
                 else
                 {
-                    //saved AuthEngine In Server is not define
-                    req.session.destroy();
-                    throw new TaskError(MainErrors.savedAuthGroupFromClientDataNotFound,
-                        {
-                            savedAuthGroup : this.req.session[CA.CLIENT_AUTH_GROUP],
-                            authGroupsInZationConfig : this._authGroups
-                        });
+                    this._defaultGroup = defaultGroup;
                 }
             }
+            else
+            {
+                throw new TaskError(MainErrors.groupsConfigNotFound);
+            }
+
+            this._shBridge = data.shBridge;
+            this._tokenEngine = data.tokenEngine;
+
+            this._currentDefault      = true;
+            this._currentGroup        = undefined;
         }
     }
 
+    async init()
+    {
+        await this._processGroup();
+    }
 
-    _processGroupWithSocket()
+    async _processGroup()
     {
         if(this._useAuth)
         {
             // noinspection JSUnresolvedFunction
-            let authToken = this._socket.getAuthToken();
-            if(authToken !== null)
+            let authToken = this._shBridge.getTokenBridge().getToken();
+            if(authToken !== null && authToken !== undefined)
             {
-                if(authToken[CA.CLIENT_AUTH_GROUP] !== undefined) {
-                    if (this.checkIsIn(authToken[CA.CLIENT_AUTH_GROUP])) {
-                        this.group = authToken[CA.CLIENT_AUTH_GROUP];
-                        this.default = false;
+                let authGroup = authToken[Const.Settings.CLIENT_AUTH_GROUP];
+                if(authGroup !== undefined)
+                {
+                    if (this.checkIsIn(authGroup))
+                    {
+                        this._currentGroup = authGroup;
+                        this._currentDefault = false;
                     }
-                    else {
+                    else
+                    {
                         //saved AuthEngine In Server is not define
                         // noinspection JSUnresolvedFunction
-                        this._socket.deauthenticate();
-                        throw new TaskError(MainErrors.savedAuthGroupFromClientDataNotFound,
+                        await this.authOut();
+
+                        throw new TaskError(MainErrors.savedAuthGroupInTokenNotFound,
                             {
-                                savedAuthGroup: authToken[CA.CLIENT_AUTH_GROUP],
+                                savedAuthGroup: authGroup,
                                 authGroupsInZationConfig: this._authGroups
                             });
                     }
@@ -121,13 +83,13 @@ class AuthEngine
                 else
                 {
                     //AuthEngine without auth group!
-                    this._socket.deauthenticate();
+                    await this.authOut();
                     throw new TaskError(MainErrors.tokenWithoutAuthGroup);
                 }
             }
             else
             {
-                this.group = AuthEngine.getDefaultGroup();
+                this._currentGroup = this.getDefaultGroup();
             }
         }
     }
@@ -140,123 +102,81 @@ class AuthEngine
 
     isDefault()
     {
-        return this.default;
+        return this._currentDefault;
     }
 
     // noinspection JSUnusedGlobalSymbols
     isUseAuth()
     {
-        return this.useAuth();
+        return this._useAuth;
     }
 
-    static getDefaultGroup()
+    getDefaultGroup()
     {
-        let defaultGroup = cationConfig[CA.CATION_AUTH_GROUPS][CA.AUTH_DEFAULT_GROUP];
-        if(defaultGroup === undefined)
-        {
-            throw new TaskError(MainErrors.defaultGroupNotFound);
-        }
-        return defaultGroup;
+       return this._defaultGroup;
     }
 
     checkIsIn(authGroup)
     {
-        if(this.authGroups !== undefined)
-        {
-            return this.authGroups.hasOwnProperty(authGroup);
-        }
-        else
-        {
-            return false;
-        }
+        return this._authGroups.hasOwnProperty(authGroup);
     }
 
     getGroup()
     {
-        return this.group;
+        return this._currentGroup;
     }
 
     // noinspection JSUnusedGlobalSymbols
     getAuthGroup()
     {
-        return this.isDefault() ? undefined : this.group;
+        return this.isDefault() ? undefined : this._currentGroup;
     }
 
-    authTo(group,id,clientData)
+    //PART AUTHENTICATION
+
+    async authTo(group,id,clientData)
     {
         let suc = false;
         if(this.checkIsIn(group))
         {
-            let oldAuthGroup =
-                ClientStorage.getClientVariable([CA.CLIENT_AUTH_GROUP],this.isSocket,this.socket,this.req);
-
-            //Update AuthEngine
-            this.default = false;
-            this.group = group;
-
-            //Update AuthEngine New
-            this.newAuthGroup = group;
-
             let obj = {};
-            obj[CA.CLIENT_AUTH_GROUP] = group;
+            obj[Const.Settings.CLIENT_AUTH_GROUP] = group;
 
             //Id to setBoth in time
             if(id !== undefined)
             {
-                let oldId =
-                    ClientStorage.getClientVariable([CA.CLIENT_AUTH_ID],this.isSocket,this.socket,this.req);
-
-                obj[CA.CLIENT_AUTH_ID] = id;
-
-                this.newAuthId = id;
-
-                if(oldId !== undefined && oldId !== id && this.isSocket)
-                {
-                    this.channelController.kickOutUserChannel(oldId);
-                }
+                obj[Const.Settings.CLIENT_AUTH_ID] = id;
             }
 
             //create AuthEngine Token!
-            ClientStorage.setCationData(obj,this.isSocket,this.socket,this.req,this.channelController,true);
-
-            //Kick out from default auth group channel!
-            this.channelController.kickOutFromDefaultGroupChannel();
-
-            if(oldAuthGroup !== undefined && oldAuthGroup !== group)
+            if(this._shBridge.getTokenBridge().hasToken())
             {
-                //KickOut from Old UserGroup Channel
-                this.channelController.kickOutFromAuthGroupChannel(oldAuthGroup);
+                await this._tokenEngine.setTokenVariable(obj,true);
+            }
+            else
+            {
+                await this._tokenEngine.createToken(obj);
             }
 
-            ClientStorage.setClientData(clientData,this.isSocket,this.socket,this.req,this.channelController);
+            this._currentDefault = false;
+            this._currentGroup = group;
+
+            await this._tokenEngine.setTokenVariable(clientData);
 
             suc = true;
         }
         return suc;
     }
 
-    setClientId(id)
+    async setClientId(id)
     {
         let suc = false;
         if(id !== undefined)
         {
-            let oldId =
-                ClientStorage.getClientVariable([CA.CLIENT_AUTH_ID],this.isSocket,this.socket,this.req);
-
             let obj = {};
-            obj[CA.CLIENT_AUTH_ID] = id;
-            ClientStorage.setCationData(obj,this.isSocket,this.socket,this.req,this.channelController);
-
+            obj[Const.Settings.CLIENT_AUTH_ID] = id;
+            await this._tokenEngine.setTokenVariable(obj,true);
             suc = true;
-
-            //Update New AuthEngine id
-            this.newAuthId = id;
-
-            if(oldId !== undefined && oldId !== id && this.isSocket)
-            {
-                this.channelController.kickOutUserChannel(oldId);
-            }
-
         }
         else
         {
@@ -265,61 +185,41 @@ class AuthEngine
         return suc;
     }
 
-    authOut()
+    async authOut()
     {
-        //Update AuthEngine
-        this.default = true;
-        this.group = AuthEngine.getDefaultGroup();
-        this.newAuthGroup  = '';
-
-        if(this.isSocket)
-        {
-            let id =
-                ClientStorage.getClientVariable([CA.CLIENT_AUTH_ID],this.isSocket,this.socket,this.req);
-
-            if(id !== undefined)
-            {
-                //Kick out User group channel
-                this.channelController.kickOutUserChannel(id);
-            }
-
-            this.channelController.kickOutFromAllAuthGroupChannels();
-            this.socket.deauthenticate();
-        }
-        else
-        {
-            this.req.session[CA.CLIENT_AUTH_GROUP] = undefined;
-            req.session.destroy();
-        }
+        this._currentDefault = true;
+        this._currentGroup = this.getDefaultGroup();
+        await this._tokenEngine.deauthenticate();
     }
+
+    //PART ACCESS CHECKER
 
     hasServerProtocolAccess(controller)
     {
         let hasAccess = false;
-        let defaultConf  = cationConfig[CA.CATION_ACCESS_DEFAULT];
 
-        if(this.isSocket)
+        if(this._shBridge.isSocket())
         {
-            if(controller[CA.CATION_SERVER_SOCKET_ACCESS] !== undefined)
+            if(controller[Const.App.SERVER_SOCKET_ACCESS] !== undefined)
             {
-                hasAccess = controller[CA.CATION_SERVER_SOCKET_ACCESS];
+                hasAccess = controller[Const.App.SERVER_SOCKET_ACCESS];
             }
-            else if(defaultConf !== undefined &&
-            defaultConf[CA.CATION_SERVER_SOCKET_ACCESS] !== undefined)
+            else if(this._authDefaultAccess !== undefined &&
+                this._authDefaultAccess[Const.App.SERVER_SOCKET_ACCESS] !== undefined)
             {
-                hasAccess = defaultConf[CA.CATION_SERVER_SOCKET_ACCESS];
+                hasAccess = this._authDefaultAccess[Const.App.SERVER_SOCKET_ACCESS];
             }
         }
         else
         {
-            if(controller[CA.CATION_SERVER_HTTP_ACCESS] !== undefined)
+            if(controller[Const.App.SERVER_HTTP_ACCESS] !== undefined)
             {
-                hasAccess = controller[CA.CATION_SERVER_HTTP_ACCESS];
+                hasAccess = controller[Const.App.SERVER_HTTP_ACCESS];
             }
-            else if(defaultConf !== undefined &&
-                defaultConf[CA.CATION_SERVER_HTTP_ACCESS] !== undefined)
+            else if(this._authDefaultAccess !== undefined &&
+                this._authDefaultAccess[Const.App.SERVER_HTTP_ACCESS] !== undefined)
             {
-                hasAccess = defaultConf[CA.CATION_SERVER_HTTP_ACCESS];
+                hasAccess = this._authDefaultAccess[Const.App.SERVER_HTTP_ACCESS];
             }
         }
         return hasAccess;
@@ -329,35 +229,32 @@ class AuthEngine
     {
         let hasAccess = false;
 
-        let keyWord = AuthEngine.getAccessKeyWord(controller);
+        let keyWord = AuthEngine._getAccessKeyWord(controller);
 
         if(keyWord === '')
         {
-            keyWord = AuthEngine.getAccessKeyWord(this.authDefault,true);
+            keyWord = AuthEngine._getAccessKeyWord(this._authDefaultAccess,true);
             if(keyWord === '')
             {
-                if(this.debug)
-                {
-                    console.err('CATION -> No default Access Found! Access will denied!');
-                }
+                this._zc.printDebugWarning('No default Access Found! Access will denied!');
                 return false;
             }
             else
             {
-                hasAccess = this.hasAccessToThis(keyWord,this.authDefault[keyWord]);
+                hasAccess = this._hasAccessToThis(keyWord,this._authDefaultAccess[keyWord]);
             }
         }
         else
         {
-            hasAccess = this.hasAccessToThis(keyWord,controller[keyWord]);
+            hasAccess = this._hasAccessToThis(keyWord,controller[keyWord]);
         }
         return hasAccess;
     }
 
-    static getAccessKeyWord(obj,isDefault = false)
+    static _getAccessKeyWord(obj,isDefault = false)
     {
-        let notAccess = obj[CA.CONTROLLER_NOT_ACCESS];
-        let access    = obj[CA.CONTROLLER_ACCESS];
+        let notAccess = obj[Const.App.CONTROLLER_NOT_ACCESS];
+        let access    = obj[Const.App.CONTROLLER_ACCESS];
         let keyWord = '';
 
         if(notAccess !== undefined && access !== undefined)
@@ -369,38 +266,38 @@ class AuthEngine
             //search One
             if(notAccess !== undefined && access === undefined)
             {
-                keyWord = CA.CONTROLLER_NOT_ACCESS;
+                keyWord = Const.App.CONTROLLER_NOT_ACCESS;
             }
             else if(notAccess === undefined && access !== undefined)
             {
-                keyWord = CA.CONTROLLER_ACCESS;
+                keyWord = Const.App.CONTROLLER_ACCESS;
             }
         }
         return keyWord;
     }
 
-    hasAccessToThis(key,value)
+    _hasAccessToThis(key,value)
     {
         let access = false;
 
         if(typeof value === 'string' || value instanceof String)
         {
-            if(value === CA.ACCESS_ALL)
+            if(value === Const.App.ACCESS_ALL)
             {
-                access = AuthEngine.accessKeyWordChanger(key,true);
+                access = AuthEngine._accessKeyWordChanger(key,true);
             }
-            else if(value === CA.ACCESS_ALL_AUTH)
+            else if(value === Const.App.ACCESS_ALL_AUTH)
             {
-                access = AuthEngine.accessKeyWordChanger(key,this.isAuth());
+                access = AuthEngine._accessKeyWordChanger(key,this.isAuth());
             }
-            else if(value === CA.ACCESS_ALL_NOT_AUTH)
+            else if(value === Const.App.ACCESS_ALL_NOT_AUTH)
             {
-                access = AuthEngine.accessKeyWordChanger(key,this.isDefault());
+                access = AuthEngine._accessKeyWordChanger(key,this.isDefault());
             }
             else if(this.checkIsIn(key))
             {
                 //Group!
-                access = AuthEngine.accessKeyWordChanger(key,this.getGroup() === value);
+                access = AuthEngine._accessKeyWordChanger(key,this.getGroup() === value);
             }
         }
         else if(Array.isArray(value))
@@ -415,14 +312,14 @@ class AuthEngine
                     break;
                 }
             }
-            access = AuthEngine.accessKeyWordChanger(key,imIn);
+            access = AuthEngine._accessKeyWordChanger(key,imIn);
         }
         return access;
     }
 
-    static accessKeyWordChanger(key,access)
+    static _accessKeyWordChanger(key,access)
     {
-        if(key === CA.CONTROLLER_NOT_ACCESS)
+        if(key === Const.App.CONTROLLER_NOT_ACCESS)
         {
             return !access;
         }
@@ -431,17 +328,7 @@ class AuthEngine
 
     getProtocol()
     {
-        return this.isSocket ? 'socket' : 'http';
-    }
-
-    _getNewAuthData()
-    {
-        return {
-        newAuthId : this.getNewAuthId(),
-        newAuthGroup : this.getNewAuthGroup()
-    };
-
-
+        return this._shBridge.isSocket() ? 'socket' : 'http';
     }
 }
 
