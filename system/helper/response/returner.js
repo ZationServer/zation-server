@@ -65,10 +65,6 @@ class Returner
         {
             this._respond();
         }
-        else
-        {
-            this._res.send();
-        }
     }
 
     //Log and send back Json
@@ -102,7 +98,7 @@ class Returner
         }
 
         //token
-        if(!this._isSocket && tb.hasNewToken())
+        if(tb !== undefined && !this._isSocket && tb.hasNewToken())
         {
             let tokenInfo = {};
             tokenInfo['st'] = await tb.getSignedToken();
