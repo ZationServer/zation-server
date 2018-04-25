@@ -23,7 +23,9 @@ class ZationStarter
 
         this._zc.printDebugInfo('Zation is launching in debug Mode!');
 
+        this._zc.printStartDebugInfo('Start socket cluster');
         this._startSocketCluster();
+        this._zc.printStartDebugInfo('Create master storage');
         this._createMasterStorage();
     }
 
@@ -36,6 +38,7 @@ class ZationStarter
             appName: this._zc.getMain(Const.Main.APP_NAME),
             workerController:__dirname + '/zationWorker.js',
             brokerController:__dirname  + '/zationBroker.js',
+            environment : this._zc.getMain(Const.Main.ENVIRONMENT),
             port   : this._zc.getMain(Const.Main.PORT),
             protocol : this._zc.getMain(Const.Main.SECURE) ? 'https' : 'http',
             protocolOptions: this._zc.getMain(Const.Main.HTTPS_CONFIG),
@@ -131,6 +134,9 @@ class ZationStarter
             this._sendToRandomWorker({systemBackgroundTasks : true});
         }
         ,this._zc.getMain(Const.Main.SYSTEM_BACKGROUND_TASK_REFRESH_RATE));
+
+        //prepareEvent
+        this._sendToRandomWorker({prepareBackgroundTask : true});
     }
 
     _setEveryBackgroundTask(id,time)

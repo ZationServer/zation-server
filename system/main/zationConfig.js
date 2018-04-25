@@ -65,6 +65,11 @@ class ZationConfig
         return this.getMain(Const.Main.DEBUG);
     }
 
+    isStartDebug()
+    {
+        return this.getMain(Const.Main.START_DEBUG);
+    }
+
     isUsePanel()
     {
         return this.getMain(Const.Main.USE_PANEL);
@@ -139,6 +144,21 @@ class ZationConfig
         obj['port'] = this.getMain(Const.Main.PORT);
         obj['appName'] = this.getMain(Const.Main.APP_NAME);
         return obj;
+    }
+
+    printStartDebugInfo(txt,isBusy = false)
+    {
+        if (this.isStartDebug())
+        {
+            if(isBusy)
+            {
+                console.log('\x1b[33m%s\x1b[0m', '   [BUSY]',txt);
+            }
+            else
+            {
+                console.log('\x1b[34m%s\x1b[0m','   [INFO]',txt);
+            }
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols

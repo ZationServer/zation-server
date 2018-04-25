@@ -32,27 +32,45 @@ class Worker extends SCWorker
         let zcOptions = this.options.zationConfigWorkerTransport;
 
         this._zc = new ZationConfig(zcOptions.mainConfig,true);
+
+        this._zc.printStartDebugInfo(`Worker with id ${this.id} begin start process!`);
+
+        this._zc.printStartDebugInfo(`Worker with id ${this.id} load other zation config files.`);
+
         this._zc.loadOtherConfigs();
 
         //Services
+        this._zc.printStartDebugInfo(`Worker with id ${this.id} create service engine.`);
         this._servieceEngine = new ServiceEngine(this._zc);
         await this._servieceEngine.init();
 
         if(this._zc.isExtraSecureAuth())
         {
+            this._zc.printStartDebugInfo(`Worker with id ${this.id} init token info storage.`);
             await this._initTokenInfoStorage();
         }
 
+        this._zc.printStartDebugInfo(`Worker with id ${this.id} prepare a small bag.`);
+        this._preapreSmallBag = SmallBag.getSmallBagFromWorker(this);
+
+        this._zc.printStartDebugInfo(`Worker with id ${this.id} load user background tasks.`);
         this._loadUserBackgroundTasks();
+
+        this._zc.printStartDebugInfo(`Worker with id ${this.id} register by master event.`);
         this._registerMasterEvent();
 
+        this._zc.printStartDebugInfo(`Worker with id ${this.id} create zation.`);
         this.zation = new Zation(this);
 
         //Server
-        if (this._zc.getMain(Const.Main.USE_HTTP_SERVER)) {
+        if (this._zc.getMain(Const.Main.USE_HTTP_SERVER))
+        {
+            this._zc.printStartDebugInfo(`Worker with id ${this.id} start http server.`);
             this._startHttpServer();
         }
-        if (this._zc.getMain(Const.Main.USE_SOCKET_SERVER)) {
+        if (this._zc.getMain(Const.Main.USE_SOCKET_SERVER))
+        {
+            this._zc.printStartDebugInfo(`Worker with id ${this.id} start socket server.`);
             this._startSocketServer();
         }
 
@@ -60,12 +78,14 @@ class Worker extends SCWorker
         if (this._zc.getMain(Const.Main.USE_HTTP_SERVER))
         {
             this._zc.emitEvent(Const.Event.ZATION_EXPRESS,
-                (f) => {f(SmallBag.getSmallBagFromWorker(this),this._app);});
+                (f) => {f(this._preapreSmallBag,this._app);});
         }
+
+        //
 
         //Fire event is started
         this._zc.emitEvent(Const.Event.ZATION_WORKER_IS_STARTED,
-            (f) => {f(SmallBag.getSmallBagFromWorker(this),this._zc.getSomeInformation(),this)});
+            (f) => {f(this._preapreSmallBag,this._zc.getSomeInformation(),this)});
     }
 
     _startSocketServer()
@@ -483,14 +503,7 @@ class Worker extends SCWorker
     {
         this.on('masterMessage',(data,respond) =>
         {
-            if(data['systemBackgroundTasks'] !== undefined && data['systemBackgroundTasks'])
-            {
-                for(let i = 0; i < this._systemBackgroundTasks.length; i++)
-                {
-                    this._invokeSystemBackgroundTask(this._systemBackgroundTasks[i]);
-                }
-            }
-            else if(data['userBackgroundTask'] !== undefined)
+            if(data['userBackgroundTask'] !== undefined)
             {
                 let id = data['userBackgroundTask'];
 
@@ -498,6 +511,20 @@ class Worker extends SCWorker
                 {
                     this._invokeUserBackgroundTask(this._userBackgroundTasks[id]);
                 }
+            }
+            else if(data['systemBackgroundTasks'] !== undefined && data['systemBackgroundTasks'])
+            {
+                for(let i = 0; i < this._systemBackgroundTasks.length; i++)
+                {
+                    this._invokeSystemBackgroundTask(this._systemBackgroundTasks[i]);
+                }
+            }
+            else if(data['prepareBackgroundTask'] !== undefined && data['prepareBackgroundTask'])
+            {
+                this._zc.emitEvent(Const.Event.ZATION_PREPARE, (f) =>
+                {
+                    f(this._preapreSmallBag,{});
+                });
             }
             respond(null);
         });
@@ -512,7 +539,7 @@ class Worker extends SCWorker
     {
         if(task !== undefined && typeof task === 'function')
         {
-            task(SmallBag.getSmallBagFromWorker(this));
+            task(this._preapreSmallBag);
         }
     }
 

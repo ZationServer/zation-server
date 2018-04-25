@@ -8,6 +8,8 @@ class MainConfig {}
 
 MainConfig.PORT                                = 'port';
 MainConfig.DEBUG                               = 'debug';
+MainConfig.START_DEBUG                         = 'startDebug';
+MainConfig.ENVIRONMENT                         = 'environment';
 MainConfig.TIME_ZONE                           = 'timeZone';
 MainConfig.WORKERS                             = 'workers';
 MainConfig.BROKERS                             = 'brokers';

@@ -16,6 +16,7 @@ Event.ZATION_BEFORE_ERROR                = 'beforeError'; //SmallBag + Error ok
 Event.ZATION_BEFORE_TASK_ERROR           = 'beforeTaskError'; //SmallBag + Error ok
 Event.ZATION_BEFORE_TASK_ERROR_BAG       = 'beforeTaskErrorBag'; //SmallBag + Error ok
 Event.ZATION_BACKGROUND_TASK             = 'backgroundTask'; //SmallBag ok
+Event.ZATION_PREPARE                     = 'prepare'; //SmallBag + Prepare Functions
 
 //SocketCluster Socket Events
 Event.SOCKET_ERROR                       = 'socketError';
