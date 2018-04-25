@@ -46,6 +46,18 @@ class SHBridge
         return this._socket;
     }
 
+    getRemoteAddress()
+    {
+        if(this._isSocket)
+        {
+            return this._socket.remoteAddress;
+        }
+        else
+        {
+            return this._httpReq.headers['x-forwarded-for'] ||  this._httpReq.connection.remoteAddress;
+        }
+    }
+
     getResponse()
     {
         return this._httpRes;

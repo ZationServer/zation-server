@@ -519,13 +519,6 @@ class Worker extends SCWorker
                     this._invokeSystemBackgroundTask(this._systemBackgroundTasks[i]);
                 }
             }
-            else if(data['prepareBackgroundTask'] !== undefined && data['prepareBackgroundTask'])
-            {
-                this._zc.emitEvent(Const.Event.ZATION_PREPARE, (f) =>
-                {
-                    f(this._preapreSmallBag,{});
-                });
-            }
             respond(null);
         });
     }

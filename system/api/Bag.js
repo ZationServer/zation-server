@@ -254,6 +254,13 @@ class Bag extends SmallBag
         return this._channelEngine.emitToSocket(eventName,data,cb);
     }
 
+    //Part Remote Address
+
+    getRemoveAddress()
+    {
+        return this._shBridge.getRemoteAddress();
+    }
+
     //Part Amazon s3
 
     // noinspection JSUnusedGlobalSymbols

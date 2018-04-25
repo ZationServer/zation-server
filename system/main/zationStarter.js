@@ -134,9 +134,6 @@ class ZationStarter
             this._sendToRandomWorker({systemBackgroundTasks : true});
         }
         ,this._zc.getMain(Const.Main.SYSTEM_BACKGROUND_TASK_REFRESH_RATE));
-
-        //prepareEvent
-        this._sendToRandomWorker({prepareBackgroundTask : true});
     }
 
     _setEveryBackgroundTask(id,time)
@@ -160,7 +157,7 @@ class ZationStarter
                 }
                 else
                 {
-                    throw Error(`Planed every background task with id ${id} goes wrong`);
+                    throw Error(`Planed every background task with id ${id} goes wrong.`);
                 }
             };
             set();
@@ -186,7 +183,7 @@ class ZationStarter
             }
             else
             {
-                throw Error(`Planed at background task with id ${id} goes wrong`);
+                throw Error(`Planed at background task with id ${id} goes wrong.`);
             }
         }
     }
