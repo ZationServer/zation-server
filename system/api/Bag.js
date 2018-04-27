@@ -15,7 +15,7 @@ class Bag extends SmallBag
     {
         let channelEngine = new ChannelEngine(worker.scServer,shBridge,worker.getZationConfig());
 
-        super(channelEngine,worker.getServiceEngine());
+        super(worker,channelEngine);
 
         this._bagVariables = {};
 
@@ -256,7 +256,7 @@ class Bag extends SmallBag
 
     //Part Remote Address
 
-    getRemoveAddress()
+    getRemoteAddress()
     {
         return this._shBridge.getRemoteAddress();
     }

@@ -5,13 +5,10 @@ GitHub: LucaCode
  */
 
 const Const             = require('../helper/constante/constWrapper');
-const MainErrors          = require('../helper/zationTaskErrors/mainTaskErrors');
 
 const path              = require('path');
 const fs                = require('fs');
 const crypto            = require('crypto');
-
-const systemController  = require('../helper/systemController/systemControler.config');
 
 class ZationConfig
 {
@@ -28,6 +25,8 @@ class ZationConfig
             //Create Defaults
             this._mainConfig[Const.Main.DEBUG] = false;
             this._mainConfig[Const.Main.PORT] = process.env.PORT || 3000;
+            this._mainConfig[Const.Main.PATH] = 'zation';
+            this._mainConfig[Const.Main.HOSTNAME] = 'localhost';
             this._mainConfig[Const.Main.POST_KEY_WORD] = 'zation';
             this._mainConfig[Const.Main.USE_AUTH] = true;
             this._mainConfig[Const.Main.APP_NAME] = 'AppWithoutName';
@@ -175,15 +174,21 @@ class ZationConfig
         }
     }
 
-    printDebugInfo(txt,obj)
+    printDebugInfo(txt,obj,jsonStringify = false)
     {
         if (this.isDebug())
         {
-            console.log('\x1b[34m%s\x1b[0m','   [INFO]',txt);
-
-            if(obj !== undefined)
+            if(jsonStringify)
             {
-                console.log(obj);
+                console.log('\x1b[34m%s\x1b[0m','   [INFO]',txt + JSON.stringify(obj));
+            }
+            else
+            {
+                console.log('\x1b[34m%s\x1b[0m','   [INFO]',txt);
+                if(obj !== undefined)
+                {
+                    console.log(obj);
+                }
             }
         }
     }

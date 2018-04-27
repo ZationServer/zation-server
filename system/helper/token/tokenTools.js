@@ -125,7 +125,7 @@ class TokenTools
     {
         let oldToken = tokenBridge.getToken();
         let suc = await TokenTools._changeToken(data,tokenBridge,zc,true);
-        if(suc)
+        if(suc && zc.isExtraSecureAuth())
         {
             let newToken = tokenBridge.getToken();
             await tokenEngine.getWorker().getTokenInfoStorage().updateTokenInfo(oldToken,newToken);

@@ -6,24 +6,71 @@ GitHub: LucaCode
 
 const Const         = require('./../helper/constante/constWrapper');
 const crypto        = require('crypto');
+const IP            = require('ip');
 const ExchangeEngine= require('./../helper/channel/chExchangeEngine');
 
 class SmallBag
 {
-    constructor(exchangeEngine,serviceEngine,zc)
+    constructor(worker,exchangeEngine = new ExchangeEngine(worker.scServer))
     {
         this._exchangeEngine = exchangeEngine;
-        this._serviceEngine = serviceEngine;
-        this._zc = zc;
+        this._serviceEngine = worker.getServiceEngine();
+        this._zc = worker.getZationConfig();
+        this._worker = worker;
     }
 
-    static getSmallBagFromWorker(worker)
+    //PART Server
+
+    // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
+    getServerIpAddress()
     {
-        let exchangeEngine = new ExchangeEngine(worker.scServer);
-        return new SmallBag(exchangeEngine,worker.getServiceEngine(),worker.getZationConfig());
+        return IP.address();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getServerPort()
+    {
+        return this._zc.getMain(Const.Main.PORT);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getAppName()
+    {
+        return this._zc.getMain(Const.Main.APP_NAME);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getZationVersion()
+    {
+        return this._worker._serverVersion;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getServerStartedTimeStamp()
+    {
+        return this._worker._serverStartedTimeStamp;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getWorkerStartedTimeStamp()
+    {
+        return this._worker._workerStartedTimeStamp;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getWorkerId()
+    {
+        return this._worker.id;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getWorkerFullId()
+    {
+        return this._worker.getWorkerFullId();
     }
 
     //Part Auth
+
     // noinspection JSUnusedGlobalSymbols
     publishAuthOut(id)
     {

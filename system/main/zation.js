@@ -10,7 +10,7 @@ const Const           = require('../helper/constante/constWrapper');
 const HttpProcessor   = require('./../helper/processor/httpProcessor');
 const SocketProcessor = require('./../helper/processor/socketProcessor');
 const Returner        = require('./../helper/response/returner');
-const SmallBag        = require('./../api/SmallBag');
+const IdCounter       = require('./../helper/tools/idCounter');
 
 class Zation
 {
@@ -18,8 +18,7 @@ class Zation
     {
         this._zc = worker.getZationConfig();
         this._worker = worker;
-        this._httpReqCount = 0;
-        this._socketReqCount = 0;
+        this._reqIdCounter = new IdCounter();
     }
 
     async run(data)
@@ -27,36 +26,26 @@ class Zation
         data.worker = this._worker;
         data.zc = this._zc;
 
+        this._reqIdCounter.increase();
+        let reqId = this._reqIdCounter.getId();
+
+        let fullReqId = `${this._worker._getFullWorkerId()}-${reqId}`;
+
         if(data.isSocket)
         {
-            this._zc.printDebugInfo(`Socket request with id: ${this._worker.id}-${this._socketReqCount} ->`
-                ,data.input);
+            this._zc.printDebugInfo(`Socket Request id: ${fullReqId} ->`
+                ,data.input,true);
 
-            if(this._zc.isDebug() || this._zc.isUsePanel())
-            {
-                data.reqId = `${this._worker.id}-${this._socketReqCount}`;
-                this._socketReqCount++;
-
-                if(this._socketReqCount >= Number.MAX_SAFE_INTEGER)
-                {
-                    this._socketReqCount = 0;
-                }
-            }
+            data.reqId = fullReqId;
         }
         else
         {
-            this._zc.printDebugInfo(`Http request with id: ${this._worker.id}-${this._httpReqCount} ->`,
-                data.req.body[Const.Main.POST_KEY_WORD]);
+            this._zc.printDebugInfo(`Http Request id: ${fullReqId} ->`,
+                data.req.body[Const.Main.POST_KEY_WORD],true);
 
             if(this._zc.isDebug() || this._zc.isUsePanel())
             {
-                data.reqId = `${this._worker.id}-${this._httpReqCount}`;
-                this._httpReqCount++;
-
-                if(this._httpReqCount >= Number.MAX_SAFE_INTEGER)
-                {
-                    this._httpReqCount = 0;
-                }
+                data.reqId = fullReqId;
             }
         }
 
@@ -83,21 +72,17 @@ class Zation
             }
 
             this._zc.emitEvent(Const.Event.ZATION_BEFORE_ERROR,
-                (f) => {f(SmallBag.getSmallBagFromWorker(this._worker),e)});
+                (f) => {f(this._worker._preapreSmallBag,e)});
 
             if(e instanceof  TaskError)
             {
-                this._zc.printDebugInfo('TASK ERROR ->',e);
-
                 this._zc.emitEvent(Const.Event.ZATION_BEFORE_TASK_ERROR,
-                    (f) => {f(SmallBag.getSmallBagFromWorker(this._worker),e)});
+                    (f) => {f(this._worker._preapreSmallBag,e)});
             }
             else if(e instanceof TaskErrorBag)
             {
-                this._zc.printDebugInfo('TASK ERROR BAG ->',e);
-
                 this._zc.emitEvent(Const.Event.ZATION_BEFORE_TASK_ERROR_BAG,
-                    (f) => {f(SmallBag.getSmallBagFromWorker(this._worker),e)});
+                    (f) => {f(this._worker._preapreSmallBag,e)});
             }
             else
             {

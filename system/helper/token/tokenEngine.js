@@ -26,10 +26,14 @@ class TokenEngine
     //to create a new Token
     async createToken(data)
     {
-        let expiry = this._generateExpiry();
-        let tokenId = await this._worker.getTokenInfoStorage().createTokenInfo(expiry,data[Const.Settings.CLIENT_AUTH_ID]);
-        data['exp'] = expiry;
-        data[Const.Settings.CLIENT_TOKEN_ID] = tokenId;
+        if(this._zc.isExtraSecureAuth())
+        {
+            let expiry = this._generateExpiry();
+            let tokenId = await this._worker.getTokenInfoStorage().createTokenInfo(expiry,data[Const.Settings.CLIENT_AUTH_ID]);
+            data['exp'] = expiry;
+            data[Const.Settings.CLIENT_TOKEN_ID] = tokenId;
+        }
+
         return TokenTools.createNewToken(data,this._shBridge.getTokenBridge(),this._zc);
     }
 

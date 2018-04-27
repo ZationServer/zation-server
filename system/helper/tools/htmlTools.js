@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 const path           = require('path');
 
-class HtmlTool
+class HtmlTools
 {
     static writeHtml(res,pathToHtml)
     {
@@ -14,4 +14,4 @@ class HtmlTool
     }
 }
 
-module.exports = HtmlTool;
+module.exports = HtmlTools;

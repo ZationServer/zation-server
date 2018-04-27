@@ -19,6 +19,7 @@ const TokenInfoStorage      = require('../helper/token/tokenInfoStorage');
 const MasterStorage         = require('../helper/storage/masterStorage');
 const SystemBackgroundTask  = require('../helper/background/systemBackgroundTasks');
 const SmallBag              = require('../api/SmallBag');
+const PrepareClientJs       = require('./../helper/tools/prepareClientJs');
 
 class Worker extends SCWorker
 {
@@ -29,6 +30,10 @@ class Worker extends SCWorker
         this._systemBackgroundTasks = [];
         this._userBackgroundTasks = {};
 
+        this._workerStartedTimeStamp = Date.now();
+        this._serverStartedTimeStamp = this.options.zationServerStartedTimeStamp;
+        this._serverVersion = this.options.zationServerVersion;
+
         let zcOptions = this.options.zationConfigWorkerTransport;
 
         this._zc = new ZationConfig(zcOptions.mainConfig,true);
@@ -38,6 +43,9 @@ class Worker extends SCWorker
         this._zc.printStartDebugInfo(`Worker with id ${this.id} load other zation config files.`);
 
         this._zc.loadOtherConfigs();
+
+        this._zc.printStartDebugInfo(`Worker with id ${this.id} starts to prepare client js.`);
+        this._preparedClientJs = PrepareClientJs.buildClientJs();
 
         //Services
         this._zc.printStartDebugInfo(`Worker with id ${this.id} create service engine.`);
@@ -51,7 +59,7 @@ class Worker extends SCWorker
         }
 
         this._zc.printStartDebugInfo(`Worker with id ${this.id} prepare a small bag.`);
-        this._preapreSmallBag = SmallBag.getSmallBagFromWorker(this);
+        this._preapreSmallBag = new SmallBag(this);
 
         this._zc.printStartDebugInfo(`Worker with id ${this.id} load user background tasks.`);
         this._loadUserBackgroundTasks();
@@ -132,6 +140,8 @@ class Worker extends SCWorker
 
     _startHttpServer()
     {
+        let path = this._zc.getMain(Const.Main.PATH);
+
         this._app = express();
         //startCookieParser
         // noinspection JSUnresolvedFunction
@@ -151,24 +161,28 @@ class Worker extends SCWorker
         //PUBLIC FOLDER
 
         // noinspection JSUnresolvedFunction
-        this._app.use('/zation/assets', express.static(__dirname + '/../public/assets'));
+        this._app.use(`/${path}/assets`, express.static(__dirname + '/../public/assets'));
 
         // noinspection JSUnresolvedFunction
-        this._app.use('/zation/css', express.static(__dirname + '/../public/css'));
+        this._app.use(`/${path}/css`, express.static(__dirname + '/../public/css'));
 
         // noinspection JSUnresolvedFunction
-        this._app.use('/zation/js', express.static(__dirname + '/../public/js'));
+        this._app.use(`/${path}/js`, express.static(__dirname + '/../public/js'));
 
         // noinspection JSUnresolvedFunction
-        this._app.use('/zation/client', express.static(__dirname + '/../public/client'));
+        this._app.use(`/${path}/panel`, express.static(__dirname + '/../public/panel'));
 
         // noinspection JSUnresolvedFunction
-        this._app.use('/zation/panel', express.static(__dirname + '/../public/panel'));
+        this._app.get(`/${path}/client`,(req,res) =>
+        {
+            res.type('.js');
+            res.send(this._preparedClientJs);
+        });
 
         //REQUEST
 
         // noinspection JSUnresolvedFunction
-        this._app.all('/zation', (req, res) => {
+        this._app.all(`/${path}`, (req, res) => {
             //Run Zation
             // noinspection JSUnusedLocalSymbols
             let p = this.zation.run(
@@ -181,6 +195,11 @@ class Worker extends SCWorker
 
         this._zc.emitEvent(Const.Event.ZATION_HTTP_SERVER_IS_STARTED,
             (f) => {f(this._zc.getSomeInformation())});
+    }
+
+    _getFullWorkerId()
+    {
+        return `${this.id}.${this._workerStartedTimeStamp}`;
     }
 
     _initSocketMiddleware()
@@ -200,6 +219,7 @@ class Worker extends SCWorker
 
                     if (id !== undefined && channel.indexOf(Const.Settings.CHANNEL_USER_CHANNEL_PREFIX) !== -1) {
                         if (Const.Settings.CHANNEL_USER_CHANNEL_PREFIX + id === channel) {
+                            this._zc.printDebugInfo(`Socket with id: ${req.socket.id} subscribes user channel ${id}`);
                             next();
                         }
                         else {
@@ -210,6 +230,10 @@ class Worker extends SCWorker
                     }
                     else if (group !== undefined && channel.indexOf(Const.Settings.CHANNEL_AUTH_GROUP_PREFIX) !== -1) {
                         if (Const.Settings.CHANNEL_AUTH_GROUP_PREFIX + group === channel) {
+
+                            this._zc.printDebugInfo
+                            (`Socket with id: ${req.socket.id} subscribes group channel ${group}`);
+
                             next();
                         }
                         else {
@@ -226,6 +250,10 @@ class Worker extends SCWorker
                     else if (channel.indexOf(Const.Settings.CHANNEL_SPECIAL_CHANNEL_PREFIX) !== -1) {
                         let chName = ChAccessEngine.getSpecialChannelName(channel);
                         if (ChAccessEngine.hasAccessToSubSpecialChannel(req.socket, chName)) {
+
+                            this._zc.printDebugInfo
+                            (`Socket with id: ${req.socket.id} subscribes special channel ${chName}`);
+
                             next();
                         }
                         else {
@@ -235,6 +263,7 @@ class Worker extends SCWorker
                         }
                     }
                     else {
+                        this._zc.printDebugInfo(`Socket with id: ${req.socket.id} subscribes ${channel}`);
                         next();
                     }
                 }
@@ -250,11 +279,16 @@ class Worker extends SCWorker
                         next(err); //Block!
                     }
                     else if (channel === Const.Settings.CHANNEL_DEFAULT_GROUP) {
+                        this._zc.printDebugInfo(`Socket with id: ${req.socket.id} subscribes default group channel`);
                         next();
                     }
                     else if (channel.indexOf(Const.Settings.CHANNEL_SPECIAL_CHANNEL_PREFIX) !== -1) {
                         let chName = ChAccessEngine.getSpecialChannelName(channel);
                         if (ChAccessEngine.hasAccessToSubSpecialChannel(req.socket, chName)) {
+
+                            this._zc.printDebugInfo
+                            (`Socket with id: ${req.socket.id} subscribes special channel ${chName}`);
+
                             next();
                         }
                         else {
@@ -264,6 +298,7 @@ class Worker extends SCWorker
                         }
                     }
                     else {
+                        this._zc.printDebugInfo(`Socket with id: ${req.socket.id} subscribes ${channel}`);
                         next();
                     }
                 }

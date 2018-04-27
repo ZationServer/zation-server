@@ -7,6 +7,8 @@ GitHub: LucaCode
 class MainConfig {}
 
 MainConfig.PORT                                = 'port';
+MainConfig.HOSTNAME                            = 'hostname';
+MainConfig.PATH                                = 'path';
 MainConfig.DEBUG                               = 'debug';
 MainConfig.START_DEBUG                         = 'startDebug';
 MainConfig.ENVIRONMENT                         = 'environment';

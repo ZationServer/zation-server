@@ -10,18 +10,24 @@ const ZationConfig      = require('./zationConfig');
 const HashSet           = require('hashset');
 const CommandStorage    = require('command-storage');
 const TimeTools         = require('./../helper/tools/timeTools');
+const PrepareClientJs   = require('./../helper/tools/prepareClientJs');
 
 class ZationStarter
 {
     constructor(options)
     {
         this._version = "0.6.0";
+        this._serverStartedTimeStamp = Date.now();
+
         this._zc = new ZationConfig(options);
         this._workerIds = new HashSet();
 
         console.log('\x1b[33m%s\x1b[0m', '   [BUSY]','Launching Zation');
 
         this._zc.printDebugInfo('Zation is launching in debug Mode!');
+
+        this._zc.printStartDebugInfo('Build server settings file');
+        PrepareClientJs.createServerSettingsFile(this._zc);
 
         this._zc.printStartDebugInfo('Start socket cluster');
         this._startSocketCluster();
@@ -47,7 +53,9 @@ class ZationStarter
             authPublicKey: this._zc.getMain(Const.Main.AUTH_PUBLIC_KEY),
             authPrivateKey: this._zc.getMain(Const.Main.AUTH_PRIVATE_KEY),
             authDefaultExpiry: this._zc.getMain(Const.Main.AUTH_DEFAULT_EXPIRY),
-            zationConfigWorkerTransport : this._zc.getWorkerTransport()
+            zationConfigWorkerTransport : this._zc.getWorkerTransport(),
+            zationServerVersion : this._version,
+            zationServerStartedTimeStamp : this._serverStartedTimeStamp
         });
 
         this._zc.loadOtherConfigs();
@@ -94,6 +102,8 @@ class ZationStarter
     {
         console.log('\x1b[32m%s\x1b[0m', '   [ACTIVE]','Zation started');
         console.log(`            Version: ${this._version}`);
+        console.log(`            Hostname: ${this._zc.getMain(Const.Main.HOSTNAME)}`);
+        console.log(`            Path: ${this._zc.getMain(Const.Main.PATH)}`);
         console.log(`            Port: ${this._zc.getMain(Const.Main.PORT)}`);
         console.log(`            Your app: ${this._zc.getMain(Const.Main.APP_NAME)}`);
         console.log(`            Time: ${TimeTools.getMoment(this._zc)}`);
