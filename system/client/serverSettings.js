@@ -1,1 +1,1 @@
-var ZATION_SERVER_DEFAULTS = {PATH : 'zation',HOSTNAME : 'localhost',PORT : '3000',SECURE : 'false'}; 
+var ZATION_SERVER_SETTINGS = {HOSTNAME : 'localhost',PORT : 3001,SECURE : false, POST_KEY_WORD : 'zation'}; 

@@ -26,11 +26,11 @@ class PrepareClientJs
     static createServerSettingsFile(zc)
     {
         let res = '';
-        res += 'var ZATION_SERVER_DEFAULTS = {';
-        res += `PATH : '${zc.getMain(Const.Main.PATH)}',`;
+        res += 'var ZATION_SERVER_SETTINGS = {';
         res += `HOSTNAME : '${zc.getMain(Const.Main.HOSTNAME)}',`;
-        res += `PORT : '${zc.getMain(Const.Main.PORT)}',`;
-        res += `SECURE : '${zc.getMain(Const.Main.SECURE)}'`;
+        res += `PORT : ${zc.getMain(Const.Main.PORT)},`;
+        res += `SECURE : ${zc.getMain(Const.Main.SECURE)}, `;
+        res += `POST_KEY_WORD : '${zc.getMain(Const.Main.POST_KEY_WORD)}'`;
         res += '}; \n';
         fs.writeFileSync(serverSettingsFile,res,'utf8');
     }

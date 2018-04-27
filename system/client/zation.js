@@ -6,7 +6,7 @@ GitHub: LucaCode
  */
 
 // noinspection JSUnusedGlobalSymbols
-class ZationSocket
+class Zation
 {
     constructor(settings = {})
     {
@@ -26,7 +26,9 @@ class ZationSocket
         this._port = 3000;
         this._secure = false;
         this._rejectUnauthorized = false;
+        this._postKeyWord = 'zation';
 
+        //SystemVars
         this._isAuthOut = false;
         this._isReAuth  = false;
         this._isFirstStart = true;
@@ -45,6 +47,7 @@ class ZationSocket
 
         //Init
         this._createSystemResponds();
+        this._readServerSettings();
         this._readSettings();
         this._addRespondsFromSettings();
         this._createSystemReactions();
@@ -70,16 +73,16 @@ class ZationSocket
             },
             {
                 name : 'clientAuthOut',
-                type : Zation.ERROR_TYP_REACT
+                type : ZationConst.ERROR_TYP_REACT
             }
         );
 
-        channelResp.onUserCh(Zation.USER_CHANNEL_AUTH_OUT,() =>
+        channelResp.onUserCh(ZationConst.USER_CHANNEL_AUTH_OUT,() =>
         {
             this.authOut();
         });
 
-        channelResp.onUserCh(Zation.USER_CHANNEL_RE_AUTH,() =>
+        channelResp.onUserCh(ZationConst.USER_CHANNEL_RE_AUTH,() =>
         {
             this.reAuth();
         });
@@ -166,8 +169,8 @@ class ZationSocket
             {
                 this._events.push({event : event,reaction : (data) =>
                     {
-                        resolve(data);
                         reaction(data);
+                        resolve(data);
                     }});
                 return true;
             }
@@ -225,7 +228,7 @@ class ZationSocket
 
                 if(this._debug)
                 {
-                    Zation._printInfo(`User is Login with id -> ${this._currentAuthId} in Group
+                    ZationTools._printInfo(`User is Login with id -> ${this._currentAuthId} in Group
                  -> ${this._currentAuthGroup}`);
                 }
             }
@@ -247,14 +250,14 @@ class ZationSocket
     {
         if(token !== null)
         {
-            if(token[Zation.CLIENT_AUTH_ID] !== undefined)
+            if(token[ZationConst.CLIENT_AUTH_ID] !== undefined)
             {
-                this._setNewAuthId(token[Zation.CLIENT_AUTH_ID]);
+                this._setNewAuthId(token[ZationConst.CLIENT_AUTH_ID]);
             }
 
-            if(token[Zation.CLIENT_AUTH_GROUP] !== undefined)
+            if(token[ZationConst.CLIENT_AUTH_GROUP] !== undefined)
             {
-                this._setNewAuthGroup(token[Zation.CLIENT_AUTH_GROUP]);
+                this._setNewAuthGroup(token[ZationConst.CLIENT_AUTH_GROUP]);
             }
         }
     }
@@ -303,15 +306,18 @@ class ZationSocket
             authDataTemp = authData;
         }
 
-        let data = Zation._buildAuthRequestData(authDataTemp, this._system, this._version);
-        let result = await this._emitZationRequest(data,respond);
+        let data = ZationTools._buildAuthRequestData(authDataTemp, this._system, this._version);
+        return await this._emitZationRequest(data,respond);
+    }
 
-        if(!result.hasNewAuthData())
+    tryToAuthIn()
+    {
+        return new Promise((resolve,reject) =>
         {
-            this._emitEvent('cantAuthIn',authData);
-        }
 
-        return result;
+
+
+        });
     }
 
 
@@ -332,7 +338,7 @@ class ZationSocket
     {
         if(this._currentAuthId !== undefined)
         {
-            this._registerZationChannel(Zation.CHANNEL_USER_CHANNEL_PREFIX,this._currentAuthId);
+            this._registerZationChannel(ZationConst.CHANNEL_USER_CHANNEL_PREFIX,this._currentAuthId);
             return true;
         }
         else
@@ -346,7 +352,7 @@ class ZationSocket
     {
         if(this._currentAuthId !== undefined)
         {
-            this._unregisterZationChannel(Zation.CHANNEL_USER_CHANNEL_PREFIX + this._currentAuthId);
+            this._unregisterZationChannel(ZationConst.CHANNEL_USER_CHANNEL_PREFIX + this._currentAuthId);
             return true;
         }
         else
@@ -358,9 +364,9 @@ class ZationSocket
     // noinspection JSUnusedGlobalSymbols
     registerAuthGroupChannel()
     {
-        if(Zation._isAuthIn(this._currentAuthGroup))
+        if(ZationTools._isAuthIn(this._currentAuthGroup))
         {
-            this._registerZationChannel(Zation.CHANNEL_AUTH_GROUP_PREFIX, this._currentAuthGroup);
+            this._registerZationChannel(ZationConst.CHANNEL_AUTH_GROUP_PREFIX, this._currentAuthGroup);
             return true;
         }
         else
@@ -372,9 +378,9 @@ class ZationSocket
     // noinspection JSUnusedGlobalSymbols
     unregisterAuthGroupChannel()
     {
-        if(Zation._isAuthIn(this._currentAuthGroup))
+        if(ZationTools._isAuthIn(this._currentAuthGroup))
         {
-            this._unregisterZationChannel(Zation.CHANNEL_AUTH_GROUP_PREFIX + this._currentAuthGroup);
+            this._unregisterZationChannel(ZationConst.CHANNEL_AUTH_GROUP_PREFIX + this._currentAuthGroup);
             return true;
         }
         else
@@ -386,9 +392,9 @@ class ZationSocket
     // noinspection JSUnusedGlobalSymbols
     registerDefaultGroupChannel()
     {
-        if(!Zation._isAuthIn(this._currentAuthGroup))
+        if(!ZationTools._isAuthIn(this._currentAuthGroup))
         {
-            this._registerZationChannel(Zation.CHANNEL_DEFAULT_GROUP);
+            this._registerZationChannel(ZationConst.CHANNEL_DEFAULT_GROUP);
             return true;
         }
         else
@@ -400,9 +406,9 @@ class ZationSocket
     // noinspection JSUnusedGlobalSymbols
     unregisterDefaultGroupChannel()
     {
-        if(!Zation._isAuthIn(this._currentAuthGroup))
+        if(!ZationTools._isAuthIn(this._currentAuthGroup))
         {
-            this._unregisterZationChannel(Zation.CHANNEL_DEFAULT_GROUP);
+            this._unregisterZationChannel(ZationConst.CHANNEL_DEFAULT_GROUP);
             return true;
         }
         else
@@ -414,13 +420,13 @@ class ZationSocket
     // noinspection JSUnusedGlobalSymbols
     registerAllChannel()
     {
-        this._registerZationChannel(Zation.CHANNEL_ALL);
+        this._registerZationChannel(ZationConst.CHANNEL_ALL);
     }
 
     // noinspection JSUnusedGlobalSymbols
     unregisterAllChannel()
     {
-        this._unregisterZationChannel(Zation.CHANNEL_ALL);
+        this._unregisterZationChannel(ZationConst.CHANNEL_ALL);
     }
 
     _registerZationChannel(channel,id = '')
@@ -459,7 +465,7 @@ class ZationSocket
     // noinspection JSUnusedGlobalSymbols
     subscribeSpecialCh(channel,id)
     {
-        let channelName = Zation.CHANNEL_SPECIAL_CHANNEL_PREFIX + channel + Zation.CHANNEL_SPECIAL_CHANNEL_ID + id;
+        let channelName = ZationConst.CHANNEL_SPECIAL_CHANNEL_PREFIX + channel + ZationConst.CHANNEL_SPECIAL_CHANNEL_ID + id;
         this._socket.subscribe(channelName);
 
         let watcher = (input) =>
@@ -490,7 +496,7 @@ class ZationSocket
     // noinspection JSUnusedGlobalSymbols
     isSubscribeSpecialCh(channel,id)
     {
-        let channelName = ZationSocket.getSpecialChannelName(channel,id);
+        let channelName = ZationTools.getSpecialChannelName(channel,id);
         let subs = this._socket.subscriptions();
         let found = false;
 
@@ -507,14 +513,14 @@ class ZationSocket
     // noinspection JSUnusedGlobalSymbols
     static getSpecialChannelName(channel,id)
     {
-        let channelName = Zation.CHANNEL_SPECIAL_CHANNEL_PREFIX;
+        let channelName = ZationConst.CHANNEL_SPECIAL_CHANNEL_PREFIX;
 
         if(channel !== undefined)
         {
             channelName+= id;
             if(id !== undefined)
             {
-                channelName += Zation.CHANNEL_SPECIAL_CHANNEL_ID + id;
+                channelName += ZationConst.CHANNEL_SPECIAL_CHANNEL_ID + id;
             }
         }
 
@@ -524,7 +530,7 @@ class ZationSocket
     // noinspection JSUnusedGlobalSymbols
     unsubscribeSpecialCh(channel,id)
     {
-        let channelName = ZationSocket.getSpecialChannelName(channel,id);
+        let channelName = ZationTools.getSpecialChannelName(channel,id);
 
         let subs = this._socket.subscriptions();
         let isUnsubscribeAChannel = false;
@@ -542,14 +548,44 @@ class ZationSocket
 
     //Part Main Config
 
+    _readServerSettings()
+    {
+        // noinspection JSUnresolvedVariable
+        if(ZATION_SERVER_SETTINGS !== undefined)
+        {
+            // noinspection JSUnresolvedVariable
+            let zss = ZATION_SERVER_SETTINGS;
+
+            if(zss['HOSTNAME'] !== undefined)
+            {
+                this._hostname = zss['HOSTNAME'];
+            }
+
+            if(zss['PORT'] !== undefined)
+            {
+                this._port = zss['PORT'];
+            }
+
+            if(zss['SECURE'] !== undefined)
+            {
+                this._secure = zss['SECURE'];
+            }
+
+            if(zss['POST_KEY_WORD'] !== undefined)
+            {
+                this._postKeyWord = zss['POST_KEY_WORD'];
+            }
+        }
+    }
+
     _readSettings()
     {
         if (this._settings.debug !== undefined) {
             this._debug = this._settings.debug;
         }
 
-        if (this._settings.autoAuth !== undefined) {
-            this._autoAuth = this._settings.autoAuth;
+        if (this._settings['autoAuth'] !== undefined) {
+            this._autoAuth = this._settings['autoAuth'];
         }
 
         if (this._settings._userChannelAutoRegistration !== undefined) {
@@ -576,7 +612,8 @@ class ZationSocket
             this._version = this._settings.version;
         }
 
-        if (this._settings.hostname !== undefined) {
+        if (this._settings.hostname !== undefined)
+        {
             this._hostname = this._settings.hostname;
         }
 
@@ -586,6 +623,10 @@ class ZationSocket
 
         if (this._settings.port !== undefined) {
             this._port = this._settings.port;
+        }
+
+        if (this._settings._postKeyWord !== undefined) {
+            this._postKeyWord = this._settings._postKeyWord;
         }
 
         if (this._settings.secure !== undefined) {
@@ -698,6 +739,7 @@ class ZationSocket
 
     _buildConnection()
     {
+        // noinspection JSUnresolvedVariable
         this._socket = socketCluster.create(this._buildOptions());
 
         this._socket.on('connect', async () => {
@@ -767,6 +809,12 @@ class ZationSocket
             this._updateAuthInfo(this._socket.authToken);
         });
 
+        this._socket.on('badAuthToken',async () =>
+        {
+            this.authOut();
+            await this.authIn(this._authData);
+        });
+
         this._socket.on('connectAbort',() =>
         {
             this._emitEvent('connectAbort',this._socket);
@@ -779,7 +827,7 @@ class ZationSocket
 
         this._socket.on('kickOut',(message, channelName) =>
         {
-            if(channelName.indexOf(Zation.CHANNEL_SPECIAL_CHANNEL_PREFIX) !== -1)
+            if(channelName.indexOf(ZationConst.CHANNEL_SPECIAL_CHANNEL_PREFIX) !== -1)
             {
                 this._emitEvent('kickOutFromSpecialChannel',channelName);
             }
@@ -788,7 +836,7 @@ class ZationSocket
 
     async send(request,reaction)
     {
-        let data = await Zation._buildRequestData(request, this._system, this._version);
+        let data = await ZationTools._buildRequestData(request, this._system, this._version);
         return await this._emitZationRequest(data,reaction);
     };
 
@@ -823,10 +871,52 @@ class ZationSocket
         });
     }
 
+    _sendHttpZationRequest(data,reaction)
+    {
+        return new Promise((resolve, reject) =>
+        {
+            let request = new XMLHttpRequest();
+            let sendObj = {};
+            sendObj[this._postKeyWord] = data;
+
+            request.addEventListener("load", () =>
+            {
+                if(request.status >= 200
+                    && request.status < 300
+                    && request.responseText !== '')
+                {
+                    let result = new Result(request.responseText);
+                    if(typeof reaction === 'function')
+                    {
+                        reaction(result);
+                    }
+                    else if(reaction instanceof RequestRespond)
+                    {
+                        reaction._trigger(result);
+                    }
+
+                    resolve(result);
+                    this._triggerRequestResponds(result);
+                }
+                else
+                {
+                    let err = new Event('No Result!');
+                    reject(err);
+                }
+            });
+
+            request.addEventListener("error", (e) => {reject(e);});
+
+            request.open('POST',this._hostname + this._path + ':' + this._port, true);
+            request.setRequestHeader("Content-type", "applization/x-www-form-urlencoded");
+            request.send(sendObj);
+        });
+    }
+
 }
 
 
-class Zation
+class ZationTools
 {
     static _isAuthIn(authGroup)
     {
@@ -873,30 +963,30 @@ class Zation
 }
 
 //Part Const
+class ZationConst {}
+ZationConst.ERROR_TYP_SYSTEM_ERROR         = 'SYSTEM_ERROR';
+ZationConst.ERROR_TYP_INPUT_ERROR          = 'INPUT_ERROR';
+ZationConst.ERROR_TYP_VALIDATOR_ERROR      = 'VALIDATOR_ERROR';
+ZationConst.ERROR_TYP_NORMAL_ERROR         = 'NORMAL_ERROR';
+ZationConst.ERROR_TYP_AUTH_ERROR           = 'AUTH_ERROR';
+ZationConst.ERROR_TYP_DATABASE_ERROR       = 'DATABASE_ERROR';
+ZationConst.ERROR_TYP_COMPATIBILITY_ERROR  = 'COMPATIBILITY_ERROR';
+ZationConst.ERROR_TYP_REACT                = 'REACT';
 
-Zation.ERROR_TYP_SYSTEM_ERROR         = 'SYSTEM_ERROR';
-Zation.ERROR_TYP_INPUT_ERROR          = 'INPUT_ERROR';
-Zation.ERROR_TYP_VALIDATOR_ERROR      = 'VALIDATOR_ERROR';
-Zation.ERROR_TYP_NORMAL_ERROR         = 'NORMAL_ERROR';
-Zation.ERROR_TYP_AUTH_ERROR           = 'AUTH_ERROR';
-Zation.ERROR_TYP_DATABASE_ERROR       = 'DATABASE_ERROR';
-Zation.ERROR_TYP_COMPATIBILITY_ERROR  = 'COMPATIBILITY_ERROR';
-Zation.ERROR_TYP_REACT                = 'REACT';
+ZationConst.CHANNEL_USER_CHANNEL_PREFIX     = 'ZATION.USER.';
+ZationConst.CHANNEL_AUTH_GROUP_PREFIX       = 'ZATION.AUTH_GROUP.';
+ZationConst.CHANNEL_ALL                     = 'ZATION.ALL';
+ZationConst.CHANNEL_DEFAULT_GROUP           = 'ZATION.DEFAULT_GROUP';
+ZationConst.CHANNEL_SPECIAL_CHANNEL_PREFIX  = 'ZATION.SPECIAL_CHANNEL.';
+ZationConst.CHANNEL_SPECIAL_CHANNEL_ID      = '.CH_ID.';
 
-Zation.CHANNEL_USER_CHANNEL_PREFIX     = 'ZATION.USER.';
-Zation.CHANNEL_AUTH_GROUP_PREFIX       = 'ZATION.AUTH_GROUP.';
-Zation.CHANNEL_ALL                     = 'ZATION.ALL';
-Zation.CHANNEL_DEFAULT_GROUP           = 'ZATION.DEFAULT_GROUP';
-Zation.CHANNEL_SPECIAL_CHANNEL_PREFIX  = 'ZATION.SPECIAL_CHANNEL.';
-Zation.CHANNEL_SPECIAL_CHANNEL_ID      = '.CH_ID.';
+ZationConst.USER_CHANNEL_AUTH_OUT          = 'zationAuthOut';
+ZationConst.USER_CHANNEL_RE_AUTH           = 'zationReAuth';
 
-Zation.USER_CHANNEL_AUTH_OUT          = 'zationAuthOut';
-Zation.USER_CHANNEL_RE_AUTH           = 'zationReAuth';
+ZationConst.CLIENT_AUTH_GROUP              = 'zationAuthGroup';
+ZationConst.CLIENT_AUTH_ID                 = 'zationAuthId';
 
-Zation.CLIENT_AUTH_GROUP              = 'zationAuthGroup';
-Zation.CLIENT_AUTH_ID                 = 'zationAuthId';
-
-Zation.SYSTEM_CONTROLLER_LOG_OUT      = 'zationSystemControllerLogOut';
+ZationConst.SYSTEM_CONTROLLER_LOG_OUT      = 'zationSystemControllerLogOut';
 
 class Result
 {
@@ -1330,16 +1420,16 @@ class ChannelRespond extends Respond
                 ChannelRespond._triggerSpecialChannelReactions(this._specialChannelReactions, channel, event, id, data);
             }
             else {
-                if (channel === Zation.CHANNEL_USER_CHANNEL_PREFIX) {
+                if (channel === ZationConst.CHANNEL_USER_CHANNEL_PREFIX) {
                     ChannelRespond._triggerChannelReactions(this._userChannelReactions, event, channel, data);
                 }
-                else if (channel === Zation.CHANNEL_AUTH_GROUP_PREFIX) {
+                else if (channel === ZationConst.CHANNEL_AUTH_GROUP_PREFIX) {
                     ChannelRespond._triggerChannelReactions(this._authGroupChannelReactions, event, channel, data);
                 }
-                else if (channel === Zation.CHANNEL_ALL) {
+                else if (channel === ZationConst.CHANNEL_ALL) {
                     ChannelRespond._triggerChannelReactions(this._allChannelReactions, event, channel, data);
                 }
-                else if (channel === Zation.CHANNEL_DEFAULT_GROUP) {
+                else if (channel === ZationConst.CHANNEL_DEFAULT_GROUP) {
                     ChannelRespond._triggerChannelReactions(this._defaultGroupChannelReactions, event, channel, data);
                 }
             }
@@ -2022,435 +2112,11 @@ class Filter
     }
 }
 
-//HTTP
-class ZationHttp
-{
-    constructor(settings = {})
-    {
-        //Var
-        this._settings = settings;
-        this._authData = settings.authData;
-
-        this._currentAuthId = undefined;
-        this._currentAuthGroup = undefined;
-
-        this._debug = false;
-        this._autoAuth = false;
-        this._system = 'U';
-        this._version = 1;
-        this._hostname = 'localhost';
-        this._path = '';
-        this._port = 3000;
-        this._secure = false;
-        this._postKeyWord = 'zation';
-
-        this._isAuthOut = false;
-        this._isReAuth  = false;
-        this._isFirstStart = true;
-
-        this._events = [];
-        //KickOut from Special Channel
-        //User cant login
-
-        //Responds
-        this._requestResponds = new Box();
-
-        //Init
-        this._createSystemResponds();
-        this._readSettings();
-        this._addRespondsFromSettings();
-        this._createSystemReactions();
-        this._buildConnection();
-    }
-
-    _createSystemResponds()
-    {
-        this._requestRespondSystem = this._requestResponds.addFixedItem(new RequestRespond());
-    }
-
-    _createSystemReactions()
-    {
-        let requestResp = this._requestResponds.getFixedItem(this._requestRespondSystem);
-
-        requestResp.onError(
-            "authOut",
-            () =>
-            {
-                this.authOut();
-            },
-            {
-                name : 'clientAuthOut',
-                type : Zation.ERROR_TYP_REACT
-            }
-        );
-    }
-
-    //Part Responds
-
-    // noinspection JSUnusedGlobalSymbols
-    getRequestRespond(key)
-    {
-        return this._requestResponds.getItem(key);
-    }
-
-
-    // noinspection JSUnusedGlobalSymbols
-    removeAllResponds()
-    {
-        this._requestResponds.removeAllItems();
-    }
-
-
-    _addRespondsFromSettings()
-    {
-        let resp = this._settings['responds'];
-        if (resp !== undefined)
-        {
-            if (Array.isArray(resp))
-            {
-                for(let i = 0; i < resp.length; i++)
-                {
-                    this.addRespond(resp[i]);
-                }
-            }
-            else if(typeof resp === 'object')
-            {
-                for(let k in resp)
-                {
-                    if(resp.hasOwnProperty(k))
-                    {
-                        this.addRespond(resp[k],k);
-                    }
-                }
-            }
-            else if(resp instanceof Respond)
-            {
-                this.addRespond(resp);
-            }
-        }
-    }
-
-
-    // noinspection JSUnusedGlobalSymbols
-    addRespond(respond,key,overwrite = true)
-    {
-        if(respond instanceof RequestRespond)
-        {
-            this._requestResponds.addItem(respond,key,overwrite);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    //Part Events
-
-    on(event,reaction = () => {})
-    {
-        return new Promise((resolve, reject) =>
-        {
-            if(typeof reaction === 'function')
-            {
-                this._events.push({event : event,reaction : (data) =>
-                    {
-                        resolve(data);
-                        reaction(data);
-                    }});
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        });
-    }
-
-    _emitEvent(event,data)
-    {
-        for(let i = 0; i < this._events.length; i++)
-        {
-            if(this._events[i].event === event)
-            {
-                this._events[i].reaction(data);
-            }
-        }
-    }
-
-    //Part Auth
-
-
-    _setNewAuthId(id)
-    {
-        if (this._currentAuthId !== id)
-        {
-            this._currentAuthId = id;
-        }
-    }
-
-    _setNewAuthGroup(group)
-    {
-        if (this._currentAuthGroup !== group)
-        {
-            if (group !== undefined && group !== '')
-            {
-                this._currentAuthGroup = group;
-
-                if(this._debug)
-                {
-                    Zation._printInfo(`User is Login with id -> ${this._currentAuthId} in Group
-                 -> ${this._currentAuthGroup}`);
-                }
-            }
-            else
-            {
-                this._currentAuthGroup = group;
-            }
-        }
-    }
-
-    _updateAuthInfo(result)
-    {
-        if(result.hasNewAuthData())
-        {
-            if(result.getNewAuthId() !== undefined)
-            {
-                this._setNewAuthId(result.getNewAuthId());
-            }
-
-            if(result.getNewAuthGroup() !== undefined)
-            {
-                this._setNewAuthGroup(result.getNewAuthGroup());
-            }
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    _httpIsAuthOut()
-    {
-        this._setNewAuthGroup('');
-        this._setNewAuthId(undefined);
-    }
-
-    reAuth()
-    {
-        this._isReAuth = true;
-        this._httpIsAuthOut();
-    }
-
-    async authOut()
-    {
-        await this.send(Zation.SYSTEM_CONTROLLER_LOG_OUT);
-        this._httpIsAuthOut();
-        this._isAuthOut = true;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    async authIn(authData, respond)
-    {
-        let authDataTemp = this._authData;
-
-        if(authData !== undefined)
-        {
-            authDataTemp = authData;
-        }
-
-        let data = Zation._buildAuthRequestData(authDataTemp, this._system, this._version);
-        let result = await this._emitZationRequest(data,respond);
-
-        if(!result.hasNewAuthData())
-        {
-            this._emitEvent('cantAuthIn',authData);
-        }
-
-        return result;
-    }
-
-
-    //Part trigger RequestResponds
-
-    _triggerRequestResponds(result)
-    {
-        this._requestResponds.forEach((respond) =>
-        {
-            respond._trigger(result);
-        });
-    }
-
-    //Part Main Config
-
-    _readSettings()
-    {
-        if (this._settings.debug !== undefined) {
-            this._debug = this._settings.debug;
-        }
-
-        if (this._settings.autoAuth !== undefined) {
-            this._autoAuth = this._settings.autoAuth;
-        }
-
-        if (this._settings.system !== undefined) {
-            this._system = this._settings.system;
-        }
-
-        if (this._settings.version !== undefined) {
-            this._version = this._settings.version;
-        }
-
-        if (this._settings.hostname !== undefined) {
-            this._hostname = this._settings.hostname;
-        }
-
-        if (this._settings.path !== undefined) {
-            this._path = this._settings.path;
-        }
-
-        if (this._settings.port !== undefined) {
-            this._port = this._settings.port;
-        }
-
-        if (this._settings.secure !== undefined) {
-            this._secure = this._settings.secure;
-        }
-
-        if (this._settings['postKeyWord'] !== undefined) {
-            this._postKeyWord = this._settings['postKeyWord'];
-        }
-
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    getSystem()
-    {
-        return this._system;
-    };
-
-    // noinspection JSUnusedGlobalSymbols
-    getVersion()
-    {
-        return this._version;
-    };
-
-    // noinspection JSUnusedGlobalSymbols
-    getHostname()
-    {
-        return this._hostname;
-    };
-
-    // noinspection JSUnusedGlobalSymbols
-    getPort()
-    {
-        return this._port;
-    };
-
-    // noinspection JSUnusedGlobalSymbols
-    getSecure()
-    {
-        return this._secure;
-    };
-
-    // noinspection JSUnusedGlobalSymbols
-    getServerAddress()
-    {
-        return this._hostname + ':' + this._settings.port;
-    };
-
-    // noinspection JSUnusedGlobalSymbols
-    isAutoAuth()
-    {
-        return this._autoAuth;
-    };
-
-    // noinspection JSUnusedGlobalSymbols
-    disableAutoAuth()
-    {
-        this._autoAuth = false;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    enableAutoAuth()
-    {
-        this._autoAuth = true;
-    }
-
-    //Part Connection
-
-    _start()
-    {
-        if(this._autoAuth)
-        {
-
-        }
-        else
-        {
-            this._emitReady();
-        }
-    }
-    _emitReady()
-    {
-        if(this._isFirstStart)
-        {
-            this._isFirstStart = false;
-            this._emitEvent('ready');
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    async send(request,reaction)
-    {
-        let data = await Zation._buildRequestData(request, this._system, this._version);
-        return await this._sendZationRequest(data,reaction);
-    };
-
-    _sendZationRequest(data,reaction)
-    {
-        return new Promise((resolve, reject) =>
-        {
-            let request = new XMLHttpRequest();
-            let sendObj = {};
-            sendObj[this._postKeyWord] = data;
-
-            request.addEventListener("load", () =>
-            {
-                if(request.status >= 200
-                    && request.status < 300
-                    && request.responseText !== '')
-                {
-                    let result = new Result(request.responseText);
-                    if(typeof reaction === 'function')
-                    {
-                        reaction(result);
-                    }
-                    else if(reaction instanceof RequestRespond)
-                    {
-                        reaction._trigger(result);
-                    }
-
-                    resolve(result);
-                    this._triggerRequestResponds(result);
-                }
-                else
-                {
-                    let err = new Event('No Result!');
-                    reject(err);
-                }
-            });
-
-            request.addEventListener("error", (e) => {reject(e);});
-
-            request.open('POST',this._hostname + this._path + ':' + this._port, true);
-            request.setRequestHeader("Content-type", "applization/x-www-form-urlencoded");
-            request.send(sendObj);
-        });
-    }
-}
-
 //Exports
 if(typeof exports==="object"&&typeof module!=="undefined")
 {
     module.exports.version = '1.0.0';
-    module.exports.ZationSocket = ZationSocket;
+    module.exports.Zation = Zation;
     module.exports.ZationHttp   = ZationHttp;
     module.exports.RequestRespond = RequestRespond;
     module.exports.ChannelRespond = ChannelRespond;

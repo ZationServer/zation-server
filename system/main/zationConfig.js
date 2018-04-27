@@ -25,14 +25,12 @@ class ZationConfig
             //Create Defaults
             this._mainConfig[Const.Main.DEBUG] = false;
             this._mainConfig[Const.Main.PORT] = process.env.PORT || 3000;
-            this._mainConfig[Const.Main.PATH] = 'zation';
             this._mainConfig[Const.Main.HOSTNAME] = 'localhost';
+            this._mainConfig[Const.Main.ENVIRONMENT] = 'dev';
             this._mainConfig[Const.Main.POST_KEY_WORD] = 'zation';
             this._mainConfig[Const.Main.USE_AUTH] = true;
             this._mainConfig[Const.Main.APP_NAME] = 'AppWithoutName';
             this._mainConfig[Const.Main.SECURE] = false;
-            this._mainConfig[Const.Main.USE_SOCKET_SERVER] = true;
-            this._mainConfig[Const.Main.USE_HTTP_SERVER] = true;
             this._mainConfig[Const.Main.USE_PROTOCOL_CHECK] = true;
             this._mainConfig[Const.Main.SEND_ERRORS_DESC] = false;
             this._mainConfig[Const.Main.AUTH_KEY] = crypto.randomBytes(32).toString('hex');

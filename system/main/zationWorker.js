@@ -71,23 +71,15 @@ class Worker extends SCWorker
         this.zation = new Zation(this);
 
         //Server
-        if (this._zc.getMain(Const.Main.USE_HTTP_SERVER))
-        {
-            this._zc.printStartDebugInfo(`Worker with id ${this.id} start http server.`);
-            this._startHttpServer();
-        }
-        if (this._zc.getMain(Const.Main.USE_SOCKET_SERVER))
-        {
-            this._zc.printStartDebugInfo(`Worker with id ${this.id} start socket server.`);
-            this._startSocketServer();
-        }
+        this._zc.printStartDebugInfo(`Worker with id ${this.id} start http server.`);
+        this._startHttpServer();
+
+        this._zc.printStartDebugInfo(`Worker with id ${this.id} start socket server.`);
+        this._startSocketServer();
 
         //Fire ExpressEvent
-        if (this._zc.getMain(Const.Main.USE_HTTP_SERVER))
-        {
-            this._zc.emitEvent(Const.Event.ZATION_EXPRESS,
-                (f) => {f(this._preapreSmallBag,this._app);});
-        }
+        this._zc.emitEvent(Const.Event.ZATION_EXPRESS,
+            (f) => {f(this._preapreSmallBag,this._app);});
 
         //
 
@@ -140,8 +132,6 @@ class Worker extends SCWorker
 
     _startHttpServer()
     {
-        let path = this._zc.getMain(Const.Main.PATH);
-
         this._app = express();
         //startCookieParser
         // noinspection JSUnresolvedFunction
@@ -161,19 +151,19 @@ class Worker extends SCWorker
         //PUBLIC FOLDER
 
         // noinspection JSUnresolvedFunction
-        this._app.use(`/${path}/assets`, express.static(__dirname + '/../public/assets'));
+        this._app.use('/zation/assets', express.static(__dirname + '/../public/assets'));
 
         // noinspection JSUnresolvedFunction
-        this._app.use(`/${path}/css`, express.static(__dirname + '/../public/css'));
+        this._app.use('/zation/css', express.static(__dirname + '/../public/css'));
 
         // noinspection JSUnresolvedFunction
-        this._app.use(`/${path}/js`, express.static(__dirname + '/../public/js'));
+        this._app.use('/zation/js', express.static(__dirname + '/../public/js'));
 
         // noinspection JSUnresolvedFunction
-        this._app.use(`/${path}/panel`, express.static(__dirname + '/../public/panel'));
+        this._app.use('/zation/panel', express.static(__dirname + '/../public/panel'));
 
         // noinspection JSUnresolvedFunction
-        this._app.get(`/${path}/client`,(req,res) =>
+        this._app.get('/zation/client',(req,res) =>
         {
             res.type('.js');
             res.send(this._preparedClientJs);
@@ -182,7 +172,7 @@ class Worker extends SCWorker
         //REQUEST
 
         // noinspection JSUnresolvedFunction
-        this._app.all(`/${path}`, (req, res) => {
+        this._app.all('/zation', (req, res) => {
             //Run Zation
             // noinspection JSUnusedLocalSymbols
             let p = this.zation.run(

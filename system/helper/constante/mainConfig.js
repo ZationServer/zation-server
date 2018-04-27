@@ -8,7 +8,6 @@ class MainConfig {}
 
 MainConfig.PORT                                = 'port';
 MainConfig.HOSTNAME                            = 'hostname';
-MainConfig.PATH                                = 'path';
 MainConfig.DEBUG                               = 'debug';
 MainConfig.START_DEBUG                         = 'startDebug';
 MainConfig.ENVIRONMENT                         = 'environment';
@@ -30,8 +29,6 @@ MainConfig.CLIENT_JS_PREPARE                   = 'clientJsPrepare';
 
 
 //ADVANCE
-MainConfig.USE_SOCKET_SERVER                   = 'useSocketServer';
-MainConfig.USE_HTTP_SERVER                     = 'useHttpServer';
 MainConfig.POST_KEY_WORD                       = 'postKeyWord';
 
 MainConfig.CONTROLLER             = 'controller';

@@ -102,10 +102,9 @@ class ZationStarter
     {
         console.log('\x1b[32m%s\x1b[0m', '   [ACTIVE]','Zation started');
         console.log(`            Version: ${this._version}`);
-        console.log(`            Hostname: ${this._zc.getMain(Const.Main.HOSTNAME)}`);
-        console.log(`            Path: ${this._zc.getMain(Const.Main.PATH)}`);
-        console.log(`            Port: ${this._zc.getMain(Const.Main.PORT)}`);
         console.log(`            Your app: ${this._zc.getMain(Const.Main.APP_NAME)}`);
+        console.log(`            Hostname: ${this._zc.getMain(Const.Main.HOSTNAME)}`);
+        console.log(`            Port: ${this._zc.getMain(Const.Main.PORT)}`);
         console.log(`            Time: ${TimeTools.getMoment(this._zc)}`);
         console.log(`            Time zone: ${this._zc.getMain(Const.Main.TIME_ZONE)}`);
         console.log(`            Worker count: ${this._master.options.workers}`);
