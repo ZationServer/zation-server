@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/system/helper/systemController/controller/zationSC_Ping.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/client/serverSettings.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/client/serverSettings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/client/zation.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/client/zation.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/systemController/controller/zationSystemControllerLogOut.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/systemController/controller/zationSC_LogOut.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/systemController/systemControler.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/systemController/systemControler.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/main/zationWorker.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/main/zationWorker.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -50,8 +42,8 @@
       <file leaf-file-name="zation.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/system/client/zation.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="194">
-              <caret line="95" column="15" lean-forward="true" selection-start-line="95" selection-start-column="15" selection-end-line="95" selection-end-column="15" />
+            <state relative-caret-position="-3964">
+              <caret line="89" column="32" selection-start-line="89" selection-start-column="32" selection-end-line="89" selection-end-column="32" />
             </state>
           </provider>
         </entry>
@@ -533,18 +525,18 @@
       <workItem from="1524659276486" duration="596000" />
       <workItem from="1524831554236" duration="23595000" />
       <workItem from="1524865895826" duration="34000" />
-      <workItem from="1524865976971" duration="15280000" />
+      <workItem from="1524865976971" duration="15956000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="292294000" />
+    <option name="totallyTimeSpent" value="292970000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="33" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21348314" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.21348314" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Statistic" order="7" weight="0.82905984" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
@@ -917,8 +909,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/system/client/zation.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="95" column="15" lean-forward="true" selection-start-line="95" selection-start-column="15" selection-end-line="95" selection-end-column="15" />
+        <state relative-caret-position="-3964">
+          <caret line="89" column="32" selection-start-line="89" selection-start-column="32" selection-end-line="89" selection-end-column="32" />
         </state>
       </provider>
     </entry>
