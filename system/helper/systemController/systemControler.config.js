@@ -6,9 +6,15 @@ GitHub: LucaCode
 
 module.exports =
     {
-        zationSystemControllerLogOut :
+        zationSC_LogOut :
             {
-                name   : 'zationSystemControllerLogOut',
+                name   : 'zationSC_LogOut',
+                systemController : true,
+                params : [],
+            },
+        zationSC_Ping :
+            {
+                name   : 'zationSC_Ping',
                 systemController : true,
                 params : [],
             }

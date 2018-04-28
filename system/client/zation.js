@@ -12,13 +12,15 @@ class Zation
     {
         //Var
         this._settings = settings;
-        this._authData = settings['authData'];
 
         this._currentAuthId = undefined;
         this._currentAuthGroup = undefined;
 
+        this._authData = {};
         this._debug = false;
-        this._autoAuth = false;
+        this._autoStartAuth = false;
+        this._autoReAuth = true;
+        this._heartbeatRefresh = 5000;
         this._system = 'U';
         this._version = 1;
         this._hostname = 'localhost';
@@ -32,6 +34,9 @@ class Zation
         this._isAuthOut = false;
         this._isReAuth  = false;
         this._isFirstStart = true;
+        this._authTokenName = 'zationToken';
+        this._reconnect = false;
+        this._heartbeatIntervall = undefined;
 
         //ChannelRegistration
         this._userChannelAutoRegistration         = true;
@@ -86,6 +91,16 @@ class Zation
         {
             this.reAuth();
         });
+    }
+
+    //Part Ping
+
+    async ping()
+    {
+        let req = new Request(ZationConst.SYSTEM_CONTROLLER_PING);
+        let start = Date.now();
+        await this.send(req);
+        return Date.now() - start;
     }
 
     //Part Responds
@@ -195,6 +210,11 @@ class Zation
     //Part Auth
 
 
+    isAuthIn()
+    {
+        return ZationTools._isAuthIn(this._currentAuthGroup);
+    }
+
     _setNewAuthId(id)
     {
         if (this._currentAuthId !== id)
@@ -297,29 +317,21 @@ class Zation
     }
 
     // noinspection JSUnusedGlobalSymbols
-    async authIn(authData, respond)
+    async authIn(respond, authData)
     {
-        let authDataTemp = this._authData;
-
         if(authData !== undefined)
         {
-            authDataTemp = authData;
+            this._authData = authData;
+        }
+        else
+        {
+            authData = this._authData;
         }
 
-        let data = ZationTools._buildAuthRequestData(authDataTemp, this._system, this._version);
-        return await this._emitZationRequest(data,respond);
+        let data = ZationTools._buildAuthRequestData(authData, this._system, this._version);
+        await this._emitZationRequest(data,respond);
+        return this.isAuthIn();
     }
-
-    tryToAuthIn()
-    {
-        return new Promise((resolve,reject) =>
-        {
-
-
-
-        });
-    }
-
 
     //Part trigger RequestResponds
 
@@ -459,7 +471,6 @@ class Zation
         }
     }
 
-
     //Part Special Channel
 
     // noinspection JSUnusedGlobalSymbols
@@ -584,8 +595,8 @@ class Zation
             this._debug = this._settings.debug;
         }
 
-        if (this._settings['autoAuth'] !== undefined) {
-            this._autoAuth = this._settings['autoAuth'];
+        if (this._settings['autoReAuth'] !== undefined) {
+            this._autoReAuth = this._settings['autoReAuth'];
         }
 
         if (this._settings._userChannelAutoRegistration !== undefined) {
@@ -604,8 +615,8 @@ class Zation
             this._allChannelAutoRegistration = this._settings._allChannelAutoRegistration;
         }
 
-        if (this._settings.system !== undefined) {
-            this._system = this._settings.system;
+        if (this._settings['system'] !== undefined) {
+            this._system = this._settings['system'];
         }
 
         if (this._settings.version !== undefined) {
@@ -615,6 +626,11 @@ class Zation
         if (this._settings.hostname !== undefined)
         {
             this._hostname = this._settings.hostname;
+        }
+
+        if (this._settings['authData'] !== undefined)
+        {
+            this._authData = this._settings['authData'] ;
         }
 
         if (this._settings.path !== undefined) {
@@ -627,6 +643,10 @@ class Zation
 
         if (this._settings._postKeyWord !== undefined) {
             this._postKeyWord = this._settings._postKeyWord;
+        }
+
+        if (this._settings['heartbeatRefresh'] !== undefined) {
+            this._heartbeatRefresh = this._settings['heartbeatRefresh'];
         }
 
         if (this._settings.secure !== undefined) {
@@ -682,21 +702,21 @@ class Zation
     };
 
     // noinspection JSUnusedGlobalSymbols
-    isAutoAuth()
+    isAutoReAuth()
     {
-        return this._autoAuth;
+        return this._autoReAuth;
     };
 
     // noinspection JSUnusedGlobalSymbols
-    disableAutoAuth()
+    disableAutoReAuth()
     {
-        this._autoAuth = false;
+        this._autoReAuth = false;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    enableAutoAuth()
+    enableAutoReAuth()
     {
-        this._autoAuth = true;
+        this._autoReAuth = true;
     }
 
     //Part Connection
@@ -726,7 +746,8 @@ class Zation
             port: this._port,
             secure: this._secure,
             rejectUnauthorized: this._rejectUnauthorized,
-            autoReconnect: true
+            autoReconnect: true,
+            authTokenName : this._authTokenName
         };
 
         if(this._path !== '')
@@ -741,54 +762,65 @@ class Zation
     {
         // noinspection JSUnresolvedVariable
         this._socket = socketCluster.create(this._buildOptions());
+        this._ConBackup = new ConBackup(this);
 
         this._socket.on('connect', async () => {
 
             this._emitEvent('connected',this._socket);
 
-            if(this._allChannelAutoRegistration)
+            if(this._reconnect)
             {
-                this.registerAllChannel();
-            }
-
-            if(this._defaultGroupChannelAutoRegistration)
-            {
-                this.registerDefaultGroupChannel();
-            }
-
-            if(this._autoAuth)
-            {
-                await this.authIn(this._authData);
+                await this._ConBackup.restoreBackup();
+                this._reconnect = false;
             }
             else
             {
-                this._emitReady();
-            }
+                if(this._allChannelAutoRegistration)
+                {
+                    this.registerAllChannel();
+                }
 
+                if(this._defaultGroupChannelAutoRegistration)
+                {
+                    this.registerDefaultGroupChannel();
+                }
+
+                if(this._autoStartAuth)
+                {
+                    this._socket.auth.loadToken(this._authTokenName,async (err,token) =>
+                    {
+                        if(token === undefined || token === null)
+                        {
+                            await this.authIn(this._authData);
+                        }
+                    });
+                }
+                else
+                {
+                    this._emitReady();
+                }
+            }
         });
 
         this._socket.on('authenticate',() => {
 
             this._emitEvent('authenticate',this._socket);
+            this._setHeartbeat();
             this._updateAuthInfo(this._socket['authToken']);
-
-            if(this._autoAuth)
+            if(this._autoStartAuth)
             {
                 this._emitReady();
             }
 
         });
 
-        this._socket.on('authStateChange', async (obj) =>
+        this._socket.on('deauthenticate',async () =>
         {
-            if(obj['newState'] === this._socket.AUTHENTICATED)
+            this._clearHeartbeat();
+            this._socketIsAuthOut();
+            if(!this._reconnect)
             {
-                this._updateAuthInfo(obj['authToken']);
-            }
-            else if(obj['newState'] === this._socket.UNAUTHENTICATED)
-            {
-                this._socketIsAuthOut();
-                if(this._autoAuth || this._isReAuth)
+                if(this._autoReAuth || this._isReAuth)
                 {
                     this._isReAuth = false;
 
@@ -809,10 +841,18 @@ class Zation
             this._updateAuthInfo(this._socket.authToken);
         });
 
-        this._socket.on('badAuthToken',async () =>
+        this._socket.on('zationBadAuthToken',async () =>
         {
-            this.authOut();
-            await this.authIn(this._authData);
+            this._emitEvent('badAuthToken',this._socket);
+        });
+
+        this._socket.on('close',() =>
+        {
+            this._clearHeartbeat();
+            this._currentAuthId =  undefined;
+            this._currentAuthGroup = '';
+            this._reconnect = true;
+            this._emitEvent('close',{});
         });
 
         this._socket.on('connectAbort',() =>
@@ -839,6 +879,24 @@ class Zation
         let data = await ZationTools._buildRequestData(request, this._system, this._version);
         return await this._emitZationRequest(data,reaction);
     };
+
+    _beatToServer()
+    {
+        this._socket.emit('zationHeartbeat',{});
+    }
+
+    _setHeartbeat()
+    {
+        this._heartbeatIntervall = setInterval(() => {this._beatToServer();},this._heartbeatRefresh);
+    }
+
+    _clearHeartbeat()
+    {
+        if(this._heartbeatIntervall !== undefined)
+        {
+            clearInterval(this._heartbeatIntervall);
+        }
+    }
 
     _emitZationRequest(data,reaction)
     {
@@ -912,7 +970,82 @@ class Zation
             request.send(sendObj);
         });
     }
+}
 
+class ConBackup
+{
+    constructor(zation)
+    {
+        this._zation = zation;
+        this._socket = this._zation._socket;
+        this._wasAuthIn = false;
+        this._oldChannels = {};
+
+        this._inRestore = false;
+
+        this._save = true;
+
+
+        this._socket.on('close',() =>
+        {
+            if(!this._inRestore)
+            {
+                this._oldChannels = this._socket.channels;
+            }
+            this._socket.channels = {};
+            this._save = false;
+        });
+
+        this._socket.on('authenticate',() =>
+        {
+            if(this._save)
+            {
+                this._wasAuthIn = true;
+            }
+
+            if(this._inRestore)
+            {
+                this._loadOldChannels();
+                this._inRestore = false;
+                this._save = true;
+            }
+        });
+
+        this._socket.on('deauthenticate',() =>
+        {
+            if(this._save)
+            {
+                this._wasAuthIn = false;
+            }
+        });
+    }
+
+    _loadOldChannels()
+    {
+        for(let k in this._oldChannels)
+        {
+            if(this._oldChannels.hasOwnProperty(k))
+            {
+                this._socket.subscribe(k,{});
+            }
+        }
+    }
+
+    async restoreBackup()
+    {
+        this._inRestore = true;
+
+        if(this._wasAuthIn)
+        {
+            await this._zation.authIn();
+        }
+        else
+        {
+            this._loadOldChannels();
+            this._inRestore = false;
+            this._save = true;
+        }
+    }
 }
 
 
@@ -986,7 +1119,8 @@ ZationConst.USER_CHANNEL_RE_AUTH           = 'zationReAuth';
 ZationConst.CLIENT_AUTH_GROUP              = 'zationAuthGroup';
 ZationConst.CLIENT_AUTH_ID                 = 'zationAuthId';
 
-ZationConst.SYSTEM_CONTROLLER_LOG_OUT      = 'zationSystemControllerLogOut';
+ZationConst.SYSTEM_CONTROLLER_LOG_OUT      = 'zationSC_LogOut';
+ZationConst.SYSTEM_CONTROLLER_PING         = 'zationSC_Ping';
 
 class Result
 {

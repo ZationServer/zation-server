@@ -7,15 +7,15 @@ GitHub: LucaCode
 let Controller    = require('../../../api/Controller');
 let Bag           = require('../../../api/Bag');
 
-class ZationSystemControllerLogOut extends Controller
+class ZationSC_LogOut extends Controller
 {
-    handle(bag)
+    async handle(bag)
     {
         if(bag instanceof Bag)
         {
-            bag.authOut();
+            await bag.authOut();
         }
     }
 }
 
-module.exports = ZationSystemControllerLogOut;
+module.exports = ZationSC_LogOut;

@@ -116,7 +116,9 @@ class Worker extends SCWorker
 
             socket.on('zationHeartbeat', async (data,respond) =>
             {
-                let token = socket.getToken();
+                this._zc.printDebugInfo(`Heartbeat from socket id: ${socket.id}`);
+
+                let token = socket.getAuthToken();
                 if(token !== null)
                 {
                     await this._tokenInfoStorage.setLastActivity(token);
@@ -429,6 +431,7 @@ class Worker extends SCWorker
 
         this.scServer.on('badSocketAuthToken', (socket) =>
         {
+            socket.emit('zationBadAuthToken',{});
             this._zc.emitEvent(Const.Event.SC_SERVER_BAD_SOCKET_AUTH_TOKEN,(f) => {f(socket);});
         });
 
