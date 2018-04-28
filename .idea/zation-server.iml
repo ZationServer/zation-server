@@ -14,5 +14,6 @@
     <orderEntry type="library" name="socket.io-client-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="socket.io-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="socket.io-parser-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="@types/lokijs" level="application" />
   </component>
 </module>

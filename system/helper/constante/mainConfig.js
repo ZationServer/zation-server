@@ -16,7 +16,6 @@ MainConfig.WORKERS                             = 'workers';
 MainConfig.BROKERS                             = 'brokers';
 MainConfig.APP_NAME                            = 'appName';
 MainConfig.SECURE                              = 'secure';
-MainConfig.EXTRA_SECURE_AUTH                   = 'extraSecureAuth';
 MainConfig.HTTPS_CONFIG                        = 'httpsConfig';
 MainConfig.USE_AUTH                            = 'useAuth';
 MainConfig.USE_PROTOCOL_CHECK                  = 'useProtocolCheck';
@@ -27,6 +26,17 @@ MainConfig.USE_PANEL                           = 'userPanel';
 MainConfig.PANEL_USER                          = 'panelUser';
 MainConfig.CLIENT_JS_PREPARE                   = 'clientJsPrepare';
 
+//Temp
+MainConfig.USE_TEMP_DB_TOKEN_INFO              = 'useTempDbTokenInfo';
+MainConfig.USE_TEMP_DB_ERROR_INFO              = 'useTempDbErrorInfo';
+MainConfig.TEMP_DB_ERROR_INFO_LIVE_TIME        = 'tempDbErrorInfoLiveTime';
+MainConfig.TEMP_DB_ENGINE                      = 'tempDbEngine';
+
+MainConfig.TEMP_DB_ENGINE_MONGO                = 'mongo';
+MainConfig.TEMP_DB_ENGINE_LEVEL                = 'level';
+
+MainConfig.TEMP_DB_CONFIG                      = 'tempDbConfig';
+MainConfig.EXTRA_SECURE_AUTH                   = 'extraSecureAuth';
 
 //ADVANCE
 MainConfig.POST_KEY_WORD                       = 'postKeyWord';

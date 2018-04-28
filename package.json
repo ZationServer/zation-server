@@ -15,7 +15,6 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "cluster": "0.7.7",
-    "command-storage": "^0.8.4",
     "connect-mongo": "^2.0.1",
     "connect-redis": "3.3.3",
     "cookie-parser": "1.4.3",
@@ -34,6 +33,7 @@
     "pg-pool": "^2.0.3",
     "scc-broker-client": "2.1.2",
     "socketcluster": "11.4.2",
-    "validator": "9.4.1"
+    "validator": "9.4.1",
+    "level": "latest"
   }
 }

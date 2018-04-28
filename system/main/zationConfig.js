@@ -37,10 +37,16 @@ class ZationConfig
             this._mainConfig[Const.Main.AUTH_PUBLIC_KEY] = null;
             this._mainConfig[Const.Main.AUTH_PRIVATE_KEY] = null;
             this._mainConfig[Const.Main.AUTH_DEFAULT_EXPIRY] = 86400;
-            this._mainConfig[Const.Main.EXTRA_SECURE_AUTH] = true;
             this._mainConfig[Const.Main.SYSTEM_BACKGROUND_TASK_REFRESH_RATE] = 1800000;
             this._mainConfig[Const.Main.TIME_ZONE] = 'Europe/Berlin';
             this._mainConfig[Const.Settings.TOKEN_INFO_STORAGE_KEY] = 'tokenInfoStorage';
+
+            //TEMP
+            this._mainConfig[Const.Main.USE_TEMP_DB_TOKEN_INFO] = true;
+            this._mainConfig[Const.Main.USE_TEMP_DB_ERROR_INFO] = true;
+            this._mainConfig[Const.Main.TEMP_DB_ERROR_INFO_LIVE_TIME] = 3600000;
+            this._mainConfig[Const.Main.TEMP_DB_ENGINE] = Const.Main.TEMP_DB_ENGINE_LEVEL;
+            this._mainConfig[Const.Main.EXTRA_SECURE_AUTH] = true;
 
             this.addToMainConfig(starterConfig,true);
             this._loadUserDataLocations();
@@ -375,6 +381,16 @@ class ZationConfig
         //Brokers Default
         this._mainConfig[Const.Main.BROKERS] =
             ZationConfig.createValueWithOsAuto(this._mainConfig[Const.Main.BROKERS]);
+    }
+
+    checkMainConfig()
+    {
+        if(this.getMain(Const.Main.EXTRA_SECURE_AUTH) && !this.getMain(Const.Main.USE_TEMP_DB_TOKEN_INFO))
+        {
+            this._mainConfig[Const.Main.EXTRA_SECURE_AUTH] = false;
+            this.printDebugWarning
+            ('Extra secure auth can only use with temp db token info. Extra secure auth is set to false!');
+        }
     }
 
 

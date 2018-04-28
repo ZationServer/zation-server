@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-class AbstractTokenInfoStorage
+class Token
 {
 
     async isTokenValid(token) {}
@@ -14,14 +14,6 @@ class AbstractTokenInfoStorage
     async updateTokenInfo(oldToken,newToken) {}
 
     async blockToken(tokenId,authId) {}
-
-    async setLastActivity(token) {}
-
-    async getLastActivity(token) {}
-
-    async setTokenInfo(key,value,tokenId,authId) {}
-
-    async getTokenInfo(key,tokenId,authId) {}
 
     async checkTokenInfoStorage() {}
 
@@ -37,4 +29,4 @@ class AbstractTokenInfoStorage
 
 }
 
-module.exports = AbstractTokenInfoStorage;
+module.exports = TokenInfoDb;

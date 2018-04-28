@@ -15,8 +15,7 @@ const ZationConfig          = require('./zationConfig');
 const Const                 = require('../helper/constante/constWrapper');
 const ChAccessEngine        = require('../helper/channel/chAccessEngine');
 const ServiceEngine         = require('../helper/services/serviceEngine');
-const TokenInfoStorage      = require('../helper/token/tokenInfoStorage');
-const MasterStorage         = require('../helper/storage/masterStorage');
+const TokenInfoStorage      = require('../helper/tempDb/tokenInfoDb/tokenInfoStorage');
 const SystemBackgroundTask  = require('../helper/background/systemBackgroundTasks');
 const SmallBag              = require('../api/SmallBag');
 const PrepareClientJs       = require('./../helper/tools/prepareClientJs');
@@ -81,8 +80,6 @@ class Worker extends SCWorker
         this._zc.emitEvent(Const.Event.ZATION_EXPRESS,
             (f) => {f(this._preapreSmallBag,this._app);});
 
-        //
-
         //Fire event is started
         this._zc.emitEvent(Const.Event.ZATION_WORKER_IS_STARTED,
             (f) => {f(this._preapreSmallBag,this._zc.getSomeInformation(),this)});
@@ -113,18 +110,6 @@ class Worker extends SCWorker
                         respond: respond,
                      });
             });
-
-            socket.on('zationHeartbeat', async (data,respond) =>
-            {
-                this._zc.printDebugInfo(`Heartbeat from socket id: ${socket.id}`);
-
-                let token = socket.getAuthToken();
-                if(token !== null)
-                {
-                    await this._tokenInfoStorage.setLastActivity(token);
-                    respond();
-                }
-            })
 
         });
 

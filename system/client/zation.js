@@ -20,7 +20,6 @@ class Zation
         this._debug = false;
         this._autoStartAuth = false;
         this._autoReAuth = true;
-        this._heartbeatRefresh = 5000;
         this._system = 'U';
         this._version = 1;
         this._hostname = 'localhost';
@@ -36,7 +35,6 @@ class Zation
         this._isFirstStart = true;
         this._authTokenName = 'zationToken';
         this._reconnect = false;
-        this._heartbeatIntervall = undefined;
 
         //ChannelRegistration
         this._userChannelAutoRegistration         = true;
@@ -645,10 +643,6 @@ class Zation
             this._postKeyWord = this._settings._postKeyWord;
         }
 
-        if (this._settings['heartbeatRefresh'] !== undefined) {
-            this._heartbeatRefresh = this._settings['heartbeatRefresh'];
-        }
-
         if (this._settings.secure !== undefined) {
             this._secure = this._settings.secure;
         }
@@ -805,7 +799,6 @@ class Zation
         this._socket.on('authenticate',() => {
 
             this._emitEvent('authenticate',this._socket);
-            this._setHeartbeat();
             this._updateAuthInfo(this._socket['authToken']);
             if(this._autoStartAuth)
             {
@@ -816,7 +809,6 @@ class Zation
 
         this._socket.on('deauthenticate',async () =>
         {
-            this._clearHeartbeat();
             this._socketIsAuthOut();
             if(!this._reconnect)
             {
@@ -848,7 +840,6 @@ class Zation
 
         this._socket.on('close',() =>
         {
-            this._clearHeartbeat();
             this._currentAuthId =  undefined;
             this._currentAuthGroup = '';
             this._reconnect = true;
@@ -879,24 +870,6 @@ class Zation
         let data = await ZationTools._buildRequestData(request, this._system, this._version);
         return await this._emitZationRequest(data,reaction);
     };
-
-    _beatToServer()
-    {
-        this._socket.emit('zationHeartbeat',{});
-    }
-
-    _setHeartbeat()
-    {
-        this._heartbeatIntervall = setInterval(() => {this._beatToServer();},this._heartbeatRefresh);
-    }
-
-    _clearHeartbeat()
-    {
-        if(this._heartbeatIntervall !== undefined)
-        {
-            clearInterval(this._heartbeatIntervall);
-        }
-    }
 
     _emitZationRequest(data,reaction)
     {

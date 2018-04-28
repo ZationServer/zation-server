@@ -8,9 +8,9 @@ const SocketCluster     = require('socketcluster');
 const Const             = require('../helper/constante/constWrapper');
 const ZationConfig      = require('./zationConfig');
 const HashSet           = require('hashset');
-const CommandStorage    = require('command-storage');
 const TimeTools         = require('./../helper/tools/timeTools');
 const PrepareClientJs   = require('./../helper/tools/prepareClientJs');
+const TempDbEngine      = require('./../helper/tempDb/tempDbEngine');
 
 class ZationStarter
 {
@@ -22,17 +22,37 @@ class ZationStarter
         this._zc = new ZationConfig(options);
         this._workerIds = new HashSet();
 
-        console.log('\x1b[33m%s\x1b[0m', '   [BUSY]','Launching Zation');
+        (async () =>
+        {
+            try
+            {
+                await this._start();
+            }
+            catch (e)
+            {
+                this._zc.printDebugWarning(`Exception by try to start server -> ${e.toString()}`);
+            }
+        })();
+    }
 
+    async _start()
+    {
+        console.log('\x1b[33m%s\x1b[0m', '   [BUSY]','Launching Zation');
         this._zc.printDebugInfo('Zation is launching in debug Mode!');
+
+        this._zc.checkMainConfig();
 
         this._zc.printStartDebugInfo('Build server settings file');
         PrepareClientJs.createServerSettingsFile(this._zc);
 
+        this._zc.printStartDebugInfo('Clear temp db');
+        await TempDbEngine.clearTemp();
+
+        this._zc.printStartDebugInfo('Create temp db structure');
+        await TempDbEngine.createTempDbStructure(this._zc);
+
         this._zc.printStartDebugInfo('Start socket cluster');
         this._startSocketCluster();
-        this._zc.printStartDebugInfo('Create master storage');
-        this._createMasterStorage();
     }
 
     _startSocketCluster()
@@ -221,24 +241,6 @@ class ZationStarter
 
             this._master.sendToWorker(workerId,obj)
         }
-    }
-
-    //PART MasterStorage
-    _createMasterStorage()
-    {
-        this._masterStorage = new CommandStorage();
-        // noinspection JSUnresolvedFunction
-        this._master.on('workerMessage',(id,data,cb) =>
-        {
-            if(data.storage !== undefined)
-            {
-                cb(null,this._masterStorage.do(data['storage']));
-            }
-            else
-            {
-                cb(false);
-            }
-        });
     }
 }
 module.exports = ZationStarter;
