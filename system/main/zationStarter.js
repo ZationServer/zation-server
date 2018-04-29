@@ -4,13 +4,13 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const SocketCluster     = require('socketcluster');
-const Const             = require('../helper/constante/constWrapper');
-const ZationConfig      = require('./zationConfig');
-const HashSet           = require('hashset');
-const TimeTools         = require('./../helper/tools/timeTools');
-const PrepareClientJs   = require('./../helper/tools/prepareClientJs');
-const TempDbEngine      = require('./../helper/tempDb/tempDbEngine');
+const SocketCluster        = require('socketcluster');
+const Const                = require('../helper/constante/constWrapper');
+const ZationConfig         = require('./zationConfig');
+const HashSet              = require('hashset');
+const TimeTools            = require('./../helper/tools/timeTools');
+const PrepareClientJs      = require('./../helper/tools/prepareClientJs');
+const PrepareTempDbEngine  = require('../helper/tempDb/prepareTempDbEngine');
 
 class ZationStarter
 {
@@ -45,11 +45,7 @@ class ZationStarter
         this._zc.printStartDebugInfo('Build server settings file');
         PrepareClientJs.createServerSettingsFile(this._zc);
 
-        this._zc.printStartDebugInfo('Clear temp db');
-        await TempDbEngine.clearTemp();
-
-        this._zc.printStartDebugInfo('Create temp db structure');
-        await TempDbEngine.createTempDbStructure(this._zc);
+        await PrepareTempDbEngine.prepareTempDb(this._zc);
 
         this._zc.printStartDebugInfo('Start socket cluster');
         this._startSocketCluster();

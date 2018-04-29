@@ -5,6 +5,7 @@ GitHub: LucaCode
  */
 
 const Const             = require('../helper/constante/constWrapper');
+const ObjectTools       = require('./../helper/tools/objectTools');
 
 const path              = require('path');
 const fs                = require('fs');
@@ -39,7 +40,6 @@ class ZationConfig
             this._mainConfig[Const.Main.AUTH_DEFAULT_EXPIRY] = 86400;
             this._mainConfig[Const.Main.SYSTEM_BACKGROUND_TASK_REFRESH_RATE] = 1800000;
             this._mainConfig[Const.Main.TIME_ZONE] = 'Europe/Berlin';
-            this._mainConfig[Const.Settings.TOKEN_INFO_STORAGE_KEY] = 'tokenInfoStorage';
 
             //TEMP
             this._mainConfig[Const.Main.USE_TEMP_DB_TOKEN_INFO] = true;
@@ -47,6 +47,7 @@ class ZationConfig
             this._mainConfig[Const.Main.TEMP_DB_ERROR_INFO_LIVE_TIME] = 3600000;
             this._mainConfig[Const.Main.TEMP_DB_ENGINE] = Const.Main.TEMP_DB_ENGINE_LEVEL;
             this._mainConfig[Const.Main.EXTRA_SECURE_AUTH] = true;
+            this._mainConfig[Const.Main.TEMP_DB_Name] = 'zationTempDb';
 
             this.addToMainConfig(starterConfig,true);
             this._loadUserDataLocations();
@@ -80,7 +81,7 @@ class ZationConfig
 
     addToMainConfig(toAdd,overwrite)
     {
-        ZationConfig._addConfigs(this._mainConfig,toAdd,overwrite);
+        ObjectTools.addObToOb(this._mainConfig,toAdd,overwrite);
     }
 
     getMain(key)
@@ -141,6 +142,17 @@ class ZationConfig
     {
         return this.getMain(Const.Main.EXTRA_SECURE_AUTH);
     }
+
+    isUseTokenInfoTempDb()
+    {
+        return this.getMain(Const.Main.USE_TEMP_DB_TOKEN_INFO);
+    }
+
+    isUseErrorInfoTempDb()
+    {
+        return this.getMain(Const.Main.USE_TEMP_DB_ERROR_INFO);
+    }
+
     getSomeInformation()
     {
         let obj = {};
@@ -224,24 +236,6 @@ class ZationConfig
             'error.config',
             this.getMain(Const.Main.ERROR_CONFIG),
         );
-    }
-
-    static _addConfigs(config,toAdd,overwrite = false)
-    {
-        for(let key in toAdd)
-        {
-            if(toAdd.hasOwnProperty(key))
-            {
-                if(!config.hasOwnProperty(key))
-                {
-                    config[key] = toAdd[key];
-                }
-                else if(overwrite)
-                {
-                    config[key] = toAdd[key];
-                }
-            }
-        }
     }
 
     static _getRootPath()
@@ -368,7 +362,7 @@ class ZationConfig
             this._mainConfig[Const.Main.MAIN_CONFIG]
         );
 
-        ZationConfig._addConfigs(this._mainConfig,mainConfig,true);
+        ObjectTools.addObToOb(this._mainConfig,mainConfig,true);
         this._processMainConfig();
     }
 

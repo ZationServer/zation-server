@@ -35,6 +35,8 @@ MainConfig.TEMP_DB_ENGINE                      = 'tempDbEngine';
 MainConfig.TEMP_DB_ENGINE_MONGO                = 'mongo';
 MainConfig.TEMP_DB_ENGINE_LEVEL                = 'level';
 
+MainConfig.TEMP_DB_Name                        = 'tempDbName';
+
 MainConfig.TEMP_DB_CONFIG                      = 'tempDbConfig';
 MainConfig.EXTRA_SECURE_AUTH                   = 'extraSecureAuth';
 

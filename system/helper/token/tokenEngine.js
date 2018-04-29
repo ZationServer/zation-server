@@ -26,11 +26,18 @@ class TokenEngine
     //to create a new Token
     async createToken(data)
     {
-        if(this._zc.isExtraSecureAuth())
+        if(this._zc.isUseErrorInfoTempDb())
         {
             let expiry = this._generateExpiry();
-            let tokenId = await this._worker.getTokenInfoStorage().createTokenInfo(expiry,data[Const.Settings.CLIENT_AUTH_ID]);
-            data['exp'] = expiry;
+            let remoteAddress = this._shBridge.getPublicRemoteAddress();
+            let tempDbUp = this._worker.getTempDbUp();
+
+            let authId = data[Const.Settings.CLIENT_AUTH_ID];
+            let authGroup = data[Const.Settings.CLIENT_AUTH_GROUP];
+
+            let tokenId = await tempDbUp.createTokenInfo(expiry,remoteAddress,authGroup,authId);
+
+            data[Const.Settings.CLIENT_EXPIRE] = expiry;
             data[Const.Settings.CLIENT_TOKEN_ID] = tokenId;
         }
 
@@ -61,8 +68,7 @@ class TokenEngine
         if(this._zc.isExtraSecureAuth())
         {
             let tokenId = token[Const.Settings.CLIENT_TOKEN_ID];
-            let authId  = token[Const.Settings.CLIENT_AUTH_ID];
-            await this._worker.getTokenInfoStorage().blockToken(tokenId,authId);
+            await this._worker.getTempDbUp().blockTokenId(tokenId);
         }
         this._shBridge.deauthenticate();
 

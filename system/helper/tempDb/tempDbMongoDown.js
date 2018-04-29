@@ -4,12 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const Const                     = require('../../constante/constWrapper');
+const Const                     = require('../constante/constWrapper');
 const AbstractTokenInfoStorage  = require('./abstractTokenInfoStorage');
-const TaskError                 = require('../../../api/TaskError');
-const MainErrors                = require('../../zationTaskErrors/mainTaskErrors');
+const TaskError                 = require('../../api/TaskError');
+const MainErrors                = require('../zationTaskErrors/mainTaskErrors');
 
-class TokenInfoDbMongo extends AbstractTokenInfoStorage
+class TempDbMongoDown extends AbstractTokenInfoStorage
 {
     constructor(abstractStorage)
     {
@@ -166,7 +166,7 @@ class TokenInfoDbMongo extends AbstractTokenInfoStorage
 
             while(keyNotFound)
             {
-                uuid = TokenInfoDbMongo._generateUUID();
+                uuid = TempDbMongoDown._generateUUID();
                 let isAvailable = ! (await isThere(uuid));
 
                 if(isAvailable)
@@ -357,7 +357,7 @@ class TokenInfoDbMongo extends AbstractTokenInfoStorage
                     let req = this._buildDoInAuthId(id,this._as.buildDo(tokenId,this._as.buildGet()));
                     let token = await this._as.send(req);
 
-                    if(TokenInfoDbMongo._isExpireInfoToken(token,timeStamp))
+                    if(TempDbMongoDown._isExpireInfoToken(token,timeStamp))
                     {
                         promises.push(this._as.send(this._buildDoInAuthId(id,this._as.buildRemove(tokenId))));
                     }
@@ -374,7 +374,7 @@ class TokenInfoDbMongo extends AbstractTokenInfoStorage
                 let req = this._buildDoInWithoutId(this._as.buildDo(tokenId,this._as.buildGet()));
                 let token = await this._as.send(req);
 
-                if(TokenInfoDbMongo._isExpireInfoToken(token,timeStamp))
+                if(TempDbMongoDown._isExpireInfoToken(token,timeStamp))
                 {
                     promises.push(this._as.send(this._buildDoInWithoutId(this._as.buildRemove(tokenId))));
                 }
@@ -403,12 +403,12 @@ class TokenInfoDbMongo extends AbstractTokenInfoStorage
 
     static _isActive(token,timeStamp)
     {
-        return !TokenInfoDbMongo._isBlocked(token) && !TokenInfoDbMongo._isExpireInfoToken(timeStamp);
+        return !TempDbMongoDown._isBlocked(token) && !TempDbMongoDown._isExpireInfoToken(timeStamp);
     }
 
     static _isOnline(token,checkValue,timeStamp)
     {
-        return TokenInfoDbMongo._isActive(token,timeStamp) && TokenInfoDbMongo._isInTime(token,checkValue);
+        return TempDbMongoDown._isActive(token,timeStamp) && TempDbMongoDown._isInTime(token,checkValue);
     }
 
     async onlineUserCount(lastMs = 600000)
@@ -427,7 +427,7 @@ class TokenInfoDbMongo extends AbstractTokenInfoStorage
                     let req = this._buildDoInAuthId(id,this._as.buildDo(tokenId,this._as.buildGet()));
                     let token = await this._as.send(req);
 
-                    if(TokenInfoDbMongo._isOnline(token,checkValue,timeStamp))
+                    if(TempDbMongoDown._isOnline(token,checkValue,timeStamp))
                     {
                         count++;
                         break;
@@ -453,7 +453,7 @@ class TokenInfoDbMongo extends AbstractTokenInfoStorage
                 let req = this._buildDoInAuthId(id,this._as.buildDo(tokenId,this._as.buildGet()));
                 let token = await this._as.send(req);
 
-                if(TokenInfoDbMongo._isOnline(token,checkValue,timeStamp))
+                if(TempDbMongoDown._isOnline(token,checkValue,timeStamp))
                 {
                     count++;
                 }
@@ -505,4 +505,4 @@ class TokenInfoDbMongo extends AbstractTokenInfoStorage
 
 }
 
-module.exports = TokenInfoDbMongo;
+module.exports = TempDbMongoDown;

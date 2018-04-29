@@ -15,10 +15,12 @@ const ZationConfig          = require('./zationConfig');
 const Const                 = require('../helper/constante/constWrapper');
 const ChAccessEngine        = require('../helper/channel/chAccessEngine');
 const ServiceEngine         = require('../helper/services/serviceEngine');
-const TokenInfoStorage      = require('../helper/tempDb/tokenInfoDb/tokenInfoStorage');
 const SystemBackgroundTask  = require('../helper/background/systemBackgroundTasks');
 const SmallBag              = require('../api/SmallBag');
 const PrepareClientJs       = require('./../helper/tools/prepareClientJs');
+
+const TempDbMongoDown       = require('../helper/tempDb/tempDbMongoDown');
+const TempDbLevelDown       = require('../helper/tempDb/tempDbLevelDown');
 
 class Worker extends SCWorker
 {
@@ -51,10 +53,10 @@ class Worker extends SCWorker
         this._servieceEngine = new ServiceEngine(this._zc);
         await this._servieceEngine.init();
 
-        if(this._zc.isExtraSecureAuth())
+        if(this._zc.isUseErrorInfoTempDb() || this._zc.isUseTokenInfoTempDb())
         {
-            this._zc.printStartDebugInfo(`Worker with id ${this.id} init token info storage.`);
-            await this._initTokenInfoStorage();
+            this._zc.printStartDebugInfo(`Worker with id ${this.id} init temp db.`);
+            await this._initTempDb()
         }
 
         this._zc.printStartDebugInfo(`Worker with id ${this.id} prepare a small bag.`);
@@ -499,18 +501,35 @@ class Worker extends SCWorker
         return httpServer;
     }
 
-    async _initTokenInfoStorage()
+    async _initTempDb()
     {
-        let key = this._zc.getMain(Const.Settings.TOKEN_INFO_STORAGE_KEY);
-        this._tokenInfoStorage = new TokenInfoStorage(await new MasterStorage(key,this));
-        await this._tokenInfoStorage.init();
-
-        this._addSystemBackgroundTask(async() =>
+        if(this._zc.getMain(Const.Main.TEMP_DB_ENGINE) === Const.Main.TEMP_DB_ENGINE_LEVEL)
         {
-            await SystemBackgroundTask.checkTokenInfoStorage(this._tokenInfoStorage,this._zc);
-        });
-    }
+            this._tempDbUp = new TempDbLevelDown(this._zc);
+            await this._tempDbUp.init();
+        }
+        else if(this._zc.getMain(Const.Main.TEMP_DB_ENGINE) === Const.Main.TEMP_DB_ENGINE_MONGO)
+        {
+            this._tempDbUp = new TempDbMongoDown(this._zc);
+            await this._tempDbUp.init();
+        }
 
+        if(this._zc.getMain(Const.Main.USE_TEMP_DB_TOKEN_INFO))
+        {
+            this._addSystemBackgroundTask(async() =>
+            {
+                await SystemBackgroundTask.checkTokenInfoTempDb(this._tempDbUp,this._zc);
+            });
+        }
+
+        if(this._zc.getMain(Const.Main.USE_TEMP_DB_ERROR_INFO))
+        {
+            this._addSystemBackgroundTask(async() =>
+            {
+                await SystemBackgroundTask.checkErrorInfoTempDb(this._tempDbUp,this._zc);
+            });
+        }
+    }
 
     _registerMasterEvent()
     {
@@ -579,9 +598,9 @@ class Worker extends SCWorker
         });
     }
 
-    getTokenInfoStorage()
+    getTempDbUp()
     {
-        return this._tokenInfoStorage;
+        return this._tempDbUp;
     }
 
     getZationConfig()

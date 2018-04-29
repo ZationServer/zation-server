@@ -6,11 +6,18 @@ GitHub: LucaCode
 
 class SystemBackgroundTasks
 {
-    static async checkTokenInfoStorage(tokenInfoStorage,zc)
+    static async checkTokenInfoTempDb(tempDbUp,zc)
     {
-        zc.printDebugInfo('Server is start to checking the tokenInfoStorage!');
-        let count = await tokenInfoStorage.checkTokenInfoStorage();
-        zc.printDebugInfo(`Server has checked the tokenInfoStorage! ${count} token are removed!`);
+        zc.printDebugInfo('Server is start to checking token info temp database!');
+        let count = await tempDbUp.checkTokenInfoDb();
+        zc.printDebugInfo(`Server has checked the token info temp database! ${count} token are removed!`);
+    }
+
+    static async checkErrorInfoTempDb(tempDbUp,zc)
+    {
+        zc.printDebugInfo('Server is start to checking error info temp database!');
+        let count = await tempDbUp.checkErrorInfoDb();
+        zc.printDebugInfo(`Server has checked the error info temp database! ${count} errors are removed!`);
     }
 }
 

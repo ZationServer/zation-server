@@ -6,6 +6,7 @@ GitHub: LucaCode
 
 const TokenBridge   = require('./tokenBridge');
 const TokenTools    = require('./../token/tokenTools');
+const IP            = require('ip');
 
 //Socket and Http Bridge
 class SHBridge
@@ -55,6 +56,20 @@ class SHBridge
         else
         {
             return this._httpReq.headers['x-forwarded-for'] ||  this._httpReq.connection.remoteAddress;
+        }
+    }
+
+    getPublicRemoteAddress()
+    {
+        let reqId = this.getRemoteAddress();
+
+        if(IP.isPrivate(reqId))
+        {
+            return IP.address();
+        }
+        else
+        {
+            return reqId;
         }
     }
 

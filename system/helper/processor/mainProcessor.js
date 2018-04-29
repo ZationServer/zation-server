@@ -25,17 +25,15 @@ class MainProcessor
         //EXTRA SECURE AUTH LAYER
         if(zc.isExtraSecureAuth() && shBridge.getTokenBridge().hasToken())
         {
-            let tokenInfoStorage = worker.getTokenInfoStorage();
+            let tokenInfoStorage = worker.getTempDbUp();
             let token = shBridge.getTokenBridge().getToken();
 
-            let valid = await tokenInfoStorage.isTokenValid(token);
+            let valid = await tokenInfoStorage.isTokenIdValid(token[Const.Settings.CLIENT_TOKEN_ID]);
 
             if(!valid)
             {
                 throw new TaskError(MainErrors.tokenIsBlocked,{token : token});
             }
-
-            await tokenInfoStorage.setLastActivity(token);
         }
         //END EXTRA SECURE AUTH LAYER
 

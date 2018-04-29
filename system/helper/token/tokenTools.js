@@ -36,7 +36,8 @@ class TokenTools
 
         if(data !== undefined)
         {
-            if(ignoreZationKeys)
+            if(ignoreZationKeys &&
+                (!updateOnly || (updateOnly && !data.hasOwnProperty(Const.Settings.CLIENT_TOKEN_ID))))
             {
                 await setToken();
 
@@ -58,6 +59,10 @@ class TokenTools
                 throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.CLIENT_TOKEN_ID});
             }
             else if(data.hasOwnProperty(Const.Settings.CLIENT_PANEL_ACCESS))
+            {
+                throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.CLIENT_PANEL_ACCESS});
+            }
+            else if(data.hasOwnProperty(Const.Settings.CLIENT_EXPIRE))
             {
                 throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.CLIENT_PANEL_ACCESS});
             }
@@ -123,12 +128,12 @@ class TokenTools
 
     static async setZationData(data,tokenBridge,tokenEngine,zc)
     {
-        let oldToken = tokenBridge.getToken();
         let suc = await TokenTools._changeToken(data,tokenBridge,zc,true);
-        if(suc && zc.isExtraSecureAuth())
+
+        if(suc && zc.isUseErrorInfoTempDb())
         {
             let newToken = tokenBridge.getToken();
-            await tokenEngine.getWorker().getTokenInfoStorage().updateTokenInfo(oldToken,newToken);
+            await tokenEngine.getWorker().getTempDbUp().updateTokenInfo(newToken);
         }
         return suc;
     }
