@@ -1,31 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/level_object.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/zation-server.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/zation-server.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/background/systemBackgroundTasks.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/background/systemBackgroundTasks.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/bridges/shBridge.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/bridges/shBridge.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/constante/mainConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/constante/mainConfig.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/constante/settings.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/constante/settings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/processor/mainProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/processor/mainProcessor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/tempDb/errorInfoDb/errorInfoDb.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/tempDb/errorInfoDb/errorInfoDbLevel.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/tempDb/tempDbLevelDown.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/tempDb/errorInfoDb/errorInfoDbMongo.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/tools/objectTools.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/tempDb/tempDbEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/tempDb/prepareTempDbEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/tempDb/tokenInfoDb/tokenInfoDb.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/tempDb/tempDbUp.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/tempDb/tokenInfoDb/tokenInfoDbLevel.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/tools/uuid.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/tempDb/tokenInfoDb/tokenInfoDbMongo.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/tempDb/tempDbMongoDown.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/token/tokenEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/token/tokenEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/helper/token/tokenTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/helper/token/tokenTools.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/main/zationConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/main/zationConfig.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/main/zationStarter.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/main/zationStarter.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/main/zationWorker.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/main/zationWorker.js" afterDir="false" />
-    </list>
+    <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -529,12 +505,12 @@
       <workItem from="1524865895826" duration="34000" />
       <workItem from="1524865976971" duration="15956000" />
       <workItem from="1524906727979" duration="17941000" />
-      <workItem from="1525001265659" duration="16460000" />
+      <workItem from="1525001265659" duration="17059000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="327371000" />
+    <option name="totallyTimeSpent" value="327970000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="22" width="1936" height="1066" extended-state="6" />
