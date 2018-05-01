@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const ZationStarter   = require('./system/main/zationStarter');
+const ZationStarter   = require('./src/main/zationStarter');
 
 //starter
 module.exports.start = (options) =>
@@ -13,11 +13,11 @@ module.exports.start = (options) =>
 };
 
 //Api Classes
-module.exports.Bag = require('./system/api/Bag');
-module.exports.SmallBag = require('./system/api/SmallBag');
-module.exports.Controller = require('./system/api/Controller');
-module.exports.Result = require('./system/api/Result');
-module.exports.TaskError = require('./system/api/TaskError');
-module.exports.TaskErrorBag = require('./system/api/TaskErrorBag');
+module.exports.Bag = require('./src/api/Bag');
+module.exports.SmallBag = require('./src/api/SmallBag');
+module.exports.Controller = require('./src/api/Controller');
+module.exports.Result = require('./src/api/Result');
+module.exports.TaskError = require('./src/api/TaskError');
+module.exports.TaskErrorBag = require('./src/api/TaskErrorBag');
 
-module.exports.ErrorType = require('./system/helper/constante/errorTypes');
+module.exports.ErrorType = require('./src/helper/constants/errorTypes');
