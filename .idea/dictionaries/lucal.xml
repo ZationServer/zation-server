@@ -8,6 +8,7 @@
       <w>minify</w>
       <w>mongo</w>
       <w>postgre</w>
+      <w>rimraf</w>
       <w>scaringella</w>
       <w>socketcluster</w>
       <w>unsubscription</w>

@@ -22,8 +22,8 @@
     "hashset": "0.0.6",
     "ip": "^1.1.5",
     "jsonwebtoken": "latest",
-    "leveldown": "1.7.0-0",
-    "linvodb3": "^3.25.1",
+    "linvodb3": "latest",
+    "level": "^3.0.0",
     "moment": "2.22.1",
     "moment-timezone": "0.5.16",
     "mongodb": "latest",
@@ -35,6 +35,7 @@
     "pg-pool": "2.0.3",
     "socketcluster": "12.0.0",
     "scc-broker-client": "^5.0.2",
-    "validator": "9.4.1"
+    "validator": "9.4.1",
+    "rimraf": "latest"
   }
 }

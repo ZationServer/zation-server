@@ -6,6 +6,7 @@ GitHub: LucaCode
 
 const FsTool      = require('./../tools/fsTools');
 const Const       = require('../constants/constWrapper');
+const fs          = require('fs');
 const MongoClient = require('mongodb').MongoClient;
 
 const tempFolder  = __dirname + '/../../temp';
@@ -14,8 +15,16 @@ class PrepareTempDbEngine
 {
     static async prepareTempDb(zc)
     {
-        zc.printStartDebugInfo('Clear temp folder');
-        await PrepareTempDbEngine.clearTempFolder();
+        if (!fs.existsSync(tempFolder))
+        {
+            zc.printStartDebugInfo('Create temp folder');
+            fs.mkdirSync(tempFolder);
+        }
+        else
+        {
+            zc.printStartDebugInfo('Clear temp folder');
+            await PrepareTempDbEngine.clearTempFolder();
+        }
 
         if(zc.isUseErrorInfoTempDb() || zc.isUseTokenInfoTempDb())
         {
@@ -29,7 +38,7 @@ class PrepareTempDbEngine
                 zc.printStartDebugInfo('Create temp db structure');
                 await PrepareTempDbEngine.prepareTempDbStructureMongo(mongoClient,zc);
 
-                mongoClient.close();
+                await mongoClient.close();
             }
         }
     }
