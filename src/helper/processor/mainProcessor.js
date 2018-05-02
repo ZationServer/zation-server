@@ -22,21 +22,6 @@ class MainProcessor
 {
     static async process(shBridge,zc,worker)
     {
-        //EXTRA SECURE AUTH LAYER
-        if(zc.isExtraSecureAuth() && shBridge.getTokenBridge().hasToken())
-        {
-            let tokenInfoStorage = worker.getTempDbUp();
-            let token = shBridge.getTokenBridge().getToken();
-
-            let valid = await tokenInfoStorage.isTokenIdValid(token[Const.Settings.CLIENT_TOKEN_ID]);
-
-            if(!valid)
-            {
-                throw new TaskError(MainErrors.tokenIsBlocked,{token : token});
-            }
-        }
-        //END EXTRA SECURE AUTH LAYER
-
         let reqData = shBridge.getZationData();
 
         if(ZationReqTools.isValidStructure(reqData))
@@ -45,23 +30,41 @@ class MainProcessor
             SystemVersionChecker.checkSystemAndVersion(zc,reqData);
 
             //Check for a auth req
-            reqData = ZationReqTools.checkZationAuth(zc,reqData);
+            if(ZationReqTools.isZationAuthReq(reqData))
+            {
+                reqData = ZationReqTools.dissolveZationAuthReq(zc,reqData);
+            }
+            else if(worker._authStartActive)
+            {
+                throw new TaskError(MainErrors.authStartActive);
+            }
 
             let task = reqData[Const.Settings.INPUT_TASK];
+            let controllerConfig = ControllerTools.getControllerConfigByTask(zc,task);
+
+            //EXTRA SECURE AUTH LAYER
+            if(zc.isExtraSecureAuth() && shBridge.getTokenBridge().hasToken() &&
+               ControllerTools.needToCheckExtraSecure(controllerConfig,zc))
+            {
+                let tokenInfoStorage = worker.getTempDbUp();
+                let token = shBridge.getTokenBridge().getToken();
+
+                let valid = await tokenInfoStorage.isTokenIdValid(token[Const.Settings.CLIENT_TOKEN_ID]);
+
+                if(!valid)
+                {
+                    throw new TaskError(MainErrors.tokenIsBlocked,{token : token});
+                }
+            }
+            //END EXTRA SECURE AUTH LAYER
 
             let tokenEngine = new TokenEngine(shBridge,worker,zc);
 
-            let authEngine = new AuthEngine(
-                {
-                    tokenEngine : tokenEngine,
-                    shBridge : shBridge,
-                    zc : zc,
-                });
+            let authEngine = new AuthEngine(shBridge,tokenEngine,worker.getAEPreparedPart());
 
             await authEngine.init();
 
             let useProtocolCheck = zc.getMain(Const.Main.USE_PROTOCOL_CHECK);
-            let controllerConfig = ControllerTools.getControllerConfigByTask(zc,task);
 
             if(!useProtocolCheck || authEngine.hasServerProtocolAccess(controllerConfig))
             {

@@ -18,9 +18,10 @@ const ServiceEngine         = require('../helper/services/serviceEngine');
 const SystemBackgroundTask  = require('../helper/background/systemBackgroundTasks');
 const SmallBag              = require('../api/SmallBag');
 const PrepareClientJs       = require('./../helper/tools/prepareClientJs');
+const AEPreparedPart        = require('./../helper/auth/aePreparedPart');
 
 const TempDbMongoDown       = require('../helper/tempDb/tempDbMongoDown');
-const TempDbLevelDown       = require('../helper/tempDb/tempDbLevelDown');
+const TempDbLevelDown       = require('../helper/tempDb/tempDbMemoryDown');
 
 class Worker extends SCWorker
 {
@@ -62,6 +63,9 @@ class Worker extends SCWorker
         this._zc.printStartDebugInfo(`Worker with id ${this.id} prepare a small bag.`);
         this._preapreSmallBag = new SmallBag(this);
 
+        this._zc.printStartDebugInfo(`Worker with id ${this.id} prepare auth engine part.`);
+        this._aePreparedPart = new AEPreparedPart(this._zc,this);
+
         this._zc.printStartDebugInfo(`Worker with id ${this.id} load user background tasks.`);
         this._loadUserBackgroundTasks();
 
@@ -70,6 +74,9 @@ class Worker extends SCWorker
 
         this._zc.printStartDebugInfo(`Worker with id ${this.id} create zation.`);
         this.zation = new Zation(this);
+
+        this._zc.printStartDebugInfo(`Worker with id ${this.id} check for authStart.`);
+        this._checkAuthStart();
 
         //Server
         this._zc.printStartDebugInfo(`Worker with id ${this.id} start http server.`);
@@ -196,34 +203,56 @@ class Worker extends SCWorker
                     let id = authToken[Const.Settings.CLIENT_AUTH_ID];
                     let group = authToken[Const.Settings.CLIENT_AUTH_GROUP];
 
-                    if (id !== undefined && channel.indexOf(Const.Settings.CHANNEL_USER_CHANNEL_PREFIX) !== -1) {
-                        if (Const.Settings.CHANNEL_USER_CHANNEL_PREFIX + id === channel) {
-                            this._zc.printDebugInfo(`Socket with id: ${req.socket.id} subscribes user channel ${id}`);
-                            next();
+                    if (channel.indexOf(Const.Settings.CHANNEL_USER_CHANNEL_PREFIX) !== -1) {
+                        if(id !== undefined)
+                        {
+                            if (Const.Settings.CHANNEL_USER_CHANNEL_PREFIX + id === channel) {
+                                this._zc.printDebugInfo(`Socket with id: ${req.socket.id} subscribes user channel ${id}`);
+                                next();
+                            }
+                            else
+                            {
+                                let err = new Error(`User: ${id} can\'t subscribe an other User Channel: ${channel}!`);
+                                err.code = 4543;
+                                next(err); //Block!
+
+                            }
                         }
-                        else {
-                            let err = new Error(`User: ${id} can\'t subscribe an other User Channel: ${channel}!`);
-                            err.code = 4502;
+                        else
+                        {
+                            let err = new Error(`User: with undefined id can\'t subscribe User Channel: ${channel}!`);
+                            err.code = 4542;
                             next(err); //Block!
                         }
                     }
-                    else if (group !== undefined && channel.indexOf(Const.Settings.CHANNEL_AUTH_GROUP_PREFIX) !== -1) {
-                        if (Const.Settings.CHANNEL_AUTH_GROUP_PREFIX + group === channel) {
+                    else if (channel.indexOf(Const.Settings.CHANNEL_AUTH_GROUP_PREFIX) !== -1) {
+                        if(group !== undefined)
+                        {
+                            if (Const.Settings.CHANNEL_AUTH_GROUP_PREFIX + group === channel)
+                            {
 
-                            this._zc.printDebugInfo
-                            (`Socket with id: ${req.socket.id} subscribes group channel ${group}`);
+                                this._zc.printDebugInfo
+                                (`Socket with id: ${req.socket.id} subscribes group channel ${group}`);
 
-                            next();
+                                next();
+                            }
+                            else
+                            {
+                                let err = new Error('User can\'t subscribe an other User Group Channel!');
+                                err.code = 4533;
+                                next(err); //Block!
+                            }
                         }
-                        else {
-                            let err = new Error('User can\'t subscribe an other User Group Channel!');
-                            err.code = 4522;
+                        else
+                        {
+                            let err = new Error(`User: with undefined group can\'t subscribe Group Channel!`);
+                            err.code = 4532;
                             next(err); //Block!
                         }
                     }
-                    else if (group !== undefined && channel === Const.Settings.CHANNEL_DEFAULT_GROUP) {
+                    else if (channel === Const.Settings.CHANNEL_DEFAULT_GROUP) {
                             let err = new Error('Auth User can\' subscribe default User Group Channel!');
-                            err.code = 4523;
+                            err.code = 4521;
                             next(err); //Block!
                     }
                     else if (channel.indexOf(Const.Settings.CHANNEL_SPECIAL_CHANNEL_PREFIX) !== -1) {
@@ -237,7 +266,23 @@ class Worker extends SCWorker
                         }
                         else {
                             let err = new Error('No access to sub this special channel!');
-                            err.code = 4524;
+                            err.code = 4512;
+                            next(err); //Block!
+                        }
+                    }
+                    else if (channel === Const.Settings.CHANNEL_PANNEL)
+                    {
+                        if (authToken[Const.Settings.CLIENT_PANEL_ACCESS] !== undefined &&
+                            authToken[Const.Settings.CLIENT_PANEL_ACCESS]) {
+
+                            this._zc.printDebugInfo
+                            (`Socket with id: ${req.socket.id} subscribes panel channel`);
+
+                            next();
+                        }
+                        else {
+                            let err = new Error('User can\'t subscribe panel channel!');
+                            err.code = 4502;
                             next(err); //Block!
                         }
                     }
@@ -249,12 +294,12 @@ class Worker extends SCWorker
                 else {
                     if (channel.indexOf(Const.Settings.CHANNEL_USER_CHANNEL_PREFIX) !== -1) {
                         let err = new Error('anonymous user can\'t subscribe a User Channel!');
-                        err.code = 4501;
+                        err.code = 4541;
                         next(err); //Block!
                     }
                     else if (channel.indexOf(Const.Settings.CHANNEL_AUTH_GROUP_PREFIX) !== -1) {
                         let err = new Error('anonymous user can\'t subscribe a User Group Channel!');
-                        err.code = 4511;
+                        err.code = 4531;
                         next(err); //Block!
                     }
                     else if (channel === Const.Settings.CHANNEL_DEFAULT_GROUP) {
@@ -272,9 +317,15 @@ class Worker extends SCWorker
                         }
                         else {
                             let err = new Error('No access to sub this special channel!');
-                            err.code = 4524;
+                            err.code = 4511;
                             next(err); //Block!
                         }
+                    }
+                    else if(channel === Const.Settings.CHANNEL_PANNEL)
+                    {
+                        let err = new Error('anonymous user can\'t subscribe panel Channel!');
+                        err.code = 4501;
+                        next(err); //Block!
                     }
                     else {
                         this._zc.printDebugInfo(`Socket with id: ${req.socket.id} subscribes ${channel}`);
@@ -291,22 +342,22 @@ class Worker extends SCWorker
             {
                 if (req.channel.indexOf(Const.Settings.CHANNEL_USER_CHANNEL_PREFIX) !== -1) {
                     let err = new Error('User can\'t publish in a User Channel!');
-                    err.code = 4503;
+                    err.code = 4546;
                     next(err); //Block!
                 }
                 else if (req.channel.indexOf(Const.Settings.CHANNEL_AUTH_GROUP_PREFIX) !== -1) {
                     let err = new Error('User can\'t publish in a User Group Channel!');
-                    err.code = 4504;
+                    err.code = 4536;
                     next(err); //Block!
                 }
                 else if (req.channel === Const.Settings.CHANNEL_ALL) {
                     let err = new Error('User can\'t publish in a all Channel!');
-                    err.code = 4505;
+                    err.code = 4556;
                     next(err); //Block!
                 }
                 else if (req.channel === Const.Settings.CHANNEL_DEFAULT_GROUP) {
                     let err = new Error('User can\'t publish in default user Group Channel!');
-                    err.code = 4506;
+                    err.code = 4526;
                     next(err); //Block!
                 }
                 else if (req.channel.indexOf(Const.Settings.CHANNEL_SPECIAL_CHANNEL_PREFIX) !== -1) {
@@ -316,9 +367,15 @@ class Worker extends SCWorker
                     }
                     else {
                         let err = new Error('No access to publish in this special channel!');
-                        err.code = 4525;
+                        err.code = 4516;
                         next(err); //Block!
                     }
+                }
+                else if(req.channel === Const.Settings.CHANNEL_PANNEL)
+                {
+                    let err = new Error('User can\'t publish in panel channel!');
+                    err.code = 4506;
+                    next(err); //Block!
                 }
                 else {
                     next();
@@ -326,7 +383,7 @@ class Worker extends SCWorker
             }
         });
 
-        //CATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
+        //ZATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_PUBLISH_OUT, (req,next) =>
         {
             if(this._zc.checkMiddlewareEvent(Const.Event.MIDDLEWARE_PUBLISH_OUT,req,next))
@@ -335,7 +392,7 @@ class Worker extends SCWorker
             }
         });
 
-        //CATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
+        //ZATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_HANDSHAKE_SC, (req,next) =>
         {
             if(this._zc.checkMiddlewareEvent(Const.Event.MIDDLEWARE_HANDSHAKE_SC,req,next))
@@ -344,7 +401,7 @@ class Worker extends SCWorker
             }
         });
 
-        //CATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
+        //ZATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_HANDSHAKE_WS, (req,next) =>
         {
             if(this._zc.checkMiddlewareEvent(Const.Event.MIDDLEWARE_HANDSHAKE_WS,req,next))
@@ -353,7 +410,7 @@ class Worker extends SCWorker
             }
         });
 
-        //CATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
+        //ZATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_EMIT, (req,next) =>
         {
             if(this._zc.checkMiddlewareEvent(Const.Event.MIDDLEWARE_EMIT,req,next))
@@ -362,6 +419,40 @@ class Worker extends SCWorker
             }
         });
 
+        //ZATION CHECK TOKEN IS BLOCKED, ONLY CHECK USER EVENT
+        // noinspection JSUnresolvedVariable
+        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_AUTHENTICATE, (req,next) =>
+        {
+            if(this._zc.checkMiddlewareEvent(Const.Event.MIDDLEWARE_AUTHENTICATE,req,next))
+            {
+                if(this._zc.isExtraSecureAuth())
+                {
+                    let token = req.authToken;
+                    this.getTempDbUp().isTokenIdValid(token[Const.Settings.CLIENT_TOKEN_ID]).then((valid) =>
+                    {
+                        if(!valid)
+                        {
+                            req.socket.emit('zationBadAuthToken',{});
+                            req.socket.deauthenticate();
+                            let err = new Error('Token is blocked');
+                            next(err,true);
+                        }
+                        else
+                        {
+                            next();
+                        }
+                    }
+                    ).catch((e) =>
+                    {
+                        next(e);
+                    });
+                }
+                else
+                {
+                    next();
+                }
+            }
+        });
     }
 
     _initScServerEvents()
@@ -503,9 +594,9 @@ class Worker extends SCWorker
 
     async _initTempDb()
     {
-        if(this._zc.getMain(Const.Main.TEMP_DB_ENGINE) === Const.Main.TEMP_DB_ENGINE_LEVEL)
+        if(this._zc.getMain(Const.Main.TEMP_DB_ENGINE) === Const.Main.TEMP_DB_ENGINE_MEMORY)
         {
-            this._tempDbUp = new TempDbLevelDown(this._zc);
+            this._tempDbUp = new TempDbLevelDown(this,this._zc);
             await this._tempDbUp.init();
         }
         else if(this._zc.getMain(Const.Main.TEMP_DB_ENGINE) === Const.Main.TEMP_DB_ENGINE_MONGO)
@@ -598,6 +689,18 @@ class Worker extends SCWorker
         });
     }
 
+    _checkAuthStart()
+    {
+        if(this._zc.getMain(Const.Main.AUTH_START))
+        {
+            this._authStartActive = true;
+            setTimeout(() =>
+            {
+                this._authStartActive = false;
+            },this._zc.getMain(Const.Main.AUTH_START_DURATION_MS));
+        }
+    }
+
     getTempDbUp()
     {
         return this._tempDbUp;
@@ -606,6 +709,16 @@ class Worker extends SCWorker
     getZationConfig()
     {
         return this._zc;
+    }
+
+    getPreparedSmallBag()
+    {
+        return this._preapreSmallBag;
+    }
+
+    getAEPreparedPart()
+    {
+        return this._aePreparedPart;
     }
 
     // noinspection JSUnusedGlobalSymbols

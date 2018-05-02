@@ -23,16 +23,19 @@ class ZationReqTools
                 ));
     }
 
-    static checkZationAuth(zc,zationReq)
+    static isZationAuthReq(zationReq)
     {
-        if(zationReq[Const.Settings.INPUT_AUTH] !== undefined)
-        {
-            zationReq[Const.Settings.INPUT_TASK] = zationReq[Const.Settings.INPUT_AUTH];
-            delete zationReq[Const.Settings.INPUT_AUTH];
+        return zationReq[Const.Settings.INPUT_AUTH] !== undefined;
+    }
 
-            zationReq[Const.Settings.INPUT_TASK][Const.Settings.INPUT_CONTROLLER] =
-                zc.getApp(Const.App.AUTH_CONTROLLER);
-        }
+    static dissolveZationAuthReq(zc,zationReq)
+    {
+        zationReq[Const.Settings.INPUT_TASK] = zationReq[Const.Settings.INPUT_AUTH];
+        delete zationReq[Const.Settings.INPUT_AUTH];
+
+        zationReq[Const.Settings.INPUT_TASK][Const.Settings.INPUT_CONTROLLER] =
+            zc.getApp(Const.App.AUTH_CONTROLLER);
+
         return zationReq;
     }
 }

@@ -26,7 +26,7 @@ class TokenEngine
     //to create a new Token
     async createToken(data)
     {
-        if(this._zc.isUseErrorInfoTempDb())
+        if(this._zc.isUseTokenInfoTempDb())
         {
             let expiry = this._generateExpiry();
             let remoteAddress = this._shBridge.getPublicRemoteAddress();

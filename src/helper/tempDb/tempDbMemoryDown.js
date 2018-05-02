@@ -6,26 +6,23 @@ GitHub: LucaCode
 
 const Const                     = require('../constants/constWrapper');
 const TempDbUp                  = require('./tempDbUp');
+const MemoryMasterBridge        = require('./../bridges/memoryMasterBridge');
 
-const LinvoDb                   = require('linvodb3');
+const TOKEN_INFO_DB             = Const.Settings.TEMP_DB_TOKEN_INFO_NAME;
+const ERROR_INFO_DB             = Const.Settings.TEMP_DB_ERROR_INFO_NAME;
 
-const tempFolder                = __dirname + '/../../temp';
-
-class TempDbLevelDown extends TempDbUp
+class TempDbMemoryDown extends TempDbUp
 {
-    constructor(zc)
+    constructor(worker,zc)
     {
         super();
+        this._worker = worker;
         this._zc = zc;
     }
 
     async init()
     {
-        const dbName = this._zc.getMain(Const.Main.TEMP_DB_Name);
-        LinvoDb.dbPath = `${tempFolder}/${dbName}`;
-
-        this._tokenInfoDb = new LinvoDb(Const.Settings.TEMP_DB_TOKEN_INFO_NAME,{});
-        this._errorInfoDb = new LinvoDb(Const.Settings.TEMP_DB_ERROR_INFO_NAME,{});
+        this._db = new MemoryMasterBridge(this._worker);
     }
 
     async createTokenInfo(expire,remoteAddress,authGroup,authId)
@@ -42,18 +39,8 @@ class TempDbLevelDown extends TempDbUp
             tokenInfo[Const.Settings.TOKEN_INFO_AUTH_ID] = authId;
         }
 
-        return await new Promise((resolve, reject) =>
-        {
-            // noinspection JSUnresolvedFunction
-            this._tokenInfoDb.instert(tokenInfo,(err,t) =>
-            {
-                if(err) {reject(err);}
-                else
-                {
-                    resolve(t._id);
-                }
-            });
-        });
+        let res = await this._db.insert(TOKEN_INFO_DB,tokenInfo);
+        return res._id;
     }
 
     async updateTokenInfo(token)
@@ -84,8 +71,7 @@ class TempDbLevelDown extends TempDbUp
                 }
             }
 
-            // noinspection JSUnresolvedFunction
-            await this._tokenInfoDb.update({_id : tokenId},{$set : updateObj},{multi : false}).exeAsync();
+            await this._db.update(TOKEN_INFO_DB,{_id : tokenId},{$set : updateObj},{multi : false});
         }
     }
 
@@ -93,8 +79,7 @@ class TempDbLevelDown extends TempDbUp
     {
         if(tokenId !== undefined)
         {
-            // noinspection JSUnresolvedFunction
-            let tokenInfo = this._tokenInfoDb.findOne({_id : tokenId}).exeAsync();
+            let tokenInfo = await this._db.findOne(TOKEN_INFO_DB,{_id : tokenId});
             return tokenInfo !== null && !tokenInfo[Const.Settings.TOKEN_INFO_IS_BLOCKED];
         }
         else
@@ -107,14 +92,11 @@ class TempDbLevelDown extends TempDbUp
     {
         let updateObj = {};
         updateObj[Const.Settings.TOKEN_INFO_IS_BLOCKED] = true;
-
-        // noinspection JSUnresolvedFunction
-        await this._tokenInfoDb.update({_id : tokenId},{$set : updateObj},{multi : false}).exeAsync();
+        await this._db.update(TOKEN_INFO_DB,{_id : tokenId},{$set : updateObj},{multi : false});
     }
 
-    async checkTokenInfoStorage()
+    async checkTokenInfoDb()
     {
-        let promises = [];
         let timeStamp = Math.floor(Date.now() / 1000);
         //check with AuthId
 
@@ -122,12 +104,9 @@ class TempDbLevelDown extends TempDbUp
         query[Const.Settings.TOKEN_INFO_EXPIRE] = { $lte : timeStamp};
 
         // noinspection JSUnresolvedFunction
-        return await this._tokenInfoDb.remove(query,{multi : true}).exeAsync();
+        return await this._db.remove(TOKEN_INFO_DB,query,{multi : true});
     }
-
-
-
 
 }
 
-module.exports = TempDbLevelDown;
+module.exports = TempDbMemoryDown;

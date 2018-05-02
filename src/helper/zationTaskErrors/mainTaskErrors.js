@@ -118,6 +118,15 @@ module.exports = {
         isFromZationSystem : true
     },
 
+    authStartActive    : {
+        name          : 'authStartActive',
+        description   : 'auth start is active, zation only accept auth request for a time!',
+        type          : ErrorType.SYSTEM_ERROR,
+        isPrivate     : false,
+        sendInfo      : false,
+        isFromZationSystem : true
+    },
+
     doubleAccessKeyWord  : {
         name          : 'doubleAccessKeyWord',
         description   : 'double Access KeyWord is use in Controller or auth Default!',

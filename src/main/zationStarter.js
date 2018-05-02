@@ -10,7 +10,7 @@ const ZationConfig         = require('./zationConfig');
 const HashSet              = require('hashset');
 const TimeTools            = require('./../helper/tools/timeTools');
 const PrepareClientJs      = require('./../helper/tools/prepareClientJs');
-const PrepareTempDbEngine  = require('../helper/tempDb/prepareTempDbEngine');
+const MasterTempDbEngine   = require('../helper/tempDb/masterTempDbEngine');
 
 class ZationStarter
 {
@@ -45,7 +45,8 @@ class ZationStarter
         this._zc.printStartDebugInfo('Build server settings file');
         PrepareClientJs.createServerSettingsFile(this._zc);
 
-        await PrepareTempDbEngine.prepareTempDb(this._zc);
+        this._tempDbEngine = new MasterTempDbEngine(this._zc);
+        await this._tempDbEngine.init();
 
         this._zc.printStartDebugInfo('Start socket cluster');
         this._startSocketCluster();
@@ -72,7 +73,8 @@ class ZationStarter
             authDefaultExpiry: this._zc.getMain(Const.Main.AUTH_DEFAULT_EXPIRY),
             zationConfigWorkerTransport : this._zc.getWorkerTransport(),
             zationServerVersion : this._version,
-            zationServerStartedTimeStamp : this._serverStartedTimeStamp
+            zationServerStartedTimeStamp : this._serverStartedTimeStamp,
+            ipcAckTimeout: 3000,
         });
 
         this._zc.loadOtherConfigs();
@@ -89,6 +91,19 @@ class ZationStarter
 
            this._printStartedInformation();
 
+        });
+
+        // noinspection JSUnresolvedFunction
+        this._master.on('workerMessage', async (wId,data,resp) =>
+        {
+            if(data['memoryDbRequest'])
+            {
+                await this._tempDbEngine.processMemoryDbReq(data['memoryDbRequestData'],resp);
+            }
+            else
+            {
+                resp(new Error('Unknown command!'));
+            }
         });
 
         // noinspection JSUnresolvedFunction
@@ -239,5 +254,6 @@ class ZationStarter
             this._master.sendToWorker(workerId,obj)
         }
     }
+
 }
 module.exports = ZationStarter;

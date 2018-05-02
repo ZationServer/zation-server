@@ -47,6 +47,7 @@ Event.SC_SERVER_DEAUTHENTICATION         = 'scServerDeauthentication';
 Event.SC_SERVER_BAD_SOCKET_AUTH_TOKEN    = 'scServerBadSocketAuthToken';
 
 //SocketCluster Middleware
+Event.MIDDLEWARE_AUTHENTICATE            = 'middlewareAuthenticate';
 Event.MIDDLEWARE_HANDSHAKE_WS            = 'middlewareHandshakeWs';
 Event.MIDDLEWARE_HANDSHAKE_SC            = 'middlewareHandshakeSc';
 Event.MIDDLEWARE_SUBSCRIBE               = 'middlewareSubscribe';

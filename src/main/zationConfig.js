@@ -40,18 +40,21 @@ class ZationConfig
             this._mainConfig[Const.Main.AUTH_DEFAULT_EXPIRY] = 86400;
             this._mainConfig[Const.Main.SYSTEM_BACKGROUND_TASK_REFRESH_RATE] = 1800000;
             this._mainConfig[Const.Main.TIME_ZONE] = 'Europe/Berlin';
+            this._mainConfig[Const.Main.AUTH_START] = false;
+            this._mainConfig[Const.Main.AUTH_START_DURATION_MS] = 20000;
 
             //TEMP
             this._mainConfig[Const.Main.USE_TEMP_DB_TOKEN_INFO] = true;
             this._mainConfig[Const.Main.USE_TEMP_DB_ERROR_INFO] = true;
             this._mainConfig[Const.Main.TEMP_DB_ERROR_INFO_LIVE_TIME] = 3600000;
-            this._mainConfig[Const.Main.TEMP_DB_ENGINE] = Const.Main.TEMP_DB_ENGINE_LEVEL;
+            this._mainConfig[Const.Main.TEMP_DB_ENGINE] = Const.Main.TEMP_DB_ENGINE_MEMORY;
             this._mainConfig[Const.Main.EXTRA_SECURE_AUTH] = true;
             this._mainConfig[Const.Main.TEMP_DB_Name] = 'zationTempDb';
 
             this.addToMainConfig(starterConfig,true);
             this._loadUserDataLocations();
             this._loadMainConfig();
+            this._processMainConfig();
         }
         else
         {
@@ -363,7 +366,6 @@ class ZationConfig
         );
 
         ObjectTools.addObToOb(this._mainConfig,mainConfig,true);
-        this._processMainConfig();
     }
 
     _processMainConfig()

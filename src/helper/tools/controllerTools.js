@@ -31,6 +31,30 @@ class ControllerTools
         }
     }
 
+    static needToCheckExtraSecure(controllerConfig,zc)
+    {
+        if(controllerConfig[Const.App.CONTROLLER_EXTRA_SECURE] !== undefined)
+        {
+            return controllerConfig[Const.App.CONTROLLER_EXTRA_SECURE];
+        }
+        else
+        {
+            let userDefaults = zc.getApp(Const.App.CONTROLLER_DEFAULT);
+            if(userDefaults !== undefined)
+            {
+                let userExtraSecureDefault = userDefaults[Const.App.CONTROLLER_EXTRA_SECURE];
+                if(userExtraSecureDefault !== undefined)
+                {
+                    return userExtraSecureDefault;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+    }
+
     static _getControllerFullPath(controllerConfig)
     {
         let controllerPath = controllerConfig[Const.App.CONTROLLER_PATH];

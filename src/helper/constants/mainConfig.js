@@ -33,12 +33,15 @@ MainConfig.TEMP_DB_ERROR_INFO_LIVE_TIME        = 'tempDbErrorInfoLiveTime';
 MainConfig.TEMP_DB_ENGINE                      = 'tempDbEngine';
 
 MainConfig.TEMP_DB_ENGINE_MONGO                = 'mongo';
-MainConfig.TEMP_DB_ENGINE_LEVEL                = 'level';
+MainConfig.TEMP_DB_ENGINE_MEMORY               = 'memory';
 
 MainConfig.TEMP_DB_Name                        = 'tempDbName';
 
 MainConfig.TEMP_DB_CONFIG                      = 'tempDbConfig';
 MainConfig.EXTRA_SECURE_AUTH                   = 'extraSecureAuth';
+
+MainConfig.AUTH_START                          = 'authStart';
+MainConfig.AUTH_START_DURATION_MS              = 'authStartDuration';
 
 //ADVANCE
 MainConfig.POST_KEY_WORD                       = 'postKeyWord';

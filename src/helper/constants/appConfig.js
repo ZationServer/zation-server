@@ -10,7 +10,7 @@ AppConfig.AUTH_CONTROLLER         = 'authController';
 AppConfig.CONTROLLER              = 'controller';
 AppConfig.GROUPS                  = 'groups';
 AppConfig.VERSION_CONTROL         = 'versionControl';
-AppConfig.ACCESS_DEFAULT          = 'accessDefault';
+AppConfig.CONTROLLER_DEFAULT      = 'controllerDefault';
 
 AppConfig.SERVER_SOCKET_ACCESS     = 'socketAccess';
 AppConfig.SERVER_HTTP_ACCESS       = 'httpAccess';
@@ -24,6 +24,7 @@ AppConfig.CONTROLLER_PARAMS              = 'params';
 AppConfig.CONTROLLER_BEFORE_HANDLE       = 'beforeHandle';
 AppConfig.CONTROLLER_RESULT              = 'result';
 AppConfig.CONTROLLER_PARAMS_CAN_MISSING  = 'paramsCanMissing';
+AppConfig.CONTROLLER_EXTRA_SECURE        = 'extraSecure';
 AppConfig.CONTROLLER_SYSTEM_CONTROLLER   = 'systemController';
 
 AppConfig.CONTROLLER_NOT_ACCESS          = 'notAccess';

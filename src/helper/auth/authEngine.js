@@ -10,40 +10,15 @@ const MainErrors    = require('../zationTaskErrors/mainTaskErrors');
 
 class AuthEngine
 {
-    constructor(data)
+    constructor(shBridge,tokenEngine,aePreparedPart)
     {
-        this._zc = data.zc;
-        this._useAuth             = this._zc.getMain(Const.Main.USE_AUTH);
+        this._aePreparedPart = aePreparedPart;
+        this._shBridge = shBridge;
+        this._tokenEngine = tokenEngine;
 
-        if(this._useAuth)
-        {
-            this._groupsConfig        = this._zc.getApp(Const.App.GROUPS);
-            this._authDefaultAccess   = this._zc.getApp(Const.App.ACCESS_DEFAULT);
-
-            if(this._groupsConfig !== undefined)
-            {
-                this._authGroups          = this._groupsConfig[Const.App.GROUPS_AUTH_GROUPS];
-                let defaultGroup = this._groupsConfig[Const.App.GROUPS_DEFAULT_GROUP];
-                if(defaultGroup === undefined)
-                {
-                    throw new TaskError(MainErrors.defaultGroupNotFound);
-                }
-                else
-                {
-                    this._defaultGroup = defaultGroup;
-                }
-            }
-            else
-            {
-                throw new TaskError(MainErrors.groupsConfigNotFound);
-            }
-
-            this._shBridge = data.shBridge;
-            this._tokenEngine = data.tokenEngine;
-
-            this._currentDefault      = true;
-            this._currentGroup        = undefined;
-        }
+        this._currentDefault      = true;
+        this._currentGroup        = undefined;
+        this._controllerDefault = this._aePreparedPart.getControllerDefault();
     }
 
     async init()
@@ -53,7 +28,7 @@ class AuthEngine
 
     async _processGroup()
     {
-        if(this._useAuth)
+        if(this._aePreparedPart.useAuth())
         {
             // noinspection JSUnresolvedFunction
             let authToken = this._shBridge.getTokenBridge().getToken();
@@ -76,7 +51,7 @@ class AuthEngine
                         throw new TaskError(MainErrors.savedAuthGroupInTokenNotFound,
                             {
                                 savedAuthGroup: authGroup,
-                                authGroupsInZationConfig: this._authGroups
+                                authGroupsInZationConfig: this._aePreparedPart.getAuthGroups()
                             });
                     }
                 }
@@ -108,17 +83,17 @@ class AuthEngine
     // noinspection JSUnusedGlobalSymbols
     isUseAuth()
     {
-        return this._useAuth;
+        return this._aePreparedPart.useAuth();
     }
 
     getDefaultGroup()
     {
-       return this._defaultGroup;
+       return this._aePreparedPart.getDefaultGroup();
     }
 
     checkIsIn(authGroup)
     {
-        return this._authGroups.hasOwnProperty(authGroup);
+        return this._aePreparedPart.getAuthGroups().hasOwnProperty(authGroup);
     }
 
     getGroup()
@@ -192,38 +167,7 @@ class AuthEngine
         await this._tokenEngine.deauthenticate();
     }
 
-    //PART ACCESS CHECKER
-
-    hasServerProtocolAccess(controller)
-    {
-        let hasAccess = false;
-
-        if(this._shBridge.isSocket())
-        {
-            if(controller[Const.App.SERVER_SOCKET_ACCESS] !== undefined)
-            {
-                hasAccess = controller[Const.App.SERVER_SOCKET_ACCESS];
-            }
-            else if(this._authDefaultAccess !== undefined &&
-                this._authDefaultAccess[Const.App.SERVER_SOCKET_ACCESS] !== undefined)
-            {
-                hasAccess = this._authDefaultAccess[Const.App.SERVER_SOCKET_ACCESS];
-            }
-        }
-        else
-        {
-            if(controller[Const.App.SERVER_HTTP_ACCESS] !== undefined)
-            {
-                hasAccess = controller[Const.App.SERVER_HTTP_ACCESS];
-            }
-            else if(this._authDefaultAccess !== undefined &&
-                this._authDefaultAccess[Const.App.SERVER_HTTP_ACCESS] !== undefined)
-            {
-                hasAccess = this._authDefaultAccess[Const.App.SERVER_HTTP_ACCESS];
-            }
-        }
-        return hasAccess;
-    }
+    //PART AUTHENTICATION ACCESS CHECKER
 
     hasAccessToController(controller)
     {
@@ -231,22 +175,34 @@ class AuthEngine
 
         let keyWord = AuthEngine._getAccessKeyWord(controller);
 
-        if(keyWord === '')
+        if(keyWord === Const.App.CONTROLLER_ACCESS &&
+            typeof controller[Const.App.CONTROLLER_ACCESS] === 'function')
         {
-            keyWord = AuthEngine._getAccessKeyWord(this._authDefaultAccess,true);
-            if(keyWord === '')
-            {
-                this._zc.printDebugWarning('No default Access Found! Access will denied!');
-                return false;
-            }
-            else
-            {
-                hasAccess = this._hasAccessToThis(keyWord,this._authDefaultAccess[keyWord]);
-            }
+            let token = this._shBridge.getTokenBridge().getToken();
+            let smallBag = this._aePreparedPart.getWorker().getPreparedSmallBag();
+            hasAccess = controller[Const.App.CONTROLLER_ACCESS](smallBag,token);
         }
         else
         {
-            hasAccess = this._hasAccessToThis(keyWord,controller[keyWord]);
+            if(keyWord === '')
+            {
+                keyWord = AuthEngine._getAccessKeyWord(this._controllerDefault,true);
+                if(keyWord === '')
+                {
+                    this._aePreparedPart.getZationConfig()
+                        .printDebugWarning('No default Access Found! Access will denied!');
+
+                    return false;
+                }
+                else
+                {
+                    hasAccess = this._hasAccessToThis(keyWord,this._controllerDefault[keyWord]);
+                }
+            }
+            else
+            {
+                hasAccess = this._hasAccessToThis(keyWord,controller[keyWord]);
+            }
         }
         return hasAccess;
     }
@@ -324,6 +280,39 @@ class AuthEngine
             return !access;
         }
         return access;
+    }
+
+    //PART PROTOCOL ACCESS CHECKER
+
+    hasServerProtocolAccess(controller)
+    {
+        let hasAccess = true;
+
+        if(this._shBridge.isSocket())
+        {
+            if(controller[Const.App.SERVER_SOCKET_ACCESS] !== undefined)
+            {
+                hasAccess = controller[Const.App.SERVER_SOCKET_ACCESS];
+            }
+            else if(this._controllerDefault !== undefined &&
+                this._controllerDefault[Const.App.SERVER_SOCKET_ACCESS] !== undefined)
+            {
+                hasAccess = this._controllerDefault[Const.App.SERVER_SOCKET_ACCESS];
+            }
+        }
+        else
+        {
+            if(controller[Const.App.SERVER_HTTP_ACCESS] !== undefined)
+            {
+                hasAccess = controller[Const.App.SERVER_HTTP_ACCESS];
+            }
+            else if(this._controllerDefault !== undefined &&
+                this._controllerDefault[Const.App.SERVER_HTTP_ACCESS] !== undefined)
+            {
+                hasAccess = this._controllerDefault[Const.App.SERVER_HTTP_ACCESS];
+            }
+        }
+        return hasAccess;
     }
 
     getProtocol()
