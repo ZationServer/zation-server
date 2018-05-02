@@ -3,83 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/Bag.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/Bag.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/Controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/Controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/Result.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/Result.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/SmallBag.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/SmallBag.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/TaskError.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/TaskError.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/TaskErrorBag.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/TaskErrorBag.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/serverSettings.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/client/serverSettings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/socketcluster.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/client/socketcluster.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/client/zation.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/client/zation.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/auth/aePreparedPart.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/auth/aePreparedPart.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/auth/authEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/auth/authEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/background/systemBackgroundTasks.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/background/systemBackgroundTasks.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/bridges/memoryMasterBridge.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/bridges/memoryMasterBridge.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/bridges/shBridge.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/bridges/shBridge.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/bridges/tokenBridge.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/bridges/tokenBridge.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/channel/chAccessEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/channel/chAccessEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/channel/chExchangeEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/channel/chExchangeEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/channel/channelEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/channel/channelEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/checker/inputWrapper.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/checker/inputWrapper.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/checker/paramChecker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/checker/paramChecker.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/checker/systemVersionChecker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/checker/systemVersionChecker.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/constants/appConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/appConfig.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/constants/channelConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/channelConfig.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/constants/constWrapper.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/constWrapper.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/constants/errorTypes.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/errorTypes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/constants/events.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/events.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/constants/mainConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/mainConfig.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/constants/settings.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/settings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/constants/validator.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/validator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/processor/httpProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/processor/httpProcessor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/processor/mainProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/processor/mainProcessor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/processor/socketProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/processor/socketProcessor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/response/returner.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/response/returner.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/services/serviceBox.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/services/serviceBox.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/services/serviceEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/services/serviceEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/systemController/controller/zationSC_LogOut.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/systemController/controller/zationSC_LogOut.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/systemController/controller/zationSC_Ping.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/systemController/controller/zationSC_Ping.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/systemController/systemControler.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/systemController/systemControler.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/tempDb/masterTempDbEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tempDb/masterTempDbEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/tempDb/tempDbMemoryDown.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tempDb/tempDbMemoryDown.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/tempDb/tempDbMongoDown.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tempDb/tempDbMongoDown.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/tempDb/tempDbUp.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/token/tokenEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/token/tokenEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/token/tokenTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/token/tokenTools.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/tools/controllerTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/controllerTools.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/tools/htmlTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/htmlTools.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/tools/idCounter.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/idCounter.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/tools/objectTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/objectTools.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/tools/prepareClientJs.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/prepareClientJs.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/tools/timeTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/timeTools.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/tools/uuid.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/uuid.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/tools/zationReqTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/zationReqTools.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/validator/easyValidator.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/validator/easyValidator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/validator/validatorEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/validator/validatorEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/views/zationServer.html" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/views/zationServer.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/zationTaskErrors/mainTaskErrors.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/zationTaskErrors/mainTaskErrors.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/zationTaskErrors/reactTaskErrors.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/zationTaskErrors/reactTaskErrors.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/zationTaskErrors/validatorTaskErrors.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/zationTaskErrors/validatorTaskErrors.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/zation.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zation.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/zationBroker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zationBroker.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/zationConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zationConfig.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/zationStarter.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zationStarter.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/zationWorker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zationWorker.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/assets/favicon/android-chrome-192x192.png" beforeDir="false" afterPath="$PROJECT_DIR$/lib/public/assets/favicon/android-chrome-192x192.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/assets/favicon/android-chrome-384x384.png" beforeDir="false" afterPath="$PROJECT_DIR$/lib/public/assets/favicon/android-chrome-384x384.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/assets/favicon/apple-touch-icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/lib/public/assets/favicon/apple-touch-icon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/assets/favicon/browserconfig.xml" beforeDir="false" afterPath="$PROJECT_DIR$/lib/public/assets/favicon/browserconfig.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/assets/favicon/favicon-16x16.png" beforeDir="false" afterPath="$PROJECT_DIR$/lib/public/assets/favicon/favicon-16x16.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/assets/favicon/favicon-32x32.png" beforeDir="false" afterPath="$PROJECT_DIR$/lib/public/assets/favicon/favicon-32x32.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/assets/favicon/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/lib/public/assets/favicon/favicon.ico" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/assets/favicon/mstile-150x150.png" beforeDir="false" afterPath="$PROJECT_DIR$/lib/public/assets/favicon/mstile-150x150.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/assets/favicon/safari-pinned-tab.svg" beforeDir="false" afterPath="$PROJECT_DIR$/lib/public/assets/favicon/safari-pinned-tab.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/assets/favicon/site.webmanifest" beforeDir="false" afterPath="$PROJECT_DIR$/lib/public/assets/favicon/site.webmanifest" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/assets/logo/zation-logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/lib/public/assets/logo/zation-logo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/assets/logo/zationLogo.svg" beforeDir="false" afterPath="$PROJECT_DIR$/lib/public/assets/logo/zationLogo.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/public/assets/logo/zationLogo_animated.svg" beforeDir="false" afterPath="$PROJECT_DIR$/lib/public/assets/logo/zationLogo_animated.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main/zationWorker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zationWorker.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -117,11 +43,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="zationWorker.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="zationWorker.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/main/zationWorker.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="533">
-              <caret line="424" column="9" selection-start-line="424" selection-start-column="9" selection-end-line="424" selection-end-column="9" />
+            <state relative-caret-position="209">
+              <caret line="193" selection-start-line="193" selection-end-line="193" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -129,16 +55,29 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="android-chrome-192x192.png" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/public/assets/favicon/android-chrome-192x192.png">
-          <provider selected="true" editor-type-id="images" />
-        </entry>
-      </file>
-      <file leaf-file-name="zation.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="zation.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/main/zation.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
+            <state relative-caret-position="154">
               <caret line="63" column="9" selection-start-line="63" selection-start-column="9" selection-end-line="63" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mainConfig.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/helper/constants/mainConfig.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="210">
+              <caret line="37" column="56" selection-start-line="37" selection-start-column="56" selection-end-line="37" selection-end-column="56" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="masterTempDbEngine.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/masterTempDbEngine.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="37" column="57" selection-start-line="37" selection-start-column="57" selection-end-line="37" selection-end-column="57" />
             </state>
           </provider>
         </entry>
@@ -175,18 +114,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="84">
               <caret line="8" selection-start-line="8" selection-end-line="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="systemBackgroundTasks.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/helper/background/systemBackgroundTasks.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="168">
-              <caret line="12" column="19" selection-start-line="12" selection-start-column="19" selection-end-line="12" selection-end-column="19" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -273,7 +200,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/system/helper/constante/mainConfig.js" />
         <option value="$PROJECT_DIR$/system/helper/background/systemBackgroundTasks.js" />
         <option value="$PROJECT_DIR$/system/helper/tempDb/tempDbEngine.js" />
         <option value="$PROJECT_DIR$/system/helper/db/mongoDbTool.js" />
@@ -324,6 +250,7 @@
         <option value="$PROJECT_DIR$/src/helper/auth/authEngine.js" />
         <option value="$PROJECT_DIR$/src/helper/processor/mainProcessor.js" />
         <option value="$PROJECT_DIR$/src/main/zationWorker.js" />
+        <option value="$PROJECT_DIR$/lib/main/zationWorker.js" />
       </list>
     </option>
   </component>
@@ -343,10 +270,10 @@
     <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="422" />
-    <option name="y" value="238" />
-    <option name="width" value="967" />
-    <option name="height" value="1057" />
+    <option name="x" value="960" />
+    <option name="y" value="30" />
+    <option name="width" value="968" />
+    <option name="height" value="1058" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -470,11 +397,12 @@
       <workItem from="1525208130476" duration="2991000" />
       <workItem from="1525214004423" duration="9641000" />
       <workItem from="1525224646045" duration="139000" />
+      <workItem from="1525225798714" duration="696000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="387346000" />
+    <option name="totallyTimeSpent" value="388042000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -486,24 +414,24 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="22" width="1936" height="1066" extended-state="6" />
+    <frame x="-7" y="33" width="1550" height="838" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13909379" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13879709" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32905984" />
+      <window_info anchor="bottom" id="Statistic" order="7" weight="0.82905984" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32435346" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.077586204" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3233618" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.3286638" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39978448" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.32763532" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39978448" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Inspection Results" order="8" weight="0.3297414" />
-      <window_info anchor="bottom" id="Statistic" order="7" weight="0.82905984" />
       <window_info anchor="bottom" id="Messages" order="7" weight="0.32905984" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -513,19 +441,19 @@
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23397224" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="10" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.3275862" />
-      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32763532" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32763532" />
+      <window_info anchor="bottom" id="Version Control" order="10" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info id="Favorites" order="2" side_tool="true" />
     </layout-to-restore>
   </component>
@@ -545,6 +473,13 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/lib/main/zation.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1239">
+          <caret line="63" column="9" selection-start-line="63" selection-start-column="9" selection-end-line="63" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/constants/errorTypes.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="298">
@@ -695,13 +630,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/constants/mainConfig.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="449">
-          <caret line="50" lean-forward="true" selection-start-line="50" selection-end-line="50" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/main/zationConfig.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="205">
@@ -747,13 +675,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/masterTempDbEngine.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="777">
-          <caret line="37" column="57" lean-forward="true" selection-start-line="37" selection-start-column="57" selection-end-line="37" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/main/zationStarter.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2131">
@@ -765,9 +686,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
           <caret line="13" selection-start-line="13" selection-end-line="13" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -775,9 +693,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1071">
           <caret line="55" column="5" selection-start-line="55" selection-start-column="5" selection-end-line="55" selection-end-column="5" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -839,23 +754,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/main/zationWorker.js">
+    <entry file="file://$PROJECT_DIR$/lib/helper/constants/mainConfig.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="533">
-          <caret line="424" column="9" selection-start-line="424" selection-start-column="9" selection-end-line="424" selection-end-column="9" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+        <state relative-caret-position="210">
+          <caret line="37" column="56" selection-start-line="37" selection-start-column="56" selection-end-line="37" selection-end-column="56" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/public/assets/favicon/android-chrome-192x192.png">
-      <provider selected="true" editor-type-id="images" />
+    <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/masterTempDbEngine.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="37" column="57" selection-start-line="37" selection-start-column="57" selection-end-line="37" selection-end-column="57" />
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/main/zation.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
+        <state relative-caret-position="154">
           <caret line="63" column="9" selection-start-line="63" selection-start-column="9" selection-end-line="63" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/main/zationWorker.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="193" selection-start-line="193" selection-end-line="193" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
