@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/lib/helper/tempDb/tempDbMemoryDown.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tempDb/tempDbMemoryDown.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/constants/mainConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/mainConfig.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/processor/mainProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/processor/mainProcessor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/tempDb/masterTempDbEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tempDb/masterTempDbEngine.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main/zationConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zationConfig.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/main/zationWorker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zationWorker.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -18,11 +20,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="mainProcessor.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="mainProcessor.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/helper/processor/mainProcessor.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="903">
-              <caret line="47" column="13" selection-start-line="47" selection-start-column="13" selection-end-line="47" selection-end-column="13" />
+            <state relative-caret-position="403">
+              <caret line="54" column="17" selection-start-line="54" selection-start-column="17" selection-end-line="54" selection-end-column="17" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -33,8 +35,8 @@
       <file leaf-file-name="zationWorker.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/main/zationWorker.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="483">
-              <caret line="537" column="31" selection-start-line="537" selection-start-column="31" selection-end-line="537" selection-end-column="31" />
+            <state relative-caret-position="255">
+              <caret line="535" column="11" lean-forward="true" selection-start-line="535" selection-start-column="11" selection-end-line="535" selection-end-column="11" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -54,8 +56,17 @@
       <file leaf-file-name="mainConfig.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/helper/constants/mainConfig.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="693">
-              <caret line="37" column="56" selection-start-line="37" selection-start-column="56" selection-end-line="37" selection-end-column="56" />
+            <state relative-caret-position="289">
+              <caret line="40" column="26" lean-forward="true" selection-start-line="40" selection-start-column="26" selection-end-line="40" selection-end-column="26" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="zationConfig.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/main/zationConfig.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="373">
+              <caret line="52" lean-forward="true" selection-start-line="52" selection-end-line="52" />
             </state>
           </provider>
         </entry>
@@ -63,8 +74,8 @@
       <file leaf-file-name="masterTempDbEngine.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/masterTempDbEngine.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="429">
-              <caret line="37" column="57" selection-start-line="37" selection-start-column="57" selection-end-line="37" selection-end-column="57" />
+            <state relative-caret-position="156">
+              <caret line="24" column="68" lean-forward="true" selection-start-line="24" selection-start-column="68" selection-end-line="24" selection-end-column="68" />
             </state>
           </provider>
         </entry>
@@ -73,16 +84,16 @@
         <entry file="file://$PROJECT_DIR$/lib/main/zationStarter.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="2037">
-              <caret line="101" column="37" selection-start-line="101" selection-start-column="37" selection-end-line="101" selection-end-column="37" />
+              <caret line="106" column="13" lean-forward="true" selection-start-line="106" selection-start-column="13" selection-end-line="106" selection-end-column="13" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tempDbMemoryDown.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="tempDbMemoryDown.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/tempDbMemoryDown.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="546">
-              <caret line="87" column="9" lean-forward="true" selection-start-line="87" selection-start-column="9" selection-end-line="87" selection-end-column="9" />
+            <state relative-caret-position="1680">
+              <caret line="84" column="12" lean-forward="true" selection-start-line="84" selection-start-column="12" selection-end-line="85" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -91,7 +102,7 @@
         <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="294">
-              <caret line="18" column="26" selection-start-line="18" selection-start-column="10" selection-end-line="18" selection-end-column="26" />
+              <caret line="18" column="26" selection-start-line="18" selection-start-column="10" selection-end-line="18" selection-end-column="17" />
             </state>
           </provider>
         </entry>
@@ -101,15 +112,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="273">
               <caret line="17" column="33" selection-start-line="17" selection-start-column="33" selection-end-line="17" selection-end-column="33" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="authEngine.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/helper/auth/authEngine.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="24" column="5" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -196,9 +198,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/system/helper/tools/object.js" />
-        <option value="$PROJECT_DIR$/system/helper/tools/objectTools.js" />
-        <option value="$PROJECT_DIR$/system/helper/bridges/shBridge.js" />
         <option value="$PROJECT_DIR$/system/helper/auth/authEngine.js" />
         <option value="$PROJECT_DIR$/system/main/zationConfig.js" />
         <option value="$PROJECT_DIR$/system/helper/tempDb/prepareTempDbEngine.js" />
@@ -242,11 +241,14 @@
         <option value="$PROJECT_DIR$/src/helper/auth/authEngine.js" />
         <option value="$PROJECT_DIR$/src/helper/processor/mainProcessor.js" />
         <option value="$PROJECT_DIR$/src/main/zationWorker.js" />
-        <option value="$PROJECT_DIR$/lib/helper/processor/mainProcessor.js" />
         <option value="$PROJECT_DIR$/lib/main/zationStarter.js" />
-        <option value="$PROJECT_DIR$/lib/main/zationWorker.js" />
         <option value="$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js" />
         <option value="$PROJECT_DIR$/lib/helper/tempDb/tempDbMemoryDown.js" />
+        <option value="$PROJECT_DIR$/lib/main/zationWorker.js" />
+        <option value="$PROJECT_DIR$/lib/helper/constants/mainConfig.js" />
+        <option value="$PROJECT_DIR$/lib/main/zationConfig.js" />
+        <option value="$PROJECT_DIR$/lib/helper/tempDb/masterTempDbEngine.js" />
+        <option value="$PROJECT_DIR$/lib/helper/processor/mainProcessor.js" />
       </list>
     </option>
   </component>
@@ -266,9 +268,9 @@
     <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="960" />
+    <option name="x" value="952" />
     <option name="y" value="30" />
-    <option name="width" value="968" />
+    <option name="width" value="975" />
     <option name="height" value="1058" />
   </component>
   <component name="ProjectView">
@@ -300,6 +302,13 @@
               <item name="zation-server" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
               <item name="helper" type="462c0819:PsiDirectoryNode" />
+              <item name="processor" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="helper" type="462c0819:PsiDirectoryNode" />
               <item name="tempDb" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -317,7 +326,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="9.5.0" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../zation" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.prettier" value="true" />
     <property name="node.js.path.for.package.prettier" value="project" />
@@ -415,11 +424,12 @@
       <workItem from="1525225798714" duration="696000" />
       <workItem from="1525254919453" duration="2525000" />
       <workItem from="1525342370842" duration="471000" />
+      <workItem from="1525342998547" duration="1740000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="391038000" />
+    <option name="totallyTimeSpent" value="392778000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -431,11 +441,12 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="22" width="1936" height="1066" extended-state="6" />
+    <frame x="-7" y="33" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13856691" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13813615" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32905984" />
+      <window_info anchor="bottom" id="Statistic" order="7" weight="0.82905984" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.077586204" />
@@ -449,7 +460,6 @@
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Inspection Results" order="8" weight="0.3297414" />
-      <window_info anchor="bottom" id="Statistic" order="7" weight="0.82905984" />
       <window_info anchor="bottom" id="Messages" order="7" weight="0.32905984" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -459,19 +469,19 @@
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23397224" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="10" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.3275862" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32763532" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="10" />
-      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32763532" />
       <window_info id="Favorites" order="2" side_tool="true" />
     </layout-to-restore>
   </component>
@@ -634,13 +644,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/main/zationConfig.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="205">
-          <caret line="44" lean-forward="true" selection-start-line="44" selection-end-line="44" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/constants/settings.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="743">
@@ -728,13 +731,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/constants/mainConfig.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="693">
-          <caret line="37" column="56" selection-start-line="37" selection-start-column="56" selection-end-line="37" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/main/zation.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1239">
@@ -742,27 +738,48 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/processor/mainProcessor.js">
+    <entry file="file://$PROJECT_DIR$/lib/main/zationStarter.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="903">
-          <caret line="47" column="13" selection-start-line="47" selection-start-column="13" selection-end-line="47" selection-end-column="13" />
+        <state relative-caret-position="2037">
+          <caret line="106" column="13" lean-forward="true" selection-start-line="106" selection-start-column="13" selection-end-line="106" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/main/zationWorker.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="535" column="11" lean-forward="true" selection-start-line="535" selection-start-column="11" selection-end-line="535" selection-end-column="11" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/main/zationStarter.js">
+    <entry file="file://$PROJECT_DIR$/lib/helper/constants/mainConfig.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2037">
-          <caret line="101" column="37" selection-start-line="101" selection-start-column="37" selection-end-line="101" selection-end-column="37" />
+        <state relative-caret-position="289">
+          <caret line="40" column="26" lean-forward="true" selection-start-line="40" selection-start-column="26" selection-end-line="40" selection-end-column="26" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/masterTempDbEngine.js">
+    <entry file="file://$PROJECT_DIR$/lib/main/zationConfig.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="429">
-          <caret line="37" column="57" selection-start-line="37" selection-start-column="57" selection-end-line="37" selection-end-column="57" />
+        <state relative-caret-position="373">
+          <caret line="52" lean-forward="true" selection-start-line="52" selection-end-line="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/tempDbMemoryDown.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1680">
+          <caret line="84" column="12" lean-forward="true" selection-start-line="84" selection-start-column="12" selection-end-line="85" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="294">
+          <caret line="18" column="26" selection-start-line="18" selection-start-column="10" selection-end-line="18" selection-end-column="17" />
         </state>
       </provider>
     </entry>
@@ -773,27 +790,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/main/zationWorker.js">
+    <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/masterTempDbEngine.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="537" column="31" selection-start-line="537" selection-start-column="31" selection-end-line="537" selection-end-column="31" />
+        <state relative-caret-position="156">
+          <caret line="24" column="68" lean-forward="true" selection-start-line="24" selection-start-column="68" selection-end-line="24" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/processor/mainProcessor.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="403">
+          <caret line="54" column="17" selection-start-line="54" selection-start-column="17" selection-end-line="54" selection-end-column="17" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="18" column="26" selection-start-line="18" selection-start-column="10" selection-end-line="18" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/tempDbMemoryDown.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="546">
-          <caret line="87" column="9" lean-forward="true" selection-start-line="87" selection-start-column="9" selection-end-line="87" selection-end-column="9" />
         </state>
       </provider>
     </entry>
