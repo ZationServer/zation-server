@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/lib/helper/input/inputValueProcessor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/config/configChecker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/config/configChecker.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/config/structures.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/config/structures.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/input/inputProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/input/inputProcessor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/input/inputValueProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/input/inputValueProcessor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/processor/validChProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/processor/validChProcessor.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -90,20 +87,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="mainProcessor.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/helper/processor/mainProcessor.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1722">
-              <caret line="86" column="21" selection-start-line="86" selection-start-column="21" selection-end-line="86" selection-end-column="21" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="configChecker.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="configChecker.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/helper/config/configChecker.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1163">
-              <caret line="502" column="12" lean-forward="true" selection-start-line="502" selection-start-column="12" selection-end-line="502" selection-end-column="12" />
+            <state relative-caret-position="281">
+              <caret line="460" column="5" lean-forward="true" selection-start-line="460" selection-start-column="5" selection-end-line="460" selection-end-column="5" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -153,11 +141,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="inputValueProcessor.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="inputValueProcessor.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/helper/input/inputValueProcessor.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="315">
-              <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+              <caret line="19" column="8" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="validChProcessor.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/helper/processor/validChProcessor.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="502">
+              <caret line="40" lean-forward="true" selection-start-line="40" selection-end-line="40" />
             </state>
           </provider>
         </entry>
@@ -308,7 +305,6 @@
         <option value="$PROJECT_DIR$/lib/helper/processor/socketProcessor.js" />
         <option value="$PROJECT_DIR$/lib/helper/tools/zationReqTools.js" />
         <option value="$PROJECT_DIR$/lib/helper/tools/controllerTools.js" />
-        <option value="$PROJECT_DIR$/lib/helper/processor/validChProcessor.js" />
         <option value="$PROJECT_DIR$/lib/helper/processor/httpProcessor.js" />
         <option value="$PROJECT_DIR$/lib/helper/constants/serviceConfig.js" />
         <option value="$PROJECT_DIR$/lib/helper/constants/constWrapper.js" />
@@ -327,10 +323,11 @@
         <option value="$PROJECT_DIR$/lib/helper/zationTaskErrors/mainTaskErrors.js" />
         <option value="$PROJECT_DIR$/lib/helper/checker/inputChecker.js" />
         <option value="$PROJECT_DIR$/lib/helper/systemController/systemControler.config.js" />
-        <option value="$PROJECT_DIR$/lib/helper/input/inputValueProcessor.js" />
         <option value="$PROJECT_DIR$/lib/helper/input/inputProcessor.js" />
         <option value="$PROJECT_DIR$/lib/helper/config/structures.js" />
         <option value="$PROJECT_DIR$/lib/helper/config/configChecker.js" />
+        <option value="$PROJECT_DIR$/lib/helper/processor/validChProcessor.js" />
+        <option value="$PROJECT_DIR$/lib/helper/input/inputValueProcessor.js" />
       </list>
     </option>
   </component>
@@ -677,12 +674,12 @@
       <workItem from="1529659197790" duration="38255000" />
       <workItem from="1529709285992" duration="8218000" />
       <workItem from="1529740765496" duration="25301000" />
-      <workItem from="1529790475308" duration="3398000" />
+      <workItem from="1529790475308" duration="4101000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="521621000" />
+    <option name="totallyTimeSpent" value="522324000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -789,6 +786,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3864">
           <caret line="188" column="95" lean-forward="true" selection-start-line="188" selection-start-column="10" selection-end-line="188" selection-end-column="95" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -894,13 +894,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="355">
           <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/processor/validChProcessor.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="565">
-          <caret line="45" lean-forward="true" selection-start-line="45" selection-end-line="45" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -973,6 +969,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="32">
           <caret line="306" column="20" selection-start-line="306" selection-start-column="11" selection-end-line="306" selection-end-column="20" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1130,20 +1129,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/input/inputValueProcessor.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/config/configChecker.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1163">
-          <caret line="502" column="12" lean-forward="true" selection-start-line="502" selection-start-column="12" selection-end-line="502" selection-end-column="12" />
+        <state relative-caret-position="281">
+          <caret line="460" column="5" lean-forward="true" selection-start-line="460" selection-start-column="5" selection-end-line="460" selection-end-column="5" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/processor/validChProcessor.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="502">
+          <caret line="40" lean-forward="true" selection-start-line="40" selection-end-line="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/input/inputValueProcessor.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="19" column="8" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="8" />
         </state>
       </provider>
     </entry>
