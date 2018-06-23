@@ -2,48 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/lib/helper/config/structures.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/api/Bag.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/Bag.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/api/SmallBag.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/SmallBag.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/api/TaskError.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/TaskError.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/auth/aePreparedPart.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/auth/aePreparedPart.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/auth/authEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/auth/authEngine.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/helper/channel/chAccessEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/channel/chAccessEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/channel/chExchangeEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/channel/chExchangeEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/checker/paramChecker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/checker/inputChecker.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/checker/systemVersionChecker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/checker/systemVersionChecker.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/helper/config/configChecker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/config/configChecker.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/helper/config/configCheckerTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/config/configCheckerTools.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/helper/config/configPreCompiler.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/config/configPreCompiler.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/appConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/appConfig.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/channelConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/channelConfig.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/mainConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/mainConfig.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/settings.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/settings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/validator.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/validator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/processor/httpProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/processor/httpProcessor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/config/structures.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/config/structures.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/helper/processor/mainProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/processor/mainProcessor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/response/returner.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/response/returner.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/services/serviceEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/services/serviceEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tempDb/masterTempDbEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tempDb/masterTempDbEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tempDb/tempDbMemoryDown.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tempDb/tempDbMemoryDown.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/token/tokenEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/token/tokenEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/token/tokenTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/token/tokenTools.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tools/controllerTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/controllerTools.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tools/inputWrapper.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/inputWrapper.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tools/objectTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/objectTools.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tools/prepareClientJs.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/prepareClientJs.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tools/timeTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/timeTools.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tools/zationReqTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/zationReqTools.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/validator/easyValidator.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/validator/easyValidator.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/helper/validator/validatorEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/validator/validatorEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/validator/validatorLibrary.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/validator/validatorLibrary.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/zationTaskErrors/validatorTaskErrors.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/zationTaskErrors/validatorTaskErrors.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main/zation.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zation.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/main/zationConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zationConfig.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main/zationStarter.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zationStarter.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main/zationWorker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zationWorker.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -59,12 +26,12 @@
     <window id="1">
       <content type="file-editors">
         <state>
-          <leaf>
+          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
             <file leaf-file-name="mainConfig.js" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/lib/helper/constants/mainConfig.js">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="1155">
-                    <caret line="62" column="10" lean-forward="true" selection-start-line="62" selection-start-column="10" selection-end-line="62" selection-end-column="30" />
+                  <state relative-caret-position="1260">
+                    <caret line="64" column="10" selection-start-line="64" selection-start-column="10" selection-end-line="64" selection-end-column="10" />
                   </state>
                 </provider>
               </entry>
@@ -72,7 +39,7 @@
             <file leaf-file-name="events.js" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/lib/helper/constants/events.js">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="-63">
+                  <state>
                     <folding>
                       <element signature="n#!!doc" expanded="true" />
                     </folding>
@@ -80,11 +47,11 @@
                 </provider>
               </entry>
             </file>
-            <file leaf-file-name="appConfig.js" pinned="false" current-in-tab="true">
+            <file leaf-file-name="appConfig.js" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/lib/helper/constants/appConfig.js">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="126">
-                    <caret line="19" column="10" lean-forward="true" selection-start-line="19" selection-start-column="10" selection-end-line="19" selection-end-column="26" />
+                  <state relative-caret-position="-173">
+                    <caret line="24" selection-start-line="24" selection-end-line="24" />
                   </state>
                 </provider>
               </entry>
@@ -92,8 +59,8 @@
             <file leaf-file-name="validator.js" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/lib/helper/constants/validator.js">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="334">
-                    <caret line="56" column="42" selection-start-line="56" selection-start-column="42" selection-end-line="56" selection-end-column="42" />
+                  <state relative-caret-position="1155">
+                    <caret line="59" column="42" selection-start-line="59" selection-start-column="42" selection-end-line="59" selection-end-column="42" />
                   </state>
                 </provider>
               </entry>
@@ -101,8 +68,8 @@
             <file leaf-file-name="settings.js" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/lib/helper/constants/settings.js">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="1869">
-                    <caret line="89" column="42" lean-forward="true" selection-start-line="89" selection-start-column="42" selection-end-line="89" selection-end-column="42" />
+                  <state relative-caret-position="1281">
+                    <caret line="91" column="26" selection-start-line="91" selection-start-column="26" selection-end-line="91" selection-end-column="26" />
                     <folding>
                       <element signature="n#!!doc" expanded="true" />
                     </folding>
@@ -110,11 +77,11 @@
                 </provider>
               </entry>
             </file>
-            <file leaf-file-name="channelConfig.js" pinned="false" current-in-tab="false">
+            <file leaf-file-name="channelConfig.js" pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/lib/helper/constants/channelConfig.js">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="357">
-                    <caret line="21" column="45" lean-forward="true" selection-start-line="21" selection-start-column="45" selection-end-line="21" selection-end-column="45" />
+                  <state relative-caret-position="441">
+                    <caret line="25" column="31" selection-start-line="25" selection-start-column="31" selection-end-line="25" selection-end-column="31" />
                   </state>
                 </provider>
               </entry>
@@ -126,11 +93,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="SmallBag.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/api/SmallBag.js">
+      <file leaf-file-name="configCheckerTools.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/helper/config/configCheckerTools.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1636">
-              <caret line="154" column="91" selection-start-line="154" selection-start-column="91" selection-end-line="154" selection-end-column="91" />
+            <state relative-caret-position="357">
+              <caret line="17" column="107" selection-start-line="17" selection-start-column="107" selection-end-line="17" selection-end-column="107" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -138,42 +105,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="validatorEngine.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/helper/validator/validatorEngine.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="183">
-              <caret line="255" selection-start-line="255" selection-end-line="255" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="validatorLibrary.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/helper/validator/validatorLibrary.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="670">
-              <caret line="78" column="17" selection-start-line="78" selection-start-column="17" selection-end-line="78" selection-end-column="17" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="isEmail.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/node_modules/validator/lib/isEmail.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-793" />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="configPreCompiler.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="configPreCompiler.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/helper/config/configPreCompiler.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="294">
-              <caret line="53" column="9" lean-forward="true" selection-start-line="53" selection-start-column="9" selection-end-line="53" selection-end-column="9" />
+            <state relative-caret-position="3">
+              <caret line="182" column="16" selection-start-line="182" selection-start-column="16" selection-end-line="182" selection-end-column="16" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -181,36 +117,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="easyValidator.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/helper/validator/easyValidator.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="693">
-              <caret line="36" column="5" lean-forward="true" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="toDate.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/node_modules/validator/lib/toDate.js">
+      <file leaf-file-name="objectTools.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/helper/tools/objectTools.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="336">
-              <caret line="16" column="46" lean-forward="true" selection-start-line="15" selection-start-column="2" selection-end-line="16" selection-end-column="46" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="assertString.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/node_modules/validator/lib/util/assertString.js">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file leaf-file-name="Controller.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/api/Controller.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
+              <caret line="16" column="17" lean-forward="true" selection-start-line="16" selection-start-column="17" selection-end-line="16" selection-end-column="17" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -218,11 +129,77 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Bag.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/api/Bag.js">
+      <file leaf-file-name="structures.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/helper/config/structures.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="608">
-              <caret line="67" column="20" lean-forward="true" selection-start-line="67" selection-start-column="20" selection-end-line="67" selection-end-column="20" />
+            <state relative-caret-position="612">
+              <caret line="135" column="22" selection-start-line="135" selection-start-column="22" selection-end-line="135" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="configChecker.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/helper/config/configChecker.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="588">
+              <caret line="28" column="3" selection-start-line="28" selection-start-column="3" selection-end-line="28" selection-end-column="3" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mainProcessor.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/lib/helper/processor/mainProcessor.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2436">
+              <caret line="120" column="20" lean-forward="true" selection-start-line="120" selection-start-column="20" selection-end-line="120" selection-end-column="20" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="zationConfig.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/main/zationConfig.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="472">
+              <caret line="115" lean-forward="true" selection-start-line="115" selection-end-line="115" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="chAccessEngine.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/helper/channel/chAccessEngine.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-341">
+              <caret line="29" column="5" lean-forward="true" selection-start-line="20" selection-start-column="4" selection-end-line="29" selection-end-column="5" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="authEngine.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/helper/auth/authEngine.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="328">
+              <caret line="188" column="95" lean-forward="true" selection-start-line="188" selection-start-column="10" selection-end-line="188" selection-end-column="95" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="aePreparedPart.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/helper/auth/aePreparedPart.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="541">
+              <caret line="53" column="5" lean-forward="true" selection-start-line="53" selection-start-column="5" selection-end-line="53" selection-end-column="5" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -325,8 +302,6 @@
         <option value="$PROJECT_DIR$/lib/helper/config/structures/appConfigStructures.js" />
         <option value="$PROJECT_DIR$/lib/helper/config/appConfigStructures.js" />
         <option value="$PROJECT_DIR$/lib/helper/constants/mainConfig.js" />
-        <option value="$PROJECT_DIR$/lib/main/zationConfig.js" />
-        <option value="$PROJECT_DIR$/lib/helper/config/configCheckerTools.js" />
         <option value="$PROJECT_DIR$/lib/helper/tools/objectTools.js" />
         <option value="$PROJECT_DIR$/lib/helper/constants/validator.js" />
         <option value="$PROJECT_DIR$/lib/main/zation.js" />
@@ -343,26 +318,28 @@
         <option value="$PROJECT_DIR$/lib/helper/tempDb/masterTempDbEngine.js" />
         <option value="$PROJECT_DIR$/lib/helper/services/serviceEngine.js" />
         <option value="$PROJECT_DIR$/lib/helper/response/returner.js" />
-        <option value="$PROJECT_DIR$/lib/helper/processor/mainProcessor.js" />
         <option value="$PROJECT_DIR$/lib/helper/processor/httpProcessor.js" />
-        <option value="$PROJECT_DIR$/lib/helper/config/configPreCompiler.js" />
-        <option value="$PROJECT_DIR$/lib/helper/config/configChecker.js" />
         <option value="$PROJECT_DIR$/lib/helper/checker/systemVersionChecker.js" />
         <option value="$PROJECT_DIR$/lib/helper/checker/inputChecker.js" />
         <option value="$PROJECT_DIR$/lib/helper/channel/chExchangeEngine.js" />
         <option value="$PROJECT_DIR$/lib/helper/constants/channelConfig.js" />
-        <option value="$PROJECT_DIR$/lib/helper/channel/chAccessEngine.js" />
         <option value="$PROJECT_DIR$/lib/helper/constants/appConfig.js" />
         <option value="$PROJECT_DIR$/lib/helper/auth/authEngine.js" />
         <option value="$PROJECT_DIR$/lib/helper/auth/aePreparedPart.js" />
-        <option value="$PROJECT_DIR$/lib/helper/config/structures.js" />
         <option value="$PROJECT_DIR$/lib/api/TaskError.js" />
         <option value="$PROJECT_DIR$/lib/api/SmallBag.js" />
         <option value="$PROJECT_DIR$/lib/api/Bag.js" />
         <option value="$PROJECT_DIR$/lib/helper/tools/inputWrapper.js" />
         <option value="$PROJECT_DIR$/lib/helper/validator/easyValidator.js" />
-        <option value="$PROJECT_DIR$/lib/helper/validator/validatorEngine.js" />
         <option value="$PROJECT_DIR$/lib/helper/validator/validatorLibrary.js" />
+        <option value="$PROJECT_DIR$/lib/helper/validator/validatorEngine.js" />
+        <option value="$PROJECT_DIR$/lib/helper/config/configCheckerTools.js" />
+        <option value="$PROJECT_DIR$/lib/helper/config/configPreCompiler.js" />
+        <option value="$PROJECT_DIR$/lib/helper/channel/chAccessEngine.js" />
+        <option value="$PROJECT_DIR$/lib/main/zationConfig.js" />
+        <option value="$PROJECT_DIR$/lib/helper/config/structures.js" />
+        <option value="$PROJECT_DIR$/lib/helper/config/configChecker.js" />
+        <option value="$PROJECT_DIR$/lib/helper/processor/mainProcessor.js" />
       </list>
     </option>
   </component>
@@ -381,9 +358,14 @@
   <component name="NodeModulesDirectoryManager">
     <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
+  <component name="NodePackageJsonFileManager">
+    <packageJsonPaths>
+      <path value="$PROJECT_DIR$/package.json" />
+    </packageJsonPaths>
+  </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="384" />
-    <option name="y" value="71" />
+    <option name="x" value="383" />
+    <option name="y" value="70" />
     <option name="width" value="975" />
     <option name="height" value="1050" />
   </component>
@@ -392,6 +374,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -584,7 +567,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -695,11 +677,12 @@
       <workItem from="1529418090113" duration="1417000" />
       <workItem from="1529568609154" duration="38839000" />
       <workItem from="1529659197790" duration="38255000" />
+      <workItem from="1529709285992" duration="8178000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="484704000" />
+    <option name="totallyTimeSpent" value="492882000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -711,49 +694,49 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="22" width="1936" height="1066" extended-state="6" />
+    <frame x="-7" y="33" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13804004" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21083939" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32905984" />
+      <window_info anchor="bottom" id="Statistic" order="7" weight="0.82905984" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3275862" />
-      <window_info anchor="bottom" id="Version Control" order="7" weight="0.077586204" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.3233618" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.077586204" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32763532" />
-      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39978448" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Inspection Results" order="8" weight="0.3297414" />
-      <window_info anchor="bottom" id="Statistic" order="7" weight="0.82905984" />
       <window_info anchor="bottom" id="Messages" order="7" weight="0.32905984" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3275862" />
     </layout>
     <layout-to-restore>
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.3233618" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13804004" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32905984" />
-      <window_info anchor="bottom" id="Version Control" order="11" weight="0.077586204" />
       <window_info anchor="bottom" id="Inspection Results" order="13" weight="0.3297414" />
       <window_info anchor="bottom" id="Statistic" order="8" weight="0.82905984" />
-      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39978448" />
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.32763532" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3275862" />
+      <window_info anchor="bottom" id="Version Control" order="11" weight="0.077586204" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Messages" order="12" weight="0.32905984" />
       <window_info id="Favorites" order="2" side_tool="true" />
     </layout-to-restore>
@@ -785,30 +768,15 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/systemController/systemControler.config.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/systemController/controller/zationSC_LogOut.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/systemController/controller/zationSC_Ping.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="336">
           <caret line="16" column="26" selection-start-line="16" selection-start-column="26" selection-end-line="16" selection-end-column="26" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -816,19 +784,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="945">
           <caret line="45" column="15" lean-forward="true" selection-start-line="45" selection-start-column="15" selection-end-line="45" selection-end-column="15" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/services/serviceBox.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-365">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
+        <state relative-caret-position="-365" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/response/returner.js">
@@ -850,27 +811,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/processor/mainProcessor.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="454">
-          <caret line="122" column="38" lean-forward="true" selection-start-line="122" selection-start-column="38" selection-end-line="122" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/processor/httpProcessor.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="454">
           <caret line="40" column="41" lean-forward="true" selection-start-line="40" selection-start-column="41" selection-end-line="40" selection-end-column="41" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/constants/validator.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="334">
-          <caret line="56" column="42" selection-start-line="56" selection-start-column="42" selection-end-line="56" selection-end-column="42" />
         </state>
       </provider>
     </entry>
@@ -903,30 +847,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/config/configCheckerTools.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1575">
-          <caret line="75" column="13" lean-forward="true" selection-start-line="75" selection-start-column="13" selection-end-line="75" selection-end-column="13" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/constants/mainConfig.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1155">
-          <caret line="62" column="10" lean-forward="true" selection-start-line="62" selection-start-column="10" selection-end-line="62" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/config/configChecker.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4243">
-          <caret line="210" column="23" lean-forward="true" selection-start-line="210" selection-start-column="23" selection-end-line="210" selection-end-column="23" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+        <state relative-caret-position="1260">
+          <caret line="64" column="10" selection-start-line="64" selection-start-column="10" selection-end-line="64" selection-end-column="10" />
         </state>
       </provider>
     </entry>
@@ -940,15 +864,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/checker/inputChecker.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/checker/inputChecker.js" />
     <entry file="file://$PROJECT_DIR$/lib/main/zationWorker.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="8866">
@@ -963,108 +879,32 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1638">
           <caret line="78" column="5" lean-forward="true" selection-start-line="78" selection-start-column="5" selection-end-line="78" selection-end-column="5" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/channel/channelEngine.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/constants/channelConfig.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="45" lean-forward="true" selection-start-line="21" selection-start-column="45" selection-end-line="21" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/channel/chAccessEngine.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="370">
-          <caret line="212" column="54" lean-forward="true" selection-start-line="212" selection-start-column="54" selection-end-line="212" selection-end-column="54" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/bridges/tokenBridge.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1478">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
+        <state relative-caret-position="-1478" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/bridges/shBridge.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/bridges/memoryMasterBridge.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-827">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
+        <state relative-caret-position="-827" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/background/systemBackgroundTasks.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/auth/authEngine.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="622">
-          <caret line="295" column="5" lean-forward="true" selection-start-line="295" selection-start-column="5" selection-end-line="295" selection-end-column="5" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/constants/settings.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1869">
-          <caret line="89" column="42" lean-forward="true" selection-start-line="89" selection-start-column="42" selection-end-line="89" selection-end-column="42" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/auth/aePreparedPart.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="244">
-          <caret line="53" column="5" lean-forward="true" selection-start-line="53" selection-start-column="5" selection-end-line="53" selection-end-column="5" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/config/structures.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="29" column="34" lean-forward="true" selection-start-line="29" selection-start-column="34" selection-end-line="29" selection-end-column="34" />
+        <state relative-caret-position="1281">
+          <caret line="91" column="26" selection-start-line="91" selection-start-column="26" selection-end-line="91" selection-end-column="26" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -1073,39 +913,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/client/zation.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1134">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
+        <state relative-caret-position="-1134" />
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/client/serverSettings.js">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/api/TaskErrorBag.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-27">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
+        <state relative-caret-position="-27" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/api/TaskError.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1113">
           <caret line="53" column="65" lean-forward="true" selection-start-line="53" selection-start-column="65" selection-end-line="53" selection-end-column="65" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/constants/appConfig.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="19" column="10" lean-forward="true" selection-start-line="19" selection-start-column="10" selection-end-line="19" selection-end-column="26" />
         </state>
       </provider>
     </entry>
@@ -1113,35 +932,23 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="309">
           <caret line="16" column="13" lean-forward="true" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/tools/objectPath.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/tools/inputWrapper.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="609">
           <caret line="29" column="30" lean-forward="true" selection-start-line="29" selection-start-column="30" selection-end-line="29" selection-end-column="30" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/api/Bag.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="608">
-          <caret line="67" column="20" lean-forward="true" selection-start-line="67" selection-start-column="20" selection-end-line="67" selection-end-column="20" />
+        <state relative-caret-position="1323">
+          <caret line="67" column="20" selection-start-line="67" selection-start-column="20" selection-end-line="67" selection-end-column="20" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -1159,8 +966,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/api/SmallBag.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1636">
-          <caret line="154" column="91" selection-start-line="154" selection-start-column="91" selection-end-line="154" selection-end-column="91" />
+        <state relative-caret-position="3150">
+          <caret line="154" column="93" selection-start-line="154" selection-start-column="93" selection-end-line="154" selection-end-column="93" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -1177,17 +984,27 @@
     <entry file="file://$PROJECT_DIR$/node_modules/validator/lib/toDate.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="336">
-          <caret line="16" column="46" lean-forward="true" selection-start-line="15" selection-start-column="2" selection-end-line="16" selection-end-column="46" />
+          <caret line="16" column="46" selection-start-line="15" selection-start-column="2" selection-end-line="16" selection-end-column="46" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/validator/lib/util/assertString.js">
+    <entry file="file://$PROJECT_DIR$/lib/helper/validator/validatorLibrary.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1323">
+          <caret line="93" selection-start-line="93" selection-end-line="93" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/validator/lib/isEmail.js">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/validator/easyValidator.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="693">
-          <caret line="36" column="5" lean-forward="true" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
+        <state relative-caret-position="612">
+          <caret line="36" column="5" selection-start-line="36" selection-start-column="5" selection-end-line="36" selection-end-column="5" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -1197,35 +1014,125 @@
     <entry file="file://$PROJECT_DIR$/lib/helper/validator/validatorEngine.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="183">
-          <caret line="255" selection-start-line="255" selection-end-line="255" />
+          <caret line="255" lean-forward="true" selection-start-line="255" selection-end-line="255" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/validator/validatorLibrary.js">
+    <entry file="file://$PROJECT_DIR$/lib/helper/constants/validator.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="670">
-          <caret line="78" column="17" selection-start-line="78" selection-start-column="17" selection-end-line="78" selection-end-column="17" />
+        <state relative-caret-position="1155">
+          <caret line="59" column="42" selection-start-line="59" selection-start-column="42" selection-end-line="59" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/tools/objectTools.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="336">
+          <caret line="16" column="17" lean-forward="true" selection-start-line="16" selection-start-column="17" selection-end-line="16" selection-end-column="17" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/validator/lib/isEmail.js">
+    <entry file="file://$PROJECT_DIR$/lib/helper/auth/aePreparedPart.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-793" />
+        <state relative-caret-position="541">
+          <caret line="53" column="5" lean-forward="true" selection-start-line="53" selection-start-column="5" selection-end-line="53" selection-end-column="5" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/auth/authEngine.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="328">
+          <caret line="188" column="95" lean-forward="true" selection-start-line="188" selection-start-column="10" selection-end-line="188" selection-end-column="95" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/channel/chAccessEngine.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-341">
+          <caret line="29" column="5" lean-forward="true" selection-start-line="20" selection-start-column="4" selection-end-line="29" selection-end-column="5" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/config/configPreCompiler.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="53" column="9" lean-forward="true" selection-start-line="53" selection-start-column="9" selection-end-line="53" selection-end-column="9" />
+        <state relative-caret-position="3">
+          <caret line="182" column="16" selection-start-line="182" selection-start-column="16" selection-end-line="182" selection-end-column="16" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/config/configCheckerTools.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="17" column="107" selection-start-line="17" selection-start-column="107" selection-end-line="17" selection-end-column="107" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/main/zationConfig.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="472">
+          <caret line="115" lean-forward="true" selection-start-line="115" selection-end-line="115" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/constants/appConfig.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-173">
+          <caret line="24" selection-start-line="24" selection-end-line="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/constants/channelConfig.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="441">
+          <caret line="25" column="31" selection-start-line="25" selection-start-column="31" selection-end-line="25" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/config/structures.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="612">
+          <caret line="135" column="22" selection-start-line="135" selection-start-column="22" selection-end-line="135" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/config/configChecker.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="588">
+          <caret line="28" column="3" selection-start-line="28" selection-start-column="3" selection-end-line="28" selection-end-column="3" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/processor/mainProcessor.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2436">
+          <caret line="120" column="20" lean-forward="true" selection-start-line="120" selection-start-column="20" selection-end-line="120" selection-end-column="20" />
         </state>
       </provider>
     </entry>
