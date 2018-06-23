@@ -2,24 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/lib/helper/constants/serviceConfig.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/helper/processor/validChProcessor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/checker/inputChecker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/checker/inputChecker.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/helper/config/configChecker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/config/configChecker.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/config/structures.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/config/structures.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/constWrapper.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/constWrapper.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/events.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/events.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/mainConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/mainConfig.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/settings.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/settings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/processor/httpProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/processor/httpProcessor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/processor/mainProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/processor/mainProcessor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/processor/socketProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/processor/socketProcessor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/services/serviceBox.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/services/serviceBox.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/services/serviceEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/services/serviceEngine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tools/controllerTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/controllerTools.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tools/zationReqTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/zationReqTools.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main/zationConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zationConfig.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -45,7 +28,7 @@
                 </provider>
               </entry>
             </file>
-            <file leaf-file-name="events.js" pinned="false" current-in-tab="true">
+            <file leaf-file-name="events.js" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/lib/helper/constants/events.js">
                 <provider selected="true" editor-type-id="text-editor">
                   <state relative-caret-position="431">
@@ -57,10 +40,10 @@
                 </provider>
               </entry>
             </file>
-            <file leaf-file-name="appConfig.js" pinned="false" current-in-tab="false">
+            <file leaf-file-name="appConfig.js" pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/lib/helper/constants/appConfig.js">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="21">
+                  <state relative-caret-position="84">
                     <caret line="24" selection-start-line="24" selection-end-line="24" />
                   </state>
                 </provider>
@@ -148,7 +131,7 @@
       <file leaf-file-name="zationStarter.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/main/zationStarter.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="-2646">
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -182,8 +165,8 @@
       <file leaf-file-name="configChecker.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/helper/config/configChecker.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-126">
-              <caret line="129" lean-forward="true" selection-start-line="129" selection-end-line="129" />
+            <state relative-caret-position="152">
+              <caret line="440" column="9" selection-start-line="440" selection-start-column="9" selection-end-line="440" selection-end-column="9" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -221,7 +204,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>createTokenInfo</find>
       <find>_createAuthIdTokenInfo</find>
       <find>_generateUniqueUuidIn</find>
       <find>_setTokenInfo</find>
@@ -251,6 +233,7 @@
       <find>SOCKET</find>
       <find>MID</find>
       <find>checkMidd</find>
+      <find>Logger</find>
     </findStrings>
     <replaceStrings>
       <replace>zationReq</replace>
@@ -680,12 +663,12 @@
       <workItem from="1529568609154" duration="38839000" />
       <workItem from="1529659197790" duration="38255000" />
       <workItem from="1529709285992" duration="8218000" />
-      <workItem from="1529740765496" duration="13412000" />
+      <workItem from="1529740765496" duration="15592000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="506334000" />
+    <option name="totallyTimeSpent" value="508514000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1061,13 +1044,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/constants/appConfig.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret line="24" selection-start-line="24" selection-end-line="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/constants/serviceConfig.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="483">
@@ -1164,17 +1140,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/main/zationStarter.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
+        <state relative-caret-position="-2646">
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/constants/appConfig.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="24" selection-start-line="24" selection-end-line="24" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/config/configChecker.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-126">
-          <caret line="129" lean-forward="true" selection-start-line="129" selection-end-line="129" />
+        <state relative-caret-position="152">
+          <caret line="440" column="9" selection-start-line="440" selection-start-column="9" selection-end-line="440" selection-end-column="9" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
