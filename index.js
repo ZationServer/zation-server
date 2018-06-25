@@ -21,3 +21,4 @@ module.exports.TaskError = require('./lib/api/TaskError');
 module.exports.TaskErrorBag = require('./lib/api/TaskErrorBag');
 
 module.exports.ErrorType = require('./lib/helper/constants/errorTypes');
+module.exports.ValidationType = require('./lib/helper/constants/validator').TYPE;
