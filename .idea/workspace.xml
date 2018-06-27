@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tempDb/tempDbMemoryDown.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tempDb/tempDbMemoryDown.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main/zationStarter.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zationStarter.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -133,7 +131,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="zationStarter.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="zationStarter.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/main/zationStarter.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="228">
@@ -165,11 +163,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tempDbUp.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="tempDbUp.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="141">
-              <caret line="26" column="16" selection-start-line="26" selection-start-column="16" selection-end-line="26" selection-end-column="16" />
+            <state relative-caret-position="189">
+              <caret line="9" column="1" lean-forward="true" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="1" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -265,7 +266,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/lib/api/TaskError.js" />
         <option value="$PROJECT_DIR$/lib/main/zationBroker.js" />
         <option value="$PROJECT_DIR$/lib/helper/processor/validationCheckProcessor.js" />
         <option value="$PROJECT_DIR$/lib/helper/processor/socketProcessor.js" />
@@ -316,6 +316,7 @@
         <option value="$PROJECT_DIR$/lib/main/zationConfig.js" />
         <option value="$PROJECT_DIR$/lib/helper/tempDb/tempDbMemoryDown.js" />
         <option value="$PROJECT_DIR$/lib/main/zationStarter.js" />
+        <option value="$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js" />
       </list>
     </option>
   </component>
@@ -340,10 +341,10 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-9" />
-    <option name="y" value="21" />
-    <option name="width" value="1937" />
-    <option name="height" value="1067" />
+    <option name="x" value="-10" />
+    <option name="y" value="20" />
+    <option name="width" value="1938" />
+    <option name="height" value="1068" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -645,12 +646,12 @@
       <workItem from="1529961692100" duration="3966000" />
       <workItem from="1529967685755" duration="601000" />
       <workItem from="1530004497819" duration="2898000" />
-      <workItem from="1530052488708" duration="1046000" />
+      <workItem from="1530052488708" duration="1417000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="589740000" />
+    <option name="totallyTimeSpent" value="590111000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1066,13 +1067,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
-          <caret line="26" column="16" selection-start-line="26" selection-start-column="16" selection-end-line="26" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/tempDbMongoDown.js">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -1086,6 +1080,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="228">
           <caret line="116" column="26" selection-start-line="116" selection-start-column="26" selection-end-line="116" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="9" column="1" lean-forward="true" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="1" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
