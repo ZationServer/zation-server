@@ -58,7 +58,9 @@ class TYPE
     static readonly LAT_LONG         = 'latLong';
     static readonly BASE64           = 'base64';
     static readonly ASCII            = 'ascii';
-    
+    static readonly NUMBER           = 'number';
+    static readonly USER_ID          = 'userId';
+
     //Not supported
     static readonly FILE             = 'file';
     //File Extensions

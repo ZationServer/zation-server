@@ -43,7 +43,7 @@ class ValidatorEngine
                             let tempErrorCount = errorBag.getTaskErrorCount();
 
                             let maybeInput =
-                                ValidatorEngine._validateType(input,cValue[i],errorBagTemp,preparedErrorData);
+                                ValidatorEngine.validateType(input,cValue[i],errorBagTemp,preparedErrorData);
 
                             if(tempErrorCount === errorBagTemp.getTaskErrorCount())
                             {
@@ -64,7 +64,7 @@ class ValidatorEngine
                     }
                     else
                     {
-                        input = ValidatorEngine._validateType(input,cValue,errorBag,preparedErrorData);
+                        input = ValidatorEngine.validateType(input,cValue,errorBag,preparedErrorData);
                     }
                 }
                 else if(ValidatorLibrary.function.hasOwnProperty(cKey))
@@ -77,7 +77,7 @@ class ValidatorEngine
         return input;
     }
 
-    static _validateType(input,type,errorBag,preparedErrorData)
+    private static validateType(input,type,errorBag,preparedErrorData)
     {
         if(ValidatorLibrary.type.hasOwnProperty(type))
         {

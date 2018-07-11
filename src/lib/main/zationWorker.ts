@@ -122,10 +122,10 @@ class ZationWorker extends SCWorker
 
         //Server
         Logger.printStartDebugInfo(`Worker with id ${this.id} start http server.`);
-        this._startHttpServer();
+        this.startHttpServer();
 
         Logger.printStartDebugInfo(`Worker with id ${this.id} start socket server.`);
-        this._startSocketServer();
+        this.startSocketServer();
 
         //Fire ExpressEvent
         this.zc.emitEvent(Const.Event.ZATION_EXPRESS,
@@ -136,15 +136,15 @@ class ZationWorker extends SCWorker
             (f) => {f(this.preparedSmallBag,this.zc.getSomeInformation(),this)});
     }
 
-    _startSocketServer()
+    private startSocketServer()
     {
-        this._initSocketMiddleware();
-        this._initScServerEvents();
+        this.initSocketMiddleware();
+        this.initScServerEvents();
 
         //START SOCKET SERVER
         this.scServer.on('connection', (socket) => {
 
-            this._initSocketEvents(socket);
+            this.initSocketEvents(socket);
 
             this.zc.emitEvent(Const.Event.SC_SERVER_CONNECTION,
                 (f) => {f(socket);});
@@ -168,7 +168,7 @@ class ZationWorker extends SCWorker
             (f) => {f(this.zc.getSomeInformation())});
     }
 
-    _startHttpServer()
+    private startHttpServer()
     {
         this.app = express();
         //startCookieParser
@@ -225,12 +225,12 @@ class ZationWorker extends SCWorker
             (f) => {f(this.zc.getSomeInformation())});
     }
 
-    _getFullWorkerId()
+    getFullWorkerId()
     {
         return `${this.id}.${this.workerStartedTimeStamp}`;
     }
 
-    _initSocketMiddleware()
+    private initSocketMiddleware()
     {
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_SUBSCRIBE, (req, next) => {
 
@@ -487,7 +487,7 @@ class ZationWorker extends SCWorker
         });
     }
 
-    _initScServerEvents()
+    private initScServerEvents()
     {
         this.scServer.on('error', (err) =>
         {
@@ -547,7 +547,7 @@ class ZationWorker extends SCWorker
 
     }
 
-    _initSocketEvents(socket)
+    private initSocketEvents(socket)
     {
         socket.on('error', (err) =>
         {
@@ -748,6 +748,26 @@ class ZationWorker extends SCWorker
     getTempDbUp() : TempDbUp
     {
         return this.tempDbUp;
+    }
+
+    getServerVersion() : string
+    {
+        return this.serverVersion;
+    }
+
+    getServerStartedTime() : number
+    {
+        return this.serverStartedTimeStamp;
+    }
+
+    getWorkerId() : number
+    {
+        return this.id;
+    }
+
+    getWorkerStartedTime() : number
+    {
+        return this.workerStartedTimeStamp;
     }
 
     getZationConfig() : ZationConfig

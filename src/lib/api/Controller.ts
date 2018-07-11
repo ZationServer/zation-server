@@ -18,11 +18,11 @@ class Controller
     {}
 
     //invokes when the controller gets an request and returns the result of the process
-    async handle(bag : Bag,input : object) : Promise<any>
+    async handle(bag : Bag,input : any) : Promise<any>
     {}
 
     //invokes when the controller gets an request with wrong input
-    async wrongInput(bag : Bag,input : object) : Promise<void>
+    async wrongInput(bag : Bag,input : any) : Promise<void>
     {}
 }
 

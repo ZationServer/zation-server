@@ -94,7 +94,7 @@ Structures.InputBodyMainKeys[Const.App.INPUT.IS_OPTIONAL]             = {types :
 
 Structures.InputBody = {};
 let allValidationTypes = ObjectTools.getObjValues(Const.Validator.TYPE);
-Structures.InputBody[Const.App.INPUT.TYPE]                    = {types : ['string'],isOptional : true,enum:allValidationTypes};
+Structures.InputBody[Const.App.INPUT.TYPE]                    = {types : ['string','array'],isOptional : true,enum:allValidationTypes};
 Structures.InputBody[Const.App.INPUT.IS_OPTIONAL]             = {types : ['boolean'],isOptional : true};
 Structures.InputBody[Const.App.INPUT.VALIDATION_GROUP]        = {types : ['string'],isOptional : true};
 Structures.InputBody[Const.Validator.KEYS.FUNCTION_ENUM]      = {types : ['array'],isOptional : true};
@@ -113,7 +113,7 @@ let allFormatLetters = ObjectTools.getObjValues(Const.Validator.FORMAT_LETTERS);
 Structures.InputBody[Const.Validator.KEYS.FORMAT_IS_LETTERS]       = {types : ['string'],isOptional : true,enum:allFormatLetters};
 
 Structures.ValidationGroup = {};
-Structures.ValidationGroup[Const.App.INPUT.TYPE]                    = {types : ['string'],isOptional : true,enum:allValidationTypes};
+Structures.ValidationGroup[Const.App.INPUT.TYPE]                    = {types : ['string','array'],isOptional : true,enum:allValidationTypes};
 Structures.ValidationGroup[Const.Validator.KEYS.FUNCTION_ENUM]      = {types : ['array'],isOptional : true};
 Structures.ValidationGroup[Const.Validator.KEYS.FUNCTION_PRIVATE_ENUM]   = {types : ['array'],isOptional : true};
 Structures.ValidationGroup[Const.Validator.KEYS.FUNCTION_MIN_LENGTH]     = {types : ['number'],isOptional : true};

@@ -127,7 +127,7 @@ class AuthEngine
 
     //PART AUTHENTICATION
 
-    async authTo(authUserGroup : string,userId : string | number,clientData : object) : Promise<boolean>
+    async authTo(authUserGroup : string,userId ?: string | number,clientData : object = {}) : Promise<boolean>
     {
         let suc = false;
         if(this.checkIsIn(authUserGroup))

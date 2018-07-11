@@ -316,6 +316,28 @@ export = {
         isFromZationSystem : true
     },
 
+    inputIsNotANumber : {
+        name          : 'inputIsNotANumber',
+        description   : 'Input is not a number!',
+        type          : ErrorType.VALIDATOR_ERROR,
+        sendInfo      : true,
+        //INFO
+        // inputValue (inputValue)
+        // inputPath (inputPath)
+        isFromZationSystem : true
+    },
+
+    inputIsNotAUserId : {
+        name          : 'inputIsNotAUserId',
+        description   : 'Input is not a user id!',
+        type          : ErrorType.VALIDATOR_ERROR,
+        sendInfo      : true,
+        //INFO
+        // inputValue (inputValue)
+        // inputPath (inputPath)
+        isFromZationSystem : true
+    },
+
     inputNotMatchWithMinLength : {
         name          : 'inputNotMatchWithMinLength',
         description   : 'Input not match with min length!',

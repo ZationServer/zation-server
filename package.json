@@ -33,7 +33,7 @@
     "moment-timezone": "0.5.16",
     "mongodb": "latest",
     "mongodb-pool": "^2.0.3",
-    "mysql": "latest",
+    "mysql": "^2.15.0",
     "nedb": "^1.8.0",
     "nodemailer": "4.6.4",
     "path": "0.12.7",
@@ -52,6 +52,8 @@
     "@types/cookie-parser": "^1.4.1",
     "@types/express-fileupload": "^0.1.1",
     "@types/node": "^10.5.2",
-    "@types/hashset": "^3.0.28"
+    "@types/hashset": "^3.0.28",
+    "@types/mysql": "^2.15.5",
+    "@types/pg-pool": "^0.0.3"
   }
 }

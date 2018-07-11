@@ -66,13 +66,13 @@ class Bag extends SmallBag
     //Part Input
 
     // noinspection JSUnusedGlobalSymbols
-    getInput(path)
+    getInput(path : string | string[]) : any
     {
         return this.inputWrapper.getInput(path);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    isInput(path)
+    isInput(path: string | string[]) : boolean
     {
         return this.inputWrapper.getInput(path) !== undefined;
     }
@@ -80,61 +80,61 @@ class Bag extends SmallBag
     //Part Auth 2
 
     // noinspection JSUnusedGlobalSymbols
-    isAuth()
+    isAuth() : boolean
     {
         return this.authEngine.isAuth();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getAuthUserGroup()
+    getAuthUserGroup() : string | undefined
     {
         return this.authEngine.getAuthUserGroup();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getUserGroup()
+    getUserGroup() : string | undefined
     {
         return this.authEngine.getUserGroup();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    async authTo(userGroup,userId,clientData = {})
+    async authTo(userGroup : string,userId ?: string | number,clientData : object= {}) : Promise<void>
     {
         await this.authEngine.authTo(userGroup,userId,clientData);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    async setUserId(id)
+    async setUserId(id : string | number) : Promise<void>
     {
         await this.authEngine.setUserId(id);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getUserId()
+    getUserId() : number | string
     {
-        this.authEngine.getUserId();
+        return this.authEngine.getUserId();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    async authOut()
+    async authOut() : Promise<void>
     {
         await this.authEngine.authOut();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getAuthEngine()
+    getAuthEngine() : AuthEngine
     {
         return this.authEngine;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    isDefault()
+    isDefault() : boolean
     {
         return this.authEngine.isDefault();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    isUseAuth()
+    isUseAuth() : boolean
     {
         return this.authEngine.isUseAuth();
     }
@@ -142,7 +142,7 @@ class Bag extends SmallBag
     //Part Cookie
 
     // noinspection JSUnusedGlobalSymbols
-    getCookieVariable(key)
+    getCookieVariable(key : string) : any
     {
         if(this.shBridge.isWebSocket())
         {
@@ -155,7 +155,7 @@ class Bag extends SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
-    setCookieVariable(key,value,settings = { maxAge: 900000})
+    setCookieVariable(key : string,value : any,settings  : object= { maxAge: 900000}) : boolean
     {
         if(this.shBridge.isWebSocket())
         {
@@ -169,7 +169,7 @@ class Bag extends SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
-    clearCookie(key)
+    clearCookie(key : string) : boolean
     {
         if(this.shBridge.isWebSocket())
         {
@@ -185,13 +185,13 @@ class Bag extends SmallBag
     //Part Http
 
     // noinspection JSUnusedGlobalSymbols
-    getResponse()
+    getResponse() : Express.Response
     {
         return this.shBridge.getResponse();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getRequest()
+    getRequest() : Express.Request
     {
         return this.shBridge.getRequest();
     }
@@ -199,13 +199,13 @@ class Bag extends SmallBag
     //Part Token
 
     // noinspection JSUnusedGlobalSymbols
-    async setTokenVariable(key,value)
+    async setTokenVariable(key : string,value : any) : Promise<boolean>
     {
         return await this.tokenEngine.setTokenVariable({key : value},false);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getTokenVariable(key)
+    getTokenVariable(key : string) : any
     {
         return this.tokenEngine.getTokenVariable(key);
     }
@@ -213,7 +213,7 @@ class Bag extends SmallBag
     //Part Socket
 
     // noinspection JSUnusedGlobalSymbols
-    getSocketId()
+    getSocketId() : string | undefined
     {
         if(this.shBridge.isWebSocket)
         {
@@ -240,13 +240,13 @@ class Bag extends SmallBag
     //Part Protocol
 
     // noinspection JSUnusedGlobalSymbols
-    getProtocol()
+    getProtocol() : string
     {
         return this.authEngine.getProtocol();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    isSocketProtocol()
+    isSocketProtocol() : boolean
     {
         return this.shBridge.isWebSocket();
     }
@@ -254,33 +254,33 @@ class Bag extends SmallBag
     //Part Socket Channel
 
     // noinspection JSUnusedGlobalSymbols
-    emitToThisClient(eventName,data,cb)
+    emitToThisClient(eventName : string,data : object,cb ?: Function) : void
     {
-        return this.channelEngine.emitToSocket(eventName,data,cb);
+        this.channelEngine.emitToSocket(eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getSubChannels()
+    getSubChannels() : string[] | undefined
     {
         return this.channelEngine.getSubChannels();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    kickFromCustomIdCh(name,id = '')
+    kickFromCustomIdCh(name : string,id : string = '') : void
     {
-        return this.channelEngine.kickCustomIdChannel(name,id);
+        this.channelEngine.kickCustomIdChannel(name,id);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    kickFromCustomCh(name)
+    kickFromCustomCh(name : string) : void
     {
-        return this.channelEngine.kickCustomChannel(name);
+        this.channelEngine.kickCustomChannel(name);
     }
 
     //Part Remote Address
 
     // noinspection JSUnusedGlobalSymbols
-    getRemoteAddress()
+    getRemoteAddress() : string
     {
         return this.shBridge.getRemoteAddress();
     }

@@ -36,7 +36,7 @@ class Zation
         this.reqIdCounter.increase();
         let reqId = this.reqIdCounter.getId();
 
-        let fullReqId = `${this.worker._getFullWorkerId()}-${reqId}`;
+        let fullReqId = `${this.worker.getFullWorkerId()}-${reqId}`;
 
         if(data.isWebSocket)
         {

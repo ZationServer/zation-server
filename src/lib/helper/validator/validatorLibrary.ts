@@ -287,6 +287,24 @@ typeLibrary[Const.Validator.TYPE.ASCII] = (input,taskErrorBag,prepareErrorData) 
     return input;
 };
 
+typeLibrary[Const.Validator.TYPE.NUMBER] = (input,taskErrorBag,prepareErrorData) =>
+{
+    if(typeof input !== 'number')
+    {
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotANumber,prepareErrorData));
+    }
+    return input;
+};
+
+typeLibrary[Const.Validator.TYPE.USER_ID] = (input,taskErrorBag,prepareErrorData) =>
+{
+    if(!(EasyValidator.isString(input) || typeof input === 'number'))
+    {
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAUserId,prepareErrorData));
+    }
+    return input;
+};
+
 //FUNCTION VALIDATION LIBRARY
 
 let functionLibrary = {};
@@ -393,7 +411,7 @@ functionLibrary[Const.Validator.KEYS.FUNCTION_CONTAINS] = (input,settings,taskEr
 
 functionLibrary[Const.Validator.KEYS.FUNCTION_EQUALS] = (input,settings,taskErrorBag,prepareErrorData) =>
 {
-    if(input !== settings)
+    if(!EasyValidator.equals(input,settings))
     {
         taskErrorBag.addTaskErrorFast(ValidatorErrors.inputIsNotEquals,
             {

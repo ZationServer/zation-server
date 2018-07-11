@@ -25,12 +25,25 @@ class ConfigCheckerTools
         {
             if(!ConfigCheckerTools.isCorrectType(obj[key],types))
             {
+                const type = ConfigCheckerTools.getTypeOf(obj[key]);
                 configErrorBag.addConfigError(new ConfigError(configName,
-                    `${targetText} has a not allowed type '${typeof obj[key]}'! This types are allowed: ${types.toString()}.`));
+                    `${targetText} has a not allowed type '${type}'! This types are allowed: ${types.toString()}.`));
                 return false;
             }
         }
         return true;
+    }
+
+    static getTypeOf(value)
+    {
+        if(Array.isArray(value))
+        {
+            return 'array';
+        }
+        else
+        {
+            return typeof value;
+        }
     }
 
     static assertStructure(structure : object,obj : object,configName : string,configErrorBag : ConfigErrorBag,target : Target = new Target())
@@ -52,10 +65,26 @@ class ConfigCheckerTools
                     if(structure[k]['enum'] !== undefined)
                     {
                         let allowedEnum = structure[k]['enum'];
-                        if(!allowedEnum.includes(obj[k]))
+
+                        if(Array.isArray(obj[k]))
                         {
-                            configErrorBag.addConfigError(new ConfigError(configName,
-                                `${target.getTarget()} value: '${obj[k]}' in property: '${k}' is not allowed. Allowed values are: ${allowedEnum.toString()}.`));
+                            let array = obj[k];
+                            for(let i = 0; i < array.length; i++)
+                            {
+                                if(!allowedEnum.includes(array[i]))
+                                {
+                                    configErrorBag.addConfigError(new ConfigError(configName,
+                                        `${target.getTarget()} value: '${array[i]}' in property array: '${k}' is not allowed. Allowed values are: ${allowedEnum.toString()}.`));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(!allowedEnum.includes(obj[k]))
+                            {
+                                configErrorBag.addConfigError(new ConfigError(configName,
+                                    `${target.getTarget()} value: '${obj[k]}' in property: '${k}' is not allowed. Allowed values are: ${allowedEnum.toString()}.`));
+                            }
                         }
                     }
                     if(structure[k]['stringOnlyEnum'] !== undefined && typeof obj[k] === 'string')

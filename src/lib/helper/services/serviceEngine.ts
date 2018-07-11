@@ -7,6 +7,11 @@ GitHub: LucaCode
 import Const           = require('../constants/constWrapper');
 import ServiceBox      = require('./serviceBox');
 
+import MySql           = require("mysql");
+import PostgresSql     = require('pg-pool');
+
+
+
 class ServiceEngine
 {
     private readonly sc : object;
@@ -35,10 +40,9 @@ class ServiceEngine
         let promises : Promise<void>[] = [];
 
         this.mySqlServiceBox =
-            new ServiceBox(Const.Service.SERVICES.MYSQL,this.sc[Const.Service.SERVICES.MYSQL],async (c) =>
+            new ServiceBox(Const.Service.SERVICES.MYSQL,this.sc[Const.Service.SERVICES.MYSQL],async (c) : Promise<MySql.Pool> =>
             {
-                const mySql = require('mysql');
-                return mySql.createPool(c);
+                return MySql.createPool(c);
             });
         promises.push(this.mySqlServiceBox.init());
 
@@ -53,8 +57,7 @@ class ServiceEngine
         this.postgresSqlBox =
             new ServiceBox(Const.Service.SERVICES.POSTGRES_SQL,this.sc[Const.Service.SERVICES.POSTGRES_SQL],async (c) =>
             {
-                const postgresSql = require('pg-pool');
-                let pool =  new postgresSql(c);
+                let pool : PostgresSql.Pool =  new PostgresSql.Pool(c);
                 return await pool.connect();
             });
         promises.push(this.postgresSqlBox.init());
@@ -87,24 +90,24 @@ class ServiceEngine
         await Promise.all(promises);
     }
 
-    getMySqlService(key : string) : any
+    getMySqlService(key : string) : MySql.Pool
     {
-        this.mySqlServiceBox.getService(key);
+        return this.mySqlServiceBox.getService(key);
     }
 
     getNodeMailerService(key : string) : any
     {
-        this.nodeMailerServiceBox.getService(key);
+        return this.nodeMailerServiceBox.getService(key);
     }
 
     getPostgresSqlService(key : string) : any
     {
-        this.postgresSqlBox.getService(key);
+        return this.postgresSqlBox.getService(key);
     }
 
     getMongoDbService(key : string) : any
     {
-        this.mongoDbBox.getService(key);
+        return this.mongoDbBox.getService(key);
     }
 
     // noinspection JSUnusedGlobalSymbols

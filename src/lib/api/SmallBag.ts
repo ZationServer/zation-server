@@ -14,6 +14,11 @@ let    IP : any         = require('ip');
 import UUID             = require('../helper/tools/uuid');
 import ExchangeEngine   = require('../helper/channel/chExchangeEngine');
 
+import MySql            = require("mysql");
+import {FieldInfo} from "mysql";
+
+
+
 class SmallBag
 {
     protected readonly exchangeEngine : ChExchangeEngine;
@@ -49,45 +54,45 @@ class SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getZationVersion() : number
+    getZationVersion() : string
     {
-        return this.worker._serverVersion;
+        return this.worker.getServerVersion();
     }
 
     // noinspection JSUnusedGlobalSymbols
     getServerStartedTimeStamp() : number
     {
-        return this.worker._serverStartedTimeStamp;
+        return this.worker.getServerStartedTime();
     }
 
     // noinspection JSUnusedGlobalSymbols
     getWorkerStartedTimeStamp() : number
     {
-        return this.worker._workerStartedTimeStamp;
+        return this.worker.getWorkerStartedTime();
     }
 
     // noinspection JSUnusedGlobalSymbols
     getWorkerId() : number
     {
-        return this.worker.id;
+        return this.worker.getWorkerId();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getWorkerFullId() : number
+    getWorkerFullId() : string
     {
-        return this.worker.getWorkerFullId();
+        return this.worker.getFullWorkerId()
     }
 
     //Part Auth
 
     // noinspection JSUnusedGlobalSymbols
-    publishAuthOut(userId) : void
+    publishAuthOut(userId : string | number) : void
     {
         this.exchangeEngine.publishAuthOut(userId);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    publishReAuth(userId) : void
+    publishReAuth(userId : string | number) : void
     {
         this.exchangeEngine.publishReAuth(userId);
     }
@@ -95,13 +100,13 @@ class SmallBag
     //Part Crypto
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-    hashSha512(string,salt)
+    hashSha512(string : string,salt ?: string) : string
     {
         return this.hashIn('sha512',string,salt);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-    hashIn(hash,string,salt)
+    hashIn(hash : string,string : string,salt ?: string) : string
     {
         if(salt !== undefined)
         {
@@ -114,13 +119,13 @@ class SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-    getRandomString(length)
+    getRandomString(length : number) : string
     {
         return crypto.randomBytes(Math.ceil(length/2)).toString('hex').slice(0,length);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-    generateUUID()
+    generateUUID() : string
     {
         return UUID.generateUUID();
     }
@@ -128,97 +133,97 @@ class SmallBag
     //Part Socket Channel
 
     // noinspection JSUnusedGlobalSymbols
-    publishToSpecifyUser(userId,eventName,data,cb)
+    publishToSpecifyUser(userId : string | number,eventName :string,data : object = {},cb ?: Function) : void
     {
         this.exchangeEngine.publishInUserCh(userId,eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    pubSpecifyUser(userId,eventName,data,cb)
+    pubSpecifyUser(userId : string | number,eventName :string,data : object = {},cb ?: Function) : void
     {
         this.publishToSpecifyUser(userId,eventName,data,cb)
     }
 
     // noinspection JSUnusedGlobalSymbols
-    publishToSpecifyUsers(userIds,eventName,data,cb)
+    publishToSpecifyUsers(userIds : (string | number)[],eventName : string,data : object = {},cb ?: Function) : void
     {
         this.exchangeEngine.publishInUserChannels(userIds,eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    pubSpecifyUsers(userIds,eventName,data,cb)
+    pubSpecifyUsers(userIds : (string | number)[],eventName : string,data : object = {},cb ?: Function) : void
     {
         this.publishToSpecifyUsers(userIds,eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    publishToAll(eventName,data,cb)
+    publishToAll(eventName : string,data : object = {},cb ?: Function) : void
     {
         this.exchangeEngine.publishInAllCh(eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    pubAll(eventName,data,cb)
+    pubAll(eventName : string,data : object = {},cb ?: Function) : void
     {
         this.publishToAll(eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    publishToAuthUserGroup(authUserGroup, eventName, data, cb)
+    publishToAuthUserGroup(authUserGroup : string, eventName : string, data : object = {}, cb ?: Function) : void
     {
         this.exchangeEngine.publishInAuthUserGroupCh(authUserGroup,eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    pubAuthUserGroup(authUserGroup, eventName, data, cb)
+    pubAuthUserGroup(authUserGroup : string, eventName : string, data : object = {}, cb ?: Function) : void
     {
         this.publishToAuthUserGroup(authUserGroup,eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    publishToDefaultUserGroup(eventName, data, cb)
+    publishToDefaultUserGroup(eventName : string, data : object = {}, cb ?: Function) : void
     {
         this.exchangeEngine.publishInDefaultUserGroupCh(eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    pubDefaultUserGroup(eventName, data, cb)
+    pubDefaultUserGroup(eventName : string, data : object = {}, cb ?: Function) : void
     {
         this.publishToDefaultUserGroup(eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    publishToAllAuthUserGroups(eventName, data, cb)
+    publishToAllAuthUserGroups(eventName : string, data : object = {}, cb ?: Function) : void
     {
        this.exchangeEngine.publishToAllAuthUserGroupCh(eventName,data,this.zc,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    pubAllAuthUserGroups(eventName, data, cb)
+    pubAllAuthUserGroups(eventName : string, data : object = {}, cb ?: Function) : void
     {
         this.publishToAllAuthUserGroups(eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    publishToCustomIdChannel(channel, id, eventName, data, cb)
+    publishToCustomIdChannel(channel : string, id : string, eventName : string, data : object = {}, cb ?: Function) : void
     {
         this.exchangeEngine.publishToCustomIdChannel(channel,id,eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    pubCustomIdChannel(channel, id, eventName, data, cb)
+    pubCustomIdChannel(channel : string, id : string, eventName : string, data : object = {}, cb ?: Function) : void
     {
         this.publishToCustomIdChannel(channel,id,eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    publishToCustomChannel(channel, eventName, data, cb)
+    publishToCustomChannel(channel : string, eventName : string, data : object = {}, cb ?: Function) : void
     {
         this.exchangeEngine.publishToCustomChannel(channel, eventName, data, cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    pubCustomChannel(channel, eventName, data, cb)
+    pubCustomChannel(channel : string, eventName : string, data : object = {}, cb ?: Function) : void
     {
         this.publishToCustomChannel(channel, eventName, data, cb);
     }
@@ -226,11 +231,11 @@ class SmallBag
     //Part Database -> MySql
 
     // noinspection JSUnusedGlobalSymbols
-    mySqlQuery(query,serviceKey = 'default')
+    mySqlQuery(query ,serviceKey : string = 'default') : Promise<Object>
     {
         return new Promise((resolve, reject) =>
         {
-            this.serviceEngine.getMySqlService(serviceKey).query(query,(error, results, fields) =>
+            this.serviceEngine.getMySqlService(serviceKey).query(query,(error, results, fields : MySql.FieldInfo[]) =>
             {
                 if(error) {reject(error);}
                 else{resolve({results : results, fields : fields});}
@@ -238,14 +243,14 @@ class SmallBag
         });
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    mySqlPrepareQuery(query,inserts,serviceKey = 'default')
+    // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
+    mySqlPrepareQuery(query,inserts,stringifyObjects?: boolean, timeZone?: string) : string
     {
-        return this.serviceEngine.getMySqlService(serviceKey).format(query,inserts);
+        return MySql.format(query,inserts,stringifyObjects,timeZone);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getMySql(serviceKey = 'default')
+    getMySql(serviceKey : string = 'default') : MySql.Pool | undefined
     {
         return this.serviceEngine.getMySqlService(serviceKey);
     }
@@ -253,7 +258,7 @@ class SmallBag
     //Part Database -> PostgreSql
 
     // noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
-    getPostgreSql(serviceKey = 'default')
+    getPostgreSql(serviceKey : string = 'default')
     {
         return this.serviceEngine.getPostgresSqlService(serviceKey);
     }
@@ -261,7 +266,7 @@ class SmallBag
     //Part Database -> MongoDb
 
     // noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
-    getMongoDb(serviceKey = 'default')
+    getMongoDb(serviceKey : string = 'default')
     {
         return this.serviceEngine.getMongoDbService(serviceKey);
     }
@@ -269,7 +274,7 @@ class SmallBag
     //Part NodeMailer
 
     // noinspection JSUnusedGlobalSymbols
-    sendMail(mailOptions,serviceKey = 'default')
+    sendMail(mailOptions : object,serviceKey : string = 'default') : Promise<object>
     {
         return new Promise((resolve, reject) =>
         {
@@ -281,7 +286,7 @@ class SmallBag
         });
     }
     // noinspection JSUnusedGlobalSymbols
-    getNodeMailer(serviceKey = 'default')
+    getNodeMailer(serviceKey : string = 'default')
     {
         return this.serviceEngine.getNodeMailerService(serviceKey);
     }
@@ -289,7 +294,7 @@ class SmallBag
     //Part Custom Services
 
     // noinspection JSUnusedGlobalSymbols
-    getCustomService(name,serviceKey = 'default')
+    getCustomService(name : string,serviceKey : string = 'default')
     {
         return this.serviceEngine.getCustomService(name,serviceKey);
     }
