@@ -2,85 +2,113 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/typescript-compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gulpFile.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/helper/constants/appConfig.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/helper/constants/channelConfig.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/helper/constants/errorTypes.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/helper/constants/events.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/helper/constants/mainConfig.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/helper/constants/serviceConfig.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/helper/constants/settings.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/helper/constants/validator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/typescript-compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/angular-settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/api/Bag.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/Bag.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/api/Controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/Controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/api/Result.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/Result.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/api/SmallBag.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/SmallBag.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/api/TaskError.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/TaskError.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/api/TaskErrorBag.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/api/TaskErrorBag.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/client/prepareClientJs.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/client/prepareClientJs.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/auth/aePreparedPart.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/auth/aePreparedPart.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/auth/authEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/auth/authEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/background/systemBackgroundTasks.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/background/systemBackgroundTasks.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/bridges/memoryMasterBridge.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/bridges/memoryMasterBridge.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/bridges/shBridge.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/bridges/shBridge.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/bridges/tokenBridge.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/bridges/tokenBridge.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/channel/chAccessEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/channel/chAccessEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/channel/chExchangeEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/channel/chExchangeEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/channel/chTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/channel/chTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/channel/channelEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/channel/channelEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/checker/systemVersionChecker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/checker/systemVersionChecker.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/config/configChecker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/config/configChecker.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/config/configCheckerTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/config/configCheckerTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/config/configError.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/config/configError.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/config/configErrorBag.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/config/configErrorBag.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/config/configPreCompiler.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/config/configPreCompiler.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/config/structures.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/config/structures.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/config/target.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/config/target.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/appConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/appConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/channelConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/channelConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/constWrapper.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/constWrapper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/errorTypes.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/errorTypes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/events.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/events.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/mainConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/mainConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/serviceConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/serviceConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/settings.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/settings.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/constants/validator.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/constants/validator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/controller/controllerCheckTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/controller/controllerCheckTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/controller/controllerPrepare.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/controller/controllerPrepare.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/controller/controllerTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/controller/controllerTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/input/inputProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/input/inputProcessor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/input/inputValueProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/input/inputValueProcessor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/logger/logger.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/logger/logger.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/processor/httpProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/processor/httpProcessor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/processor/mainProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/processor/mainProcessor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/processor/socketProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/processor/socketProcessor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/processor/validChProcessor.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/processor/validChProcessor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/response/returner.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/response/returner.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/services/serviceBox.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/services/serviceBox.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/services/serviceEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/services/serviceEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/systemController/controller/zationSC_LogOut.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/systemController/controller/zationSC_LogOut.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/systemController/controller/zationSC_Ping.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/systemController/controller/zationSC_Ping.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/systemController/systemControler.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/systemController/systemControler.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tempDb/masterTempDbEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tempDb/masterTempDbEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tempDb/tempDbMemoryDown.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tempDb/tempDbMemoryDown.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tempDb/tempDbMongoDown.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tempDb/tempDbMongoDown.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/token/tokenEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/token/tokenEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/token/tokenTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/token/tokenTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tools/htmlTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/htmlTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tools/idCounter.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/idCounter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tools/inputWrapper.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/inputWrapper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tools/objectPath.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/objectPath.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tools/objectTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/objectTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tools/timeTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/timeTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tools/uuid.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/uuid.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/tools/zationReqTools.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/tools/zationReqTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/validator/easyValidator.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/validator/easyValidator.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/validator/validatorEngine.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/validator/validatorEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/validator/validatorLibrary.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/validator/validatorLibrary.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/zationTaskErrors/mainTaskErrors.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/zationTaskErrors/mainTaskErrors.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/zationTaskErrors/reactTaskErrors.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/zationTaskErrors/reactTaskErrors.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/zationTaskErrors/validatorTaskErrors.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/zationTaskErrors/validatorTaskErrors.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main/zation.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zation.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main/zationBroker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zationBroker.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main/zationConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zationConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main/zationStarter.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zationStarter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main/zationWorker.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main/zationWorker.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/api/Bag.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api/Bag.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/api/Controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api/Controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/api/Result.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api/Result.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/api/SmallBag.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api/SmallBag.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/api/TaskError.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api/TaskError.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/api/TaskErrorBag.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api/TaskErrorBag.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/client/prepareClientJs.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/client/prepareClientJs.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/client/serverSettings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/client/serverSettings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/client/zation.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/client/zation.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/auth/aePreparedPart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/auth/aePreparedPart.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/auth/authEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/auth/authEngine.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/background/systemBackgroundTasks.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/background/systemBackgroundTasks.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/bridges/memoryMasterBridge.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/bridges/memoryMasterBridge.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/bridges/shBridge.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/bridges/shBridge.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/bridges/tokenBridge.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/bridges/tokenBridge.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/channel/chAccessEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/channel/chAccessEngine.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/channel/chExchangeEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/channel/chExchangeEngine.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/channel/chTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/channel/chTools.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/channel/channelEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/channel/channelEngine.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/checker/systemVersionChecker.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/checker/systemVersionChecker.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/config/configChecker.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/config/configChecker.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/config/configCheckerTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/config/configCheckerTools.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/config/configError.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/config/configError.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/config/configErrorBag.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/config/configErrorBag.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/config/configPreCompiler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/config/configPreCompiler.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/config/structures.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/config/structures.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/config/target.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/config/target.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/constants/appConfig.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/constants/channelConfig.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/constants/constWrapper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/constants/constWrapper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/constants/errorTypes.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/constants/events.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/constants/mainConfig.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/constants/serviceConfig.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/constants/settings.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/constants/validator.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/controller/controllerCheckTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/controller/controllerCheckTools.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/controller/controllerPrepare.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/controller/controllerPrepare.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/controller/controllerTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/controller/controllerTools.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/input/inputProcessor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/input/inputProcessor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/input/inputValueProcessor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/input/inputValueProcessor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/logger/logger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/logger/logger.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/processor/httpProcessor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/processor/httpProcessor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/processor/mainProcessor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/processor/mainProcessor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/processor/socketProcessor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/processor/socketProcessor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/processor/validChProcessor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/processor/validChProcessor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/response/returner.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/response/returner.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/services/serviceBox.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/services/serviceBox.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/services/serviceEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/services/serviceEngine.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/systemController/controller/zationSC_LogOut.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/systemController/controller/zationSC_LogOut.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/systemController/controller/zationSC_Ping.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/systemController/controller/zationSC_Ping.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/systemController/systemControler.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/systemController/systemControler.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/tempDb/masterTempDbEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tempDb/masterTempDbEngine.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/tempDb/tempDbMemoryDown.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tempDb/tempDbMemoryDown.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/tempDb/tempDbMongoDown.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tempDb/tempDbMongoDown.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tempDb/tempDbUp.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/token/tokenEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/token/tokenEngine.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/token/tokenTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/token/tokenTools.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/tools/htmlTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/htmlTools.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/tools/idCounter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/idCounter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/tools/inputWrapper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/inputWrapper.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/tools/objectPath.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/objectPath.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/tools/objectTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/objectTools.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/tools/timeTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/timeTools.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/tools/uuid.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/uuid.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/tools/zationReqTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/zationReqTools.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/validator/easyValidator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/validator/easyValidator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/validator/validatorEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/validator/validatorEngine.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/validator/validatorLibrary.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/validator/validatorLibrary.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/views/zationServer.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/views/zationServer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/zationTaskErrors/mainTaskErrors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/zationTaskErrors/mainTaskErrors.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/zationTaskErrors/reactTaskErrors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/zationTaskErrors/reactTaskErrors.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/zationTaskErrors/validatorTaskErrors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/zationTaskErrors/validatorTaskErrors.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main/zation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zation.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main/zationBroker.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationBroker.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main/zationConfig.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationConfig.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main/zationStarter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationStarter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main/zationWorker.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationWorker.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/public/assets/favicon/android-chrome-192x192.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/favicon/android-chrome-192x192.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/public/assets/favicon/android-chrome-384x384.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/favicon/android-chrome-384x384.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/public/assets/favicon/apple-touch-icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/favicon/apple-touch-icon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/public/assets/favicon/browserconfig.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/favicon/browserconfig.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/public/assets/favicon/favicon-16x16.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/favicon/favicon-16x16.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/public/assets/favicon/favicon-32x32.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/favicon/favicon-32x32.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/public/assets/favicon/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/favicon/favicon.ico" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/public/assets/favicon/mstile-150x150.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/favicon/mstile-150x150.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/public/assets/favicon/safari-pinned-tab.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/favicon/safari-pinned-tab.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/public/assets/favicon/site.webmanifest" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/favicon/site.webmanifest" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/public/assets/logo/zation-logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/logo/zation-logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/public/assets/logo/zationLogo.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/logo/zationLogo.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/public/assets/logo/zationLogo_animated.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/logo/zationLogo_animated.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -92,92 +120,28 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="DockManager">
-    <window id="1">
-      <content type="file-editors">
-        <state>
-          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-            <file leaf-file-name="mainConfig.ts" pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/lib/helper/constants/mainConfig.ts">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="756">
-                    <caret line="40" column="62" selection-start-line="40" selection-start-column="62" selection-end-line="40" selection-end-column="62" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file leaf-file-name="events.ts" pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/lib/helper/constants/events.ts">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="1071">
-                    <caret line="55" column="60" selection-start-line="55" selection-start-column="60" selection-end-line="55" selection-end-column="60" />
-                    <folding>
-                      <element signature="n#!!doc" expanded="true" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file leaf-file-name="appConfig.ts" pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/lib/helper/constants/appConfig.ts">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="210">
-                    <caret line="14" column="41" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="41" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file leaf-file-name="validator.ts" pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/lib/helper/constants/validator.ts">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="1155">
-                    <caret line="59" column="42" selection-start-line="59" selection-start-column="42" selection-end-line="59" selection-end-column="42" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file leaf-file-name="settings.ts" pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/lib/helper/constants/settings.ts">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="966">
-                    <caret line="50" selection-start-line="50" selection-end-line="55" selection-end-column="28" />
-                    <folding>
-                      <element signature="n#!!doc" expanded="true" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file leaf-file-name="channelConfig.ts" pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/lib/helper/constants/channelConfig.ts">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="504">
-                    <caret line="28" column="31" selection-start-line="28" selection-start-column="31" selection-end-line="28" selection-end-column="31" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
+  <component name="FavoritesManager">
+    <favorites_list name="finshed translated to ts">
+      <favorite_root url="file://$PROJECT_DIR$/lib/helper/constants/channelConfig.ts" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+      <favorite_root url="file://$PROJECT_DIR$/lib/helper/constants/appConfig.ts" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+      <favorite_root url="file://$PROJECT_DIR$/lib/helper/constants/constWrapper.ts" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+      <favorite_root url="file://$PROJECT_DIR$/lib/helper/constants/errorTypes.ts" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+      <favorite_root url="file://$PROJECT_DIR$/lib/helper/constants/events.ts" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+      <favorite_root url="file://$PROJECT_DIR$/lib/helper/constants/mainConfig.ts" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+      <favorite_root url="file://$PROJECT_DIR$/lib/helper/constants/serviceConfig.ts" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+      <favorite_root url="file://$PROJECT_DIR$/lib/helper/constants/settings.ts" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+      <favorite_root url="file://$PROJECT_DIR$/lib/helper/constants/validator.ts" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+      <favorite_root url="file://$PROJECT_DIR$/lib/helper/logger/logger.ts" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+      <favorite_root url="file://$PROJECT_DIR$/lib/helper/auth/aePreparedPart.ts" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+    </favorites_list>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="zationWorker.ts" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/main/zationWorker.ts">
+      <file leaf-file-name="mainConfig.ts" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/mainConfig.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3001">
-              <caret line="750" column="19" lean-forward="true" selection-start-line="750" selection-start-column="19" selection-end-line="750" selection-end-column="19" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="constWrapper.ts" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/helper/constants/constWrapper.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="588">
-              <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
+            <state relative-caret-position="315">
+              <caret line="60" column="31" selection-start-line="60" selection-start-column="31" selection-end-line="60" selection-end-column="31" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -185,20 +149,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Controller.ts" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/api/Controller.ts">
+      <file leaf-file-name="controllerPrepare.ts" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/lib/helper/controller/controllerPrepare.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="670">
+              <caret line="113" column="1" selection-start-line="113" selection-start-column="1" selection-end-line="113" selection-end-column="1" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="controllerCheckTools.ts" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/lib/helper/controller/controllerCheckTools.ts">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="462">
-              <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Bag.ts" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/api/Bag.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="20" column="32" lean-forward="true" selection-start-line="20" selection-start-column="32" selection-end-line="20" selection-end-column="32" />
+              <caret line="25" column="9" selection-start-line="25" selection-start-column="9" selection-end-line="25" selection-end-column="9" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -206,41 +173,63 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="aePreparedPart.ts" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/lib/helper/auth/aePreparedPart.ts">
+      <file leaf-file-name="configChecker.ts" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/lib/helper/config/configChecker.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="388">
+              <caret line="496" column="27" selection-start-line="496" selection-start-column="27" selection-end-line="496" selection-end-column="27" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="zationWorker.ts" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/lib/main/zationWorker.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="zationStarter.ts" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/lib/main/zationStarter.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="460">
+              <caret line="186" column="31" lean-forward="true" selection-start-line="186" selection-start-column="31" selection-end-line="186" selection-end-column="31" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="package.json" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="504">
-              <caret line="30" column="13" lean-forward="true" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
+              <caret line="24" column="29" lean-forward="true" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.d.ts" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/compiled/index.d.ts">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file leaf-file-name="prepareClientJs.ts" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/lib/client/prepareClientJs.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="248">
+              <caret line="26" selection-start-line="26" selection-end-line="26" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tsconfig.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tsconfig.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="189">
-              <caret line="9" column="1" lean-forward="true" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="authEngine.ts" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/helper/auth/authEngine.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="399">
-              <caret line="23" column="16" lean-forward="true" selection-start-line="23" selection-start-column="16" selection-end-line="23" selection-end-column="16" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SmallBag.ts" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/api/SmallBag.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="523">
-              <caret line="314" column="5" lean-forward="true" selection-start-line="314" selection-start-column="5" selection-end-line="314" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -252,22 +241,12 @@
       <list>
         <option value="CSS File" />
         <option value="JavaScript File" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>emitE</find>
-      <find>H</find>
-      <find>BACKGROUND_TAS</find>
-      <find>SOCKET</find>
-      <find>MID</find>
-      <find>checkMidd</find>
-      <find>Logger</find>
-      <find>inputName</find>
-      <find>param</find>
-      <find>InputPath</find>
-      <find>key</find>
       <find>propertyPa</find>
       <find>target</find>
       <find>assert</find>
@@ -286,14 +265,20 @@
       <find>458</find>
       <find>Channel</find>
       <find>console.log</find>
+      <find>public</find>
+      <find>Event.</find>
+      <find>ErrorTypes.</find>
+      <find>MainConfig.KEYS.</find>
+      <find>ValidatorConst.TYPE.</find>
       <find>const</find>
+      <find>module.exports.</find>
+      <find>const</find>
+      <find>_preapreSmallBag</find>
+      <find>user</find>
+      <find>this.</find>
+      <find>Requ</find>
     </findStrings>
     <replaceStrings>
-      <replace>ChannelEngine</replace>
-      <replace>shBridge</replace>
-      <replace>MainErros</replace>
-      <replace>MainErrors</replace>
-      <replace>TOKEN_INFO_LAST_ACTIVITY</replace>
       <replace>Errors</replace>
       <replace>ValidatorErrors</replace>
       <replace>Const.</replace>
@@ -318,7 +303,12 @@
       <replace>ServiceConfig</replace>
       <replace>inputPath</replace>
       <replace>input</replace>
+      <replace>static readonly</replace>
+      <replace>impotz</replace>
       <replace>import</replace>
+      <replace>import</replace>
+      <replace>getPreparedSmallBag()</replace>
+      <replace>private</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -327,57 +317,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/lib/client/zation.js" />
-        <option value="$PROJECT_DIR$/lib/helper/zationTaskErrors/mainTaskErrors.js" />
-        <option value="$PROJECT_DIR$/lib/main/zation.js" />
-        <option value="$PROJECT_DIR$/lib/helper/validator/validatorEngine.js" />
-        <option value="$PROJECT_DIR$/lib/helper/input/inputValueProcessor.js" />
-        <option value="$PROJECT_DIR$/lib/helper/validator/validatorLibrary.js" />
-        <option value="$PROJECT_DIR$/lib/helper/config/target.js" />
-        <option value="$PROJECT_DIR$/lib/helper/input/inputProcessor.js" />
-        <option value="$PROJECT_DIR$/lib/client/prepareClientJs.js" />
-        <option value="$PROJECT_DIR$/lib/helper/constants/errorTypes.js" />
-        <option value="$PROJECT_DIR$/lib/helper/constants/channelConfig.js" />
-        <option value="$PROJECT_DIR$/lib/helper/constants/settings.js" />
-        <option value="$PROJECT_DIR$/lib/api/SmallBag.js" />
-        <option value="$PROJECT_DIR$/lib/helper/channel/chExchangeEngine.js" />
-        <option value="$PROJECT_DIR$/lib/helper/channel/channelEngine.js" />
-        <option value="$PROJECT_DIR$/lib/helper/channel/chTools.js" />
-        <option value="$PROJECT_DIR$/lib/helper/token/tokenEngine.js" />
-        <option value="$PROJECT_DIR$/lib/helper/channel/chAccessEngine.js" />
-        <option value="$PROJECT_DIR$/lib/helper/config/configPreCompiler.js" />
-        <option value="$PROJECT_DIR$/lib/main/zationConfig.js" />
-        <option value="$PROJECT_DIR$/lib/helper/tempDb/tempDbMemoryDown.js" />
-        <option value="$PROJECT_DIR$/lib/helper/tempDb/tempDbUp.js" />
-        <option value="$PROJECT_DIR$/lib/helper/processor/validChProcessor.js" />
-        <option value="$PROJECT_DIR$/lib/helper/controller/controllerCheckTools.js" />
-        <option value="$PROJECT_DIR$/lib/helper/processor/mainProcessor.js" />
-        <option value="$PROJECT_DIR$/lib/api/Controller.js" />
-        <option value="$PROJECT_DIR$/lib/helper/systemController/systemControler.config.js" />
-        <option value="$PROJECT_DIR$/lib/helper/config/configChecker.js" />
-        <option value="$PROJECT_DIR$/lib/main/zationStarter.js" />
-        <option value="$PROJECT_DIR$/lib/helper/controller/controllerTools.js" />
-        <option value="$PROJECT_DIR$/lib/helper/controller/controllerPrepare.js" />
-        <option value="$PROJECT_DIR$/lib/main/zationWorker.js" />
-        <option value="$PROJECT_DIR$/lib/helper/auth/authEngine.js" />
-        <option value="$PROJECT_DIR$/lib/api/Bag.js" />
-        <option value="$PROJECT_DIR$/lib/helper/constants/appConfig.js" />
-        <option value="$PROJECT_DIR$/lib/helper/config/structures.js" />
-        <option value="$PROJECT_DIR$/lib/helper/bridges/shBridge.js" />
-        <option value="$PROJECT_DIR$/lib/helper/processor/httpProcessor.js" />
-        <option value="$PROJECT_DIR$/lib/helper/processor/socketProcessor.js" />
-        <option value="$PROJECT_DIR$/lib/helper/tempDb/tempDbMongoDown.js" />
-        <option value="$PROJECT_DIR$/index.js" />
-        <option value="$PROJECT_DIR$/package.json" />
-        <option value="$PROJECT_DIR$/lib/api/Controller.ts" />
-        <option value="$PROJECT_DIR$/lib/api/SmallBag.ts" />
-        <option value="$PROJECT_DIR$/lib/helper/auth/authEngine.ts" />
-        <option value="$PROJECT_DIR$/lib/main/zationWorker.ts" />
-        <option value="$PROJECT_DIR$/lib/api/Bag.ts" />
+        <option value="$PROJECT_DIR$/src/lib/main/zation.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/tools/zationReqTools.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/tools/uuid.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/tools/timeTools.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/tools/objectTools.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/tools/inputWrapper.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/tools/idCounter.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/tools/htmlTools.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/bridges/tokenBridge.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/token/tokenTools.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/tempDb/tempDbMongoDown.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/tempDb/tempDbMemoryDown.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/systemController/controller/zationSC_LogOut.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/background/backgoundTaskSetter.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/background/backgroundTaskSetter.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/services/serviceBox.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/bridges/shBridge.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/processor/mainProcessor.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/processor/validChProcessor.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/input/inputValueProcessor.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/input/inputProcessor.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/controller/controllerTools.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/controller/controllerPrepare.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/config/structures.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/config/configPreCompiler.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/config/configError.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/config/configErrorBag.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/config/target.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/checker/systemVersionChecker.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/tools/objectPath.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/config/configCheckerTools.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/channel/chExchangeEngine.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/channel/channelEngine.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/bridges/memoryMasterBridge.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/token/tokenEngine.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/auth/authEngine.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/channel/chTools.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/channel/chAccessEngine.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/services/serviceEngine.ts" />
+        <option value="$PROJECT_DIR$/src/lib/api/SmallBag.ts" />
+        <option value="$PROJECT_DIR$/src/lib/api/Bag.ts" />
+        <option value="$PROJECT_DIR$/src/lib/api/TaskError.ts" />
+        <option value="$PROJECT_DIR$/src/lib/api/Result.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/response/returner.ts" />
+        <option value="$PROJECT_DIR$/src/lib/client/prepareClientJs.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/constants/mainConfig.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/config/configChecker.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/controller/controllerCheckTools.ts" />
+        <option value="$PROJECT_DIR$/src/lib/main/zationStarter.ts" />
         <option value="$PROJECT_DIR$/tsconfig.json" />
-        <option value="$PROJECT_DIR$/lib/helper/constants/constWrapper.ts" />
-        <option value="$PROJECT_DIR$/lib/helper/constants/appConfig.ts" />
-        <option value="$PROJECT_DIR$/lib/helper/auth/aePreparedPart.ts" />
+        <option value="$PROJECT_DIR$/package.json" />
       </list>
     </option>
   </component>
@@ -402,8 +392,8 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="22" />
+    <option name="x" value="143" />
+    <option name="y" value="104" />
     <option name="width" value="1382" />
     <option name="height" value="754" />
   </component>
@@ -412,7 +402,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -420,181 +409,11 @@
               <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
               <item name="zation-server" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="api" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="auth" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="background" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="bridges" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="channel" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="checker" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="config" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="constants" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="controller" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="input" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="logger" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="processor" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="response" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="services" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="systemController" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="systemController" type="462c0819:PsiDirectoryNode" />
-              <item name="controller" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="tempDb" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="token" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="tools" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="validator" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="zationTaskErrors" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -608,17 +427,17 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="C:/Program Files (x86)/nodejs/node" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="Settings.JavaScript" />
-    <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
+    <property name="settings.editor.selected.configurable" value="settings.typescriptcompiler" />
+    <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
     <property name="typescript-compiler-editor-notification" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\MyProjekts\GitHub\zation-server\src" />
       <recent name="D:\MyProjekts\GitHub\zation-server\lib\helper\controller" />
       <recent name="D:\MyProjekts\GitHub\zation-server\lib\helper" />
       <recent name="D:\MyProjekts\GitHub\zation-server\lib\client" />
       <recent name="D:\MyProjekts\GitHub\zation-server\lib\helper\input" />
-      <recent name="D:\MyProjekts\GitHub\zation-server\lib\helper\config" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -634,8 +453,8 @@
     </option>
   </component>
   <component name="RunManager" selected="Node.js.test.js">
-    <configuration name="test2.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/test2.js" working-dir="$PROJECT_DIR$/lib" />
-    <configuration name="test.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/test.js" working-dir="$PROJECT_DIR$/lib" />
+    <configuration name="test2.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/test2.js" working-dir="$PROJECT_DIR$/src/lib" />
+    <configuration name="test.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/test.js" working-dir="$PROJECT_DIR$/src/lib" />
     <list>
       <item itemvalue="Node.js.test.js" />
       <item itemvalue="Node.js.test2.js" />
@@ -726,11 +545,13 @@
       <workItem from="1531160023812" duration="224000" />
       <workItem from="1531160329852" duration="37000" />
       <workItem from="1531160478616" duration="8359000" />
+      <workItem from="1531205537209" duration="9174000" />
+      <workItem from="1531214821940" duration="32938000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="630312000" />
+    <option name="totallyTimeSpent" value="672424000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -745,19 +566,19 @@
     <frame x="-8" y="22" width="1936" height="1066" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2081138" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3286638" />
-      <window_info anchor="bottom" id="Statistic" order="7" weight="0.66918105" />
-      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3275862" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32193732" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.55172414" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.077586204" />
+      <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.25862068" />
+      <window_info anchor="bottom" id="TypeScript" order="8" weight="0.09159483" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.8968023" visible="true" weight="0.2081138" />
+      <window_info anchor="bottom" id="Statistic" order="7" weight="0.037715517" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3275862" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.09051724" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39978448" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="TypeScript" order="8" />
+      <window_info id="Favorites" order="2" sideWeight="0.10319767" side_tool="true" visible="true" weight="0.2081138" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -802,302 +623,426 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="7" />
+      <option name="time" value="11" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/lib/helper/constants/settings.ts">
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/input/inputProcessor.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="966">
-          <caret line="50" selection-start-line="50" selection-end-line="55" selection-end-column="28" />
+        <state relative-caret-position="-1884">
+          <caret line="51" lean-forward="true" selection-start-line="51" selection-end-line="51" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/logger/logger.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="588">
-          <caret line="28" column="64" lean-forward="true" selection-start-line="28" selection-start-column="11" selection-end-line="28" selection-end-column="64" />
-        </state>
-      </provider>
+    <entry file="file://$PROJECT_DIR$/src/lib/client/zation.js">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/config/configPreCompiler.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="635">
-          <caret line="284" column="9" lean-forward="true" selection-start-line="284" selection-start-column="9" selection-end-line="284" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/main/zation.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1134">
-          <caret line="58" column="9" selection-start-line="58" selection-start-column="9" selection-end-line="58" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/main/zationStarter.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="756">
-          <caret line="40" column="25" lean-forward="true" selection-start-line="40" selection-start-column="25" selection-end-line="40" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/systemController/systemControler.config.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="22" column="6" lean-forward="true" selection-start-line="22" selection-start-column="6" selection-end-line="22" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/controller/controllerTools.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1008">
-          <caret line="52" column="5" lean-forward="true" selection-start-line="52" selection-start-column="5" selection-end-line="52" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/controller/controllerCheckTools.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="34" lean-forward="true" selection-start-line="34" selection-end-line="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/controller/controllerPrepare.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-231">
-          <caret line="14" column="6" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/config/structures.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="559">
-          <caret line="41" column="51" lean-forward="true" selection-start-line="41" selection-start-column="51" selection-end-line="41" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/processor/validChProcessor.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="756">
-          <caret line="40" column="13" lean-forward="true" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/processor/socketProcessor.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="714">
-          <caret line="38" column="33" selection-start-line="38" selection-start-column="33" selection-end-line="38" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/processor/mainProcessor.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="672">
-          <caret line="109" column="58" selection-start-line="109" selection-start-column="58" selection-end-line="109" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/processor/httpProcessor.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="693">
-          <caret line="52" column="26" selection-start-line="52" selection-start-column="26" selection-end-line="52" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/token/tokenEngine.ts">
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/controller/controllerTools.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
-          <caret line="19" column="8" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/token/tokenTools.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2627">
-          <caret line="28" column="90" selection-start-line="28" selection-start-column="90" selection-end-line="28" selection-end-column="90" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external/lib.dom.d.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="356">
-          <caret line="3798" column="24" lean-forward="true" selection-start-line="3798" selection-start-column="24" selection-end-line="3798" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/tempDb/tempDbMongoDown.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="17" column="33" selection-start-line="17" selection-start-column="33" selection-end-line="17" selection-end-column="33" />
+          <caret line="33" column="71" selection-start-line="33" selection-start-column="71" selection-end-line="33" selection-end-column="71" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external/lib.es2015.core.d.ts">
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/validator.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="301">
-          <caret line="285" column="4" selection-start-line="285" selection-start-column="4" selection-end-line="285" selection-end-column="4" />
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.ts">
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/settings.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/serviceConfig.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/events.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/errorTypes.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/constWrapper.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/channelConfig.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/appConfig.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/config/configPreCompiler.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6006">
+          <caret line="286" column="9" lean-forward="true" selection-start-line="286" selection-start-column="9" selection-end-line="286" selection-end-column="9" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/config/structures.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="441">
+          <caret line="21" column="68" lean-forward="true" selection-start-line="21" selection-start-column="68" selection-end-line="21" selection-end-column="68" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/logger/logger.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="26">
+          <caret line="64" column="13" lean-forward="true" selection-start-line="64" selection-start-column="13" selection-end-line="64" selection-end-column="13" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/config/configError.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="494">
+          <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/config/target.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="882">
+          <caret line="42" column="5" lean-forward="true" selection-start-line="42" selection-start-column="5" selection-end-line="42" selection-end-column="5" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/tools/objectPath.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="385">
+          <caret line="54" column="12" lean-forward="true" selection-start-line="54" selection-start-column="12" selection-end-line="54" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/config/configCheckerTools.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="579">
+          <caret line="120" column="13" lean-forward="true" selection-start-line="120" selection-start-column="13" selection-end-line="120" selection-end-column="13" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/config/configErrorBag.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="488">
+          <caret line="30" column="4" selection-start-line="30" selection-start-column="4" selection-end-line="30" selection-end-column="4" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/checker/systemVersionChecker.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="299">
+          <caret line="17" column="9" lean-forward="true" selection-start-line="17" selection-start-column="9" selection-end-line="17" selection-end-column="9" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/channel/chExchangeEngine.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1890">
+          <caret line="90" column="5" lean-forward="true" selection-start-line="90" selection-start-column="5" selection-end-line="90" selection-end-column="5" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/bridges/tokenBridge.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2310">
+          <caret line="110" column="1" lean-forward="true" selection-start-line="110" selection-start-column="1" selection-end-line="110" selection-end-column="1" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/bridges/shBridge.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="18" column="35" lean-forward="true" selection-start-line="18" selection-start-column="35" selection-end-line="18" selection-end-column="35" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/bridges/memoryMasterBridge.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="500">
+          <caret line="46" column="36" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/background/systemBackgroundTasks.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="25" column="31" selection-start-line="25" selection-start-column="31" selection-end-line="25" selection-end-column="31" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/auth/aePreparedPart.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1045">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/token/tokenEngine.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="72" column="31" lean-forward="true" selection-start-line="72" selection-start-column="31" selection-end-line="72" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/auth/authEngine.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6510">
+          <caret line="310" selection-start-line="310" selection-end-line="310" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/channel/channelEngine.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="551">
+          <caret line="71" column="43" selection-start-line="71" selection-start-column="43" selection-end-line="71" selection-end-column="43" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/channel/chTools.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="420">
-          <caret line="24" selection-start-line="24" selection-end-line="24" />
+          <caret line="74" column="52" selection-start-line="74" selection-start-column="52" selection-end-line="74" selection-end-column="52" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/client/prepareClientJs.ts">
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/channel/chAccessEngine.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="546">
-          <caret line="30" column="45" selection-start-line="30" selection-start-column="45" selection-end-line="30" selection-end-column="45" />
+        <state relative-caret-position="714">
+          <caret line="34" column="13" selection-start-line="34" selection-start-column="13" selection-end-line="34" selection-end-column="13" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/client/zation.js">
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/services/serviceEngine.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="43029">
-          <caret line="2054" column="15" selection-start-line="2054" selection-start-column="15" selection-end-line="2054" selection-end-column="15" />
+        <state relative-caret-position="1227">
+          <caret line="89" column="32" selection-start-line="89" selection-start-column="32" selection-end-line="89" selection-end-column="32" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dist/index.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dist/index.d.ts">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dist/lib/helper/auth/aePreparedPart.js">
+    <entry file="file://$PROJECT_DIR$/src/lib/api/Controller.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-126" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dist/lib/helper/auth/aePreparedPart.d.ts">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="706">
-          <caret line="48" column="1" selection-start-line="48" selection-start-column="1" selection-end-line="48" selection-end-column="1" />
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dist/lib/api/Controller.d.ts">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dist/lib/api/Controller.js">
+    <entry file="file://$PROJECT_DIR$/src/lib/api/Bag.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
+        <state relative-caret-position="1047">
+          <caret line="64" selection-start-line="64" selection-end-line="64" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/bridges/shBridge.ts">
+    <entry file="file://$PROJECT_DIR$/src/lib/api/SmallBag.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="11" column="12" selection-start-line="11" selection-start-column="12" selection-end-line="11" selection-end-column="12" />
+        <state relative-caret-position="567">
+          <caret line="30" selection-start-line="30" selection-end-line="30" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/bridges/tokenBridge.ts">
+    <entry file="file://$PROJECT_DIR$/src/lib/api/TaskError.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="773">
-          <caret line="57" column="32" selection-start-line="57" selection-start-column="32" selection-end-line="57" selection-end-column="46" />
+        <state relative-caret-position="514">
+          <caret line="94" column="44" lean-forward="true" selection-start-line="94" selection-start-column="44" selection-end-line="94" selection-end-column="44" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/channel/chAccessEngine.ts">
+    <entry file="file://$PROJECT_DIR$/src/lib/api/TaskErrorBag.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="773">
-          <caret line="118" selection-start-line="118" selection-end-line="118" />
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/config/configChecker.ts">
+    <entry file="file://$PROJECT_DIR$/src/lib/api/Result.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="27" column="16" selection-start-line="27" selection-start-column="16" selection-end-line="27" selection-end-column="16" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/response/returner.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="205">
+          <caret line="104" column="16" selection-start-line="104" selection-start-column="16" selection-end-line="104" selection-end-column="16" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/client/prepareClientJs.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="248">
+          <caret line="26" selection-start-line="26" selection-end-line="26" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/main/zationWorker.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/mainConfig.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="60" column="31" selection-start-line="60" selection-start-column="31" selection-end-line="60" selection-end-column="31" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/controller/controllerPrepare.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="670">
+          <caret line="113" column="1" selection-start-line="113" selection-start-column="1" selection-end-line="113" selection-end-column="1" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/controller/controllerCheckTools.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="462">
-          <caret line="26" column="26" selection-start-line="26" selection-start-column="26" selection-end-line="26" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/api/TaskError.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
+          <caret line="25" column="9" selection-start-line="25" selection-start-column="9" selection-end-line="25" selection-end-column="9" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/api/TaskErrorBag.ts">
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/config/configChecker.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/api/Result.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dist/lib/api/Bag.d.ts">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dist/lib/api/Bag.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-252" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dist/api/Bag.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="16" column="17" lean-forward="true" selection-start-line="16" selection-start-column="17" selection-end-line="16" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dist/api/Controller.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/api/SmallBag.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="523">
-          <caret line="314" column="5" lean-forward="true" selection-start-line="314" selection-start-column="5" selection-end-line="314" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/api/Controller.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/auth/authEngine.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="23" column="16" lean-forward="true" selection-start-line="23" selection-start-column="16" selection-end-line="23" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dist/api/Bag.d.ts">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/api/Bag.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="20" column="32" lean-forward="true" selection-start-line="20" selection-start-column="32" selection-end-line="20" selection-end-column="32" />
+        <state relative-caret-position="388">
+          <caret line="496" column="27" selection-start-line="496" selection-start-column="27" selection-end-line="496" selection-end-column="27" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -1106,49 +1051,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tsconfig.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="9" column="1" lean-forward="true" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="1" />
+        <state relative-caret-position="168">
+          <caret line="8" column="31" selection-start-line="8" selection-start-column="31" selection-end-line="8" selection-end-column="31" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/main/zationWorker.ts">
+    <entry file="file://$PROJECT_DIR$/src/lib/main/zationStarter.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3001">
-          <caret line="750" column="19" lean-forward="true" selection-start-line="750" selection-start-column="19" selection-end-line="750" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/constants/channelConfig.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="28" column="31" selection-start-line="28" selection-start-column="31" selection-end-line="28" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/constants/appConfig.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="41" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/constants/constWrapper.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="588">
-          <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
+        <state relative-caret-position="460">
+          <caret line="186" column="31" lean-forward="true" selection-start-line="186" selection-start-column="31" selection-end-line="186" selection-end-column="31" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/helper/auth/aePreparedPart.ts">
+    <entry file="file://$PROJECT_DIR$/compiled/lib/helper/processor/httpProcessor.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/compiled/index.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/compiled/index.d.ts">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="504">
-          <caret line="30" column="13" lean-forward="true" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+          <caret line="24" column="29" lean-forward="true" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
         </state>
       </provider>
     </entry>
