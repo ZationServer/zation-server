@@ -18,6 +18,14 @@ export = {
         isFromZationSystem : true
     },
 
+    authControllerNotSet : {
+        name          : 'authControllerNotSet',
+        description   : 'Auth controller not set',
+        type          : ErrorType.INPUT_ERROR,
+        sendInfo      : false,
+        isFromZationSystem : true
+    },
+
     controllerIsNotAController : {
         name          : 'controllerIsNotAController',
         description   : 'controller is not a object from type Controller',

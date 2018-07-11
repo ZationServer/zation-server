@@ -765,6 +765,11 @@ class ZationWorker extends SCWorker
         return this.id;
     }
 
+    getIsAuthStartActive() : boolean
+    {
+        return this.authStartActive;
+    }
+
     getWorkerStartedTime() : number
     {
         return this.workerStartedTimeStamp;

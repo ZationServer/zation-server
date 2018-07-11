@@ -32,9 +32,13 @@ class MainProcessor
             //Check for a auth req
             if(ZationReqTools.isZationAuthReq(reqData))
             {
+                if(!zc.isApp(Const.App.KEYS.AUTH_CONTROLLER))
+                {
+                    throw new TaskError(MainErrors.authControllerNotSet);
+                }
                 reqData = ZationReqTools.dissolveZationAuthReq(zc,reqData);
             }
-            else if(worker._authStartActive)
+            else if(worker.getIsAuthStartActive())
             {
                 throw new TaskError(MainErrors.authStartActive);
             }

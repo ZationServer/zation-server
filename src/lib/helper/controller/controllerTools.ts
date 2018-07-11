@@ -5,9 +5,8 @@ GitHub: LucaCode
  */
 
 import Const            = require('../constants/constWrapper');
-import Controller       = require("../../api/Controller");
 import ZationConfig     = require("../../main/zationConfig");
-import Bag = require("../../api/Bag");
+import Bag              = require("../../api/Bag");
 
 const systemControllerPath   = __dirname + './../systemController/controller';
 

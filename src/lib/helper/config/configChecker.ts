@@ -123,6 +123,21 @@ class ConfigChecker
        this.checkValidationGroups();
        this.checkVersionControl();
        this.checkControllerConfigs();
+       this.checkAuthController();
+   }
+
+   private checkAuthController()
+   {
+       let authController = this.zc.getApp(Const.App.KEYS.AUTH_CONTROLLER);
+       if(typeof authController === "string" && this.zc.isApp(Const.App.KEYS.CONTROLLER))
+       {
+           let controller = this.zc.getApp(Const.App.KEYS.CONTROLLER);
+           if(!controller.hasOwnProperty(authController))
+           {
+               this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+                   `AuthController: '${authController}' is not found.`));
+           }
+       }
    }
 
    private checkEventConfig()
