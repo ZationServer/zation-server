@@ -1,36 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/lib/helper/background/backgroundTasksSaver.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/helper/background/backgroundTasksSender.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/helper/constants/starterConfig.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/helper/infoObjects/zationInfoObj.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/helper/tools/funcTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/api/Config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api/Config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/background/backgroundTasksSetter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/background/backgroundTasksSetter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/config/configChecker.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/config/configChecker.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/config/structures.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/config/structures.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/configEditTool/appConfigStructure.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/configEditTool/appConfigStructure.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/configEditTool/eventConfigStructure.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/configEditTool/eventConfigStructure.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/configEditTool/serviceConfigStructure.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/configEditTool/serviceConfigStructure.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/appConfig.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/constants/appConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/constWrapper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/constants/constWrapper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/events.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/constants/events.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/mainConfig.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/constants/mainConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/settings.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/constants/settings.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/controller/controllerCheckTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/controller/controllerCheckTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/controller/controllerTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/controller/controllerTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/tools/objectTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/objectTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/tools/timeTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/timeTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/main/zation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zation.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/main/zationConfig.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/main/zationStarter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationStarter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/main/zationWorker.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationWorker.ts" afterDir="false" />
-    </list>
+    <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -63,7 +34,7 @@
     <session id="1522475154">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
           <entry key="project.open.time.1" value="2" />
           <entry key="project.open.time.7" value="1" />
           <entry key="project.opened" value="3" />
@@ -624,12 +595,12 @@
       <workItem from="1531401832441" duration="17568000" />
       <workItem from="1531447397892" duration="2629000" />
       <workItem from="1531474206374" duration="29509000" />
-      <workItem from="1531521870046" duration="455000" />
+      <workItem from="1531521870046" duration="561000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="760277000" />
+    <option name="totallyTimeSpent" value="760383000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -835,6 +806,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="574">
           <caret line="28" selection-start-line="28" selection-end-line="28" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#appConfig#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
