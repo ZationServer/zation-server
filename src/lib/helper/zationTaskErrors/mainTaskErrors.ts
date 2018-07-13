@@ -46,6 +46,17 @@ export = {
         isFromZationSystem : true
     },
 
+    serviceNotFound  : {
+        name          : 'serviceNotFound ',
+        description   : 'Service not found ',
+        type          : ErrorType.SYSTEM_ERROR,
+        sendInfo      : false,
+        //INFO
+        // serviceName (name of the service)
+        // serviceKey  (service Key)
+        isFromZationSystem : true
+    },
+
     versionToOld    : {
         name          : 'versionToOld',
         description   : 'Version is to old',
@@ -117,6 +128,16 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPathMissing (input path to missing property)
+        isFromZationSystem : true
+    },
+
+    unknownObjectProperty : {
+        name          : 'unknownObjectProperty',
+        description   : 'unknown object property was in an object input',
+        type          : ErrorType.INPUT_ERROR,
+        sendInfo      : false,
+        //INFO
+        // propertyName
         isFromZationSystem : true
     },
 
@@ -222,17 +243,6 @@ export = {
         sendInfo      : true,
         //INFO
         // key (key like to Set)
-        isFromZationSystem : true
-    },
-
-    tryToUseNotConfiguredService : {
-        name          : 'tryToUseNotConfiguredService',
-        description   : 'try to use not configured service!',
-        type          : ErrorType.SYSTEM_ERROR,
-        sendInfo      : true,
-        //INFO
-        // service (service name)
-        // key (optional)
         isFromZationSystem : true
     },
 

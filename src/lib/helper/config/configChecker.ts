@@ -237,7 +237,15 @@ class ConfigChecker
        {
            if(this.objectsConfig.hasOwnProperty(objName))
            {
-               this.checkObject(this.objectsConfig[objName],new Target(`Object: ${objName}`,'propertyPath'),objName);
+               if(!Array.isArray(this.objectsConfig[objName]) &&  typeof this.objectsConfig[objName] === 'object')
+               {
+                   this.checkObject(this.objectsConfig[objName],new Target(`Object: ${objName}`,'propertyPath'),objName);
+               }
+               else
+               {
+                   this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+                       `Object: '${objName}' value must be an object!`));
+               }
            }
        }
        this.checkCrossImports();

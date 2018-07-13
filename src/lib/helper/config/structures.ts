@@ -44,6 +44,7 @@ Structures.Main[Const.Main.KEYS.START_DEBUG]             = {types : ['boolean'],
 Structures.Main[Const.Main.KEYS.SHOW_CONFIG_WARNINGS]    = {types : ['boolean'],isOptional : true};
 Structures.Main[Const.Main.KEYS.ENVIRONMENT]             = {types : ['string'],isOptional : true};
 Structures.Main[Const.Main.KEYS.TIME_ZONE]               = {types : ['string'],isOptional : true};
+Structures.Main[Const.Main.KEYS.ZATION_CONSOLE_LOG]      = {types : ['boolean'],isOptional : true};
 
 Structures.Main[Const.Main.KEYS.WORKERS]
     = {types : ['number','string'],isOptional : true, stringOnlyEnum : [Const.Main.OPTIONS.AUTO]};
@@ -120,7 +121,7 @@ Structures.ValidationGroup[Const.Validator.KEYS.FUNCTION_MIN_LENGTH]     = {type
 Structures.ValidationGroup[Const.Validator.KEYS.FUNCTION_MAX_LENGTH]     = {types : ['number'],isOptional : true};
 Structures.ValidationGroup[Const.Validator.KEYS.FUNCTION_LENGTH]         = {types : ['number'],isOptional : true};
 Structures.ValidationGroup[Const.Validator.KEYS.FUNCTION_CONTAINS]       = {types : ['string'],isOptional : true};
-Structures.ValidationGroup[Const.Validator.KEYS.FUNCTION_EQUALS]         = {types : ['string','number'],isOptional : true};
+Structures.ValidationGroup[Const.Validator.KEYS.FUNCTION_EQUALS]         = {types : ['string','number','object'],isOptional : true};
 Structures.ValidationGroup[Const.Validator.KEYS.FUNCTION_BIGGER_THAN]    = {types : ['number'],isOptional : true};
 Structures.ValidationGroup[Const.Validator.KEYS.FUNCTION_LESSER_THAN]    = {types : ['number'],isOptional : true};
 Structures.ValidationGroup[Const.Validator.KEYS.FUNCTION_REGEX]          = {types : ['string'],isOptional : true};
@@ -170,7 +171,7 @@ Structures.EventConfig[Const.Event.ZATION_IS_STARTED]                = {types : 
 Structures.EventConfig[Const.Event.ZATION_BEFORE_ERROR]              = {types : ['function','array'],isOptional : true};
 Structures.EventConfig[Const.Event.ZATION_BEFORE_TASK_ERROR]         = {types : ['function','array'],isOptional : true};
 Structures.EventConfig[Const.Event.ZATION_BEFORE_TASK_ERROR_BAG]     = {types : ['function','array'],isOptional : true};
-Structures.EventConfig[Const.Event.ZATION_BACKGROUND_TASK]           = {types : ['function','array'],isOptional : true};
+Structures.EventConfig[Const.Event.ZATION_BACKGROUND_TASKS]          = {types : ['function','array'],isOptional : true};
 Structures.EventConfig[Const.Event.ZATION_GET_USER_COUNT]            = {types : ['function'],isOptional : true};
 
 Structures.EventConfig[Const.Event.SC_SERVER_ERROR]                  = {types : ['function','array'],isOptional : true};

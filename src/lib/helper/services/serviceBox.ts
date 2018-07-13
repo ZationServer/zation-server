@@ -4,8 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import TaskError       = require('../../api/TaskError');
-import MainErrors      = require('../zationTaskErrors/mainTaskErrors');
+import ServiceNotFoundError = require("./serviceNotFoundError");
 
 class ServiceBox
 {
@@ -29,7 +28,8 @@ class ServiceBox
         await this.initService(this.config,this.howToCreate);
     }
 
-    private async initService(config,howToCreate)
+    private async initService(config,howToCreate) : Promise<void>
+
     {
         if(config !== undefined && typeof config === 'object')
         {
@@ -43,17 +43,21 @@ class ServiceBox
         }
     }
 
-    getService(key = 'default')
+    async getService(key : string = 'default') : Promise<any>
     {
         if(this.services.hasOwnProperty(key))
         {
-            return this.howToGet(this.services[key]);
+            return await this.howToGet(this.services[key]);
         }
         else
         {
-            throw new
-            TaskError(MainErrors.tryToUseNotConfiguredService, {service : this.serviceName, key : key});
+            throw new ServiceNotFoundError(this.serviceName,key);
         }
+    }
+
+    isServiceExists(key : string = 'default') : boolean
+    {
+        return this.services.hasOwnProperty(key);
     }
 }
 

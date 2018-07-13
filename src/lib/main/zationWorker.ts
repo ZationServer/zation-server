@@ -3,7 +3,9 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-const  SCWorker : any           = require('socketcluster/scworker');
+import BackgroundTasksSetter = require("../helper/background/backgroundTasksSetter");
+
+const  SCWorker : any        = require('socketcluster/scworker');
 import express               = require('express');
 import cookieParser          = require('cookie-parser');
 import bodyParser            = require('body-parser');
@@ -171,6 +173,7 @@ class ZationWorker extends SCWorker
     private startHttpServer()
     {
         this.app = express();
+
         //startCookieParser
         // noinspection JSUnresolvedFunction
         this.app.use(cookieParser());
@@ -713,24 +716,19 @@ class ZationWorker extends SCWorker
 
     private loadUserBackgroundTasks()
     {
-        this.zc.emitEvent(Const.Event.ZATION_BACKGROUND_TASK,(f) =>
-        {
-            let id = 0;
-            f(
-                //EveryTask
-                (time,task) =>
-                {
-                    this.userBackgroundTasks[id] = task;
-                    id++;
-                },
-                //AtTask
-                (time,task) =>
-                {
-                    this.userBackgroundTasks[id] = task;
-                    id++;
-                }
-            );
-        });
+        let id = 0;
+        const bkTS = new BackgroundTasksSetter(
+            (time,task) => {
+
+                this.userBackgroundTasks[id] = task;
+                id++;
+            },
+            (time,task) => {
+                this.userBackgroundTasks[id] = task;
+                id++;
+            });
+
+        this.zc.emitEvent(Const.Event.ZATION_BACKGROUND_TASKS,(f) => {f(bkTS)});
     }
 
     private checkAuthStart()

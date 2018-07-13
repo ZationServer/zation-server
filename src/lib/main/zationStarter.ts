@@ -3,16 +3,18 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-const  SocketCluster : any     = require('socketcluster');
-import Const                = require('../helper/constants/constWrapper');
-import Logger               = require('../helper/logger/logger');
-import ZationConfig         = require('./zationConfig');
-import ConfigChecker        = require('../helper/config/configChecker');
-import ConfigErrorBag       = require('../helper/config/configErrorBag');
-import HashSet              = require('hashset');
-import TimeTools            = require('../helper/tools/timeTools');
-import PrepareClientJs      = require('../client/prepareClientJs');
-import MasterTempDbEngine   = require('../helper/tempDb/masterTempDbEngine');
+
+const  SocketCluster : any   = require('socketcluster');
+import Const                 = require('../helper/constants/constWrapper');
+import Logger                = require('../helper/logger/logger');
+import ZationConfig          = require('./zationConfig');
+import ConfigChecker         = require('../helper/config/configChecker');
+import ConfigErrorBag        = require('../helper/config/configErrorBag');
+import HashSet               = require('hashset');
+import TimeTools             = require('../helper/tools/timeTools');
+import PrepareClientJs       = require('../client/prepareClientJs');
+import MasterTempDbEngine    = require('../helper/tempDb/masterTempDbEngine');
+import BackgroundTasksSetter = require("../helper/background/backgroundTasksSetter");
 
 class ZationStarter
 {
@@ -53,13 +55,13 @@ class ZationStarter
         }
         else
         {
-            console.log('\x1b[31m%s\x1b[0m','   [WARNING]','You can only start zation once.');
+            Logger.printWarning('You can only start zation once.');
         }
     }
 
     private async start()
     {
-        console.log('\x1b[33m%s\x1b[0m', '   [BUSY]','Launching Zation');
+        Logger.printBusy('Launching Zation');
         Logger.printDebugInfo('Zation is launching in debug Mode!');
 
         this.zc.loadOtherConfigs();
@@ -109,6 +111,7 @@ class ZationStarter
             zationServerVersion : ZationStarter.version,
             zationServerStartedTimeStamp : this.serverStartedTimeStamp,
             ipcAckTimeout: 3000,
+            logLevel : 0
         });
 
         // noinspection JSUnresolvedFunction
@@ -170,18 +173,18 @@ class ZationStarter
         let protocol = this.zc.getMain(Const.Main.KEYS.SECURE) ? 'https' : 'http';
         let server   = `${protocol}://${hostName}:${port}`;
 
-        console.log('\x1b[32m%s\x1b[0m', '   [ACTIVE]','Zation started');
-        console.log(`            Version: ${ZationStarter.version}`);
-        console.log(`            Your app: ${this.zc.getMain(Const.Main.KEYS.APP_NAME)}`);
-        console.log(`            Hostname: ${hostName}`);
-        console.log(`            Port: ${port}`);
-        console.log(`            Time: ${TimeTools.getMoment(this.zc)}`);
-        console.log(`            Time zone: ${this.zc.getMain(Const.Main.KEYS.TIME_ZONE)}`);
-        console.log(`            Worker count: ${this.master.options.workers}`);
-        console.log(`            Broker count: ${this.master.options.brokers}`);
-        console.log(`            Server: ${server}`);
-        console.log('            GitHub: https://github.com/ZationServer');
-        console.log(`            StartTime: ${Date.now()-this.serverStartedTimeStamp} ms`);
+        Logger.log('\x1b[32m%s\x1b[0m', '   [ACTIVE]','Zation started');
+        Logger.log(`            Version: ${ZationStarter.version}`);
+        Logger.log(`            Your app: ${this.zc.getMain(Const.Main.KEYS.APP_NAME)}`);
+        Logger.log(`            Hostname: ${hostName}`);
+        Logger.log(`            Port: ${port}`);
+        Logger.log(`            Time: ${TimeTools.getMoment(this.zc)}`);
+        Logger.log(`            Time zone: ${this.zc.getMain(Const.Main.KEYS.TIME_ZONE)}`);
+        Logger.log(`            Worker count: ${this.master.options.workers}`);
+        Logger.log(`            Broker count: ${this.master.options.brokers}`);
+        Logger.log(`            Server: ${server}`);
+        Logger.log('            GitHub: https://github.com/ZationServer');
+        Logger.log(`            StartTime: ${Date.now()-this.serverStartedTimeStamp} ms`);
     }
 
     private getRandomWorkerId()
@@ -196,18 +199,19 @@ class ZationStarter
     private startBackgroundTasks()
     {
         //userBackgroundTasks
-        this.zc.emitEvent(Const.Event.ZATION_BACKGROUND_TASK,(f) =>
-        {
-            let id = 0;
-            f((time) => {
-                this.setEveryBackgroundTask(id,time);
-                id++;
-            }
-            ,(time) => {
-                this.setAtBackgroundTask(id,time);
-                id++;
-            });
+        let id = 0;
+        const bkTS = new BackgroundTasksSetter(
+            (time) => {
+
+            this.setAtBackgroundTask(id,time);
+            id++;
+        },
+            (time) => {
+            this.setEveryBackgroundTask(id,time);
+            id++;
         });
+
+        this.zc.emitEvent(Const.Event.ZATION_BACKGROUND_TASKS,(f) => {f(bkTS);});
 
         //systemBackgroundTask
         setInterval(() =>

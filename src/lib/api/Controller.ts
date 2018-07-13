@@ -13,15 +13,40 @@ class Controller
     {
     }
 
-    //invokes when the zation system is creating instance of the controller (in worker start)
+    /**
+     * @description
+     * Gets invokes when the zation system is
+     * creating instance of the controller (in worker start)
+     * @param simpleBag
+     */
     async initialize(simpleBag : SmallBag) : Promise<void>
     {}
 
-    //invokes when the controller gets an request and returns the result of the process
+    /**
+     * @description
+     * Gets invokes when the controller gets an request
+     * and input is correct
+     * @param bag
+     * @param input
+     * @return
+     * The Return value of the function
+     * is send to the client
+     * with an success response.
+     * @throws
+     * You can also throw TaskErrors,
+     * which are sent to the client
+     * with a not success response.
+     */
     async handle(bag : Bag,input : any) : Promise<any>
     {}
 
-    //invokes when the controller gets an request with wrong input
+    /**
+     * @description
+     * Gets invokes when the controller gets an request
+     * with wrong input
+     * @param bag
+     * @param input
+     */
     async wrongInput(bag : Bag,input : any) : Promise<void>
     {}
 }

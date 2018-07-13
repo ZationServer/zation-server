@@ -4,13 +4,15 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const           = require('../constants/constWrapper');
-import ServiceBox      = require('./serviceBox');
+import Const                = require('../constants/constWrapper');
+import ServiceBox           = require('./serviceBox');
+import ServiceNotFoundError = require("./serviceNotFoundError");
 
-import MySql           = require("mysql");
-import PostgresSql     = require('pg-pool');
-
-
+import MySql                = require("mysql");
+import Pg                   = require('pg');
+import nodeMailer           = require('nodemailer');
+import mongodb              = require('mongodb');
+import {MongoClient}          from "mongodb";
 
 class ServiceEngine
 {
@@ -40,34 +42,38 @@ class ServiceEngine
         let promises : Promise<void>[] = [];
 
         this.mySqlServiceBox =
-            new ServiceBox(Const.Service.SERVICES.MYSQL,this.sc[Const.Service.SERVICES.MYSQL],async (c) : Promise<MySql.Pool> =>
+            new ServiceBox(Const.Service.SERVICES.MYSQL,this.sc[Const.Service.SERVICES.MYSQL],
+                async (c) : Promise<MySql.Pool> =>
             {
                 return MySql.createPool(c);
             });
         promises.push(this.mySqlServiceBox.init());
 
         this.nodeMailerServiceBox =
-            new ServiceBox(Const.Service.SERVICES.NODE_MAILER,this.sc[Const.Service.SERVICES.NODE_MAILER],async (c) =>
+            new ServiceBox(Const.Service.SERVICES.NODE_MAILER,this.sc[Const.Service.SERVICES.NODE_MAILER],
+                async (c) : Promise<nodeMailer.Transporter> =>
             {
-                const nodeMailer = require('nodemailer');
                 return nodeMailer.createTransport(c);
             });
         promises.push(this.nodeMailerServiceBox.init());
 
         this.postgresSqlBox =
-            new ServiceBox(Const.Service.SERVICES.POSTGRES_SQL,this.sc[Const.Service.SERVICES.POSTGRES_SQL],async (c) =>
+            new ServiceBox(Const.Service.SERVICES.POSTGRES_SQL,this.sc[Const.Service.SERVICES.POSTGRES_SQL],
+               async (c) : Promise<Pg.Pool> =>
             {
-                let pool : PostgresSql.Pool =  new PostgresSql.Pool(c);
-                return await pool.connect();
+                return new Pg.Pool(c);
+            }, async (s) : Promise<Pg.Client> =>
+            {
+                return s.connect();
+
             });
         promises.push(this.postgresSqlBox.init());
 
         this.mongoDbBox =
-            new ServiceBox(Const.Service.SERVICES.MONGO_DB,this.sc[Const.Service.SERVICES.MONGO_DB],async (c) =>
-            {
-                const mongo = require('mongodb-pool');
-                // noinspection JSUnresolvedFunction
-                return await mongo.getConnection(c.url,c);
+            new ServiceBox(Const.Service.SERVICES.MONGO_DB,this.sc[Const.Service.SERVICES.MONGO_DB],
+                async (c : object) : Promise<MongoClient> => {
+                let url : string = c['url'];
+                return await mongodb.MongoClient.connect(url,c);
             });
         promises.push(this.mongoDbBox.init());
 
@@ -90,33 +96,59 @@ class ServiceEngine
         await Promise.all(promises);
     }
 
-    getMySqlService(key : string) : MySql.Pool
+    async getMySqlService(key : string = 'default') : Promise<MySql.Pool>
     {
         return this.mySqlServiceBox.getService(key);
     }
 
-    getNodeMailerService(key : string) : any
+    isMySqlService(key : string = 'default') : boolean
+    {
+        return this.mySqlServiceBox.isServiceExists(key);
+    }
+
+    async getNodeMailerService(key : string = 'default') : Promise<nodeMailer.Transporter>
     {
         return this.nodeMailerServiceBox.getService(key);
     }
 
-    getPostgresSqlService(key : string) : any
+    isNodeMailerService(key : string = 'default') : boolean
+    {
+        return this.nodeMailerServiceBox.isServiceExists(key);
+    }
+
+    async getPostgresSqlService(key : string = 'default') : Promise<Pg.Client>
     {
         return this.postgresSqlBox.getService(key);
     }
 
-    getMongoDbService(key : string) : any
+    isPostgresSqlService(key : string = 'default') : boolean
+    {
+        return this.postgresSqlBox.isServiceExists(key);
+    }
+
+    async getMongoDbService(key : string = 'default') : Promise<MongoClient>
     {
         return this.mongoDbBox.getService(key);
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    isCustomService(serviceName : string) : boolean
+    isMongoDbService(key : string = 'default') : boolean
     {
-        return this.customServices[serviceName] instanceof ServiceBox
+        return this.mongoDbBox.isServiceExists(key);
     }
 
-    getCustomService(serviceName : string,key : string) : any
+    // noinspection JSUnusedGlobalSymbols
+    isCustomService(serviceName : string,key : string = 'default') : boolean
+    {
+        if(this.customServices[serviceName] instanceof ServiceBox)
+        {
+            return this.customServices[serviceName].isServiceExists(key);
+        }
+        else {
+            return false;
+        }
+    }
+
+    async getCustomService(serviceName : string,key : string = 'default') : Promise<any>
     {
         if(this.customServices[serviceName] instanceof ServiceBox)
         {
@@ -124,7 +156,7 @@ class ServiceEngine
         }
         else
         {
-            return undefined;
+            throw new ServiceNotFoundError(serviceName,key);
         }
     }
 

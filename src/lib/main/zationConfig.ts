@@ -47,6 +47,7 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.AUTH_START] = false;
             this.mainConfig[Const.Main.KEYS.AUTH_START_DURATION_MS] = 20000;
             this.mainConfig[Const.Main.KEYS.WORKERS] = Const.Main.OPTIONS.AUTO;
+            this.mainConfig[Const.Main.KEYS.ZATION_CONSOLE_LOG] = true;
 
             //TEMP
             this.mainConfig[Const.Main.KEYS.USE_TEMP_DB_TOKEN_INFO] = true;

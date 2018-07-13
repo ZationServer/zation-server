@@ -99,7 +99,7 @@ class ControllerPrepare
     {
         let isSystemC    = ControllerTools.isSystemController(config);
         let cClass : any = ControllerTools.getControllerClass(config,this.zc);
-        let cInstance    = new cClass();
+        let cInstance : Controller = new cClass();
 
         await cInstance.initialize(this.worker.getPreparedSmallBag());
         if(!isSystemC)

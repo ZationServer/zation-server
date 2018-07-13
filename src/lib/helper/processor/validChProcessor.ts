@@ -44,40 +44,47 @@ class ValidChProcessor
 
             let inputToCheck = validReq[Const.Settings.VALIDATION_REQUEST_INPUT.INPUT];
 
+            let promises : Promise<void>[] = [];
             let errorBag = new TaskErrorBag();
             for(let i = 0; i < inputToCheck.length; i++)
             {
-                if
-                (
-                    typeof inputToCheck[i] === 'object' &&
-                    Array.isArray(inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.KEY_PATH]) &&
-                    inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.VALUE] !== undefined
-                )
+                promises.push(new Promise<void>(async (resolve,reject) =>
                 {
-                    let keyPath = inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.KEY_PATH];
-                    let value   = inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.VALUE];
-
-                    let specificConfig =
-                        ControllerTools.getControllerConfigFromInputPath(keyPath,controllerInput);
-
-                    if(specificConfig !== undefined)
+                    if
+                    (
+                        typeof inputToCheck[i] === 'object' &&
+                        Array.isArray(inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.KEY_PATH]) &&
+                        inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.VALUE] !== undefined
+                    )
                     {
-                        InputValueProcessor.checkIsValid(value,specificConfig,keyPath,errorBag,useInputValidation);
+                        let keyPath = inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.KEY_PATH];
+                        let value   = inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.VALUE];
+
+                        let specificConfig =
+                            ControllerTools.getControllerConfigFromInputPath(keyPath,controllerInput);
+
+                        if(specificConfig !== undefined)
+                        {
+                            await InputValueProcessor.checkIsValid(value,specificConfig,keyPath,errorBag,useInputValidation);
+                            resolve();
+                        }
+                        else
+                        {
+                            reject(new TaskError(MainErrors.inputPathInControllerNotFound,
+                                {
+                                    controllerName : cName,
+                                    inputPath : keyPath
+                                }));
+                        }
                     }
                     else
                     {
-                        throw new TaskError(MainErrors.inputPathInControllerNotFound,
-                            {
-                                controllerName : cName,
-                                inputPath : keyPath
-                            });
+                        reject(new TaskError(MainErrors.wrongInputData));
                     }
-                }
-                else
-                {
-                    throw new TaskError(MainErrors.wrongInputData);
-                }
+                }));
             }
+
+            await Promise.all(promises);
             //ends when we have errors
             errorBag.throwMeIfHaveError();
 

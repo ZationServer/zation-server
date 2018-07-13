@@ -88,7 +88,8 @@ class MainProcessor
                     //check input
                     try
                     {
-                        inputWrapper  = InputProcessor.processInput(task,controllerConfig);
+                        inputWrapper  = await InputProcessor.
+                        processInput(task,controllerConfig,worker.getPreparedSmallBag());
                     }
                     catch (e)
                     {

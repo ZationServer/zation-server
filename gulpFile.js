@@ -18,16 +18,7 @@ gulp.task('scss', function() {
 
 gulp.task('cof', function() {
     return gulp
-        .src([
-            'src/**/*.png',
-            'src/**/*.xml',
-            'src/**/*.webmanifest',
-            'src/**/*.svg',
-            'src/**/*.jpeg',
-            'src/**/*.js',
-            'src/**/*.ico',
-            'src/**/*.html'
-        ])
+        .src(['src/**/*','!src/**/*.ts'])
         .pipe(gulp.dest('compiled'));
 });
 
@@ -35,21 +26,8 @@ gulp.task('default', ['compile', 'watch']);
 
 gulp.task('compile', ['scss','cof','ts']);
 
-gulp.task('watch', function(cb) {
-
+gulp.task('watch', () => {
     gulp.watch('src/**/*.ts', ['ts']);
     gulp.watch('src/**/*.scss', ['scss']);
-
-    gulp.watch(
-        [
-            'src/**/*.png',
-            'src/**/*.xml',
-            'src/**/*.webmanifest',
-            'src/**/*.svg',
-            'src/**/*.jpeg',
-            'src/**/*.js',
-            'src/**/*.ico',
-            'src/**/*.html'
-        ],
-        ['cof']);
+    gulp.watch(['src/**/*','!src/**/*.ts'], ['cof']);
 });

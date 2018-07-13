@@ -4,57 +4,79 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import TaskErrorBag    = require("../../api/TaskErrorBag");
+import TaskErrorBag     = require("../../api/TaskErrorBag");
 import Const            = require('../constants/constWrapper');
 import ValidationEngine = require('../validator/validatorEngine');
 import TaskError        = require('../../api/TaskError');
 import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
+import SmallBag         = require("../../api/SmallBag");
 
 class InputValueProcessor
 {
     private readonly inputValidation : boolean;
     private readonly compile : boolean;
+    private readonly preparedSmallBag : SmallBag | undefined;
 
-    constructor(inputValidation = true,compile = true)
+    constructor(inputValidation : boolean = true,compile : boolean = true,preparedSmallBag ?: SmallBag)
     {
         this.inputValidation = inputValidation;
         this.compile = compile;
+        this.preparedSmallBag = preparedSmallBag;
     }
 
-    static checkIsValid(input : object,config : object,inputPath : string,errorBag : TaskErrorBag,useInputValidation : boolean = true) : void
+    static async checkIsValid(input : object,config : object,inputPath : string,errorBag : TaskErrorBag,useInputValidation : boolean = true) : Promise<void>
     {
-        let inputValueProcessor = new InputValueProcessor(useInputValidation,false);
-        inputValueProcessor.processValue(input,config,inputPath,errorBag);
+        let inputValueProcessor = new InputValueProcessor(useInputValidation,false,undefined);
+        await inputValueProcessor.processValue(input,config,inputPath,errorBag);
     }
 
-    processValue(input : any,config : object,currentInputPath : string,errorBag : TaskErrorBag) : any
+    async processValue(input : any,config : object,currentInputPath : string,errorBag : TaskErrorBag) : Promise<any>
     {
         if(typeof config[Const.App.INPUT.ARRAY] === 'object')
         {
             //Array reference
-            input = this.processArray(input,config,currentInputPath,errorBag);
+            input = await this.processArray(input,config,currentInputPath,errorBag);
         }
         else if(typeof config[Const.App.OBJECTS.PROPERTIES] === 'object')
         {
             //Object reference
-            input = this.processObject(input,config,currentInputPath,errorBag);
+            input = await this.processObject(input,config,currentInputPath,errorBag);
         }
         else
         {
             //normal Input
-            input = this.processData(input,config,currentInputPath,errorBag);
+            input = await this.processData(input,config,currentInputPath,errorBag);
         }
         return input;
     }
 
-    private processObject(input : any,config : object,currentInputPath : string,errorBag : TaskErrorBag) : any
+    private async processObject(input : any,config : object,currentInputPath : string,errorBag : TaskErrorBag) : Promise<any>
     {
         let props = config[Const.App.OBJECTS.PROPERTIES];
         if(typeof input === 'object')
         {
-            let hasError = false;
+            let tempErrorBag = new TaskErrorBag();
+
+            //check if the input has unknown property
+            for(let k in input)
+            {
+                if(input.hasOwnProperty(k) && !props.hasOwnProperty(k))
+                {
+                    //ups unknown key
+                    errorBag.addTaskError(new TaskError
+                        (
+                            MainErrors.unknownObjectProperty,
+                            {
+                                propertyName : k
+                            }
+                        )
+                    );
+
+                }
+            }
 
             //check all expected props
+            let promises : Promise<any>[] = [];
             for(let propName in props)
             {
                 if(props.hasOwnProperty(propName))
@@ -64,9 +86,14 @@ class InputValueProcessor
                     if(input.hasOwnProperty(propName))
                     {
                         //allOk lets check the prop
-                        input[propName] =
-                            this.processValue
-                            (input[propName],props[propName],currentInputPathNew,errorBag);
+                        promises.push(new Promise(async (resolve) =>
+                        {
+                            input[propName] =
+                                await this.processValue
+                            (input[propName],props[propName],currentInputPathNew,tempErrorBag);
+
+                            resolve();
+                        }))
                     }
                     else
                     {
@@ -75,7 +102,7 @@ class InputValueProcessor
                         if(!props[propName][Const.App.INPUT.IS_OPTIONAL])
                         {
                             //oh its missing!
-                            errorBag.addTaskError(new TaskError
+                            tempErrorBag.addTaskError(new TaskError
                                 (
                                     MainErrors.objectPropertyIsMissing,
                                     {
@@ -89,11 +116,22 @@ class InputValueProcessor
                 }
             }
 
+            await Promise.all(promises);
+
             //compile obj
-            if(!hasError && this.compile && typeof config[Const.App.OBJECTS.COMPILE_AS] === 'function')
+            if(
+                !tempErrorBag.haveTaskError() &&
+                this.compile &&
+                this.preparedSmallBag !== undefined &&
+                typeof config[Const.App.OBJECTS.COMPILE_AS] === 'function')
             {
                 let compileAs = config[Const.App.OBJECTS.COMPILE_AS];
-                input = compileAs(input);
+                input = await compileAs(input,this.preparedSmallBag);
+            }
+
+            if(tempErrorBag.haveTaskError())
+            {
+                errorBag.addFromTaskErrorBag(tempErrorBag);
             }
         }
         else
@@ -112,7 +150,7 @@ class InputValueProcessor
         return input;
     }
 
-    private processData(input : any,config : object,currentInputPath : string,errorBag : TaskErrorBag) : any
+    private async processData(input : any,config : object,currentInputPath : string,errorBag : TaskErrorBag) : Promise<any>
     {
         if(this.inputValidation)
         {
@@ -121,7 +159,7 @@ class InputValueProcessor
         return input;
     }
 
-    private processArray(input : any,config : object,currentInputPath : string,errorBag : TaskErrorBag) : any
+    private async processArray(input : any,config : object,currentInputPath : string,errorBag : TaskErrorBag) : Promise<any>
     {
         if(Array.isArray(input))
         {
@@ -136,14 +174,21 @@ class InputValueProcessor
             if(isOk)
             {
                 let arrayInputConfig = config[Const.App.INPUT.ARRAY];
+                let promises : Promise<any>[] = [];
                 //input reference so we can return it normal
                 for(let i = 0; i < input.length; i++)
                 {
-                    let currentInputPathNew = `${currentInputPath}.${i}`;
-                    input[i] =
-                        this.processValue
-                        (input[i],arrayInputConfig,currentInputPathNew,errorBag);
+                    promises.push(new Promise(async (resolve) =>
+                    {
+                        let currentInputPathNew = `${currentInputPath}.${i}`;
+                        input[i] =
+                            await this.processValue
+                            (input[i],arrayInputConfig,currentInputPathNew,errorBag);
+                        resolve();
+                    }));
                 }
+
+                await Promise.all(promises);
             }
         }
         else

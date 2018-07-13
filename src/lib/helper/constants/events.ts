@@ -15,7 +15,7 @@ class Event
     static readonly ZATION_BEFORE_ERROR                = 'beforeError'; //SmallBag + Error ok
     static readonly ZATION_BEFORE_TASK_ERROR           = 'beforeTaskError'; //SmallBag + Error ok
     static readonly ZATION_BEFORE_TASK_ERROR_BAG       = 'beforeTaskErrorBag'; //SmallBag + Error ok
-    static readonly ZATION_BACKGROUND_TASK             = 'backgroundTask'; //everyTask(time,task), atTask(time,task) (task(smallBag))
+    static readonly ZATION_BACKGROUND_TASKS            = 'backgroundTasks'; //everyTask(time,task), atTask(time,task) (task(smallBag))
     static readonly ZATION_GET_USER_COUNT              = 'getUserCount'; //SmallBag
 
     //SocketCluster Socket Events

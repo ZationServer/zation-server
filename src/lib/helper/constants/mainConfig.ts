@@ -21,6 +21,7 @@ class KEYS {
     static readonly USE_PROTOCOL_CHECK                    = 'useProtocolCheck';
     static readonly SEND_ERRORS_DESC                      = 'sendErrorDescription';
     static readonly SYSTEM_BACKGROUND_TASK_REFRESH_RATE   = 'systemBackgroundTaskRefreshRate';
+    static readonly ZATION_CONSOLE_LOG                    = 'zationConsoleLog';
 
     static readonly USE_PANEL                             = 'usePanel';
     static readonly PANEL_USER                            = 'panelUser';
