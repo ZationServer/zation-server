@@ -58,6 +58,21 @@ class Config
         return config;
     }
 
+    static mainConfig(config : any) : any
+    {
+        return config;
+    }
+
+    static channelConfig(config : any) : any
+    {
+        return config;
+    }
+
+    static errorConfig(config : any) : any
+    {
+        return config;
+    }
+
 
     //Part App Config functions
 
