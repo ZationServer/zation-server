@@ -40,7 +40,7 @@ class ControllerTools
         }
         else
         {
-            return require(zc.getMain(Const.Main.KEYS.CONTROLLER) + '/' + path);
+            return require(zc.getStarter(Const.Starter.KEYS.CONTROLLER) + '/' + path);
         }
     }
 

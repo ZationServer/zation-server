@@ -4,12 +4,15 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const Const             = require('../helper/constants/constWrapper');
-const ObjectTools       = require('../helper/tools/objectTools');
+import Const             = require('../helper/constants/constWrapper');
+import ObjectTools       = require('../helper/tools/objectTools');
 
-const path              = require('path');
-const fs                = require('fs');
-const crypto            = require('crypto');
+import path              = require('path');
+import fs                = require('fs');
+import crypto            = require('crypto');
+import ZationInfoObj     = require("../helper/infoObjects/zationInfoObj");
+import Structures        = require('./../helper/config/structures');
+import FuncTools         = require("../helper/tools/funcTools");
 
 class ZationConfig
 {
@@ -17,14 +20,17 @@ class ZationConfig
     private appConfig : object = {};
     private channelConfig : object = {};
     private errorConfig : object = {};
-    private mainConfig : object = {};
+    private readonly mainConfig : object = {};
     private serviceConfig : object = {};
+    private readonly starterConfig : object = {};
 
-    constructor(starterConfig : object,workerTransport : boolean = false)
+    constructor(data : object = {},workerTransport : boolean = false)
     {
 
         if(!workerTransport)
         {
+            this.starterConfig = data;
+
             //Create Defaults
             this.mainConfig[Const.Main.KEYS.DEBUG] = false;
             this.mainConfig[Const.Main.KEYS.START_DEBUG] = false;
@@ -48,6 +54,7 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.AUTH_START_DURATION_MS] = 20000;
             this.mainConfig[Const.Main.KEYS.WORKERS] = Const.Main.OPTIONS.AUTO;
             this.mainConfig[Const.Main.KEYS.ZATION_CONSOLE_LOG] = true;
+            this.mainConfig[Const.Main.KEYS.SC_CONSOLE_LOG] = false;
 
             //TEMP
             this.mainConfig[Const.Main.KEYS.USE_TEMP_DB_TOKEN_INFO] = true;
@@ -57,20 +64,24 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.EXTRA_SECURE_AUTH] = true;
             this.mainConfig[Const.Main.KEYS.TEMP_DB_Name] = 'zationTempDb';
 
-            this.addToMainConfig(starterConfig,true);
             this.loadUserDataLocations();
             this.loadMainConfig();
+
+            this.addToMainConfig
+            (this.starterConfig,true,Structures.Main);
+
             this.processMainConfig();
         }
         else
         {
-            this.mainConfig = starterConfig;
+            this.starterConfig = data['starterConfig'];
+            this.mainConfig = data['mainConfig'];
         }
     }
 
     getWorkerTransport() : object
     {
-        return {mainConfig : this.mainConfig};
+        return {mainConfig : this.mainConfig,starterConfig : this.starterConfig};
     }
 
     isDebug() : boolean
@@ -93,9 +104,24 @@ class ZationConfig
         return this.getMain(Const.Main.KEYS.USE_PANEL);
     }
 
-    addToMainConfig(toAdd : object,overwrite : boolean) : void
+    addToMainConfig(toAdd : object,overwrite : boolean,onlyAddKeys ?: object) : void
     {
-        ObjectTools.addObToOb(this.mainConfig,toAdd,overwrite);
+        if(onlyAddKeys === undefined) {
+            ObjectTools.addObToOb(this.mainConfig,toAdd,overwrite);
+        }
+        else {
+            ObjectTools.onlyAddObToOb(this.mainConfig,toAdd,overwrite,onlyAddKeys);
+        }
+    }
+
+    getStarter(key : any) : any
+    {
+        return this.starterConfig[key];
+    }
+
+    getStarterConfig() : object
+    {
+        return this.starterConfig;
     }
 
     getMain(key : any) : any
@@ -212,12 +238,9 @@ class ZationConfig
         return this.getMain(Const.Main.KEYS.USE_TEMP_DB_ERROR_INFO);
     }
 
-    getSomeInformation() : object
+    getSomeInformation() : ZationInfoObj
     {
-        let obj = {};
-        obj['port'] = this.getMain(Const.Main.KEYS.PORT);
-        obj['appName'] = this.getMain(Const.Main.KEYS.APP_NAME);
-        return obj;
+        return new ZationInfoObj(this);
     }
 
     loadOtherConfigs() : void
@@ -226,32 +249,32 @@ class ZationConfig
         this.eventConfig = ZationConfig.loadZationConfig
         (
             'event.config',
-            this.getMain(Const.Main.KEYS.EVENT_CONFIG),
+            this.getStarter(Const.Starter.KEYS.EVENT_CONFIG),
         );
 
         this.channelConfig = ZationConfig.loadZationConfig
         (
             'channel.config',
-            this.getMain(Const.Main.KEYS.CHANNEL_CONFIG),
+            this.getStarter(Const.Starter.KEYS.CHANNEL_CONFIG),
         );
 
         this.appConfig = ZationConfig.loadZationConfig
         (
             'app.config',
-            this.getMain(Const.Main.KEYS.APP_CONFIG),
+            this.getStarter(Const.Starter.KEYS.APP_CONFIG),
             false
         );
 
         this.errorConfig = ZationConfig.loadZationConfig
         (
             'error.config',
-            this.getMain(Const.Main.KEYS.ERROR_CONFIG),
+            this.getStarter(Const.Starter.KEYS.ERROR_CONFIG),
         );
 
         this.serviceConfig = ZationConfig.loadZationConfig
         (
             'service.config',
-            this.getMain(Const.Main.KEYS.SERVICE_CONFIG),
+            this.getStarter(Const.Starter.KEYS.SERVICE_CONFIG),
         );
     }
 
@@ -262,20 +285,36 @@ class ZationConfig
         return path.dirname(require.main.filename || process.mainModule.filename);
     }
 
-    static loadZationConfig(name : string,path : string,optional : boolean = true) : object
+    static loadZationConfig(name : string,value : any,optional : boolean = true) : object
     {
-        if(fs.existsSync(path+'.js'))
+        if(typeof value === 'string')
         {
-            return require(path);
+            if(value.lastIndexOf('.js') === -1) {
+                value += '.js';
+            }
+
+            if(fs.existsSync(value)) {
+                return require(value);
+            }
+            else if(optional) {
+                return {};
+            }
+            else {
+                throw new Error(`Config ${name} not found in path ${path}`);
+            }
         }
-        else if(optional)
-        {
-            return {};
+        else if(typeof value === 'object') {
+            return value;
         }
-        else
-        {
-            throw new Error(`Config ${name} not found in path ${path}`);
+        else {
+            if(optional) {
+                return {};
+            }
+            else {
+                throw new Error(`Error to load Config ${name}`);
+            }
         }
+
     }
 
     static createValueWithOsAuto(checkValue : any)
@@ -293,89 +332,50 @@ class ZationConfig
         return result;
     }
 
-    static emitEvent(func : Function | Function[],howToEmit : Function = (f) => {f();}) : void
-    {
-        if(func !== undefined && typeof func === 'function')
-        {
-            howToEmit(func);
-        }
-        else if(Array.isArray(func))
-        {
-            for(let i = 0; i < func.length; i++)
-            {
-                ZationConfig.emitEvent(func[i],howToEmit);
-            }
-        }
-    }
-
-    static checkMiddlewareFunc(func : Function,req : object,next : Function) : boolean
-    {
-        if(func !== undefined && typeof func === 'function')
-        {
-            let res  = func(req);
-            if(res !== undefined && typeof res === "boolean" && res)
-            {
-                return true;
-            }
-            else
-            {
-                if(typeof res === 'object')
-                {
-                    next(res);
-                    return false;
-                }
-                else
-                {
-                    let err : any = new Error('Access is in middleware from cation event blocked!');
-                    err.code = 4650;
-                    next(err);
-                    return false;
-                }
-            }
-        }
-        else
-        {
-            return true;
-        }
-    }
-
     checkMiddlewareEvent(event : string,req : object,next : Function) : boolean
     {
         let func = this.getEvent(event);
-        return ZationConfig.checkMiddlewareFunc(func,req,next);
+        return FuncTools.checkMiddlewareFunc(func,req,next);
     }
 
-    emitEvent(event : string,howToEmit : Function) : void
+    async emitEvent(event : string,...params : any[]) : Promise<void>
     {
-        ZationConfig.emitEvent(this.getEvent(event),howToEmit);
+        await FuncTools.emitEvent(this.getEvent(event),...params);
     }
 
     private loadUserDataLocations() : void
     {
-        this.loadZationConfigLocation(Const.Main.KEYS.MAIN_CONFIG,'main.config');
-        this.loadZationConfigLocation(Const.Main.KEYS.APP_CONFIG,'app.config');
-        this.loadZationConfigLocation(Const.Main.KEYS.CHANNEL_CONFIG,'channel.config');
-        this.loadZationConfigLocation(Const.Main.KEYS.ERROR_CONFIG,'error.config');
-        this.loadZationConfigLocation(Const.Main.KEYS.EVENT_CONFIG,'event.config');
-        this.loadZationConfigLocation(Const.Main.KEYS.SERVICE_CONFIG,'service.config');
+        this.loadZationConfigLocation(Const.Starter.KEYS.MAIN_CONFIG,'main.config');
+        this.loadZationConfigLocation(Const.Starter.KEYS.APP_CONFIG,'app.config');
+        this.loadZationConfigLocation(Const.Starter.KEYS.CHANNEL_CONFIG,'channel.config');
+        this.loadZationConfigLocation(Const.Starter.KEYS.ERROR_CONFIG,'error.config');
+        this.loadZationConfigLocation(Const.Starter.KEYS.EVENT_CONFIG,'event.config');
+        this.loadZationConfigLocation(Const.Starter.KEYS.SERVICE_CONFIG,'service.config');
 
-        if(!this.mainConfig.hasOwnProperty(Const.Main.KEYS.CONTROLLER))
+        if(!this.starterConfig.hasOwnProperty(Const.Starter.KEYS.CONTROLLER))
         {
-            this.mainConfig[Const.Main.KEYS.CONTROLLER] = ZationConfig._getRootPath() + '/controller';
+            this.starterConfig[Const.Starter.KEYS.CONTROLLER] = ZationConfig._getRootPath() + '/controller';
         }
     }
 
     private loadZationConfigLocation(key : string,defaultName : string) : void
     {
-        if(!this.mainConfig.hasOwnProperty(key))
-        {
-            if(this.mainConfig.hasOwnProperty(Const.Main.KEYS.CONFIG))
-            {
-                this.mainConfig[key] =  this.mainConfig[Const.Main.KEYS.CONFIG] + '/' + defaultName;
+        if(!this.starterConfig.hasOwnProperty(key)) {
+            if(this.starterConfig.hasOwnProperty(Const.Starter.KEYS.CONFIG)) {
+                this.starterConfig[key] =  this.starterConfig[Const.Starter.KEYS.CONFIG] + '/' + defaultName;
             }
-            else
+            else {
+                this.starterConfig[key] = ZationConfig._getRootPath() + '/config/' + defaultName;
+            }
+        }
+        else
+        {
+            const value = this.getStarter(key);
+            if(typeof value === "string" && this.starterConfig.hasOwnProperty(Const.Starter.KEYS.CONFIG))
             {
-                this.mainConfig[key] = ZationConfig._getRootPath() + '/config/' + defaultName;
+                const configLocation = this.starterConfig[key];
+                const configPath = this.starterConfig[Const.Starter.KEYS.CONFIG];
+                this.starterConfig[key] =  configPath + '/' + configLocation;
             }
         }
     }
@@ -385,7 +385,7 @@ class ZationConfig
         let mainConfig = ZationConfig.loadZationConfig
         (
             'main.config',
-            this.mainConfig[Const.Main.KEYS.MAIN_CONFIG]
+            this.starterConfig[Const.Starter.KEYS.MAIN_CONFIG]
         );
 
         ObjectTools.addObToOb(this.mainConfig,mainConfig,true);
@@ -401,7 +401,6 @@ class ZationConfig
         this.mainConfig[Const.Main.KEYS.BROKERS] =
             ZationConfig.createValueWithOsAuto(this.mainConfig[Const.Main.KEYS.BROKERS]);
     }
-
 }
 
 export = ZationConfig;

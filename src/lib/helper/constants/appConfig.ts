@@ -12,6 +12,13 @@ class KEYS {
     static readonly CONTROLLER_DEFAULT      = 'controllerDefault';
     static readonly OBJECTS                 = 'objects';
     static readonly VALIDATION_GROUPS       = 'validationGroups';
+    static readonly BACKGROUND_TASKS        = 'backgroundTasks';
+}
+
+class BACKGROUND_TASKS {
+    static readonly EVERY            = 'every';
+    static readonly AT               = 'at';
+    static readonly TASK             = 'task';
 }
 
 class USER_GROUPS {
@@ -67,6 +74,7 @@ class AppConfig
     public static readonly ACCESS = ACCESS;
     public static readonly INPUT = INPUT;
     public static readonly ARRAY = ARRAY;
+    public static readonly BACKGROUND_TASKS = BACKGROUND_TASKS;
 }
 
 export = AppConfig;

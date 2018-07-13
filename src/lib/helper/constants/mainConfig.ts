@@ -22,6 +22,7 @@ class KEYS {
     static readonly SEND_ERRORS_DESC                      = 'sendErrorDescription';
     static readonly SYSTEM_BACKGROUND_TASK_REFRESH_RATE   = 'systemBackgroundTaskRefreshRate';
     static readonly ZATION_CONSOLE_LOG                    = 'zationConsoleLog';
+    static readonly SC_CONSOLE_LOG                        = 'scConsoleLog';
 
     static readonly USE_PANEL                             = 'usePanel';
     static readonly PANEL_USER                            = 'panelUser';
@@ -44,16 +45,6 @@ class KEYS {
 
     //ADVANCE
     static readonly POST_KEY_WORD                  = 'postKeyWord';
-
-    static readonly CONTROLLER             = 'controller';
-    static readonly CONFIG                 = 'configs';
-
-    static readonly APP_CONFIG             = 'app.config';
-    static readonly CHANNEL_CONFIG         = 'channel.config';
-    static readonly MAIN_CONFIG            = 'main.config';
-    static readonly ERROR_CONFIG           = 'error.config';
-    static readonly EVENT_CONFIG           = 'event.config';
-    static readonly SERVICE_CONFIG         = 'service.config';
 
     static readonly AUTH_KEY               = 'authKey';
     static readonly AUTH_DEFAULT_EXPIRY    = 'authDefaultExpiry';

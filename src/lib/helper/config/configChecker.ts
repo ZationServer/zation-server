@@ -43,6 +43,17 @@ class ConfigChecker
    {
        this.zc = zationConfig;
        this.ceb = configErrorBag;
+   }
+
+   public checkStarterConfig()
+   {
+       ConfigCheckerTools.assertStructure
+       (Structures.StarterConfig,this.zc.getStarterConfig(),
+           Const.Settings.CN.STARTER,this.ceb);
+   }
+
+   public checkAllConfigs()
+   {
        this.prepare();
        this.checkConfig();
    }
@@ -124,6 +135,25 @@ class ConfigChecker
        this.checkVersionControl();
        this.checkControllerConfigs();
        this.checkAuthController();
+       this.checkBackgroundTasks();
+   }
+
+   private checkBackgroundTasks()
+   {
+       let bkt = this.zc.getApp(Const.App.BACKGROUND_TASKS);
+
+       if(typeof bkt === 'object')
+       {
+           for(let name in bkt)
+           {
+               if(bkt.hasOwnProperty(name))
+               {
+                   ConfigCheckerTools.assertStructure
+                   (Structures.BackgroundTask,bkt[name],
+                       Const.Settings.CN.APP,this.ceb,new Target(`BackgroundTask: '${name}'`));
+               }
+           }
+       }
    }
 
    private checkAuthController()

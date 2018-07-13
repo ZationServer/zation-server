@@ -12,6 +12,7 @@ import mainConfig    = require('./mainConfig');
 import settings      = require('./settings');
 import validator     = require('./validator');
 import serviceConfig = require('./serviceConfig');
+import starterConfig = require('./starterConfig');
 
 class ConstWrapper
 {
@@ -23,6 +24,7 @@ class ConstWrapper
     static readonly Settings = settings;
     static readonly Validator = validator;
     static readonly Service = serviceConfig;
+    static readonly Starter = starterConfig;
 }
 
 export = ConstWrapper;

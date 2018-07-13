@@ -9,7 +9,7 @@ import SmallBag        = require("../../api/SmallBag");
 import ValidationTypes = require("../constants/validationTypes");
 
 
-interface AppConfig
+export interface AppConfig
 {
     [Const.App.KEYS.AUTH_CONTROLLER] ?: string;
     [Const.App.KEYS.CONTROLLER] ?: Record<string,ControllerConfig>;
@@ -18,15 +18,33 @@ interface AppConfig
     [Const.App.KEYS.CONTROLLER_DEFAULT] ?: ControllerConfig;
     [Const.App.KEYS.OBJECTS] ?: Record<string,ObjectConfig>;
     [Const.App.KEYS.VALIDATION_GROUPS] ?: Record<string,InputValidationConfig>;
+    [Const.App.KEYS.BACKGROUND_TASKS] ?: Record<string,BackgroundTask>;
 }
 
-interface UserGroupConfig
+export type TaskFunction = (smallBag : SmallBag) => Promise<void>;
+
+export interface BackgroundTask
+{
+    [Const.App.BACKGROUND_TASKS.AT] ?: number | TimeObj | TimeObj[] | number[];
+    [Const.App.BACKGROUND_TASKS.EVERY] ?: number | TimeObj | TimeObj[] | number[];
+    [Const.App.BACKGROUND_TASKS.TASK] ?: TaskFunction | TaskFunction[];
+}
+
+export interface TimeObj
+{
+    hour ?: number;
+    minute ?: number;
+    second ?: number;
+    millisecond ?: number;
+}
+
+export interface UserGroupConfig
 {
     [Const.App.USER_GROUPS.DEFAULT] ?: string;
     [Const.App.USER_GROUPS.AUTH] ?: Record<string,object>;
 }
 
-interface ControllerConfig
+export interface ControllerConfig
 {
     [Const.App.CONTROLLER.INPUT] ?: Record<string,InputConfig | ObjectConfig | ArrayConfig | string | ArrayShortSyntax>;
     [Const.App.CONTROLLER.BEFORE_HANDLE] ?: BeforeHandleFunction[] | BeforeHandleFunction;
@@ -42,10 +60,10 @@ interface ControllerConfig
     [Const.App.CONTROLLER.NOT_ACCESS] ?: string | number | (string | number)[] | ControllerAccessFunction;
 }
 
-type BeforeHandleFunction = (bag : Bag) => Promise<void>;
-type ControllerAccessFunction = (smallBag : SmallBag,token : object) => Promise<void>;
+export type BeforeHandleFunction = (bag : Bag) => Promise<void>;
+export type ControllerAccessFunction = (smallBag : SmallBag,token : object) => Promise<void>;
 
-interface InputValidationConfig
+export interface InputValidationConfig
 {
     [Const.Validator.KEYS.TYPE] ?: ValidationTypes;
     [Const.Validator.KEYS.FUNCTION_ENUM] ?: any [];
@@ -63,13 +81,13 @@ interface InputValidationConfig
     [Const.Validator.KEYS.FORMAT_IS_LETTERS] ?: string;
 }
 
-interface InputConfig extends InputValidationConfig
+export interface InputConfig extends InputValidationConfig
 {
     [Const.App.INPUT.IS_OPTIONAL] ?: boolean;
     [Const.App.INPUT.VALIDATION_GROUP] ?: string;
 }
 
-interface ObjectConfig
+export interface ObjectConfig
 {
     [Const.App.OBJECTS.PROPERTIES] ?:
         Record<string,InputConfig | ObjectConfig | ArrayConfig | string | ArrayShortSyntax>;
@@ -77,25 +95,23 @@ interface ObjectConfig
     [Const.App.OBJECTS.COMPILE_AS] ?: CompileAsFunction;
 }
 
-interface ArrayConfig extends ArraySettings
+export interface ArrayConfig extends ArraySettings
 {
     [Const.App.INPUT.ARRAY] : InputConfig | ObjectConfig | ArrayConfig | string | ArrayShortSyntax;
     [Const.App.INPUT.IS_OPTIONAL] : boolean;
 }
 
-interface ArraySettings
+export interface ArraySettings
 {
     [Const.App.ARRAY.MIN_LENGTH] ?: number;
     [Const.App.ARRAY.MAX_LENGTH] ?: number;
     [Const.App.ARRAY.LENGTH] ?: number;
 }
 
-interface ArrayShortSyntax extends Array<string | ArrayShortSyntax | InputConfig | ObjectConfig | ArrayConfig | ArraySettings>
+export interface ArrayShortSyntax extends Array<string | ArrayShortSyntax | InputConfig | ObjectConfig | ArrayConfig | ArraySettings>
 {
     0 : string | ArrayShortSyntax | InputConfig | ObjectConfig | ArrayConfig
     1 : ArraySettings
 }
 
-type CompileAsFunction = (obj: object,smallBag : SmallBag) => any;
-
-export = AppConfig;
+export type CompileAsFunction = (obj: object,smallBag : SmallBag) => any;

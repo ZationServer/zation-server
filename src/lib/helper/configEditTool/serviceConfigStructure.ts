@@ -16,7 +16,7 @@ import {ConnectionConfig}            from "pg";
 import {MongoClientOptions}          from "mongodb";
 
 
-interface ServiceConfig
+export interface ServiceConfig
 {
     [Const.Service.KEYS.SERVICES] ?: Service;
 
@@ -24,7 +24,7 @@ interface ServiceConfig
         Record<string,(CustomService | Record<string,object> | DefaultConfig<object>)>;
 }
 
-type NodeMailerConfig = (
+export type NodeMailerConfig = (
     SMTPTransport | SMTPTransport.Options |
     SMTPPool | SMTPPool.Options |
     SendmailTransport | SendmailTransport.Options |
@@ -34,7 +34,7 @@ type NodeMailerConfig = (
     Transport | TransportOptions
     );
 
-interface Service
+export interface Service
 {
     [Const.Service.SERVICES.MYSQL] ?: Record<string,PoolConfig> | DefaultConfig<PoolConfig>;
     [Const.Service.SERVICES.NODE_MAILER] ?: Record<string,NodeMailerConfig> | DefaultConfig<NodeMailerConfig>;
@@ -42,18 +42,17 @@ interface Service
     [Const.Service.SERVICES.MONGO_DB] ?: Record<string,MongoClientOptions> | DefaultConfig<MongoClientOptions>;
 }
 
-type CustomServiceCreateFunction<T> = (config : object) => Promise<T>;
-type CustomServiceGetFunction<T,R> = (service : T) => Promise<R>;
+export type CustomServiceCreateFunction<T> = (config : object) => Promise<T>;
+export type CustomServiceGetFunction<T,R> = (service : T) => Promise<R>;
 
-interface CustomService
+export interface CustomService
 {
     [Const.Service.CUSTOM_SERVICES.CREATE] ?: CustomServiceCreateFunction<any>;
     [Const.Service.CUSTOM_SERVICES.GET] ?: CustomServiceGetFunction<any,any>
 }
 
-interface DefaultConfig<T>
+export interface DefaultConfig<T>
 {
     default ?: T;
 }
 
-export = ServiceConfig;

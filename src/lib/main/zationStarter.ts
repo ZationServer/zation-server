@@ -4,6 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+import BackgroundTaskSender  = require("../helper/background/backgroundTasksSender");
 const  SocketCluster : any   = require('socketcluster');
 import Const                 = require('../helper/constants/constWrapper');
 import Logger                = require('../helper/logger/logger');
@@ -64,19 +65,28 @@ class ZationStarter
         Logger.printBusy('Launching Zation');
         Logger.printDebugInfo('Zation is launching in debug Mode!');
 
-        this.zc.loadOtherConfigs();
-
-        Logger.printStartDebugInfo(`Zation is checking the config files!`);
+        Logger.printStartDebugInfo(`Zation is checking the start config!`);
 
         let configErrorBag = new ConfigErrorBag();
-        new ConfigChecker(this.zc,configErrorBag);
-        if(configErrorBag.hasConfigError())
-        {
+        const configChecker = new ConfigChecker(this.zc,configErrorBag);
+
+        configChecker.checkStarterConfig();
+        if(configErrorBag.hasConfigError()) {
             Logger.printConfigErrorBag(configErrorBag);
             process.exit();
         }
 
-        Logger.printStartDebugInfo(`Zation has found no errors in the config!`);
+        Logger.printStartDebugInfo(`Zation is loading other config files!`);
+        this.zc.loadOtherConfigs();
+
+        Logger.printStartDebugInfo(`Zation is checking the config files!`);
+        configChecker.checkAllConfigs();
+        if(configErrorBag.hasConfigError()) {
+            Logger.printConfigErrorBag(configErrorBag);
+            process.exit();
+        }
+
+        Logger.printStartDebugInfo(`Zation has found no errors in the configs!`);
 
         Logger.printStartDebugInfo('Build server settings file');
         PrepareClientJs.createServerSettingsFile(this.zc);
@@ -111,20 +121,17 @@ class ZationStarter
             zationServerVersion : ZationStarter.version,
             zationServerStartedTimeStamp : this.serverStartedTimeStamp,
             ipcAckTimeout: 3000,
-            logLevel : 0
+            logLevel : this.zc.getMain(Const.Main.KEYS.SC_CONSOLE_LOG) ? 100 : 0
         });
 
         // noinspection JSUnresolvedFunction
-        this.master.on('ready',() =>
+        this.master.on('ready',async () =>
         {
-            this.startBackgroundTasks();
-
-            this.zc.emitEvent(Const.Event.ZATION_IS_STARTED, (f) =>
-            {
-                f(this.zc.getSomeInformation());
-            });
-
            this.printStartedInformation();
+
+           this.startBackgroundTasks();
+
+           await this.zc.emitEvent(Const.Event.ZATION_IS_STARTED, this.zc.getSomeInformation());
 
         });
 
@@ -199,19 +206,18 @@ class ZationStarter
     private startBackgroundTasks()
     {
         //userBackgroundTasks
-        let id = 0;
-        const bkTS = new BackgroundTasksSetter(
-            (time) => {
+        const bkTsSender = new BackgroundTaskSender(this,this.zc);
 
-            this.setAtBackgroundTask(id,time);
-            id++;
+        const bkTS = new BackgroundTasksSetter(
+            (name,time) => {
+
+            bkTsSender.setEveryBackgroundTask(name,time);
         },
-            (time) => {
-            this.setEveryBackgroundTask(id,time);
-            id++;
+            (name,time) => {
+            bkTsSender.setAtBackgroundTask(name,time);
         });
 
-        this.zc.emitEvent(Const.Event.ZATION_BACKGROUND_TASKS,(f) => {f(bkTS);});
+        bkTS.setUserBackgroundTasks(this.zc);
 
         //systemBackgroundTask
         setInterval(() =>
@@ -221,64 +227,7 @@ class ZationStarter
         ,this.zc.getMain(Const.Main.KEYS.SYSTEM_BACKGROUND_TASK_REFRESH_RATE));
     }
 
-    private setEveryBackgroundTask(id,time)
-    {
-        if(Number.isInteger(time))
-        {
-            setInterval(() => {
-                this.startUserBackgroundTask(id);
-            },time);
-        }
-        else if(typeof time === 'object')
-        {
-            let set = () => {
-                let tillTime = TimeTools.processTaskTriggerTime(time,this.zc);
-                if(tillTime && tillTime > 0)
-                {
-                    setTimeout(() => {
-                        this.startUserBackgroundTask(id);
-                        set();
-                    },tillTime);
-                }
-                else
-                {
-                    throw Error(`Planed every background task with id ${id} goes wrong.`);
-                }
-            };
-            set();
-        }
-    }
-
-    private setAtBackgroundTask(id,time)
-    {
-        if(Number.isInteger(time))
-        {
-            setTimeout(() => {
-                this.startUserBackgroundTask(id);
-            },time);
-        }
-        else if(typeof time === 'object')
-        {
-            let tillTime = TimeTools.processTaskTriggerTime(time,this.zc);
-            if(tillTime && tillTime > 0)
-            {
-                setTimeout(() => {
-                    this.startUserBackgroundTask(id);
-                },tillTime);
-            }
-            else
-            {
-                throw Error(`Planed at background task with id ${id} goes wrong.`);
-            }
-        }
-    }
-
-    private startUserBackgroundTask(id)
-    {
-        this.sendToRandomWorker({userBackgroundTask : id});
-    }
-
-    private sendToRandomWorker(obj)
+    public sendToRandomWorker(obj)
     {
         let workerId = this.getRandomWorkerId();
 
@@ -287,7 +236,7 @@ class ZationStarter
             if(obj.userBackgroundTask !== undefined)
             {
                 Logger.printDebugInfo
-                (`Worker with id: ${workerId}, start to invoke background task number: ${obj.userBackgroundTask}`);
+                (`Worker with id: ${workerId}, start to invoke background task : '${obj.userBackgroundTask}'`);
             }
             else if(obj.systemBackgroundTasks !== undefined && obj.systemBackgroundTasks)
             {

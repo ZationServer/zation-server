@@ -10,12 +10,11 @@ class Event
     static readonly ZATION_EXPRESS                     = 'express'; //SmallBag + Express ok
     static readonly ZATION_WORKER_IS_STARTED           = 'workerIsStarted'; //SmallBag + infoObj + worker ok
     static readonly ZATION_HTTP_SERVER_IS_STARTED      = 'httpServerIsStarted'; // infoObj ok
-    static readonly ZATION_SOCKET_SERVER_IS_STARTED    = 'socketServerIsStarted'; // infoObj ok
+    static readonly ZATION_WS_SERVER_IS_STARTED        = 'wsServerIsStarted'; // infoObj ok
     static readonly ZATION_IS_STARTED                  = 'isStarted'; // infoObj ok
     static readonly ZATION_BEFORE_ERROR                = 'beforeError'; //SmallBag + Error ok
     static readonly ZATION_BEFORE_TASK_ERROR           = 'beforeTaskError'; //SmallBag + Error ok
     static readonly ZATION_BEFORE_TASK_ERROR_BAG       = 'beforeTaskErrorBag'; //SmallBag + Error ok
-    static readonly ZATION_BACKGROUND_TASKS            = 'backgroundTasks'; //everyTask(time,task), atTask(time,task) (task(smallBag))
     static readonly ZATION_GET_USER_COUNT              = 'getUserCount'; //SmallBag
 
     //SocketCluster Socket Events

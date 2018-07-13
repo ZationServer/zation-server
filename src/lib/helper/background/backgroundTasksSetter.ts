@@ -4,71 +4,64 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-/*
-Class Description
-This Class api makes it easier to
-handle backgroundTask in the event config.
- */
+import ZationConfig     = require("../../main/zationConfig");
+import Const            = require("../constants/constWrapper");
+import {BackgroundTask} from "../configEditTool/appConfigStructure";
 
-import SmallBag = require("../../api/SmallBag");
-
-type TaskFunction = (smallBag : SmallBag) => Promise<void>;
-type SetBackgroundFunction = (time : Number | Object, task : TaskFunction) => void;
+type SetTask = (name : string,time : any,task : any) => void;
 
 class BackgroundTasksSetter
 {
-    private readonly callAt : SetBackgroundFunction;
-    private readonly callEvery : SetBackgroundFunction;
+   private readonly setEvery : SetTask;
+   private readonly setAt : SetTask;
 
-    constructor(callAt : SetBackgroundFunction,callEvery : SetBackgroundFunction)
-    {
-        this.callAt = callAt;
-        this.callEvery = callEvery
-    }
+   constructor(setEvery : SetTask, setAt : SetTask)
+   {
+       this.setAt = setAt;
+       this.setEvery = setEvery;
+   }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Set a Background Task that gets invoked on one time point.
-     * @example
-     * setAt({hour : 13},(smallBag =>
-     * {
-     *    //task....
-     * }));
-     * @param atTime
-     * Can be an Object or Number for example:
-     * Object -> {hour : 13, minute : 54, second : 50, millisecond : 10},
-     * Number -> 2000
-     * @param task
-     * Function that describes the background task
-     * witch gets invoked with a smallBag
-     */
-    setAt(atTime : Number | Object, task : TaskFunction) : void
-    {
-        this.callAt(atTime,task);
-    }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Set a background task which is called each time at a timestamp.
-     * @example
-     * setEvery({hour : 13},(smallBag =>
-     * {
-     *    //task....
-     * }));
-     * @param everyTime
-     * Can be an Object or Number for example:
-     * Object -> {hour : 13, minute : 54, second : 50, millisecond : 10},
-     * Number -> 2000
-     * @param task
-     * Function that describes the background task
-     * witch gets invoked with a smallBag
-     */
-    setEvery(everyTime : Number | Object, task : TaskFunction) : void
-    {
-        this.callEvery(everyTime,task);
-    }
+   setUserBackgroundTasks (zc : ZationConfig)
+   {
+       const bkt = zc.getApp(Const.App.KEYS.BACKGROUND_TASKS);
+       if(typeof bkt === 'object')
+       {
+           for(let name in bkt)
+           {
+               if(bkt.hasOwnProperty(name))
+               {
+                   this.setTask(name,bkt[name]);
+               }
+           }
+       }
+   }
+
+   private setTask(name : string,bkTask : BackgroundTask)
+   {
+       const task = bkTask[Const.App.BACKGROUND_TASKS.TASK];
+       if(task !== undefined)
+       {
+           BackgroundTasksSetter.timeSetter
+           (this.setEvery,Const.App.BACKGROUND_TASKS.EVERY,task,name,bkTask);
+
+           BackgroundTasksSetter.timeSetter
+           (this.setAt,Const.App.BACKGROUND_TASKS.AT,task,name,bkTask);
+       }
+   }
+
+   private static timeSetter(func : SetTask,key : string,task,name,bkt)
+   {
+       if(Array.isArray(bkt[key])) {
+           for(let i = 0; i < bkt[key].length; i ++) {
+               func(name,bkt[key][i],task);
+           }
+       }
+       else {
+           func(name,bkt[key],task);
+       }
+   }
+
 }
 
 export = BackgroundTasksSetter;

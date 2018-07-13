@@ -81,19 +81,21 @@ class Zation
                 e = data['e'];
             }
 
-            this.zc.emitEvent(Const.Event.ZATION_BEFORE_ERROR,
-                (f) => {f(this.worker.getPreparedSmallBag(),e)});
+            let promises : Promise<void>[] = [];
+
+            promises.push(this.zc.emitEvent
+            (Const.Event.ZATION_BEFORE_ERROR, this.worker.getPreparedSmallBag(),e));
 
             if(e instanceof  TaskError)
             {
-                this.zc.emitEvent(Const.Event.ZATION_BEFORE_TASK_ERROR,
-                    (f) => {f(this.worker.getPreparedSmallBag(),e)});
+                promises.push(this.zc.emitEvent
+                (Const.Event.ZATION_BEFORE_TASK_ERROR,this.worker.getPreparedSmallBag(),e));
             }
             else { // noinspection SuspiciousInstanceOfGuard
                 if(e instanceof TaskErrorBag)
                 {
-                    this.zc.emitEvent(Const.Event.ZATION_BEFORE_TASK_ERROR_BAG,
-                        (f) => {f(this.worker.getPreparedSmallBag(),e)});
+                    promises.push(this.zc.emitEvent
+                    (Const.Event.ZATION_BEFORE_TASK_ERROR_BAG,this.worker.getPreparedSmallBag(),e));
                 }
                 else
                 {
@@ -101,7 +103,7 @@ class Zation
                 }
             }
 
-
+            await Promise.all(promises);
             await returner.reactOnError(e,data['tb']);
         }
     }

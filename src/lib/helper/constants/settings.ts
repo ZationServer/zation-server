@@ -109,6 +109,7 @@ class CN
     static readonly ERROR           = 'Error   :';
     static readonly EVENT           = 'Event   :';
     static readonly SERVICE         = 'Service :';
+    static readonly STARTER         = 'Starter :';
 }
 
 class Settings

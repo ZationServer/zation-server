@@ -22,7 +22,7 @@ class ControllerTools
         }
         else
         {
-            return fs.existsSync(zc.getMain(Const.Main.KEYS.CONTROLLER) + '/' + cFullPath + '.js');
+            return fs.existsSync(zc.getStarter(Const.Starter.KEYS.CONTROLLER) + '/' + cFullPath + '.js');
         }
     }
 
@@ -37,7 +37,7 @@ class ControllerTools
             }
             else
             {
-                require(zc.getMain(Const.Main.KEYS.CONTROLLER) + '/' + cFullPath);
+                require(zc.getStarter(Const.Starter.KEYS.CONTROLLER) + '/' + cFullPath);
                 return true;
             }
         }
@@ -55,7 +55,7 @@ class ControllerTools
             controller = require(systemControllerPath + '/' + cFullPath);
         }
         else {
-            controller = require(zc.getMain(Const.Main.KEYS.CONTROLLER) + '/' + cFullPath);
+            controller = require(zc.getStarter(Const.Starter.KEYS.CONTROLLER) + '/' + cFullPath);
         }
 
         return controller.prototype instanceof Controller;

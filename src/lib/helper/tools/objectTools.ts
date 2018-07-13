@@ -21,6 +21,20 @@ class ObjectTools
         }
     }
 
+    static onlyAddObToOb(mainOb : object,addOb : object,overwrite : boolean = false, onlyAddKeys : object) : void
+    {
+        for(let key in addOb)
+        {
+            if(addOb.hasOwnProperty(key))
+            {
+                if(onlyAddKeys.hasOwnProperty(key) && (overwrite || !mainOb.hasOwnProperty(key)))
+                {
+                    mainOb[key] = addOb[key];
+                }
+            }
+        }
+    }
+
     static getObjValues(obj : object) : any[]
     {
         let values : any[] = [];
@@ -72,7 +86,6 @@ class ObjectTools
         }
         return size;
     }
-
 }
 
 export = ObjectTools;

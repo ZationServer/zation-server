@@ -3,7 +3,7 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-const moment : any = require('moment-timezone');
+import moment = require('moment-timezone');
 import Const  = require('../constants/constWrapper');
 import Logger = require('../logger/logger');
 
@@ -25,6 +25,7 @@ class TimeTools
         let isSecond = second !== undefined;
         let isMillisecond = millisecond !== undefined;
 
+        //load only set values
         if(isMillisecond) {fireMoment.set({ms : millisecond});}
         if(isSecond) {fireMoment.set({s : second});}
         if(isMinute) {fireMoment.set({m : minute});}
@@ -47,28 +48,62 @@ class TimeTools
             if(!isMillisecond) {fireMoment.set({ms : 0});}
         }
 
-
-        if(isHour && hour <= now.hour())
+        const process = (fireMoment) =>
         {
+            Logger.printDebugInfo(`Background Task is planed to -> ${fireMoment.format('dddd, MMMM Do YYYY, k:mm:ss:SSSS ')}`);
+            return moment.duration(fireMoment.diff(now)).asMilliseconds();
+        };
+
+
+        if(fireMoment.isSameOrBefore(now))
+        {
+            if(!millisecond)
+            {
+                let tempDate = fireMoment.clone();
+                tempDate.millisecond = now.millisecond;
+                tempDate.add(1,'millisecond');
+                if(tempDate.isAfter(now))
+                {
+                    return process(tempDate);
+                }
+            }
+            if(!second)
+            {
+                let tempDate = fireMoment.clone();
+                tempDate.second = now.second;
+                tempDate.add(1,'seconds');
+                if(tempDate.isAfter(now))
+                {
+                    return process(tempDate);
+                }
+            }
+            if(!minute)
+            {
+                let tempDate = fireMoment.clone();
+                tempDate.minute = now.minute;
+                tempDate.add(1,'minutes');
+                if(tempDate.isAfter(now))
+                {
+                    return process(tempDate);
+                }
+            }
+            if(!hour)
+            {
+                let tempDate = fireMoment.clone();
+                tempDate.hour = now.hour;
+                tempDate.add(1,'hours');
+                if(tempDate.isAfter(now))
+                {
+                    return process(tempDate);
+                }
+            }
+
             fireMoment.add(1,'days');
+            return process(fireMoment);
         }
-        else if(isMinute && minute <= now.minute())
-        {
-            fireMoment.add(1,'hours');
-        }
-        else if(isSecond && second <= now.second())
-        {
-            fireMoment.add(1,'minutes')
-        }
-        else if(isMillisecond && millisecond <= now.millisecond())
-        {
-            fireMoment.add(1,'seconds');
-        }
-        Logger.printDebugInfo(`Background Task is planed to -> ${fireMoment.format('dddd, MMMM Do YYYY, k:mm:ss:SSSS ')}`);
-
-        // noinspection JSUnresolvedFunction
-        return moment.duration(fireMoment.diff(now)).asMilliseconds();
+        return process(fireMoment);
     }
+
 }
 
 export = TimeTools;

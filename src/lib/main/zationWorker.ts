@@ -3,8 +3,8 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-import BackgroundTasksSetter = require("../helper/background/backgroundTasksSetter");
 
+import FuncTools             = require("../helper/tools/funcTools");
 const  SCWorker : any        = require('socketcluster/scworker');
 import express               = require('express');
 import cookieParser          = require('cookie-parser');
@@ -27,6 +27,7 @@ import ControllerPrepare     = require('../helper/controller/controllerPrepare')
 import TempDbMongoDown       = require('../helper/tempDb/tempDbMongoDown');
 import TempDbLevelDown       = require('../helper/tempDb/tempDbMemoryDown');
 import TempDbUp              = require("../helper/tempDb/tempDbUp");
+import BackgroundTasksSaver  = require("../helper/background/backgroundTasksSaver");
 
 class ZationWorker extends SCWorker
 {
@@ -69,10 +70,12 @@ class ZationWorker extends SCWorker
 
         let zcOptions = this.options.zationConfigWorkerTransport;
 
-        this.zc = new ZationConfig(zcOptions.mainConfig,true);
+        this.zc = new ZationConfig(zcOptions,true);
 
         //setLogger
         Logger.setZationConfig(this.zc);
+
+        await this.setUpLogInfo();
 
         Logger.printStartDebugInfo(`Worker with id ${this.id} begin start process!`);
 
@@ -124,21 +127,28 @@ class ZationWorker extends SCWorker
 
         //Server
         Logger.printStartDebugInfo(`Worker with id ${this.id} start http server.`);
-        this.startHttpServer();
+        await this.startHttpServer();
 
         Logger.printStartDebugInfo(`Worker with id ${this.id} start socket server.`);
-        this.startSocketServer();
+        await this.startSocketServer();
 
         //Fire ExpressEvent
-        this.zc.emitEvent(Const.Event.ZATION_EXPRESS,
-            (f) => {f(this.preparedSmallBag,this.app);});
+        await this.zc.emitEvent(Const.Event.ZATION_EXPRESS,this.preparedSmallBag,this.app);
 
         //Fire event is started
-        this.zc.emitEvent(Const.Event.ZATION_WORKER_IS_STARTED,
-            (f) => {f(this.preparedSmallBag,this.zc.getSomeInformation(),this)});
+        await this.zc.emitEvent
+        (Const.Event.ZATION_WORKER_IS_STARTED,this.preparedSmallBag,this.zc.getSomeInformation(),this);
     }
 
-    private startSocketServer()
+    private async setUpLogInfo()
+    {
+        this.on('error',(e) =>
+        {
+            Logger.printWarning(`Worker: '${this.getFullWorkerId()}' has an error: ${e.stack}!`);
+        });
+    }
+
+    private async startSocketServer()
     {
         this.initSocketMiddleware();
         this.initScServerEvents();
@@ -148,8 +158,7 @@ class ZationWorker extends SCWorker
 
             this.initSocketEvents(socket);
 
-            this.zc.emitEvent(Const.Event.SC_SERVER_CONNECTION,
-                (f) => {f(socket);});
+            this.zc.emitEvent(Const.Event.SC_SERVER_CONNECTION,socket);
 
             Logger.printDebugInfo(`Socket with id: ${socket.id} is connected!`);
 
@@ -166,11 +175,10 @@ class ZationWorker extends SCWorker
 
         });
 
-        this.zc.emitEvent(Const.Event.ZATION_SOCKET_SERVER_IS_STARTED,
-            (f) => {f(this.zc.getSomeInformation())});
+        await this.zc.emitEvent(Const.Event.ZATION_WS_SERVER_IS_STARTED,this.zc.getSomeInformation());
     }
 
-    private startHttpServer()
+    private async startHttpServer()
     {
         this.app = express();
 
@@ -224,8 +232,7 @@ class ZationWorker extends SCWorker
                 });
         });
 
-        this.zc.emitEvent(Const.Event.ZATION_HTTP_SERVER_IS_STARTED,
-            (f) => {f(this.zc.getSomeInformation())});
+        await this.zc.emitEvent(Const.Event.ZATION_HTTP_SERVER_IS_STARTED,this.zc.getSomeInformation());
     }
 
     getFullWorkerId()
@@ -492,74 +499,74 @@ class ZationWorker extends SCWorker
 
     private initScServerEvents()
     {
-        this.scServer.on('error', (err) =>
+        this.scServer.on('error', async (err) =>
         {
-            this.zc.emitEvent(Const.Event.SC_SERVER_ERROR,(f) => {f(err);});
+            await this.zc.emitEvent(Const.Event.SC_SERVER_ERROR,err);
         });
 
-        this.scServer.on('notice', (note) =>
+        this.scServer.on('notice', async (note) =>
         {
-            this.zc.emitEvent(Const.Event.SC_SERVER_NOTICE,(f) => {f(note);});
+            await this.zc.emitEvent(Const.Event.SC_SERVER_NOTICE,note);
         });
 
-        this.scServer.on('handshake', (socket) =>
+        this.scServer.on('handshake', async (socket) =>
         {
-            this.zc.emitEvent(Const.Event.SC_SERVER_HANDSHAKE,(f) => {f(socket);});
+            await this.zc.emitEvent(Const.Event.SC_SERVER_HANDSHAKE,socket);
         });
 
-        this.scServer.on('connectionAbort', (socket) =>
+        this.scServer.on('connectionAbort', async (socket) =>
         {
-            this.zc.emitEvent(Const.Event.SC_SERVER_CONNECTION_ABORT,(f) => {f(socket);});
+            await this.zc.emitEvent(Const.Event.SC_SERVER_CONNECTION_ABORT,socket);
         });
 
-        this.scServer.on('disconnection', (socket) =>
+        this.scServer.on('disconnection', async (socket) =>
         {
-            this.zc.emitEvent(Const.Event.SC_SERVER_DISCONNECTION,(f) => {f(socket);});
+            await this.zc.emitEvent(Const.Event.SC_SERVER_DISCONNECTION,socket);
         });
 
-        this.scServer.on('closure', (socket) =>
+        this.scServer.on('closure', async (socket) =>
         {
-            this.zc.emitEvent(Const.Event.SC_SERVER_CLOSURE,(f) => {f(socket);});
+            await this.zc.emitEvent(Const.Event.SC_SERVER_CLOSURE,socket);
         });
 
-        this.scServer.on('subscription', (socket) =>
+        this.scServer.on('subscription', async (socket) =>
         {
-            this.zc.emitEvent(Const.Event.SC_SERVER_SUBSCRIPTION,(f) => {f(socket);});
+            await this.zc.emitEvent(Const.Event.SC_SERVER_SUBSCRIPTION,socket);
         });
 
-        this.scServer.on('unsubscription', (socket) =>
+        this.scServer.on('unsubscription', async (socket) =>
         {
-            this.zc.emitEvent(Const.Event.SC_SERVER_UNSUBSCRIPTION,(f) => {f(socket);});
+            await this.zc.emitEvent(Const.Event.SC_SERVER_UNSUBSCRIPTION,socket);
         });
 
-        this.scServer.on('authentication', (socket) =>
+        this.scServer.on('authentication', async (socket) =>
         {
-            this.zc.emitEvent(Const.Event.SC_SERVER_AUTHENTICATION,(f) => {f(socket);});
+            await this.zc.emitEvent(Const.Event.SC_SERVER_AUTHENTICATION,socket);
         });
 
-        this.scServer.on('deauthentication', (socket) =>
+        this.scServer.on('deauthentication', async (socket) =>
         {
-            this.zc.emitEvent(Const.Event.SC_SERVER_DEAUTHENTICATION,(f) => {f(socket);});
+            await this.zc.emitEvent(Const.Event.SC_SERVER_DEAUTHENTICATION,socket);
         });
 
-        this.scServer.on('badSocketAuthToken', (socket) =>
+        this.scServer.on('badSocketAuthToken', async (socket) =>
         {
             socket.emit('zationBadAuthToken',{});
-            this.zc.emitEvent(Const.Event.SC_SERVER_BAD_SOCKET_AUTH_TOKEN,(f) => {f(socket);});
+            await this.zc.emitEvent(Const.Event.SC_SERVER_BAD_SOCKET_AUTH_TOKEN,socket);
         });
 
     }
 
     private initSocketEvents(socket)
     {
-        socket.on('error', (err) =>
+        socket.on('error', async (err) =>
         {
-            this.zc.emitEvent(Const.Event.SOCKET_ERROR,(f) => {f(socket,err);});
+            await this.zc.emitEvent(Const.Event.SOCKET_ERROR,socket,err);
         });
 
-        socket.on('raw', () =>
+        socket.on('raw', async () =>
         {
-            this.zc.emitEvent(Const.Event.SOCKET_RAW,(f) => {f(socket);});
+            await this.zc.emitEvent(Const.Event.SOCKET_RAW,socket);
         });
 
         socket.on('connect', async (scCon) =>
@@ -570,17 +577,17 @@ class ZationWorker extends SCWorker
                 //todo
                 //await this.tempDbUp.tokenDisconnected()
             }
-            this.zc.emitEvent(Const.Event.SOCKET_CONNECT,(f) => {f(socket,scCon);});
+            await this.zc.emitEvent(Const.Event.SOCKET_CONNECT,socket,scCon);
         });
 
-        socket.on('disconnect', () =>
+        socket.on('disconnect', async () =>
         {
-            this.zc.emitEvent(Const.Event.SOCKET_DISCONNECT,(f) => {f(socket);});
+            await this.zc.emitEvent(Const.Event.SOCKET_DISCONNECT,socket);
         });
 
-        socket.on('connectAbort', () =>
+        socket.on('connectAbort', async () =>
         {
-            this.zc.emitEvent(Const.Event.SOCKET_CONNECT_ABORT,(f) => {f(socket);});
+            await this.zc.emitEvent(Const.Event.SOCKET_CONNECT_ABORT,socket);
         });
 
         socket.on('close', async () =>
@@ -591,37 +598,37 @@ class ZationWorker extends SCWorker
             {
                 await this.tempDbUp.tokenDisconnected(authToken[Const.Settings.CLIENT.TOKEN_ID])
             }
-            this.zc.emitEvent(Const.Event.SOCKET_CLOSE,(f) => {f(socket);});
+            await this.zc.emitEvent(Const.Event.SOCKET_CLOSE,socket);
         });
 
-        socket.on('subscribe', () =>
+        socket.on('subscribe', async () =>
         {
-            this.zc.emitEvent(Const.Event.SOCKET_SUBSCRIBE,(f) => {f(socket);});
+            await this.zc.emitEvent(Const.Event.SOCKET_SUBSCRIBE,socket);
         });
 
-        socket.on('unsubscribe', () =>
+        socket.on('unsubscribe', async () =>
         {
-            this.zc.emitEvent(Const.Event.SOCKET_UNSUBSCRIBE,(f) => {f(socket);});
+            await this.zc.emitEvent(Const.Event.SOCKET_UNSUBSCRIBE,socket);
         });
 
-        socket.on('badAuthToken', (arg) =>
+        socket.on('badAuthToken', async (arg) =>
         {
-            this.zc.emitEvent(Const.Event.SOCKET_BAD_AUTH_TOKEN,(f) => {f(socket,arg);});
+            await this.zc.emitEvent(Const.Event.SOCKET_BAD_AUTH_TOKEN,socket,arg);
         });
 
-        socket.on('authenticate', (token) =>
+        socket.on('authenticate', async (token) =>
         {
-            this.zc.emitEvent(Const.Event.SOCKET_AUTHENTICATE,(f) => {f(socket,token);});
+            await this.zc.emitEvent(Const.Event.SOCKET_AUTHENTICATE,socket,token);
         });
 
-        socket.on('deauthenticate', (token) =>
+        socket.on('deauthenticate', async (token) =>
         {
-            this.zc.emitEvent(Const.Event.SOCKET_DEAUTHENTICATE,(f) => {f(socket,token);});
+            await this.zc.emitEvent(Const.Event.SOCKET_DEAUTHENTICATE,socket,token);
         });
 
-        socket.on('message', (msg) =>
+        socket.on('message', async (msg) =>
         {
-            this.zc.emitEvent(Const.Event.SOCKET_MESSAGE,(f) => {f(socket,msg);});
+            await this.zc.emitEvent(Const.Event.SOCKET_MESSAGE,socket,msg);
         });
 
     }
@@ -671,7 +678,7 @@ class ZationWorker extends SCWorker
 
     private registerMasterEvent()
     {
-        this.on('masterMessage',(data,respond) =>
+        this.on('masterMessage',async (data,respond) =>
         {
             if(data['userBackgroundTask'] !== undefined)
             {
@@ -679,7 +686,7 @@ class ZationWorker extends SCWorker
 
                 if(this.userBackgroundTasks.hasOwnProperty(id))
                 {
-                    this.invokeUserBackgroundTask(this.userBackgroundTasks[id]);
+                    await this.invokeUserBackgroundTask(this.userBackgroundTasks[id]);
                 }
             }
             else if(data['systemBackgroundTasks'] !== undefined && data['systemBackgroundTasks'])
@@ -698,11 +705,11 @@ class ZationWorker extends SCWorker
         this.systemBackgroundTasks.push(func);
     }
 
-    private invokeUserBackgroundTask(task)
+    private async invokeUserBackgroundTask(task)
     {
-        if(task !== undefined && typeof task === 'function')
+        if(task !== undefined)
         {
-            task(this.preparedSmallBag);
+            await FuncTools.emitEvent(task,this.preparedSmallBag);
         }
     }
 
@@ -716,19 +723,12 @@ class ZationWorker extends SCWorker
 
     private loadUserBackgroundTasks()
     {
-        let id = 0;
-        const bkTS = new BackgroundTasksSetter(
-            (time,task) => {
-
-                this.userBackgroundTasks[id] = task;
-                id++;
-            },
-            (time,task) => {
-                this.userBackgroundTasks[id] = task;
-                id++;
+        const bkTS = new BackgroundTasksSaver(
+            (name,task) => {
+                this.userBackgroundTasks[name] = task;
             });
 
-        this.zc.emitEvent(Const.Event.ZATION_BACKGROUND_TASKS,(f) => {f(bkTS)});
+        bkTS.saveUserBackgroundTasks(this.zc);
     }
 
     private checkAuthStart()
