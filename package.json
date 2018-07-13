@@ -1,6 +1,6 @@
 {
   "name": "zation-server",
-  "version": "0.6.5",
+  "version": "0.0.2",
   "license": "MIT",
   "description": "Appication Framework Master",
   "main": "compiled/index.js",

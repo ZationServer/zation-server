@@ -17,7 +17,6 @@
     <orderEntry type="library" name="@types/lokijs" level="application" />
     <orderEntry type="library" name="@types/level-sublevel" level="application" />
     <orderEntry type="library" name="@types/levelup" level="application" />
-    <orderEntry type="library" name="level-object" level="project" />
     <orderEntry type="library" name="linvodb3" level="application" />
   </component>
 </module>
