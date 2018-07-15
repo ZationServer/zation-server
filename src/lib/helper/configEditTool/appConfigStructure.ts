@@ -8,26 +8,43 @@ import Bag             = require("../../api/Bag");
 import SmallBag        = require("../../api/SmallBag");
 import ValidationTypes = require("../constants/validationTypes");
 
+const a: AppConfig =
+    {
+        backgroundTasks :
+            {
+
+                a :
+                    {
+
+                        task : (sb) =>
+                        {
+                        }
+                    }
+            }
+
+
+
+    };
 
 export interface AppConfig
 {
-    [Const.App.KEYS.AUTH_CONTROLLER] ?: string;
-    [Const.App.KEYS.CONTROLLER] ?: Record<string,ControllerConfig>;
-    [Const.App.KEYS.USER_GROUPS] ?: UserGroupConfig;
-    [Const.App.KEYS.VERSION_CONTROL] ?: Record<string,number>;
-    [Const.App.KEYS.CONTROLLER_DEFAULT] ?: ControllerConfig;
-    [Const.App.KEYS.OBJECTS] ?: Record<string,ObjectConfig>;
-    [Const.App.KEYS.VALIDATION_GROUPS] ?: Record<string,InputValidationConfig>;
-    [Const.App.KEYS.BACKGROUND_TASKS] ?: Record<string,BackgroundTask>;
+    authController ?: string;
+    controller ?: Record<string,ControllerConfig>;
+    userGroups ?: UserGroupConfig;
+    versionControl ?: Record<string,number>;
+    controllerDefault ?: ControllerConfig;
+    objects ?: Record<string,ObjectConfig>;
+    validationGroups ?: Record<string,InputValidationConfig>;
+    backgroundTasks ?: Record<string,BackgroundTask>;
 }
 
 export type TaskFunction = (smallBag : SmallBag) => Promise<void>;
 
 export interface BackgroundTask
 {
-    [Const.App.BACKGROUND_TASKS.AT] ?: number | TimeObj | TimeObj[] | number[];
-    [Const.App.BACKGROUND_TASKS.EVERY] ?: number | TimeObj | TimeObj[] | number[];
-    [Const.App.BACKGROUND_TASKS.TASK] ?: TaskFunction | TaskFunction[];
+    at ?: number | TimeObj | TimeObj[] | number[];
+    every ?: number | TimeObj | TimeObj[] | number[];
+    task ?: TaskFunction | TaskFunction[];
 }
 
 export interface TimeObj
@@ -40,24 +57,24 @@ export interface TimeObj
 
 export interface UserGroupConfig
 {
-    [Const.App.USER_GROUPS.DEFAULT] ?: string;
-    [Const.App.USER_GROUPS.AUTH] ?: Record<string,object>;
+    default ?: string;
+    auth ?: Record<string,object>;
 }
 
 export interface ControllerConfig
 {
-    [Const.App.CONTROLLER.INPUT] ?: Record<string,InputConfig | ObjectConfig | ArrayConfig | string | ArrayShortSyntax>;
-    [Const.App.CONTROLLER.BEFORE_HANDLE] ?: BeforeHandleFunction[] | BeforeHandleFunction;
-    [Const.App.CONTROLLER.SYSTEM_CONTROLLER] ?: boolean;
-    [Const.App.CONTROLLER.WS_ACCESS] ?: boolean;
-    [Const.App.CONTROLLER.HTTP_ACCESS] ?: boolean;
-    [Const.App.CONTROLLER.INPUT_VALIDATION] ?: boolean;
-    [Const.App.CONTROLLER.INPUT_ALL_ALLOW] ?: boolean;
-    [Const.App.CONTROLLER.EXTRA_SECURE] ?: boolean;
-    [Const.App.CONTROLLER.PATH] ?: string;
-    [Const.App.CONTROLLER.NAME] ?: string;
-    [Const.App.CONTROLLER.ACCESS] ?: string | number | (string | number)[] | ControllerAccessFunction;
-    [Const.App.CONTROLLER.NOT_ACCESS] ?: string | number | (string | number)[] | ControllerAccessFunction;
+    input ?: Record<string,InputConfig | ObjectConfig | ArrayConfig | string | ArrayShortSyntax>;
+    beforeHandle ?: BeforeHandleFunction[] | BeforeHandleFunction;
+    systemController ?: boolean;
+    wsAccess ?: boolean;
+    httpAccess ?: boolean;
+    inputValidation ?: boolean;
+    inputAllAllow ?: boolean;
+    extraSecure ?: boolean;
+    path ?: string;
+    name ?: string;
+    access ?: string | number | (string | number)[] | ControllerAccessFunction;
+    notAccess ?: string | number | (string | number)[] | ControllerAccessFunction;
 }
 
 export type BeforeHandleFunction = (bag : Bag) => Promise<void>;
@@ -65,20 +82,20 @@ export type ControllerAccessFunction = (smallBag : SmallBag,token : object) => P
 
 export interface InputValidationConfig
 {
-    [Const.Validator.KEYS.TYPE] ?: ValidationTypes;
-    [Const.Validator.KEYS.FUNCTION_ENUM] ?: any [];
-    [Const.Validator.KEYS.FUNCTION_PRIVATE_ENUM] ?: any [];
-    [Const.Validator.KEYS.FUNCTION_MIN_LENGTH] ?: number;
-    [Const.Validator.KEYS.FUNCTION_MAX_LENGTH] ?: number;
-    [Const.Validator.KEYS.FUNCTION_LENGTH] ?: number;
-    [Const.Validator.KEYS.FUNCTION_CONTAINS] ?: string;
-    [Const.Validator.KEYS.FUNCTION_EQUALS] ?: string | number | object;
-    [Const.Validator.KEYS.FUNCTION_BIGGER_THAN] ?: number;
-    [Const.Validator.KEYS.FUNCTION_LESSER_THAN] ?: number;
-    [Const.Validator.KEYS.FUNCTION_REGEX] ?: string;
-    [Const.Validator.KEYS.FUNCTION_ENDS_WITH] ?: string;
-    [Const.Validator.KEYS.FUNCTION_STARTS_WITH] ?: string;
-    [Const.Validator.KEYS.FORMAT_IS_LETTERS] ?: string;
+    type ?: ValidationTypes;
+    enum ?: any [];
+    privateEnum ?: any [];
+    minLength ?: number;
+    maxLength ?: number;
+    length ?: number;
+    contains ?: string;
+    equals ?: string | number | object;
+    biggerThan ?: number;
+    lesserThan ?: number;
+    regex ?: string;
+    endsWith ?: string;
+    startsWith ?: string;
+    isLetters ?: string;
 }
 
 export interface InputConfig extends InputValidationConfig
@@ -89,7 +106,7 @@ export interface InputConfig extends InputValidationConfig
 
 export interface ObjectConfig
 {
-    [Const.App.OBJECTS.PROPERTIES] ?:
+    [Const.App.OBJECTS.PROPERTIES] :
         Record<string,InputConfig | ObjectConfig | ArrayConfig | string | ArrayShortSyntax>;
 
     [Const.App.OBJECTS.COMPILE_AS] ?: CompileAsFunction;

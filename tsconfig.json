@@ -11,14 +11,15 @@
     "noImplicitAny": false,
     "declaration": true,
     "outDir": "assets",
-    "strict": true
+    "strict": true,
+    "alwaysStrict" : true
   },
   "include": [
     "src/**/*"
   ],
   "exclude": [
     "node_modules",
-    "compiled"
+    "dist"
   ]
 
 }
