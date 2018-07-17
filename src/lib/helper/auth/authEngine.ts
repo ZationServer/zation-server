@@ -10,6 +10,7 @@ import AEPreparedPart = require('./aePreparedPart');
 import SHBridge       = require("../bridges/shBridge");
 import TokenEngine    = require("../token/tokenEngine");
 import MainErrors     = require("../zationTaskErrors/mainTaskErrors");
+import ZationToken = require("../infoObjects/zationInfo");
 
 class AuthEngine
 {
@@ -269,7 +270,7 @@ class AuthEngine
         {
             let token = this.shBridge.getTokenBridge().getToken();
             let smallBag = this.aePreparedPart.getWorker().getPreparedSmallBag();
-            access = AuthEngine.accessKeyWordChanger(key,value(smallBag,token));
+            access = AuthEngine.accessKeyWordChanger(key,value(smallBag,new ZationToken(token)));
         }
         else if(Number.isInteger(value))
         {

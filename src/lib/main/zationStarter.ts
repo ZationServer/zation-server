@@ -13,14 +13,14 @@ import ConfigChecker         = require('../helper/config/configChecker');
 import ConfigErrorBag        = require('../helper/config/configErrorBag');
 import HashSet               = require('hashset');
 import TimeTools             = require('../helper/tools/timeTools');
-import PrepareClientJs       = require('../client/prepareClientJs');
+import PrepareClientJs       = require('../helper/client/prepareClientJs');
 import MasterTempDbEngine    = require('../helper/tempDb/masterTempDbEngine');
 import BackgroundTasksSetter = require("../helper/background/backgroundTasksSetter");
 
 class ZationStarter
 {
     private static instance : ZationStarter | null = null;
-    private static readonly version : string = '0.0.6';
+    private static readonly version : string = '0.0.8';
 
     private readonly serverStartedTimeStamp : number;
     private readonly zc : ZationConfig;
@@ -63,10 +63,9 @@ class ZationStarter
     private async start()
     {
         Logger.printBusy('Launching Zation');
-        Logger.printDebugInfo('Zation is launching in debug Mode!');
+        Logger.printDebugInfo('Zation is launching in debug Mode.');
 
-        Logger.printStartDebugInfo(`Zation is checking the start config!`);
-
+        Logger.startStopWatch();
         let configErrorBag = new ConfigErrorBag();
         const configChecker = new ConfigChecker(this.zc,configErrorBag);
 
@@ -75,27 +74,35 @@ class ZationStarter
             Logger.printConfigErrorBag(configErrorBag);
             process.exit();
         }
+        Logger.printStartDebugInfo(`Zation has checked the start config.`,true);
 
-        Logger.printStartDebugInfo(`Zation is loading other config files!`);
+        Logger.startStopWatch();
         this.zc.loadOtherConfigs();
+        Logger.printStartDebugInfo(`Zation has loaded the other config files.`,true);
 
-        Logger.printStartDebugInfo(`Zation is checking the config files!`);
+        Logger.startStopWatch();
         configChecker.checkAllConfigs();
         if(configErrorBag.hasConfigError()) {
             Logger.printConfigErrorBag(configErrorBag);
             process.exit();
         }
+        Logger.printStartDebugInfo(`Zation has checked the config files.`,true);
 
-        Logger.printStartDebugInfo(`Zation has found no errors in the configs!`);
-
-        Logger.printStartDebugInfo('Build server settings file');
+        Logger.startStopWatch();
         PrepareClientJs.createServerSettingsFile(this.zc);
+        Logger.printStartDebugInfo('Zation builds the server settings file.',true);
 
-        this.tempDbEngine = new MasterTempDbEngine(this.zc);
-        await this.tempDbEngine.init();
+        if(this.zc.isUseErrorInfoTempDb() || this.zc.isUseTokenInfoTempDb())
+        {
+            Logger.startStopWatch();
+            this.tempDbEngine = new MasterTempDbEngine(this.zc);
+            await this.tempDbEngine.init();
+            Logger.printStartDebugInfo('Zation init the master temp db engine.',true);
+        }
 
-        Logger.printStartDebugInfo('Start socket cluster');
+        Logger.startStopWatch();
         this.startSocketCluster();
+        Logger.printStartDebugInfo('Zation starts socket cluster.',true);
     }
 
     private startSocketCluster()
@@ -109,6 +116,7 @@ class ZationStarter
             brokerController:__dirname  + '/zationBroker.js',
             environment : this.zc.getMain(Const.Main.KEYS.ENVIRONMENT),
             port   : this.zc.getMain(Const.Main.KEYS.PORT),
+            path   : this.zc.getMain(Const.Main.KEYS.PATH),
             protocol : this.zc.getMain(Const.Main.KEYS.SECURE) ? 'https' : 'http',
             protocolOptions: this.zc.getMain(Const.Main.KEYS.HTTPS_CONFIG),
             wsEngine: 'sc-uws',

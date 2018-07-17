@@ -23,13 +23,13 @@ class Returner
     private readonly reqId    : string;
     private readonly sendErrorDesc : boolean;
     
-    constructor(data)
+    constructor({isWebSocket,respond,res,zc,reqId})
     {
-        this.webSocket  = data['isWebSocket'];
-        this.respond    = data['respond'];
-        this.res        = data['res'];
-        this.zc         = data['zc'];
-        this.reqId      = data['reqId'];
+        this.webSocket  = isWebSocket;
+        this.respond    = respond;
+        this.res        = res;
+        this.zc         = zc;
+        this.reqId      = reqId;
 
         this.sendErrorDesc = this.zc.getMain(Const.Main.KEYS.SEND_ERRORS_DESC);
     }
@@ -104,24 +104,24 @@ class Returner
 
         //result
         if (res instanceof Result) {
-            obj['r'] = res._getJsonObj();
+            obj[Const.Settings.RESPONSE.RESULT] = res._getJsonObj();
         }
         else {
-            obj['r'] = {};
+            obj[Const.Settings.RESPONSE.RESULT] = {};
         }
 
         //token
         if(tb !== undefined && !this.webSocket && tb.isNewToken())
         {
             let tokenInfo = {};
-            tokenInfo['st'] = await tb.getSignedToken();
-            tokenInfo['pt'] = tb.getPlainToken();
-            obj['t'] = tokenInfo;
+            tokenInfo[Const.Settings.RESPONSE.TOKEN_SIGNED] = await tb.getSignedToken();
+            tokenInfo[Const.Settings.RESPONSE.TOKEN_PLAIN] = tb.getPlainToken();
+            obj[Const.Settings.RESPONSE.TOKEN] = tokenInfo;
         }
 
         //error
-        obj['e'] = errors;
-        obj['s'] = errors.length === 0;
+        obj[Const.Settings.RESPONSE.ERRORS] = errors;
+        obj[Const.Settings.RESPONSE.SUCCESSFUL] = errors.length === 0;
 
         return obj;
     }

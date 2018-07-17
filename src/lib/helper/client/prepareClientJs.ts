@@ -6,11 +6,9 @@ GitHub: LucaCode
 
 import fs           = require('fs');
 import path         = require('path');
-import Const        = require('../helper/constants/constWrapper');
-import ZationConfig = require("../main/zationConfig");
-
-//todo use module path later!!
-const ZationClient = require('./../../../../zation-js-client');
+import Const        = require('../constants/constWrapper');
+import ZationConfig = require("../../main/zationConfig");
+import ZationClient = require('zation-client');
 
 const serverSettingsFile           = __dirname + '/serverSettings.js';
 
@@ -33,6 +31,7 @@ class PrepareClientJs
         res += `PORT : ${zc.getMain(Const.Main.KEYS.PORT)},`;
         res += `SECURE : ${zc.getMain(Const.Main.KEYS.SECURE)}, `;
         res += `POST_KEY_WORD : '${zc.getMain(Const.Main.KEYS.POST_KEY_WORD)}'`;
+        res += `PATH : '${zc.getMain(Const.Main.KEYS.PATH)}'`;
         res += '}; \n';
         fs.writeFileSync(serverSettingsFile,res,'utf8');
     }

@@ -168,15 +168,16 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to an specify user channel
+     * Publish to an specify user channel or channels
      * @example
      * publishToSpecifyUser('paul10','message',{message : 'hello',fromUserId : 'luca34'});
-     * @param userId
+     * publishToSpecifyUser(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
+     * @param userId or more userIds in array
      * @param eventName
      * @param data
      * @param cb
      */
-    publishToSpecifyUser(userId : string | number,eventName :string,data : object = {},cb ?: Function) : void
+    publishToSpecifyUser(userId : string | number | (number|string)[],eventName :string,data : object = {},cb ?: Function) : void
     {
         this.exchangeEngine.publishInUserCh(userId,eventName,data,cb);
     }
@@ -184,49 +185,18 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to an specify user channel
+     * Publish to an specify user channel or channels
      * @example
      * pubSpecifyUser('paul10','message',{message : 'hello',fromUserId : 'luca34'});
-     * @param userId
+     * pubSpecifyUser(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
+     * @param userId or more userIds in array
      * @param eventName
      * @param data
      * @param cb
      */
-    pubSpecifyUser(userId : string | number,eventName :string,data : object = {},cb ?: Function) : void
+    pubSpecifyUser(userId : string | number | (number|string)[],eventName :string,data : object = {},cb ?: Function) : void
     {
         this.publishToSpecifyUser(userId,eventName,data,cb)
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish to specify user channels
-     * @example
-     * publishToSpecifyUsers(['paul10','lea209'],'message',{message : 'hello',fromUserId : 'luca34'});
-     * @param userIds
-     * @param eventName
-     * @param data
-     * @param cb
-     */
-    publishToSpecifyUsers(userIds : (string | number)[],eventName : string,data : object = {},cb ?: Function) : void
-    {
-        this.exchangeEngine.publishInUserChannels(userIds,eventName,data,cb);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish to specify user channels
-     * @example
-     * pubSpecifyUsers(['paul10','lea209'],'message',{message : 'hello',fromUserId : 'luca34'});
-     * @param userIds
-     * @param eventName
-     * @param data
-     * @param cb
-     */
-    pubSpecifyUsers(userIds : (string | number)[],eventName : string,data : object = {},cb ?: Function) : void
-    {
-        this.publishToSpecifyUsers(userIds,eventName,data,cb);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -262,15 +232,15 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to auth user group
-     * @example
+     * Publish to auth user group or groups
      * publishToAuthUserGroup('admin','userRegistered',{userId : '1'});
-     * @param authUserGroup
+     * publishToAuthUserGroup(['admin','superAdmin'],'userRegistered',{userId : '1'});
+     * @param authUserGroup or an array of auth user groups
      * @param eventName
      * @param data
      * @param cb
      */
-    publishToAuthUserGroup(authUserGroup : string, eventName : string, data : object = {}, cb ?: Function) : void
+    publishToAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {}, cb ?: Function) : void
     {
         this.exchangeEngine.publishInAuthUserGroupCh(authUserGroup,eventName,data,cb);
     }
@@ -278,15 +248,16 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to auth user group
+     * Publish to auth user group or groups
      * @example
      * pubAuthUserGroup('admin','userRegistered',{userId : '1'});
-     * @param authUserGroup
+     * pubAuthUserGroup(['admin','superAdmin'],'userRegistered',{userId : '1'});
+     * @param authUserGroup or an array of auth user groups
      * @param eventName
      * @param data
      * @param cb
      */
-    pubAuthUserGroup(authUserGroup : string, eventName : string, data : object = {}, cb ?: Function) : void
+    pubAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {}, cb ?: Function) : void
     {
         this.publishToAuthUserGroup(authUserGroup,eventName,data,cb);
     }
@@ -388,15 +359,16 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom Channel
+     * Publish in an custom channel
      * @example
      * publishToCustomChannel('messageChannel','message',{message : 'hello',fromUserId : '1'});
-     * @param channel
+     * publishToCustomChannel(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
+     * @param channel or an array of channels
      * @param eventName
      * @param data
      * @param cb
      */
-    publishToCustomChannel(channel : string, eventName : string, data : object = {}, cb ?: Function) : void
+    publishToCustomChannel(channel : string | string[], eventName : string, data : object = {}, cb ?: Function) : void
     {
         this.exchangeEngine.publishToCustomChannel(channel, eventName, data, cb);
     }
@@ -404,17 +376,75 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom Channel
+     * Publish in an custom channel or channels
      * @example
      * pubCustomChannel('messageChannel','message',{message : 'hello',fromUserId : '1'});
-     * @param channel
+     * pubCustomChannel(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
+     * @param channel or an array of channels
      * @param eventName
      * @param data
      * @param cb
      */
-    pubCustomChannel(channel : string, eventName : string, data : object = {}, cb ?: Function) : void
+    pubCustomChannel(channel : string | string[], eventName : string, data : object = {}, cb ?: Function) : void
     {
         this.publishToCustomChannel(channel, eventName, data, cb);
+    }
+
+    //Part Channel KickOut
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Publish in an custom channel or channels
+     * @example
+     * pubCustomChannel('messageChannel','message',{message : 'hello',fromUserId : '1'});
+     * pubCustomChannel(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
+     * @param userId
+     * @param channel or an array of channels
+     * @param id
+     * @param exceptTokenId
+     */
+    async kickUserFromCustomIdCh
+    (
+        userId : number | string | (number | string)[],
+        channel : string,
+        id ?: string,
+        exceptTokenId ?: string[] | string
+    ) : Promise<boolean>
+    {
+        return true;
+    }
+
+    async kickUserFromCustomCh
+    (
+        userId : number | string | (number | string)[],
+        channel : string,
+        exceptTokenId ?: string[] | string
+    ) : Promise<boolean>
+    {
+        return true;
+    }
+
+    //Part Security
+
+    async disconnectUser(userId : number | string | (number | string)[]) : Promise<boolean>
+    {
+        return true;
+    }
+
+    async disconnectToken(tokenId :  string | (string)[]) : Promise<boolean>
+    {
+        return true;
+    }
+
+    async deauthenticateUser(userId : number | string | (number | string)[]) : Promise<boolean>
+    {
+        return true;
+    }
+
+    async deauthenticateTokenId(tokenId :  string | (string)[]) : Promise<boolean>
+    {
+        return true;
     }
 
     //Part Database -> MySql
@@ -618,6 +648,14 @@ class SmallBag
     isCustomService(name : string,serviceKey : string = 'default') : boolean
     {
         return this.serviceEngine.isCustomService(name,serviceKey);
+    }
+
+    //Part Errors
+
+    getError(name)
+    {
+
+
     }
 
     //Part TempDb Variables

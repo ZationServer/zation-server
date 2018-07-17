@@ -4,6 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+import Const = require("../helper/constants/constWrapper");
+
 class Result
 {
 
@@ -35,8 +37,8 @@ class Result
     _getJsonObj() : object
     {
         let obj = {};
-        obj['kv'] = this.keyValuePairs;
-        obj['v'] = this.values;
+        obj[Const.Settings.RESPONSE.RESULT_PAIRS] = this.keyValuePairs;
+        obj[Const.Settings.RESPONSE.RESULT_VALUES] = this.values;
 
         return obj;
     }

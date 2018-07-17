@@ -10,7 +10,7 @@ import ObjectTools       = require('../helper/tools/objectTools');
 import path              = require('path');
 import fs                = require('fs');
 import crypto            = require('crypto');
-import ZationInfoObj     = require("../helper/infoObjects/zationInfoObj");
+import ZationInfoObj     = require("../helper/infoObjects/zationInfo");
 import Structures        = require('./../helper/config/structures');
 import FuncTools         = require("../helper/tools/funcTools");
 
@@ -39,6 +39,7 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.HOSTNAME] = 'localhost';
             this.mainConfig[Const.Main.KEYS.ENVIRONMENT] = 'dev';
             this.mainConfig[Const.Main.KEYS.POST_KEY_WORD] = 'zation';
+            this.mainConfig[Const.Main.KEYS.PATH] = 'zation';
             this.mainConfig[Const.Main.KEYS.USE_AUTH] = true;
             this.mainConfig[Const.Main.KEYS.APP_NAME] = 'AppWithoutName';
             this.mainConfig[Const.Main.KEYS.SECURE] = false;

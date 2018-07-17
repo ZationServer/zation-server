@@ -39,9 +39,16 @@ class ChExchangeEngine
         this.scServer.exchange.publish(channel,ChExchangeEngine.buildData(eventName,data),cb);
     }
 
-    publishInUserCh(id : any,eventName : string,data : any,cb ?: Function) : void
+    publishInUserCh(id : number | string | (string | number)[],eventName : string,data : any,cb ?: Function) : void
     {
-        this.publish(ChTools.buildUserChName(id),eventName,data,cb)
+        if(Array.isArray(id)) {
+            for(let i = 0; i < id.length; i++) {
+                this.publish(ChTools.buildUserChName(id[i]),eventName,data,cb)
+            }
+        }
+        else {
+            this.publish(ChTools.buildUserChName(id),eventName,data,cb)
+        }
     }
 
     publishInDefaultUserGroupCh(eventName : string, data : any, cb ?: Function) : void
@@ -49,22 +56,21 @@ class ChExchangeEngine
         this.publish(Const.Settings.CHANNEL.DEFAULT_USER_GROUP,eventName,data,cb);
     }
 
-    publishInUserChannels(ids : any[],eventName : string,data : any,cb ?: Function) : void
-    {
-        for(let i = 0; i < ids.length; i++)
-        {
-            this.publishInUserCh(ids[i],eventName,data,cb);
-        }
-    }
-
     publishInAllCh(eventName : string,data : any,cb ?: Function) : void
     {
         this.publish(Const.Settings.CHANNEL.ALL,eventName,data,cb);
     }
 
-    publishInAuthUserGroupCh(authUserGroup : string, eventName : string, data : any, cb ?: Function) : void
+    publishInAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : any, cb ?: Function) : void
     {
-        this.publish(ChTools.buildAuthUserGroupChName(authUserGroup),eventName,data,cb);
+        if(Array.isArray(authUserGroup)) {
+            for(let i = 0; i < authUserGroup.length; i++) {
+                this.publish(ChTools.buildAuthUserGroupChName(authUserGroup[i]),eventName,data,cb);
+            }
+        }
+        else {
+            this.publish(ChTools.buildAuthUserGroupChName(authUserGroup),eventName,data,cb);
+        }
     }
 
     static buildData(eventName : string,data : any) : object
@@ -93,10 +99,20 @@ class ChExchangeEngine
         this.publish(channelFullName,eventName,data,cb);
     }
 
-    publishToCustomChannel(channel : string, eventName : string, data : any, cb ?: Function) : void
+    publishToCustomChannel(channel : string | string[], eventName : string, data : any, cb ?: Function) : void
     {
-        let channelFullName = ChTools.buildCustomChannelName(channel);
-        this.publish(channelFullName,eventName,data,cb);
+        if(Array.isArray(channel)) {
+            for(let i = 0; i < channel.length; i++)
+            {
+                let channelFullName = ChTools.buildCustomChannelName(channel[i]);
+                this.publish(channelFullName,eventName,data,cb);
+            }
+        }
+        else
+        {
+            let channelFullName = ChTools.buildCustomChannelName(channel);
+            this.publish(channelFullName,eventName,data,cb);
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols

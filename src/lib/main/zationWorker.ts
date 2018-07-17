@@ -20,7 +20,7 @@ import ChAccessEngine        = require('../helper/channel/chAccessEngine');
 import ServiceEngine         = require('../helper/services/serviceEngine');
 import SystemBackgroundTask  = require('../helper/background/systemBackgroundTasks');
 import SmallBag              = require('../api/SmallBag');
-import PrepareClientJs       = require('../client/prepareClientJs');
+import PrepareClientJs       = require('../helper/client/prepareClientJs');
 import AEPreparedPart        = require('../helper/auth/aePreparedPart');
 import ControllerPrepare     = require('../helper/controller/controllerPrepare');
 
@@ -52,6 +52,9 @@ class ZationWorker extends SCWorker
 
     private app : any;
 
+    private mapUserTokenIds = {};
+    private mapTokenIdSockets = {};
+
     constructor()
     {
         super();
@@ -77,63 +80,89 @@ class ZationWorker extends SCWorker
 
         await this.setUpLogInfo();
 
-        Logger.printStartDebugInfo(`Worker with id ${this.id} begin start process!`);
+        await this.start();
+    }
 
-        Logger.printStartDebugInfo(`Worker with id ${this.id} load other zation config files.`);
+    private async start()
+    {
+        Logger.printStartDebugInfo(`Worker with id ${this.id} begin start process!`,false,true);
 
+        Logger.startStopWatch();
         this.zc.loadOtherConfigs();
+        Logger.printStartDebugInfo(`Worker with id ${this.id} loads other zation config files.`,true);
 
-        Logger.printStartDebugInfo(`Worker with id ${this.id} preCompile configs!`);
-
+        Logger.startStopWatch();
         let preCompiler = new ConfigPreCompiler(this.zc);
         preCompiler.preCompile();
+        Logger.printStartDebugInfo(`Worker with id ${this.id} preCompile configs!`, true);
 
-        Logger.printStartDebugInfo(`Worker with id ${this.id} starts to prepare client js.`);
+        Logger.startStopWatch();
         this.preparedClientJs = PrepareClientJs.buildClientJs();
+        Logger.printStartDebugInfo(`Worker with id ${this.id} prepares client js.`, true);
 
         //Services
-        Logger.printStartDebugInfo(`Worker with id ${this.id} create service engine.`);
+        Logger.startStopWatch();
         this.serviceEngine = new ServiceEngine(this.zc);
         await this.serviceEngine.init();
+        Logger.printStartDebugInfo(`Worker with id ${this.id} creates service engine.`,true);
 
         if(this.zc.isUseErrorInfoTempDb() || this.zc.isUseTokenInfoTempDb())
         {
-            Logger.printStartDebugInfo(`Worker with id ${this.id} init temp db.`);
-            await this.initTempDb()
+            Logger.startStopWatch();
+            await this.initTempDb();
+            Logger.printStartDebugInfo(`Worker with id ${this.id} init temp db.`,true);
         }
 
-        Logger.printStartDebugInfo(`Worker with id ${this.id} prepare a small bag.`);
+        Logger.startStopWatch();
         this.preparedSmallBag = new SmallBag(this);
+        Logger.printStartDebugInfo(`Worker with id ${this.id} prepares a small bag.`,true);
 
         //prepareController
-        Logger.printStartDebugInfo(`Worker with id ${this.id} starts to prepare controller.`);
+        Logger.startStopWatch();
         this.controllerPrepare = new ControllerPrepare(this.zc,this);
         await this.controllerPrepare.prepare();
+        Logger.printStartDebugInfo(`Worker with id ${this.id} prepares controller.`,true);
 
-        Logger.printStartDebugInfo(`Worker with id ${this.id} prepare auth engine part.`);
+        Logger.startStopWatch();
         this.aePreparedPart = new AEPreparedPart(this.zc,this);
+        Logger.printStartDebugInfo(`Worker with id ${this.id} prepares auth engine part.`,true);
 
-        Logger.printStartDebugInfo(`Worker with id ${this.id} load user background tasks.`);
+        Logger.startStopWatch();
         this.loadUserBackgroundTasks();
+        Logger.printStartDebugInfo(`Worker with id ${this.id} loads user background tasks.`,true);
 
-        Logger.printStartDebugInfo(`Worker with id ${this.id} register by master event.`);
+        Logger.startStopWatch();
         this.registerMasterEvent();
+        Logger.printStartDebugInfo(`Worker with id ${this.id} registers by master event.`,true);
 
-        Logger.printStartDebugInfo(`Worker with id ${this.id} create zation.`);
+        if(this.isLeader)
+        {
+            Logger.startStopWatch();
+            await this.registerLeaderChannel();
+            Logger.printStartDebugInfo(`Worker with id ${this.id} registers worker leader channel.`,true);
+        }
+
+        Logger.startStopWatch();
         this.zation = new Zation(this);
+        Logger.printStartDebugInfo(`Worker with id ${this.id} creates zation.`,true);
 
-        Logger.printStartDebugInfo(`Worker with id ${this.id} check for authStart.`);
+        Logger.startStopWatch();
         this.checkAuthStart();
+        Logger.printStartDebugInfo(`Worker with id ${this.id} checks for authStart.`,true);
 
         //Server
-        Logger.printStartDebugInfo(`Worker with id ${this.id} start http server.`);
+        Logger.startStopWatch();
         await this.startHttpServer();
+        Logger.printStartDebugInfo(`Worker with id ${this.id} starts http server.`,true);
 
-        Logger.printStartDebugInfo(`Worker with id ${this.id} start socket server.`);
-        await this.startSocketServer();
+        Logger.startStopWatch();
+        await this.startWebSocketServer();
+        Logger.printStartDebugInfo(`Worker with id ${this.id} starts web socket server.`,true);
 
         //Fire ExpressEvent
+        Logger.startStopWatch();
         await this.zc.emitEvent(Const.Event.ZATION_EXPRESS,this.preparedSmallBag,this.app);
+        Logger.printStartDebugInfo(`Worker with id ${this.id} process express event.`,true);
 
         //Fire event is started
         await this.zc.emitEvent
@@ -148,17 +177,17 @@ class ZationWorker extends SCWorker
         });
     }
 
-    private async startSocketServer()
+    private async startWebSocketServer()
     {
         this.initSocketMiddleware();
         this.initScServerEvents();
 
         //START SOCKET SERVER
-        this.scServer.on('connection', (socket) => {
+        this.scServer.on('connection', async (socket) => {
 
             this.initSocketEvents(socket);
 
-            this.zc.emitEvent(Const.Event.SC_SERVER_CONNECTION,socket);
+            await this.zc.emitEvent(Const.Event.SC_SERVER_CONNECTION,socket);
 
             Logger.printDebugInfo(`Socket with id: ${socket.id} is connected!`);
 
@@ -182,6 +211,8 @@ class ZationWorker extends SCWorker
     {
         this.app = express();
 
+        const path = this.zc.getMain(Const.Main.KEYS.PATH);
+
         //startCookieParser
         // noinspection JSUnresolvedFunction
         this.app.use(cookieParser());
@@ -200,19 +231,19 @@ class ZationWorker extends SCWorker
         //PUBLIC FOLDER
 
         // noinspection JSUnresolvedFunction
-        this.app.use('/zation/assets', express.static(__dirname + '/../public/assets'));
+        this.app.use(`/${path}/assets`, express.static(__dirname + '/../public/assets'));
 
         // noinspection JSUnresolvedFunction
-        this.app.use('/zation/css', express.static(__dirname + '/../public/css'));
+        this.app.use(`/${path}/css`, express.static(__dirname + '/../public/css'));
 
         // noinspection JSUnresolvedFunction
-        this.app.use('/zation/js', express.static(__dirname + '/../public/js'));
+        this.app.use(`/${path}/js`, express.static(__dirname + '/../public/js'));
 
         // noinspection JSUnresolvedFunction
-        this.app.use('/zation/panel', express.static(__dirname + '/../public/panel'));
+        this.app.use(`/${path}/panel`, express.static(__dirname + '/../public/panel'));
 
         // noinspection JSUnresolvedFunction
-        this.app.get('/zation/client',(req,res) =>
+        this.app.get(`/${path}/client`,(req,res) =>
         {
             res.type('.js');
             res.send(this.preparedClientJs);
@@ -221,7 +252,7 @@ class ZationWorker extends SCWorker
         //REQUEST
 
         // noinspection JSUnresolvedFunction
-        this.app.all('/zation', (req, res) => {
+        this.app.all(`/${path}`, (req, res) => {
             //Run Zation
             // noinspection JSUnusedLocalSymbols
             let p = this.zation.run(
@@ -644,6 +675,18 @@ class ZationWorker extends SCWorker
             httpServer = require('http').createServer();
         }
         return httpServer;
+    }
+
+    private async registerLeaderChannel()
+    {
+        const channel = this.exchange.subscribe(Const.Settings.CHANNEL.ALL_WORKER_LEADER);
+        channel.watch((data) =>
+        {
+            //data.question.isTokenBlocked()
+
+
+
+        });
     }
 
     private async initTempDb()

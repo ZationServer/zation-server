@@ -8,9 +8,10 @@ import ChannelEngine = require('./../helper/channel/channelEngine');
 import SmallBag      = require('./SmallBag');
 import SHBridge      = require("../helper/bridges/shBridge");
 import AuthEngine    = require("../helper/auth/authEngine");
-import TokenEngine = require("../helper/token/tokenEngine");
-import InputWrapper = require("../helper/tools/inputWrapper");
-import ZationWorker = require("../main/zationWorker");
+import TokenEngine   = require("../helper/token/tokenEngine");
+import InputWrapper  = require("../helper/tools/inputWrapper");
+import ZationWorker  = require("../main/zationWorker");
+import Const         = require("../helper/constants/constWrapper");
 
 class Bag extends SmallBag
 {
@@ -210,8 +211,25 @@ class Bag extends SmallBag
         return this.tokenEngine.getTokenVariable(key);
     }
 
-    //Part Socket
+    // noinspection JSUnusedGlobalSymbols
+    getTokenId() : string
+    {
+        return this.tokenEngine.getTokenVariable(Const.Settings.CLIENT.TOKEN_ID);
+    }
 
+    // noinspection JSUnusedGlobalSymbols
+    getTokenExpire() : string
+    {
+        return this.tokenEngine.getTokenVariable(Const.Settings.CLIENT.EXPIRE);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    hasToken() : boolean
+    {
+        return this.shBridge.getTokenBridge().getToken() !==  undefined;
+    }
+
+    //Part Socket
     // noinspection JSUnusedGlobalSymbols
     getSocketId() : string | undefined
     {

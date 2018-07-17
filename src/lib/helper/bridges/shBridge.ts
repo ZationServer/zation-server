@@ -7,7 +7,7 @@ GitHub: LucaCode
 import TokenBridge   = require('./tokenBridge');
 import TokenTools    = require('../token/tokenTools');
 import ZationConfig  = require("../../main/zationConfig");
-const IP : any       = require('ip');
+const  IP : any      = require('ip');
 
 //Socket and Http Bridge
 class SHBridge

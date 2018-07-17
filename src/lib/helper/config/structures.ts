@@ -70,6 +70,7 @@ Main[Const.Main.KEYS.CLIENT_JS_PREPARE]       = {types : ['boolean'],isOptional 
 Main[Const.Main.KEYS.USE_TEMP_DB_TOKEN_INFO]  = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.USE_TEMP_DB_ERROR_INFO]  = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.TEMP_DB_ERROR_INFO_LIVE_TIME] = {types : ['number'],isOptional : true};
+Main[Const.Main.KEYS.PATH]                    = {types : ['string'],isOptional : true};
 
 Main[Const.Main.KEYS.TEMP_DB_ENGINE] =
     {types : ['string'],isOptional : true,enum : [Const.Main.TEMP_DB_ENGINE.MONGO,Const.Main.TEMP_DB_ENGINE.MASTER_MEMORY]};

@@ -6,7 +6,7 @@ GitHub: LucaCode
 import Const                         = require('./../constants/constWrapper');
 import ExpressCore                   = require("express-serve-static-core");
 import SmallBag                      = require("../../api/SmallBag");
-import ZationInfoObj                 = require("../infoObjects/zationInfoObj");
+import ZationInfoObj                 = require("../infoObjects/zationInfo");
 import ZationWorker                  = require("../../main/zationWorker");
 import TaskError                     = require("../../api/TaskError");
 import TaskErrorBag                  = require("../../api/TaskErrorBag");

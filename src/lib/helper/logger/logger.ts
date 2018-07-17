@@ -12,15 +12,30 @@ class Logger
 {
     private static zc : ZationConfig;
 
+    private static stopWatchStartTime : any = new Date();
+
     static setZationConfig(zc : ZationConfig) : void
     {
         Logger.zc = zc;
     }
 
-    static printStartDebugInfo(txt : string,isBusy : boolean = false) : void
+    static startStopWatch()
+    {
+        if(Logger.zc.isStartDebug())
+        {
+            Logger.stopWatchStartTime = new Date();
+        }
+    }
+
+    static printStartDebugInfo(txt : string,time : boolean = false,isBusy : boolean = false) : void
     {
         if (Logger.zc.isStartDebug())
         {
+            if(time)
+            {
+                txt = `${txt} In ${Date.now() - Logger.stopWatchStartTime}ms`;
+            }
+
             if(isBusy)
             {
                 Logger.log('\x1b[33m%s\x1b[0m', '   [BUSY]',txt);

@@ -7,6 +7,7 @@ GitHub: LucaCode
 class KEYS {
     static readonly PORT                                  = 'port';
     static readonly HOSTNAME                              = 'hostname';
+    static readonly PATH                                  = 'path';
     static readonly DEBUG                                 = 'debug';
     static readonly START_DEBUG                           = 'startDebug';
     static readonly SHOW_CONFIG_WARNINGS                  = 'showConfigWarnings';
