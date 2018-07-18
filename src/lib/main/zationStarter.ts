@@ -20,7 +20,7 @@ import BackgroundTasksSetter = require("../helper/background/backgroundTasksSett
 class ZationStarter
 {
     private static instance : ZationStarter | null = null;
-    private static readonly version : string = '0.1.0';
+    private static readonly version : string = '0.1.1';
 
     private readonly serverStartedTimeStamp : number;
     private readonly zc : ZationConfig;
