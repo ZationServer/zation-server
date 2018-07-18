@@ -38,8 +38,6 @@ class AEPreparedPart
                 if(defaultGroup === undefined)
                 {
                     this.defaultGroup = Const.Settings.DEFAULT_USER_GROUP.FALLBACK;
-                    Logger.printConfigWarning(Const.Settings.CN.APP,'No settings for the default user group found!' +
-                        ' DefaultUserGroup is set to \'default\'');
                 }
                 else
                 {

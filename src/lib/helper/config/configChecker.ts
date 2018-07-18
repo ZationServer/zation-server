@@ -104,6 +104,8 @@ class ConfigChecker
        }
        else
        {
+           Logger.printConfigWarning
+           (Const.Settings.CN.APP,`No settings for the default user group found! DefaultUserGroup will be set to 'default'`);
            groups.push(Const.Settings.DEFAULT_USER_GROUP.FALLBACK);
        }
 
