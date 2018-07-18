@@ -20,7 +20,7 @@ import BackgroundTasksSetter = require("../helper/background/backgroundTasksSett
 class ZationStarter
 {
     private static instance : ZationStarter | null = null;
-    private static readonly version : string = '0.1.4';
+    private static readonly version : string = '0.1.5';
 
     private readonly serverStartedTimeStamp : number;
     private readonly zc : ZationConfig;
@@ -188,10 +188,11 @@ class ZationStarter
 
     private printStartedInformation()
     {
-        let hostName = this.zc.getMain(Const.Main.KEYS.HOSTNAME);
-        let port     = this.zc.getMain(Const.Main.KEYS.PORT);
-        let protocol = this.zc.getMain(Const.Main.KEYS.SECURE) ? 'https' : 'http';
-        let server   = `${protocol}://${hostName}:${port}`;
+        const hostName = this.zc.getMain(Const.Main.KEYS.HOSTNAME);
+        const port     = this.zc.getMain(Const.Main.KEYS.PORT);
+        const path     = this.zc.getMain(Const.Main.KEYS.PATH);
+        const protocol = this.zc.getMain(Const.Main.KEYS.SECURE) ? 'https' : 'http';
+        const server   = `${protocol}://${hostName}:${port}/${path}`;
 
         Logger.log('\x1b[32m%s\x1b[0m', '   [ACTIVE]','Zation started');
         Logger.log(`            Version: ${ZationStarter.version}`);

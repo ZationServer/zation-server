@@ -297,7 +297,7 @@ class ConfigChecker
    // noinspection JSMethodCanBeStatic
    private warningForPublish(value : any,target : Target) : void
    {
-       if(value !== undefined && (typeof value !== "boolean" || (typeof value === 'boolean' && !value )))
+       if(value !== undefined && (typeof value !== "boolean" || (typeof value === 'boolean' && value )))
        {
            Logger.printConfigWarning
            (Const.Settings.CN.CHANNEL,
