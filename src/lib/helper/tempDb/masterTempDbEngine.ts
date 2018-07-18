@@ -40,7 +40,6 @@ class MasterTempDbEngine
             }
             else if(this.zc.getMain(Const.Main.KEYS.TEMP_DB_ENGINE) === Const.Main.TEMP_DB_ENGINE.MASTER_MEMORY)
             {
-                Logger.printStartDebugInfo('Create master memory temp db');
                 const NeDb = require('nedb');
                 // noinspection JSCheckFunctionSignatures
                 this.memoryTokenInfoDb = new NeDb({inMemoryOnly : true});

@@ -29,7 +29,6 @@ class ServiceBox
     }
 
     private async initService(config,howToCreate) : Promise<void>
-
     {
         if(config !== undefined && typeof config === 'object')
         {

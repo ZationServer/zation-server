@@ -4,6 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+                               require('cache-require-paths');
 import FuncTools             = require("../helper/tools/funcTools");
 const  SCWorker : any        = require('socketcluster/scworker');
 import express               = require('express');
@@ -87,7 +88,7 @@ class ZationWorker extends SCWorker
 
     private async startZWorker()
     {
-        Logger.printStartDebugInfo(`Worker with id ${this.id} begin start process!`,false,true);
+        Logger.printStartDebugInfo(`Worker with id ${this.id} begin start process.`,false,true);
 
         Logger.startStopWatch();
         this.zc.loadOtherConfigs();
@@ -96,7 +97,7 @@ class ZationWorker extends SCWorker
         Logger.startStopWatch();
         let preCompiler = new ConfigPreCompiler(this.zc);
         preCompiler.preCompile();
-        Logger.printStartDebugInfo(`Worker with id ${this.id} preCompile configs!`, true);
+        Logger.printStartDebugInfo(`Worker with id ${this.id} preCompile configs.`, true);
 
         Logger.startStopWatch();
         this.preparedClientJs = PrepareClientJs.buildClientJs();

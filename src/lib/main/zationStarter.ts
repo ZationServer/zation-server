@@ -3,7 +3,7 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-
+                               require('cache-require-paths');
 import BackgroundTaskSender  = require("../helper/background/backgroundTasksSender");
 const  SocketCluster : any   = require('socketcluster');
 import Const                 = require('../helper/constants/constWrapper');
@@ -17,10 +17,11 @@ import PrepareClientJs       = require('../helper/client/prepareClientJs');
 import MasterTempDbEngine    = require('../helper/tempDb/masterTempDbEngine');
 import BackgroundTasksSetter = require("../helper/background/backgroundTasksSetter");
 
+
 class ZationStarter
 {
     private static instance : ZationStarter | null = null;
-    private static readonly version : string = '0.1.5';
+    private static readonly version : string = '0.1.6';
 
     private readonly serverStartedTimeStamp : number;
     private readonly zc : ZationConfig;

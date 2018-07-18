@@ -14,8 +14,8 @@ import ZationInfoObj     = require("../helper/infoObjects/zationInfo");
 import Structures        = require('./../helper/config/structures');
 import FuncTools         = require("../helper/tools/funcTools");
 import {TaskErrorOptions} from "../helper/configEditTool/errorConfigStructure";
-import ErrorNotFound = require("../helper/error/errorNotFoundError");
-import SmallBag = require("../api/SmallBag");
+import ErrorNotFound      = require("../helper/error/errorNotFoundError");
+import SmallBag           = require("../api/SmallBag");
 
 class ZationConfig
 {
