@@ -107,7 +107,7 @@ class AuthEngine
 
     checkIsIn(authGroup) : boolean
     {
-        return this.aePreparedPart.getAuthGroups().hasOwnProperty(authGroup);
+        return this.aePreparedPart.isAuthGroup(authGroup);
     }
 
     getUserGroup() : string | undefined

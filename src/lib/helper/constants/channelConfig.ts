@@ -10,6 +10,12 @@ class KEYS {
     static readonly DEFAULTS                   = 'default';
 }
 
+class ACCESS {
+    static readonly ALL_AUTH                = 'allAuth';
+    static readonly ALL_NOT_AUTH            = 'allNotAuth';
+    static readonly ALL                     = 'all';
+}
+
 //Generate Info to check Access for specialChannels
 class INFO {
     static readonly AUTH_USER_GROUP   = 'authUserGroup';
@@ -32,6 +38,7 @@ class ChannelConfig
 {
     public static readonly KEYS = KEYS;
     public static readonly CHANNEL = CHANNEL;
+    public static readonly ACCESS = ACCESS;
 }
 
 export = ChannelConfig;

@@ -76,6 +76,12 @@ class AEPreparedPart
     {
         return this.useAuth;
     }
+
+    isAuthGroup(authGroup) : boolean
+    {
+        return this.authGroups.hasOwnProperty(authGroup);
+    }
+
 }
 
 export = AEPreparedPart;

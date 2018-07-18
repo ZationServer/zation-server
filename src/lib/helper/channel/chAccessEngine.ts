@@ -35,8 +35,21 @@ class ChAccessEngine
 
             if(typeof value === 'string')
             {
-                if(info.authUserGroup === value)
+                if(value === Const.Channel.ACCESS.ALL)
                 {
+                    access = true;
+                }
+                else if(value === Const.Channel.ACCESS.ALL_AUTH)
+                {
+                    access = info.isAuthIn;
+                }
+                else if(value === Const.Channel.ACCESS.ALL_NOT_AUTH)
+                {
+                    access = !info.isAuthIn;
+                }
+                else if(info.authUserGroup === value)
+                {
+                    //Group!
                     access = true;
                 }
             }

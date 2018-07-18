@@ -65,6 +65,8 @@
     "gulp-sass": "4.0.1",
     "gulp-typescript": "5.0.0-alpha.3",
     "typescript": "2.9.2",
-    "typescript-require": "0.2.10"
+    "typescript-require": "0.2.10",
+    "graceful-fs": "4.1.11",
+    "minimatch": "3.0.4"
   }
 }

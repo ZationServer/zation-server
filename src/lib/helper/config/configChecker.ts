@@ -266,6 +266,16 @@ class ConfigChecker
                `${target.getTarget()} only 'subscribe' or 'notSubscribe' keyword is allow.`));
        }
 
+       //check access dependency to userGroups
+       this.checkAccessKeyDependency
+       (channel[Const.Channel.CHANNEL.PUBLISH],Const.Channel.CHANNEL.PUBLISH,target);
+       this.checkAccessKeyDependency
+       (channel[Const.Channel.CHANNEL.NOT_PUBLISH],Const.Channel.CHANNEL.NOT_PUBLISH,target);
+       this.checkAccessKeyDependency
+       (channel[Const.Channel.CHANNEL.SUBSCRIBE],Const.Channel.CHANNEL.SUBSCRIBE,target);
+       this.checkAccessKeyDependency
+       (channel[Const.Channel.CHANNEL.NOT_SUBSCRIBE],Const.Channel.CHANNEL.NOT_SUBSCRIBE,target);
+
        if
        (
            isDefault &&
@@ -280,6 +290,7 @@ class ConfigChecker
            Logger.printConfigWarning(Const.Settings.CN.CHANNEL,'It is recommended to set a default value for publish and subscribe.');
        }
    }
+
 
    private checkAccessControllerDefaultIsSet()
    {
