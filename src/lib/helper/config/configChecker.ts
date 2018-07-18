@@ -75,6 +75,12 @@ class ConfigChecker
        let authGroups = ObjectPath.getPath(this.zc.getAppConfig(),
            [Const.App.KEYS.USER_GROUPS,Const.App.USER_GROUPS.AUTH]);
 
+       if(!this.zc.isApp(Const.App.KEYS.USER_GROUPS))
+       {
+           Logger.printConfigWarning
+           (Const.Settings.CN.APP,`No settings for the user groups are found! DefaultUserGroup will be set to 'default'`);
+       }
+
        if(authGroups !== undefined)
        {
            groups = Object.keys(authGroups);

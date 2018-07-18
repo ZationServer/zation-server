@@ -48,8 +48,6 @@ class AEPreparedPart
             {
                 this.defaultGroup = 'default';
                 this.authGroups = {};
-                Logger.printConfigWarning(Const.Settings.CN.APP,'No settings for the user groups are found!' +
-                    ' DefaultUserGroup is set to \'default\'');
             }
         }
     }
