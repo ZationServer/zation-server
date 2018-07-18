@@ -368,6 +368,12 @@ class ZationWorker extends SCWorker
                             next(err); //Block!
                         }
                     }
+                    else if(channel === Const.Settings.CHANNEL.ALL_WORKER)
+                    {
+                        let err : any = new Error('User can\'t subscribe all worker channel!');
+                        err.code = 4503;
+                        next(err); //Block!
+                    }
                     else {
                         Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes ${channel}`);
                         next();
@@ -401,6 +407,12 @@ class ZationWorker extends SCWorker
                     {
                         let err : any = new Error('anonymous user can\'t subscribe panel Channel!');
                         err.code = 4501;
+                        next(err); //Block!
+                    }
+                    else if(channel === Const.Settings.CHANNEL.ALL_WORKER)
+                    {
+                        let err : any = new Error('user can\'t subscribe all worker Channel!');
+                        err.code = 4504;
                         next(err); //Block!
                     }
                     else {
@@ -456,6 +468,12 @@ class ZationWorker extends SCWorker
                 {
                     let err : any = new Error('User can\'t publish in panel channel!');
                     err.code = 4506;
+                    next(err); //Block!
+                }
+                else if(req.channel === Const.Settings.CHANNEL.ALL_WORKER)
+                {
+                    let err : any = new Error('User can\'t publish in all worker channel!');
+                    err.code = 4507;
                     next(err); //Block!
                 }
                 else {
