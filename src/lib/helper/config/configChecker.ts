@@ -20,12 +20,6 @@ import ConfigErrorBag       = require("./configErrorBag");
 /*
 app config
 if type = file -> only file functions
-
-error config
-all
-
-main config
-second layer for ex. https
  */
 
 class ConfigChecker
@@ -124,6 +118,7 @@ class ConfigChecker
        this.checkChannelConfig();
        this.checkServiceConfig();
        this.checkEventConfig();
+       this.checkErrorConfig();
    }
 
    private checkAppConfig()
@@ -158,22 +153,54 @@ class ConfigChecker
 
    private checkAuthController()
    {
-       let authController = this.zc.getApp(Const.App.KEYS.AUTH_CONTROLLER);
-       if(typeof authController === "string" && this.zc.isApp(Const.App.KEYS.CONTROLLER))
+       let authControllerName = this.zc.getApp(Const.App.KEYS.AUTH_CONTROLLER);
+       if(typeof authControllerName === "string" && this.zc.isApp(Const.App.KEYS.CONTROLLER))
        {
            let controller = this.zc.getApp(Const.App.KEYS.CONTROLLER);
-           if(!controller.hasOwnProperty(authController))
+           if(!controller.hasOwnProperty(authControllerName))
            {
                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
-                   `AuthController: '${authController}' is not found.`));
+                   `AuthController: '${authControllerName}' is not found.`));
+           }
+           else
+           {
+               //checkAuthControllerAccess value
+               let authController = controller[authControllerName];
+               if(authController[Const.App.CONTROLLER.ACCESS] !== Const.App.ACCESS.ALL)
+               {
+                   Logger.printConfigWarning
+                   (Const.Settings.CN.APP,`It is recommended to set the access of the authController directly to 'all'.`);
+               }
            }
        }
    }
+
 
    private checkEventConfig()
    {
        ConfigCheckerTools.assertStructure
        (Structures.EventConfig,this.zc.getEventConfig(),Const.Settings.CN.EVENT,this.ceb);
+   }
+
+   private checkErrorConfig()
+   {
+       if(typeof this.zc.getErrorConfig() === 'object')
+       {
+           let errors = this.zc.getErrorConfig();
+           for(let k in errors)
+           {
+               if(errors.hasOwnProperty(k))
+               {
+                   this.checkError(errors[k],new Target(`error '${k}'`));
+               }
+           }
+       }
+   }
+
+   private checkError(error: object,target : Target)
+   {
+       ConfigCheckerTools.assertStructure
+       (Structures.Error,error,Const.Settings.CN.ERROR,this.ceb,target);
    }
 
    private checkChannelConfig()
@@ -364,6 +391,40 @@ class ConfigChecker
 
        //checkStructure
        ConfigCheckerTools.assertStructure(Structures.Main,this.zc.getMainConfig(),Const.Settings.CN.MAIN,this.ceb);
+
+       this.checkHttpsMainConfig();
+       this.checkPanelUserMainConfig();
+   }
+
+   private checkHttpsMainConfig()
+   {
+       const httpsConfig = this.zc.getMain(Const.Main.KEYS.HTTPS_CONFIG);
+
+       if(typeof httpsConfig === 'object')
+       {
+           //checkStructure
+           ConfigCheckerTools.assertStructure(Structures.HttpsConfig,httpsConfig,Const.Settings.CN.MAIN,this.ceb);
+       }
+   }
+
+   private checkPanelUserMainConfig()
+   {
+       const panelUserConfig = this.zc.getMain(Const.Main.PANEL_USER);
+       if(Array.isArray(panelUserConfig)) {
+           for(let i = 0; i < panelUserConfig.length; i++) {
+               this.checkPanelUserConfig(panelUserConfig[i],new Target(`UserConfig '${i}'`));
+           }
+       }
+       else if(typeof panelUserConfig === 'object') {
+           this.checkPanelUserConfig(panelUserConfig)
+
+       }
+   }
+
+   private checkPanelUserConfig(config : object,target ?: Target)
+   {
+       //checkStructure
+       ConfigCheckerTools.assertStructure(Structures.PanelUserConfig,config,Const.Settings.CN.MAIN,this.ceb,target);
    }
 
     private checkServiceConfig()
@@ -793,6 +854,21 @@ class ConfigChecker
        }
    }
 
+   private static getAccessKeyWord(access : any, notAccess : any) : string
+   {
+       let keyWord = '';
+       //search One
+       if(notAccess !== undefined && access === undefined)
+       {
+           keyWord = Const.App.CONTROLLER.NOT_ACCESS;
+       }
+       else if(notAccess === undefined && access !== undefined)
+       {
+           keyWord = Const.App.CONTROLLER.ACCESS;
+       }
+       return keyWord;
+   }
+
    private checkControllerAccessKey(cc,target)
    {
        let notAccess = cc[Const.App.CONTROLLER.NOT_ACCESS];
@@ -805,16 +881,7 @@ class ConfigChecker
        }
        else
        {
-           let keyWord = '';
-           //search One
-           if(notAccess !== undefined && access === undefined)
-           {
-               keyWord = Const.App.CONTROLLER.NOT_ACCESS;
-           }
-           else if(notAccess === undefined && access !== undefined)
-           {
-               keyWord = Const.App.CONTROLLER.ACCESS;
-           }
+           let keyWord = ConfigChecker.getAccessKeyWord(access,notAccess);
            this.checkAccessKeyDependency(cc[keyWord],keyWord,target);
        }
    }

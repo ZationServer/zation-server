@@ -26,6 +26,7 @@ class TokenBridge
 
         this.newToken = false;
         this.plainTokenTemp = {};
+
     }
 
     isWebSocket() : boolean

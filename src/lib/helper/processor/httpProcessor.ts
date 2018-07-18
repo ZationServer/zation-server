@@ -11,6 +11,8 @@ import SHBridge              = require('../bridges/shBridge');
 import TokenTools            = require('../token/tokenTools');
 import ValidChProcessor      = require('./validChProcessor');
 import ZationReqTools        = require('../tools/zationReqTools');
+import TaskError             = require("../../api/TaskError");
+import MainErrors            = require('../zationTaskErrors/mainTaskErrors');
 
 const helper   = __dirname + '/../';
 const views    = helper + 'views/';
@@ -42,7 +44,20 @@ class HttpProcessor
             else
             {
                 //normal Req
-                req.zationToken = await TokenTools.verifyToken(zationData[Const.Settings.REQUEST_INPUT.TOKEN],zc);
+                if(!!zationData[Const.Settings.REQUEST_INPUT.TOKEN])
+                {
+                    req.zationToken = await TokenTools.verifyToken(zationData[Const.Settings.REQUEST_INPUT.TOKEN],zc);
+
+                    let tokenInfoStorage = worker.getTempDbUp();
+                    let token = req.zationToken;
+
+                    let valid = await tokenInfoStorage.isTokenUnblocked(token[Const.Settings.CLIENT.TOKEN_ID]);
+
+                    if(!valid)
+                    {
+                        throw new TaskError(MainErrors.tokenIsBlocked,{token : token});
+                    }
+                }
 
                 let shBridge = new SHBridge(
                     {

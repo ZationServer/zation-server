@@ -4,6 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+import SmallBag = require("../../api/SmallBag");
+
 class FuncTools
 {
     static async emitEvent(func : Function | Function[],...params : any[]) : Promise<void>
@@ -20,10 +22,10 @@ class FuncTools
         }
     }
 
-    static checkMiddlewareFunc(func : Function,req : object,next : Function) : boolean
+    static async checkMiddlewareFunc(func : Function,req : object,next : Function,smallBag : SmallBag) : Promise<boolean>
     {
         if(func !== undefined && typeof func === 'function') {
-            let res  = func(req);
+            let res  = await func(smallBag,req);
             if(res !== undefined && typeof res === "boolean" && res) {
                 return true;
             }

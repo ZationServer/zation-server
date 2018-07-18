@@ -74,11 +74,11 @@ class ZationStarter
             Logger.printConfigErrorBag(configErrorBag);
             process.exit();
         }
-        Logger.printStartDebugInfo(`Zation has checked the start config.`,true);
+        Logger.printStartDebugInfo(`Master has checked the start config.`,true);
 
         Logger.startStopWatch();
         this.zc.loadOtherConfigs();
-        Logger.printStartDebugInfo(`Zation has loaded the other config files.`,true);
+        Logger.printStartDebugInfo(`Master has loaded the other config files.`,true);
 
         Logger.startStopWatch();
         configChecker.checkAllConfigs();
@@ -86,23 +86,23 @@ class ZationStarter
             Logger.printConfigErrorBag(configErrorBag);
             process.exit();
         }
-        Logger.printStartDebugInfo(`Zation has checked the config files.`,true);
+        Logger.printStartDebugInfo(`Master has checked the config files.`,true);
 
         Logger.startStopWatch();
         PrepareClientJs.createServerSettingsFile(this.zc);
-        Logger.printStartDebugInfo('Zation builds the server settings file.',true);
+        Logger.printStartDebugInfo('Master builds the server settings file.',true);
 
         if(this.zc.isUseErrorInfoTempDb() || this.zc.isUseTokenInfoTempDb())
         {
             Logger.startStopWatch();
             this.tempDbEngine = new MasterTempDbEngine(this.zc);
             await this.tempDbEngine.init();
-            Logger.printStartDebugInfo('Zation init the master temp db engine.',true);
+            Logger.printStartDebugInfo('Master init the master temp db engine.',true);
         }
 
         Logger.startStopWatch();
         this.startSocketCluster();
-        Logger.printStartDebugInfo('Zation starts socket cluster.',true);
+        Logger.printStartDebugInfo('Master starts socket cluster.',true);
     }
 
     private startSocketCluster()
@@ -137,7 +137,12 @@ class ZationStarter
         {
            this.printStartedInformation();
 
-           this.startBackgroundTasks();
+           if(this.zc.isLeaderInstance())
+           {
+               Logger.startStopWatch();
+               this.startBackgroundTasks();
+               Logger.printStartDebugInfo('Master init the background tasks.',true);
+           }
 
            await this.zc.emitEvent(Const.Event.ZATION_IS_STARTED, this.zc.getSomeInformation());
 

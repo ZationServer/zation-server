@@ -233,12 +233,10 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     getSocketId() : string | undefined
     {
-        if(this.shBridge.isWebSocket)
-        {
+        if(this.shBridge.isWebSocket) {
             return this.shBridge.getSocket().id;
         }
-        else
-        {
+        else {
             return undefined;
         }
     }

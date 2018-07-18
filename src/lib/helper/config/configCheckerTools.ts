@@ -126,7 +126,7 @@ class ConfigCheckerTools
         if(!found)
         {
             configErrorBag.addConfigError(new ConfigError(configName,
-                `${target} ${message}`));
+                `${target.getTarget()} ${message}`));
             return false;
         }
         return true;

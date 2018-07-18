@@ -72,17 +72,19 @@ class TokenEngine
 
     async deauthenticate(token : object) : Promise<void>
     {
+        //blockToken
         if(this.zc.isExtraSecureAuth())
         {
             let tokenId = token[Const.Settings.CLIENT.TOKEN_ID];
             await this.worker.getTempDbUp().blockTokenId(tokenId);
         }
-        this.shBridge.getTokenBridge().deauthenticate();
 
-        if(this.shBridge.isWebSocket())
+        //disconnect all sockets with tokenId
+        if(!!token && !!token[Const.Settings.CLIENT.TOKEN_ID])
         {
-            ChAccessEngine.checkSocketCustomChAccess(this.shBridge.getSocket(),this.worker);
-            ChAccessEngine.checkSocketZationChAccess(this.shBridge.getSocket());
+            this.worker
+                .getPreparedSmallBag()
+                .disconnectToken(token[Const.Settings.CLIENT.TOKEN_ID]);
         }
     }
 

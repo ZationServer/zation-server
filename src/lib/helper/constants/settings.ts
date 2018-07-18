@@ -15,9 +15,10 @@ class ERROR
     static readonly DESCRIPTION                  = 'description';
     static readonly TYPE                         = 'type';
     static readonly SEND_INFO                    = 'sendInfo';
+    static readonly INFO                         = 'info';
     static readonly IS_FROM_ZATION_SYSTEM        = 'isFromZationSystem';
     static readonly IS_PRIVATE                   = 'isPrivate';
-    static readonly INFO = ERROR_INFO;
+    static readonly IN_INFO                      = ERROR_INFO;
 }
 
 class REQUEST_INPUT
@@ -31,6 +32,14 @@ class REQUEST_INPUT
     static readonly TOKEN                        = 'to';
 }
 
+class RESPONSE_ERROR
+{
+    static readonly Name                         = 'n';
+    static readonly TYPE                         = 't';
+    static readonly FROM_ZATION_SYSTEM           = 'zs';
+    static readonly DESCRIPTION                  = 'd';
+    static readonly INFO                         = 'i';
+}
 
 class RESPONSE
 {
@@ -38,12 +47,15 @@ class RESPONSE
     static readonly SUCCESSFUL                   = 's';
     static readonly RESULT                       = 'r';
     static readonly TOKEN                        = 't';
+    static readonly ZATION_INFO                  = 'zi';
 
     static readonly TOKEN_SIGNED                 = 'st';
     static readonly TOKEN_PLAIN                  = 'pt';
 
     static readonly RESULT_PAIRS                 = 'kv';
     static readonly RESULT_VALUES                = 'v';
+
+    static readonly ERROR                        = RESPONSE_ERROR;
 }
 
 class VALIDATION_REQUEST_INPUT
@@ -73,7 +85,6 @@ class CHANNEL
     static readonly ALL                       = 'ZATION.ALL';
     static readonly PANEL                     = 'ZATION.PANEL';
     static readonly ALL_WORKER                = 'ZATION.ALL_WORKER';
-    static readonly ALL_WORKER_LEADER         = 'ZATION.ALL_WORKER_LEADER';
 
     static readonly CUSTOM_ID_CHANNEL_PREFIX  = 'ZATION.CUSTOM_ID_CHANNEL.';
     static readonly CUSTOM_CHANNEL_ID         = '.CH_ID.';

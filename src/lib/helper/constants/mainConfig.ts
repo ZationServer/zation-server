@@ -24,6 +24,7 @@ class KEYS {
     static readonly SYSTEM_BACKGROUND_TASK_REFRESH_RATE   = 'systemBackgroundTaskRefreshRate';
     static readonly ZATION_CONSOLE_LOG                    = 'zationConsoleLog';
     static readonly SC_CONSOLE_LOG                        = 'scConsoleLog';
+    static readonly LEADER_INSTANCE                       = 'leaderInstance';
 
     static readonly USE_PANEL                             = 'usePanel';
     static readonly PANEL_USER                            = 'panelUser';
@@ -63,11 +64,23 @@ class OPTIONS {
     static readonly AUTO            = 'auto';
 }
 
+class PANEL_USER {
+    static readonly PASSWORD            = 'password';
+    static readonly USER_NAME           = 'userName';
+}
+
+class HTTPS_CONFIG {
+    static readonly CER            = 'cert';
+    static readonly KEY            = 'key';
+}
+
 class MainConfig
 {
     public static readonly TEMP_DB_ENGINE = TEMP_DB_ENGINE;
     public static readonly OPTIONS = OPTIONS;
     public static readonly KEYS = KEYS;
+    public static readonly PANEL_USER = PANEL_USER;
+    public static readonly HTTPS_CONFIG = HTTPS_CONFIG;
 }
 
 

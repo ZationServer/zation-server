@@ -10,9 +10,11 @@ This class is to publish into channels with the scServer.exchange object.
 It is used by the SmallBag and the ChannelEngine.
  */
 
-import Const       = require('../constants/constWrapper');
-import ChTools     = require('./chTools');
-import ZationConfig = require("../../main/zationConfig");
+import Const             = require('../constants/constWrapper');
+import ChTools           = require('./chTools');
+import ZationConfig      = require("../../main/zationConfig");
+import Logger            = require("../logger/logger");
+import {WorkerChActions} from "../constants/workerChActions";
 
 class ChExchangeEngine
 {
@@ -37,6 +39,29 @@ class ChExchangeEngine
     {
         // noinspection TypeScriptValidateJSTypes
         this.scServer.exchange.publish(channel,ChExchangeEngine.buildData(eventName,data),cb);
+    }
+
+    publishTaskToWorker(action : WorkerChActions,id : string | number | (string | number)[], ch ?: string)
+    {
+        let ids : (string | number)[] = [];
+        if(!Array.isArray(id)) {
+            ids = [id];
+        }
+        else {
+            ids = id;
+        }
+
+        this.publishToWorker({ids,action,ch});
+    }
+
+    publishToWorker(data : any)
+    {
+        this.scServer.exchange.publish(Const.Settings.CHANNEL.ALL_WORKER,data,(e) => {
+            if(e)
+            {
+                Logger.printWarning(`Failed to publish data: '${data.toString()}' in worker channel!`);
+            }
+        });
     }
 
     publishInUserCh(id : number | string | (string | number)[],eventName : string,data : any,cb ?: Function) : void

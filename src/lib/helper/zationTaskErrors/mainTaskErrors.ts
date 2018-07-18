@@ -57,6 +57,16 @@ export = {
         isFromZationSystem : true
     },
 
+    errorNotFound  : {
+        name          : 'errorNotFound ',
+        description   : 'Error not found ',
+        type          : ErrorType.SYSTEM_ERROR,
+        sendInfo      : false,
+        //INFO
+        // errorName (name of the error)
+        isFromZationSystem : true
+    },
+
     versionToOld    : {
         name          : 'versionToOld',
         description   : 'Version is to old',
@@ -165,7 +175,7 @@ export = {
     authStartActive    : {
         name          : 'authStartActive',
         description   : 'auth start is active, zation only accept auth request for a time!',
-        type          : ErrorType.WAITING,
+        type          : ErrorType.TIME_ERROR,
         isPrivate     : false,
         sendInfo      : false,
         isFromZationSystem : true

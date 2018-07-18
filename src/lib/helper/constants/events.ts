@@ -29,6 +29,7 @@ class Event
     static readonly SOCKET_BAD_AUTH_TOKEN              = 'socketBadAuthToken';
     static readonly SOCKET_AUTHENTICATE                = 'socketAuthenticate';
     static readonly SOCKET_DEAUTHENTICATE              = 'socketDeauthenticate';
+    static readonly SOCKET_AUTH_STATE_CHANGE           = 'socketAuthStateChange';
     static readonly SOCKET_MESSAGE                     = 'socketMessage';
 
     //SocketCluster ScServer Events
@@ -44,6 +45,7 @@ class Event
     static readonly SC_SERVER_AUTHENTICATION           = 'scServerAuthentication';
     static readonly SC_SERVER_DEAUTHENTICATION         = 'scServerDeauthentication';
     static readonly SC_SERVER_BAD_SOCKET_AUTH_TOKEN    = 'scServerBadSocketAuthToken';
+    static readonly SC_SERVER_READY                    = 'scServerReady';
 
     //SocketCluster Middleware
     static readonly MIDDLEWARE_AUTHENTICATE            = 'middlewareAuthenticate';

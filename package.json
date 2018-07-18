@@ -32,6 +32,7 @@
     "@types/node": "10.5.2",
     "@types/nodemailer": "4.6.2",
     "@types/pg-pool": "0.0.3",
+    "@types/node-fetch": "2.1.1",
     "body-parser": "1.18.3",
     "connect-mongo": "2.0.1",
     "connect-redis": "3.3.3 ",
@@ -52,7 +53,9 @@
     "scc-broker-client": "6.0.1",
     "socketcluster": "14.0.4",
     "validator": "10.4.0",
-    "zation-client": "0.0.1"
+    "zation-client": "0.0.1",
+    "node-fetch": "2.1.2",
+    "sc-hasher" : "1.0.0"
   },
   "devDependencies": {
     "@types/gulp-sass": "0.0.31",

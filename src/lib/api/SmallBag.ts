@@ -19,6 +19,10 @@ import Pg               = require('pg');
 import nodeMailer       = require('nodemailer');
 import {MongoClient}      from "mongodb";
 import {Options}          from "nodemailer/lib/mailer";
+import TaskError        = require("./TaskError");
+import fetch,{Request, RequestInit, Response} from 'node-fetch';
+import ChTools = require("../helper/channel/chTools");
+import {WorkerChActions} from "../helper/constants/workerChActions";
 
 class SmallBag
 {
@@ -390,63 +394,6 @@ class SmallBag
         this.publishToCustomChannel(channel, eventName, data, cb);
     }
 
-    //Part Channel KickOut
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in an custom channel or channels
-     * @example
-     * pubCustomChannel('messageChannel','message',{message : 'hello',fromUserId : '1'});
-     * pubCustomChannel(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
-     * @param userId
-     * @param channel or an array of channels
-     * @param id
-     * @param exceptTokenId
-     */
-    async kickUserFromCustomIdCh
-    (
-        userId : number | string | (number | string)[],
-        channel : string,
-        id ?: string,
-        exceptTokenId ?: string[] | string
-    ) : Promise<boolean>
-    {
-        return true;
-    }
-
-    async kickUserFromCustomCh
-    (
-        userId : number | string | (number | string)[],
-        channel : string,
-        exceptTokenId ?: string[] | string
-    ) : Promise<boolean>
-    {
-        return true;
-    }
-
-    //Part Security
-
-    async disconnectUser(userId : number | string | (number | string)[]) : Promise<boolean>
-    {
-        return true;
-    }
-
-    async disconnectToken(tokenId :  string | (string)[]) : Promise<boolean>
-    {
-        return true;
-    }
-
-    async deauthenticateUser(userId : number | string | (number | string)[]) : Promise<boolean>
-    {
-        return true;
-    }
-
-    async deauthenticateTokenId(tokenId :  string | (string)[]) : Promise<boolean>
-    {
-        return true;
-    }
-
     //Part Database -> MySql
 
     // noinspection JSUnusedGlobalSymbols
@@ -652,26 +599,156 @@ class SmallBag
 
     //Part Errors
 
-    getError(name)
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns taskError with Info from the error config file
+     * @throws ErrorNotFoundError
+     * @param name
+     * @param info
+     */
+    getError(name : string,info : object = {}) : TaskError
     {
-
-
+        const errorOp = this.zc.getError(name);
+        return new TaskError(errorOp,info);
     }
 
-    //Part TempDb Variables
     // noinspection JSUnusedGlobalSymbols
-    async getTempDbVar(key)
+    /**
+     * @description
+     * Checks if the error with this name is exist
+     * and can be used.
+     * @param name
+     */
+    isError(name : string) : boolean
     {
-        //TODO
+        return this.zc.isError(name);
+    }
 
+    //Part Http
+    // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
+    async fetch(url: string | Request, init?: RequestInit): Promise<Response>
+    {
+        return await fetch(url,init);
+    }
 
+    //Part Channel KickOut
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * KickOut all sockets with userId from an custom id channel (server side)
+     * @example
+     * kickUserCustomIdCh('user20','chatGroup');
+     * kickUserCustomIdCh(['tom39','lara23'],'image','2');
+     * @param userId or more user ids in an array
+     * @param channel
+     * @param id is optional, if it is not given the users will be kicked out from all ids of this channel.
+     */
+    kickUserCustomIdCh(userId : number | string | (number | string)[], channel : string, id ?: string) : void
+    {
+        let ch = ChTools.buildCustomIdChannelName(channel,id);
+        this.exchangeEngine.publishTaskToWorker(WorkerChActions.KICK_OUT_USER_IDS_FROM_CH,userId,ch);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    async setTempDbVar(key,value)
+    /**
+     * @description
+     * KickOut all sockets with userId from an custom channel (server side)
+     * @example
+     * kickUserCustomCh('user20','chatGroup');
+     * kickUserCustomCh(['tom39','lara23'],'image');
+     * @param userId or more user ids in an array
+     * @param channel
+     */
+    kickUserCustomCh(userId : number | string | (number | string)[], channel : string) : void
     {
-        //TODO
+        let ch = ChTools.buildCustomChannelName(channel);
+        this.exchangeEngine.publishTaskToWorker(WorkerChActions.KICK_OUT_USER_IDS_FROM_CH,userId,ch);
+    }
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * KickOut all sockets with token id from an custom id channel (server side)
+     * @example
+     * kickTokenCustomIdCh('TOKEN-UUID1','chatGroup');
+     * kickTokenCustomIdCh(['TOKEN-UUID1,'TOKEN-UUID2'],'image','2');
+     * @param tokenId
+     * @param channel
+     * @param id is optional, if it is not given the sockets with tokenId will be kicked out from all ids of this channel.
+     */
+    kickTokenCustomIdCh(tokenId : string | string[], channel : string, id ?: string) : void
+    {
+        let ch = ChTools.buildCustomIdChannelName(channel,id);
+        this.exchangeEngine.publishTaskToWorker(WorkerChActions.KICK_OUT_TOKEN_IDS_FROM_CH,tokenId,ch);
+    }
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * KickOut all sockets with token id from an custom channel (server side)
+     * @example
+     * kickTokenCustomCh('TOKEN-UUID1','chatGroup');
+     * kickTokenCustomCh(['TOKEN-UUID1,'TOKEN-UUID2'],'image','2');
+     * @param tokenId
+     * @param channel
+     */
+    kickTokenCustomCh(tokenId : string | string[], channel : string) : void
+    {
+        let ch = ChTools.buildCustomChannelName(channel);
+        this.exchangeEngine.publishTaskToWorker(WorkerChActions.KICK_OUT_TOKEN_IDS_FROM_CH,tokenId,ch);
+    }
 
+    //Part Security
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Disconnect all sockets with user id (server side)
+     * @example
+     * disconnectUser('tim902','leonie23');
+     * @param userIds
+     */
+    disconnectUser(...userIds : (number | string)[]) : void
+    {
+        this.exchangeEngine.publishTaskToWorker(WorkerChActions.DISCONNECT_USER_IDS,userIds);
+    }
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Disconnect all sockets with token id (server side)
+     * @example
+     * disconnectToken('TOKEN-UUID1','TOKEN-UUID2');
+     * @param tokenIds
+     */
+    disconnectToken(...tokenIds : string[]) : void
+    {
+        this.exchangeEngine.publishTaskToWorker(WorkerChActions.DISCONNECT_TOKEN_IDS,tokenIds);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Deauthenticate all sockets with user id (server side)
+     * @example
+     * deauthenticateUser('tim902','leonie23');
+     * @param userIds
+     */
+    deauthenticateUser(...userIds : (number | string)[]) : void
+    {
+        this.exchangeEngine.publishTaskToWorker(WorkerChActions.DEAUTHENTICATE_USER_IDS,userIds);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Deauthenticate all sockets with token id (server side)
+     * @example
+     * deauthenticateToken('TOKEN-UUID1','TOKEN-UUID2');
+     * @param tokenIds
+     */
+    deauthenticateToken(...tokenIds :  string[]) : void
+    {
+        this.exchangeEngine.publishTaskToWorker(WorkerChActions.DEAUTHENTICATE_TOKEN_IDS,tokenIds);
     }
 
     //Part Amazon s3

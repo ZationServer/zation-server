@@ -30,7 +30,7 @@ class TokenTools
 
                 if(tokenBridge.isWebSocket())
                 {
-                    ChAccessEngine.checkSocketCustomChAccess(tokenBridge.getSocket(),worker);
+                    await ChAccessEngine.checkSocketCustomChAccess(tokenBridge.getSocket(),worker);
                 }
 
                 suc = true;

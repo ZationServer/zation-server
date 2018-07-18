@@ -8,7 +8,7 @@ import fs           = require('fs');
 import path         = require('path');
 import Const        = require('../constants/constWrapper');
 import ZationConfig = require("../../main/zationConfig");
-import ZationClient = require('zation-client');
+//import ZationClient = require('zation-client');
 
 const serverSettingsFile           = __dirname + '/serverSettings.js';
 
@@ -18,7 +18,7 @@ class PrepareClientJs
     {
         let res = '';
         // noinspection JSUnresolvedVariable,JSUnresolvedFunction
-        res += ZationClient.ZationReader.getZationMinifyClient();
+        //res += ZationClient.ZationReader.getZationMinifyClient();
         res += fs.readFileSync(path.resolve(serverSettingsFile), "utf8");
         return res;
     }

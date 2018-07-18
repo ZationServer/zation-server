@@ -18,26 +18,6 @@ import ZationConfig  = require("../../main/zationConfig");
 
 class ChTools
 {
-    static generateInfo(socket) : any
-    {
-        let info = {};
-
-        let type = TokenTools.getSocketTokenVariable([Const.Settings.CLIENT.AUTH_USER_GROUP],socket);
-
-        info[Const.Channel.CHANNEL.INFO.AUTH_USER_GROUP] = type;
-
-        info[Const.Channel.CHANNEL.INFO.USER_ID] =
-            TokenTools.getSocketTokenVariable([Const.Settings.CLIENT.USER_ID],socket);
-
-        info[Const.Channel.CHANNEL.INFO.SOCKET] = socket;
-
-        info[Const.Channel.CHANNEL.INFO.TOKEN_ID] =
-            TokenTools.getSocketTokenVariable([Const.Settings.CLIENT.TOKEN_ID],socket);
-
-        info[Const.Channel.CHANNEL.INFO.IS_AUTH_IN] = type !== undefined;
-
-        return info;
-    }
 
     static buildCustomIdChannelName(name : string,id : string = '') : string
     {

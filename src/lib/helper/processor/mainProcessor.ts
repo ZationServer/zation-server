@@ -53,8 +53,9 @@ class MainProcessor
             let controllerConfig = worker.getControllerPrepare().getControllerConfig(controllerName);
 
             //EXTRA SECURE AUTH LAYER
-            if(zc.isExtraSecureAuth() && shBridge.getTokenBridge().hasToken() &&
-               ControllerTools.needToCheckExtraSecure(controllerConfig))
+            if(shBridge.getTokenBridge().hasToken() && shBridge.isWebSocket() &&
+                ControllerTools.needToCheckExtraSecure(controllerConfig) &&
+                zc.isExtraSecureAuth())
             {
                 let tokenInfoStorage = worker.getTempDbUp();
                 let token = shBridge.getTokenBridge().getToken();

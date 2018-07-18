@@ -4,7 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-let Const      = require('../helper/constants/constWrapper');
+import {TaskErrorOptions} from "../helper/configEditTool/errorConfigStructure";
+import TaskErrorBuilder   = require("../helper/builder/taskErrorBuilder");
+let Const                 = require('../helper/constants/constWrapper');
 
 class TaskError
 {
@@ -16,7 +18,7 @@ class TaskError
     private privateE : boolean;
     private readonly fromZationSystem : boolean;
 
-    constructor(error : object = {},info ?: object | string)
+    constructor(error : TaskErrorOptions = {},info ?: object | string)
     {
         //defaultValues
         this.name        = 'TaskError';
@@ -81,23 +83,23 @@ class TaskError
 
         if(this.privateE)
         {
-            obj['n'] = 'TaskError';
-            obj['t'] = this.type;
+            obj[Const.Settings.RESPONSE.ERROR.Name] = 'TaskError';
+            obj[Const.Settings.RESPONSE.ERROR.TYPE] = this.type;
         }
         else
         {
-            obj['n'] = this.name;
-            obj['t'] = this.type;
-            obj['zs'] = this.fromZationSystem;
+            obj[Const.Settings.RESPONSE.ERROR.Name] = this.name;
+            obj[Const.Settings.RESPONSE.ERROR.TYPE] = this.type;
+            obj[Const.Settings.RESPONSE.ERROR.FROM_ZATION_SYSTEM] = this.fromZationSystem;
 
             if(withDesc)
             {
-                obj['d'] = this.description;
+                obj[Const.Settings.RESPONSE.ERROR.DESCRIPTION] = this.description;
             }
 
             if(this.sendInfo)
             {
-                obj['i'] = this.info;
+                obj[Const.Settings.RESPONSE.ERROR.INFO] = this.info;
             }
         }
         return obj;
@@ -179,6 +181,11 @@ class TaskError
     isFromZationSystem() : boolean
     {
         return this.fromZationSystem;
+    }
+
+    static build() : TaskErrorBuilder
+    {
+        return new TaskErrorBuilder();
     }
 }
 

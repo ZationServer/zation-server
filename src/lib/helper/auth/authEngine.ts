@@ -11,6 +11,7 @@ import SHBridge       = require("../bridges/shBridge");
 import TokenEngine    = require("../token/tokenEngine");
 import MainErrors     = require("../zationTaskErrors/mainTaskErrors");
 import ZationToken = require("../infoObjects/zationInfo");
+import ChAccessEngine = require("../channel/chAccessEngine");
 
 class AuthEngine
 {
@@ -184,10 +185,26 @@ class AuthEngine
 
     async authOut() : Promise <void>
     {
+        if(!this.isAuth()) {
+            return;
+        }
+
         this.currentDefault = true;
         this.currentUserGroup = this.getDefaultGroup();
         this.currentUserId = undefined;
+
+        //deauthenticate socket/send info by http back
+        this.shBridge.deauthenticate();
+
+        //block oldToken and disconnect all sockets with Token Id
         await this.tokenEngine.deauthenticate(this.shBridge.getTokenBridge().getToken());
+
+        //check channels from socket
+        if(this.shBridge.isWebSocket())
+        {
+            await ChAccessEngine.checkSocketCustomChAccess(this.shBridge.getSocket(),this.aePreparedPart.getWorker());
+            ChAccessEngine.checkSocketZationChAccess(this.shBridge.getSocket());
+        }
     }
 
     //PART AUTHENTICATION ACCESS CHECKER

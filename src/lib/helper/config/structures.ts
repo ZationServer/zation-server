@@ -7,6 +7,15 @@ GitHub: LucaCode
 import Const       = require('../constants/constWrapper');
 import ObjectTools = require('../tools/objectTools');
 
+const Error = {};
+Error[Const.Settings.ERROR.NAME]                       = {types : ['string'],isOptional : true};
+Error[Const.Settings.ERROR.IS_FROM_ZATION_SYSTEM]      = {types : ['boolean'],isOptional : true};
+Error[Const.Settings.ERROR.SEND_INFO]                  = {types : ['boolean'],isOptional : true};
+Error[Const.Settings.ERROR.IS_PRIVATE]                 = {types : ['boolean'],isOptional : true};
+Error[Const.Settings.ERROR.DESCRIPTION]                = {types : ['string'],isOptional : true};
+Error[Const.Settings.ERROR.TYPE]                       = {types : ['string'],isOptional : true};
+Error[Const.Settings.ERROR.INFO]                       = {types : ['object'],isOptional : true};
+
 const App = {};
 App[Const.App.KEYS.AUTH_CONTROLLER]      = {types : ['string'],isOptional : true};
 App[Const.App.KEYS.CONTROLLER]           = {types : ['object'],isOptional : true};
@@ -50,6 +59,7 @@ Main[Const.Main.KEYS.ENVIRONMENT]             = {types : ['string'],isOptional :
 Main[Const.Main.KEYS.TIME_ZONE]               = {types : ['string'],isOptional : true};
 Main[Const.Main.KEYS.ZATION_CONSOLE_LOG]      = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.SC_CONSOLE_LOG]          = {types : ['boolean'],isOptional : true};
+Main[Const.Main.KEYS.LEADER_INSTANCE]         = {types : ['boolean'],isOptional : true};
 
 Main[Const.Main.KEYS.WORKERS]
     = {types : ['number','string'],isOptional : true, stringOnlyEnum : [Const.Main.OPTIONS.AUTO]};
@@ -65,7 +75,7 @@ Main[Const.Main.KEYS.USE_PROTOCOL_CHECK]      = {types : ['boolean'],isOptional 
 Main[Const.Main.KEYS.SEND_ERRORS_DESC]        = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.SYSTEM_BACKGROUND_TASK_REFRESH_RATE] = {types : ['number'],isOptional : true};
 Main[Const.Main.KEYS.USE_PANEL]               = {types : ['boolean'],isOptional : true};
-Main[Const.Main.KEYS.PANEL_USER]              = {types : ['object'],isOptional : true};
+Main[Const.Main.KEYS.PANEL_USER]              = {types : ['object','array'],isOptional : true};
 Main[Const.Main.KEYS.CLIENT_JS_PREPARE]       = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.USE_TEMP_DB_TOKEN_INFO]  = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.USE_TEMP_DB_ERROR_INFO]  = {types : ['boolean'],isOptional : true};
@@ -143,10 +153,17 @@ ChannelConfig[Const.Channel.KEYS.DEFAULTS]                = {types : ['object'],
 ChannelConfig[Const.Channel.KEYS.CUSTOM_CHANNELS]         = {types : ['object'],isOptional : true};
 ChannelConfig[Const.Channel.KEYS.CUSTOM_ID_CHANNELS]      = {types : ['object'],isOptional : true};
 
+const HttpsConfig = {};
+HttpsConfig[Const.Main.HTTPS_CONFIG.CER]             = {types : ['string'],isOptional : true};
+HttpsConfig[Const.Main.HTTPS_CONFIG.KEY]             = {types : ['string'],isOptional : true};
 
 const ServiceConfig = {};
 ServiceConfig[Const.Service.KEYS.SERVICES]             = {types : ['object'],isOptional : true};
 ServiceConfig[Const.Service.KEYS.CUSTOM_SERVICES]      = {types : ['object'],isOptional : true};
+
+const PanelUserConfig = {};
+PanelUserConfig[Const.Main.PANEL_USER.USER_NAME]             = {types : ['string'],isOptional : false};
+PanelUserConfig[Const.Main.PANEL_USER.PASSWORD]              = {types : ['string'],isOptional : false};
 
 const ChannelItem = {};
 ChannelItem[Const.Channel.CHANNEL.PUBLISH]       = {types : ['function','boolean','number','array','string'],isOptional : true};
@@ -195,6 +212,7 @@ EventConfig[Const.Event.SC_SERVER_UNSUBSCRIPTION]         = {types : ['function'
 EventConfig[Const.Event.SC_SERVER_AUTHENTICATION]         = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.SC_SERVER_DEAUTHENTICATION]       = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.SC_SERVER_BAD_SOCKET_AUTH_TOKEN]  = {types : ['function','array'],isOptional : true};
+EventConfig[Const.Event.SC_SERVER_READY]                  = {types : ['function','array'],isOptional : true};
 
 EventConfig[Const.Event.SOCKET_ERROR]                     = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.SOCKET_RAW]                       = {types : ['function','array'],isOptional : true};
@@ -207,6 +225,7 @@ EventConfig[Const.Event.SOCKET_UNSUBSCRIBE]               = {types : ['function'
 EventConfig[Const.Event.SOCKET_BAD_AUTH_TOKEN]            = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.SOCKET_AUTHENTICATE]              = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.SOCKET_DEAUTHENTICATE]            = {types : ['function','array'],isOptional : true};
+EventConfig[Const.Event.SOCKET_AUTH_STATE_CHANGE]         = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.SOCKET_MESSAGE]                   = {types : ['function','array'],isOptional : true};
 
 EventConfig[Const.Event.MIDDLEWARE_AUTHENTICATE]          = {types : ['function'],isOptional : true};
@@ -235,6 +254,9 @@ class Structures
     public static readonly AppArray = AppArray;
     public static readonly ArrayShortCutSpecify = ArrayShortCutSpecify;
     public static readonly EventConfig = EventConfig;
+    public static readonly Error = Error;
+    public static readonly HttpsConfig = HttpsConfig;
+    public static readonly PanelUserConfig = PanelUserConfig;
 }
 
 export = Structures;

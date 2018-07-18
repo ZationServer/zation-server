@@ -28,6 +28,7 @@ class ConfigPeCompiler
         this.preCompileObjects();
         this.preCompileController();
         this.preCompileChannelConfig();
+        this.preCompileErrorConfig();
 
         //view precompiled app config
         //console.dir(this.zc.getAppConfig(),{depth:null})
@@ -71,6 +72,21 @@ class ConfigPeCompiler
         else
         {
             this.zc.getChannelConfig()[Const.Channel.KEYS.CUSTOM_ID_CHANNELS] = {};
+        }
+    }
+
+    private preCompileErrorConfig() : void
+    {
+        if(typeof this.zc.getErrorConfig() === 'object')
+        {
+            let errors = this.zc.getErrorConfig();
+            for(let k in errors)
+            {
+                if(errors.hasOwnProperty(k) && errors[k][Const.Settings.ERROR.NAME] === undefined)
+                {
+                    errors[k][Const.Settings.ERROR.NAME] = k;
+                }
+            }
         }
     }
 

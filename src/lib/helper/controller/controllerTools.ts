@@ -57,7 +57,7 @@ class ControllerTools
         {
             return controllerConfig[Const.App.CONTROLLER.EXTRA_SECURE];
         }
-        return true;
+        return false;
     }
 
     //Part Before Handle

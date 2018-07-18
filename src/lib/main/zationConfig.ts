@@ -13,6 +13,9 @@ import crypto            = require('crypto');
 import ZationInfoObj     = require("../helper/infoObjects/zationInfo");
 import Structures        = require('./../helper/config/structures');
 import FuncTools         = require("../helper/tools/funcTools");
+import {TaskErrorOptions} from "../helper/configEditTool/errorConfigStructure";
+import ErrorNotFound = require("../helper/error/errorNotFoundError");
+import SmallBag = require("../api/SmallBag");
 
 class ZationConfig
 {
@@ -56,6 +59,7 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.WORKERS] = Const.Main.OPTIONS.AUTO;
             this.mainConfig[Const.Main.KEYS.ZATION_CONSOLE_LOG] = true;
             this.mainConfig[Const.Main.KEYS.SC_CONSOLE_LOG] = false;
+            this.mainConfig[Const.Main.KEYS.LEADER_INSTANCE] = process.env.LEADER || true;
 
             //TEMP
             this.mainConfig[Const.Main.KEYS.USE_TEMP_DB_TOKEN_INFO] = true;
@@ -200,6 +204,26 @@ class ZationConfig
         return this.appConfig;
     }
 
+    getErrorConfig() : object
+    {
+        return this.errorConfig;
+    }
+
+    getError(name : string) : TaskErrorOptions
+    {
+        if(this.errorConfig.hasOwnProperty(name)) {
+            return this.errorConfig[name];
+        }
+        else {
+            throw new ErrorNotFound(name);
+        }
+    }
+
+    isError(name : string) : boolean
+    {
+        return this.errorConfig.hasOwnProperty(name);
+    }
+
     getVerifyKey() : any
     {
         if(this.getMain(Const.Main.KEYS.AUTH_PUBLIC_KEY) !== null)
@@ -237,6 +261,11 @@ class ZationConfig
     isUseErrorInfoTempDb() : boolean
     {
         return this.getMain(Const.Main.KEYS.USE_TEMP_DB_ERROR_INFO);
+    }
+
+    isLeaderInstance() : boolean
+    {
+        return this.getMain(Const.Main.KEYS.LEADER_INSTANCE);
     }
 
     getSomeInformation() : ZationInfoObj
@@ -333,10 +362,10 @@ class ZationConfig
         return result;
     }
 
-    checkMiddlewareEvent(event : string,req : object,next : Function) : boolean
+    async checkMiddlewareEvent(event : string,req : object,next : Function,smallBag : SmallBag) : Promise<boolean>
     {
         let func = this.getEvent(event);
-        return FuncTools.checkMiddlewareFunc(func,req,next);
+        return await FuncTools.checkMiddlewareFunc(func,req,next,smallBag);
     }
 
     async emitEvent(event : string,...params : any[]) : Promise<void>

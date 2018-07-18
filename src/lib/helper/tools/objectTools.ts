@@ -7,6 +7,47 @@ GitHub: LucaCode
 
 class ObjectTools
 {
+    static mergeObjects(objects : object[]) : object
+    {
+        if(objects.length >= 1) {
+
+            let mainObj = objects[0];
+
+            for(let i = 1; i < objects.length; i++) {
+                mainObj = ObjectTools.mergeObjToObj(mainObj,objects[i]);
+            }
+
+            return mainObj;
+        }
+        else {
+            return {};
+        }
+    }
+
+    //Merge objects on all layers (needs more performance)
+    static mergeObjToObj(mainObj : object, toMergeObj : object)
+    {
+        if(typeof mainObj === "object" && typeof toMergeObj === "object")
+        {
+            for(let k in toMergeObj)
+            {
+                if(toMergeObj.hasOwnProperty(k))
+                {
+                    if(!mainObj.hasOwnProperty(k))
+                    {
+                        mainObj[k] = toMergeObj[k];
+                    }
+                    else
+                    {
+                        mainObj[k] = ObjectTools.mergeObjToObj(toMergeObj[k],toMergeObj[k]);
+                    }
+                }
+            }
+        }
+        return mainObj;
+    }
+
+    //Only adds obj to obj on the first Layer
     static addObToOb(mainOb : object,addOb : object,overwrite : boolean = false) : void
     {
         for(let key in addOb)

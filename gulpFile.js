@@ -35,7 +35,7 @@ const replaceConst = (match) =>
             return undefined;
         }
     }
-    return tempRes;
+    return `'${tempRes}' `;
 };
 
 gulp.task('cetTs', function () {

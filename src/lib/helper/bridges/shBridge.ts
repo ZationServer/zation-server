@@ -35,6 +35,11 @@ class SHBridge
         this.zc = zc;
 
         this.tokenBridge = new TokenBridge(isWebSocket,socket,httpReq,zc);
+
+        if(!this.isWebSocket() && this.httpRes['zationInfo'] === undefined)
+        {
+            this.httpRes['zationInfo'] = [];
+        }
     }
 
     getZationData() : object
@@ -52,6 +57,15 @@ class SHBridge
     getTokenBridge() : TokenBridge
     {
         return this.tokenBridge;
+    }
+
+    deauthenticate() : void
+    {
+        this.getTokenBridge().deauthenticate();
+        if(!this.isWebSocket())
+        {
+            this.httpRes['zationInfo'].push('authOut');
+        }
     }
 
     getSocket() : any

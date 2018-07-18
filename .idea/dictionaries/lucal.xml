@@ -4,6 +4,7 @@
       <w>crypto</w>
       <w>deauthenticate</w>
       <w>deauthentication</w>
+      <w>hasher</w>
       <w>linvo</w>
       <w>minify</w>
       <w>mongo</w>

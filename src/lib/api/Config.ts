@@ -22,8 +22,21 @@ import
     BeforeTaskErrorFunction,
     EventConfig,
     ExpressFunction,
-    GetUserCountFunction, HttpServerIsStartedFunction, IsStartedFunction,
-    WorkerIsStartedFunction, WsServerIsStartedFunction
+    GetUserCountFunction,
+    HttpServerIsStartedFunction,
+    IsStartedFunction, ScServerAuthenticationFunction, ScServerBadSocketAuthTokenFunction,
+    ScServerConnectionFunction, ScServerDeauthenticationFunction,
+    ScServerErrorFunction,
+    ScServerNoticeFunction, ScServerReadyFunction,
+    ScServerSocketFunction, ScServerSubscriptionFunction, ScServerUnsubscriptionFunction,
+    SocketConnectionFunction,
+    SocketErrorFunction,
+    SocketFunction,
+    SocketMessageFunction,
+    SocketObjFunction,
+    SocketAuthenticateFunction,
+    WorkerIsStartedFunction,
+    WsServerIsStartedFunction, SocketDeauthenticateFunction, MiddlewareFunction
 } from "../helper/configEditTool/eventConfigStructure";
 
 import
@@ -37,39 +50,29 @@ import
     AppConfig, BeforeHandleFunction,
     CompileAsFunction, ControllerAccessFunction, TaskFunction
 } from "../helper/configEditTool/appConfigStructure";
+import {ErrorConfig} from "../helper/configEditTool/errorConfigStructure";
+import {ChannelAccessFunction, ChannelConfig} from "../helper/configEditTool/channelConfigStructure";
+import ObjectTools = require("../helper/tools/objectTools");
+import {StarterConfig} from "../helper/configEditTool/starterConfigStructure";
+import {MainConfig} from "../helper/configEditTool/mainConfigStructure";
 
 
 class Config
 {
+    //Part config tools
 
-    static c : AppConfig =
-    {
-        controller :
-            {
-
-                login :
-                    {
-
-                        access : (sb,t) =>
-                        {
-                            return t.panelAccess;
-                        }
-
-                    }
-
-            }
-
-
-    };
-
+    static merge(...configs : object[]) : object {
+        return ObjectTools.mergeObjects(configs);
+    }
 
     //Part main configs
     static appConfig(config : AppConfig) : AppConfig {return config;}
     static eventConfig(config : EventConfig) : EventConfig {return config;}
     static serviceConfig(config : ServiceConfig) : ServiceConfig {return config;}
-    static mainConfig(config : any) : any {return config;}
-    static channelConfig(config : any) : any {return config;}
-    static errorConfig(config : any) : any {return config;}
+    static mainConfig(config : MainConfig) : MainConfig {return config;}
+    static channelConfig(config : ChannelConfig) : ChannelConfig {return config;}
+    static errorConfig(config : ErrorConfig) : ErrorConfig {return config;}
+    static starterConfig(config : StarterConfig) : StarterConfig {return config;}
 
     //Part App Config functions
 
@@ -77,6 +80,10 @@ class Config
     static beforeHandle(func : BeforeHandleFunction) : BeforeHandleFunction {return func;}
     static controllerAccess(func : ControllerAccessFunction) : ControllerAccessFunction {return func;}
     static task(func : TaskFunction) :  TaskFunction {return func;}
+
+    //Part Channel Config functions
+
+    static channelAccess(func : ChannelAccessFunction) : ChannelAccessFunction {return func;}
 
     //Part Event Config events
 
@@ -91,8 +98,46 @@ class Config
     static wsServerIsStarted(func : WsServerIsStartedFunction) : WsServerIsStartedFunction{return func;}
     static isStarted(func : IsStartedFunction) : IsStartedFunction{return func;}
 
-    //Part Type
+    //Part Socket Events (SC)
+    static socketError(func : SocketErrorFunction) : SocketErrorFunction {return func;}
+    static socketRaw(func : SocketFunction) : SocketFunction {return func;}
+    static socketConnect(func : SocketConnectionFunction) : SocketConnectionFunction {return func;}
+    static socketDisconnect(func : SocketFunction) : SocketFunction {return func;}
+    static socketConnectAbort(func : SocketFunction) : SocketFunction {return func;}
+    static socketClose(func : SocketFunction) : SocketFunction {return func;}
+    static socketSubscribe(func : SocketFunction) : SocketFunction {return func;}
+    static socketUnsubscribe(func : SocketFunction) : SocketFunction{return func;}
+    static socketBadAuthToken(func : SocketObjFunction) : SocketObjFunction{return func;}
+    static socketAuthenticate(func : SocketAuthenticateFunction) : SocketAuthenticateFunction{return func;}
+    static socketDeauthenticate(func : SocketDeauthenticateFunction) : SocketDeauthenticateFunction{return func;}
+    static socketAuthStateChange(func : SocketFunction) : SocketFunction{return func;}
+    static socketMessage(func : SocketMessageFunction) : SocketMessageFunction{return func;}
 
+    //Part ScServer Events (SC)
+    static scServerError(func : ScServerErrorFunction) : ScServerErrorFunction {return func;}
+    static scServerNotice(func : ScServerNoticeFunction) : ScServerNoticeFunction {return func;}
+    static scServerHandshake(func : ScServerSocketFunction) : ScServerSocketFunction {return func;}
+    static scServerConnectionAbort(func : ScServerSocketFunction) : ScServerSocketFunction {return func;}
+    static scServerConnection(func : ScServerConnectionFunction) : ScServerConnectionFunction {return func;}
+    static scServerDisconnection(func : ScServerSocketFunction) : ScServerSocketFunction {return func;}
+    static scServerClosure(func : ScServerSocketFunction) : ScServerSocketFunction {return func;}
+    static scServerSubscription(func : ScServerSubscriptionFunction) : ScServerSubscriptionFunction {return func;}
+    static scServerUnsubscription(func : ScServerUnsubscriptionFunction) : ScServerUnsubscriptionFunction {return func;}
+    static scServerAuthentication(func : ScServerAuthenticationFunction) : ScServerAuthenticationFunction {return func;}
+    static scServerDeauthentication(func : ScServerDeauthenticationFunction) : ScServerDeauthenticationFunction {return func;}
+    static scServerBadSocketAuthToken(func : ScServerBadSocketAuthTokenFunction) : ScServerBadSocketAuthTokenFunction {return func;}
+    static scServerReady(func : ScServerReadyFunction) : ScServerReadyFunction {return func;}
+
+    //Part Middleware Events (SC)
+    static middlewareAuthenticate(func : MiddlewareFunction) : MiddlewareFunction {return func;}
+    static middlewareHandshakeWs(func : MiddlewareFunction) : MiddlewareFunction {return func;}
+    static middlewareHandshakeSc(func : MiddlewareFunction) : MiddlewareFunction {return func;}
+    static middlewareSubscribe(func : MiddlewareFunction) : MiddlewareFunction {return func;}
+    static middlewarePublishIn(func : MiddlewareFunction) : MiddlewareFunction {return func;}
+    static middlewarePublishOut(func : MiddlewareFunction) : MiddlewareFunction {return func;}
+    static middlewareEmit(func : MiddlewareFunction) : MiddlewareFunction {return func;}
+
+    //Part Type
     // noinspection JSUnusedGlobalSymbols
     static typeSmallBag(smallBag : SmallBag) : SmallBag {return smallBag;}
     // noinspection JSUnusedGlobalSymbols
@@ -107,8 +152,8 @@ class Config
     static typeController(controller : Controller) : Controller {return controller;}
     // noinspection JSUnusedGlobalSymbols
     static typeExpress(express : ExpressCore.Express) : ExpressCore.Express {return express;}
-    //Part Create easy service configs
 
+    //Part Create easy service configs
     // noinspection JSUnusedGlobalSymbols
     static mySqlConfig(config : PoolConfig) : PoolConfig {return config;}
     // noinspection JSUnusedGlobalSymbols
