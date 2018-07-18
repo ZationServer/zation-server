@@ -276,6 +276,9 @@ class ConfigChecker
        this.checkAccessKeyDependency
        (channel[Const.Channel.CHANNEL.NOT_SUBSCRIBE],Const.Channel.CHANNEL.NOT_SUBSCRIBE,target);
 
+       this.warningForPublish(channel[Const.Channel.CHANNEL.PUBLISH],target);
+       this.warningForPublish(channel[Const.Channel.CHANNEL.NOT_PUBLISH],target);
+
        if
        (
            isDefault &&
@@ -288,6 +291,18 @@ class ConfigChecker
        )
        {
            Logger.printConfigWarning(Const.Settings.CN.CHANNEL,'It is recommended to set a default value for publish and subscribe.');
+       }
+   }
+
+   // noinspection JSMethodCanBeStatic
+   private warningForPublish(value : any,target : Target) : void
+   {
+       if(!(typeof value === 'boolean' && !value))
+       {
+           Logger.printConfigWarning
+           (Const.Settings.CN.CHANNEL,`
+           ${target.getTarget()} please notice that this publish access is used when a client publish from outside!`+
+               `So it is better to use an controller (with validation) and publish from server side!`);
        }
    }
 
