@@ -297,11 +297,11 @@ class ConfigChecker
    // noinspection JSMethodCanBeStatic
    private warningForPublish(value : any,target : Target) : void
    {
-       if(!(typeof value === 'boolean' && !value))
+       if(typeof  value !== "boolean" || (typeof value === 'boolean' && !value ))
        {
            Logger.printConfigWarning
-           (Const.Settings.CN.CHANNEL,`
-           ${target.getTarget()} please notice that this publish access is used when a client publish from outside!`+
+           (Const.Settings.CN.CHANNEL,
+               `${target.getTarget()} please notice that this publish access is used when a client publish from outside!`+
                `So it is better to use an controller (with validation) and publish from server side!`);
        }
    }
