@@ -1,9 +1,11 @@
-const gulp         = require('gulp');
-const gulpIgnore   = require('gulp-ignore');
-const gulpReplace  = require('gulp-replace');
-const typescript   = require('gulp-typescript');
-const sass         = require('gulp-sass');
-const tscConfig    = require('./tsconfig.json');
+const gulp              = require('gulp');
+const gulpIgnore        = require('gulp-ignore');
+const gulpReplace       = require('gulp-replace');
+const typescript        = require('gulp-typescript');
+const sass              = require('gulp-sass');
+const tscConfig         = require('./tsconfig.json');
+const OptimizeJs        = require('gulp-optimize-js');
+const terser            = require('gulp-terser');
 
 gulp.task('scss', function() {
     return gulp.src('src/**/*.scss')
@@ -55,6 +57,14 @@ gulp.task('mainTs', function () {
         .pipe(gulp.dest('dist'));
 });
 
+gulp.task('optimize', function () {
+    return gulp
+        .src('dist/**/*.js')
+        .pipe(OptimizeJs())
+        .pipe(terser())
+        .pipe(gulp.dest('dist'));
+});
+
 gulp.task('ts', ['mainTs'], () =>
 {
     // noinspection JSUnresolvedFunction
@@ -63,7 +73,11 @@ gulp.task('ts', ['mainTs'], () =>
 
 gulp.task('default', ['compile', 'watch']);
 
-gulp.task('compile', ['scss','cof','ts']);
+gulp.task('compile', ['scss','cof','ts'], () =>
+{
+    // noinspection JSUnresolvedFunction
+    gulp.start('optimize');
+});
 
 gulp.task('watch', () => {
     gulp.watch('src/**/*.ts', ['ts']);

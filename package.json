@@ -60,14 +60,16 @@
   },
   "devDependencies": {
     "@types/gulp-sass": "0.0.31",
+    "graceful-fs": "4.1.11",
     "gulp": "3.9.1",
     "gulp-ignore": "2.0.2",
     "gulp-replace": "1.0.0",
     "gulp-sass": "4.0.1",
     "gulp-typescript": "5.0.0-alpha.3",
+    "minimatch": "3.0.4",
     "typescript": "2.9.2",
-    "typescript-require": "0.2.10",
-    "graceful-fs": "4.1.11",
-    "minimatch": "3.0.4"
+    "gulp-optimize-js": "1.1.0",
+    "terser": "3.8.0",
+    "gulp-terser": "1.0.1"
   }
 }

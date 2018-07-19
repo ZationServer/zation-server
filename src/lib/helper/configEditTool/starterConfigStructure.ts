@@ -4,13 +4,13 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const      = require('./../constants/constWrapper');
-import {AppConfig} from "../../../../dist/lib/helper/configEditTool/appConfigStructure";
+import Const           = require('./../constants/constWrapper');
 import {ChannelConfig} from "./channelConfigStructure";
-import {MainConfig} from "./mainConfigStructure";
-import {ErrorConfig} from "./errorConfigStructure";
-import {EventConfig} from "./eventConfigStructure";
+import {MainConfig}    from "./mainConfigStructure";
+import {ErrorConfig}   from "./errorConfigStructure";
+import {EventConfig}   from "./eventConfigStructure";
 import {ServiceConfig} from "./serviceConfigStructure";
+import {AppConfig}     from "./appConfigStructure";
 
 export type StarterConfig = StarterConfigMain & MainConfig;
 
