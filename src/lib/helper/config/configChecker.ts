@@ -253,44 +253,44 @@ class ConfigChecker
        ConfigCheckerTools.assertStructure
        (Structures.ChannelItem,channel,Const.Settings.CN.CHANNEL,this.ceb,target);
 
-       if(channel.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH) &&
-           channel.hasOwnProperty(Const.Channel.CHANNEL.NOT_PUBLISH))
+       if(channel.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_ACCESS) &&
+           channel.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS))
        {
            this.ceb.addConfigError(new ConfigError(Const.Settings.CN.CHANNEL,
-               `${target.getTarget()} only 'publish' or 'notPublish' keyword is allow.`));
+               `${target.getTarget()} only 'publishAccess' or 'publishNotAccess' keyword is allow.`));
        }
-       if(channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE) &&
-           channel.hasOwnProperty(Const.Channel.CHANNEL.NOT_SUBSCRIBE))
+       if(channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_ACCESS) &&
+           channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS))
        {
            this.ceb.addConfigError(new ConfigError(Const.Settings.CN.CHANNEL,
-               `${target.getTarget()} only 'subscribe' or 'notSubscribe' keyword is allow.`));
+               `${target.getTarget()} only 'subscribeAccess' or 'subscribeNotAccess' keyword is allow.`));
        }
 
        //check access dependency to userGroups
        this.checkAccessKeyDependency
-       (channel[Const.Channel.CHANNEL.PUBLISH],Const.Channel.CHANNEL.PUBLISH,target);
+       (channel[Const.Channel.CHANNEL.PUBLISH_ACCESS],Const.Channel.CHANNEL.PUBLISH_ACCESS,target);
        this.checkAccessKeyDependency
-       (channel[Const.Channel.CHANNEL.NOT_PUBLISH],Const.Channel.CHANNEL.NOT_PUBLISH,target);
+       (channel[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS],Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS,target);
        this.checkAccessKeyDependency
-       (channel[Const.Channel.CHANNEL.SUBSCRIBE],Const.Channel.CHANNEL.SUBSCRIBE,target);
+       (channel[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS],Const.Channel.CHANNEL.SUBSCRIBE_ACCESS,target);
        this.checkAccessKeyDependency
-       (channel[Const.Channel.CHANNEL.NOT_SUBSCRIBE],Const.Channel.CHANNEL.NOT_SUBSCRIBE,target);
+       (channel[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS],Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS,target);
 
-       this.warningForPublish(channel[Const.Channel.CHANNEL.PUBLISH],target);
-       this.warningForPublish(channel[Const.Channel.CHANNEL.NOT_PUBLISH],target);
+       this.warningForPublish(channel[Const.Channel.CHANNEL.PUBLISH_ACCESS],target);
+       this.warningForPublish(channel[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS],target);
 
        if
        (
            isDefault &&
            !(
-               (channel.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH) ||
-                   channel.hasOwnProperty(Const.Channel.CHANNEL.NOT_PUBLISH)) &&
-               (channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE) ||
-                   channel.hasOwnProperty(Const.Channel.CHANNEL.NOT_SUBSCRIBE))
+               (channel.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_ACCESS) ||
+                   channel.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS)) &&
+               (channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_ACCESS) ||
+                   channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS))
            )
        )
        {
-           Logger.printConfigWarning(Const.Settings.CN.CHANNEL,'It is recommended to set a default value for publish and subscribe.');
+           Logger.printConfigWarning(Const.Settings.CN.CHANNEL,'It is recommended to set a default value for publishAccess and subscribeAccess.');
        }
    }
 
@@ -301,7 +301,7 @@ class ConfigChecker
        {
            Logger.printConfigWarning
            (Const.Settings.CN.CHANNEL,
-               `${target.getTarget()} please notice that this publish access is used when a client publish from outside!`+
+               `${target.getTarget()} please notice that 'publishAccess' is used when a client publish from outside!`+
                `So it is better to use an controller (with validation) and publish from server side!`);
        }
    }

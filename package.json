@@ -1,13 +1,13 @@
 {
   "name": "zation-server",
-  "version": "0.1.7",
+  "version": "0.1.9",
   "license": "MIT",
   "description": "Appication Framework Master",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "gulp compile",
+    "build": "gulp build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -70,6 +70,7 @@
     "typescript": "2.9.2",
     "gulp-optimize-js": "1.1.0",
     "terser": "3.8.0",
-    "gulp-terser": "1.0.1"
+    "gulp-terser": "1.0.1",
+    "gulp-clean": "0.4.0"
   }
 }

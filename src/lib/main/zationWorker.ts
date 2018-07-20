@@ -424,7 +424,7 @@ class ZationWorker extends SCWorker
             }
         });
 
-        //BLOCK USER CAN PUBLISH IN ZATION CHANNELS
+        //BLOCK USER CAN PUBLISH_ACCESS IN ZATION CHANNELS
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_PUBLISH_IN, async (req, next) =>
         {
             const channel = req.channel;

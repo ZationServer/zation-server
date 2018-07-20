@@ -166,10 +166,12 @@ PanelUserConfig[Const.Main.PANEL_USER.USER_NAME]             = {types : ['string
 PanelUserConfig[Const.Main.PANEL_USER.PASSWORD]              = {types : ['string'],isOptional : false};
 
 const ChannelItem = {};
-ChannelItem[Const.Channel.CHANNEL.PUBLISH]       = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelItem[Const.Channel.CHANNEL.SUBSCRIBE]     = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelItem[Const.Channel.CHANNEL.NOT_SUBSCRIBE] = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelItem[Const.Channel.CHANNEL.NOT_PUBLISH]   = {types : ['function','boolean','number','array','string'],isOptional : true};
+ChannelItem[Const.Channel.CHANNEL.PUBLISH_ACCESS]       = {types : ['function','boolean','number','array','string'],isOptional : true};
+ChannelItem[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS]     = {types : ['function','boolean','number','array','string'],isOptional : true};
+ChannelItem[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS] = {types : ['function','boolean','number','array','string'],isOptional : true};
+ChannelItem[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS]   = {types : ['function','boolean','number','array','string'],isOptional : true};
+ChannelItem[Const.Channel.CHANNEL.ON_PUBLISH]           = {types : ['function'],isOptional : true};
+ChannelItem[Const.Channel.CHANNEL.ON_SUBSCRIPTION]      = {types : ['function'],isOptional : true};
 
 const Services = {};
 Services[Const.Service.SERVICES.MYSQL]                  = {types : ['object'],isOptional : true};

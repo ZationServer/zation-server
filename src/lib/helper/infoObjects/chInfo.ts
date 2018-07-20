@@ -7,7 +7,7 @@ GitHub: LucaCode
 import Const        = require('./../constants/constWrapper');
 import TokenTools   = require("../token/tokenTools");
 
-class AccessChInfo
+class ChInfo
 {
     private readonly _authUserGroup : string | undefined;
     private readonly _userId : string | number | undefined;
@@ -17,9 +17,10 @@ class AccessChInfo
     private readonly _tokenExpire : number;
     private readonly _panelAccess : number;
     private readonly _channelId : string | undefined;
+    private readonly _channelName : string;
     private readonly _isCustomIdCh : boolean;
 
-    constructor(socket : object, chId ?: string)
+    constructor(socket : object,chName : string,chId ?: string)
     {
         this._authUserGroup = TokenTools.getSocketTokenVariable([Const.Settings.CLIENT.AUTH_USER_GROUP],socket);
         this._userId  = TokenTools.getSocketTokenVariable([Const.Settings.CLIENT.USER_ID],socket);
@@ -29,6 +30,7 @@ class AccessChInfo
         this._panelAccess = TokenTools.getSocketTokenVariable([Const.Settings.CLIENT.PANEL_ACCESS],socket);
         this._isAuthIn = this._authUserGroup !== undefined;
         this._channelId = chId;
+        this._channelName = chName;
         this._isCustomIdCh = chId !== undefined;
     }
 
@@ -67,6 +69,10 @@ class AccessChInfo
     get isCustomIdCh(): boolean {
         return this._isCustomIdCh;
     }
+
+    get channelName(): string {
+        return this._channelName;
+    }
 }
 
-export = AccessChInfo;
+export = ChInfo;

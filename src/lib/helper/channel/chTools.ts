@@ -42,14 +42,14 @@ class ChTools
 
     static kickOut(socket,channel : string) : void
     {
-        // noinspection JSUnresolvedFunction,JSValidateTypes
+        // noinspection JSUnresolvedFunction,JSValidateTypes,TypeScriptValidateJSTypes
         socket.kickOut(channel);
         Logger.printDebugInfo(`Socket with id: ${socket.id} is kick out from channel ${channel}`);
     }
 
     static getGetSocketDataFunc(socket) : Function
     {
-        return (key) => {TokenTools.getSocketTokenVariable(key,socket);};
+        return (key : string) : any => {TokenTools.getSocketTokenVariable(key,socket);};
     }
 
     static getCustomIdChannelInfo(ch : string) : any

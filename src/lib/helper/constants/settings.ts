@@ -52,8 +52,8 @@ class RESPONSE
     static readonly TOKEN_SIGNED                 = 'st';
     static readonly TOKEN_PLAIN                  = 'pt';
 
-    static readonly RESULT_PAIRS                 = 'kv';
-    static readonly RESULT_VALUES                = 'v';
+    static readonly RESULT_MAIN                  = 'r';
+    static readonly RESULT_STATUS                = 's';
 
     static readonly ERROR                        = RESPONSE_ERROR;
 }

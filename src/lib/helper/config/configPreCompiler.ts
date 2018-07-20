@@ -99,34 +99,48 @@ class ConfigPeCompiler
             {
                 if(channels.hasOwnProperty(chName))
                 {
-                    if(!(channels[chName].hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE) ||
-                        channels[chName].hasOwnProperty(Const.Channel.CHANNEL.NOT_SUBSCRIBE)))
+                    if(!(channels[chName].hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_ACCESS) ||
+                        channels[chName].hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS)))
                     {
-                        if(defaultCh[Const.Channel.CHANNEL.SUBSCRIBE] !== undefined)
+                        if(defaultCh[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS] !== undefined)
                         {
-                            channels[chName][Const.Channel.CHANNEL.SUBSCRIBE] =
-                                defaultCh[Const.Channel.CHANNEL.SUBSCRIBE];
+                            channels[chName][Const.Channel.CHANNEL.SUBSCRIBE_ACCESS] =
+                                defaultCh[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS];
                         }
-                        if(defaultCh[Const.Channel.CHANNEL.NOT_SUBSCRIBE] !== undefined)
+                        if(defaultCh[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS] !== undefined)
                         {
-                            channels[chName][Const.Channel.CHANNEL.NOT_SUBSCRIBE] =
-                                defaultCh[Const.Channel.CHANNEL.NOT_SUBSCRIBE];
+                            channels[chName][Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS] =
+                                defaultCh[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS];
                         }
                     }
 
-                    if(!(channels[chName].hasOwnProperty(Const.Channel.CHANNEL.PUBLISH) ||
-                        channels[chName].hasOwnProperty(Const.Channel.CHANNEL.NOT_PUBLISH)))
+                    if(!(channels[chName].hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_ACCESS) ||
+                        channels[chName].hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS)))
                     {
-                        if(defaultCh[Const.Channel.CHANNEL.PUBLISH] !== undefined)
+                        if(defaultCh[Const.Channel.CHANNEL.PUBLISH_ACCESS] !== undefined)
                         {
-                            channels[chName][Const.Channel.CHANNEL.PUBLISH] =
-                                defaultCh[Const.Channel.CHANNEL.PUBLISH];
+                            channels[chName][Const.Channel.CHANNEL.PUBLISH_ACCESS] =
+                                defaultCh[Const.Channel.CHANNEL.PUBLISH_ACCESS];
                         }
-                        if(defaultCh[Const.Channel.CHANNEL.NOT_PUBLISH] !== undefined)
+                        if(defaultCh[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS] !== undefined)
                         {
-                            channels[chName][Const.Channel.CHANNEL.NOT_PUBLISH] =
-                                defaultCh[Const.Channel.CHANNEL.NOT_PUBLISH];
+                            channels[chName][Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS] =
+                                defaultCh[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS];
                         }
+                    }
+
+                    if((!channels[chName].hasOwnProperty(Const.Channel.CHANNEL.ON_PUBLISH))&&
+                         defaultCh.hasOwnProperty(Const.Channel.CHANNEL.ON_PUBLISH))
+                    {
+                        channels[chName][Const.Channel.CHANNEL.ON_PUBLISH] =
+                            defaultCh[Const.Channel.CHANNEL.ON_PUBLISH];
+                    }
+
+                    if((!channels[chName].hasOwnProperty(Const.Channel.CHANNEL.ON_SUBSCRIPTION))&&
+                        defaultCh.hasOwnProperty(Const.Channel.CHANNEL.ON_SUBSCRIPTION))
+                    {
+                        channels[chName][Const.Channel.CHANNEL.ON_SUBSCRIPTION] =
+                            defaultCh[Const.Channel.CHANNEL.ON_SUBSCRIPTION];
                     }
                 }
             }

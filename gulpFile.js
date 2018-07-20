@@ -6,6 +6,7 @@ const sass              = require('gulp-sass');
 const tscConfig         = require('./tsconfig.json');
 const OptimizeJs        = require('gulp-optimize-js');
 const terser            = require('gulp-terser');
+const clean             = require('gulp-clean');
 
 gulp.task('scss', function() {
     return gulp.src('src/**/*.scss')
@@ -65,6 +66,11 @@ gulp.task('optimize', function () {
         .pipe(gulp.dest('dist'));
 });
 
+gulp.task('cleanDist', function () {
+    return gulp.src('dist', {read: false})
+        .pipe(clean());
+});
+
 gulp.task('ts', ['mainTs'], () =>
 {
     // noinspection JSUnresolvedFunction
@@ -72,6 +78,12 @@ gulp.task('ts', ['mainTs'], () =>
 });
 
 gulp.task('default', ['compile', 'watch']);
+
+gulp.task('build', ['cleanDist'], () =>
+{
+    // noinspection JSUnresolvedFunction
+    gulp.start('compile');
+});
 
 gulp.task('compile', ['scss','cof','ts'], () =>
 {

@@ -9,88 +9,62 @@ import Const = require("../helper/constants/constWrapper");
 class Result
 {
 
-    private keyValuePairs : object;
-    private values : any[];
+    private result : any = undefined;
+    private statusCode : any = undefined;
     
-    constructor(data : any)
+    constructor(result : any,statusCode ?: string | number | any)
     {
-        this.keyValuePairs = {};
-        this.values = [];
-
-        if(data !== undefined)
-        {
-            if(data !== null && typeof data === 'object')
-            {
-                this.keyValuePairs = data;
-            }
-            else if(Array.isArray(data))
-            {
-                this.values = data;
-            }
-            else
-            {
-                this.addValue(data);
-            }
-        }
+        this.result = result;
+        this.statusCode = statusCode;
     }
 
     _getJsonObj() : object
     {
         let obj = {};
-        obj[Const.Settings.RESPONSE.RESULT_PAIRS] = this.keyValuePairs;
-        obj[Const.Settings.RESPONSE.RESULT_VALUES] = this.values;
-
+        obj[Const.Settings.RESPONSE.RESULT_MAIN] = this.result;
+        obj[Const.Settings.RESPONSE.RESULT_STATUS] = this.statusCode;
         return obj;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    removePair(key : string) : void
+    removeResult() : void
     {
-        delete this.keyValuePairs[key];
+        this.result = undefined;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    removeValue(index : number) : void
+    setResult(result : any) : void
     {
-        delete this.values[index];
+        this.result = result;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    addPair(key : string,value : any,overwrite : boolean = false) : boolean
+    hasResult() : boolean
     {
-        if(overwrite || !this.keyValuePairs.hasOwnProperty(key))
-        {
-            this.keyValuePairs[key] = value;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    addValue(value : any) : void
-    {
-        this.values.push(value);
+        return this.result !== undefined;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    clearResult() : void
+    setStatusCode(statusCode : string | number | any) : void
     {
-        this.keyValuePairs = {};
-        this.values = [];
+        this.statusCode = statusCode;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getValueFromKey(key : string) : any
+    hasStatusCode() : boolean
     {
-        return this.keyValuePairs[key];
+        return this.statusCode !== undefined;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getValueFromIndex(index : number) : any
+    removeStatusCode() : void
     {
-        return this.values[index];
+        this.statusCode = undefined;
+    }
+
+    getTypeOfResult() : string
+    {
+        return typeof this.result;
     }
 }
 

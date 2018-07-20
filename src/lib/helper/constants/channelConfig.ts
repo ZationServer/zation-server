@@ -26,10 +26,13 @@ class INFO {
 }
 
 class CHANNEL {
-    static readonly NOT_PUBLISH            = 'notPublish';
-    static readonly PUBLISH                = 'publish';
-    static readonly NOT_SUBSCRIBE          = 'notSubscribe';
-    static readonly SUBSCRIBE              = 'subscribe';
+    static readonly PUBLISH_NOT_ACCESS     = 'PublishNotAccess';
+    static readonly PUBLISH_ACCESS         = 'publishAccess';
+    static readonly SUBSCRIBE_NOT_ACCESS   = 'subscribeNotAccess';
+    static readonly SUBSCRIBE_ACCESS       = 'subscribeAccess';
+
+    static readonly ON_SUBSCRIPTION        = 'onSubscription';
+    static readonly ON_PUBLISH             = 'onPublish';
 
     static readonly INFO = INFO;
 }
