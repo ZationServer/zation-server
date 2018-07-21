@@ -48,7 +48,7 @@ class MainProcessor
             let controllerName = task[Const.Settings.REQUEST_INPUT.CONTROLLER];
 
             //Trows if not exists
-            worker.getControllerPrepare.checkControllerExist(controllerName);
+            worker.getControllerPrepare().checkControllerExist(controllerName);
 
             let controllerConfig = worker.getControllerPrepare().getControllerConfig(controllerName);
 
@@ -132,6 +132,7 @@ class MainProcessor
             await ControllerTools.processBeforeHandleEvents(controllerConfig, bag);
 
             let result = await controllerInstance.handle(bag,bag.getInput());
+
 
             if (!(result instanceof Result))
             {

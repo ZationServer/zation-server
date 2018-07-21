@@ -7,6 +7,7 @@ GitHub: LucaCode
 import TokenBridge   = require('./tokenBridge');
 import TokenTools    = require('../token/tokenTools');
 import ZationConfig  = require("../../main/zationConfig");
+import Const         = require("../constants/constWrapper");
 const  IP : any      = require('ip');
 
 //Socket and Http Bridge
@@ -64,7 +65,7 @@ class SHBridge
         this.getTokenBridge().deauthenticate();
         if(!this.isWebSocket())
         {
-            this.httpRes['zationInfo'].push('authOut');
+            this.httpRes['zationInfo'].push(Const.Settings.ZATION_HTTP_INFO.AUTH_OUT);
         }
     }
 

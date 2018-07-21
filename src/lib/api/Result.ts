@@ -10,9 +10,9 @@ class Result
 {
 
     private result : any = undefined;
-    private statusCode : any = undefined;
+    private statusCode : number | string | undefined = undefined;
     
-    constructor(result : any,statusCode ?: string | number | any)
+    constructor(result : any,statusCode ?: string | number)
     {
         this.result = result;
         this.statusCode = statusCode;
@@ -45,7 +45,7 @@ class Result
     }
 
     // noinspection JSUnusedGlobalSymbols
-    setStatusCode(statusCode : string | number | any) : void
+    setStatusCode(statusCode : string | number) : void
     {
         this.statusCode = statusCode;
     }

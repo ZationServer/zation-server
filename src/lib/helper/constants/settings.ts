@@ -41,6 +41,11 @@ class RESPONSE_ERROR
     static readonly INFO                         = 'i';
 }
 
+class ZATION_HTTP_INFO
+{
+    static readonly AUTH_OUT                     = 'authOut';
+}
+
 class RESPONSE
 {
     static readonly ERRORS                       = 'e';
@@ -153,6 +158,7 @@ class Settings
     static readonly TOKEN_INFO = TOKEN_INFO;
     static readonly CN = CN;
     static readonly RESPONSE = RESPONSE;
+    static readonly ZATION_HTTP_INFO = ZATION_HTTP_INFO;
 }
 
 export = Settings;

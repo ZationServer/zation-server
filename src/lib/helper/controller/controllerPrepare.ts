@@ -104,11 +104,11 @@ class ControllerPrepare
         await cInstance.initialize(this.worker.getPreparedSmallBag());
         if(!isSystemC)
         {
-            this.appController[name] = {config : config,controller : cInstance};
+            this.appController[name] = {config : config,instance : cInstance};
         }
         else
         {
-            this.systemController[name] = {config : config,controller : cInstance};
+            this.systemController[name] = {config : config,instance : cInstance};
         }
     }
 }

@@ -198,7 +198,7 @@ class ZationWorker extends SCWorker
                 // noinspection JSUnusedLocalSymbols
                 let p = this.zation.run(
                     {
-                        isSocket: true,
+                        isWebSocket: true,
                         input: data,
                         socket: socket,
                         respond: respond,
@@ -260,7 +260,7 @@ class ZationWorker extends SCWorker
             // noinspection JSUnusedLocalSymbols
             let p = this.zation.run(
                 {
-                    isSocket: false,
+                    isisWebSocket: false,
                     res: res,
                     req: req,
                 });
