@@ -7,7 +7,7 @@ GitHub: LucaCode
 import Const            = require('../constants/constWrapper');
 import TaskError        = require('../../api/TaskError');
 import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
-import ChAccessEngine   = require('../channel/chAccessEngine');
+import {ChAccessEngine}   from '../channel/chAccessEngine';
 import TokenBridge = require("../bridges/tokenBridge");
 import ZationWorker = require("../../main/zationWorker");
 import TokenEngine = require("./tokenEngine");

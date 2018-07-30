@@ -18,7 +18,7 @@ import ZationConfig         = require("../../main/zationConfig");
 import ZationWorker         = require("../../main/zationWorker");
 import ChInfo               = require("../infoObjects/chInfo");
 
-class ChAccessEngine
+export class ChAccessEngine
 {
     //Part Access
     private static async hasAccessTo(value : any,socket : any,smallBag : SmallBag,chName : string,chId ?: string) : Promise<boolean>
@@ -439,5 +439,3 @@ class ChAccessEngine
     }
 
 }
-
-export = ChAccessEngine;

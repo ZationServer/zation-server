@@ -83,6 +83,7 @@ class MainProcessor
 
                 if(!useAuth || authEngine.hasAccessToController(controllerConfig))
                 {
+
                     let controllerInstance = worker.getControllerPrepare().getControllerInstance(controllerName);
                     let inputWrapper : InputWrapper;
 
@@ -107,6 +108,14 @@ class MainProcessor
 
                     let bag = new Bag(shBridge,worker,authEngine,tokenEngine,inputWrapper);
                     return await MainProcessor.processController(controllerInstance,controllerConfig,bag,shBridge.getTokenBridge());
+                }
+                else
+                {
+                    throw new TaskError(MainErrors.noAccessToController,
+                        {
+                            authUserGroup: authEngine.getAuthUserGroup(),
+                            authIn: authEngine.isAuth()
+                        });
                 }
             }
             else

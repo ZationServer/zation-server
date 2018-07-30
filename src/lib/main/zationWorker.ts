@@ -17,7 +17,7 @@ import ZationConfig          = require('./zationConfig');
 import ConfigPreCompiler     = require('../helper/config/configPreCompiler');
 import Logger                = require('../helper/logger/logger');
 import Const                 = require('../helper/constants/constWrapper');
-import ChAccessEngine        = require('../helper/channel/chAccessEngine');
+import {ChAccessEngine}        from '../helper/channel/chAccessEngine';
 import ServiceEngine         = require('../helper/services/serviceEngine');
 import SystemBackgroundTask  = require('../helper/background/systemBackgroundTasks');
 import SmallBag              = require('../api/SmallBag');

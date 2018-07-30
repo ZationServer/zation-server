@@ -77,7 +77,7 @@ class AEPreparedPart
         return this.useAuth;
     }
 
-    isAuthGroup(authGroup) : boolean
+    isAuthGroup(authGroup : string) : boolean
     {
         return this.authGroups.hasOwnProperty(authGroup);
     }

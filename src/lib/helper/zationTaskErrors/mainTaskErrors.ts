@@ -199,7 +199,7 @@ export = {
         sendInfo      : true,
         //INFO
         // authIn (show if you auth in system)
-        // authType (your auth type)
+        // authUserGroup (your auth type)
         isFromZationSystem : true
     },
 

@@ -11,7 +11,7 @@ import SHBridge       = require("../bridges/shBridge");
 import TokenEngine    = require("../token/tokenEngine");
 import MainErrors     = require("../zationTaskErrors/mainTaskErrors");
 import ZationToken = require("../infoObjects/zationInfo");
-import ChAccessEngine = require("../channel/chAccessEngine");
+import {ChAccessEngine} from "../channel/chAccessEngine";
 
 class AuthEngine
 {
@@ -105,7 +105,7 @@ class AuthEngine
        return this.aePreparedPart.getDefaultGroup();
     }
 
-    checkIsIn(authGroup) : boolean
+    checkIsIn(authGroup : string) : boolean
     {
         return this.aePreparedPart.isAuthGroup(authGroup);
     }
@@ -213,6 +213,7 @@ class AuthEngine
     {
         let hasAccess = false;
         let keyWord = AuthEngine.getAccessKeyWord(controller);
+
         if(keyWord === '')
         {
             Logger.printDebugWarning('No controller access config found! Access will denied!');
@@ -248,7 +249,7 @@ class AuthEngine
     {
         let access = false;
 
-        if(typeof value === 'string' || value instanceof String)
+        if(typeof value === 'string')
         {
             if(value === Const.App.ACCESS.ALL)
             {
@@ -262,7 +263,7 @@ class AuthEngine
             {
                 access = AuthEngine.accessKeyWordChanger(key,this.isDefault());
             }
-            else if(this.checkIsIn(key))
+            else if(this.checkIsIn(value))
             {
                 //Group!
                 access = AuthEngine.accessKeyWordChanger(key,this.getUserGroup() === value);
