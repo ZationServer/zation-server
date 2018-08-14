@@ -51,7 +51,11 @@ import
     CompileAsFunction, ControllerAccessFunction, TaskFunction
 } from "../helper/configEditTool/appConfigStructure";
 import {ErrorConfig} from "../helper/configEditTool/errorConfigStructure";
-import {ChannelAccessFunction, ChannelConfig} from "../helper/configEditTool/channelConfigStructure";
+import {
+    ChannelAccessFunction,
+    ChannelConfig,
+    ChannelEventFunction
+} from "../helper/configEditTool/channelConfigStructure";
 import ObjectTools = require("../helper/tools/objectTools");
 import {StarterConfig} from "../helper/configEditTool/starterConfigStructure";
 import {MainConfig} from "../helper/configEditTool/mainConfigStructure";
@@ -84,6 +88,7 @@ class Config
     //Part Channel Config functions
 
     static channelAccess(func : ChannelAccessFunction) : ChannelAccessFunction {return func;}
+    static channelOn(func : ChannelEventFunction) : ChannelEventFunction {return func;}
 
     //Part Event Config events
 

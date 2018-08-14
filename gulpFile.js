@@ -67,7 +67,7 @@ gulp.task('optimize', function () {
 });
 
 gulp.task('cleanDist', function () {
-    return gulp.src('dist', {read: false})
+    return gulp.src('dist', {read: false,allowEmpty : true})
         .pipe(clean());
 });
 
