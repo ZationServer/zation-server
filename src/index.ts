@@ -15,6 +15,7 @@ import ErrorType            = require('./lib/helper/constants/errorTypes');
 import ServiceNotFoundError = require('./lib/helper/services/serviceNotFoundError');
 import Config               = require('./lib/api/Config');
 import ValidationTypes      = require('./lib/helper/constants/validationTypes');
+import FsUtil               = require('socketcluster/fsutil');
 
 //starter
 const start = (options) =>
@@ -34,5 +35,6 @@ export =
         ErrorType,
         Config,
         ServiceNotFoundError,
-        ValidationTypes
+        ValidationTypes,
+        FsUtil
     };

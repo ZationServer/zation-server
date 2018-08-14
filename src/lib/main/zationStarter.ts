@@ -22,7 +22,7 @@ const  isWindows             = require('is-windows');
 class ZationStarter
 {
     private static instance : ZationStarter | null = null;
-    private static readonly version : string = '0.2.4';
+    private static readonly version : string = '0.2.5';
 
     private readonly serverStartedTimeStamp : number;
     private readonly zc : ZationConfig;
@@ -231,6 +231,7 @@ class ZationStarter
         Logger.log(`            Time zone: ${this.zc.getMain(Const.Main.KEYS.TIME_ZONE)}`);
         Logger.log(`            Worker count: ${this.master.options.workers}`);
         Logger.log(`            Broker count: ${this.master.options.brokers}`);
+        Logger.log(`            Leader instance: ${this.zc.getMain(Const.Main.KEYS.LEADER_INSTANCE)}`);
         Logger.log(`            Server: ${server}`);
         Logger.log('            GitHub: https://github.com/ZationServer');
         Logger.log(`            StartTime: ${Date.now()-this.serverStartedTimeStamp} ms`);

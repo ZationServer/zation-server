@@ -1,6 +1,6 @@
 {
   "name": "zation-server",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "license": "MIT",
   "description": "Appication Framework Master",
   "main": "dist/index.js",
@@ -63,7 +63,7 @@
   "devDependencies": {
     "@types/gulp-sass": "0.0.31",
     "graceful-fs": "4.1.11",
-    "gulp": "3.9.1",
+    "gulp": "4.0.0",
     "gulp-ignore": "2.0.2",
     "gulp-replace": "1.0.0",
     "gulp-sass": "4.0.1",

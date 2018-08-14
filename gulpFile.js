@@ -71,28 +71,16 @@ gulp.task('cleanDist', function () {
         .pipe(clean());
 });
 
-gulp.task('ts', ['mainTs'], () =>
-{
-    // noinspection JSUnresolvedFunction
-    gulp.start('cetTs');
-});
+gulp.task('ts', gulp.series('mainTs','cetTs'));
 
-gulp.task('default', ['compile', 'watch']);
+gulp.task('compile', gulp.series(gulp.parallel('scss','cof','ts'),'optimize'));
 
-gulp.task('build', ['cleanDist'], () =>
-{
-    // noinspection JSUnresolvedFunction
-    gulp.start('compile');
-});
-
-gulp.task('compile', ['scss','cof','ts'], () =>
-{
-    // noinspection JSUnresolvedFunction
-    gulp.start('optimize');
-});
+gulp.task('build', gulp.series('cleanDist','compile'));
 
 gulp.task('watch', () => {
-    gulp.watch('src/**/*.ts', ['ts']);
-    gulp.watch('src/**/*.scss', ['scss']);
-    gulp.watch(['src/**/*','!src/**/*.ts','!src/**/*.scss'], ['cof']);
+    gulp.watch('src/**/*.ts', gulp.parallel('ts'));
+    gulp.watch('src/**/*.scss', gulp.parallel('scss'));
+    gulp.watch(['src/**/*','!src/**/*.ts','!src/**/*.scss'], gulp.parallel('cof'));
 });
+
+gulp.task('default', gulp.series('compile', 'watch'));
