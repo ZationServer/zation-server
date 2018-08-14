@@ -16,12 +16,13 @@ import TimeTools             = require('../helper/tools/timeTools');
 import PrepareClientJs       = require('../helper/client/prepareClientJs');
 import MasterTempDbEngine    = require('../helper/tempDb/masterTempDbEngine');
 import BackgroundTasksSetter = require("../helper/background/backgroundTasksSetter");
+const  isWindows             = require('is-windows');
 
 
 class ZationStarter
 {
     private static instance : ZationStarter | null = null;
-    private static readonly version : string = '0.2.1';
+    private static readonly version : string = '0.2.2';
 
     private readonly serverStartedTimeStamp : number;
     private readonly zc : ZationConfig;
@@ -50,7 +51,7 @@ class ZationStarter
                 }
                 catch (e)
                 {
-                    Logger.printDebugWarning(`Exception when trying to start server -> ${e.toString()}`);
+                    Logger.printStartFail(`Exception when trying to start server -> ${e.toString()}`);
                     console.log(e);
                 }
             })();
@@ -108,7 +109,25 @@ class ZationStarter
 
     private startSocketCluster()
     {
-        this.master = new SocketCluster({
+        try {
+            require("sc-uws");
+        }
+        catch (e) {
+            if(this.zc.getMain(Const.Main.KEYS.USE_SC_UWS)) {
+                Logger.printStartFail
+                (`Failed to load sc-uws! Error -> ${e.toString()}.`);
+
+                if(isWindows()) {
+                    Logger.printStartFail(`Try to run command 'npm install --global --production windows-build-tools'`);
+                }
+
+                Logger.printStartFail
+                (`${isWindows() ? 'Also you' : 'You'} can try to set the property 'useScUws' in Main or Start config to false. But you will lose performance!`);
+                process.exit();
+            }
+        }
+
+        let scOptions = {
             workers : this.zc.getMain(Const.Main.KEYS.WORKERS),
             brokers : this.zc.getMain(Const.Main.KEYS.BROKERS),
             rebootWorkerOnCrash: true,
@@ -120,7 +139,6 @@ class ZationStarter
             path   : this.zc.getMain(Const.Main.KEYS.PATH),
             protocol : this.zc.getMain(Const.Main.KEYS.SECURE) ? 'https' : 'http',
             protocolOptions: this.zc.getMain(Const.Main.KEYS.HTTPS_CONFIG),
-            wsEngine: 'sc-uws',
             authKey: this.zc.getMain(Const.Main.KEYS.AUTH_KEY),
             authAlgorithm: this.zc.getMain(Const.Main.KEYS.AUTH_ALGORITHM),
             authPublicKey: this.zc.getMain(Const.Main.KEYS.AUTH_PUBLIC_KEY),
@@ -131,7 +149,13 @@ class ZationStarter
             zationServerStartedTimeStamp : this.serverStartedTimeStamp,
             ipcAckTimeout: 3000,
             logLevel : this.zc.getMain(Const.Main.KEYS.SC_CONSOLE_LOG) ? 100 : 0
-        });
+        };
+
+        if(this.zc.getMain(Const.Main.KEYS.USE_SC_UWS)) {
+            scOptions['wsEngine'] = 'sc-uws';
+        }
+
+        this.master = new SocketCluster(scOptions);
 
         // noinspection JSUnresolvedFunction
         this.master.on('ready',async () =>

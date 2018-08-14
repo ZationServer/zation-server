@@ -60,6 +60,7 @@ Main[Const.Main.KEYS.TIME_ZONE]               = {types : ['string'],isOptional :
 Main[Const.Main.KEYS.ZATION_CONSOLE_LOG]      = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.SC_CONSOLE_LOG]          = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.LEADER_INSTANCE]         = {types : ['boolean'],isOptional : true};
+Main[Const.Main.KEYS.USE_SC_UWS]              = {types : ['boolean'],isOptional : true};
 
 Main[Const.Main.KEYS.WORKERS]
     = {types : ['number','string'],isOptional : true, stringOnlyEnum : [Const.Main.OPTIONS.AUTO]};

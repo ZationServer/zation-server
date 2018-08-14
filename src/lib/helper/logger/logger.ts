@@ -48,7 +48,7 @@ class Logger
     }
 
     // noinspection JSUnusedGlobalSymbols
-   static printDebugWarning(txt : string,obj ?: object) : void
+    static printDebugWarning(txt : string,obj ?: object) : void
     {
         if (Logger.zc.isDebug())
         {
@@ -58,6 +58,16 @@ class Logger
             {
                 Logger.log(obj);
             }
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    static printStartFail(txt : string,obj ?: object) : void
+    {
+        Logger.log('\x1b[31m%s\x1b[0m','   [FAIL]',txt);
+        if(obj !== undefined)
+        {
+            Logger.log(obj);
         }
     }
 

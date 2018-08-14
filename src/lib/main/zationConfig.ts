@@ -60,6 +60,7 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.ZATION_CONSOLE_LOG] = true;
             this.mainConfig[Const.Main.KEYS.SC_CONSOLE_LOG] = false;
             this.mainConfig[Const.Main.KEYS.LEADER_INSTANCE] = process.env.LEADER || true;
+            this.mainConfig[Const.Main.KEYS.USE_SC_UWS] = true;
 
             //TEMP
             this.mainConfig[Const.Main.KEYS.USE_TEMP_DB_TOKEN_INFO] = true;
