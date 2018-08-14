@@ -22,7 +22,7 @@ const  isWindows             = require('is-windows');
 class ZationStarter
 {
     private static instance : ZationStarter | null = null;
-    private static readonly version : string = '0.2.2';
+    private static readonly version : string = '0.2.3';
 
     private readonly serverStartedTimeStamp : number;
     private readonly zc : ZationConfig;
@@ -153,6 +153,9 @@ class ZationStarter
 
         if(this.zc.getMain(Const.Main.KEYS.USE_SC_UWS)) {
             scOptions['wsEngine'] = 'sc-uws';
+        }
+        else {
+            scOptions['wsEngine'] = 'ws';
         }
 
         this.master = new SocketCluster(scOptions);

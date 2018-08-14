@@ -61,8 +61,8 @@ gulp.task('mainTs', function () {
 gulp.task('optimize', function () {
     return gulp
         .src('dist/**/*.js')
-        //.pipe(OptimizeJs())
-        //.pipe(terser())
+        .pipe(OptimizeJs())
+        .pipe(terser())
         .pipe(gulp.dest('dist'));
 });
 
