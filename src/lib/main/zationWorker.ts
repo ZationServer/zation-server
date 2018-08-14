@@ -176,7 +176,12 @@ class ZationWorker extends SCWorker
     {
         this.on('error',(e) =>
         {
-            Logger.printWarning(`Worker: '${this.getFullWorkerId()}' has an error: ${e.stack}!`);
+           Logger.printError
+           (
+               e,
+               `Worker: '${this.getFullWorkerId()}' has an error!`,
+               `Worker will be restarted!`
+           );
         });
     }
 

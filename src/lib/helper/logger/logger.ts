@@ -84,6 +84,21 @@ class Logger
         Logger.log('\x1b[31m%s\x1b[0m','   [WARNING]',message);
     }
 
+    static printError(error : any, beforeMessage : string, endMessage ?: string) : void
+    {
+        if (Logger.zc.isDebug())
+        {
+            Logger.log
+            (
+                '\x1b[31m%s\x1b[0m',
+                '   [ERROR]',
+                beforeMessage,
+                error.stack,
+                !!endMessage ? `\n    ${endMessage}` : ''
+            );
+        }
+    }
+
     static printBusy(message : string) : void
     {
         Logger.log('\x1b[33m%s\x1b[0m','   [BUSY]',message);
