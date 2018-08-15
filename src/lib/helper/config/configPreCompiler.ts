@@ -178,6 +178,15 @@ class ConfigPeCompiler
                 this.preCompileObjectResolveExtras(this.objectsConfig[objName]);
             }
         }
+
+        //than resolve the objects inheritance
+        for(let objName in this.objectsConfig)
+        {
+            if(this.objectsConfig.hasOwnProperty(objName))
+            {
+                this.preCompileInheritance(this.objectsConfig[objName]);
+            }
+        }
     }
 
     private preCompileObjectResolveExtras(obj : object) : void
@@ -255,6 +264,55 @@ class ConfigPeCompiler
             {
                 //we have array look in the array body!
                 this.preCompileResolveExtras(Const.App.INPUT.ARRAY,nowValue);
+            }
+        }
+    }
+
+    private preCompileInheritance(value : any) : void
+    {
+        if(typeof value === "object")
+        {
+            //check input
+            if(value.hasOwnProperty(Const.App.OBJECTS.PROPERTIES))
+            {
+                //isObject
+                if(typeof value[Const.App.OBJECTS.EXTENDS] === 'string')
+                {
+                    //extends there
+                    //check super extends before this
+                    const superName = value[Const.App.OBJECTS.EXTENDS];
+                    this.preCompileInheritance(this.objectsConfig[superName]);
+
+                    //lastExtend
+                    //extend Props
+                    const superProps = this.objectsConfig[superName][Const.App.OBJECTS.PROPERTIES];
+                    ObjectTools.addObToOb(value[Const.App.OBJECTS.PROPERTIES],superProps,false);
+                    //extend compileAs
+                    const superObj = this.objectsConfig[superName];
+
+                    const superCompileAs =
+                        typeof superObj[Const.App.OBJECTS.COMPILE_AS] === 'function' ?
+                        superObj[Const.App.OBJECTS.COMPILE_AS] :
+                        async (obj) => {return obj;};
+
+                    const currentCompileAs =
+                        typeof value[Const.App.OBJECTS.COMPILE_AS] === 'function' ?
+                        value[Const.App.OBJECTS.COMPILE_AS] :
+                        async (obj) => {return obj;};
+
+                    value[Const.App.OBJECTS.COMPILE_AS] = async (obj, smallBag) => {
+                        return await currentCompileAs(await superCompileAs(obj,smallBag),smallBag);
+                    };
+
+                    //remove extension
+                    delete value[Const.App.OBJECTS.EXTENDS];
+                }
+            }
+            else if(value.hasOwnProperty(Const.App.INPUT.ARRAY))
+            {
+                //is array
+                let inArray = value[Const.App.INPUT.ARRAY];
+                this.preCompileInheritance(inArray);
             }
         }
     }
@@ -346,6 +404,7 @@ class ConfigPeCompiler
                         //Compile validation groups and resolve object links
                         this.preCompileValidationGroups(input[inputName]);
                         this.preCompileResolveExtras(inputName,input);
+                        this.preCompileInheritance(input[inputName]);
                     }
                 }
             }

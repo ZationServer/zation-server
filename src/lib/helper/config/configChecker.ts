@@ -32,6 +32,7 @@ class ConfigChecker
    private cNames : object;
    private validAccessValues : any[];
    private objectImports : any[];
+   private objectExtensions : any[];
 
    constructor(zationConfig,configErrorBag)
    {
@@ -324,6 +325,7 @@ class ConfigChecker
    private checkObjectsConfig()
    {
        this.objectImports = [];
+       this.objectExtensions = [];
        for(let objName in this.objectsConfig)
        {
            if(this.objectsConfig.hasOwnProperty(objName))
@@ -339,37 +341,50 @@ class ConfigChecker
                }
            }
        }
-       this.checkCrossImports();
+       this.checkCrossImportsOrExtends();
    }
 
-   private checkCrossImports()
+   private checkCrossImportsOrExtends()
    {
        for(let i = 0; i < this.objectImports.length; i++)
        {
-           let objImport = this.objectImports[i];
-           if(this.isCrossIn(objImport))
+           let objDep = this.objectImports[i];
+           if(this.isCrossIn(objDep,this.objectImports))
            {
                this.objectImports[i] = {};
 
                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
-                   `Object: '${objImport['o']}' uses '${objImport['i']}' Object: '${objImport['i']}' uses '${objImport['o']}' a cross import, it will create an infinite loop.`));
+                   `Object: '${objDep['s']}' uses '${objDep['t']}' Object: '${objDep['t']}' uses '${objDep['s']}' a cyclic import, it will create an infinite loop.`));
+           }
+       }
+
+       for(let i = 0; i < this.objectExtensions.length; i++)
+       {
+           let objDep = this.objectExtensions[i];
+           if(this.isCrossIn(objDep,this.objectExtensions))
+           {
+               this.objectExtensions[i] = {};
+
+               this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+                   `Object: '${objDep['s']}' extends '${objDep['t']}' Object: '${objDep['t']}' extends '${objDep['s']}' a cyclic inheritance, it will create an infinite loop.`));
            }
        }
    }
 
-   private isCrossIn(objImport)
+   // noinspection JSMethodCanBeStatic
+   private isCrossIn(objDep,array : object[])
    {
-       for(let i = 0; i < this.objectImports.length; i++)
-       {
+       for(let i = 0; i < array.length; i++) {
            if
            (
-               this.objectImports[i]['o'] === objImport['i'] &&
-               this.objectImports[i]['i'] === objImport['o']
+               array[i]['s'] === objDep['t'] &&
+               array[i]['t'] === objDep['s']
            )
            {
                return true;
            }
        }
+       return false;
    }
 
    private checkValidationGroups()
@@ -402,6 +417,11 @@ class ConfigChecker
                    this.checkInputBody(props[k],target.addPath(k),objName);
                }
            }
+       }
+       //check for extend
+       if(typeof obj[Const.App.OBJECTS.EXTENDS] === 'string')
+       {
+           this.checkPropertyByObjExtend(obj[Const.App.OBJECTS.EXTENDS],target,objName);
        }
    }
 
@@ -732,7 +752,7 @@ class ConfigChecker
        if(!this.objectsConfig.hasOwnProperty(objLinkName))
        {
            this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
-               `${target.getTarget()} the dependency to object: '${objLinkName}' can not be resolved, Object not found.`));
+               `${target.getTarget()} the link dependency to object: '${objLinkName}' can not be resolved, Object not found.`));
        }
        else
        {
@@ -745,10 +765,33 @@ class ConfigChecker
            else if(objName !== undefined)
            {
                //add to import table to check later the imports
-               this.objectImports.push({o:objName,i:objLinkName});
+               this.objectImports.push({s:objName,t:objLinkName});
            }
        }
    }
+
+    private checkPropertyByObjExtend(objExtendName,target,objName)
+    {
+        if(!this.objectsConfig.hasOwnProperty(objExtendName))
+        {
+            this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+                `${target.getTarget()} the inheritance dependency to object: '${objExtendName}' can not be resolved, Object not found.`));
+        }
+        else
+        {
+            //check if object extend it self (by controller objName will be undefined)
+            if(objName === objExtendName)
+            {
+                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+                    `${target.getTarget()} object self inheritance, will create an infinite loop.`));
+            }
+            else if(objName !== undefined)
+            {
+                //add to extend table to check later the extensions
+                this.objectExtensions.push({s:objName,t:objExtendName});
+            }
+        }
+    }
 
    private checkArrayShortCut(value,target,objName)
    {
@@ -800,6 +843,12 @@ class ConfigChecker
            {
                //isObject
                ConfigCheckerTools.assertStructure(Structures.AppObject,value,Const.Settings.CN.APP,this.ceb,target);
+
+               //Check for extension
+               if(typeof value[Const.App.OBJECTS.EXTENDS] === 'string') {
+                   this.checkPropertyByObjExtend(value[Const.App.OBJECTS.EXTENDS],target,objName);
+               }
+
                if(typeof value[Const.App.OBJECTS.PROPERTIES] === 'object')
                {
                    let props = value[Const.App.OBJECTS.PROPERTIES];

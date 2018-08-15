@@ -29,6 +29,7 @@ class USER_GROUPS {
 class OBJECTS {
     static readonly PROPERTIES             = 'properties';
     static readonly COMPILE_AS             = 'compileAs';
+    static readonly EXTENDS                = 'extends';
 }
 
 class CONTROLLER {

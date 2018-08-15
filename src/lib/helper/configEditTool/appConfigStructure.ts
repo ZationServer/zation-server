@@ -96,6 +96,7 @@ export interface ObjectConfig
 {
     [Const.App.OBJECTS.PROPERTIES] : ObjectProperties;
     [Const.App.OBJECTS.COMPILE_AS] ?: CompileAsFunction;
+    [Const.App.OBJECTS.EXTENDS] ?: string;
 }
 
 export interface ArrayConfig extends ArraySettings
