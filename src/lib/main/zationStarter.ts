@@ -22,7 +22,7 @@ const  isWindows             = require('is-windows');
 class ZationStarter
 {
     private static instance : ZationStarter | null = null;
-    private static readonly version : string = '0.2.6';
+    private static readonly version : string = '0.2.7';
 
     private readonly serverStartedTimeStamp : number;
     private readonly zc : ZationConfig;
