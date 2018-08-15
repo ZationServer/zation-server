@@ -23,6 +23,9 @@ export interface AppConfig
 
 export type TaskFunction = (smallBag : SmallBag) => Promise<void> | void;
 
+export type ControllerInput = Record<string,InputProperty>;
+export type InputProperty = InputConfig | ObjectConfig | ArrayConfig | string | ArrayShortSyntax;
+
 export interface BackgroundTask
 {
     [Const.App.BACKGROUND_TASKS.AT] ?: number | TimeObj | TimeObj[] | number[];
@@ -87,11 +90,11 @@ export interface InputConfig extends InputValidationConfig
     [Const.App.INPUT.VALIDATION_GROUP] ?: string;
 }
 
+export type ObjectProperties = Record<string,InputConfig | ObjectConfig | ArrayConfig | string | ArrayShortSyntax>;
+
 export interface ObjectConfig
 {
-    [Const.App.OBJECTS.PROPERTIES] :
-        Record<string,InputConfig | ObjectConfig | ArrayConfig | string | ArrayShortSyntax>;
-
+    [Const.App.OBJECTS.PROPERTIES] : ObjectProperties;
     [Const.App.OBJECTS.COMPILE_AS] ?: CompileAsFunction;
 }
 

@@ -17,12 +17,12 @@ export type ChannelEventFunction =
 
 export interface ChannelConfig
 {
-    [Const.Channel.KEYS.DEFAULTS] ?: ChannelAccess;
-    [Const.Channel.KEYS.CUSTOM_CHANNELS] ?: Record<string,ChannelAccess>;
-    [Const.Channel.KEYS.CUSTOM_ID_CHANNELS] ?: Record<string,ChannelAccess>;
+    [Const.Channel.KEYS.DEFAULTS] ?: Channel;
+    [Const.Channel.KEYS.CUSTOM_CHANNELS] ?: Record<string,Channel>;
+    [Const.Channel.KEYS.CUSTOM_ID_CHANNELS] ?: Record<string,Channel>;
 }
 
-export interface ChannelAccess
+export interface Channel
 {
     [Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS] ?: ChannelAccessFunction | boolean | string | number | (string|number)[];
     [Const.Channel.CHANNEL.PUBLISH_ACCESS] ?: ChannelAccessFunction | boolean | string | number | (string|number)[];

@@ -24,6 +24,8 @@ export interface ServiceConfig
         Record<string,(CustomService | Record<string,object> | DefaultConfig<object>)>;
 }
 
+export type MainCustomService = CustomService | Record<string,object> | DefaultConfig<object>;
+
 export type NodeMailerConfig = (
     SMTPTransport | SMTPTransport.Options |
     SMTPPool | SMTPPool.Options |

@@ -41,17 +41,30 @@ import
 
 import
 {
+    MainCustomService,
     NodeMailerConfig,
     ServiceConfig
 } from "../helper/configEditTool/serviceConfigStructure";
 
 import
 {
-    AppConfig, BeforeHandleFunction,
-    CompileAsFunction, ControllerAccessFunction, TaskFunction
+    AppConfig,
+    BeforeHandleFunction,
+    CompileAsFunction,
+    ControllerAccessFunction,
+    ControllerConfig,
+    ControllerInput, InputProperty,
+    InputValidationConfig,
+    ObjectConfig, ObjectProperties,
+    TaskFunction
 } from "../helper/configEditTool/appConfigStructure";
-import {ErrorConfig} from "../helper/configEditTool/errorConfigStructure";
+import
+{
+    ErrorConfig,
+    TaskErrorOptions
+} from "../helper/configEditTool/errorConfigStructure";
 import {
+    Channel,
     ChannelAccessFunction,
     ChannelConfig,
     ChannelEventFunction
@@ -59,7 +72,6 @@ import {
 import ObjectTools = require("../helper/tools/objectTools");
 import {StarterConfig} from "../helper/configEditTool/starterConfigStructure";
 import {MainConfig} from "../helper/configEditTool/mainConfigStructure";
-
 
 class Config
 {
@@ -85,10 +97,25 @@ class Config
     static controllerAccess(func : ControllerAccessFunction) : ControllerAccessFunction {return func;}
     static task(func : TaskFunction) :  TaskFunction {return func;}
 
+    static controller(c : ControllerConfig) :  ControllerConfig {return c;}
+    static controllerInput(c : ControllerInput) :  ControllerInput {return c;}
+    static inputProperty(c : InputProperty) :  InputProperty {return c;}
+    static object(c : ObjectConfig) :  ObjectConfig {return c;}
+    static objectProperties(c : ObjectProperties) :  ObjectProperties {return c;}
+    static validationGroup(c : InputValidationConfig) :  InputValidationConfig {return c;}
+
     //Part Channel Config functions
 
     static channelAccess(func : ChannelAccessFunction) : ChannelAccessFunction {return func;}
     static channelOn(func : ChannelEventFunction) : ChannelEventFunction {return func;}
+
+    static channel(c : Channel) : Channel {return c;}
+
+    //Part Service Config
+    static customService(c : MainCustomService) : MainCustomService {return c;}
+
+    //Part Error Config
+    static taskError(c : TaskErrorOptions) : TaskErrorOptions {return c;}
 
     //Part Event Config events
 
