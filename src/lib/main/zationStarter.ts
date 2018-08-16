@@ -118,7 +118,7 @@ class ZationStarter
                 (`Failed to load sc-uws! Error -> ${e.toString()}.`);
 
                 if(isWindows()) {
-                    Logger.printStartFail(`Try to run command 'npm install --global --production windows-build-tools'`);
+                    Logger.printStartFail(`Try to install c++ compiler with command 'npm install --global --production windows-build-tools'`);
                 }
 
                 Logger.printStartFail
@@ -153,9 +153,6 @@ class ZationStarter
 
         if(this.zc.getMain(Const.Main.KEYS.USE_SC_UWS)) {
             scOptions['wsEngine'] = 'sc-uws';
-        }
-        else {
-            scOptions['wsEngine'] = 'ws';
         }
 
         this.master = new SocketCluster(scOptions);

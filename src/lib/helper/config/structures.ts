@@ -33,14 +33,14 @@ BackgroundTask[Const.App.BACKGROUND_TASKS.TASK]     = {types : ['function','arra
 
 const AppObject = {};
 AppObject[Const.App.OBJECTS.PROPERTIES]        = {types : ['object'],isOptional : false};
-AppObject[Const.App.OBJECTS.COMPILE_AS]        = {types : ['function'],isOptional : true};
+AppObject[Const.App.OBJECTS.BUILDER]           = {types : ['function'],isOptional : true};
 AppObject[Const.App.OBJECTS.EXTENDS]           = {types : ['string'],isOptional : true};
 
 const AppController = {};   
 AppController[Const.App.CONTROLLER.INPUT]             = {types : ['object'],isOptional : true};
 AppController[Const.App.CONTROLLER.BEFORE_HANDLE]     = {types : ['function','array'],isOptional : true};
 AppController[Const.App.CONTROLLER.SYSTEM_CONTROLLER] = {types : ['boolean'],isOptional : true};
-AppController[Const.App.CONTROLLER.WS_ACCESS]     = {types : ['boolean'],isOptional : true};
+AppController[Const.App.CONTROLLER.WS_ACCESS]         = {types : ['boolean'],isOptional : true};
 AppController[Const.App.CONTROLLER.HTTP_ACCESS]       = {types : ['boolean'],isOptional : true};
 AppController[Const.App.CONTROLLER.INPUT_VALIDATION]  = {types : ['boolean'],isOptional : true};
 AppController[Const.App.CONTROLLER.INPUT_ALL_ALLOW]   = {types : ['boolean'],isOptional : true};

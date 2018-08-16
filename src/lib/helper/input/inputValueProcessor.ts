@@ -123,10 +123,10 @@ class InputValueProcessor
                 !tempErrorBag.haveTaskError() &&
                 this.compile &&
                 this.preparedSmallBag !== undefined &&
-                typeof config[Const.App.OBJECTS.COMPILE_AS] === 'function')
+                typeof config[Const.App.OBJECTS.BUILDER] === 'function')
             {
-                let compileAs = config[Const.App.OBJECTS.COMPILE_AS];
-                input = await compileAs(input,this.preparedSmallBag);
+                let builder = config[Const.App.OBJECTS.BUILDER];
+                input = await builder(input,this.preparedSmallBag);
             }
 
             if(tempErrorBag.haveTaskError())
