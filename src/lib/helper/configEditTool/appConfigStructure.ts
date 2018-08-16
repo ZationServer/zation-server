@@ -95,7 +95,7 @@ export type ObjectProperties = Record<string,InputConfig | ObjectConfig | ArrayC
 export interface ObjectConfig
 {
     [Const.App.OBJECTS.PROPERTIES] : ObjectProperties;
-    [Const.App.OBJECTS.BUILDER] ?: BuilderFunction;
+    [Const.App.OBJECTS.CONSTRUCT] ?: ConstructFunction;
     [Const.App.OBJECTS.EXTENDS] ?: string;
 }
 
@@ -118,4 +118,4 @@ export interface ArrayShortSyntax extends Array<string | ArrayShortSyntax | Inpu
     1 : ArraySettings
 }
 
-export type BuilderFunction = (obj: object, smallBag : SmallBag) => Promise<any> | any;
+export type ConstructFunction = (obj: object, smallBag : SmallBag) => Promise<any> | any;

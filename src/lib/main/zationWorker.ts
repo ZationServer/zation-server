@@ -167,6 +167,8 @@ class ZationWorker extends SCWorker
         await this.zc.emitEvent(Const.Event.ZATION_EXPRESS,this.preparedSmallBag,this.app);
         Logger.printStartDebugInfo(`Worker with id ${this.id} process express event.`,true);
 
+        Logger.printStartDebugInfo(`Worker with id ${this.id} is started.`,false);
+
         //Fire event is started
         await this.zc.emitEvent
         (Const.Event.ZATION_WORKER_IS_STARTED,this.preparedSmallBag,this.zc.getSomeInformation(),this);

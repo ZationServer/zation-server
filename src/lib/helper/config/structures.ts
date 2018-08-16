@@ -33,7 +33,7 @@ BackgroundTask[Const.App.BACKGROUND_TASKS.TASK]     = {types : ['function','arra
 
 const AppObject = {};
 AppObject[Const.App.OBJECTS.PROPERTIES]        = {types : ['object'],isOptional : false};
-AppObject[Const.App.OBJECTS.BUILDER]           = {types : ['function'],isOptional : true};
+AppObject[Const.App.OBJECTS.CONSTRUCT]         = {types : ['function'],isOptional : true};
 AppObject[Const.App.OBJECTS.EXTENDS]           = {types : ['string'],isOptional : true};
 
 const AppController = {};   

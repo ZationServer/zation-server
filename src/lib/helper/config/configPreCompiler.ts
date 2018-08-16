@@ -287,21 +287,21 @@ class ConfigPeCompiler
                     //extend Props
                     const superProps = this.objectsConfig[superName][Const.App.OBJECTS.PROPERTIES];
                     ObjectTools.addObToOb(value[Const.App.OBJECTS.PROPERTIES],superProps,false);
-                    //extend builder
+                    //extend construct
                     const superObj = this.objectsConfig[superName];
 
-                    const superBuilder =
-                        typeof superObj[Const.App.OBJECTS.BUILDER] === 'function' ?
-                        superObj[Const.App.OBJECTS.BUILDER] :
+                    const superConstruct =
+                        typeof superObj[Const.App.OBJECTS.CONSTRUCT] === 'function' ?
+                        superObj[Const.App.OBJECTS.CONSTRUCT] :
                         async (obj) => {return obj;};
 
-                    const currentBuilder =
-                        typeof value[Const.App.OBJECTS.BUILDER] === 'function' ?
-                        value[Const.App.OBJECTS.BUILDER] :
+                    const currentConstruct =
+                        typeof value[Const.App.OBJECTS.CONSTRUCT] === 'function' ?
+                        value[Const.App.OBJECTS.CONSTRUCT] :
                         async (obj) => {return obj;};
 
-                    value[Const.App.OBJECTS.BUILDER] = async (obj, smallBag) => {
-                        return await currentBuilder(await superBuilder(obj,smallBag),smallBag);
+                    value[Const.App.OBJECTS.CONSTRUCT] = async (obj, smallBag) => {
+                        return await currentConstruct(await superConstruct(obj,smallBag),smallBag);
                     };
 
                     //remove extension

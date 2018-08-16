@@ -118,15 +118,15 @@ class InputValueProcessor
 
             await Promise.all(promises);
 
-            //compile obj
+            //construct obj
             if(
                 !tempErrorBag.haveTaskError() &&
                 this.compile &&
                 this.preparedSmallBag !== undefined &&
-                typeof config[Const.App.OBJECTS.BUILDER] === 'function')
+                typeof config[Const.App.OBJECTS.CONSTRUCT] === 'function')
             {
-                let builder = config[Const.App.OBJECTS.BUILDER];
-                input = await builder(input,this.preparedSmallBag);
+                let construct = config[Const.App.OBJECTS.CONSTRUCT];
+                input = await construct(input,this.preparedSmallBag);
             }
 
             if(tempErrorBag.haveTaskError())

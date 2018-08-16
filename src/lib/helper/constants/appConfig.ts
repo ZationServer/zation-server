@@ -28,7 +28,7 @@ class USER_GROUPS {
 
 class OBJECTS {
     static readonly PROPERTIES             = 'properties';
-    static readonly BUILDER                = 'builder';
+    static readonly CONSTRUCT              = 'construct';
     static readonly EXTENDS                = 'extends';
 }
 

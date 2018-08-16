@@ -50,7 +50,7 @@ import
 {
     AppConfig,
     BeforeHandleFunction,
-    BuilderFunction,
+    ConstructFunction,
     ControllerAccessFunction,
     ControllerConfig,
     ControllerInput, InputProperty,
@@ -92,7 +92,7 @@ class Config
 
     //Part App Config functions
 
-    static builder(func : BuilderFunction) : BuilderFunction {return func;}
+    static construct(func : ConstructFunction) : ConstructFunction {return func;}
     static beforeHandle(func : BeforeHandleFunction) : BeforeHandleFunction {return func;}
     static controllerAccess(func : ControllerAccessFunction) : ControllerAccessFunction {return func;}
     static task(func : TaskFunction) :  TaskFunction {return func;}
