@@ -154,6 +154,9 @@ class ZationStarter
         if(this.zc.getMain(Const.Main.KEYS.USE_SC_UWS)) {
             scOptions['wsEngine'] = 'sc-uws';
         }
+        else {
+            scOptions['wsEngine'] = 'ws';
+        }
 
         this.master = new SocketCluster(scOptions);
 
@@ -217,7 +220,7 @@ class ZationStarter
         const port     = this.zc.getMain(Const.Main.KEYS.PORT);
         const path     = this.zc.getMain(Const.Main.KEYS.PATH);
         const protocol = this.zc.getMain(Const.Main.KEYS.SECURE) ? 'https' : 'http';
-        const server   = `${protocol}://${hostName}:${port}/${path}`;
+        const server   = `${protocol}://${hostName}:${port}${path}`;
 
         Logger.log('\x1b[32m%s\x1b[0m', '   [ACTIVE]','Zation started');
         Logger.log(`            Version: ${ZationStarter.version}`);
@@ -226,6 +229,7 @@ class ZationStarter
         Logger.log(`            Port: ${port}`);
         Logger.log(`            Time: ${TimeTools.getMoment(this.zc)}`);
         Logger.log(`            Time zone: ${this.zc.getMain(Const.Main.KEYS.TIME_ZONE)}`);
+        Logger.log(`            WebSocket engine: ${this.master.options.wsEngine}`);
         Logger.log(`            Worker count: ${this.master.options.workers}`);
         Logger.log(`            Broker count: ${this.master.options.brokers}`);
         Logger.log(`            Leader instance: ${this.zc.getMain(Const.Main.KEYS.LEADER_INSTANCE)}`);

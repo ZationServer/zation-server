@@ -58,6 +58,7 @@
     "sc-hasher": "1.0.0",
     "cache-require-paths": "0.3.0",
     "sc-uws": "10.148.1",
+    "ws": "6.0.0",
     "is-windows": "1.0.2"
   },
   "devDependencies": {

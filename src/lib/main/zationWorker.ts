@@ -248,10 +248,10 @@ class ZationWorker extends SCWorker
         this.app.use(`/zation/js`, express.static(__dirname + '/../public/js'));
 
         // noinspection JSUnresolvedFunction
-        this.app.use(`/${path}/panel`, express.static(__dirname + '/../public/panel'));
+        this.app.use(`${path}/panel`, express.static(__dirname + '/../public/panel'));
 
         // noinspection JSUnresolvedFunction
-        this.app.get(`/${path}/client`,(req,res) =>
+        this.app.get(`${path}/client`,(req,res) =>
         {
             res.type('.js');
             res.send(this.preparedClientJs);
@@ -260,7 +260,7 @@ class ZationWorker extends SCWorker
         //REQUEST
 
         // noinspection JSUnresolvedFunction
-        this.app.all(`/${path}`, (req, res) => {
+        this.app.all(`${path}`, (req, res) => {
             //Run Zation
             // noinspection JSUnusedLocalSymbols
             let p = this.zation.run(
