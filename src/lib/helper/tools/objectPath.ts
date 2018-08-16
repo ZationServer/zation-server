@@ -25,7 +25,7 @@ class ObjectPath
        this.obj = obj;
    }
 
-   get(path : string | string[]) : any
+   get(path ?: string | string[]) : any
    {
        if(path !== undefined)
        {

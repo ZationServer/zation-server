@@ -17,10 +17,15 @@ import AuthEngine            = require('../auth/authEngine');
 import Bag                   = require('../../api/Bag');
 import TokenEngine           = require('../token/tokenEngine');
 import InputWrapper          = require("../tools/inputWrapper");
+import SHBridge              = require("../bridges/shBridge");
+import ZationConfig          = require("../../main/zationConfig");
+import ZationWorker          = require("../../main/zationWorker");
+import Controller            = require("../../api/Controller");
+import TokenBridge           = require("../bridges/tokenBridge");
 
 class MainProcessor
 {
-    static async process(shBridge,zc,worker)
+    static async process(shBridge : SHBridge,zc : ZationConfig,worker : ZationWorker)
     {
         let reqData = shBridge.getZationData();
 
@@ -43,14 +48,16 @@ class MainProcessor
                 throw new TaskError(MainErrors.authStartActive);
             }
 
-            let task = reqData[Const.Settings.REQUEST_INPUT.TASK];
+            const task = reqData[Const.Settings.REQUEST_INPUT.TASK];
 
-            let controllerName = task[Const.Settings.REQUEST_INPUT.CONTROLLER];
+            const isSystemController = ZationReqTools.isSystemControllerReq(task);
+            const controllerName = ZationReqTools.getControllerName(task,isSystemController);
 
             //Trows if not exists
-            worker.getControllerPrepare().checkControllerExist(controllerName);
+            worker.getControllerPrepare().checkControllerExist(controllerName,isSystemController);
 
-            let controllerConfig = worker.getControllerPrepare().getControllerConfig(controllerName);
+            let controllerConfig =
+                worker.getControllerPrepare().getControllerConfig(controllerName,isSystemController);
 
             //EXTRA SECURE AUTH LAYER
             if(shBridge.getTokenBridge().hasToken() && shBridge.isWebSocket() &&
@@ -83,8 +90,9 @@ class MainProcessor
 
                 if(!useAuth || authEngine.hasAccessToController(controllerConfig))
                 {
+                    let controllerInstance =
+                        worker.getControllerPrepare().getControllerInstance(controllerName,isSystemController);
 
-                    let controllerInstance = worker.getControllerPrepare().getControllerInstance(controllerName);
                     let inputWrapper : InputWrapper;
 
                     //check input
@@ -122,7 +130,7 @@ class MainProcessor
             {
                 throw new TaskError(MainErrors.noAccessToServerProtocol,
                     {
-                        controller: task[Const.Settings.REQUEST_INPUT.CONTROLLER],
+                        controller: controllerName,
                         protocol: authEngine.getProtocol()
                     });
             }
@@ -134,7 +142,7 @@ class MainProcessor
     }
 
     //LAYER 10
-    static async processController(controllerInstance,controllerConfig,bag,tb)
+    static async processController(controllerInstance : Controller,controllerConfig : object,bag : Bag,tb : TokenBridge)
     {
         try
         {

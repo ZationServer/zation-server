@@ -67,7 +67,7 @@ class Bag extends SmallBag
     //Part Input
 
     // noinspection JSUnusedGlobalSymbols
-    getInput(path : string | string[]) : any
+    getInput(path ?: string | string[]) : any
     {
         return this.inputWrapper.getInput(path);
     }

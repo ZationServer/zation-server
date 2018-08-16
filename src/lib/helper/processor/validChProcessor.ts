@@ -18,13 +18,15 @@ class ValidChProcessor
     {
         if(ZationReqTools.isValidValidationStructure(reqData))
         {
-            let validReq = reqData[Const.Settings.VALIDATION_REQUEST_INPUT.MAIN];
-            let cName = validReq[Const.Settings.VALIDATION_REQUEST_INPUT.CONTROLLER];
+            const validReq = reqData[Const.Settings.VALIDATION_REQUEST_INPUT.MAIN];
+
+            const isSystemController = ZationReqTools.isSystemControllerReq(validReq);
+            const cName = ZationReqTools.getControllerName(validReq,isSystemController);
 
             //Trows if not exists
-            worker.getControllerPrepare.checkControllerExist(cName);
+            worker.getControllerPrepare.checkControllerExist(cName,isSystemController);
 
-            let controller = worker.getControllerPrepare().getControllerConfig(cName);
+            let controller = worker.getControllerPrepare().getControllerConfig(cName,isSystemController);
 
             //end here if all is allow
             if(typeof controller[Const.App.CONTROLLER.INPUT_ALL_ALLOW] === 'boolean' &&

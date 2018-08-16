@@ -18,6 +18,16 @@ export = {
         isFromZationSystem : true
     },
 
+    systemControllerNotFound : {
+        name          : 'systemControllerNotFound',
+        description   : 'System controller is missing',
+        type          : ErrorType.INPUT_ERROR,
+        sendInfo      : false,
+        //INFO
+        // controllerName (From missing Controller)
+        isFromZationSystem : true
+    },
+
     authControllerNotSet : {
         name          : 'authControllerNotSet',
         description   : 'Auth controller not set',

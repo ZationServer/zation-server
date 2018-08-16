@@ -15,7 +15,7 @@ class InputWrapper
         this.input = new ObjectPath(input);
     }
 
-    getInput(path : string | string[]) : any
+    getInput(path ?: string | string[]) : any
     {
         return this.input.get(path);
     }

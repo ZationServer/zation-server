@@ -30,24 +30,24 @@ class ControllerPrepare
         this.appController = {};
     }
 
-    getControllerInstance(name : string) : Controller
+    getControllerInstance(name : string,isSystemController : boolean) : Controller
     {
-        return this.getController(name).instance;
+        return this.getController(name,isSystemController).instance;
     }
 
 
-    getControllerConfig(name : string) : object
+    getControllerConfig(name : string,isSystemController : boolean) : object
     {
-        return this.getController(name).config;
+        return this.getController(name,isSystemController).config;
     }
 
-    private getController(name : string) : any
+    private getController(name : string,isSystemController : boolean) : any
     {
-        if(this.appController.hasOwnProperty(name))
+        if(!isSystemController)
         {
             return this.appController[name];
         }
-        else if(this.systemController.hasOwnProperty(name))
+        else if(isSystemController)
         {
             return this.systemController[name];
         }
@@ -57,16 +57,26 @@ class ControllerPrepare
         }
     }
 
-    isControllerExist(name : string) : boolean
+    isControllerExist(name : string,isSystemController : boolean) : boolean
     {
-        return this.appController.hasOwnProperty(name) || this.systemController.hasOwnProperty(name);
+        if(!isSystemController) {
+            return this.appController.hasOwnProperty(name)
+        }
+        else {
+            return this.systemController.hasOwnProperty(name);
+        }
     }
 
-    checkControllerExist(name : string) : void
+    checkControllerExist(name : string,isSystemController : boolean) : void
     {
-        if(!this.isControllerExist(name))
+        if(!this.isControllerExist(name,isSystemController))
         {
-            throw new TaskError(MainErrors.controllerNotFound, {controllerName: name});
+            if(isSystemController) {
+                throw new TaskError(MainErrors.systemControllerNotFound, {controllerName: name});
+            }
+            else {
+                throw new TaskError(MainErrors.controllerNotFound, {controllerName: name});
+            }
         }
     }
 

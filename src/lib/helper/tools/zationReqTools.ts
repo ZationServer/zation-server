@@ -16,12 +16,31 @@ class ZationReqTools
             (
                 (
                     typeof zationReq[Const.Settings.REQUEST_INPUT.TASK] === 'object' &&
-                    typeof zationReq[Const.Settings.REQUEST_INPUT.TASK][Const.Settings.REQUEST_INPUT.CONTROLLER] === 'string' &&
+                    (
+                        typeof zationReq[Const.Settings.REQUEST_INPUT.TASK][Const.Settings.REQ_IN_C.CONTROLLER] === 'string' ||
+                        typeof zationReq[Const.Settings.REQUEST_INPUT.TASK][Const.Settings.REQ_IN_C.SYSTEM_CONTROLLER] === 'string'
+                    ) &&
                     typeof zationReq[Const.Settings.REQUEST_INPUT.TASK][Const.Settings.REQUEST_INPUT.INPUT] === 'object'
                 ) || (
                     typeof zationReq[Const.Settings.REQUEST_INPUT.AUTH] === 'object' &&
                     typeof zationReq[Const.Settings.REQUEST_INPUT.AUTH][Const.Settings.REQUEST_INPUT.INPUT] === 'object'
                 ));
+    }
+
+    static isSystemControllerReq(task : object) : boolean
+    {
+        return typeof task[Const.Settings.REQ_IN_C.SYSTEM_CONTROLLER] === 'string' &&
+            !task[Const.Settings.REQ_IN_C.CONTROLLER];
+    }
+
+    static getControllerName(task : object, isSystemController : boolean) : string
+    {
+        if(!isSystemController) {
+            return task[Const.Settings.REQ_IN_C.CONTROLLER];
+        }
+        else {
+            return task[Const.Settings.REQ_IN_C.SYSTEM_CONTROLLER];
+        }
     }
 
     static isValidationCheckReq(zationReq : object) : boolean
@@ -35,9 +54,12 @@ class ZationReqTools
     {
         return typeof zationReq[Const.Settings.VALIDATION_REQUEST_INPUT.MAIN] === 'object' &&
             (
-                typeof zationReq[Const.Settings.VALIDATION_REQUEST_INPUT.MAIN]
-                    [Const.Settings.VALIDATION_REQUEST_INPUT.CONTROLLER] === 'string' &&
-
+                (
+                    typeof zationReq[Const.Settings.VALIDATION_REQUEST_INPUT.MAIN]
+                        [Const.Settings.REQ_IN_C.CONTROLLER] === 'string' ||
+                    typeof zationReq[Const.Settings.VALIDATION_REQUEST_INPUT.MAIN]
+                        [Const.Settings.REQ_IN_C.SYSTEM_CONTROLLER] === 'string'
+                ) &&
                 Array.isArray(zationReq[Const.Settings.VALIDATION_REQUEST_INPUT.MAIN]
                     [Const.Settings.VALIDATION_REQUEST_INPUT.INPUT])
             );
@@ -53,7 +75,7 @@ class ZationReqTools
         zationReq[Const.Settings.REQUEST_INPUT.TASK] = zationReq[Const.Settings.REQUEST_INPUT.AUTH];
         delete zationReq[Const.Settings.REQUEST_INPUT.AUTH];
 
-        zationReq[Const.Settings.REQUEST_INPUT.TASK][Const.Settings.REQUEST_INPUT.CONTROLLER] =
+        zationReq[Const.Settings.REQUEST_INPUT.TASK][Const.Settings.REQ_IN_C.CONTROLLER] =
             zc.getApp(Const.App.KEYS.AUTH_CONTROLLER);
 
         return zationReq;
