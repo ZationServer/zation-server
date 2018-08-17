@@ -24,7 +24,6 @@ class KEYS {
     static readonly SYSTEM_BACKGROUND_TASK_REFRESH_RATE   = 'systemBackgroundTaskRefreshRate';
     static readonly ZATION_CONSOLE_LOG                    = 'zationConsoleLog';
     static readonly SC_CONSOLE_LOG                        = 'scConsoleLog';
-    static readonly LEADER_INSTANCE                       = 'leaderInstance';
     static readonly USE_SC_UWS                            = 'useScUws';
 
     static readonly USE_PANEL                             = 'usePanel';

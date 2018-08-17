@@ -5,12 +5,12 @@ GitHub: LucaCode
  */
 
 import Const              = require('../constants/constWrapper');
-import {TaskErrorOptions} from "../configEditTool/errorConfigStructure";
+import {ErrorConstruct} from "../configEditTool/errorConfigStructure";
 import TaskError          = require("../../api/TaskError");
 
 class TaskErrorBuilder
 {
-    private errorSettings : TaskErrorOptions = {};
+    private errorSettings : ErrorConstruct = {};
     private errorInfo : object = {};
 
     constructor()

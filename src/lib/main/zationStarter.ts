@@ -17,6 +17,7 @@ import PrepareClientJs       = require('../helper/client/prepareClientJs');
 import MasterTempDbEngine    = require('../helper/tempDb/masterTempDbEngine');
 import BackgroundTasksSetter = require("../helper/background/backgroundTasksSetter");
 const  isWindows             = require('is-windows');
+const  ScClient : any        = require('socketcluster-client');
 
 
 class ZationStarter
@@ -27,8 +28,11 @@ class ZationStarter
     private readonly serverStartedTimeStamp : number;
     private readonly zc : ZationConfig;
     private workerIds : any;
+    private brokerIds : any;
     private tempDbEngine : MasterTempDbEngine;
     private master : any;
+
+    private stateServerActive : boolean;
 
     constructor(options)
     {
@@ -42,6 +46,7 @@ class ZationStarter
             //setLogger
             Logger.setZationConfig(this.zc);
             this.workerIds = new HashSet();
+            this.brokerIds = new HashSet();
 
             (async () =>
             {
@@ -134,6 +139,7 @@ class ZationStarter
             appName: this.zc.getMain(Const.Main.KEYS.APP_NAME),
             workerController:__dirname + '/zationWorker.js',
             brokerController:__dirname  + '/zationBroker.js',
+            workerClusterController: null,
             environment : this.zc.getMain(Const.Main.KEYS.ENVIRONMENT),
             port   : this.zc.getMain(Const.Main.KEYS.PORT),
             path   : this.zc.getMain(Const.Main.KEYS.PATH),
@@ -148,7 +154,8 @@ class ZationStarter
             zationServerVersion : ZationStarter.version,
             zationServerStartedTimeStamp : this.serverStartedTimeStamp,
             ipcAckTimeout: 3000,
-            logLevel : this.zc.getMain(Const.Main.KEYS.SC_CONSOLE_LOG) ? 100 : 0
+            logLevel : this.zc.getMain(Const.Main.KEYS.SC_CONSOLE_LOG) ? 100 : 0,
+
         };
 
         if(this.zc.getMain(Const.Main.KEYS.USE_SC_UWS)) {
@@ -163,17 +170,25 @@ class ZationStarter
         // noinspection JSUnresolvedFunction
         this.master.on('ready',async () =>
         {
-           this.printStartedInformation();
+           this.stateServerActive =  !!this.master.options.clusterStateServerHost;
 
-           if(this.zc.isLeaderInstance())
-           {
+           if(!this.stateServerActive) {
                Logger.startStopWatch();
                this.startBackgroundTasks();
                Logger.printStartDebugInfo('Master init the background tasks.',true);
            }
+           else
+           {
+               try {
+                   await this.connectToStateServer();
+               }
+               catch (e) {
+                   this.crashServer(e);
+               }
+           }
 
+           this.printStartedInformation();
            await this.zc.emitEvent(Const.Event.ZATION_IS_STARTED, this.zc.getSomeInformation());
-
         });
 
 
@@ -195,10 +210,20 @@ class ZationStarter
         {
             let id = info.id;
             // noinspection JSUnresolvedFunction
-            if(id  !== undefined && !this.workerIds.contains(id))
-            {
+            if(id  !== undefined && !this.workerIds.contains(id)) {
                 // noinspection JSUnresolvedFunction
                 this.workerIds.add(id);
+            }
+        });
+
+        // noinspection JSUnresolvedFunction
+        this.master.on('brokerStart', (info) =>
+        {
+            let id = info.id;
+            // noinspection JSUnresolvedFunction
+            if(id  !== undefined && !this.brokerIds.contains(id)) {
+                // noinspection JSUnresolvedFunction
+                this.brokerIds.add(id);
             }
         });
 
@@ -206,10 +231,19 @@ class ZationStarter
         this.master.on('workerExit', (info) =>
         {
             let id = info.id;
-            if(id  !== undefined)
-            {
+            if(id  !== undefined) {
                 // noinspection JSUnresolvedFunction
                 this.workerIds.remove(id);
+            }
+        });
+
+        // noinspection JSUnresolvedFunction
+        this.master.on('brokerExit', (info) =>
+        {
+            let id = info.id;
+            if(id  !== undefined) {
+                // noinspection JSUnresolvedFunction
+                this.brokerIds.remove(id);
             }
         });
     }
@@ -229,10 +263,11 @@ class ZationStarter
         Logger.log(`            Port: ${port}`);
         Logger.log(`            Time: ${TimeTools.getMoment(this.zc)}`);
         Logger.log(`            Time zone: ${this.zc.getMain(Const.Main.KEYS.TIME_ZONE)}`);
+        Logger.log(`            Instance id: ${this.master.options.instanceId}`);
         Logger.log(`            WebSocket engine: ${this.master.options.wsEngine}`);
+        Logger.log(`            Machine scaling active: ${this.stateServerActive}`);
         Logger.log(`            Worker count: ${this.master.options.workers}`);
         Logger.log(`            Broker count: ${this.master.options.brokers}`);
-        Logger.log(`            Leader instance: ${this.zc.getMain(Const.Main.KEYS.LEADER_INSTANCE)}`);
         Logger.log(`            Server: ${server}`);
         Logger.log('            GitHub: https://github.com/ZationServer');
         Logger.log(`            StartTime: ${Date.now()-this.serverStartedTimeStamp} ms`);
@@ -243,6 +278,135 @@ class ZationStarter
         // noinspection JSUnresolvedFunction
         let array = this.workerIds.toArray();
         return array[Math.floor(Math.random()*array.length)];
+    }
+
+    //PART Scaling
+
+    private async connectToStateServer()
+    {
+        //connect to state server
+        const DEFAULT_PORT = 7777;
+        const DEFAULT_RETRY_DELAY = 2000;
+        const DEFAULT_STATE_SERVER_CONNECT_TIMEOUT = 3000;
+        const DEFAULT_STATE_SERVER_ACK_TIMEOUT = 2000;
+        const DEFAULT_RECONNECT_RANDOMNESS = 1000;
+        const retryDelay = this.master.options.brokerRetryDelay || DEFAULT_RETRY_DELAY;
+        const reconnectRandomness = this.master.stateServerReconnectRandomness || DEFAULT_RECONNECT_RANDOMNESS;
+        const authKey = this.master.options.clusterAuthKey || null;
+
+        const zcStateSocketOptions = {
+            hostname: this.master.options.stateServerHost, // Required option
+            port: this.master.options.stateServerPort || DEFAULT_PORT,
+            connectTimeout: this.master.options.stateServerConnectTimeout || DEFAULT_STATE_SERVER_CONNECT_TIMEOUT,
+            ackTimeout: this.master.options.stateServerAckTimeout || DEFAULT_STATE_SERVER_ACK_TIMEOUT,
+            autoReconnectOptions: {
+                initialDelay: retryDelay,
+                randomness: reconnectRandomness,
+                multiplier: 1,
+                maxDelay: retryDelay + reconnectRandomness
+            },
+            query: {
+                authKey,
+                instancePort: this.zc.getMain(Const.Main.KEYS.PORT),
+                instanceType: 'zation-master',
+            }
+        };
+        const stateSocket = ScClient.connect(zcStateSocketOptions);
+
+        return new Promise((resolve, reject) =>
+        {
+            let connected : boolean = false;
+
+            stateSocket.on('newLeader',(data,respond) => {
+                this.activateLeader(stateSocket);
+                respond(null);
+            });
+
+            stateSocket.on('connect', async () =>
+            {
+                connected = true;
+                try {
+                    await this.syncData(stateSocket);
+                }
+                catch (e) {
+                    reject(e);
+                }
+                stateSocket.emit('zMasterJoin', {instanceId : this.master.options.instanceId},
+                    (err) =>
+                {
+                    if(!err) {
+                        reject(err);
+                    }
+                });
+            });
+
+            setTimeout(() =>
+            {
+                if(!connected) {
+                    reject(new Error('Timeout to connect to zation-cluster-state server.'));
+                }
+            },5000);
+        });
+    }
+
+    private async syncData(stateSocket : any)
+    {
+        Logger.printStartDebugInfo('Master is try to synchronize data from leader.');
+        await new Promise((resolve, reject) =>
+        {
+            stateSocket.emit('getSyncData',{},async (err,data) => {
+                if(err) {
+                    reject(new Error(`Failed to get synchronize data error -> ${err.toString()}`));
+                }
+
+                if(data.haveLeader) {
+                    Logger.startStopWatch();
+                    await this.setSyncData(data);
+                    Logger.printStartDebugInfo('Master synchronize data from leader.',true);
+                    resolve();
+                }
+                else {
+                    Logger.printStartDebugInfo(`Master does not need to synchronize data from a leader.`);
+                }
+            });
+        });
+    }
+
+    private activateLeader(stateSocket : any)
+    {
+        Logger.printDebugInfo(`This Instance '${this.master.options.instanceId}' becomes the leader.`);
+
+        Logger.startStopWatch();
+        this.startBackgroundTasks();
+        Logger.printStartDebugInfo('Master init the background tasks.',true);
+
+        Logger.printStartDebugInfo('Master register on leader events.');
+        stateSocket.on('getSyncData',async (data,respond) => {
+            respond(null,await this.getSyncData());
+        });
+    }
+
+    private async setSyncData(data : any)
+    {
+        //set data to broker
+
+
+    }
+
+    private async getSyncData()
+    {
+        //get data from broker
+        this.brokerIds.toArray().forEach( (id) =>
+        {
+
+        });
+    }
+
+    // noinspection JSMethodCanBeStatic
+    private crashServer(error : any)
+    {
+        Logger.printStartFail(error.message);
+        process.exit();
     }
 
     //PART BackgroundTasks

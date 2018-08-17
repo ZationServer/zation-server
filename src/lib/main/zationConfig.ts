@@ -13,7 +13,7 @@ import crypto            = require('crypto');
 import ZationInfoObj     = require("../helper/infoObjects/zationInfo");
 import Structures        = require('./../helper/config/structures');
 import FuncTools         = require("../helper/tools/funcTools");
-import {TaskErrorOptions} from "../helper/configEditTool/errorConfigStructure";
+import {ErrorConstruct} from "../helper/configEditTool/errorConfigStructure";
 import ErrorNotFound      = require("../helper/error/errorNotFoundError");
 import SmallBag           = require("../api/SmallBag");
 
@@ -38,7 +38,7 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.DEBUG] = false;
             this.mainConfig[Const.Main.KEYS.START_DEBUG] = false;
             this.mainConfig[Const.Main.KEYS.SHOW_CONFIG_WARNINGS] = true;
-            this.mainConfig[Const.Main.KEYS.PORT] = process.env.PORT || 3000;
+            this.mainConfig[Const.Main.KEYS.PORT] = Number(process.env.PORT) || Number(process.env.p) || 3000;
             this.mainConfig[Const.Main.KEYS.HOSTNAME] = 'localhost';
             this.mainConfig[Const.Main.KEYS.ENVIRONMENT] = 'dev';
             this.mainConfig[Const.Main.KEYS.POST_KEY_WORD] = 'zation';
@@ -59,7 +59,6 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.WORKERS] = Const.Main.OPTIONS.AUTO;
             this.mainConfig[Const.Main.KEYS.ZATION_CONSOLE_LOG] = true;
             this.mainConfig[Const.Main.KEYS.SC_CONSOLE_LOG] = false;
-            this.mainConfig[Const.Main.KEYS.LEADER_INSTANCE] = process.env.LEADER || true;
             this.mainConfig[Const.Main.KEYS.USE_SC_UWS] = true;
 
             //TEMP
@@ -210,7 +209,7 @@ class ZationConfig
         return this.errorConfig;
     }
 
-    getError(name : string) : TaskErrorOptions
+    getError(name : string) : ErrorConstruct
     {
         if(this.errorConfig.hasOwnProperty(name)) {
             return this.errorConfig[name];
@@ -262,11 +261,6 @@ class ZationConfig
     isUseErrorInfoTempDb() : boolean
     {
         return this.getMain(Const.Main.KEYS.USE_TEMP_DB_ERROR_INFO);
-    }
-
-    isLeaderInstance() : boolean
-    {
-        return this.getMain(Const.Main.KEYS.LEADER_INSTANCE);
     }
 
     getSomeInformation() : ZationInfoObj

@@ -88,17 +88,22 @@ class CLIENT
 
 class CHANNEL
 {
+    //Zation Main Channels
     static readonly USER_CHANNEL_PREFIX       = 'ZATION.USER.';
     static readonly AUTH_USER_GROUP_PREFIX    = 'ZATION.AUTH_USER_GROUP.';
     static readonly DEFAULT_USER_GROUP        = 'ZATION.DEFAULT_USER_GROUP';
     static readonly ALL                       = 'ZATION.ALL';
     static readonly PANEL                     = 'ZATION.PANEL';
-    static readonly ALL_WORKER                = 'ZATION.ALL_WORKER';
 
+    //Custom Channels
     static readonly CUSTOM_ID_CHANNEL_PREFIX  = 'ZATION.CUSTOM_ID_CHANNEL.';
     static readonly CUSTOM_CHANNEL_ID         = '.CH_ID.';
 
     static readonly CUSTOM_CHANNEL_PREFIX     = 'ZATION.CUSTOM_CHANNEL.';
+
+    //Internal Channels
+    static readonly ALL_WORKER                = 'ZATION.ALL_WORKER';
+    static readonly TOKEN_CHANNEL_PREFIX      = 'ZATION.TOKEN.';
 }
 
 

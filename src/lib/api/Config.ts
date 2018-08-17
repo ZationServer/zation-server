@@ -61,7 +61,7 @@ import
 import
 {
     ErrorConfig,
-    TaskErrorOptions
+    ErrorConstruct
 } from "../helper/configEditTool/errorConfigStructure";
 import {
     Channel,
@@ -115,7 +115,7 @@ class Config
     static customService(c : MainCustomService) : MainCustomService {return c;}
 
     //Part Error Config
-    static taskError(c : TaskErrorOptions) : TaskErrorOptions {return c;}
+    static taskError(c : ErrorConstruct) : ErrorConstruct {return c;}
 
     //Part Event Config events
 

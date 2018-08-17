@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {TaskErrorOptions} from "../helper/configEditTool/errorConfigStructure";
+import {ErrorConstruct} from "../helper/configEditTool/errorConfigStructure";
 import TaskErrorBuilder   = require("../helper/builder/taskErrorBuilder");
 let Const                 = require('../helper/constants/constWrapper');
 
@@ -18,7 +18,7 @@ class TaskError
     private privateE : boolean;
     private readonly fromZationSystem : boolean;
 
-    constructor(error : TaskErrorOptions = {},info ?: object | string)
+    constructor(errorConstruct : ErrorConstruct = {}, info ?: object | string)
     {
         //defaultValues
         this.name        = 'TaskError';
@@ -41,34 +41,34 @@ class TaskError
             }
         }
 
-        if(error.hasOwnProperty(Const.Settings.ERROR.NAME))
+        if(errorConstruct.hasOwnProperty(Const.Settings.ERROR.NAME))
         {
-            this.name = error[Const.Settings.ERROR.NAME];
+            this.name = errorConstruct[Const.Settings.ERROR.NAME];
         }
 
-        if(error.hasOwnProperty(Const.Settings.ERROR.DESCRIPTION))
+        if(errorConstruct.hasOwnProperty(Const.Settings.ERROR.DESCRIPTION))
         {
-            this.description = error[Const.Settings.ERROR.DESCRIPTION];
+            this.description = errorConstruct[Const.Settings.ERROR.DESCRIPTION];
         }
 
-        if(error.hasOwnProperty(Const.Settings.ERROR.TYPE))
+        if(errorConstruct.hasOwnProperty(Const.Settings.ERROR.TYPE))
         {
-            this.type = error[Const.Settings.ERROR.TYPE];
+            this.type = errorConstruct[Const.Settings.ERROR.TYPE];
         }
 
-        if(error.hasOwnProperty(Const.Settings.ERROR.SEND_INFO))
+        if(errorConstruct.hasOwnProperty(Const.Settings.ERROR.SEND_INFO))
         {
-            this.sendInfo = error[Const.Settings.ERROR.SEND_INFO];
+            this.sendInfo = errorConstruct[Const.Settings.ERROR.SEND_INFO];
         }
 
-        if(error.hasOwnProperty(Const.Settings.ERROR.IS_PRIVATE))
+        if(errorConstruct.hasOwnProperty(Const.Settings.ERROR.IS_PRIVATE))
         {
-            this.privateE = error[Const.Settings.ERROR.IS_PRIVATE];
+            this.privateE = errorConstruct[Const.Settings.ERROR.IS_PRIVATE];
         }
 
-        if(error.hasOwnProperty(Const.Settings.ERROR.IS_FROM_ZATION_SYSTEM))
+        if(errorConstruct.hasOwnProperty(Const.Settings.ERROR.IS_FROM_ZATION_SYSTEM))
         {
-            this.fromZationSystem = error[Const.Settings.ERROR.IS_FROM_ZATION_SYSTEM];
+            this.fromZationSystem = errorConstruct[Const.Settings.ERROR.IS_FROM_ZATION_SYSTEM];
         }
     }
 

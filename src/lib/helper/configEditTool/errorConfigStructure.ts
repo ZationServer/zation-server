@@ -5,9 +5,9 @@ GitHub: LucaCode
  */
 import Const           = require('./../constants/constWrapper');
 
-export type ErrorConfig = Record<string,TaskErrorOptions>;
+export type ErrorConfig = Record<string,ErrorConstruct>;
 
-export interface TaskErrorOptions
+export interface ErrorConstruct
 {
     [Const.Settings.ERROR.NAME]?: string;
     [Const.Settings.ERROR.DESCRIPTION]?: string;

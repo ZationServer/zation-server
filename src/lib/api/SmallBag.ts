@@ -604,10 +604,22 @@ class SmallBag
      * @description
      * Returns taskError with Info from the error config file
      * @throws ErrorNotFoundError
-     * @param name
+     * @param errorName
+     */
+    getErrorConstruct(errorName : string) : Object
+    {
+        return this.zc.getError(name);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns taskError with Info from the error config file
+     * @throws ErrorNotFoundError
+     * @param errorName
      * @param info
      */
-    getError(name : string,info : object = {}) : TaskError
+    getTaskError(errorName : string,info : object = {}) : TaskError
     {
         const errorOp = this.zc.getError(name);
         return new TaskError(errorOp,info);
@@ -620,7 +632,7 @@ class SmallBag
      * and can be used.
      * @param name
      */
-    isError(name : string) : boolean
+    isErrorConstruct(name : string) : boolean
     {
         return this.zc.isError(name);
     }

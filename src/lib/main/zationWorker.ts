@@ -130,12 +130,9 @@ class ZationWorker extends SCWorker
         this.aePreparedPart = new AEPreparedPart(this.zc,this);
         Logger.printStartDebugInfo(`Worker with id ${this.id} prepares auth engine part.`,true);
 
-        if(this.zc.isLeaderInstance())
-        {
-            Logger.startStopWatch();
-            this.loadUserBackgroundTasks();
-            Logger.printStartDebugInfo(`Worker with id ${this.id} loads user background tasks.`,true);
-        }
+        Logger.startStopWatch();
+        this.loadUserBackgroundTasks();
+        Logger.printStartDebugInfo(`Worker with id ${this.id} loads user background tasks.`,true);
 
         Logger.startStopWatch();
         this.registerMasterEvent();
