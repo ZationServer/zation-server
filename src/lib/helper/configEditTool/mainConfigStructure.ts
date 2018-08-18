@@ -3,7 +3,9 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
+
 import Const                         = require('./../constants/constWrapper');
+import {MongoClientOptions}            from "mongodb";
 
 export interface MainConfig
 {
@@ -32,15 +34,6 @@ export interface MainConfig
     [Const.Main.KEYS.PANEL_USER] ?: PanelUserConfig | PanelUserConfig[];
     [Const.Main.KEYS.CLIENT_JS_PREPARE] ?: boolean;
 
-    //TEMP DB
-    [Const.Main.KEYS.USE_TEMP_DB_TOKEN_INFO] ?: boolean;
-    [Const.Main.KEYS.USE_TEMP_DB_ERROR_INFO] ?: boolean;
-    [Const.Main.KEYS.TEMP_DB_ERROR_INFO_LIVE_TIME] ?: number;
-    [Const.Main.KEYS.TEMP_DB_ENGINE] ?: string;
-    [Const.Main.KEYS.TEMP_DB_Name] ?: string;
-    [Const.Main.KEYS.TEMP_DB_CONFIG] ?: object;
-    //End TEMP DB
-
     [Const.Main.KEYS.EXTRA_SECURE_AUTH] ?: boolean;
 
     [Const.Main.KEYS.AUTH_START] ?: boolean;
@@ -53,11 +46,60 @@ export interface MainConfig
     [Const.Main.KEYS.AUTH_PRIVATE_KEY] ?: string;
     [Const.Main.KEYS.AUTH_PUBLIC_KEY] ?: string;
 
+    //TempStorage
+    [Const.Main.KEYS.TEMP_STORAGE_ENGINE] ?: string;
+    [Const.Main.KEYS.TEMP_STORAGE_MONGO_OPTIONS] ?: (TempStorageOptions & MongoClientOptions);
+
+    //Cluster
+    [Const.Main.KEYS.CLUSTER_AUTH_KEY] ?: string | null;
+    [Const.Main.KEYS.STATE_SERVER_HOST] ?: string | null;
+    [Const.Main.KEYS.STATE_SERVER_PORT] ?: number | null;
+
+    [Const.Main.KEYS.CLUSTER_MAPPING_ENGINE] ?: string | null;
+    [Const.Main.KEYS.CLUSTER_CLIENT_POOL_SIZE] ?: number | null;
+    [Const.Main.KEYS.CLUSTER_INSTANCE_IP] ?: string | null;
+    [Const.Main.KEYS.CLUSTER_INSTANCE_IP_FAMILY] ?: string | null;
+    [Const.Main.KEYS.CLUSTER_STATE_SERVER_CONNECT_TIMEOUT] ?: number | null;
+    [Const.Main.KEYS.CLUSTER_STATE_SERVER_ACK_TIMEOUT] ?: number | null;
+    [Const.Main.KEYS.CLUSTER_STATE_SERVER_RECONNECT_RANDOMNESS] ?: number | null;
+
+    //Sc
+    [Const.Main.KEYS.SC_LOG_LEVEL] ?: number | null;
+    [Const.Main.KEYS.SOCKET_CHANNEL_LIMIT] ?: number | null;
+    [Const.Main.KEYS.CRASH_WORKER_ON_ERROR] ?: boolean | null;
+    [Const.Main.KEYS.KILL_MASTER_ON_SIGNAL] ?: boolean | null;
+    [Const.Main.KEYS.INSTANCE_ID] ?: string | null;
+    [Const.Main.KEYS.KILL_WORKER_MEMORY_THRESHOLD] ?: number | null;
+    [Const.Main.KEYS.CONNECT_TIMEOUT] ?: number | null;
+    [Const.Main.KEYS.HANDSHAKE_TIMEOUT] ?: number | null;
+    [Const.Main.KEYS.ACK_TIMEOUT] ?: number | null;
+    [Const.Main.KEYS.IPC_ACK_TIMEOUT] ?: number | null;
+    [Const.Main.KEYS.SOCKET_UPGRADE_TIMEOUT] ?: number | null;
+    [Const.Main.KEYS.ORIGINS] ?: string | null;
+    [Const.Main.KEYS.PING_INTERVAL] ?: number | null;
+    [Const.Main.KEYS.PING_TIMEOUT] ?: number | null;
+    [Const.Main.KEYS.PROCESS_TERM_TIME_OUT] ?: number | null;
+    [Const.Main.KEYS.PROPAGATE_ERRORS] ?: boolean | null;
+    [Const.Main.KEYS.PROPAGATE_WARNINGS] ?: boolean | null;
+    [Const.Main.KEYS.MIDDLEWARE_EMIT_WARNINGS] ?: boolean | null;
+    [Const.Main.KEYS.REBOOT_ON_SIGNAL] ?: boolean | null;
+    [Const.Main.KEYS.DOWNGRADE_TO_USER] ?: boolean | null;
+    [Const.Main.KEYS.SOCKET_ROOT] ?: string | null;
+    [Const.Main.KEYS.SCHEDULING_POLICY] ?: string | null;
+    [Const.Main.KEYS.ALLOW_CLIENT_PUBLISH] ?: boolean | null;
+    [Const.Main.KEYS.TCP_SYN_BACKLOG] ?: any | null;
+    [Const.Main.KEYS.WORKER_STATUS_INTERVAL] ?: number | null;
+    [Const.Main.KEYS.PUB_SUB_BATCH_DURATION] ?: number | null;
 }
 
 export interface PanelUserConfig {
     [Const.Main.PANEL_USER.USER_NAME] : string;
     [Const.Main.PANEL_USER.PASSWORD] : string;
+}
+
+export interface TempStorageOptions {
+    url : string,
+    db : string
 }
 
 

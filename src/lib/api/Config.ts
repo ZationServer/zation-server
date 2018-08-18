@@ -13,7 +13,6 @@ import Result                = require("./Result");
 import Controller            = require("./Controller");
 import {ConnectionConfig}      from "pg";
 import {PoolConfig}            from "mysql";
-import {MongoClientOptions}    from "mongodb";
 
 import
 {
@@ -41,7 +40,7 @@ import
 
 import
 {
-    MainCustomService,
+    MainCustomService, MongoDbConfig,
     NodeMailerConfig,
     ServiceConfig
 } from "../helper/configEditTool/serviceConfigStructure";
@@ -193,7 +192,7 @@ class Config
     // noinspection JSUnusedGlobalSymbols
     static nodeMailer(config : NodeMailerConfig) : NodeMailerConfig {return config;}
     // noinspection JSUnusedGlobalSymbols
-    static mongoDb(config : MongoClientOptions) : MongoClientOptions {return config;}
+    static mongoDb(config : MongoDbConfig) : MongoDbConfig {return config;}
 }
 
 export = Config;

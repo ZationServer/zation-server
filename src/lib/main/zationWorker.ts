@@ -19,15 +19,11 @@ import Logger                = require('../helper/logger/logger');
 import Const                 = require('../helper/constants/constWrapper');
 import {ChAccessEngine}        from '../helper/channel/chAccessEngine';
 import ServiceEngine         = require('../helper/services/serviceEngine');
-import SystemBackgroundTask  = require('../helper/background/systemBackgroundTasks');
 import SmallBag              = require('../api/SmallBag');
 import PrepareClientJs       = require('../helper/client/prepareClientJs');
 import AEPreparedPart        = require('../helper/auth/aePreparedPart');
 import ControllerPrepare     = require('../helper/controller/controllerPrepare');
 
-import TempDbMongoDown       = require('../helper/tempDb/tempDbMongoDown');
-import TempDbLevelDown       = require('../helper/tempDb/tempDbMemoryDown');
-import TempDbUp              = require("../helper/tempDb/tempDbUp");
 import BackgroundTasksSaver  = require("../helper/background/backgroundTasksSaver");
 import Mapper                = require("../helper/tools/mapper");
 import {WorkerChActions}     from "../helper/constants/workerChActions";
@@ -50,8 +46,6 @@ class ZationWorker extends SCWorker
     private zation : Zation;
 
     private authStartActive : boolean;
-
-    private tempDbUp : TempDbUp;
 
     private app : any;
 
@@ -108,13 +102,6 @@ class ZationWorker extends SCWorker
         this.serviceEngine = new ServiceEngine(this.zc);
         await this.serviceEngine.init();
         Logger.printStartDebugInfo(`Worker with id ${this.id} creates service engine.`,true);
-
-        if(this.zc.isUseErrorInfoTempDb() || this.zc.isUseTokenInfoTempDb())
-        {
-            Logger.startStopWatch();
-            await this.initTempDb();
-            Logger.printStartDebugInfo(`Worker with id ${this.id} init temp db.`,true);
-        }
 
         Logger.startStopWatch();
         this.preparedSmallBag = new SmallBag(this);
@@ -673,10 +660,6 @@ class ZationWorker extends SCWorker
         {
             // noinspection JSUnresolvedFunction
             let token = socket.getAuthToken();
-            if(this.zc.isUseTokenInfoTempDb() && token !== null)
-            {
-                await this.tempDbUp.tokenDisconnected(token[Const.Settings.CLIENT.TOKEN_ID])
-            }
 
             if(token!==null) {
                 if(!!token[Const.Settings.CLIENT.TOKEN_ID]) {
@@ -845,36 +828,6 @@ class ZationWorker extends SCWorker
         (this.mapUserToScId,userIds,action,`can not be found in worker. But is listed in userId Mapping!`);
     }
 
-    private async initTempDb()
-    {
-        if(this.zc.getMain(Const.Main.KEYS.TEMP_DB_ENGINE) === Const.Main.TEMP_DB_ENGINE.MASTER_MEMORY)
-        {
-            this.tempDbUp = new TempDbLevelDown(this,this.zc);
-            await this.tempDbUp.init();
-        }
-        else if(this.zc.getMain(Const.Main.KEYS.TEMP_DB_ENGINE) === Const.Main.TEMP_DB_ENGINE.MONGO)
-        {
-            this.tempDbUp = new TempDbMongoDown(this.zc);
-            await this.tempDbUp.init();
-        }
-
-        if(this.zc.getMain(Const.Main.KEYS.USE_TEMP_DB_TOKEN_INFO))
-        {
-            this.addSystemBackgroundTask(async() =>
-            {
-                await SystemBackgroundTask.checkTokenInfoTempDb(this.tempDbUp);
-            });
-        }
-
-        if(this.zc.getMain(Const.Main.KEYS.USE_TEMP_DB_ERROR_INFO))
-        {
-            this.addSystemBackgroundTask(async() =>
-            {
-                await SystemBackgroundTask.checkErrorInfoTempDb(this.tempDbUp);
-            });
-        }
-    }
-
     private registerMasterEvent()
     {
         this.on('masterMessage',async (data,respond) =>
@@ -899,6 +852,7 @@ class ZationWorker extends SCWorker
         });
     }
 
+    // noinspection JSUnusedLocalSymbols
     private addSystemBackgroundTask(func)
     {
         this.systemBackgroundTasks.push(func);
@@ -940,11 +894,6 @@ class ZationWorker extends SCWorker
                 this.authStartActive = false;
             },this.zc.getMain(Const.Main.KEYS.AUTH_START_DURATION_MS));
         }
-    }
-
-    getTempDbUp() : TempDbUp
-    {
-        return this.tempDbUp;
     }
 
     getServerVersion() : string

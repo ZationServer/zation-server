@@ -78,16 +78,8 @@ Main[Const.Main.KEYS.SYSTEM_BACKGROUND_TASK_REFRESH_RATE] = {types : ['number'],
 Main[Const.Main.KEYS.USE_PANEL]               = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.PANEL_USER]              = {types : ['object','array'],isOptional : true};
 Main[Const.Main.KEYS.CLIENT_JS_PREPARE]       = {types : ['boolean'],isOptional : true};
-Main[Const.Main.KEYS.USE_TEMP_DB_TOKEN_INFO]  = {types : ['boolean'],isOptional : true};
-Main[Const.Main.KEYS.USE_TEMP_DB_ERROR_INFO]  = {types : ['boolean'],isOptional : true};
-Main[Const.Main.KEYS.TEMP_DB_ERROR_INFO_LIVE_TIME] = {types : ['number'],isOptional : true};
 Main[Const.Main.KEYS.PATH]                    = {types : ['string'],isOptional : true};
 
-Main[Const.Main.KEYS.TEMP_DB_ENGINE] =
-    {types : ['string'],isOptional : true,enum : [Const.Main.TEMP_DB_ENGINE.MONGO,Const.Main.TEMP_DB_ENGINE.MASTER_MEMORY]};
-
-Main[Const.Main.KEYS.TEMP_DB_Name]            = {types : ['string'],isOptional : true};
-Main[Const.Main.KEYS.TEMP_DB_CONFIG]          = {types : ['object'],isOptional : true};
 Main[Const.Main.KEYS.EXTRA_SECURE_AUTH]       = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.AUTH_START]              = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.AUTH_START_DURATION_MS]  = {types : ['number'],isOptional : true};
@@ -97,6 +89,54 @@ Main[Const.Main.KEYS.AUTH_DEFAULT_EXPIRY]     = {types : ['number'],isOptional :
 Main[Const.Main.KEYS.AUTH_ALGORITHM]          = {types : ['string'],isOptional : true};
 Main[Const.Main.KEYS.AUTH_PRIVATE_KEY]        = {types : ['string','object'],isOptional : true};
 Main[Const.Main.KEYS.AUTH_PUBLIC_KEY]         = {types : ['string','object'],isOptional : true};
+
+//TempStorage
+Main[Const.Main.KEYS.TEMP_STORAGE_ENGINE]
+    = {types : ['string'],isOptional : true,enum :
+        [Const.Main.TEMP_STORAGE_ENGINE.INTERNAL,Const.Main.TEMP_STORAGE_ENGINE.MONGO]};
+
+Main[Const.Main.KEYS.TEMP_STORAGE_MONGO_OPTIONS]     = {types : ['object','null'],isOptional : true};
+
+//Cluster
+Main[Const.Main.KEYS.CLUSTER_AUTH_KEY]        = {types : ['string','null'],isOptional : true};
+Main[Const.Main.KEYS.STATE_SERVER_HOST]       = {types : ['string','null'],isOptional : true};
+Main[Const.Main.KEYS.STATE_SERVER_PORT]       = {types : ['number','null'],isOptional : true};
+
+Main[Const.Main.KEYS.CLUSTER_MAPPING_ENGINE]  = {types : ['string','null'],isOptional : true};
+Main[Const.Main.KEYS.CLUSTER_CLIENT_POOL_SIZE]= {types : ['number','null'],isOptional : true};
+Main[Const.Main.KEYS.CLUSTER_INSTANCE_IP]     = {types : ['string','null'],isOptional : true};
+Main[Const.Main.KEYS.CLUSTER_INSTANCE_IP_FAMILY]            = {types : ['string','null'],isOptional : true};
+Main[Const.Main.KEYS.CLUSTER_STATE_SERVER_CONNECT_TIMEOUT]  = {types : ['number','null'],isOptional : true};
+Main[Const.Main.KEYS.CLUSTER_STATE_SERVER_ACK_TIMEOUT]      = {types : ['number','null'],isOptional : true};
+Main[Const.Main.KEYS.CLUSTER_STATE_SERVER_RECONNECT_RANDOMNESS]  = {types : ['number','null'],isOptional : true};
+
+//Sc
+Main[Const.Main.KEYS.SC_LOG_LEVEL]                             = {types : ['number','null'],isOptional : true};
+Main[Const.Main.KEYS.SOCKET_CHANNEL_LIMIT]                  = {types : ['number','null'],isOptional : true};
+Main[Const.Main.KEYS.CRASH_WORKER_ON_ERROR]                 = {types : ['boolean','null'],isOptional : true};
+Main[Const.Main.KEYS.KILL_MASTER_ON_SIGNAL]                 = {types : ['boolean','null'],isOptional : true};
+Main[Const.Main.KEYS.INSTANCE_ID]                           = {types : ['string','null'],isOptional : true};
+Main[Const.Main.KEYS.KILL_WORKER_MEMORY_THRESHOLD]          = {types : ['number','null'],isOptional : true};
+Main[Const.Main.KEYS.CONNECT_TIMEOUT]                       = {types : ['number','null'],isOptional : true};
+Main[Const.Main.KEYS.HANDSHAKE_TIMEOUT]                     = {types : ['number','null'],isOptional : true};
+Main[Const.Main.KEYS.ACK_TIMEOUT]                           = {types : ['number','null'],isOptional : true};
+Main[Const.Main.KEYS.IPC_ACK_TIMEOUT]                        = {types : ['number','null'],isOptional : true};
+Main[Const.Main.KEYS.SOCKET_UPGRADE_TIMEOUT]                = {types : ['number','null'],isOptional : true};
+Main[Const.Main.KEYS.ORIGINS]                               = {types : ['string','null'],isOptional : true};
+Main[Const.Main.KEYS.PING_INTERVAL]                         = {types : ['number','null'],isOptional : true};
+Main[Const.Main.KEYS.PING_TIMEOUT]                          = {types : ['number','null'],isOptional : true};
+Main[Const.Main.KEYS.PROCESS_TERM_TIME_OUT]                 = {types : ['number','null'],isOptional : true};
+Main[Const.Main.KEYS.PROPAGATE_ERRORS]                      = {types : ['boolean','null'],isOptional : true};
+Main[Const.Main.KEYS.PROPAGATE_WARNINGS]                    = {types : ['boolean','null'],isOptional : true};
+Main[Const.Main.KEYS.MIDDLEWARE_EMIT_WARNINGS]              = {types : ['boolean','null'],isOptional : true};
+Main[Const.Main.KEYS.REBOOT_ON_SIGNAL]                      = {types : ['boolean','null'],isOptional : true};
+Main[Const.Main.KEYS.DOWNGRADE_TO_USER]                     = {types : ['boolean','null'],isOptional : true};
+Main[Const.Main.KEYS.SOCKET_ROOT]                           = {types : ['string','null'],isOptional : true};
+Main[Const.Main.KEYS.SCHEDULING_POLICY]                     = {types : ['string','null'],isOptional : true};
+Main[Const.Main.KEYS.ALLOW_CLIENT_PUBLISH]                  = {types : ['boolean','null'],isOptional : true};
+Main[Const.Main.KEYS.TCP_SYN_BACKLOG]                       = {types : ['object','boolean','string','null'],isOptional : true};
+Main[Const.Main.KEYS.WORKER_STATUS_INTERVAL]                = {types : ['number','null'],isOptional : true};
+Main[Const.Main.KEYS.PUB_SUB_BATCH_DURATION]                = {types : ['number','null'],isOptional : true};
 
 const StarterConfig = {};
 ObjectTools.addObToOb(StarterConfig,Main);

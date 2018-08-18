@@ -60,20 +60,20 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.ZATION_CONSOLE_LOG] = true;
             this.mainConfig[Const.Main.KEYS.SC_CONSOLE_LOG] = false;
             this.mainConfig[Const.Main.KEYS.USE_SC_UWS] = true;
-
-            //TEMP
-            this.mainConfig[Const.Main.KEYS.USE_TEMP_DB_TOKEN_INFO] = true;
-            this.mainConfig[Const.Main.KEYS.USE_TEMP_DB_ERROR_INFO] = true;
-            this.mainConfig[Const.Main.KEYS.TEMP_DB_ERROR_INFO_LIVE_TIME] = 3600000;
-            this.mainConfig[Const.Main.KEYS.TEMP_DB_ENGINE] = Const.Main.TEMP_DB_ENGINE.MASTER_MEMORY;
             this.mainConfig[Const.Main.KEYS.EXTRA_SECURE_AUTH] = true;
-            this.mainConfig[Const.Main.KEYS.TEMP_DB_Name] = 'zationTempDb';
+            this.mainConfig[Const.Main.KEYS.TEMP_STORAGE_ENGINE] = Const.Main.TEMP_STORAGE_ENGINE.INTERNAL;
+            this.mainConfig[Const.Main.KEYS.TEMP_STORAGE_MONGO_OPTIONS] = null;
+            this.mainConfig[Const.Main.KEYS.CLUSTER_AUTH_KEY] = null;
+            this.mainConfig[Const.Main.KEYS.STATE_SERVER_HOST] = null;
+            this.mainConfig[Const.Main.KEYS.STATE_SERVER_PORT] = null;
+            this.mainConfig[Const.Main.KEYS.CRASH_WORKER_ON_ERROR] = true;
+            this.mainConfig[Const.Main.KEYS.KILL_MASTER_ON_SIGNAL] = false;
+            this.mainConfig[Const.Main.KEYS.IPC_ACK_TIMEOUT] = 3000;
 
             this.loadUserDataLocations();
             this.loadMainConfig();
 
-            this.addToMainConfig
-            (this.starterConfig,true,Structures.Main);
+            this.addToMainConfig(this.starterConfig,true,Structures.Main);
 
             this.processMainConfig();
         }
@@ -132,6 +132,16 @@ class ZationConfig
     getMain(key : any) : any
     {
         return this.mainConfig[key];
+    }
+
+    getMainOrNull(key : any) : any
+    {
+        if(!!this.mainConfig[key]) {
+            return this.mainConfig[key];
+        }
+        else {
+            return null;
+        }
     }
 
     isMain(key : any) : boolean
@@ -251,16 +261,6 @@ class ZationConfig
     isExtraSecureAuth() : boolean
     {
         return this.getMain(Const.Main.KEYS.EXTRA_SECURE_AUTH);
-    }
-
-    isUseTokenInfoTempDb() : boolean
-    {
-        return this.getMain(Const.Main.KEYS.USE_TEMP_DB_TOKEN_INFO);
-    }
-
-    isUseErrorInfoTempDb() : boolean
-    {
-        return this.getMain(Const.Main.KEYS.USE_TEMP_DB_ERROR_INFO);
     }
 
     getSomeInformation() : ZationInfoObj

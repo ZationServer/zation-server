@@ -14,7 +14,6 @@ import ConfigErrorBag        = require('../helper/config/configErrorBag');
 import HashSet               = require('hashset');
 import TimeTools             = require('../helper/tools/timeTools');
 import PrepareClientJs       = require('../helper/client/prepareClientJs');
-import MasterTempDbEngine    = require('../helper/tempDb/masterTempDbEngine');
 import BackgroundTasksSetter = require("../helper/background/backgroundTasksSetter");
 const  isWindows             = require('is-windows');
 const  ScClient : any        = require('socketcluster-client');
@@ -29,8 +28,9 @@ class ZationStarter
     private readonly zc : ZationConfig;
     private workerIds : any;
     private brokerIds : any;
-    private tempDbEngine : MasterTempDbEngine;
     private master : any;
+
+    private clusterStateServerHost : any;
 
     private stateServerActive : boolean;
 
@@ -42,6 +42,9 @@ class ZationStarter
 
             this.serverStartedTimeStamp = Date.now();
             this.zc = new ZationConfig(options);
+
+            //Cluster
+
 
             //setLogger
             Logger.setZationConfig(this.zc);
@@ -99,13 +102,8 @@ class ZationStarter
         PrepareClientJs.createServerSettingsFile(this.zc);
         Logger.printStartDebugInfo('Master builds the server settings file.',true);
 
-        if(this.zc.isUseErrorInfoTempDb() || this.zc.isUseTokenInfoTempDb())
-        {
-            Logger.startStopWatch();
-            this.tempDbEngine = new MasterTempDbEngine(this.zc);
-            await this.tempDbEngine.init();
-            Logger.printStartDebugInfo('Master init the master temp db engine.',true);
-        }
+        this.clusterStateServerHost = process.env.SCC_STATE_SERVER_HOST || process.env.STATE_SERVER_HOST
+            || process.env.ZATION_STATE_SERVER_HOST || this.zc.getMainOrNull(Const.Main.KEYS.STATE_SERVER_HOST);
 
         Logger.startStopWatch();
         this.startSocketCluster();
@@ -132,6 +130,9 @@ class ZationStarter
             }
         }
 
+        const scLogLevel = this.zc.getMain(Const.Main.KEYS.SC_CONSOLE_LOG) ?
+            this.zc.getMainOrNull(Const.Main.KEYS.SC_LOG_LEVEL) : 0;
+
         let scOptions = {
             workers : this.zc.getMain(Const.Main.KEYS.WORKERS),
             brokers : this.zc.getMain(Const.Main.KEYS.BROKERS),
@@ -153,9 +154,42 @@ class ZationStarter
             zationConfigWorkerTransport : this.zc.getWorkerTransport(),
             zationServerVersion : ZationStarter.version,
             zationServerStartedTimeStamp : this.serverStartedTimeStamp,
-            ipcAckTimeout: 3000,
-            logLevel : this.zc.getMain(Const.Main.KEYS.SC_CONSOLE_LOG) ? 100 : 0,
-
+            logLevel : scLogLevel,
+            clusterAuthKey : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_AUTH_KEY),
+            clusterStateServerHost : this.clusterStateServerHost,
+            clusterStateServerPort : this.zc.getMainOrNull(Const.Main.KEYS.STATE_SERVER_PORT),
+            clusterMappingEngine : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_MAPPING_ENGINE),
+            clusterClientPoolSize : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_CLIENT_POOL_SIZE),
+            clusterInstanceIp : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_INSTANCE_IP),
+            clusterInstanceIpFamily : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_INSTANCE_IP_FAMILY),
+            clusterStateServerConnectTimeout : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_STATE_SERVER_CONNECT_TIMEOUT),
+            clusterStateServerAckTimeout : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_STATE_SERVER_ACK_TIMEOUT),
+            clusterStateServerReconnectRandomness : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_STATE_SERVER_RECONNECT_RANDOMNESS),
+            socketChannelLimit : this.zc.getMainOrNull(Const.Main.KEYS.SOCKET_CHANNEL_LIMIT),
+            crashWorkerOnError : this.zc.getMainOrNull(Const.Main.KEYS.CRASH_WORKER_ON_ERROR),
+            killMasterOnSignal : this.zc.getMainOrNull(Const.Main.KEYS.KILL_MASTER_ON_SIGNAL),
+            instanceId : this.zc.getMainOrNull(Const.Main.KEYS.INSTANCE_ID),
+            killWorkerMemoryThreshold : this.zc.getMainOrNull(Const.Main.KEYS.KILL_WORKER_MEMORY_THRESHOLD),
+            connectTimeout : this.zc.getMainOrNull(Const.Main.KEYS.CONNECT_TIMEOUT),
+            handshakeTimeout : this.zc.getMainOrNull(Const.Main.KEYS.HANDSHAKE_TIMEOUT),
+            ackTimeout : this.zc.getMainOrNull(Const.Main.KEYS.ACK_TIMEOUT),
+            ipcAckTimeout : this.zc.getMainOrNull(Const.Main.KEYS.IPC_ACK_TIMEOUT),
+            socketUpgradeTimeout : this.zc.getMainOrNull(Const.Main.KEYS.SOCKET_UPGRADE_TIMEOUT),
+            origins : this.zc.getMainOrNull(Const.Main.KEYS.ORIGINS),
+            pingInterval : this.zc.getMainOrNull(Const.Main.KEYS.PING_INTERVAL),
+            pingTimeout : this.zc.getMainOrNull(Const.Main.KEYS.PING_TIMEOUT),
+            processTermTimeout : this.zc.getMainOrNull(Const.Main.KEYS.PROCESS_TERM_TIME_OUT),
+            propagateErrors : this.zc.getMainOrNull(Const.Main.KEYS.PROPAGATE_ERRORS),
+            propagateWarnings : this.zc.getMainOrNull(Const.Main.KEYS.PROPAGATE_WARNINGS),
+            middlewareEmitWarnings : this.zc.getMainOrNull(Const.Main.KEYS.MIDDLEWARE_EMIT_WARNINGS),
+            rebootOnSignal : this.zc.getMainOrNull(Const.Main.KEYS.REBOOT_ON_SIGNAL),
+            downgradeToUser : this.zc.getMainOrNull(Const.Main.KEYS.DOWNGRADE_TO_USER),
+            socketRoot : this.zc.getMainOrNull(Const.Main.KEYS.SOCKET_ROOT),
+            schedulingPolicy : this.zc.getMainOrNull(Const.Main.KEYS.SCHEDULING_POLICY),
+            allowClientPublish : this.zc.getMainOrNull(Const.Main.KEYS.ALLOW_CLIENT_PUBLISH),
+            tcpSynBacklog : this.zc.getMainOrNull(Const.Main.KEYS.TCP_SYN_BACKLOG),
+            workerStatusInterval : this.zc.getMainOrNull(Const.Main.KEYS.WORKER_STATUS_INTERVAL),
+            pubSubBatchDuration : this.zc.getMainOrNull(Const.Main.KEYS.PUB_SUB_BATCH_DURATION),
         };
 
         if(this.zc.getMain(Const.Main.KEYS.USE_SC_UWS)) {
@@ -189,20 +223,6 @@ class ZationStarter
 
            this.printStartedInformation();
            await this.zc.emitEvent(Const.Event.ZATION_IS_STARTED, this.zc.getSomeInformation());
-        });
-
-
-        // noinspection JSUnresolvedFunction
-        this.master.on('workerMessage', async (wId,data,resp) =>
-        {
-            if(data['memoryDbRequest'])
-            {
-                await this.tempDbEngine.processMemoryDbReq(data['memoryDbRequestData'],resp);
-            }
-            else
-            {
-                resp(new Error('Unknown command!'));
-            }
         });
 
         // noinspection JSUnresolvedFunction
@@ -355,6 +375,7 @@ class ZationStarter
         await new Promise((resolve, reject) =>
         {
             stateSocket.emit('getSyncData',{},async (err,data) => {
+
                 if(err) {
                     reject(new Error(`Failed to get synchronize data error -> ${err.toString()}`));
                 }

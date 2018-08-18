@@ -53,8 +53,7 @@ class ControllerTools
     //Part Extra Secure
     static needToCheckExtraSecure(controllerConfig : object) : boolean
     {
-        if(controllerConfig[Const.App.CONTROLLER.EXTRA_SECURE] !== undefined)
-        {
+        if(controllerConfig[Const.App.CONTROLLER.EXTRA_SECURE] !== undefined) {
             return controllerConfig[Const.App.CONTROLLER.EXTRA_SECURE];
         }
         return false;

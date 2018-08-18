@@ -140,6 +140,10 @@ class ConfigCheckerTools
             {
                 return Array.isArray(value);
             }
+            if(type === 'null')
+            {
+                return value === null;
+            }
             if(type === 'object')
             {
                 return typeof value === 'object' && !Array.isArray(value);

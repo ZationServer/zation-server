@@ -432,22 +432,21 @@ class ConfigChecker
 
    private checkMainConfig()
    {
-       //check secure Auth Block
-       if(this.zc.getMain(Const.Main.KEYS.EXTRA_SECURE_AUTH) && !this.zc.getMain(Const.Main.KEYS.USE_TEMP_DB_TOKEN_INFO))
-       {
-           this.zc.getMainConfig()[Const.Main.KEYS.EXTRA_SECURE_AUTH] = false;
-           Logger.printConfigWarning
-           (
-               Const.Settings.CN.MAIN,
-               'Extra secure auth can only use with temp db token info. Extra secure auth is set to false!'
-           );
-       }
-
        //checkStructure
        ConfigCheckerTools.assertStructure(Structures.Main,this.zc.getMainConfig(),Const.Settings.CN.MAIN,this.ceb);
 
        this.checkHttpsMainConfig();
        this.checkPanelUserMainConfig();
+       this.checkTempStorageEngine();
+   }
+
+   private checkTempStorageEngine()
+   {
+       if(this.zc.getMain(Const.Main.KEYS.TEMP_STORAGE_ENGINE) === Const.Main.TEMP_STORAGE_ENGINE.MONGO)
+       {
+           this.ceb.addConfigError(new ConfigError(Const.Settings.CN.MAIN,
+               `Temp storage engine mongo is not supported yet! Please change it to internal.`));
+       }
    }
 
    private checkHttpsMainConfig()

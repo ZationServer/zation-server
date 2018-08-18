@@ -36,12 +36,20 @@ export type NodeMailerConfig = (
     Transport | TransportOptions
     );
 
+type MongoDbUrl = {
+        url : string
+    }
+
+export type MongoDbConfig = (
+    MongoClientOptions & MongoDbUrl
+    );
+
 export interface Service
 {
     [Const.Service.SERVICES.MYSQL] ?: Record<string,PoolConfig> | DefaultConfig<PoolConfig>;
     [Const.Service.SERVICES.NODE_MAILER] ?: Record<string,NodeMailerConfig> | DefaultConfig<NodeMailerConfig>;
     [Const.Service.SERVICES.POSTGRES_SQL] ?: Record<string,ConnectionConfig> | DefaultConfig<ConnectionConfig>;
-    [Const.Service.SERVICES.MONGO_DB] ?: Record<string,MongoClientOptions> | DefaultConfig<MongoClientOptions>;
+    [Const.Service.SERVICES.MONGO_DB] ?: Record<string,MongoDbConfig> | DefaultConfig<MongoDbConfig>;
 }
 
 export type CustomServiceCreateFunction<T> = (config : object) => Promise<T>;

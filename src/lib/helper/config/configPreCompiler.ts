@@ -354,7 +354,7 @@ class ConfigPeCompiler
                     {
                         if(value.hasOwnProperty(k))
                         {
-                            if(!Structure.hasOwnProperty(k))
+                            if(!Structure.InputBodyMainKeys.hasOwnProperty(k))
                             {
                                 delete value[k];
                             }
