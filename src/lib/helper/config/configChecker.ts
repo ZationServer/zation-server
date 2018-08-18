@@ -442,10 +442,10 @@ class ConfigChecker
 
    private checkTempStorageEngine()
    {
-       if(this.zc.getMain(Const.Main.KEYS.TEMP_STORAGE_ENGINE) === Const.Main.TEMP_STORAGE_ENGINE.MONGO)
+       if(this.zc.getMain(Const.Main.KEYS.TEMP_STORAGE_ENGINE) === Const.Main.TEMP_STORAGE_ENGINE.MONGO_DB)
        {
            this.ceb.addConfigError(new ConfigError(Const.Settings.CN.MAIN,
-               `Temp storage engine mongo is not supported yet! Please change it to internal.`));
+               `Temp storage engine mongoDb is not supported yet! Please change it to internal.`));
        }
    }
 

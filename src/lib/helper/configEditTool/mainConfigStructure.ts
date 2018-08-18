@@ -48,7 +48,7 @@ export interface MainConfig
 
     //TempStorage
     [Const.Main.KEYS.TEMP_STORAGE_ENGINE] ?: string;
-    [Const.Main.KEYS.TEMP_STORAGE_MONGO_OPTIONS] ?: (TempStorageOptions & MongoClientOptions);
+    [Const.Main.KEYS.TEMP_STORAGE_MONGO_DB_OPTIONS] ?: (TempStorageOptions & MongoClientOptions);
 
     //Cluster
     [Const.Main.KEYS.CLUSTER_AUTH_KEY] ?: string | null;

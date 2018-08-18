@@ -62,7 +62,7 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.USE_SC_UWS] = true;
             this.mainConfig[Const.Main.KEYS.EXTRA_SECURE_AUTH] = true;
             this.mainConfig[Const.Main.KEYS.TEMP_STORAGE_ENGINE] = Const.Main.TEMP_STORAGE_ENGINE.INTERNAL;
-            this.mainConfig[Const.Main.KEYS.TEMP_STORAGE_MONGO_OPTIONS] = null;
+            this.mainConfig[Const.Main.KEYS.TEMP_STORAGE_MONGO_DB_OPTIONS] = null;
             this.mainConfig[Const.Main.KEYS.CLUSTER_AUTH_KEY] = null;
             this.mainConfig[Const.Main.KEYS.STATE_SERVER_HOST] = null;
             this.mainConfig[Const.Main.KEYS.STATE_SERVER_PORT] = null;
