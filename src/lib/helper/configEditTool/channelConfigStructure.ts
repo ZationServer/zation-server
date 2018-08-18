@@ -31,4 +31,5 @@ export interface Channel
 
     [Const.Channel.CHANNEL.ON_PUBLISH] ?: ChannelEventFunction;
     [Const.Channel.CHANNEL.ON_SUBSCRIPTION] ?: ChannelEventFunction;
+    [Const.Channel.CHANNEL.ON_UNSUBSCRIPTION] ?: ChannelEventFunction;
 }

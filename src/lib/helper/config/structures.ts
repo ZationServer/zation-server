@@ -213,6 +213,7 @@ ChannelItem[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS] = {types : ['function','
 ChannelItem[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS]   = {types : ['function','boolean','number','array','string'],isOptional : true};
 ChannelItem[Const.Channel.CHANNEL.ON_PUBLISH]           = {types : ['function'],isOptional : true};
 ChannelItem[Const.Channel.CHANNEL.ON_SUBSCRIPTION]      = {types : ['function'],isOptional : true};
+ChannelItem[Const.Channel.CHANNEL.ON_UNSUBSCRIPTION]    = {types : ['function'],isOptional : true};
 
 const Services = {};
 Services[Const.Service.SERVICES.MYSQL]                  = {types : ['object'],isOptional : true};

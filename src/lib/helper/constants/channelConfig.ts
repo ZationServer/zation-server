@@ -32,6 +32,7 @@ class CHANNEL {
     static readonly SUBSCRIBE_ACCESS       = 'subscribeAccess';
 
     static readonly ON_SUBSCRIPTION        = 'onSubscription';
+    static readonly ON_UNSUBSCRIPTION      = 'onUnsubscription';
     static readonly ON_PUBLISH             = 'onPublish';
 
     static readonly INFO = INFO;

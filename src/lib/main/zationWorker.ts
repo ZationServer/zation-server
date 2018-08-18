@@ -279,137 +279,130 @@ class ZationWorker extends SCWorker
                 let authToken = req.socket.getAuthToken();
                 let channel = req.channel;
 
-                if (authToken !== null) {
-                    let id = authToken[Const.Settings.CLIENT.USER_ID];
-                    let group = authToken[Const.Settings.CLIENT.AUTH_USER_GROUP];
+                if (channel.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
 
-                    if (channel.indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1) {
-                        if(id !== undefined)
-                        {
-                            if (Const.Settings.CHANNEL.USER_CHANNEL_PREFIX + id === channel) {
-                                Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes user channel ${id}`);
-                                next();
+                    next((await ChAccessEngine.checkAccessSubCustomIdCh(req.socket,channel,this.preparedSmallBag,this.zc)));
+                }
+                else if (channel.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
+
+                    next((await ChAccessEngine.checkAccessSubCustomCh(req.socket,channel,this.preparedSmallBag,this.zc)));
+                }
+                else
+                {
+                    if (authToken !== null) {
+                        let id = authToken[Const.Settings.CLIENT.USER_ID];
+                        let group = authToken[Const.Settings.CLIENT.AUTH_USER_GROUP];
+
+                        if (channel.indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1) {
+                            if(id !== undefined)
+                            {
+                                if (Const.Settings.CHANNEL.USER_CHANNEL_PREFIX + id === channel) {
+                                    Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes user channel ${id}`);
+                                    next();
+                                }
+                                else
+                                {
+                                    let err : any = new Error(`User: ${id} can\'t subscribe an other User Channel: ${channel}!`);
+                                    err.code = 4543;
+                                    next(err); //Block!
+
+                                }
                             }
                             else
                             {
-                                let err : any = new Error(`User: ${id} can\'t subscribe an other User Channel: ${channel}!`);
-                                err.code = 4543;
+                                let err : any = new Error(`User: with undefined id can\'t subscribe User Channel: ${channel}!`);
+                                err.code = 4542;
                                 next(err); //Block!
-
                             }
                         }
-                        else
-                        {
-                            let err : any = new Error(`User: with undefined id can\'t subscribe User Channel: ${channel}!`);
-                            err.code = 4542;
-                            next(err); //Block!
-                        }
-                    }
-                    else if (channel.indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1) {
-                        if(group !== undefined)
-                        {
-                            if (Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX + group === channel)
+                        else if (channel.indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1) {
+                            if(group !== undefined)
                             {
+                                if (Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX + group === channel)
+                                {
 
-                                Logger.printDebugInfo
-                                (`Socket with id: ${req.socket.id} subscribes group channel ${group}`);
+                                    Logger.printDebugInfo
+                                    (`Socket with id: ${req.socket.id} subscribes group channel ${group}`);
 
-                                next();
+                                    next();
+                                }
+                                else
+                                {
+                                    let err : any = new Error('User can\'t subscribe an other User Group Channel!');
+                                    err.code = 4533;
+                                    next(err); //Block!
+                                }
                             }
                             else
                             {
-                                let err : any = new Error('User can\'t subscribe an other User Group Channel!');
-                                err.code = 4533;
+                                let err : any = new Error(`User: with undefined group can\'t subscribe Group Channel!`);
+                                err.code = 4532;
                                 next(err); //Block!
                             }
                         }
-                        else
-                        {
-                            let err : any = new Error(`User: with undefined group can\'t subscribe Group Channel!`);
-                            err.code = 4532;
-                            next(err); //Block!
-                        }
-                    }
-                    else if (channel === Const.Settings.CHANNEL.DEFAULT_USER_GROUP) {
+                        else if (channel === Const.Settings.CHANNEL.DEFAULT_USER_GROUP) {
                             let err : any = new Error('Auth User can\' subscribe default User Group Channel!');
                             err.code = 4521;
                             next(err); //Block!
-                    }
-                    else if (channel.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
-
-                        next((await ChAccessEngine.checkAccessSubCustomIdCh(req.socket,channel,this.preparedSmallBag,this.zc)));
-
-                    }
-                    else if (channel.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
-
-                        next((await ChAccessEngine.checkAccessSubCustomCh(req.socket,channel,this.preparedSmallBag,this.zc)));
-                    }
-                    else if (channel === Const.Settings.CHANNEL.PANEL)
-                    {
-                        if (authToken[Const.Settings.CLIENT.PANEL_ACCESS] !== undefined &&
-                            authToken[Const.Settings.CLIENT.PANEL_ACCESS]) {
-
-                            Logger.printDebugInfo
-                            (`Socket with id: ${req.socket.id} subscribes panel channel`);
-
-                            next();
                         }
-                        else {
-                            let err : any = new Error('User can\'t subscribe panel channel!');
-                            err.code = 4502;
+                        else if (channel === Const.Settings.CHANNEL.PANEL)
+                        {
+                            if (authToken[Const.Settings.CLIENT.PANEL_ACCESS] !== undefined &&
+                                authToken[Const.Settings.CLIENT.PANEL_ACCESS]) {
+
+                                Logger.printDebugInfo
+                                (`Socket with id: ${req.socket.id} subscribes panel channel`);
+
+                                next();
+                            }
+                            else {
+                                let err : any = new Error('User can\'t subscribe panel channel!');
+                                err.code = 4502;
+                                next(err); //Block!
+                            }
+                        }
+                        else if(channel === Const.Settings.CHANNEL.ALL_WORKER)
+                        {
+                            let err : any = new Error('User can\'t subscribe all worker channel!');
+                            err.code = 4503;
                             next(err); //Block!
                         }
-                    }
-                    else if(channel === Const.Settings.CHANNEL.ALL_WORKER)
-                    {
-                        let err : any = new Error('User can\'t subscribe all worker channel!');
-                        err.code = 4503;
-                        next(err); //Block!
+                        else {
+                            Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes ${channel}`);
+                            next();
+                        }
                     }
                     else {
-                        Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes ${channel}`);
-                        next();
-                    }
-                }
-                else {
-                    if (channel.indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1) {
-                        let err : any = new Error('anonymous user can\'t subscribe a User Channel!');
-                        err.code = 4541;
-                        next(err); //Block!
-                    }
-                    else if (channel.indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1) {
-                        let err : any = new Error('anonymous user can\'t subscribe a User Group Channel!');
-                        err.code = 4531;
-                        next(err); //Block!
-                    }
-                    else if (channel === Const.Settings.CHANNEL.DEFAULT_USER_GROUP) {
-                        Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes default group channel`);
-                        next();
-                    }
-                    else if (channel.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
-
-                        next((await ChAccessEngine.checkAccessSubCustomIdCh(req.socket,channel,this.preparedSmallBag,this.zc)));
-
-                    }
-                    else if (channel.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
-
-                        next((await ChAccessEngine.checkAccessSubCustomCh(req.socket,channel,this.preparedSmallBag,this.zc)));
-                    }
-                    else if(channel === Const.Settings.CHANNEL.PANEL)
-                    {
-                        let err : any = new Error('anonymous user can\'t subscribe panel Channel!');
-                        err.code = 4501;
-                        next(err); //Block!
-                    }
-                    else if(channel === Const.Settings.CHANNEL.ALL_WORKER)
-                    {
-                        let err : any = new Error('user can\'t subscribe all worker Channel!');
-                        err.code = 4504;
-                        next(err); //Block!
-                    }
-                    else {
-                        Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes ${channel}`);
-                        next();
+                        if (channel.indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1) {
+                            let err : any = new Error('Anonymous user can\'t subscribe a User Channel!');
+                            err.code = 4541;
+                            next(err); //Block!
+                        }
+                        else if (channel.indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1) {
+                            let err : any = new Error('Anonymous user can\'t subscribe a User Group Channel!');
+                            err.code = 4531;
+                            next(err); //Block!
+                        }
+                        else if (channel === Const.Settings.CHANNEL.DEFAULT_USER_GROUP) {
+                            Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes default group channel`);
+                            next();
+                        }
+                        else if(channel === Const.Settings.CHANNEL.PANEL)
+                        {
+                            let err : any = new Error('Anonymous user can\'t subscribe panel Channel!');
+                            err.code = 4501;
+                            next(err); //Block!
+                        }
+                        else if(channel === Const.Settings.CHANNEL.ALL_WORKER)
+                        {
+                            let err : any = new Error('User can\'t subscribe all worker Channel!');
+                            err.code = 4504;
+                            next(err); //Block!
+                        }
+                        else {
+                            Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes ${channel}`);
+                            next();
+                        }
                     }
                 }
             }

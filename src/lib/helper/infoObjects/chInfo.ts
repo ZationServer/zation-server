@@ -12,10 +12,10 @@ class ChInfo
     private readonly _authUserGroup : string | undefined;
     private readonly _userId : string | number | undefined;
     private readonly _socket : object;
-    private readonly _tokenId : string;
+    private readonly _tokenId : string | undefined;
     private readonly _isAuthIn : boolean;
-    private readonly _tokenExpire : number;
-    private readonly _panelAccess : number;
+    private readonly _tokenExpire : number | undefined;
+    private readonly _panelAccess : number | undefined;
     private readonly _channelId : string | undefined;
     private readonly _channelName : string;
     private readonly _isCustomIdCh : boolean;
