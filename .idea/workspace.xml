@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/config/structures.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/config/structures.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/configEditTool/channelConfigStructure.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/configEditTool/channelConfigStructure.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/channelConfig.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/constants/channelConfig.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib/helper/infoObjects/chInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/infoObjects/chInfo.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib/main/zationWorker.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationWorker.ts" afterDir="false" />
     </list>
@@ -21,7 +18,7 @@
     <session id="1522475154">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="19" />
+          <entry key="project.closed" value="20" />
           <entry key="project.open.time.0" value="5" />
           <entry key="project.open.time.1" value="8" />
           <entry key="project.open.time.2" value="2" />
@@ -44,7 +41,7 @@
           <entry key="dummy" value="151" />
           <entry key="js" value="2161" />
           <entry key="json" value="362" />
-          <entry key="ts" value="41159" />
+          <entry key="ts" value="41166" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
@@ -52,7 +49,7 @@
           <entry key="JSON" value="353" />
           <entry key="JavaScript" value="2161" />
           <entry key="PLAIN_TEXT" value="151" />
-          <entry key="TypeScript" value="41159" />
+          <entry key="TypeScript" value="41166" />
           <entry key="tsconfig" value="9" />
         </counts>
       </usages-collector>
@@ -62,7 +59,7 @@
           <entry key="gitignore" value="1" />
           <entry key="js" value="78" />
           <entry key="json" value="27" />
-          <entry key="ts" value="560" />
+          <entry key="ts" value="561" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
@@ -70,7 +67,7 @@
           <entry key="JSON" value="23" />
           <entry key="JavaScript" value="78" />
           <entry key="PLAIN_TEXT" value="3" />
-          <entry key="TypeScript" value="560" />
+          <entry key="TypeScript" value="561" />
           <entry key="tsconfig" value="4" />
         </counts>
       </usages-collector>
@@ -160,6 +157,17 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/lib/helper/channel/channelEngine.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-63">
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/config/configChecker.ts">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="341">
@@ -183,7 +191,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/configEditTool/channelConfigStructure.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="404">
+            <state relative-caret-position="609">
               <caret line="31" column="51" lean-forward="true" selection-start-line="31" selection-start-column="51" selection-end-line="31" selection-end-column="51" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
@@ -205,30 +213,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/serviceConfig.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/channelConfig.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
+            <state relative-caret-position="443">
               <caret line="34" column="30" lean-forward="true" selection-start-line="34" selection-start-column="30" selection-end-line="34" selection-end-column="30" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/main/zationWorker.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6908">
-              <caret line="433" column="23" selection-start-line="433" selection-start-column="23" selection-end-line="433" selection-end-column="23" />
+            <state relative-caret-position="-14">
+              <caret line="429" column="39" lean-forward="true" selection-start-line="429" selection-start-column="39" selection-end-line="429" selection-end-column="39" />
               <folding>
                 <element signature="n#express#0" expanded="true" />
               </folding>
@@ -239,17 +236,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/channel/chAccessEngine.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="364">
-              <caret line="138" column="41" lean-forward="true" selection-start-line="138" selection-start-column="41" selection-end-line="138" selection-end-column="41" />
+            <state relative-caret-position="322">
+              <caret line="199" column="30" lean-forward="true" selection-start-line="199" selection-start-column="30" selection-end-line="199" selection-end-column="30" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/infoObjects/chInfo.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="519">
-              <caret line="33" column="48" lean-forward="true" selection-start-line="33" selection-start-column="48" selection-end-line="33" selection-end-column="48" />
+            <state relative-caret-position="1407">
+              <caret line="72" column="31" lean-forward="true" selection-start-line="72" selection-start-column="31" selection-end-line="72" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -295,8 +292,8 @@
       <find>respond</find>
       <find>Main</find>
       <find>Warning</find>
-      <find>Mongo</find>
       <find>ON_SUB</find>
+      <find>Mongo</find>
     </findStrings>
     <replaceStrings>
       <replace>.App.</replace>
@@ -386,8 +383,8 @@
         <option value="$PROJECT_DIR$/src/lib/helper/constants/channelConfig.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/config/structures.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/configEditTool/channelConfigStructure.ts" />
-        <option value="$PROJECT_DIR$/src/lib/helper/infoObjects/chInfo.ts" />
         <option value="$PROJECT_DIR$/src/lib/main/zationWorker.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/infoObjects/chInfo.ts" />
       </list>
     </option>
   </component>
@@ -411,7 +408,7 @@
       <path value="$PROJECT_DIR$/package.json" />
     </packageJsonPaths>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="-8" />
     <option name="y" value="22" />
     <option name="width" value="1936" />
@@ -732,12 +729,12 @@
       <workItem from="1534364166430" duration="19964000" />
       <workItem from="1534508784502" duration="3396000" />
       <workItem from="1534516630470" duration="14751000" />
-      <workItem from="1534580905965" duration="8224000" />
+      <workItem from="1534580905965" duration="9721000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="967755000" />
+    <option name="totallyTimeSpent" value="969252000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -749,7 +746,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="22" width="1936" height="1066" extended-state="6" />
+    <frame x="-8" y="22" width="1936" height="1066" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.8955007" visible="true" weight="0.21338251" />
@@ -822,13 +819,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/controller/controllerPrepare.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="69" column="4" selection-start-line="69" selection-start-column="4" selection-end-line="69" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/helper/processor/validChProcessor.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-918">
@@ -1118,36 +1108,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/mainConfig.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="52" column="44" selection-start-line="52" selection-start-column="44" selection-end-line="52" selection-end-column="44" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/config/configChecker.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="341">
-          <caret line="451" column="33" lean-forward="true" selection-start-line="451" selection-start-column="33" selection-end-line="451" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/serviceConfig.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/channelConfig.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="34" column="30" lean-forward="true" selection-start-line="34" selection-start-column="30" selection-end-line="34" selection-end-column="30" />
         </state>
       </provider>
     </entry>
@@ -1171,10 +1137,43 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/channelConfig.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="443">
+          <caret line="34" column="30" lean-forward="true" selection-start-line="34" selection-start-column="30" selection-end-line="34" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/helper/configEditTool/channelConfigStructure.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="404">
+        <state relative-caret-position="609">
           <caret line="31" column="51" lean-forward="true" selection-start-line="31" selection-start-column="51" selection-end-line="31" selection-end-column="51" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/config/configChecker.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="341">
+          <caret line="451" column="33" lean-forward="true" selection-start-line="451" selection-start-column="33" selection-end-line="451" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/mainConfig.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="462">
+          <caret line="52" column="44" selection-start-line="52" selection-start-column="44" selection-end-line="52" selection-end-column="44" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/channel/channelEngine.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-63">
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -1183,25 +1182,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/helper/channel/chAccessEngine.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="364">
-          <caret line="138" column="41" lean-forward="true" selection-start-line="138" selection-start-column="41" selection-end-line="138" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/infoObjects/chInfo.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="33" column="48" lean-forward="true" selection-start-line="33" selection-start-column="48" selection-end-line="33" selection-end-column="48" />
+        <state relative-caret-position="322">
+          <caret line="199" column="30" lean-forward="true" selection-start-line="199" selection-start-column="30" selection-end-line="199" selection-end-column="30" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/main/zationWorker.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6908">
-          <caret line="433" column="23" selection-start-line="433" selection-start-column="23" selection-end-line="433" selection-end-column="23" />
+        <state relative-caret-position="-14">
+          <caret line="429" column="39" lean-forward="true" selection-start-line="429" selection-start-column="39" selection-end-line="429" selection-end-column="39" />
           <folding>
             <element signature="n#express#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/infoObjects/chInfo.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1407">
+          <caret line="72" column="31" lean-forward="true" selection-start-line="72" selection-start-column="31" selection-end-line="72" selection-end-column="31" />
         </state>
       </provider>
     </entry>

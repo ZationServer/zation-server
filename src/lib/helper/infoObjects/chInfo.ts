@@ -46,7 +46,7 @@ class ChInfo
         return this._socket;
     }
 
-    get tokenId(): string {
+    get tokenId(): string | undefined {
         return this._tokenId;
     }
 
@@ -54,11 +54,11 @@ class ChInfo
         return this._isAuthIn;
     }
 
-    get tokenExpire(): number {
+    get tokenExpire(): number | undefined{
         return this._tokenExpire;
     }
 
-    get panelAccess(): number {
+    get panelAccess(): number | undefined{
         return this._panelAccess;
     }
 
