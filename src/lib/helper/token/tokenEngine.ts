@@ -33,6 +33,7 @@ class TokenEngine
     //to create a new Token
     async createToken(data : object) : Promise<boolean>
     {
+        /*
         if(this.zc.isUseTokenInfoTempDb())
         {
             let expiry = this.generateExpiry();
@@ -47,6 +48,7 @@ class TokenEngine
             data[Const.Settings.CLIENT.EXPIRE] = expiry;
             data[Const.Settings.CLIENT.TOKEN_ID] = tokenId;
         }
+        */
 
         return TokenTools.createNewToken(data,this.shBridge.getTokenBridge(),this.worker);
     }

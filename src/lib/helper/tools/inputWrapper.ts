@@ -20,6 +20,10 @@ class InputWrapper
         return this.input.get(path);
     }
 
+    hasInput(path ?: string | string[]) : boolean
+    {
+        return this.input.has(path);
+    }
 }
 
 export = InputWrapper;

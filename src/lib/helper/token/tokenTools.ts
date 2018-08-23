@@ -134,11 +134,13 @@ class TokenTools
     {
         let suc = await TokenTools.changeToken(data,tokenBridge,worker,true);
 
+        /*
         if(suc && worker.getZationConfig().isUseTokenInfoTempDb())
         {
             let newToken = tokenBridge.getToken();
             await tokenEngine.getWorker().getTempDbUp().updateTokenInfo(newToken);
         }
+        */
         return suc;
     }
 

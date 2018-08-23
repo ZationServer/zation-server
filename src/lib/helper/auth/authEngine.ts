@@ -58,11 +58,11 @@ class AuthEngine
                     }
                     else
                     {
-                        //saved AuthEngine In Server is not define
-                        // noinspection JSUnresolvedFunction
+                        //saved authGroup is in Server not define
+                        //noinspection JSUnresolvedFunction
                         await this.authOut();
 
-                        throw new TaskError(MainErrors.savedAuthGroupInTokenNotFound,
+                        throw new TaskError(MainErrors.inTokenSavedAuthGroupIsNotFound,
                             {
                                 savedAuthGroup: authUserGroup,
                                 authGroupsInZationConfig: this.aePreparedPart.getAuthGroups()
@@ -71,7 +71,7 @@ class AuthEngine
                 }
                 else
                 {
-                    //AuthEngine without auth group!
+                    //token without auth group!
                     await this.authOut();
                     throw new TaskError(MainErrors.tokenWithoutAuthGroup);
                 }

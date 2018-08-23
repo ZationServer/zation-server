@@ -56,15 +56,13 @@ class Returner
         }
         else {
             // noinspection SuspiciousInstanceOfGuard
-            if(err instanceof TaskErrorBag)
-                    {
-                        errors = err.getJsonObj(this.sendErrorDesc || this.zc.isDebug());
-                    }
-                    else
-                    {
-                        let error = new TaskError(MainErrors.unknownSystemError);
-                        errors = [error.getJsonObj()];
-                    }
+            if(err instanceof TaskErrorBag) {
+                errors = err.getJsonObj(this.sendErrorDesc || this.zc.isDebug());
+            }
+            else {
+                let error = new TaskError(MainErrors.unknownSystemError);
+                errors = [error.getJsonObj()];
+            }
         }
 
         this.sendBack(await this.createResult('',tb,errors));

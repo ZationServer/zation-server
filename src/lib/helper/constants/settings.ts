@@ -107,10 +107,10 @@ class CHANNEL
 }
 
 
-class USER_CHANNEL
+class SOCKET_EMIT_EVENTS
 {
-    static readonly AUTH_OUT              = 'zationAuthOut';
-    static readonly RE_AUTH               = 'zationReAuth';
+    static readonly AUTH_OUT              = 'ZATION.AUTH_OUT';
+    static readonly RE_AUTH               = 'ZATION.RE_AUTH';
 }
 
 class DEFAULT_USER_GROUP
@@ -161,7 +161,7 @@ class Settings
     static readonly VALIDATION_REQUEST_INPUT = VALIDATION_REQUEST_INPUT;
     static readonly CLIENT = CLIENT;
     static readonly CHANNEL = CHANNEL;
-    static readonly USER_CHANNEL = USER_CHANNEL;
+    static readonly USER_CHANNEL = SOCKET_EMIT_EVENTS;
     static readonly DEFAULT_USER_GROUP = DEFAULT_USER_GROUP;
     static readonly TEMP_DB = TEMP_DB;
     static readonly TOKEN_INFO = TOKEN_INFO;

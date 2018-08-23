@@ -4,7 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-                               require('cache-require-paths');
+                               import * as moment from "moment";
+
+require('cache-require-paths');
 import FuncTools             = require("../helper/tools/funcTools");
 const  SCWorker : any        = require('socketcluster/scworker');
 import express               = require('express');
@@ -27,6 +29,8 @@ import ControllerPrepare     = require('../helper/controller/controllerPrepare')
 import BackgroundTasksSaver  = require("../helper/background/backgroundTasksSaver");
 import Mapper                = require("../helper/tools/mapper");
 import {WorkerChActions}     from "../helper/constants/workerChActions";
+import _date = moment.unitOfTime._date;
+import ObjectPath = require("../helper/tools/objectPath");
 
 class ZationWorker extends SCWorker
 {
@@ -181,11 +185,14 @@ class ZationWorker extends SCWorker
 
             this.initSocketEvents(socket);
 
+            //init socket variables
+            socket.zationSocketVariables = new ObjectPath({});
+
             await this.zc.emitEvent(Const.Event.SC_SERVER_CONNECTION,this.getPreparedSmallBag(),socket,conSate);
 
             Logger.printDebugInfo(`Socket with id: ${socket.id} is connected!`);
 
-            socket.on('zationRequest', (data, respond) => {
+            socket.on('ZATION.SERVER.REQUEST', (data, respond) => {
                 // noinspection JSUnusedLocalSymbols
                 let p = this.zation.run(
                     {
@@ -475,6 +482,8 @@ class ZationWorker extends SCWorker
                 (Const.Event.MIDDLEWARE_PUBLISH_OUT,req,next,this.getPreparedSmallBag());
 
             if(userMidRes) {
+
+                console.log(req);
                 next();
             }
         });
@@ -674,6 +683,7 @@ class ZationWorker extends SCWorker
 
         socket.on('unsubscribe', async () =>
         {
+
             await this.zc.emitEvent(Const.Event.SOCKET_UNSUBSCRIBE,this.getPreparedSmallBag(),socket);
         });
 
@@ -748,7 +758,11 @@ class ZationWorker extends SCWorker
             }
 
             const ids = data.ids;
-            const ch = data.ch;
+            const mainData = data.mainData;
+
+            const ch = mainData.ch;
+            const event = mainData.event;
+            const emitData = mainData.data;
 
             const kickOutAction = (s) =>
             {
@@ -768,6 +782,14 @@ class ZationWorker extends SCWorker
             else if(data.action === WorkerChActions.KICK_OUT_USER_IDS_FROM_CH && !!ch)
             {
                 this.forUserIds(ids,kickOutAction);
+            }
+            else if(data.action === WorkerChActions.EMIT_TOKEN_IDS)
+            {
+                this.forTokenIds(ids,(s) => {s.emit(event,emitData)});
+            }
+            else if(data.action === WorkerChActions.EMIT_USER_IDS)
+            {
+                this.forUserIds(ids,(s) => {s.emit(event,emitData);});
             }
             else if(data.action === WorkerChActions.DISCONNECT_TOKEN_IDS)
             {

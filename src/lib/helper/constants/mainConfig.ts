@@ -57,6 +57,7 @@ class KEYS {
     static readonly SC_LOG_LEVEL                          = 'scLogLevel';
     static readonly SOCKET_CHANNEL_LIMIT                  = 'socketChannelLimit';
     static readonly CRASH_WORKER_ON_ERROR                 = 'crashWorkerOnError';
+    static readonly REBOOT_WORKER_ON_CRASH                = 'rebootWorkerOnCrash';
     static readonly KILL_MASTER_ON_SIGNAL                 = 'killMasterOnSignal';
     static readonly INSTANCE_ID                           = 'instanceId';
     static readonly KILL_WORKER_MEMORY_THRESHOLD          = 'killWorkerMemoryThreshold';

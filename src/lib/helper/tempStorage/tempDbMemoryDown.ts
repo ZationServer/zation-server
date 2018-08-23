@@ -4,7 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 import Const                     = require('../constants/constWrapper');
-import TempDbUp                  = require('./tempDbUp');
 import MemoryMasterBridge        = require('../bridges/memoryMasterBridge');
 import ZationWorker              = require("../../main/zationWorker");
 import ZationConfig              = require("../../main/zationConfig");
@@ -12,7 +11,7 @@ import ZationConfig              = require("../../main/zationConfig");
 const TOKEN_INFO_DB              = Const.Settings.TEMP_DB.TOKEN_INFO_NAME;
 //const ERROR_INFO_DB              = Const.Settings.TEMP_DB.ERROR_INFO_NAME;
 
-class TempDbMemoryDown implements TempDbUp
+class TempDbMemoryDown
 {
     private readonly worker : ZationWorker;
     private readonly zc : ZationConfig;

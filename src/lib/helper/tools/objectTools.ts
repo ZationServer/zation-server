@@ -25,7 +25,7 @@ class ObjectTools
     }
 
     //Merge objects on all layers (needs more performance)
-    static mergeObjToObj(mainObj : object, toMergeObj : object)
+    static mergeObjToObj(mainObj : object, toMergeObj : object, override : boolean = false)
     {
         if(typeof mainObj === "object" && typeof toMergeObj === "object")
         {
@@ -33,13 +33,13 @@ class ObjectTools
             {
                 if(toMergeObj.hasOwnProperty(k))
                 {
-                    if(!mainObj.hasOwnProperty(k))
+                    if(!mainObj.hasOwnProperty(k) || (typeof mainObj[k] !== 'object' && override))
                     {
                         mainObj[k] = toMergeObj[k];
                     }
                     else
                     {
-                        mainObj[k] = ObjectTools.mergeObjToObj(toMergeObj[k],toMergeObj[k]);
+                        mainObj[k] = ObjectTools.mergeObjToObj(toMergeObj[k],toMergeObj[k],override);
                     }
                 }
             }

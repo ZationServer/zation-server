@@ -161,8 +161,8 @@ export = {
         isFromZationSystem : true
     },
 
-    savedAuthGroupInTokenNotFound    : {
-        name          : 'savedAuthGroupInTokenNotFound',
+    inTokenSavedAuthGroupIsNotFound    : {
+        name          : 'inTokenSavedAuthGroupIsNotFound',
         description   : 'the auth group is saved in the token is not found on the zation Config',
         type          : ErrorType.TOKEN_ERROR,
         isPrivate     : true,

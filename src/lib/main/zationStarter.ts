@@ -136,7 +136,6 @@ class ZationStarter
         let scOptions = {
             workers : this.zc.getMain(Const.Main.KEYS.WORKERS),
             brokers : this.zc.getMain(Const.Main.KEYS.BROKERS),
-            rebootWorkerOnCrash: true,
             appName: this.zc.getMain(Const.Main.KEYS.APP_NAME),
             workerController:__dirname + '/zationWorker.js',
             brokerController:__dirname  + '/zationBroker.js',
@@ -167,6 +166,7 @@ class ZationStarter
             clusterStateServerReconnectRandomness : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_STATE_SERVER_RECONNECT_RANDOMNESS),
             socketChannelLimit : this.zc.getMainOrNull(Const.Main.KEYS.SOCKET_CHANNEL_LIMIT),
             crashWorkerOnError : this.zc.getMainOrNull(Const.Main.KEYS.CRASH_WORKER_ON_ERROR),
+            rebootWorkerOnCrash: this.zc.getMainOrNull(Const.Main.KEYS.REBOOT_WORKER_ON_CRASH),
             killMasterOnSignal : this.zc.getMainOrNull(Const.Main.KEYS.KILL_MASTER_ON_SIGNAL),
             instanceId : this.zc.getMainOrNull(Const.Main.KEYS.INSTANCE_ID),
             killWorkerMemoryThreshold : this.zc.getMainOrNull(Const.Main.KEYS.KILL_WORKER_MEMORY_THRESHOLD),

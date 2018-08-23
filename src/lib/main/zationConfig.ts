@@ -66,9 +66,27 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.CLUSTER_AUTH_KEY] = null;
             this.mainConfig[Const.Main.KEYS.STATE_SERVER_HOST] = null;
             this.mainConfig[Const.Main.KEYS.STATE_SERVER_PORT] = null;
+            this.mainConfig[Const.Main.KEYS.SC_LOG_LEVEL] = 2;
+            this.mainConfig[Const.Main.KEYS.SOCKET_CHANNEL_LIMIT] = 1000;
             this.mainConfig[Const.Main.KEYS.CRASH_WORKER_ON_ERROR] = true;
+            this.mainConfig[Const.Main.KEYS.REBOOT_WORKER_ON_CRASH] = true;
             this.mainConfig[Const.Main.KEYS.KILL_MASTER_ON_SIGNAL] = false;
+            this.mainConfig[Const.Main.KEYS.CONNECT_TIMEOUT] = 10000;
+            this.mainConfig[Const.Main.KEYS.HANDSHAKE_TIMEOUT] = 10000;
+            this.mainConfig[Const.Main.KEYS.ACK_TIMEOUT] = 10000;
             this.mainConfig[Const.Main.KEYS.IPC_ACK_TIMEOUT] = 3000;
+            this.mainConfig[Const.Main.KEYS.SOCKET_UPGRADE_TIMEOUT] = 1000;
+            this.mainConfig[Const.Main.KEYS.ORIGINS] = '*:*';
+            this.mainConfig[Const.Main.KEYS.PING_INTERVAL] = 8000;
+            this.mainConfig[Const.Main.KEYS.PING_TIMEOUT] = 20000;
+            this.mainConfig[Const.Main.KEYS.PROCESS_TERM_TIME_OUT] = 10000;
+            this.mainConfig[Const.Main.KEYS.PROPAGATE_ERRORS] = true;
+            this.mainConfig[Const.Main.KEYS.PROPAGATE_WARNINGS] = true;
+            this.mainConfig[Const.Main.KEYS.MIDDLEWARE_EMIT_WARNINGS] = true;
+            this.mainConfig[Const.Main.KEYS.REBOOT_ON_SIGNAL] = true;
+            this.mainConfig[Const.Main.KEYS.DOWNGRADE_TO_USER] = false;
+            this.mainConfig[Const.Main.KEYS.ALLOW_CLIENT_PUBLISH] = true;
+            this.mainConfig[Const.Main.KEYS.WORKER_STATUS_INTERVAL] = 10000;
 
             this.loadUserDataLocations();
             this.loadMainConfig();

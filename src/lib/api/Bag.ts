@@ -12,10 +12,12 @@ import TokenEngine   = require("../helper/token/tokenEngine");
 import InputWrapper  = require("../helper/tools/inputWrapper");
 import ZationWorker  = require("../main/zationWorker");
 import Const         = require("../helper/constants/constWrapper");
+import ObjectPath = require("../helper/tools/objectPath");
+import {relativeTimeRounding} from "moment";
 
 class Bag extends SmallBag
 {
-    private bagVariables : object;
+    private bagVariables : ObjectPath;
     private readonly shBridge : SHBridge;
     private readonly authEngine : AuthEngine;
     private readonly channelEngine : ChannelEngine;
@@ -26,7 +28,7 @@ class Bag extends SmallBag
     {
         super(worker,channelEngine);
 
-        this.bagVariables = {};
+        this.bagVariables = new ObjectPath({});
         this.shBridge = shBridge;
         this.authEngine = authEngine;
         this.channelEngine = channelEngine;
@@ -37,31 +39,23 @@ class Bag extends SmallBag
     //Part Bag Variable
 
     // noinspection JSUnusedGlobalSymbols
-    setBagVariable(key : string,value : any,overwrite : boolean = true) : void
-    {
-        if((this.bagVariables.hasOwnProperty(key) && overwrite)
-        || !this.bagVariables.hasOwnProperty(key))
-        {
-            this.bagVariables[key] = value;
-        }
+    setBagVariable(path : string | string[],value : any,overwrite : boolean = true) : boolean {
+        return this.bagVariables.set(path,value,overwrite);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    hasBagVariable(key : string) : boolean
-    {
-        return this.bagVariables.hasOwnProperty(key);
+    hasBagVariable(path ?: string | string[]) : boolean {
+        return this.bagVariables.has(path);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getBagVariable(key : string) : any
-    {
-        return this.bagVariables[key];
+    getBagVariable(path ?: string | string[]) : any {
+        return this.bagVariables.get(path);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    emptyBagVariable() : void
-    {
-        this.bagVariables = {};
+    deleteBagVariables(path ?: string | string[]) : void {
+        this.bagVariables.delete(path);
     }
 
     //Part Input
@@ -73,9 +67,56 @@ class Bag extends SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
-    isInput(path: string | string[]) : boolean
+    hasInput(path: string | string[]) : boolean
     {
-        return this.inputWrapper.getInput(path) !== undefined;
+        return this.inputWrapper.hasInput(path);
+    }
+
+    //Part ServerSocketVariable
+
+    // noinspection JSUnusedGlobalSymbols
+    setSocketVariable(path : string | string[],value : any,overwrite : boolean = true) : boolean
+    {
+        if(this.shBridge.isWebSocket() && this.shBridge.getSocket().zationSocketVariables instanceof ObjectPath) {
+            return this.shBridge.getSocket().zationSocketVariables.set(path,value,overwrite);
+        }
+        else {
+            return false;
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    hasSocketVariable(path ?: string | string[]) : boolean
+    {
+        if(this.shBridge.isWebSocket() && this.shBridge.getSocket().zationSocketVariables instanceof ObjectPath) {
+            return this.shBridge.getSocket().zationSocketVariables.has(path);
+        }
+        else {
+            return false;
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getSocketVariable(path ?: string | string[]) : any
+    {
+        if(this.shBridge.isWebSocket() && this.shBridge.getSocket().zationSocketVariables instanceof ObjectPath) {
+            return this.shBridge.getSocket().zationSocketVariables.get(path);
+        }
+        else {
+            return undefined;
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    emptySocketVariables() : boolean
+    {
+        if(this.shBridge.isWebSocket() && this.shBridge.getSocket().zationSocketVariables instanceof ObjectPath) {
+            this.shBridge.getSocket().zationSocketVariables.setObj({});
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     //Part Auth 2
@@ -197,7 +238,7 @@ class Bag extends SmallBag
         return this.shBridge.getRequest();
     }
 
-    //Part Token
+    //Part Token Variable
 
     // noinspection JSUnusedGlobalSymbols
     async setTokenVariable(key : string,value : any) : Promise<boolean>
@@ -210,6 +251,8 @@ class Bag extends SmallBag
     {
         return this.tokenEngine.getTokenVariable(key);
     }
+
+    //Part Token
 
     // noinspection JSUnusedGlobalSymbols
     getTokenId() : string
@@ -267,12 +310,21 @@ class Bag extends SmallBag
         return this.shBridge.isWebSocket();
     }
 
-    //Part Socket Channel
+    //Part Socket
 
     // noinspection JSUnusedGlobalSymbols
-    emitToThisClient(eventName : string,data : object,cb ?: Function) : void
+    /**
+     * @description
+     * Emit to socket, the return value is an promises with the result.
+     * If this method is used in an http request, an error is thrown.
+     * If an error occurs while emitting to socket, this error is also thrown.
+     * @throws Error
+     * @param eventName
+     * @param data
+     */
+    async emitToSocket(eventName : string,data : any) : Promise<object>
     {
-        this.channelEngine.emitToSocket(eventName,data,cb);
+        return await this.channelEngine.emitToSocket(eventName,data);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -299,6 +351,275 @@ class Bag extends SmallBag
     getRemoteAddress() : string
     {
         return this.shBridge.getRemoteAddress();
+    }
+
+    //Part new publish overwrite (with src)
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Publish to an user channel or channels
+     * @example
+     * publishToUser('paul10','message',{message : 'hello',fromUserId : 'luca34'});
+     * publishToUser(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
+     * @param userId or more userIds in array
+     * @param eventName
+     * @param data
+     * @param srcSocketId
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
+     */
+    async publishToUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketId ?: string | null) : Promise<void>
+    {
+        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
+        return await this.exchangeEngine.publishInUserCh(userId,eventName,data,srcSocketId);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Publish to an user channel or channels
+     * @example
+     * pubUser('paul10','message',{message : 'hello',fromUserId : 'luca34'});
+     * pubUser(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
+     * @param userId or more userIds in array
+     * @param eventName
+     * @param data
+     * @param srcSocketId
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
+     */
+    async pubUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketId ?: string | null) : Promise<void>
+    {
+        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
+        return await this.publishToUser(userId,eventName,data,srcSocketId)
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Publish to all channel
+     * @example
+     * publishToAll('message',{message : 'hello'});
+     * @param eventName
+     * @param data
+     * @param srcSocketId
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
+     */
+    async publishToAll(eventName : string,data : object = {},srcSocketId ?: string | null) : Promise<void>
+    {
+        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
+        return await this.exchangeEngine.publishInAllCh(eventName,data,srcSocketId);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Publish to all channel
+     * @example
+     * pubAll('message',{message : 'hello'});
+     * @param eventName
+     * @param data
+     * @param srcSocketId
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
+     */
+    async pubAll(eventName : string,data : object = {},srcSocketId ?: string | null) : Promise<void>
+    {
+        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
+        return await this.publishToAll(eventName,data,srcSocketId);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Publish to auth user group or groups
+     * publishToAuthUserGroup('admin','userRegistered',{userId : '1'});
+     * publishToAuthUserGroup(['admin','superAdmin'],'userRegistered',{userId : '1'});
+     * @param authUserGroup or an array of auth user groups
+     * @param eventName
+     * @param data
+     * @param srcSocketId
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
+     */
+    async publishToAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    {
+        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
+        return await this.exchangeEngine.publishInAuthUserGroupCh(authUserGroup,eventName,data,srcSocketId);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Publish to auth user group or groups
+     * @example
+     * pubAuthUserGroup('admin','userRegistered',{userId : '1'});
+     * pubAuthUserGroup(['admin','superAdmin'],'userRegistered',{userId : '1'});
+     * @param authUserGroup or an array of auth user groups
+     * @param eventName
+     * @param data
+     * @param srcSocketId
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
+     */
+    async pubAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    {
+        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
+        return await this.publishToAuthUserGroup(authUserGroup,eventName,data,srcSocketId);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Publish to default user group
+     * @example
+     * publishToDefaultUserGroup('message',{message : 'hello'});
+     * @param eventName
+     * @param data
+     * @param srcSocketId
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
+     */
+    async publishToDefaultUserGroup(eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    {
+        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
+        return await this.exchangeEngine.publishInDefaultUserGroupCh(eventName,data,srcSocketId);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Publish to default user group
+     * @example
+     * pubDefaultUserGroup('message',{message : 'hello'});
+     * @param eventName
+     * @param data
+     * @param srcSocketId
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
+     */
+    async pubDefaultUserGroup(eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    {
+        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
+        return await this.publishToDefaultUserGroup(eventName,data,srcSocketId);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Publish in all auth user groups
+     * @example
+     * publishToAllAuthUserGroups('message',{fromUserId : '1',message : 'hello'});
+     * @param eventName
+     * @param data
+     * @param srcSocketId
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
+     */
+    async publishToAllAuthUserGroups(eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    {
+        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
+        return await this.exchangeEngine.publishToAllAuthUserGroupCh(eventName,data,this.zc,srcSocketId);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Publish in all auth user groups
+     * @example
+     * pubAllAuthUserGroups('message',{fromUserId : '1',message : 'hello'});
+     * @param eventName
+     * @param data
+     * @param srcSocketId
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
+     */
+    async pubAllAuthUserGroups(eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    {
+        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
+        return await this.publishToAllAuthUserGroups(eventName,data,srcSocketId);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Publish in an custom id Channel
+     * @example
+     * publishToCustomIdChannel('imageChannel','image2','like',{fromUserId : '1'});
+     * @param channel
+     * @param id
+     * @param eventName
+     * @param data
+     * @param srcSocketId
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
+     */
+    async publishToCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    {
+        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
+        return await this.exchangeEngine.publishToCustomIdChannel(channel,id,eventName,data,srcSocketId);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Publish in an custom id Channel
+     * @example
+     * pubCustomIdChannel('imageChannel','image2','like',{fromUserId : '1'});
+     * @param channel
+     * @param id
+     * @param eventName
+     * @param data
+     * @param srcSocketId
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
+     */
+    async pubCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    {
+        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
+        return await this.publishToCustomIdChannel(channel,id,eventName,data,srcSocketId);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Publish in an custom channel
+     * @example
+     * publishToCustomChannel('messageChannel','message',{message : 'hello',fromUserId : '1'});
+     * publishToCustomChannel(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
+     * @param channel or an array of channels
+     * @param eventName
+     * @param data
+     * @param srcSocketId
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
+     */
+    async publishToCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    {
+        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
+        return this.exchangeEngine.publishToCustomChannel(channel,eventName,data,srcSocketId);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Publish in an custom channel or channels
+     * @example
+     * pubCustomChannel('messageChannel','message',{message : 'hello',fromUserId : '1'});
+     * pubCustomChannel(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
+     * @param channel or an array of channels
+     * @param eventName
+     * @param data
+     * @param srcSocketId
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
+     */
+    async pubCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    {
+        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
+        return await this.publishToCustomChannel(channel,eventName,data,srcSocketId);
     }
 }
 

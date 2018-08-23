@@ -26,12 +26,24 @@ class ChannelEngine extends ChExchangeEngine
         this.isWebSocket = shBridge.isWebSocket();
     }
 
-    emitToSocket(eventName : string,data : any,cb ?: Function) : void
+    async emitToSocket(eventName : string,data : any) : Promise<object>
     {
-        if(this.isWebSocket)
+        return new Promise<object>((resolve, reject) =>
         {
-            this.socket.emit(eventName,data,cb);
-        }
+            if(this.isWebSocket) {
+                this.socket.emit(eventName,data,(err,data) => {
+                    if(err) {
+                        reject(err);
+                    }
+                    else {
+                        resolve(data);
+                    }
+                });
+            }
+            else {
+                reject(new Error(`Can't emit an socket event by and http request!`));
+            }
+        });
     }
 
     getSubChannels() : any[] | undefined

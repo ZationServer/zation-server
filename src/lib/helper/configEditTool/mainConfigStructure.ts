@@ -64,31 +64,32 @@ export interface MainConfig
     [Const.Main.KEYS.CLUSTER_STATE_SERVER_RECONNECT_RANDOMNESS] ?: number | null;
 
     //Sc
-    [Const.Main.KEYS.SC_LOG_LEVEL] ?: number | null;
-    [Const.Main.KEYS.SOCKET_CHANNEL_LIMIT] ?: number | null;
-    [Const.Main.KEYS.CRASH_WORKER_ON_ERROR] ?: boolean | null;
-    [Const.Main.KEYS.KILL_MASTER_ON_SIGNAL] ?: boolean | null;
+    [Const.Main.KEYS.SC_LOG_LEVEL] ?: number;
+    [Const.Main.KEYS.SOCKET_CHANNEL_LIMIT] ?: number;
+    [Const.Main.KEYS.CRASH_WORKER_ON_ERROR] ?: boolean;
+    [Const.Main.KEYS.REBOOT_WORKER_ON_CRASH] ?: boolean;
+    [Const.Main.KEYS.KILL_MASTER_ON_SIGNAL] ?: boolean;
     [Const.Main.KEYS.INSTANCE_ID] ?: string | null;
     [Const.Main.KEYS.KILL_WORKER_MEMORY_THRESHOLD] ?: number | null;
-    [Const.Main.KEYS.CONNECT_TIMEOUT] ?: number | null;
-    [Const.Main.KEYS.HANDSHAKE_TIMEOUT] ?: number | null;
-    [Const.Main.KEYS.ACK_TIMEOUT] ?: number | null;
-    [Const.Main.KEYS.IPC_ACK_TIMEOUT] ?: number | null;
-    [Const.Main.KEYS.SOCKET_UPGRADE_TIMEOUT] ?: number | null;
-    [Const.Main.KEYS.ORIGINS] ?: string | null;
-    [Const.Main.KEYS.PING_INTERVAL] ?: number | null;
-    [Const.Main.KEYS.PING_TIMEOUT] ?: number | null;
-    [Const.Main.KEYS.PROCESS_TERM_TIME_OUT] ?: number | null;
-    [Const.Main.KEYS.PROPAGATE_ERRORS] ?: boolean | null;
-    [Const.Main.KEYS.PROPAGATE_WARNINGS] ?: boolean | null;
-    [Const.Main.KEYS.MIDDLEWARE_EMIT_WARNINGS] ?: boolean | null;
-    [Const.Main.KEYS.REBOOT_ON_SIGNAL] ?: boolean | null;
-    [Const.Main.KEYS.DOWNGRADE_TO_USER] ?: boolean | null;
+    [Const.Main.KEYS.CONNECT_TIMEOUT] ?: number;
+    [Const.Main.KEYS.HANDSHAKE_TIMEOUT] ?: number;
+    [Const.Main.KEYS.ACK_TIMEOUT] ?: number;
+    [Const.Main.KEYS.IPC_ACK_TIMEOUT] ?: number;
+    [Const.Main.KEYS.SOCKET_UPGRADE_TIMEOUT] ?: number;
+    [Const.Main.KEYS.ORIGINS] ?: string;
+    [Const.Main.KEYS.PING_INTERVAL] ?: number;
+    [Const.Main.KEYS.PING_TIMEOUT] ?: number;
+    [Const.Main.KEYS.PROCESS_TERM_TIME_OUT] ?: number;
+    [Const.Main.KEYS.PROPAGATE_ERRORS] ?: boolean;
+    [Const.Main.KEYS.PROPAGATE_WARNINGS] ?: boolean;
+    [Const.Main.KEYS.MIDDLEWARE_EMIT_WARNINGS] ?: boolean;
+    [Const.Main.KEYS.REBOOT_ON_SIGNAL] ?: boolean;
+    [Const.Main.KEYS.DOWNGRADE_TO_USER] ?: boolean;
     [Const.Main.KEYS.SOCKET_ROOT] ?: string | null;
     [Const.Main.KEYS.SCHEDULING_POLICY] ?: string | null;
-    [Const.Main.KEYS.ALLOW_CLIENT_PUBLISH] ?: boolean | null;
+    [Const.Main.KEYS.ALLOW_CLIENT_PUBLISH] ?: boolean;
     [Const.Main.KEYS.TCP_SYN_BACKLOG] ?: any | null;
-    [Const.Main.KEYS.WORKER_STATUS_INTERVAL] ?: number | null;
+    [Const.Main.KEYS.WORKER_STATUS_INTERVAL] ?: number;
     [Const.Main.KEYS.PUB_SUB_BATCH_DURATION] ?: number | null;
 }
 
