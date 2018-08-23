@@ -4,8 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-let    crypto : any     = require('crypto');
-let    IP : any         = require('ip');
+const    crypto : any   = require('crypto');
+const    IP : any       = require('ip');
 import ChExchangeEngine = require("../helper/channel/chExchangeEngine");
 import ServiceEngine    = require("../helper/services/serviceEngine");
 import ZationConfig     = require("../main/zationConfig");

@@ -48,12 +48,10 @@ class ChannelEngine extends ChExchangeEngine
 
     getSubChannels() : any[] | undefined
     {
-        if(this.isWebSocket)
-        {
+        if(this.isWebSocket) {
             return this.socket.subscriptions();
         }
-        else
-        {
+        else {
             return undefined;
         }
     }

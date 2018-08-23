@@ -77,6 +77,17 @@ export = {
         isFromZationSystem : true
     },
 
+    methodIsNotCompatible  : {
+        name          : 'methodIsNotCompatible',
+        description   : 'Method is not compatible with request protocol',
+        type          : ErrorType.SYSTEM_ERROR,
+        sendInfo      : false,
+        //INFO
+        // reqType
+        // requiredReqType
+        isFromZationSystem : true
+    },
+
     versionToOld    : {
         name          : 'versionToOld',
         description   : 'Version is to old',

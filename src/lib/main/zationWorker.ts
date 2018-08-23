@@ -4,8 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-                               import * as moment from "moment";
-
 require('cache-require-paths');
 import FuncTools             = require("../helper/tools/funcTools");
 const  SCWorker : any        = require('socketcluster/scworker');
@@ -29,8 +27,6 @@ import ControllerPrepare     = require('../helper/controller/controllerPrepare')
 import BackgroundTasksSaver  = require("../helper/background/backgroundTasksSaver");
 import Mapper                = require("../helper/tools/mapper");
 import {WorkerChActions}     from "../helper/constants/workerChActions";
-import _date = moment.unitOfTime._date;
-import ObjectPath = require("../helper/tools/objectPath");
 
 class ZationWorker extends SCWorker
 {
@@ -186,7 +182,7 @@ class ZationWorker extends SCWorker
             this.initSocketEvents(socket);
 
             //init socket variables
-            socket.zationSocketVariables = new ObjectPath({});
+            socket.zationSocketVariables = {};
 
             await this.zc.emitEvent(Const.Event.SC_SERVER_CONNECTION,this.getPreparedSmallBag(),socket,conSate);
 
@@ -955,6 +951,7 @@ class ZationWorker extends SCWorker
     {
         return this.controllerPrepare;
     }
+
 
     // noinspection JSUnusedGlobalSymbols
     getServiceEngine() : ServiceEngine

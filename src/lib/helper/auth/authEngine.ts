@@ -122,7 +122,7 @@ class AuthEngine
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getUserId() : number | string
+    getUserId() : number | string | undefined
     {
         return this.currentUserId;
     }

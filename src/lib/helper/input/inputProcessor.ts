@@ -5,7 +5,6 @@ GitHub: LucaCode
  */
 
 import Const               = require('../constants/constWrapper');
-import InputWrapper        = require('../tools/inputWrapper');
 import ObjectTools         = require('../tools/objectTools');
 import TaskError           = require('../../api/TaskError');
 import TaskErrorBag        = require('../../api/TaskErrorBag');
@@ -126,14 +125,14 @@ class InputProcessor
 
     //fast Checks of the input
     //than create the checked Data
-    static async processInput(task : object, controller : object, preparedSmallBag : SmallBag) : Promise<InputWrapper>
+    static async processInput(task : object, controller : object, preparedSmallBag : SmallBag) : Promise<object>
     {
         let input = task[Const.Settings.REQUEST_INPUT.INPUT];
 
         if(typeof controller[Const.App.CONTROLLER.INPUT_ALL_ALLOW] === 'boolean'&&
             controller[Const.App.CONTROLLER.INPUT_ALL_ALLOW])
         {
-            return new InputWrapper(input);
+            return input;
         }
 
         let useInputValidation = true;
@@ -188,7 +187,7 @@ class InputProcessor
                     result = await
                         InputProcessor.processInputObject(controllerInput,input,useInputValidation,preparedSmallBag);
                 }
-                return new InputWrapper(result);
+                return result;
             }
         }
     }

@@ -16,7 +16,6 @@ import InputProcessor        = require('../input/inputProcessor');
 import AuthEngine            = require('../auth/authEngine');
 import Bag                   = require('../../api/Bag');
 import TokenEngine           = require('../token/tokenEngine');
-import InputWrapper          = require("../tools/inputWrapper");
 import SHBridge              = require("../bridges/shBridge");
 import ZationConfig          = require("../../main/zationConfig");
 import ZationWorker          = require("../../main/zationWorker");
@@ -93,12 +92,12 @@ class MainProcessor
                     let controllerInstance =
                         worker.getControllerPrepare().getControllerInstance(controllerName,isSystemController);
 
-                    let inputWrapper : InputWrapper;
+                    let input : object;
 
                     //check input
                     try
                     {
-                        inputWrapper  = await InputProcessor.
+                        input  = await InputProcessor.
                         processInput(task,controllerConfig,worker.getPreparedSmallBag());
                     }
                     catch (e)
@@ -114,7 +113,7 @@ class MainProcessor
                         throw e;
                     }
 
-                    let bag = new Bag(shBridge,worker,authEngine,tokenEngine,inputWrapper);
+                    let bag = new Bag(shBridge,worker,authEngine,tokenEngine,input);
                     return await MainProcessor.processController(controllerInstance,controllerConfig,bag,shBridge.getTokenBridge());
                 }
                 else

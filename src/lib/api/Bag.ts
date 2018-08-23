@@ -9,155 +9,286 @@ import SmallBag      = require('./SmallBag');
 import SHBridge      = require("../helper/bridges/shBridge");
 import AuthEngine    = require("../helper/auth/authEngine");
 import TokenEngine   = require("../helper/token/tokenEngine");
-import InputWrapper  = require("../helper/tools/inputWrapper");
 import ZationWorker  = require("../main/zationWorker");
 import Const         = require("../helper/constants/constWrapper");
-import ObjectPath = require("../helper/tools/objectPath");
-import {relativeTimeRounding} from "moment";
+import ObjectPath    = require("../helper/tools/objectPath");
+import MethodIsNotCompatible = require("../helper/error/methodIsNotCompatible");
+import ObjectPathSequence    = require("../helper/tools/objectPathSequence");
 
 class Bag extends SmallBag
 {
-    private bagVariables : ObjectPath;
+    private bagVariables : object;
     private readonly shBridge : SHBridge;
     private readonly authEngine : AuthEngine;
     private readonly channelEngine : ChannelEngine;
     private readonly tokenEngine : TokenEngine;
-    private readonly inputWrapper : InputWrapper;
+    private readonly input : object;
 
-    constructor(shBridge : SHBridge,worker : ZationWorker,authEngine : AuthEngine,tokenEngine : TokenEngine,inputWrapper : InputWrapper,channelEngine : ChannelEngine = new ChannelEngine(worker.scServer,shBridge))
+    constructor(shBridge : SHBridge,worker : ZationWorker,authEngine : AuthEngine,tokenEngine : TokenEngine,input : object,channelEngine : ChannelEngine = new ChannelEngine(worker.scServer,shBridge))
     {
         super(worker,channelEngine);
 
-        this.bagVariables = new ObjectPath({});
+        this.bagVariables = {};
         this.shBridge = shBridge;
         this.authEngine = authEngine;
         this.channelEngine = channelEngine;
         this.tokenEngine = tokenEngine;
-        this.inputWrapper = inputWrapper;
+        this.input = input;
     }
 
     //Part Bag Variable
 
     // noinspection JSUnusedGlobalSymbols
-    setBagVariable(path : string | string[],value : any,overwrite : boolean = true) : boolean {
-        return this.bagVariables.set(path,value,overwrite);
+    /**
+     * @description
+     * Set a bag variable with objectPath
+     * @example
+     * setBagVariable('my.variable','hello');
+     * @param path
+     * @param value
+     */
+    setBagVariable(path : string | string[],value : any) : void {
+        ObjectPath.set(this.bagVariables,path,value);
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Has a bag variable with objectPath
+     * @example
+     * hasBagVariable('my.variable');
+     * @param path
+     */
     hasBagVariable(path ?: string | string[]) : boolean {
-        return this.bagVariables.has(path);
+        return ObjectPath.has(this.bagVariables,path);
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Get a bag variable with objectPath
+     * @example
+     * getBagVariable('my.variable');
+     * @param path
+     */
     getBagVariable(path ?: string | string[]) : any {
-        return this.bagVariables.get(path);
+        return ObjectPath.get(this.bagVariables,path);
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Delete a bag variable with objectPath
+     * @example
+     * deleteBagVariable('my.variable');
+     * deleteBagVariable(); //deletes all variables
+     * @param path
+     */
     deleteBagVariables(path ?: string | string[]) : void {
-        this.bagVariables.delete(path);
+        if(!!path) {
+            ObjectPath.del(this.bagVariables,path);
+        }
+        else {
+            this.bagVariables = {};
+        }
     }
 
     //Part Input
 
     // noinspection JSUnusedGlobalSymbols
-    getInput(path ?: string | string[]) : any
-    {
-        return this.inputWrapper.getInput(path);
+    /**
+     * @description
+     * Get input with object path
+     * @example
+     * getInput('person.name');
+     * @param path
+     */
+    getInput(path ?: string | string[]) : any {
+        return ObjectPath.get(this.input,path);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    hasInput(path: string | string[]) : boolean
-    {
-        return this.inputWrapper.hasInput(path);
+    /**
+     * @description
+     * Has input with object path
+     * @example
+     * hasInput('person.name');
+     * @param path
+     */
+    hasInput(path: string | string[]) : boolean {
+        return ObjectPath.has(this.input,path);
     }
 
     //Part ServerSocketVariable
 
     // noinspection JSUnusedGlobalSymbols
-    setSocketVariable(path : string | string[],value : any,overwrite : boolean = true) : boolean
+    /**
+     * @description
+     * Set socket variable (server side) with object path
+     * Requires web socket request!
+     * @example
+     * setSocketVariable('email','example@gmail.com');
+     * @param path
+     * @param value
+     * @throws MethodIsNotCompatible
+     */
+    setSocketVariable(path : string | string[],value : any) : void
     {
-        if(this.shBridge.isWebSocket() && this.shBridge.getSocket().zationSocketVariables instanceof ObjectPath) {
-            return this.shBridge.getSocket().zationSocketVariables.set(path,value,overwrite);
+        if(this.shBridge.isWebSocket()) {
+            ObjectPath.set(this.shBridge.getSocket().zationSocketVariables,path,value);
         }
         else {
-            return false;
+            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
         }
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Has socket variable (server side) with object path
+     * Requires web socket request!
+     * @example
+     * hasSocketVariable('email');
+     * @param path
+     * @throws MethodIsNotCompatible
+     */
     hasSocketVariable(path ?: string | string[]) : boolean
     {
-        if(this.shBridge.isWebSocket() && this.shBridge.getSocket().zationSocketVariables instanceof ObjectPath) {
-            return this.shBridge.getSocket().zationSocketVariables.has(path);
+        if(this.shBridge.isWebSocket()) {
+            return ObjectPath.has(this.shBridge.getSocket().zationSocketVariables,path);
         }
         else {
-            return false;
+            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
         }
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Get socket variable (server side) with object path
+     * Requires web socket request!
+     * @example
+     * getSocketVariable('email');
+     * @param path
+     * @throws MethodIsNotCompatible
+     */
     getSocketVariable(path ?: string | string[]) : any
     {
-        if(this.shBridge.isWebSocket() && this.shBridge.getSocket().zationSocketVariables instanceof ObjectPath) {
-            return this.shBridge.getSocket().zationSocketVariables.get(path);
+        if(this.shBridge.isWebSocket()) {
+            return ObjectPath.get(this.shBridge.getSocket().zationSocketVariables,path);
         }
         else {
-            return undefined;
+            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
         }
     }
 
     // noinspection JSUnusedGlobalSymbols
-    emptySocketVariables() : boolean
+    /**
+     * @description
+     * Delete socket variable (server side) with object path
+     * Requires web socket request!
+     * @example
+     * deleteSocketVariable('email');
+     * @param path
+     * @throws MethodIsNotCompatible
+     */
+    deleteSocketVariable(path ?: string | string[]) : void
     {
-        if(this.shBridge.isWebSocket() && this.shBridge.getSocket().zationSocketVariables instanceof ObjectPath) {
-            this.shBridge.getSocket().zationSocketVariables.setObj({});
-            return true;
+        if(this.shBridge.isWebSocket()) {
+            if(!!path) {
+                ObjectPath.del(this.bagVariables,path);
+            }
+            else {
+                this.shBridge.getSocket().zationSocketVariables = {};
+            }
         }
         else {
-            return false;
+            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
         }
     }
 
     //Part Auth 2
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns if current socket is authenticated
+     */
     isAuth() : boolean
     {
         return this.authEngine.isAuth();
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the authentication user group of current socket.
+     * If the socket is not authenticated, it will return undefined.
+     */
     getAuthUserGroup() : string | undefined
     {
         return this.authEngine.getAuthUserGroup();
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the user group of current socket.
+     * The user group can be the default group or one of the auth groups
+     */
     getUserGroup() : string | undefined
     {
         return this.authEngine.getUserGroup();
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Authenticate an socket.
+     * The method return true if the authentication is success.
+     * @example
+     * await authTo('user','tom12',{email : 'example@gmail.com'});
+     * @param userGroup
+     * @param userId
+     * @param clientData
+     */
     async authTo(userGroup : string,userId ?: string | number,clientData : object= {}) : Promise<void>
     {
         await this.authEngine.authTo(userGroup,userId,clientData);
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Set the user id for this socket.
+     * The method return true if the process is success.
+     * @example
+     * await setUserId('luca23');
+     * @param id
+     */
     async setUserId(id : string | number) : Promise<void>
     {
         await this.authEngine.setUserId(id);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getUserId() : number | string
+    /**
+     * @description
+     * Returns the user id of the current socket.
+     */
+    getUserId() : number | string | undefined
     {
         return this.authEngine.getUserId();
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Deauthenticate current socket.
+     * The token will be rendered useless.
+     * @example
+     * await authOut();
+     */
     async authOut() : Promise<void>
     {
         await this.authEngine.authOut();
@@ -170,6 +301,10 @@ class Bag extends SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns true if the current socket is not authenticated (default user group).
+     */
     isDefault() : boolean
     {
         return this.authEngine.isDefault();
@@ -184,43 +319,58 @@ class Bag extends SmallBag
     //Part Cookie
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Get cookie variable
+     * Requires http request!
+     * @throws MethodIsNotCompatible
+     * @param key
+     */
     getCookieVariable(key : string) : any
     {
-        if(this.shBridge.isWebSocket())
-        {
-            return undefined;
+        if(this.shBridge.isWebSocket()) {
+            throw new MethodIsNotCompatible(this.getProtocol(),'http');
         }
-        else
-        {
+        else {
             return this.shBridge.getResponse().cookies[key];
         }
     }
 
     // noinspection JSUnusedGlobalSymbols
-    setCookieVariable(key : string,value : any,settings  : object= { maxAge: 900000}) : boolean
+    /**
+     * @description
+     * Set cookie variable
+     * Requires http request!
+     * @throws MethodIsNotCompatible
+     * @param key
+     * @param value
+     * @param settings
+     */
+    setCookieVariable(key : string,value : any,settings  : object= { maxAge: 900000}) : void
     {
-        if(this.shBridge.isWebSocket())
-        {
-            return false;
+        if(this.shBridge.isWebSocket()) {
+            throw new MethodIsNotCompatible(this.getProtocol(),'http');
         }
-        else
-        {
+        else {
             this.shBridge.getResponse().cookie(key,value,settings);
-            return true;
         }
     }
 
     // noinspection JSUnusedGlobalSymbols
-    clearCookie(key : string) : boolean
+    /**
+     * @description
+     * Clear cookie variable
+     * Requires http request!
+     * @throws MethodIsNotCompatible
+     * @param key
+     */
+    clearCookie(key : string) : void
     {
-        if(this.shBridge.isWebSocket())
-        {
-            return false;
+        if(this.shBridge.isWebSocket()) {
+            throw new MethodIsNotCompatible(this.getProtocol(),'http');
         }
-        else
-        {
+        else {
             this.shBridge.getResponse().clearCookie(key);
-            return true;
         }
     }
 
@@ -252,21 +402,42 @@ class Bag extends SmallBag
         return this.tokenEngine.getTokenVariable(key);
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    seqEditTokenVariable() : ObjectPathSequence
+    {
+        return new ObjectPathSequence(,()=>
+        {
+
+        });
+    }
+
     //Part Token
 
     // noinspection JSUnusedGlobalSymbols
-    getTokenId() : string
+    /**
+     * @description
+     * Returns token id of the token form the socket.
+     */
+    getTokenId() : string | undefined
     {
         return this.tokenEngine.getTokenVariable(Const.Settings.CLIENT.TOKEN_ID);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getTokenExpire() : string
+    /**
+     * @description
+     * Returns the expire of the token from the socket.
+     */
+    getTokenExpire() : string | undefined
     {
         return this.tokenEngine.getTokenVariable(Const.Settings.CLIENT.EXPIRE);
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Checks if the current request has a token.
+     */
     hasToken() : boolean
     {
         return this.shBridge.getTokenBridge().getToken() !==  undefined;
@@ -274,40 +445,52 @@ class Bag extends SmallBag
 
     //Part Socket
     // noinspection JSUnusedGlobalSymbols
-    getSocketId() : string | undefined
+    /**
+     * @description
+     * Returns the socket id of the current socket.
+     * Requires ws request!
+     * @throws MethodIsNotCompatible
+     */
+    getSocketId() : string
     {
         if(this.shBridge.isWebSocket) {
             return this.shBridge.getSocket().id;
         }
         else {
-            return undefined;
+            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
         }
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getSocket()
-    {
+    getSocket() : any {
         return this.shBridge.getSocket();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getScServer()
-    {
+    getScServer() : any {
         return this.worker.scServer;
     }
 
     //Part Protocol
 
     // noinspection JSUnusedGlobalSymbols
-    getProtocol() : string
-    {
+    /**
+     * @description
+     * Returns the current protocol of this request.
+     * It can be 'ws' or 'http'.
+     */
+    getProtocol() : string {
         return this.authEngine.getProtocol();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    isSocketProtocol() : boolean
-    {
+    isWebSocketProtocol() : boolean {
         return this.shBridge.isWebSocket();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    isHttpProtocol() : boolean {
+        return !this.shBridge.isWebSocket();
     }
 
     //Part Socket
@@ -318,7 +501,8 @@ class Bag extends SmallBag
      * Emit to socket, the return value is an promises with the result.
      * If this method is used in an http request, an error is thrown.
      * If an error occurs while emitting to socket, this error is also thrown.
-     * @throws Error
+     * @desc Require web socket request!
+     * @throws Error,MethodIsNotCompatible
      * @param eventName
      * @param data
      */
@@ -328,18 +512,40 @@ class Bag extends SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the current channel subscriptions of the socket.
+     * If the request protocol is 'http' the method will be return undefined.
+     * Requires ws request!
+     */
     getSubChannels() : string[] | undefined
     {
         return this.channelEngine.getSubChannels();
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Kick the current socket from an custom id channel.
+     * @example
+     * kickFromCustomIdCh('images','10');
+     * kickFromCustomIdCh('messageStreams');
+     * @param name
+     * @param id (if it is not provided the socket will be kicked from all ids)
+     */
     kickFromCustomIdCh(name : string,id : string = '') : void
     {
         this.channelEngine.kickCustomIdChannel(name,id);
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Kick the current socket from an custom channel.
+     * @example
+     * kickFromCustomCh('stream');
+     * @param name
+     */
     kickFromCustomCh(name : string) : void
     {
         this.channelEngine.kickCustomChannel(name);
@@ -348,6 +554,10 @@ class Bag extends SmallBag
     //Part Remote Address
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the remote ip address from the current request.
+     */
     getRemoteAddress() : string
     {
         return this.shBridge.getRemoteAddress();
@@ -359,6 +569,8 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish to an user channel or channels
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
      * @example
      * publishToUser('paul10','message',{message : 'hello',fromUserId : 'luca34'});
      * publishToUser(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
@@ -366,8 +578,6 @@ class Bag extends SmallBag
      * @param eventName
      * @param data
      * @param srcSocketId
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
-     * If it is null, will be published anonymously.
      */
     async publishToUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketId ?: string | null) : Promise<void>
     {
@@ -379,6 +589,8 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish to an user channel or channels
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
      * @example
      * pubUser('paul10','message',{message : 'hello',fromUserId : 'luca34'});
      * pubUser(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
@@ -386,8 +598,6 @@ class Bag extends SmallBag
      * @param eventName
      * @param data
      * @param srcSocketId
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
-     * If it is null, will be published anonymously.
      */
     async pubUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketId ?: string | null) : Promise<void>
     {
@@ -399,13 +609,13 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish to all channel
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
      * @example
      * publishToAll('message',{message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketId
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
-     * If it is null, will be published anonymously.
      */
     async publishToAll(eventName : string,data : object = {},srcSocketId ?: string | null) : Promise<void>
     {
@@ -417,13 +627,13 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish to all channel
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
      * @example
      * pubAll('message',{message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketId
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
-     * If it is null, will be published anonymously.
      */
     async pubAll(eventName : string,data : object = {},srcSocketId ?: string | null) : Promise<void>
     {
@@ -435,14 +645,15 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish to auth user group or groups
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
+     * @example
      * publishToAuthUserGroup('admin','userRegistered',{userId : '1'});
      * publishToAuthUserGroup(['admin','superAdmin'],'userRegistered',{userId : '1'});
      * @param authUserGroup or an array of auth user groups
      * @param eventName
      * @param data
      * @param srcSocketId
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
-     * If it is null, will be published anonymously.
      */
     async publishToAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
     {
@@ -454,6 +665,8 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish to auth user group or groups
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
      * @example
      * pubAuthUserGroup('admin','userRegistered',{userId : '1'});
      * pubAuthUserGroup(['admin','superAdmin'],'userRegistered',{userId : '1'});
@@ -461,8 +674,6 @@ class Bag extends SmallBag
      * @param eventName
      * @param data
      * @param srcSocketId
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
-     * If it is null, will be published anonymously.
      */
     async pubAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
     {
@@ -474,13 +685,13 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish to default user group
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
      * @example
      * publishToDefaultUserGroup('message',{message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketId
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
-     * If it is null, will be published anonymously.
      */
     async publishToDefaultUserGroup(eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
     {
@@ -492,13 +703,13 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish to default user group
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
      * @example
      * pubDefaultUserGroup('message',{message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketId
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
-     * If it is null, will be published anonymously.
      */
     async pubDefaultUserGroup(eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
     {
@@ -510,13 +721,13 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish in all auth user groups
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
      * @example
      * publishToAllAuthUserGroups('message',{fromUserId : '1',message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketId
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
-     * If it is null, will be published anonymously.
      */
     async publishToAllAuthUserGroups(eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
     {
@@ -528,13 +739,13 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish in all auth user groups
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
      * @example
      * pubAllAuthUserGroups('message',{fromUserId : '1',message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketId
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
-     * If it is null, will be published anonymously.
      */
     async pubAllAuthUserGroups(eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
     {
@@ -546,6 +757,8 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish in an custom id Channel
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
      * @example
      * publishToCustomIdChannel('imageChannel','image2','like',{fromUserId : '1'});
      * @param channel
@@ -553,8 +766,6 @@ class Bag extends SmallBag
      * @param eventName
      * @param data
      * @param srcSocketId
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
-     * If it is null, will be published anonymously.
      */
     async publishToCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
     {
@@ -566,6 +777,8 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish in an custom id Channel
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
      * @example
      * pubCustomIdChannel('imageChannel','image2','like',{fromUserId : '1'});
      * @param channel
@@ -573,8 +786,6 @@ class Bag extends SmallBag
      * @param eventName
      * @param data
      * @param srcSocketId
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
-     * If it is null, will be published anonymously.
      */
     async pubCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
     {
@@ -586,6 +797,8 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish in an custom channel
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
      * @example
      * publishToCustomChannel('messageChannel','message',{message : 'hello',fromUserId : '1'});
      * publishToCustomChannel(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
@@ -593,8 +806,6 @@ class Bag extends SmallBag
      * @param eventName
      * @param data
      * @param srcSocketId
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
-     * If it is null, will be published anonymously.
      */
     async publishToCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
     {
@@ -606,6 +817,8 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish in an custom channel or channels
+     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If it is null, will be published anonymously.
      * @example
      * pubCustomChannel('messageChannel','message',{message : 'hello',fromUserId : '1'});
      * pubCustomChannel(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
@@ -613,8 +826,6 @@ class Bag extends SmallBag
      * @param eventName
      * @param data
      * @param srcSocketId
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
-     * If it is null, will be published anonymously.
      */
     async pubCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
     {
