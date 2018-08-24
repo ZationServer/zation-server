@@ -30,6 +30,7 @@ class ZationStarter
     private brokerIds : any;
     private master : any;
 
+    private serverIsReady : boolean;
     private clusterStateServerHost : any;
 
     private stateServerActive : boolean;
@@ -104,6 +105,7 @@ class ZationStarter
 
         this.clusterStateServerHost = process.env.SCC_STATE_SERVER_HOST || process.env.STATE_SERVER_HOST
             || process.env.ZATION_STATE_SERVER_HOST || this.zc.getMainOrNull(Const.Main.KEYS.STATE_SERVER_HOST);
+        this.serverIsReady = !this.clusterStateServerHost;
 
         Logger.startStopWatch();
         this.startSocketCluster();
@@ -153,6 +155,7 @@ class ZationStarter
             zationConfigWorkerTransport : this.zc.getWorkerTransport(),
             zationServerVersion : ZationStarter.version,
             zationServerStartedTimeStamp : this.serverStartedTimeStamp,
+            zationServerIsReady : this.serverIsReady,
             logLevel : scLogLevel,
             clusterAuthKey : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_AUTH_KEY),
             clusterStateServerHost : this.clusterStateServerHost,
@@ -347,6 +350,7 @@ class ZationStarter
                 connected = true;
                 try {
                     await this.syncData(stateSocket);
+                    await this.activateServerIsReady();
                 }
                 catch (e) {
                     reject(e);
@@ -367,6 +371,13 @@ class ZationStarter
                 }
             },5000);
         });
+    }
+
+    private async activateServerIsReady()
+    {
+
+
+
     }
 
     private async syncData(stateSocket : any)

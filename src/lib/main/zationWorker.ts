@@ -536,17 +536,16 @@ class ZationWorker extends SCWorker
                 {
                     // noinspection JSUnresolvedVariable
                     let token = req.authToken;
-                    this.getTempDbUp().isTokenUnblocked(token[Const.Settings.CLIENT.TOKEN_ID]).then((valid) =>
+                    this.getTSWClient().isTokenUnblocked(token[Const.Settings.CLIENT.TOKEN_ID])
+                        .then((valid) =>
                     {
-                        if(!valid)
-                        {
+                        if(!valid) {
                             req.socket.emit('zationBadAuthToken',{});
                             req.socket.deauthenticate();
                             let err = new Error('Token is blocked');
                             next(err,true);
                         }
-                        else
-                        {
+                        else {
                             next();
                         }
                     }

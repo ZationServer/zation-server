@@ -83,7 +83,7 @@ class TOKEN
     static readonly TOKEN_ID                    = 'zationTokenId';
     static readonly PANEL_ACCESS                = 'zationPanelAccess';
     static readonly EXPIRE                      = 'exp';
-    static readonly SECRET_KEY                  = 'secretKey';
+    static readonly CHECK_KEY                   = 'zationCheckKey';
     static readonly CUSTOM_VARIABLES            = 'zationCustomVariables';
 }
 

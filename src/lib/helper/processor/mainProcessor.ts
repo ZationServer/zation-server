@@ -63,13 +63,12 @@ class MainProcessor
                 ControllerTools.needToCheckExtraSecure(controllerConfig) &&
                 zc.isExtraSecureAuth())
             {
-                let tokenInfoStorage = worker.getTempDbUp();
-                let token = shBridge.getTokenBridge().getToken();
+                const tsw = worker.getTSWClient();
+                const token = shBridge.getTokenBridge().getToken();
 
-                let valid = await tokenInfoStorage.isTokenUnblocked(token[Const.Settings.CLIENT.TOKEN_ID]);
+                const valid = await tsw.isTokenUnblocked(token[Const.Settings.CLIENT.TOKEN_ID]);
 
-                if(!valid)
-                {
+                if(!valid) {
                     throw new TaskError(MainErrors.tokenIsBlocked,{token : token});
                 }
             }
