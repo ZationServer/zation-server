@@ -10,11 +10,12 @@ type CommitFunction = (object : object) => Promise<void>;
 
 class ObjectPathSequence
 {
-    private readonly object : object;
+    private object : object;
     private readonly commitFunction : CommitFunction;
 
     constructor(object : object, commitFunc : CommitFunction) {
         this.object = object;
+        this.commitFunction = commitFunc;
     }
 
     set(path : string | string[],value : any) : ObjectPathSequence {
@@ -22,20 +23,19 @@ class ObjectPathSequence
         return this;
     }
 
-    delete(path : string | string[]) : ObjectPathSequence {
-        ObjectPath.del(this.object,path);
+    delete(path ?: string | string[]) : ObjectPathSequence {
+        if(!!path) {
+            ObjectPath.del(this.object,path);
+        }
+        else {
+            this.object = {};
+        }
         return this;
     }
 
     async commit() {
         await this.commitFunction(this.object);
     }
-
-
-
-
-
-
 }
 
 export = ObjectPathSequence;

@@ -4,6 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+import TSWClient = require("../helper/tempStorage/tswClient");
+
 require('cache-require-paths');
 import FuncTools             = require("../helper/tools/funcTools");
 const  SCWorker : any        = require('socketcluster/scworker');
@@ -182,7 +184,7 @@ class ZationWorker extends SCWorker
             this.initSocketEvents(socket);
 
             //init socket variables
-            socket.zationSocketVariables = {};
+            socket[Const.Settings.SOCKET.VARIABLES] = {};
 
             await this.zc.emitEvent(Const.Event.SC_SERVER_CONNECTION,this.getPreparedSmallBag(),socket,conSate);
 
@@ -916,6 +918,11 @@ class ZationWorker extends SCWorker
     {
         return this.serverStartedTimeStamp;
     }
+
+    getTSWClient() : TSWClient {
+
+    }
+
 
     getWorkerId() : number
     {

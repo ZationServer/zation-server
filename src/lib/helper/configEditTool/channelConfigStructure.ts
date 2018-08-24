@@ -5,15 +5,13 @@ GitHub: LucaCode
  */
 import Const                         = require('./../constants/constWrapper');
 import SmallBag                      = require("../../api/SmallBag");
-import ChInfo                        = require("../infoObjects/chInfo");
-
-export type GetTokenVarFunction = (key : string) => any;
+import ChInfo                        = require("../infoObjects/chAccessInfo");
 
 export type ChannelAccessFunction =
-    (smallBag : SmallBag, info : ChInfo, getTokenVar : GetTokenVarFunction) => Promise<boolean> | boolean;
+    (smallBag : SmallBag, info : ChInfo) => Promise<boolean> | boolean;
 
 export type ChannelEventFunction =
-    (smallBag : SmallBag, info : ChInfo, getTokenVar : GetTokenVarFunction) => Promise<void> | void;
+    (smallBag : SmallBag, info : ChInfo) => Promise<void> | void;
 
 export interface ChannelConfig
 {

@@ -135,7 +135,7 @@ class Bag extends SmallBag
     setSocketVariable(path : string | string[],value : any) : void
     {
         if(this.shBridge.isWebSocket()) {
-            ObjectPath.set(this.shBridge.getSocket().zationSocketVariables,path,value);
+            ObjectPath.set(this.shBridge.getSocket()[Const.Settings.SOCKET.VARIABLES],path,value);
         }
         else {
             throw new MethodIsNotCompatible(this.getProtocol(),'ws');
@@ -155,7 +155,7 @@ class Bag extends SmallBag
     hasSocketVariable(path ?: string | string[]) : boolean
     {
         if(this.shBridge.isWebSocket()) {
-            return ObjectPath.has(this.shBridge.getSocket().zationSocketVariables,path);
+            return ObjectPath.has(this.shBridge.getSocket()[Const.Settings.SOCKET.VARIABLES],path);
         }
         else {
             throw new MethodIsNotCompatible(this.getProtocol(),'ws');
@@ -175,7 +175,7 @@ class Bag extends SmallBag
     getSocketVariable(path ?: string | string[]) : any
     {
         if(this.shBridge.isWebSocket()) {
-            return ObjectPath.get(this.shBridge.getSocket().zationSocketVariables,path);
+            return ObjectPath.get(this.shBridge.getSocket()[Const.Settings.SOCKET.VARIABLES],path);
         }
         else {
             throw new MethodIsNotCompatible(this.getProtocol(),'ws');
@@ -196,10 +196,10 @@ class Bag extends SmallBag
     {
         if(this.shBridge.isWebSocket()) {
             if(!!path) {
-                ObjectPath.del(this.bagVariables,path);
+                ObjectPath.del(this.shBridge.getSocket()[Const.Settings.SOCKET.VARIABLES],path);
             }
             else {
-                this.shBridge.getSocket().zationSocketVariables = {};
+                this.shBridge.getSocket()[Const.Settings.SOCKET.VARIABLES] = {};
             }
         }
         else {
@@ -214,8 +214,7 @@ class Bag extends SmallBag
      * @description
      * Returns if current socket is authenticated
      */
-    isAuth() : boolean
-    {
+    isAuth() : boolean {
         return this.authEngine.isAuth();
     }
 
@@ -225,8 +224,7 @@ class Bag extends SmallBag
      * Returns the authentication user group of current socket.
      * If the socket is not authenticated, it will return undefined.
      */
-    getAuthUserGroup() : string | undefined
-    {
+    getAuthUserGroup() : string | undefined {
         return this.authEngine.getAuthUserGroup();
     }
 
@@ -236,8 +234,7 @@ class Bag extends SmallBag
      * Returns the user group of current socket.
      * The user group can be the default group or one of the auth groups
      */
-    getUserGroup() : string | undefined
-    {
+    getUserGroup() : string | undefined {
         return this.authEngine.getUserGroup();
     }
 
@@ -245,16 +242,28 @@ class Bag extends SmallBag
     /**
      * @description
      * Authenticate an socket.
-     * The method return true if the authentication is success.
+     * This method will throw errors if the process fails
      * @example
-     * await authTo('user','tom12',{email : 'example@gmail.com'});
-     * @param userGroup
+     * await authenticate('user','tom12',{email : 'example@gmail.com'});
+     * @param authUserGroup The authUserGroup must exist in the app.config. Otherwise an error will be thrown.
      * @param userId
-     * @param clientData
+     * @param tokenCustomVar If this parameter is used all previous variables will be deleted.
+     * @throws AuthenticationError
      */
-    async authTo(userGroup : string,userId ?: string | number,clientData : object= {}) : Promise<void>
-    {
-        await this.authEngine.authTo(userGroup,userId,clientData);
+    async authenticate(authUserGroup : string,userId ?: string | number,tokenCustomVar ?: object) : Promise<void> {
+        await this.authEngine.authenticate(authUserGroup,userId,tokenCustomVar);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Deauthenticate current socket.
+     * The token will be rendered useless.
+     * @example
+     * await deauthenticate();
+     */
+    async deauthenticate() : Promise<void> {
+        await this.authEngine.deauthenticate();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -265,9 +274,9 @@ class Bag extends SmallBag
      * @example
      * await setUserId('luca23');
      * @param id
+     * @throws AuthenticationError
      */
-    async setUserId(id : string | number) : Promise<void>
-    {
+    async setUserId(id : string | number) : Promise<void> {
         await this.authEngine.setUserId(id);
     }
 
@@ -276,27 +285,12 @@ class Bag extends SmallBag
      * @description
      * Returns the user id of the current socket.
      */
-    getUserId() : number | string | undefined
-    {
+    getUserId() : number | string | undefined {
         return this.authEngine.getUserId();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Deauthenticate current socket.
-     * The token will be rendered useless.
-     * @example
-     * await authOut();
-     */
-    async authOut() : Promise<void>
-    {
-        await this.authEngine.authOut();
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    getAuthEngine() : AuthEngine
-    {
+    getAuthEngine() : AuthEngine {
         return this.authEngine;
     }
 
@@ -305,14 +299,12 @@ class Bag extends SmallBag
      * @description
      * Returns true if the current socket is not authenticated (default user group).
      */
-    isDefault() : boolean
-    {
+    isDefault() : boolean {
         return this.authEngine.isDefault();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    isUseAuth() : boolean
-    {
+    isUseAuth() : boolean {
         return this.authEngine.isUseAuth();
     }
 
@@ -389,26 +381,88 @@ class Bag extends SmallBag
     }
 
     //Part Token Variable
-
     // noinspection JSUnusedGlobalSymbols
-    async setTokenVariable(key : string,value : any) : Promise<boolean>
-    {
-        return await this.tokenEngine.setTokenVariable({key : value},false);
+    /**
+     * @description
+     * Set a custom token variable with object path
+     * You can access this variables on client and server side
+     * @example
+     * await setCustomTokenVar('person.email','example@gmail.com');
+     * @param path
+     * @param value
+     */
+    async setCustomTokenVar(path : string | string[],value : any) : Promise<void> {
+        const ctv = this.tokenEngine.getCustomTokenVar();
+        ObjectPath.set(ctv,path,value);
+        await this.tokenEngine.setCustomTokenVar(ctv);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getTokenVariable(key : string) : any
-    {
-        return this.tokenEngine.getTokenVariable(key);
+    /**
+     * @description
+     * Delete a custom token variable with object path
+     * You can access this variables on client and server side
+     * @example
+     * await deleteCustomTokenVar('person.email');
+     * @param path
+     */
+    async deleteCustomTokenVar(path ?: string | string[]) : Promise<void> {
+        if(!!path) {
+            const ctv = this.tokenEngine.getCustomTokenVar();
+            ObjectPath.del(ctv,path);
+            await this.tokenEngine.setCustomTokenVar(ctv);
+        }
+        else {
+            await this.tokenEngine.setCustomTokenVar({});
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols
-    seqEditTokenVariable() : ObjectPathSequence
+    /**
+     * @description
+     * Sequence edit the custom token variables
+     * Useful if you want to make several changes.
+     * This will do everything in one and saves performance.
+     * You can access this variables on client and server side
+     * @example
+     * await seqEditCustomTokenVar()
+     *       .delete('person.lastName')
+     *       .set('person.name','Luca')
+     *       .set('person.email','example@gmail.com')
+     *       .commit();
+     */
+    seqEditCustomTokenVar() : ObjectPathSequence
     {
-        return new ObjectPathSequence(,()=>
-        {
-
+        return new ObjectPathSequence(this.tokenEngine.getCustomTokenVar(),
+            async (obj)=> {
+            await  this.tokenEngine.setCustomTokenVar(obj);
         });
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Has a custom token variable with object path
+     * You can access this variables on client and server side
+     * @example
+     * hasCustomTokenVar('person.email');
+     * @param path
+     */
+    hasCustomTokenVar(path ?: string | string[]) : boolean {
+        return ObjectPath.has(this.tokenEngine.getCustomTokenVar(),path);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Get a custom token variable with object path
+     * You can access this variables on client and server side
+     * @example
+     * getCustomTokenVar('person.email');
+     * @param path
+     */
+    getCustomTokenVar(path ?: string | string[]) : any {
+        return ObjectPath.get(this.tokenEngine.getCustomTokenVar(),path);
     }
 
     //Part Token

@@ -115,12 +115,10 @@ class TokenTools
         // noinspection JSUnresolvedFunction
         let token = socket.getAuthToken();
 
-        if(token !== undefined)
-        {
+        if(token !== undefined) {
             return token[key];
         }
-        else
-        {
+        else {
             return undefined;
         }
     }
@@ -155,25 +153,19 @@ class TokenTools
         {
             let algorithm = zc.getMain(Const.Main.KEYS.AUTH_ALGORITHM);
 
-            Jwt.verify(token,zc.getVerifyKey(),{algorithm : algorithm},(err,decoded) =>
-            {
-                if(err)
-                {
-                    if(err.name === 'TokenExpiredError')
-                    {
+            Jwt.verify(token,zc.getVerifyKey(),{algorithm : algorithm},(err,decoded) => {
+                if(err) {
+                    if(err.name === 'TokenExpiredError') {
                         reject(new TaskError(MainErrors.tokenExpiredError,{expiredAt : err.expiredAt}));
                     }
-                    else if(err.name === 'JsonWebTokenError')
-                    {
+                    else if(err.name === 'JsonWebTokenError') {
                         reject(new TaskError(MainErrors.jsonWebTokenError,err));
                     }
-                    else
-                    {
+                    else {
                         reject(new TaskError(MainErrors.unknownTokenVerifyError,err));
                     }
                 }
-                else
-                {
+                else {
                     resolve(decoded);
                 }
             });
@@ -187,19 +179,15 @@ class TokenTools
             let options = {};
             options['algorithm'] = zc.getMain(Const.Main.KEYS.AUTH_ALGORITHM);
 
-            if(data['exp'] === undefined)
-            {
+            if(data['exp'] === undefined) {
                 options['expiresIn'] = zc.getMain(Const.Main.KEYS.AUTH_DEFAULT_EXPIRY);
             }
 
-            Jwt.verify(data,zc.getSignKey(),options,(err,signedToken) =>
-            {
-                if(err)
-                {
+            Jwt.sign(data,zc.getSignKey(),options,(err,signedToken) => {
+                if(err) {
                     reject(new TaskError(MainErrors.unknownTokenSignError,err));
                 }
-                else
-                {
+                else {
                     resolve(signedToken);
                 }
             });

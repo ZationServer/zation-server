@@ -42,7 +42,7 @@ class RESPONSE_ERROR
 
 class ZATION_HTTP_INFO
 {
-    static readonly AUTH_OUT                     = 'authOut';
+    static readonly DEAUTHENTICATE               = 'deauthenticate';
 }
 
 class RESPONSE
@@ -76,15 +76,21 @@ class VALIDATION_REQUEST_INPUT
     static readonly INPUT_VALUE       = 'v';
 }
 
-class CLIENT
+class TOKEN
 {
     static readonly AUTH_USER_GROUP             = 'zationAuthUserGroup';
     static readonly USER_ID                     = 'zationUserId';
     static readonly TOKEN_ID                    = 'zationTokenId';
     static readonly PANEL_ACCESS                = 'zationPanelAccess';
     static readonly EXPIRE                      = 'exp';
+    static readonly SECRET_KEY                  = 'secretKey';
+    static readonly CUSTOM_VARIABLES            = 'zationCustomVariables';
 }
 
+class SOCKET
+{
+    static readonly VARIABLES            = 'zationSocketVariables';
+}
 
 class CHANNEL
 {
@@ -109,7 +115,7 @@ class CHANNEL
 
 class SOCKET_EMIT_EVENTS
 {
-    static readonly AUTH_OUT              = 'ZATION.AUTH_OUT';
+    static readonly DEAUTHENTICATE        = 'ZATION.DEAUTHENTICATE';
     static readonly RE_AUTH               = 'ZATION.RE_AUTH';
 }
 
@@ -159,7 +165,7 @@ class Settings
     static readonly ERROR = ERROR;
     static readonly REQUEST_INPUT = REQUEST_INPUT;
     static readonly VALIDATION_REQUEST_INPUT = VALIDATION_REQUEST_INPUT;
-    static readonly CLIENT = CLIENT;
+    static readonly CLIENT = TOKEN;
     static readonly CHANNEL = CHANNEL;
     static readonly USER_CHANNEL = SOCKET_EMIT_EVENTS;
     static readonly DEFAULT_USER_GROUP = DEFAULT_USER_GROUP;
@@ -169,6 +175,7 @@ class Settings
     static readonly RESPONSE = RESPONSE;
     static readonly ZATION_HTTP_INFO = ZATION_HTTP_INFO;
     static readonly REQ_IN_C = REQ_IN_C;
+    static readonly SOCKET = SOCKET;
 }
 
 export = Settings;

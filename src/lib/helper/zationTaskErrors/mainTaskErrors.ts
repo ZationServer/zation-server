@@ -88,6 +88,16 @@ export = {
         isFromZationSystem : true
     },
 
+    authenticationError  : {
+        name          : 'authenticationError',
+        description   : 'Authenticate error by trying to authenticate an socket.',
+        type          : ErrorType.SYSTEM_ERROR,
+        sendInfo      : false,
+        //INFO
+        // reason
+        isFromZationSystem : true
+    },
+
     versionToOld    : {
         name          : 'versionToOld',
         description   : 'Version is to old',
@@ -255,15 +265,6 @@ export = {
         //INFO
         // protocol   (The protocol you request with)
         // controller (The controller you request)
-        isFromZationSystem : true
-    },
-
-    cantSetUndefinedId : {
-        name          : 'cantSetUndefinedId',
-        description   : 'cant set undefined id!',
-        type          : ErrorType.SYSTEM_ERROR,
-        sendInfo      : true,
-        //INFO
         isFromZationSystem : true
     },
 

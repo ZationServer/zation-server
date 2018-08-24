@@ -13,9 +13,9 @@ import crypto            = require('crypto');
 import ZationInfoObj     = require("../helper/infoObjects/zationInfo");
 import Structures        = require('./../helper/config/structures');
 import FuncTools         = require("../helper/tools/funcTools");
-import {ErrorConstruct} from "../helper/configEditTool/errorConfigStructure";
-import ErrorNotFound      = require("../helper/error/errorNotFoundError");
-import SmallBag           = require("../api/SmallBag");
+import {ErrorConstruct}    from "../helper/configEditTool/errorConfigStructure";
+import ErrorNotFound     = require("../helper/error/errorNotFoundError");
+import SmallBag          = require("../api/SmallBag");
 
 class ZationConfig
 {

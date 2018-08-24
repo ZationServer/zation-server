@@ -7,7 +7,7 @@ GitHub: LucaCode
 import ZationConfig = require("../../main/zationConfig");
 import Const        = require('./../constants/constWrapper');
 
-class ZationToken
+class ZationInfo
 {
     private readonly _port : number;
     private readonly _appName : string;
@@ -45,4 +45,4 @@ class ZationToken
     }
 }
 
-export = ZationToken;
+export = ZationInfo;

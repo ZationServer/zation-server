@@ -65,7 +65,7 @@ class SHBridge
         this.getTokenBridge().deauthenticate();
         if(!this.isWebSocket())
         {
-            this.httpRes['zationInfo'].push(Const.Settings.ZATION_HTTP_INFO.AUTH_OUT);
+            this.httpRes['zationInfo'].push(Const.Settings.ZATION_HTTP_INFO.DEAUTHENTICATE);
         }
     }
 

@@ -10,8 +10,9 @@ import AEPreparedPart = require('./aePreparedPart');
 import SHBridge       = require("../bridges/shBridge");
 import TokenEngine    = require("../token/tokenEngine");
 import MainErrors     = require("../zationTaskErrors/mainTaskErrors");
-import ZationToken = require("../infoObjects/zationInfo");
+import ZationToken    = require("../infoObjects/zationToken");
 import {ChAccessEngine} from "../channel/chAccessEngine";
+import AuthenticationError = require("../error/authenticationError");
 
 class AuthEngine
 {
@@ -36,10 +37,10 @@ class AuthEngine
 
     async init() : Promise<void>
     {
-        await this._processGroupAndId();
+        await this.processGroupAndId();
     }
 
-    async _processGroupAndId(): Promise<void>
+    private async processGroupAndId(): Promise<void>
     {
         if(this.aePreparedPart.isUseAuth())
         {
@@ -60,7 +61,7 @@ class AuthEngine
                     {
                         //saved authGroup is in Server not define
                         //noinspection JSUnresolvedFunction
-                        await this.authOut();
+                        await this.deauthenticate();
 
                         throw new TaskError(MainErrors.inTokenSavedAuthGroupIsNotFound,
                             {
@@ -72,7 +73,7 @@ class AuthEngine
                 else
                 {
                     //token without auth group!
-                    await this.authOut();
+                    await this.deauthenticate();
                     throw new TaskError(MainErrors.tokenWithoutAuthGroup);
                 }
             }
@@ -129,61 +130,66 @@ class AuthEngine
 
     //PART AUTHENTICATION
 
-    async authTo(authUserGroup : string,userId ?: string | number,clientData : object = {}) : Promise<boolean>
+    async authenticate(authUserGroup : string, userId ?: string | number,tokenCustomVar ?: object) : Promise<void>
     {
-        let suc = false;
-        if(this.checkIsIn(authUserGroup))
-        {
+        if(this.checkIsIn(authUserGroup)) {
+
             let obj = {};
             obj[Const.Settings.CLIENT.AUTH_USER_GROUP] = authUserGroup;
 
             //Id to setBoth in time
-            if(userId !== undefined)
-            {
+            if(userId !== undefined) {
                 obj[Const.Settings.CLIENT.USER_ID] = userId;
             }
 
             //create AuthEngine Token!
-            if(this.shBridge.getTokenBridge().hasToken())
-            {
-                await this.tokenEngine.setTokenVariable(obj,true);
+            let suc = false;
+            if(this.shBridge.getTokenBridge().hasToken()) {
+                suc = await this.tokenEngine.updateTokenVariable(obj);
             }
-            else
-            {
-                await this.tokenEngine.createToken(obj);
+            else {
+                suc = await this.tokenEngine.createToken(obj);
             }
 
-            this.currentDefault = false;
-            this.currentUserId = userId;
-            this.currentUserGroup = authUserGroup;
+            if(suc) {
+                this.currentDefault = false;
+                this.currentUserId = userId;
+                this.currentUserGroup = authUserGroup;
 
-            await this.tokenEngine.setTokenVariable(clientData);
-
-            suc = true;
+                if(!!tokenCustomVar) {
+                    await this.tokenEngine.setCustomTokenVar(tokenCustomVar);
+                }
+            }
+            else {
+                throw new AuthenticationError(`Update or create token is failed!`);
+            }
         }
-        return suc;
+        else {
+            throw new AuthenticationError(`Auth group '${authUserGroup}' is not found in the app.config!`);
+        }
     }
 
-    async setUserId(userId : number | string) : Promise<boolean>
+    async setUserId(userId : number | string) : Promise<void>
     {
-        let suc = false;
-        if(userId !== undefined)
-        {
+        if(this.isAuth()) {
             let obj = {};
             obj[Const.Settings.CLIENT.USER_ID] = userId;
             //is only set if the client has a auth token (than he has also a user group)
-            await this.tokenEngine.setTokenVariable(obj,true);
-            this.currentUserId(userId);
-            suc = true;
+            const suc = await this.tokenEngine.updateTokenVariable(obj);
+
+            if(suc) {
+                this.currentUserId = userId;
+            }
+            else {
+                throw new AuthenticationError(`Update token is failed!`);
+            }
         }
-        else
-        {
-            throw new TaskError(MainErrors.cantSetUndefinedId);
+        else {
+            throw new AuthenticationError(`User ID can not be updated if the socket is unauthenticated!`);
         }
-        return suc;
     }
 
-    async authOut() : Promise <void>
+    async deauthenticate() : Promise <void>
     {
         if(!this.isAuth()) {
             return;
@@ -196,12 +202,11 @@ class AuthEngine
         //deauthenticate socket/send info by http back
         this.shBridge.deauthenticate();
 
-        //block oldToken and disconnect all sockets with Token Id
-        await this.tokenEngine.deauthenticate(this.shBridge.getTokenBridge().getToken());
+        //block token in tempStorage and disconnect all sockets with tokenId
+        await this.tokenEngine.removeToken(this.shBridge.getTokenBridge().getToken());
 
         //check channels from socket
-        if(this.shBridge.isWebSocket())
-        {
+        if(this.shBridge.isWebSocket()) {
             await ChAccessEngine.checkSocketCustomChAccess(this.shBridge.getSocket(),this.aePreparedPart.getWorker());
             ChAccessEngine.checkSocketZationChAccess(this.shBridge.getSocket());
         }
@@ -214,13 +219,11 @@ class AuthEngine
         let hasAccess = false;
         let keyWord = AuthEngine.getAccessKeyWord(controller);
 
-        if(keyWord === '')
-        {
+        if(keyWord === '') {
             Logger.printDebugWarning('No controller access config found! Access will denied!');
             return false;
         }
-        else
-        {
+        else {
             hasAccess = this.hasAccessToThis(keyWord,controller[keyWord]);
         }
         return hasAccess;
@@ -234,12 +237,10 @@ class AuthEngine
 
         //double keyword is checked in the starter checkConfig
         //search One
-        if(notAccess !== undefined && access === undefined)
-        {
+        if(notAccess !== undefined && access === undefined) {
             keyWord = Const.App.CONTROLLER.NOT_ACCESS;
         }
-        else if(notAccess === undefined && access !== undefined)
-        {
+        else if(notAccess === undefined && access !== undefined) {
             keyWord = Const.App.CONTROLLER.ACCESS;
         }
         return keyWord;
@@ -251,20 +252,16 @@ class AuthEngine
 
         if(typeof value === 'string')
         {
-            if(value === Const.App.ACCESS.ALL)
-            {
+            if(value === Const.App.ACCESS.ALL) {
                 access = AuthEngine.accessKeyWordChanger(key,true);
             }
-            else if(value === Const.App.ACCESS.ALL_AUTH)
-            {
+            else if(value === Const.App.ACCESS.ALL_AUTH) {
                 access = AuthEngine.accessKeyWordChanger(key,this.isAuth());
             }
-            else if(value === Const.App.ACCESS.ALL_NOT_AUTH)
-            {
+            else if(value === Const.App.ACCESS.ALL_NOT_AUTH) {
                 access = AuthEngine.accessKeyWordChanger(key,this.isDefault());
             }
-            else if(this.checkIsIn(value))
-            {
+            else if(this.checkIsIn(value)) {
                 //Group!
                 access = AuthEngine.accessKeyWordChanger(key,this.getUserGroup() === value);
             }
@@ -273,25 +270,21 @@ class AuthEngine
         {
             //authGroups
             let imIn = false;
-            for(let i = 0; i < value.length;i++)
-            {
+            for(let i = 0; i < value.length;i++) {
                 if(((typeof value[i] === 'string' || value[i] instanceof String)&&value[i] === this.getUserGroup())
-                || (Number.isInteger(value[i]) && value[i] === this.getUserId()))
-                {
+                || (Number.isInteger(value[i]) && value[i] === this.getUserId())) {
                     imIn = true;
                     break;
                 }
             }
             access = AuthEngine.accessKeyWordChanger(key,imIn);
         }
-        else if(typeof value === 'function')
-        {
+        else if(typeof value === 'function') {
             let token = this.shBridge.getTokenBridge().getToken();
             let smallBag = this.aePreparedPart.getWorker().getPreparedSmallBag();
             access = AuthEngine.accessKeyWordChanger(key,value(smallBag,new ZationToken(token)));
         }
-        else if(Number.isInteger(value))
-        {
+        else if(Number.isInteger(value)) {
             access = AuthEngine.accessKeyWordChanger(key, this.getUserId() === value);
         }
         return access;
@@ -299,8 +292,7 @@ class AuthEngine
 
     private static accessKeyWordChanger(key : string,access : boolean) : boolean
     {
-        if(key === Const.App.CONTROLLER.NOT_ACCESS)
-        {
+        if(key === Const.App.CONTROLLER.NOT_ACCESS) {
             return !access;
         }
         return access;
@@ -311,12 +303,10 @@ class AuthEngine
     hasServerProtocolAccess(controller : object) : boolean
     {
         let hasAccess = true;
-        if(this.shBridge.isWebSocket() && controller[Const.App.CONTROLLER.WS_ACCESS] !== undefined)
-        {
+        if(this.shBridge.isWebSocket() && controller[Const.App.CONTROLLER.WS_ACCESS] !== undefined) {
             hasAccess = controller[Const.App.CONTROLLER.WS_ACCESS];
         }
-        else if(controller[Const.App.CONTROLLER.HTTP_ACCESS] !== undefined)
-        {
+        else if(controller[Const.App.CONTROLLER.HTTP_ACCESS] !== undefined) {
             hasAccess = controller[Const.App.CONTROLLER.HTTP_ACCESS];
         }
         return hasAccess;

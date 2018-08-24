@@ -16,7 +16,7 @@ import ChTools              = require('./chTools');
 import SmallBag             = require("../../api/SmallBag");
 import ZationConfig         = require("../../main/zationConfig");
 import ZationWorker         = require("../../main/zationWorker");
-import ChInfo               = require("../infoObjects/chInfo");
+import ChInfo               = require("../infoObjects/chAccessInfo");
 
 export class ChAccessEngine
 {

@@ -6,7 +6,6 @@ GitHub: LucaCode
 
 import TokenTools     = require('./tokenTools');
 import Const          = require('../constants/constWrapper');
-import ChAccessEngine = require('../channel/chAccessEngine');
 import SHBridge       = require("../bridges/shBridge");
 import ZationWorker   = require("../../main/zationWorker");
 import ZationConfig   = require("../../main/zationConfig");
@@ -26,73 +25,65 @@ class TokenEngine
 
     private generateExpiry() : number
     {
-        let defaultExp = this.zc.getMain(Const.Main.KEYS.AUTH_DEFAULT_EXPIRY);
+        const defaultExp = this.zc.getMain(Const.Main.KEYS.AUTH_DEFAULT_EXPIRY);
         return Math.floor(Date.now() / 1000) +  defaultExp;
     }
 
     //to create a new Token
     async createToken(data : object) : Promise<boolean>
     {
-        /*
-        if(this.zc.isUseTokenInfoTempDb())
-        {
-            let expiry = this.generateExpiry();
-            let remoteAddress = this.shBridge.getPublicRemoteAddress();
-            let tempDbUp = this.worker.getTempDbUp();
+        const tswClient = this.worker.getTSWClient();
 
-            let userId = data[Const.Settings.CLIENT.USER_ID];
-            let authUserGroup = data[Const.Settings.CLIENT.AUTH_USER_GROUP];
+        const expiry = this.generateExpiry();
+        const remoteAddress = this.shBridge.getPublicRemoteAddress();
+        const userId = data[Const.Settings.CLIENT.USER_ID];
+        const authUserGroup = data[Const.Settings.CLIENT.AUTH_USER_GROUP];
 
-            let tokenId = await tempDbUp.createTokenInfo(expiry,remoteAddress,authUserGroup,userId);
+        const tokenId = await tswClient.saveTokenInfo(expiry,remoteAddress,authUserGroup,userId);
 
-            data[Const.Settings.CLIENT.EXPIRE] = expiry;
-            data[Const.Settings.CLIENT.TOKEN_ID] = tokenId;
-        }
-        */
+        data[Const.Settings.CLIENT.EXPIRE] = expiry;
+        data[Const.Settings.CLIENT.TOKEN_ID] = tokenId;
 
         return TokenTools.createNewToken(data,this.shBridge.getTokenBridge(),this.worker);
     }
 
-    //For update the token
-    async setTokenVariable(data : object,zationAllow : boolean = false) : Promise<boolean>
+    async removeToken(token : object) : Promise<void>
     {
-        if(zationAllow)
+        if(!!token && !!token[Const.Settings.CLIENT.TOKEN_ID])
         {
-            return await TokenTools.setZationData(data,this.shBridge.getTokenBridge(),this,this.worker);
+            const tokenId = token[Const.Settings.CLIENT.TOKEN_ID];
+
+            //block oldToken in tempStorage
+            if(this.zc.isExtraSecureAuth()) {
+                await this.worker
+                    .getTSWClient()
+                    .blockTokenId(tokenId);
+            }
+
+            //disconnect all sockets with tokenId
+            await this.worker
+                .getPreparedSmallBag()
+                .disconnectToken(tokenId);
         }
-        else
-        {
-            return await TokenTools.setTokenVariable(data,this.shBridge.getTokenBridge(),this.worker);
-        }
+    }
+
+    async updateTokenVariable(data : object) : Promise<boolean>
+    {
+        return true;
     }
 
     //getATokenVariable
-    getTokenVariable(key : any) : any
-    {
+    getTokenVariable(key : any) : any {
         return TokenTools.getTokenVariable(key,this.shBridge.getTokenBridge());
     }
 
-    async deauthenticate(token : object) : Promise<void>
-    {
-        //blockToken
-        if(this.zc.isExtraSecureAuth())
-        {
-            let tokenId = token[Const.Settings.CLIENT.TOKEN_ID];
-            await this.worker.getTempDbUp().blockTokenId(tokenId);
-        }
-
-        //disconnect all sockets with tokenId
-        if(!!token && !!token[Const.Settings.CLIENT.TOKEN_ID])
-        {
-            this.worker
-                .getPreparedSmallBag()
-                .disconnectToken(token[Const.Settings.CLIENT.TOKEN_ID]);
-        }
+    getCustomTokenVar() : object {
+        return this.getTokenVariable(Const.Settings.CLIENT.CUSTOM_VARIABLES);
     }
 
-    getWorker() : ZationWorker
+    async setCustomTokenVar(data : object) : Promise<void>
     {
-        return this.worker;
+
     }
 }
 

@@ -10,7 +10,7 @@ class ZationSC_LogOut extends Controller
 {
     async handle(bag)
     {
-        await bag.authOut();
+        await bag.deauthenticate();
     }
 }
 
