@@ -4,20 +4,14 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationWorker              = require("../../main/zationWorker");
-import ZationConfig              = require("../../main/zationConfig");
-
 //TempStorageWorkerClient
 abstract class TSWClient
 {
-    abstract readonly worker : ZationWorker;
-    abstract readonly zc : ZationConfig;
-
     async abstract init() : Promise<void>;
-    async abstract saveTokenInfo(expire,remoteAddress,authUserGroup,userId) : Promise<string>;
+    async abstract saveTokenInfo(expire : number,remoteAddress : string,authUserGroup : string,userId : number | string | undefined) : Promise<string>;
     async abstract updateTokenInfo(token : object) : Promise<any>;
     async abstract isTokenUnblocked(tokenId : any) : Promise<boolean>;
-    async abstract blockTokenId(tokenId : any) : Promise<any>;
+    async abstract blockTokenId(tokenId : any) : Promise<void>;
 }
 
 export = TSWClient;

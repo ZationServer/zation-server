@@ -1,0 +1,28 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+const  encrypter         = require("object-encrypter");
+
+class Encoder
+{
+    private engine : any;
+
+    constructor(secretKey : string)
+    {
+        this.engine = encrypter(secretKey);
+    }
+
+    encrypt(obj : object) : string
+    {
+        return this.engine.encrypt(obj);
+    }
+
+    decrypt(code : string) : object
+    {
+        return this.engine.decrypt(code);
+    }
+}
+
+export = Encoder;

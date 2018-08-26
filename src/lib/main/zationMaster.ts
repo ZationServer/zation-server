@@ -3,7 +3,8 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-                               require('cache-require-paths');
+
+require('cache-require-paths');
 import BackgroundTaskSender  = require("../helper/background/backgroundTasksSender");
 const  SocketCluster : any   = require('socketcluster');
 import Const                 = require('../helper/constants/constWrapper');
@@ -16,12 +17,11 @@ import TimeTools             = require('../helper/tools/timeTools');
 import PrepareClientJs       = require('../helper/client/prepareClientJs');
 import BackgroundTasksSetter = require("../helper/background/backgroundTasksSetter");
 const  isWindows             = require('is-windows');
-const  ScClient : any        = require('socketcluster-client');
+import StateServerEngine     = require("../helper/cluster/stateServerEngine");
 
-
-class ZationStarter
+class ZationMaster
 {
-    private static instance : ZationStarter | null = null;
+    private static instance : ZationMaster | null = null;
     private static readonly version : string = '0.2.9';
 
     private readonly serverStartedTimeStamp : number;
@@ -30,22 +30,20 @@ class ZationStarter
     private brokerIds : any;
     private master : any;
 
+    //cluster
     private serverIsReady : boolean;
     private clusterStateServerHost : any;
-
     private stateServerActive : boolean;
+    private stateServerEngine : StateServerEngine;
 
     constructor(options)
     {
-        if(ZationStarter.instance === null)
+        if(ZationMaster.instance === null)
         {
-            ZationStarter.instance = this;
+            ZationMaster.instance = this;
 
             this.serverStartedTimeStamp = Date.now();
             this.zc = new ZationConfig(options);
-
-            //Cluster
-
 
             //setLogger
             Logger.setZationConfig(this.zc);
@@ -103,9 +101,19 @@ class ZationStarter
         PrepareClientJs.createServerSettingsFile(this.zc);
         Logger.printStartDebugInfo('Master builds the server settings file.',true);
 
-        this.clusterStateServerHost = process.env.SCC_STATE_SERVER_HOST || process.env.STATE_SERVER_HOST
-            || process.env.ZATION_STATE_SERVER_HOST || this.zc.getMainOrNull(Const.Main.KEYS.STATE_SERVER_HOST);
-        this.serverIsReady = !this.clusterStateServerHost;
+        await this.checkClusterMode();
+        if(this.stateServerActive)
+        {
+            //cluster active
+            this.stateServerEngine = new StateServerEngine(this.zc,this);
+
+            try {
+                await this.stateServerEngine.connectToStateServer();
+            }
+            catch (e) {
+                this.crashServer(e);
+            }
+        }
 
         Logger.startStopWatch();
         this.startSocketCluster();
@@ -153,7 +161,7 @@ class ZationStarter
             authPrivateKey: this.zc.getMain(Const.Main.KEYS.AUTH_PRIVATE_KEY),
             authDefaultExpiry: this.zc.getMain(Const.Main.KEYS.AUTH_DEFAULT_EXPIRY),
             zationConfigWorkerTransport : this.zc.getWorkerTransport(),
-            zationServerVersion : ZationStarter.version,
+            zationServerVersion : ZationMaster.version,
             zationServerStartedTimeStamp : this.serverStartedTimeStamp,
             zationServerIsReady : this.serverIsReady,
             logLevel : scLogLevel,
@@ -207,21 +215,10 @@ class ZationStarter
         // noinspection JSUnresolvedFunction
         this.master.on('ready',async () =>
         {
-           this.stateServerActive =  !!this.master.options.clusterStateServerHost;
-
            if(!this.stateServerActive) {
                Logger.startStopWatch();
                this.startBackgroundTasks();
                Logger.printStartDebugInfo('Master init the background tasks.',true);
-           }
-           else
-           {
-               try {
-                   await this.connectToStateServer();
-               }
-               catch (e) {
-                   this.crashServer(e);
-               }
            }
 
            this.printStartedInformation();
@@ -280,7 +277,7 @@ class ZationStarter
         const server   = `${protocol}://${hostName}:${port}${path}`;
 
         Logger.log('\x1b[32m%s\x1b[0m', '   [ACTIVE]','Zation started');
-        Logger.log(`            Version: ${ZationStarter.version}`);
+        Logger.log(`            Version: ${ZationMaster.version}`);
         Logger.log(`            Your app: ${this.zc.getMain(Const.Main.KEYS.APP_NAME)}`);
         Logger.log(`            Hostname: ${hostName}`);
         Logger.log(`            Port: ${port}`);
@@ -305,71 +302,37 @@ class ZationStarter
 
     //PART Scaling
 
-    private async connectToStateServer()
+    private async checkClusterMode()
     {
-        //connect to state server
-        const DEFAULT_PORT = 7777;
-        const DEFAULT_RETRY_DELAY = 2000;
-        const DEFAULT_STATE_SERVER_CONNECT_TIMEOUT = 3000;
-        const DEFAULT_STATE_SERVER_ACK_TIMEOUT = 2000;
-        const DEFAULT_RECONNECT_RANDOMNESS = 1000;
-        const retryDelay = this.master.options.brokerRetryDelay || DEFAULT_RETRY_DELAY;
-        const reconnectRandomness = this.master.stateServerReconnectRandomness || DEFAULT_RECONNECT_RANDOMNESS;
-        const authKey = this.master.options.clusterAuthKey || null;
+        this.clusterStateServerHost = process.env.SCC_STATE_SERVER_HOST || process.env.STATE_SERVER_HOST
+            || process.env.ZATION_STATE_SERVER_HOST || this.zc.getMainOrNull(Const.Main.KEYS.STATE_SERVER_HOST);
 
-        const zcStateSocketOptions = {
-            hostname: this.master.options.stateServerHost, // Required option
-            port: this.master.options.stateServerPort || DEFAULT_PORT,
-            connectTimeout: this.master.options.stateServerConnectTimeout || DEFAULT_STATE_SERVER_CONNECT_TIMEOUT,
-            ackTimeout: this.master.options.stateServerAckTimeout || DEFAULT_STATE_SERVER_ACK_TIMEOUT,
-            autoReconnectOptions: {
-                initialDelay: retryDelay,
-                randomness: reconnectRandomness,
-                multiplier: 1,
-                maxDelay: retryDelay + reconnectRandomness
-            },
-            query: {
-                authKey,
-                instancePort: this.zc.getMain(Const.Main.KEYS.PORT),
-                instanceType: 'zation-master',
-            }
-        };
-        const stateSocket = ScClient.connect(zcStateSocketOptions);
+        this.stateServerActive =  !!this.clusterStateServerHost;
 
-        return new Promise((resolve, reject) =>
-        {
-            let connected : boolean = false;
+        //server is not ready before sync data from state..
+        this.serverIsReady = !this.stateServerActive;
+    }
 
-            stateSocket.on('newLeader',(data,respond) => {
-                this.activateLeader(stateSocket);
-                respond(null);
-            });
+    private async joinTheCluster()
+    {
 
-            stateSocket.on('connect', async () =>
-            {
-                connected = true;
-                try {
-                    await this.syncData(stateSocket);
-                    await this.activateServerIsReady();
-                }
-                catch (e) {
-                    reject(e);
-                }
-                stateSocket.emit('zMasterJoin', {instanceId : this.master.options.instanceId},
-                    (err) =>
-                {
-                    if(!err) {
-                        reject(err);
-                    }
-                });
-            });
 
-            setTimeout(() =>
-            {
-                if(!connected) {
-                    reject(new Error('Timeout to connect to zation-cluster-state server.'));
-                }
-            },5000);
+
+
+
+
+
+        try {
+            await this.syncData(stateSocket);
+            await this.activateServerIsReady();
+        }
+        catch (e) {
+            reject(e);
+        }
+
+        stateSocket.on('newLeader',(data,respond) => {
+            this.activateLeader(stateSocket);
+            respond(null);
         });
     }
 
@@ -435,9 +398,11 @@ class ZationStarter
     }
 
     // noinspection JSMethodCanBeStatic
-    private crashServer(error : any)
+    private crashServer(error : Error | string)
     {
-        Logger.printStartFail(error.message);
+        let txt = typeof error === 'object' ?
+            error.message : error;
+        Logger.printStartFail(txt);
         process.exit();
     }
 
@@ -489,4 +454,4 @@ class ZationStarter
     }
 }
 
-export = ZationStarter;
+export = ZationMaster;

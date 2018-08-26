@@ -76,6 +76,11 @@ class VALIDATION_REQUEST_INPUT
     static readonly INPUT_VALUE       = 'v';
 }
 
+class INTERNAL_DATA
+{
+    static readonly TOKEN_CHECK_KEY   = 'tokenCheckKey';
+}
+
 class TOKEN
 {
     static readonly AUTH_USER_GROUP             = 'zationAuthUserGroup';
@@ -176,6 +181,7 @@ class Settings
     static readonly ZATION_HTTP_INFO = ZATION_HTTP_INFO;
     static readonly REQ_IN_C = REQ_IN_C;
     static readonly SOCKET = SOCKET;
+    static readonly INTERNAL_DATA = INTERNAL_DATA;
 }
 
 export = Settings;

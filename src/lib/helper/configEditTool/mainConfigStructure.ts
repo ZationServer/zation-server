@@ -6,6 +6,7 @@ GitHub: LucaCode
 
 import Const                         = require('./../constants/constWrapper');
 import {MongoClientOptions}            from "mongodb";
+import {ServerOptions}                 from "https";
 
 export interface MainConfig
 {
@@ -21,7 +22,7 @@ export interface MainConfig
     [Const.Main.KEYS.BROKERS] ?: 'auto' | number;
     [Const.Main.KEYS.APP_NAME] ?: string;
     [Const.Main.KEYS.SECURE] ?: boolean;
-    [Const.Main.KEYS.HTTPS_CONFIG] ?: HttpsConfig;
+    [Const.Main.KEYS.HTTPS_CONFIG] ?: ServerOptions;
     [Const.Main.KEYS.USE_AUTH] ?: boolean;
     [Const.Main.KEYS.USE_PROTOCOL_CHECK] ?: boolean;
     [Const.Main.KEYS.SEND_ERRORS_DESC] ?: boolean;
@@ -52,9 +53,11 @@ export interface MainConfig
 
     //Cluster
     [Const.Main.KEYS.CLUSTER_AUTH_KEY] ?: string | null;
+    [Const.Main.KEYS.CLUSTER_SECRET_KEY] ?: string | null;
     [Const.Main.KEYS.STATE_SERVER_HOST] ?: string | null;
     [Const.Main.KEYS.STATE_SERVER_PORT] ?: number | null;
 
+    [Const.Main.KEYS.CLUSTER_SHARE_TOKEN_AUTH] ?: boolean;
     [Const.Main.KEYS.CLUSTER_MAPPING_ENGINE] ?: string | null;
     [Const.Main.KEYS.CLUSTER_CLIENT_POOL_SIZE] ?: number | null;
     [Const.Main.KEYS.CLUSTER_INSTANCE_IP] ?: string | null;
@@ -101,10 +104,4 @@ export interface PanelUserConfig {
 export interface TempStorageOptions {
     url : string,
     db : string
-}
-
-
-export interface HttpsConfig {
-    key ?: string;
-    cert ?: string;
 }

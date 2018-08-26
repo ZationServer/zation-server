@@ -26,10 +26,10 @@ class ZationConfig
     private readonly mainConfig : object = {};
     private serviceConfig : object = {};
     private readonly starterConfig : object = {};
+    private readonly internalData : object = {};
 
     constructor(data : object = {},workerTransport : boolean = false)
     {
-
         if(!workerTransport)
         {
             this.starterConfig = data;
@@ -87,24 +87,28 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.DOWNGRADE_TO_USER] = false;
             this.mainConfig[Const.Main.KEYS.ALLOW_CLIENT_PUBLISH] = true;
             this.mainConfig[Const.Main.KEYS.WORKER_STATUS_INTERVAL] = 10000;
+            this.mainConfig[Const.Main.KEYS.CLUSTER_SHARE_TOKEN_AUTH] = true;
 
             this.loadUserDataLocations();
             this.loadMainConfig();
 
             this.addToMainConfig(this.starterConfig,true,Structures.Main);
-
             this.processMainConfig();
+
+            this.internalData[Const.Settings.INTERNAL_DATA.TOKEN_CHECK_KEY]
+                = crypto.randomBytes(32).toString('hex');
         }
         else
         {
             this.starterConfig = data['starterConfig'];
             this.mainConfig = data['mainConfig'];
+            this.internalData = data['internalData'];
         }
     }
 
     getWorkerTransport() : object
     {
-        return {mainConfig : this.mainConfig,starterConfig : this.starterConfig};
+        return {mainConfig : this.mainConfig,starterConfig : this.starterConfig,internalData : this.internalData};
     }
 
     isDebug() : boolean
@@ -165,6 +169,11 @@ class ZationConfig
     isMain(key : any) : boolean
     {
         return this.mainConfig[key] !== undefined;
+    }
+
+    setMain(key : any,value : any) : void
+    {
+        this.mainConfig[key] = value;
     }
 
     getMainConfig() : object

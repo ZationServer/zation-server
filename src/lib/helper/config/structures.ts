@@ -99,9 +99,11 @@ Main[Const.Main.KEYS.TEMP_STORAGE_MONGO_DB_OPTIONS]     = {types : ['object','nu
 
 //Cluster
 Main[Const.Main.KEYS.CLUSTER_AUTH_KEY]        = {types : ['string','null'],isOptional : true};
+Main[Const.Main.KEYS.CLUSTER_SECRET_KEY]      = {types : ['string','null'],isOptional : true};
 Main[Const.Main.KEYS.STATE_SERVER_HOST]       = {types : ['string','null'],isOptional : true};
 Main[Const.Main.KEYS.STATE_SERVER_PORT]       = {types : ['number','null'],isOptional : true};
 
+Main[Const.Main.KEYS.CLUSTER_SHARE_TOKEN_AUTH]= {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.CLUSTER_MAPPING_ENGINE]  = {types : ['string','null'],isOptional : true};
 Main[Const.Main.KEYS.CLUSTER_CLIENT_POOL_SIZE]= {types : ['number','null'],isOptional : true};
 Main[Const.Main.KEYS.CLUSTER_INSTANCE_IP]     = {types : ['string','null'],isOptional : true};

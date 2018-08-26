@@ -42,9 +42,11 @@ class KEYS {
 
     //Cluster
     static readonly CLUSTER_AUTH_KEY                      = 'clusterAuthKey';
+    static readonly CLUSTER_SECRET_KEY                    = 'clusterSecretKey';
     static readonly STATE_SERVER_HOST                     = 'stateServerHost';
     static readonly STATE_SERVER_PORT                     = 'stateServerPort';
 
+    static readonly CLUSTER_SHARE_TOKEN_AUTH              = 'clusterShareTokenAuth';
     static readonly CLUSTER_MAPPING_ENGINE                = 'clusterMappingEngine';
     static readonly CLUSTER_CLIENT_POOL_SIZE              = 'clusterClientPoolSize';
     static readonly CLUSTER_INSTANCE_IP                   = 'clusterInstanceIp';
@@ -83,7 +85,7 @@ class KEYS {
     static readonly PUB_SUB_BATCH_DURATION                = 'pubSubBatchDuration';
 
     //ADVANCE
-    static readonly POST_KEY_WORD                  = 'postKeyWord';
+    static readonly POST_KEY_WORD          = 'postKeyWord';
 
     static readonly AUTH_KEY               = 'authKey';
     static readonly AUTH_DEFAULT_EXPIRY    = 'authDefaultExpiry';

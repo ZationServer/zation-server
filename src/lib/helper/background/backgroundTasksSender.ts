@@ -3,7 +3,7 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-import ZationStarter = require("../../main/zationStarter");
+import ZationStarter = require("../../main/zationMaster");
 import TimeTools     = require("../tools/timeTools");
 import ZationConfig  = require("../../main/zationConfig");
 

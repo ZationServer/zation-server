@@ -29,6 +29,8 @@ import ControllerPrepare     = require('../helper/controller/controllerPrepare')
 import BackgroundTasksSaver  = require("../helper/background/backgroundTasksSaver");
 import Mapper                = require("../helper/tools/mapper");
 import {WorkerChActions}     from "../helper/constants/workerChActions";
+import TSWCInternalDown = require("../helper/tempStorage/tswcInternalDown");
+import TSWCMongoDown = require("../helper/tempStorage/tswcMongoDown");
 
 class ZationWorker extends SCWorker
 {
@@ -45,6 +47,7 @@ class ZationWorker extends SCWorker
     private preparedSmallBag : SmallBag;
     private controllerPrepare : ControllerPrepare;
     private aePreparedPart : AEPreparedPart;
+    private tswClient : TSWClient;
     private zation : Zation;
 
     private authStartActive : boolean;
@@ -143,6 +146,11 @@ class ZationWorker extends SCWorker
         Logger.startStopWatch();
         await this.startHttpServer();
         Logger.printStartDebugInfo(`Worker with id ${this.id} starts http server.`,true);
+
+        //TempStorageClient
+        Logger.startStopWatch();
+        await this.startTSWClient();
+        Logger.printStartDebugInfo(`Worker with id ${this.id} starts temp storage worker client.`,true);
 
         Logger.startStopWatch();
         await this.startWebSocketServer();
@@ -908,6 +916,19 @@ class ZationWorker extends SCWorker
         }
     }
 
+    private async startTSWClient()
+    {
+        const engine = this.zc.getMain(Const.Main.KEYS.TEMP_STORAGE_ENGINE);
+        if(engine === Const.Main.TEMP_STORAGE_ENGINE.MONGO_DB) {
+            this.tswClient = new TSWCMongoDown(this,this.zc);
+        }
+        else {
+            //use internal (default)
+            this.tswClient = new TSWCInternalDown(this,this.zc);
+        }
+        await this.tswClient.init();
+    }
+
     getServerVersion() : string
     {
         return this.serverVersion;
@@ -918,10 +939,10 @@ class ZationWorker extends SCWorker
         return this.serverStartedTimeStamp;
     }
 
-    getTSWClient() : TSWClient {
-
+    getTSWClient() : TSWClient
+    {
+        return this.tswClient;
     }
-
 
     getWorkerId() : number
     {
@@ -957,7 +978,6 @@ class ZationWorker extends SCWorker
     {
         return this.controllerPrepare;
     }
-
 
     // noinspection JSUnusedGlobalSymbols
     getServiceEngine() : ServiceEngine
