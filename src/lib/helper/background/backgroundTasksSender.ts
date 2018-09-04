@@ -12,10 +12,13 @@ class BackgroundTasksSender
     private readonly starter : ZationStarter;
     private readonly zc : ZationConfig;
 
+    private active : boolean;
+
     constructor(starter : ZationStarter,zc : ZationConfig)
     {
         this.zc = zc;
         this.starter = starter;
+        this.active = true;
     }
 
     public setEveryBackgroundTask(name,time)
@@ -46,9 +49,15 @@ class BackgroundTasksSender
         }
     }
 
+    public setActive(active : boolean) {
+        this.active = active;
+    }
+
     private runUserBackgroundTask(name)
     {
-        this.starter.sendToRandomWorker({userBackgroundTask : name});
+        if(this.active) {
+            this.starter.sendToRandomWorker({userBackgroundTask : name});
+        }
     }
 
     public setAtBackgroundTask(name,time)

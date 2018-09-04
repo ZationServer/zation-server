@@ -16,6 +16,7 @@ import FuncTools         = require("../helper/tools/funcTools");
 import {ErrorConstruct}    from "../helper/configEditTool/errorConfigStructure";
 import ErrorNotFound     = require("../helper/error/errorNotFoundError");
 import SmallBag          = require("../api/SmallBag");
+const  uuidV4            = require('uuid/v4');
 
 class ZationConfig
 {
@@ -61,7 +62,7 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.SC_CONSOLE_LOG] = false;
             this.mainConfig[Const.Main.KEYS.USE_SC_UWS] = true;
             this.mainConfig[Const.Main.KEYS.EXTRA_SECURE_AUTH] = true;
-            this.mainConfig[Const.Main.KEYS.TEMP_STORAGE_ENGINE] = Const.Main.TEMP_STORAGE_ENGINE.INTERNAL;
+            this.mainConfig[Const.Main.KEYS.TEMP_STORAGE_ENGINE] = Const.Main.TEMP_STORAGE_ENGINE.INTERNAL_SHARED;
             this.mainConfig[Const.Main.KEYS.TEMP_STORAGE_MONGO_DB_OPTIONS] = null;
             this.mainConfig[Const.Main.KEYS.CLUSTER_AUTH_KEY] = null;
             this.mainConfig[Const.Main.KEYS.STATE_SERVER_HOST] = null;
@@ -88,6 +89,7 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.ALLOW_CLIENT_PUBLISH] = true;
             this.mainConfig[Const.Main.KEYS.WORKER_STATUS_INTERVAL] = 10000;
             this.mainConfig[Const.Main.KEYS.CLUSTER_SHARE_TOKEN_AUTH] = true;
+            this.mainConfig[Const.Main.KEYS.INSTANCE_ID] = uuidV4();
 
             this.loadUserDataLocations();
             this.loadMainConfig();
@@ -154,6 +156,16 @@ class ZationConfig
     getMain(key : any) : any
     {
         return this.mainConfig[key];
+    }
+
+    getInternal(key : any) : any
+    {
+        return this.internalData[key];
+    }
+
+    setInternal(key : any,value : any) : void
+    {
+        return this.internalData[key] = value;
     }
 
     getMainOrNull(key : any) : any

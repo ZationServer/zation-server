@@ -38,7 +38,6 @@ class KEYS {
 
     //TempStorage
     static readonly TEMP_STORAGE_ENGINE                   = 'tempStorageEngine';
-    static readonly TEMP_STORAGE_MONGO_DB_OPTIONS         = 'tempStorageMongoDbOptions';
 
     //Cluster
     static readonly CLUSTER_AUTH_KEY                      = 'clusterAuthKey';
@@ -95,8 +94,8 @@ class KEYS {
 }
 
 class TEMP_STORAGE_ENGINE {
-    static readonly MONGO_DB             = 'mongoDb';
-    static readonly INTERNAL             = 'internal';
+    static readonly INTERNAL_SHARED             = 'internalShared';
+    static readonly INTERNAL_FULL               = 'internalFull';
 }
 
 class OPTIONS {

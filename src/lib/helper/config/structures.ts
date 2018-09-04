@@ -93,9 +93,7 @@ Main[Const.Main.KEYS.AUTH_PUBLIC_KEY]         = {types : ['string','object'],isO
 //TempStorage
 Main[Const.Main.KEYS.TEMP_STORAGE_ENGINE]
     = {types : ['string'],isOptional : true,enum :
-        [Const.Main.TEMP_STORAGE_ENGINE.INTERNAL,Const.Main.TEMP_STORAGE_ENGINE.MONGO_DB]};
-
-Main[Const.Main.KEYS.TEMP_STORAGE_MONGO_DB_OPTIONS]     = {types : ['object','null'],isOptional : true};
+        [Const.Main.TEMP_STORAGE_ENGINE.INTERNAL_FULL,Const.Main.TEMP_STORAGE_ENGINE.INTERNAL_SHARED]};
 
 //Cluster
 Main[Const.Main.KEYS.CLUSTER_AUTH_KEY]        = {types : ['string','null'],isOptional : true};

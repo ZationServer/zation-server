@@ -35,6 +35,7 @@ class ZationMaster
     private clusterStateServerHost : any;
     private stateServerActive : boolean;
     private stateServerEngine : StateServerEngine;
+    private isClusterLeader : boolean;
 
     constructor(options)
     {
@@ -102,13 +103,11 @@ class ZationMaster
         Logger.printStartDebugInfo('Master builds the server settings file.',true);
 
         await this.checkClusterMode();
-        if(this.stateServerActive)
-        {
+        if(this.stateServerActive) {
             //cluster active
             this.stateServerEngine = new StateServerEngine(this.zc,this);
-
             try {
-                await this.stateServerEngine.connectToStateServer();
+                await this.stateServerEngine.registerStateServer();
             }
             catch (e) {
                 this.crashServer(e);
@@ -220,6 +219,9 @@ class ZationMaster
                this.startBackgroundTasks();
                Logger.printStartDebugInfo('Master init the background tasks.',true);
            }
+           else {
+               await this.stateServerEngine.scStarted();
+           }
 
            this.printStartedInformation();
            await this.zc.emitEvent(Const.Event.ZATION_IS_STARTED, this.zc.getSomeInformation());
@@ -309,31 +311,8 @@ class ZationMaster
 
         this.stateServerActive =  !!this.clusterStateServerHost;
 
-        //server is not ready before sync data from state..
-        this.serverIsReady = !this.stateServerActive;
-    }
-
-    private async joinTheCluster()
-    {
-
-
-
-
-
-
-
-        try {
-            await this.syncData(stateSocket);
-            await this.activateServerIsReady();
-        }
-        catch (e) {
-            reject(e);
-        }
-
-        stateSocket.on('newLeader',(data,respond) => {
-            this.activateLeader(stateSocket);
-            respond(null);
-        });
+        //server is not ready before sync data from state.. (data sync only in engine)
+        this.serverIsReady = !this.stateServerActive || ;
     }
 
     private async activateServerIsReady()
@@ -345,7 +324,7 @@ class ZationMaster
 
     private async syncData(stateSocket : any)
     {
-        Logger.printStartDebugInfo('Master is try to synchronize data from leader.');
+        Logger.printStartDebugInfo('Master is try to synchronize data from cluster leader.');
         await new Promise((resolve, reject) =>
         {
             stateSocket.emit('getSyncData',{},async (err,data) => {
@@ -367,7 +346,7 @@ class ZationMaster
         });
     }
 
-    private activateLeader(stateSocket : any)
+    private activateClusterLeader(stateSocket : any)
     {
         Logger.printDebugInfo(`This Instance '${this.master.options.instanceId}' becomes the leader.`);
 
@@ -397,8 +376,10 @@ class ZationMaster
         });
     }
 
+    //PART Crash
+
     // noinspection JSMethodCanBeStatic
-    private crashServer(error : Error | string)
+    public crashServer(error : Error | string)
     {
         let txt = typeof error === 'object' ?
             error.message : error;

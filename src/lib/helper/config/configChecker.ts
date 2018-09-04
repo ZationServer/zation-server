@@ -73,7 +73,7 @@ class ConfigChecker
 
        let extraKeys : any = [Const.App.ACCESS.ALL,Const.App.ACCESS.ALL_NOT_AUTH,Const.App.ACCESS.ALL_AUTH];
 
-       let authGroups = ObjectPath.getPath(this.zc.getAppConfig(),
+       let authGroups = ObjectPath.get(this.zc.getAppConfig(),
            [Const.App.KEYS.USER_GROUPS,Const.App.USER_GROUPS.AUTH]);
 
        if(!this.zc.isApp(Const.App.KEYS.USER_GROUPS))
@@ -97,7 +97,7 @@ class ConfigChecker
            }
        }
 
-       let defaultGroup = ObjectPath.getPath(this.zc.getAppConfig(),
+       let defaultGroup = ObjectPath.get(this.zc.getAppConfig(),
            [Const.App.KEYS.USER_GROUPS,Const.App.USER_GROUPS.DEFAULT]);
 
        if(defaultGroup !== undefined)
@@ -310,10 +310,10 @@ class ConfigChecker
 
    private checkAccessControllerDefaultIsSet()
    {
-       let access = ObjectPath.getPath(this.zc.getAppConfig(),
+       let access = ObjectPath.get(this.zc.getAppConfig(),
            [Const.App.KEYS.CONTROLLER_DEFAULT,Const.App.CONTROLLER.ACCESS]);
 
-       let notAccess = ObjectPath.getPath(this.zc.getAppConfig(),
+       let notAccess = ObjectPath.get(this.zc.getAppConfig(),
            [Const.App.KEYS.CONTROLLER_DEFAULT,Const.App.CONTROLLER.NOT_ACCESS]);
 
        if(access === undefined && notAccess === undefined)
@@ -437,16 +437,6 @@ class ConfigChecker
 
        this.checkHttpsMainConfig();
        this.checkPanelUserMainConfig();
-       this.checkTempStorageEngine();
-   }
-
-   private checkTempStorageEngine()
-   {
-       if(this.zc.getMain(Const.Main.KEYS.TEMP_STORAGE_ENGINE) === Const.Main.TEMP_STORAGE_ENGINE.MONGO_DB)
-       {
-           this.ceb.addConfigError(new ConfigError(Const.Settings.CN.MAIN,
-               `Temp storage engine mongoDb is not supported yet! Please change it to internal.`));
-       }
    }
 
    private checkHttpsMainConfig()
