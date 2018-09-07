@@ -123,29 +123,13 @@ class TokenTools
         }
     }
 
-    static async setTokenVariable(data : object,tokenBridge : TokenBridge,worker : ZationWorker) : Promise<boolean>
-    {
-        return await TokenTools.changeToken(data,tokenBridge,worker);
-    }
-
-    static async setZationData(data : object,tokenBridge : TokenBridge,tokenEngine : TokenEngine,worker : ZationWorker) : Promise<boolean>
-    {
-        let suc = await TokenTools.changeToken(data,tokenBridge,worker,true);
-
-        /*
-        if(suc && worker.getZationConfig().isUseTokenInfoTempDb())
-        {
-            let newToken = tokenBridge.getToken();
-            await tokenEngine.getWorker().getTempDbUp().updateTokenInfo(newToken);
-        }
-        */
-        return suc;
-    }
-
     static async createNewToken(data : object,tokenBridge : TokenBridge,worker : ZationWorker) : Promise<boolean>
     {
         return await TokenTools.changeToken(data,tokenBridge,worker,true,false);
     }
+
+
+    //Part Http Token
 
     static async verifyToken(token,zc : ZationConfig)
     {

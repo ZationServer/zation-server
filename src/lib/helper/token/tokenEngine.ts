@@ -81,9 +81,10 @@ class TokenEngine
         return this.getTokenVariable(Const.Settings.CLIENT.CUSTOM_VARIABLES);
     }
 
-    async setCustomTokenVar(data : object) : Promise<void>
-    {
-
+    async setCustomTokenVar(data : object) : Promise<void> {
+        const customVar = {};
+        customVar[Const.Settings.CLIENT.CUSTOM_VARIABLES] = data;
+        await this.updateTokenVariable(customVar);
     }
 }
 
