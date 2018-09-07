@@ -819,6 +819,50 @@ class SmallBag
         return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.DEAUTHENTICATE_TOKEN_IDS,tokenIds);
     }
 
+    //Part Worker
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the socket with the socketId
+     * You have only access to sockets they are connected to this worker.
+     * @example
+     * getWorkerSocket('SOCKET-ID');
+     * @param socketId
+     */
+    getWorkerSocket(socketId : string) : any | undefined
+    {
+        return this.worker.scServer.clients[socketId];
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the socketIds with the tokenId
+     * You have only access to socketsIds they are connected to this worker.
+     * @example
+     * getSocketIdsWithTokenId('TOKEN-ID');
+     * @param tokenId
+     */
+    getSocketIdsWithTokenId(tokenId : string) : string[]
+    {
+        return this.worker.getTokenIdToScIdMapper().getValues(tokenId);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the socketIds with the userId
+     * You have only access to socketsIds they are connected to this worker.
+     * @example
+     * getSocketIdsWithUserId('tom1554');
+     * @param userId
+     */
+    getSocketIdsWithUserId(userId : string) : string[]
+    {
+        return this.worker.getUserToScIdMapper().getValues(userId);
+    }
+
     //Part Amazon s3
     // noinspection JSUnusedGlobalSymbols
     uploadFileToBucket()

@@ -29,8 +29,8 @@ import ControllerPrepare     = require('../helper/controller/controllerPrepare')
 import BackgroundTasksSaver  = require("../helper/background/backgroundTasksSaver");
 import Mapper                = require("../helper/tools/mapper");
 import {WorkerChActions}     from "../helper/constants/workerChActions";
-import TSWCInternalDown = require("../helper/tempStorage/tswcInternalDown");
-import TSWCMongoDown = require("../helper/tempStorage/tswcMongoDown");
+import TSWCInternalDown      = require("../helper/tempStorage/tswcInternalDown");
+import TSWCMongoDown         = require("../helper/tempStorage/tswcMongoDown");
 
 class ZationWorker extends SCWorker
 {
@@ -985,6 +985,17 @@ class ZationWorker extends SCWorker
         return this.serviceEngine;
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    getUserToScIdMapper() : Mapper<string>
+    {
+        return this.mapUserToScId;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getTokenIdToScIdMapper() : Mapper<string>
+    {
+        return this.mapTokenIdToScId;
+    }
 }
 
 new ZationWorker();
