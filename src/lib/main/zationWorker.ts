@@ -722,7 +722,6 @@ class ZationWorker extends SCWorker
                     this.mapUserToScId.removeValueFromKey(token[Const.Settings.CLIENT.USER_ID],socket.id);
                 }
             }
-
             await this.zc.emitEvent(Const.Event.SOCKET_DEAUTHENTICATE,this.getPreparedSmallBag(),socket,token);
         });
 

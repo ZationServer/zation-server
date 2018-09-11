@@ -17,6 +17,7 @@ import {ErrorConstruct}    from "../helper/configEditTool/errorConfigStructure";
 import ErrorNotFound     = require("../helper/error/errorNotFoundError");
 import SmallBag          = require("../api/SmallBag");
 const  uuidV4            = require('uuid/v4');
+import moment            = require('moment-timezone');
 
 class ZationConfig
 {
@@ -54,7 +55,7 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.AUTH_PRIVATE_KEY] = null;
             this.mainConfig[Const.Main.KEYS.AUTH_DEFAULT_EXPIRY] = 86400;
             this.mainConfig[Const.Main.KEYS.SYSTEM_BACKGROUND_TASK_REFRESH_RATE] = 1800000;
-            this.mainConfig[Const.Main.KEYS.TIME_ZONE] = 'Europe/Berlin';
+            this.mainConfig[Const.Main.KEYS.TIME_ZONE] = moment.tz.guess() || 'Europe/Berlin';
             this.mainConfig[Const.Main.KEYS.AUTH_START] = false;
             this.mainConfig[Const.Main.KEYS.AUTH_START_DURATION_MS] = 20000;
             this.mainConfig[Const.Main.KEYS.WORKERS] = Const.Main.OPTIONS.AUTO;
@@ -63,7 +64,6 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.USE_SC_UWS] = true;
             this.mainConfig[Const.Main.KEYS.EXTRA_SECURE_AUTH] = true;
             this.mainConfig[Const.Main.KEYS.TEMP_STORAGE_ENGINE] = Const.Main.TEMP_STORAGE_ENGINE.INTERNAL_SHARED;
-            this.mainConfig[Const.Main.KEYS.TEMP_STORAGE_MONGO_DB_OPTIONS] = null;
             this.mainConfig[Const.Main.KEYS.CLUSTER_AUTH_KEY] = null;
             this.mainConfig[Const.Main.KEYS.STATE_SERVER_HOST] = null;
             this.mainConfig[Const.Main.KEYS.STATE_SERVER_PORT] = null;
