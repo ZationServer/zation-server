@@ -35,7 +35,7 @@ import
     SocketObjFunction,
     SocketAuthenticateFunction,
     WorkerIsStartedFunction,
-    WsServerIsStartedFunction, SocketDeauthenticateFunction, MiddlewareFunction
+    WsServerIsStartedFunction, SocketDeauthenticateFunction, ScMiddlewareFunction
 } from "../helper/configEditTool/eventConfigStructure";
 
 import
@@ -160,13 +160,13 @@ class Config
     static scServerReady(func : ScServerReadyFunction) : ScServerReadyFunction {return func;}
 
     //Part Middleware Events (SC)
-    static middlewareAuthenticate(func : MiddlewareFunction) : MiddlewareFunction {return func;}
-    static middlewareHandshakeWs(func : MiddlewareFunction) : MiddlewareFunction {return func;}
-    static middlewareHandshakeSc(func : MiddlewareFunction) : MiddlewareFunction {return func;}
-    static middlewareSubscribe(func : MiddlewareFunction) : MiddlewareFunction {return func;}
-    static middlewarePublishIn(func : MiddlewareFunction) : MiddlewareFunction {return func;}
-    static middlewarePublishOut(func : MiddlewareFunction) : MiddlewareFunction {return func;}
-    static middlewareEmit(func : MiddlewareFunction) : MiddlewareFunction {return func;}
+    static middlewareAuthenticate(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static middlewareHandshakeWs(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static middlewareHandshakeSc(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static middlewareSubscribe(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static middlewarePublishIn(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static middlewarePublishOut(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static middlewareEmit(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
 
     //Part Type
     // noinspection JSUnusedGlobalSymbols

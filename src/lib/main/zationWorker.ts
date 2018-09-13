@@ -29,8 +29,10 @@ import ControllerPrepare     = require('../helper/controller/controllerPrepare')
 import BackgroundTasksSaver  = require("../helper/background/backgroundTasksSaver");
 import Mapper                = require("../helper/tools/mapper");
 import {WorkerChActions}     from "../helper/constants/workerChActions";
-import TSWCInternalDown      = require("../helper/tempStorage/tswcInternalDown");
+import TSWCInternalDown      = require("../helper/tempStorage/tswcInternalSharedDown");
 import TSWCMongoDown         = require("../helper/tempStorage/tswcMongoDown");
+import {Socket} from "../helper/socket/socket";
+import ZationToken = require("../helper/infoObjects/zationToken");
 
 class ZationWorker extends SCWorker
 {
@@ -200,7 +202,7 @@ class ZationWorker extends SCWorker
 
             socket.on('ZATION.SERVER.REQUEST', (data, respond) => {
                 // noinspection JSUnusedLocalSymbols
-                let p = this.zation.run(
+                const p = this.zation.run(
                     {
                         isWebSocket: true,
                         input: data,
@@ -269,7 +271,6 @@ class ZationWorker extends SCWorker
                     req: req,
                 });
         });
-
         await this.zc.emitEvent(Const.Event.ZATION_HTTP_SERVER_IS_STARTED,this.zc.getSomeInformation());
     }
 
@@ -280,11 +281,11 @@ class ZationWorker extends SCWorker
 
     private initSocketMiddleware()
     {
-        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_SUBSCRIBE, async (req, next) => {
+        this.scServer.addMiddleware(this.scServer.SC_MIDDLEWARE_SUBSCRIBE, async (req, next) => {
 
             const userMidRes = await
-                this.zc.checkMiddlewareEvent
-                (Const.Event.MIDDLEWARE_SUBSCRIBE,req,next,this.getPreparedSmallBag());
+                this.zc.checkScMiddlewareEvent
+                (Const.Event.SC_MIDDLEWARE_SUBSCRIBE,next,this.getPreparedSmallBag(),req);
 
             if(userMidRes)
             {
@@ -422,13 +423,13 @@ class ZationWorker extends SCWorker
         });
 
         //BLOCK USER CAN PUBLISH_ACCESS IN ZATION CHANNELS
-        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_PUBLISH_IN, async (req, next) =>
+        this.scServer.addMiddleware(this.scServer.SC_MIDDLEWARE_PUBLISH_IN, async (req, next) =>
         {
             const channel = req.channel;
 
             const userMidRes = await
-            this.zc.checkMiddlewareEvent
-            (Const.Event.MIDDLEWARE_PUBLISH_IN,req,next,this.getPreparedSmallBag());
+            this.zc.checkScMiddlewareEvent
+            (Const.Event.SC_MIDDLEWARE_PUBLISH_IN,next,this.getPreparedSmallBag(),req);
 
             if(userMidRes)
             {
@@ -481,11 +482,11 @@ class ZationWorker extends SCWorker
         });
 
         //ZATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
-        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_PUBLISH_OUT, async (req,next) =>
+        this.scServer.addMiddleware(this.scServer.SC_MIDDLEWARE_PUBLISH_OUT, async (req, next) =>
         {
             const userMidRes = await
-                this.zc.checkMiddlewareEvent
-                (Const.Event.MIDDLEWARE_PUBLISH_OUT,req,next,this.getPreparedSmallBag());
+                this.zc.checkScMiddlewareEvent
+                (Const.Event.SC_MIDDLEWARE_PUBLISH_OUT,next,this.getPreparedSmallBag(),req);
 
             if(userMidRes) {
 
@@ -495,11 +496,11 @@ class ZationWorker extends SCWorker
         });
 
         //ZATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
-        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_HANDSHAKE_SC, async (req,next) =>
+        this.scServer.addMiddleware(this.scServer.SC_MIDDLEWARE_HANDSHAKE_SC, async (req, next) =>
         {
             const userMidRes = await
-            this.zc.checkMiddlewareEvent
-            (Const.Event.MIDDLEWARE_HANDSHAKE_SC,req,next,this.getPreparedSmallBag());
+            this.zc.checkScMiddlewareEvent
+            (Const.Event.SC_MIDDLEWARE_HANDSHAKE_SC,next,this.getPreparedSmallBag(),req);
 
             if(userMidRes) {
                 next();
@@ -507,11 +508,11 @@ class ZationWorker extends SCWorker
         });
 
         //ZATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
-        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_HANDSHAKE_WS, async (req,next) =>
+        this.scServer.addMiddleware(this.scServer.SC_MIDDLEWARE_HANDSHAKE_WS, async (req, next) =>
         {
             const userMidRes = await
-            this.zc.checkMiddlewareEvent
-            (Const.Event.MIDDLEWARE_HANDSHAKE_WS,req,next,this.getPreparedSmallBag());
+            this.zc.checkScMiddlewareEvent
+            (Const.Event.SC_MIDDLEWARE_HANDSHAKE_WS,next,this.getPreparedSmallBag(),req);
 
             if(userMidRes) {
                 next();
@@ -519,11 +520,11 @@ class ZationWorker extends SCWorker
         });
 
         //ZATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
-        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_EMIT, async (req,next) =>
+        this.scServer.addMiddleware(this.scServer.SC_MIDDLEWARE_EMIT, async (req, next) =>
         {
             const userMidRes = await
-            this.zc.checkMiddlewareEvent
-            (Const.Event.MIDDLEWARE_EMIT,req,next,this.getPreparedSmallBag());
+            this.zc.checkScMiddlewareEvent
+            (Const.Event.SC_MIDDLEWARE_EMIT,next,this.getPreparedSmallBag(),req);
 
             if(userMidRes) {
                 next();
@@ -532,26 +533,32 @@ class ZationWorker extends SCWorker
 
         //ZATION CHECK TOKEN IS BLOCKED, ONLY CHECK USER EVENT
         // noinspection JSUnresolvedVariable
-        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_AUTHENTICATE, async (req,next) =>
+        this.scServer.addMiddleware(this.scServer.SC_MIDDLEWARE_AUTHENTICATE, async (req, next) =>
         {
-            const userMidRes = await
-            this.zc.checkMiddlewareEvent
-            (Const.Event.MIDDLEWARE_AUTHENTICATE,req,next,this.getPreparedSmallBag());
+            const token = req.authToken;
 
-            if(userMidRes)
+            const userMidRes = await
+            this.zc.checkScMiddlewareEvent
+            (Const.Event.SC_MIDDLEWARE_AUTHENTICATE,next,this.getPreparedSmallBag(),req);
+
+            const zationAuthMid = await
+            this.zc.checkAuthenticationMiddlewareEvent
+            (Const.Event.MIDDLEWARE_AUTHENTICATE,next,this.getPreparedSmallBag(),new ZationToken(token));
+
+            if(userMidRes && zationAuthMid)
             {
                 if(this.zc.isExtraSecureAuth())
                 {
                     // noinspection JSUnresolvedVariable
-                    let token = req.authToken;
                     this.getTSWClient().isTokenUnblocked(token[Const.Settings.CLIENT.TOKEN_ID])
                         .then((valid) =>
                     {
                         if(!valid) {
-                            req.socket.emit('zationBadAuthToken',{});
-                            req.socket.deauthenticate();
+                            const socket : Socket = req.socket;
+                            socket.emit('zationBadAuthToken',{});
+                            socket.deauthenticate();
                             let err = new Error('Token is blocked');
-                            next(err,true);
+                            next(err);
                         }
                         else {
                             next();
@@ -562,8 +569,7 @@ class ZationWorker extends SCWorker
                         next(e);
                     });
                 }
-                else
-                {
+                else {
                     next();
                 }
             }
@@ -768,7 +774,7 @@ class ZationWorker extends SCWorker
             const event = mainData.event;
             const emitData = mainData.data;
 
-            const kickOutAction = (s) =>
+            const kickOutAction = (s : Socket) =>
             {
                 const subs = s.subscriptions();
                 for(let i = 0; i < subs.length; i++) {
@@ -789,27 +795,27 @@ class ZationWorker extends SCWorker
             }
             else if(data.action === WorkerChActions.EMIT_TOKEN_IDS)
             {
-                this.forTokenIds(ids,(s) => {s.emit(event,emitData)});
+                this.forTokenIds(ids,(s : Socket) => {s.emit(event,emitData)});
             }
             else if(data.action === WorkerChActions.EMIT_USER_IDS)
             {
-                this.forUserIds(ids,(s) => {s.emit(event,emitData);});
+                this.forUserIds(ids,(s : Socket) => {s.emit(event,emitData);});
             }
             else if(data.action === WorkerChActions.DISCONNECT_TOKEN_IDS)
             {
-                this.forTokenIds(ids,(s) => {s.disconnect();});
+                this.forTokenIds(ids,(s : Socket) => {s.disconnect();});
             }
             else if(data.action === WorkerChActions.DISCONNECT_USER_IDS)
             {
-                this.forUserIds(ids,(s) => {s.disconnect();});
+                this.forUserIds(ids,(s : Socket) => {s.disconnect();});
             }
             else if(data.action === WorkerChActions.DEAUTHENTICATE_TOKEN_IDS)
             {
-                this.forTokenIds(ids,(s) => {s.deauthenticate();});
+                this.forTokenIds(ids,(s : Socket) => {s.deauthenticate();});
             }
             else if(data.action === WorkerChActions.DEAUTHENTICATE_USER_IDS)
             {
-                this.forUserIds(ids,(s) => {s.deauthenticate();});
+                this.forUserIds(ids,(s : Socket) => {s.deauthenticate();});
             }
         });
     }
@@ -918,11 +924,11 @@ class ZationWorker extends SCWorker
     private async startTSWClient()
     {
         const engine = this.zc.getMain(Const.Main.KEYS.TEMP_STORAGE_ENGINE);
-        if(engine === Const.Main.TEMP_STORAGE_ENGINE.MONGO_DB) {
+        if(engine === Const.Main.TEMP_STORAGE_ENGINE.INTERNAL_FULL) {
             this.tswClient = new TSWCMongoDown(this,this.zc);
         }
         else {
-            //use internal (default)
+            //use internal-shared (default)
             this.tswClient = new TSWCInternalDown(this,this.zc);
         }
         await this.tswClient.init();

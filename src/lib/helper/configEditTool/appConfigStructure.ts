@@ -18,7 +18,7 @@ export interface AppConfig
     [Const.App.KEYS.CONTROLLER_DEFAULT] ?: ControllerConfig;
     [Const.App.KEYS.OBJECTS] ?: Record<string,ObjectConfig>;
     [Const.App.KEYS.VALIDATION_GROUPS] ?: Record<string,InputValidationConfig>;
-    [Const.App.KEYS.BACKGROUND_TASKS] ?: Record<string,BackgroundTask>;
+    [Const.App.KEYS.BACKGROUND_TASKS] ?: Record<string,BackgroundTask>
 }
 
 export type TaskFunction = (smallBag : SmallBag) => Promise<void> | void;

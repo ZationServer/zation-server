@@ -22,11 +22,11 @@ class FuncTools
         }
     }
 
-    static async checkMiddlewareFunc(func : Function,req : object,next : Function,smallBag : SmallBag) : Promise<boolean>
+    static async checkMiddlewareFunc(func : Function | undefined,next : Function,...params : any[]) : Promise<boolean>
     {
         if(func !== undefined && typeof func === 'function') {
-            let res  = await func(smallBag,req);
-            if(res !== undefined && typeof res === "boolean" && res) {
+            let res  = await func(...params);
+            if(typeof res === "boolean" && res) {
                 return true;
             }
             else {

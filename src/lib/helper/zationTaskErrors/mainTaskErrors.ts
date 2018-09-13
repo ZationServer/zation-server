@@ -336,4 +336,13 @@ export = {
         isFromZationSystem : true
     },
 
+    authenticateMiddlewareBlock : {
+        name          : 'authenticateMiddlewareBlock',
+        description   : 'authenticate middleware block req',
+        type          : ErrorType.TOKEN_ERROR,
+        sendInfo      : true,
+        //INFO
+        // err
+        isFromZationSystem : true
+    }
 };

@@ -5,7 +5,6 @@ GitHub: LucaCode
  */
 
 import Const                         = require('./../constants/constWrapper');
-import {MongoClientOptions}            from "mongodb";
 import {ServerOptions}                 from "https";
 
 export interface MainConfig
@@ -100,7 +99,4 @@ export interface PanelUserConfig {
     [Const.Main.PANEL_USER.PASSWORD] : string;
 }
 
-export interface TempStorageOptions {
-    url : string,
-    db : string
-}
+

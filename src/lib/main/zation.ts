@@ -30,9 +30,6 @@ class Zation
 
     async run(data)
     {
-        data.worker = this.worker;
-        data.zc = this.zc;
-
         this.reqIdCounter.increase();
         let reqId = this.reqIdCounter.getId();
 
@@ -63,25 +60,22 @@ class Zation
 
         try
         {
-            if(data.isWebSocket)
-            {
-                await returner.reactOnResult(await SocketProcessor.runSocketProcess(data));
+            if(data.isWebSocket) {
+                await returner.reactOnResult(await SocketProcessor.runSocketProcess(data.socket,data.input,data.respond,this.zc,this.worker));
             }
-            else
-            {
-                await returner.reactOnResult(await HttpProcessor.runHttpProcess(data));
+            else {
+                await returner.reactOnResult(await HttpProcessor.runHttpProcess(data.req,data.res,this.zc,this.worker));
             }
         }
         catch(data)
         {
             let e = data;
 
-            if(data['tb'] !== undefined)
-            {
+            if(data['tb'] !== undefined) {
                 e = data['e'];
             }
 
-            let promises : Promise<void>[] = [];
+            const promises : Promise<void>[] = [];
 
             promises.push(this.zc.emitEvent
             (Const.Event.ZATION_BEFORE_ERROR, this.worker.getPreparedSmallBag(),e));

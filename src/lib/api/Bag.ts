@@ -14,6 +14,7 @@ import Const         = require("../helper/constants/constWrapper");
 import ObjectPath    = require("../helper/tools/objectPath");
 import MethodIsNotCompatible = require("../helper/error/methodIsNotCompatible");
 import ObjectPathSequence    = require("../helper/tools/objectPathSequence");
+import {Socket} from "../helper/socket/socket";
 
 class Bag extends SmallBag
 {
@@ -516,7 +517,7 @@ class Bag extends SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getSocket() : any {
+    getSocket() : Socket {
         return this.shBridge.getSocket();
     }
 

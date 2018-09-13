@@ -273,13 +273,13 @@ EventConfig[Const.Event.SOCKET_DEAUTHENTICATE]            = {types : ['function'
 EventConfig[Const.Event.SOCKET_AUTH_STATE_CHANGE]         = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.SOCKET_MESSAGE]                   = {types : ['function','array'],isOptional : true};
 
-EventConfig[Const.Event.MIDDLEWARE_AUTHENTICATE]          = {types : ['function'],isOptional : true};
-EventConfig[Const.Event.MIDDLEWARE_HANDSHAKE_WS]          = {types : ['function'],isOptional : true};
-EventConfig[Const.Event.MIDDLEWARE_HANDSHAKE_SC]          = {types : ['function'],isOptional : true};
-EventConfig[Const.Event.MIDDLEWARE_SUBSCRIBE]             = {types : ['function'],isOptional : true};
-EventConfig[Const.Event.MIDDLEWARE_PUBLISH_IN]            = {types : ['function'],isOptional : true};
-EventConfig[Const.Event.MIDDLEWARE_PUBLISH_OUT]           = {types : ['function'],isOptional : true};
-EventConfig[Const.Event.MIDDLEWARE_EMIT]                  = {types : ['function'],isOptional : true};
+EventConfig[Const.Event.SC_MIDDLEWARE_AUTHENTICATE]          = {types : ['function'],isOptional : true};
+EventConfig[Const.Event.SC_MIDDLEWARE_HANDSHAKE_WS]          = {types : ['function'],isOptional : true};
+EventConfig[Const.Event.SC_MIDDLEWARE_HANDSHAKE_SC]          = {types : ['function'],isOptional : true};
+EventConfig[Const.Event.SC_MIDDLEWARE_SUBSCRIBE]             = {types : ['function'],isOptional : true};
+EventConfig[Const.Event.SC_MIDDLEWARE_PUBLISH_IN]            = {types : ['function'],isOptional : true};
+EventConfig[Const.Event.SC_MIDDLEWARE_PUBLISH_OUT]           = {types : ['function'],isOptional : true};
+EventConfig[Const.Event.SC_MIDDLEWARE_EMIT]                  = {types : ['function'],isOptional : true};
 
 class Structures
 {

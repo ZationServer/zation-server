@@ -13,6 +13,9 @@ import ValidChProcessor      = require('./validChProcessor');
 import ZationReqTools        = require('../tools/zationReqTools');
 import TaskError             = require("../../api/TaskError");
 import MainErrors            = require('../zationTaskErrors/mainTaskErrors');
+import ZationWorker          = require("../../main/zationWorker");
+import ZationConfig          = require("../../main/zationConfig");
+import ZationToken           = require("../infoObjects/zationToken");
 
 const helper   = __dirname + '/../';
 const views    = helper + 'views/';
@@ -20,7 +23,7 @@ const views    = helper + 'views/';
 class HttpProcessor
 {
     //HTTP Extra Layer
-    static async runHttpProcess({worker, res, req, zc})
+    static async runHttpProcess(req,res,zc : ZationConfig,worker : ZationWorker)
     {
         let zationJsonData = req.body[zc.getMain(Const.Main.KEYS.POST_KEY_WORD)];
 
@@ -36,8 +39,7 @@ class HttpProcessor
             let zationData = await JSON.parse(req.body[zc.getMain(Const.Main.KEYS.POST_KEY_WORD)]);
 
             //check for validationCheckRequest
-            if(ZationReqTools.isValidationCheckReq(zationData))
-            {
+            if(ZationReqTools.isValidationCheckReq(zationData)) {
                 //validation Check req
                 return await ValidChProcessor.process(zationData,zc,worker);
             }
@@ -47,14 +49,19 @@ class HttpProcessor
                 if(!!zationData[Const.Settings.REQUEST_INPUT.TOKEN])
                 {
                     req.zationToken = await TokenTools.verifyToken(zationData[Const.Settings.REQUEST_INPUT.TOKEN],zc);
+                    const token = req.zationToken;
+                    const valid = await worker.getTSWClient().isTokenUnblocked(token[Const.Settings.CLIENT.TOKEN_ID]);
 
-                    let tokenInfoStorage = worker.getTempDbUp();
-                    let token = req.zationToken;
+                    const next = (err) => {
+                        if(err) {
+                            throw new TaskError(MainErrors.authenticateMiddlewareBlock,{err : err});
+                        }
+                    };
 
-                    let valid = await tokenInfoStorage.isTokenUnblocked(token[Const.Settings.CLIENT.TOKEN_ID]);
+                    await zc.checkAuthenticationMiddlewareEvent
+                        (Const.Event.MIDDLEWARE_AUTHENTICATE,next,worker.getPreparedSmallBag(),new ZationToken(token));
 
-                    if(!valid)
-                    {
+                    if(!valid) {
                         throw new TaskError(MainErrors.tokenIsBlocked,{token : token});
                     }
                 }

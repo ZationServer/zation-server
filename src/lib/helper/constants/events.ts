@@ -15,7 +15,9 @@ class Event
     static readonly ZATION_BEFORE_ERROR                = 'beforeError'; //SmallBag + Error ok
     static readonly ZATION_BEFORE_TASK_ERROR           = 'beforeTaskError'; //SmallBag + Error ok
     static readonly ZATION_BEFORE_TASK_ERROR_BAG       = 'beforeTaskErrorBag'; //SmallBag + Error ok
-    static readonly ZATION_GET_USER_COUNT              = 'getUserCount'; //SmallBag
+
+    //Zation Middleware
+    static readonly MIDDLEWARE_AUTHENTICATE            = 'middlewareAuthenticate';
 
     //SocketCluster Socket Events
     static readonly SOCKET_ERROR                       = 'socketError';
@@ -48,13 +50,13 @@ class Event
     static readonly SC_SERVER_READY                    = 'scServerReady';
 
     //SocketCluster Middleware
-    static readonly MIDDLEWARE_AUTHENTICATE            = 'middlewareAuthenticate';
-    static readonly MIDDLEWARE_HANDSHAKE_WS            = 'middlewareHandshakeWs';
-    static readonly MIDDLEWARE_HANDSHAKE_SC            = 'middlewareHandshakeSc';
-    static readonly MIDDLEWARE_SUBSCRIBE               = 'middlewareSubscribe';
-    static readonly MIDDLEWARE_PUBLISH_IN              = 'middlewarePublishIn';
-    static readonly MIDDLEWARE_PUBLISH_OUT             = 'middlewarePublishOut';
-    static readonly MIDDLEWARE_EMIT                    = 'middlewareEmit';
+    static readonly SC_MIDDLEWARE_AUTHENTICATE            = 'scMiddlewareAuthenticate';
+    static readonly SC_MIDDLEWARE_HANDSHAKE_WS            = 'scMiddlewareHandshakeWs';
+    static readonly SC_MIDDLEWARE_HANDSHAKE_SC            = 'scMiddlewareHandshakeSc';
+    static readonly SC_MIDDLEWARE_SUBSCRIBE               = 'scMiddlewareSubscribe';
+    static readonly SC_MIDDLEWARE_PUBLISH_IN              = 'scMiddlewarePublishIn';
+    static readonly SC_MIDDLEWARE_PUBLISH_OUT             = 'scMiddlewarePublishOut';
+    static readonly SC_MIDDLEWARE_EMIT                    = 'scMiddlewareEmit';
 }
 
 export = Event;

@@ -10,7 +10,7 @@ import TSWClient                 = require("./tswClient");
 import BrokerKeyHasher = require("./brokerKeyHasher");
 
 //TempStorageWorkerClient
-class TSWCInternalDown extends TSWClient
+class TswcInternalSharedDown extends TSWClient
 {
     private readonly worker: ZationWorker;
     private readonly zc: ZationConfig;
@@ -51,4 +51,4 @@ class TSWCInternalDown extends TSWClient
     }
 }
 
-export = TSWCInternalDown;
+export = TswcInternalSharedDown;

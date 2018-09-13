@@ -4,6 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+import {Socket} from "../helper/socket/socket";
+
 const    crypto : any   = require('crypto');
 const    IP : any       = require('ip');
 import ChExchangeEngine = require("../helper/channel/chExchangeEngine");
@@ -830,7 +832,7 @@ class SmallBag
      * getWorkerSocket('SOCKET-ID');
      * @param socketId
      */
-    getWorkerSocket(socketId : string) : any | undefined
+    getWorkerSocket(socketId : string) : Socket | undefined
     {
         return this.worker.scServer.clients[socketId];
     }

@@ -18,6 +18,7 @@ import ErrorNotFound     = require("../helper/error/errorNotFoundError");
 import SmallBag          = require("../api/SmallBag");
 const  uuidV4            = require('uuid/v4');
 import moment            = require('moment-timezone');
+import ZationToken       = require("../helper/infoObjects/zationToken");
 
 class ZationConfig
 {
@@ -396,14 +397,20 @@ class ZationConfig
         return result;
     }
 
-    async checkMiddlewareEvent(event : string,req : object,next : Function,smallBag : SmallBag) : Promise<boolean>
-    {
-        let func = this.getEvent(event);
-        return await FuncTools.checkMiddlewareFunc(func,req,next,smallBag);
+    async checkMiddlewareEvent(event : string,next : Function,...params : any[]) : Promise<boolean> {
+        const func = this.getEvent(event);
+        return await FuncTools.checkMiddlewareFunc(func,next,...params);
     }
 
-    async emitEvent(event : string,...params : any[]) : Promise<void>
-    {
+    async checkScMiddlewareEvent(event : string,next : Function,smallBag : SmallBag,req : object) : Promise<boolean> {
+        return await this.checkMiddlewareEvent(event,next,smallBag,req);
+    }
+
+    async checkAuthenticationMiddlewareEvent(event : string,next : Function,smallBag : SmallBag,zationToken : ZationToken) : Promise<boolean> {
+        return await this.checkMiddlewareEvent(event,next,smallBag,zationToken);
+    }
+
+    async emitEvent(event : string,...params : any[]) : Promise<void> {
         await FuncTools.emitEvent(this.getEvent(event),...params);
     }
 

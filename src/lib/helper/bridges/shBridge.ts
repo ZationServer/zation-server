@@ -69,7 +69,7 @@ class SHBridge
         }
     }
 
-    getSocket() : any
+    getSocket() : Socket
     {
         return this.socket;
     }

@@ -10,6 +10,7 @@ import ZationInfoObj                 = require("../infoObjects/zationInfo");
 import ZationWorker                  = require("../../main/zationWorker");
 import TaskError                     = require("../../api/TaskError");
 import TaskErrorBag                  = require("../../api/TaskErrorBag");
+import ZationToken                   = require("../infoObjects/zationToken");
 
 export type ExpressFunction = (smallBag : SmallBag, express : ExpressCore.Express) => Promise<void> | void;
 export type WorkerIsStartedFunction = (smallBag : SmallBag, info : ZationInfoObj, worker : ZationWorker) => Promise<void> | void;
@@ -19,7 +20,8 @@ export type IsStartedFunction = (info : ZationInfoObj) => Promise<void> | void;
 export type BeforeErrorFunction = (smallBag : SmallBag, error : object) => Promise<void> | void;
 export type BeforeTaskErrorFunction = (smallBag : SmallBag, taskError : TaskError) => Promise<void> | void;
 export type BeforeTaskErrorBagFunction = (smallBag : SmallBag, taskErrorBag : TaskErrorBag) => Promise<void> | void;
-export type GetUserCountFunction = (smallBag : SmallBag) => Promise<number> | number;
+
+export type MiddlewareAuthenticationFunction = (smallBag : SmallBag,zationToken  : ZationToken) => Promise<boolean> | boolean | Promise<object> | object | Promise<any> | any;
 
 export type SocketErrorFunction = (smallBag : SmallBag, socket : object, error : object) => Promise<void> | void;
 export type SocketFunction = (smallBag : SmallBag, socket : object) => Promise<void> | void;
@@ -40,7 +42,7 @@ export type ScServerDeauthenticationFunction = (smallBag : SmallBag, socket : ob
 export type ScServerBadSocketAuthTokenFunction = (smallBag : SmallBag, socket : object, obj : object) => Promise<void> | void;
 export type ScServerReadyFunction = (smallBag : SmallBag) => Promise<void> | void;
 
-export type MiddlewareFunction = (smallBag : SmallBag,req : object) => Promise<boolean> | boolean | Promise<object> | object | Promise<any> | any;
+export type ScMiddlewareFunction = (smallBag : SmallBag, req : object) => Promise<boolean> | boolean | Promise<object> | object | Promise<any> | any;
 
 export interface EventConfig
 {
@@ -52,7 +54,8 @@ export interface EventConfig
     [Const.Event.ZATION_BEFORE_ERROR] ?: BeforeErrorFunction | BeforeErrorFunction[];
     [Const.Event.ZATION_BEFORE_TASK_ERROR] ?: BeforeTaskErrorFunction | BeforeTaskErrorFunction[];
     [Const.Event.ZATION_BEFORE_TASK_ERROR_BAG] ?: BeforeTaskErrorBagFunction | BeforeTaskErrorBagFunction[];
-    [Const.Event.ZATION_GET_USER_COUNT] ?: GetUserCountFunction;
+
+    [Const.Event.MIDDLEWARE_AUTHENTICATE] ?: MiddlewareAuthenticationFunction;
 
     [Const.Event.SOCKET_ERROR] ?: SocketErrorFunction | SocketErrorFunction[];
     [Const.Event.SOCKET_RAW] ?: SocketFunction | SocketFunction[];
@@ -82,11 +85,11 @@ export interface EventConfig
     [Const.Event.SC_SERVER_BAD_SOCKET_AUTH_TOKEN] ?: ScServerBadSocketAuthTokenFunction | ScServerBadSocketAuthTokenFunction[];
     [Const.Event.SC_SERVER_READY] ?: ScServerReadyFunction | ScServerReadyFunction[];
 
-    [Const.Event.MIDDLEWARE_AUTHENTICATE] ?: MiddlewareFunction;
-    [Const.Event.MIDDLEWARE_HANDSHAKE_WS] ?: MiddlewareFunction;
-    [Const.Event.MIDDLEWARE_HANDSHAKE_SC] ?: MiddlewareFunction;
-    [Const.Event.MIDDLEWARE_SUBSCRIBE] ?: MiddlewareFunction;
-    [Const.Event.MIDDLEWARE_PUBLISH_IN] ?: MiddlewareFunction;
-    [Const.Event.MIDDLEWARE_PUBLISH_OUT] ?: MiddlewareFunction;
-    [Const.Event.MIDDLEWARE_EMIT] ?: MiddlewareFunction;
+    [Const.Event.SC_MIDDLEWARE_AUTHENTICATE] ?: ScMiddlewareFunction;
+    [Const.Event.SC_MIDDLEWARE_HANDSHAKE_WS] ?: ScMiddlewareFunction;
+    [Const.Event.SC_MIDDLEWARE_HANDSHAKE_SC] ?: ScMiddlewareFunction;
+    [Const.Event.SC_MIDDLEWARE_SUBSCRIBE] ?: ScMiddlewareFunction;
+    [Const.Event.SC_MIDDLEWARE_PUBLISH_IN] ?: ScMiddlewareFunction;
+    [Const.Event.SC_MIDDLEWARE_PUBLISH_OUT] ?: ScMiddlewareFunction;
+    [Const.Event.SC_MIDDLEWARE_EMIT] ?: ScMiddlewareFunction;
 }
