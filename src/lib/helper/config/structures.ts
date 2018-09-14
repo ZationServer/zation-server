@@ -191,9 +191,12 @@ ValidationGroup[Const.Validator.KEYS.FUNCTION_STARTS_WITH]    = {types : ['strin
 ValidationGroup[Const.Validator.KEYS.FORMAT_IS_LETTERS]       = {types : ['string'],isOptional : true,enum:allFormatLetters};
 
 const ChannelConfig = {};
-ChannelConfig[Const.Channel.KEYS.DEFAULTS]                = {types : ['object'],isOptional : true};
 ChannelConfig[Const.Channel.KEYS.CUSTOM_CHANNELS]         = {types : ['object'],isOptional : true};
 ChannelConfig[Const.Channel.KEYS.CUSTOM_ID_CHANNELS]      = {types : ['object'],isOptional : true};
+ChannelConfig[Const.Channel.KEYS.USER_CH]                 = {types : ['object'],isOptional : true};
+ChannelConfig[Const.Channel.KEYS.USER_GROUP_CH]           = {types : ['object'],isOptional : true};
+ChannelConfig[Const.Channel.KEYS.DEFAULT_USER_GROUP_CH]   = {types : ['object'],isOptional : true};
+ChannelConfig[Const.Channel.KEYS.ALL_CH]                  = {types : ['object'],isOptional : true};
 
 const HttpsConfig = {};
 HttpsConfig[Const.Main.HTTPS_CONFIG.CER]             = {types : ['string'],isOptional : true};
@@ -207,14 +210,15 @@ const PanelUserConfig = {};
 PanelUserConfig[Const.Main.PANEL_USER.USER_NAME]             = {types : ['string'],isOptional : false};
 PanelUserConfig[Const.Main.PANEL_USER.PASSWORD]              = {types : ['string'],isOptional : false};
 
-const ChannelItem = {};
-ChannelItem[Const.Channel.CHANNEL.PUBLISH_ACCESS]       = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelItem[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS]     = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelItem[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS] = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelItem[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS]   = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelItem[Const.Channel.CHANNEL.ON_PUBLISH]           = {types : ['function'],isOptional : true};
-ChannelItem[Const.Channel.CHANNEL.ON_SUBSCRIPTION]      = {types : ['function'],isOptional : true};
-ChannelItem[Const.Channel.CHANNEL.ON_UNSUBSCRIPTION]    = {types : ['function'],isOptional : true};
+const ChannelFullItem = {};
+ChannelFullItem[Const.Channel.CHANNEL.PUBLISH_ACCESS]       = {types : ['function','boolean','number','array','string'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS]     = {types : ['function','boolean','number','array','string'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS] = {types : ['function','boolean','number','array','string'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS]   = {types : ['function','boolean','number','array','string'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL.ON_PUBLISH]           = {types : ['function'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL.ON_SUBSCRIPTION]      = {types : ['function'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL.ON_UNSUBSCRIPTION]    = {types : ['function'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH] = {types : ['boolean'],isOptional : true};
 
 const Services = {};
 Services[Const.Service.SERVICES.MYSQL]                  = {types : ['object'],isOptional : true};
@@ -238,12 +242,12 @@ const EventConfig = {};
 EventConfig[Const.Event.ZATION_EXPRESS]                   = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_WORKER_IS_STARTED]         = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_HTTP_SERVER_IS_STARTED]    = {types : ['function','array'],isOptional : true};
-EventConfig[Const.Event.ZATION_WS_SERVER_IS_STARTED]  = {types : ['function','array'],isOptional : true};
+EventConfig[Const.Event.ZATION_WS_SERVER_IS_STARTED]      = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_IS_STARTED]                = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_BEFORE_ERROR]              = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_BEFORE_TASK_ERROR]         = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_BEFORE_TASK_ERROR_BAG]     = {types : ['function','array'],isOptional : true};
-EventConfig[Const.Event.ZATION_GET_USER_COUNT]            = {types : ['function'],isOptional : true};
+EventConfig[Const.Event.MIDDLEWARE_AUTHENTICATE]          = {types : ['function'],isOptional : true};
 
 EventConfig[Const.Event.SC_SERVER_ERROR]                  = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.SC_SERVER_NOTICE]                 = {types : ['function','array'],isOptional : true};
@@ -294,7 +298,7 @@ class Structures
     public static readonly ValidationGroup = ValidationGroup;
     public static readonly ChannelConfig = ChannelConfig;
     public static readonly ServiceConfig = ServiceConfig;
-    public static readonly ChannelItem = ChannelItem;
+    public static readonly ChannelItem = ChannelFullItem;
     public static readonly Services = Services;
     public static readonly AppArray = AppArray;
     public static readonly ArrayShortCutSpecify = ArrayShortCutSpecify;

@@ -7,22 +7,16 @@ GitHub: LucaCode
 class KEYS {
     static readonly CUSTOM_ID_CHANNELS         = 'customIdChannels';
     static readonly CUSTOM_CHANNELS            = 'customChannels';
-    static readonly DEFAULTS                   = 'default';
+    static readonly USER_CH                    = 'userCh';
+    static readonly USER_GROUP_CH              = 'userGroupCh';
+    static readonly DEFAULT_USER_GROUP_CH      = 'defaultUserGroupCh';
+    static readonly ALL_CH                     = 'allCh';
 }
 
 class ACCESS {
     static readonly ALL_AUTH                = 'allAuth';
     static readonly ALL_NOT_AUTH            = 'allNotAuth';
     static readonly ALL                     = 'all';
-}
-
-//Generate Info to check Access for specialChannels
-class INFO {
-    static readonly AUTH_USER_GROUP   = 'authUserGroup';
-    static readonly IS_AUTH_IN        = 'authIn';
-    static readonly USER_ID           = 'userId';
-    static readonly SOCKET            = 'socket';
-    static readonly TOKEN_ID          = 'tokenId';
 }
 
 class CHANNEL {
@@ -34,8 +28,14 @@ class CHANNEL {
     static readonly ON_SUBSCRIPTION        = 'onSubscription';
     static readonly ON_UNSUBSCRIPTION      = 'onUnsubscription';
     static readonly ON_PUBLISH             = 'onPublish';
+}
 
-    static readonly INFO = INFO;
+class CHANNEL_SETTINGS {
+    static readonly SOCKET_GET_OWN_PUBLISH = 'socketGetOwnPublish';
+}
+
+class CHANNEL_DEFAULT {
+    static readonly DEFAULT = 'default';
 }
 
 class ChannelConfig
@@ -43,6 +43,8 @@ class ChannelConfig
     public static readonly KEYS = KEYS;
     public static readonly CHANNEL = CHANNEL;
     public static readonly ACCESS = ACCESS;
+    public static readonly CHANNEL_SETTINGS = CHANNEL_SETTINGS;
+    public static readonly CHANNEL_DEFAULT = CHANNEL_DEFAULT;
 }
 
 export = ChannelConfig;

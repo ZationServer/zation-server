@@ -15,9 +15,20 @@ export type ChannelEventFunction =
 
 export interface ChannelConfig
 {
-    [Const.Channel.KEYS.DEFAULTS] ?: Channel;
-    [Const.Channel.KEYS.CUSTOM_CHANNELS] ?: Record<string,Channel>;
-    [Const.Channel.KEYS.CUSTOM_ID_CHANNELS] ?: Record<string,Channel>;
+    [Const.Channel.KEYS.CUSTOM_CHANNELS] ?: Record<string,(Channel | ChannelSettings)> | ChannelDefault;
+    [Const.Channel.KEYS.CUSTOM_ID_CHANNELS] ?: Record<string,(Channel | ChannelSettings)> | ChannelDefault;
+    [Const.Channel.KEYS.USER_CH]  ?: ChannelSettings;
+    [Const.Channel.KEYS.USER_GROUP_CH] ?: ChannelSettings;
+    [Const.Channel.KEYS.DEFAULT_USER_GROUP_CH] ?: ChannelSettings;
+    [Const.Channel.KEYS.ALL_CH] ?: ChannelSettings;
+}
+
+export interface ChannelDefault {
+    [Const.Channel.CHANNEL_DEFAULT.DEFAULT] ?: (Channel | ChannelSettings);
+}
+
+export interface ChannelSettings {
+    [Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH] ?: boolean;
 }
 
 export interface Channel
@@ -31,3 +42,4 @@ export interface Channel
     [Const.Channel.CHANNEL.ON_SUBSCRIPTION] ?: ChannelEventFunction;
     [Const.Channel.CHANNEL.ON_UNSUBSCRIPTION] ?: ChannelEventFunction;
 }
+
