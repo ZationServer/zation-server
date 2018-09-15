@@ -16,6 +16,11 @@ class IdTools
         return socketSid.split(IdTools.sidSeparator);
     }
 
+    static buildSid(instanceId : string, workerId : string,socketId : string) : string
+    {
+        return instanceId+IdTools.sidSeparator+workerId+IdTools.sidSeparator+socketId;
+    }
+
     static socketSidToServerInstanceId(socketSid : string) {
         return this.splitSid(socketSid)[0];
     }
@@ -23,6 +28,8 @@ class IdTools
     static socketSidToWorkerId(socketSid : string) {
         return this.splitSid(socketSid)[1];
     }
+
+    static socketIdToSid
 }
 
 export = IdTools;

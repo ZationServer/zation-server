@@ -4,8 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import TSWClient = require("../helper/tempStorage/tswClient");
-
 require('cache-require-paths');
 import FuncTools             = require("../helper/tools/funcTools");
 const  SCWorker : any        = require('socketcluster/scworker');
@@ -29,8 +27,6 @@ import ControllerPrepare     = require('../helper/controller/controllerPrepare')
 import BackgroundTasksSaver  = require("../helper/background/backgroundTasksSaver");
 import Mapper                = require("../helper/tools/mapper");
 import {WorkerChActions}     from "../helper/constants/workerChActions";
-import TSWCInternalDown      = require("../helper/tempStorage/tswcInternalSharedDown");
-import TSWCMongoDown         = require("../helper/tempStorage/tswcMongoDown");
 import {Socket}              from "../helper/socket/socket";
 import ZationToken           = require("../helper/infoObjects/zationToken");
 import IdTools               = require("../helper/tools/idTools");
@@ -50,7 +46,6 @@ class ZationWorker extends SCWorker
     private preparedSmallBag : SmallBag;
     private controllerPrepare : ControllerPrepare;
     private aePreparedPart : AEPreparedPart;
-    private tswClient : TSWClient;
     private zation : Zation;
 
     private authStartActive : boolean;
@@ -150,11 +145,6 @@ class ZationWorker extends SCWorker
         await this.startHttpServer();
         Logger.printStartDebugInfo(`Worker with id ${this.id} starts http server.`,true);
 
-        //TempStorageClient
-        Logger.startStopWatch();
-        await this.startTSWClient();
-        Logger.printStartDebugInfo(`Worker with id ${this.id} starts temp storage worker client.`,true);
-
         Logger.startStopWatch();
         await this.startWebSocketServer();
         Logger.printStartDebugInfo(`Worker with id ${this.id} starts web socket server.`,true);
@@ -194,7 +184,7 @@ class ZationWorker extends SCWorker
 
             //init socket variables
             socket[Const.Settings.SOCKET.VARIABLES] = {};
-            socket.sid = `${this.options.instanceId}-|-${this.id}-|-${socket.id}`;
+            socket.sid = IdTools.buildSid(this.options.instanceId,this.id,socket.id);
 
             this.initSocketEvents(socket);
 
@@ -940,19 +930,6 @@ class ZationWorker extends SCWorker
         }
     }
 
-    private async startTSWClient()
-    {
-        const engine = this.zc.getMain(Const.Main.KEYS.TEMP_STORAGE_ENGINE);
-        if(engine === Const.Main.TEMP_STORAGE_ENGINE.INTERNAL_FULL) {
-            this.tswClient = new TSWCMongoDown(this,this.zc);
-        }
-        else {
-            //use internal-shared (default)
-            this.tswClient = new TSWCInternalDown(this,this.zc);
-        }
-        await this.tswClient.init();
-    }
-
     getServerVersion() : string
     {
         return this.serverVersion;
@@ -961,11 +938,6 @@ class ZationWorker extends SCWorker
     getServerStartedTime() : number
     {
         return this.serverStartedTimeStamp;
-    }
-
-    getTSWClient() : TSWClient
-    {
-        return this.tswClient;
     }
 
     getWorkerId() : number
@@ -1010,13 +982,13 @@ class ZationWorker extends SCWorker
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getUserToScSidMapper() : Mapper<string>
+    getUserToScIdMapper() : Mapper<string>
     {
         return this.mapUserToScId;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getTokenIdToScSidMapper() : Mapper<string>
+    getTokenIdToScIdMapper() : Mapper<string>
     {
         return this.mapTokenIdToScId;
     }

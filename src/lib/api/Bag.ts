@@ -14,7 +14,7 @@ import Const         = require("../helper/constants/constWrapper");
 import ObjectPath    = require("../helper/tools/objectPath");
 import MethodIsNotCompatible = require("../helper/error/methodIsNotCompatible");
 import ObjectPathSequence    = require("../helper/tools/objectPathSequence");
-import {Socket} from "../helper/socket/socket";
+import {Socket}                from "../helper/socket/socket";
 
 class Bag extends SmallBag
 {
@@ -562,8 +562,18 @@ class Bag extends SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
+    isWs() : boolean {
+        return this.isWebSocketProtocol();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
     isHttpProtocol() : boolean {
         return !this.shBridge.isWebSocket();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    isHttp() : boolean {
+        return this.isHttpProtocol();
     }
 
     //Part Socket
@@ -650,12 +660,11 @@ class Bag extends SmallBag
      * @param userId or more userIds in array
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      */
-    async publishToUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketId ?: string | null) : Promise<void>
+    async publishToUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
-        return await this.exchangeEngine.publishInUserCh(userId,eventName,data,srcSocketId);
+        return await this.exchangeEngine.publishInUserCh(userId,eventName,data,this._processSrcSocketSid(srcSocketSid));
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -670,12 +679,11 @@ class Bag extends SmallBag
      * @param userId or more userIds in array
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      */
-    async pubUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketId ?: string | null) : Promise<void>
+    async pubUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
-        return await this.publishToUser(userId,eventName,data,srcSocketId)
+        return await this.publishToUser(userId,eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -688,12 +696,11 @@ class Bag extends SmallBag
      * publishToAll('message',{message : 'hello'});
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      */
-    async publishToAll(eventName : string,data : object = {},srcSocketId ?: string | null) : Promise<void>
+    async publishToAll(eventName : string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
-        return await this.exchangeEngine.publishInAllCh(eventName,data,srcSocketId);
+        return await this.exchangeEngine.publishInAllCh(eventName,data,this._processSrcSocketSid(srcSocketSid));
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -706,12 +713,11 @@ class Bag extends SmallBag
      * pubAll('message',{message : 'hello'});
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      */
-    async pubAll(eventName : string,data : object = {},srcSocketId ?: string | null) : Promise<void>
+    async pubAll(eventName : string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
-        return await this.publishToAll(eventName,data,srcSocketId);
+        return await this.publishToAll(eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -726,12 +732,11 @@ class Bag extends SmallBag
      * @param authUserGroup or an array of auth user groups
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      */
-    async publishToAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    async publishToAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
-        return await this.exchangeEngine.publishInAuthUserGroupCh(authUserGroup,eventName,data,srcSocketId);
+        return await this.exchangeEngine.publishInAuthUserGroupCh(authUserGroup,eventName,data,this._processSrcSocketSid(srcSocketSid));
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -746,12 +751,11 @@ class Bag extends SmallBag
      * @param authUserGroup or an array of auth user groups
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      */
-    async pubAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    async pubAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
-        return await this.publishToAuthUserGroup(authUserGroup,eventName,data,srcSocketId);
+        return await this.publishToAuthUserGroup(authUserGroup,eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -764,12 +768,11 @@ class Bag extends SmallBag
      * publishToDefaultUserGroup('message',{message : 'hello'});
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      */
-    async publishToDefaultUserGroup(eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    async publishToDefaultUserGroup(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
-        return await this.exchangeEngine.publishInDefaultUserGroupCh(eventName,data,srcSocketId);
+        return await this.exchangeEngine.publishInDefaultUserGroupCh(eventName,data,this._processSrcSocketSid(srcSocketSid));
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -782,12 +785,11 @@ class Bag extends SmallBag
      * pubDefaultUserGroup('message',{message : 'hello'});
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      */
-    async pubDefaultUserGroup(eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    async pubDefaultUserGroup(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
-        return await this.publishToDefaultUserGroup(eventName,data,srcSocketId);
+        return await this.publishToDefaultUserGroup(eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -800,12 +802,11 @@ class Bag extends SmallBag
      * publishToAllAuthUserGroups('message',{fromUserId : '1',message : 'hello'});
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      */
-    async publishToAllAuthUserGroups(eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    async publishToAllAuthUserGroups(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
-        return await this.exchangeEngine.publishToAllAuthUserGroupCh(eventName,data,this.zc,srcSocketId);
+        return await this.exchangeEngine.publishToAllAuthUserGroupCh(eventName,data,this.zc,this._processSrcSocketSid(srcSocketSid));
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -818,12 +819,11 @@ class Bag extends SmallBag
      * pubAllAuthUserGroups('message',{fromUserId : '1',message : 'hello'});
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      */
-    async pubAllAuthUserGroups(eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    async pubAllAuthUserGroups(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
-        return await this.publishToAllAuthUserGroups(eventName,data,srcSocketId);
+        return await this.publishToAllAuthUserGroups(eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -838,12 +838,11 @@ class Bag extends SmallBag
      * @param id
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      */
-    async publishToCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    async publishToCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
-        return await this.exchangeEngine.publishToCustomIdChannel(channel,id,eventName,data,srcSocketId);
+        return await this.exchangeEngine.publishToCustomIdChannel(channel,id,eventName,data,this._processSrcSocketSid(srcSocketSid));
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -858,12 +857,11 @@ class Bag extends SmallBag
      * @param id
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      */
-    async pubCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    async pubCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
-        return await this.publishToCustomIdChannel(channel,id,eventName,data,srcSocketId);
+        return await this.publishToCustomIdChannel(channel,id,eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -878,12 +876,11 @@ class Bag extends SmallBag
      * @param channel or an array of channels
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      */
-    async publishToCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    async publishToCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
-        return this.exchangeEngine.publishToCustomChannel(channel,eventName,data,srcSocketId);
+        return this.exchangeEngine.publishToCustomChannel(channel,eventName,data,this._processSrcSocketSid(srcSocketSid));
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -898,12 +895,15 @@ class Bag extends SmallBag
      * @param channel or an array of channels
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      */
-    async pubCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketId ?: string | null) : Promise<void>
+    async pubCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        srcSocketId = !!srcSocketId ? srcSocketId : (srcSocketId === null ? undefined : this.getSocketId());
-        return await this.publishToCustomChannel(channel,eventName,data,srcSocketId);
+        return await this.publishToCustomChannel(channel,eventName,data,srcSocketSid);
+    }
+
+    private _processSrcSocketSid(srcSocketSid : string | null | undefined) : undefined | string {
+        return !!srcSocketSid ? srcSocketSid : (srcSocketSid === null || !this.isWs() ? undefined : this.getSocketSid());
     }
 }
 

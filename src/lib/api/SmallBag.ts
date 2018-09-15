@@ -642,14 +642,17 @@ class SmallBag
      * @example
      * kickUserCustomIdCh('user20','chatGroup');
      * kickUserCustomIdCh(['tom39','lara23'],'image','2');
+     * kickUserCustomIdCh(['tom39','lara23'],'image',undefined,'EXCEPT-SOCKET-SID');
      * @param userId or more user ids in an array
      * @param channel
      * @param id is optional, if it is not given the users will be kicked out from all ids of this channel.
+     * @param exceptSocketSids
      */
-    async kickUserCustomIdCh(userId : number | string | (number | string)[], channel : string, id ?: string) : Promise<void>
+    async kickUserCustomIdCh(userId : number | string | (number | string)[], channel : string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         let ch = ChTools.buildCustomIdChannelName(channel,id);
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.KICK_OUT_USER_IDS_FROM_CH,userId,{ch});
+        return await
+            this.exchangeEngine.publishTaskToWorker(WorkerChActions.KICK_OUT_USER_IDS_FROM_CH,userId,exceptSocketSids,{ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -659,13 +662,16 @@ class SmallBag
      * @example
      * kickUserCustomCh('user20','chatGroup');
      * kickUserCustomCh(['tom39','lara23'],'image');
+     * kickUserCustomCh(['tom39','lara23'],'image','EXCEPT-SOCKET-SID');
      * @param userId or more user ids in an array
      * @param channel
+     * @param exceptSocketSids
      */
-    async kickUserCustomCh(userId : number | string | (number | string)[], channel : string) : Promise<void>
+    async kickUserCustomCh(userId : number | string | (number | string)[], channel : string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         let ch = ChTools.buildCustomChannelName(channel);
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.KICK_OUT_USER_IDS_FROM_CH,userId,{ch});
+        return await
+            this.exchangeEngine.publishTaskToWorker(WorkerChActions.KICK_OUT_USER_IDS_FROM_CH,userId,exceptSocketSids,{ch});
     }
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -674,14 +680,17 @@ class SmallBag
      * @example
      * kickTokenCustomIdCh('TOKEN-UUID1','chatGroup');
      * kickTokenCustomIdCh(['TOKEN-UUID1,'TOKEN-UUID2'],'image','2');
+     * kickTokenCustomIdCh(['TOKEN-UUID1,'TOKEN-UUID2'],'image',undefined,'EXCEPT-SOCKET-SID');
      * @param tokenId
      * @param channel
      * @param id is optional, if it is not given the sockets with tokenId will be kicked out from all ids of this channel.
+     * @param exceptSocketSids
      */
-    async kickTokenCustomIdCh(tokenId : string | string[], channel : string, id ?: string) : Promise<void>
+    async kickTokenCustomIdCh(tokenId : string | string[], channel : string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         let ch = ChTools.buildCustomIdChannelName(channel,id);
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.KICK_OUT_TOKEN_IDS_FROM_CH,tokenId,{ch});
+        return await
+            this.exchangeEngine.publishTaskToWorker(WorkerChActions.KICK_OUT_TOKEN_IDS_FROM_CH,tokenId,exceptSocketSids,{ch});
     }
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -689,14 +698,16 @@ class SmallBag
      * KickOut all sockets on complete system with token id from an custom channel (server side)
      * @example
      * kickTokenCustomCh('TOKEN-UUID1','chatGroup');
-     * kickTokenCustomCh(['TOKEN-UUID1,'TOKEN-UUID2'],'image','2');
+     * kickTokenCustomCh(['TOKEN-UUID1,'TOKEN-UUID2'],'image','EXCEPT-SOCKET-SID');
      * @param tokenId
      * @param channel
+     * @param exceptSocketSids
      */
-    async kickTokenCustomCh(tokenId : string | string[], channel : string) : Promise<void>
+    async kickTokenCustomCh(tokenId : string | string[], channel : string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         let ch = ChTools.buildCustomChannelName(channel);
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.KICK_OUT_TOKEN_IDS_FROM_CH,tokenId,{ch});
+        return await
+            this.exchangeEngine.publishTaskToWorker(WorkerChActions.KICK_OUT_TOKEN_IDS_FROM_CH,tokenId,exceptSocketSids,{ch});
     }
 
     //Part Extra Emit
@@ -706,14 +717,16 @@ class SmallBag
      * Emit to all sockets on complete system with user id (server side)
      * @example
      * emitUser('joel2','myEvent',{myData : 'test'});
+     * emitUser('joel2','myEvent',{myData : 'test'},'EXCEPT-SOCKET-SID');
      * @param userIds
      * @param event
      * @param data
+     * @param exceptSocketSids
      */
-    async emitUser(userIds : (number | string)[],event : string,data : any = {}) : Promise<void>
+    async emitUser(userIds : (number | string)[],event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
     {
         return await
-            this.exchangeEngine.publishTaskToWorker(WorkerChActions.EMIT_USER_IDS,userIds,{event,data});
+            this.exchangeEngine.publishTaskToWorker(WorkerChActions.EMIT_USER_IDS,userIds,exceptSocketSids,{event,data});
     }
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -721,14 +734,16 @@ class SmallBag
      * Emit to all sockets on complete system with token id (server side)
      * @example
      * emitToken('TOKEN-UUID1','myEvent',{myData : 'test'});
+     * emitToken('TOKEN-UUID2','myEvent',{myData : 'test'},'EXCEPT-SOCKET-SID');
      * @param tokenIds
      * @param event
      * @param data
+     * @param exceptSocketSids
      */
-    async emitToken(tokenIds : string[],event : string,data : any = {}) : Promise<void>
+    async emitToken(tokenIds : string[],event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
     {
         return await
-            this.exchangeEngine.publishTaskToWorker(WorkerChActions.EMIT_TOKEN_IDS,tokenIds,{event,data});
+            this.exchangeEngine.publishTaskToWorker(WorkerChActions.EMIT_TOKEN_IDS,tokenIds,exceptSocketSids,{event,data});
     }
 
     //Part Security
@@ -738,25 +753,30 @@ class SmallBag
      * @description
      * Disconnect all sockets on complete system with user id (server side)
      * @example
-     * disconnectUser('tim902','leonie23');
+     * disconnectUser(['tim902','leonie23']);
+     * disconnectUser('tim902');
+     * disconnectUser('tim902','EXCEPT-SOCKET-SID');
      * @param userIds
+     * @param exceptSocketSids
      */
-    async disconnectUser(...userIds : (number | string)[]) : Promise<void>
+    async disconnectUser(userIds : (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.DISCONNECT_USER_IDS,userIds);
+        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.DISCONNECT_USER_IDS,userIds,exceptSocketSids);
     }
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
      * Disconnect all sockets on complete system with token id (server side)
      * @example
-     * disconnectToken('TOKEN-UUID1','TOKEN-UUID2');
+     * disconnectToken(['TOKEN-UUID1','TOKEN-UUID2']);
+     * disconnectToken('TOKEN-UUID1');
+     * disconnectToken('TOKEN-UUID1','EXCEPT-SOCKET-SID'');
      * @param tokenIds
-     * @param exceptSocketIds
+     * @param exceptSocketSids
      */
-    async disconnectToken(tokenIds : string[],exceptSocketIds : string[] | string = []) : Promise<void>
+    async disconnectToken(tokenIds : string[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.DISCONNECT_TOKEN_IDS,tokenIds,exceptSocketIds);
+        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.DISCONNECT_TOKEN_IDS,tokenIds,exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -850,7 +870,42 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socketSids with the tokenId
+     * Returns the socketSids from socketId
+     * Only for ids they are found on the worker!
+     * @example
+     * convertSocketIdToSid('SOCKET-ID-1','SOCKET-ID-2');
+     * @param socketIds
+     */
+    convertSocketIdToSid(...socketIds : string[]) : string[]
+    {
+        const res : string[] = [];
+        socketIds.forEach((id) => {
+            let socket : Socket | undefined = this.getWorkerSocket(id);
+            if(!!socket) {
+                res.push(socket.sid);
+            }
+        });
+        return res;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the socketIds from socket with the tokenId
+     * You have only access to socketsIds they are connected to this worker.
+     * @example
+     * getSocketIdsWithTokenId('TOKEN-ID');
+     * @param tokenId
+     */
+    getSocketIdsWithTokenId(tokenId : string) : string[]
+    {
+        return this.worker.getTokenIdToScIdMapper().getValues(tokenId);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the socketSids from socket with the tokenId
      * You have only access to socketsSids they are connected to this worker.
      * @example
      * getSocketSidsWithTokenId('TOKEN-ID');
@@ -858,13 +913,27 @@ class SmallBag
      */
     getSocketSidsWithTokenId(tokenId : string) : string[]
     {
-        return this.worker.getTokenIdToScSidMapper().getValues(tokenId);
+        return this.convertSocketIdToSid(...this.getSocketIdsWithTokenId(tokenId));
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socketSids with the userId
+     * Returns the socketIds from sockets with the userId
+     * You have only access to socketsIds they are connected to this worker.
+     * @example
+     * getSocketIdsWithUserId('tom1554');
+     * @param userId
+     */
+    getSocketIdsWithUserId(userId : string) : string[]
+    {
+        return this.worker.getUserToScIdMapper().getValues(userId);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description&
+     * Returns the socketSids from sockets with the userId
      * You have only access to socketsSids they are connected to this worker.
      * @example
      * getSocketSidsWithUserId('tom1554');
@@ -872,7 +941,7 @@ class SmallBag
      */
     getSocketSidsWithUserId(userId : string) : string[]
     {
-        return this.worker.getUserToScSidMapper().getValues(userId);
+        return this.convertSocketIdToSid(...this.getSocketIdsWithUserId(userId));
     }
 
     //Part Amazon s3
