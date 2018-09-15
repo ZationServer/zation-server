@@ -44,7 +44,6 @@ AppController[Const.App.CONTROLLER.WS_ACCESS]         = {types : ['boolean'],isO
 AppController[Const.App.CONTROLLER.HTTP_ACCESS]       = {types : ['boolean'],isOptional : true};
 AppController[Const.App.CONTROLLER.INPUT_VALIDATION]  = {types : ['boolean'],isOptional : true};
 AppController[Const.App.CONTROLLER.INPUT_ALL_ALLOW]   = {types : ['boolean'],isOptional : true};
-AppController[Const.App.CONTROLLER.EXTRA_SECURE]      = {types : ['boolean'],isOptional : true};
 AppController[Const.App.CONTROLLER.PATH]              = {types : ['string'],isOptional : true};
 AppController[Const.App.CONTROLLER.NAME]              = {types : ['string'],isOptional : true};
 AppController[Const.App.CONTROLLER.ACCESS]            = {types : ['string','function','number','array'],isOptional : true};
@@ -80,7 +79,6 @@ Main[Const.Main.KEYS.PANEL_USER]              = {types : ['object','array'],isOp
 Main[Const.Main.KEYS.CLIENT_JS_PREPARE]       = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.PATH]                    = {types : ['string'],isOptional : true};
 
-Main[Const.Main.KEYS.EXTRA_SECURE_AUTH]       = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.AUTH_START]              = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.AUTH_START_DURATION_MS]  = {types : ['number'],isOptional : true};
 Main[Const.Main.KEYS.POST_KEY_WORD]           = {types : ['string'],isOptional : true};
@@ -89,11 +87,6 @@ Main[Const.Main.KEYS.AUTH_DEFAULT_EXPIRY]     = {types : ['number'],isOptional :
 Main[Const.Main.KEYS.AUTH_ALGORITHM]          = {types : ['string'],isOptional : true};
 Main[Const.Main.KEYS.AUTH_PRIVATE_KEY]        = {types : ['string','object'],isOptional : true};
 Main[Const.Main.KEYS.AUTH_PUBLIC_KEY]         = {types : ['string','object'],isOptional : true};
-
-//TempStorage
-Main[Const.Main.KEYS.TEMP_STORAGE_ENGINE]
-    = {types : ['string'],isOptional : true,enum :
-        [Const.Main.TEMP_STORAGE_ENGINE.INTERNAL_FULL,Const.Main.TEMP_STORAGE_ENGINE.INTERNAL_SHARED]};
 
 //Cluster
 Main[Const.Main.KEYS.CLUSTER_AUTH_KEY]        = {types : ['string','null'],isOptional : true};

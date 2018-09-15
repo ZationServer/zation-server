@@ -37,7 +37,6 @@ class CONTROLLER {
     static readonly PATH                = 'path';
     static readonly INPUT               = 'input';
     static readonly BEFORE_HANDLE       = 'beforeHandle';
-    static readonly EXTRA_SECURE        = 'extraSecure';
     static readonly SYSTEM_CONTROLLER   = 'systemController';
     static readonly HTTP_ACCESS         = 'httpAccess';
     static readonly WS_ACCESS           = 'wsAccess';

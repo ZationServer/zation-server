@@ -3,22 +3,19 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-import ZationStarter = require("../../main/zationMaster");
+import ZationMaster = require("../../main/zationMaster");
 import TimeTools     = require("../tools/timeTools");
 import ZationConfig  = require("../../main/zationConfig");
 
 class BackgroundTasksSender
 {
-    private readonly starter : ZationStarter;
+    private readonly master : ZationMaster;
     private readonly zc : ZationConfig;
 
-    private active : boolean;
-
-    constructor(starter : ZationStarter,zc : ZationConfig)
+    constructor(master : ZationMaster, zc : ZationConfig)
     {
         this.zc = zc;
-        this.starter = starter;
-        this.active = true;
+        this.master = master;
     }
 
     public setEveryBackgroundTask(name,time)
@@ -49,15 +46,8 @@ class BackgroundTasksSender
         }
     }
 
-    public setActive(active : boolean) {
-        this.active = active;
-    }
-
-    private runUserBackgroundTask(name)
-    {
-        if(this.active) {
-            this.starter.sendToRandomWorker({userBackgroundTask : name});
-        }
+    private runUserBackgroundTask(name) {
+        this.master.sendBackgroundTask({userBackgroundTask : name});
     }
 
     public setAtBackgroundTask(name,time)

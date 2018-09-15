@@ -31,11 +31,13 @@ class ZationMaster
     private master : any;
 
     //cluster
-    private serverIsReady : boolean;
     private clusterStateServerHost : any;
     private stateServerActive : boolean;
     private stateServerEngine : StateServerEngine;
-    private isClusterLeader : boolean;
+
+    //backgroundTasks
+    private backgroundTaskActive : boolean = true;
+    private backgroundTaskInit : boolean = false;
 
     constructor(options)
     {
@@ -162,7 +164,6 @@ class ZationMaster
             zationConfigWorkerTransport : this.zc.getWorkerTransport(),
             zationServerVersion : ZationMaster.version,
             zationServerStartedTimeStamp : this.serverStartedTimeStamp,
-            zationServerIsReady : this.serverIsReady,
             logLevel : scLogLevel,
             clusterAuthKey : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_AUTH_KEY),
             clusterStateServerHost : this.clusterStateServerHost,
@@ -218,6 +219,8 @@ class ZationMaster
                Logger.startStopWatch();
                this.startBackgroundTasks();
                Logger.printStartDebugInfo('Master init the background tasks.',true);
+               this.backgroundTaskInit = true;
+               this.backgroundTaskActive = true;
            }
            else {
                await this.stateServerEngine.scStarted();
@@ -310,74 +313,29 @@ class ZationMaster
             || process.env.ZATION_STATE_SERVER_HOST || this.zc.getMainOrNull(Const.Main.KEYS.STATE_SERVER_HOST);
 
         this.stateServerActive =  !!this.clusterStateServerHost;
-
-        //server is not ready before sync data from state.. (data sync only in engine)
-        this.serverIsReady = !this.stateServerActive || ;
     }
 
-    private async activateServerIsReady()
-    {
-
-
-
-    }
-
-    private async syncData(stateSocket : any)
-    {
-        Logger.printStartDebugInfo('Master is try to synchronize data from cluster leader.');
-        await new Promise((resolve, reject) =>
-        {
-            stateSocket.emit('getSyncData',{},async (err,data) => {
-
-                if(err) {
-                    reject(new Error(`Failed to get synchronize data error -> ${err.toString()}`));
-                }
-
-                if(data.haveLeader) {
-                    Logger.startStopWatch();
-                    await this.setSyncData(data);
-                    Logger.printStartDebugInfo('Master synchronize data from leader.',true);
-                    resolve();
-                }
-                else {
-                    Logger.printStartDebugInfo(`Master does not need to synchronize data from a leader.`);
-                }
-            });
-        });
-    }
-
-    private activateClusterLeader(stateSocket : any)
+    public activateClusterLeader() : void
     {
         Logger.printDebugInfo(`This Instance '${this.master.options.instanceId}' becomes the leader.`);
 
-        Logger.startStopWatch();
-        this.startBackgroundTasks();
-        Logger.printStartDebugInfo('Master init the background tasks.',true);
+        if(!this.backgroundTaskInit) {
+            Logger.startStopWatch();
+            this.startBackgroundTasks();
+            Logger.printStartDebugInfo('Master init the background tasks.',true);
+            this.backgroundTaskInit = true;
+        }
 
-        Logger.printStartDebugInfo('Master register on leader events.');
-        stateSocket.on('getSyncData',async (data,respond) => {
-            respond(null,await this.getSyncData());
-        });
+        this.backgroundTaskActive = true;
     }
 
-    private async setSyncData(data : any)
+    public deactivateClusterLeader() : void
     {
-        //set data to broker
-
-
-    }
-
-    private async getSyncData()
-    {
-        //get data from broker
-        this.brokerIds.toArray().forEach( (id) =>
-        {
-
-        });
+        Logger.printDebugInfo(`This Instance '${this.master.options.instanceId}' gets the lead taken off!`);
+        this.backgroundTaskActive = false;
     }
 
     //PART Crash
-
     // noinspection JSMethodCanBeStatic
     public crashServer(error : Error | string)
     {
@@ -396,7 +354,6 @@ class ZationMaster
 
         const bkTS = new BackgroundTasksSetter(
             (name,time) => {
-
             bkTsSender.setEveryBackgroundTask(name,time);
         },
             (name,time) => {
@@ -406,11 +363,17 @@ class ZationMaster
         bkTS.setUserBackgroundTasks(this.zc);
 
         //systemBackgroundTask
-        setInterval(() =>
-        {
-            this.sendToRandomWorker({systemBackgroundTasks : true});
+        setInterval(() => {
+            this.sendBackgroundTask({systemBackgroundTasks : true});
         }
         ,this.zc.getMain(Const.Main.KEYS.SYSTEM_BACKGROUND_TASK_REFRESH_RATE));
+    }
+
+    public sendBackgroundTask(obj)
+    {
+        if(this.backgroundTaskActive) {
+            this.sendToRandomWorker(obj);
+        }
     }
 
     public sendToRandomWorker(obj)

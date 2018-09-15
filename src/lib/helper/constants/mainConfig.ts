@@ -30,14 +30,9 @@ class KEYS {
     static readonly PANEL_USER                            = 'panelUser';
     static readonly CLIENT_JS_PREPARE                     = 'clientJsPrepare';
 
-    static readonly EXTRA_SECURE_AUTH              = 'extraSecureAuth';
-
     //Auth Start
     static readonly AUTH_START                     = 'authStart';
     static readonly AUTH_START_DURATION_MS         = 'authStartDuration';
-
-    //TempStorage
-    static readonly TEMP_STORAGE_ENGINE                   = 'tempStorageEngine';
 
     //Cluster
     static readonly CLUSTER_AUTH_KEY                      = 'clusterAuthKey';
@@ -93,11 +88,6 @@ class KEYS {
     static readonly AUTH_PUBLIC_KEY        = 'authPublicKey';
 }
 
-class TEMP_STORAGE_ENGINE {
-    static readonly INTERNAL_SHARED             = 'internalShared';
-    static readonly INTERNAL_FULL               = 'internalFull';
-}
-
 class OPTIONS {
     static readonly AUTO            = 'auto';
 }
@@ -114,7 +104,6 @@ class HTTPS_CONFIG {
 
 class MainConfig
 {
-    public static readonly TEMP_STORAGE_ENGINE = TEMP_STORAGE_ENGINE;
     public static readonly OPTIONS = OPTIONS;
     public static readonly KEYS = KEYS;
     public static readonly PANEL_USER = PANEL_USER;
