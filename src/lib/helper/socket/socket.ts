@@ -7,6 +7,7 @@ GitHub: LucaCode
 export interface Socket
 {
     id : string;
+    sid : string;
     request : any;
     remoteAddress : string;
     exchange : any;

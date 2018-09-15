@@ -24,6 +24,7 @@ import TaskError        = require("./TaskError");
 import fetch,{Request, RequestInit, Response} from 'node-fetch';
 import ChTools = require("../helper/channel/chTools");
 import {WorkerChActions} from "../helper/constants/workerChActions";
+import IdTools = require("../helper/tools/idTools");
 
 class SmallBag
 {
@@ -42,8 +43,8 @@ class SmallBag
 
     //PART Server
     // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
-    getServerIpAddress() : string
-    {
+    getServerIpAddress() : string {
+        // noinspection TypeScriptValidateJSTypes
         return IP.address();
     }
 
@@ -89,41 +90,6 @@ class SmallBag
         return this.worker.getFullWorkerId()
     }
 
-    //Part Auth
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Auth out an user
-     * @param userIds
-     */
-    async authOutUser(...userIds : (number | string)[]) : Promise<void>
-    {
-        await this.exchangeEngine.publishTaskToWorker(WorkerChActions.EMIT_USER_IDS,userIds,{event : });
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Auth out an user
-     * @param tokenIds
-     */
-    async authOutToken(...tokenIds :  string[]) : Promise<void>
-    {
-        await this.exchangeEngine.publishTaskToWorker(WorkerChActions.EMIT_TOKEN_IDS,tokenIds,{event : });
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * ReAuth an user
-     * @param userId
-     */
-    async publishReAuth(userId : string | number) : Promise<void>
-    {
-        await this.exchangeEngine.publishReAuth(userId);
-    }
-
     //Part Crypto
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -148,12 +114,10 @@ class SmallBag
      */
     hashIn(hash : string,string : string,salt ?: string) : string
     {
-        if(salt !== undefined)
-        {
+        if(salt !== undefined) {
             return crypto.createHmac(hash,salt).update(string).digest('hex');
         }
-        else
-        {
+        else {
             return crypto.createHash(hash).update(string).digest('hex');
         }
     }
@@ -164,7 +128,7 @@ class SmallBag
      * Returns an random string
      * @param length
      */
-    getRandomString(length : number) : string
+    getRandomString(length : number = 16) : string
     {
         return crypto.randomBytes(Math.ceil(length/2)).toString('hex').slice(0,length);
     }
@@ -174,8 +138,7 @@ class SmallBag
      * @description
      * Returns an generated uuid
      */
-    generateUUID() : string
-    {
+    generateUUID() : string {
         return UUID.generateUUID();
     }
 
@@ -191,12 +154,12 @@ class SmallBag
      * @param userId or more userIds in array
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishToUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketId ?: string) : Promise<void>
+    async publishToUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string) : Promise<void>
     {
-        return await this.exchangeEngine.publishInUserCh(userId,eventName,data,srcSocketId);
+        return await this.exchangeEngine.publishInUserCh(userId,eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -209,12 +172,12 @@ class SmallBag
      * @param userId or more userIds in array
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketId ?: string) : Promise<void>
+    async pubUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string) : Promise<void>
     {
-        return await this.publishToUser(userId,eventName,data,srcSocketId)
+        return await this.publishToUser(userId,eventName,data,srcSocketSid)
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -225,12 +188,12 @@ class SmallBag
      * publishToAll('message',{message : 'hello'});
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishToAll(eventName : string,data : object = {},srcSocketId ?: string) : Promise<void>
+    async publishToAll(eventName : string,data : object = {},srcSocketSid ?: string) : Promise<void>
     {
-        return await this.exchangeEngine.publishInAllCh(eventName,data,srcSocketId);
+        return await this.exchangeEngine.publishInAllCh(eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -241,12 +204,12 @@ class SmallBag
      * pubAll('message',{message : 'hello'});
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubAll(eventName : string,data : object = {},srcSocketId ?: string) : Promise<void>
+    async pubAll(eventName : string,data : object = {},srcSocketSid ?: string) : Promise<void>
     {
-        return await this.publishToAll(eventName,data,srcSocketId);
+        return await this.publishToAll(eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -258,12 +221,12 @@ class SmallBag
      * @param authUserGroup or an array of auth user groups
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishToAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketId ?: string) : Promise<void>
+    async publishToAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
     {
-        return await this.exchangeEngine.publishInAuthUserGroupCh(authUserGroup,eventName,data,srcSocketId);
+        return await this.exchangeEngine.publishInAuthUserGroupCh(authUserGroup,eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -276,12 +239,12 @@ class SmallBag
      * @param authUserGroup or an array of auth user groups
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketId ?: string) : Promise<void>
+    async pubAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
     {
-        return await this.publishToAuthUserGroup(authUserGroup,eventName,data,srcSocketId);
+        return await this.publishToAuthUserGroup(authUserGroup,eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -292,12 +255,12 @@ class SmallBag
      * publishToDefaultUserGroup('message',{message : 'hello'});
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishToDefaultUserGroup(eventName : string, data : object = {},srcSocketId ?: string) : Promise<void>
+    async publishToDefaultUserGroup(eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
     {
-        return await this.exchangeEngine.publishInDefaultUserGroupCh(eventName,data,srcSocketId);
+        return await this.exchangeEngine.publishInDefaultUserGroupCh(eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -308,12 +271,12 @@ class SmallBag
      * pubDefaultUserGroup('message',{message : 'hello'});
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubDefaultUserGroup(eventName : string, data : object = {},srcSocketId ?: string) : Promise<void>
+    async pubDefaultUserGroup(eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
     {
-        return await this.publishToDefaultUserGroup(eventName,data,srcSocketId);
+        return await this.publishToDefaultUserGroup(eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -324,12 +287,12 @@ class SmallBag
      * publishToAllAuthUserGroups('message',{fromUserId : '1',message : 'hello'});
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishToAllAuthUserGroups(eventName : string, data : object = {},srcSocketId ?: string) : Promise<void>
+    async publishToAllAuthUserGroups(eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
     {
-        return await this.exchangeEngine.publishToAllAuthUserGroupCh(eventName,data,this.zc,srcSocketId);
+        return await this.exchangeEngine.publishToAllAuthUserGroupCh(eventName,data,this.zc,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -340,12 +303,12 @@ class SmallBag
      * pubAllAuthUserGroups('message',{fromUserId : '1',message : 'hello'});
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubAllAuthUserGroups(eventName : string, data : object = {},srcSocketId ?: string) : Promise<void>
+    async pubAllAuthUserGroups(eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
     {
-        return await this.publishToAllAuthUserGroups(eventName,data,srcSocketId);
+        return await this.publishToAllAuthUserGroups(eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -358,12 +321,12 @@ class SmallBag
      * @param id
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishToCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketId ?: string) : Promise<void>
+    async publishToCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
     {
-        return await this.exchangeEngine.publishToCustomIdChannel(channel,id,eventName,data,srcSocketId);
+        return await this.exchangeEngine.publishToCustomIdChannel(channel,id,eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -376,12 +339,12 @@ class SmallBag
      * @param id
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketId ?: string) : Promise<void>
+    async pubCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
     {
-        return await this.publishToCustomIdChannel(channel,id,eventName,data,srcSocketId);
+        return await this.publishToCustomIdChannel(channel,id,eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -394,12 +357,12 @@ class SmallBag
      * @param channel or an array of channels
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishToCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketId ?: string) : Promise<void>
+    async publishToCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
     {
-        return this.exchangeEngine.publishToCustomChannel(channel,eventName,data,srcSocketId);
+        return this.exchangeEngine.publishToCustomChannel(channel,eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -412,12 +375,12 @@ class SmallBag
      * @param channel or an array of channels
      * @param eventName
      * @param data
-     * @param srcSocketId
+     * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketId ?: string) : Promise<void>
+    async pubCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
     {
-        return await this.publishToCustomChannel(channel,eventName,data,srcSocketId);
+        return await this.publishToCustomChannel(channel,eventName,data,srcSocketSid);
     }
 
     //Part Database -> MySql
@@ -675,7 +638,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets with userId from an custom id channel (server side)
+     * KickOut all sockets on complete system with userId from an custom id channel (server side)
      * @example
      * kickUserCustomIdCh('user20','chatGroup');
      * kickUserCustomIdCh(['tom39','lara23'],'image','2');
@@ -692,7 +655,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets with userId from an custom channel (server side)
+     * KickOut all sockets on complete system with userId from an custom channel (server side)
      * @example
      * kickUserCustomCh('user20','chatGroup');
      * kickUserCustomCh(['tom39','lara23'],'image');
@@ -707,7 +670,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets with token id from an custom id channel (server side)
+     * KickOut all sockets on complete system with token id from an custom id channel (server side)
      * @example
      * kickTokenCustomIdCh('TOKEN-UUID1','chatGroup');
      * kickTokenCustomIdCh(['TOKEN-UUID1,'TOKEN-UUID2'],'image','2');
@@ -723,7 +686,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets with token id from an custom channel (server side)
+     * KickOut all sockets on complete system with token id from an custom channel (server side)
      * @example
      * kickTokenCustomCh('TOKEN-UUID1','chatGroup');
      * kickTokenCustomCh(['TOKEN-UUID1,'TOKEN-UUID2'],'image','2');
@@ -740,7 +703,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Emit to all sockets with user id (server side)
+     * Emit to all sockets on complete system with user id (server side)
      * @example
      * emitUser('joel2','myEvent',{myData : 'test'});
      * @param userIds
@@ -755,7 +718,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Emit to all sockets with token id (server side)
+     * Emit to all sockets on complete system with token id (server side)
      * @example
      * emitToken('TOKEN-UUID1','myEvent',{myData : 'test'});
      * @param tokenIds
@@ -773,7 +736,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Disconnect all sockets with user id (server side)
+     * Disconnect all sockets on complete system with user id (server side)
      * @example
      * disconnectUser('tim902','leonie23');
      * @param userIds
@@ -785,40 +748,87 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Disconnect all sockets with token id (server side)
+     * Disconnect all sockets on complete system with token id (server side)
      * @example
      * disconnectToken('TOKEN-UUID1','TOKEN-UUID2');
      * @param tokenIds
+     * @param exceptSocketIds
      */
-    async disconnectToken(...tokenIds : string[]) : Promise<void>
+    async disconnectToken(tokenIds : string[],exceptSocketIds : string[] | string = []) : Promise<void>
     {
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.DISCONNECT_TOKEN_IDS,tokenIds);
+        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.DISCONNECT_TOKEN_IDS,tokenIds,exceptSocketIds);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Deauthenticate all sockets with user id (server side)
+     * Deauthenticate all sockets on complete system with user id/s (server side)
      * @example
-     * deauthenticateUser('tim902','leonie23');
+     * deauthenticateUser(['tim902','leonie23']);
+     * deauthenticateUser('tim902');
+     * deauthenticateUser('tim902','EXCEPT-SOCKET-SID');
      * @param userIds
+     * @param exceptSocketSids
      */
-    async deauthenticateUser(...userIds : (number | string)[]) : Promise<void>
+    async deauthenticateUser(userIds : (number | string)[] | number | string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.DEAUTHENTICATE_USER_IDS,userIds);
+        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.DEAUTHENTICATE_USER_IDS,userIds,exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Deauthenticate all sockets with token id (server side)
+     * Deauthenticate all sockets on complete system with token id/s (server side)
      * @example
-     * deauthenticateToken('TOKEN-UUID1','TOKEN-UUID2');
+     * deauthenticateToken(['TOKEN-UUID1','TOKEN-UUID2']);
+     * deauthenticateToken('TOKEN-UUID2');
+     * deauthenticateToken('TOKEN-UUID2','EXCEPT-SOCKET-SID');
      * @param tokenIds
+     * @param exceptSocketSids
      */
-    async deauthenticateToken(...tokenIds :  string[]) : Promise<void>
+    async deauthenticateToken(tokenIds : string[] | string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.DEAUTHENTICATE_TOKEN_IDS,tokenIds);
+        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.DEAUTHENTICATE_TOKEN_IDS,tokenIds,exceptSocketSids);
+    }
+
+    //Part SocketId Tools
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns the socketId from the socketSid.
+     * @example
+     * socketSidToSocketId('SOCKET-SID');
+     * @param socketSid
+     */
+    socketSidToSocketId(socketSid : string) : string
+    {
+        return IdTools.socketSidToSocketId(socketSid);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns the server instance id from the socketSid.
+     * @example
+     * socketSidToSeverId(SOCKET-SID');
+     * @param socketSid
+     */
+    socketSidToSeverId(socketSid : string) : string
+    {
+        return IdTools.socketSidToServerInstanceId(socketSid);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns the worker id from the socketSid.
+     * @example
+     * socketSidToWorkerId('SOCKET-SID');
+     * @param socketSid
+     */
+    socketSidToWorkerId(socketSid : string) : string
+    {
+        return IdTools.socketSidToWorkerId(socketSid);
     }
 
     //Part Worker
@@ -840,33 +850,34 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socketIds with the tokenId
-     * You have only access to socketsIds they are connected to this worker.
+     * Returns the socketSids with the tokenId
+     * You have only access to socketsSids they are connected to this worker.
      * @example
-     * getSocketIdsWithTokenId('TOKEN-ID');
+     * getSocketSidsWithTokenId('TOKEN-ID');
      * @param tokenId
      */
-    getSocketIdsWithTokenId(tokenId : string) : string[]
+    getSocketSidsWithTokenId(tokenId : string) : string[]
     {
-        return this.worker.getTokenIdToScIdMapper().getValues(tokenId);
+        return this.worker.getTokenIdToScSidMapper().getValues(tokenId);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socketIds with the userId
-     * You have only access to socketsIds they are connected to this worker.
+     * Returns the socketSids with the userId
+     * You have only access to socketsSids they are connected to this worker.
      * @example
-     * getSocketIdsWithUserId('tom1554');
+     * getSocketSidsWithUserId('tom1554');
      * @param userId
      */
-    getSocketIdsWithUserId(userId : string) : string[]
+    getSocketSidsWithUserId(userId : string) : string[]
     {
-        return this.worker.getUserToScIdMapper().getValues(userId);
+        return this.worker.getUserToScSidMapper().getValues(userId);
     }
 
     //Part Amazon s3
     // noinspection JSUnusedGlobalSymbols
+    /*
     uploadFileToBucket()
     {
         //TODO
@@ -879,6 +890,7 @@ class SmallBag
         //TODO
 
     }
+    */
 }
 
 export = SmallBag;

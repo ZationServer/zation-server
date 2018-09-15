@@ -31,8 +31,9 @@ import Mapper                = require("../helper/tools/mapper");
 import {WorkerChActions}     from "../helper/constants/workerChActions";
 import TSWCInternalDown      = require("../helper/tempStorage/tswcInternalSharedDown");
 import TSWCMongoDown         = require("../helper/tempStorage/tswcMongoDown");
-import {Socket} from "../helper/socket/socket";
-import ZationToken = require("../helper/infoObjects/zationToken");
+import {Socket}              from "../helper/socket/socket";
+import ZationToken           = require("../helper/infoObjects/zationToken");
+import IdTools               = require("../helper/tools/idTools");
 
 class ZationWorker extends SCWorker
 {
@@ -189,12 +190,13 @@ class ZationWorker extends SCWorker
         this.initScServerEvents();
 
         //START SOCKET SERVER
-        this.scServer.on('connection', async (socket,conSate) => {
-
-            this.initSocketEvents(socket);
+        this.scServer.on('connection', async (socket : Socket,conSate) => {
 
             //init socket variables
             socket[Const.Settings.SOCKET.VARIABLES] = {};
+            socket.sid = `${this.options.instanceId}-|-${this.id}-|-${socket.id}`;
+
+            this.initSocketEvents(socket);
 
             await this.zc.emitEvent(Const.Event.SC_SERVER_CONNECTION,this.getPreparedSmallBag(),socket,conSate);
 
@@ -768,6 +770,7 @@ class ZationWorker extends SCWorker
             }
 
             const ids = data.ids;
+            const exceptSocketSids = data.exceptSocketSids;
             const mainData = data.mainData;
 
             const ch = mainData.ch;
@@ -787,70 +790,86 @@ class ZationWorker extends SCWorker
 
             if(data.action === WorkerChActions.KICK_OUT_TOKEN_IDS_FROM_CH && !!ch)
             {
-                this.forTokenIds(ids,kickOutAction);
+                this.forTokenIds(ids,exceptSocketSids,kickOutAction);
             }
             else if(data.action === WorkerChActions.KICK_OUT_USER_IDS_FROM_CH && !!ch)
             {
-                this.forUserIds(ids,kickOutAction);
+                this.forUserIds(ids,exceptSocketSids,kickOutAction);
             }
             else if(data.action === WorkerChActions.EMIT_TOKEN_IDS)
             {
-                this.forTokenIds(ids,(s : Socket) => {s.emit(event,emitData)});
+                this.forTokenIds(ids,exceptSocketSids,(s : Socket) => {s.emit(event,emitData)});
             }
             else if(data.action === WorkerChActions.EMIT_USER_IDS)
             {
-                this.forUserIds(ids,(s : Socket) => {s.emit(event,emitData);});
+                this.forUserIds(ids,exceptSocketSids,(s : Socket) => {s.emit(event,emitData);});
             }
             else if(data.action === WorkerChActions.DISCONNECT_TOKEN_IDS)
             {
-                this.forTokenIds(ids,(s : Socket) => {s.disconnect();});
+                this.forTokenIds(ids,exceptSocketSids,(s : Socket) => {s.disconnect();});
             }
             else if(data.action === WorkerChActions.DISCONNECT_USER_IDS)
             {
-                this.forUserIds(ids,(s : Socket) => {s.disconnect();});
+                this.forUserIds(ids,exceptSocketSids,(s : Socket) => {s.disconnect();});
             }
             else if(data.action === WorkerChActions.DEAUTHENTICATE_TOKEN_IDS)
             {
-                this.forTokenIds(ids,(s : Socket) => {s.deauthenticate();});
+                this.forTokenIds(ids,exceptSocketSids,(s : Socket) => {s.deauthenticate();});
             }
             else if(data.action === WorkerChActions.DEAUTHENTICATE_USER_IDS)
             {
-                this.forUserIds(ids,(s : Socket) => {s.deauthenticate();});
+                this.forUserIds(ids,exceptSocketSids,(s : Socket) => {s.deauthenticate();});
             }
         });
     }
 
-    private forMappingSCIds(mapper : Mapper<string>,ids : (string | number)[],action : Function,message : string) : void
+    private exceptSocketSidsFilter(exceptSocketSids : string[]) : string[]
     {
+        const filteredIds : string[] = [];
+        exceptSocketSids.forEach((sid) =>{
+            const splitSid = IdTools.splitSid(sid);
+            if (this.options.instanceId === splitSid[0] && this.id === splitSid[1]) {
+                filteredIds.push(splitSid[2]);
+            }
+        });
+        return filteredIds;
+    }
+
+    private forMappingSCIds(mapper : Mapper<string>,ids : (string | number)[],exceptSocketSids : string[],action : Function,message : string) : void
+    {
+        const filterExceptSocketIds : string[] = this.exceptSocketSidsFilter(exceptSocketSids);
         for(let i = 0; i < ids.length; i++)
         {
             const id = ids[i].toString();
             if(mapper.isKeyExist(id))
             {
-                const socketIds = mapper.getValues(id);
-                for(let i = 0; i < socketIds.length; i++)
+                const socketSids = mapper.getValues(id);
+                for(let i = 0; i < socketSids.length; i++)
                 {
-                    if(this.scServer.clients.hasOwnProperty(socketIds[i])) {
-                        action(this.scServer.clients[socketIds[i]]);
-                    }
-                    else {
-                        Logger.printDebugWarning(`SocketId: '${socketIds[i]}' ${message}`);
+                    if(!filterExceptSocketIds.includes(socketSids[i]))
+                    {
+                        if(this.scServer.clients.hasOwnProperty(socketSids[i])) {
+                            action(this.scServer.clients[socketSids[i]]);
+                        }
+                        else {
+                            Logger.printDebugWarning(`SocketId: '${socketSids[i]}' ${message}`);
+                        }
                     }
                 }
             }
         }
     }
 
-    private forTokenIds(tokenIds : string[],action : Function) : void
+    private forTokenIds(tokenIds : string[],exceptSocketSids : string[],action : Function) : void
     {
         this.forMappingSCIds
-        (this.mapTokenIdToScId,tokenIds,action,`can not be found in worker. But is listed in tokenId Mapping!`);
+        (this.mapTokenIdToScId,tokenIds,exceptSocketSids,action,`can not be found in worker. But is listed in tokenId Mapping!`);
     }
 
-    private forUserIds(userIds : (number | string)[],action : Function) : void
+    private forUserIds(userIds : (number | string)[],exceptSocketSids : string[],action : Function) : void
     {
         this.forMappingSCIds
-        (this.mapUserToScId,userIds,action,`can not be found in worker. But is listed in userId Mapping!`);
+        (this.mapUserToScId,userIds,exceptSocketSids,action,`can not be found in worker. But is listed in userId Mapping!`);
     }
 
     private registerMasterEvent()
@@ -991,13 +1010,13 @@ class ZationWorker extends SCWorker
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getUserToScIdMapper() : Mapper<string>
+    getUserToScSidMapper() : Mapper<string>
     {
         return this.mapUserToScId;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getTokenIdToScIdMapper() : Mapper<string>
+    getTokenIdToScSidMapper() : Mapper<string>
     {
         return this.mapTokenIdToScId;
     }

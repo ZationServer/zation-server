@@ -517,6 +517,24 @@ class Bag extends SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the socket sid of the current socket.
+     * This id is unique in scalable process.
+     * Requires ws request!
+     * @throws MethodIsNotCompatible
+     */
+    getSocketSid() : string
+    {
+        if(this.shBridge.isWebSocket) {
+            return this.shBridge.getSocket().sid;
+        }
+        else {
+            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
     getSocket() : Socket {
         return this.shBridge.getSocket();
     }

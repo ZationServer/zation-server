@@ -27,13 +27,13 @@ class ChExchangeEngine
 
     //PART Publish
 
-    publish(channel : string,eventName : string,data : any,cb ?: Function,srcSocketId ?: string) : void
+    publish(channel : string,eventName : string,data : any,cb ?: Function,srcSocketSid ?: string) : void
     {
         // noinspection TypeScriptValidateJSTypes
-        this.scServer.exchange.publish(channel,ChExchangeEngine.buildData(eventName,data,srcSocketId),cb);
+        this.scServer.exchange.publish(channel,ChExchangeEngine.buildData(eventName,data,srcSocketSid),cb);
     }
 
-    private pubAsync(channel : string,eventName : string,data : any,srcSocketId ?: string) : Promise<void>
+    private pubAsync(channel : string,eventName : string,data : any,srcSocketSid ?: string) : Promise<void>
     {
         return new Promise<void>((resolve, reject) => {
             this.publish(channel,eventName,data,(err) => {
@@ -43,7 +43,7 @@ class ChExchangeEngine
                 else {
                     resolve();
                 }
-            },srcSocketId);
+            },srcSocketSid);
         });
     }
 
@@ -74,95 +74,90 @@ class ChExchangeEngine
         }
     }
 
-    async publishTaskToWorker(action : WorkerChActions, id : string | number | (string | number)[], mainData : object = {}) : Promise<void>
+    async publishTaskToWorker(action : WorkerChActions, ids : string | number | (string | number)[],exceptSocketSids : string[] | string,mainData : object = {}) : Promise<void>
     {
-        let ids : (string | number)[] = [];
-        if(!Array.isArray(id)) {
-            ids = [id];
-        }
-        else {
-            ids = id;
-        }
-        await this.publishToWorker({ids,action,mainData});
+        const tmpIds : (string | number)[]  = Array.isArray(ids) ? ids : [ids];
+        const tmpExceptSocketSids : string[] = Array.isArray(exceptSocketSids) ? exceptSocketSids : [exceptSocketSids];
+        await this.publishToWorker({ids : tmpIds,action : action,mainData : mainData,exceptSocketSids : tmpExceptSocketSids});
     }
 
     //Part Zation Channels
 
-    async publishInUserCh(id : number | string | (string | number)[],eventName : string,data : any,srcSocketId ?: string) : Promise<void>
+    async publishInUserCh(id : number | string | (string | number)[],eventName : string,data : any,srcSocketSid ?: string) : Promise<void>
     {
         if(Array.isArray(id)) {
             let promises : Promise<void>[] = [];
             for(let i = 0; i < id.length; i++) {
-                promises.push(this.pubAsync(ChTools.buildUserChName(id[i]),eventName,data,srcSocketId));
+                promises.push(this.pubAsync(ChTools.buildUserChName(id[i]),eventName,data,srcSocketSid));
             }
             await Promise.all(promises);
         }
         else {
-            await this.pubAsync(ChTools.buildUserChName(id),eventName,data,srcSocketId);
+            await this.pubAsync(ChTools.buildUserChName(id),eventName,data,srcSocketSid);
         }
     }
 
 
-    async publishInDefaultUserGroupCh(eventName : string, data : any,srcSocketId ?: string) : Promise<void>
+    async publishInDefaultUserGroupCh(eventName : string, data : any,srcSocketSid ?: string) : Promise<void>
     {
-        await this.pubAsync(Const.Settings.CHANNEL.DEFAULT_USER_GROUP,eventName,data,srcSocketId);
+        await this.pubAsync(Const.Settings.CHANNEL.DEFAULT_USER_GROUP,eventName,data,srcSocketSid);
     }
 
-    async publishInAllCh(eventName : string,data : any,srcSocketId ?: string) : Promise<void>
+    async publishInAllCh(eventName : string,data : any,srcSocketSid ?: string) : Promise<void>
     {
-        await this.pubAsync(Const.Settings.CHANNEL.ALL,eventName,data,srcSocketId);
+        await this.pubAsync(Const.Settings.CHANNEL.ALL,eventName,data,srcSocketSid);
     }
 
-    async publishInAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : any,srcSocketId ?: string) : Promise<void>
+    async publishInAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : any,srcSocketSid ?: string) : Promise<void>
     {
         if(Array.isArray(authUserGroup)) {
             let promises : Promise<void>[] = [];
             for(let i = 0; i < authUserGroup.length; i++) {
-               promises.push(this.pubAsync(ChTools.buildAuthUserGroupChName(authUserGroup[i]),eventName,data,srcSocketId));
+               promises.push(this.pubAsync(ChTools.buildAuthUserGroupChName(authUserGroup[i]),eventName,data,srcSocketSid));
             }
             await Promise.all(promises);
         }
         else {
-            await this.pubAsync(ChTools.buildAuthUserGroupChName(authUserGroup),eventName,data,srcSocketId);
+            await this.pubAsync(ChTools.buildAuthUserGroupChName(authUserGroup),eventName,data,srcSocketSid);
         }
     }
 
-    static buildData(eventName : string,data : any,srcSocketId ?: string) : object
+    static buildData(eventName : string,data : any,srcSocketSid ?: string) : object
     {
         return {
             e : eventName,
             d : data,
-            ssi : srcSocketId
+            ssi : srcSocketSid
         };
     }
 
-    async publishToAllAuthUserGroupCh(eventName : string, data : any,zc : ZationConfig,srcSocketId ?: string) : Promise<void>
+    async publishToAllAuthUserGroupCh(eventName : string, data : any,zc : ZationConfig,srcSocketSid ?: string) : Promise<void>
     {
         let groups = zc.getApp(Const.App.KEYS.USER_GROUPS)[Const.App.USER_GROUPS.AUTH];
-        await this.publishInAuthUserGroupCh(Object.keys(groups),eventName,data,srcSocketId);
+        await this.publishInAuthUserGroupCh(Object.keys(groups),eventName,data,srcSocketSid);
     }
 
-    async publishToCustomIdChannel(channel : string, id : any, eventName : string, data : any,srcSocketId ?: string) : Promise<void>
+    async publishToCustomIdChannel(channel : string, id : any, eventName : string, data : any,srcSocketSid ?: string) : Promise<void>
     {
         let channelFullName = ChTools.buildCustomIdChannelName(channel,id);
-        await this.pubAsync(channelFullName,eventName,data,srcSocketId);
+        await this.pubAsync(channelFullName,eventName,data,srcSocketSid);
     }
 
-    async publishToCustomChannel(channel : string | string[], eventName : string, data : any,srcSocketId ?: string) : Promise<void>
+    async publishToCustomChannel(channel : string | string[], eventName : string, data : any,srcSocketSid ?: string) : Promise<void>
     {
         if(Array.isArray(channel)) {
             let promises : Promise<void>[] = [];
             for(let i = 0; i < channel.length; i++)
             {
                 let channelFullName = ChTools.buildCustomChannelName(channel[i]);
-                promises.push(this.pubAsync(channelFullName,eventName,data,srcSocketId));
+                promises.push(this.pubAsync(channelFullName,eventName,data,srcSocketSid));
             }
             await Promise.all(promises);
         }
         else
         {
             let channelFullName = ChTools.buildCustomChannelName(channel);
-            await this.pubAsync(channelFullName,eventName,data,srcSocketId);
+            await this.pubAsync(channelFullName,eventName,data,srcSocketSid);
         }
     }
 
