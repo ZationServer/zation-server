@@ -537,33 +537,8 @@ class ZationWorker extends SCWorker
             this.zc.checkAuthenticationMiddlewareEvent
             (Const.Event.MIDDLEWARE_AUTHENTICATE,next,this.getPreparedSmallBag(),new ZationToken(token));
 
-            if(userMidRes && zationAuthMid)
-            {
-                if(this.zc.isExtraSecureAuth())
-                {
-                    // noinspection JSUnresolvedVariable
-                    this.getTSWClient().isTokenUnblocked(token[Const.Settings.CLIENT.TOKEN_ID])
-                        .then((valid) =>
-                    {
-                        if(!valid) {
-                            const socket : Socket = req.socket;
-                            socket.emit('zationBadAuthToken',{});
-                            socket.deauthenticate();
-                            let err = new Error('Token is blocked');
-                            next(err);
-                        }
-                        else {
-                            next();
-                        }
-                    }
-                    ).catch((e) =>
-                    {
-                        next(e);
-                    });
-                }
-                else {
-                    next();
-                }
+            if(userMidRes && zationAuthMid) {
+                next();
             }
         });
     }

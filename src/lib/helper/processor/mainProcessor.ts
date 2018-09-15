@@ -57,23 +57,7 @@ class MainProcessor
 
             let controllerConfig =
                 worker.getControllerPrepare().getControllerConfig(controllerName,isSystemController);
-
-            //EXTRA SECURE AUTH LAYER
-            if(shBridge.getTokenBridge().hasToken() && shBridge.isWebSocket() &&
-                ControllerTools.needToCheckExtraSecure(controllerConfig) &&
-                zc.isExtraSecureAuth())
-            {
-                const tsw = worker.getTSWClient();
-                const token = shBridge.getTokenBridge().getToken();
-
-                const valid = await tsw.isTokenUnblocked(token[Const.Settings.CLIENT.TOKEN_ID]);
-
-                if(!valid) {
-                    throw new TaskError(MainErrors.tokenIsBlocked,{token : token});
-                }
-            }
-            //END EXTRA SECURE AUTH LAYER
-
+            
             let tokenEngine = new TokenEngine(shBridge,worker,zc);
 
             let authEngine = new AuthEngine(shBridge,tokenEngine,worker.getAEPreparedPart());

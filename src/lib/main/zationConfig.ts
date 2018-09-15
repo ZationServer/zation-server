@@ -197,6 +197,7 @@ class ZationConfig
         return this.serviceConfig[key];
     }
 
+    // noinspection JSUnusedGlobalSymbols
     isService(key : any) : boolean
     {
         return this.serviceConfig[key] !== undefined;
@@ -227,6 +228,7 @@ class ZationConfig
         return this.eventConfig[key];
     }
 
+    // noinspection JSUnusedGlobalSymbols
     isEvent(key : any) : boolean
     {
         return this.eventConfig[key] !== undefined;

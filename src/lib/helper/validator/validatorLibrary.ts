@@ -152,11 +152,11 @@ typeLibrary[Const.Validator.TYPE.HEXADECIMAL] = (input,taskErrorBag,prepareError
     return input;
 };
 
-typeLibrary[Const.Validator.TYPE.IP_5] = (input,taskErrorBag,prepareErrorData) =>
+typeLibrary[Const.Validator.TYPE.IP_4] = (input, taskErrorBag, prepareErrorData) =>
 {
-    if(!EasyValidator.isIP5(input))
+    if(!EasyValidator.isIP4(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAIp5,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAIp4,prepareErrorData));
     }
     return input;
 };

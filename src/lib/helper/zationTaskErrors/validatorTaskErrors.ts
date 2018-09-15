@@ -151,9 +151,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAIp5 : {
-        name          : 'inputIsNotAIp5',
-        description   : 'Input is not a Ip Version 5!',
+    inputIsNotAIp4 : {
+        name          : 'inputIsNotAIp4',
+        description   : 'Input is not a Ip Version 4!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO

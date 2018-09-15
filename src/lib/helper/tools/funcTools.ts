@@ -31,13 +31,13 @@ class FuncTools
             }
             else {
                 if(typeof res === 'object') {
-                    next(res);
+                    next(res,true);
                     return false;
                 }
                 else {
                     let err : any = new Error('Access is in middleware from zation event blocked!');
                     err.code = 4650;
-                    next(err);
+                    next(err,true);
                     return false;
                 }
             }

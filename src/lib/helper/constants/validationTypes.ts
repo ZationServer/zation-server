@@ -20,7 +20,7 @@ class ValidationTypes
     static readonly MD5              = 'md5';
     static readonly HEX_COLOR        = 'hexColor';
     static readonly HEXADECIMAL      = 'hexadecimal';
-    static readonly IP_5             = 'ip5';
+    static readonly IP_4             = 'ip5';
     static readonly IP_6             = 'ip6';
     static readonly ISBN_10          = 'isbn10';
     static readonly ISBN_13          = 'isbn13';

@@ -78,7 +78,7 @@ class EasyValidator
         return Validator.isHexadecimal(data);
     }
 
-    static isIP5(data)
+    static isIP4(data)
     {
         // noinspection JSUnresolvedFunction
         return Validator.isIP(data,'4');
