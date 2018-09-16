@@ -89,6 +89,7 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.WORKER_STATUS_INTERVAL] = 10000;
             this.mainConfig[Const.Main.KEYS.CLUSTER_SHARE_TOKEN_AUTH] = true;
             this.mainConfig[Const.Main.KEYS.INSTANCE_ID] = uuidV4();
+            this.mainConfig[Const.Main.KEYS.USE_TOKEN_CHECK_KEY] = true;
 
             this.loadUserDataLocations();
             this.loadMainConfig();

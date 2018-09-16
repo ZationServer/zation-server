@@ -410,9 +410,9 @@ export class ChAccessEngine
 
             if(token !== undefined && token !== null)
             {
-                authUserGroup = token[Const.Settings.CLIENT.AUTH_USER_GROUP];
-                userId = token[Const.Settings.CLIENT.USER_ID];
-                panelAccess = token[Const.Settings.CLIENT.PANEL_ACCESS]
+                authUserGroup = token[Const.Settings.TOKEN.AUTH_USER_GROUP];
+                userId = token[Const.Settings.TOKEN.USER_ID];
+                panelAccess = token[Const.Settings.TOKEN.PANEL_ACCESS]
             }
 
             for(let i = 0; i < subs.length; i++)

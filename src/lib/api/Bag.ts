@@ -475,7 +475,7 @@ class Bag extends SmallBag
      */
     getTokenId() : string | undefined
     {
-        return this.tokenEngine.getTokenVariable(Const.Settings.CLIENT.TOKEN_ID);
+        return this.tokenEngine.getTokenVariable(Const.Settings.TOKEN.TOKEN_ID);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -485,7 +485,7 @@ class Bag extends SmallBag
      */
     getTokenExpire() : string | undefined
     {
-        return this.tokenEngine.getTokenVariable(Const.Settings.CLIENT.EXPIRE);
+        return this.tokenEngine.getTokenVariable(Const.Settings.TOKEN.EXPIRE);
     }
 
     // noinspection JSUnusedGlobalSymbols

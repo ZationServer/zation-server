@@ -18,11 +18,11 @@ class SocketInfo
     }
 
     get authUserGroup(): string | undefined {
-        return TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.AUTH_USER_GROUP,this._socket);
+        return TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.AUTH_USER_GROUP,this._socket);
     }
 
     get userId(): string | number | undefined {
-        return TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.USER_ID,this._socket);
+        return TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.USER_ID,this._socket);
     }
 
     get socket(): object {
@@ -38,7 +38,7 @@ class SocketInfo
     }
 
     get tokenId(): string | undefined {
-        return TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.TOKEN_ID,this._socket);
+        return TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.TOKEN_ID,this._socket);
     }
 
     get isAuthIn(): boolean {
@@ -46,11 +46,11 @@ class SocketInfo
     }
 
     get tokenExpire(): number | undefined{
-        return TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.EXPIRE,this._socket);
+        return TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.EXPIRE,this._socket);
     }
 
     get panelAccess(): number | undefined{
-        return TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.PANEL_ACCESS,this._socket);
+        return TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.PANEL_ACCESS,this._socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -63,7 +63,7 @@ class SocketInfo
      * @param path
      */
     hasCustomTokenVar(path ?: string | string[]) : boolean {
-        let ctv = TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.CUSTOM_VARIABLES,this._socket);
+        let ctv = TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.CUSTOM_VARIABLES,this._socket);
         return ObjectPath.has(!!ctv ? ctv : {},path);
     }
 
@@ -77,7 +77,7 @@ class SocketInfo
      * @param path
      */
     getCustomTokenVar(path ?: string | string[]) : any {
-        let ctv = TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.CUSTOM_VARIABLES,this._socket);
+        let ctv = TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.CUSTOM_VARIABLES,this._socket);
         return ObjectPath.get(!!ctv ? ctv : {},path);
     }
 

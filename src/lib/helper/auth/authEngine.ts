@@ -48,8 +48,8 @@ class AuthEngine
         let authToken = this.shBridge.getTokenBridge().getToken();
         if(authToken !== null && authToken !== undefined)
         {
-            this.currentUserId = authToken[Const.Settings.CLIENT.USER_ID];
-            let authUserGroup = authToken[Const.Settings.CLIENT.AUTH_USER_GROUP];
+            this.currentUserId = authToken[Const.Settings.TOKEN.USER_ID];
+            let authUserGroup = authToken[Const.Settings.TOKEN.AUTH_USER_GROUP];
             if(authUserGroup !== undefined) {
                 if (this.checkIsIn(authUserGroup)) {
                     this.currentUserGroup = authUserGroup;
@@ -128,11 +128,11 @@ class AuthEngine
         if(this.checkIsIn(authUserGroup)) {
 
             let obj = {};
-            obj[Const.Settings.CLIENT.AUTH_USER_GROUP] = authUserGroup;
+            obj[Const.Settings.TOKEN.AUTH_USER_GROUP] = authUserGroup;
 
             //Id to setBoth in time
             if(userId !== undefined) {
-                obj[Const.Settings.CLIENT.USER_ID] = userId;
+                obj[Const.Settings.TOKEN.USER_ID] = userId;
             }
 
             //create AuthEngine Token!
@@ -166,7 +166,7 @@ class AuthEngine
     {
         if(this.isAuth()) {
             let obj = {};
-            obj[Const.Settings.CLIENT.USER_ID] = userId;
+            obj[Const.Settings.TOKEN.USER_ID] = userId;
             //is only set if the client has a auth token (than he has also a user group)
             const suc = await this.tokenEngine.updateTokenVariable(obj);
 

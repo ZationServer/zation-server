@@ -50,7 +50,7 @@ class HttpProcessor
                 {
                     req.zationToken = await TokenTools.verifyToken(zationData[Const.Settings.REQUEST_INPUT.TOKEN],zc);
                     const token = req.zationToken;
-                    const valid = await worker.getTSWClient().isTokenUnblocked(token[Const.Settings.CLIENT.TOKEN_ID]);
+                    const valid = await worker.getTSWClient().isTokenUnblocked(token[Const.Settings.TOKEN.TOKEN_ID]);
 
                     const next = (err) => {
                         if(err) {

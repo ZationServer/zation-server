@@ -36,22 +36,22 @@ class TokenEngine
 
         const expiry = this.generateExpiry();
         const remoteAddress = this.shBridge.getPublicRemoteAddress();
-        const userId = data[Const.Settings.CLIENT.USER_ID];
-        const authUserGroup = data[Const.Settings.CLIENT.AUTH_USER_GROUP];
+        const userId = data[Const.Settings.TOKEN.USER_ID];
+        const authUserGroup = data[Const.Settings.TOKEN.AUTH_USER_GROUP];
 
         const tokenId = await tswClient.saveTokenInfo(expiry,remoteAddress,authUserGroup,userId);
 
-        data[Const.Settings.CLIENT.EXPIRE] = expiry;
-        data[Const.Settings.CLIENT.TOKEN_ID] = tokenId;
+        data[Const.Settings.TOKEN.EXPIRE] = expiry;
+        data[Const.Settings.TOKEN.TOKEN_ID] = tokenId;
 
         return TokenTools.createNewToken(data,this.shBridge.getTokenBridge(),this.worker);
     }
 
     async removeToken(token : object) : Promise<void>
     {
-        if(!!token && !!token[Const.Settings.CLIENT.TOKEN_ID])
+        if(!!token && !!token[Const.Settings.TOKEN.TOKEN_ID])
         {
-            const tokenId = token[Const.Settings.CLIENT.TOKEN_ID];
+            const tokenId = token[Const.Settings.TOKEN.TOKEN_ID];
 
             //disconnect all sockets with tokenId
             await this.worker
@@ -71,12 +71,12 @@ class TokenEngine
     }
 
     getCustomTokenVar() : object {
-        return this.getTokenVariable(Const.Settings.CLIENT.CUSTOM_VARIABLES);
+        return this.getTokenVariable(Const.Settings.TOKEN.CUSTOM_VARIABLES);
     }
 
     async setCustomTokenVar(data : object) : Promise<void> {
         const customVar = {};
-        customVar[Const.Settings.CLIENT.CUSTOM_VARIABLES] = data;
+        customVar[Const.Settings.TOKEN.CUSTOM_VARIABLES] = data;
         await this.updateTokenVariable(customVar);
     }
 }

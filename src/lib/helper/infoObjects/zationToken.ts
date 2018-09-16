@@ -19,14 +19,14 @@ class ZationToken
 
     constructor(token : Object)
     {
-        this._userId         = token[Const.Settings.CLIENT.USER_ID];
-        this._authUserGroup  = token[Const.Settings.CLIENT.AUTH_USER_GROUP];
-        this._tokenId        = token[Const.Settings.CLIENT.TOKEN_ID];
-        this._expire         = token[Const.Settings.CLIENT.EXPIRE];
-        this._panelAccess    = token[Const.Settings.CLIENT.PANEL_ACCESS];
+        this._userId         = token[Const.Settings.TOKEN.USER_ID];
+        this._authUserGroup  = token[Const.Settings.TOKEN.AUTH_USER_GROUP];
+        this._tokenId        = token[Const.Settings.TOKEN.TOKEN_ID];
+        this._expire         = token[Const.Settings.TOKEN.EXPIRE];
+        this._panelAccess    = token[Const.Settings.TOKEN.PANEL_ACCESS];
 
-        this._ctv = !!token[Const.Settings.CLIENT.CUSTOM_VARIABLES] ?
-            token[Const.Settings.CLIENT.CUSTOM_VARIABLES] : {};
+        this._ctv = !!token[Const.Settings.TOKEN.CUSTOM_VARIABLES] ?
+            token[Const.Settings.TOKEN.CUSTOM_VARIABLES] : {};
     }
 
     isAuthIn() : boolean {

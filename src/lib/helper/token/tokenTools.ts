@@ -42,7 +42,7 @@ class TokenTools
         if(data !== undefined)
         {
             if(ignoreZationKeys &&
-                (!updateOnly || (updateOnly && !data.hasOwnProperty(Const.Settings.CLIENT.TOKEN_ID))))
+                (!updateOnly || (updateOnly && !data.hasOwnProperty(Const.Settings.TOKEN.TOKEN_ID))))
             {
                 await setToken();
 
@@ -51,25 +51,25 @@ class TokenTools
                     ChAccessEngine.checkSocketZationChAccess(tokenBridge.getSocket());
                 }
             }
-            else if(data.hasOwnProperty(Const.Settings.CLIENT.AUTH_USER_GROUP))
+            else if(data.hasOwnProperty(Const.Settings.TOKEN.AUTH_USER_GROUP))
             {
-                throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.CLIENT.AUTH_USER_GROUP});
+                throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.TOKEN.AUTH_USER_GROUP});
             }
-            else if(data.hasOwnProperty(Const.Settings.CLIENT.USER_ID))
+            else if(data.hasOwnProperty(Const.Settings.TOKEN.USER_ID))
             {
-                throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.CLIENT.USER_ID});
+                throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.TOKEN.USER_ID});
             }
-            else if(data.hasOwnProperty(Const.Settings.CLIENT.TOKEN_ID))
+            else if(data.hasOwnProperty(Const.Settings.TOKEN.TOKEN_ID))
             {
-                throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.CLIENT.TOKEN_ID});
+                throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.TOKEN.TOKEN_ID});
             }
-            else if(data.hasOwnProperty(Const.Settings.CLIENT.PANEL_ACCESS))
+            else if(data.hasOwnProperty(Const.Settings.TOKEN.PANEL_ACCESS))
             {
-                throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.CLIENT.PANEL_ACCESS});
+                throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.TOKEN.PANEL_ACCESS});
             }
-            else if(data.hasOwnProperty(Const.Settings.CLIENT.EXPIRE))
+            else if(data.hasOwnProperty(Const.Settings.TOKEN.EXPIRE))
             {
-                throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.CLIENT.EXPIRE});
+                throw new TaskError(MainErrors.zationKeyConflict, {key: Const.Settings.TOKEN.EXPIRE});
             }
             else
             {

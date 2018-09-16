@@ -309,8 +309,8 @@ class ZationWorker extends SCWorker
                 }
                 else {
                     if (authToken !== null) {
-                        const id = authToken[Const.Settings.CLIENT.USER_ID];
-                        const group = authToken[Const.Settings.CLIENT.AUTH_USER_GROUP];
+                        const id = authToken[Const.Settings.TOKEN.USER_ID];
+                        const group = authToken[Const.Settings.TOKEN.AUTH_USER_GROUP];
 
                         if (channel.indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1) {
                             if(id !== undefined) {
@@ -358,8 +358,8 @@ class ZationWorker extends SCWorker
                         }
                         else if (channel === Const.Settings.CHANNEL.PANEL)
                         {
-                            if (authToken[Const.Settings.CLIENT.PANEL_ACCESS] !== undefined &&
-                                authToken[Const.Settings.CLIENT.PANEL_ACCESS]) {
+                            if (authToken[Const.Settings.TOKEN.PANEL_ACCESS] !== undefined &&
+                                authToken[Const.Settings.TOKEN.PANEL_ACCESS]) {
 
                                 Logger.printDebugInfo
                                 (`Socket with id: ${req.socket.id} subscribes panel channel`);
@@ -584,7 +584,17 @@ class ZationWorker extends SCWorker
             (Const.Event.MIDDLEWARE_AUTHENTICATE,next,this.getPreparedSmallBag(),new ZationToken(token));
 
             if(userMidRes && zationAuthMid) {
-                next();
+                if(this.zc.getMain(Const.Main.KEYS.USE_TOKEN_CHECK_KEY)) {
+                    if(token[Const.Settings.TOKEN.CHECK_KEY] === this.zc.getInternal(Const.Settings.INTERNAL_DATA.TOKEN_CHECK_KEY)) {
+                        next();
+                    }
+                    else {
+                        next(new Error('Wrong or missing token check key!'));
+                    }
+                }
+                else {
+                    next();
+                }
             }
         });
     }
@@ -728,12 +738,12 @@ class ZationWorker extends SCWorker
             let token = socket.getAuthToken();
 
             if(token!==null) {
-                if(!!token[Const.Settings.CLIENT.TOKEN_ID]) {
-                    this.mapTokenIdToScId.removeValueFromKey(token[Const.Settings.CLIENT.TOKEN_ID],socket.id);
+                if(!!token[Const.Settings.TOKEN.TOKEN_ID]) {
+                    this.mapTokenIdToScId.removeValueFromKey(token[Const.Settings.TOKEN.TOKEN_ID],socket.id);
                 }
 
-                if(!!token[Const.Settings.CLIENT.USER_ID]) {
-                    this.mapUserToScId.removeValueFromKey(token[Const.Settings.CLIENT.USER_ID],socket.id);
+                if(!!token[Const.Settings.TOKEN.USER_ID]) {
+                    this.mapUserToScId.removeValueFromKey(token[Const.Settings.TOKEN.USER_ID],socket.id);
                 }
             }
 
@@ -758,12 +768,12 @@ class ZationWorker extends SCWorker
         socket.on('authenticate', async (token) =>
         {
             if(token!==null) {
-                if(!!token[Const.Settings.CLIENT.TOKEN_ID]) {
-                    this.mapTokenIdToScId.map(token[Const.Settings.CLIENT.TOKEN_ID],socket.id);
+                if(!!token[Const.Settings.TOKEN.TOKEN_ID]) {
+                    this.mapTokenIdToScId.map(token[Const.Settings.TOKEN.TOKEN_ID],socket.id);
                 }
 
-                if(!!token[Const.Settings.CLIENT.USER_ID]) {
-                    this.mapUserToScId.map(token[Const.Settings.CLIENT.USER_ID],socket.id);
+                if(!!token[Const.Settings.TOKEN.USER_ID]) {
+                    this.mapUserToScId.map(token[Const.Settings.TOKEN.USER_ID],socket.id);
                 }
             }
             await this.zc.emitEvent(Const.Event.SOCKET_AUTHENTICATE,this.getPreparedSmallBag(),socket,token);
@@ -772,12 +782,12 @@ class ZationWorker extends SCWorker
         socket.on('deauthenticate', async (token) =>
         {
             if(token!==null) {
-                if(!!token[Const.Settings.CLIENT.TOKEN_ID]) {
-                    this.mapTokenIdToScId.removeValueFromKey(token[Const.Settings.CLIENT.TOKEN_ID],socket.id);
+                if(!!token[Const.Settings.TOKEN.TOKEN_ID]) {
+                    this.mapTokenIdToScId.removeValueFromKey(token[Const.Settings.TOKEN.TOKEN_ID],socket.id);
                 }
 
-                if(!!token[Const.Settings.CLIENT.USER_ID]) {
-                    this.mapUserToScId.removeValueFromKey(token[Const.Settings.CLIENT.USER_ID],socket.id);
+                if(!!token[Const.Settings.TOKEN.USER_ID]) {
+                    this.mapUserToScId.removeValueFromKey(token[Const.Settings.TOKEN.USER_ID],socket.id);
                 }
             }
             await this.zc.emitEvent(Const.Event.SOCKET_DEAUTHENTICATE,this.getPreparedSmallBag(),socket,token);

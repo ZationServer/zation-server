@@ -170,7 +170,7 @@ class Settings
     static readonly ERROR = ERROR;
     static readonly REQUEST_INPUT = REQUEST_INPUT;
     static readonly VALIDATION_REQUEST_INPUT = VALIDATION_REQUEST_INPUT;
-    static readonly CLIENT = TOKEN;
+    static readonly TOKEN = TOKEN;
     static readonly CHANNEL = CHANNEL;
     static readonly USER_CHANNEL = SOCKET_EMIT_EVENTS;
     static readonly DEFAULT_USER_GROUP = DEFAULT_USER_GROUP;
