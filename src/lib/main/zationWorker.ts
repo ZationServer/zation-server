@@ -247,16 +247,16 @@ class ZationWorker extends SCWorker
 
         //PUBLIC FOLDER
 
-        // noinspection JSUnresolvedFunction
+        // noinspection JSUnresolvedFunction,TypeScriptValidateJSTypes
         this.app.use(`/zation/assets`, express.static(__dirname + '/../public/assets'));
 
-        // noinspection JSUnresolvedFunction
+        // noinspection JSUnresolvedFunction,TypeScriptValidateJSTypes
         this.app.use(`/zation/css`, express.static(__dirname + '/../public/css'));
 
-        // noinspection JSUnresolvedFunction
+        // noinspection JSUnresolvedFunction,TypeScriptValidateJSTypes
         this.app.use(`/zation/js`, express.static(__dirname + '/../public/js'));
 
-        // noinspection JSUnresolvedFunction
+        // noinspection JSUnresolvedFunction,TypeScriptValidateJSTypes
         this.app.use(`${path}/panel`, express.static(__dirname + '/../public/panel'));
 
         // noinspection JSUnresolvedFunction
@@ -633,52 +633,98 @@ class ZationWorker extends SCWorker
 
         this.scServer.on('subscription', async (socket,chName,chOptions) =>
         {
+            let pro : Promise<void>[] = [];
             //trigger sub customCh event
             if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
                 const {name,id} = ChTools.getCustomIdChannelInfo(chName);
                 let func = this.chConfigManager.getOnSubCustomIdCh(name);
                 if(!!func) {
-                    (async () => {
-                        await FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket));
-                    })();
+                    pro.push(FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket)));
                 }
             }
             else if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
                 const name = ChTools.getCustomChannelName(chName);
                 let func = this.chConfigManager.getOnSubCustomCh(name);
                 if(!!func) {
-                    (async () => {
-                        await FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket));
-                    })();
+                    pro.push(FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket)));
                 }
             }
-
-            await this.zc.emitEvent(Const.Event.SC_SERVER_SUBSCRIPTION,this.getPreparedSmallBag(),socket,chName,chOptions);
+            else if(chName.indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1) {
+                let func = this.chConfigManager.getOnSubUserCh();
+                if(!!func) {
+                    const id = ChTools.getUserIdFromCh(chName);
+                    pro.push(FuncTools.emitEvent(func,this.smallBag,id,new SocketInfo(socket)));
+                }
+            }
+            else if(chName.indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1) {
+                let func = this.chConfigManager.getOnSubAuthUserGroupCh();
+                if(!!func) {
+                    const group = ChTools.getUserAuthGroupFromCh(chName);
+                    pro.push(FuncTools.emitEvent(func,this.smallBag,group,new SocketInfo(socket)));
+                }
+            }
+            else if(chName === Const.Settings.CHANNEL.DEFAULT_USER_GROUP) {
+                let func = this.chConfigManager.getOnSubDefaultUserGroupCh();
+                if(!!func) {
+                    pro.push(FuncTools.emitEvent(func,this.smallBag,new SocketInfo(socket)));
+                }
+            }
+            else if(chName === Const.Settings.CHANNEL.ALL) {
+                let func = this.chConfigManager.getOnSubAllCh();
+                if(!!func) {
+                    pro.push(FuncTools.emitEvent(func,this.smallBag,new SocketInfo(socket)));
+                }
+            }
+            pro.push(this.zc.emitEvent(Const.Event.SC_SERVER_SUBSCRIPTION,this.getPreparedSmallBag(),socket,chName,chOptions));
+            await Promise.all(pro);
         });
 
         this.scServer.on('unsubscription', async (socket,chName) =>
         {
+            let pro : Promise<void>[] = [];
             //trigger sub customCh event
             if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
                 const {name,id} = ChTools.getCustomIdChannelInfo(chName);
                 let func = this.chConfigManager.getOnUnsubCustomIdCh(name);
                 if(!!func) {
-                    (async () => {
-                        await FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket));
-                    })();
+                    pro.push(FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket)));
                 }
             }
             else if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
                 const name = ChTools.getCustomChannelName(chName);
                 let func = this.chConfigManager.getOnUnsubCustomCh(name);
                 if(!!func) {
-                    (async () => {
-                        await FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket));
-                    })();
+                    pro.push(FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket)));
                 }
             }
-
-            await this.zc.emitEvent(Const.Event.SC_SERVER_UNSUBSCRIPTION,this.getPreparedSmallBag(),socket,chName);
+            else if(chName.indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1) {
+                let func = this.chConfigManager.getOnUnsubUserCh();
+                if(!!func) {
+                    const id = ChTools.getUserIdFromCh(chName);
+                    pro.push(FuncTools.emitEvent(func,this.smallBag,id,new SocketInfo(socket)));
+                }
+            }
+            else if(chName.indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1) {
+                let func = this.chConfigManager.getOnUnsubAuthUserGroupCh();
+                if(!!func) {
+                    const group = ChTools.getUserAuthGroupFromCh(chName);
+                    pro.push(FuncTools.emitEvent(func,this.smallBag,group,new SocketInfo(socket)));
+                }
+            }
+            else if(chName === Const.Settings.CHANNEL.DEFAULT_USER_GROUP) {
+                let func = this.chConfigManager.getOnUnsubDefaultUserGroupCh();
+                if(!!func) {
+                    pro.push(FuncTools.emitEvent(func,this.smallBag,new SocketInfo(socket)));
+                }
+            }
+            else if(chName === Const.Settings.CHANNEL.ALL) {
+                let func = this.chConfigManager.getOnUnsubAllCh();
+                if(!!func) {
+                    pro.push(FuncTools.emitEvent(func,this.smallBag,new SocketInfo(socket)));
+                }
+            }
+            pro.push(this.zc.emitEvent(Const.Event.SC_SERVER_UNSUBSCRIPTION,this.getPreparedSmallBag(),socket,chName));
+            await Promise.all(pro);
         });
 
         this.scServer.on('authentication', async (socket,authToken) =>
@@ -741,7 +787,6 @@ class ZationWorker extends SCWorker
                 if(!!token[Const.Settings.TOKEN.TOKEN_ID]) {
                     this.mapTokenIdToScId.removeValueFromKey(token[Const.Settings.TOKEN.TOKEN_ID],socket.id);
                 }
-
                 if(!!token[Const.Settings.TOKEN.USER_ID]) {
                     this.mapUserToScId.removeValueFromKey(token[Const.Settings.TOKEN.USER_ID],socket.id);
                 }
@@ -771,9 +816,8 @@ class ZationWorker extends SCWorker
                 if(!!token[Const.Settings.TOKEN.TOKEN_ID]) {
                     this.mapTokenIdToScId.map(token[Const.Settings.TOKEN.TOKEN_ID],socket.id);
                 }
-
                 if(!!token[Const.Settings.TOKEN.USER_ID]) {
-                    this.mapUserToScId.map(token[Const.Settings.TOKEN.USER_ID],socket.id);
+                    this.mapUserIdToScId.map(token[Const.Settings.TOKEN.USER_ID],socket.id);
                 }
             }
             await this.zc.emitEvent(Const.Event.SOCKET_AUTHENTICATE,this.getPreparedSmallBag(),socket,token);
@@ -785,9 +829,8 @@ class ZationWorker extends SCWorker
                 if(!!token[Const.Settings.TOKEN.TOKEN_ID]) {
                     this.mapTokenIdToScId.removeValueFromKey(token[Const.Settings.TOKEN.TOKEN_ID],socket.id);
                 }
-
                 if(!!token[Const.Settings.TOKEN.USER_ID]) {
-                    this.mapUserToScId.removeValueFromKey(token[Const.Settings.TOKEN.USER_ID],socket.id);
+                    this.mapUserIdToScId.removeValueFromKey(token[Const.Settings.TOKEN.USER_ID],socket.id);
                 }
             }
             await this.zc.emitEvent(Const.Event.SOCKET_DEAUTHENTICATE,this.getPreparedSmallBag(),socket,token);
@@ -829,7 +872,7 @@ class ZationWorker extends SCWorker
                 return;
             }
 
-            const ids = data.ids;
+            const ids : (string | number)[]  = data.ids;
             const exceptSocketSids = data.exceptSocketSids;
             const mainData = data.mainData;
 
@@ -912,7 +955,7 @@ class ZationWorker extends SCWorker
         }
     }
 
-    private forTokenIds(tokenIds : string[],exceptSocketSids : string[],action : Function) : void
+    private forTokenIds(tokenIds : (number | string)[],exceptSocketSids : string[],action : Function) : void
     {
         this.forMappingSCIds
         (this.mapTokenIdToScId,tokenIds,exceptSocketSids,action,`can not be found in worker. But is listed in tokenId Mapping!`);

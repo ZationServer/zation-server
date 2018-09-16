@@ -39,12 +39,6 @@ class TokenBridge
         return this.socket;
     }
 
-    tokenIsThere() : boolean
-    {
-        let token = this.getToken();
-        return token !== undefined && token !== null;
-    }
-
     deauthenticate() : void
     {
         if(this.webSocket)
@@ -83,14 +77,11 @@ class TokenBridge
     setToken(data : object) : void
     {
         this.newToken = true;
-
-        if(this.webSocket)
-        {
+        if(this.webSocket) {
             // noinspection JSUnresolvedFunction
             this.socket.setAuthToken(data);
         }
-        else
-        {
+        else {
             this.plainTokenTemp = data;
         }
     }

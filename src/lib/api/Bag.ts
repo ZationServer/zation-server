@@ -15,6 +15,7 @@ import ObjectPath    = require("../helper/tools/objectPath");
 import MethodIsNotCompatible = require("../helper/error/methodIsNotCompatible");
 import ObjectPathSequence    = require("../helper/tools/objectPathSequence");
 import {Socket}                from "../helper/socket/socket";
+import AuthenticationError = require("../helper/error/authenticationError");
 
 class Bag extends SmallBag
 {
@@ -271,7 +272,6 @@ class Bag extends SmallBag
     /**
      * @description
      * Set the user id for this socket.
-     * The method return true if the process is success.
      * @example
      * await setUserId('luca23');
      * @param id
@@ -279,6 +279,19 @@ class Bag extends SmallBag
      */
     async setUserId(id : string | number) : Promise<void> {
         await this.authEngine.setUserId(id);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Set the panel access for this socket.
+     * @example
+     * await setPanelAccess(true);
+     * @throws AuthenticationError
+     * @param access
+     */
+    async setPanelAccess(access : boolean) : Promise<void> {
+        await this.authEngine.setPanelAccess(access);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -387,15 +400,22 @@ class Bag extends SmallBag
      * @description
      * Set a custom token variable with object path
      * You can access this variables on client and server side
+     * Check that the socket is authenticated (has a token)
      * @example
      * await setCustomTokenVar('person.email','example@gmail.com');
      * @param path
      * @param value
+     * @throws AuthenticationError
      */
     async setCustomTokenVar(path : string | string[],value : any) : Promise<void> {
-        const ctv = this.tokenEngine.getCustomTokenVar();
-        ObjectPath.set(ctv,path,value);
-        await this.tokenEngine.setCustomTokenVar(ctv);
+        if(this.shBridge.getTokenBridge().hasToken()) {
+            const ctv = this.tokenEngine.getCustomTokenVar();
+            ObjectPath.set(ctv,path,value);
+            await this.tokenEngine.setCustomTokenVar(ctv);
+        }
+        else {
+            throw new AuthenticationError(`Can't set custom token variable when socket is not authenticated!`);
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -403,18 +423,25 @@ class Bag extends SmallBag
      * @description
      * Delete a custom token variable with object path
      * You can access this variables on client and server side
+     * Check that the socket is authenticated (has a token)
      * @example
      * await deleteCustomTokenVar('person.email');
      * @param path
+     * @throws AuthenticationError
      */
     async deleteCustomTokenVar(path ?: string | string[]) : Promise<void> {
-        if(!!path) {
-            const ctv = this.tokenEngine.getCustomTokenVar();
-            ObjectPath.del(ctv,path);
-            await this.tokenEngine.setCustomTokenVar(ctv);
+        if(this.shBridge.getTokenBridge().hasToken()) {
+            if(!!path) {
+                const ctv = this.tokenEngine.getCustomTokenVar();
+                ObjectPath.del(ctv,path);
+                await this.tokenEngine.setCustomTokenVar(ctv);
+            }
+            else {
+                await this.tokenEngine.setCustomTokenVar({});
+            }
         }
         else {
-            await this.tokenEngine.setCustomTokenVar({});
+            throw new AuthenticationError(`Can't set custom token variable when socket is not authenticated!`);
         }
     }
 
@@ -425,19 +452,26 @@ class Bag extends SmallBag
      * Useful if you want to make several changes.
      * This will do everything in one and saves performance.
      * You can access this variables on client and server side
+     * Check that the socket is authenticated (has a token)
      * @example
      * await seqEditCustomTokenVar()
      *       .delete('person.lastName')
      *       .set('person.name','Luca')
      *       .set('person.email','example@gmail.com')
      *       .commit();
+     * @throws AuthenticationError
      */
     seqEditCustomTokenVar() : ObjectPathSequence
     {
-        return new ObjectPathSequence(this.tokenEngine.getCustomTokenVar(),
-            async (obj)=> {
-            await  this.tokenEngine.setCustomTokenVar(obj);
-        });
+        if(this.shBridge.getTokenBridge().hasToken()) {
+            return new ObjectPathSequence(this.tokenEngine.getCustomTokenVar(),
+                async (obj)=> {
+                    await  this.tokenEngine.setCustomTokenVar(obj);
+                });
+        }
+        else {
+            throw new AuthenticationError(`Can't set custom token variable when socket is not authenticated!`);
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols

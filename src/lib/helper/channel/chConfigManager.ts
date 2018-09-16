@@ -15,10 +15,10 @@ class ChConfigManager {
     private zc: ZationConfig;
     private readonly cc: object;
 
-    private sgopUserCh: boolean = true;
-    private sgopAuthUserGroupCh: boolean = true;
-    private sgopDefaultUserGroupCh: boolean = true;
-    private sgopAllCh: boolean = true;
+    private infoUserCh: object = {};
+    private infoAuthUserGroupCh: object = {};
+    private infoDefaultUserGroupCh: object = {};
+    private infoAllCh: object = {};
 
     private infoCustomCh: object = {};
     private infoCustomIdCh: object = {};
@@ -30,10 +30,10 @@ class ChConfigManager {
     }
 
     readConfig() {
-        this.sgopUserCh = this.processChannelKey(Const.Channel.KEYS.USER_CH);
-        this.sgopAuthUserGroupCh = this.processChannelKey(Const.Channel.KEYS.AUTH_USER_GROUP_CH);
-        this.sgopDefaultUserGroupCh = this.processChannelKey(Const.Channel.KEYS.DEFAULT_USER_GROUP_CH);
-        this.sgopAllCh = this.processChannelKey(Const.Channel.KEYS.ALL_CH);
+        this.infoUserCh = this.processChannel(Const.Channel.KEYS.USER_CH);
+        this.infoAuthUserGroupCh = this.processChannel(Const.Channel.KEYS.AUTH_USER_GROUP_CH);
+        this.infoDefaultUserGroupCh = this.processChannel(Const.Channel.KEYS.DEFAULT_USER_GROUP_CH);
+        this.infoAllCh = this.processChannel(Const.Channel.KEYS.ALL_CH);
         this.infoCustomCh = this.processCustomChannel(Const.Channel.KEYS.CUSTOM_CHANNELS);
         this.infoCustomIdCh = this.processCustomChannel(Const.Channel.KEYS.CUSTOM_ID_CHANNELS);
     }
@@ -81,13 +81,15 @@ class ChConfigManager {
         return res;
     }
 
-    private processChannelKey(key: string): boolean {
+    private processChannel(key: string): object {
+        const res = {};
         if (this.cc.hasOwnProperty(key)) {
-            return this.getSgop(this.cc[key][Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH]);
+            res['sgop'] = (this.cc[key][Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH]);
+            res['onSub'] = (this.cc[key][Const.Channel.CHANNEL.ON_SUBSCRIPTION]);
+            res['onUnsub'] = (this.cc[key][Const.Channel.CHANNEL.ON_UNSUBSCRIPTION]);
+            res['onBagPub'] = (this.cc[key][Const.Channel.CHANNEL.ON_BAG_PUBLISH]);
         }
-        else {
-            return true;
-        }
+        return res;
     }
 
     // noinspection JSMethodCanBeStatic
@@ -103,19 +105,19 @@ class ChConfigManager {
 
     //socket get own pub fast
     getSocketGetOwnPubUserCh(): boolean {
-        return this.sgopUserCh;
+        return this.infoUserCh['sgop'];
     }
 
     getSocketGetOwnPubAuthUserGroupCh(): boolean {
-        return this.sgopAuthUserGroupCh;
+        return this.infoAuthUserGroupCh['sgop'];
     }
 
     getSocketGetOwnPubDefaultUserGroupCh(): boolean {
-        return this.sgopDefaultUserGroupCh;
+        return this.infoDefaultUserGroupCh['sgop'];
     }
 
     getSocketGetOwnPubAllCh(): boolean {
-        return this.sgopAllCh;
+        return this.infoAllCh['sgop'];
     }
 
     getSocketGetOwnPubCustomCh(chName: string): boolean {
@@ -200,6 +202,54 @@ class ChConfigManager {
 
     getOnUnsubCustomIdCh(chName: string): any {
         return this.infoCustomIdCh[chName]['onUnsub'];
+    }
+
+    getOnSubUserCh(): any {
+        return this.infoUserCh['onSub'];
+    }
+
+    getOnUnsubUserCh(): any {
+        return this.infoUserCh['onUnsub'];
+    }
+
+    getOnBagPubUserCh(): any {
+        return this.infoUserCh['onBagPub'];
+    }
+
+    getOnSubAuthUserGroupCh(): any {
+        return this.infoAuthUserGroupCh['onSub'];
+    }
+
+    getOnUnsubAuthUserGroupCh(): any {
+        return this.infoAuthUserGroupCh['onUnsub'];
+    }
+
+    getOnBagPubAuthUserUserCh(): any {
+        return this.infoAuthUserGroupCh['onBagPub'];
+    }
+
+    getOnSubDefaultUserGroupCh(): any {
+        return this.infoDefaultUserGroupCh['onSub'];
+    }
+
+    getOnUnsubDefaultUserGroupCh(): any {
+        return this.infoDefaultUserGroupCh['onUnsub'];
+    }
+
+    getOnBagPubDefaultUserUserCh(): any {
+        return this.infoDefaultUserGroupCh['onBagPub'];
+    }
+
+    getOnSubAllCh(): any {
+        return this.infoAllCh['onSub'];
+    }
+
+    getOnUnsubAllCh(): any {
+        return this.infoAllCh['onUnsub'];
+    }
+
+    getOnBagPubAllCh(): any {
+        return this.infoDefaultUserGroupCh['onBagPub'];
     }
 
 }

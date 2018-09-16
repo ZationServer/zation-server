@@ -61,15 +61,27 @@ import
     ErrorConstruct
 } from "../helper/configEditTool/errorConfigStructure";
 import {
-    CChannelClientPubAccessFunction, CChannelDefault,
+    AuthUserGroupChannel, AuthUserGroupChOnBagPubFunction, AuthUserGroupChOnSubFunction, AuthUserGroupChOnUnsubFunction,
+    CChannelClientPubAccessFunction,
+    CChannelDefault,
     CChannelOnBagPubFunction,
-    CChannelOnClientPubFunction, CChannelOnSubFunction,
+    CChannelOnClientPubFunction,
+    CChannelOnSubFunction,
     CChannelSubAccessFunction,
-    ChannelConfig, ChannelSettings,
-    CIdChannelClientPubAccessFunction, CIdChannelDefault,
+    ChannelConfig,
+    ChannelSettings,
+    CIdChannelClientPubAccessFunction,
+    CIdChannelDefault,
     CIdChannelOnBagPubFunction,
-    CIdChannelOnClientPubFunction, CIdChannelOnSubFunction,
-    CIdChannelSubAccessFunction, CustomCh, CustomIdCh
+    CIdChannelOnClientPubFunction,
+    CIdChannelOnSubFunction,
+    CIdChannelSubAccessFunction,
+    CustomCh,
+    CustomIdCh, NormalChannel, NormalChOnBagPubFunction, NormalChOnSubFunction, NormalChOnUnsubFunction,
+    UserChannel,
+    UserChOnBagPubFunction,
+    UserChOnSubFunction,
+    UserChOnUnsubFunction
 } from "../helper/configEditTool/channelConfigStructure";
 import ObjectTools = require("../helper/tools/objectTools");
 import {StarterConfig} from "../helper/configEditTool/starterConfigStructure";
@@ -131,7 +143,20 @@ class Config
     static customIdCh(c : Record<string,(ChannelSettings | CustomCh)> | CIdChannelDefault) :
         Record<string,(ChannelSettings | CustomCh)> | CIdChannelDefault{return c;}
 
-    static channelSetting(c : ChannelSettings) : ChannelSettings {return c;}
+    static userCh(c : ChannelSettings | UserChannel) : ChannelSettings | UserChannel {return c;}
+    static userChOnSub(func : UserChOnSubFunction) : UserChOnSubFunction {return func;}
+    static userChOnUnsub(func : UserChOnUnsubFunction) : UserChOnUnsubFunction {return func;}
+    static userChOnBagPub(func : UserChOnBagPubFunction) : UserChOnBagPubFunction {return func;}
+
+    static authUserGroupCh(c : ChannelSettings | AuthUserGroupChannel) : ChannelSettings | AuthUserGroupChannel {return c;}
+    static authUserGroupChOnSub(func : AuthUserGroupChOnSubFunction) : AuthUserGroupChOnSubFunction {return func;}
+    static authUserGroupChOnUnsub(func : AuthUserGroupChOnUnsubFunction) : AuthUserGroupChOnUnsubFunction {return func;}
+    static authUserGroupChOnBagPub(func : AuthUserGroupChOnBagPubFunction) : AuthUserGroupChOnBagPubFunction {return func;}
+
+    static normalCh(c : ChannelSettings | NormalChannel) : ChannelSettings | NormalChannel {return c;}
+    static normalChOnSub(func : NormalChOnSubFunction) : NormalChOnSubFunction {return func;}
+    static normalChOnUnsub(func : NormalChOnUnsubFunction) : NormalChOnUnsubFunction {return func;}
+    static normalChOnBagPub(func : NormalChOnBagPubFunction) : NormalChOnBagPubFunction {return func;}
 
     //Part Service Config
     static customService(c : MainCustomService) : MainCustomService {return c;}

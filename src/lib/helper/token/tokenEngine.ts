@@ -9,6 +9,7 @@ import Const          = require('../constants/constWrapper');
 import SHBridge       = require("../bridges/shBridge");
 import ZationWorker   = require("../../main/zationWorker");
 import ZationConfig   = require("../../main/zationConfig");
+import UUID           = require("../tools/uuid");
 
 class TokenEngine
 {
@@ -23,46 +24,53 @@ class TokenEngine
         this.zc = zc;
     }
 
-    private generateExpiry() : number
-    {
+    private generateExpiry() : number {
         const defaultExp = this.zc.getMain(Const.Main.KEYS.AUTH_DEFAULT_EXPIRY);
         return Math.floor(Date.now() / 1000) +  defaultExp;
     }
 
     //to create a new Token
-    async createToken(data : object) : Promise<boolean>
-    {
-        const tswClient = this.worker.getTSWClient();
-
-        const expiry = this.generateExpiry();
-        const remoteAddress = this.shBridge.getPublicRemoteAddress();
-        const userId = data[Const.Settings.TOKEN.USER_ID];
-        const authUserGroup = data[Const.Settings.TOKEN.AUTH_USER_GROUP];
-
-        const tokenId = await tswClient.saveTokenInfo(expiry,remoteAddress,authUserGroup,userId);
-
-        data[Const.Settings.TOKEN.EXPIRE] = expiry;
-        data[Const.Settings.TOKEN.TOKEN_ID] = tokenId;
-
+    async createToken(data : object) : Promise<boolean> {
+        data[Const.Settings.TOKEN.EXPIRE] = this.generateExpiry();
+        data[Const.Settings.TOKEN.TOKEN_ID]  = UUID.generateUUID();
         return TokenTools.createNewToken(data,this.shBridge.getTokenBridge(),this.worker);
     }
 
-    async removeToken(token : object) : Promise<void>
+    private updateWorkerMap(data : object) : void
     {
-        if(!!token && !!token[Const.Settings.TOKEN.TOKEN_ID])
-        {
-            const tokenId = token[Const.Settings.TOKEN.TOKEN_ID];
+        //update worker mapper
+        if(this.shBridge.isWebSocket()) {
+            //update worker mapper
+            if(!this.shBridge.getTokenBridge().hasToken())
+            {
+                //take new id and tokenId
+                if(!!data[Const.Settings.TOKEN.USER_ID]) {
+                    this.worker.getUserToScIdMapper().map(data[Const.Settings.TOKEN.USER_ID].toString(), this.shBridge.getSocket().id);
+                }
+                if(!!data[Const.Settings.TOKEN.TOKEN_ID]) {
+                    this.worker.getTokenIdToScIdMapper().map(data[Const.Settings.TOKEN.TOKEN_ID].toString(),this.shBridge.getSocket().id);
+                }
+            }
+            else
+            {
+                const oldToken = this.shBridge.getTokenBridge().getToken();
+                //check changed
+                if(oldToken[Const.Settings.TOKEN.TOKEN_ID] !== data[Const.Settings.TOKEN.TOKEN_ID])
+                {
+                    if(!!data[Const.Settings.TOKEN.TOKEN_ID])
+                    {
+                        //
 
-            //disconnect all sockets with tokenId
-            await this.worker
-                .getPreparedSmallBag()
-                .disconnectToken(tokenId);
+                    }
+                }
+
+            }
         }
     }
 
-    async updateTokenVariable(data : object) : Promise<boolean>
-    {
-        return true;
+    async updateTokenVariable(data : object) : Promise<boolean> {
+        this.updateWorkerMap(data);
+        return await TokenTools.updateToken(data,this.shBridge.getTokenBridge(),this.worker);
     }
 
     //getATokenVariable
@@ -74,10 +82,8 @@ class TokenEngine
         return this.getTokenVariable(Const.Settings.TOKEN.CUSTOM_VARIABLES);
     }
 
-    async setCustomTokenVar(data : object) : Promise<void> {
-        const customVar = {};
-        customVar[Const.Settings.TOKEN.CUSTOM_VARIABLES] = data;
-        await this.updateTokenVariable(customVar);
+    async setCustomTokenVar(data : object) : Promise<boolean> {
+        return await TokenTools.updateCustomTokenVar(data,this.shBridge.getTokenBridge(),this.worker);
     }
 }
 

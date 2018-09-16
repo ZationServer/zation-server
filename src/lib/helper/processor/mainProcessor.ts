@@ -61,7 +61,7 @@ class MainProcessor
             const tokenEngine = new TokenEngine(shBridge,worker,zc);
 
             const authEngine =
-                new AuthEngine(shBridge,tokenEngine,worker.getAEPreparedPart(),worker.getChAccessEngine());
+                new AuthEngine(shBridge,tokenEngine,worker);
 
             await authEngine.init();
 

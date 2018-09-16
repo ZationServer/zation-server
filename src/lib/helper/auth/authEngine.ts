@@ -13,6 +13,7 @@ import MainErrors     = require("../zationTaskErrors/mainTaskErrors");
 import ZationToken    = require("../infoObjects/zationToken");
 import {ChAccessEngine} from "../channel/chAccessEngine";
 import AuthenticationError = require("../error/authenticationError");
+import ZationWorker        = require("../../main/zationWorker");
 
 class AuthEngine
 {
@@ -20,17 +21,19 @@ class AuthEngine
     private shBridge : SHBridge;
     private tokenEngine : TokenEngine;
     private chAccessEngine : ChAccessEngine;
+    private worker : ZationWorker;
 
     private currentDefault : boolean;
     private currentUserGroup :string | undefined;
     private currentUserId : any;
 
-    constructor(shBridge : SHBridge,tokenEngine :TokenEngine,aePreparedPart : AEPreparedPart,chAccessEngine : ChAccessEngine)
+    constructor(shBridge : SHBridge,tokenEngine :TokenEngine,worker : ZationWorker)
     {
-        this.aePreparedPart = aePreparedPart;
+        this.aePreparedPart = worker.getAEPreparedPart();
         this.shBridge       = shBridge;
         this.tokenEngine    = tokenEngine;
-        this.chAccessEngine = chAccessEngine;
+        this.chAccessEngine = worker.getChAccessEngine();
+        this.worker         = worker;
 
         this.currentDefault      = true;
         this.currentUserGroup    = undefined;
@@ -121,8 +124,7 @@ class AuthEngine
         return this.currentUserId;
     }
 
-    //PART AUTHENTICATION
-
+    //PART AUTHENTICATION&
     async authenticate(authUserGroup : string, userId ?: string | number,tokenCustomVar ?: object) : Promise<void>
     {
         if(this.checkIsIn(authUserGroup)) {
@@ -162,7 +164,19 @@ class AuthEngine
         }
     }
 
-    async setUserId(userId : number | string) : Promise<void>
+    async setPanelAccess(access : boolean) : Promise<void>
+    {
+        if(this.isAuth()) {
+            let obj = {};
+            obj[Const.Settings.TOKEN.PANEL_ACCESS] = access;
+            await this.tokenEngine.updateTokenVariable(obj);
+        }
+        else {
+            throw new AuthenticationError(`Panel access can not be updated if the socket is unauthenticated!`);
+        }
+    }
+
+    async setUserId(userId : number | string | null) : Promise<void>
     {
         if(this.isAuth()) {
             let obj = {};
@@ -194,9 +208,6 @@ class AuthEngine
 
         //deauthenticate socket/send info by http back
         this.shBridge.deauthenticate();
-
-        //block token in tempStorage and disconnect all sockets with tokenId
-        await this.tokenEngine.removeToken(this.shBridge.getTokenBridge().getToken());
 
         //check channels from socket
         if(this.shBridge.isWebSocket()) {

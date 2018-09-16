@@ -241,7 +241,7 @@ class ConfigChecker
                    key === Const.Channel.KEYS.AUTH_USER_GROUP_CH || key === Const.Channel.KEYS.USER_CH)
                {
                    ConfigCheckerTools.assertStructure
-                   (Structures.ChannelSettingsOnlyItem,mainChannels[key],Const.Settings.CN.CHANNEL,this.ceb,new Target(key));
+                   (Structures.ChannelNormalItem,mainChannels[key],Const.Settings.CN.CHANNEL,this.ceb,new Target(key));
                }
            }
        }

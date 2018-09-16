@@ -90,14 +90,26 @@ class ChExchangeEngine
 
     async publishInUserCh(id : number | string | (string | number)[],eventName : string,data : any,srcSocketSid ?: string) : Promise<void>
     {
+        const eventTrigger = (id : number | string) => {
+            //trigger pub bag userCh event
+            const func = this.worker.getChConfigManager().getOnBagPubUserCh();
+            if(!!func) {
+                (async () => {
+                    await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), id, data);
+                })();
+            }
+        };
+
         if(Array.isArray(id)) {
             let promises : Promise<void>[] = [];
             for(let i = 0; i < id.length; i++) {
+                eventTrigger(id[i]);
                 promises.push(this.pubAsync(ChTools.buildUserChName(id[i]),eventName,data,srcSocketSid));
             }
             await Promise.all(promises);
         }
         else {
+            eventTrigger(id);
             await this.pubAsync(ChTools.buildUserChName(id),eventName,data,srcSocketSid);
         }
     }
@@ -105,24 +117,48 @@ class ChExchangeEngine
 
     async publishInDefaultUserGroupCh(eventName : string, data : any,srcSocketSid ?: string) : Promise<void>
     {
+        const func = this.worker.getChConfigManager().getOnBagPubDefaultUserUserCh();
+        if(!!func) {
+            (async () => {
+                await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), data);
+            })();
+        }
         await this.pubAsync(Const.Settings.CHANNEL.DEFAULT_USER_GROUP,eventName,data,srcSocketSid);
     }
 
     async publishInAllCh(eventName : string,data : any,srcSocketSid ?: string) : Promise<void>
     {
+        const func = this.worker.getChConfigManager().getOnBagPubAllCh();
+        if(!!func) {
+            (async () => {
+                await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), data);
+            })();
+        }
         await this.pubAsync(Const.Settings.CHANNEL.ALL,eventName,data,srcSocketSid);
     }
 
     async publishInAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : any,srcSocketSid ?: string) : Promise<void>
     {
+        const eventTrigger = (group : string) => {
+            //trigger pub bag auth user group Ch event
+            const func = this.worker.getChConfigManager().getOnBagPubAuthUserUserCh();
+            if(!!func) {
+                (async () => {
+                    await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), group, data);
+                })();
+            }
+        };
+
         if(Array.isArray(authUserGroup)) {
             let promises : Promise<void>[] = [];
             for(let i = 0; i < authUserGroup.length; i++) {
-               promises.push(this.pubAsync(ChTools.buildAuthUserGroupChName(authUserGroup[i]),eventName,data,srcSocketSid));
+                eventTrigger(authUserGroup[i]);
+                promises.push(this.pubAsync(ChTools.buildAuthUserGroupChName(authUserGroup[i]),eventName,data,srcSocketSid));
             }
             await Promise.all(promises);
         }
         else {
+            eventTrigger(authUserGroup);
             await this.pubAsync(ChTools.buildAuthUserGroupChName(authUserGroup),eventName,data,srcSocketSid);
         }
     }
@@ -144,9 +180,9 @@ class ChExchangeEngine
 
     async publishToCustomIdChannel(channel : string, id : any, eventName : string, data : any,srcSocketSid ?: string) : Promise<void>
     {
-        let channelFullName = ChTools.buildCustomIdChannelName(channel,id);
+        const channelFullName = ChTools.buildCustomIdChannelName(channel,id);
         //trigger pub bag customCh event
-        let func = this.worker.getChConfigManager().getOnBagPubCustomIdCh(channel);
+        const func = this.worker.getChConfigManager().getOnBagPubCustomIdCh(channel);
         if(!!func) {
             (async () => {
                 await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), new CIdChInfo(channel, id), data);
@@ -160,7 +196,7 @@ class ChExchangeEngine
         const eventTrigger = (chName : string) =>
         {
             //trigger pub bag customCh event
-            let func = this.worker.getChConfigManager().getOnBagPubCustomCh(chName);
+            const func = this.worker.getChConfigManager().getOnBagPubCustomCh(chName);
             if(!!func) {
                 (async () => {
                     await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), new CChInfo(chName), data);

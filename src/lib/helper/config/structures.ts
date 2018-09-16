@@ -188,7 +188,7 @@ const ChannelConfig = {};
 ChannelConfig[Const.Channel.KEYS.CUSTOM_CHANNELS]         = {types : ['object'],isOptional : true};
 ChannelConfig[Const.Channel.KEYS.CUSTOM_ID_CHANNELS]      = {types : ['object'],isOptional : true};
 ChannelConfig[Const.Channel.KEYS.USER_CH]                 = {types : ['object'],isOptional : true};
-ChannelConfig[Const.Channel.KEYS.AUTH_USER_GROUP_CH]           = {types : ['object'],isOptional : true};
+ChannelConfig[Const.Channel.KEYS.AUTH_USER_GROUP_CH]      = {types : ['object'],isOptional : true};
 ChannelConfig[Const.Channel.KEYS.DEFAULT_USER_GROUP_CH]   = {types : ['object'],isOptional : true};
 ChannelConfig[Const.Channel.KEYS.ALL_CH]                  = {types : ['object'],isOptional : true};
 
@@ -206,16 +206,20 @@ PanelUserConfig[Const.Main.PANEL_USER.PASSWORD]              = {types : ['string
 
 const ChannelFullItem = {};
 ChannelFullItem[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS]       = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelFullItem[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS]     = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelFullItem[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS] = {types : ['function','boolean','number','array','string'],isOptional : true};
 ChannelFullItem[Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS]   = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelFullItem[Const.Channel.CHANNEL.ON_CLIENT_PUBLISH]           = {types : ['function'],isOptional : true};
-ChannelFullItem[Const.Channel.CHANNEL.ON_SUBSCRIPTION]      = {types : ['function'],isOptional : true};
-ChannelFullItem[Const.Channel.CHANNEL.ON_UNSUBSCRIPTION]    = {types : ['function'],isOptional : true};
-ChannelFullItem[Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH] = {types : ['boolean'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS]            = {types : ['function','boolean','number','array','string'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS]        = {types : ['function','boolean','number','array','string'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL.ON_CLIENT_PUBLISH]           = {types : ['function','array'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL.ON_BAG_PUBLISH]              = {types : ['function','array'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL.ON_SUBSCRIPTION]             = {types : ['function','array'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL.ON_UNSUBSCRIPTION]           = {types : ['function','array'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH] = {types : ['boolean','array'],isOptional : true};
 
-const ChannelSettingsOnlyItem = {};
-ChannelSettingsOnlyItem[Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH] = {types : ['boolean'],isOptional : true};
+const ChannelNormalItem = {};
+ChannelNormalItem[Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH] = {types : ['boolean'],isOptional : true};
+ChannelNormalItem[Const.Channel.CHANNEL.ON_BAG_PUBLISH]                  = {types : ['function','array'],isOptional : true};
+ChannelNormalItem[Const.Channel.CHANNEL.ON_SUBSCRIPTION]                 = {types : ['function','array'],isOptional : true};
+ChannelNormalItem[Const.Channel.CHANNEL.ON_UNSUBSCRIPTION]               = {types : ['function','array'],isOptional : true};
 
 const Services = {};
 Services[Const.Service.SERVICES.MYSQL]                  = {types : ['object'],isOptional : true};
@@ -296,7 +300,7 @@ class Structures
     public static readonly ChannelConfig = ChannelConfig;
     public static readonly ServiceConfig = ServiceConfig;
     public static readonly ChannelFullItem = ChannelFullItem;
-    public static readonly ChannelSettingsOnlyItem = ChannelSettingsOnlyItem;
+    public static readonly ChannelNormalItem = ChannelNormalItem;
     public static readonly Services = Services;
     public static readonly AppArray = AppArray;
     public static readonly ArrayShortCutSpecify = ArrayShortCutSpecify;

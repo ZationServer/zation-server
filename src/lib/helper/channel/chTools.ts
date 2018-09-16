@@ -64,6 +64,14 @@ class ChTools
         return ChTools.getCustomIdChannelInfo(ch).name;
     }
 
+    static getUserIdFromCh(ch : string) : string {
+        return ch.split('.')[2];
+    }
+
+    static getUserAuthGroupFromCh(ch : string) : string {
+        return ch.split('.')[2];
+    }
+
     static getCustomIdChConfig(zc : ZationConfig,name : string) : object
     {
         //precompiler creates {} if is not set!
