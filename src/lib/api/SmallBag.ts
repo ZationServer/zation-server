@@ -941,6 +941,19 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * Returns the clients of the worker
+     * Key are socketIds and value are sockets
+     * @example
+     * getWorkerClients();
+     */
+    getWorkerClients() : object
+    {
+        return this.worker.scServer.clients;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * Returns the socketSids from socketId
      * Only for ids they are found on the worker!
      * @example
