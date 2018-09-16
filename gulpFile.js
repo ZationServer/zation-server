@@ -7,6 +7,7 @@ const tscConfig         = require('./tsconfig.json');
 const OptimizeJs        = require('gulp-optimize-js');
 const terser            = require('gulp-terser');
 const clean             = require('gulp-clean');
+const path              = require('path');
 
 gulp.task('scss', function() {
     return gulp.src('src/**/*.scss')
@@ -22,7 +23,7 @@ gulp.task('cof', function() {
 
 const isConfigEditorFile = (file) =>
 {
-    return file.path.match(`^.*src\\\\lib\\\\helper\\\\configEditTool\\\\.*[.ts]$`);
+    return file.path.match(`^.*src${path.sep}lib${path.sep}helper${path.sep}configEditTool${path.sep}.*[.ts]$`);
 };
 
 const replaceConst = (match) =>
