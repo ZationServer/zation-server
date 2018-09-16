@@ -115,22 +115,22 @@ class ConfigPeCompiler
                         }
                     }
 
-                    if(!(channels[chName].hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_ACCESS) ||
-                        channels[chName].hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS)))
+                    if(!(channels[chName].hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS) ||
+                        channels[chName].hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS)))
                     {
-                        if(defaultCh[Const.Channel.CHANNEL.PUBLISH_ACCESS] !== undefined)
+                        if(defaultCh[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS] !== undefined)
                         {
-                            channels[chName][Const.Channel.CHANNEL.PUBLISH_ACCESS] =
-                                defaultCh[Const.Channel.CHANNEL.PUBLISH_ACCESS];
+                            channels[chName][Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS] =
+                                defaultCh[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS];
                         }
-                        if(defaultCh[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS] !== undefined)
+                        if(defaultCh[Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS] !== undefined)
                         {
-                            channels[chName][Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS] =
-                                defaultCh[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS];
+                            channels[chName][Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS] =
+                                defaultCh[Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS];
                         }
                     }
 
-                    this.processDefaultValue(channels[chName],defaultCh,Const.Channel.CHANNEL.ON_PUBLISH);
+                    this.processDefaultValue(channels[chName],defaultCh,Const.Channel.CHANNEL.ON_CLIENT_PUBLISH);
                     this.processDefaultValue(channels[chName],defaultCh,Const.Channel.CHANNEL.ON_SUBSCRIPTION);
                     this.processDefaultValue(channels[chName],defaultCh,Const.Channel.CHANNEL.ON_UNSUBSCRIPTION);
                     this.processDefaultValue(channels[chName],defaultCh,Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH);

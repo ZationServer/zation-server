@@ -4,8 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import SmallBag = require("../../api/SmallBag");
-
 class FuncTools
 {
     static async emitEvent(func : Function | Function[],...params : any[]) : Promise<void>

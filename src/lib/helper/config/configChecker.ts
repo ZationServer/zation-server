@@ -256,8 +256,8 @@ class ConfigChecker
 
        if(typeof channel === 'object')
        {
-           if(channel.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_ACCESS) &&
-               channel.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS))
+           if(channel.hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS) &&
+               channel.hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS))
            {
                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.CHANNEL,
                    `${mainTarget.getTarget()} only 'publishAccess' or 'publishNotAccess' keyword is allow.`));
@@ -271,24 +271,24 @@ class ConfigChecker
 
            //check access dependency to userGroups
            this.checkAccessKeyDependency
-           (channel[Const.Channel.CHANNEL.PUBLISH_ACCESS],Const.Channel.CHANNEL.PUBLISH_ACCESS,mainTarget);
+           (channel[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS],Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS,mainTarget);
            this.checkAccessKeyDependency
-           (channel[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS],Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS,mainTarget);
+           (channel[Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS],Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS,mainTarget);
            this.checkAccessKeyDependency
            (channel[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS],Const.Channel.CHANNEL.SUBSCRIBE_ACCESS,mainTarget);
            this.checkAccessKeyDependency
            (channel[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS],Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS,mainTarget);
 
-           this.warningForPublish(channel[Const.Channel.CHANNEL.PUBLISH_ACCESS],mainTarget);
-           this.warningForPublish(channel[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS],mainTarget);
+           this.warningForPublish(channel[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS],mainTarget);
+           this.warningForPublish(channel[Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS],mainTarget);
        }
 
        if
        (
            chName === Const.Channel.CHANNEL_DEFAULT.DEFAULT &&
            !(
-               (channel.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_ACCESS) ||
-                   channel.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS)) &&
+               (channel.hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS) ||
+                   channel.hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS)) &&
                (channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_ACCESS) ||
                    channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS))
            )

@@ -14,9 +14,12 @@ import Const                = require('../constants/constWrapper');
 import Logger               = require('../logger/logger');
 import ChTools              = require('./chTools');
 import SmallBag             = require("../../api/SmallBag");
-import ChInfo               = require("../infoObjects/chAccessInfo");
 import ChConfigManager      = require("./chConfigManager");
 import {Socket}               from "../socket/socket";
+import CIdChInfo             = require("../infoObjects/cIdChInfo");
+import CChInfo               = require("../infoObjects/cChInfo");
+import SocketInfo            = require("../infoObjects/socketInfo");
+import FuncTools             = require("../tools/funcTools");
 
 export class ChAccessEngine
 {
@@ -29,7 +32,7 @@ export class ChAccessEngine
     }
 
     //Part Access
-    private async hasAccessTo(value : any,socket : any,chName : string,{isPub, pubData},chId ?: string) : Promise<boolean>
+    private async hasAccessTo(value : any,socket : Socket,chName : string,{isPub, pubData},chId ?: string) : Promise<boolean>
     {
         let access = false;
 
@@ -37,19 +40,27 @@ export class ChAccessEngine
             access = value;
         }
         else {
-            const info : ChInfo = new ChInfo(socket,chName,chId);
+            let chInfo = {};
+            if(!!chId) {
+                chInfo = new CIdChInfo(chName,chId);
+            }
+            else {
+                chInfo = new CChInfo(chName);
+            }
+            const socketInfo : SocketInfo = new SocketInfo(socket);
+
             if(typeof value === 'string')
             {
                 if(value === Const.Channel.ACCESS.ALL) {
                     access = true;
                 }
                 else if(value === Const.Channel.ACCESS.ALL_AUTH) {
-                    access = info.isAuthIn;
+                    access = socketInfo.isAuthIn;
                 }
                 else if(value === Const.Channel.ACCESS.ALL_NOT_AUTH) {
-                    access = !info.isAuthIn;
+                    access = !socketInfo.isAuthIn;
                 }
-                else if(info.authUserGroup === value) {
+                else if(socketInfo.authUserGroup === value) {
                     //Group!
                     access = true;
                 }
@@ -58,10 +69,10 @@ export class ChAccessEngine
             {
                 let res;
                 if(isPub) {
-                    res = await value(this.smallBag,info,pubData);
+                    res = await value(this.smallBag,chInfo,socketInfo,pubData);
                 }
                 else {
-                    res = await value(this.smallBag,info);
+                    res = await value(this.smallBag,chInfo,socketInfo);
                 }
 
                 if(typeof res === 'boolean') {
@@ -71,18 +82,18 @@ export class ChAccessEngine
             else if(Array.isArray(value)) {
                 for(let i = 0; i < value.length; i++)
                 {
-                    if(typeof value[i] === 'string' && value[i] === info.authUserGroup) {
+                    if(typeof value[i] === 'string' && value[i] === socketInfo.authUserGroup) {
                         access = true;
                         break;
                     }
-                    else if(typeof value[i] === 'number' && value[i] === info.userId) {
+                    else if(typeof value[i] === 'number' && value[i] === socketInfo.userId) {
                         access = true;
                         break;
                     }
                 }
             }
             else if(typeof value === 'number') {
-                if(info.userId === value) {
+                if(socketInfo.userId === value) {
                     access = true;
                 }
             }
@@ -164,10 +175,6 @@ export class ChAccessEngine
                 id
             )))
             {
-                //allOk
-                await ChAccessEngine.invokeChEvent
-                (chConfig[Const.Channel.CHANNEL.ON_SUBSCRIPTION],smallBag,socket,name,id);
-
                 Logger.printDebugInfo
                 (`Socket with id: ${socket.id} subscribes customIdChannel. Name: '${name}',Id: '${id}'.`);
                 return undefined;
@@ -182,7 +189,7 @@ export class ChAccessEngine
         }
     }
 
-    async checkAccessPubCustomIdCh(socket,tryPubName : string,pubData : any) : Promise<any>
+    async checkAccessClientPubCustomIdCh(socket, tryPubName : string, pubData : any) : Promise<any>
     {
         //return error
         const {name,id} = ChTools.getCustomIdChannelInfo(tryPubName);
@@ -224,8 +231,12 @@ export class ChAccessEngine
             )))
             {
                 //allOk
-                await ChAccessEngine.invokeChEvent
-                (chConfig[Const.Channel.CHANNEL.ON_PUBLISH],smallBag,socket,name,id);
+                let func = this.chConfigManager.getOnClientPubCustomIdCh(name);
+                if(!!func) {
+                    (async () => {
+                        await FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket),pubData);
+                    })();
+                }
 
                 Logger.printDebugInfo
                 (`Socket with id: ${socket.id} publish in customIdChannel. Name: '${name}',Id: '${id}'.`);
@@ -272,10 +283,6 @@ export class ChAccessEngine
                 name
             )))
             {
-                //allOk
-                await ChAccessEngine.invokeChEvent
-                (chConfig[Const.Channel.CHANNEL.ON_SUBSCRIPTION],smallBag,socket,name);
-
                 Logger.printDebugInfo
                 (`Socket with id: ${socket.id} subscribes a customChannel: '${name}'.`);
                 return undefined;
@@ -289,7 +296,7 @@ export class ChAccessEngine
             }
         }
     }
-    async checkAccessPubCustomCh(socket,tryPubName : string,pubData : any) : Promise<any>
+    async checkAccessClientPubCustomCh(socket, tryPubName : string, pubData : any) : Promise<any>
     {
         //return error
         const name = ChTools.getCustomChannelName(tryPubName);
@@ -323,8 +330,12 @@ export class ChAccessEngine
             )))
             {
                 //allOk
-                await ChAccessEngine.invokeChEvent
-                (chConfig[Const.Channel.CHANNEL.ON_PUBLISH],smallBag,socket,name);
+                let func = this.chConfigManager.getOnClientPubCustomCh(name);
+                if(!!func) {
+                    (async () => {
+                        await FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket),pubData);
+                    })();
+                }
 
                 Logger.printDebugInfo
                 (`Socket with id: ${socket.id} publish in a customChannel: '${name}'.`);

@@ -3,7 +3,6 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-
 import SmallBag              = require("./SmallBag");
 import Bag                   = require("./Bag");
 import ExpressCore           = require("express-serve-static-core");
@@ -62,11 +61,15 @@ import
     ErrorConstruct
 } from "../helper/configEditTool/errorConfigStructure";
 import {
-    Channel,
-    ChannelPubAccessFunction,
-    ChannelSubAccessFunction,
-    ChannelConfig,
-    ChannelEventFunction
+    CChannelClientPubAccessFunction, CChannelDefault,
+    CChannelOnBagPubFunction,
+    CChannelOnClientPubFunction, CChannelOnSubFunction,
+    CChannelSubAccessFunction,
+    ChannelConfig, ChannelSettings,
+    CIdChannelClientPubAccessFunction, CIdChannelDefault,
+    CIdChannelOnBagPubFunction,
+    CIdChannelOnClientPubFunction, CIdChannelOnSubFunction,
+    CIdChannelSubAccessFunction, CustomCh, CustomIdCh
 } from "../helper/configEditTool/channelConfigStructure";
 import ObjectTools = require("../helper/tools/objectTools");
 import {StarterConfig} from "../helper/configEditTool/starterConfigStructure";
@@ -104,12 +107,31 @@ class Config
     static validationGroup(c : InputValidationConfig) :  InputValidationConfig {return c;}
 
     //Part Channel Config functions
+    static cIdChClientPubAccess(func : CIdChannelClientPubAccessFunction) : CIdChannelClientPubAccessFunction {return func;}
+    static cChClientPubAccess(func : CChannelClientPubAccessFunction) : CChannelClientPubAccessFunction  {return func;}
 
-    static channelPubAccess(func : ChannelSubAccessFunction) : ChannelSubAccessFunction {return func;}
-    static channelSubAccess(func : ChannelPubAccessFunction) : ChannelPubAccessFunction {return func;}
-    static channelOn(func : ChannelEventFunction) : ChannelEventFunction {return func;}
+    static cIdChSubAccess(func : CIdChannelSubAccessFunction) : CIdChannelSubAccessFunction {return func;}
+    static cChSubAccess(func : CChannelSubAccessFunction) : CChannelSubAccessFunction {return func;}
 
-    static channel(c : Channel) : Channel {return c;}
+    static cChOnClientPub(func : CChannelOnClientPubFunction) : CChannelOnClientPubFunction {return func;}
+    static cIdChOnClientPub(func : CIdChannelOnClientPubFunction) : CIdChannelOnClientPubFunction {return func;}
+
+    static cChOnBagPub(func : CChannelOnBagPubFunction) : CChannelOnBagPubFunction {return func;}
+    static cIdChOnBagPub(func : CIdChannelOnBagPubFunction) : CIdChannelOnBagPubFunction {return func;}
+
+    static cChOnSub(func : CChannelOnSubFunction) : CChannelOnSubFunction {return func;}
+    static cIdChOnSub(func : CIdChannelOnSubFunction) : CIdChannelOnSubFunction {return func;}
+
+    static cChOnUnsub(func : CChannelOnSubFunction) : CChannelOnSubFunction {return func;}
+    static cIdChOnUnsub(func : CIdChannelOnSubFunction) : CIdChannelOnSubFunction {return func;}
+
+    static customCh(c :  Record<string,(ChannelSettings | CustomIdCh)> | CChannelDefault) :
+        Record<string,(ChannelSettings | CustomIdCh)> | CChannelDefault  {return c;}
+
+    static customIdCh(c : Record<string,(ChannelSettings | CustomCh)> | CIdChannelDefault) :
+        Record<string,(ChannelSettings | CustomCh)> | CIdChannelDefault{return c;}
+
+    static channelSetting(c : ChannelSettings) : ChannelSettings {return c;}
 
     //Part Service Config
     static customService(c : MainCustomService) : MainCustomService {return c;}

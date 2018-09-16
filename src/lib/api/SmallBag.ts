@@ -34,7 +34,7 @@ class SmallBag
     protected readonly zc : ZationConfig;
     protected readonly worker : ZationWorker;
     
-    constructor(worker : ZationWorker,exchangeEngine : ExchangeEngine = new ExchangeEngine(worker.scServer))
+    constructor(worker : ZationWorker,exchangeEngine : ExchangeEngine = new ExchangeEngine(worker))
     {
         this.exchangeEngine = exchangeEngine;
         this.serviceEngine = worker.getServiceEngine();

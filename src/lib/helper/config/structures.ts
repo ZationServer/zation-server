@@ -204,11 +204,11 @@ PanelUserConfig[Const.Main.PANEL_USER.USER_NAME]             = {types : ['string
 PanelUserConfig[Const.Main.PANEL_USER.PASSWORD]              = {types : ['string'],isOptional : false};
 
 const ChannelFullItem = {};
-ChannelFullItem[Const.Channel.CHANNEL.PUBLISH_ACCESS]       = {types : ['function','boolean','number','array','string'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS]       = {types : ['function','boolean','number','array','string'],isOptional : true};
 ChannelFullItem[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS]     = {types : ['function','boolean','number','array','string'],isOptional : true};
 ChannelFullItem[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS] = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelFullItem[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS]   = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelFullItem[Const.Channel.CHANNEL.ON_PUBLISH]           = {types : ['function'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS]   = {types : ['function','boolean','number','array','string'],isOptional : true};
+ChannelFullItem[Const.Channel.CHANNEL.ON_CLIENT_PUBLISH]           = {types : ['function'],isOptional : true};
 ChannelFullItem[Const.Channel.CHANNEL.ON_SUBSCRIPTION]      = {types : ['function'],isOptional : true};
 ChannelFullItem[Const.Channel.CHANNEL.ON_UNSUBSCRIPTION]    = {types : ['function'],isOptional : true};
 ChannelFullItem[Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH] = {types : ['boolean'],isOptional : true};

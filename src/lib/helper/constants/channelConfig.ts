@@ -20,14 +20,15 @@ class ACCESS {
 }
 
 class CHANNEL {
-    static readonly PUBLISH_NOT_ACCESS     = 'publishNotAccess';
-    static readonly PUBLISH_ACCESS         = 'publishAccess';
-    static readonly SUBSCRIBE_NOT_ACCESS   = 'subscribeNotAccess';
-    static readonly SUBSCRIBE_ACCESS       = 'subscribeAccess';
+    static readonly CLIENT_PUBLISH_NOT_ACCESS  = 'clientPublishNotAccess';
+    static readonly CLIENT_PUBLISH_ACCESS      = 'clientPublishAccess';
+    static readonly SUBSCRIBE_NOT_ACCESS       = 'subscribeNotAccess';
+    static readonly SUBSCRIBE_ACCESS           = 'subscribeAccess';
 
     static readonly ON_SUBSCRIPTION        = 'onSubscription';
     static readonly ON_UNSUBSCRIPTION      = 'onUnsubscription';
-    static readonly ON_PUBLISH             = 'onPublish';
+    static readonly ON_CLIENT_PUBLISH      = 'onClientPublish';
+    static readonly ON_BAG_PUBLISH         = 'onBagPublish';
 }
 
 class CHANNEL_SETTINGS {

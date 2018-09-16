@@ -33,6 +33,9 @@ import {WorkerChActions}     from "../helper/constants/workerChActions";
 import {Socket}              from "../helper/socket/socket";
 import ZationToken           = require("../helper/infoObjects/zationToken");
 import IdTools               = require("../helper/tools/idTools");
+import CIdChInfo             = require("../helper/infoObjects/cIdChInfo");
+import SocketInfo            = require("../helper/infoObjects/socketInfo");
+import CChInfo               = require("../helper/infoObjects/cChInfo");
 
 class ZationWorker extends SCWorker
 {
@@ -412,7 +415,7 @@ class ZationWorker extends SCWorker
             }
         });
 
-        //BLOCK USER CAN PUBLISH_ACCESS IN ZATION CHANNELS
+        //BLOCK USER CAN CLIENT_PUBLISH_ACCESS IN ZATION CHANNELS
         this.scServer.addMiddleware(this.scServer.SC_MIDDLEWARE_PUBLISH_IN, async (req, next) =>
         {
             const channel = req.channel;
@@ -429,10 +432,10 @@ class ZationWorker extends SCWorker
                     next(err); //Block!
                 }
                 else if (req.channel.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
-                    next(await this.chAccessEngine.checkAccessPubCustomIdCh(req.socket,channel,req.data));
+                    next(await this.chAccessEngine.checkAccessClientPubCustomIdCh(req.socket,channel,req.data));
                 }
                 else if (req.channel.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
-                    next(await this.chAccessEngine.checkAccessPubCustomCh(req.socket,channel,req.data));
+                    next(await this.chAccessEngine.checkAccessClientPubCustomCh(req.socket,channel,req.data));
                 }
                 else if (req.channel.indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1) {
                     let err : any = new Error('User can\'t publish in a User Group Channel!');
@@ -620,11 +623,51 @@ class ZationWorker extends SCWorker
 
         this.scServer.on('subscription', async (socket,chName,chOptions) =>
         {
+            //trigger sub customCh event
+            if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
+                const {name,id} = ChTools.getCustomIdChannelInfo(chName);
+                let func = this.chConfigManager.getOnSubCustomIdCh(name);
+                if(!!func) {
+                    (async () => {
+                        await FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket));
+                    })();
+                }
+            }
+            else if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
+                const name = ChTools.getCustomChannelName(chName);
+                let func = this.chConfigManager.getOnSubCustomCh(name);
+                if(!!func) {
+                    (async () => {
+                        await FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket));
+                    })();
+                }
+            }
+
             await this.zc.emitEvent(Const.Event.SC_SERVER_SUBSCRIPTION,this.getPreparedSmallBag(),socket,chName,chOptions);
         });
 
         this.scServer.on('unsubscription', async (socket,chName) =>
         {
+            //trigger sub customCh event
+            if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
+                const {name,id} = ChTools.getCustomIdChannelInfo(chName);
+                let func = this.chConfigManager.getOnUnsubCustomIdCh(name);
+                if(!!func) {
+                    (async () => {
+                        await FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket));
+                    })();
+                }
+            }
+            else if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
+                const name = ChTools.getCustomChannelName(chName);
+                let func = this.chConfigManager.getOnUnsubCustomCh(name);
+                if(!!func) {
+                    (async () => {
+                        await FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket));
+                    })();
+                }
+            }
+
             await this.zc.emitEvent(Const.Event.SC_SERVER_UNSUBSCRIPTION,this.getPreparedSmallBag(),socket,chName);
         });
 
@@ -704,7 +747,6 @@ class ZationWorker extends SCWorker
 
         socket.on('unsubscribe', async () =>
         {
-
             await this.zc.emitEvent(Const.Event.SOCKET_UNSUBSCRIBE,this.getPreparedSmallBag(),socket);
         });
 
@@ -796,36 +838,28 @@ class ZationWorker extends SCWorker
                 }
             };
 
-            if(data.action === WorkerChActions.KICK_OUT_TOKEN_IDS_FROM_CH && !!ch)
-            {
+            if(data.action === WorkerChActions.KICK_OUT_TOKEN_IDS_FROM_CH && !!ch) {
                 this.forTokenIds(ids,exceptSocketSids,kickOutAction);
             }
-            else if(data.action === WorkerChActions.KICK_OUT_USER_IDS_FROM_CH && !!ch)
-            {
+            else if(data.action === WorkerChActions.KICK_OUT_USER_IDS_FROM_CH && !!ch) {
                 this.forUserIds(ids,exceptSocketSids,kickOutAction);
             }
-            else if(data.action === WorkerChActions.EMIT_TOKEN_IDS)
-            {
+            else if(data.action === WorkerChActions.EMIT_TOKEN_IDS) {
                 this.forTokenIds(ids,exceptSocketSids,(s : Socket) => {s.emit(event,emitData)});
             }
-            else if(data.action === WorkerChActions.EMIT_USER_IDS)
-            {
+            else if(data.action === WorkerChActions.EMIT_USER_IDS) {
                 this.forUserIds(ids,exceptSocketSids,(s : Socket) => {s.emit(event,emitData);});
             }
-            else if(data.action === WorkerChActions.DISCONNECT_TOKEN_IDS)
-            {
+            else if(data.action === WorkerChActions.DISCONNECT_TOKEN_IDS) {
                 this.forTokenIds(ids,exceptSocketSids,(s : Socket) => {s.disconnect();});
             }
-            else if(data.action === WorkerChActions.DISCONNECT_USER_IDS)
-            {
+            else if(data.action === WorkerChActions.DISCONNECT_USER_IDS) {
                 this.forUserIds(ids,exceptSocketSids,(s : Socket) => {s.disconnect();});
             }
-            else if(data.action === WorkerChActions.DEAUTHENTICATE_TOKEN_IDS)
-            {
+            else if(data.action === WorkerChActions.DEAUTHENTICATE_TOKEN_IDS) {
                 this.forTokenIds(ids,exceptSocketSids,(s : Socket) => {s.deauthenticate();});
             }
-            else if(data.action === WorkerChActions.DEAUTHENTICATE_USER_IDS)
-            {
+            else if(data.action === WorkerChActions.DEAUTHENTICATE_USER_IDS) {
                 this.forUserIds(ids,exceptSocketSids,(s : Socket) => {s.deauthenticate();});
             }
         });

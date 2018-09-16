@@ -156,7 +156,7 @@ class StateServerEngine
     public async registerStateServer()
     {
         this.stateSocket = ScClient.connect(this.connectSettings);
-
+        Logger.printStartDebugInfo('Master wait for connection to zation-cluster-state server...');
         return new Promise((resolve) =>
         {
             this.stateSocket.on('error',async (e) =>
@@ -192,6 +192,7 @@ class StateServerEngine
             {
                 if(this.firstConnection) {
                     this.firstConnection = false;
+                    Logger.printStartDebugInfo('Master is connected to zation-cluster-state server');
                     await this.registerMaster();
                     resolve();
                 }

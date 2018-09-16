@@ -15,14 +15,19 @@ import ChTools           = require('./chTools');
 import ZationConfig      = require("../../main/zationConfig");
 import Logger            = require("../logger/logger");
 import {WorkerChActions} from "../constants/workerChActions";
+import FuncTools         = require("../tools/funcTools");
+import ZationWorker      = require("../../main/zationWorker");
+import CIdChInfo         = require("../infoObjects/cIdChInfo");
+import CChInfo           = require("../infoObjects/cChInfo");
 
 class ChExchangeEngine
 {
     private readonly scServer : any;
+    private readonly worker: ZationWorker;
 
-    constructor(scServer)
-    {
-        this.scServer = scServer;
+    constructor(worker : ZationWorker) {
+        this.worker = worker;
+        this.scServer = worker.scServer;
     }
 
     //PART Publish
@@ -140,16 +145,35 @@ class ChExchangeEngine
     async publishToCustomIdChannel(channel : string, id : any, eventName : string, data : any,srcSocketSid ?: string) : Promise<void>
     {
         let channelFullName = ChTools.buildCustomIdChannelName(channel,id);
+        //trigger pub bag customCh event
+        let func = this.worker.getChConfigManager().getOnBagPubCustomIdCh(channel);
+        if(!!func) {
+            (async () => {
+                await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), new CIdChInfo(channel, id), data);
+            })();
+        }
         await this.pubAsync(channelFullName,eventName,data,srcSocketSid);
     }
 
     async publishToCustomChannel(channel : string | string[], eventName : string, data : any,srcSocketSid ?: string) : Promise<void>
     {
+        const eventTrigger = (chName : string) =>
+        {
+            //trigger pub bag customCh event
+            let func = this.worker.getChConfigManager().getOnBagPubCustomCh(chName);
+            if(!!func) {
+                (async () => {
+                    await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), new CChInfo(chName), data);
+                })();
+            }
+        };
+
         if(Array.isArray(channel)) {
             let promises : Promise<void>[] = [];
             for(let i = 0; i < channel.length; i++)
             {
                 let channelFullName = ChTools.buildCustomChannelName(channel[i]);
+                eventTrigger(channel[i]);
                 promises.push(this.pubAsync(channelFullName,eventName,data,srcSocketSid));
             }
             await Promise.all(promises);
@@ -157,6 +181,7 @@ class ChExchangeEngine
         else
         {
             let channelFullName = ChTools.buildCustomChannelName(channel);
+            eventTrigger(channel);
             await this.pubAsync(channelFullName,eventName,data,srcSocketSid);
         }
     }

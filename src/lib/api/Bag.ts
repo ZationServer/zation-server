@@ -25,7 +25,7 @@ class Bag extends SmallBag
     private readonly tokenEngine : TokenEngine;
     private readonly input : object;
 
-    constructor(shBridge : SHBridge,worker : ZationWorker,authEngine : AuthEngine,tokenEngine : TokenEngine,input : object,channelEngine : ChannelEngine = new ChannelEngine(worker.scServer,shBridge))
+    constructor(shBridge : SHBridge,worker : ZationWorker,authEngine : AuthEngine,tokenEngine : TokenEngine,input : object,channelEngine : ChannelEngine = new ChannelEngine(worker,shBridge))
     {
         super(worker,channelEngine);
 

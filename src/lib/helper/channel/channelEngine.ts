@@ -13,15 +13,16 @@ personal socket functionality.
 import ChExchangeEngine  = require('./chExchangeEngine');
 import ChTools           = require('./chTools');
 import SHBridge          = require("../bridges/shBridge");
+import ZationWorker      = require("../../main/zationWorker");
 
 class ChannelEngine extends ChExchangeEngine
 {
     private readonly socket : any;
     private readonly isWebSocket : boolean;
     
-    constructor(scServer : any,shBridge : SHBridge)
+    constructor(worker : ZationWorker,shBridge : SHBridge)
     {
-        super(scServer);
+        super(worker);
         this.socket = shBridge.getSocket();
         this.isWebSocket = shBridge.isWebSocket();
     }

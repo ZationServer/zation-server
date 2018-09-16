@@ -9,43 +9,20 @@ import TokenTools   = require("../token/tokenTools");
 import ObjectPath   = require("../tools/objectPath");
 import {Socket}       from "../socket/socket";
 
-class ChAccessInfo
+class SocketInfo
 {
-    private readonly _authUserGroup : string | undefined;
-    private readonly _userId : string | number | undefined;
     private readonly _socket : Socket;
-    private readonly _tokenId : string | undefined;
-    private readonly _isAuthIn : boolean;
-    private readonly _tokenExpire : number | undefined;
-    private readonly _panelAccess : number | undefined;
-    private readonly _channelId : string | undefined;
-    private readonly _channelName : string;
-    private readonly _isCustomIdCh : boolean;
-    private readonly _ctv : object;
 
-    constructor(socket : Socket,chName : string,chId ?: string)
-    {
-        this._authUserGroup = TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.AUTH_USER_GROUP,socket);
-        this._userId  = TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.USER_ID,socket);
+    constructor(socket : Socket) {
         this._socket = socket;
-        this._tokenId = TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.TOKEN_ID,socket);
-        this._tokenExpire = TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.EXPIRE,socket);
-        this._panelAccess = TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.PANEL_ACCESS,socket);
-        this._isAuthIn = this._authUserGroup !== undefined;
-        this._channelId = chId;
-        this._channelName = chName;
-        this._isCustomIdCh = chId !== undefined;
-
-        const ctv = TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.CUSTOM_VARIABLES,socket);
-        this._ctv = !!ctv ? ctv : {};
     }
 
     get authUserGroup(): string | undefined {
-        return this._authUserGroup;
+        return TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.AUTH_USER_GROUP,this._socket);
     }
 
     get userId(): string | number | undefined {
-        return this._userId;
+        return TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.USER_ID,this._socket);
     }
 
     get socket(): object {
@@ -61,31 +38,19 @@ class ChAccessInfo
     }
 
     get tokenId(): string | undefined {
-        return this._tokenId;
+        return TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.TOKEN_ID,this._socket);
     }
 
     get isAuthIn(): boolean {
-        return this._isAuthIn;
+        return this.authUserGroup !== undefined;
     }
 
     get tokenExpire(): number | undefined{
-        return this._tokenExpire;
+        return TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.EXPIRE,this._socket);
     }
 
     get panelAccess(): number | undefined{
-        return this._panelAccess;
-    }
-
-    get channelId(): string | undefined {
-        return this._channelId;
-    }
-
-    get isCustomIdCh(): boolean {
-        return this._isCustomIdCh;
-    }
-
-    get channelName(): string {
-        return this._channelName;
+        return TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.PANEL_ACCESS,this._socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -98,7 +63,8 @@ class ChAccessInfo
      * @param path
      */
     hasCustomTokenVar(path ?: string | string[]) : boolean {
-        return ObjectPath.has(this._ctv,path);
+        let ctv = TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.CUSTOM_VARIABLES,this._socket);
+        return ObjectPath.has(!!ctv ? ctv : {},path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -111,7 +77,8 @@ class ChAccessInfo
      * @param path
      */
     getCustomTokenVar(path ?: string | string[]) : any {
-        return ObjectPath.get(this._ctv,path);
+        let ctv = TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.CUSTOM_VARIABLES,this._socket);
+        return ObjectPath.get(!!ctv ? ctv : {},path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -139,4 +106,4 @@ class ChAccessInfo
     }
 }
 
-export = ChAccessInfo;
+export = SocketInfo;
