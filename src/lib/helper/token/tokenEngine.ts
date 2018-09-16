@@ -41,8 +41,7 @@ class TokenEngine
         //update worker mapper
         if(this.shBridge.isWebSocket()) {
             //update worker mapper
-            if(!this.shBridge.getTokenBridge().hasToken())
-            {
+            if(!this.shBridge.getTokenBridge().hasToken()) {
                 //take new id and tokenId
                 if(!!data[Const.Settings.TOKEN.USER_ID]) {
                     this.worker.getUserToScIdMapper().map(data[Const.Settings.TOKEN.USER_ID].toString(), this.shBridge.getSocket().id);
@@ -51,16 +50,18 @@ class TokenEngine
                     this.worker.getTokenIdToScIdMapper().map(data[Const.Settings.TOKEN.TOKEN_ID].toString(),this.shBridge.getSocket().id);
                 }
             }
-            else
-            {
+            else {
                 const oldToken = this.shBridge.getTokenBridge().getToken();
-                //check changed
-                if(oldToken[Const.Settings.TOKEN.TOKEN_ID] !== data[Const.Settings.TOKEN.TOKEN_ID])
-                {
-                    if(!!data[Const.Settings.TOKEN.TOKEN_ID])
-                    {
-                        //
-
+                //check changed (tokenId can't change)
+                if(oldToken[Const.Settings.TOKEN.USER_ID] !== data[Const.Settings.TOKEN.USER_ID]) {
+                    //userId Changed
+                    if(!!data[Const.Settings.TOKEN.TOKEN_ID]) {
+                        //take new user id
+                        this.worker.getUserToScIdMapper().map(data[Const.Settings.TOKEN.USER_ID].toString(), this.shBridge.getSocket().id);
+                    }
+                    if(!!oldToken[Const.Settings.TOKEN.USER_ID]) {
+                        //remove old token user id
+                        this.worker.getUserToScIdMapper().removeValueFromKey(oldToken[Const.Settings.TOKEN.USER_ID].toString(), this.shBridge.getSocket().id);
                     }
                 }
 

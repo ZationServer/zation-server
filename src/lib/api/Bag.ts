@@ -271,7 +271,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the user id for this socket.
+     * Set the user id of the token from this socket.
      * @example
      * await setUserId('luca23');
      * @param id
@@ -279,6 +279,18 @@ class Bag extends SmallBag
      */
     async setUserId(id : string | number) : Promise<void> {
         await this.authEngine.setUserId(id);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Remove the user id of the token from this socket.
+     * @example
+     * await removeUserId();
+     * @throws AuthenticationError
+     */
+    async removeUserId() : Promise<void> {
+        await this.authEngine.removeUserId();
     }
 
     // noinspection JSUnusedGlobalSymbols

@@ -12,6 +12,7 @@ import TokenBridge      = require("../bridges/tokenBridge");
 import ZationWorker     = require("../../main/zationWorker");
 import ZationConfig     = require("../../main/zationConfig");
 import {Socket}           from "../socket/socket";
+import {isNull} from "util";
 const  Jwt : any        = require('jsonwebtoken');
 
 class TokenTools
@@ -23,7 +24,7 @@ class TokenTools
             if (!updateOnly || (updateOnly && !data.hasOwnProperty(Const.Settings.TOKEN.TOKEN_ID))) {
                 const token = tokenBridge.getToken();
                 if((typeof token === 'object') || (!updateOnly)) {
-                    await tokenBridge.setToken(TokenTools.bringAuthTokenTogether(token,data));
+                    await tokenBridge.setToken(TokenTools.combineTokenAndProcess(token,data));
                     suc = true;
                 }
                 if(tokenBridge.isWebSocket()) {
@@ -52,7 +53,7 @@ class TokenTools
         return suc;
     }
 
-    private static bringAuthTokenTogether(token : object,newData : object) : object
+    private static combineTokenAndProcess(token : object,newData : object) : object
     {
         if(token === null) {
             return newData;
@@ -60,7 +61,12 @@ class TokenTools
         else {
             for(let k in newData) {
                 if(newData.hasOwnProperty(k)) {
-                    token[k] = newData[k];
+                    if(newData[k] === null) {
+                        delete token[k];
+                    }
+                    else {
+                        token[k] = newData[k];
+                    }
                 }
             }
             return token;

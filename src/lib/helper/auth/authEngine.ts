@@ -51,7 +51,10 @@ class AuthEngine
         let authToken = this.shBridge.getTokenBridge().getToken();
         if(authToken !== null && authToken !== undefined)
         {
-            this.currentUserId = authToken[Const.Settings.TOKEN.USER_ID];
+            this.currentUserId =
+                !!authToken[Const.Settings.TOKEN.USER_ID] ?
+                    authToken[Const.Settings.TOKEN.USER_ID] : undefined;
+
             let authUserGroup = authToken[Const.Settings.TOKEN.AUTH_USER_GROUP];
             if(authUserGroup !== undefined) {
                 if (this.checkIsIn(authUserGroup)) {
@@ -176,7 +179,7 @@ class AuthEngine
         }
     }
 
-    async setUserId(userId : number | string | null) : Promise<void>
+    async setUserId(userId : number | string) : Promise<void>
     {
         if(this.isAuth()) {
             let obj = {};
@@ -186,6 +189,25 @@ class AuthEngine
 
             if(suc) {
                 this.currentUserId = userId;
+            }
+            else {
+                throw new AuthenticationError(`Update token is failed!`);
+            }
+        }
+        else {
+            throw new AuthenticationError(`User ID can not be updated if the socket is unauthenticated!`);
+        }
+    }
+
+    async removeUserId() : Promise<void>
+    {
+        if(this.isAuth()) {
+            let obj = {};
+            obj[Const.Settings.TOKEN.USER_ID] = null;
+            const suc = await this.tokenEngine.updateTokenVariable(obj);
+
+            if(suc) {
+                this.currentUserId = undefined;
             }
             else {
                 throw new AuthenticationError(`Update token is failed!`);
