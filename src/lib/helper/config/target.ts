@@ -26,6 +26,11 @@ class Target
         return new Target(this.mainTarget,this.pathName,this.splitSign,this.extraInfo,this.path);
     }
 
+    getMainTarget() : string
+    {
+        return this.mainTarget;
+    }
+
     getLastPath() : string | undefined
     {
         if(this.path !== undefined)

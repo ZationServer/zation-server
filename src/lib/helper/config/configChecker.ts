@@ -294,7 +294,7 @@ class ConfigChecker
            )
        )
        {
-           Logger.printConfigWarning(`${Const.Settings.CN.CHANNEL} ${firstTarget.getTarget()}`,'It is recommended to set a default value for publishAccess and subscribeAccess.');
+           Logger.printConfigWarning(`${Const.Settings.CN.CHANNEL} ${firstTarget.getMainTarget()}`,'It is recommended to set a default value for clientPublishAccess and subscribeAccess.');
        }
    }
 
