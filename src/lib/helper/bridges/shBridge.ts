@@ -8,6 +8,7 @@ import TokenBridge   = require('./tokenBridge');
 import TokenTools    = require('../token/tokenTools');
 import ZationConfig  = require("../../main/zationConfig");
 import Const         = require("../constants/constWrapper");
+import {Socket} from "../socket/socket";
 const  IP : any      = require('ip');
 
 //Socket and Http Bridge
@@ -93,6 +94,7 @@ class SHBridge
         // noinspection TypeScriptValidateJSTypes
         if(IP.isPrivate(reqId))
         {
+            // noinspection TypeScriptValidateJSTypes
             return IP.address();
         }
         else
@@ -114,11 +116,6 @@ class SHBridge
     isWebSocket() : boolean
     {
         return this.webSocket;
-    }
-
-    getTokenVariable(key) : any
-    {
-        return TokenTools.getTokenVariable(key,this.getTokenBridge());
     }
 
 }

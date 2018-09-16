@@ -8,7 +8,7 @@ class KEYS {
     static readonly CUSTOM_ID_CHANNELS         = 'customIdChannels';
     static readonly CUSTOM_CHANNELS            = 'customChannels';
     static readonly USER_CH                    = 'userCh';
-    static readonly USER_GROUP_CH              = 'userGroupCh';
+    static readonly AUTH_USER_GROUP_CH         = 'authUserGroupCh';
     static readonly DEFAULT_USER_GROUP_CH      = 'defaultUserGroupCh';
     static readonly ALL_CH                     = 'allCh';
 }
@@ -20,7 +20,7 @@ class ACCESS {
 }
 
 class CHANNEL {
-    static readonly PUBLISH_NOT_ACCESS     = 'PublishNotAccess';
+    static readonly PUBLISH_NOT_ACCESS     = 'publishNotAccess';
     static readonly PUBLISH_ACCESS         = 'publishAccess';
     static readonly SUBSCRIBE_NOT_ACCESS   = 'subscribeNotAccess';
     static readonly SUBSCRIBE_ACCESS       = 'subscribeAccess';

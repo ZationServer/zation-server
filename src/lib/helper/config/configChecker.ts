@@ -218,71 +218,74 @@ class ConfigChecker
        ConfigCheckerTools.assertStructure
        (Structures.ChannelConfig,this.zc.getChannelConfig(),Const.Settings.CN.CHANNEL,this.ceb);
 
-       if(this.zc.isChannel(Const.Channel.KEYS.DEFAULTS))
-       {
-           this.checkChannelItem(this.zc.getChannel(Const.Channel.KEYS.DEFAULTS),new Target('Default'),true);
-       }
 
-
-       let customChannel = this.zc.getChannel(Const.Channel.KEYS.CUSTOM_CHANNELS);
-       if(typeof customChannel === 'object')
+       let mainChannels = this.zc.getChannelConfig();
+       for(let key in mainChannels)
        {
-           for(let channel in customChannel)
+           if(mainChannels.hasOwnProperty(key) && typeof mainChannels[key] === 'object')
            {
-               if(customChannel.hasOwnProperty(channel))
+               if(key === Const.Channel.KEYS.CUSTOM_CHANNELS || key === Const.Channel.KEYS.CUSTOM_ID_CHANNELS)
                {
-                   this.checkChannelItem(customChannel[channel],new Target(`CustomChannel: '${channel}'`));
+                   const chPart = mainChannels[key];
+                   const firstTarget = new Target(key);
+                   for(let chName in chPart)
+                   {
+                       if(chPart.hasOwnProperty(chName)) {
+                           this.checkFullChannelItem(chPart[chName],firstTarget,chName);
+                       }
+                   }
                }
-           }
-       }
-
-       let customIdChannel = this.zc.getChannel(Const.Channel.KEYS.CUSTOM_ID_CHANNELS);
-       if(typeof customIdChannel === 'object')
-       {
-           for(let channel in customIdChannel)
-           {
-               if(customIdChannel.hasOwnProperty(channel))
+               else if
+               (
+                   key === Const.Channel.KEYS.ALL_CH || key === Const.Channel.KEYS.DEFAULT_USER_GROUP_CH ||
+                   key === Const.Channel.KEYS.AUTH_USER_GROUP_CH || key === Const.Channel.KEYS.USER_CH)
                {
-                   this.checkChannelItem(customIdChannel[channel],new Target(`CustomIdChannel: '${channel}'`));
+                   ConfigCheckerTools.assertStructure
+                   (Structures.ChannelSettingsOnlyItem,mainChannels[key],Const.Settings.CN.CHANNEL,this.ceb,new Target(key));
                }
            }
        }
    }
 
-   private checkChannelItem(channel,target,isDefault = false)
+   private checkFullChannelItem(channel : any,firstTarget : Target,chName : string) : void
    {
+       const mainTarget = firstTarget.addPath(chName);
+
        ConfigCheckerTools.assertStructure
-       (Structures.ChannelItem,channel,Const.Settings.CN.CHANNEL,this.ceb,target);
+       (Structures.ChannelFullItem,channel,Const.Settings.CN.CHANNEL,this.ceb,mainTarget);
 
-       if(channel.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_ACCESS) &&
-           channel.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS))
+       if(typeof channel === 'object')
        {
-           this.ceb.addConfigError(new ConfigError(Const.Settings.CN.CHANNEL,
-               `${target.getTarget()} only 'publishAccess' or 'publishNotAccess' keyword is allow.`));
-       }
-       if(channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_ACCESS) &&
-           channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS))
-       {
-           this.ceb.addConfigError(new ConfigError(Const.Settings.CN.CHANNEL,
-               `${target.getTarget()} only 'subscribeAccess' or 'subscribeNotAccess' keyword is allow.`));
-       }
+           if(channel.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_ACCESS) &&
+               channel.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS))
+           {
+               this.ceb.addConfigError(new ConfigError(Const.Settings.CN.CHANNEL,
+                   `${mainTarget.getTarget()} only 'publishAccess' or 'publishNotAccess' keyword is allow.`));
+           }
+           if(channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_ACCESS) &&
+               channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS))
+           {
+               this.ceb.addConfigError(new ConfigError(Const.Settings.CN.CHANNEL,
+                   `${mainTarget.getTarget()} only 'subscribeAccess' or 'subscribeNotAccess' keyword is allow.`));
+           }
 
-       //check access dependency to userGroups
-       this.checkAccessKeyDependency
-       (channel[Const.Channel.CHANNEL.PUBLISH_ACCESS],Const.Channel.CHANNEL.PUBLISH_ACCESS,target);
-       this.checkAccessKeyDependency
-       (channel[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS],Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS,target);
-       this.checkAccessKeyDependency
-       (channel[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS],Const.Channel.CHANNEL.SUBSCRIBE_ACCESS,target);
-       this.checkAccessKeyDependency
-       (channel[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS],Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS,target);
+           //check access dependency to userGroups
+           this.checkAccessKeyDependency
+           (channel[Const.Channel.CHANNEL.PUBLISH_ACCESS],Const.Channel.CHANNEL.PUBLISH_ACCESS,mainTarget);
+           this.checkAccessKeyDependency
+           (channel[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS],Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS,mainTarget);
+           this.checkAccessKeyDependency
+           (channel[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS],Const.Channel.CHANNEL.SUBSCRIBE_ACCESS,mainTarget);
+           this.checkAccessKeyDependency
+           (channel[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS],Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS,mainTarget);
 
-       this.warningForPublish(channel[Const.Channel.CHANNEL.PUBLISH_ACCESS],target);
-       this.warningForPublish(channel[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS],target);
+           this.warningForPublish(channel[Const.Channel.CHANNEL.PUBLISH_ACCESS],mainTarget);
+           this.warningForPublish(channel[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS],mainTarget);
+       }
 
        if
        (
-           isDefault &&
+           chName === Const.Channel.CHANNEL_DEFAULT.DEFAULT &&
            !(
                (channel.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_ACCESS) ||
                    channel.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS)) &&
@@ -291,7 +294,7 @@ class ConfigChecker
            )
        )
        {
-           Logger.printConfigWarning(Const.Settings.CN.CHANNEL,'It is recommended to set a default value for publishAccess and subscribeAccess.');
+           Logger.printConfigWarning(`${Const.Settings.CN.CHANNEL} ${firstTarget.getTarget()}`,'It is recommended to set a default value for publishAccess and subscribeAccess.');
        }
    }
 

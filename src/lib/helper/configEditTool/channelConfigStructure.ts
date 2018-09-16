@@ -7,8 +7,11 @@ import Const                         = require('./../constants/constWrapper');
 import SmallBag                      = require("../../api/SmallBag");
 import ChInfo                        = require("../infoObjects/chAccessInfo");
 
-export type ChannelAccessFunction =
+export type ChannelSubAccessFunction =
     (smallBag : SmallBag, info : ChInfo) => Promise<boolean> | boolean;
+
+export type ChannelPubAccessFunction =
+    (smallBag : SmallBag, info : ChInfo, pubData : object) => Promise<boolean> | boolean;
 
 export type ChannelEventFunction =
     (smallBag : SmallBag, info : ChInfo) => Promise<void> | void;
@@ -18,7 +21,7 @@ export interface ChannelConfig
     [Const.Channel.KEYS.CUSTOM_CHANNELS] ?: Record<string,(Channel | ChannelSettings)> | ChannelDefault;
     [Const.Channel.KEYS.CUSTOM_ID_CHANNELS] ?: Record<string,(Channel | ChannelSettings)> | ChannelDefault;
     [Const.Channel.KEYS.USER_CH]  ?: ChannelSettings;
-    [Const.Channel.KEYS.USER_GROUP_CH] ?: ChannelSettings;
+    [Const.Channel.KEYS.AUTH_USER_GROUP_CH] ?: ChannelSettings;
     [Const.Channel.KEYS.DEFAULT_USER_GROUP_CH] ?: ChannelSettings;
     [Const.Channel.KEYS.ALL_CH] ?: ChannelSettings;
 }
@@ -33,10 +36,10 @@ export interface ChannelSettings {
 
 export interface Channel
 {
-    [Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS] ?: ChannelAccessFunction | boolean | string | number | (string|number)[];
-    [Const.Channel.CHANNEL.PUBLISH_ACCESS] ?: ChannelAccessFunction | boolean | string | number | (string|number)[];
-    [Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS] ?: ChannelAccessFunction | boolean | string | number | (string|number)[];
-    [Const.Channel.CHANNEL.SUBSCRIBE_ACCESS] ?: ChannelAccessFunction | boolean | string | number | (string|number)[];
+    [Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS] ?: ChannelPubAccessFunction | boolean | string | number | (string|number)[];
+    [Const.Channel.CHANNEL.PUBLISH_ACCESS] ?: ChannelPubAccessFunction | boolean | string | number | (string|number)[];
+    [Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS] ?: ChannelSubAccessFunction | boolean | string | number | (string|number)[];
+    [Const.Channel.CHANNEL.SUBSCRIBE_ACCESS] ?: ChannelSubAccessFunction | boolean | string | number | (string|number)[];
 
     [Const.Channel.CHANNEL.ON_PUBLISH] ?: ChannelEventFunction;
     [Const.Channel.CHANNEL.ON_SUBSCRIPTION] ?: ChannelEventFunction;

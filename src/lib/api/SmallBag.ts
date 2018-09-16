@@ -22,9 +22,10 @@ import {MongoClient}      from "mongodb";
 import {Options}          from "nodemailer/lib/mailer";
 import TaskError        = require("./TaskError");
 import fetch,{Request, RequestInit, Response} from 'node-fetch';
-import ChTools = require("../helper/channel/chTools");
+import ChTools          = require("../helper/channel/chTools");
 import {WorkerChActions} from "../helper/constants/workerChActions";
-import IdTools = require("../helper/tools/idTools");
+import IdTools          = require("../helper/tools/idTools");
+import ObjectPath       = require("../helper/tools/objectPath");
 
 class SmallBag
 {
@@ -52,6 +53,12 @@ class SmallBag
     getServerPort() : number
     {
         return this.zc.getMain(Const.Main.KEYS.PORT);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getServerInstanceId() : string
+    {
+        return this.worker.options.instanceId;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -849,6 +856,70 @@ class SmallBag
     socketSidToWorkerId(socketSid : string) : string
     {
         return IdTools.socketSidToWorkerId(socketSid);
+    }
+
+    //Part ServerSocketVariable
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Set socket variable (server side) with object path
+     * @example
+     * setSocketVariable('email','example@gmail.com');
+     * @param socket
+     * @param path
+     * @param value
+     */
+    setSocketVariableWithSocket(socket : Socket,path : string | string[],value : any) : void
+    {
+        ObjectPath.set(socket[Const.Settings.SOCKET.VARIABLES],path,value);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Has socket variable (server side) with object path
+     * @example
+     * hasSocketVariable('email');
+     * @param socket
+     * @param path
+     */
+    hasSocketVariableWithSocket(socket : Socket,path ?: string | string[]) : boolean
+    {
+        return ObjectPath.has(socket[Const.Settings.SOCKET.VARIABLES],path);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Get socket variable (server side) with object path
+     * @example
+     * getSocketVariable('email');
+     * @param socket
+     * @param path
+     */
+    getSocketVariableWithSocket(socket : Socket,path ?: string | string[]) : any
+    {
+        return ObjectPath.get(socket[Const.Settings.SOCKET.VARIABLES],path);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Delete socket variable (server side) with object path
+     * @example
+     * deleteSocketVariable('email');
+     * @param socket
+     * @param path
+     */
+    deleteSocketVariableWithSocket(socket : Socket,path ?: string | string[]) : void
+    {
+        if(!!path) {
+            ObjectPath.del(socket[Const.Settings.SOCKET.VARIABLES],path);
+        }
+        else {
+            socket[Const.Settings.SOCKET.VARIABLES] = {};
+        }
     }
 
     //Part Worker

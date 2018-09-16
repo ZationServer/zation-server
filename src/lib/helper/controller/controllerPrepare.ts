@@ -110,6 +110,7 @@ class ControllerPrepare
         let isSystemC    = ControllerTools.isSystemController(config);
         let cClass : any = ControllerTools.getControllerClass(config,this.zc);
         let cInstance : Controller = new cClass();
+        this.addControllerConfigAccessKey(config);
 
         await cInstance.initialize(this.worker.getPreparedSmallBag());
         if(!isSystemC)
@@ -120,6 +121,24 @@ class ControllerPrepare
         {
             this.systemController[name] = {config : config,instance : cInstance};
         }
+    }
+
+    // noinspection JSMethodCanBeStatic
+    addControllerConfigAccessKey(config : object) : void
+    {
+        let notAccess = config[Const.App.CONTROLLER.NOT_ACCESS];
+        let access    = config[Const.App.CONTROLLER.ACCESS];
+        let keyWord = '';
+
+        //double keyword is checked in the starter checkConfig
+        //search One
+        if(notAccess !== undefined && access === undefined) {
+            keyWord = Const.App.CONTROLLER.NOT_ACCESS;
+        }
+        else if(notAccess === undefined && access !== undefined) {
+            keyWord = Const.App.CONTROLLER.ACCESS;
+        }
+        config['speedAccessKey'] = keyWord;
     }
 }
 

@@ -56,7 +56,6 @@ export interface ControllerConfig
     [Const.App.CONTROLLER.HTTP_ACCESS] ?: boolean;
     [Const.App.CONTROLLER.INPUT_VALIDATION] ?: boolean;
     [Const.App.CONTROLLER.INPUT_ALL_ALLOW] ?: boolean;
-    [Const.App.CONTROLLER.EXTRA_SECURE] ?: boolean;
     [Const.App.CONTROLLER.PATH] ?: string;
     [Const.App.CONTROLLER.NAME] ?: string;
     [Const.App.CONTROLLER.ACCESS] ?: string | number | (string | number)[] | ControllerAccessFunction;

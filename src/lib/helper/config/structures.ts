@@ -187,7 +187,7 @@ const ChannelConfig = {};
 ChannelConfig[Const.Channel.KEYS.CUSTOM_CHANNELS]         = {types : ['object'],isOptional : true};
 ChannelConfig[Const.Channel.KEYS.CUSTOM_ID_CHANNELS]      = {types : ['object'],isOptional : true};
 ChannelConfig[Const.Channel.KEYS.USER_CH]                 = {types : ['object'],isOptional : true};
-ChannelConfig[Const.Channel.KEYS.USER_GROUP_CH]           = {types : ['object'],isOptional : true};
+ChannelConfig[Const.Channel.KEYS.AUTH_USER_GROUP_CH]           = {types : ['object'],isOptional : true};
 ChannelConfig[Const.Channel.KEYS.DEFAULT_USER_GROUP_CH]   = {types : ['object'],isOptional : true};
 ChannelConfig[Const.Channel.KEYS.ALL_CH]                  = {types : ['object'],isOptional : true};
 
@@ -212,6 +212,9 @@ ChannelFullItem[Const.Channel.CHANNEL.ON_PUBLISH]           = {types : ['functio
 ChannelFullItem[Const.Channel.CHANNEL.ON_SUBSCRIPTION]      = {types : ['function'],isOptional : true};
 ChannelFullItem[Const.Channel.CHANNEL.ON_UNSUBSCRIPTION]    = {types : ['function'],isOptional : true};
 ChannelFullItem[Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH] = {types : ['boolean'],isOptional : true};
+
+const ChannelSettingsOnlyItem = {};
+ChannelSettingsOnlyItem[Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH] = {types : ['boolean'],isOptional : true};
 
 const Services = {};
 Services[Const.Service.SERVICES.MYSQL]                  = {types : ['object'],isOptional : true};
@@ -291,7 +294,8 @@ class Structures
     public static readonly ValidationGroup = ValidationGroup;
     public static readonly ChannelConfig = ChannelConfig;
     public static readonly ServiceConfig = ServiceConfig;
-    public static readonly ChannelItem = ChannelFullItem;
+    public static readonly ChannelFullItem = ChannelFullItem;
+    public static readonly ChannelSettingsOnlyItem = ChannelSettingsOnlyItem;
     public static readonly Services = Services;
     public static readonly AppArray = AppArray;
     public static readonly ArrayShortCutSpecify = ArrayShortCutSpecify;

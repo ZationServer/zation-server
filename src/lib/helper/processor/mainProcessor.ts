@@ -55,12 +55,13 @@ class MainProcessor
             //Trows if not exists
             worker.getControllerPrepare().checkControllerExist(controllerName,isSystemController);
 
-            let controllerConfig =
+            const controllerConfig =
                 worker.getControllerPrepare().getControllerConfig(controllerName,isSystemController);
-            
-            let tokenEngine = new TokenEngine(shBridge,worker,zc);
 
-            let authEngine = new AuthEngine(shBridge,tokenEngine,worker.getAEPreparedPart());
+            const tokenEngine = new TokenEngine(shBridge,worker,zc);
+
+            const authEngine =
+                new AuthEngine(shBridge,tokenEngine,worker.getAEPreparedPart(),worker.getChAccessEngine());
 
             await authEngine.init();
 

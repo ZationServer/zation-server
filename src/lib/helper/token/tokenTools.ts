@@ -12,6 +12,7 @@ import TokenBridge = require("../bridges/tokenBridge");
 import ZationWorker = require("../../main/zationWorker");
 import TokenEngine = require("./tokenEngine");
 import ZationConfig = require("../../main/zationConfig");
+import {Socket} from "../socket/socket";
 const  Jwt : any         = require('jsonwebtoken');
 
 class TokenTools
@@ -110,12 +111,12 @@ class TokenTools
         }
     }
 
-    static getSocketTokenVariable(key : any,socket : any) : any
+    static getSocketTokenVariable(key : any,socket : Socket) : any
     {
         // noinspection JSUnresolvedFunction
         let token = socket.getAuthToken();
 
-        if(token !== undefined) {
+        if(!!token) {
             return token[key];
         }
         else {

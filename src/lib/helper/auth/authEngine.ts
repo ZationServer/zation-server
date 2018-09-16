@@ -19,16 +19,18 @@ class AuthEngine
     private aePreparedPart : AEPreparedPart;
     private shBridge : SHBridge;
     private tokenEngine : TokenEngine;
+    private chAccessEngine : ChAccessEngine;
 
     private currentDefault : boolean;
     private currentUserGroup :string | undefined;
     private currentUserId : any;
 
-    constructor(shBridge : SHBridge,tokenEngine :TokenEngine,aePreparedPart : AEPreparedPart)
+    constructor(shBridge : SHBridge,tokenEngine :TokenEngine,aePreparedPart : AEPreparedPart,chAccessEngine : ChAccessEngine)
     {
         this.aePreparedPart = aePreparedPart;
         this.shBridge       = shBridge;
         this.tokenEngine    = tokenEngine;
+        this.chAccessEngine = chAccessEngine;
 
         this.currentDefault      = true;
         this.currentUserGroup    = undefined;
@@ -42,48 +44,39 @@ class AuthEngine
 
     private async processGroupAndId(): Promise<void>
     {
-        if(this.aePreparedPart.isUseAuth())
+        // noinspection JSUnresolvedFunction
+        let authToken = this.shBridge.getTokenBridge().getToken();
+        if(authToken !== null && authToken !== undefined)
         {
-            // noinspection JSUnresolvedFunction
-            let authToken = this.shBridge.getTokenBridge().getToken();
-            if(authToken !== null && authToken !== undefined)
-            {
-                this.currentUserId = authToken[Const.Settings.CLIENT.USER_ID];
-                let authUserGroup = authToken[Const.Settings.CLIENT.AUTH_USER_GROUP];
-                if(authUserGroup !== undefined)
-                {
-                    if (this.checkIsIn(authUserGroup))
-                    {
-                        this.currentUserGroup = authUserGroup;
-                        this.currentDefault = false;
-                    }
-                    else
-                    {
-                        //saved authGroup is in Server not define
-                        //noinspection JSUnresolvedFunction
-                        await this.deauthenticate();
-
-                        throw new TaskError(MainErrors.inTokenSavedAuthGroupIsNotFound,
-                            {
-                                savedAuthGroup: authUserGroup,
-                                authGroupsInZationConfig: this.aePreparedPart.getAuthGroups()
-                            });
-                    }
+            this.currentUserId = authToken[Const.Settings.CLIENT.USER_ID];
+            let authUserGroup = authToken[Const.Settings.CLIENT.AUTH_USER_GROUP];
+            if(authUserGroup !== undefined) {
+                if (this.checkIsIn(authUserGroup)) {
+                    this.currentUserGroup = authUserGroup;
+                    this.currentDefault = false;
                 }
-                else
-                {
-                    //token without auth group!
+                else {
+                    //saved authGroup is in Server not define
+                    //noinspection JSUnresolvedFunction
                     await this.deauthenticate();
-                    throw new TaskError(MainErrors.tokenWithoutAuthGroup);
+
+                    throw new TaskError(MainErrors.inTokenSavedAuthGroupIsNotFound,
+                        {
+                            savedAuthGroup: authUserGroup,
+                            authGroupsInZationConfig: this.aePreparedPart.getAuthGroups()
+                        });
                 }
             }
-            else
-            {
-                this.currentUserGroup = this.getDefaultGroup();
+            else {
+                //token without auth group!
+                await this.deauthenticate();
+                throw new TaskError(MainErrors.tokenWithoutAuthGroup);
             }
         }
+        else {
+            this.currentUserGroup = this.getDefaultGroup();
+        }
     }
-
 
     isAuth() : boolean
     {
@@ -207,7 +200,7 @@ class AuthEngine
 
         //check channels from socket
         if(this.shBridge.isWebSocket()) {
-            await ChAccessEngine.checkSocketCustomChAccess(this.shBridge.getSocket(),this.aePreparedPart.getWorker());
+            await this.chAccessEngine.checkSocketCustomChAccess(this.shBridge.getSocket());
             ChAccessEngine.checkSocketZationChAccess(this.shBridge.getSocket());
         }
     }
@@ -217,7 +210,7 @@ class AuthEngine
     hasAccessToController(controller : object) : boolean
     {
         let hasAccess = false;
-        let keyWord = AuthEngine.getAccessKeyWord(controller);
+        let keyWord = controller['speedAccessKey'];
 
         if(keyWord === '') {
             Logger.printDebugWarning('No controller access config found! Access will denied!');
@@ -227,23 +220,6 @@ class AuthEngine
             hasAccess = this.hasAccessToThis(keyWord,controller[keyWord]);
         }
         return hasAccess;
-    }
-
-    private static getAccessKeyWord(obj : object) : string
-    {
-        let notAccess = obj[Const.App.CONTROLLER.NOT_ACCESS];
-        let access    = obj[Const.App.CONTROLLER.ACCESS];
-        let keyWord = '';
-
-        //double keyword is checked in the starter checkConfig
-        //search One
-        if(notAccess !== undefined && access === undefined) {
-            keyWord = Const.App.CONTROLLER.NOT_ACCESS;
-        }
-        else if(notAccess === undefined && access !== undefined) {
-            keyWord = Const.App.CONTROLLER.ACCESS;
-        }
-        return keyWord;
     }
 
     private hasAccessToThis(key : string, value) : boolean

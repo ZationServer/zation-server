@@ -21,7 +21,6 @@ import
     BeforeTaskErrorFunction,
     EventConfig,
     ExpressFunction,
-    GetUserCountFunction,
     HttpServerIsStartedFunction,
     IsStartedFunction, ScServerAuthenticationFunction, ScServerBadSocketAuthTokenFunction,
     ScServerConnectionFunction, ScServerDeauthenticationFunction,
@@ -35,7 +34,7 @@ import
     SocketObjFunction,
     SocketAuthenticateFunction,
     WorkerIsStartedFunction,
-    WsServerIsStartedFunction, SocketDeauthenticateFunction, ScMiddlewareFunction
+    WsServerIsStartedFunction, SocketDeauthenticateFunction, ScMiddlewareFunction, MiddlewareAuthenticationFunction
 } from "../helper/configEditTool/eventConfigStructure";
 
 import
@@ -64,7 +63,8 @@ import
 } from "../helper/configEditTool/errorConfigStructure";
 import {
     Channel,
-    ChannelAccessFunction,
+    ChannelPubAccessFunction,
+    ChannelSubAccessFunction,
     ChannelConfig,
     ChannelEventFunction
 } from "../helper/configEditTool/channelConfigStructure";
@@ -105,7 +105,8 @@ class Config
 
     //Part Channel Config functions
 
-    static channelAccess(func : ChannelAccessFunction) : ChannelAccessFunction {return func;}
+    static channelPubAccess(func : ChannelSubAccessFunction) : ChannelSubAccessFunction {return func;}
+    static channelSubAccess(func : ChannelPubAccessFunction) : ChannelPubAccessFunction {return func;}
     static channelOn(func : ChannelEventFunction) : ChannelEventFunction {return func;}
 
     static channel(c : Channel) : Channel {return c;}
@@ -124,10 +125,12 @@ class Config
     static beforeError(func : BeforeErrorFunction) : BeforeErrorFunction {return func;}
     static beforeTaskError(func : BeforeTaskErrorFunction) : BeforeTaskErrorFunction {return func;}
     static beforeTaskErrorBag(func : BeforeTaskErrorBagFunction) : BeforeTaskErrorBagFunction {return func;}
-    static getUserCount(func : GetUserCountFunction) : GetUserCountFunction {return func;}
     static httpServerStarted(func : HttpServerIsStartedFunction) : HttpServerIsStartedFunction {return func;}
     static wsServerIsStarted(func : WsServerIsStartedFunction) : WsServerIsStartedFunction{return func;}
     static isStarted(func : IsStartedFunction) : IsStartedFunction{return func;}
+
+    //Zation Middleware
+    static middlewareAuthenticate(func : MiddlewareAuthenticationFunction) : MiddlewareAuthenticationFunction {return func;}
 
     //Part Socket Events (SC)
     static socketError(func : SocketErrorFunction) : SocketErrorFunction {return func;}
@@ -160,13 +163,13 @@ class Config
     static scServerReady(func : ScServerReadyFunction) : ScServerReadyFunction {return func;}
 
     //Part Middleware Events (SC)
-    static middlewareAuthenticate(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
-    static middlewareHandshakeWs(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
-    static middlewareHandshakeSc(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
-    static middlewareSubscribe(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
-    static middlewarePublishIn(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
-    static middlewarePublishOut(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
-    static middlewareEmit(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static scMiddlewareAuthenticate(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static scMiddlewareHandshakeWs(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static scMiddlewareHandshakeSc(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static scMiddlewareSubscribe(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static scMiddlewarePublishIn(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static scMiddlewarePublishOut(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static scMiddlewareEmit(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
 
     //Part Type
     // noinspection JSUnusedGlobalSymbols

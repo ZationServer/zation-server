@@ -14,140 +14,120 @@ import Const                = require('../constants/constWrapper');
 import Logger               = require('../logger/logger');
 import ChTools              = require('./chTools');
 import SmallBag             = require("../../api/SmallBag");
-import ZationConfig         = require("../../main/zationConfig");
-import ZationWorker         = require("../../main/zationWorker");
 import ChInfo               = require("../infoObjects/chAccessInfo");
+import ChConfigManager      = require("./chConfigManager");
+import {Socket}               from "../socket/socket";
 
 export class ChAccessEngine
 {
+    private chConfigManager : ChConfigManager;
+    private readonly smallBag : SmallBag;
+
+    constructor(chConfigManager : ChConfigManager,smallBag : SmallBag) {
+        this.chConfigManager = chConfigManager;
+        this.smallBag = smallBag;
+    }
+
     //Part Access
-    private static async hasAccessTo(value : any,socket : any,smallBag : SmallBag,chName : string,chId ?: string) : Promise<boolean>
+    private async hasAccessTo(value : any,socket : any,chName : string,{isPub, pubData},chId ?: string) : Promise<boolean>
     {
         let access = false;
 
-        if(typeof value === 'boolean')
-        {
+        if(typeof value === 'boolean') {
             access = value;
         }
-        else
-        {
+        else {
             const info : ChInfo = new ChInfo(socket,chName,chId);
-
             if(typeof value === 'string')
             {
-                if(value === Const.Channel.ACCESS.ALL)
-                {
+                if(value === Const.Channel.ACCESS.ALL) {
                     access = true;
                 }
-                else if(value === Const.Channel.ACCESS.ALL_AUTH)
-                {
+                else if(value === Const.Channel.ACCESS.ALL_AUTH) {
                     access = info.isAuthIn;
                 }
-                else if(value === Const.Channel.ACCESS.ALL_NOT_AUTH)
-                {
+                else if(value === Const.Channel.ACCESS.ALL_NOT_AUTH) {
                     access = !info.isAuthIn;
                 }
-                else if(info.authUserGroup === value)
-                {
+                else if(info.authUserGroup === value) {
                     //Group!
                     access = true;
                 }
             }
             else if(typeof value === 'function')
             {
-                let getFunc = ChTools.getGetSocketDataFunc(socket);
+                let res;
+                if(isPub) {
+                    res = await value(this.smallBag,info,pubData);
+                }
+                else {
+                    res = await value(this.smallBag,info);
+                }
 
-                let res = await value(smallBag,info,getFunc);
-                if(typeof res === 'boolean')
-                {
+                if(typeof res === 'boolean') {
                     access = res;
                 }
             }
-            else if(Array.isArray(value))
-            {
+            else if(Array.isArray(value)) {
                 for(let i = 0; i < value.length; i++)
                 {
-                    if(typeof value[i] === 'string' && value[i] === info.authUserGroup)
-                    {
+                    if(typeof value[i] === 'string' && value[i] === info.authUserGroup) {
                         access = true;
                         break;
                     }
-                    else if(typeof value[i] === 'number' && value[i] === info.userId)
-                    {
+                    else if(typeof value[i] === 'number' && value[i] === info.userId) {
                         access = true;
                         break;
                     }
                 }
             }
-            else if(typeof value === 'number')
-            {
-                if(info.userId === value)
-                {
+            else if(typeof value === 'number') {
+                if(info.userId === value) {
                     access = true;
                 }
             }
         }
-
         return access;
     }
 
     //Part CustomCh Access
-
-    static async hasAccessToSub(socket, channelConfig : object, smallBag : SmallBag,chName : string,chId ?: string) : Promise<boolean>
+    private async hasAccessToSub(socket : Socket,accessKey : number,accessValue : any,chName : string,chId ?: string) : Promise<boolean>
     {
-        if(channelConfig.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_ACCESS))
-        {
-            let value = channelConfig[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS];
-            return await ChAccessEngine.hasAccessTo(value,socket,smallBag,chName,chId);
+        if(accessKey === 1) {
+            //normal
+            return await this.hasAccessTo(accessValue,socket,chName,{isPub : false,pubData : {}},chId);
         }
-        else if(channelConfig.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS))
-        {
-            let value = channelConfig[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS];
-            return !(await ChAccessEngine.hasAccessTo(value,socket,smallBag,chName,chId));
+        else if(accessKey === 2) {
+            //not
+            return !(await this.hasAccessTo(accessValue,socket,chName,{isPub : false,pubData : {}},chId));
         }
-        else
-        {
+        else {
             //default if no setting found!
             return false;
         }
     }
 
-    static async hasAccessToPub(socket, channelConfig : object, smallBag : SmallBag,chName : string,chId ?: string) : Promise<boolean>
+    private async hasAccessToPub(socket : Socket,accessKey : number,accessValue : any,pubData : any,chName : string,chId ?: string) : Promise<boolean>
     {
-        if(channelConfig.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_ACCESS))
-        {
-            let value = channelConfig[Const.Channel.CHANNEL.PUBLISH_ACCESS];
-            return await ChAccessEngine.hasAccessTo(value,socket,smallBag,chName,chId);
+        if(accessKey === 1) {
+            //normal
+            return await this.hasAccessTo(accessValue,socket,chName,{isPub : true,pubData : pubData},chId);
         }
-        else if(channelConfig.hasOwnProperty(Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS))
-        {
-            let value = channelConfig[Const.Channel.CHANNEL.PUBLISH_NOT_ACCESS];
-            return !( await ChAccessEngine.hasAccessTo(value,socket,smallBag,chName,chId));
+        else if(accessKey === 2) {
+            //not
+            return !(await this.hasAccessTo(accessValue,socket,chName,{isPub : true,pubData : pubData},chId));
         }
-        else
-        {
+        else {
             //default if no setting found!
             return false;
-        }
-    }
-
-    //Part channel Events
-    static async invokeChEvent(value : undefined | Function,smallBag : SmallBag,socket : object,chName : string, chId ?: string)
-    {
-        if(typeof value === 'function')
-        {
-            const info : ChInfo = new ChInfo(socket,chName,chId);
-            const getFunc = ChTools.getGetSocketDataFunc(socket);
-            await value(smallBag,info,getFunc);
         }
     }
 
     //Part Middleware Checks
-
-    static async checkAccessSubCustomIdCh(socket,trySubName : string,smallBag : SmallBag,zc : ZationConfig) : Promise<any>
+    async checkAccessSubCustomIdCh(socket,trySubName : string) : Promise<any>
     {
         //return error
-        let {name,id} = ChTools.getCustomIdChannelInfo(trySubName);
+        const {name,id} = ChTools.getCustomIdChannelInfo(trySubName);
 
         if(name === undefined || name === '')
         {
@@ -164,9 +144,7 @@ export class ChAccessEngine
             return Error;
         }
 
-        let chConfig = ChTools.getCustomIdChConfig(zc,name);
-
-        if(chConfig === undefined)
+        if(!this.chConfigManager.isCustomIdCh(name))
         {
             let err = new Error('Unknown customIdChannel!');
             // @ts-ignore'
@@ -177,7 +155,14 @@ export class ChAccessEngine
         }
         else
         {
-            if(await (ChAccessEngine.hasAccessToSub(socket,chConfig,smallBag,name,id)))
+            if(await (this.hasAccessToSub
+            (
+                socket,
+                this.chConfigManager.getSubAccessKeyCustomIdCh(name),
+                this.chConfigManager.getSubAccessValueCustomIdCh(name),
+                name,
+                id
+            )))
             {
                 //allOk
                 await ChAccessEngine.invokeChEvent
@@ -197,10 +182,10 @@ export class ChAccessEngine
         }
     }
 
-    static async checkAccessPubCustomIdCh(socket,tryPubName : string,smallBag : SmallBag,zc : ZationConfig) : Promise<any>
+    async checkAccessPubCustomIdCh(socket,tryPubName : string,pubData : any) : Promise<any>
     {
         //return error
-        let {name,id} = ChTools.getCustomIdChannelInfo(tryPubName);
+        const {name,id} = ChTools.getCustomIdChannelInfo(tryPubName);
 
         if(name === undefined || name === '')
         {
@@ -217,9 +202,7 @@ export class ChAccessEngine
             return Error;
         }
 
-        let chConfig = ChTools.getCustomIdChConfig(zc,name);
-
-        if(chConfig === undefined)
+        if(!this.chConfigManager.isCustomIdCh(name))
         {
             let err = new Error('Unknown customIdChannel!');
             // @ts-ignore'
@@ -230,7 +213,15 @@ export class ChAccessEngine
         }
         else
         {
-            if(await (ChAccessEngine.hasAccessToPub(socket,chConfig,smallBag,name,id)))
+            if(await (this.hasAccessToPub
+            (
+                socket,
+                this.chConfigManager.getPubAccessKeyCustomIdCh(name),
+                this.chConfigManager.getPubAccessValueCustomIdCh(name),
+                pubData,
+                name,
+                id
+            )))
             {
                 //allOk
                 await ChAccessEngine.invokeChEvent
@@ -249,10 +240,10 @@ export class ChAccessEngine
             }
         }
     }
-    static async checkAccessSubCustomCh(socket,trySubName : string,smallBag : SmallBag,zc : ZationConfig) : Promise<any>
+    async checkAccessSubCustomCh(socket,trySubName : string) : Promise<any>
     {
         //return error
-        let name = ChTools.getCustomChannelName(trySubName);
+        const name = ChTools.getCustomChannelName(trySubName);
 
         if(name === undefined || name === '')
         {
@@ -262,9 +253,7 @@ export class ChAccessEngine
             return Error;
         }
 
-        let chConfig = ChTools.getCustomChConfig(zc,name);
-
-        if(chConfig === undefined)
+        if(!this.chConfigManager.isCustomCh(name))
         {
             let err = new Error('Unknown customChannel!');
             // @ts-ignore'
@@ -275,7 +264,13 @@ export class ChAccessEngine
         }
         else
         {
-            if(await (ChAccessEngine.hasAccessToSub(socket,chConfig,smallBag,name)))
+            if(await (this.hasAccessToSub
+            (
+                socket,
+                this.chConfigManager.getSubAccessKeyCustomCh(name),
+                this.chConfigManager.getSubAccessValueCustomCh(name),
+                name
+            )))
             {
                 //allOk
                 await ChAccessEngine.invokeChEvent
@@ -294,10 +289,10 @@ export class ChAccessEngine
             }
         }
     }
-    static async checkAccessPubCustomCh(socket,tryPubName : string,smallBag : SmallBag,zc : ZationConfig) : Promise<any>
+    async checkAccessPubCustomCh(socket,tryPubName : string,pubData : any) : Promise<any>
     {
         //return error
-        let name = ChTools.getCustomChannelName(tryPubName);
+        const name = ChTools.getCustomChannelName(tryPubName);
 
         if(name === undefined || name === '')
         {
@@ -307,9 +302,7 @@ export class ChAccessEngine
             return Error;
         }
 
-        let chConfig = ChTools.getCustomChConfig(zc,name);
-
-        if(chConfig === undefined)
+        if(!this.chConfigManager.isCustomCh(name))
         {
             let err = new Error('Unknown customChannel!');
             // @ts-ignore'
@@ -320,7 +313,14 @@ export class ChAccessEngine
         }
         else
         {
-            if((await ChAccessEngine.hasAccessToPub(socket,chConfig,smallBag,name)))
+            if((await this.hasAccessToPub
+            (
+                socket,
+                this.chConfigManager.getPubAccessKeyCustomCh(name),
+                this.chConfigManager.getPubAccessValueCustomCh(name),
+                pubData,
+                name
+            )))
             {
                 //allOk
                 await ChAccessEngine.invokeChEvent
@@ -343,10 +343,8 @@ export class ChAccessEngine
 
     //Part Check Access auto
     //(When the token is changed)
-
-    static async checkSocketCustomChAccess(socket, worker : ZationWorker) : Promise<void>
+    async checkSocketCustomChAccess(socket : Socket) : Promise<void>
     {
-        let zc = worker.getZationConfig();
         if(socket !== undefined)
         {
             let subs = socket.subscriptions();
@@ -356,11 +354,15 @@ export class ChAccessEngine
                 if(subs[i].indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1)
                 {
                     //custom id channel
-
-                    let {name,id} = ChTools.getCustomIdChannelInfo(subs[i]);
-                    let config = ChTools.getCustomIdChConfig(zc,name);
-                    if(! (await ChAccessEngine.hasAccessToSub(socket,config,worker.getPreparedSmallBag(),id)))
-                    {
+                    const {name,id} = ChTools.getCustomIdChannelInfo(subs[i]);
+                    if(! (await this.hasAccessToSub
+                    (
+                        socket,
+                        this.chConfigManager.getSubAccessKeyCustomIdCh(name),
+                        this.chConfigManager.getSubAccessValueCustomIdCh(name),
+                        name,
+                        id
+                    ))) {
                         ChTools.kickOut(socket,subs[i]);
                     }
                 }
@@ -369,9 +371,13 @@ export class ChAccessEngine
                     //custom channel
 
                     let name = ChTools.getCustomChannelName(subs[i]);
-                    let config = ChTools.getCustomChConfig(zc,name);
-                    if(! (await ChAccessEngine.hasAccessToSub(socket,config,worker.getPreparedSmallBag(),name)))
-                    {
+                    if(! (await this.hasAccessToSub
+                    (
+                        socket,
+                        this.chConfigManager.getSubAccessKeyCustomCh(name),
+                        this.chConfigManager.getSubAccessValueCustomCh(name),
+                        name
+                    ))) {
                         ChTools.kickOut(socket,subs[i]);
                     }
                 }
@@ -379,13 +385,13 @@ export class ChAccessEngine
         }
     }
 
-    static checkSocketZationChAccess(socket) : void
+    static checkSocketZationChAccess(socket : Socket) : void
     {
         if(socket !== undefined)
         {
             // noinspection JSUnresolvedFunction
-            let token = socket.getAuthToken();
-            let subs = socket.subscriptions();
+            const token = socket.getAuthToken();
+            const subs = socket.subscriptions();
 
             let authUserGroup = undefined;
             let userId = undefined;

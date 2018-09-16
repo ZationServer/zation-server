@@ -34,8 +34,6 @@ export interface MainConfig
     [Const.Main.KEYS.PANEL_USER] ?: PanelUserConfig | PanelUserConfig[];
     [Const.Main.KEYS.CLIENT_JS_PREPARE] ?: boolean;
 
-    [Const.Main.KEYS.EXTRA_SECURE_AUTH] ?: boolean;
-
     [Const.Main.KEYS.AUTH_START] ?: boolean;
     [Const.Main.KEYS.AUTH_START_DURATION_MS] ?: number;
 
@@ -45,9 +43,6 @@ export interface MainConfig
     [Const.Main.KEYS.AUTH_ALGORITHM] ?: string;
     [Const.Main.KEYS.AUTH_PRIVATE_KEY] ?: string;
     [Const.Main.KEYS.AUTH_PUBLIC_KEY] ?: string;
-
-    //TempStorage
-    [Const.Main.KEYS.TEMP_STORAGE_ENGINE] ?: string;
 
     //Cluster
     [Const.Main.KEYS.CLUSTER_AUTH_KEY] ?: string | null;

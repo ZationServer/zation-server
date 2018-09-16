@@ -53,13 +53,6 @@ class TokenEngine
         {
             const tokenId = token[Const.Settings.CLIENT.TOKEN_ID];
 
-            //block oldToken in tempStorage
-            if(this.zc.isExtraSecureAuth()) {
-                await this.worker
-                    .getTSWClient()
-                    .blockTokenId(tokenId);
-            }
-
             //disconnect all sockets with tokenId
             await this.worker
                 .getPreparedSmallBag()

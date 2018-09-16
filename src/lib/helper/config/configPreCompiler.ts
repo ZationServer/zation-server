@@ -56,22 +56,23 @@ class ConfigPeCompiler
 
     private preCompileChannelConfig() : void
     {
-        if(this.zc.isChannel(Const.Channel.KEYS.CUSTOM_CHANNELS))
-        {
-            this.preCompileChannelDefault(this.zc.getChannel(Const.Channel.KEYS.CUSTOM_CHANNELS));
-        }
-        else
-        {
-            this.zc.getChannelConfig()[Const.Channel.KEYS.CUSTOM_CHANNELS] = {};
-        }
+        const channelConfig = this.zc.getChannelConfig();
 
-        if(this.zc.isChannel(Const.Channel.KEYS.CUSTOM_ID_CHANNELS))
+        for(let k in channelConfig)
         {
-            this.preCompileChannelDefault(this.zc.getChannel(Const.Channel.KEYS.CUSTOM_ID_CHANNELS));
-        }
-        else
-        {
-            this.zc.getChannelConfig()[Const.Channel.KEYS.CUSTOM_ID_CHANNELS] = {};
+            if(channelConfig.hasOwnProperty(k))
+            {
+                if(typeof channelConfig[k] === 'object')
+                {
+                    if(k === Const.Channel.KEYS.CUSTOM_ID_CHANNELS || k === Const.Channel.KEYS.CUSTOM_CHANNELS) {
+                        this.preCompileChannelDefault(channelConfig[k]);
+                    }
+                }
+                else {
+                    channelConfig[k] = {};
+                }
+
+            }
         }
     }
 
@@ -92,12 +93,12 @@ class ConfigPeCompiler
 
     private preCompileChannelDefault(channels : object) : void
     {
-        if(this.zc.isChannel(Const.Channel.KEYS.DEFAULTS))
+        if(channels[Const.Channel.CHANNEL_DEFAULT.DEFAULT])
         {
-            let defaultCh = this.zc.getChannel(Const.Channel.KEYS.DEFAULTS);
+            let defaultCh = channels[Const.Channel.CHANNEL_DEFAULT.DEFAULT];
             for(let chName in channels)
             {
-                if(channels.hasOwnProperty(chName))
+                if(channels.hasOwnProperty(chName) && chName !== Const.Channel.CHANNEL_DEFAULT.DEFAULT)
                 {
                     if(!(channels[chName].hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_ACCESS) ||
                         channels[chName].hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS)))
@@ -129,21 +130,23 @@ class ConfigPeCompiler
                         }
                     }
 
-                    if((!channels[chName].hasOwnProperty(Const.Channel.CHANNEL.ON_PUBLISH))&&
-                         defaultCh.hasOwnProperty(Const.Channel.CHANNEL.ON_PUBLISH))
-                    {
-                        channels[chName][Const.Channel.CHANNEL.ON_PUBLISH] =
-                            defaultCh[Const.Channel.CHANNEL.ON_PUBLISH];
-                    }
-
-                    if((!channels[chName].hasOwnProperty(Const.Channel.CHANNEL.ON_SUBSCRIPTION))&&
-                        defaultCh.hasOwnProperty(Const.Channel.CHANNEL.ON_SUBSCRIPTION))
-                    {
-                        channels[chName][Const.Channel.CHANNEL.ON_SUBSCRIPTION] =
-                            defaultCh[Const.Channel.CHANNEL.ON_SUBSCRIPTION];
-                    }
+                    this.processDefaultValue(channels[chName],defaultCh,Const.Channel.CHANNEL.ON_PUBLISH);
+                    this.processDefaultValue(channels[chName],defaultCh,Const.Channel.CHANNEL.ON_SUBSCRIPTION);
+                    this.processDefaultValue(channels[chName],defaultCh,Const.Channel.CHANNEL.ON_UNSUBSCRIPTION);
+                    this.processDefaultValue(channels[chName],defaultCh,Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH);
                 }
             }
+            delete channels[Const.Channel.CHANNEL_DEFAULT.DEFAULT];
+        }
+    }
+
+    // noinspection JSMethodCanBeStatic
+    private processDefaultValue(obj : object,defaultObj : object,key : string) : void
+    {
+        if((!obj.hasOwnProperty(key))&&
+            defaultObj.hasOwnProperty(key))
+        {
+            obj[key] = defaultObj[key];
         }
     }
 

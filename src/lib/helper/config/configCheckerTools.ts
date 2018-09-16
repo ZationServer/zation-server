@@ -48,6 +48,13 @@ class ConfigCheckerTools
 
     static assertStructure(structure : object,obj : object,configName : string,configErrorBag : ConfigErrorBag,target : Target = new Target())
     {
+        if(typeof obj !== 'object')
+        {
+            configErrorBag.addConfigError(new ConfigError(configName,
+                `${target.getTarget()} needs to be from type object!`));
+            return;
+        }
+
         let allowedKeys : any = [];
         for(let k in structure)
         {

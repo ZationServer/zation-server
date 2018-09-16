@@ -7,12 +7,13 @@ GitHub: LucaCode
 import Const        = require('./../constants/constWrapper');
 import TokenTools   = require("../token/tokenTools");
 import ObjectPath   = require("../tools/objectPath");
+import {Socket}       from "../socket/socket";
 
 class ChAccessInfo
 {
     private readonly _authUserGroup : string | undefined;
     private readonly _userId : string | number | undefined;
-    private readonly _socket : object;
+    private readonly _socket : Socket;
     private readonly _tokenId : string | undefined;
     private readonly _isAuthIn : boolean;
     private readonly _tokenExpire : number | undefined;
@@ -22,7 +23,7 @@ class ChAccessInfo
     private readonly _isCustomIdCh : boolean;
     private readonly _ctv : object;
 
-    constructor(socket : object,chName : string,chId ?: string)
+    constructor(socket : Socket,chName : string,chId ?: string)
     {
         this._authUserGroup = TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.AUTH_USER_GROUP,socket);
         this._userId  = TokenTools.getSocketTokenVariable(Const.Settings.CLIENT.USER_ID,socket);
@@ -49,6 +50,14 @@ class ChAccessInfo
 
     get socket(): object {
         return this._socket;
+    }
+
+    get socketSid(): string {
+        return this._socket.sid;
+    }
+
+    get socketId(): string {
+        return this._socket.id;
     }
 
     get tokenId(): string | undefined {

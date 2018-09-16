@@ -4,13 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-/*
-Class Description :
-This class is to check the access for publish or subscribe channels.
-It is used to check the access in the middleware or to check when the
-token is changed.
- */
-
 import Const         = require('../constants/constWrapper');
 import TokenTools    = require('../token/tokenTools');
 import Logger        = require('../logger/logger');
@@ -47,11 +40,6 @@ class ChTools
         Logger.printDebugInfo(`Socket with id: ${socket.id} is kick out from channel ${channel}`);
     }
 
-    static getGetSocketDataFunc(socket) : Function
-    {
-        return (key : string) : any => {TokenTools.getSocketTokenVariable(key,socket);};
-    }
-
     static getCustomIdChannelInfo(ch : string) : any
     {
         let nameAndId = ch.replace(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX,'')
@@ -70,6 +58,10 @@ class ChTools
                 name : nameAndId[0]
             };
         }
+    }
+
+    static getCustomIdChannelName(ch : string) : string {
+        return ChTools.getCustomIdChannelInfo(ch).name;
     }
 
     static getCustomIdChConfig(zc : ZationConfig,name : string) : object
