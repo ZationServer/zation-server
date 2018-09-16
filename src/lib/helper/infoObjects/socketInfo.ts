@@ -80,30 +80,6 @@ class SocketInfo
         let ctv = TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.CUSTOM_VARIABLES,this._socket);
         return ObjectPath.get(!!ctv ? ctv : {},path);
     }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Has socket variable (server side) with object path
-     * @example
-     * hasSocketVariable('email');
-     * @param path
-     */
-    hasSocketVariable(path ?: string | string[]) : boolean {
-        return ObjectPath.has(this._socket[Const.Settings.SOCKET.VARIABLES],path);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Get socket variable (server side) with object path
-     * @example
-     * getSocketVariable('email');
-     * @param path
-     */
-    getSocketVariable(path ?: string | string[]) : any {
-        return ObjectPath.get(this._socket[Const.Settings.SOCKET.VARIABLES],path);
-    }
 }
 
 export = SocketInfo;

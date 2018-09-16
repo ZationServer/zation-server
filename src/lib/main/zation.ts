@@ -14,6 +14,7 @@ import SocketProcessor = require('../helper/processor/socketProcessor');
 import Returner        = require('../helper/response/returner');
 import IdCounter       = require('../helper/tools/idCounter');
 import ZationWorker    = require("./zationWorker");
+import CodeError = require("../helper/error/codeError");
 
 class Zation
 {
@@ -82,6 +83,10 @@ class Zation
 
             if(e instanceof  TaskError)
             {
+                if(e instanceof CodeError) {
+                    Logger.printDebugWarning(`Code error -> ${e.toString()}/n stack-> ${e.stack}`);
+                }
+
                 promises.push(this.zc.emitEvent
                 (Const.Event.ZATION_BEFORE_TASK_ERROR,this.worker.getPreparedSmallBag(),e));
             }

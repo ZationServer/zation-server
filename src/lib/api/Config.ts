@@ -90,7 +90,6 @@ import {MainConfig} from "../helper/configEditTool/mainConfigStructure";
 class Config
 {
     //Part config tools
-
     static merge(...configs : object[]) : object {
         return ObjectTools.mergeObjects(configs);
     }

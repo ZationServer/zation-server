@@ -4,13 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ErrorConstruct} from "../helper/configEditTool/errorConfigStructure";
+import {ErrorConstruct}     from "../helper/configEditTool/errorConfigStructure";
 import TaskErrorBuilder   = require("../helper/builder/taskErrorBuilder");
 let Const                 = require('../helper/constants/constWrapper');
 
-class TaskError
+class TaskError extends Error
 {
-    private name : string;
     private description : string;
     private type : string;
     private sendInfo : boolean;
@@ -20,6 +19,7 @@ class TaskError
 
     constructor(errorConstruct : ErrorConstruct = {}, info ?: object | string)
     {
+        super();
         //defaultValues
         this.name        = 'TaskError';
         this.description = 'No Description define in Error';

@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import TaskError       = require('./../../api/TaskError');
 import MainTaskErrors  = require('./../zationTaskErrors/mainTaskErrors');
+import CodeError       = require("./codeError");
 
-class AuthenticationError extends TaskError
+class AuthenticationError extends CodeError
 {
     private readonly reason : string;
 

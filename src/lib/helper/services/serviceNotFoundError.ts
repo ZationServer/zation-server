@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import TaskError       = require('./../../api/TaskError');
 import MainTaskErrors  = require('./../zationTaskErrors/mainTaskErrors');
+import CodeError       = require("../error/codeError");
 
-class ServiceNotFoundError extends TaskError
+class ServiceNotFoundError extends CodeError
 {
     private readonly serviceName : string;
     private readonly serviceKey : string;

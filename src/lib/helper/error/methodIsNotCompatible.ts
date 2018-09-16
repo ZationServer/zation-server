@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import TaskError       = require('./../../api/TaskError');
 import MainTaskErrors  = require('./../zationTaskErrors/mainTaskErrors');
+import CodeError       = require("./codeError");
 
-class MethodIsNotCompatible extends TaskError
+class MethodIsNotCompatible extends CodeError
 {
     private readonly reqType : string;
     private readonly requiredReqType : string;
