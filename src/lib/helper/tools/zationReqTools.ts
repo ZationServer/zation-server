@@ -60,7 +60,7 @@ class ZationReqTools
             task[Const.Settings.REQUEST_INPUT.INPUT] = input;
             res[Const.Settings.REQUEST_INPUT.TASK] = task;
         }
-        else if(query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.AUTHEN_REQ)) {
+        else if(query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.AUTH_REQ)) {
             res[Const.Settings.REQUEST_INPUT.AUTH] = {};
             res[Const.Settings.REQUEST_INPUT.AUTH][Const.Settings.REQUEST_INPUT.INPUT] = input;
         }
@@ -75,7 +75,7 @@ class ZationReqTools
             query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.VERSION)
             )
             && (
-            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.AUTHEN_REQ) ||
+            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.AUTH_REQ) ||
             query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.CONTROLLER) ||
             query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.SYSTEM_CONTROLLER)
             ) &&

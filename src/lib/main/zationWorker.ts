@@ -5,38 +5,39 @@ GitHub: LucaCode
  */
 
 require('cache-require-paths');
-import ChTools               = require("../helper/channel/chTools");
-import FuncTools             = require("../helper/tools/funcTools");
-import express               = require('express');
-import cookieParser          = require('cookie-parser');
-import bodyParser            = require('body-parser');
-import fileUpload            = require('express-fileupload');
+import ChTools = require("../helper/channel/chTools");
+import FuncTools = require("../helper/tools/funcTools");
+import express = require('express');
+import cookieParser = require('cookie-parser');
+import bodyParser = require('body-parser');
+import fileUpload = require('express-fileupload');
 
-import Zation                = require('./zation');
-import ZationConfig          = require('./zationConfig');
-import ConfigPreCompiler     = require('../helper/config/configPreCompiler');
-import Logger                = require('../helper/logger/logger');
-import Const                 = require('../helper/constants/constWrapper');
-import ServiceEngine         = require('../helper/services/serviceEngine');
-import SmallBag              = require('../api/SmallBag');
-import PrepareClientJs       = require('../helper/client/prepareClientJs');
-import AEPreparedPart        = require('../helper/auth/aePreparedPart');
-import ChConfigManager       = require("../helper/channel/chConfigManager");
-import ControllerPrepare     = require('../helper/controller/controllerPrepare');
+import Zation = require('./zation');
+import ZationConfig = require('./zationConfig');
+import ConfigPreCompiler = require('../helper/config/configPreCompiler');
+import Logger = require('../helper/logger/logger');
+import Const = require('../helper/constants/constWrapper');
+import ServiceEngine = require('../helper/services/serviceEngine');
+import SmallBag = require('../api/SmallBag');
+import PrepareClientJs = require('../helper/client/prepareClientJs');
+import AEPreparedPart = require('../helper/auth/aePreparedPart');
+import ChConfigManager = require("../helper/channel/chConfigManager");
+import ControllerPrepare = require('../helper/controller/controllerPrepare');
 
-import BackgroundTasksSaver  = require("../helper/background/backgroundTasksSaver");
-import Mapper                = require("../helper/tools/mapper");
-import ZationToken           = require("../helper/infoObjects/zationToken");
-import IdTools               = require("../helper/tools/idTools");
-import CIdChInfo             = require("../helper/infoObjects/cIdChInfo");
-import SocketInfo            = require("../helper/infoObjects/socketInfo");
-import CChInfo               = require("../helper/infoObjects/cChInfo");
+import BackgroundTasksSaver = require("../helper/background/backgroundTasksSaver");
+import Mapper = require("../helper/tools/mapper");
+import ZationToken = require("../helper/infoObjects/zationToken");
+import IdTools = require("../helper/tools/idTools");
+import CIdChInfo = require("../helper/infoObjects/cIdChInfo");
+import SocketInfo = require("../helper/infoObjects/socketInfo");
+import CChInfo = require("../helper/infoObjects/cChInfo");
+import HashSet = require('hashset');
 
 const  SCWorker : any        = require('socketcluster/scworker');
-import {ChAccessEngine}        from '../helper/channel/chAccessEngine';
-import {WorkerChTaskActions}   from "../helper/constants/workerChTaskActions";
-import {Socket}                from "../helper/socket/socket";
-import {WorkerChTargets}       from "../helper/constants/workerChTargets";
+import {ChAccessEngine} from '../helper/channel/chAccessEngine';
+import {WorkerChTaskActions} from "../helper/constants/workerChTaskActions";
+import {Socket} from "../helper/socket/socket";
+import {WorkerChTargets} from "../helper/constants/workerChTargets";
 
 class ZationWorker extends SCWorker
 {
@@ -63,8 +64,11 @@ class ZationWorker extends SCWorker
     private mapUserToScId : Mapper<string> = new Mapper<string>();
     private mapTokenIdToScId : Mapper<string> = new Mapper<string>();
 
-    private mapCustomChToScId : Mapper<Socket> = new Mapper<Socket>();
-    private mapCustomIdChToScId : Mapper<Socket> = new Mapper<Socket>();
+    private mapCustomChToSc : Mapper<Socket> = new Mapper<Socket>();
+    private mapCustomIdChToSc : Mapper<Socket> = new Mapper<Socket>();
+
+    private mapAuthUserGroupToSc : Mapper<Socket> = new Mapper<Socket>();
+    private defaultUserGroup  = new HashSet();
 
     constructor()
     {
@@ -172,6 +176,11 @@ class ZationWorker extends SCWorker
         await this.zc.emitEvent(Const.Event.ZATION_EXPRESS,this.preparedSmallBag,this.app);
         Logger.printStartDebugInfo(`Worker with id ${this.id} process express event.`,true);
 
+        //Fire ScServerEvent
+        Logger.startStopWatch();
+        await this.zc.emitEvent(Const.Event.ZATION_SC_SERVER,this.preparedSmallBag,this.scServer);
+        Logger.printStartDebugInfo(`Worker with id ${this.id} process scServer event.`,true);
+
         Logger.printStartDebugInfo(`Worker with id ${this.id} is started.`,false);
 
         //Fire event is started
@@ -205,8 +214,7 @@ class ZationWorker extends SCWorker
             socket.sid = IdTools.buildSid(this.options.instanceId,this.id,socket.id);
 
             this.initSocketEvents(socket);
-
-            await this.zc.emitEvent(Const.Event.SC_SERVER_CONNECTION,this.getPreparedSmallBag(),socket,conSate);
+            this.defaultUserGroup.add(socket);
 
             Logger.printDebugInfo(`Socket with id: ${socket.id} is connected!`);
 
@@ -220,6 +228,9 @@ class ZationWorker extends SCWorker
                         respond: respond,
                      });
             });
+
+            await this.zc.emitEvent(Const.Event.SC_SERVER_CONNECTION,this.getPreparedSmallBag(),socket,conSate);
+            await this.zc.emitEvent(Const.Event.ZATION_SOCKET_CONNECTION,this.getPreparedSmallBag(),new SocketInfo(socket));
 
         });
 
@@ -626,6 +637,7 @@ class ZationWorker extends SCWorker
 
         this.scServer.on('disconnection', async (socket) =>
         {
+            await this.zc.emitEvent(Const.Event.ZATION_SOCKET_DISCONNECTION,this.getPreparedSmallBag(),new SocketInfo(socket));
             await this.zc.emitEvent(Const.Event.SC_SERVER_DISCONNECTION,this.getPreparedSmallBag(),socket);
         });
 
@@ -640,7 +652,7 @@ class ZationWorker extends SCWorker
             //trigger sub customCh event and update mapper
             if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
                 const {name,id} = ChTools.getCustomIdChannelInfo(chName);
-                this.mapCustomIdChToScId.map(`${name}.${id}`,socket);
+                this.mapCustomIdChToSc.map(`${name}.${id}`,socket);
                 let func = this.chConfigManager.getOnSubCustomIdCh(name);
                 if(!!func) {
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket)));
@@ -648,7 +660,7 @@ class ZationWorker extends SCWorker
             }
             else if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
                 const name = ChTools.getCustomChannelName(chName);
-                this.mapCustomChToScId.map(name,socket);
+                this.mapCustomChToSc.map(name,socket);
                 let func = this.chConfigManager.getOnSubCustomCh(name);
                 if(!!func) {
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket)));
@@ -693,7 +705,7 @@ class ZationWorker extends SCWorker
             //trigger sub customCh event and update mapper
             if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
                 const {name,id} = ChTools.getCustomIdChannelInfo(chName);
-                this.mapCustomIdChToScId.removeValueFromKey(`${name}.${id}`,socket);
+                this.mapCustomIdChToSc.removeValueFromKey(`${name}.${id}`,socket);
                 let func = this.chConfigManager.getOnUnsubCustomIdCh(name);
                 if(!!func) {
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket)));
@@ -701,7 +713,7 @@ class ZationWorker extends SCWorker
             }
             else if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
                 const name = ChTools.getCustomChannelName(chName);
-                this.mapCustomChToScId.removeValueFromKey(name,socket);
+                this.mapCustomChToSc.removeValueFromKey(name,socket);
                 let func = this.chConfigManager.getOnUnsubCustomCh(name);
                 if(!!func) {
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket)));
@@ -803,6 +815,12 @@ class ZationWorker extends SCWorker
                 if(!!token[Const.Settings.TOKEN.USER_ID]) {
                     this.mapUserToScId.removeValueFromKey(token[Const.Settings.TOKEN.USER_ID],socket.id);
                 }
+                if(!!token[Const.Settings.TOKEN.AUTH_USER_GROUP]) {
+                    this.mapAuthUserGroupToSc.removeValueFromKey(token[Const.Settings.TOKEN.AUTH_USER_GROUP],socket);
+                }
+            }
+            else {
+                this.defaultUserGroup.remove(socket);
             }
 
             await this.zc.emitEvent(Const.Event.SOCKET_CLOSE,this.getPreparedSmallBag(),socket);
@@ -832,6 +850,10 @@ class ZationWorker extends SCWorker
                 if(!!token[Const.Settings.TOKEN.USER_ID]) {
                     this.mapUserIdToScId.map(token[Const.Settings.TOKEN.USER_ID],socket.id);
                 }
+                if(!!token[Const.Settings.TOKEN.AUTH_USER_GROUP]) {
+                    this.mapAuthUserGroupToSc.map(token[Const.Settings.TOKEN.AUTH_USER_GROUP],socket);
+                    this.defaultUserGroup.remove(socket);
+                }
             }
             await this.zc.emitEvent(Const.Event.SOCKET_AUTHENTICATE,this.getPreparedSmallBag(),socket,token);
         });
@@ -845,7 +867,13 @@ class ZationWorker extends SCWorker
                 if(!!token[Const.Settings.TOKEN.USER_ID]) {
                     this.mapUserIdToScId.removeValueFromKey(token[Const.Settings.TOKEN.USER_ID],socket.id);
                 }
+                if(!!token[Const.Settings.TOKEN.AUTH_USER_GROUP]) {
+                    this.mapAuthUserGroupToSc.removeValueFromKey(token[Const.Settings.TOKEN.AUTH_USER_GROUP],socket);
+                }
             }
+            //no token = default
+            this.defaultUserGroup.add(socket);
+
             await this.zc.emitEvent(Const.Event.SOCKET_DEAUTHENTICATE,this.getPreparedSmallBag(),socket,token);
         });
 
@@ -879,7 +907,7 @@ class ZationWorker extends SCWorker
     private async registerWorkerChannel()
     {
         const channel = this.exchange.subscribe(Const.Settings.CHANNEL.ALL_WORKER);
-        channel.watch((data) =>
+        channel.watch(async (data) =>
         {
             if(!Array.isArray(data.ids)) {
                 return;
@@ -970,6 +998,9 @@ class ZationWorker extends SCWorker
                 else if(data.action === WorkerChTaskActions.DEAUTHENTICATE) {
                     this.forAllSocketSids(ids,deauthenticateAction);
                 }
+            }
+            else if(data.target === WorkerChTargets.THIS_WORKER && data.action === WorkerChTaskActions.MESSAGE) {
+                await this.zc.emitEvent(Const.Event.ZATION_WORKER_MESSAGE,this.preparedSmallBag,emitData);
             }
         });
     }
@@ -1163,15 +1194,27 @@ class ZationWorker extends SCWorker
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getCustomChToScIdMapper() : Mapper<Socket>
+    getCustomChToScMapper() : Mapper<Socket>
     {
-        return this.mapCustomChToScId;
+        return this.mapCustomChToSc;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getCustomIdChToScIdMapper() : Mapper<Socket>
+    getCustomIdChToScMapper() : Mapper<Socket>
     {
-        return this.mapCustomIdChToScId;
+        return this.mapCustomIdChToSc;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getAuthUserGroupToScMapper() : Mapper<Socket>
+    {
+        return this.mapAuthUserGroupToSc;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getDefaultUserGroupsMap() : any
+    {
+        return this.defaultUserGroup;
     }
 }
 

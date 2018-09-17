@@ -65,6 +65,19 @@ class TokenEngine
                     }
                 }
 
+                //update authUserGroup Mapper
+                if(oldToken[Const.Settings.TOKEN.AUTH_USER_GROUP] !== data[Const.Settings.TOKEN.AUTH_USER_GROUP]) {
+                    //authUserGroup Changed
+                    if(!!data[Const.Settings.TOKEN.AUTH_USER_GROUP]) {
+                        //take new user id
+                        this.worker.getAuthUserGroupToScMapper().map(data[Const.Settings.TOKEN.AUTH_USER_GROUP], this.shBridge.getSocket());
+                    }
+                    if(!!oldToken[Const.Settings.TOKEN.AUTH_USER_GROUP]) {
+                        //remove old token user id
+                        this.worker.getAuthUserGroupToScMapper().removeValueFromKey(oldToken[Const.Settings.TOKEN.USER_ID],this.shBridge.getSocket());
+                    }
+                }
+
             }
         }
     }

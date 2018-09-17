@@ -1378,7 +1378,7 @@ class SmallBag
      * getWorkerSocketSubsCustomCh('CH-NAME');
      */
     getWorkerSocketSubsCustomCh(channel : string) : Socket[] {
-        return this.worker.getCustomChToScIdMapper().getValues(channel);
+        return this.worker.getCustomChToScMapper().getValues(channel);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1389,7 +1389,7 @@ class SmallBag
      * getWorkerSocketSubsCustomIdCh('CH-NAME','ID');
      */
     getWorkerSocketSubsCustomIdCh(channel : string, id : string) : Socket[] {
-        return this.worker.getCustomIdChToScIdMapper().getValues(`${channel}.${id}`);
+        return this.worker.getCustomIdChToScMapper().getValues(`${channel}.${id}`);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1469,22 +1469,86 @@ class SmallBag
         return this.convertSocketIdToSid(...this.getSocketIdsWithUserId(userId));
     }
 
-    //Part Amazon s3
     // noinspection JSUnusedGlobalSymbols
-    /*
-    uploadFileToBucket()
-    {
-        //TODO
-
+    /**
+     * @description
+     * Returns object with authUserGroups as key
+     * and value with count of connected clients (only this worker)
+     */
+    getWorkerAuthUserGroupsCount() : object {
+       const res = {};
+       const authGroups = this.worker.getAEPreparedPart().getAuthGroups();
+       for(let group in authGroups) {
+           if(authGroups.hasOwnProperty(group)) {
+               res[group] = this.worker.getAuthUserGroupToScMapper().getValues(group).length;
+           }
+       }
+       return res;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getFileFromBucket()
-    {
-        //TODO
-
+    /**
+     * @description
+     * Returns count of connected default user groups sockets (only this worker)
+     */
+    getWorkerDefaultUserGroupCount() : number {
+        return this.worker.getDefaultUserGroupsMap().length;
     }
-    */
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns count of auth user group sockets (only this worker)
+     */
+    getWorkerAuthUserGroupCount(authUserGroup : string) : number {
+        return this.worker.getAuthUserGroupToScMapper().getValues(authUserGroup).length;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns object with authUserGroups as key
+     * and value with array of sockets (only this worker)
+     */
+    getWorkerAuthUserGroupsSockets() : object {
+        const res = {};
+        const authGroups = this.worker.getAEPreparedPart().getAuthGroups();
+        for(let group in authGroups) {
+            if(authGroups.hasOwnProperty(group)) {
+                res[group] = this.worker.getAuthUserGroupToScMapper().getValues(group);
+            }
+        }
+        return res;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns array of default user group sockets (only this worker)
+     */
+    getWorkerDefaultUserGroupSockets() : Socket[] {
+        return this.worker.getDefaultUserGroupsMap().toArray();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns array of auth user group sockets (only this worker)
+     */
+    getWorkerAuthUserGroupSockets(authUserGroup : string) : Socket[] {
+        return this.worker.getAuthUserGroupToScMapper().getValues(authUserGroup);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Send message to all workers on compete system
+     * You can react on the message with the workerMessage event in the event config.
+     */
+    async sendWorkerMessage(data : any) : Promise<void> {
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.THIS_WORKER,WorkerChTaskActions.MESSAGE, [],[],{data : data});
+    }
 }
 
 export = SmallBag;

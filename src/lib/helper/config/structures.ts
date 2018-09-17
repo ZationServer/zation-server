@@ -243,6 +243,7 @@ ArrayShortCutSpecify[Const.App.ARRAY.LENGTH]                   = {types : ['numb
 
 const EventConfig = {};
 EventConfig[Const.Event.ZATION_EXPRESS]                   = {types : ['function','array'],isOptional : true};
+EventConfig[Const.Event.ZATION_SC_SERVER]                 = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_WORKER_IS_STARTED]         = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_HTTP_SERVER_IS_STARTED]    = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_WS_SERVER_IS_STARTED]      = {types : ['function','array'],isOptional : true};
@@ -250,6 +251,9 @@ EventConfig[Const.Event.ZATION_IS_STARTED]                = {types : ['function'
 EventConfig[Const.Event.ZATION_BEFORE_ERROR]              = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_BEFORE_TASK_ERROR]         = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_BEFORE_TASK_ERROR_BAG]     = {types : ['function','array'],isOptional : true};
+EventConfig[Const.Event.ZATION_SOCKET_CONNECTION]         = {types : ['function','array'],isOptional : true};
+EventConfig[Const.Event.ZATION_SOCKET_DISCONNECTION]      = {types : ['function','array'],isOptional : true};
+EventConfig[Const.Event.ZATION_WORKER_MESSAGE]         = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.MIDDLEWARE_AUTHENTICATE]          = {types : ['function'],isOptional : true};
 
 EventConfig[Const.Event.SC_SERVER_ERROR]                  = {types : ['function','array'],isOptional : true};

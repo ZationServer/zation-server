@@ -92,7 +92,7 @@ class ConfigChecker
        {
            if(groups[i].indexOf('.') !== -1) {
                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
-                   `${groups[i]} is not a valid auth user group! Points in name are not allowed.`));
+                   `${groups[i]} is not a valid auth user group! Dot/s in name are not allowed.`));
            }
 
            if(extraKeys.includes(groups[i]))
@@ -239,7 +239,7 @@ class ConfigChecker
 
                            if(chName.indexOf('.') !== -1) {
                                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.CHANNEL,
-                                   `${firstTarget.getTarget()} Channel name ${chName} is not valid! Points in name are not allowed.`));
+                                   `${firstTarget.getTarget()} Channel name ${chName} is not valid! Dot/s in name are not allowed.`));
                            }
 
                            this.checkFullChannelItem(chPart[chName],firstTarget,chName);

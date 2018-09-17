@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import SmallBag = require("./SmallBag");
-import Bag = require("./Bag");
+import Bag      = require("./Bag");
 
 class Controller
 {

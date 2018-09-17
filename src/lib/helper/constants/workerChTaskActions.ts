@@ -9,5 +9,6 @@ export enum WorkerChTaskActions
     DISCONNECT,
     DEAUTHENTICATE,
     KICK_OUT,
-    EMIT
+    EMIT,
+    MESSAGE
 }

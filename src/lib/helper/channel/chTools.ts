@@ -10,7 +10,6 @@ import ZationConfig  = require("../../main/zationConfig");
 
 class ChTools
 {
-
     static buildCustomIdChannelName(name ?: string,id : string = '') : string
     {
         if(!!name) {

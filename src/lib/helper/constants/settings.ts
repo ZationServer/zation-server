@@ -25,7 +25,7 @@ class HTTP_GET_REQ
 {
     static readonly VERSION                      = 'v';
     static readonly SYSTEM                       = 's';
-    static readonly AUTHEN_REQ                   = 'a';
+    static readonly AUTH_REQ                     = 'a';
     static readonly CONTROLLER                   = 'c';
     static readonly SYSTEM_CONTROLLER            = 'sc';
     static readonly INPUT                        = 'i';
@@ -140,30 +140,6 @@ class DEFAULT_USER_GROUP
     static readonly FALLBACK        = 'default';
 }
 
-class TEMP_DB
-{
-    static readonly TOKEN_INFO_NAME            = 'tokenInfo';
-    static readonly ERROR_INFO_NAME            = 'errorInfo';
-}
-
-class CONNECTION_STATE_VALUES
-{
-    static readonly CON    = 'CON'; //connected
-    static readonly DIS    = 'DIS'; //disconnected
-}
-
-class TOKEN_INFO
-{
-    static readonly USER_ID                 = 'USER_ID';
-    static readonly AUTH_USER_GROUP         = 'AUTH_USER_GROUP';
-    static readonly IS_BLOCKED              = 'IS_BLOCKED';
-    static readonly EXPIRE                  = 'EXPIRE';
-    static readonly CONNECTION_STATE        = 'CONNECTION_STATE';
-    static readonly CREATED_REMOTE_ADDRESS  = 'CREATED_REMOTE_ADDRESS';
-    
-    static readonly CONNECTION_STATE_VALUES = CONNECTION_STATE_VALUES;
-}
-
 //CN = CONFIG_NAMES
 class CN
 {
@@ -185,8 +161,6 @@ class Settings
     static readonly CHANNEL = CHANNEL;
     static readonly USER_CHANNEL = SOCKET_EMIT_EVENTS;
     static readonly DEFAULT_USER_GROUP = DEFAULT_USER_GROUP;
-    static readonly TEMP_DB = TEMP_DB;
-    static readonly TOKEN_INFO = TOKEN_INFO;
     static readonly CN = CN;
     static readonly RESPONSE = RESPONSE;
     static readonly ZATION_HTTP_INFO = ZATION_HTTP_INFO;

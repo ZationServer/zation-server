@@ -21,11 +21,17 @@ import
     EventConfig,
     ExpressFunction,
     HttpServerIsStartedFunction,
-    IsStartedFunction, ScServerAuthenticationFunction, ScServerBadSocketAuthTokenFunction,
-    ScServerConnectionFunction, ScServerDeauthenticationFunction,
+    IsStartedFunction,
+    ScServerAuthenticationFunction,
+    ScServerBadSocketAuthTokenFunction,
+    ScServerConnectionFunction,
+    ScServerDeauthenticationFunction,
     ScServerErrorFunction,
-    ScServerNoticeFunction, ScServerReadyFunction,
-    ScServerSocketFunction, ScServerSubscriptionFunction, ScServerUnsubscriptionFunction,
+    ScServerNoticeFunction,
+    ScServerReadyFunction,
+    ScServerSocketFunction,
+    ScServerSubscriptionFunction,
+    ScServerUnsubscriptionFunction,
     SocketConnectionFunction,
     SocketErrorFunction,
     SocketFunction,
@@ -33,7 +39,11 @@ import
     SocketObjFunction,
     SocketAuthenticateFunction,
     WorkerIsStartedFunction,
-    WsServerIsStartedFunction, SocketDeauthenticateFunction, ScMiddlewareFunction, MiddlewareAuthenticationFunction
+    WsServerIsStartedFunction,
+    SocketDeauthenticateFunction,
+    ScMiddlewareFunction,
+    MiddlewareAuthenticationFunction,
+    ScServerFunction, ZationSocketConnectionFunction, ZationSocketDisconnectionFunction, ZationWorkerMessageFunction
 } from "../helper/configEditTool/eventConfigStructure";
 
 import
@@ -168,12 +178,16 @@ class Config
     //Part Zation Events
     static workerIsStarted(func : WorkerIsStartedFunction) : WorkerIsStartedFunction {return func;}
     static express(func : ExpressFunction) : ExpressFunction {return func;}
+    static scServer(func : ScServerFunction) : ScServerFunction {return func;}
     static beforeError(func : BeforeErrorFunction) : BeforeErrorFunction {return func;}
     static beforeTaskError(func : BeforeTaskErrorFunction) : BeforeTaskErrorFunction {return func;}
     static beforeTaskErrorBag(func : BeforeTaskErrorBagFunction) : BeforeTaskErrorBagFunction {return func;}
     static httpServerStarted(func : HttpServerIsStartedFunction) : HttpServerIsStartedFunction {return func;}
     static wsServerIsStarted(func : WsServerIsStartedFunction) : WsServerIsStartedFunction{return func;}
     static isStarted(func : IsStartedFunction) : IsStartedFunction{return func;}
+    static socketConnection(func : ZationSocketConnectionFunction) : ZationSocketConnectionFunction {return func;}
+    static socketDisconnection(func : ZationSocketDisconnectionFunction) : ZationSocketDisconnectionFunction {return func;}
+    static workerMessage(func : ZationWorkerMessageFunction) : ZationWorkerMessageFunction {return func;}
 
     //Zation Middleware
     static middlewareAuthenticate(func : MiddlewareAuthenticationFunction) : MiddlewareAuthenticationFunction {return func;}

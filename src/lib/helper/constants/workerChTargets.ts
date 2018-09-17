@@ -9,5 +9,6 @@ export enum WorkerChTargets
     USER_IDS,
     TOKEN_IDS,
     ALL_SOCKETS,
-    SOCKETS_SIDS
+    SOCKETS_SIDS,
+    THIS_WORKER
 }
