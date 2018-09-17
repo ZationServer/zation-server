@@ -55,7 +55,6 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.AUTH_PUBLIC_KEY] = null;
             this.mainConfig[Const.Main.KEYS.AUTH_PRIVATE_KEY] = null;
             this.mainConfig[Const.Main.KEYS.AUTH_DEFAULT_EXPIRY] = 86400;
-            this.mainConfig[Const.Main.KEYS.SYSTEM_BACKGROUND_TASK_REFRESH_RATE] = 1800000;
             this.mainConfig[Const.Main.KEYS.TIME_ZONE] = moment.tz.guess() || 'Europe/Berlin';
             this.mainConfig[Const.Main.KEYS.AUTH_START] = false;
             this.mainConfig[Const.Main.KEYS.AUTH_START_DURATION_MS] = 20000;
@@ -93,6 +92,11 @@ class ZationConfig
 
             this.loadUserDataLocations();
             this.loadMainConfig();
+
+            //override env
+            if(Number(process.env.PORT) || Number(process.env.p)) {
+                this.mainConfig[Const.Main.KEYS.PORT] = Number(process.env.PORT) || Number(process.env.p)
+            }
 
             this.addToMainConfig(this.starterConfig,true,Structures.Main);
             this.processMainConfig();

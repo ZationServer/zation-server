@@ -21,7 +21,6 @@ class KEYS {
     static readonly USE_AUTH                              = 'useAuth';
     static readonly USE_PROTOCOL_CHECK                    = 'useProtocolCheck';
     static readonly SEND_ERRORS_DESC                      = 'sendErrorDescription';
-    static readonly SYSTEM_BACKGROUND_TASK_REFRESH_RATE   = 'systemBackgroundTaskRefreshRate';
     static readonly ZATION_CONSOLE_LOG                    = 'zationConsoleLog';
     static readonly SC_CONSOLE_LOG                        = 'scConsoleLog';
     static readonly USE_SC_UWS                            = 'useScUws';

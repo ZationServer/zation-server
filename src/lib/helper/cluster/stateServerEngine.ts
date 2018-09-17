@@ -96,7 +96,7 @@ class StateServerEngine
             sharedVarDec = sharedVar;
         }
 
-        if(typeof sharedVarDec !== 'object')
+        if(typeof sharedVarDec === 'object')
         {
             this.zc.setInternal(Const.Settings.INTERNAL_DATA.TOKEN_CHECK_KEY,sharedVarDec.tokenCheckKey);
 
@@ -153,7 +153,7 @@ class StateServerEngine
         };
     }
 
-    public async registerStateServer()
+    public registerStateServer()
     {
         this.stateSocket = ScClient.connect(this.connectSettings);
         Logger.printStartDebugInfo('Master wait for connection to zation-cluster-state server...');
@@ -166,11 +166,11 @@ class StateServerEngine
                 }
                 else {
                     Logger.printStartDebugInfo
-                    (`Error by trying to connect to zation-cluster-state server -> ${e.toString()}. Connection is tried again.`);
+                    (`Error by trying to connect to zation-cluster-state server -> ${e.name}. Connection is tried again.`);
                 }
             });
 
-            this.stateSocket.on('close',async ()=>
+            this.stateSocket.on('disconnect',async ()=>
             {
                 if(this.inBootProcess) {
                     this.zm.crashServer(`Connection to state server is lost in boot process!`);
@@ -178,7 +178,14 @@ class StateServerEngine
                 else {
                     //lost connection by running server
                     Logger.printDebugWarning
-                    (`Connection to zation-cluster-state server is closed. To scale up or down, the state server must be reachable!`);
+                    (`Connection to zation-cluster-state server is lost. To scale up or down, the state server must be reachable!`);
+                }
+            });
+
+            this.stateSocket.on('connectAbort',async ()=>
+            {
+                if(this.inBootProcess) {
+                    this.zm.crashServer(`Connection to state server is failed in start process!`);
                 }
             });
 
@@ -203,6 +210,7 @@ class StateServerEngine
                     {
                         if(tryCount < 4) {
                             tryCount++;
+                            Logger.printDebugInfo('Try to reconnect to state server!');
                             const res = await this.reconnectStateServer();
                             if(!res) {
                                 await tryFunc();
@@ -211,30 +219,35 @@ class StateServerEngine
                         else {
                             Logger.printDebugWarning(`Reconnection to state server failed ${tryCount} times!`);
                         }
-                    }
+                    };
+                    await tryFunc();
                 }
             });
         });
     }
 
-    private async registerMaster()
+    private registerMaster()
     {
-        this.stateSocket.emit
-        ('zMasterRegister',
-            {
-                settings : this.serverSettings,
-                sharedData : this.serverSharedData,
-                instanceId : this.zc.getMain(Const.Main.KEYS.INSTANCE_ID)
-            },
-            async (err,data) =>
-            {
-                if(!err) {
-                    await this.reactOnRegisterRespond(data);
-                }
-                else {
-                    throw err;
-                }
-            });
+        return new Promise((resolve) =>
+        {
+            this.stateSocket.emit
+            ('zMasterRegister',
+                {
+                    settings : this.serverSettings,
+                    sharedData : this.serverSharedData,
+                    instanceId : this.zc.getMain(Const.Main.KEYS.INSTANCE_ID)
+                },
+                async (err,data) =>
+                {
+                    if(!err) {
+                        await this.reactOnRegisterRespond(data);
+                        resolve();
+                    }
+                    else {
+                        throw err;
+                    }
+                });
+        });
     }
 
     private async reactOnRegisterRespond(data : any)
@@ -258,7 +271,6 @@ class StateServerEngine
                 setTimeout(async () => {
                     await this.registerMaster();
                     resolve();
-
                 },Number(ms));
             });
         }
@@ -338,7 +350,7 @@ class StateServerEngine
                         }
                     }
                     else {
-                        Logger.printDebugInfo(`Reconnection to state server failed. Error -> ${err.toString()}`)
+                        Logger.printDebugInfo(`Reconnection to state server failed. Error -> ${err.toString()}`);
                         resolve(false);
                     }
                 });

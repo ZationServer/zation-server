@@ -39,7 +39,6 @@ import CChInfo               = require("../helper/infoObjects/cChInfo");
 
 class ZationWorker extends SCWorker
 {
-    private systemBackgroundTasks : Function[];
     private userBackgroundTasks : object;
 
     private workerStartedTimeStamp : number;
@@ -72,7 +71,6 @@ class ZationWorker extends SCWorker
     async run()
     {
         //BackgroundStuff
-        this.systemBackgroundTasks = [];
         this.userBackgroundTasks = {};
 
         this.workerStartedTimeStamp = Date.now();
@@ -289,7 +287,7 @@ class ZationWorker extends SCWorker
 
     private initSocketMiddleware()
     {
-        this.scServer.addMiddleware(this.scServer.SC_MIDDLEWARE_SUBSCRIBE, async (req, next) => {
+        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_SUBSCRIBE, async (req, next) => {
 
             const userMidRes = await
                 this.zc.checkScMiddlewareEvent
@@ -416,7 +414,7 @@ class ZationWorker extends SCWorker
         });
 
         //BLOCK USER CAN CLIENT_PUBLISH_ACCESS IN ZATION CHANNELS
-        this.scServer.addMiddleware(this.scServer.SC_MIDDLEWARE_PUBLISH_IN, async (req, next) =>
+        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_PUBLISH_IN, async (req, next) =>
         {
             const channel = req.channel;
 
@@ -469,7 +467,7 @@ class ZationWorker extends SCWorker
         });
 
         //ZATION checks for sockets get own published data
-        this.scServer.addMiddleware(this.scServer.SC_MIDDLEWARE_PUBLISH_OUT, async (req, next) =>
+        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_PUBLISH_OUT, async (req, next) =>
         {
             const userMidRes = await
                 this.zc.checkScMiddlewareEvent
@@ -534,7 +532,7 @@ class ZationWorker extends SCWorker
         });
 
         //ZATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
-        this.scServer.addMiddleware(this.scServer.SC_MIDDLEWARE_HANDSHAKE_SC, async (req, next) =>
+        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_HANDSHAKE_SC, async (req, next) =>
         {
             const userMidRes = await
             this.zc.checkScMiddlewareEvent
@@ -546,7 +544,7 @@ class ZationWorker extends SCWorker
         });
 
         //ZATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
-        this.scServer.addMiddleware(this.scServer.SC_MIDDLEWARE_HANDSHAKE_WS, async (req, next) =>
+        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_HANDSHAKE_WS, async (req, next) =>
         {
             const userMidRes = await
             this.zc.checkScMiddlewareEvent
@@ -558,7 +556,7 @@ class ZationWorker extends SCWorker
         });
 
         //ZATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
-        this.scServer.addMiddleware(this.scServer.SC_MIDDLEWARE_EMIT, async (req, next) =>
+        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_EMIT, async (req, next) =>
         {
             const userMidRes = await
             this.zc.checkScMiddlewareEvent
@@ -571,7 +569,7 @@ class ZationWorker extends SCWorker
 
         //ZATION ONLY CHECK USER EVENT AND AUTHENTICATE MIDDLEWARE
         // noinspection JSUnresolvedVariable
-        this.scServer.addMiddleware(this.scServer.SC_MIDDLEWARE_AUTHENTICATE, async (req, next) =>
+        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_AUTHENTICATE, async (req, next) =>
         {
             const token = req.authToken;
 
@@ -974,43 +972,17 @@ class ZationWorker extends SCWorker
             if(data['userBackgroundTask'] !== undefined)
             {
                 let id = data['userBackgroundTask'];
-
-                if(this.userBackgroundTasks.hasOwnProperty(id))
-                {
+                if(this.userBackgroundTasks.hasOwnProperty(id)) {
                     await this.invokeUserBackgroundTask(this.userBackgroundTasks[id]);
-                }
-            }
-            else if(data['systemBackgroundTasks'] !== undefined && data['systemBackgroundTasks'])
-            {
-                for(let i = 0; i < this.systemBackgroundTasks.length; i++)
-                {
-                    this.invokeSystemBackgroundTask(this.systemBackgroundTasks[i]);
                 }
             }
             respond(null);
         });
     }
 
-    // noinspection JSUnusedLocalSymbols
-    private addSystemBackgroundTask(func)
-    {
-        this.systemBackgroundTasks.push(func);
-    }
-
     private async invokeUserBackgroundTask(task)
     {
-        if(task !== undefined)
-        {
-            await FuncTools.emitEvent(task,this.preparedSmallBag);
-        }
-    }
-
-    private invokeSystemBackgroundTask(task)
-    {
-        if(task !== undefined && typeof task === 'function')
-        {
-            task(this);
-        }
+        await FuncTools.emitEvent(task,this.preparedSmallBag);
     }
 
     private loadUserBackgroundTasks()
@@ -1019,7 +991,6 @@ class ZationWorker extends SCWorker
             (name,task) => {
                 this.userBackgroundTasks[name] = task;
             });
-
         bkTS.saveUserBackgroundTasks(this.zc);
     }
 

@@ -74,7 +74,6 @@ Main[Const.Main.KEYS.HTTPS_CONFIG]            = {types : ['object'],isOptional :
 Main[Const.Main.KEYS.USE_AUTH]                = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.USE_PROTOCOL_CHECK]      = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.SEND_ERRORS_DESC]        = {types : ['boolean'],isOptional : true};
-Main[Const.Main.KEYS.SYSTEM_BACKGROUND_TASK_REFRESH_RATE] = {types : ['number'],isOptional : true};
 Main[Const.Main.KEYS.USE_PANEL]               = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.PANEL_USER]              = {types : ['object','array'],isOptional : true};
 Main[Const.Main.KEYS.CLIENT_JS_PREPARE]       = {types : ['boolean'],isOptional : true};

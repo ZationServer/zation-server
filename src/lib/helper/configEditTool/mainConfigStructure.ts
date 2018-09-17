@@ -25,7 +25,6 @@ export interface MainConfig
     [Const.Main.KEYS.USE_AUTH] ?: boolean;
     [Const.Main.KEYS.USE_PROTOCOL_CHECK] ?: boolean;
     [Const.Main.KEYS.SEND_ERRORS_DESC] ?: boolean;
-    [Const.Main.KEYS.SYSTEM_BACKGROUND_TASK_REFRESH_RATE] ?: number;
     [Const.Main.KEYS.ZATION_CONSOLE_LOG] ?: boolean;
     [Const.Main.KEYS.SC_CONSOLE_LOG] ?: boolean;
     [Const.Main.KEYS.USE_SC_UWS] ?: boolean;

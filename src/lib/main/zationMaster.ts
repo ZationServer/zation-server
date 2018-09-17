@@ -55,14 +55,11 @@ class ZationMaster
 
             (async () =>
             {
-                try
-                {
+                try {
                     await this.start();
                 }
-                catch (e)
-                {
+                catch (e) {
                     Logger.printStartFail(`Exception when trying to start server -> ${e.toString()}`);
-                    console.log(e);
                 }
             })();
         }
@@ -115,7 +112,10 @@ class ZationMaster
                 this.crashServer(e);
             }
         }
+        this.startSocketClusterWithLog();
+    }
 
+    public startSocketClusterWithLog() {
         Logger.startStopWatch();
         this.startSocketCluster();
         Logger.printStartDebugInfo('Master starts socket cluster.',true);
@@ -317,7 +317,7 @@ class ZationMaster
 
     public activateClusterLeader() : void
     {
-        Logger.printDebugInfo(`This Instance '${this.master.options.instanceId}' becomes the leader.`);
+        Logger.printDebugInfo(`This Instance '${this.master.options.instanceId}' becomes the cluster leader.`);
 
         if(!this.backgroundTaskInit) {
             Logger.startStopWatch();
@@ -339,6 +339,10 @@ class ZationMaster
     // noinspection JSMethodCanBeStatic
     public crashServer(error : Error | string)
     {
+        if(this.master) {
+            this.master.killWorkers();
+            this.master.killBrokers();
+        }
         let txt = typeof error === 'object' ?
             error.message : error;
         Logger.printStartFail(txt);
@@ -361,12 +365,6 @@ class ZationMaster
         });
 
         bkTS.setUserBackgroundTasks(this.zc);
-
-        //systemBackgroundTask
-        setInterval(() => {
-            this.sendBackgroundTask({systemBackgroundTasks : true});
-        }
-        ,this.zc.getMain(Const.Main.KEYS.SYSTEM_BACKGROUND_TASK_REFRESH_RATE));
     }
 
     public sendBackgroundTask(obj)
