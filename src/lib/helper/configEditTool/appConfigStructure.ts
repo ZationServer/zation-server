@@ -54,6 +54,8 @@ export interface ControllerConfig
     [Const.App.CONTROLLER.SYSTEM_CONTROLLER] ?: boolean;
     [Const.App.CONTROLLER.WS_ACCESS] ?: boolean;
     [Const.App.CONTROLLER.HTTP_ACCESS] ?: boolean;
+    [Const.App.CONTROLLER.HTTP_GET_ALLOWED] ?: boolean;
+    [Const.App.CONTROLLER.HTTP_POST_ALLOWED] ?: boolean;
     [Const.App.CONTROLLER.INPUT_VALIDATION] ?: boolean;
     [Const.App.CONTROLLER.INPUT_ALL_ALLOW] ?: boolean;
     [Const.App.CONTROLLER.PATH] ?: string;

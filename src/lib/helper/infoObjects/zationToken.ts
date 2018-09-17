@@ -61,7 +61,7 @@ class ZationToken
     /**
      * @description
      * Has a custom token variable with object path
-     * You can access this variables on client and server side
+     * You can protocolAccess this variables on client and server side
      * @example
      * hasCustomTokenVar('person.email');
      * @param path
@@ -74,7 +74,7 @@ class ZationToken
     /**
      * @description
      * Get a custom token variable with object path
-     * You can access this variables on client and server side
+     * You can protocolAccess this variables on client and server side
      * @example
      * getCustomTokenVar('person.email');
      * @param path

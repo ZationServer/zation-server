@@ -14,7 +14,7 @@ import Const             = require('../constants/constWrapper');
 import ChTools           = require('./chTools');
 import ZationConfig      = require("../../main/zationConfig");
 import Logger            = require("../logger/logger");
-import {WorkerChActions} from "../constants/workerChActions";
+import {WorkerChTaskActions} from "../constants/workerChTaskActions";
 import FuncTools         = require("../tools/funcTools");
 import ZationWorker      = require("../../main/zationWorker");
 import CIdChInfo         = require("../infoObjects/cIdChInfo");
@@ -79,7 +79,7 @@ class ChExchangeEngine
         }
     }
 
-    async publishTaskToWorker(action : WorkerChActions, ids : string | number | (string | number)[],exceptSocketSids : string[] | string,mainData : object = {}) : Promise<void>
+    async publishTaskToWorker(action : WorkerChTaskActions, ids : string | number | (string | number)[], exceptSocketSids : string[] | string, mainData : object = {}) : Promise<void>
     {
         const tmpIds : (string | number)[]  = Array.isArray(ids) ? ids : [ids];
         const tmpExceptSocketSids : string[] = Array.isArray(exceptSocketSids) ? exceptSocketSids : [exceptSocketSids];

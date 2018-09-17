@@ -197,7 +197,7 @@ export = {
 
     inputIsNotAJson : {
         name          : 'inputIsNotAJson',
-        description   : 'Input is not a Json!',
+        description   : 'Input is not a JsonConverter!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO

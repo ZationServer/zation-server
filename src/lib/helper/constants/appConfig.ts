@@ -39,6 +39,8 @@ class CONTROLLER {
     static readonly BEFORE_HANDLE       = 'beforeHandle';
     static readonly SYSTEM_CONTROLLER   = 'systemController';
     static readonly HTTP_ACCESS         = 'httpAccess';
+    static readonly HTTP_GET_ALLOWED    = 'httpGetAllowed';
+    static readonly HTTP_POST_ALLOWED   = 'httpPostAllowed';
     static readonly WS_ACCESS           = 'wsAccess';
     static readonly INPUT_VALIDATION    = 'inputValidation';
     static readonly INPUT_ALL_ALLOW     = 'inputAllAllow';

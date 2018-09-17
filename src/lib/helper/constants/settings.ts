@@ -21,6 +21,17 @@ class ERROR
     static readonly IN_INFO                      = ERROR_INFO;
 }
 
+class HTTP_GET_REQ
+{
+    static readonly VERSION                      = 'v';
+    static readonly SYSTEM                       = 's';
+    static readonly AUTHEN_REQ                   = 'a';
+    static readonly CONTROLLER                   = 'c';
+    static readonly SYSTEM_CONTROLLER            = 'sc';
+    static readonly INPUT                        = 'i';
+    static readonly TOKEN                        = 't';
+}
+
 class REQUEST_INPUT
 {
     static readonly INPUT                        = 'i';
@@ -182,6 +193,7 @@ class Settings
     static readonly REQ_IN_C = REQ_IN_C;
     static readonly SOCKET = SOCKET;
     static readonly INTERNAL_DATA = INTERNAL_DATA;
+    static readonly HTTP_GET_REQ = HTTP_GET_REQ;
 }
 
 export = Settings;

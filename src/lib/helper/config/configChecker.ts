@@ -269,7 +269,7 @@ class ConfigChecker
                    `${mainTarget.getTarget()} only 'subscribeAccess' or 'subscribeNotAccess' keyword is allow.`));
            }
 
-           //check access dependency to userGroups
+           //check protocolAccess dependency to userGroups
            this.checkAccessKeyDependency
            (channel[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS],Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS,mainTarget);
            this.checkAccessKeyDependency
@@ -321,7 +321,7 @@ class ConfigChecker
 
        if(access === undefined && notAccess === undefined)
        {
-           Logger.printConfigWarning(Const.Settings.CN.APP,'It is recommended to set a controller default value for access or notAccess.');
+           Logger.printConfigWarning(Const.Settings.CN.APP,'It is recommended to set a controller default value for protocolAccess or notAccess.');
        }
    }
 

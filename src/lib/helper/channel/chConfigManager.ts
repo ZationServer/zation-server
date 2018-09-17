@@ -137,7 +137,7 @@ class ChConfigManager {
         return this.infoCustomIdCh.hasOwnProperty(chName);
     }
 
-    //pub access
+    //pub protocolAccess
     getPubAccessValueCustomCh(chName: string): any {
         return this.infoCustomCh[chName].pa;
     }
@@ -154,7 +154,7 @@ class ChConfigManager {
         return this.infoCustomIdCh[chName].pak;
     }
 
-    //sub access
+    //sub protocolAccess
     getSubAccessValueCustomCh(chName: string): any {
         return this.infoCustomCh[chName].sa;
     }

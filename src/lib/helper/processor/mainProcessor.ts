@@ -21,6 +21,7 @@ import ZationConfig          = require("../../main/zationConfig");
 import ZationWorker          = require("../../main/zationWorker");
 import Controller            = require("../../api/Controller");
 import TokenBridge           = require("../bridges/tokenBridge");
+import ProtocolAccessChecker = require("../protocolAccess/protocolAccessChecker");
 
 class MainProcessor
 {
@@ -34,16 +35,13 @@ class MainProcessor
             SystemVersionChecker.checkSystemAndVersion(zc,reqData);
 
             //Check for a auth req
-            if(ZationReqTools.isZationAuthReq(reqData))
-            {
-                if(!zc.isApp(Const.App.KEYS.AUTH_CONTROLLER))
-                {
+            if(ZationReqTools.isZationAuthReq(reqData)) {
+                if(!zc.isApp(Const.App.KEYS.AUTH_CONTROLLER)) {
                     throw new TaskError(MainErrors.authControllerNotSet);
                 }
                 reqData = ZationReqTools.dissolveZationAuthReq(zc,reqData);
             }
-            else if(worker.getIsAuthStartActive())
-            {
+            else if(worker.getIsAuthStartActive()) {
                 throw new TaskError(MainErrors.authStartActive);
             }
 
@@ -65,61 +63,69 @@ class MainProcessor
 
             await authEngine.init();
 
-            let useProtocolCheck = zc.getMain(Const.Main.KEYS.USE_PROTOCOL_CHECK);
+            const useProtocolCheck = zc.getMain(Const.Main.KEYS.USE_PROTOCOL_CHECK);
+            if(!useProtocolCheck || ProtocolAccessChecker.hasProtocolAccess(shBridge,controllerConfig)) {
 
-            if(!useProtocolCheck || authEngine.hasServerProtocolAccess(controllerConfig))
-            {
-                let useAuth = zc.getMain(Const.Main.KEYS.USE_AUTH);
-
-                if(!useAuth || authEngine.hasAccessToController(controllerConfig))
+                const useHttpMethodCheck = zc.getMain(Const.Main.KEYS.USE_HTTP_METHOD_CHECK);
+                if
+                (
+                    (!shBridge.isWebSocket() && (!useHttpMethodCheck || ProtocolAccessChecker.hasHttpMethodAccess(shBridge,controllerConfig)))
+                    || shBridge.isWebSocket()
+                )
                 {
-                    let controllerInstance =
-                        worker.getControllerPrepare().getControllerInstance(controllerName,isSystemController);
+                    let useAuth = zc.getMain(Const.Main.KEYS.USE_AUTH);
+                    if(!useAuth || authEngine.hasAccessToController(controllerConfig)) {
+                        let controllerInstance =
+                            worker.getControllerPrepare().getControllerInstance(controllerName,isSystemController);
 
-                    let input : object;
+                        let input : object;
 
-                    //check input
-                    try
-                    {
-                        input  = await InputProcessor.
-                        processInput(task,controllerConfig,worker.getPreparedSmallBag());
-                    }
-                    catch (e)
-                    {
-                        //invoke controller wrong input function
-                        if(e instanceof TaskError || e instanceof TaskErrorBag)
+                        //check input
+                        try
                         {
-                            let input = task[Const.Settings.REQUEST_INPUT.INPUT];
-                            let bag = new Bag(shBridge,worker,authEngine,tokenEngine,input);
-                            await controllerInstance.wrongInput(bag,input);
+                            input  = await InputProcessor.
+                            processInput(task,controllerConfig,worker.getPreparedSmallBag());
                         }
-                        //than throw the input for return it to client
-                        throw e;
-                    }
+                        catch (e) {
+                            //invoke controller wrong input function
+                            if(e instanceof TaskError || e instanceof TaskErrorBag)
+                            {
+                                let input = task[Const.Settings.REQUEST_INPUT.INPUT];
+                                let bag = new Bag(shBridge,worker,authEngine,tokenEngine,input);
+                                await controllerInstance.wrongInput(bag,input);
+                            }
+                            //than throw the input for return it to client
+                            throw e;
+                        }
 
-                    let bag = new Bag(shBridge,worker,authEngine,tokenEngine,input);
-                    return await MainProcessor.processController(controllerInstance,controllerConfig,bag,shBridge.getTokenBridge());
+                        let bag = new Bag(shBridge,worker,authEngine,tokenEngine,input);
+                        return await MainProcessor.processController(controllerInstance,controllerConfig,bag,shBridge.getTokenBridge());
+                    }
+                    else {
+                        throw new TaskError(MainErrors.noAccessToController,
+                            {
+                                authUserGroup: authEngine.getAuthUserGroup(),
+                                authIn: authEngine.isAuth()
+                            });
+                    }
                 }
-                else
-                {
-                    throw new TaskError(MainErrors.noAccessToController,
+                else {
+                    throw new TaskError(MainErrors.noAccessToHttpMethod,
                         {
-                            authUserGroup: authEngine.getAuthUserGroup(),
-                            authIn: authEngine.isAuth()
+                            controller: controllerName,
+                            method: shBridge.getRequest().method
                         });
                 }
             }
-            else
-            {
+            else {
                 throw new TaskError(MainErrors.noAccessToServerProtocol,
                     {
                         controller: controllerName,
-                        protocol: authEngine.getProtocol()
+                        protocol: ProtocolAccessChecker.getProtocol(shBridge)
                     });
             }
         }
-        else
-        {
+        else {
             throw new TaskError(MainErrors.wrongInputData);
         }
     }
@@ -134,15 +140,13 @@ class MainProcessor
             let result = await controllerInstance.handle(bag,bag.getInput());
 
 
-            if (!(result instanceof Result))
-            {
+            if (!(result instanceof Result)) {
                 result = new Result(result);
             }
 
             return {result : result,tb : tb};
         }
-        catch(e)
-        {
+        catch(e) {
             throw {e : e,tb : tb};
         }
     }

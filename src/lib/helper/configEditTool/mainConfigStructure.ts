@@ -24,6 +24,7 @@ export interface MainConfig
     [Const.Main.KEYS.HTTPS_CONFIG] ?: ServerOptions;
     [Const.Main.KEYS.USE_AUTH] ?: boolean;
     [Const.Main.KEYS.USE_PROTOCOL_CHECK] ?: boolean;
+    [Const.Main.KEYS.USE_HTTP_METHOD_CHECK] ?: boolean;
     [Const.Main.KEYS.SEND_ERRORS_DESC] ?: boolean;
     [Const.Main.KEYS.ZATION_CONSOLE_LOG] ?: boolean;
     [Const.Main.KEYS.SC_CONSOLE_LOG] ?: boolean;

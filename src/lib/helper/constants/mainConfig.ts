@@ -20,6 +20,7 @@ class KEYS {
     static readonly HTTPS_CONFIG                          = 'httpsConfig';
     static readonly USE_AUTH                              = 'useAuth';
     static readonly USE_PROTOCOL_CHECK                    = 'useProtocolCheck';
+    static readonly USE_HTTP_METHOD_CHECK                 = 'useHttpMethodCheck';
     static readonly SEND_ERRORS_DESC                      = 'sendErrorDescription';
     static readonly ZATION_CONSOLE_LOG                    = 'zationConsoleLog';
     static readonly SC_CONSOLE_LOG                        = 'scConsoleLog';

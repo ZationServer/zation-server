@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-export enum WorkerChActions
+export enum WorkerChTaskActions
 {
     DISCONNECT_TOKEN_IDS,
     DISCONNECT_USER_IDS,

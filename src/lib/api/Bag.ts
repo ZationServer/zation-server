@@ -16,6 +16,7 @@ import MethodIsNotCompatible = require("../helper/error/methodIsNotCompatible");
 import ObjectPathSequence    = require("../helper/tools/objectPathSequence");
 import {Socket}                from "../helper/socket/socket";
 import AuthenticationError = require("../helper/error/authenticationError");
+import ProtocolAccessChecker = require("../helper/protocolAccess/protocolAccessChecker");
 
 class Bag extends SmallBag
 {
@@ -296,7 +297,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the panel access for this socket.
+     * Set the panel protocolAccess for this socket.
      * @example
      * await setPanelAccess(true);
      * @throws AuthenticationError
@@ -395,15 +396,33 @@ class Bag extends SmallBag
     //Part Http
 
     // noinspection JSUnusedGlobalSymbols
-    getResponse() : Express.Response
-    {
-        return this.shBridge.getResponse();
+    getResponse() : Express.Response {
+        if(this.shBridge.isWebSocket()) {
+            throw new MethodIsNotCompatible(this.getProtocol(),'http');
+        }
+        else {
+            return this.shBridge.getResponse();
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getRequest() : Express.Request
-    {
-        return this.shBridge.getRequest();
+    getRequest() : Express.Request {
+        if(this.shBridge.isWebSocket()) {
+            throw new MethodIsNotCompatible(this.getProtocol(),'http');
+        }
+        else {
+            return this.shBridge.getRequest();
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getHttpMethod() : string {
+        if(this.shBridge.isWebSocket()) {
+            throw new MethodIsNotCompatible(this.getProtocol(),'http');
+        }
+        else {
+            return this.shBridge.getRequest().method;
+        }
     }
 
     //Part Token Variable
@@ -411,7 +430,7 @@ class Bag extends SmallBag
     /**
      * @description
      * Set a custom token variable with object path
-     * You can access this variables on client and server side
+     * You can protocolAccess this variables on client and server side
      * Check that the socket is authenticated (has a token)
      * @example
      * await setCustomTokenVar('person.email','example@gmail.com');
@@ -434,7 +453,7 @@ class Bag extends SmallBag
     /**
      * @description
      * Delete a custom token variable with object path
-     * You can access this variables on client and server side
+     * You can protocolAccess this variables on client and server side
      * Check that the socket is authenticated (has a token)
      * @example
      * await deleteCustomTokenVar('person.email');
@@ -463,7 +482,7 @@ class Bag extends SmallBag
      * Sequence edit the custom token variables
      * Useful if you want to make several changes.
      * This will do everything in one and saves performance.
-     * You can access this variables on client and server side
+     * You can protocolAccess this variables on client and server side
      * Check that the socket is authenticated (has a token)
      * @example
      * await seqEditCustomTokenVar()
@@ -490,7 +509,7 @@ class Bag extends SmallBag
     /**
      * @description
      * Has a custom token variable with object path
-     * You can access this variables on client and server side
+     * You can protocolAccess this variables on client and server side
      * @example
      * hasCustomTokenVar('person.email');
      * @param path
@@ -503,7 +522,7 @@ class Bag extends SmallBag
     /**
      * @description
      * Get a custom token variable with object path
-     * You can access this variables on client and server side
+     * You can protocolAccess this variables on client and server side
      * @example
      * getCustomTokenVar('person.email');
      * @param path
@@ -599,7 +618,7 @@ class Bag extends SmallBag
      * It can be 'ws' or 'http'.
      */
     getProtocol() : string {
-        return this.authEngine.getProtocol();
+        return ProtocolAccessChecker.getProtocol(this.shBridge);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -680,16 +699,43 @@ class Bag extends SmallBag
         this.channelEngine.kickCustomChannel(name);
     }
 
-    //Part Remote Address
+    //Part General req info
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the remote ip address from the current request.
+     * Returns the remote ip address (can be a private address) from the current request.
      */
-    getRemoteAddress() : string
-    {
+    getRemoteAddress() : string {
         return this.shBridge.getRemoteAddress();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the only public remote ip address from the current request.
+     */
+    getPublicRemoteAddress() : string
+    {
+        return this.shBridge.getPublicRemoteAddress();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the system that requests
+     */
+    getRequestSystem() : string {
+        return this.shBridge.getZationData()[Const.Settings.REQUEST_INPUT.SYSTEM];
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the version that requests
+     */
+    getRequestVersion() : string {
+        return this.shBridge.getZationData()[Const.Settings.REQUEST_INPUT.VERSION];
     }
 
     //Part new publish overwrite (with src)

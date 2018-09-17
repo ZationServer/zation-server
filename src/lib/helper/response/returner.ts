@@ -78,7 +78,7 @@ class Returner
         }
     }
 
-    //Log and send back Json
+    //Log and send back JsonConverter
     private sendBack(resObj : any) : void
     {
         if(this.webSocket)

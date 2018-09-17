@@ -23,7 +23,7 @@ import {Options}          from "nodemailer/lib/mailer";
 import TaskError        = require("./TaskError");
 import fetch,{Request, RequestInit, Response} from 'node-fetch';
 import ChTools          = require("../helper/channel/chTools");
-import {WorkerChActions} from "../helper/constants/workerChActions";
+import {WorkerChTaskActions} from "../helper/constants/workerChTaskActions";
 import IdTools          = require("../helper/tools/idTools");
 import ObjectPath       = require("../helper/tools/objectPath");
 
@@ -659,7 +659,7 @@ class SmallBag
     {
         let ch = ChTools.buildCustomIdChannelName(channel,id);
         return await
-            this.exchangeEngine.publishTaskToWorker(WorkerChActions.KICK_OUT_USER_IDS_FROM_CH,userId,exceptSocketSids,{ch});
+            this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.KICK_OUT_USER_IDS_FROM_CH,userId,exceptSocketSids,{ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -678,7 +678,7 @@ class SmallBag
     {
         let ch = ChTools.buildCustomChannelName(channel);
         return await
-            this.exchangeEngine.publishTaskToWorker(WorkerChActions.KICK_OUT_USER_IDS_FROM_CH,userId,exceptSocketSids,{ch});
+            this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.KICK_OUT_USER_IDS_FROM_CH,userId,exceptSocketSids,{ch});
     }
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -697,7 +697,7 @@ class SmallBag
     {
         let ch = ChTools.buildCustomIdChannelName(channel,id);
         return await
-            this.exchangeEngine.publishTaskToWorker(WorkerChActions.KICK_OUT_TOKEN_IDS_FROM_CH,tokenId,exceptSocketSids,{ch});
+            this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.KICK_OUT_TOKEN_IDS_FROM_CH,tokenId,exceptSocketSids,{ch});
     }
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -714,7 +714,7 @@ class SmallBag
     {
         let ch = ChTools.buildCustomChannelName(channel);
         return await
-            this.exchangeEngine.publishTaskToWorker(WorkerChActions.KICK_OUT_TOKEN_IDS_FROM_CH,tokenId,exceptSocketSids,{ch});
+            this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.KICK_OUT_TOKEN_IDS_FROM_CH,tokenId,exceptSocketSids,{ch});
     }
 
     //Part Extra Emit
@@ -733,7 +733,7 @@ class SmallBag
     async emitUser(userIds : (number | string)[],event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
     {
         return await
-            this.exchangeEngine.publishTaskToWorker(WorkerChActions.EMIT_USER_IDS,userIds,exceptSocketSids,{event,data});
+            this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.EMIT_USER_IDS,userIds,exceptSocketSids,{event,data});
     }
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -750,7 +750,7 @@ class SmallBag
     async emitToken(tokenIds : string[],event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
     {
         return await
-            this.exchangeEngine.publishTaskToWorker(WorkerChActions.EMIT_TOKEN_IDS,tokenIds,exceptSocketSids,{event,data});
+            this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.EMIT_TOKEN_IDS,tokenIds,exceptSocketSids,{event,data});
     }
 
     //Part Security
@@ -768,7 +768,7 @@ class SmallBag
      */
     async disconnectUser(userIds : (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.DISCONNECT_USER_IDS,userIds,exceptSocketSids);
+        return await this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.DISCONNECT_USER_IDS,userIds,exceptSocketSids);
     }
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -783,7 +783,7 @@ class SmallBag
      */
     async disconnectToken(tokenIds : string[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.DISCONNECT_TOKEN_IDS,tokenIds,exceptSocketSids);
+        return await this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.DISCONNECT_TOKEN_IDS,tokenIds,exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -799,7 +799,7 @@ class SmallBag
      */
     async deauthenticateUser(userIds : (number | string)[] | number | string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.DEAUTHENTICATE_USER_IDS,userIds,exceptSocketSids);
+        return await this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.DEAUTHENTICATE_USER_IDS,userIds,exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -815,7 +815,7 @@ class SmallBag
      */
     async deauthenticateToken(tokenIds : string[] | string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChActions.DEAUTHENTICATE_TOKEN_IDS,tokenIds,exceptSocketSids);
+        return await this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.DEAUTHENTICATE_TOKEN_IDS,tokenIds,exceptSocketSids);
     }
 
     //Part SocketId Tools
@@ -928,7 +928,7 @@ class SmallBag
     /**
      * @description
      * Returns the socket with the socketId
-     * You have only access to sockets they are connected to this worker.
+     * You have only protocolAccess to sockets they are connected to this worker.
      * @example
      * getWorkerSocket('SOCKET-ID');
      * @param socketId
@@ -976,7 +976,7 @@ class SmallBag
     /**
      * @description
      * Returns the socketIds from socket with the tokenId
-     * You have only access to socketsIds they are connected to this worker.
+     * You have only protocolAccess to socketsIds they are connected to this worker.
      * @example
      * getSocketIdsWithTokenId('TOKEN-ID');
      * @param tokenId
@@ -990,7 +990,7 @@ class SmallBag
     /**
      * @description
      * Returns the socketSids from socket with the tokenId
-     * You have only access to socketsSids they are connected to this worker.
+     * You have only protocolAccess to socketsSids they are connected to this worker.
      * @example
      * getSocketSidsWithTokenId('TOKEN-ID');
      * @param tokenId
@@ -1004,7 +1004,7 @@ class SmallBag
     /**
      * @description
      * Returns the socketIds from sockets with the userId
-     * You have only access to socketsIds they are connected to this worker.
+     * You have only protocolAccess to socketsIds they are connected to this worker.
      * @example
      * getSocketIdsWithUserId('tom1554');
      * @param userId
@@ -1018,7 +1018,7 @@ class SmallBag
     /**
      * @description&
      * Returns the socketSids from sockets with the userId
-     * You have only access to socketsSids they are connected to this worker.
+     * You have only protocolAccess to socketsSids they are connected to this worker.
      * @example
      * getSocketSidsWithUserId('tom1554');
      * @param userId

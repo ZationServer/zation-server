@@ -225,7 +225,7 @@ export = {
 
     noAccessToController  : {
         name          : 'noAccessToController',
-        description   : 'you have no access to this controller!',
+        description   : 'you have no protocolAccess to this controller!',
         type          : ErrorType.AUTH_ERROR,
         sendInfo      : true,
         //INFO
@@ -245,6 +245,28 @@ export = {
         isFromZationSystem : true
     },
 
+    wrongGetReqInputData : {
+        name          : 'wrongGetReqInputData',
+        description   : 'wrong get req input data!',
+        type          : ErrorType.INPUT_ERROR,
+        isPrivate     : true,
+        sendInfo      : false,
+        //INFO
+        //
+        isFromZationSystem : true
+    },
+
+    JSONParseSyntaxError : {
+        name          : 'JSONParseSyntaxError ',
+        description   : 'Error by parse json',
+        type          : ErrorType.INPUT_ERROR,
+        isPrivate     : true,
+        sendInfo      : false,
+        //INFO
+        // input
+        isFromZationSystem : true
+    },
+
     inputPathInControllerNotFound : {
         name          : 'inputPathInControllerNotFound',
         description   : 'Input path in controller not found!',
@@ -259,11 +281,22 @@ export = {
 
     noAccessToServerProtocol  : {
         name          : 'noAccessToServerProtocol',
-        description   : 'you have no access to this controller with this server protocol!',
+        description   : 'you have no protocolAccess to this controller with this server protocol!',
         type          : ErrorType.PROTOCOL_ERROR,
         sendInfo      : true,
         //INFO
         // protocol   (The protocol you request with)
+        // controller (The controller you request)
+        isFromZationSystem : true
+    },
+
+    noAccessToHttpMethod  : {
+        name          : 'noAccessToHttpMethod' ,
+        description   : 'you have no methodAccess to this controller with this http method!',
+        type          : ErrorType.PROTOCOL_ERROR,
+        sendInfo      : true,
+        //INFO
+        // method   (The method you request with)
         // controller (The controller you request)
         isFromZationSystem : true
     },

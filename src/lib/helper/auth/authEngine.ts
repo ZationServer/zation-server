@@ -246,7 +246,7 @@ class AuthEngine
         let keyWord = controller['speedAccessKey'];
 
         if(keyWord === '') {
-            Logger.printDebugWarning('No controller access config found! Access will denied!');
+            Logger.printDebugWarning('No controller protocolAccess config found! Access will denied!');
             return false;
         }
         else {
@@ -307,24 +307,6 @@ class AuthEngine
         return access;
     }
 
-    //PART PROTOCOL ACCESS CHECKER
-
-    hasServerProtocolAccess(controller : object) : boolean
-    {
-        let hasAccess = true;
-        if(this.shBridge.isWebSocket() && controller[Const.App.CONTROLLER.WS_ACCESS] !== undefined) {
-            hasAccess = controller[Const.App.CONTROLLER.WS_ACCESS];
-        }
-        else if(controller[Const.App.CONTROLLER.HTTP_ACCESS] !== undefined) {
-            hasAccess = controller[Const.App.CONTROLLER.HTTP_ACCESS];
-        }
-        return hasAccess;
-    }
-
-    getProtocol() : string
-    {
-        return this.shBridge.isWebSocket() ? 'ws' : 'http';
-    }
 }
 
 export = AuthEngine;

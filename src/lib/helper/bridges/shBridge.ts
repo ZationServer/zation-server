@@ -5,10 +5,9 @@ GitHub: LucaCode
  */
 
 import TokenBridge   = require('./tokenBridge');
-import TokenTools    = require('../token/tokenTools');
 import ZationConfig  = require("../../main/zationConfig");
 import Const         = require("../constants/constWrapper");
-import {Socket} from "../socket/socket";
+import {Socket}        from "../socket/socket";
 const  IP : any      = require('ip');
 
 //Socket and Http Bridge
@@ -46,12 +45,10 @@ class SHBridge
 
     getZationData() : object
     {
-        if(this.webSocket)
-        {
+        if(this.webSocket) {
             return this.socketData;
         }
-        else
-        {
+        else {
             return this.httpData;
         }
     }
@@ -77,28 +74,25 @@ class SHBridge
 
     getRemoteAddress() : any
     {
-        if(this.webSocket)
-        {
+        if(this.webSocket) {
             return this.socket.remoteAddress;
         }
-        else
-        {
+        else {
             return this.httpReq.headers['x-forwarded-for'] ||  this.httpReq.connection.remoteAddress;
         }
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getPublicRemoteAddress() : any
     {
         let reqId = this.getRemoteAddress();
 
         // noinspection TypeScriptValidateJSTypes
-        if(IP.isPrivate(reqId))
-        {
+        if(IP.isPrivate(reqId)) {
             // noinspection TypeScriptValidateJSTypes
             return IP.address();
         }
-        else
-        {
+        else {
             return reqId;
         }
     }
@@ -108,13 +102,11 @@ class SHBridge
         return this.httpRes;
     }
 
-    getRequest() : any
-    {
+    getRequest() : any {
         return this.httpReq;
     }
 
-    isWebSocket() : boolean
-    {
+    isWebSocket() : boolean {
         return this.webSocket;
     }
 

@@ -29,7 +29,7 @@ import ControllerPrepare     = require('../helper/controller/controllerPrepare')
 
 import BackgroundTasksSaver  = require("../helper/background/backgroundTasksSaver");
 import Mapper                = require("../helper/tools/mapper");
-import {WorkerChActions}     from "../helper/constants/workerChActions";
+import {WorkerChTaskActions}     from "../helper/constants/workerChTaskActions";
 import {Socket}              from "../helper/socket/socket";
 import ZationToken           = require("../helper/infoObjects/zationToken");
 import IdTools               = require("../helper/tools/idTools");
@@ -277,6 +277,7 @@ class ZationWorker extends SCWorker
                     req: req,
                 });
         });
+
         await this.zc.emitEvent(Const.Event.ZATION_HTTP_SERVER_IS_STARTED,this.zc.getSomeInformation());
     }
 
@@ -673,6 +674,9 @@ class ZationWorker extends SCWorker
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new SocketInfo(socket)));
                 }
             }
+            else if(chName === Const.Settings.CHANNEL.PANEL) {
+              //A Socket subs the panel channel
+            }
             pro.push(this.zc.emitEvent(Const.Event.SC_SERVER_SUBSCRIPTION,this.getPreparedSmallBag(),socket,chName,chOptions));
             await Promise.all(pro);
         });
@@ -720,6 +724,9 @@ class ZationWorker extends SCWorker
                 if(!!func) {
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new SocketInfo(socket)));
                 }
+            }
+            else if(chName === Const.Settings.CHANNEL.PANEL) {
+                //A Socket unSubs the panel channel
             }
             pro.push(this.zc.emitEvent(Const.Event.SC_SERVER_UNSUBSCRIPTION,this.getPreparedSmallBag(),socket,chName));
             await Promise.all(pro);
@@ -889,28 +896,28 @@ class ZationWorker extends SCWorker
                 }
             };
 
-            if(data.action === WorkerChActions.KICK_OUT_TOKEN_IDS_FROM_CH && !!ch) {
+            if(data.action === WorkerChTaskActions.KICK_OUT_TOKEN_IDS_FROM_CH && !!ch) {
                 this.forTokenIds(ids,exceptSocketSids,kickOutAction);
             }
-            else if(data.action === WorkerChActions.KICK_OUT_USER_IDS_FROM_CH && !!ch) {
+            else if(data.action === WorkerChTaskActions.KICK_OUT_USER_IDS_FROM_CH && !!ch) {
                 this.forUserIds(ids,exceptSocketSids,kickOutAction);
             }
-            else if(data.action === WorkerChActions.EMIT_TOKEN_IDS) {
+            else if(data.action === WorkerChTaskActions.EMIT_TOKEN_IDS) {
                 this.forTokenIds(ids,exceptSocketSids,(s : Socket) => {s.emit(event,emitData)});
             }
-            else if(data.action === WorkerChActions.EMIT_USER_IDS) {
+            else if(data.action === WorkerChTaskActions.EMIT_USER_IDS) {
                 this.forUserIds(ids,exceptSocketSids,(s : Socket) => {s.emit(event,emitData);});
             }
-            else if(data.action === WorkerChActions.DISCONNECT_TOKEN_IDS) {
+            else if(data.action === WorkerChTaskActions.DISCONNECT_TOKEN_IDS) {
                 this.forTokenIds(ids,exceptSocketSids,(s : Socket) => {s.disconnect();});
             }
-            else if(data.action === WorkerChActions.DISCONNECT_USER_IDS) {
+            else if(data.action === WorkerChTaskActions.DISCONNECT_USER_IDS) {
                 this.forUserIds(ids,exceptSocketSids,(s : Socket) => {s.disconnect();});
             }
-            else if(data.action === WorkerChActions.DEAUTHENTICATE_TOKEN_IDS) {
+            else if(data.action === WorkerChTaskActions.DEAUTHENTICATE_TOKEN_IDS) {
                 this.forTokenIds(ids,exceptSocketSids,(s : Socket) => {s.deauthenticate();});
             }
-            else if(data.action === WorkerChActions.DEAUTHENTICATE_USER_IDS) {
+            else if(data.action === WorkerChTaskActions.DEAUTHENTICATE_USER_IDS) {
                 this.forUserIds(ids,exceptSocketSids,(s : Socket) => {s.deauthenticate();});
             }
         });

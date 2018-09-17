@@ -41,7 +41,7 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.DEBUG] = false;
             this.mainConfig[Const.Main.KEYS.START_DEBUG] = false;
             this.mainConfig[Const.Main.KEYS.SHOW_CONFIG_WARNINGS] = true;
-            this.mainConfig[Const.Main.KEYS.PORT] = Number(process.env.PORT) || Number(process.env.p) || 3000;
+            this.mainConfig[Const.Main.KEYS.PORT] = 3000;
             this.mainConfig[Const.Main.KEYS.HOSTNAME] = 'localhost';
             this.mainConfig[Const.Main.KEYS.ENVIRONMENT] = 'dev';
             this.mainConfig[Const.Main.KEYS.POST_KEY_WORD] = 'zation';
@@ -50,6 +50,7 @@ class ZationConfig
             this.mainConfig[Const.Main.KEYS.APP_NAME] = 'AppWithoutName';
             this.mainConfig[Const.Main.KEYS.SECURE] = false;
             this.mainConfig[Const.Main.KEYS.USE_PROTOCOL_CHECK] = true;
+            this.mainConfig[Const.Main.KEYS.USE_HTTP_METHOD_CHECK] = true;
             this.mainConfig[Const.Main.KEYS.SEND_ERRORS_DESC] = false;
             this.mainConfig[Const.Main.KEYS.AUTH_KEY] = crypto.randomBytes(32).toString('hex');
             this.mainConfig[Const.Main.KEYS.AUTH_PUBLIC_KEY] = null;

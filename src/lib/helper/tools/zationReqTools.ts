@@ -6,6 +6,7 @@ GitHub: LucaCode
 
 import Const              = require('../constants/constWrapper');
 import ZationConfig       = require("../../main/zationConfig");
+import JsonConverter      = require("./jsonConverter");
 
 class ZationReqTools
 {
@@ -31,6 +32,54 @@ class ZationReqTools
     {
         return typeof task[Const.Settings.REQ_IN_C.SYSTEM_CONTROLLER] === 'string' &&
             !task[Const.Settings.REQ_IN_C.CONTROLLER];
+    }
+
+    public static async convertGetRequest(query : object) : Promise<object>
+    {
+        const res = {};
+
+        //input convert
+        const input = await JsonConverter.parse(query[Const.Settings.HTTP_GET_REQ.INPUT]);
+
+        //version,system,token
+        res[Const.Settings.REQUEST_INPUT.SYSTEM] = query[Const.Settings.HTTP_GET_REQ.SYSTEM_CONTROLLER];
+        res[Const.Settings.REQUEST_INPUT.VERSION] = query[Const.Settings.HTTP_GET_REQ.VERSION];
+        res[Const.Settings.REQUEST_INPUT.TOKEN] = query[Const.Settings.HTTP_GET_REQ.TOKEN];
+
+        //task
+        if(query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.CONTROLLER) || query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.SYSTEM_CONTROLLER)) {
+            const task = {};
+
+            if(query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.CONTROLLER)) {
+                task[Const.Settings.REQ_IN_C.CONTROLLER] = query[Const.Settings.HTTP_GET_REQ.CONTROLLER];
+            }
+            else {
+                task[Const.Settings.REQ_IN_C.SYSTEM_CONTROLLER] = query[Const.Settings.HTTP_GET_REQ.SYSTEM_CONTROLLER];
+            }
+
+            task[Const.Settings.REQUEST_INPUT.INPUT] = input;
+            res[Const.Settings.REQUEST_INPUT.TASK] = task;
+        }
+        else if(query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.AUTHEN_REQ)) {
+            res[Const.Settings.REQUEST_INPUT.AUTH] = {};
+            res[Const.Settings.REQUEST_INPUT.AUTH][Const.Settings.REQUEST_INPUT.INPUT] = input;
+        }
+
+        return res;
+    }
+
+    public static isValidGetReq(query : object) : boolean
+    {
+        return(
+            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.SYSTEM) &&
+            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.VERSION)
+            )
+            && (
+            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.AUTHEN_REQ) ||
+            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.CONTROLLER) ||
+            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.SYSTEM_CONTROLLER)
+            ) &&
+            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.INPUT);
     }
 
     static getControllerName(task : object, isSystemController : boolean) : string
