@@ -4,11 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ChTools = require("../helper/channel/chTools");
-
 require('cache-require-paths');
+import ChTools               = require("../helper/channel/chTools");
 import FuncTools             = require("../helper/tools/funcTools");
-const  SCWorker : any        = require('socketcluster/scworker');
 import express               = require('express');
 import cookieParser          = require('cookie-parser');
 import bodyParser            = require('body-parser');
@@ -19,7 +17,6 @@ import ZationConfig          = require('./zationConfig');
 import ConfigPreCompiler     = require('../helper/config/configPreCompiler');
 import Logger                = require('../helper/logger/logger');
 import Const                 = require('../helper/constants/constWrapper');
-import {ChAccessEngine}        from '../helper/channel/chAccessEngine';
 import ServiceEngine         = require('../helper/services/serviceEngine');
 import SmallBag              = require('../api/SmallBag');
 import PrepareClientJs       = require('../helper/client/prepareClientJs');
@@ -29,13 +26,17 @@ import ControllerPrepare     = require('../helper/controller/controllerPrepare')
 
 import BackgroundTasksSaver  = require("../helper/background/backgroundTasksSaver");
 import Mapper                = require("../helper/tools/mapper");
-import {WorkerChTaskActions}     from "../helper/constants/workerChTaskActions";
-import {Socket}              from "../helper/socket/socket";
 import ZationToken           = require("../helper/infoObjects/zationToken");
 import IdTools               = require("../helper/tools/idTools");
 import CIdChInfo             = require("../helper/infoObjects/cIdChInfo");
 import SocketInfo            = require("../helper/infoObjects/socketInfo");
 import CChInfo               = require("../helper/infoObjects/cChInfo");
+
+const  SCWorker : any        = require('socketcluster/scworker');
+import {ChAccessEngine}        from '../helper/channel/chAccessEngine';
+import {WorkerChTaskActions}   from "../helper/constants/workerChTaskActions";
+import {Socket}                from "../helper/socket/socket";
+import {WorkerChTargets}       from "../helper/constants/workerChTargets";
 
 class ZationWorker extends SCWorker
 {
@@ -61,6 +62,9 @@ class ZationWorker extends SCWorker
 
     private mapUserToScId : Mapper<string> = new Mapper<string>();
     private mapTokenIdToScId : Mapper<string> = new Mapper<string>();
+
+    private mapCustomChToScId : Mapper<Socket> = new Mapper<Socket>();
+    private mapCustomIdChToScId : Mapper<Socket> = new Mapper<Socket>();
 
     constructor()
     {
@@ -633,9 +637,10 @@ class ZationWorker extends SCWorker
         this.scServer.on('subscription', async (socket,chName,chOptions) =>
         {
             let pro : Promise<void>[] = [];
-            //trigger sub customCh event
+            //trigger sub customCh event and update mapper
             if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
                 const {name,id} = ChTools.getCustomIdChannelInfo(chName);
+                this.mapCustomIdChToScId.map(`${name}.${id}`,socket);
                 let func = this.chConfigManager.getOnSubCustomIdCh(name);
                 if(!!func) {
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket)));
@@ -643,6 +648,7 @@ class ZationWorker extends SCWorker
             }
             else if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
                 const name = ChTools.getCustomChannelName(chName);
+                this.mapCustomChToScId.map(name,socket);
                 let func = this.chConfigManager.getOnSubCustomCh(name);
                 if(!!func) {
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket)));
@@ -684,9 +690,10 @@ class ZationWorker extends SCWorker
         this.scServer.on('unsubscription', async (socket,chName) =>
         {
             let pro : Promise<void>[] = [];
-            //trigger sub customCh event
+            //trigger sub customCh event and update mapper
             if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
                 const {name,id} = ChTools.getCustomIdChannelInfo(chName);
+                this.mapCustomIdChToScId.removeValueFromKey(`${name}.${id}`,socket);
                 let func = this.chConfigManager.getOnUnsubCustomIdCh(name);
                 if(!!func) {
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket)));
@@ -694,6 +701,7 @@ class ZationWorker extends SCWorker
             }
             else if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
                 const name = ChTools.getCustomChannelName(chName);
+                this.mapCustomChToScId.removeValueFromKey(name,socket);
                 let func = this.chConfigManager.getOnUnsubCustomCh(name);
                 if(!!func) {
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket)));
@@ -877,7 +885,7 @@ class ZationWorker extends SCWorker
                 return;
             }
 
-            const ids : (string | number)[]  = data.ids;
+            const ids : any[] = data.ids;
             const exceptSocketSids = data.exceptSocketSids;
             const mainData = data.mainData;
 
@@ -885,8 +893,7 @@ class ZationWorker extends SCWorker
             const event = mainData.event;
             const emitData = mainData.data;
 
-            const kickOutAction = (s : Socket) =>
-            {
+            const kickOutAction = (s : Socket) => {
                 const subs = s.subscriptions();
                 for(let i = 0; i < subs.length; i++) {
                     if(subs[i].indexOf(ch) !== -1) {
@@ -896,37 +903,104 @@ class ZationWorker extends SCWorker
                 }
             };
 
-            if(data.action === WorkerChTaskActions.KICK_OUT_TOKEN_IDS_FROM_CH && !!ch) {
-                this.forTokenIds(ids,exceptSocketSids,kickOutAction);
+            const emitAction = (s : Socket) => {
+                s.emit(event,emitData);
+            };
+
+            const disconnectAction = (s : Socket) => {
+                s.disconnect();
+            };
+
+            const deauthenticateAction = (s : Socket) => {
+                s.deauthenticate();
+            };
+
+            if(data.target === WorkerChTargets.USER_IDS) {
+                if(data.action === WorkerChTaskActions.KICK_OUT && !!ch) {
+                    this.forUserIds(ids,exceptSocketSids,kickOutAction);
+                }
+                else if(data.action === WorkerChTaskActions.EMIT) {
+                    this.forUserIds(ids,exceptSocketSids,emitAction);
+                }
+                else if(data.action === WorkerChTaskActions.DISCONNECT) {
+                    this.forUserIds(ids,exceptSocketSids,disconnectAction);
+                }
+                else if(data.action === WorkerChTaskActions.DEAUTHENTICATE) {
+                    this.forUserIds(ids,exceptSocketSids,deauthenticateAction);
+                }
             }
-            else if(data.action === WorkerChTaskActions.KICK_OUT_USER_IDS_FROM_CH && !!ch) {
-                this.forUserIds(ids,exceptSocketSids,kickOutAction);
+            else if(data.target === WorkerChTargets.TOKEN_IDS) {
+                if(data.action === WorkerChTaskActions.KICK_OUT && !!ch) {
+                    this.forTokenIds(ids,exceptSocketSids,kickOutAction);
+                }
+                else if(data.action === WorkerChTaskActions.EMIT) {
+                    this.forTokenIds(ids,exceptSocketSids,emitAction);
+                }
+                else if(data.action === WorkerChTaskActions.DISCONNECT) {
+                    this.forTokenIds(ids,exceptSocketSids,disconnectAction);
+                }
+                else if(data.action === WorkerChTaskActions.DEAUTHENTICATE) {
+                    this.forTokenIds(ids,exceptSocketSids,deauthenticateAction);
+                }
             }
-            else if(data.action === WorkerChTaskActions.EMIT_TOKEN_IDS) {
-                this.forTokenIds(ids,exceptSocketSids,(s : Socket) => {s.emit(event,emitData)});
+            else if(data.target === WorkerChTargets.ALL_SOCKETS) {
+                if(data.action === WorkerChTaskActions.KICK_OUT && !!ch) {
+                    this.forAllSockets(exceptSocketSids,kickOutAction) ;
+                }
+                else if(data.action === WorkerChTaskActions.EMIT) {
+                    this.forAllSockets(exceptSocketSids,emitAction);
+                }
+                else if(data.action === WorkerChTaskActions.DISCONNECT) {
+                    this.forAllSockets(exceptSocketSids,disconnectAction);
+                }
+                else if(data.action === WorkerChTaskActions.DEAUTHENTICATE) {
+                    this.forAllSockets(exceptSocketSids,deauthenticateAction);
+                }
             }
-            else if(data.action === WorkerChTaskActions.EMIT_USER_IDS) {
-                this.forUserIds(ids,exceptSocketSids,(s : Socket) => {s.emit(event,emitData);});
-            }
-            else if(data.action === WorkerChTaskActions.DISCONNECT_TOKEN_IDS) {
-                this.forTokenIds(ids,exceptSocketSids,(s : Socket) => {s.disconnect();});
-            }
-            else if(data.action === WorkerChTaskActions.DISCONNECT_USER_IDS) {
-                this.forUserIds(ids,exceptSocketSids,(s : Socket) => {s.disconnect();});
-            }
-            else if(data.action === WorkerChTaskActions.DEAUTHENTICATE_TOKEN_IDS) {
-                this.forTokenIds(ids,exceptSocketSids,(s : Socket) => {s.deauthenticate();});
-            }
-            else if(data.action === WorkerChTaskActions.DEAUTHENTICATE_USER_IDS) {
-                this.forUserIds(ids,exceptSocketSids,(s : Socket) => {s.deauthenticate();});
+            else if(data.target === WorkerChTargets.SOCKETS_SIDS) {
+                if(data.action === WorkerChTaskActions.KICK_OUT && !!ch) {
+                    this.forAllSocketSids(ids,kickOutAction) ;
+                }
+                else if(data.action === WorkerChTaskActions.EMIT) {
+                    this.forAllSocketSids(ids,emitAction);
+                }
+                else if(data.action === WorkerChTaskActions.DISCONNECT) {
+                    this.forAllSocketSids(ids,disconnectAction);
+                }
+                else if(data.action === WorkerChTaskActions.DEAUTHENTICATE) {
+                    this.forAllSocketSids(ids,deauthenticateAction);
+                }
             }
         });
     }
 
-    private exceptSocketSidsFilter(exceptSocketSids : string[]) : string[]
+    private forAllSocketSids(ids : string[],action : Function)
+    {
+        const filterSocketIds : string[] = this.socketSidsFilter(ids);
+        for(let i = 0; i < filterSocketIds.length; i++)
+        {
+            if(this.scServer.clients.hasOwnProperty(filterSocketIds[i])) {
+                action(this.scServer.clients[filterSocketIds[i]]);
+            }
+        }
+    }
+
+    private forAllSockets(exceptSocketSids : string[],action : Function)
+    {
+        const filterExceptSocketIds : string[] = this.socketSidsFilter(exceptSocketSids);
+        for(let id in this.scServer.clients) {
+            if(this.scServer.clients.hasOwnProperty(id)) {
+                if(!filterExceptSocketIds.includes(this.scServer.clients[id].id)) {
+                    action(this.scServer.clients[id]);
+                }
+            }
+        }
+    }
+
+    private socketSidsFilter(socketSids : string[]) : string[]
     {
         const filteredIds : string[] = [];
-        exceptSocketSids.forEach((sid) =>{
+        socketSids.forEach((sid) =>{
             const splitSid = IdTools.splitSid(sid);
             if (this.options.instanceId === splitSid[0] && this.id === splitSid[1]) {
                 filteredIds.push(splitSid[2]);
@@ -937,22 +1011,22 @@ class ZationWorker extends SCWorker
 
     private forMappingSCIds(mapper : Mapper<string>,ids : (string | number)[],exceptSocketSids : string[],action : Function,message : string) : void
     {
-        const filterExceptSocketIds : string[] = this.exceptSocketSidsFilter(exceptSocketSids);
+        const filterExceptSocketIds : string[] = this.socketSidsFilter(exceptSocketSids);
         for(let i = 0; i < ids.length; i++)
         {
             const id = ids[i].toString();
             if(mapper.isKeyExist(id))
             {
-                const socketSids = mapper.getValues(id);
-                for(let i = 0; i < socketSids.length; i++)
+                const socketIds = mapper.getValues(id);
+                for(let i = 0; i < socketIds.length; i++)
                 {
-                    if(!filterExceptSocketIds.includes(socketSids[i]))
+                    if(!filterExceptSocketIds.includes(socketIds[i]))
                     {
-                        if(this.scServer.clients.hasOwnProperty(socketSids[i])) {
-                            action(this.scServer.clients[socketSids[i]]);
+                        if(this.scServer.clients.hasOwnProperty(socketIds[i])) {
+                            action(this.scServer.clients[socketIds[i]]);
                         }
                         else {
-                            Logger.printDebugWarning(`SocketId: '${socketSids[i]}' ${message}`);
+                            Logger.printDebugWarning(`SocketId: '${socketIds[i]}' ${message}`);
                         }
                     }
                 }
@@ -1086,6 +1160,18 @@ class ZationWorker extends SCWorker
     getTokenIdToScIdMapper() : Mapper<string>
     {
         return this.mapTokenIdToScId;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getCustomChToScIdMapper() : Mapper<Socket>
+    {
+        return this.mapCustomChToScId;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getCustomIdChToScIdMapper() : Mapper<Socket>
+    {
+        return this.mapCustomIdChToScId;
     }
 }
 

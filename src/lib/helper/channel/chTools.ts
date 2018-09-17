@@ -5,25 +5,29 @@ GitHub: LucaCode
  */
 
 import Const         = require('../constants/constWrapper');
-import TokenTools    = require('../token/tokenTools');
 import Logger        = require('../logger/logger');
 import ZationConfig  = require("../../main/zationConfig");
 
 class ChTools
 {
 
-    static buildCustomIdChannelName(name : string,id : string = '') : string
+    static buildCustomIdChannelName(name ?: string,id : string = '') : string
     {
-        return Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX + name
-        + Const.Settings.CHANNEL.CUSTOM_CHANNEL_ID + id;
+        if(!!name) {
+            return Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX + name
+                + Const.Settings.CHANNEL.CUSTOM_CHANNEL_ID + id;
+        }
+        else {
+            return Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX;
+        }
     }
 
-    static buildCustomChannelName(name : string) : string
+    static buildCustomChannelName(name : string = '') : string
     {
         return Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX + name;
     }
 
-    static buildAuthUserGroupChName(authUserGroup : string) : string
+    static buildAuthUserGroupChName(authUserGroup : string = '') : string
     {
         return Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX + authUserGroup;
     }

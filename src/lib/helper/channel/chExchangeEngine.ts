@@ -19,6 +19,7 @@ import FuncTools         = require("../tools/funcTools");
 import ZationWorker      = require("../../main/zationWorker");
 import CIdChInfo         = require("../infoObjects/cIdChInfo");
 import CChInfo           = require("../infoObjects/cChInfo");
+import {WorkerChTargets} from "../constants/workerChTargets";
 
 class ChExchangeEngine
 {
@@ -79,11 +80,11 @@ class ChExchangeEngine
         }
     }
 
-    async publishTaskToWorker(action : WorkerChTaskActions, ids : string | number | (string | number)[], exceptSocketSids : string[] | string, mainData : object = {}) : Promise<void>
+    async publishTaskToWorker(target : WorkerChTargets,action : WorkerChTaskActions, ids : string | number | (string | number)[], exceptSocketSids : string[] | string, mainData : object = {}) : Promise<void>
     {
         const tmpIds : (string | number)[]  = Array.isArray(ids) ? ids : [ids];
         const tmpExceptSocketSids : string[] = Array.isArray(exceptSocketSids) ? exceptSocketSids : [exceptSocketSids];
-        await this.publishToWorker({ids : tmpIds,action : action,mainData : mainData,exceptSocketSids : tmpExceptSocketSids});
+        await this.publishToWorker({ids : tmpIds,action : action,target : target,mainData : mainData,exceptSocketSids : tmpExceptSocketSids});
     }
 
     //Part Zation Channels

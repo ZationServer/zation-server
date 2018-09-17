@@ -5,27 +5,29 @@ GitHub: LucaCode
  */
 
 import {Socket} from "../helper/socket/socket";
+import {MongoClient} from "mongodb";
+import {Options} from "nodemailer/lib/mailer";
+import fetch, {Request, RequestInit, Response} from 'node-fetch';
+import {WorkerChTaskActions} from "../helper/constants/workerChTaskActions";
+import {WorkerChTargets} from "../helper/constants/workerChTargets";
 
 const    crypto : any   = require('crypto');
 const    IP : any       = require('ip');
 import ChExchangeEngine = require("../helper/channel/chExchangeEngine");
-import ServiceEngine    = require("../helper/services/serviceEngine");
-import ZationConfig     = require("../main/zationConfig");
-import ZationWorker     = require("../main/zationWorker");
-import Const            = require('../helper/constants/constWrapper');
-import UUID             = require('../helper/tools/uuid');
-import ExchangeEngine   = require('../helper/channel/chExchangeEngine');
-import MySql            = require("mysql");
-import Pg               = require('pg');
-import nodeMailer       = require('nodemailer');
-import {MongoClient}      from "mongodb";
-import {Options}          from "nodemailer/lib/mailer";
-import TaskError        = require("./TaskError");
-import fetch,{Request, RequestInit, Response} from 'node-fetch';
-import ChTools          = require("../helper/channel/chTools");
-import {WorkerChTaskActions} from "../helper/constants/workerChTaskActions";
-import IdTools          = require("../helper/tools/idTools");
-import ObjectPath       = require("../helper/tools/objectPath");
+import ServiceEngine = require("../helper/services/serviceEngine");
+import ZationConfig = require("../main/zationConfig");
+import ZationWorker = require("../main/zationWorker");
+import Const = require('../helper/constants/constWrapper');
+import UUID = require('../helper/tools/uuid');
+import ExchangeEngine = require('../helper/channel/chExchangeEngine');
+import MySql = require("mysql");
+import Pg = require('pg');
+import nodeMailer = require('nodemailer');
+import TaskError = require("./TaskError");
+import ChTools = require("../helper/channel/chTools");
+import IdTools = require("../helper/tools/idTools");
+import ObjectPath = require("../helper/tools/objectPath");
+import TokenTools = require("../helper/token/tokenTools");
 
 class SmallBag
 {
@@ -645,76 +647,340 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on complete system with userId from an custom id channel (server side)
+     * KickOut all sockets on the complete system with userId from an custom id channel (server side)
      * @example
      * kickUserCustomIdCh('user20','chatGroup');
      * kickUserCustomIdCh(['tom39','lara23'],'image','2');
      * kickUserCustomIdCh(['tom39','lara23'],'image',undefined,'EXCEPT-SOCKET-SID');
      * @param userId or more user ids in an array
-     * @param channel
+     * @param channel is optional, if it is not given the users will be kicked out from all custom id channels.
      * @param id is optional, if it is not given the users will be kicked out from all ids of this channel.
      * @param exceptSocketSids
      */
-    async kickUserCustomIdCh(userId : number | string | (number | string)[], channel : string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
+    async kickUserCustomIdCh(userId : number | string | (number | string)[], channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        let ch = ChTools.buildCustomIdChannelName(channel,id);
-        return await
-            this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.KICK_OUT_USER_IDS_FROM_CH,userId,exceptSocketSids,{ch});
+        const ch = ChTools.buildCustomIdChannelName(channel,id);
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.USER_IDS, WorkerChTaskActions.KICK_OUT,userId,exceptSocketSids,{ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on complete system with userId from an custom channel (server side)
+     * KickOut all sockets on the complete system with userId from an custom channel (server side)
      * @example
      * kickUserCustomCh('user20','chatGroup');
      * kickUserCustomCh(['tom39','lara23'],'image');
      * kickUserCustomCh(['tom39','lara23'],'image','EXCEPT-SOCKET-SID');
      * @param userId or more user ids in an array
-     * @param channel
+     * @param channel is optional, if it is not given the users will be kicked out from all custom channels.
      * @param exceptSocketSids
      */
-    async kickUserCustomCh(userId : number | string | (number | string)[], channel : string,exceptSocketSids : string[] | string = []) : Promise<void>
+    async kickUserCustomCh(userId : number | string | (number | string)[], channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        let ch = ChTools.buildCustomChannelName(channel);
-        return await
-            this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.KICK_OUT_USER_IDS_FROM_CH,userId,exceptSocketSids,{ch});
+        const ch = ChTools.buildCustomChannelName(channel);
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.USER_IDS, WorkerChTaskActions.KICK_OUT,userId,exceptSocketSids,{ch});
     }
+
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on complete system with token id from an custom id channel (server side)
+     * KickOut all sockets on the complete system with userId from all channel (server side)
+     * @example
+     * kickUserAllCh('user20');
+     * kickUserAllCh(['tom39','lara23']);
+     * kickUserAllCh(['tom39','lara23'],'EXCEPT-SOCKET-SID');
+     * @param userId or more user ids in an array
+     * @param exceptSocketSids
+     */
+    async kickUserAllCh(userId : number | string | (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
+    {
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.USER_IDS,WorkerChTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : Const.Settings.CHANNEL.ALL});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * KickOut all sockets on the complete system with userId from auth user group channel (server side)
+     * @example
+     * kickUserAuthUserGroupCh('user20','user');
+     * kickUserAuthUserGroupCh(['tom39','lara23'],'user');
+     * kickUserAuthUserGroupCh(['tom39','lara23'],'user','EXCEPT-SOCKET-SID');
+     * @param userId or more user ids in an array
+     * @param authUserGroup is optional, if it is not given the users will be kicked out from all auth user group channels.
+     * @param exceptSocketSids
+     */
+    async kickUserAuthUserGroupCh(userId : number | string | (number | string)[],authUserGroup ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
+    {
+        const ch = ChTools.buildAuthUserGroupChName(authUserGroup);
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.USER_IDS,WorkerChTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : ch});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * KickOut all sockets on the complete system with userId from default user group channel (server side)
+     * @example
+     * kickUserDefaultUserGroupCh('user20');
+     * kickUserDefaultUserGroupCh(['tom39','lara23']);
+     * kickUserDefaultUserGroupCh(['tom39','lara23'],'EXCEPT-SOCKET-SID');
+     * @param userId or more user ids in an array
+     * @param exceptSocketSids
+     */
+    async kickUserDefaultUserGroupCh(userId : number | string | (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
+    {
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.USER_IDS,WorkerChTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : Const.Settings.CHANNEL.DEFAULT_USER_GROUP});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * KickOut all sockets on the complete system with token id from an custom id channel (server side)
      * @example
      * kickTokenCustomIdCh('TOKEN-UUID1','chatGroup');
      * kickTokenCustomIdCh(['TOKEN-UUID1,'TOKEN-UUID2'],'image','2');
      * kickTokenCustomIdCh(['TOKEN-UUID1,'TOKEN-UUID2'],'image',undefined,'EXCEPT-SOCKET-SID');
-     * @param tokenId
-     * @param channel
+     * @param tokenId or more tokenIds in an array
+     * @param channel is optional, if it is not given the sockets with tokenId will be kicked out from all custom id channels.
      * @param id is optional, if it is not given the sockets with tokenId will be kicked out from all ids of this channel.
      * @param exceptSocketSids
      */
-    async kickTokenCustomIdCh(tokenId : string | string[], channel : string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
+    async kickTokenCustomIdCh(tokenId : string | string[], channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        let ch = ChTools.buildCustomIdChannelName(channel,id);
-        return await
-            this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.KICK_OUT_TOKEN_IDS_FROM_CH,tokenId,exceptSocketSids,{ch});
+        const ch = ChTools.buildCustomIdChannelName(channel,id);
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch});
     }
+
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on complete system with token id from an custom channel (server side)
+     * KickOut all sockets on the complete system with token id from an custom channel (server side)
      * @example
      * kickTokenCustomCh('TOKEN-UUID1','chatGroup');
      * kickTokenCustomCh(['TOKEN-UUID1,'TOKEN-UUID2'],'image','EXCEPT-SOCKET-SID');
-     * @param tokenId
-     * @param channel
+     * @param tokenId or more tokenIds in an array
+     * @param channel is optional, if it is not given the sockets with tokenId will be kicked out from all custom channels.
      * @param exceptSocketSids
      */
-    async kickTokenCustomCh(tokenId : string | string[], channel : string,exceptSocketSids : string[] | string = []) : Promise<void>
+    async kickTokenCustomCh(tokenId : string | string[], channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        let ch = ChTools.buildCustomChannelName(channel);
-        return await
-            this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.KICK_OUT_TOKEN_IDS_FROM_CH,tokenId,exceptSocketSids,{ch});
+        const ch = ChTools.buildCustomChannelName(channel);
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * KickOut all sockets on the complete system with token id from all channel (server side)
+     * @example
+     * kickTokenAllCh('TOKEN-UUID1');
+     * kickTokenCustomCh(['TOKEN-UUID1,'TOKEN-UUID2'],'EXCEPT-SOCKET-SID');
+     * @param tokenId or more tokenIds in an array
+     * @param exceptSocketSids
+     */
+    async kickTokenAllCh(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
+    {
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : Const.Settings.CHANNEL.ALL});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * KickOut all sockets on the complete system with token id from auth user group channel (server side)
+     * @example
+     * kickTokenAuthUserGroupCh('TOKEN-UUID1','user');
+     * kickTokenAuthUserGroupCh(['TOKEN-UUID1,'TOKEN-UUID2'],'user','EXCEPT-SOCKET-SID');
+     * @param tokenId or more tokenIds in an array
+     * @param authUserGroup is optional, if it is not given the socket with token id will be kicked out from all auth user group channels.
+     * @param exceptSocketSids
+     */
+    async kickTokenAuthUserGroupCh(tokenId : string | string[],authUserGroup ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
+    {
+        const ch = ChTools.buildAuthUserGroupChName(authUserGroup);
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : ch});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * KickOut all sockets on the complete system with token id from default user group channel (server side)
+     * @example
+     * kickTokenDefaultUserGroupCh('TOKEN-UUID1');
+     * kickTokenDefaultUserGroupCh(['TOKEN-UUID1,'TOKEN-UUID2'],'EXCEPT-SOCKET-SID');
+     * @param tokenId or more tokenIds in an array
+     * @param exceptSocketSids
+     */
+    async kickTokenDefaultUserGroupCh(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
+    {
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : Const.Settings.CHANNEL.DEFAULT_USER_GROUP});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Kick out all sockets on the complete system from an custom id channel
+     * @example
+     * kickOutAllSocketsCustomIdCh('CUSTOM-CH-NAME','ID');
+     * @param channel is optional, if it is not given the sockets will be kicked out from all custom id channels.
+     * @param id is optional, if it is not given the sockets will be kicked out from all ids of this channel.
+     * @param exceptSocketSids
+     */
+    async kickAllSocketsCustomIdCh(channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
+    {
+        const ch = ChTools.buildCustomIdChannelName(channel, id);
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ch});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Kick out all sockets on the complete system from an custom channel
+     * @example
+     * kickOutAllSocketsCustomCh('CUSTOM-CH-NAME');
+     * @param channel is optional, if it is not given the sockets will be kicked out from all custom channels.
+     * @param exceptSocketSids
+     */
+    async kickAllSocketsCustomCh(channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
+    {
+        const ch = ChTools.buildCustomChannelName(channel);
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ch});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Kick out all sockets on the complete system from all channel
+     * @example
+     * kickOutAllSocketsAllCh();
+     * @param exceptSocketSids
+     */
+    async kickAllSocketsAllCh(exceptSocketSids : string[] | string = []) : Promise<void>
+    {
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch : Const.Settings.CHANNEL.ALL});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Kick out all sockets on the complete system from auth user group channel
+     * @example
+     * kickOutAllSocketsAuthUserGroupCh() ;
+     * @param authUserGroup is optional, if it is not given all sockets will be kicked out from all auth user group channels.
+     * @param exceptSocketSids
+     */
+    async kickAllSocketsAuthUserGroupCh(authUserGroup ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
+    {
+        const ch = ChTools.buildAuthUserGroupChName(authUserGroup);
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ch});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Kick out all sockets on the complete system from default user group channel
+     * @example
+     * kickOutAllSocketsDefaultUserGroupCh() ;
+     * @param exceptSocketSids
+     */
+    async kickAllSocketsDefaultUserGroupCh(exceptSocketSids : string[] | string = []) : Promise<void>
+    {
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch : Const.Settings.CHANNEL.DEFAULT_USER_GROUP});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * KickOut all sockets on the complete system with sid from an custom id channel (server side)
+     * @example
+     * kickSocketsCustomIdCh('SOCKET-SID','chatGroup');
+     * kickSocketsCustomIdCh(['SOCKET-SID-1','SOCKET-SID-2'],'image','2');
+     * @param socketSid or more socketSids in an array
+     * @param channel is optional, if it is not given the sockets will be kicked out from all custom id channels.
+     * @param id is optional, if it is not given the sockets will be kicked out from all ids of this channel.
+     */
+    async kickSocketsCustomIdCh(socketSid : string | string[], channel ?: string, id ?: string) : Promise<void>
+    {
+        const ch = ChTools.buildCustomIdChannelName(channel,id);
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.SOCKETS_SIDS, WorkerChTaskActions.KICK_OUT,socketSid,[],{ch});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * KickOut all sockets on the complete system with sid from an custom channel (server side)
+     * @example
+     * kickSocketsCustomCh('SOCKET-SID','chatGroup');
+     * kickSocketsCustomCh(['SOCKET-SID-1','SOCKET-SID-2'],'image');
+     * @param socketSid or more socketSids in an array
+     * @param channel is optional, if it is not given the sockets will be kicked out from all custom channels.
+     */
+    async kickSocketsCustomCh(socketSid : string | string[], channel ?: string) : Promise<void>
+    {
+        const ch = ChTools.buildCustomChannelName(channel);
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.SOCKETS_SIDS, WorkerChTaskActions.KICK_OUT,socketSid,[],{ch});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * KickOut all sockets on the complete system with sid from all channel (server side)
+     * @example
+     * kickSocketsAllCh('SOCKET-SID');
+     * kickSocketsAllCh(['SOCKET-SID-1','SOCKET-SID-2']);
+     * @param socketSid or more socketSids in an array
+     */
+    async kickSocketsAllCh(socketSid : string | string[]) : Promise<void>
+    {
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.SOCKETS_SIDS,WorkerChTaskActions.KICK_OUT,socketSid,[],{ch : Const.Settings.CHANNEL.ALL});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * KickOut all sockets on the complete system with sid from auth user group channel (server side)
+     * @example
+     * kickSocketsAuthUserGroupCh('SOCKET-SID','user');
+     * kickSocketsAuthUserGroupCh(['SOCKET-SID-1','SOCKET-SID-2'],'user');
+     * @param socketSid or more socketSids in an array
+     * @param authUserGroup is optional, if it is not given the sockets will be kicked out from all auth user group channels.
+     */
+    async kickSocketsAuthUserGroupCh(socketSid : string | string[],authUserGroup ?: string) : Promise<void>
+    {
+        const ch = ChTools.buildAuthUserGroupChName(authUserGroup);
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.SOCKETS_SIDS,WorkerChTaskActions.KICK_OUT,socketSid,[],{ch : ch});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * KickOut all sockets on the complete system with sid from default user group channel (server side)
+     * @example
+     * kickSocketsDefaultUserGroupCh('SOCKET-SID');
+     * kickSocketsDefaultUserGroupCh(['SOCKET-SID-1','SOCKET-SID-2']);
+     * @param socketSid or more socketSids in an array
+     */
+    async kickSocketsDefaultUserGroupCh(socketSid : string | string[]) : Promise<void>
+    {
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.SOCKETS_SIDS,WorkerChTaskActions.KICK_OUT,socketSid,[],{ch : Const.Settings.CHANNEL.DEFAULT_USER_GROUP});
     }
 
     //Part Extra Emit
@@ -725,16 +991,17 @@ class SmallBag
      * @example
      * emitUser('joel2','myEvent',{myData : 'test'});
      * emitUser('joel2','myEvent',{myData : 'test'},'EXCEPT-SOCKET-SID');
-     * @param userIds
+     * @param userId or more userIds in an array
      * @param event
      * @param data
      * @param exceptSocketSids
      */
-    async emitUser(userIds : (number | string)[],event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
+    async emitUser(userId : number | string | (number | string)[],event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        return await
-            this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.EMIT_USER_IDS,userIds,exceptSocketSids,{event,data});
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.USER_IDS,WorkerChTaskActions.EMIT,userId,exceptSocketSids,{event,data});
     }
+
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
@@ -742,16 +1009,51 @@ class SmallBag
      * @example
      * emitToken('TOKEN-UUID1','myEvent',{myData : 'test'});
      * emitToken('TOKEN-UUID2','myEvent',{myData : 'test'},'EXCEPT-SOCKET-SID');
-     * @param tokenIds
+     * @param tokenId or more tokenIds in an array
      * @param event
      * @param data
      * @param exceptSocketSids
      */
-    async emitToken(tokenIds : string[],event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
+    async emitToken(tokenId : string | string[],event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        return await
-            this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.EMIT_TOKEN_IDS,tokenIds,exceptSocketSids,{event,data});
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.EMIT,tokenId,exceptSocketSids,{event,data});
     }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Emit to all sockets on complete system (server side)
+     * @example
+     * emitAllSockets('myEvent',{myData : 'test'});
+     * emitAllSockets('myEvent',{myData : 'test'},'EXCEPT-SOCKET-SID');
+     * @param event
+     * @param data
+     * @param exceptSocketSids
+     */
+    async emitAllSockets(event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
+    {
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.EMIT,[],exceptSocketSids,{event,data});
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Emit to all sockets with sid on complete system (server side)
+     * @example
+     * emitSockets('SOCKET-SID','myEvent',{myData : 'test'});
+     * emitSockets(['SOCKET-SID-1','SOCKET-SID-2'],'myEvent',{myData : 'test'});
+     * @param socketSid or more socketSids in an array
+     * @param event
+     * @param data
+     */
+    async emitSockets(socketSid : string | string[],event : string,data : any = {}) : Promise<void>
+    {
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.SOCKETS_SIDS,WorkerChTaskActions.EMIT,socketSid,[],{event,data});
+    }
+
 
     //Part Security
 
@@ -763,13 +1065,15 @@ class SmallBag
      * disconnectUser(['tim902','leonie23']);
      * disconnectUser('tim902');
      * disconnectUser('tim902','EXCEPT-SOCKET-SID');
-     * @param userIds
+     * @param userId or more userIds in an array
      * @param exceptSocketSids
      */
-    async disconnectUser(userIds : (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
+    async disconnectUser(userId : number | string | (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.DISCONNECT_USER_IDS,userIds,exceptSocketSids);
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.USER_IDS,WorkerChTaskActions.DISCONNECT,userId,exceptSocketSids);
     }
+
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
@@ -778,12 +1082,42 @@ class SmallBag
      * disconnectToken(['TOKEN-UUID1','TOKEN-UUID2']);
      * disconnectToken('TOKEN-UUID1');
      * disconnectToken('TOKEN-UUID1','EXCEPT-SOCKET-SID'');
-     * @param tokenIds
+     * @param tokenId or more tokenIds in an array
      * @param exceptSocketSids
      */
-    async disconnectToken(tokenIds : string[],exceptSocketSids : string[] | string = []) : Promise<void>
+    async disconnectToken(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.DISCONNECT_TOKEN_IDS,tokenIds,exceptSocketSids);
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.DISCONNECT,tokenId,exceptSocketSids);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Disconnect all sockets on complete system (server side)
+     * @example
+     * disconnectAllSockets('EXCEPT-SOCKET-SID');
+     * @param exceptSocketSids
+     */
+    async disconnectAllSockets(exceptSocketSids : string[] | string = []) : Promise<void>
+    {
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.DISCONNECT,[],exceptSocketSids);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Disconnect all sockets on complete system with sid (server side)
+     * @example
+     * disconnectSockets(['SOCKET-SID-1','SOCKET-SID-2']);
+     * disconnectSockets('SOCKET-SID');
+     * @param socketSid or more socketSids in an array
+     */
+    async disconnectSockets(socketSid : string | string[]) : Promise<void>
+    {
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.SOCKETS_SIDS,WorkerChTaskActions.DISCONNECT,socketSid,[]);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -794,12 +1128,13 @@ class SmallBag
      * deauthenticateUser(['tim902','leonie23']);
      * deauthenticateUser('tim902');
      * deauthenticateUser('tim902','EXCEPT-SOCKET-SID');
-     * @param userIds
+     * @param userId or more userIds in an array
      * @param exceptSocketSids
      */
-    async deauthenticateUser(userIds : (number | string)[] | number | string,exceptSocketSids : string[] | string = []) : Promise<void>
+    async deauthenticateUser(userId : number | string | (number | string)[] | number | string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.DEAUTHENTICATE_USER_IDS,userIds,exceptSocketSids);
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.USER_IDS,WorkerChTaskActions.DEAUTHENTICATE,userId,exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -810,15 +1145,70 @@ class SmallBag
      * deauthenticateToken(['TOKEN-UUID1','TOKEN-UUID2']);
      * deauthenticateToken('TOKEN-UUID2');
      * deauthenticateToken('TOKEN-UUID2','EXCEPT-SOCKET-SID');
-     * @param tokenIds
+     * @param tokenId or more tokenIds in an array
      * @param exceptSocketSids
      */
-    async deauthenticateToken(tokenIds : string[] | string,exceptSocketSids : string[] | string = []) : Promise<void>
+    async deauthenticateToken(tokenId : string | string[] | string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        return await this.exchangeEngine.publishTaskToWorker(WorkerChTaskActions.DEAUTHENTICATE_TOKEN_IDS,tokenIds,exceptSocketSids);
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.DEAUTHENTICATE,tokenId,exceptSocketSids);
     }
 
-    //Part SocketId Tools
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Deauthenticate all sockets on complete system (server side)
+     * @example
+     * deauthenticateAllSockets('EXCEPT-SOCKET-SID');
+     * @param exceptSocketSids
+     */
+    async deauthenticateAllSockets(exceptSocketSids : string[] | string = []) : Promise<void>
+    {
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.DEAUTHENTICATE,[],exceptSocketSids);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Deauthenticate all sockets on complete system with sid (server side)
+     * @example
+     * deauthenticateSockets(['SOCKET-SID-1','SOCKET-SID-2']);
+     * deauthenticateSockets('SOCKET-SID');
+     * @param socketSid or more socketSids in an array
+     */
+    async deauthenticateSockets(socketSid : string | string[] | string) : Promise<void>
+    {
+        await this.exchangeEngine.publishTaskToWorker
+        (WorkerChTargets.SOCKETS_SIDS,WorkerChTaskActions.DEAUTHENTICATE,socketSid,[]);
+    }
+
+    //Part Socket Tools
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns user id from socket (if authenticated and has one)
+     * @example
+     * getUserIdFromSocket(socket);
+     * @param socket
+     */
+    getUserIdFromSocket(socket : Socket) : string | number | undefined {
+        return TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.USER_ID,socket);
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns user group from socket (if authenticated)
+     * @example
+     * getUserIdFromSocket(socket);
+     * @param socket
+     */
+    getAuthUserGroupFromSocket(socket : Socket) : string | undefined {
+        return TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.AUTH_USER_GROUP,socket);
+    }
+
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
@@ -949,6 +1339,57 @@ class SmallBag
     getWorkerClients() : object
     {
         return this.worker.scServer.clients;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the number of connected clients to this worker
+     * @example
+     * getWorkerConnectedClientsCount();
+     */
+    getWorkerConnectedClientsCount() : number {
+        return this.worker.getStatus().clientCount;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns http requests per minute
+     */
+    getWorkerHttpRequestPerMinute() : number {
+        return this.worker.getStatus().httpRPM;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns web sockets requests per minute
+     */
+    getWorkerWsRequestPerMinute() : number {
+        return this.worker.getStatus().wsRPM;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns all sockets from this worker that subscribes the custom channel
+     * @example
+     * getWorkerSocketSubsCustomCh('CH-NAME');
+     */
+    getWorkerSocketSubsCustomCh(channel : string) : Socket[] {
+        return this.worker.getCustomChToScIdMapper().getValues(channel);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns all sockets from this worker that subscribes the custom id channel
+     * @example
+     * getWorkerSocketSubsCustomIdCh('CH-NAME','ID');
+     */
+    getWorkerSocketSubsCustomIdCh(channel : string, id : string) : Socket[] {
+        return this.worker.getCustomIdChToScIdMapper().getValues(`${channel}.${id}`);
     }
 
     // noinspection JSUnusedGlobalSymbols
