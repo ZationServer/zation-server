@@ -57,7 +57,7 @@ class Zation
             }
         }
 
-        let returner = new Returner(data);
+        let returner = new Returner(data,this.zc);
 
         try
         {
