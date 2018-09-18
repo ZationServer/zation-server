@@ -43,7 +43,7 @@ import
     SocketDeauthenticateFunction,
     ScMiddlewareFunction,
     MiddlewareAuthenticationFunction,
-    ScServerFunction, ZationSocketConnectionFunction, ZationSocketDisconnectionFunction, ZationWorkerMessageFunction
+    ScServerFunction, ZationSocketFunction, ZationSocketDisconnectionFunction, ZationWorkerMessageFunction
 } from "../helper/configEditTool/eventConfigStructure";
 
 import
@@ -185,7 +185,7 @@ class Config
     static httpServerStarted(func : HttpServerIsStartedFunction) : HttpServerIsStartedFunction {return func;}
     static wsServerIsStarted(func : WsServerIsStartedFunction) : WsServerIsStartedFunction{return func;}
     static isStarted(func : IsStartedFunction) : IsStartedFunction{return func;}
-    static socketConnection(func : ZationSocketConnectionFunction) : ZationSocketConnectionFunction {return func;}
+    static socketConnection(func : ZationSocketFunction) : ZationSocketFunction {return func;}
     static socketDisconnection(func : ZationSocketDisconnectionFunction) : ZationSocketDisconnectionFunction {return func;}
     static workerMessage(func : ZationWorkerMessageFunction) : ZationWorkerMessageFunction {return func;}
 

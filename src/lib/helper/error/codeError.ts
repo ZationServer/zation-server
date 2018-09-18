@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 /*
 This Marks error in code
-Example try to set custom auth token, but socket is not authenticated
+Example try to set custom auth token, but sc is not authenticated
  */
 
 import {ErrorConstruct}   from "../configEditTool/errorConfigStructure";

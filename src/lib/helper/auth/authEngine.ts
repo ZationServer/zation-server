@@ -228,10 +228,10 @@ class AuthEngine
         this.currentUserGroup = this.getDefaultGroup();
         this.currentUserId = undefined;
 
-        //deauthenticate socket/send info by http back
+        //deauthenticate sc/send info by http back
         this.shBridge.deauthenticate();
 
-        //check channels from socket
+        //check channels from sc
         if(this.shBridge.isWebSocket()) {
             await this.chAccessEngine.checkSocketCustomChAccess(this.shBridge.getSocket());
             ChAccessEngine.checkSocketZationChAccess(this.shBridge.getSocket());

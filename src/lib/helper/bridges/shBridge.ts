@@ -7,7 +7,7 @@ GitHub: LucaCode
 import TokenBridge   = require('./tokenBridge');
 import ZationConfig  = require("../../main/zationConfig");
 import Const         = require("../constants/constWrapper");
-import {Socket}        from "../socket/socket";
+import {Socket}        from "../sc/socket";
 const  IP : any      = require('ip');
 
 //Socket and Http Bridge

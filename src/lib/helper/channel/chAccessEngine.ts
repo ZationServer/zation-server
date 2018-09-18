@@ -15,7 +15,7 @@ import Logger               = require('../logger/logger');
 import ChTools              = require('./chTools');
 import SmallBag             = require("../../api/SmallBag");
 import ChConfigManager      = require("./chConfigManager");
-import {Socket}               from "../socket/socket";
+import {Socket}               from "../sc/socket";
 import CIdChInfo             = require("../infoObjects/cIdChInfo");
 import CChInfo               = require("../infoObjects/cChInfo");
 import SocketInfo            = require("../infoObjects/socketInfo");

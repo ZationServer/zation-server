@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Socket} from "../helper/socket/socket";
+import {Socket} from "../helper/sc/socket";
 import {MongoClient} from "mongodb";
 import {Options} from "nodemailer/lib/mailer";
 import fetch, {Request, RequestInit, Response} from 'node-fetch';
@@ -798,7 +798,7 @@ class SmallBag
      * kickTokenAuthUserGroupCh('TOKEN-UUID1','user');
      * kickTokenAuthUserGroupCh(['TOKEN-UUID1,'TOKEN-UUID2'],'user','EXCEPT-SOCKET-SID');
      * @param tokenId or more tokenIds in an array
-     * @param authUserGroup is optional, if it is not given the socket with token id will be kicked out from all auth user group channels.
+     * @param authUserGroup is optional, if it is not given the sc with token id will be kicked out from all auth user group channels.
      * @param exceptSocketSids
      */
     async kickTokenAuthUserGroupCh(tokenId : string | string[],authUserGroup ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
@@ -1188,9 +1188,9 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Returns user id from socket (if authenticated and has one)
+     * Returns user id from sc (if authenticated and has one)
      * @example
-     * getUserIdFromSocket(socket);
+     * getUserIdFromSocket(sc);
      * @param socket
      */
     getUserIdFromSocket(socket : Socket) : string | number | undefined {
@@ -1200,9 +1200,9 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Returns user group from socket (if authenticated)
+     * Returns user group from sc (if authenticated)
      * @example
-     * getUserIdFromSocket(socket);
+     * getUserIdFromSocket(sc);
      * @param socket
      */
     getAuthUserGroupFromSocket(socket : Socket) : string | undefined {
@@ -1253,7 +1253,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Set socket variable (server side) with object path
+     * Set sc variable (server side) with object path
      * @example
      * setSocketVariable('email','example@gmail.com');
      * @param socket
@@ -1268,7 +1268,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Has socket variable (server side) with object path
+     * Has sc variable (server side) with object path
      * @example
      * hasSocketVariable('email');
      * @param socket
@@ -1282,7 +1282,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Get socket variable (server side) with object path
+     * Get sc variable (server side) with object path
      * @example
      * getSocketVariable('email');
      * @param socket
@@ -1296,7 +1296,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Delete socket variable (server side) with object path
+     * Delete sc variable (server side) with object path
      * @example
      * deleteSocketVariable('email');
      * @param socket
@@ -1317,7 +1317,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socket with the socketId
+     * Returns the sc with the socketId
      * You have only protocolAccess to sockets they are connected to this worker.
      * @example
      * getWorkerSocket('SOCKET-ID');
@@ -1416,7 +1416,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socketIds from socket with the tokenId
+     * Returns the socketIds from sc with the tokenId
      * You have only protocolAccess to socketsIds they are connected to this worker.
      * @example
      * getSocketIdsWithTokenId('TOKEN-ID');
@@ -1430,7 +1430,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socketSids from socket with the tokenId
+     * Returns the socketSids from sc with the tokenId
      * You have only protocolAccess to socketsSids they are connected to this worker.
      * @example
      * getSocketSidsWithTokenId('TOKEN-ID');

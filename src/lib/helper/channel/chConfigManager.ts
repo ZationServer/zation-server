@@ -103,7 +103,7 @@ class ChConfigManager {
         }
     }
 
-    //socket get own pub fast
+    //sc get own pub fast
     getSocketGetOwnPubUserCh(): boolean {
         return this.infoUserCh['sgop'];
     }

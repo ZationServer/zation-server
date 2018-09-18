@@ -7,7 +7,7 @@ GitHub: LucaCode
 /*
 Class Description :
 This class is for the Bag, it extends the ExchangeEngine and ads
-personal socket functionality.
+personal sc functionality.
  */
 
 import ChExchangeEngine  = require('./chExchangeEngine');

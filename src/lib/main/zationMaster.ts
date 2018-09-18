@@ -118,7 +118,7 @@ class ZationMaster
     public startSocketClusterWithLog() {
         Logger.startStopWatch();
         this.startSocketCluster();
-        Logger.printStartDebugInfo('Master starts socket cluster.',true);
+        Logger.printStartDebugInfo('Master starts sc cluster.',true);
     }
 
     private startSocketCluster()

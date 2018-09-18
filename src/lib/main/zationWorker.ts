@@ -4,6 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+import {ScServer} from "../helper/sc/scServer";
+
 require('cache-require-paths');
 import ChTools = require("../helper/channel/chTools");
 import FuncTools = require("../helper/tools/funcTools");
@@ -36,7 +38,7 @@ import HashSet = require('hashset');
 const  SCWorker : any        = require('socketcluster/scworker');
 import {ChAccessEngine} from '../helper/channel/chAccessEngine';
 import {WorkerChTaskActions} from "../helper/constants/workerChTaskActions";
-import {Socket} from "../helper/socket/socket";
+import {Socket} from "../helper/sc/socket";
 import {WorkerChTargets} from "../helper/constants/workerChTargets";
 
 class ZationWorker extends SCWorker
@@ -48,6 +50,7 @@ class ZationWorker extends SCWorker
     private serverVersion : string;
     private zc : ZationConfig;
 
+    public scServer : ScServer;
     private preparedClientJs : PrepareClientJs;
     private serviceEngine : ServiceEngine;
     private preparedSmallBag : SmallBag;
@@ -209,7 +212,7 @@ class ZationWorker extends SCWorker
         //START SOCKET SERVER
         this.scServer.on('connection', async (socket : Socket,conSate) => {
 
-            //init socket variables
+            //init sc variables
             socket[Const.Settings.SOCKET.VARIABLES] = {};
             socket.sid = IdTools.buildSid(this.options.instanceId,this.id,socket.id);
 
@@ -230,7 +233,7 @@ class ZationWorker extends SCWorker
             });
 
             await this.zc.emitEvent(Const.Event.SC_SERVER_CONNECTION,this.getPreparedSmallBag(),socket,conSate);
-            await this.zc.emitEvent(Const.Event.ZATION_SOCKET_CONNECTION,this.getPreparedSmallBag(),new SocketInfo(socket));
+            await this.zc.emitEvent(Const.Event.ZATION_SOCKET,this.getPreparedSmallBag(),new SocketInfo(socket));
 
         });
 

@@ -7,7 +7,7 @@ GitHub: LucaCode
 import Const        = require('./../constants/constWrapper');
 import TokenTools   = require("../token/tokenTools");
 import ObjectPath   = require("../tools/objectPath");
-import {Socket}       from "../socket/socket";
+import {Socket}       from "../sc/socket";
 
 class SocketInfo
 {

@@ -90,7 +90,7 @@ export = {
 
     authenticationError  : {
         name          : 'authenticationError',
-        description   : 'Authenticate error by trying to authenticate an socket.',
+        description   : 'Authenticate error by trying to authenticate an sc.',
         type          : ErrorType.SYSTEM_ERROR,
         sendInfo      : false,
         //INFO

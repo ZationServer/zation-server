@@ -9,6 +9,7 @@ class Event
     //Zation Events
     static readonly ZATION_EXPRESS                     = 'express'; //SmallBag + Express ok
     static readonly ZATION_SC_SERVER                   = 'scServer'; //SmallBag + ScServer
+    static readonly ZATION_SOCKET                      = 'socket'; //SmallBag + SocketInfo
     static readonly ZATION_WORKER_IS_STARTED           = 'workerIsStarted'; //SmallBag + infoObj + worker ok
     static readonly ZATION_HTTP_SERVER_IS_STARTED      = 'httpServerIsStarted'; // infoObj ok
     static readonly ZATION_WS_SERVER_IS_STARTED        = 'wsServerIsStarted'; // infoObj ok
@@ -16,7 +17,7 @@ class Event
     static readonly ZATION_BEFORE_ERROR                = 'beforeError'; //SmallBag + Error ok
     static readonly ZATION_BEFORE_TASK_ERROR           = 'beforeTaskError'; //SmallBag + Error ok
     static readonly ZATION_BEFORE_TASK_ERROR_BAG       = 'beforeTaskErrorBag'; //SmallBag + Error ok
-    static readonly ZATION_SOCKET_CONNECTION           = 'socketConnection'; //SmallBag + SocketInfo
+
     static readonly ZATION_SOCKET_DISCONNECTION        = 'socketDisconnection'; //SmallBag + SocketInfo
     static readonly ZATION_WORKER_MESSAGE              = 'workerMessage'; //SmallBag + data
 

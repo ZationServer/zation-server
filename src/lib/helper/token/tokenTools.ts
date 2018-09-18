@@ -11,8 +11,7 @@ import {ChAccessEngine}   from '../channel/chAccessEngine';
 import TokenBridge      = require("../bridges/tokenBridge");
 import ZationWorker     = require("../../main/zationWorker");
 import ZationConfig     = require("../../main/zationConfig");
-import {Socket}           from "../socket/socket";
-import {isNull} from "util";
+import {Socket}           from "../sc/socket";
 const  Jwt : any        = require('jsonwebtoken');
 
 class TokenTools
