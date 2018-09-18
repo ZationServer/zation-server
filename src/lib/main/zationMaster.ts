@@ -22,7 +22,7 @@ import StateServerEngine     = require("../helper/cluster/stateServerEngine");
 class ZationMaster
 {
     private static instance : ZationMaster | null = null;
-    private static readonly version : string = '0.3.5';
+    private static readonly version : string = '0.3.6';
 
     private readonly serverStartedTimeStamp : number;
     private readonly zc : ZationConfig;
