@@ -9,7 +9,7 @@ import ExpressCore           = require("express-serve-static-core");
 import TaskError             = require("./TaskError");
 import TaskErrorBag          = require("./TaskErrorBag");
 import Result                = require("./Result");
-import Controller            = require("./Controller");
+import {Controller}            from "./Controller";
 import {ConnectionConfig}      from "pg";
 import {PoolConfig}            from "mysql";
 
@@ -114,7 +114,6 @@ class Config
     static starterConfig(config : StarterConfig) : StarterConfig {return config;}
 
     //Part App Config functions
-
     static construct(func : ConstructFunction) : ConstructFunction {return func;}
     static beforeHandle(func : BeforeHandleFunction) : BeforeHandleFunction {return func;}
     static controllerAccess(func : ControllerAccessFunction) : ControllerAccessFunction {return func;}
@@ -179,13 +178,13 @@ class Config
     static workerIsStarted(func : WorkerIsStartedFunction) : WorkerIsStartedFunction {return func;}
     static express(func : ExpressFunction) : ExpressFunction {return func;}
     static scServer(func : ScServerFunction) : ScServerFunction {return func;}
+    static socketConnection(func : ZationSocketFunction) : ZationSocketFunction {return func;}
     static beforeError(func : BeforeErrorFunction) : BeforeErrorFunction {return func;}
     static beforeTaskError(func : BeforeTaskErrorFunction) : BeforeTaskErrorFunction {return func;}
     static beforeTaskErrorBag(func : BeforeTaskErrorBagFunction) : BeforeTaskErrorBagFunction {return func;}
     static httpServerStarted(func : HttpServerIsStartedFunction) : HttpServerIsStartedFunction {return func;}
     static wsServerIsStarted(func : WsServerIsStartedFunction) : WsServerIsStartedFunction{return func;}
     static isStarted(func : IsStartedFunction) : IsStartedFunction{return func;}
-    static socketConnection(func : ZationSocketFunction) : ZationSocketFunction {return func;}
     static socketDisconnection(func : ZationSocketDisconnectionFunction) : ZationSocketDisconnectionFunction {return func;}
     static workerMessage(func : ZationWorkerMessageFunction) : ZationWorkerMessageFunction {return func;}
 
