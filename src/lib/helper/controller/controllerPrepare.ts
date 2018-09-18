@@ -11,7 +11,7 @@ import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
 import systemController = require('../systemController/systemControler.config');
 import ControllerTools  = require('./controllerTools');
 import ZationWorker     = require("../../main/zationWorker");
-import Controller       = require("../../api/Controller");
+import {Controller}       from'../../api/Controller';
 
 class ControllerPrepare
 {

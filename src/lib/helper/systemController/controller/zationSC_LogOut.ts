@@ -3,8 +3,7 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-
-let Controller    = require('../../../api/Controller');
+import {Controller} from "../../../api/Controller";
 
 class ZationSC_LogOut extends Controller
 {

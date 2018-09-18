@@ -8,9 +8,9 @@ import MainProcessor         = require('./mainProcessor');
 import ValidChProcessor      = require('./validChProcessor');
 import SHBridge              = require('../bridges/shBridge');
 import ZationReqTools        = require('../tools/zationReqTools');
-import ZationWorker = require("../../main/zationWorker");
-import ZationConfig = require("../../main/zationConfig");
-import {Socket} from "../sc/socket";
+import ZationWorker          = require("../../main/zationWorker");
+import ZationConfig          = require("../../main/zationConfig");
+import {Socket}                from "../sc/socket";
 
 class SocketProcessor
 {

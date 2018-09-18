@@ -7,11 +7,9 @@ GitHub: LucaCode
 import SmallBag = require("./SmallBag");
 import Bag      = require("./Bag");
 
-class Controller
+export class Controller
 {
-    constructor()
-    {
-    }
+    constructor() {}
 
     /**
      * @description
@@ -19,8 +17,7 @@ class Controller
      * creating instance of the controller (in worker start)
      * @param simpleBag
      */
-    async initialize(simpleBag : SmallBag) : Promise<void>
-    {}
+    async initialize(simpleBag : SmallBag) : Promise<void> {}
 
     /**
      * @description
@@ -37,8 +34,7 @@ class Controller
      * which are sent to the client
      * with a not success response.
      */
-    async handle(bag : Bag,input : any) : Promise<any>
-    {}
+    async handle(bag : Bag,input : any) : Promise<any> {}
 
     /**
      * @description
@@ -47,8 +43,6 @@ class Controller
      * @param bag
      * @param input
      */
-    async wrongInput(bag : Bag,input : any) : Promise<void>
-    {}
+    async wrongInput(bag : Bag,input : any) : Promise<void> {}
 }
 
-export = Controller;

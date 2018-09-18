@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import Const            = require('../constants/constWrapper');
-import Controller       = require('../../api/Controller');
+import {Controller}       from '../../api/Controller';
 import ZationConfig     = require("../../main/zationConfig");
 import fs               = require('fs');
 

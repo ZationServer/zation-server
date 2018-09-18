@@ -19,7 +19,7 @@ import TokenEngine           = require('../token/tokenEngine');
 import SHBridge              = require("../bridges/shBridge");
 import ZationConfig          = require("../../main/zationConfig");
 import ZationWorker          = require("../../main/zationWorker");
-import Controller            = require("../../api/Controller");
+import {Controller}            from'../../api/Controller';
 import TokenBridge           = require("../bridges/tokenBridge");
 import ProtocolAccessChecker = require("../protocolAccess/protocolAccessChecker");
 

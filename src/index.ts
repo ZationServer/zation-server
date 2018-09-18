@@ -7,7 +7,7 @@ GitHub: LucaCode
 import ZationStarter        = require('./lib/main/zationMaster');
 import Bag                  = require('./lib/api/Bag');
 import SmallBag             = require('./lib/api/SmallBag');
-import Controller           = require('./lib/api/Controller');
+import {Controller}           from'./lib/api/Controller';
 import Result               = require('./lib/api/Result');
 import TaskError            = require('./lib/api/TaskError');
 import TaskErrorBag         = require('./lib/api/TaskErrorBag');
@@ -18,8 +18,7 @@ import ValidationTypes      = require('./lib/helper/constants/validationTypes');
 const  FsUtil : any         = require('socketcluster/fsutil');
 
 //starter
-const start = (options) =>
-{
+const start = (options) => {
     new ZationStarter(options);
 };
 
