@@ -64,7 +64,7 @@ class ZationWorker extends SCWorker
 
     private app : any;
 
-    private mapUserToScId : Mapper<string> = new Mapper<string>();
+    private mapUserIdToScId : Mapper<string> = new Mapper<string>();
     private mapTokenIdToScId : Mapper<string> = new Mapper<string>();
 
     private mapCustomChToSc : Mapper<Socket> = new Mapper<Socket>();
@@ -816,7 +816,7 @@ class ZationWorker extends SCWorker
                     this.mapTokenIdToScId.removeValueFromKey(token[Const.Settings.TOKEN.TOKEN_ID],socket.id);
                 }
                 if(!!token[Const.Settings.TOKEN.USER_ID]) {
-                    this.mapUserToScId.removeValueFromKey(token[Const.Settings.TOKEN.USER_ID],socket.id);
+                    this.mapUserIdToScId.removeValueFromKey(token[Const.Settings.TOKEN.USER_ID],socket.id);
                 }
                 if(!!token[Const.Settings.TOKEN.AUTH_USER_GROUP]) {
                     this.mapAuthUserGroupToSc.removeValueFromKey(token[Const.Settings.TOKEN.AUTH_USER_GROUP],socket);
@@ -1077,7 +1077,7 @@ class ZationWorker extends SCWorker
     private forUserIds(userIds : (number | string)[],exceptSocketSids : string[],action : Function) : void
     {
         this.forMappingSCIds
-        (this.mapUserToScId,userIds,exceptSocketSids,action,`can not be found in worker. But is listed in userId Mapping!`);
+        (this.mapUserIdToScId,userIds,exceptSocketSids,action,`can not be found in worker. But is listed in userId Mapping!`);
     }
 
     private registerMasterEvent()
@@ -1187,7 +1187,7 @@ class ZationWorker extends SCWorker
     // noinspection JSUnusedGlobalSymbols
     getUserToScIdMapper() : Mapper<string>
     {
-        return this.mapUserToScId;
+        return this.mapUserIdToScId;
     }
 
     // noinspection JSUnusedGlobalSymbols

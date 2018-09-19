@@ -8,6 +8,7 @@ import SmallBag                      = require("../../api/SmallBag");
 import CChInfo                       = require("../infoObjects/cChInfo");
 import CIdChInfo                     = require("../infoObjects/cIdChInfo");
 import SocketInfo                    = require("../infoObjects/socketInfo");
+import PubData                       = require("../infoObjects/pubData");
 
 export type CIdChannelSubAccessFunction =
     (smallBag : SmallBag, chInfo : CIdChInfo, socketInfo : SocketInfo) => Promise<boolean> | boolean;
@@ -28,10 +29,10 @@ export type CChannelOnClientPubFunction =
     (smallBag : SmallBag, chInfo : CChInfo, socketInfo : SocketInfo, pubData : PubData) => Promise<void> | void;
 
 export type CIdChannelOnBagPubFunction =
-    (smallBag : SmallBag, chInfo : CIdChInfo, pubData : any) => Promise<void> | void;
+    (smallBag : SmallBag, chInfo : CIdChInfo, pubData : PubData) => Promise<void> | void;
 
 export type CChannelOnBagPubFunction =
-    (smallBag : SmallBag, chInfo : CChInfo, pubData : any) => Promise<void> | void;
+    (smallBag : SmallBag, chInfo : CChInfo, pubData : PubData) => Promise<void> | void;
 
 export type CIdChannelOnSubFunction =
     (smallBag : SmallBag, chInfo : CIdChInfo, socketInfo : SocketInfo) => Promise<void> | void;
@@ -46,7 +47,7 @@ export type UserChOnUnsubFunction =
     (smallBag : SmallBag, userId : string, socketInfo : SocketInfo) => Promise<void> | void;
 
 export type UserChOnBagPubFunction =
-    (smallBag : SmallBag, userId : string, pubData : any) => Promise<void> | void;
+    (smallBag : SmallBag, userId : string, pubData : PubData) => Promise<void> | void;
 
 export type AuthUserGroupChOnSubFunction =
     (smallBag : SmallBag, userGroup : string, socketInfo : SocketInfo) => Promise<void> | void;
@@ -55,7 +56,7 @@ export type AuthUserGroupChOnUnsubFunction =
     (smallBag : SmallBag, userGroup  : string, socketInfo : SocketInfo) => Promise<void> | void;
 
 export type AuthUserGroupChOnBagPubFunction =
-    (smallBag : SmallBag, userGroup  : string, pubData : any) => Promise<void> | void;
+    (smallBag : SmallBag, userGroup  : string, pubData : PubData) => Promise<void> | void;
 
 export type NormalChOnSubFunction =
     (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
@@ -64,7 +65,7 @@ export type NormalChOnUnsubFunction =
     (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
 
 export type NormalChOnBagPubFunction =
-    (smallBag : SmallBag, pubData : any) => Promise<void> | void;
+    (smallBag : SmallBag, pubData : PubData) => Promise<void> | void;
 
 export interface ChannelConfig
 {
@@ -74,12 +75,6 @@ export interface ChannelConfig
     [Const.Channel.KEYS.AUTH_USER_GROUP_CH] ?: ChannelSettings | AuthUserGroupChannel;
     [Const.Channel.KEYS.DEFAULT_USER_GROUP_CH] ?: ChannelSettings | NormalChannel;
     [Const.Channel.KEYS.ALL_CH] ?: ChannelSettings | NormalChannel;
-}
-
-export interface PubData {
-    e : string,
-    d : any,
-    ssi : string | undefined
 }
 
 export interface CChannelDefault {

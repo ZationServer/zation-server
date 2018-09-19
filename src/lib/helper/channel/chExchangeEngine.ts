@@ -20,10 +20,12 @@ import ZationWorker      = require("../../main/zationWorker");
 import CIdChInfo         = require("../infoObjects/cIdChInfo");
 import CChInfo           = require("../infoObjects/cChInfo");
 import {WorkerChTargets} from "../constants/workerChTargets";
+import PubData = require("../infoObjects/pubData");
+import {ScServer} from "../sc/scServer";
 
 class ChExchangeEngine
 {
-    private readonly scServer : any;
+    private readonly scServer : ScServer;
     private readonly worker: ZationWorker;
 
     constructor(worker : ZationWorker) {
@@ -96,7 +98,7 @@ class ChExchangeEngine
             const func = this.worker.getChConfigManager().getOnBagPubUserCh();
             if(!!func) {
                 (async () => {
-                    await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), id, data);
+                    await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), id, new PubData(eventName,data,srcSocketSid));
                 })();
             }
         };
@@ -121,7 +123,7 @@ class ChExchangeEngine
         const func = this.worker.getChConfigManager().getOnBagPubDefaultUserUserCh();
         if(!!func) {
             (async () => {
-                await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), data);
+                await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), new PubData(eventName,data,srcSocketSid));
             })();
         }
         await this.pubAsync(Const.Settings.CHANNEL.DEFAULT_USER_GROUP,eventName,data,srcSocketSid);
@@ -132,7 +134,7 @@ class ChExchangeEngine
         const func = this.worker.getChConfigManager().getOnBagPubAllCh();
         if(!!func) {
             (async () => {
-                await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), data);
+                await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), new PubData(eventName,data,srcSocketSid));
             })();
         }
         await this.pubAsync(Const.Settings.CHANNEL.ALL,eventName,data,srcSocketSid);
@@ -145,7 +147,7 @@ class ChExchangeEngine
             const func = this.worker.getChConfigManager().getOnBagPubAuthUserUserCh();
             if(!!func) {
                 (async () => {
-                    await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), group, data);
+                    await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), group, new PubData(eventName,data,srcSocketSid));
                 })();
             }
         };
@@ -186,7 +188,7 @@ class ChExchangeEngine
         const func = this.worker.getChConfigManager().getOnBagPubCustomIdCh(channel);
         if(!!func) {
             (async () => {
-                await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), new CIdChInfo(channel, id), data);
+                await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), new CIdChInfo(channel, id), new PubData(eventName,data,srcSocketSid));
             })();
         }
         await this.pubAsync(channelFullName,eventName,data,srcSocketSid);
@@ -200,7 +202,7 @@ class ChExchangeEngine
             const func = this.worker.getChConfigManager().getOnBagPubCustomCh(chName);
             if(!!func) {
                 (async () => {
-                    await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), new CChInfo(chName), data);
+                    await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), new CChInfo(chName), new PubData(eventName,data,srcSocketSid));
                 })();
             }
         };

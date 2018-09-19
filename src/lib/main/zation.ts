@@ -32,9 +32,10 @@ class Zation
     async run(data)
     {
         this.reqIdCounter.increase();
-        let reqId = this.reqIdCounter.getId();
+        const reqId = this.reqIdCounter.getId();
 
-        let fullReqId = `${this.worker.getFullWorkerId()}-${reqId}`;
+        // scalable unique id for every req based on instanceId-workerId-time/count
+        const fullReqId = `${this.worker.options.instanceId}-${this.worker.getFullWorkerId()}-${reqId}`;
 
         if(data.isWebSocket)
         {

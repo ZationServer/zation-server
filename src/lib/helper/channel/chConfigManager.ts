@@ -45,36 +45,37 @@ class ChConfigManager {
             for (let ch in channels) {
                 if (channels.hasOwnProperty(ch) && ch !== Const.Channel.CHANNEL_DEFAULT.DEFAULT) {
                     const chConfig = channels[ch];
-                    res['sgop'] = this.getSgop(chConfig[Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH]);
 
+                    res[ch] = {};
+                    res[ch]['sgop'] = this.getSgop(chConfig[Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH]);
                     if (chConfig.hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS)) {
-                        res['pa'] = chConfig[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS];
-                        res['pak'] = 1;
+                        res[ch]['pa'] = chConfig[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS];
+                        res[ch]['pak'] = 1;
                     }
                     else if (chConfig.hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS)) {
-                        res['pa'] = chConfig[Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS];
-                        res['pak'] = 2;
+                        res[ch]['pa'] = chConfig[Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS];
+                        res[ch]['pak'] = 2;
                     }
                     else {
-                        res['pak'] = 0;
+                        res[ch]['pak'] = 0;
                     }
 
                     if (chConfig.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_ACCESS)) {
-                        res['sa'] = chConfig[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS];
-                        res['sak'] = 1;
+                        res[ch]['sa'] = chConfig[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS];
+                        res[ch]['sak'] = 1;
                     }
                     else if (chConfig.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS)) {
-                        res['sa'] = chConfig[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS];
-                        res['sak'] = 2;
+                        res[ch]['sa'] = chConfig[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS];
+                        res[ch]['sak'] = 2;
                     }
                     else {
-                        res['sak'] = 0;
+                        res[ch]['sak'] = 0;
                     }
 
-                    res['onClientPub'] = chConfig[Const.Channel.CHANNEL.ON_CLIENT_PUBLISH];
-                    res['onBagPub'] = chConfig[Const.Channel.CHANNEL.ON_BAG_PUBLISH];
-                    res['onSub'] = chConfig[Const.Channel.CHANNEL.ON_SUBSCRIPTION];
-                    res['onUnsub'] = chConfig[Const.Channel.CHANNEL.ON_UNSUBSCRIPTION];
+                    res[ch]['onClientPub'] = chConfig[Const.Channel.CHANNEL.ON_CLIENT_PUBLISH];
+                    res[ch]['onBagPub'] = chConfig[Const.Channel.CHANNEL.ON_BAG_PUBLISH];
+                    res[ch]['onSub'] = chConfig[Const.Channel.CHANNEL.ON_SUBSCRIPTION];
+                    res[ch]['onUnsub'] = chConfig[Const.Channel.CHANNEL.ON_UNSUBSCRIPTION];
                 }
             }
         }
@@ -121,11 +122,11 @@ class ChConfigManager {
     }
 
     getSocketGetOwnPubCustomCh(chName: string): boolean {
-        return this.infoCustomCh[chName].sgop;
+        return this.getCustomChInfo(chName).sgop;
     }
 
     getSocketGetOwnPubCustomIdCh(chName: string): boolean {
-        return this.infoCustomIdCh[chName].sgop;
+        return this.getCustomIdChInfo(chName).sgop;
     }
 
     //ch is there
@@ -137,71 +138,83 @@ class ChConfigManager {
         return this.infoCustomIdCh.hasOwnProperty(chName);
     }
 
+    //ch is there
+    getCustomChInfo(chName: string): any {
+        return this.infoCustomCh.hasOwnProperty(chName) ?
+            this.infoCustomCh[chName] : {};
+    }
+
+    getCustomIdChInfo(chName: string): any {
+        return this.infoCustomIdCh.hasOwnProperty(chName) ?
+            this.infoCustomIdCh[chName] : {};
+    }
+
     //pub protocolAccess
     getPubAccessValueCustomCh(chName: string): any {
-        return this.infoCustomCh[chName].pa;
+        return this.getCustomChInfo(chName).pa;
     }
 
     getPubAccessValueCustomIdCh(chName: string): any {
-        return this.infoCustomIdCh[chName].pa;
+        return this.getCustomIdChInfo(chName).pa;
     }
 
     getPubAccessKeyCustomCh(chName: string): number {
-        return this.infoCustomCh[chName].pak;
+        return this.getCustomChInfo(chName).pak;
     }
 
     getPubAccessKeyCustomIdCh(chName: string): number {
-        return this.infoCustomIdCh[chName].pak;
+        return this.getCustomIdChInfo(chName).pak;
     }
 
     //sub protocolAccess
     getSubAccessValueCustomCh(chName: string): any {
-        return this.infoCustomCh[chName].sa;
+        return this.getCustomChInfo(chName).sa;
     }
 
     getSubAccessValueCustomIdCh(chName: string): any {
-        return this.infoCustomIdCh[chName].sa;
+        return this.getCustomIdChInfo(chName).sa;
     }
 
     getSubAccessKeyCustomCh(chName: string): number {
-        return this.infoCustomCh[chName].sak;
+        return this.getCustomChInfo(chName).sak;
     }
 
     getSubAccessKeyCustomIdCh(chName: string): number {
-        return this.infoCustomIdCh[chName].sak;
+        return this.getCustomIdChInfo(chName).sak;
     }
 
     //events
     getOnClientPubCustomCh(chName: string): any {
-        return this.infoCustomCh[chName]['onClientPub'];
+        return this.getCustomChInfo(chName)['onClientPub'];
     }
 
     getOnClientPubCustomIdCh(chName: string): any {
-        return this.infoCustomIdCh[chName]['onClientPub'];
+        return this.getCustomIdChInfo(chName)['onClientPub'];
     }
 
     getOnBagPubCustomCh(chName: string): any {
-        return this.infoCustomCh[chName]['onBagPub'];
+        return this.getCustomChInfo(chName)['onBagPub'];
     }
 
     getOnBagPubCustomIdCh(chName: string): any {
-        return this.infoCustomIdCh[chName]['onBagPub'];
+
+        return this.getCustomIdChInfo(chName)['onBagPub'];
     }
 
     getOnSubCustomCh(chName: string): any {
-        return this.infoCustomCh[chName]['onSub'];
+        return this.getCustomChInfo(chName)['onSub'];
     }
 
     getOnSubCustomIdCh(chName: string): any {
-        return this.infoCustomIdCh[chName]['onSub'];
+        return this.getCustomIdChInfo(chName)['onSub'];
     }
 
     getOnUnsubCustomCh(chName: string): any {
-        return this.infoCustomCh[chName]['onUnsub'];
+        return this.getCustomChInfo(chName)['onUnsub'];
     }
 
     getOnUnsubCustomIdCh(chName: string): any {
-        return this.infoCustomIdCh[chName]['onUnsub'];
+        return this.getCustomIdChInfo(chName)['onUnsub'];
     }
 
     getOnSubUserCh(): any {
@@ -251,7 +264,6 @@ class ChConfigManager {
     getOnBagPubAllCh(): any {
         return this.infoDefaultUserGroupCh['onBagPub'];
     }
-
 }
 
 export = ChConfigManager;

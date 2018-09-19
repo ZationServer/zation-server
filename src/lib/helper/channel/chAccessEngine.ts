@@ -6,8 +6,8 @@ GitHub: LucaCode
 
 /*
 Class Description :
-This class is to check the protocolAccess for publish or subscribe channels.
-It is used to check the protocolAccess in the middleware or to check when the
+This class is to check the access for publish or subscribe channels.
+It is used to check the access in the middleware or to check when the
 token is changed.
  */
 import Const                = require('../constants/constWrapper');
@@ -20,6 +20,7 @@ import CIdChInfo             = require("../infoObjects/cIdChInfo");
 import CChInfo               = require("../infoObjects/cChInfo");
 import SocketInfo            = require("../infoObjects/socketInfo");
 import FuncTools             = require("../tools/funcTools");
+import PubData               = require("../infoObjects/pubData");
 
 export class ChAccessEngine
 {
@@ -69,7 +70,7 @@ export class ChAccessEngine
             {
                 let res;
                 if(isPub) {
-                    res = await value(this.smallBag,chInfo,socketInfo,pubData);
+                    res = await value(this.smallBag,chInfo,socketInfo,PubData.getFromBuilded(pubData));
                 }
                 else {
                     res = await value(this.smallBag,chInfo,socketInfo);
@@ -181,7 +182,7 @@ export class ChAccessEngine
             }
             else
             {
-                let err = new Error('No protocolAccess to sub this customIdChannel!');
+                let err = new Error('No access to sub this customIdChannel!');
                 // @ts-ignore'
                 err.code = 4594;
                 return err;
@@ -234,7 +235,7 @@ export class ChAccessEngine
                 let func = this.chConfigManager.getOnClientPubCustomIdCh(name);
                 if(!!func) {
                     (async () => {
-                        await FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket),pubData);
+                        await FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket),PubData.getFromBuilded(pubData));
                     })();
                 }
 
@@ -244,7 +245,7 @@ export class ChAccessEngine
             }
             else
             {
-                let err = new Error('No protocolAccess to publish in this customIdChannel!');
+                let err = new Error('No access to publish in this customIdChannel!');
                 // @ts-ignore'
                 err.code = 4598;
                 return err;
@@ -289,7 +290,7 @@ export class ChAccessEngine
             }
             else
             {
-                let err = new Error('No protocolAccess to subscribe this customChannel!');
+                let err = new Error('No access to subscribe this customChannel!');
                 // @ts-ignore'
                 err.code = 4584;
                 return err;
@@ -333,7 +334,7 @@ export class ChAccessEngine
                 let func = this.chConfigManager.getOnClientPubCustomCh(name);
                 if(!!func) {
                     (async () => {
-                        await FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket),pubData);
+                        await FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket),PubData.getFromBuilded(pubData));
                     })();
                 }
 
@@ -343,7 +344,7 @@ export class ChAccessEngine
             }
             else
             {
-                let err = new Error('No protocolAccess to publish in this customChannel!');
+                let err = new Error('No access to publish in this customChannel!');
                 // @ts-ignore'
                 err.code = 4587;
                 return err;
