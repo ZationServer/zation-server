@@ -13,6 +13,7 @@ import TaskErrorBag                  = require("../../api/TaskErrorBag");
 import ZationToken                   = require("../infoObjects/zationToken");
 import SocketInfo                    = require("../infoObjects/socketInfo");
 import {ScServer}                      from "../sc/scServer";
+import {Socket}                        from "../sc/socket";
 
 export type ExpressFunction = (smallBag : SmallBag, express : ExpressCore.Express) => Promise<void> | void;
 export type ScServerFunction = (smallBag : SmallBag, scServer : ScServer) => Promise<void> | void;
@@ -29,23 +30,23 @@ export type ZationWorkerMessageFunction = (smallBag : SmallBag, data : any) => P
 
 export type MiddlewareAuthenticationFunction = (smallBag : SmallBag,zationToken  : ZationToken) => Promise<boolean> | boolean | Promise<object> | object | Promise<any> | any;
 
-export type SocketErrorFunction = (smallBag : SmallBag, socket : object, error : object) => Promise<void> | void;
-export type SocketFunction = (smallBag : SmallBag, socket : object) => Promise<void> | void;
-export type SocketConnectionFunction = (smallBag : SmallBag, socket : object, conState : object) => Promise<void> | void;
-export type SocketObjFunction = (smallBag : SmallBag, socket : object, obj : object) => Promise<void> | void;
-export type SocketAuthenticateFunction = (smallBag : SmallBag, socket : object, authToken : object) => Promise<void> | void;
-export type SocketDeauthenticateFunction = (smallBag : SmallBag, socket : object, oldAuthToken : object) => Promise<void> | void;
-export type SocketMessageFunction = (smallBag : SmallBag, socket : object, message : string) => Promise<void> | void;
+export type SocketErrorFunction = (smallBag : SmallBag, socket : Socket, error : object) => Promise<void> | void;
+export type SocketFunction = (smallBag : SmallBag, socket : Socket) => Promise<void> | void;
+export type SocketConnectionFunction = (smallBag : SmallBag, socket : Socket, conState : object) => Promise<void> | void;
+export type SocketObjFunction = (smallBag : SmallBag, socket : Socket, obj : object) => Promise<void> | void;
+export type SocketAuthenticateFunction = (smallBag : SmallBag, socket : Socket, authToken : object) => Promise<void> | void;
+export type SocketDeauthenticateFunction = (smallBag : SmallBag, socket : Socket, oldAuthToken : object) => Promise<void> | void;
+export type SocketMessageFunction = (smallBag : SmallBag, socket : Socket, message : string) => Promise<void> | void;
 
 export type ScServerErrorFunction = (smallBag : SmallBag, error : object) => Promise<void> | void;
 export type ScServerNoticeFunction = (smallBag : SmallBag, note : object) => Promise<void> | void;
-export type ScServerSocketFunction = (smallBag : SmallBag, socket : object) => Promise<void> | void;
-export type ScServerConnectionFunction = (smallBag : SmallBag, socket : object, conState : object) => Promise<void> | void;
-export type ScServerSubscriptionFunction = (smallBag : SmallBag, socket : object, channelName : string, channelOptions : object) => Promise<void> | void;
-export type ScServerUnsubscriptionFunction = (smallBag : SmallBag, socket : object, channelName : string) => Promise<void> | void;
-export type ScServerAuthenticationFunction = (smallBag : SmallBag, socket : object, authToken : object) => Promise<void> | void;
-export type ScServerDeauthenticationFunction = (smallBag : SmallBag, socket : object, oldAuthToken : object) => Promise<void> | void;
-export type ScServerBadSocketAuthTokenFunction = (smallBag : SmallBag, socket : object, obj : object) => Promise<void> | void;
+export type ScServerSocketFunction = (smallBag : SmallBag, socket : Socket) => Promise<void> | void;
+export type ScServerConnectionFunction = (smallBag : SmallBag, socket : Socket, conState : object) => Promise<void> | void;
+export type ScServerSubscriptionFunction = (smallBag : SmallBag, socket : Socket, channelName : string, channelOptions : object) => Promise<void> | void;
+export type ScServerUnsubscriptionFunction = (smallBag : SmallBag, socket : Socket, channelName : string) => Promise<void> | void;
+export type ScServerAuthenticationFunction = (smallBag : SmallBag, socket : Socket, authToken : object) => Promise<void> | void;
+export type ScServerDeauthenticationFunction = (smallBag : SmallBag, socket : Socket, oldAuthToken : object) => Promise<void> | void;
+export type ScServerBadSocketAuthTokenFunction = (smallBag : SmallBag, socket : Socket, obj : object) => Promise<void> | void;
 export type ScServerReadyFunction = (smallBag : SmallBag) => Promise<void> | void;
 
 export type ScMiddlewareFunction = (smallBag : SmallBag, req : object) => Promise<boolean> | boolean | Promise<object> | object | Promise<any> | any;

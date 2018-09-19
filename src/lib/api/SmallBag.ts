@@ -4,30 +4,31 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Socket} from "../helper/sc/socket";
-import {MongoClient} from "mongodb";
-import {Options} from "nodemailer/lib/mailer";
+import {Socket}             from "../helper/sc/socket";
+import {MongoClient}        from "mongodb";
+import {Options}            from "nodemailer/lib/mailer";
 import fetch, {Request, RequestInit, Response} from 'node-fetch';
 import {WorkerChTaskActions} from "../helper/constants/workerChTaskActions";
-import {WorkerChTargets} from "../helper/constants/workerChTargets";
+import {WorkerChTargets}     from "../helper/constants/workerChTargets";
 
-const    crypto : any   = require('crypto');
-const    IP : any       = require('ip');
-import ChExchangeEngine = require("../helper/channel/chExchangeEngine");
-import ServiceEngine = require("../helper/services/serviceEngine");
-import ZationConfig = require("../main/zationConfig");
-import ZationWorker = require("../main/zationWorker");
-import Const = require('../helper/constants/constWrapper');
-import UUID = require('../helper/tools/uuid');
-import ExchangeEngine = require('../helper/channel/chExchangeEngine');
-import MySql = require("mysql");
-import Pg = require('pg');
-import nodeMailer = require('nodemailer');
-import TaskError = require("./TaskError");
-import ChTools = require("../helper/channel/chTools");
-import IdTools = require("../helper/tools/idTools");
-import ObjectPath = require("../helper/tools/objectPath");
-import TokenTools = require("../helper/token/tokenTools");
+const    crypto : any       = require('crypto');
+const    IP : any           = require('ip');
+import ChExchangeEngine     = require("../helper/channel/chExchangeEngine");
+import ServiceEngine        = require("../helper/services/serviceEngine");
+import ZationConfig         = require("../main/zationConfig");
+import ZationWorker         = require("../main/zationWorker");
+import Const                = require('../helper/constants/constWrapper');
+const  uuidV4               = require('uuid/v4');
+const uniqid                = require('uniqid');
+import ExchangeEngine       = require('../helper/channel/chExchangeEngine');
+import MySql                = require("mysql");
+import Pg                   = require('pg');
+import nodeMailer           = require('nodemailer');
+import TaskError            = require("./TaskError");
+import ChTools              = require("../helper/channel/chTools");
+import IdTools              = require("../helper/tools/idTools");
+import ObjectPath           = require("../helper/tools/objectPath");
+import TokenTools           = require("../helper/token/tokenTools");
 
 class SmallBag
 {
@@ -145,10 +146,19 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Returns an generated uuid
+     * Returns an generated uuid v4
      */
-    generateUUID() : string {
-        return UUID.generateUUID();
+    generateUUIDv4() : string {
+        return uuidV4();
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns an generated unique id
+     */
+    generateUniqueId() : string {
+        return uniqid();
     }
 
     //Part Socket Channel

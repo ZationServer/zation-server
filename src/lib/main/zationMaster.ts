@@ -4,6 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+import PortChecker = require("../helper/tools/portChecker");
+
 require('cache-require-paths');
 import BackgroundTaskSender  = require("../helper/background/backgroundTasksSender");
 const  SocketCluster : any   = require('socketcluster');
@@ -19,30 +21,27 @@ import BackgroundTasksSetter = require("../helper/background/backgroundTasksSett
 const  isWindows             = require('is-windows');
 import StateServerEngine     = require("../helper/cluster/stateServerEngine");
 
-class ZationMaster
-{
-    private static instance : ZationMaster | null = null;
-    private static readonly version : string = '0.3.6';
+class ZationMaster {
+    private static instance: ZationMaster | null = null;
+    private static readonly version: string = '0.3.6';
 
-    private readonly serverStartedTimeStamp : number;
-    private readonly zc : ZationConfig;
-    private workerIds : any;
-    private brokerIds : any;
-    private master : any;
+    private readonly serverStartedTimeStamp: number;
+    private readonly zc: ZationConfig;
+    private workerIds: any;
+    private brokerIds: any;
+    private master: any;
 
     //cluster
-    private clusterStateServerHost : any;
-    private stateServerActive : boolean;
-    private stateServerEngine : StateServerEngine;
+    private clusterStateServerHost: any;
+    private stateServerActive: boolean;
+    private stateServerEngine: StateServerEngine;
 
     //backgroundTasks
-    private backgroundTaskActive : boolean = true;
-    private backgroundTaskInit : boolean = false;
+    private backgroundTaskActive: boolean = true;
+    private backgroundTaskInit: boolean = false;
 
-    constructor(options)
-    {
-        if(ZationMaster.instance === null)
-        {
+    constructor(options) {
+        if (ZationMaster.instance === null) {
             ZationMaster.instance = this;
 
             this.serverStartedTimeStamp = Date.now();
@@ -53,8 +52,7 @@ class ZationMaster
             this.workerIds = new HashSet();
             this.brokerIds = new HashSet();
 
-            (async () =>
-            {
+            (async () => {
                 try {
                     await this.start();
                 }
@@ -63,48 +61,48 @@ class ZationMaster
                 }
             })();
         }
-        else
-        {
+        else {
             Logger.printWarning('You can only start zation once.');
         }
     }
 
-    private async start()
-    {
+    private async start() {
         Logger.printBusy('Launching Zation');
         Logger.printDebugInfo('Zation is launching in debug Mode.');
 
         Logger.startStopWatch();
         let configErrorBag = new ConfigErrorBag();
-        const configChecker = new ConfigChecker(this.zc,configErrorBag);
+        const configChecker = new ConfigChecker(this.zc, configErrorBag);
 
         configChecker.checkStarterConfig();
-        if(configErrorBag.hasConfigError()) {
+        if (configErrorBag.hasConfigError()) {
             Logger.printConfigErrorBag(configErrorBag);
             process.exit();
         }
-        Logger.printStartDebugInfo(`Master has checked the start config.`,true);
+        Logger.printStartDebugInfo(`Master has checked the start config.`, true);
 
         Logger.startStopWatch();
         this.zc.loadOtherConfigs();
-        Logger.printStartDebugInfo(`Master has loaded the other config files.`,true);
+        Logger.printStartDebugInfo(`Master has loaded the other config files.`, true);
 
         Logger.startStopWatch();
         configChecker.checkAllConfigs();
-        if(configErrorBag.hasConfigError()) {
+        if (configErrorBag.hasConfigError()) {
             Logger.printConfigErrorBag(configErrorBag);
             process.exit();
         }
-        Logger.printStartDebugInfo(`Master has checked the config files.`,true);
+        Logger.printStartDebugInfo(`Master has checked the config files.`, true);
 
         Logger.startStopWatch();
         PrepareClientJs.createServerSettingsFile(this.zc);
-        Logger.printStartDebugInfo('Master builds the server settings file.',true);
+        Logger.printStartDebugInfo('Master builds the server settings file.', true);
+
+        await this.checkPort();
 
         await this.checkClusterMode();
-        if(this.stateServerActive) {
+        if (this.stateServerActive) {
             //cluster active
-            this.stateServerEngine = new StateServerEngine(this.zc,this);
+            this.stateServerEngine = new StateServerEngine(this.zc, this);
             try {
                 await this.stateServerEngine.registerStateServer();
             }
@@ -118,7 +116,18 @@ class ZationMaster
     public startSocketClusterWithLog() {
         Logger.startStopWatch();
         this.startSocketCluster();
-        Logger.printStartDebugInfo('Master starts sc cluster.',true);
+        Logger.printStartDebugInfo('Master starts sc cluster.', true);
+    }
+
+    private async checkPort()
+    {
+        Logger.startStopWatch();
+        const port = this.zc.getMain(Const.Main.KEYS.PORT);
+        const portIsAvailable = await PortChecker.isPortAvailable(port);
+        if(!portIsAvailable) {
+            this.crashServer(`The port ${port} is not available! try with a different port!`);
+        }
+        Logger.printStartDebugInfo('Master checked port is available.', true);
     }
 
     private startSocketCluster()

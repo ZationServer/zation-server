@@ -9,7 +9,7 @@ import Const          = require('../constants/constWrapper');
 import SHBridge       = require("../bridges/shBridge");
 import ZationWorker   = require("../../main/zationWorker");
 import ZationConfig   = require("../../main/zationConfig");
-import UUID           = require("../tools/uuid");
+const uniqid          = require('uniqid');
 
 class TokenEngine
 {
@@ -32,7 +32,7 @@ class TokenEngine
     //to create a new Token
     async createToken(data : object) : Promise<boolean> {
         data[Const.Settings.TOKEN.EXPIRE] = this.generateExpiry();
-        data[Const.Settings.TOKEN.TOKEN_ID]  = UUID.generateUUID();
+        data[Const.Settings.TOKEN.TOKEN_ID]  = uniqid();
         return TokenTools.createNewToken(data,this.shBridge.getTokenBridge(),this.worker);
     }
 
