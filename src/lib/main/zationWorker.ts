@@ -73,6 +73,8 @@ class ZationWorker extends SCWorker
     private mapAuthUserGroupToSc : Mapper<Socket> = new Mapper<Socket>();
     private defaultUserGroup  = new HashSet();
 
+    private variableStorage : object = {};
+
     constructor()
     {
         super();
@@ -1218,6 +1220,18 @@ class ZationWorker extends SCWorker
     getDefaultUserGroupsMap() : any
     {
         return this.defaultUserGroup;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getWorkerVariableStorage() : object
+    {
+        return this.variableStorage;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    setWorkerVariableStorage(obj : object) : void
+    {
+        this.variableStorage = obj;
     }
 }
 

@@ -1322,6 +1322,61 @@ class SmallBag
         }
     }
 
+    //Worker storage
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Set a worker variable (server side) with object path
+     * @example
+     * setWorkerVariable('email','example@gmail.com');
+     * @param path
+     * @param value
+     */
+    setWorkerVariable(path : string | string[],value : any) : void {
+        ObjectPath.set(this.worker.getWorkerVariableStorage(),path,value);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Has a worker variable (server side) with object path
+     * @example
+     * hasWorkerVariable('email');
+     * @param path
+     */
+    hasWorkerVariable(path ?: string | string[]) : boolean {
+        return ObjectPath.has(this.worker.getWorkerVariableStorage(),path);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Get worker variable (server side) with object path
+     * @example
+     * getWorkerVariable('email');
+     * @param path
+     */
+    getWorkerVariable(path ?: string | string[]) : any {
+        return ObjectPath.get(this.worker.getWorkerVariableStorage(),path);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Delete a worker variable (server side) with object path
+     * @example
+     * deleteWorkerVariable('email');
+     * @param path
+     */
+    protected deleteWorkerVariable(path ?: string | string[]) : void {
+        if(!!path) {
+            ObjectPath.del(this.worker.getWorkerVariableStorage(),path);
+        }
+        else {
+            this.worker.setWorkerVariableStorage({});
+        }
+    }
+
     //Part Worker
 
     // noinspection JSUnusedGlobalSymbols
