@@ -13,6 +13,7 @@ import {WorkerChTargets}     from "../helper/constants/workerChTargets";
 
 const    crypto : any       = require('crypto');
 const    IP : any           = require('ip');
+const    crypto2 : any      = require("crypto2");
 import ChExchangeEngine     = require("../helper/channel/chExchangeEngine");
 import ServiceEngine        = require("../helper/services/serviceEngine");
 import ZationConfig         = require("../main/zationConfig");
@@ -29,6 +30,7 @@ import ChTools              = require("../helper/channel/chTools");
 import IdTools              = require("../helper/tools/idTools");
 import ObjectPath           = require("../helper/tools/objectPath");
 import TokenTools           = require("../helper/token/tokenTools");
+import {AsymmetricKeyPairs}   from "../helper/infoObjects/asymmetricKeyPairs";
 
 class SmallBag
 {
@@ -143,8 +145,74 @@ class SmallBag
         return crypto.randomBytes(Math.ceil(length/2)).toString('hex').slice(0,length);
     }
 
+    //Asymmetric Encryption
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
+     * @description
+     * Returns an object with private an public key.
+     * For Asymmetric Encryption
+     * @example
+     * const { privateKey, publicKey } = await getAsyncKeyPair();
+     *
+     */
+    async getAsymmetricKeyPair() : Promise<AsymmetricKeyPairs>
+    {
+        return await crypto2.createKeyPair();
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Encrypts a message with the publicKey
+     * and returns the encrypted message
+     * @example
+     * const encryptMessage = await asymmetricEncrypt('MY-MESSAGE','PUBLIC-KEY');
+     */
+    async asymmetricEncrypt(txt : string, publicKey : string) : Promise<string>
+    {
+        return await crypto2.encrypt.rsa(txt,publicKey);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Decrypts the message with the privateKey
+     * and returns the decrypted message
+     * @example
+     * const decryptedMessage = await asymmetricDecrypt('DECRYPTED-MESSAGE','PRIVATE-KEY');
+     */
+    async asymmetricDecrypt(decryptedTxt : string, privateKey : string) : Promise<string>
+    {
+        return await crypto2.decrypt.rsa(decryptedTxt,privateKey);
+    }
+
+    //Symmetric Encryption
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Generates an password that you can use for Symmetric Encryption
+     * @example
+     * const password = await generatePassword();
+     */
+    async generatePassword(secret : String = this.getRandomString()) : Promise<string>
+    {
+        return await crypto2.createPassword(secret);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Generates an initialization vector that you can use for Symmetric Encryption
+     * @example
+     * const password = await generatePassword();
+     */
+    async generateIv() : Promise<string>
+    {
+        return await crypto2.createIv();
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /*
      * @description
      * Returns an generated uuid v4
      */
