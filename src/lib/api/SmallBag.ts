@@ -166,11 +166,13 @@ class SmallBag
      * Encrypts a message with the publicKey
      * and returns the encrypted message
      * @example
-     * const encryptMessage = await asymmetricEncrypt('MY-MESSAGE','PUBLIC-KEY');
+     * const encryptedMessage = await asymmetricEncrypt('MY-MESSAGE','PUBLIC-KEY');
+     * @param message
+     * @param publicKey
      */
-    async asymmetricEncrypt(txt : string, publicKey : string) : Promise<string>
+    async asymmetricEncrypt(message : string, publicKey : string) : Promise<string>
     {
-        return await crypto2.encrypt.rsa(txt,publicKey);
+        return await crypto2.encrypt.rsa(message,publicKey);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -179,11 +181,13 @@ class SmallBag
      * Decrypts the message with the privateKey
      * and returns the decrypted message
      * @example
-     * const decryptedMessage = await asymmetricDecrypt('DECRYPTED-MESSAGE','PRIVATE-KEY');
+     * const decryptedMessage = await asymmetricDecrypt('ENCRYPTED-MESSAGE','PRIVATE-KEY');
+     * @param encryptedMessage
+     * @param privateKey
      */
-    async asymmetricDecrypt(decryptedTxt : string, privateKey : string) : Promise<string>
+    async asymmetricDecrypt(encryptedMessage : string, privateKey : string) : Promise<string>
     {
-        return await crypto2.decrypt.rsa(decryptedTxt,privateKey);
+        return await crypto2.decrypt.rsa(encryptedMessage,privateKey);
     }
 
     //Symmetric Encryption
@@ -193,6 +197,7 @@ class SmallBag
      * Generates an password that you can use for Symmetric Encryption
      * @example
      * const password = await generatePassword();
+     * @param secret
      */
     async generatePassword(secret : String = this.getRandomString()) : Promise<string>
     {
@@ -204,18 +209,83 @@ class SmallBag
      * @description
      * Generates an initialization vector that you can use for Symmetric Encryption
      * @example
-     * const password = await generatePassword();
+     * const password = await generateIv();
      */
     async generateIv() : Promise<string>
     {
         return await crypto2.createIv();
     }
 
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /*
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
      * @description
-     * Returns an generated uuid v4
+     * Encrypts a message with a password an initialization vector
+     * and returns the encrypted message
+     * @example
+     * const encryptedMessage = await symmetricEncrypt('secret information',password,iv);
+     * @param message
+     * @param password
+     * @param iv
      */
+    async symmetricEncrypt(message : string,password : string,iv : string) : Promise<string>
+    {
+        return await crypto2.encrypt.aes256cbc(message,password,iv);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Decrypts a message with a password an initialization vector
+     * and returns the decrypted message
+     * @example
+     * const password = await symmetricDecrypt(encryptedMessage,password,iv);
+     * @param encryptedMessage
+     * @param password
+     * @param iv
+     */
+    async symmetricDecrypt(encryptedMessage : string,password : string,iv : string) : Promise<string>
+    {
+        return await crypto2.decrypt.aes256cbc(encryptedMessage, password, iv);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Creates an signature from an message with a privateKey
+     * and returns the signature
+     * @example
+     * const signature = await asymmetricSign(message,privateKey);
+     * @param message
+     * @param privateKey
+     */
+    async asymmetricSign(message : string,privateKey : string) : Promise<string>
+    {
+        // noinspection TypeScriptValidateJSTypes
+        return await crypto2.sign(message, privateKey);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Verify the signature with the publicKey and message
+     * and returns if the signature is valid
+     * @example
+     * const signature = await asymmetricVerify(message,publicKey,signature);
+     * @param message
+     * @param publicKey
+     * @param signature
+     */
+    async asymmetricVerify(message : string,publicKey : string,signature : string) : Promise<boolean>
+    {
+        // noinspection TypeScriptValidateJSTypes
+        return await crypto2.verify(message,publicKey,signature);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+      * @description
+      * Returns an generated uuid v4
+      */
     generateUUIDv4() : string {
         return uuidV4();
     }
