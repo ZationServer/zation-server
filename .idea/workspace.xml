@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="fix channel engine bugs&#10;add new PubData object">
+    <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="Add new Crypto Support &#10;for asymmetric and symmetric encryption">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/api/SmallBag.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api/SmallBag.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/main/zationMaster.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationMaster.ts" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -236,15 +235,15 @@
           <entry key="patch" value="1" />
           <entry key="png" value="1" />
           <entry key="svg" value="3" />
-          <entry key="ts" value="297" />
+          <entry key="ts" value="298" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JSON" value="60" />
+          <entry key="JSON" value="61" />
           <entry key="JavaScript" value="105" />
-          <entry key="PLAIN_TEXT" value="2139" />
-          <entry key="TypeScript" value="27346" />
+          <entry key="PLAIN_TEXT" value="2204" />
+          <entry key="TypeScript" value="27785" />
           <entry key="tsconfig" value="2" />
         </counts>
       </usages-collector>
@@ -256,7 +255,7 @@
           <entry key="PATCH" value="1" />
           <entry key="PLAIN_TEXT" value="1" />
           <entry key="SVG" value="3" />
-          <entry key="TypeScript" value="297" />
+          <entry key="TypeScript" value="298" />
           <entry key="tsconfig" value="1" />
         </counts>
       </usages-collector>
@@ -264,9 +263,9 @@
         <counts>
           <entry key="dummy" value="155" />
           <entry key="js" value="105" />
-          <entry key="json" value="62" />
-          <entry key="ts" value="27346" />
-          <entry key="txt" value="1984" />
+          <entry key="json" value="63" />
+          <entry key="ts" value="27785" />
+          <entry key="txt" value="2049" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages" />
@@ -290,28 +289,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/api/SmallBag.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="440">
-              <caret line="212" lean-forward="true" selection-start-line="212" selection-end-line="212" />
+            <state relative-caret-position="276">
+              <caret line="293" column="7" lean-forward="true" selection-start-line="293" selection-start-column="7" selection-end-line="293" selection-end-column="7" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="e#81#136#0" expanded="true" />
                 <element signature="n#ChExchangeEngine#0" expanded="true" />
                 <element signature="n#ExchangeEngine#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/infoObjects/asymmetricKeyPairs.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="207">
-              <caret line="9" column="24" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -332,8 +319,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="331">
-              <caret line="68" column="12" selection-start-line="68" selection-start-column="12" selection-end-line="68" selection-end-column="12" />
+            <state relative-caret-position="46">
+              <caret line="2" column="19" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/lib/main/zationMaster.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="409">
+              <caret line="25" column="52" selection-start-line="25" selection-start-column="52" selection-end-line="25" selection-end-column="52" />
+              <folding>
+                <element signature="n#Const#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -509,7 +508,6 @@
         <option value="$PROJECT_DIR$/src/lib/helper/tools/uuid.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/token/tokenEngine.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/tools/portChecker.ts" />
-        <option value="$PROJECT_DIR$/src/lib/main/zationMaster.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/configEditTool/eventConfigStructure.ts" />
         <option value="$PROJECT_DIR$/src/lib/main/zation.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/channel/chConfigManager.ts" />
@@ -521,9 +519,10 @@
         <option value="$PROJECT_DIR$/src/lib/helper/systemController/controller/zationSC_Ping.ts" />
         <option value="$PROJECT_DIR$/src/lib/main/zationWorker.ts" />
         <option value="$PROJECT_DIR$/src/lib/api/Controller.ts" />
-        <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/src/lib/helper/infoObjects/asymmetricKeyPairs.ts" />
         <option value="$PROJECT_DIR$/src/lib/api/SmallBag.ts" />
+        <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/src/lib/main/zationMaster.ts" />
       </list>
     </option>
   </component>
@@ -548,9 +547,9 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds" fullScreen="true">
-    <option name="y" value="23" />
+    <option name="y" value="22" />
     <option name="width" value="1440" />
-    <option name="height" value="827" />
+    <option name="height" value="829" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -882,7 +881,7 @@
       <workItem from="1537170513356" duration="28552000" />
       <workItem from="1537205022297" duration="12529000" />
       <workItem from="1537267850389" duration="18968000" />
-      <workItem from="1537871769615" duration="1988000" />
+      <workItem from="1537871769615" duration="7101000" />
     </task>
     <task id="LOCAL-00001" summary="add self detected time zone config function">
       <created>1536673812706</created>
@@ -1094,11 +1093,18 @@
       <option name="project" value="LOCAL" />
       <updated>1537386754491</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Add new Crypto Support &#10;for asymmetric and symmetric encryption">
+      <created>1537954556631</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1537954556631</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1208835000" />
+    <option name="totallyTimeSpent" value="1213948000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1113,12 +1119,12 @@
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.82800984" visible="true" weight="0.2508809" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.82800984" visible="true" weight="0.2508809" />
       <window_info id="Structure" order="1" sideWeight="0.17199017" side_tool="true" weight="0.2508809" />
       <window_info id="Favorites" order="2" sideWeight="0.10449927" side_tool="true" weight="0.2081138" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.22850123" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.2899263" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.2899263" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39978448" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -1134,7 +1140,7 @@
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.24962178" />
-      <window_info anchor="right" x="0" y="0" width="434" height="866" id="Documentation" order="3" side_tool="true" weight="0.32995737" />
+      <window_info anchor="right" x="0" y="0" width="434" height="866" id="Documentation" order="3" side_tool="true" weight="0.3297568" />
     </layout>
     <layout-to-restore>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.8955007" visible="true" weight="0.2170706" />
@@ -1168,7 +1174,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="new reconnect to state server support&#10;fix cluster bugs&#10;remove first part of extra secure auth" />
     <MESSAGE value="fix validation bug&#10;´" />
     <MESSAGE value="fix validation bug &#10;remove extra secure parts" />
     <MESSAGE value="add new channel access checker&#10;add chConfigManager for performance speed&#10;change channel config structure(add in config checker and pre compiler)&#10;add new channel pub access value pubData&#10;improve performance of controller access check (access key word prepare)&#10;remove extra secure auth part2&#10;add new smallBag functions&#10;fix bugs&#10;improve general performance" />
@@ -1193,7 +1198,8 @@
     <MESSAGE value="update version 0.3.6" />
     <MESSAGE value="fix returner bug" />
     <MESSAGE value="fix channel engine bugs&#10;add new PubData object" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix channel engine bugs&#10;add new PubData object" />
+    <MESSAGE value="Add new Crypto Support &#10;for asymmetric and symmetric encryption" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add new Crypto Support &#10;for asymmetric and symmetric encryption" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/lib/helper/token/tokenTools.ts">
@@ -1310,13 +1316,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="226">
           <caret line="12" column="58" selection-start-line="12" selection-start-column="58" selection-end-line="12" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/main/zationMaster.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-331">
-          <caret line="133" column="5" selection-start-line="133" selection-start-column="5" selection-end-line="133" selection-end-column="5" />
         </state>
       </provider>
     </entry>
@@ -1496,13 +1495,6 @@
     <entry file="file://$PROJECT_DIR$/src/lib/public/assets/logo/zation-logo.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="331">
-          <caret line="68" column="12" selection-start-line="68" selection-start-column="12" selection-end-line="68" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/helper/infoObjects/cChInfo.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -1525,13 +1517,30 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/api/SmallBag.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="212" lean-forward="true" selection-start-line="212" selection-end-line="212" />
+        <state relative-caret-position="276">
+          <caret line="293" column="7" lean-forward="true" selection-start-line="293" selection-start-column="7" selection-end-line="293" selection-end-column="7" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="e#81#136#0" expanded="true" />
             <element signature="n#ChExchangeEngine#0" expanded="true" />
             <element signature="n#ExchangeEngine#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="46">
+          <caret line="2" column="19" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/main/zationMaster.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="409">
+          <caret line="25" column="52" selection-start-line="25" selection-start-column="52" selection-end-line="25" selection-end-column="52" />
+          <folding>
+            <element signature="n#Const#0" expanded="true" />
           </folding>
         </state>
       </provider>
