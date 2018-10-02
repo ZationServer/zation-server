@@ -42,22 +42,22 @@ class ChannelEngine extends ChExchangeEngine
                 });
             }
             else {
-                reject(new Error(`Can't emit an socket event by and http request!`));
+                reject(new Error(`Can't emit an socket event by an http request!`));
             }
         });
     }
 
-    getSubChannels() : any[] | undefined
+    getSubChannels() : string[]
     {
         if(this.isWebSocket) {
             return this.socket.subscriptions();
         }
         else {
-            return undefined;
+            return [];
         }
     }
 
-    kickWithIndex(search : string) : boolean
+    kickWithIndex(search : string) : void
     {
         if(this.isWebSocket)
         {
@@ -69,9 +69,7 @@ class ChannelEngine extends ChExchangeEngine
                     ChTools.kickOut(this.socket,search);
                 }
             }
-            return true;
         }
-        return false;
     }
 
 

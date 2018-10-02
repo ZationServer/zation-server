@@ -17,6 +17,7 @@ import ObjectPathSequence    = require("../helper/tools/objectPathSequence");
 import {Socket}                from "../helper/sc/socket";
 import AuthenticationError = require("../helper/error/authenticationError");
 import ProtocolAccessChecker = require("../helper/protocolAccess/protocolAccessChecker");
+import {ScServer} from "../helper/sc/scServer";
 
 class Bag extends SmallBag
 {
@@ -224,6 +225,15 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * Returns if current sc is authenticated
+     */
+    isAuthenticated() : boolean {
+        return this.isAuth();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * Returns the authentication user group of current sc.
      * If the sc is not authenticated, it will return undefined.
      */
@@ -396,7 +406,12 @@ class Bag extends SmallBag
     //Part Http
 
     // noinspection JSUnusedGlobalSymbols
-    getResponse() : Express.Response {
+    /**
+     * @description
+     * Return the http response
+     * @throws MethodIsNotCompatible
+     */
+    getHttpResponse() : Express.Response {
         if(this.shBridge.isWebSocket()) {
             throw new MethodIsNotCompatible(this.getProtocol(),'http');
         }
@@ -406,7 +421,12 @@ class Bag extends SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getRequest() : Express.Request {
+    /**
+     * @description
+     * Return the http request
+     * @throws MethodIsNotCompatible
+     */
+    getHttpRequest() : Express.Request {
         if(this.shBridge.isWebSocket()) {
             throw new MethodIsNotCompatible(this.getProtocol(),'http');
         }
@@ -416,6 +436,11 @@ class Bag extends SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Return the http method
+     * @throws MethodIsNotCompatible
+     */
     getHttpMethod() : string {
         if(this.shBridge.isWebSocket()) {
             throw new MethodIsNotCompatible(this.getProtocol(),'http');
@@ -513,9 +538,15 @@ class Bag extends SmallBag
      * @example
      * hasCustomTokenVar('person.email');
      * @param path
+     * @throws AuthenticationError
      */
     hasCustomTokenVar(path ?: string | string[]) : boolean {
-        return ObjectPath.has(this.tokenEngine.getCustomTokenVar(),path);
+        if(this.shBridge.getTokenBridge().hasToken()) {
+            return ObjectPath.has(this.tokenEngine.getCustomTokenVar(),path);
+        }
+        else {
+            throw new AuthenticationError(`Can't access custom token variable when socket is not authenticated!`);
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -526,9 +557,15 @@ class Bag extends SmallBag
      * @example
      * getCustomTokenVar('person.email');
      * @param path
+     * @throws AuthenticationError
      */
     getCustomTokenVar(path ?: string | string[]) : any {
-        return ObjectPath.get(this.tokenEngine.getCustomTokenVar(),path);
+        if(this.shBridge.getTokenBridge().hasToken()) {
+            return ObjectPath.get(this.tokenEngine.getCustomTokenVar(),path);
+        }
+        else {
+            throw new AuthenticationError(`Can't access custom token variable when socket is not authenticated!`);
+        }
     }
 
     //Part Token
@@ -536,21 +573,49 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns token id of the token form the sc.
+     * Returns token id of the token form the socket.
+     * @throws AuthenticationError
      */
-    getTokenId() : string | undefined
+    getTokenId() : string
     {
-        return this.tokenEngine.getTokenVariable(Const.Settings.TOKEN.TOKEN_ID);
+        if(this.shBridge.getTokenBridge().hasToken()){
+            return this.tokenEngine.getTokenVariable(Const.Settings.TOKEN.TOKEN_ID);
+        }
+        else {
+            throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the expire of the token from the sc.
+     * Returns the expire of the token from the socket.
+     * @throws AuthenticationError
      */
-    getTokenExpire() : string | undefined
+    getTokenExpire() : number
     {
-        return this.tokenEngine.getTokenVariable(Const.Settings.TOKEN.EXPIRE);
+        if(this.shBridge.getTokenBridge().hasToken()){
+            return this.tokenEngine.getTokenVariable(Const.Settings.TOKEN.EXPIRE);
+        }
+        else {
+            throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the panel access of the token from the socket.
+     * @throws AuthenticationError
+     */
+    getTokenPanelAccess() : boolean
+    {
+        if(this.shBridge.getTokenBridge().hasToken()){
+            return this.tokenEngine.getTokenVariable(Const.Settings.TOKEN.PANEL_ACCESS);
+        }
+        else {
+            throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -560,7 +625,7 @@ class Bag extends SmallBag
      */
     hasToken() : boolean
     {
-        return this.shBridge.getTokenBridge().getToken() !==  undefined;
+        return this.shBridge.getTokenBridge().hasToken();
     }
 
     //Part Socket
@@ -600,12 +665,26 @@ class Bag extends SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the socket
+     * @throws MethodIsNotCompatible
+     */
     getSocket() : Socket {
-        return this.shBridge.getSocket();
+        if(this.shBridge.isWebSocket) {
+            return this.shBridge.getSocket();
+        }
+        else {
+            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getScServer() : any {
+    /**
+     * @description
+     * Returns the sc server from worker
+     */
+    getScServer() : ScServer {
         return this.worker.scServer;
     }
 
@@ -622,21 +701,37 @@ class Bag extends SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the current request protocol is web socket
+     */
     isWebSocketProtocol() : boolean {
         return this.shBridge.isWebSocket();
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the current request protocol is web socket
+     */
     isWs() : boolean {
         return this.isWebSocketProtocol();
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the current request protocol is http
+     */
     isHttpProtocol() : boolean {
         return !this.shBridge.isWebSocket();
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the current request protocol is http
+     */
     isHttp() : boolean {
         return this.isHttpProtocol();
     }
@@ -662,13 +757,18 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the current channel subscriptions of the sc.
-     * If the request protocol is 'http' the method will be return undefined.
+     * Returns the current channel subscriptions of the socket.
      * Requires ws request!
+     * @throws MethodIsNotCompatible
      */
-    getSubChannels() : string[] | undefined
+    getSubChannels() : string[]
     {
-        return this.channelEngine.getSubChannels();
+        if(this.shBridge.isWebSocket) {
+            return this.channelEngine.getSubChannels();
+        }
+        else {
+            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -680,10 +780,16 @@ class Bag extends SmallBag
      * kickFromCustomIdCh('messageStreams');
      * @param name
      * @param id (if it is not provided the sc will be kicked from all ids)
+     * @throws MethodIsNotCompatible
      */
     kickFromCustomIdCh(name : string,id : string = '') : void
     {
-        this.channelEngine.kickCustomIdChannel(name,id);
+        if(this.shBridge.isWebSocket) {
+            this.channelEngine.kickCustomIdChannel(name,id);
+        }
+        else {
+            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -693,10 +799,16 @@ class Bag extends SmallBag
      * @example
      * kickFromCustomCh('stream');
      * @param name
+     * @throws MethodIsNotCompatible
      */
     kickFromCustomCh(name : string) : void
     {
-        this.channelEngine.kickCustomChannel(name);
+        if(this.shBridge.isWebSocket) {
+            this.channelEngine.kickCustomChannel(name);
+        }
+        else {
+            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
+        }
     }
 
     //Part General req info
@@ -744,8 +856,6 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish to an user channel or channels
-     * If this param is undefined and request is webSocket, the id of the current sc is used.
-     * If it is null, will be published anonymously.
      * @example
      * publishToUser('paul10','message',{message : 'hello',fromUserId : 'luca34'});
      * publishToUser(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
@@ -753,6 +863,8 @@ class Bag extends SmallBag
      * @param eventName
      * @param data
      * @param srcSocketSid
+     * If this param is undefined and request is webSocket, the id of the current sc is used.
+     * If it is null, will be published anonymously.
      */
     async publishToUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
@@ -763,8 +875,6 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish to an user channel or channels
-     * If this param is undefined and request is webSocket, the id of the current sc is used.
-     * If it is null, will be published anonymously.
      * @example
      * pubUser('paul10','message',{message : 'hello',fromUserId : 'luca34'});
      * pubUser(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
@@ -772,6 +882,8 @@ class Bag extends SmallBag
      * @param eventName
      * @param data
      * @param srcSocketSid
+     * If this param is undefined and request is webSocket, the id of the current sc is used.
+     * If it is null, will be published anonymously.
      */
     async pubUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
@@ -782,13 +894,13 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish to all channel
-     * If this param is undefined and request is webSocket, the id of the current sc is used.
-     * If it is null, will be published anonymously.
      * @example
      * publishToAll('message',{message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
+     * If this param is undefined and request is webSocket, the id of the current sc is used.
+     * If it is null, will be published anonymously.
      */
     async publishToAll(eventName : string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
@@ -799,13 +911,13 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish to all channel
-     * If this param is undefined and request is webSocket, the id of the current sc is used.
-     * If it is null, will be published anonymously.
      * @example
      * pubAll('message',{message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
+     * If this param is undefined and request is webSocket, the id of the current sc is used.
+     * If it is null, will be published anonymously.
      */
     async pubAll(eventName : string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
@@ -816,8 +928,6 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish to auth user group or groups
-     * If this param is undefined and request is webSocket, the id of the current sc is used.
-     * If it is null, will be published anonymously.
      * @example
      * publishToAuthUserGroup('admin','userRegistered',{userId : '1'});
      * publishToAuthUserGroup(['admin','superAdmin'],'userRegistered',{userId : '1'});
@@ -825,6 +935,8 @@ class Bag extends SmallBag
      * @param eventName
      * @param data
      * @param srcSocketSid
+     * If this param is undefined and request is webSocket, the id of the current sc is used.
+     * If it is null, will be published anonymously.
      */
     async publishToAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
@@ -835,8 +947,6 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish to auth user group or groups
-     * If this param is undefined and request is webSocket, the id of the current sc is used.
-     * If it is null, will be published anonymously.
      * @example
      * pubAuthUserGroup('admin','userRegistered',{userId : '1'});
      * pubAuthUserGroup(['admin','superAdmin'],'userRegistered',{userId : '1'});
@@ -844,6 +954,8 @@ class Bag extends SmallBag
      * @param eventName
      * @param data
      * @param srcSocketSid
+     * If this param is undefined and request is webSocket, the id of the current sc is used.
+     * If it is null, will be published anonymously.
      */
     async pubAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
@@ -854,13 +966,13 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish to default user group
-     * If this param is undefined and request is webSocket, the id of the current sc is used.
-     * If it is null, will be published anonymously.
      * @example
      * publishToDefaultUserGroup('message',{message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
+     * If this param is undefined and request is webSocket, the id of the current sc is used.
+     * If it is null, will be published anonymously.
      */
     async publishToDefaultUserGroup(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
@@ -871,13 +983,13 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish to default user group
-     * If this param is undefined and request is webSocket, the id of the current sc is used.
-     * If it is null, will be published anonymously.
      * @example
      * pubDefaultUserGroup('message',{message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
+     * If this param is undefined and request is webSocket, the id of the current sc is used.
+     * If it is null, will be published anonymously.
      */
     async pubDefaultUserGroup(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
@@ -888,13 +1000,13 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish in all auth user groups
-     * If this param is undefined and request is webSocket, the id of the current sc is used.
-     * If it is null, will be published anonymously.
      * @example
      * publishToAllAuthUserGroups('message',{fromUserId : '1',message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
+     * If this param is undefined and request is webSocket, the id of the current sc is used.
+     * If it is null, will be published anonymously.
      */
     async publishToAllAuthUserGroups(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
@@ -905,13 +1017,13 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish in all auth user groups
-     * If this param is undefined and request is webSocket, the id of the current sc is used.
-     * If it is null, will be published anonymously.
      * @example
      * pubAllAuthUserGroups('message',{fromUserId : '1',message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
+     * If this param is undefined and request is webSocket, the id of the current sc is used.
+     * If it is null, will be published anonymously.
      */
     async pubAllAuthUserGroups(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
@@ -922,8 +1034,6 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish in an custom id Channel
-     * If this param is undefined and request is webSocket, the id of the current sc is used.
-     * If it is null, will be published anonymously.
      * @example
      * publishToCustomIdChannel('imageChannel','image2','like',{fromUserId : '1'});
      * @param channel
@@ -931,6 +1041,8 @@ class Bag extends SmallBag
      * @param eventName
      * @param data
      * @param srcSocketSid
+     * If this param is undefined and request is webSocket, the id of the current sc is used.
+     * If it is null, will be published anonymously.
      */
     async publishToCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
@@ -941,8 +1053,6 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish in an custom id Channel
-     * If this param is undefined and request is webSocket, the id of the current sc is used.
-     * If it is null, will be published anonymously.
      * @example
      * pubCustomIdChannel('imageChannel','image2','like',{fromUserId : '1'});
      * @param channel
@@ -950,6 +1060,8 @@ class Bag extends SmallBag
      * @param eventName
      * @param data
      * @param srcSocketSid
+     * If this param is undefined and request is webSocket, the id of the current sc is used.
+     * If it is null, will be published anonymously.
      */
     async pubCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
@@ -960,8 +1072,6 @@ class Bag extends SmallBag
     /**
      * @description
      * Publish in an custom channel
-     * If this param is undefined and request is webSocket, the id of the current sc is used.
-     * If it is null, will be published anonymously.
      * @example
      * publishToCustomChannel('messageChannel','message',{message : 'hello',fromUserId : '1'});
      * publishToCustomChannel(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
@@ -969,6 +1079,8 @@ class Bag extends SmallBag
      * @param eventName
      * @param data
      * @param srcSocketSid
+     * If this param is undefined and request is webSocket, the id of the current sc is used.
+     * If it is null, will be published anonymously.
      */
     async publishToCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
@@ -978,9 +1090,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom channel or channels
-     * If this param is undefined and request is webSocket, the id of the current sc is used.
-     * If it is null, will be published anonymously.
+     * Publish in an custom channel or channels*
      * @example
      * pubCustomChannel('messageChannel','message',{message : 'hello',fromUserId : '1'});
      * pubCustomChannel(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
@@ -988,6 +1098,8 @@ class Bag extends SmallBag
      * @param eventName
      * @param data
      * @param srcSocketSid
+     * If this param is undefined and request is webSocket, the id of the current sc is used.
+     * If it is null, will be published anonymously.
      */
     async pubCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
