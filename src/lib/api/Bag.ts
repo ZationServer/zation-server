@@ -430,7 +430,7 @@ class Bag extends SmallBag
     /**
      * @description
      * Set a custom token variable with object path
-     * You can protocolAccess this variables on client and server side
+     * You can access this variables on client and server side
      * Check that the sc is authenticated (has a token)
      * @example
      * await setCustomTokenVar('person.email','example@gmail.com');
@@ -453,7 +453,7 @@ class Bag extends SmallBag
     /**
      * @description
      * Delete a custom token variable with object path
-     * You can protocolAccess this variables on client and server side
+     * You can access this variables on client and server side
      * Check that the sc is authenticated (has a token)
      * @example
      * await deleteCustomTokenVar('person.email');
@@ -482,7 +482,7 @@ class Bag extends SmallBag
      * Sequence edit the custom token variables
      * Useful if you want to make several changes.
      * This will do everything in one and saves performance.
-     * You can protocolAccess this variables on client and server side
+     * You can access this variables on client and server side
      * Check that the sc is authenticated (has a token)
      * @example
      * await seqEditCustomTokenVar()
@@ -509,7 +509,7 @@ class Bag extends SmallBag
     /**
      * @description
      * Has a custom token variable with object path
-     * You can protocolAccess this variables on client and server side
+     * You can access this variables on client and server side
      * @example
      * hasCustomTokenVar('person.email');
      * @param path
@@ -522,7 +522,7 @@ class Bag extends SmallBag
     /**
      * @description
      * Get a custom token variable with object path
-     * You can protocolAccess this variables on client and server side
+     * You can access this variables on client and server side
      * @example
      * getCustomTokenVar('person.email');
      * @param path
