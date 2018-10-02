@@ -4,6 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+export type OnHandlerFunction = (data : any, response : ResponseFunction) => void
+export type ResponseFunction = (err : any | number, responseData : any) => void
+
 export interface Socket
 {
     id : string;
@@ -22,8 +25,8 @@ export interface Socket
 
     getState() : string;
     disconnect(code ?: any, data ?: any) : void;
-    emit(event : string, data : object, callback ?: Function) : void;
-    on(event : string, handler : Function) : void;
+    emit(event : string, data : object, callback ?: ResponseFunction) : void;
+    on(event : string, handler : OnHandlerFunction) : void;
     off(event ?: string, handler ?: Function) : void;
     send(data : any, options ?: object) : void;
     getAuthToken() : object | null;
