@@ -93,7 +93,7 @@ class TokenEngine
     }
 
     getCustomTokenVar() : object {
-        return this.getTokenVariable(Const.Settings.TOKEN.CUSTOM_VARIABLES);
+        return TokenTools.getTokenVariable(Const.Settings.TOKEN.CUSTOM_VARIABLES,this.shBridge.getTokenBridge());
     }
 
     async setCustomTokenVar(data : object) : Promise<boolean> {

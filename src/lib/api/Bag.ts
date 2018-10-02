@@ -260,11 +260,11 @@ class Bag extends SmallBag
      * await authenticate('user','tom12',{email : 'example@gmail.com'});
      * @param authUserGroup The authUserGroup must exist in the app.config. Otherwise an error will be thrown.
      * @param userId
-     * @param tokenCustomVar If this parameter is used all previous variables will be deleted.
+     * @param customTokenVar If this parameter is used all previous variables will be deleted.
      * @throws AuthenticationError
      */
-    async authenticate(authUserGroup : string,userId ?: string | number,tokenCustomVar ?: object) : Promise<void> {
-        await this.authEngine.authenticate(authUserGroup,userId,tokenCustomVar);
+    async authenticate(authUserGroup : string,userId ?: string | number,customTokenVar ?: object) : Promise<void> {
+        await this.authEngine.authenticate(authUserGroup,userId,customTokenVar);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -608,7 +608,7 @@ class Bag extends SmallBag
      * Returns the panel access of the token from the socket.
      * @throws AuthenticationError
      */
-    getTokenPanelAccess() : boolean
+    getPanelAccess() : boolean
     {
         if(this.shBridge.getTokenBridge().hasToken()){
             return this.tokenEngine.getTokenVariable(Const.Settings.TOKEN.PANEL_ACCESS);
@@ -616,16 +616,6 @@ class Bag extends SmallBag
         else {
             throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
         }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Checks if the current request has a token.
-     */
-    hasToken() : boolean
-    {
-        return this.shBridge.getTokenBridge().hasToken();
     }
 
     //Part Socket
