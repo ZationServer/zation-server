@@ -16,33 +16,26 @@ export class Controller
 
     /**
      * @description
-     * Gets invokes when the zation system is
-     * creating instance of the controller (in worker start)
+     * Gets invokes when the zation system is creating instance of the controller (in worker start).
      * @param simpleBag
      */
     async initialize(simpleBag : SmallBag) : Promise<void> {}
 
     /**
      * @description
-     * Gets invokes when the controller gets an request
-     * and input is correct
+     * Gets invokes when the controller gets an request and input is correct.
      * @param bag
      * @param input
      * @return
-     * The Return value of the function
-     * is send to the client
-     * with an success response.
+     * The Return value of the function is send to the client with an success response.
      * @throws
-     * You can also throw TaskErrors,
-     * which are sent to the client
-     * with a not success response.
+     * You can also throw TaskErrors, which are sent to the client with a not success response.
      */
     async handle(bag : Bag,input : any) : Promise<any> {}
 
     /**
      * @description
-     * Gets invokes when the controller gets an request
-     * with wrong input
+     * Gets invokes when the controller gets an request with wrong input.
      * @param bag
      * @param input
      */
@@ -52,7 +45,7 @@ export class Controller
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set a controller variable (server side) with object path
+     * Set a controller variable (server side) with object path.
      * @example
      * setControllerVariable('email','example@gmail.com');
      * @param path
@@ -65,7 +58,7 @@ export class Controller
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Has a controller variable (server side) with object path
+     * Has a controller variable (server side) with object path.
      * @example
      * hasControllerVariable('email');
      * @param path
@@ -77,7 +70,7 @@ export class Controller
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Get controller variable (server side) with object path
+     * Get controller variable (server side) with object path.
      * @example
      * getControllerVariable('email');
      * @param path
@@ -89,7 +82,7 @@ export class Controller
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Delete a controller variable (server side) with object path
+     * Delete a controller variable (server side) with object path.
      * @example
      * deleteControllerVariable('email');
      * @param path

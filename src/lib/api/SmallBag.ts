@@ -107,7 +107,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Hash an string with sha512
+     * Hash an string with sha512.
      * @param string
      * @param salt
      */
@@ -119,7 +119,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Hash an string
+     * Hash an string.
      * @param hash
      * @param string
      * @param salt
@@ -137,7 +137,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Returns an random string
+     * Returns an random string.
      * @param length
      */
     getRandomString(length : number = 16) : string
@@ -149,8 +149,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Returns an object with private an public key.
-     * For Asymmetric Encryption
+     * Returns an object with private an public key for Asymmetric Encryption.
      * @example
      * const { privateKey, publicKey } = await getAsyncKeyPair();
      *
@@ -163,8 +162,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Encrypts a message with the publicKey
-     * and returns the encrypted message
+     * Encrypts a message with the publicKey and returns the encrypted message.
      * @example
      * const encryptedMessage = await asymmetricEncrypt('MY-MESSAGE','PUBLIC-KEY');
      * @param message
@@ -178,8 +176,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Decrypts the message with the privateKey
-     * and returns the decrypted message
+     * Decrypts the message with the privateKey and returns the decrypted message.
      * @example
      * const decryptedMessage = await asymmetricDecrypt('ENCRYPTED-MESSAGE','PRIVATE-KEY');
      * @param encryptedMessage
@@ -194,7 +191,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Generates an password that you can use for Symmetric Encryption
+     * Generates an password that you can use for Symmetric Encryption.
      * @example
      * const password = await generatePassword();
      * @param secret
@@ -207,7 +204,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Generates an initialization vector that you can use for Symmetric Encryption
+     * Generates an initialization vector that you can use for Symmetric Encryption.
      * @example
      * const password = await generateIv();
      */
@@ -219,8 +216,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Encrypts a message with a password an initialization vector
-     * and returns the encrypted message
+     * Encrypts a message with a password an initialization vector and returns the encrypted message.
      * @example
      * const encryptedMessage = await symmetricEncrypt('secret information',password,iv);
      * @param message
@@ -235,8 +231,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Decrypts a message with a password an initialization vector
-     * and returns the decrypted message
+     * Decrypts a message with a password an initialization vector and returns the decrypted message.
      * @example
      * const password = await symmetricDecrypt(encryptedMessage,password,iv);
      * @param encryptedMessage
@@ -251,8 +246,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Creates an signature from an message with a privateKey
-     * and returns the signature
+     * Creates an signature from an message with a privateKey and returns the signature.
      * @example
      * const signature = await asymmetricSign(message,privateKey);
      * @param message
@@ -267,8 +261,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Verify the signature with the publicKey and message
-     * and returns if the signature is valid
+     * Verify the signature with the publicKey and message and returns if the signature is valid.
      * @example
      * const signature = await asymmetricVerify(message,publicKey,signature);
      * @param message
@@ -284,7 +277,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
       * @description
-      * Returns an generated uuid v4
+      * Returns an generated uuid v4.
       */
     generateUUIDv4() : string {
         return uuidV4();
@@ -293,7 +286,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Returns an generated unique id
+     * Returns an generated unique id.
      */
     generateUniqueId() : string {
         return uniqid();
@@ -304,11 +297,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to an user channel or channels
+     * Publish to an user channel or channels.
      * @example
      * publishToUser('paul10','message',{message : 'hello',fromUserId : 'luca34'});
      * publishToUser(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
-     * @param userId or more userIds in array
+     * @param userId or more userIds in array.
      * @param eventName
      * @param data
      * @param srcSocketSid
@@ -322,11 +315,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to an user channel or channels
+     * Publish to an user channel or channels.
      * @example
      * pubUser('paul10','message',{message : 'hello',fromUserId : 'luca34'});
      * pubUser(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
-     * @param userId or more userIds in array
+     * @param userId or more userIds in array.
      * @param eventName
      * @param data
      * @param srcSocketSid
@@ -340,7 +333,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to all channel
+     * Publish to all channel.
      * @example
      * publishToAll('message',{message : 'hello'});
      * @param eventName
@@ -356,7 +349,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to all channel
+     * Publish to all channel.
      * @example
      * pubAll('message',{message : 'hello'});
      * @param eventName
@@ -372,7 +365,8 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to auth user group or groups
+     * Publish to auth user group or groups.
+     * @example
      * publishToAuthUserGroup('admin','userRegistered',{userId : '1'});
      * publishToAuthUserGroup(['admin','superAdmin'],'userRegistered',{userId : '1'});
      * @param authUserGroup or an array of auth user groups
@@ -389,11 +383,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to auth user group or groups
+     * Publish to auth user group or groups.
      * @example
      * pubAuthUserGroup('admin','userRegistered',{userId : '1'});
      * pubAuthUserGroup(['admin','superAdmin'],'userRegistered',{userId : '1'});
-     * @param authUserGroup or an array of auth user groups
+     * @param authUserGroup or an array of auth user groups.
      * @param eventName
      * @param data
      * @param srcSocketSid
@@ -407,7 +401,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to default user group
+     * Publish to default user group.
      * @example
      * publishToDefaultUserGroup('message',{message : 'hello'});
      * @param eventName
@@ -423,7 +417,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to default user group
+     * Publish to default user group.
      * @example
      * pubDefaultUserGroup('message',{message : 'hello'});
      * @param eventName
@@ -439,7 +433,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in all auth user groups
+     * Publish in all auth user groups.
      * @example
      * publishToAllAuthUserGroups('message',{fromUserId : '1',message : 'hello'});
      * @param eventName
@@ -455,7 +449,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in all auth user groups
+     * Publish in all auth user groups.
      * @example
      * pubAllAuthUserGroups('message',{fromUserId : '1',message : 'hello'});
      * @param eventName
@@ -471,7 +465,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom id Channel
+     * Publish in an custom id Channel.
      * @example
      * publishToCustomIdChannel('imageChannel','image2','like',{fromUserId : '1'});
      * @param channel
@@ -489,7 +483,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom id Channel
+     * Publish in an custom id Channel.
      * @example
      * pubCustomIdChannel('imageChannel','image2','like',{fromUserId : '1'});
      * @param channel
@@ -507,11 +501,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom channel
+     * Publish in an custom channel.
      * @example
      * publishToCustomChannel('messageChannel','message',{message : 'hello',fromUserId : '1'});
      * publishToCustomChannel(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
-     * @param channel or an array of channels
+     * @param channel or an array of channels.
      * @param eventName
      * @param data
      * @param srcSocketSid
@@ -525,11 +519,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom channel or channels
+     * Publish in an custom channel or channels.
      * @example
      * pubCustomChannel('messageChannel','message',{message : 'hello',fromUserId : '1'});
      * pubCustomChannel(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
-     * @param channel or an array of channels
+     * @param channel or an array of channels.
      * @param eventName
      * @param data
      * @param srcSocketSid
@@ -545,7 +539,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Is for an mysql query
+     * Is for an mysql query.
      * @example
      * const res = mySqlQuery('SELECT 1 + 1 AS solution');
      * const solution = res.results[0];
@@ -553,9 +547,7 @@ class SmallBag
      * @param  query
      * @param  serviceKey
      * @return Promise<object>
-     * The object has 2 fields,
-     * one for the result ('result') and
-     * one for the fields information ('fields')
+     * The object has 2 fields, one for the result ('result') and one for the fields information ('fields').
      */
     mySqlQuery(query ,serviceKey : string = 'default') : Promise<object>
     {
@@ -573,7 +565,7 @@ class SmallBag
     // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
     /**
      * @description
-     * Format an mySql query
+     * Format an mySql query.
      * @example
      * mySqlFormat('SELECT * FROM ?? WHERE ?? = ?',['users', 'id', 10]);
      * @param  query
@@ -590,8 +582,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Checks if the service with this key is exist
-     * and can be used.
+     * Checks if the service with this key is exist and can be used.
      * @param  serviceKey
      */
     isMySql(serviceKey : string = 'default') : boolean
@@ -615,7 +606,7 @@ class SmallBag
     /**
      * @throws ServiceNotFoundError
      * @param  serviceKey
-     * the key to the service
+     * the key to the service.
      */
     async getPostgreSql(serviceKey : string = 'default') : Promise<Pg.Client>
     {
@@ -625,8 +616,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Checks if the service with this key is exist
-     * and can be used.
+     * Checks if the service with this key is exist and can be used.
      * @param  serviceKey
      */
     isPostgreSql(serviceKey : string = 'default') : boolean
@@ -640,7 +630,7 @@ class SmallBag
     /**
      * @throws ServiceNotFoundError
      * @param  serviceKey
-     * the key to the service
+     * the key to the service.
      */
     async getMongoDb(serviceKey : string = 'default') : Promise<MongoClient>
     {
@@ -650,8 +640,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Checks if the service with this key is exist
-     * and can be used.
+     * Checks if the service with this key is exist and can be used.
      * @param  serviceKey
      */
     isMongoDb(serviceKey : string = 'default') : boolean
@@ -664,7 +653,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Send an email, with use node mailer service
+     * Send an email, with the node mailer service.
      * @example
      * let mailOptions = {
      *  from: '"Fred Foo 👻" <foo@example.com>', // sender address
@@ -678,7 +667,7 @@ class SmallBag
      * @param mailOptions
      * @param  serviceKey
      * @return Promise<object>
-     * The object is an info object
+     * The object is an info object.
      */
     sendMail(mailOptions : Options,serviceKey : string = 'default') : Promise<object>
     {
@@ -696,7 +685,7 @@ class SmallBag
     /**
      * @throws ServiceNotFoundError
      * @param  serviceKey
-     * the key to the service
+     * the key to the service.
      */
     async getNodeMailer(serviceKey : string = 'default') : Promise<nodeMailer.Transporter>
     {
@@ -706,8 +695,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Checks if the service with this key is exist
-     * and can be used.
+     * Checks if the service with this key is exist and can be used.
      * @param  serviceKey
      */
     isNodeMailer(serviceKey : string = 'default') : boolean
@@ -721,9 +709,9 @@ class SmallBag
     /**
      * @throws ServiceNotFoundError
      * @param  name
-     * The name of the custom service
+     * The name of the custom service.
      * @param  serviceKey
-     * the key to the service
+     * the key to the service.
      */
     async getCustomService(name : string,serviceKey : string = 'default') : Promise<any>
     {
@@ -733,8 +721,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Checks if the service with this key is exist
-     * and can be used.
+     * Checks if the service with this key is exist and can be used.
      * @param name
      * @param  serviceKey
      */
@@ -748,7 +735,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns taskError with Info from the error config file
+     * Returns taskError with Info from the error config file.
      * @throws ErrorNotFoundError
      * @param errorName
      */
@@ -760,7 +747,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns taskError with Info from the error config file
+     * Returns taskError with Info from the error config file.
      * @throws ErrorNotFoundError
      * @param errorName
      * @param info
@@ -774,8 +761,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Checks if the error with this name is exist
-     * and can be used.
+     * Checks if the error with this name is exist and can be used.
      * @param name
      */
     isErrorConstruct(name : string) : boolean
@@ -785,6 +771,13 @@ class SmallBag
 
     //Part Http
     // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Fetch method witch can be use to make an http request.
+     * Look in npm package 'node-fetch'.
+     * @param url
+     * @param init
+     */
     async fetch(url: string | Request, init?: RequestInit): Promise<Response>
     {
         return await fetch(url,init);
@@ -795,12 +788,12 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with userId from an custom id channel (server side)
+     * KickOut all sockets on the complete system with userId from an custom id channel (server side).
      * @example
      * kickUserCustomIdCh('user20','chatGroup');
      * kickUserCustomIdCh(['tom39','lara23'],'image','2');
      * kickUserCustomIdCh(['tom39','lara23'],'image',undefined,'EXCEPT-SOCKET-SID');
-     * @param userId or more user ids in an array
+     * @param userId or more user ids in an array.
      * @param channel is optional, if it is not given the users will be kicked out from all custom id channels.
      * @param id is optional, if it is not given the users will be kicked out from all ids of this channel.
      * @param exceptSocketSids
@@ -815,12 +808,12 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with userId from an custom channel (server side)
+     * KickOut all sockets on the complete system with userId from an custom channel (server side).
      * @example
      * kickUserCustomCh('user20','chatGroup');
      * kickUserCustomCh(['tom39','lara23'],'image');
      * kickUserCustomCh(['tom39','lara23'],'image','EXCEPT-SOCKET-SID');
-     * @param userId or more user ids in an array
+     * @param userId or more user ids in an array.
      * @param channel is optional, if it is not given the users will be kicked out from all custom channels.
      * @param exceptSocketSids
      */
@@ -834,12 +827,12 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with userId from all channel (server side)
+     * KickOut all sockets on the complete system with userId from all channel (server side).
      * @example
      * kickUserAllCh('user20');
      * kickUserAllCh(['tom39','lara23']);
      * kickUserAllCh(['tom39','lara23'],'EXCEPT-SOCKET-SID');
-     * @param userId or more user ids in an array
+     * @param userId or more user ids in an array.
      * @param exceptSocketSids
      */
     async kickUserAllCh(userId : number | string | (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
@@ -851,12 +844,12 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with userId from auth user group channel (server side)
+     * KickOut all sockets on the complete system with userId from auth user group channel (server side).
      * @example
      * kickUserAuthUserGroupCh('user20','user');
      * kickUserAuthUserGroupCh(['tom39','lara23'],'user');
      * kickUserAuthUserGroupCh(['tom39','lara23'],'user','EXCEPT-SOCKET-SID');
-     * @param userId or more user ids in an array
+     * @param userId or more user ids in an array.
      * @param authUserGroup is optional, if it is not given the users will be kicked out from all auth user group channels.
      * @param exceptSocketSids
      */
@@ -870,12 +863,12 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with userId from default user group channel (server side)
+     * KickOut all sockets on the complete system with userId from default user group channel (server side).
      * @example
      * kickUserDefaultUserGroupCh('user20');
      * kickUserDefaultUserGroupCh(['tom39','lara23']);
      * kickUserDefaultUserGroupCh(['tom39','lara23'],'EXCEPT-SOCKET-SID');
-     * @param userId or more user ids in an array
+     * @param userId or more user ids in an array.
      * @param exceptSocketSids
      */
     async kickUserDefaultUserGroupCh(userId : number | string | (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
@@ -887,12 +880,12 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with token id from an custom id channel (server side)
+     * KickOut all sockets on the complete system with token id from an custom id channel (server side).
      * @example
      * kickTokenCustomIdCh('TOKEN-UUID1','chatGroup');
      * kickTokenCustomIdCh(['TOKEN-UUID1,'TOKEN-UUID2'],'image','2');
      * kickTokenCustomIdCh(['TOKEN-UUID1,'TOKEN-UUID2'],'image',undefined,'EXCEPT-SOCKET-SID');
-     * @param tokenId or more tokenIds in an array
+     * @param tokenId or more tokenIds in an array.
      * @param channel is optional, if it is not given the sockets with tokenId will be kicked out from all custom id channels.
      * @param id is optional, if it is not given the sockets with tokenId will be kicked out from all ids of this channel.
      * @param exceptSocketSids
@@ -907,11 +900,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with token id from an custom channel (server side)
+     * KickOut all sockets on the complete system with token id from an custom channel (server side).
      * @example
      * kickTokenCustomCh('TOKEN-UUID1','chatGroup');
      * kickTokenCustomCh(['TOKEN-UUID1,'TOKEN-UUID2'],'image','EXCEPT-SOCKET-SID');
-     * @param tokenId or more tokenIds in an array
+     * @param tokenId or more tokenIds in an array.
      * @param channel is optional, if it is not given the sockets with tokenId will be kicked out from all custom channels.
      * @param exceptSocketSids
      */
@@ -925,11 +918,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with token id from all channel (server side)
+     * KickOut all sockets on the complete system with token id from all channel (server side).
      * @example
      * kickTokenAllCh('TOKEN-UUID1');
      * kickTokenCustomCh(['TOKEN-UUID1,'TOKEN-UUID2'],'EXCEPT-SOCKET-SID');
-     * @param tokenId or more tokenIds in an array
+     * @param tokenId or more tokenIds in an array.
      * @param exceptSocketSids
      */
     async kickTokenAllCh(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
@@ -941,11 +934,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with token id from auth user group channel (server side)
+     * KickOut all sockets on the complete system with token id from auth user group channel (server side).
      * @example
      * kickTokenAuthUserGroupCh('TOKEN-UUID1','user');
      * kickTokenAuthUserGroupCh(['TOKEN-UUID1,'TOKEN-UUID2'],'user','EXCEPT-SOCKET-SID');
-     * @param tokenId or more tokenIds in an array
+     * @param tokenId or more tokenIds in an array.
      * @param authUserGroup is optional, if it is not given the sc with token id will be kicked out from all auth user group channels.
      * @param exceptSocketSids
      */
@@ -959,11 +952,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with token id from default user group channel (server side)
+     * KickOut all sockets on the complete system with token id from default user group channel (server side).
      * @example
      * kickTokenDefaultUserGroupCh('TOKEN-UUID1');
      * kickTokenDefaultUserGroupCh(['TOKEN-UUID1,'TOKEN-UUID2'],'EXCEPT-SOCKET-SID');
-     * @param tokenId or more tokenIds in an array
+     * @param tokenId or more tokenIds in an array.
      * @param exceptSocketSids
      */
     async kickTokenDefaultUserGroupCh(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
@@ -975,7 +968,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Kick out all sockets on the complete system from an custom id channel
+     * Kick out all sockets on the complete system from an custom id channel.
      * @example
      * kickOutAllSocketsCustomIdCh('CUSTOM-CH-NAME','ID');
      * @param channel is optional, if it is not given the sockets will be kicked out from all custom id channels.
@@ -992,7 +985,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Kick out all sockets on the complete system from an custom channel
+     * Kick out all sockets on the complete system from an custom channel.
      * @example
      * kickOutAllSocketsCustomCh('CUSTOM-CH-NAME');
      * @param channel is optional, if it is not given the sockets will be kicked out from all custom channels.
@@ -1008,7 +1001,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Kick out all sockets on the complete system from all channel
+     * Kick out all sockets on the complete system from all channel.
      * @example
      * kickOutAllSocketsAllCh();
      * @param exceptSocketSids
@@ -1022,9 +1015,9 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Kick out all sockets on the complete system from auth user group channel
+     * Kick out all sockets on the complete system from auth user group channel.
      * @example
-     * kickOutAllSocketsAuthUserGroupCh() ;
+     * kickOutAllSocketsAuthUserGroupCh();
      * @param authUserGroup is optional, if it is not given all sockets will be kicked out from all auth user group channels.
      * @param exceptSocketSids
      */
@@ -1038,9 +1031,9 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Kick out all sockets on the complete system from default user group channel
+     * Kick out all sockets on the complete system from default user group channel.
      * @example
-     * kickOutAllSocketsDefaultUserGroupCh() ;
+     * kickOutAllSocketsDefaultUserGroupCh();
      * @param exceptSocketSids
      */
     async kickAllSocketsDefaultUserGroupCh(exceptSocketSids : string[] | string = []) : Promise<void>
@@ -1052,11 +1045,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with sid from an custom id channel (server side)
+     * KickOut all sockets on the complete system with sid from an custom id channel (server side).
      * @example
      * kickSocketsCustomIdCh('SOCKET-SID','chatGroup');
      * kickSocketsCustomIdCh(['SOCKET-SID-1','SOCKET-SID-2'],'image','2');
-     * @param socketSid or more socketSids in an array
+     * @param socketSid or more socketSids in an array.
      * @param channel is optional, if it is not given the sockets will be kicked out from all custom id channels.
      * @param id is optional, if it is not given the sockets will be kicked out from all ids of this channel.
      */
@@ -1070,11 +1063,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with sid from an custom channel (server side)
+     * KickOut all sockets on the complete system with sid from an custom channel (server side).
      * @example
      * kickSocketsCustomCh('SOCKET-SID','chatGroup');
      * kickSocketsCustomCh(['SOCKET-SID-1','SOCKET-SID-2'],'image');
-     * @param socketSid or more socketSids in an array
+     * @param socketSid or more socketSids in an array.
      * @param channel is optional, if it is not given the sockets will be kicked out from all custom channels.
      */
     async kickSocketsCustomCh(socketSid : string | string[], channel ?: string) : Promise<void>
@@ -1087,11 +1080,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with sid from all channel (server side)
+     * KickOut all sockets on the complete system with sid from all channel (server side).
      * @example
      * kickSocketsAllCh('SOCKET-SID');
      * kickSocketsAllCh(['SOCKET-SID-1','SOCKET-SID-2']);
-     * @param socketSid or more socketSids in an array
+     * @param socketSid or more socketSids in an array.
      */
     async kickSocketsAllCh(socketSid : string | string[]) : Promise<void>
     {
@@ -1102,11 +1095,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with sid from auth user group channel (server side)
+     * KickOut all sockets on the complete system with sid from auth user group channel (server side).
      * @example
      * kickSocketsAuthUserGroupCh('SOCKET-SID','user');
      * kickSocketsAuthUserGroupCh(['SOCKET-SID-1','SOCKET-SID-2'],'user');
-     * @param socketSid or more socketSids in an array
+     * @param socketSid or more socketSids in an array.
      * @param authUserGroup is optional, if it is not given the sockets will be kicked out from all auth user group channels.
      */
     async kickSocketsAuthUserGroupCh(socketSid : string | string[],authUserGroup ?: string) : Promise<void>
@@ -1119,11 +1112,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with sid from default user group channel (server side)
+     * KickOut all sockets on the complete system with sid from default user group channel (server side).
      * @example
      * kickSocketsDefaultUserGroupCh('SOCKET-SID');
      * kickSocketsDefaultUserGroupCh(['SOCKET-SID-1','SOCKET-SID-2']);
-     * @param socketSid or more socketSids in an array
+     * @param socketSid or more socketSids in an array.
      */
     async kickSocketsDefaultUserGroupCh(socketSid : string | string[]) : Promise<void>
     {
@@ -1135,11 +1128,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Emit to all sockets on complete system with user id (server side)
+     * Emit to all sockets on complete system with user id (server side).
      * @example
      * emitUser('joel2','myEvent',{myData : 'test'});
      * emitUser('joel2','myEvent',{myData : 'test'},'EXCEPT-SOCKET-SID');
-     * @param userId or more userIds in an array
+     * @param userId or more userIds in an array.
      * @param event
      * @param data
      * @param exceptSocketSids
@@ -1153,11 +1146,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Emit to all sockets on complete system with token id (server side)
+     * Emit to all sockets on complete system with token id (server side).
      * @example
      * emitToken('TOKEN-UUID1','myEvent',{myData : 'test'});
      * emitToken('TOKEN-UUID2','myEvent',{myData : 'test'},'EXCEPT-SOCKET-SID');
-     * @param tokenId or more tokenIds in an array
+     * @param tokenId or more tokenIds in an array.
      * @param event
      * @param data
      * @param exceptSocketSids
@@ -1171,7 +1164,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Emit to all sockets on complete system (server side)
+     * Emit to all sockets on complete system (server side).
      * @example
      * emitAllSockets('myEvent',{myData : 'test'});
      * emitAllSockets('myEvent',{myData : 'test'},'EXCEPT-SOCKET-SID');
@@ -1188,11 +1181,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Emit to all sockets with sid on complete system (server side)
+     * Emit to all sockets with sid on complete system (server side).
      * @example
      * emitSockets('SOCKET-SID','myEvent',{myData : 'test'});
      * emitSockets(['SOCKET-SID-1','SOCKET-SID-2'],'myEvent',{myData : 'test'});
-     * @param socketSid or more socketSids in an array
+     * @param socketSid or more socketSids in an array.
      * @param event
      * @param data
      */
@@ -1208,12 +1201,12 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Disconnect all sockets on complete system with user id (server side)
+     * Disconnect all sockets on complete system with user id (server side).
      * @example
      * disconnectUser(['tim902','leonie23']);
      * disconnectUser('tim902');
      * disconnectUser('tim902','EXCEPT-SOCKET-SID');
-     * @param userId or more userIds in an array
+     * @param userId or more userIds in an array.
      * @param exceptSocketSids
      */
     async disconnectUser(userId : number | string | (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
@@ -1225,12 +1218,12 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Disconnect all sockets on complete system with token id (server side)
+     * Disconnect all sockets on complete system with token id (server side).
      * @example
      * disconnectToken(['TOKEN-UUID1','TOKEN-UUID2']);
      * disconnectToken('TOKEN-UUID1');
      * disconnectToken('TOKEN-UUID1','EXCEPT-SOCKET-SID'');
-     * @param tokenId or more tokenIds in an array
+     * @param tokenId or more tokenIds in an array.
      * @param exceptSocketSids
      */
     async disconnectToken(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
@@ -1242,7 +1235,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Disconnect all sockets on complete system (server side)
+     * Disconnect all sockets on complete system (server side).
      * @example
      * disconnectAllSockets('EXCEPT-SOCKET-SID');
      * @param exceptSocketSids
@@ -1256,11 +1249,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Disconnect all sockets on complete system with sid (server side)
+     * Disconnect all sockets on complete system with sid (server side).
      * @example
      * disconnectSockets(['SOCKET-SID-1','SOCKET-SID-2']);
      * disconnectSockets('SOCKET-SID');
-     * @param socketSid or more socketSids in an array
+     * @param socketSid or more socketSids in an array.
      */
     async disconnectSockets(socketSid : string | string[]) : Promise<void>
     {
@@ -1271,12 +1264,12 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Deauthenticate all sockets on complete system with user id/s (server side)
+     * Deauthenticate all sockets on complete system with user id/s (server side).
      * @example
      * deauthenticateUser(['tim902','leonie23']);
      * deauthenticateUser('tim902');
      * deauthenticateUser('tim902','EXCEPT-SOCKET-SID');
-     * @param userId or more userIds in an array
+     * @param userId or more userIds in an array.
      * @param exceptSocketSids
      */
     async deauthenticateUser(userId : number | string | (number | string)[] | number | string,exceptSocketSids : string[] | string = []) : Promise<void>
@@ -1288,12 +1281,12 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Deauthenticate all sockets on complete system with token id/s (server side)
+     * Deauthenticate all sockets on complete system with token id/s (server side).
      * @example
      * deauthenticateToken(['TOKEN-UUID1','TOKEN-UUID2']);
      * deauthenticateToken('TOKEN-UUID2');
      * deauthenticateToken('TOKEN-UUID2','EXCEPT-SOCKET-SID');
-     * @param tokenId or more tokenIds in an array
+     * @param tokenId or more tokenIds in an array.
      * @param exceptSocketSids
      */
     async deauthenticateToken(tokenId : string | string[] | string,exceptSocketSids : string[] | string = []) : Promise<void>
@@ -1305,7 +1298,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Deauthenticate all sockets on complete system (server side)
+     * Deauthenticate all sockets on complete system (server side).
      * @example
      * deauthenticateAllSockets('EXCEPT-SOCKET-SID');
      * @param exceptSocketSids
@@ -1319,11 +1312,11 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Deauthenticate all sockets on complete system with sid (server side)
+     * Deauthenticate all sockets on complete system with sid (server side).
      * @example
      * deauthenticateSockets(['SOCKET-SID-1','SOCKET-SID-2']);
      * deauthenticateSockets('SOCKET-SID');
-     * @param socketSid or more socketSids in an array
+     * @param socketSid or more socketSids in an array.
      */
     async deauthenticateSockets(socketSid : string | string[] | string) : Promise<void>
     {
@@ -1336,7 +1329,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Returns user id from sc (if authenticated and has one)
+     * Returns user id from sc (if authenticated and has one).
      * @example
      * getUserIdFromSocket(sc);
      * @param socket
@@ -1348,7 +1341,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Returns user group from sc (if authenticated)
+     * Returns user group from sc (if authenticated).
      * @example
      * getUserIdFromSocket(sc);
      * @param socket
@@ -1401,7 +1394,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Set sc variable (server side) with object path
+     * Set sc variable (server side) with object path.
      * @example
      * setSocketVariable('email','example@gmail.com');
      * @param socket
@@ -1416,7 +1409,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Has sc variable (server side) with object path
+     * Has sc variable (server side) with object path.
      * @example
      * hasSocketVariable('email');
      * @param socket
@@ -1430,7 +1423,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Get sc variable (server side) with object path
+     * Get sc variable (server side) with object path.
      * @example
      * getSocketVariable('email');
      * @param socket
@@ -1444,7 +1437,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Delete sc variable (server side) with object path
+     * Delete sc variable (server side) with object path.
      * @example
      * deleteSocketVariable('email');
      * @param socket
@@ -1464,7 +1457,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set a worker variable (server side) with object path
+     * Set a worker variable (server side) with object path.
      * @example
      * setWorkerVariable('email','example@gmail.com');
      * @param path
@@ -1477,7 +1470,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Has a worker variable (server side) with object path
+     * Has a worker variable (server side) with object path.
      * @example
      * hasWorkerVariable('email');
      * @param path
@@ -1489,7 +1482,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Get worker variable (server side) with object path
+     * Get worker variable (server side) with object path.
      * @example
      * getWorkerVariable('email');
      * @param path
@@ -1501,7 +1494,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Delete a worker variable (server side) with object path
+     * Delete a worker variable (server side) with object path.
      * @example
      * deleteWorkerVariable('email');
      * @param path
@@ -1520,7 +1513,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the sc with the socketId
+     * Returns the sc with the socketId.
      * You have only protocolAccess to sockets they are connected to this worker.
      * @example
      * getWorkerSocket('SOCKET-ID');
@@ -1534,8 +1527,8 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the clients of the worker
-     * Key are socketIds and value are sockets
+     * Returns the clients of the worker.
+     * Key are socketIds and value are sockets.
      * @example
      * getWorkerClients();
      */
@@ -1547,7 +1540,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the number of connected clients to this worker
+     * Returns the number of connected clients to this worker.
      * @example
      * getWorkerConnectedClientsCount();
      */
@@ -1558,7 +1551,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns http requests per minute
+     * Returns http requests per minute.
      */
     getWorkerHttpRequestPerMinute() : number {
         return this.worker.getStatus().httpRPM;
@@ -1567,7 +1560,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns web sockets requests per minute
+     * Returns web sockets requests per minute.
      */
     getWorkerWsRequestPerMinute() : number {
         return this.worker.getStatus().wsRPM;
@@ -1576,7 +1569,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns all sockets from this worker that subscribes the custom channel
+     * Returns all sockets from this worker that subscribes the custom channel.
      * @example
      * getWorkerSocketSubsCustomCh('CH-NAME');
      */
@@ -1587,7 +1580,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns all sockets from this worker that subscribes the custom id channel
+     * Returns all sockets from this worker that subscribes the custom id channel.
      * @example
      * getWorkerSocketSubsCustomIdCh('CH-NAME','ID');
      */
@@ -1598,7 +1591,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socketSids from socketId
+     * Returns the socketSids from socketId.
      * Only for ids they are found on the worker!
      * @example
      * convertSocketIdToSid('SOCKET-ID-1','SOCKET-ID-2');
@@ -1619,7 +1612,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socketIds from sc with the tokenId
+     * Returns the socketIds from sc with the tokenId.
      * You have only protocolAccess to socketsIds they are connected to this worker.
      * @example
      * getSocketIdsWithTokenId('TOKEN-ID');
@@ -1633,7 +1626,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socketSids from sc with the tokenId
+     * Returns the socketSids from sc with the tokenId.
      * You have only protocolAccess to socketsSids they are connected to this worker.
      * @example
      * getSocketSidsWithTokenId('TOKEN-ID');
@@ -1647,7 +1640,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socketIds from sockets with the userId
+     * Returns the socketIds from sockets with the userId.
      * You have only protocolAccess to socketsIds they are connected to this worker.
      * @example
      * getSocketIdsWithUserId('tom1554');
@@ -1661,7 +1654,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description&
-     * Returns the socketSids from sockets with the userId
+     * Returns the socketSids from sockets with the userId.
      * You have only protocolAccess to socketsSids they are connected to this worker.
      * @example
      * getSocketSidsWithUserId('tom1554');
@@ -1675,8 +1668,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns object with authUserGroups as key
-     * and value with count of connected clients (only this worker)
+     * Returns object with authUserGroups as key and value with count of connected clients (only this worker).
      */
     getWorkerAuthUserGroupsCount() : object {
        const res = {};
@@ -1692,7 +1684,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns count of connected default user groups sockets (only this worker)
+     * Returns count of connected default user groups sockets (only this worker).
      */
     getWorkerDefaultUserGroupCount() : number {
         return this.worker.getDefaultUserGroupsMap().length;
@@ -1701,7 +1693,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns count of auth user group sockets (only this worker)
+     * Returns count of auth user group sockets (only this worker).
      */
     getWorkerAuthUserGroupCount(authUserGroup : string) : number {
         return this.worker.getAuthUserGroupToScMapper().getValues(authUserGroup).length;
@@ -1710,8 +1702,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns object with authUserGroups as key
-     * and value with array of sockets (only this worker)
+     * Returns object with authUserGroups as key and value with array of sockets (only this worker).
      */
     getWorkerAuthUserGroupsSockets() : object {
         const res = {};
@@ -1727,7 +1718,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns array of default user group sockets (only this worker)
+     * Returns array of default user group sockets (only this worker).
      */
     getWorkerDefaultUserGroupSockets() : Socket[] {
         return this.worker.getDefaultUserGroupsMap().toArray();
@@ -1736,7 +1727,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns array of auth user group sockets (only this worker)
+     * Returns array of auth user group sockets (only this worker).
      */
     getWorkerAuthUserGroupSockets(authUserGroup : string) : Socket[] {
         return this.worker.getAuthUserGroupToScMapper().getValues(authUserGroup);
@@ -1745,7 +1736,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Send message to all workers on compete system
+     * Send message to all workers on compete system.
      * You can react on the message with the workerMessage event in the event config.
      */
     async sendWorkerMessage(data : any) : Promise<void> {

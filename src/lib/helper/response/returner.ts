@@ -116,12 +116,6 @@ class Returner
             obj[Const.Settings.RESPONSE.TOKEN] = tokenInfo;
         }
 
-        //info for http
-        if(!this.webSocket && Array.isArray(this.res['zationInfo']) && this.res['zationInfo'].length > 0)
-        {
-            obj[Const.Settings.RESPONSE.ZATION_INFO] = this.res['zationInfo'];
-        }
-
         //error
         obj[Const.Settings.RESPONSE.ERRORS] = errors;
         obj[Const.Settings.RESPONSE.SUCCESSFUL] = errors.length === 0;

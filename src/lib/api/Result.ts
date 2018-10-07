@@ -62,6 +62,7 @@ class Result
         this.statusCode = undefined;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getTypeOfResult() : string
     {
         return typeof this.result;

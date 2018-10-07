@@ -15,9 +15,9 @@ import ObjectPath    = require("../helper/tools/objectPath");
 import MethodIsNotCompatible = require("../helper/error/methodIsNotCompatible");
 import ObjectPathSequence    = require("../helper/tools/objectPathSequence");
 import {Socket}                from "../helper/sc/socket";
-import AuthenticationError = require("../helper/error/authenticationError");
+import AuthenticationError   = require("../helper/error/authenticationError");
 import ProtocolAccessChecker = require("../helper/protocolAccess/protocolAccessChecker");
-import {ScServer} from "../helper/sc/scServer";
+import {ScServer}              from "../helper/sc/scServer";
 
 class Bag extends SmallBag
 {
@@ -45,7 +45,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set a bag variable with objectPath
+     * Set a bag variable with objectPath.
      * @example
      * setBagVariable('my.variable','hello');
      * @param path
@@ -58,7 +58,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Has a bag variable with objectPath
+     * Has a bag variable with objectPath.
      * @example
      * hasBagVariable('my.variable');
      * @param path
@@ -70,7 +70,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Get a bag variable with objectPath
+     * Get a bag variable with objectPath.
      * @example
      * getBagVariable('my.variable');
      * @param path
@@ -82,7 +82,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Delete a bag variable with objectPath
+     * Delete a bag variable with objectPath.
      * @example
      * deleteBagVariable('my.variable');
      * deleteBagVariable(); //deletes all variables
@@ -102,7 +102,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Get input with object path
+     * Get input with object path.
      * @example
      * getInput('person.name');
      * @param path
@@ -114,7 +114,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Has input with object path
+     * Has input with object path.
      * @example
      * hasInput('person.name');
      * @param path
@@ -128,7 +128,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set sc variable (server side) with object path
+     * Set sc variable (server side) with object path.
      * Requires web sc request!
      * @example
      * setSocketVariable('email','example@gmail.com');
@@ -149,7 +149,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Has sc variable (server side) with object path
+     * Has sc variable (server side) with object path.
      * Requires web sc request!
      * @example
      * hasSocketVariable('email');
@@ -169,7 +169,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Get sc variable (server side) with object path
+     * Get sc variable (server side) with object path.
      * Requires web sc request!
      * @example
      * getSocketVariable('email');
@@ -189,7 +189,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Delete sc variable (server side) with object path
+     * Delete sc variable (server side) with object path.
      * Requires web sc request!
      * @example
      * deleteSocketVariable('email');
@@ -216,7 +216,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns if current sc is authenticated
+     * Returns if current sc is authenticated.
      */
     isAuth() : boolean {
         return this.authEngine.isAuth();
@@ -225,7 +225,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns if current sc is authenticated
+     * Returns if current sc is authenticated.
      */
     isAuthenticated() : boolean {
         return this.isAuth();
@@ -245,7 +245,7 @@ class Bag extends SmallBag
     /**
      * @description
      * Returns the user group of current sc.
-     * The user group can be the default group or one of the auth groups
+     * The user group can be the default group or one of the auth groups.
      */
     getUserGroup() : string | undefined {
         return this.authEngine.getUserGroup();
@@ -255,7 +255,7 @@ class Bag extends SmallBag
     /**
      * @description
      * Authenticate an sc.
-     * This method will throw errors if the process fails
+     * This method will throw errors if the process fails.
      * @example
      * await authenticate('user','tom12',{email : 'example@gmail.com'});
      * @param authUserGroup The authUserGroup must exist in the app.config. Otherwise an error will be thrown.
@@ -341,6 +341,10 @@ class Bag extends SmallBag
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns true if the server is using authentication.
+     */
     isUseAuth() : boolean {
         return this.authEngine.isUseAuth();
     }
@@ -350,7 +354,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Get cookie variable
+     * Get cookie variable.
      * Requires http request!
      * @throws MethodIsNotCompatible
      * @param key
@@ -368,7 +372,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set cookie variable
+     * Set cookie variable.
      * Requires http request!
      * @throws MethodIsNotCompatible
      * @param key
@@ -388,7 +392,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Clear cookie variable
+     * Clear cookie variable.
      * Requires http request!
      * @throws MethodIsNotCompatible
      * @param key
@@ -408,7 +412,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Return the http response
+     * Return the http response.
      * @throws MethodIsNotCompatible
      */
     getHttpResponse() : Express.Response {
@@ -423,7 +427,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Return the http request
+     * Return the http request.
      * @throws MethodIsNotCompatible
      */
     getHttpRequest() : Express.Request {
@@ -438,7 +442,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Return the http method
+     * Return the http method.
      * @throws MethodIsNotCompatible
      */
     getHttpMethod() : string {
@@ -454,9 +458,9 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set a custom token variable with object path
-     * You can access this variables on client and server side
-     * Check that the sc is authenticated (has a token)
+     * Set a custom token variable with object path.
+     * You can access this variables on client and server side.
+     * Check that the sc is authenticated (has a token).
      * @example
      * await setCustomTokenVar('person.email','example@gmail.com');
      * @param path
@@ -477,9 +481,9 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Delete a custom token variable with object path
-     * You can access this variables on client and server side
-     * Check that the sc is authenticated (has a token)
+     * Delete a custom token variable with object path.
+     * You can access this variables on client and server side.
+     * Check that the sc is authenticated (has a token).
      * @example
      * await deleteCustomTokenVar('person.email');
      * @param path
@@ -504,11 +508,11 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Sequence edit the custom token variables
+     * Sequence edit the custom token variables.
      * Useful if you want to make several changes.
      * This will do everything in one and saves performance.
-     * You can access this variables on client and server side
-     * Check that the sc is authenticated (has a token)
+     * You can access this variables on client and server side.
+     * Check that the sc is authenticated (has a token).
      * @example
      * await seqEditCustomTokenVar()
      *       .delete('person.lastName')
@@ -533,8 +537,8 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Has a custom token variable with object path
-     * You can access this variables on client and server side
+     * Check has a custom token variable with object path.
+     * You can access this variables on client and server side.
      * @example
      * hasCustomTokenVar('person.email');
      * @param path
@@ -552,8 +556,8 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Get a custom token variable with object path
-     * You can access this variables on client and server side
+     * Get a custom token variable with object path.
+     * You can access this variables on client and server side.
      * @example
      * getCustomTokenVar('person.email');
      * @param path
@@ -657,7 +661,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socket
+     * Returns the socket.
      * @throws MethodIsNotCompatible
      */
     getSocket() : Socket {
@@ -672,7 +676,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the sc server from worker
+     * Returns the sc server from worker.
      */
     getScServer() : ScServer {
         return this.worker.scServer;
@@ -693,7 +697,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the current request protocol is web socket
+     * Returns the current request protocol is web socket.
      */
     isWebSocketProtocol() : boolean {
         return this.shBridge.isWebSocket();
@@ -702,7 +706,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the current request protocol is web socket
+     * Returns the current request protocol is web socket.
      */
     isWs() : boolean {
         return this.isWebSocketProtocol();
@@ -711,7 +715,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the current request protocol is http
+     * Returns the current request protocol is http.
      */
     isHttpProtocol() : boolean {
         return !this.shBridge.isWebSocket();
@@ -720,7 +724,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the current request protocol is http
+     * Returns the current request protocol is http.
      */
     isHttp() : boolean {
         return this.isHttpProtocol();
@@ -769,7 +773,7 @@ class Bag extends SmallBag
      * kickFromCustomIdCh('images','10');
      * kickFromCustomIdCh('messageStreams');
      * @param name
-     * @param id (if it is not provided the sc will be kicked from all ids)
+     * @param id if it is not provided the sc will be kicked from all ids.
      * @throws MethodIsNotCompatible
      */
     kickFromCustomIdCh(name : string,id : string = '') : void
@@ -825,7 +829,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the system that requests
+     * Returns the system that requests.
      */
     getRequestSystem() : string {
         return this.shBridge.getZationData()[Const.Settings.REQUEST_INPUT.SYSTEM];
@@ -834,7 +838,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the version that requests
+     * Returns the version that requests.
      */
     getRequestVersion() : string {
         return this.shBridge.getZationData()[Const.Settings.REQUEST_INPUT.VERSION];
@@ -845,11 +849,11 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to an user channel or channels
+     * Publish to an user channel or channels.
      * @example
      * publishToUser('paul10','message',{message : 'hello',fromUserId : 'luca34'});
      * publishToUser(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
-     * @param userId or more userIds in array
+     * @param userId or more userIds in array.
      * @param eventName
      * @param data
      * @param srcSocketSid
@@ -864,11 +868,11 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to an user channel or channels
+     * Publish to an user channel or channels.
      * @example
      * pubUser('paul10','message',{message : 'hello',fromUserId : 'luca34'});
      * pubUser(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
-     * @param userId or more userIds in array
+     * @param userId or more userIds in array.
      * @param eventName
      * @param data
      * @param srcSocketSid
@@ -883,7 +887,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to all channel
+     * Publish to all channel.
      * @example
      * publishToAll('message',{message : 'hello'});
      * @param eventName
@@ -900,7 +904,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to all channel
+     * Publish to all channel.
      * @example
      * pubAll('message',{message : 'hello'});
      * @param eventName
@@ -917,11 +921,11 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to auth user group or groups
+     * Publish to auth user group or groups.
      * @example
      * publishToAuthUserGroup('admin','userRegistered',{userId : '1'});
      * publishToAuthUserGroup(['admin','superAdmin'],'userRegistered',{userId : '1'});
-     * @param authUserGroup or an array of auth user groups
+     * @param authUserGroup or an array of auth user groups.
      * @param eventName
      * @param data
      * @param srcSocketSid
@@ -936,11 +940,11 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to auth user group or groups
+     * Publish to auth user group or groups.
      * @example
      * pubAuthUserGroup('admin','userRegistered',{userId : '1'});
      * pubAuthUserGroup(['admin','superAdmin'],'userRegistered',{userId : '1'});
-     * @param authUserGroup or an array of auth user groups
+     * @param authUserGroup or an array of auth user groups.
      * @param eventName
      * @param data
      * @param srcSocketSid
@@ -955,7 +959,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to default user group
+     * Publish to default user group.
      * @example
      * publishToDefaultUserGroup('message',{message : 'hello'});
      * @param eventName
@@ -972,7 +976,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to default user group
+     * Publish to default user group.
      * @example
      * pubDefaultUserGroup('message',{message : 'hello'});
      * @param eventName
@@ -989,7 +993,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in all auth user groups
+     * Publish in all auth user groups.
      * @example
      * publishToAllAuthUserGroups('message',{fromUserId : '1',message : 'hello'});
      * @param eventName
@@ -1006,7 +1010,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in all auth user groups
+     * Publish in all auth user groups.
      * @example
      * pubAllAuthUserGroups('message',{fromUserId : '1',message : 'hello'});
      * @param eventName
@@ -1023,7 +1027,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom id Channel
+     * Publish in an custom id Channel.
      * @example
      * publishToCustomIdChannel('imageChannel','image2','like',{fromUserId : '1'});
      * @param channel
@@ -1042,7 +1046,7 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom id Channel
+     * Publish in an custom id Channel.
      * @example
      * pubCustomIdChannel('imageChannel','image2','like',{fromUserId : '1'});
      * @param channel
@@ -1061,11 +1065,11 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom channel
+     * Publish in an custom channel.
      * @example
      * publishToCustomChannel('messageChannel','message',{message : 'hello',fromUserId : '1'});
      * publishToCustomChannel(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
-     * @param channel or an array of channels
+     * @param channel or an array of channels.
      * @param eventName
      * @param data
      * @param srcSocketSid
@@ -1080,11 +1084,11 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom channel or channels*
+     * Publish in an custom channel or channels.
      * @example
      * pubCustomChannel('messageChannel','message',{message : 'hello',fromUserId : '1'});
      * pubCustomChannel(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
-     * @param channel or an array of channels
+     * @param channel or an array of channels.
      * @param eventName
      * @param data
      * @param srcSocketSid
