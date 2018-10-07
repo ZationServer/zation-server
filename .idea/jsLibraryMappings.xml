@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{@types/level-sublevel, @types/levelup, @types/lokijs, express-DefinitelyTyped, level-object, linvodb3, node-DefinitelyTyped, slocket-DefinitelyTyped, socket.io-DefinitelyTyped, socket.io-client-DefinitelyTyped, socket.io-parser-DefinitelyTyped}" />
-    <includedPredefinedLibrary name="Node.js Core" />
+    <file url="PROJECT" libraries="{@types/node, level-object}" />
   </component>
 </project>

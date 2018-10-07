@@ -88,19 +88,22 @@ class ConfigChecker
        }
 
        //checkAuthGroups don't have a all/allAuth/allNotAuth Name
-       for(let i = 0; i < groups.length; i++)
-       {
-           if(groups[i].indexOf('.') !== -1) {
+       for(let i = 0; i < groups.length; i++) {
+           if (groups[i].indexOf('.') !== -1) {
                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
                    `${groups[i]} is not a valid auth user group! Dot/s in name are not allowed.`));
            }
 
-           if(extraKeys.includes(groups[i]))
-           {
+           if (extraKeys.includes(groups[i])) {
                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
                    `auth user group with name ${groups[i]} is not allowed use an other name!`));
            }
+
+           ConfigCheckerTools.assertStructure
+           (Structures.AuthUserGroup, authGroups[groups[i]],
+               Const.Settings.CN.APP, this.ceb, new Target(`Auth User Group: '${groups[i]}'`));
        }
+
 
        let defaultGroup = ObjectPath.get(this.zc.getAppConfig(),
            [Const.App.KEYS.USER_GROUPS,Const.App.USER_GROUPS.DEFAULT]);

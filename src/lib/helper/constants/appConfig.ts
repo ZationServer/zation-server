@@ -26,6 +26,10 @@ class USER_GROUPS {
     static readonly AUTH             = 'auth';
 }
 
+class AUTH_USER_GROUP {
+    static readonly PANEL_ACCESS      = 'panelAccess';
+}
+
 class OBJECTS {
     static readonly PROPERTIES             = 'properties';
     static readonly CONSTRUCT              = 'construct';
@@ -71,6 +75,7 @@ class AppConfig
 {
     public static readonly KEYS = KEYS;
     public static readonly USER_GROUPS = USER_GROUPS;
+    public static readonly AUTH_USER_GROUP = AUTH_USER_GROUP;
     public static readonly OBJECTS = OBJECTS;
     public static readonly CONTROLLER = CONTROLLER;
     public static readonly ACCESS = ACCESS;

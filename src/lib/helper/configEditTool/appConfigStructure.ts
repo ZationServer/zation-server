@@ -13,7 +13,7 @@ export interface AppConfig
 {
     [Const.App.KEYS.AUTH_CONTROLLER] ?: string;
     [Const.App.KEYS.CONTROLLER] ?: Record<string,ControllerConfig>;
-    [Const.App.KEYS.USER_GROUPS] ?: UserGroupConfig;
+    [Const.App.KEYS.USER_GROUPS] ?: UserGroupsConfig;
     [Const.App.KEYS.VERSION_CONTROL] ?: Record<string,number>;
     [Const.App.KEYS.CONTROLLER_DEFAULT] ?: ControllerConfig;
     [Const.App.KEYS.OBJECTS] ?: Record<string,ObjectConfig>;
@@ -41,10 +41,15 @@ export interface TimeObj
     millisecond ?: number;
 }
 
-export interface UserGroupConfig
+export interface UserGroupsConfig
 {
     [Const.App.USER_GROUPS.DEFAULT] ?: string;
-    [Const.App.USER_GROUPS.AUTH] ?: Record<string,object>;
+    [Const.App.USER_GROUPS.AUTH] ?: Record<string,AuthUserGroupConfig>;
+}
+
+export interface AuthUserGroupConfig
+{
+    [Const.App.AUTH_USER_GROUP.PANEL_ACCESS] ?: boolean;
 }
 
 export interface ControllerConfig

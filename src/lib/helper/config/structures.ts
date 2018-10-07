@@ -241,6 +241,10 @@ ArrayShortCutSpecify[Const.App.ARRAY.MIN_LENGTH]               = {types : ['numb
 ArrayShortCutSpecify[Const.App.ARRAY.MAX_LENGTH]               = {types : ['number'],isOptional : true};
 ArrayShortCutSpecify[Const.App.ARRAY.LENGTH]                   = {types : ['number'],isOptional : true};
 
+
+const AuthUserGroup = {};
+AuthUserGroup[Const.App.AUTH_USER_GROUP.PANEL_ACCESS] = {types : ['boolean'],isOptional: true};
+
 const EventConfig = {};
 EventConfig[Const.Event.ZATION_EXPRESS]                   = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_SC_SERVER]                 = {types : ['function','array'],isOptional : true};
@@ -314,6 +318,7 @@ class Structures
     public static readonly Error = Error;
     public static readonly HttpsConfig = HttpsConfig;
     public static readonly PanelUserConfig = PanelUserConfig;
+    public static readonly AuthUserGroup = AuthUserGroup;
 }
 
 export = Structures;

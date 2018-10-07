@@ -5,7 +5,6 @@ GitHub: LucaCode
  */
 
 import Const        = require('../constants/constWrapper');
-import Logger       = require('../logger/logger');
 import ZationWorker = require("../../main/zationWorker");
 import ZationConfig = require("../../main/zationConfig");
 
@@ -60,6 +59,18 @@ class AEPreparedPart
     getAuthGroups() : object
     {
         return this.authGroups;
+    }
+
+    authUserGroupPanelAccess(authUserGroup : string) : boolean
+    {
+        const tempGroup = this.getAuthGroups()[authUserGroup];
+        if(!!tempGroup){
+            return !!tempGroup[Const.App.AUTH_USER_GROUP.PANEL_ACCESS] ?
+                tempGroup[Const.App.AUTH_USER_GROUP.PANEL_ACCESS] : false;
+        }
+        else{
+            return false;
+        }
     }
 
     getDefaultGroup() : string

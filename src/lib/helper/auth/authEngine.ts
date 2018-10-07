@@ -140,6 +140,11 @@ class AuthEngine
                 obj[Const.Settings.TOKEN.USER_ID] = userId;
             }
 
+            //check auto panelAccess
+            if(this.aePreparedPart.authUserGroupPanelAccess(authUserGroup)) {
+                obj[Const.Settings.TOKEN.PANEL_ACCESS] = true;
+            }
+
             //create AuthEngine Token!
             let suc = false;
             if(this.shBridge.getTokenBridge().hasToken()) {
