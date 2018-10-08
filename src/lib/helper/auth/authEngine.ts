@@ -74,9 +74,13 @@ class AuthEngine
                 }
             }
             else {
-                //token without auth group!
-                await this.deauthenticate();
-                throw new TaskError(MainErrors.tokenWithoutAuthGroup);
+                if(!(typeof authUserGroup[Const.Settings.TOKEN.ONLY_PANEL_TOKEN] === 'boolean' &&
+                    authUserGroup[Const.Settings.TOKEN.ONLY_PANEL_TOKEN]))
+                {
+                    //token without auth group and it is not a only panel token.
+                    await this.deauthenticate();
+                    throw new TaskError(MainErrors.tokenWithoutAuthGroup);
+                }
             }
         }
         else {
@@ -130,7 +134,7 @@ class AuthEngine
     //PART AUTHENTICATION&
     async authenticate(authUserGroup : string, userId ?: string | number,tokenCustomVar ?: object) : Promise<void>
     {
-        if(this.checkIsIn(authUserGroup) || authUserGroup === Const.Settings.PANEL.AUTH_USER_GROUP) {
+        if(this.checkIsIn(authUserGroup)) {
 
             let obj = {};
             obj[Const.Settings.TOKEN.AUTH_USER_GROUP] = authUserGroup;

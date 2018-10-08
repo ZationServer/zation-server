@@ -91,11 +91,6 @@ class ConfigChecker {
                     `auth user group with name ${groups[i]} is not allowed use an other name!`));
             }
 
-            if (groups[i] === Const.Settings.PANEL.AUTH_USER_GROUP) {
-                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
-                    `auth user group with name ${groups[i]} is not allowed. This auth user group name is used internal in the zation system!`));
-            }
-
             ConfigCheckerTools.assertStructure
             (Structures.AuthUserGroup, authGroups[groups[i]],
                 Const.Settings.CN.APP, this.ceb, new Target(`Auth User Group: '${groups[i]}'`));
@@ -449,7 +444,6 @@ class ConfigChecker {
        {
            Logger.printConfigWarning
            (Const.Settings.CN.MAIN, `Its recommend to not use the default panel access credentials!` +
-           `Notice that you can authenticate the socket with this credentials and use controller / sub channels with access 'allAuth'!` +
            `So please change them in the main config!`);
        }
    }

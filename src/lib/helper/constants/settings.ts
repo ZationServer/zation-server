@@ -98,6 +98,7 @@ class TOKEN
     static readonly USER_ID                     = 'zationUserId';
     static readonly TOKEN_ID                    = 'zationTokenId';
     static readonly PANEL_ACCESS                = 'zationPanelAccess';
+    static readonly ONLY_PANEL_TOKEN            = 'zationOnlyPanelToken';
     static readonly EXPIRE                      = 'exp';
     static readonly CHECK_KEY                   = 'zationCheckKey';
     static readonly CUSTOM_VARIABLES            = 'zationCustomVariables';
@@ -141,11 +142,6 @@ class DEFAULT_USER_GROUP
     static readonly FALLBACK        = 'default';
 }
 
-class PANEL
-{
-    static readonly AUTH_USER_GROUP = 'zationPanelUser';
-}
-
 //CN = CONFIG_NAMES
 class CN
 {
@@ -174,7 +170,6 @@ class Settings
     static readonly SOCKET = SOCKET;
     static readonly INTERNAL_DATA = INTERNAL_DATA;
     static readonly HTTP_GET_REQ = HTTP_GET_REQ;
-    static readonly PANEL = PANEL;
 }
 
 export = Settings;

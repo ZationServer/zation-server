@@ -20,6 +20,8 @@ class PanelEngine
 
     private readonly panelAccessData : object[];
 
+    private alreadyFirstPong : boolean = false;
+
     constructor(zw : ZationWorker)
     {
         this.zw = zw;
@@ -57,12 +59,13 @@ class PanelEngine
         {
             if(data.action === 'ping') {
                 this.renewPanelInUse();
+                if(!this.alreadyFirstPong) {
+                    this.sendFirstPong();
+                }
             }
-            else if(data.action === 'firstPing')
-            {
+            else if(data.action === 'firstPing') {
                 this.renewPanelInUse();
-                //send directly info from system
-
+                this.sendFirstPong();
             }
         });
     }
@@ -79,6 +82,12 @@ class PanelEngine
         this.panelInUseTimeout = setTimeout(() => {
             this.panelInUse = false;
         },5000);
+    }
+
+    private sendFirstPong() : void
+    {
+        this.alreadyFirstPong = true;
+
     }
 
     pubInPanel(eventName : string,data : object)

@@ -14,7 +14,11 @@ class ZationSC_Ping extends Controller
         {
             //throw
         }
-        await bag.authenticate(Const.Settings.PANEL.AUTH_USER_GROUP);
+
+        const token = {};
+        token[Const.Settings.TOKEN.PANEL_ACCESS] = true;
+        token[Const.Settings.TOKEN.ONLY_PANEL_TOKEN] = true;
+        bag.getSocket().setAuthToken(token)
     }
 }
 
