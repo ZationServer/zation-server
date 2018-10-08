@@ -30,7 +30,7 @@ class PrepareClientJs
         res += `HOSTNAME : '${zc.getMain(Const.Main.KEYS.HOSTNAME)}',`;
         res += `PORT : ${zc.getMain(Const.Main.KEYS.PORT)},`;
         res += `SECURE : ${zc.getMain(Const.Main.KEYS.SECURE)}, `;
-        res += `POST_KEY_WORD : '${zc.getMain(Const.Main.KEYS.POST_KEY_WORD)},'`;
+        res += `POST_KEY : '${zc.getMain(Const.Main.KEYS.POST_KEY)},'`;
         res += `PATH : '${zc.getMain(Const.Main.KEYS.PATH)}'`;
         res += '}; \n';
         fs.writeFileSync(serverSettingsFile,res,'utf8');

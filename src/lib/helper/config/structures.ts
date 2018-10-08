@@ -84,7 +84,7 @@ Main[Const.Main.KEYS.PATH]                    = {types : ['string'],isOptional :
 
 Main[Const.Main.KEYS.AUTH_START]              = {types : ['boolean'],isOptional : true};
 Main[Const.Main.KEYS.AUTH_START_DURATION_MS]  = {types : ['number'],isOptional : true};
-Main[Const.Main.KEYS.POST_KEY_WORD]           = {types : ['string'],isOptional : true};
+Main[Const.Main.KEYS.POST_KEY]                = {types : ['string'],isOptional : true};
 Main[Const.Main.KEYS.AUTH_KEY]                = {types : ['string','object'],isOptional : true};
 Main[Const.Main.KEYS.AUTH_DEFAULT_EXPIRY]     = {types : ['number'],isOptional : true};
 Main[Const.Main.KEYS.AUTH_ALGORITHM]          = {types : ['string'],isOptional : true};

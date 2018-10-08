@@ -68,7 +68,7 @@ class ZationConfig
         this.mainConfig[Const.Main.KEYS.PORT] = 3000;
         this.mainConfig[Const.Main.KEYS.HOSTNAME] = 'localhost';
         this.mainConfig[Const.Main.KEYS.ENVIRONMENT] = 'dev';
-        this.mainConfig[Const.Main.KEYS.POST_KEY_WORD] = 'zation';
+        this.mainConfig[Const.Main.KEYS.POST_KEY] = 'zation';
         this.mainConfig[Const.Main.KEYS.PATH] = '/zation';
         this.mainConfig[Const.Main.KEYS.USE_AUTH] = true;
         this.mainConfig[Const.Main.KEYS.APP_NAME] = 'AppWithoutName';

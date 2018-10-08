@@ -80,7 +80,7 @@ class KEYS {
     static readonly PUB_SUB_BATCH_DURATION                = 'pubSubBatchDuration';
 
     //ADVANCE
-    static readonly POST_KEY_WORD          = 'postKeyWord';
+    static readonly POST_KEY               = 'postKey';
 
     static readonly AUTH_KEY               = 'authKey';
     static readonly AUTH_DEFAULT_EXPIRY    = 'authDefaultExpiry';

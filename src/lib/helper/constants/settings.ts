@@ -62,7 +62,7 @@ class RESPONSE
     static readonly SUCCESSFUL                   = 's';
     static readonly RESULT                       = 'r';
     static readonly TOKEN                        = 't';
-    static readonly ZATION_INFO                  = 'zi';
+    static readonly ZATION_HTTP_INFO             = 'zhi';
 
     static readonly TOKEN_SIGNED                 = 'st';
     static readonly TOKEN_PLAIN                  = 'pt';

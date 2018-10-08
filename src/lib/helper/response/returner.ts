@@ -118,7 +118,7 @@ class Returner
 
         //info for http
         if(!this.webSocket && Array.isArray(this.res['zationInfo']) && this.res['zationInfo'].length > 0) {
-            obj[Const.Settings.RESPONSE.ZATION_INFO] = this.res['zationInfo'];
+            obj[Const.Settings.RESPONSE.ZATION_HTTP_INFO] = this.res['zationInfo'];
         }
 
         //error

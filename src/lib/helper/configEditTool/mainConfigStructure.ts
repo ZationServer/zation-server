@@ -37,7 +37,7 @@ export interface MainConfig
     [Const.Main.KEYS.AUTH_START] ?: boolean;
     [Const.Main.KEYS.AUTH_START_DURATION_MS] ?: number;
 
-    [Const.Main.KEYS.POST_KEY_WORD] ?: string;
+    [Const.Main.KEYS.POST_KEY] ?: string;
     [Const.Main.KEYS.AUTH_KEY] ?: string;
     [Const.Main.KEYS.AUTH_DEFAULT_EXPIRY] ?: number;
     [Const.Main.KEYS.AUTH_ALGORITHM] ?: string;

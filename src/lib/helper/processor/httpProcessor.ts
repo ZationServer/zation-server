@@ -26,9 +26,9 @@ class HttpProcessor
     //HTTP Extra Layer
     static async runHttpProcess(req,res,zc : ZationConfig,worker : ZationWorker)
     {
-        if (req.method === 'POST' && !!req.body[zc.getMain(Const.Main.KEYS.POST_KEY_WORD)]) {
+        if (req.method === 'POST' && !!req.body[zc.getMain(Const.Main.KEYS.POST_KEY)]) {
             HttpProcessor.setHeader(res);
-            const zationData = await JsonConverter.parse(req.body[zc.getMain(Const.Main.KEYS.POST_KEY_WORD)]);
+            const zationData = await JsonConverter.parse(req.body[zc.getMain(Const.Main.KEYS.POST_KEY)]);
             return await HttpProcessor.mainProcess(req,res,zc,worker,zationData);
         }
         else if(req.method === 'GET' && !(Object.keys(req.query).length === 0))

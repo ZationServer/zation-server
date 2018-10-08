@@ -46,8 +46,8 @@ class Zation
         }
         else
         {
-            let reqContent = data.req.body[Const.Main.KEYS.POST_KEY_WORD] !== undefined ?
-                data.req.body[Const.Main.KEYS.POST_KEY_WORD] : 'Nothing in post key!';
+            let reqContent = data.req.body[Const.Main.KEYS.POST_KEY] !== undefined ?
+                data.req.body[Const.Main.KEYS.POST_KEY] : 'Nothing in post key!';
 
             Logger.printDebugInfo(`Http Request id: ${fullReqId} -> `,
                 reqContent,true);
