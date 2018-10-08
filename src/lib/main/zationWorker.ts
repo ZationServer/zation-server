@@ -456,6 +456,13 @@ class ZationWorker extends SCWorker
         {
             const channel = req.channel;
 
+            //add ssi to pub data
+            const addSrcSid = ()=> {
+                if(typeof req.data === "object") {
+                    req.data['ssi'] = req.socket.sid;
+                }
+            };
+
             const userMidRes = await
             this.zc.checkScMiddlewareEvent
             (Const.Event.SC_MIDDLEWARE_PUBLISH_IN,next,this.getPreparedSmallBag(),req);
@@ -468,9 +475,11 @@ class ZationWorker extends SCWorker
                     next(err); //Block!
                 }
                 else if (req.channel.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
+                    addSrcSid();
                     next(await this.chAccessEngine.checkAccessClientPubCustomIdCh(req.socket,channel,req.data));
                 }
                 else if (req.channel.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
+                    addSrcSid();
                     next(await this.chAccessEngine.checkAccessClientPubCustomCh(req.socket,channel,req.data));
                 }
                 else if (req.channel.indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1) {
@@ -499,6 +508,7 @@ class ZationWorker extends SCWorker
                         authToken[Const.Settings.TOKEN.PANEL_ACCESS] !== undefined &&
                         authToken[Const.Settings.TOKEN.PANEL_ACCESS])
                     {
+                        addSrcSid();
                         next();
                     }
                     else

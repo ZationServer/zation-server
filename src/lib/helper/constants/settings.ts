@@ -127,7 +127,6 @@ class CHANNEL
 
     //Internal Channels
     static readonly ALL_WORKER                = 'ZATION.ALL_WORKER';
-    static readonly TOKEN_CHANNEL_PREFIX      = 'ZATION.TOKEN.';
 }
 
 

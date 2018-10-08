@@ -17,7 +17,7 @@ class PubData
         this._srcSocketSid = srcSocketSid;
     }
 
-    static getFromBuilded(data : object) : PubData {
+    static getFromBuild(data : object) : PubData {
         return new PubData(data['e'],data['d'],data['ssi']);
     }
 

@@ -70,7 +70,7 @@ export class ChAccessEngine
             {
                 let res;
                 if(isPub) {
-                    res = await value(this.smallBag,chInfo,socketInfo,PubData.getFromBuilded(pubData));
+                    res = await value(this.smallBag,chInfo,socketInfo,PubData.getFromBuild(pubData));
                 }
                 else {
                     res = await value(this.smallBag,chInfo,socketInfo);
@@ -235,7 +235,7 @@ export class ChAccessEngine
                 let func = this.chConfigManager.getOnClientPubCustomIdCh(name);
                 if(!!func) {
                     (async () => {
-                        await FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket),PubData.getFromBuilded(pubData));
+                        await FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket),PubData.getFromBuild(pubData));
                     })();
                 }
 
@@ -334,7 +334,7 @@ export class ChAccessEngine
                 let func = this.chConfigManager.getOnClientPubCustomCh(name);
                 if(!!func) {
                     (async () => {
-                        await FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket),PubData.getFromBuilded(pubData));
+                        await FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket),PubData.getFromBuild(pubData));
                     })();
                 }
 
