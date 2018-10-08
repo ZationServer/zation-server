@@ -81,24 +81,21 @@ class TaskError extends Error
     {
         let obj = {};
 
-        if(this.privateE)
-        {
+        obj[Const.Settings.RESPONSE.ERROR.TYPE] = this.type;
+        obj[Const.Settings.RESPONSE.ERROR.FROM_ZATION_SYSTEM] = this.fromZationSystem;
+
+        if(this.privateE) {
             obj[Const.Settings.RESPONSE.ERROR.Name] = 'TaskError';
-            obj[Const.Settings.RESPONSE.ERROR.TYPE] = this.type;
         }
         else
         {
             obj[Const.Settings.RESPONSE.ERROR.Name] = this.name;
-            obj[Const.Settings.RESPONSE.ERROR.TYPE] = this.type;
-            obj[Const.Settings.RESPONSE.ERROR.FROM_ZATION_SYSTEM] = this.fromZationSystem;
 
-            if(withDesc)
-            {
+            if(withDesc) {
                 obj[Const.Settings.RESPONSE.ERROR.DESCRIPTION] = this.description;
             }
 
-            if(this.sendInfo)
-            {
+            if(this.sendInfo) {
                 obj[Const.Settings.RESPONSE.ERROR.INFO] = this.info;
             }
         }
