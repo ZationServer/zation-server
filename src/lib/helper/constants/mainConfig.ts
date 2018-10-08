@@ -90,7 +90,7 @@ class KEYS {
 }
 
 class OPTIONS {
-    static readonly AUTO            = 'auto';
+    static readonly AUTO                = 'auto';
 }
 
 class PANEL_USER {

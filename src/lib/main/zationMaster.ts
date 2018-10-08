@@ -317,6 +317,12 @@ class ZationMaster {
         Logger.log(`            Worker count: ${this.master.options.workers}`);
         Logger.log(`            Broker count: ${this.master.options.brokers}`);
         Logger.log(`            Server: ${server}`);
+        if(this.zc.getMain(Const.Main.KEYS.USE_PANEL)) {
+            Logger.log(`            Panel: ${server}/panel`);
+        }
+        if(this.zc.getMain(Const.Main.KEYS.CLIENT_JS_PREPARE)) {
+            Logger.log(`            ClientJs: ${server}/client`);
+        }
         Logger.log('            GitHub: https://github.com/ZationServer');
         Logger.log(`            StartTime: ${Date.now()-this.serverStartedTimeStamp} ms`);
     }
