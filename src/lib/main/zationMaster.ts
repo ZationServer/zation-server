@@ -20,6 +20,7 @@ import PrepareClientJs       = require('../helper/client/prepareClientJs');
 import BackgroundTasksSetter = require("../helper/background/backgroundTasksSetter");
 const  isWindows             = require('is-windows');
 import StateServerEngine     = require("../helper/cluster/stateServerEngine");
+import {WorkerMessageActions} from "../helper/constants/workerMessageActions";
 
 class ZationMaster {
     private static instance: ZationMaster | null = null;
@@ -35,6 +36,8 @@ class ZationMaster {
     private clusterStateServerHost: any;
     private stateServerActive: boolean;
     private stateServerEngine: StateServerEngine;
+
+    private clusterLeader: boolean = false;
 
     //backgroundTasks
     private backgroundTaskActive: boolean = true;
@@ -225,11 +228,13 @@ class ZationMaster {
         this.master.on('ready',async () =>
         {
            if(!this.stateServerActive) {
+               //not in cluster mode
                Logger.startStopWatch();
                this.startBackgroundTasks();
                Logger.printStartDebugInfo('Master init the background tasks.',true);
                this.backgroundTaskInit = true;
                this.backgroundTaskActive = true;
+               this.clusterLeader = true;
            }
            else {
                await this.stateServerEngine.scStarted();
@@ -258,6 +263,15 @@ class ZationMaster {
             if(id  !== undefined && !this.brokerIds.contains(id)) {
                 // noinspection JSUnresolvedFunction
                 this.brokerIds.add(id);
+            }
+        });
+
+        // noinspection JSUnresolvedFunction
+        this.master.on('workerMessage', (workerId,data,respond) =>
+        {
+            const action = data.action;
+            if(action === WorkerMessageActions.IS_LEADER) {
+                respond(null,{isLeader : this.clusterLeader});
             }
         });
 
@@ -334,14 +348,15 @@ class ZationMaster {
             Logger.printStartDebugInfo('Master init the background tasks.',true);
             this.backgroundTaskInit = true;
         }
-
         this.backgroundTaskActive = true;
+        this.clusterLeader = true;
     }
 
     public deactivateClusterLeader() : void
     {
         Logger.printDebugInfo(`This Instance '${this.master.options.instanceId}' gets the lead taken off!`);
         this.backgroundTaskActive = false;
+        this.clusterLeader = false;
     }
 
     //PART Crash

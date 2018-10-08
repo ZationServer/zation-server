@@ -50,6 +50,7 @@ export interface UserGroupsConfig
 export interface AuthUserGroupConfig
 {
     [Const.App.AUTH_USER_GROUP.PANEL_ACCESS] ?: boolean;
+    [Const.App.AUTH_USER_GROUP.PANEL_DISPLAY_NAME] ?: string;
 }
 
 export interface ControllerConfig

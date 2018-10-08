@@ -27,7 +27,8 @@ class USER_GROUPS {
 }
 
 class AUTH_USER_GROUP {
-    static readonly PANEL_ACCESS      = 'panelAccess';
+    static readonly PANEL_ACCESS       = 'panelAccess';
+    static readonly PANEL_DISPLAY_NAME = 'panelDisplayName';
 }
 
 class OBJECTS {

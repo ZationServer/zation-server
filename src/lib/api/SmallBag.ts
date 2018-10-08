@@ -31,6 +31,7 @@ import IdTools              = require("../helper/tools/idTools");
 import ObjectPath           = require("../helper/tools/objectPath");
 import TokenTools           = require("../helper/token/tokenTools");
 import {AsymmetricKeyPairs}   from "../helper/infoObjects/asymmetricKeyPairs";
+import {WorkerMessageActions} from "../helper/constants/workerMessageActions";
 
 class SmallBag
 {
@@ -48,58 +49,140 @@ class SmallBag
     }
 
     //PART Server
-    // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns the server ip address.
+     */
     getServerIpAddress() : string {
         // noinspection TypeScriptValidateJSTypes
         return IP.address();
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the server port.
+     */
     getServerPort() : number
     {
         return this.zc.getMain(Const.Main.KEYS.PORT);
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the server instance id.
+     */
     getServerInstanceId() : string
     {
         return this.worker.options.instanceId;
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the app name.
+     */
     getAppName() : string
     {
         return this.zc.getMain(Const.Main.KEYS.APP_NAME);
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the zation version.
+     */
     getZationVersion() : string
     {
         return this.worker.getServerVersion();
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the started time stamp from this server.
+     */
     getServerStartedTimeStamp() : number
     {
         return this.worker.getServerStartedTime();
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the started time stamp from this worker.
+     */
     getWorkerStartedTimeStamp() : number
     {
         return this.worker.getWorkerStartedTime();
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the worker id.
+     */
     getWorkerId() : number
     {
         return this.worker.getWorkerId();
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the full worker id. (includes the node process id)
+     * So this id is unique for every restart from this worker.
+     */
     getWorkerFullId() : string
     {
-        return this.worker.getFullWorkerId()
+        return this.worker.getFullWorkerId();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the zation worker instance.
+     * This only for advance use cases.
+     */
+    getWorker() : ZationWorker
+    {
+        return this.worker;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns if this worker is the leader.
+     */
+    isLeaderWorker() : boolean
+    {
+        return this.worker.isLeader;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns if this server instance is the leader of the cluster.
+     * Notice that this server can lose his leader ship again!
+     * If cluster mode is not active (means only one server is running without state server)
+     * it will returns always true.
+     */
+    isLeaderServer() : Promise<boolean>
+    {
+        return new Promise<boolean>((resolve,reject) =>
+        {
+            this.worker.sendToMaster({action : WorkerMessageActions.IS_LEADER},(err,data) => {
+               if(err) {
+                   reject(err);
+               }
+               else {
+                   resolve(data.isLeader);
+               }
+            });
+        });
     }
 
     //Part Crypto
@@ -216,7 +299,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Encrypts a message with a password an initialization vector and returns the encrypted message.
+     * Encrypts a message with a password and initialization vector than returns the encrypted message.
      * @example
      * const encryptedMessage = await symmetricEncrypt('secret information',password,iv);
      * @param message
@@ -231,7 +314,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Decrypts a message with a password an initialization vector and returns the decrypted message.
+     * Decrypts a message with a password and initialization vector than returns the decrypted message.
      * @example
      * const password = await symmetricDecrypt(encryptedMessage,password,iv);
      * @param encryptedMessage
@@ -287,6 +370,7 @@ class SmallBag
     /**
      * @description
      * Returns an generated unique id.
+     * By using npm package 'uniqid'.
      */
     generateUniqueId() : string {
         return uniqid();
@@ -540,14 +624,16 @@ class SmallBag
     /**
      * @description
      * Is for an mysql query.
+     * Throws an ServiceNotFoundError if the service is not found.
      * @example
      * const res = mySqlQuery('SELECT 1 + 1 AS solution');
      * const solution = res.results[0];
      * @throws ServiceNotFoundError
      * @param  query
      * @param  serviceKey
+     * the key to the service.
      * @return Promise<object>
-     * The object has 2 fields, one for the result ('result') and one for the fields information ('fields').
+     * The object has 2 fields, one for the result 'result' and one for the fields information 'fields'.
      */
     mySqlQuery(query ,serviceKey : string = 'default') : Promise<object>
     {
@@ -582,28 +668,34 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Checks if the service with this key is exist and can be used.
-     * @param  serviceKey
-     */
-    isMySql(serviceKey : string = 'default') : boolean
-    {
-        return this.serviceEngine.isMySqlService(serviceKey);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
+     * Returns this service, if it exist otherwise it will throw an ServiceNotFoundError error.
      * @throws ServiceNotFoundError
      * @param  serviceKey
+     * the key to the service.
      */
     async getMySql(serviceKey : string = 'default') : Promise<MySql.Pool>
     {
         return await this.serviceEngine.getMySqlService(serviceKey);
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Checks if the service with this key is exist and can be used.
+     * @param  serviceKey
+     * the key to the service.
+     */
+    isMySql(serviceKey : string = 'default') : boolean
+    {
+        return this.serviceEngine.isMySqlService(serviceKey);
+    }
+
     //Part Database -> PostgreSql
 
     // noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
     /**
+     * @description
+     * Returns this service, if it exist otherwise it will throw an ServiceNotFoundError error.
      * @throws ServiceNotFoundError
      * @param  serviceKey
      * the key to the service.
@@ -618,6 +710,7 @@ class SmallBag
      * @description
      * Checks if the service with this key is exist and can be used.
      * @param  serviceKey
+     * the key to the service.
      */
     isPostgreSql(serviceKey : string = 'default') : boolean
     {
@@ -628,6 +721,8 @@ class SmallBag
 
     // noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
     /**
+     * @description
+     * Returns this service, if it exist otherwise it will throw an ServiceNotFoundError error.
      * @throws ServiceNotFoundError
      * @param  serviceKey
      * the key to the service.
@@ -642,6 +737,7 @@ class SmallBag
      * @description
      * Checks if the service with this key is exist and can be used.
      * @param  serviceKey
+     * the key to the service.
      */
     isMongoDb(serviceKey : string = 'default') : boolean
     {
@@ -654,6 +750,7 @@ class SmallBag
     /**
      * @description
      * Send an email, with the node mailer service.
+     * Throws an ServiceNotFoundError if the service is not found.
      * @example
      * let mailOptions = {
      *  from: '"Fred Foo 👻" <foo@example.com>', // sender address
@@ -683,6 +780,8 @@ class SmallBag
     }
     // noinspection JSUnusedGlobalSymbols
     /**
+     * @description
+     * Returns this service, if it exist otherwise it will throw an ServiceNotFoundError error.
      * @throws ServiceNotFoundError
      * @param  serviceKey
      * the key to the service.
@@ -697,6 +796,7 @@ class SmallBag
      * @description
      * Checks if the service with this key is exist and can be used.
      * @param  serviceKey
+     * the key to the service.
      */
     isNodeMailer(serviceKey : string = 'default') : boolean
     {
@@ -707,9 +807,11 @@ class SmallBag
 
     // noinspection JSUnusedGlobalSymbols
     /**
+     * @description
+     * Returns this service, if it exist otherwise it will throw an ServiceNotFoundError error.
      * @throws ServiceNotFoundError
      * @param  name
-     * The name of the custom service.
+     * the name of the custom service.
      * @param  serviceKey
      * the key to the service.
      */
@@ -723,7 +825,9 @@ class SmallBag
      * @description
      * Checks if the service with this key is exist and can be used.
      * @param name
+     * the name of the custom service.
      * @param  serviceKey
+     * the key to the service.
      */
     isCustomService(name : string,serviceKey : string = 'default') : boolean
     {
@@ -735,7 +839,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns taskError with Info from the error config file.
+     * Returns taskError construct from the error config file.
      * @throws ErrorNotFoundError
      * @param errorName
      */
@@ -747,7 +851,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns taskError with Info from the error config file.
+     * Returns taskError with info that is build from the error construct from error config file.
      * @throws ErrorNotFoundError
      * @param errorName
      * @param info
@@ -761,7 +865,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Checks if the error with this name is exist and can be used.
+     * Checks if the error construct with this name is exist and can be used.
      * @param name
      */
     isErrorConstruct(name : string) : boolean
@@ -939,7 +1043,7 @@ class SmallBag
      * kickTokenAuthUserGroupCh('TOKEN-UUID1','user');
      * kickTokenAuthUserGroupCh(['TOKEN-UUID1,'TOKEN-UUID2'],'user','EXCEPT-SOCKET-SID');
      * @param tokenId or more tokenIds in an array.
-     * @param authUserGroup is optional, if it is not given the sc with token id will be kicked out from all auth user group channels.
+     * @param authUserGroup is optional, if it is not given the socket with token id will be kicked out from all auth user group channels.
      * @param exceptSocketSids
      */
     async kickTokenAuthUserGroupCh(tokenId : string | string[],authUserGroup ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
@@ -1329,7 +1433,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Returns user id from sc (if authenticated and has one).
+     * Returns user id from socket (if authenticated and has one).
      * @example
      * getUserIdFromSocket(sc);
      * @param socket
@@ -1341,7 +1445,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Returns user group from sc (if authenticated).
+     * Returns user group from socket (if authenticated).
      * @example
      * getUserIdFromSocket(sc);
      * @param socket
@@ -1394,7 +1498,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Set sc variable (server side) with object path.
+     * Set socket variable (server side) with object path.
      * @example
      * setSocketVariable('email','example@gmail.com');
      * @param socket
@@ -1409,7 +1513,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Has sc variable (server side) with object path.
+     * Has socket variable (server side) with object path.
      * @example
      * hasSocketVariable('email');
      * @param socket
@@ -1423,7 +1527,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Get sc variable (server side) with object path.
+     * Get socket variable (server side) with object path.
      * @example
      * getSocketVariable('email');
      * @param socket
@@ -1437,7 +1541,7 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Delete sc variable (server side) with object path.
+     * Delete socket variable (server side) with object path.
      * @example
      * deleteSocketVariable('email');
      * @param socket
@@ -1513,8 +1617,8 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the sc with the socketId.
-     * You have only protocolAccess to sockets they are connected to this worker.
+     * Returns the socket with the socketId.
+     * You have only access to sockets they are connected to this worker.
      * @example
      * getWorkerSocket('SOCKET-ID');
      * @param socketId
@@ -1612,13 +1716,13 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socketIds from sc with the tokenId.
-     * You have only protocolAccess to socketsIds they are connected to this worker.
+     * Returns the sockets with the tokenId.
+     * You have only have access to sockets they are connected to this worker.
      * @example
      * getSocketIdsWithTokenId('TOKEN-ID');
      * @param tokenId
      */
-    getSocketIdsWithTokenId(tokenId : string) : string[]
+    getSocketsWithTokenId(tokenId : string) : Socket[]
     {
         return this.worker.getTokenIdToScIdMapper().getValues(tokenId);
     }
@@ -1626,43 +1730,15 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socketSids from sc with the tokenId.
-     * You have only protocolAccess to socketsSids they are connected to this worker.
-     * @example
-     * getSocketSidsWithTokenId('TOKEN-ID');
-     * @param tokenId
-     */
-    getSocketSidsWithTokenId(tokenId : string) : string[]
-    {
-        return this.convertSocketIdToSid(...this.getSocketIdsWithTokenId(tokenId));
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns the socketIds from sockets with the userId.
-     * You have only protocolAccess to socketsIds they are connected to this worker.
+     * Returns the sockets with the userId.
+     * You have only have access to sockets they are connected to this worker.
      * @example
      * getSocketIdsWithUserId('tom1554');
      * @param userId
      */
-    getSocketIdsWithUserId(userId : string) : string[]
+    getSocketsWithUserId(userId : string) : Socket[]
     {
         return this.worker.getUserToScIdMapper().getValues(userId);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description&
-     * Returns the socketSids from sockets with the userId.
-     * You have only protocolAccess to socketsSids they are connected to this worker.
-     * @example
-     * getSocketSidsWithUserId('tom1554');
-     * @param userId
-     */
-    getSocketSidsWithUserId(userId : string) : string[]
-    {
-        return this.convertSocketIdToSid(...this.getSocketIdsWithUserId(userId));
     }
 
     // noinspection JSUnusedGlobalSymbols

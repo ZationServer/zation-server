@@ -130,7 +130,7 @@ class AuthEngine
     //PART AUTHENTICATION&
     async authenticate(authUserGroup : string, userId ?: string | number,tokenCustomVar ?: object) : Promise<void>
     {
-        if(this.checkIsIn(authUserGroup)) {
+        if(this.checkIsIn(authUserGroup) || authUserGroup === Const.Settings.PANEL.AUTH_USER_GROUP) {
 
             let obj = {};
             obj[Const.Settings.TOKEN.AUTH_USER_GROUP] = authUserGroup;

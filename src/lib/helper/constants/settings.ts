@@ -62,6 +62,7 @@ class RESPONSE
     static readonly SUCCESSFUL                   = 's';
     static readonly RESULT                       = 'r';
     static readonly TOKEN                        = 't';
+    static readonly ZATION_INFO                  = 'zi';
 
     static readonly TOKEN_SIGNED                 = 'st';
     static readonly TOKEN_PLAIN                  = 'pt';
@@ -114,7 +115,8 @@ class CHANNEL
     static readonly AUTH_USER_GROUP_PREFIX    = 'ZATION.AUTH_USER_GROUP.';
     static readonly DEFAULT_USER_GROUP        = 'ZATION.DEFAULT_USER_GROUP';
     static readonly ALL                       = 'ZATION.ALL';
-    static readonly PANEL                     = 'ZATION.PANEL';
+    static readonly PANEL_IN                  = 'ZATION.PANEL_IN';
+    static readonly PANEL_OUT                 = 'ZATION.PANEL_OUT';
 
     //Custom Channels
     static readonly CUSTOM_ID_CHANNEL_PREFIX  = 'ZATION.CUSTOM_ID_CHANNEL.';
@@ -137,6 +139,11 @@ class SOCKET_EMIT_EVENTS
 class DEFAULT_USER_GROUP
 {
     static readonly FALLBACK        = 'default';
+}
+
+class PANEL
+{
+    static readonly AUTH_USER_GROUP = 'zationPanelUser';
 }
 
 //CN = CONFIG_NAMES
@@ -167,6 +174,7 @@ class Settings
     static readonly SOCKET = SOCKET;
     static readonly INTERNAL_DATA = INTERNAL_DATA;
     static readonly HTTP_GET_REQ = HTTP_GET_REQ;
+    static readonly PANEL = PANEL;
 }
 
 export = Settings;

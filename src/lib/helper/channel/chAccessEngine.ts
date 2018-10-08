@@ -427,7 +427,7 @@ export class ChAccessEngine
                 }
 
                 //Auth Group
-                if(subs[i].indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1)
+                else if(subs[i].indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1)
                 {
                     let authGroupSub = subs[i].replace(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX,'');
                     if(authUserGroup !== authGroupSub)
@@ -437,7 +437,7 @@ export class ChAccessEngine
                 }
 
                 //User Channel
-                if(subs[i].indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1)
+                else if(subs[i].indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1)
                 {
                     let userIdSub = subs[i].replace(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX,'');
                     if(userId !== userIdSub)
@@ -447,7 +447,7 @@ export class ChAccessEngine
                 }
 
                 //Panel Channel
-                if(subs[i] === Const.Settings.CHANNEL.PANEL && !panelAccess)
+                else if(subs[i] === Const.Settings.CHANNEL.PANEL_OUT && !panelAccess)
                 {
                     ChTools.kickOut(socket,subs[i]);
                 }

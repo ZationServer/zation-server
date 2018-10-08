@@ -63,6 +63,10 @@ class AEPreparedPart
 
     authUserGroupPanelAccess(authUserGroup : string) : boolean
     {
+        if(authUserGroup === Const.Settings.PANEL.AUTH_USER_GROUP) {
+            return true;
+        }
+
         const tempGroup = this.getAuthGroups()[authUserGroup];
         if(!!tempGroup){
             return !!tempGroup[Const.App.AUTH_USER_GROUP.PANEL_ACCESS] ?

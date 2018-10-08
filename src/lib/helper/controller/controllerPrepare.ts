@@ -35,7 +35,6 @@ class ControllerPrepare
         return this.getController(name,isSystemController).instance;
     }
 
-
     getControllerConfig(name : string,isSystemController : boolean) : object
     {
         return this.getController(name,isSystemController).config;

@@ -22,439 +22,384 @@ app config
 if type = file -> only file functions
  */
 
-class ConfigChecker
-{
-   private readonly zc : ZationConfig;
-   private readonly ceb : ConfigErrorBag;
+class ConfigChecker {
+    private readonly zc: ZationConfig;
+    private readonly ceb: ConfigErrorBag;
 
-   private objectsConfig : object;
-   private validationGroupConfig : object;
-   private cNames : object;
-   private validAccessValues : any[];
-   private objectImports : any[];
-   private objectExtensions : any[];
+    private objectsConfig: object;
+    private validationGroupConfig: object;
+    private cNames: object;
+    private validAccessValues: any[];
+    private objectImports: any[];
+    private objectExtensions: any[];
 
-   constructor(zationConfig,configErrorBag)
-   {
-       this.zc = zationConfig;
-       this.ceb = configErrorBag;
-   }
+    constructor(zationConfig, configErrorBag) {
+        this.zc = zationConfig;
+        this.ceb = configErrorBag;
+    }
 
-   public checkStarterConfig()
-   {
-       ConfigCheckerTools.assertStructure
-       (Structures.StarterConfig,this.zc.getStarterConfig(),
-           Const.Settings.CN.STARTER,this.ceb);
-   }
+    public checkStarterConfig() {
+        ConfigCheckerTools.assertStructure
+        (Structures.StarterConfig, this.zc.getStarterConfig(),
+            Const.Settings.CN.STARTER, this.ceb);
+    }
 
-   public checkAllConfigs()
-   {
-       this.prepare();
-       this.checkConfig();
-   }
-   
-   private prepare()
-   {
-       this.prepareAllValidUserGroupsAndCheck();
-       this.objectsConfig =
-           this.zc.isApp(Const.App.KEYS.OBJECTS) && typeof this.zc.getApp(Const.App.KEYS.OBJECTS) === 'object'
-               ? this.zc.getApp(Const.App.KEYS.OBJECTS) : {};
+    public checkAllConfigs() {
+        this.prepare();
+        this.checkConfig();
+    }
 
-       this.validationGroupConfig =
-           this.zc.isApp(Const.App.KEYS.VALIDATION_GROUPS) && typeof this.zc.getApp(Const.App.KEYS.VALIDATION_GROUPS) === 'object'
-               ? this.zc.getApp(Const.App.KEYS.VALIDATION_GROUPS) : {};
+    private prepare() {
+        this.prepareAllValidUserGroupsAndCheck();
+        this.objectsConfig =
+            this.zc.isApp(Const.App.KEYS.OBJECTS) && typeof this.zc.getApp(Const.App.KEYS.OBJECTS) === 'object'
+                ? this.zc.getApp(Const.App.KEYS.OBJECTS) : {};
 
-       this.cNames = {};
-   }
+        this.validationGroupConfig =
+            this.zc.isApp(Const.App.KEYS.VALIDATION_GROUPS) && typeof this.zc.getApp(Const.App.KEYS.VALIDATION_GROUPS) === 'object'
+                ? this.zc.getApp(Const.App.KEYS.VALIDATION_GROUPS) : {};
 
-   private prepareAllValidUserGroupsAndCheck()
-   {
-       let groups : any = [];
+        this.cNames = {};
+    }
 
-       let extraKeys : any = [Const.App.ACCESS.ALL,Const.App.ACCESS.ALL_NOT_AUTH,Const.App.ACCESS.ALL_AUTH];
+    private prepareAllValidUserGroupsAndCheck() {
+        let groups: any = [];
 
-       let authGroups = ObjectPath.get(this.zc.getAppConfig(),
-           [Const.App.KEYS.USER_GROUPS,Const.App.USER_GROUPS.AUTH]);
+        let extraKeys: any = [Const.App.ACCESS.ALL, Const.App.ACCESS.ALL_NOT_AUTH, Const.App.ACCESS.ALL_AUTH];
 
-       if(!this.zc.isApp(Const.App.KEYS.USER_GROUPS))
-       {
-           Logger.printConfigWarning
-           (Const.Settings.CN.APP,`No settings for the user groups are found! DefaultUserGroup will be set to 'default'`);
-       }
+        let authGroups = ObjectPath.get(this.zc.getAppConfig(),
+            [Const.App.KEYS.USER_GROUPS, Const.App.USER_GROUPS.AUTH]);
 
-       if(authGroups !== undefined)
-       {
-           groups = Object.keys(authGroups);
-       }
+        if (!this.zc.isApp(Const.App.KEYS.USER_GROUPS)) {
+            Logger.printConfigWarning
+            (Const.Settings.CN.APP, `No settings for the user groups are found! DefaultUserGroup will be set to 'default'`);
+        }
 
-       //checkAuthGroups don't have a all/allAuth/allNotAuth Name
-       for(let i = 0; i < groups.length; i++) {
-           if (groups[i].indexOf('.') !== -1) {
-               this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
-                   `${groups[i]} is not a valid auth user group! Dot/s in name are not allowed.`));
-           }
+        if (authGroups !== undefined) {
+            groups = Object.keys(authGroups);
+        }
 
-           if (extraKeys.includes(groups[i])) {
-               this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
-                   `auth user group with name ${groups[i]} is not allowed use an other name!`));
-           }
+        //checkAuthGroups don't have a all/allAuth/allNotAuth Name
+        for (let i = 0; i < groups.length; i++) {
+            if (groups[i].indexOf('.') !== -1) {
+                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+                    `${groups[i]} is not a valid auth user group! Dot/s in name are not allowed.`));
+            }
 
-           ConfigCheckerTools.assertStructure
-           (Structures.AuthUserGroup, authGroups[groups[i]],
-               Const.Settings.CN.APP, this.ceb, new Target(`Auth User Group: '${groups[i]}'`));
-       }
+            if (extraKeys.includes(groups[i])) {
+                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+                    `auth user group with name ${groups[i]} is not allowed use an other name!`));
+            }
+
+            if (groups[i] === Const.Settings.PANEL.AUTH_USER_GROUP) {
+                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+                    `auth user group with name ${groups[i]} is not allowed. This auth user group name is used internal in the zation system!`));
+            }
+
+            ConfigCheckerTools.assertStructure
+            (Structures.AuthUserGroup, authGroups[groups[i]],
+                Const.Settings.CN.APP, this.ceb, new Target(`Auth User Group: '${groups[i]}'`));
+        }
 
 
-       let defaultGroup = ObjectPath.get(this.zc.getAppConfig(),
-           [Const.App.KEYS.USER_GROUPS,Const.App.USER_GROUPS.DEFAULT]);
+        let defaultGroup = ObjectPath.get(this.zc.getAppConfig(),
+            [Const.App.KEYS.USER_GROUPS, Const.App.USER_GROUPS.DEFAULT]);
 
-       if(defaultGroup !== undefined)
-       {
-           if(extraKeys.includes(defaultGroup))
-           {
-               this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
-                   `default user group with name ${defaultGroup} is not allowed use an other name!`));
-           }
-           groups.push(defaultGroup);
-       }
-       else
-       {
-           Logger.printConfigWarning
-           (Const.Settings.CN.APP,`No settings for the default user group found! DefaultUserGroup will be set to 'default'`);
-           groups.push(Const.Settings.DEFAULT_USER_GROUP.FALLBACK);
-       }
+        if (defaultGroup !== undefined) {
+            if (extraKeys.includes(defaultGroup)) {
+                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+                    `default user group with name ${defaultGroup} is not allowed use an other name!`));
+            }
+            groups.push(defaultGroup);
+        } else {
+            Logger.printConfigWarning
+            (Const.Settings.CN.APP, `No settings for the default user group found! DefaultUserGroup will be set to 'default'`);
+            groups.push(Const.Settings.DEFAULT_USER_GROUP.FALLBACK);
+        }
 
-       this.validAccessValues = groups;
-       this.validAccessValues.push(Const.App.ACCESS.ALL,Const.App.ACCESS.ALL_NOT_AUTH,Const.App.ACCESS.ALL_AUTH);
-   }
-   
-   private checkConfig()
-   {
-       this.checkMainConfig();
-       this.checkAppConfig();
-       this.checkChannelConfig();
-       this.checkServiceConfig();
-       this.checkEventConfig();
-       this.checkErrorConfig();
-   }
+        this.validAccessValues = groups;
+        this.validAccessValues.push(Const.App.ACCESS.ALL, Const.App.ACCESS.ALL_NOT_AUTH, Const.App.ACCESS.ALL_AUTH);
+    }
 
-   private checkAppConfig()
-   {
-       this.checkAccessControllerDefaultIsSet();
-       this.checkAppConfigMain();
-       this.checkObjectsConfig();
-       this.checkValidationGroups();
-       this.checkVersionControl();
-       this.checkControllerConfigs();
-       this.checkAuthController();
-       this.checkBackgroundTasks();
-   }
+    private checkConfig() {
+        this.checkMainConfig();
+        this.checkAppConfig();
+        this.checkChannelConfig();
+        this.checkServiceConfig();
+        this.checkEventConfig();
+        this.checkErrorConfig();
+    }
 
-   private checkBackgroundTasks()
-   {
-       let bkt = this.zc.getApp(Const.App.BACKGROUND_TASKS);
+    private checkAppConfig() {
+        this.checkAccessControllerDefaultIsSet();
+        this.checkAppConfigMain();
+        this.checkObjectsConfig();
+        this.checkValidationGroups();
+        this.checkVersionControl();
+        this.checkControllerConfigs();
+        this.checkAuthController();
+        this.checkBackgroundTasks();
+    }
 
-       if(typeof bkt === 'object')
-       {
-           for(let name in bkt)
-           {
-               if(bkt.hasOwnProperty(name))
-               {
-                   ConfigCheckerTools.assertStructure
-                   (Structures.BackgroundTask,bkt[name],
-                       Const.Settings.CN.APP,this.ceb,new Target(`BackgroundTask: '${name}'`));
-               }
-           }
-       }
-   }
+    private checkBackgroundTasks() {
+        let bkt = this.zc.getApp(Const.App.BACKGROUND_TASKS);
 
-   private checkAuthController()
-   {
-       let authControllerName = this.zc.getApp(Const.App.KEYS.AUTH_CONTROLLER);
-       if(typeof authControllerName === "string" && this.zc.isApp(Const.App.KEYS.CONTROLLER))
-       {
-           let controller = this.zc.getApp(Const.App.KEYS.CONTROLLER);
-           if(!controller.hasOwnProperty(authControllerName))
-           {
-               this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
-                   `AuthController: '${authControllerName}' is not found.`));
-           }
-           else
-           {
-               //checkAuthControllerAccess value
-               let authController = controller[authControllerName];
-               if(authController[Const.App.CONTROLLER.ACCESS] !== Const.App.ACCESS.ALL)
-               {
-                   Logger.printConfigWarning
-                   (Const.Settings.CN.APP,`It is recommended to set the access of the authController directly to 'all'.`);
-               }
-           }
-       }
-   }
+        if (typeof bkt === 'object') {
+            for (let name in bkt) {
+                if (bkt.hasOwnProperty(name)) {
+                    ConfigCheckerTools.assertStructure
+                    (Structures.BackgroundTask, bkt[name],
+                        Const.Settings.CN.APP, this.ceb, new Target(`BackgroundTask: '${name}'`));
+                }
+            }
+        }
+    }
+
+    private checkAuthController() {
+        let authControllerName = this.zc.getApp(Const.App.KEYS.AUTH_CONTROLLER);
+        if (typeof authControllerName === "string" && this.zc.isApp(Const.App.KEYS.CONTROLLER)) {
+            let controller = this.zc.getApp(Const.App.KEYS.CONTROLLER);
+            if (!controller.hasOwnProperty(authControllerName)) {
+                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+                    `AuthController: '${authControllerName}' is not found.`));
+            } else {
+                //checkAuthControllerAccess value
+                let authController = controller[authControllerName];
+                if (authController[Const.App.CONTROLLER.ACCESS] !== Const.App.ACCESS.ALL) {
+                    Logger.printConfigWarning
+                    (Const.Settings.CN.APP, `It is recommended to set the access of the authController directly to 'all'.`);
+                }
+            }
+        }
+    }
 
 
-   private checkEventConfig()
-   {
-       ConfigCheckerTools.assertStructure
-       (Structures.EventConfig,this.zc.getEventConfig(),Const.Settings.CN.EVENT,this.ceb);
-   }
+    private checkEventConfig() {
+        ConfigCheckerTools.assertStructure
+        (Structures.EventConfig, this.zc.getEventConfig(), Const.Settings.CN.EVENT, this.ceb);
+    }
 
-   private checkErrorConfig()
-   {
-       if(typeof this.zc.getErrorConfig() === 'object')
-       {
-           let errors = this.zc.getErrorConfig();
-           for(let k in errors)
-           {
-               if(errors.hasOwnProperty(k))
-               {
-                   this.checkError(errors[k],new Target(`error '${k}'`));
-               }
-           }
-       }
-   }
+    private checkErrorConfig() {
+        if (typeof this.zc.getErrorConfig() === 'object') {
+            let errors = this.zc.getErrorConfig();
+            for (let k in errors) {
+                if (errors.hasOwnProperty(k)) {
+                    this.checkError(errors[k], new Target(`error '${k}'`));
+                }
+            }
+        }
+    }
 
-   private checkError(error: object,target : Target)
-   {
-       ConfigCheckerTools.assertStructure
-       (Structures.Error,error,Const.Settings.CN.ERROR,this.ceb,target);
-   }
+    private checkError(error: object, target: Target) {
+        ConfigCheckerTools.assertStructure
+        (Structures.Error, error, Const.Settings.CN.ERROR, this.ceb, target);
+    }
 
-   private checkChannelConfig()
-   {
-       //main structure
-       ConfigCheckerTools.assertStructure
-       (Structures.ChannelConfig,this.zc.getChannelConfig(),Const.Settings.CN.CHANNEL,this.ceb);
+    private checkChannelConfig() {
+        //main structure
+        ConfigCheckerTools.assertStructure
+        (Structures.ChannelConfig, this.zc.getChannelConfig(), Const.Settings.CN.CHANNEL, this.ceb);
 
 
-       let mainChannels = this.zc.getChannelConfig();
-       for(let key in mainChannels)
-       {
-           if(mainChannels.hasOwnProperty(key) && typeof mainChannels[key] === 'object')
-           {
-               if(key === Const.Channel.KEYS.CUSTOM_CHANNELS || key === Const.Channel.KEYS.CUSTOM_ID_CHANNELS)
-               {
-                   const chPart = mainChannels[key];
-                   const firstTarget = new Target(key);
-                   for(let chName in chPart)
-                   {
-                       if(chPart.hasOwnProperty(chName)) {
+        let mainChannels = this.zc.getChannelConfig();
+        for (let key in mainChannels) {
+            if (mainChannels.hasOwnProperty(key) && typeof mainChannels[key] === 'object') {
+                if (key === Const.Channel.KEYS.CUSTOM_CHANNELS || key === Const.Channel.KEYS.CUSTOM_ID_CHANNELS) {
+                    const chPart = mainChannels[key];
+                    const firstTarget = new Target(key);
+                    for (let chName in chPart) {
+                        if (chPart.hasOwnProperty(chName)) {
 
-                           if(chName.indexOf('.') !== -1) {
-                               this.ceb.addConfigError(new ConfigError(Const.Settings.CN.CHANNEL,
-                                   `${firstTarget.getTarget()} Channel name ${chName} is not valid! Dot/s in name are not allowed.`));
-                           }
+                            if (chName.indexOf('.') !== -1) {
+                                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.CHANNEL,
+                                    `${firstTarget.getTarget()} Channel name ${chName} is not valid! Dot/s in name are not allowed.`));
+                            }
 
-                           this.checkFullChannelItem(chPart[chName],firstTarget,chName);
-                       }
-                   }
-               }
-               else if
-               (
-                   key === Const.Channel.KEYS.ALL_CH || key === Const.Channel.KEYS.DEFAULT_USER_GROUP_CH ||
-                   key === Const.Channel.KEYS.AUTH_USER_GROUP_CH || key === Const.Channel.KEYS.USER_CH)
-               {
-                   ConfigCheckerTools.assertStructure
-                   (Structures.ChannelNormalItem,mainChannels[key],Const.Settings.CN.CHANNEL,this.ceb,new Target(key));
-               }
-           }
-       }
-   }
+                            this.checkFullChannelItem(chPart[chName], firstTarget, chName);
+                        }
+                    }
+                } else if
+                (
+                    key === Const.Channel.KEYS.ALL_CH || key === Const.Channel.KEYS.DEFAULT_USER_GROUP_CH ||
+                    key === Const.Channel.KEYS.AUTH_USER_GROUP_CH || key === Const.Channel.KEYS.USER_CH) {
+                    ConfigCheckerTools.assertStructure
+                    (Structures.ChannelNormalItem, mainChannels[key], Const.Settings.CN.CHANNEL, this.ceb, new Target(key));
+                }
+            }
+        }
+    }
 
-   private checkFullChannelItem(channel : any,firstTarget : Target,chName : string) : void
-   {
-       const mainTarget = firstTarget.addPath(chName);
+    private checkFullChannelItem(channel: any, firstTarget: Target, chName: string): void {
+        const mainTarget = firstTarget.addPath(chName);
 
-       ConfigCheckerTools.assertStructure
-       (Structures.ChannelFullItem,channel,Const.Settings.CN.CHANNEL,this.ceb,mainTarget);
+        ConfigCheckerTools.assertStructure
+        (Structures.ChannelFullItem, channel, Const.Settings.CN.CHANNEL, this.ceb, mainTarget);
 
-       if(typeof channel === 'object')
-       {
-           if(channel.hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS) &&
-               channel.hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS))
-           {
-               this.ceb.addConfigError(new ConfigError(Const.Settings.CN.CHANNEL,
-                   `${mainTarget.getTarget()} only 'publishAccess' or 'publishNotAccess' keyword is allow.`));
-           }
-           if(channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_ACCESS) &&
-               channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS))
-           {
-               this.ceb.addConfigError(new ConfigError(Const.Settings.CN.CHANNEL,
-                   `${mainTarget.getTarget()} only 'subscribeAccess' or 'subscribeNotAccess' keyword is allow.`));
-           }
+        if (typeof channel === 'object') {
+            if (channel.hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS) &&
+                channel.hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS)) {
+                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.CHANNEL,
+                    `${mainTarget.getTarget()} only 'publishAccess' or 'publishNotAccess' keyword is allow.`));
+            }
+            if (channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_ACCESS) &&
+                channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS)) {
+                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.CHANNEL,
+                    `${mainTarget.getTarget()} only 'subscribeAccess' or 'subscribeNotAccess' keyword is allow.`));
+            }
 
-           //check protocolAccess dependency to userGroups
-           this.checkAccessKeyDependency
-           (channel[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS],Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS,mainTarget);
-           this.checkAccessKeyDependency
-           (channel[Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS],Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS,mainTarget);
-           this.checkAccessKeyDependency
-           (channel[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS],Const.Channel.CHANNEL.SUBSCRIBE_ACCESS,mainTarget);
-           this.checkAccessKeyDependency
-           (channel[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS],Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS,mainTarget);
+            //check protocolAccess dependency to userGroups
+            this.checkAccessKeyDependency
+            (channel[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS], Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS, mainTarget);
+            this.checkAccessKeyDependency
+            (channel[Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS], Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS, mainTarget);
+            this.checkAccessKeyDependency
+            (channel[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS], Const.Channel.CHANNEL.SUBSCRIBE_ACCESS, mainTarget);
+            this.checkAccessKeyDependency
+            (channel[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS], Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS, mainTarget);
 
-           this.warningForPublish(channel[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS],mainTarget);
-           this.warningForPublish(channel[Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS],mainTarget);
-       }
+            this.warningForPublish(channel[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS], mainTarget);
+            this.warningForPublish(channel[Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS], mainTarget);
+        }
 
-       if
-       (
-           chName === Const.Channel.CHANNEL_DEFAULT.DEFAULT &&
-           !(
-               (channel.hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS) ||
-                   channel.hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS)) &&
-               (channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_ACCESS) ||
-                   channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS))
-           )
-       )
-       {
-           Logger.printConfigWarning(`${Const.Settings.CN.CHANNEL} ${firstTarget.getMainTarget()}`,'It is recommended to set a default value for clientPublishAccess and subscribeAccess.');
-       }
-   }
+        if
+        (
+            chName === Const.Channel.CHANNEL_DEFAULT.DEFAULT &&
+            !(
+                (channel.hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS) ||
+                    channel.hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS)) &&
+                (channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_ACCESS) ||
+                    channel.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS))
+            )
+        ) {
+            Logger.printConfigWarning(`${Const.Settings.CN.CHANNEL} ${firstTarget.getMainTarget()}`, 'It is recommended to set a default value for clientPublishAccess and subscribeAccess.');
+        }
+    }
 
-   // noinspection JSMethodCanBeStatic
-   private warningForPublish(value : any,target : Target) : void
-   {
-       if(value !== undefined && (typeof value !== "boolean" || (typeof value === 'boolean' && value )))
-       {
-           Logger.printConfigWarning
-           (Const.Settings.CN.CHANNEL,
-               `${target.getTarget()} please notice that 'publishAccess' is used when a client publish from outside!`+
-               `So it is better to use an controller (with validation) and publish from server side!`);
-       }
-   }
+    // noinspection JSMethodCanBeStatic
+    private warningForPublish(value: any, target: Target): void {
+        if (value !== undefined && (typeof value !== "boolean" || (typeof value === 'boolean' && value))) {
+            Logger.printConfigWarning
+            (Const.Settings.CN.CHANNEL,
+                `${target.getTarget()} please notice that 'publishAccess' is used when a client publish from outside!` +
+                `So it is better to use an controller (with validation) and publish from server side!`);
+        }
+    }
 
 
-   private checkAccessControllerDefaultIsSet()
-   {
-       let access = ObjectPath.get(this.zc.getAppConfig(),
-           [Const.App.KEYS.CONTROLLER_DEFAULT,Const.App.CONTROLLER.ACCESS]);
+    private checkAccessControllerDefaultIsSet() {
+        let access = ObjectPath.get(this.zc.getAppConfig(),
+            [Const.App.KEYS.CONTROLLER_DEFAULT, Const.App.CONTROLLER.ACCESS]);
 
-       let notAccess = ObjectPath.get(this.zc.getAppConfig(),
-           [Const.App.KEYS.CONTROLLER_DEFAULT,Const.App.CONTROLLER.NOT_ACCESS]);
+        let notAccess = ObjectPath.get(this.zc.getAppConfig(),
+            [Const.App.KEYS.CONTROLLER_DEFAULT, Const.App.CONTROLLER.NOT_ACCESS]);
 
-       if(access === undefined && notAccess === undefined)
-       {
-           Logger.printConfigWarning(Const.Settings.CN.APP,'It is recommended to set a controller default value for protocolAccess or notAccess.');
-       }
-   }
+        if (access === undefined && notAccess === undefined) {
+            Logger.printConfigWarning(Const.Settings.CN.APP, 'It is recommended to set a controller default value for protocolAccess or notAccess.');
+        }
+    }
 
-   private checkObjectsConfig()
-   {
-       this.objectImports = [];
-       this.objectExtensions = [];
-       for(let objName in this.objectsConfig)
-       {
-           if(this.objectsConfig.hasOwnProperty(objName))
-           {
-               if(!Array.isArray(this.objectsConfig[objName]) &&  typeof this.objectsConfig[objName] === 'object')
-               {
-                   this.checkObject(this.objectsConfig[objName],new Target(`Object: ${objName}`,'propertyPath'),objName);
-               }
-               else
-               {
-                   this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
-                       `Object: '${objName}' value must be an object!`));
-               }
-           }
-       }
-       this.checkCrossImportsOrExtends();
-   }
+    private checkObjectsConfig() {
+        this.objectImports = [];
+        this.objectExtensions = [];
+        for (let objName in this.objectsConfig) {
+            if (this.objectsConfig.hasOwnProperty(objName)) {
+                if (!Array.isArray(this.objectsConfig[objName]) && typeof this.objectsConfig[objName] === 'object') {
+                    this.checkObject(this.objectsConfig[objName], new Target(`Object: ${objName}`, 'propertyPath'), objName);
+                } else {
+                    this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+                        `Object: '${objName}' value must be an object!`));
+                }
+            }
+        }
+        this.checkCrossImportsOrExtends();
+    }
 
-   private checkCrossImportsOrExtends()
-   {
-       for(let i = 0; i < this.objectImports.length; i++)
-       {
-           let objDep = this.objectImports[i];
-           if(this.isCrossIn(objDep,this.objectImports))
-           {
-               this.objectImports[i] = {};
+    private checkCrossImportsOrExtends() {
+        for (let i = 0; i < this.objectImports.length; i++) {
+            let objDep = this.objectImports[i];
+            if (this.isCrossIn(objDep, this.objectImports)) {
+                this.objectImports[i] = {};
 
-               this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
-                   `Object: '${objDep['s']}' uses '${objDep['t']}' Object: '${objDep['t']}' uses '${objDep['s']}' a cyclic import, it will create an infinite loop.`));
-           }
-       }
+                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+                    `Object: '${objDep['s']}' uses '${objDep['t']}' Object: '${objDep['t']}' uses '${objDep['s']}' a cyclic import, it will create an infinite loop.`));
+            }
+        }
 
-       for(let i = 0; i < this.objectExtensions.length; i++)
-       {
-           let objDep = this.objectExtensions[i];
-           if(this.isCrossIn(objDep,this.objectExtensions))
-           {
-               this.objectExtensions[i] = {};
+        for (let i = 0; i < this.objectExtensions.length; i++) {
+            let objDep = this.objectExtensions[i];
+            if (this.isCrossIn(objDep, this.objectExtensions)) {
+                this.objectExtensions[i] = {};
 
-               this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
-                   `Object: '${objDep['s']}' extends '${objDep['t']}' Object: '${objDep['t']}' extends '${objDep['s']}' a cyclic inheritance, it will create an infinite loop.`));
-           }
-       }
-   }
+                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+                    `Object: '${objDep['s']}' extends '${objDep['t']}' Object: '${objDep['t']}' extends '${objDep['s']}' a cyclic inheritance, it will create an infinite loop.`));
+            }
+        }
+    }
 
-   // noinspection JSMethodCanBeStatic
-   private isCrossIn(objDep,array : object[])
-   {
-       for(let i = 0; i < array.length; i++) {
-           if
-           (
-               array[i]['s'] === objDep['t'] &&
-               array[i]['t'] === objDep['s']
-           )
-           {
-               return true;
-           }
-       }
-       return false;
-   }
+    // noinspection JSMethodCanBeStatic
+    private isCrossIn(objDep, array: object[]) {
+        for (let i = 0; i < array.length; i++) {
+            if
+            (
+                array[i]['s'] === objDep['t'] &&
+                array[i]['t'] === objDep['s']
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-   private checkValidationGroups()
-   {
-       for(let group in this.validationGroupConfig)
-       {
-           if(this.validationGroupConfig.hasOwnProperty(group))
-           {
-               let groupConfig = this.validationGroupConfig[group];
-               ConfigCheckerTools.assertStructure
-               (Structures.ValidationGroup,groupConfig,Const.Settings.CN.APP,this.ceb,new Target(`validationGroup '${group}'`));
+    private checkValidationGroups() {
+        for (let group in this.validationGroupConfig) {
+            if (this.validationGroupConfig.hasOwnProperty(group)) {
+                let groupConfig = this.validationGroupConfig[group];
+                ConfigCheckerTools.assertStructure
+                (Structures.ValidationGroup, groupConfig, Const.Settings.CN.APP, this.ceb, new Target(`validationGroup '${group}'`));
 
-               this.checkOnlyValidationFunctions(groupConfig,`validation group ${group}`);
-           }
-       }
-   }
+                this.checkOnlyValidationFunctions(groupConfig, `validation group ${group}`);
+            }
+        }
+    }
 
-   private checkObject(obj,target,objName)
-   {
-       ConfigCheckerTools.assertStructure(Structures.AppObject,obj,Const.Settings.CN.APP,this.ceb,target);
+    private checkObject(obj, target, objName) {
+        ConfigCheckerTools.assertStructure(Structures.AppObject, obj, Const.Settings.CN.APP, this.ceb, target);
 
-       //check property body
-       if(typeof obj[Const.App.OBJECTS.PROPERTIES] === 'object')
-       {
-           let props = obj[Const.App.OBJECTS.PROPERTIES];
-           for(let k in props)
-           {
-               if(props.hasOwnProperty(k))
-               {
-                   this.checkInputBody(props[k],target.addPath(k),objName);
-               }
-           }
-       }
-       //check for extend
-       if(typeof obj[Const.App.OBJECTS.EXTENDS] === 'string')
-       {
-           this.checkPropertyByObjExtend(obj[Const.App.OBJECTS.EXTENDS],target,objName);
-       }
-   }
+        //check property body
+        if (typeof obj[Const.App.OBJECTS.PROPERTIES] === 'object') {
+            let props = obj[Const.App.OBJECTS.PROPERTIES];
+            for (let k in props) {
+                if (props.hasOwnProperty(k)) {
+                    this.checkInputBody(props[k], target.addPath(k), objName);
+                }
+            }
+        }
+        //check for extend
+        if (typeof obj[Const.App.OBJECTS.EXTENDS] === 'string') {
+            this.checkPropertyByObjExtend(obj[Const.App.OBJECTS.EXTENDS], target, objName);
+        }
+    }
 
-   private checkAppConfigMain()
-   {
-       ConfigCheckerTools.assertStructure(Structures.App,this.zc.getAppConfig(),Const.Settings.CN.APP,this.ceb);
-   }
+    private checkAppConfigMain() {
+        ConfigCheckerTools.assertStructure(Structures.App, this.zc.getAppConfig(), Const.Settings.CN.APP, this.ceb);
+    }
 
-   private checkMainConfig()
-   {
-       //checkStructure
-       ConfigCheckerTools.assertStructure(Structures.Main,this.zc.getMainConfig(),Const.Settings.CN.MAIN,this.ceb);
+    private checkMainConfig() {
+        //checkStructure
+        ConfigCheckerTools.assertStructure(Structures.Main, this.zc.getMainConfig(), Const.Settings.CN.MAIN, this.ceb);
 
-       this.checkHttpsMainConfig();
-       this.checkPanelUserMainConfig();
-   }
+        this.checkHttpsMainConfig();
+        this.checkPanelClientPrepare();
+        this.checkPanelUserMainConfig();
+    }
+
+    private checkPanelClientPrepare()
+    {
+        if(this.zc.getMain(Const.Main.KEYS.USE_PANEL) && !this.zc.getMain(Const.Main.KEYS.CLIENT_JS_PREPARE)) {
+            this.ceb.addConfigError(new ConfigError(Const.Settings.CN.MAIN,
+                `For using the zation panel (usePanel) you need to set the clientJsPrepare in the main config to true.`));
+        }
+    }
 
    private checkHttpsMainConfig()
    {
@@ -470,21 +415,43 @@ class ConfigChecker
    private checkPanelUserMainConfig()
    {
        const panelUserConfig = this.zc.getMain(Const.Main.PANEL_USER);
+       let hasOneUser = false;
        if(Array.isArray(panelUserConfig)) {
            for(let i = 0; i < panelUserConfig.length; i++) {
+               hasOneUser = true;
                this.checkPanelUserConfig(panelUserConfig[i],new Target(`UserConfig '${i}'`));
            }
        }
        else if(typeof panelUserConfig === 'object') {
-           this.checkPanelUserConfig(panelUserConfig)
-
+           hasOneUser = true;
+           this.checkPanelUserConfig(panelUserConfig);
        }
+
+       if(this.zc.getMain(Const.Main.KEYS.USE_PANEL) && !hasOneUser)
+       {
+           Logger.printConfigWarning
+           (
+               Const.Settings.CN.MAIN,
+               `The zation panel is activated but no panelUser is defined in the main config.`
+           );
+       }
+
    }
 
    private checkPanelUserConfig(config : object,target ?: Target)
    {
        //checkStructure
        ConfigCheckerTools.assertStructure(Structures.PanelUserConfig,config,Const.Settings.CN.MAIN,this.ceb,target);
+
+       if( config[Const.Main.PANEL_USER.PASSWORD] === 'admin' &&
+           config[Const.Main.PANEL_USER.USER_NAME] === 'admin' &&
+           this.zc.getApp(Const.Main.KEYS.USE_PANEL))
+       {
+           Logger.printConfigWarning
+           (Const.Settings.CN.MAIN, `Its recommend to not use the default panel access credentials!` +
+           `Notice that you can authenticate the socket with this credentials and use controller / sub channels with access 'allAuth'!` +
+           `So please change them in the main config!`);
+       }
    }
 
     private checkServiceConfig()

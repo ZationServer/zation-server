@@ -244,6 +244,7 @@ ArrayShortCutSpecify[Const.App.ARRAY.LENGTH]                   = {types : ['numb
 
 const AuthUserGroup = {};
 AuthUserGroup[Const.App.AUTH_USER_GROUP.PANEL_ACCESS] = {types : ['boolean'],isOptional: true};
+AuthUserGroup[Const.App.AUTH_USER_GROUP.PANEL_DISPLAY_NAME] = {types : ['string'],isOptional: true};
 
 const EventConfig = {};
 EventConfig[Const.Event.ZATION_EXPRESS]                   = {types : ['function','array'],isOptional : true};
@@ -257,7 +258,7 @@ EventConfig[Const.Event.ZATION_BEFORE_ERROR]              = {types : ['function'
 EventConfig[Const.Event.ZATION_BEFORE_TASK_ERROR]         = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_BEFORE_TASK_ERROR_BAG]     = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_SOCKET_DISCONNECTION]      = {types : ['function','array'],isOptional : true};
-EventConfig[Const.Event.ZATION_WORKER_MESSAGE]         = {types : ['function','array'],isOptional : true};
+EventConfig[Const.Event.ZATION_WORKER_MESSAGE]            = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.MIDDLEWARE_AUTHENTICATE]          = {types : ['function'],isOptional : true};
 
 EventConfig[Const.Event.SC_SERVER_ERROR]                  = {types : ['function','array'],isOptional : true};
