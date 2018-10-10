@@ -41,8 +41,8 @@ export interface MainConfig
     [Const.Main.KEYS.AUTH_KEY] ?: string;
     [Const.Main.KEYS.AUTH_DEFAULT_EXPIRY] ?: number;
     [Const.Main.KEYS.AUTH_ALGORITHM] ?: string;
-    [Const.Main.KEYS.AUTH_PRIVATE_KEY] ?: string;
-    [Const.Main.KEYS.AUTH_PUBLIC_KEY] ?: string;
+    [Const.Main.KEYS.AUTH_PRIVATE_KEY] ?: string | null;
+    [Const.Main.KEYS.AUTH_PUBLIC_KEY] ?: string | null;
 
     //Cluster
     [Const.Main.KEYS.CLUSTER_AUTH_KEY] ?: string | null;

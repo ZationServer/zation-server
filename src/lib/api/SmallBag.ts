@@ -1503,6 +1503,7 @@ class SmallBag
      * setSocketVariable('email','example@gmail.com');
      * @param socket
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
      */
     setSocketVariableWithSocket(socket : Socket,path : string | string[],value : any) : void
@@ -1518,6 +1519,7 @@ class SmallBag
      * hasSocketVariable('email');
      * @param socket
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      */
     hasSocketVariableWithSocket(socket : Socket,path ?: string | string[]) : boolean
     {
@@ -1532,6 +1534,7 @@ class SmallBag
      * getSocketVariable('email');
      * @param socket
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      */
     getSocketVariableWithSocket(socket : Socket,path ?: string | string[]) : any
     {
@@ -1546,6 +1549,7 @@ class SmallBag
      * deleteSocketVariable('email');
      * @param socket
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      */
     deleteSocketVariableWithSocket(socket : Socket,path ?: string | string[]) : void
     {
@@ -1565,6 +1569,7 @@ class SmallBag
      * @example
      * setWorkerVariable('email','example@gmail.com');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
      */
     setWorkerVariable(path : string | string[],value : any) : void {
@@ -1578,6 +1583,7 @@ class SmallBag
      * @example
      * hasWorkerVariable('email');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      */
     hasWorkerVariable(path ?: string | string[]) : boolean {
         return ObjectPath.has(this.worker.getWorkerVariableStorage(),path);
@@ -1590,6 +1596,7 @@ class SmallBag
      * @example
      * getWorkerVariable('email');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      */
     getWorkerVariable(path ?: string | string[]) : any {
         return ObjectPath.get(this.worker.getWorkerVariableStorage(),path);
@@ -1602,6 +1609,7 @@ class SmallBag
      * @example
      * deleteWorkerVariable('email');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      */
     protected deleteWorkerVariable(path ?: string | string[]) : void {
         if(!!path) {

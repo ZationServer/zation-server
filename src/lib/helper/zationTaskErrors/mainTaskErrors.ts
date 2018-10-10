@@ -203,6 +203,15 @@ export = {
         isFromZationSystem : true
     },
 
+    wrongPanelAuthData   : {
+        name          : 'wrongPanelAuthData',
+        description   : 'Wrong panel auth data!',
+        type          : ErrorType.INPUT_ERROR,
+        isPrivate     : false,
+        sendInfo      : false,
+        isFromZationSystem : true
+    },
+
     authStartActive    : {
         name          : 'authStartActive',
         description   : 'auth start is active, zation only accept auth request for a time!',

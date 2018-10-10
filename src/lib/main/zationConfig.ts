@@ -19,16 +19,23 @@ import SmallBag          = require("../api/SmallBag");
 const  uuidV4            = require('uuid/v4');
 import moment            = require('moment-timezone');
 import ZationToken       = require("../helper/infoObjects/zationToken");
+import {EventConfig}       from "../helper/configEditTool/eventConfigStructure";
+import {AppConfig}         from "../helper/configEditTool/appConfigStructure";
+import {ChannelConfig}     from "../helper/configEditTool/channelConfigStructure";
+import {ErrorConfig}       from "../helper/configEditTool/errorConfigStructure";
+import {MainConfig}        from "../helper/configEditTool/mainConfigStructure";
+import {ServiceConfig}     from "../helper/configEditTool/serviceConfigStructure";
+import {StarterConfig}     from "../helper/configEditTool/starterConfigStructure";
 
 class ZationConfig
 {
-    private eventConfig : object = {};
-    private appConfig : object = {};
-    private channelConfig : object = {};
-    private errorConfig : object = {};
-    private readonly mainConfig : object = {};
-    private serviceConfig : object = {};
-    private readonly starterConfig : object = {};
+    private eventConfig : EventConfig = {};
+    private appConfig : AppConfig = {};
+    private channelConfig : ChannelConfig = {};
+    private errorConfig : ErrorConfig = {};
+    private readonly mainConfig : MainConfig = {};
+    private serviceConfig : ServiceConfig = {};
+    private readonly starterConfig : StarterConfig = {};
     private readonly internalData : object = {};
 
     constructor(starterData : object = {},workerTransport : boolean = false)
@@ -180,12 +187,7 @@ class ZationConfig
 
     getMainOrNull(key : any) : any
     {
-        if(!!this.mainConfig[key]) {
-            return this.mainConfig[key];
-        }
-        else {
-            return null;
-        }
+        return this.mainConfig[key] || null;
     }
 
     isMain(key : any) : boolean
@@ -336,6 +338,7 @@ class ZationConfig
             false
         );
 
+        // @ts-ignore
         this.errorConfig = ZationConfig.loadZationConfig
         (
             'error.config',

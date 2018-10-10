@@ -49,6 +49,7 @@ export class Controller
      * @example
      * setControllerVariable('email','example@gmail.com');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
      */
     protected setControllerVariable(path : string | string[],value : any) : void {
@@ -62,6 +63,7 @@ export class Controller
      * @example
      * hasControllerVariable('email');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      */
     protected hasControllerVariable(path ?: string | string[]) : boolean {
         return ObjectPath.has(this._storage,path);
@@ -74,6 +76,7 @@ export class Controller
      * @example
      * getControllerVariable('email');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      */
     protected getControllerVariable(path ?: string | string[]) : any {
         return ObjectPath.get(this._storage,path);
@@ -86,6 +89,7 @@ export class Controller
      * @example
      * deleteControllerVariable('email');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      */
     protected deleteControllerVariable(path ?: string | string[]) : void {
         if(!!path) {

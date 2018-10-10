@@ -49,6 +49,7 @@ class Bag extends SmallBag
      * @example
      * setBagVariable('my.variable','hello');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
      */
     setBagVariable(path : string | string[],value : any) : void {
@@ -62,6 +63,7 @@ class Bag extends SmallBag
      * @example
      * hasBagVariable('my.variable');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      */
     hasBagVariable(path ?: string | string[]) : boolean {
         return ObjectPath.has(this.bagVariables,path);
@@ -74,6 +76,7 @@ class Bag extends SmallBag
      * @example
      * getBagVariable('my.variable');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      */
     getBagVariable(path ?: string | string[]) : any {
         return ObjectPath.get(this.bagVariables,path);
@@ -87,6 +90,7 @@ class Bag extends SmallBag
      * deleteBagVariable('my.variable');
      * deleteBagVariable(); //deletes all variables
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      */
     deleteBagVariables(path ?: string | string[]) : void {
         if(!!path) {
@@ -106,6 +110,7 @@ class Bag extends SmallBag
      * @example
      * getInput('person.name');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      */
     getInput(path ?: string | string[]) : any {
         return ObjectPath.get(this.input,path);
@@ -118,6 +123,7 @@ class Bag extends SmallBag
      * @example
      * hasInput('person.name');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      */
     hasInput(path: string | string[]) : boolean {
         return ObjectPath.has(this.input,path);
@@ -133,6 +139,7 @@ class Bag extends SmallBag
      * @example
      * setSocketVariable('email','example@gmail.com');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
      * @throws MethodIsNotCompatible
      */
@@ -154,6 +161,7 @@ class Bag extends SmallBag
      * @example
      * hasSocketVariable('email');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      * @throws MethodIsNotCompatible
      */
     hasSocketVariable(path ?: string | string[]) : boolean
@@ -174,6 +182,7 @@ class Bag extends SmallBag
      * @example
      * getSocketVariable('email');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      * @throws MethodIsNotCompatible
      */
     getSocketVariable(path ?: string | string[]) : any
@@ -194,6 +203,7 @@ class Bag extends SmallBag
      * @example
      * deleteSocketVariable('email');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      * @throws MethodIsNotCompatible
      */
     deleteSocketVariable(path ?: string | string[]) : void
@@ -463,6 +473,7 @@ class Bag extends SmallBag
      * @example
      * await setCustomTokenVar('person.email','example@gmail.com');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
      * @throws AuthenticationError
      */
@@ -486,6 +497,7 @@ class Bag extends SmallBag
      * @example
      * await deleteCustomTokenVar('person.email');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError
      */
     async deleteCustomTokenVar(path ?: string | string[]) : Promise<void> {
@@ -542,6 +554,7 @@ class Bag extends SmallBag
      * @example
      * hasCustomTokenVar('person.email');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError
      */
     hasCustomTokenVar(path ?: string | string[]) : boolean {
@@ -562,6 +575,7 @@ class Bag extends SmallBag
      * @example
      * getCustomTokenVar('person.email');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError
      */
     getCustomTokenVar(path ?: string | string[]) : any {
