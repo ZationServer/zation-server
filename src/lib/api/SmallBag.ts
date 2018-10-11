@@ -32,6 +32,8 @@ import ObjectPath           = require("../helper/tools/objectPath");
 import TokenTools           = require("../helper/token/tokenTools");
 import {AsymmetricKeyPairs}   from "../helper/infoObjects/asymmetricKeyPairs";
 import {WorkerMessageActions} from "../helper/constants/workerMessageActions";
+import {ErrorConstruct} from "../helper/configEditTool/errorConfigStructure";
+import TaskErrorBag = require("./TaskErrorBag");
 
 class SmallBag
 {
@@ -836,6 +838,40 @@ class SmallBag
 
     //Part Errors
 
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns a new taskError by using the constructor.
+     * @param errorConstruct
+     * Create a new error construct
+     * or get one from the error.config by using the method getErrorConstruct on the bag/smallBag.
+     * @param info
+     * The error info is a dynamic object which contains more detailed information.
+     * For example, with an inputNotMatchWithMinLength error,
+     * the info object could include what the length of the input is and
+     * what the minimum length is.
+     */
+    buildTaskError(errorConstruct : ErrorConstruct = {}, info ?: object | string) : TaskError
+    {
+        return new TaskError(errorConstruct,info);
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns a new taskErrorBag by using the constructor.
+     * With the bag you can collect task errors
+     * and throw them later all together.
+     * Then all errors are sent to the client.
+     * @example
+     * buildTaskErrorBag(myError,myError2).throw();
+     * @param taskError
+     */
+    buildTaskErrorBag(...taskError : TaskError[]) : TaskErrorBag
+    {
+        return new TaskErrorBag(...taskError);
+    }
+
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
@@ -860,6 +896,20 @@ class SmallBag
     {
         const errorOp = this.zc.getError(name);
         return new TaskError(errorOp,info);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Throws an taskError with info that is build from the error construct from error config file.
+     * @throws ErrorNotFoundError
+     * @param errorName
+     * @param info
+     */
+    throwTaskError(errorName : string,info : object = {}) : void
+    {
+        const errorOp = this.zc.getError(name);
+        throw new TaskError(errorOp,info);
     }
 
     // noinspection JSUnusedGlobalSymbols
