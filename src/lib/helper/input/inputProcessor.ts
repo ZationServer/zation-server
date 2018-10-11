@@ -41,7 +41,7 @@ class InputProcessor
         }
         await Promise.all(promises);
 
-        taskErrorBag.throwMeIfHaveError();
+        taskErrorBag.throwIfHasError();
         return result;
     }
 
@@ -70,7 +70,7 @@ class InputProcessor
         }
         await Promise.all(promises);
 
-        taskErrorBag.throwMeIfHaveError();
+        taskErrorBag.throwIfHasError();
         return result;
     }
 

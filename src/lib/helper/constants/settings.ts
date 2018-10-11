@@ -12,6 +12,7 @@ class ERROR_INFO
 class ERROR
 {
     static readonly NAME                         = 'name';
+    static readonly GROUP                        = 'group';
     static readonly DESCRIPTION                  = 'description';
     static readonly TYPE                         = 'type';
     static readonly SEND_INFO                    = 'sendInfo';
@@ -45,6 +46,7 @@ class REQUEST_INPUT
 class RESPONSE_ERROR
 {
     static readonly Name                         = 'n';
+    static readonly Group                        = 'g';
     static readonly TYPE                         = 't';
     static readonly FROM_ZATION_SYSTEM           = 'zs';
     static readonly DESCRIPTION                  = 'd';

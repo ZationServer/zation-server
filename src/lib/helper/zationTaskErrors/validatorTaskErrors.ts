@@ -8,9 +8,9 @@ import ErrorType = require('../constants/errorTypes');
 
 export = {
 
-    inputIsNotAString : {
-        name          : 'inputIsNotAString',
-        description   : 'Input is not a String!',
+    inputIsNotTypeString : {
+        name          : 'inputIsNotTypeString',
+        description   : 'Input is not from type String!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -19,9 +19,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAInt : {
-        name          : 'inputIsNotAInt',
-        description   : 'Input is not a Int!',
+    inputIsNotTypeInt : {
+        name          : 'inputIsNotTypeInt',
+        description   : 'Input is not from type Int!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -30,9 +30,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAFloat : {
-        name          : 'inputIsNotAFloat',
-        description   : 'Input is not a Float!',
+    inputIsNotTypeFloat : {
+        name          : 'inputIsNotTypeFloat',
+        description   : 'Input is not from type Float!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -41,9 +41,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotADate : {
-        name          : 'inputIsNotADate',
-        description   : 'Input is not a Date!',
+    inputIsNotTypeDate : {
+        name          : 'inputIsNotTypeDate',
+        description   : 'Input is not from type Date!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -52,9 +52,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAEmail : {
-        name          : 'inputIsNotAEmail',
-        description   : 'Input is not a Email!',
+    inputIsNotTypeEmail : {
+        name          : 'inputIsNotTypeEmail',
+        description   : 'Input is not from type Email!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -63,9 +63,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotABoolean : {
-        name          : 'inputIsNotABoolean',
-        description   : 'Input is not a Boolean!',
+    inputIsNotTypeBoolean : {
+        name          : 'inputIsNotTypeBoolean',
+        description   : 'Input is not from type Boolean!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -74,9 +74,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotASha512 : {
-        name          : 'inputIsNotASha512',
-        description   : 'Input is not a Sha512!',
+    inputIsNotTypeSha512 : {
+        name          : 'inputIsNotTypeSha512',
+        description   : 'Input is not from type Sha512!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -85,9 +85,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotASha256 : {
-        name          : 'inputIsNotASha256',
-        description   : 'Input is not a Sha256!',
+    inputIsNotTypeSha256 : {
+        name          : 'inputIsNotTypeSha256',
+        description   : 'Input is not from type Sha256!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -96,9 +96,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotASha384 : {
-        name          : 'inputIsNotASha384',
-        description   : 'Input is not a Sha384!',
+    inputIsNotTypeSha384 : {
+        name          : 'inputIsNotTypeSha384',
+        description   : 'Input is not from type Sha384!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -107,9 +107,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotASha1 : {
-        name          : 'inputIsNotASha1',
-        description   : 'Input is not a Sha1!',
+    inputIsNotTypeSha1 : {
+        name          : 'inputIsNotTypeSha1',
+        description   : 'Input is not from type Sha1!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -118,9 +118,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAMd5 : {
-        name          : 'inputIsNotAMd5',
-        description   : 'Input is not a Md5!',
+    inputIsNotTypeMd5 : {
+        name          : 'inputIsNotTypeMd5',
+        description   : 'Input is not from type Md5!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -129,9 +129,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAHexColor : {
-        name          : 'inputIsNotAHexColor',
-        description   : 'Input is not a HexColor!',
+    inputIsNotTypeHexColor : {
+        name          : 'inputIsNotTypeHexColor',
+        description   : 'Input is not from type HexColor!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -140,9 +140,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAHexadecimal : {
-        name          : 'inputIsNotAHexadecimal',
-        description   : 'Input is not a hexadecimal!',
+    inputIsNotTypeHexadecimal : {
+        name          : 'inputIsNotTypeHexadecimal',
+        description   : 'Input is not from type hexadecimal!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -151,9 +151,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAIp4 : {
-        name          : 'inputIsNotAIp4',
-        description   : 'Input is not a Ip Version 4!',
+    inputIsNotTypeIp4 : {
+        name          : 'inputIsNotTypeIp4',
+        description   : 'Input is not from type Ip Version 4!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -162,9 +162,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAIp6 : {
-        name          : 'inputIsNotAIp6',
-        description   : 'Input is not a Ip Version 6!',
+    inputIsNotTypeIp6 : {
+        name          : 'inputIsNotTypeIp6',
+        description   : 'Input is not from type Ip Version 6!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -173,9 +173,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAIsbn10 : {
-        name          : 'inputIsNotAIsbn10',
-        description   : 'Input is not a Isbn Version 10!',
+    inputIsNotTypeIsbn10 : {
+        name          : 'inputIsNotTypeIsbn10',
+        description   : 'Input is not from type Isbn Version 10!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -184,9 +184,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAIsbn13 : {
-        name          : 'inputIsNotAIsbn13',
-        description   : 'Input is not a Isbn Version 13!',
+    inputIsNotTypeIsbn13 : {
+        name          : 'inputIsNotTypeIsbn13',
+        description   : 'Input is not from type Isbn Version 13!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -195,9 +195,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAJson : {
-        name          : 'inputIsNotAJson',
-        description   : 'Input is not a JsonConverter!',
+    inputIsNotTypeJson : {
+        name          : 'inputIsNotTypeJson',
+        description   : 'Input is not from type JsonConverter!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -206,9 +206,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAUrl : {
-        name          : 'inputIsNotAUrl',
-        description   : 'Input is not a Url!',
+    inputIsNotTypeUrl : {
+        name          : 'inputIsNotTypeUrl',
+        description   : 'Input is not from type Url!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -217,9 +217,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAMimeType : {
-        name          : 'inputIsNotAMimeType',
-        description   : 'Input is not a Mime Type!',
+    inputIsNotTypeMimeType : {
+        name          : 'inputIsNotTypeMimeType',
+        description   : 'Input is not from type Mime Type!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -228,9 +228,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAMacAddress : {
-        name          : 'inputIsNotAMacAddress',
-        description   : 'Input is not a Max Address!',
+    inputIsNotTypeMacAddress : {
+        name          : 'inputIsNotTypeMacAddress',
+        description   : 'Input is not from type Max Address!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -239,9 +239,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAMobileNumber : {
-        name          : 'inputIsNotAMobileNumber',
-        description   : 'Input is not a Mobile Number!',
+    inputIsNotTypeMobileNumber : {
+        name          : 'inputIsNotTypeMobileNumber',
+        description   : 'Input is not from type Mobile Number!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -250,9 +250,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAUuid3 : {
-        name          : 'inputIsNotAUuid3',
-        description   : 'Input is not a UUID Version 3!',
+    inputIsNotTypeUuid3 : {
+        name          : 'inputIsNotTypeUuid3',
+        description   : 'Input is not from type UUID Version 3!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -261,9 +261,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAUuid4 : {
-        name          : 'inputIsNotAUuid4',
-        description   : 'Input is not a UUID Version 4!',
+    inputIsNotTypeUuid4 : {
+        name          : 'inputIsNotTypeUuid4',
+        description   : 'Input is not from type UUID Version 4!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -272,9 +272,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAUuid5 : {
-        name          : 'inputIsNotAUuid5',
-        description   : 'Input is not a UUID Version 5!',
+    inputIsNotTypeUuid5 : {
+        name          : 'inputIsNotTypeUuid5',
+        description   : 'Input is not from type UUID Version 5!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -283,9 +283,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotALatLong : {
-        name          : 'inputIsNotALatLong',
-        description   : 'Input is not a LatLong!',
+    inputIsNotTypeLatLong : {
+        name          : 'inputIsNotTypeLatLong',
+        description   : 'Input is not from type LatLong!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -294,9 +294,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotABase64 : {
-        name          : 'inputIsNotABase64',
-        description   : 'Input is not a Base64!',
+    inputIsNotTypeBase64 : {
+        name          : 'inputIsNotTypeBase64',
+        description   : 'Input is not from type Base64!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -305,9 +305,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAAscii : {
-        name          : 'inputIsNotAAscii',
-        description   : 'Input is not a Ascii!',
+    inputIsNotTypeAscii : {
+        name          : 'inputIsNotTypeAscii',
+        description   : 'Input is not from type Ascii!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -316,9 +316,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotANumber : {
-        name          : 'inputIsNotANumber',
-        description   : 'Input is not a number!',
+    inputIsNotTypeNumber : {
+        name          : 'inputIsNotTypeNumber',
+        description   : 'Input is not from type number!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -327,9 +327,9 @@ export = {
         isFromZationSystem : true
     },
 
-    inputIsNotAUserId : {
-        name          : 'inputIsNotAUserId',
-        description   : 'Input is not a user id!',
+    inputIsNotTypeUserId : {
+        name          : 'inputIsNotTypeUserId',
+        description   : 'Input is not from type user id!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO

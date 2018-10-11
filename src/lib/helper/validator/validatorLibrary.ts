@@ -21,7 +21,7 @@ typeLibrary[Const.Validator.TYPE.STRING] = (input,taskErrorBag,prepareErrorData)
 {
     if(!EasyValidator.isString(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAString,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeString,prepareErrorData));
     }
     return input;
 };
@@ -34,7 +34,7 @@ typeLibrary[Const.Validator.TYPE.INT] = (input,taskErrorBag,prepareErrorData) =>
     }
     else
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAInt,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeInt,prepareErrorData));
         return input;
     }
 };
@@ -47,7 +47,7 @@ typeLibrary[Const.Validator.TYPE.FLOAT] = (input,taskErrorBag,prepareErrorData) 
     }
     else
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAFloat,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeFloat,prepareErrorData));
         return input;
     }
 };
@@ -61,7 +61,7 @@ typeLibrary[Const.Validator.TYPE.DATE] = (input,taskErrorBag,prepareErrorData) =
     }
     else
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotADate,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeDate,prepareErrorData));
         return input;
     }
 };
@@ -70,7 +70,7 @@ typeLibrary[Const.Validator.TYPE.EMAIL] = (input,taskErrorBag,prepareErrorData) 
 {
     if(!EasyValidator.isEmail(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAEmail,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeEmail,prepareErrorData));
         return input;
     }
     return input;
@@ -84,7 +84,7 @@ typeLibrary[Const.Validator.TYPE.BOOLEAN] = (input,taskErrorBag,prepareErrorData
     }
     else
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotABoolean,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeBoolean,prepareErrorData));
         return input;
     }
 };
@@ -93,7 +93,7 @@ typeLibrary[Const.Validator.TYPE.SHA512] = (input,taskErrorBag,prepareErrorData)
 {
     if(!EasyValidator.isSha512(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotASha512,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeSha512,prepareErrorData));
     }
     return input;
 };
@@ -102,7 +102,7 @@ typeLibrary[Const.Validator.TYPE.SHA256] = (input,taskErrorBag,prepareErrorData)
 {
     if(!EasyValidator.isSha256(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotASha256,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeSha256,prepareErrorData));
     }
     return input;
 };
@@ -111,7 +111,7 @@ typeLibrary[Const.Validator.TYPE.SHA384] = (input,taskErrorBag,prepareErrorData)
 {
     if(!EasyValidator.isSha384(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotASha384,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeSha384,prepareErrorData));
     }
     return input;
 };
@@ -120,7 +120,7 @@ typeLibrary[Const.Validator.TYPE.SHA1] = (input,taskErrorBag,prepareErrorData) =
 {
     if(!EasyValidator.isSha1(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotASha1,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeSha1,prepareErrorData));
     }
     return input;
 };
@@ -129,7 +129,7 @@ typeLibrary[Const.Validator.TYPE.MD5] = (input,taskErrorBag,prepareErrorData) =>
 {
     if(!EasyValidator.isMd5(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAMd5,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeMd5,prepareErrorData));
     }
     return input;
 };
@@ -138,7 +138,7 @@ typeLibrary[Const.Validator.TYPE.HEX_COLOR] = (input,taskErrorBag,prepareErrorDa
 {
     if(!EasyValidator.isHexColor(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAHexColor,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeHexColor,prepareErrorData));
     }
     return input;
 };
@@ -147,7 +147,7 @@ typeLibrary[Const.Validator.TYPE.HEXADECIMAL] = (input,taskErrorBag,prepareError
 {
     if(!EasyValidator.isHexadecimal(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAHexadecimal,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeHexadecimal,prepareErrorData));
     }
     return input;
 };
@@ -156,7 +156,7 @@ typeLibrary[Const.Validator.TYPE.IP_4] = (input, taskErrorBag, prepareErrorData)
 {
     if(!EasyValidator.isIP4(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAIp4,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeIp4,prepareErrorData));
     }
     return input;
 };
@@ -165,7 +165,7 @@ typeLibrary[Const.Validator.TYPE.IP_6] = (input,taskErrorBag,prepareErrorData) =
 {
     if(!EasyValidator.isIP6(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAIp6,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeIp6,prepareErrorData));
     }
     return input;
 };
@@ -174,7 +174,7 @@ typeLibrary[Const.Validator.TYPE.ISBN_10] = (input,taskErrorBag,prepareErrorData
 {
     if(!EasyValidator.isISB10(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAIsbn10,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeIsbn10,prepareErrorData));
     }
     return input;
 };
@@ -183,7 +183,7 @@ typeLibrary[Const.Validator.TYPE.ISBN_13] = (input,taskErrorBag,prepareErrorData
 {
     if(!EasyValidator.isISB13(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAIsbn13,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeIsbn13,prepareErrorData));
     }
     return input;
 };
@@ -192,7 +192,7 @@ typeLibrary[Const.Validator.TYPE.JSON] = (input,taskErrorBag,prepareErrorData) =
 {
     if(!EasyValidator.isJSON(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAJson,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeJson,prepareErrorData));
     }
     return input;
 };
@@ -201,7 +201,7 @@ typeLibrary[Const.Validator.TYPE.URL] = (input,taskErrorBag,prepareErrorData) =>
 {
     if(!EasyValidator.isUrl(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAUrl,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeUrl,prepareErrorData));
     }
     return input;
 };
@@ -210,7 +210,7 @@ typeLibrary[Const.Validator.TYPE.MIME_TYPE] = (input,taskErrorBag,prepareErrorDa
 {
     if(!EasyValidator.isMimeType(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAMimeType,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeMimeType,prepareErrorData));
     }
     return input;
 };
@@ -219,7 +219,7 @@ typeLibrary[Const.Validator.TYPE.MAC_ADDRESS] = (input,taskErrorBag,prepareError
 {
     if(!EasyValidator.isMACAddress(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAMacAddress,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeMacAddress,prepareErrorData));
     }
     return input;
 };
@@ -228,7 +228,7 @@ typeLibrary[Const.Validator.TYPE.MOBILE_NUMBER] = (input,taskErrorBag,prepareErr
 {
     if(!EasyValidator.isMobilePhone(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAMobileNumber,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeMobileNumber,prepareErrorData));
     }
     return input;
 };
@@ -237,7 +237,7 @@ typeLibrary[Const.Validator.TYPE.UUID_3] = (input,taskErrorBag,prepareErrorData)
 {
     if(!EasyValidator.isUUID3(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAUuid3,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeUuid3,prepareErrorData));
     }
     return input;
 };
@@ -246,7 +246,7 @@ typeLibrary[Const.Validator.TYPE.UUID_4] = (input,taskErrorBag,prepareErrorData)
 {
     if(!EasyValidator.isUUID4(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAUuid4,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeUuid4,prepareErrorData));
     }
     return input;
 };
@@ -255,7 +255,7 @@ typeLibrary[Const.Validator.TYPE.UUID_5] = (input,taskErrorBag,prepareErrorData)
 {
     if(!EasyValidator.isUUID5(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAUuid5,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeUuid5,prepareErrorData));
     }
     return input;
 };
@@ -264,7 +264,7 @@ typeLibrary[Const.Validator.TYPE.LAT_LONG] = (input,taskErrorBag,prepareErrorDat
 {
     if(!EasyValidator.isLatLong(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotALatLong,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeLatLong,prepareErrorData));
     }
     return input;
 };
@@ -273,7 +273,7 @@ typeLibrary[Const.Validator.TYPE.BASE64] = (input,taskErrorBag,prepareErrorData)
 {
     if(!EasyValidator.isBase64(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotABase64,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeBase64,prepareErrorData));
     }
     return input;
 };
@@ -282,7 +282,7 @@ typeLibrary[Const.Validator.TYPE.ASCII] = (input,taskErrorBag,prepareErrorData) 
 {
     if(!EasyValidator.isAscii(input))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAAscii,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeAscii,prepareErrorData));
     }
     return input;
 };
@@ -291,7 +291,7 @@ typeLibrary[Const.Validator.TYPE.NUMBER] = (input,taskErrorBag,prepareErrorData)
 {
     if(typeof input !== 'number')
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotANumber,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeNumber,prepareErrorData));
     }
     return input;
 };
@@ -300,7 +300,7 @@ typeLibrary[Const.Validator.TYPE.USER_ID] = (input,taskErrorBag,prepareErrorData
 {
     if(!(EasyValidator.isString(input) || typeof input === 'number'))
     {
-        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotAUserId,prepareErrorData));
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeUserId,prepareErrorData));
     }
     return input;
 };
@@ -314,7 +314,7 @@ functionLibrary[Const.Validator.KEYS.FUNCTION_REGEX] = (input,settings,taskError
     let regex  = new RegExp(settings);
     if(!regex.test(input))
     {
-        taskErrorBag.addTaskErrorFast(ValidatorErrors.inputIsNotMatchWithRegex,
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotMatchWithRegex,
             {
                 inputValue : prepareErrorData.inputValue,
                 inputPath : prepareErrorData.inputPath,
@@ -328,7 +328,7 @@ functionLibrary[Const.Validator.KEYS.FUNCTION_ENUM] = (input,settings,taskErrorB
 {
     if(!EasyValidator.validEnum(settings,input))
     {
-        taskErrorBag.addTaskErrorFast(ValidatorErrors.inputIsNotMatchWithEnum,
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotMatchWithEnum,
             {
                 inputValue : prepareErrorData.inputValue,
                 inputPath : prepareErrorData.inputPath,
@@ -342,7 +342,7 @@ functionLibrary[Const.Validator.KEYS.FUNCTION_PRIVATE_ENUM] = (input,settings,ta
 {
     if(!EasyValidator.validEnum(settings,input))
     {
-        taskErrorBag.addTaskErrorFast(ValidatorErrors.inputIsNotMatchWithPrivateEnum,prepareErrorData);
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotMatchWithPrivateEnum,prepareErrorData);
     }
     return input;
 };
@@ -352,7 +352,7 @@ functionLibrary[Const.Validator.KEYS.FUNCTION_MIN_LENGTH] = (input,settings,task
     if(input.length < settings)
     {
 
-        taskErrorBag.addTaskErrorFast(ValidatorErrors.inputNotMatchWithMinLength,
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithMinLength,
             {
                 inputValue : prepareErrorData.inputValue,
                 inputPath : prepareErrorData.inputPath,
@@ -367,7 +367,7 @@ functionLibrary[Const.Validator.KEYS.FUNCTION_MAX_LENGTH] = (input,settings,task
     if(input.length > settings)
     {
 
-        taskErrorBag.addTaskErrorFast(ValidatorErrors.inputNotMatchWithMaxLength,
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithMaxLength,
             {
                 inputValue : prepareErrorData.inputValue,
                 inputPath : prepareErrorData.inputPath,
@@ -383,7 +383,7 @@ functionLibrary[Const.Validator.KEYS.FUNCTION_LENGTH] = (input,settings,taskErro
     if(input.length !== settings)
     {
 
-        taskErrorBag.addTaskErrorFast(ValidatorErrors.inputNotMatchWithLength,
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithLength,
             {
                 inputValue : prepareErrorData.inputValue,
                 inputPath : prepareErrorData.inputPath,
@@ -399,7 +399,7 @@ functionLibrary[Const.Validator.KEYS.FUNCTION_CONTAINS] = (input,settings,taskEr
     if(input.indexOf(settings) === -1)
     {
 
-        taskErrorBag.addTaskErrorFast(ValidatorErrors.inputNotMatchWithContains,
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithContains,
             {
                 inputValue : prepareErrorData.inputValue,
                 inputPath : prepareErrorData.inputPath,
@@ -413,7 +413,7 @@ functionLibrary[Const.Validator.KEYS.FUNCTION_EQUALS] = (input,settings,taskErro
 {
     if(!EasyValidator.equals(input,settings))
     {
-        taskErrorBag.addTaskErrorFast(ValidatorErrors.inputIsNotEquals,
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotEquals,
             {
                 inputValue : prepareErrorData.inputValue,
                 inputPath : prepareErrorData.inputPath,
@@ -428,7 +428,7 @@ functionLibrary[Const.Validator.KEYS.FUNCTION_BIGGER_THAN] = (input,settings,tas
 {
     if(input < settings)
     {
-        taskErrorBag.addTaskErrorFast(ValidatorErrors.inputIsNotBiggerThan,
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotBiggerThan,
             {
                 inputValue : prepareErrorData.inputValue,
                 inputPath : prepareErrorData.inputPath,
@@ -443,7 +443,7 @@ functionLibrary[Const.Validator.KEYS.FUNCTION_LESSER_THAN] = (input,settings,tas
 {
     if(input > settings)
     {
-        taskErrorBag.addTaskErrorFast(ValidatorErrors.inputIsNotLesserThan,
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotLesserThan,
             {
                 inputValue : prepareErrorData.inputValue,
                 inputPath : prepareErrorData.inputPath,
@@ -457,7 +457,7 @@ functionLibrary[Const.Validator.KEYS.FUNCTION_STARTS_WITH] = (input,settings,tas
 {
     if(!input.startsWith(settings))
     {
-        taskErrorBag.addTaskErrorFast(ValidatorErrors.inputIsNotStartsWith,
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotStartsWith,
             {
                 inputValue : prepareErrorData.inputValue,
                 inputPath : prepareErrorData.inputPath,
@@ -472,7 +472,7 @@ functionLibrary[Const.Validator.KEYS.FUNCTION_ENDS_WITH] = (input,settings,taskE
 {
     if(!input.endsWith(settings))
     {
-        taskErrorBag.addTaskErrorFast(ValidatorErrors.inputIsNotEndsWith,
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotEndsWith,
             {
                 inputValue : prepareErrorData.inputValue,
                 inputPath : prepareErrorData.inputPath,
@@ -487,11 +487,11 @@ functionLibrary[Const.Validator.KEYS.FORMAT_IS_LETTERS] = (input,settings,taskEr
 {
     if((settings === Const.Validator.FORMAT_LETTERS.UPPER_CASE) && (!EasyValidator.isUpperCase(input)))
     {
-        taskErrorBag.addTaskErrorFast(ValidatorErrors.inputIsNotUppercase,prepareErrorData);
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotUppercase,prepareErrorData);
     }
     else if((settings === Const.Validator.FORMAT_LETTERS.LOWER_CASE) && (!EasyValidator.isLowerCase(input)))
     {
-        taskErrorBag.addTaskErrorFast(ValidatorErrors.inputIsNotLowercase,prepareErrorData);
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotLowercase,prepareErrorData);
     }
     return input;
 };

@@ -88,7 +88,7 @@ class ValidChProcessor
 
             await Promise.all(promises);
             //ends when we have errors
-            errorBag.throwMeIfHaveError();
+            errorBag.throwIfHasError();
 
             return {};
         }

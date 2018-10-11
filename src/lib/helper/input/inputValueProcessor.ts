@@ -120,7 +120,7 @@ class InputValueProcessor
 
             //construct obj
             if(
-                !tempErrorBag.haveTaskError() &&
+                !tempErrorBag.isNotEmpty() &&
                 this.compile &&
                 this.preparedSmallBag !== undefined &&
                 typeof config[Const.App.OBJECTS.CONSTRUCT] === 'function')
@@ -129,7 +129,7 @@ class InputValueProcessor
                 input = await construct(input,this.preparedSmallBag);
             }
 
-            if(tempErrorBag.haveTaskError())
+            if(tempErrorBag.isNotEmpty())
             {
                 errorBag.addFromTaskErrorBag(tempErrorBag);
             }

@@ -51,16 +51,16 @@ class Returner
 
         if(err instanceof TaskError)
         {
-            errors = [err.getJsonObj(this.sendErrorDesc || this.zc.isDebug())];
+            errors = [err._getJsonObj(this.sendErrorDesc || this.zc.isDebug())];
         }
         else {
             // noinspection SuspiciousInstanceOfGuard
             if(err instanceof TaskErrorBag) {
-                errors = err.getJsonObj(this.sendErrorDesc || this.zc.isDebug());
+                errors = err._getJsonObj(this.sendErrorDesc || this.zc.isDebug());
             }
             else {
                 let error = new TaskError(MainErrors.unknownSystemError);
-                errors = [error.getJsonObj()];
+                errors = [error._getJsonObj()];
             }
         }
 

@@ -23,6 +23,11 @@ class TaskErrorBuilder
         return this;
     }
 
+    group(group : string | undefined) : TaskErrorBuilder {
+        this.errorSettings[Const.Settings.ERROR.GROUP] = group;
+        return this;
+    }
+
     typ(type : string) : TaskErrorBuilder {
         this.errorSettings[Const.Settings.ERROR.TYPE] = type;
         return this;
@@ -100,8 +105,7 @@ class TaskErrorBuilder
 
     addInfo(key : string, value : any, override : boolean = true)
     {
-        if(override || !this.errorInfo.hasOwnProperty(key))
-        {
+        if(override || !this.errorInfo.hasOwnProperty(key)) {
             this.errorInfo[key] = value;
         }
         return this;

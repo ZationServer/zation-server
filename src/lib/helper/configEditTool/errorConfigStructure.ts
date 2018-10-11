@@ -10,6 +10,7 @@ export type ErrorConfig = Record<string,ErrorConstruct>;
 export interface ErrorConstruct
 {
     [Const.Settings.ERROR.NAME]?: string;
+    [Const.Settings.ERROR.GROUP]?: string;
     [Const.Settings.ERROR.DESCRIPTION]?: string;
     [Const.Settings.ERROR.TYPE]?: string;
     [Const.Settings.ERROR.SEND_INFO]?: boolean;

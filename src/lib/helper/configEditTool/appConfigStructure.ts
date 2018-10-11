@@ -6,7 +6,6 @@ GitHub: LucaCode
 import Const           = require('./../constants/constWrapper');
 import Bag             = require("../../api/Bag");
 import SmallBag        = require("../../api/SmallBag");
-import ValidationTypes = require("../constants/validationTypes");
 import ZationToken     = require("../infoObjects/zationToken");
 
 export interface AppConfig
@@ -75,7 +74,7 @@ export type ControllerAccessFunction = (smallBag : SmallBag,token : ZationToken)
 
 export interface InputValidationConfig
 {
-    [Const.App.INPUT.TYPE] ?: ValidationTypes;
+    [Const.App.INPUT.TYPE] ?: string | string[];
     [Const.Validator.KEYS.FUNCTION_ENUM] ?: any [];
     [Const.Validator.KEYS.FUNCTION_PRIVATE_ENUM] ?: any [];
     [Const.Validator.KEYS.FUNCTION_MIN_LENGTH] ?: number;

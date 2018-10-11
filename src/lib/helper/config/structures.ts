@@ -9,6 +9,7 @@ import ObjectTools = require('../tools/objectTools');
 
 const Error = {};
 Error[Const.Settings.ERROR.NAME]                       = {types : ['string'],isOptional : true};
+Error[Const.Settings.ERROR.GROUP]                      = {types : ['string'],isOptional : true};
 Error[Const.Settings.ERROR.IS_FROM_ZATION_SYSTEM]      = {types : ['boolean'],isOptional : true};
 Error[Const.Settings.ERROR.SEND_INFO]                  = {types : ['boolean'],isOptional : true};
 Error[Const.Settings.ERROR.IS_PRIVATE]                 = {types : ['boolean'],isOptional : true};
