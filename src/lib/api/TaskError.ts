@@ -83,11 +83,11 @@ class TaskError extends Error
         };
 
         if(this.privateE) {
-            obj[Const.Settings.RESPONSE.ERROR.Name] = 'TaskError';
+            obj[Const.Settings.RESPONSE.ERROR.NAME] = 'TaskError';
         }
         else {
-            obj[Const.Settings.RESPONSE.ERROR.Name] = this.name;
-            obj[Const.Settings.RESPONSE.ERROR.Group] = this.group;
+            obj[Const.Settings.RESPONSE.ERROR.NAME] = this.name;
+            obj[Const.Settings.RESPONSE.ERROR.GROUP] = this.group;
             if(withDesc) {
                 obj[Const.Settings.RESPONSE.ERROR.DESCRIPTION] = this.description;
             }

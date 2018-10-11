@@ -280,7 +280,7 @@ class AuthEngine
                 access = AuthEngine.accessKeyWordChanger(key,this.isDefault());
             }
             else if(this.checkIsIn(value)) {
-                //Group!
+                //GROUP!
                 access = AuthEngine.accessKeyWordChanger(key,this.getUserGroup() === value);
             }
         }

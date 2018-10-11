@@ -62,7 +62,7 @@ export class ChAccessEngine
                     access = !socketInfo.isAuthIn;
                 }
                 else if(socketInfo.authUserGroup === value) {
-                    //Group!
+                    //GROUP!
                     access = true;
                 }
             }
@@ -426,7 +426,7 @@ export class ChAccessEngine
                     ChTools.kickOut(socket,Const.Settings.CHANNEL.DEFAULT_USER_GROUP);
                 }
 
-                //Auth Group
+                //Auth GROUP
                 else if(subs[i].indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1)
                 {
                     let authGroupSub = subs[i].replace(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX,'');

@@ -45,8 +45,8 @@ class REQUEST_INPUT
 
 class RESPONSE_ERROR
 {
-    static readonly Name                         = 'n';
-    static readonly Group                        = 'g';
+    static readonly NAME                         = 'n';
+    static readonly GROUP                        = 'g';
     static readonly TYPE                         = 't';
     static readonly FROM_ZATION_SYSTEM           = 'zs';
     static readonly DESCRIPTION                  = 'd';

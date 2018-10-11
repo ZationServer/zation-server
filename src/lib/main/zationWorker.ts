@@ -371,7 +371,7 @@ class ZationWorker extends SCWorker
                                     next();
                                 }
                                 else {
-                                    let err : any = new Error('User can\'t subscribe an other User Group Channel!');
+                                    let err : any = new Error('User can\'t subscribe an other User GROUP Channel!');
                                     err.code = 4533;
                                     next(err); //Block!
                                 }
@@ -383,7 +383,7 @@ class ZationWorker extends SCWorker
                             }
                         }
                         else if (channel === Const.Settings.CHANNEL.DEFAULT_USER_GROUP) {
-                            let err : any = new Error('Auth User can\' subscribe default User Group Channel!');
+                            let err : any = new Error('Auth User can\' subscribe default User GROUP Channel!');
                             err.code = 4521;
                             next(err); //Block!
                         }
@@ -424,7 +424,7 @@ class ZationWorker extends SCWorker
                             next(err); //Block!
                         }
                         else if (channel.indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1) {
-                            let err : any = new Error('Anonymous user can\'t subscribe a User Group Channel!');
+                            let err : any = new Error('Anonymous user can\'t subscribe a User GROUP Channel!');
                             err.code = 4531;
                             next(err); //Block!
                         }
@@ -483,7 +483,7 @@ class ZationWorker extends SCWorker
                     next(await this.chAccessEngine.checkAccessClientPubCustomCh(req.socket,channel,req.data));
                 }
                 else if (req.channel.indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1) {
-                    let err : any = new Error('User can\'t publish in a User Group Channel!');
+                    let err : any = new Error('User can\'t publish in a User GROUP Channel!');
                     err.code = 4536;
                     next(err); //Block!
                 }
@@ -493,7 +493,7 @@ class ZationWorker extends SCWorker
                     next(err); //Block!
                 }
                 else if (req.channel === Const.Settings.CHANNEL.DEFAULT_USER_GROUP) {
-                    let err : any = new Error('User can\'t publish in default user Group Channel!');
+                    let err : any = new Error('User can\'t publish in default user GROUP Channel!');
                     err.code = 4526;
                     next(err); //Block!
                 }

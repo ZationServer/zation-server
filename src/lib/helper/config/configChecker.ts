@@ -79,7 +79,7 @@ class ConfigChecker {
             groups = Object.keys(authGroups);
         }
 
-        //checkAuthGroups don't have a all/allAuth/allNotAuth Name
+        //checkAuthGroups don't have a all/allAuth/allNotAuth NAME
         for (let i = 0; i < groups.length; i++) {
             if (groups[i].indexOf('.') !== -1) {
                 this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
