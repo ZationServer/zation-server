@@ -399,7 +399,7 @@ functionLibrary[Const.Validator.KEYS.FUNCTION_CONTAINS] = (input,settings,taskEr
     if(input.indexOf(settings) === -1)
     {
 
-        taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithContains,
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotContains,
             {
                 inputValue : prepareErrorData.inputValue,
                 inputPath : prepareErrorData.inputPath,

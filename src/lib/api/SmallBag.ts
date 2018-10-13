@@ -95,6 +95,26 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * Returns if the server is running in debug mode.
+     */
+    isDebugMode() : boolean
+    {
+        return this.zc.isDebug();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns if the server is running in start debug mode.
+     */
+    isStartDebugMode() : boolean
+    {
+        return this.zc.isStartDebug();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * Returns the zation version.
      */
     getZationVersion() : string

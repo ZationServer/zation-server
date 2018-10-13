@@ -46,8 +46,8 @@ class TaskError extends Error
         this.type        = errorConstruct[Const.Settings.ERROR.TYPE] || Const.Error.NORMAL_ERROR;
         this.sendInfo    = errorConstruct[Const.Settings.ERROR.SEND_INFO] || false;
         this.info        = {};
-        this.privateE    = errorConstruct[Const.Settings.ERROR.IS_PRIVATE] || false;
-        this.fromZationSystem = errorConstruct[Const.Settings.ERROR.IS_FROM_ZATION_SYSTEM] || false;
+        this.privateE    = errorConstruct[Const.Settings.ERROR.PRIVATE] || false;
+        this.fromZationSystem = errorConstruct[Const.Settings.ERROR.FROM_ZATION_SYSTEM] || false;
 
         if(info) {
             if (typeof info === 'string') {

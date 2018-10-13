@@ -10,82 +10,85 @@ export = {
 
     controllerNotFound : {
         name          : 'controllerNotFound',
-        description   : 'Controller is missing',
+        description   : 'Controller is missing.',
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : false,
         //INFO
         // controllerName (From missing Controller)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     systemControllerNotFound : {
         name          : 'systemControllerNotFound',
-        description   : 'System controller is missing',
+        description   : 'System controller is missing.',
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : false,
         //INFO
         // controllerName (From missing Controller)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     authControllerNotSet : {
         name          : 'authControllerNotSet',
-        description   : 'Auth controller not set',
+        description   : 'Auth controller not set.',
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : false,
-        isFromZationSystem : true
-    },
-
-    controllerIsNotAController : {
-        name          : 'controllerIsNotAController',
-        description   : 'controller is not a object from type Controller',
-        type          : ErrorType.SYSTEM_ERROR,
-        sendInfo      : false,
-        //INFO
-        // controllerName
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     systemNotFound  : {
         name          : 'systemNotFound',
-        description   : 'system not found on Server',
+        description   : 'System not found on Server.',
         type          : ErrorType.COMPATIBILITY_ERROR,
         sendInfo      : false,
         //INFO
         // systemName (From missing system)
-        isFromZationSystem : true
+        fromZationSystem : true
+    },
+
+    versionToOld    : {
+        name          : 'versionToOld',
+        description   : 'Version is to old.',
+        type          : ErrorType.COMPATIBILITY_ERROR,
+        sendInfo      : true,
+        //INFO
+        // minVersion (Version you need min)
+        fromZationSystem : true
     },
 
     serviceNotFound  : {
-        name          : 'serviceNotFound ',
-        description   : 'Service not found ',
-        type          : ErrorType.SYSTEM_ERROR,
+        name          : 'serviceNotFound',
+        description   : 'Service not found.',
+        type          : ErrorType.CODE_ERROR,
         sendInfo      : false,
+        private       : true,
         //INFO
         // serviceName (name of the service)
         // serviceKey  (service Key)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     errorNotFound  : {
-        name          : 'errorNotFound ',
-        description   : 'Error not found ',
-        type          : ErrorType.SYSTEM_ERROR,
+        name          : 'errorNotFound',
+        description   : 'Error not found.',
+        type          : ErrorType.CODE_ERROR,
         sendInfo      : false,
+        private       : true,
         //INFO
         // errorName (name of the error)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     methodIsNotCompatible  : {
         name          : 'methodIsNotCompatible',
-        description   : 'Method is not compatible with request protocol',
-        type          : ErrorType.SYSTEM_ERROR,
+        description   : 'Method is not compatible with request protocol.',
+        type          : ErrorType.CODE_ERROR,
         sendInfo      : false,
+        private       : true,
         //INFO
         // reqType
         // requiredReqType
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     authenticationError  : {
@@ -95,296 +98,230 @@ export = {
         sendInfo      : false,
         //INFO
         // reason
-        isFromZationSystem : true
-    },
-
-    versionToOld    : {
-        name          : 'versionToOld',
-        description   : 'Version is to old',
-        type          : ErrorType.COMPATIBILITY_ERROR,
-        sendInfo      : true,
-        //INFO
-        // minVersion (Version you need min)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputMissing    : {
         name          : 'inputMissing',
-        description   : 'input input are Missing',
+        description   : 'Input input are Missing.',
         type          : ErrorType.INPUT_ERROR,
-        sendInfo      : true,
+        sendInfo      : false,
         //INFO
         // inputMissing[] (All input keys are missing)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
-    inputMissingInObject    : {
-        name          : 'inputMissingInObject',
-        description   : 'Some keys from the object don\'t equals the input names',
-        type          : ErrorType.INPUT_ERROR,
-        sendInfo      : true,
-        //INFO
-        // inputMissing[] (All input are missing in array)
-        isFromZationSystem : true
-    },
-
-    toMuchInput    : {
-        name          : 'toMuchInput',
-        description   : 'to many Input in Controller',
+    tooMuchInput    : {
+        name          : 'tooMuchInput',
+        description   : 'Too much Input in Controller.',
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : false,
         //INFO
         //sendCount : send input Count,
         //expectedMaxCount : controller config max input Count
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     arrayWasExpected    : {
         name          : 'arrayWasExpected',
-        description   : 'array was expected',
+        description   : 'Array was expected.',
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : false,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     objectWasExpected    : {
         name          : 'objectWasExpected',
-        description   : 'object was expected',
+        description   : 'Object was expected.',
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : false,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     objectPropertyIsMissing  : {
         name          : 'objectPropertyIsMissing',
-        description   : 'object property is missing (because its not optional)',
+        description   : 'Object property is missing (because its not optional).',
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : false,
         //INFO
         // inputValue (inputValue)
         // inputPathMissing (input path to missing property)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     unknownObjectProperty : {
         name          : 'unknownObjectProperty',
-        description   : 'unknown object property was in an object input',
+        description   : 'Unknown object property was in an object input.',
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : false,
         //INFO
         // propertyName
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inTokenSavedAuthGroupIsNotFound    : {
         name          : 'inTokenSavedAuthGroupIsNotFound',
-        description   : 'the auth group is saved in the token is not found on the zation Config',
+        description   : 'The auth group is saved in the token is not found on the zation Config.',
         type          : ErrorType.TOKEN_ERROR,
-        isPrivate     : true,
+        private       : true,
         sendInfo      : false,
         //INFO
         // savedAuthGroup (the saved auth group in token)
         // authGroupsInZationConfig (auth groups in the zation config)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     tokenWithoutAuthGroup   : {
         name          : 'tokenWithoutAuthGroup',
         description   : 'Token without auth group!',
         type          : ErrorType.TOKEN_ERROR,
-        isPrivate     : true,
+        private       : true,
         sendInfo      : false,
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     wrongPanelAuthData   : {
         name          : 'wrongPanelAuthData',
         description   : 'Wrong panel auth data!',
-        type          : ErrorType.INPUT_ERROR,
-        isPrivate     : false,
+        type          : ErrorType.AUTH_ERROR,
+        private       : false,
         sendInfo      : false,
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     authStartActive    : {
         name          : 'authStartActive',
-        description   : 'auth start is active, zation only accept auth request for a time!',
+        description   : 'Auth start is active, zation only accept auth request for a time!',
         type          : ErrorType.TIME_ERROR,
-        isPrivate     : false,
+        private       : false,
         sendInfo      : false,
-        isFromZationSystem : true
-    },
-
-    doubleAccessKeyWord  : {
-        name          : 'doubleAccessKeyWord',
-        description   : 'double Access KeyWord is use in Controller or auth Default!',
-        type          : ErrorType.SYSTEM_ERROR,
-        isPrivate     : true,
-        sendInfo      : false,
-        //INFO
-        // isInController (show if it is in a Controller, if not it is in Default)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     noAccessToController  : {
         name          : 'noAccessToController',
-        description   : 'you have no protocolAccess to this controller!',
+        description   : 'You have no protocolAccess to this controller!',
         type          : ErrorType.AUTH_ERROR,
         sendInfo      : true,
         //INFO
         // authIn (show if you auth in system)
         // authUserGroup (your auth type)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
-    wrongInputData : {
-        name          : 'wrongInputData',
-        description   : 'wrong input data with missing object fields!',
+    wrongInputDataStructure : {
+        name          : 'wrongInputDataStructure',
+        description   : 'Wrong input data with wrong structure.',
         type          : ErrorType.INPUT_ERROR,
-        isPrivate     : true,
+        private       : false,
         sendInfo      : false,
-        //INFO
-        //
-        isFromZationSystem : true
-    },
-
-    wrongGetReqInputData : {
-        name          : 'wrongGetReqInputData',
-        description   : 'wrong get req input data!',
-        type          : ErrorType.INPUT_ERROR,
-        isPrivate     : true,
-        sendInfo      : false,
-        //INFO
-        //
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     JSONParseSyntaxError : {
         name          : 'JSONParseSyntaxError ',
-        description   : 'Error by parse json',
+        description   : 'Error by parse json.',
         type          : ErrorType.INPUT_ERROR,
-        isPrivate     : true,
+        private       : false,
         sendInfo      : false,
-        //INFO
-        // input
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputPathInControllerNotFound : {
         name          : 'inputPathInControllerNotFound',
         description   : 'Input path in controller not found!',
         type          : ErrorType.INPUT_ERROR,
-        isPrivate     : true,
-        sendInfo      : false,
+        private       : false,
+        sendInfo      : true,
         //INFO
         //controllerName (name of controller)
         //inputPath
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
-    noAccessToServerProtocol  : {
-        name          : 'noAccessToServerProtocol',
-        description   : 'you have no protocolAccess to this controller with this server protocol!',
+    noAccessWithProtocol  : {
+        name          : 'noAccessWithProtocol',
+        description   : 'You have no protocolAccess to this controller with this server protocol!',
         type          : ErrorType.PROTOCOL_ERROR,
         sendInfo      : true,
         //INFO
         // protocol   (The protocol you request with)
-        // controller (The controller you request)
-        isFromZationSystem : true
+        // controllerName (The controller you request)
+        fromZationSystem : true
     },
 
-    noAccessToHttpMethod  : {
-        name          : 'noAccessToHttpMethod' ,
-        description   : 'you have no methodAccess to this controller with this http method!',
+    noAccessWithHttpMethod  : {
+        name          : 'noAccessWithHttpMethod' ,
+        description   : 'You have no methodAccess to this controller with this http method!',
         type          : ErrorType.PROTOCOL_ERROR,
         sendInfo      : true,
         //INFO
         // method   (The method you request with)
         // controller (The controller you request)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
-    zationKeyConflict : {
-        name          : 'zationKeyConflict',
-        description   : 'cant Save Data With conflict with Zation Key!',
-        type          : ErrorType.SYSTEM_ERROR,
-        sendInfo      : true,
-        //INFO
-        // key (key like to Set)
-        isFromZationSystem : true
-    },
-
-    unknownSystemError : {
-        name          : 'unknownSystemError',
-        description   : 'look in info for more detail! To see run in debug!',
+    unknownError : {
+        name          : 'unknownError',
+        description   : 'Look in info for more detail! To see run in debug!',
         type          : ErrorType.SYSTEM_ERROR,
         sendInfo      : true,
         //INFO
         // info (info from Exception only in Debug Mode!)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     unknownTokenVerifyError : {
         name          : 'unknownTokenVerifyError',
-        description   : 'look in info for more detail!',
+        description   : 'Look in info for more detail!',
         type          : ErrorType.TOKEN_ERROR,
         sendInfo      : false,
         //INFO
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     unknownTokenSignError : {
         name          : 'unknownTokenSignError',
-        description   : 'look in info for more detail!',
+        description   : 'Look in info for more detail!',
         type          : ErrorType.TOKEN_ERROR,
         sendInfo      : false,
         //INFO
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     tokenExpiredError : {
         name          : 'tokenExpiredError',
-        description   : 'jwt expired',
+        description   : 'Jwt expired.',
         type          : ErrorType.TOKEN_ERROR,
         sendInfo      : true,
         //INFO
         // expiredAt
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     jsonWebTokenError : {
         name          : 'jsonWebTokenError',
-        description   : 'json web token error',
+        description   : 'Json web token error.',
         type          : ErrorType.TOKEN_ERROR,
         sendInfo      : true,
         //INFO
         // message
-        isFromZationSystem : true
-    },
-
-    tokenIsBlocked : {
-        name          : 'tokenIsBlocked',
-        description   : 'token is blocked',
-        type          : ErrorType.TOKEN_ERROR,
-        sendInfo      : true,
-        //INFO
-        // token
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     authenticateMiddlewareBlock : {
         name          : 'authenticateMiddlewareBlock',
-        description   : 'authenticate middleware block req',
+        description   : 'Authenticate middleware block req.',
         type          : ErrorType.TOKEN_ERROR,
         sendInfo      : true,
         //INFO
         // err
-        isFromZationSystem : true
+        fromZationSystem : true
     }
 };

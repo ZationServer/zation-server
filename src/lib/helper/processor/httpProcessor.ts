@@ -40,7 +40,7 @@ class HttpProcessor
                 return await HttpProcessor.mainProcess(req,res,zc,worker,zationData);
             }
             else {
-                throw new TaskError(MainErrors.wrongGetReqInputData);
+                throw new TaskError(MainErrors.wrongInputDataStructure);
             }
         }
         else {

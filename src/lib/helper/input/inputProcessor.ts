@@ -151,7 +151,7 @@ class InputProcessor
         //to much input
         if(controllerInputCount < inputCount)
         {
-            throw new TaskError(MainErrors.toMuchInput,
+            throw new TaskError(MainErrors.tooMuchInput,
                 {
                     sendCount : inputCount,
                     expectedMaxCount : controllerInputCount

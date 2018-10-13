@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ErrorType = require('../constants/errorTypes');
+import ErrorType   = require('../constants/errorTypes');
 import ErrorGroups = require("../constants/errorGroups");
 
 export = {
@@ -18,7 +18,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeInt : {
@@ -30,7 +30,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeFloat : {
@@ -42,7 +42,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeDate : {
@@ -54,7 +54,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeEmail : {
@@ -66,7 +66,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeBoolean : {
@@ -78,7 +78,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeSha512 : {
@@ -90,7 +90,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeSha256 : {
@@ -102,7 +102,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeSha384 : {
@@ -114,7 +114,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeSha1 : {
@@ -126,7 +126,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeMd5 : {
@@ -138,7 +138,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeHexColor : {
@@ -150,7 +150,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeHexadecimal : {
@@ -162,7 +162,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeIp4 : {
@@ -174,7 +174,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeIp6 : {
@@ -186,7 +186,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeIsbn10 : {
@@ -198,7 +198,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeIsbn13 : {
@@ -210,7 +210,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeJson : {
@@ -222,7 +222,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeUrl : {
@@ -234,7 +234,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeMimeType : {
@@ -246,7 +246,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeMacAddress : {
@@ -258,7 +258,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeMobileNumber : {
@@ -270,7 +270,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeUuid3 : {
@@ -282,7 +282,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeUuid4 : {
@@ -294,7 +294,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeUuid5 : {
@@ -306,7 +306,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeLatLong : {
@@ -318,7 +318,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeBase64 : {
@@ -330,7 +330,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeAscii : {
@@ -342,7 +342,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeNumber : {
@@ -354,7 +354,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotTypeUserId : {
@@ -366,11 +366,12 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputNotMatchWithMinLength : {
         name          : 'inputNotMatchWithMinLength',
+        group         : ErrorGroups.VALUE_LENGTH_ERROR,
         description   : 'Input not match with min length!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -378,11 +379,12 @@ export = {
         // inputValue (inputValue)
         // inputPath (inputPath)
         // minLength (minLength)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputNotMatchWithMaxLength : {
         name          : 'inputNotMatchWithMaxLength',
+        group         : ErrorGroups.VALUE_LENGTH_ERROR,
         description   : 'Input not match with max length!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -390,11 +392,12 @@ export = {
         // inputValue (inputValue)
         // inputPath (inputPath)
         // maxLength (maxLength)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputNotMatchWithLength : {
         name          : 'inputNotMatchWithLength',
+        group         : ErrorGroups.VALUE_LENGTH_ERROR,
         description   : 'Input not match with length!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -402,33 +405,35 @@ export = {
         // inputValue (inputValue)
         // inputPath (inputPath)
         // length (length)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotUppercase : {
         name          : 'inputIsNotUpperCase',
+        group         : ErrorGroups.LETTERS_FORMAT_ERROR,
         description   : 'Input is not uppercase!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotLowercase : {
         name          : 'inputIsNotLowercase',
+        group         : ErrorGroups.LETTERS_FORMAT_ERROR,
         description   : 'Input is not lowercase!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
-    inputNotMatchWithContains : {
-        name          : 'inputNotMatchWithContains',
+    inputIsNotContains : {
+        name          : 'inputIsNotContains',
         description   : 'Input is not contains!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -436,7 +441,7 @@ export = {
         // inputValue (inputValue)
         // inputPath (inputPath)
         // shouldContain (shouldContain)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotEquals : {
@@ -448,11 +453,12 @@ export = {
         // inputValue (inputValue)
         // inputPath (inputPath)
         // shouldEqual (shouldEqual)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotBiggerThan : {
         name          : 'inputIsNotBiggerThan',
+        group         : ErrorGroups.NUMBER_SIZE_ERROR,
         description   : 'Input is not bigger than!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -460,11 +466,12 @@ export = {
         // inputValue (inputValue)
         // inputPath (inputPath)
         // shouldBiggerThan (shouldBiggerThan)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotLesserThan : {
         name          : 'inputIsNotLesserThan',
+        group         : ErrorGroups.NUMBER_SIZE_ERROR,
         description   : 'Input is not lesser than!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -472,7 +479,7 @@ export = {
         // inputValue (inputValue)
         // inputPath (inputPath)
         // shouldLesserThan (shouldLesserThan)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotMatchWithRegex : {
@@ -484,7 +491,7 @@ export = {
         // inputValue (inputValue)
         // inputPath (inputPath)
         // regex (regex)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotStartsWith : {
@@ -496,7 +503,7 @@ export = {
         // inputValue (inputValue)
         // inputPath (inputPath)
         // shouldStartsWith (shouldStartsWith)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotEndsWith : {
@@ -508,11 +515,12 @@ export = {
         // inputValue (inputValue)
         // inputPath (inputPath)
         // shouldEndsWith (shouldEndsWith)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotMatchWithEnum : {
         name          : 'inputIsNotMatchWithEnum',
+        group         : ErrorGroups.ENUM_ERROR,
         description   : 'Input is not match with enum!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -520,22 +528,24 @@ export = {
         // inputValue (inputValue)
         // inputPath (inputPath)
         // enum (Enum Array)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputIsNotMatchWithPrivateEnum : {
         name          : 'inputIsNotMatchWithPrivateEnum',
+        group         : ErrorGroups.ENUM_ERROR,
         description   : 'Input is not match with private enum!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputArrayNotMatchWithMaxLength : {
         name          : 'inputArrayNotMatchWithMaxLength',
+        group         : ErrorGroups.ARRAY_LENGTH_ERROR,
         description   : 'Input array not match with max length!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -543,11 +553,12 @@ export = {
         // inputValue (inputValue)
         // inputPath (inputPath)
         // maxLength (maxLength)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputArrayNotMatchWithMinLength : {
         name          : 'inputArrayNotMatchWithMinLength',
+        group         : ErrorGroups.ARRAY_LENGTH_ERROR,
         description   : 'Input array not match with min length!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -555,11 +566,12 @@ export = {
         // inputValue (inputValue)
         // inputPath (inputPath)
         // minLength (minLength)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     inputArrayNotMatchWithLength : {
         name          : 'inputArrayNotMatchWithLength',
+        group         : ErrorGroups.ARRAY_LENGTH_ERROR,
         description   : 'Input array not match with length!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -567,11 +579,12 @@ export = {
         // inputValue (inputValue)
         // inputPath (inputPath)
         // length (length)
-        isFromZationSystem : true
+        fromZationSystem : true
     },
 
     noValidTypeWasFound : {
         name          : 'noValidTypeWasFound',
+        group         : ErrorGroups.TYPE_ERROR,
         description   : 'No valid type was found!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -579,6 +592,6 @@ export = {
         // inputValue (inputValue)
         // inputPath (inputPath)
         // types (types was checked on value)
-        isFromZationSystem : true
+        fromZationSystem : true
     }
 };

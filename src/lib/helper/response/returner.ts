@@ -59,7 +59,7 @@ class Returner
                 errors = err._getJsonObj(this.sendErrorDesc || this.zc.isDebug());
             }
             else {
-                let error = new TaskError(MainErrors.unknownSystemError);
+                let error = new TaskError(MainErrors.unknownError);
                 errors = [error._getJsonObj()];
             }
         }

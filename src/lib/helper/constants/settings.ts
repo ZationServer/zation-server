@@ -17,8 +17,8 @@ class ERROR
     static readonly TYPE                         = 'type';
     static readonly SEND_INFO                    = 'sendInfo';
     static readonly INFO                         = 'info';
-    static readonly IS_FROM_ZATION_SYSTEM        = 'isFromZationSystem';
-    static readonly IS_PRIVATE                   = 'isPrivate';
+    static readonly FROM_ZATION_SYSTEM           = 'fromZationSystem';
+    static readonly PRIVATE                      = 'private';
     static readonly IN_INFO                      = ERROR_INFO;
 }
 

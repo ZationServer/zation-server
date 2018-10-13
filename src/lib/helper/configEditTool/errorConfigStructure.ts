@@ -15,6 +15,6 @@ export interface ErrorConstruct
     [Const.Settings.ERROR.TYPE]?: string;
     [Const.Settings.ERROR.SEND_INFO]?: boolean;
     [Const.Settings.ERROR.INFO] ?: object;
-    [Const.Settings.ERROR.IS_PRIVATE] ?: boolean;
-    [Const.Settings.ERROR.IS_FROM_ZATION_SYSTEM] ?: boolean;
+    [Const.Settings.ERROR.PRIVATE] ?: boolean;
+    [Const.Settings.ERROR.FROM_ZATION_SYSTEM] ?: boolean;
 }

@@ -81,7 +81,7 @@ class ValidChProcessor
                     }
                     else
                     {
-                        reject(new TaskError(MainErrors.wrongInputData));
+                        reject(new TaskError(MainErrors.wrongInputDataStructure));
                     }
                 }));
             }
@@ -94,7 +94,7 @@ class ValidChProcessor
         }
         else
         {
-            throw new TaskError(MainErrors.wrongInputData);
+            throw new TaskError(MainErrors.wrongInputDataStructure);
         }
     }
 }

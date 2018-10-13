@@ -183,7 +183,7 @@ class TaskErrorBuilder
      * Set if the task error is private.
      */
     private(isPrivate : boolean) : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.IS_PRIVATE] = isPrivate;
+        this.errorSettings[Const.Settings.ERROR.PRIVATE] = isPrivate;
         return this;
     }
 
@@ -193,7 +193,7 @@ class TaskErrorBuilder
      * Set if the task error is from zation system.
      */
     fromZationSystem(fromZationSystem : boolean) : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.IS_FROM_ZATION_SYSTEM] = fromZationSystem;
+        this.errorSettings[Const.Settings.ERROR.FROM_ZATION_SYSTEM] = fromZationSystem;
         return this;
     }
 

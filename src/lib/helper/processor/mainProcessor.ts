@@ -110,7 +110,7 @@ class MainProcessor
                     }
                 }
                 else {
-                    throw new TaskError(MainErrors.noAccessToHttpMethod,
+                    throw new TaskError(MainErrors.noAccessWithHttpMethod,
                         {
                             controller: controllerName,
                             method: shBridge.getRequest().method
@@ -118,15 +118,15 @@ class MainProcessor
                 }
             }
             else {
-                throw new TaskError(MainErrors.noAccessToServerProtocol,
+                throw new TaskError(MainErrors.noAccessWithProtocol,
                     {
-                        controller: controllerName,
+                        controllerName: controllerName,
                         protocol: ProtocolAccessChecker.getProtocol(shBridge)
                     });
             }
         }
         else {
-            throw new TaskError(MainErrors.wrongInputData);
+            throw new TaskError(MainErrors.wrongInputDataStructure);
         }
     }
 
