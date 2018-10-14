@@ -32,7 +32,8 @@ class ZationBroker extends SCBroker
                 authKey: this.options.clusterAuthKey,
                 stateServerConnectTimeout: this.options.clusterStateServerConnectTimeout,
                 stateServerAckTimeout: this.options.clusterStateServerAckTimeout,
-                stateServerReconnectRandomness: this.options.clusterStateServerReconnectRandomness
+                stateServerReconnectRandomness: this.options.clusterStateServerReconnectRandomness,
+                noErrorLogging : true
             });
         }
     }
