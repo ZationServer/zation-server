@@ -102,7 +102,7 @@ class ZationMaster {
 
         await this.checkPort();
 
-        await this.checkClusterMode();
+        this.checkClusterMode();
         if (this.stateServerActive) {
             //cluster active
             this.stateServerEngine = new StateServerEngine(this.zc, this);
@@ -335,12 +335,8 @@ class ZationMaster {
     }
 
     //PART Scaling
-
-    private async checkClusterMode()
-    {
-        this.clusterStateServerHost = process.env.SCC_STATE_SERVER_HOST || process.env.STATE_SERVER_HOST
-            || process.env.ZATION_STATE_SERVER_HOST || this.zc.getMainOrNull(Const.Main.KEYS.STATE_SERVER_HOST);
-
+    private checkClusterMode() {
+        this.clusterStateServerHost = this.zc.getMainOrNull(Const.Main.KEYS.STATE_SERVER_HOST);
         this.stateServerActive =  !!this.clusterStateServerHost;
     }
 

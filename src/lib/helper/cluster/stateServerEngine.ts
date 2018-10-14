@@ -164,10 +164,6 @@ class StateServerEngine
                 if(e.name === 'BadClusterAuthError') {
                     this.zm.crashServer(`The provided 'clusterAuthKey' is wrong. Can't connect to zation-cluster-state server.`);
                 }
-                else {
-                    Logger.printStartDebugInfo
-                    (`Error by trying to connect to zation-cluster-state server -> ${e.name}. Connection is tried again.`);
-                }
             });
 
             this.stateSocket.on('disconnect',async ()=>
@@ -186,6 +182,10 @@ class StateServerEngine
             {
                 if(this.inBootProcess) {
                     this.zm.crashServer(`Connection to state server is failed in start process!`);
+                }
+                else {
+                    Logger.printDebugWarning
+                    (`Reconnection to zation-cluster-state server is failed. Connection is tried again.`);
                 }
             });
 

@@ -6,6 +6,7 @@ GitHub: LucaCode
 
 import ZationConfig         = require("./zationConfig");
 import Logger               = require("../helper/logger/logger");
+import Const                = require("../helper/constants/constWrapper");
 const SCBroker              = require('socketcluster/scbroker');
 const scClusterBrokerClient = require('scc-broker-client');
 
@@ -33,7 +34,7 @@ class ZationBroker extends SCBroker
                 stateServerConnectTimeout: this.options.clusterStateServerConnectTimeout,
                 stateServerAckTimeout: this.options.clusterStateServerAckTimeout,
                 stateServerReconnectRandomness: this.options.clusterStateServerReconnectRandomness,
-                noErrorLogging : true
+                noErrorLogging : !this.zc.getMain(Const.Main.KEYS.SC_CONSOLE_LOG)
             });
         }
     }

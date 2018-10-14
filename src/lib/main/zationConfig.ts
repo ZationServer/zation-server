@@ -51,6 +51,14 @@ class ZationConfig
             if(Number(process.env.PORT) || Number(process.env.p)) {
                 this.mainConfig[Const.Main.KEYS.PORT] = Number(process.env.PORT) || Number(process.env.p)
             }
+            if(process.env.STATE_SERVER_HOST || process.env.ssh) {
+                this.mainConfig[Const.Main.KEYS.STATE_SERVER_HOST] =
+                    process.env.STATE_SERVER_HOST || process.env.ssh;
+            }
+            if(Number(process.env.STATE_SERVER_PORT) || Number(process.env.ssp)) {
+                this.mainConfig[Const.Main.KEYS.STATE_SERVER_PORT] =
+                    Number(process.env.STATE_SERVER_PORT) || Number(process.env.ssh);
+            }
 
             this.addToMainConfig(this.starterConfig,true,Structures.Main);
             this.processMainConfig();
