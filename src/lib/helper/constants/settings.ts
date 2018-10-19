@@ -85,7 +85,7 @@ class VALIDATION_REQUEST_INPUT
 {
     static readonly MAIN              = 'v';
     static readonly INPUT             = 'i';
-    static readonly INPUT_KEY_PATH    = 'kp';
+    static readonly INPUT_PATH        = 'ip';
     static readonly INPUT_VALUE       = 'v';
 }
 

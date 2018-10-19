@@ -55,12 +55,20 @@ class ValidChProcessor
                     if
                     (
                         typeof inputToCheck[i] === 'object' &&
-                        Array.isArray(inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.INPUT_KEY_PATH]) &&
+                        (
+                            Array.isArray(inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.INPUT_PATH]) ||
+                            typeof inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.INPUT_PATH] === 'string'
+                        )
+                        &&
                         inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.INPUT_VALUE] !== undefined
                     )
                     {
-                        let keyPath = inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.INPUT_KEY_PATH];
+                        let keyPath = inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.INPUT_PATH];
                         let value   = inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.INPUT_VALUE];
+
+                        if(typeof keyPath === 'string') {
+                            keyPath = keyPath.split('.');
+                        }
 
                         let specificConfig =
                             ControllerTools.getControllerConfigFromInputPath(keyPath,controllerInput);
