@@ -68,9 +68,32 @@ class ZationReqTools
         return res;
     }
 
+    public static async convertValidationGetRequest(query : object) : Promise<object>
+    {
+        const res = {};
+
+        //input convert
+        const input = await JsonConverter.parse(query[Const.Settings.HTTP_GET_REQ.INPUT]);
+
+        const main = {};
+
+        if(query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.CONTROLLER)) {
+            main[Const.Settings.REQ_IN_C.CONTROLLER] = query[Const.Settings.HTTP_GET_REQ.CONTROLLER];
+        }
+        else {
+            main[Const.Settings.REQ_IN_C.SYSTEM_CONTROLLER] = query[Const.Settings.HTTP_GET_REQ.SYSTEM_CONTROLLER];
+        }
+        //input
+        main[Const.Settings.VALIDATION_REQUEST_INPUT.INPUT] = input;
+
+        res[Const.Settings.VALIDATION_REQUEST_INPUT.MAIN] = main;
+
+        return res;
+    }
+
     public static isValidGetReq(query : object) : boolean
     {
-        return(
+        return((
             query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.SYSTEM) &&
             query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.VERSION)
             )
@@ -79,7 +102,20 @@ class ZationReqTools
             query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.CONTROLLER) ||
             query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.SYSTEM_CONTROLLER)
             ) &&
-            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.INPUT);
+            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.INPUT));
+    }
+
+    public static isValidValidationGetReq(query : object) : boolean
+    {
+        return (
+            //validationReq
+            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.VALI_REQ) &&
+            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.INPUT) &&
+            (
+                query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.CONTROLLER) ||
+                query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.SYSTEM_CONTROLLER)
+            )
+        );
     }
 
     static getControllerName(task : object, isSystemController : boolean) : string

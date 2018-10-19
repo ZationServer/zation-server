@@ -39,6 +39,12 @@ class HttpProcessor
                 const zationData = await ZationReqTools.convertGetRequest(query);
                 return await HttpProcessor.mainProcess(req,res,zc,worker,zationData);
             }
+            else if(ZationReqTools.isValidValidationGetReq(query))
+            {
+                HttpProcessor.setHeader(res);
+                const zationData = await ZationReqTools.convertValidationGetRequest(query);
+                return await HttpProcessor.mainProcess(req,res,zc,worker,zationData);
+            }
             else {
                 throw new TaskError(MainErrors.wrongInputDataStructure);
             }

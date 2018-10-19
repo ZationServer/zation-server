@@ -27,6 +27,7 @@ class HTTP_GET_REQ
     static readonly VERSION                      = 'v';
     static readonly SYSTEM                       = 's';
     static readonly AUTH_REQ                     = 'a';
+    static readonly VALI_REQ                     = 'vr';
     static readonly CONTROLLER                   = 'c';
     static readonly SYSTEM_CONTROLLER            = 'sc';
     static readonly INPUT                        = 'i';
