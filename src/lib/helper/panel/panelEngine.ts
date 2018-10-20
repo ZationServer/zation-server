@@ -18,7 +18,7 @@ class PanelEngine
 
     private zw : ZationWorker;
 
-    private readonly panelAccessData : object[];
+    private readonly panelAccessData : object[] = [];
 
     private alreadyFirstPong : boolean = false;
 
