@@ -955,92 +955,104 @@ class ZationWorker extends SCWorker
             const ids : any[] = data.ids;
             const exceptSocketSids = data.exceptSocketSids;
             const mainData = data.mainData;
-
-            const ch = mainData.ch;
-            const event = mainData.event;
             const emitData = mainData.data;
 
-            const kickOutAction = (s : Socket) => {
-                const subs = s.subscriptions();
-                for(let i = 0; i < subs.length; i++) {
-                    if(subs[i].indexOf(ch) !== -1) {
-                        // noinspection TypeScriptValidateJSTypes
-                        s.kickOut(ch);
+            switch (data.action) {
+                case WorkerChTaskActions.KICK_OUT:
+                    const ch = mainData.ch;
+                    if(ch)
+                    {
+                        const kickOutAction = (s : Socket) => {
+                            const subs = s.subscriptions();
+                            for(let i = 0; i < subs.length; i++) {
+                                if(subs[i].indexOf(ch) !== -1) {
+                                    // noinspection TypeScriptValidateJSTypes
+                                    s.kickOut(ch);
+                                }
+                            }
+                        };
+                        switch (data.target) {
+                            case WorkerChTargets.USER_IDS:
+                                this.forUserIds(ids,exceptSocketSids,kickOutAction);
+                                break;
+                            case WorkerChTargets.TOKEN_IDS:
+                                this.forTokenIds(ids,exceptSocketSids,kickOutAction);
+                                break;
+                            case WorkerChTargets.ALL_SOCKETS:
+                                this.forAllSockets(exceptSocketSids,kickOutAction);
+                                break;
+                            case WorkerChTargets.SOCKETS_SIDS:
+                                this.forAllSocketSids(ids,kickOutAction);
+                                break;
+                        }
                     }
-                }
-            };
+                    break;
+                case WorkerChTaskActions.EMIT:
+                    const emitAction = (s : Socket) => {
+                        s.emit(mainData.event,emitData);
+                    };
+                    switch (data.target) {
+                        case WorkerChTargets.USER_IDS:
+                            this.forUserIds(ids,exceptSocketSids,emitAction);
+                            break;
+                        case WorkerChTargets.TOKEN_IDS:
+                            this.forTokenIds(ids,exceptSocketSids,emitAction);
+                            break;
+                        case WorkerChTargets.ALL_SOCKETS:
+                            this.forAllSockets(exceptSocketSids,emitAction);
+                            break;
+                        case WorkerChTargets.SOCKETS_SIDS:
+                            this.forAllSocketSids(ids,emitAction);
+                            break;
+                    }
+                    break;
+                case WorkerChTaskActions.DISCONNECT:
+                    const disconnectAction = (s : Socket) => {
+                        s.disconnect();
+                    };
+                    switch (data.target) {
+                        case WorkerChTargets.USER_IDS:
+                            this.forUserIds(ids,exceptSocketSids,disconnectAction);
+                            break;
+                        case WorkerChTargets.TOKEN_IDS:
+                            this.forTokenIds(ids,exceptSocketSids,disconnectAction);
+                            break;
+                        case WorkerChTargets.ALL_SOCKETS:
+                            this.forAllSockets(exceptSocketSids,disconnectAction);
+                            break;
+                        case WorkerChTargets.SOCKETS_SIDS:
+                            this.forAllSocketSids(ids,disconnectAction);
+                            break;
+                    }
+                    break;
+                case WorkerChTaskActions.DEAUTHENTICATE:
+                    const deauthenticateAction = (s : Socket) => {
+                        s.deauthenticate();
+                    };
+                    switch (data.target) {
+                        case WorkerChTargets.USER_IDS:
+                            this.forUserIds(ids,exceptSocketSids,deauthenticateAction);
+                            break;
+                        case WorkerChTargets.TOKEN_IDS:
+                            this.forTokenIds(ids,exceptSocketSids,deauthenticateAction);
+                            break;
+                        case WorkerChTargets.ALL_SOCKETS:
+                            this.forAllSockets(exceptSocketSids,deauthenticateAction);
+                            break;
+                        case WorkerChTargets.SOCKETS_SIDS:
+                            this.forAllSocketSids(ids,deauthenticateAction);
+                            break;
+                    }
+                    break;
+                case WorkerChTaskActions.MESSAGE:
+                    switch (data.target) {
+                        case WorkerChTargets.THIS_WORKER:
+                            await this.zc.emitEvent(Const.Event.ZATION_WORKER_MESSAGE,this.preparedSmallBag,emitData);
+                            break;
+                    }
+                    break;
+            }
 
-            const emitAction = (s : Socket) => {
-                s.emit(event,emitData);
-            };
-
-            const disconnectAction = (s : Socket) => {
-                s.disconnect();
-            };
-
-            const deauthenticateAction = (s : Socket) => {
-                s.deauthenticate();
-            };
-
-            if(data.target === WorkerChTargets.USER_IDS) {
-                if(data.action === WorkerChTaskActions.KICK_OUT && !!ch) {
-                    this.forUserIds(ids,exceptSocketSids,kickOutAction);
-                }
-                else if(data.action === WorkerChTaskActions.EMIT) {
-                    this.forUserIds(ids,exceptSocketSids,emitAction);
-                }
-                else if(data.action === WorkerChTaskActions.DISCONNECT) {
-                    this.forUserIds(ids,exceptSocketSids,disconnectAction);
-                }
-                else if(data.action === WorkerChTaskActions.DEAUTHENTICATE) {
-                    this.forUserIds(ids,exceptSocketSids,deauthenticateAction);
-                }
-            }
-            else if(data.target === WorkerChTargets.TOKEN_IDS) {
-                if(data.action === WorkerChTaskActions.KICK_OUT && !!ch) {
-                    this.forTokenIds(ids,exceptSocketSids,kickOutAction);
-                }
-                else if(data.action === WorkerChTaskActions.EMIT) {
-                    this.forTokenIds(ids,exceptSocketSids,emitAction);
-                }
-                else if(data.action === WorkerChTaskActions.DISCONNECT) {
-                    this.forTokenIds(ids,exceptSocketSids,disconnectAction);
-                }
-                else if(data.action === WorkerChTaskActions.DEAUTHENTICATE) {
-                    this.forTokenIds(ids,exceptSocketSids,deauthenticateAction);
-                }
-            }
-            else if(data.target === WorkerChTargets.ALL_SOCKETS) {
-                if(data.action === WorkerChTaskActions.KICK_OUT && !!ch) {
-                    this.forAllSockets(exceptSocketSids,kickOutAction) ;
-                }
-                else if(data.action === WorkerChTaskActions.EMIT) {
-                    this.forAllSockets(exceptSocketSids,emitAction);
-                }
-                else if(data.action === WorkerChTaskActions.DISCONNECT) {
-                    this.forAllSockets(exceptSocketSids,disconnectAction);
-                }
-                else if(data.action === WorkerChTaskActions.DEAUTHENTICATE) {
-                    this.forAllSockets(exceptSocketSids,deauthenticateAction);
-                }
-            }
-            else if(data.target === WorkerChTargets.SOCKETS_SIDS) {
-                if(data.action === WorkerChTaskActions.KICK_OUT && !!ch) {
-                    this.forAllSocketSids(ids,kickOutAction) ;
-                }
-                else if(data.action === WorkerChTaskActions.EMIT) {
-                    this.forAllSocketSids(ids,emitAction);
-                }
-                else if(data.action === WorkerChTaskActions.DISCONNECT) {
-                    this.forAllSocketSids(ids,disconnectAction);
-                }
-                else if(data.action === WorkerChTaskActions.DEAUTHENTICATE) {
-                    this.forAllSocketSids(ids,deauthenticateAction);
-                }
-            }
-            else if(data.target === WorkerChTargets.THIS_WORKER && data.action === WorkerChTaskActions.MESSAGE) {
-                await this.zc.emitEvent(Const.Event.ZATION_WORKER_MESSAGE,this.preparedSmallBag,emitData);
-            }
         });
     }
 
