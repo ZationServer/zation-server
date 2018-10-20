@@ -289,7 +289,7 @@ class ZationWorker extends SCWorker
 
         if(this.zc.getMain(Const.Main.KEYS.CLIENT_JS_PREPARE)) {
             // noinspection JSUnresolvedFunction
-            this.app.get(`${path}/client`,(req,res) =>
+            this.app.get(`${path}/client.js`,(req,res) =>
             {
                 res.type('.js');
                 res.send(this.preparedClientJs);
