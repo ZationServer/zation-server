@@ -24,6 +24,7 @@ export type WsServerIsStartedFunction = (info : ZationInfoObj) => Promise<void> 
 export type IsStartedFunction = (info : ZationInfoObj) => Promise<void> | void;
 export type BeforeErrorFunction = (smallBag : SmallBag, error : object) => Promise<void> | void;
 export type BeforeTaskErrorFunction = (smallBag : SmallBag, taskError : TaskError) => Promise<void> | void;
+export type BeforeCodeErrorFunction = (smallBag : SmallBag, taskError : TaskError) => Promise<void> | void;
 export type BeforeTaskErrorBagFunction = (smallBag : SmallBag, taskErrorBag : TaskErrorBag) => Promise<void> | void;
 export type ZationSocketDisconnectionFunction = (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
 export type ZationWorkerMessageFunction = (smallBag : SmallBag, data : any) => Promise<void> | void;
@@ -62,6 +63,7 @@ export interface EventConfig
     [Const.Event.ZATION_IS_STARTED] ?: IsStartedFunction | IsStartedFunction[];
     [Const.Event.ZATION_BEFORE_ERROR] ?: BeforeErrorFunction | BeforeErrorFunction[];
     [Const.Event.ZATION_BEFORE_TASK_ERROR] ?: BeforeTaskErrorFunction | BeforeTaskErrorFunction[];
+    [Const.Event.ZATION_BEFORE_CODE_ERROR] ?: BeforeCodeErrorFunction | BeforeCodeErrorFunction[];
     [Const.Event.ZATION_BEFORE_TASK_ERROR_BAG] ?: BeforeTaskErrorBagFunction | BeforeTaskErrorBagFunction[];
     [Const.Event.ZATION_SOCKET_DISCONNECTION] ?: ZationSocketDisconnectionFunction | ZationSocketDisconnectionFunction[];
     [Const.Event.ZATION_WORKER_MESSAGE] ?: ZationWorkerMessageFunction | ZationWorkerMessageFunction[];

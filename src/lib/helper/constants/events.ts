@@ -16,6 +16,7 @@ class Event
     static readonly ZATION_IS_STARTED                  = 'isStarted'; // infoObj ok
     static readonly ZATION_BEFORE_ERROR                = 'beforeError'; //SmallBag + Error ok
     static readonly ZATION_BEFORE_TASK_ERROR           = 'beforeTaskError'; //SmallBag + Error ok
+    static readonly ZATION_BEFORE_CODE_ERROR           = 'beforeCodeError'; //SmallBag + Error ok
     static readonly ZATION_BEFORE_TASK_ERROR_BAG       = 'beforeTaskErrorBag'; //SmallBag + Error ok
 
     static readonly ZATION_SOCKET_DISCONNECTION        = 'socketDisconnection'; //SmallBag + SocketInfo

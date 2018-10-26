@@ -257,6 +257,7 @@ EventConfig[Const.Event.ZATION_WS_SERVER_IS_STARTED]      = {types : ['function'
 EventConfig[Const.Event.ZATION_IS_STARTED]                = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_BEFORE_ERROR]              = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_BEFORE_TASK_ERROR]         = {types : ['function','array'],isOptional : true};
+EventConfig[Const.Event.ZATION_BEFORE_CODE_ERROR]         = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_BEFORE_TASK_ERROR_BAG]     = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_SOCKET_DISCONNECTION]      = {types : ['function','array'],isOptional : true};
 EventConfig[Const.Event.ZATION_WORKER_MESSAGE]            = {types : ['function','array'],isOptional : true};

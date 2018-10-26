@@ -86,6 +86,8 @@ class Zation
             {
                 if(e instanceof CodeError) {
                     Logger.printDebugWarning(`Code error -> ${e.toString()}/n stack-> ${e.stack}`);
+                    promises.push(this.zc.emitEvent
+                    (Const.Event.ZATION_BEFORE_CODE_ERROR,this.worker.getPreparedSmallBag(),e));
                 }
 
                 promises.push(this.zc.emitEvent
