@@ -96,10 +96,6 @@ class ZationMaster {
         }
         Logger.printStartDebugInfo(`Master has checked the config files.`, true);
 
-        Logger.startStopWatch();
-        PrepareClientJs.createServerSettingsFile(this.zc);
-        Logger.printStartDebugInfo('Master builds the server settings file.', true);
-
         await this.checkPort();
 
         this.checkClusterMode();
@@ -176,6 +172,7 @@ class ZationMaster {
             zationConfigWorkerTransport : this.zc.getWorkerTransport(),
             zationServerVersion : ZationMaster.version,
             zationServerStartedTimeStamp : this.serverStartedTimeStamp,
+            zationServerSettingsFile : PrepareClientJs.createServerSettingsFile(this.zc),
             logLevel : scLogLevel,
             clusterAuthKey : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_AUTH_KEY),
             clusterStateServerHost : this.clusterStateServerHost,
@@ -321,7 +318,7 @@ class ZationMaster {
             Logger.log(`            Panel: ${server}/panel`);
         }
         if(this.zc.getMain(Const.Main.KEYS.CLIENT_JS_PREPARE)) {
-            Logger.log(`            ClientJs: ${server}/client`);
+            Logger.log(`            ClientJs: ${server}/client.js`);
         }
         Logger.log('            GitHub: https://github.com/ZationServer');
         Logger.log(`            StartTime: ${Date.now()-this.serverStartedTimeStamp} ms`);

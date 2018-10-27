@@ -8,22 +8,21 @@ import fs           = require('fs');
 import path         = require('path');
 import Const        = require('../constants/constWrapper');
 import ZationConfig = require("../../main/zationConfig");
-import {ZationReader} from 'zation-client';
 
-const serverSettingsFile = __dirname + '/serverSettings.js';
+const pathToMinZation = __dirname + '/../../../../node_modules/zation-client/dist/zation.min.js';
 
 class PrepareClientJs
 {
-    static buildClientJs() : string
+    static buildClientJs(serverSettingsFile : string) : string
     {
         let res = '';
         // noinspection JSUnresolvedVariable,JSUnresolvedFunction
-        res += ZationReader.getZationMinifyClient();
-        res += fs.readFileSync(path.resolve(serverSettingsFile), "utf8");
+        res += fs.readFileSync(path.resolve(pathToMinZation), 'utf8');
+        res += serverSettingsFile;
         return res;
     }
 
-    static createServerSettingsFile(zc : ZationConfig)
+    static createServerSettingsFile(zc : ZationConfig) : string
     {
         let res = '';
         res += 'var ZATION_SERVER_SETTINGS = {';
@@ -33,7 +32,7 @@ class PrepareClientJs
         res += `POST_KEY : '${zc.getMain(Const.Main.KEYS.POST_KEY)}',`;
         res += `PATH : '${zc.getMain(Const.Main.KEYS.PATH)}'`;
         res += '}; \n';
-        fs.writeFileSync(serverSettingsFile,res,'utf8');
+        return res;
     }
 
 }

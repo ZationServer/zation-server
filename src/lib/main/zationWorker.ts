@@ -119,7 +119,7 @@ class ZationWorker extends SCWorker
 
         if(this.zc.getMain(Const.Main.KEYS.CLIENT_JS_PREPARE)) {
             Logger.startStopWatch();
-            this.preparedClientJs = PrepareClientJs.buildClientJs();
+            this.preparedClientJs = PrepareClientJs.buildClientJs(this.options.zationServerSettingsFile);
             Logger.printStartDebugInfo(`Worker with id ${this.id} prepares client js.`, true);
         }
 
