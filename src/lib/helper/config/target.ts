@@ -81,12 +81,10 @@ class Target
 
         if(this.path === undefined)
         {
-            if(this.mainTarget !== '')
-            {
+            if(this.mainTarget !== '') {
                 return `${this.mainTarget} ${extraInfo}->`;
             }
-            else
-            {
+            else {
                 return '';
             }
         }

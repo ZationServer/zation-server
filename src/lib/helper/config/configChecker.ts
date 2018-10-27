@@ -272,7 +272,7 @@ class ConfigChecker {
 
     // noinspection JSMethodCanBeStatic
     private warningForPublish(value: any, target: Target): void {
-        if (value !== undefined && (typeof value !== "boolean" || (typeof value === 'boolean' && value))) {
+        if (value !== undefined && (typeof value !== "boolean" || value)) {
             Logger.printConfigWarning
             (Const.Settings.CN.CHANNEL,
                 `${target.getTarget()} please notice that 'publishAccess' is used when a client publish from outside!` +
@@ -409,21 +409,20 @@ class ConfigChecker {
 
    private checkPanelUserMainConfig()
    {
-       const panelUserConfig = this.zc.getMain(Const.Main.PANEL_USER);
+       const panelUserConfig = this.zc.getMain(Const.Main.KEYS.PANEL_USER);
        let hasOneUser = false;
        if(Array.isArray(panelUserConfig)) {
            for(let i = 0; i < panelUserConfig.length; i++) {
                hasOneUser = true;
-               this.checkPanelUserConfig(panelUserConfig[i],new Target(`UserConfig '${i}'`));
+               this.checkPanelUserConfig(panelUserConfig[i],new Target(`Panel UserConfig '${i}'`));
            }
        }
        else if(typeof panelUserConfig === 'object') {
            hasOneUser = true;
-           this.checkPanelUserConfig(panelUserConfig);
+           this.checkPanelUserConfig(panelUserConfig,new Target(`Panel UserConfig`));
        }
 
-       if(this.zc.getMain(Const.Main.KEYS.USE_PANEL) && !hasOneUser)
-       {
+       if(this.zc.getMain(Const.Main.KEYS.USE_PANEL) && !hasOneUser) {
            Logger.printConfigWarning
            (
                Const.Settings.CN.MAIN,
@@ -440,11 +439,11 @@ class ConfigChecker {
 
        if( config[Const.Main.PANEL_USER.PASSWORD] === 'admin' &&
            config[Const.Main.PANEL_USER.USER_NAME] === 'admin' &&
-           this.zc.getApp(Const.Main.KEYS.USE_PANEL))
+           this.zc.getMain(Const.Main.KEYS.USE_PANEL))
        {
            Logger.printConfigWarning
            (Const.Settings.CN.MAIN, `Its recommend to not use the default panel access credentials!` +
-           `So please change them in the main config!`);
+           ` So please change them in the main config!`);
        }
    }
 

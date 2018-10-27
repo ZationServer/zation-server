@@ -5,11 +5,8 @@ GitHub: LucaCode
  */
 
 import fs           = require('fs');
-import path         = require('path');
 import Const        = require('../constants/constWrapper');
 import ZationConfig = require("../../main/zationConfig");
-
-const pathToMinZation = __dirname + '/../../../../node_modules/zation-client/dist/zation.min.js';
 
 class PrepareClientJs
 {
@@ -17,9 +14,15 @@ class PrepareClientJs
     {
         let res = '';
         // noinspection JSUnresolvedVariable,JSUnresolvedFunction
-        res += fs.readFileSync(path.resolve(pathToMinZation), 'utf8');
+        res += PrepareClientJs.loadZationMinifyClient();
         res += serverSettingsFile;
         return res;
+    }
+
+    static loadZationMinifyClient() : string
+    {
+        const filePath = require.resolve('zation-client/dist/zation.min.js');
+        return fs.readFileSync(filePath, 'utf8');
     }
 
     static createServerSettingsFile(zc : ZationConfig) : string
