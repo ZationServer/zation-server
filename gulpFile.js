@@ -8,6 +8,8 @@ const OptimizeJs        = require('gulp-optimize-js');
 const terser            = require('gulp-terser');
 const clean             = require('gulp-clean');
 const path              = require('path');
+const browserify        = require('browserify');
+const source            = require('vinyl-source-stream');
 
 gulp.task('scss', function() {
     return gulp.src('src/**/*.scss')
@@ -72,9 +74,27 @@ gulp.task('cleanDist', function () {
         .pipe(clean());
 });
 
+gulp.task('cleanPanelBuild', function () {
+    return gulp.src('dist/lib/public/panel/ts', {read: false,allowEmpty : true})
+        .pipe(clean());
+});
+
+gulp.task('bundlePanel', function () {
+    // noinspection JSUnresolvedFunction
+    return browserify({
+        entries: 'dist/lib/public/panel/ts/index.js',
+    })
+        .bundle()
+        .pipe(source('index.js'))
+        .pipe(gulp.dest('dist/lib/public/panel/js'));
+});
+
+
 gulp.task('ts', gulp.series('mainTs','cetTs'));
 
-gulp.task('compile', gulp.series(gulp.parallel('scss','cof','ts'),'optimize'));
+gulp.task('buildPanel',gulp.series('bundlePanel','cleanPanelBuild'));
+
+gulp.task('compile', gulp.series(gulp.parallel('scss','cof','ts'),'buildPanel','optimize'));
 
 gulp.task('build', gulp.series('cleanDist','compile'));
 

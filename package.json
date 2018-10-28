@@ -2,7 +2,7 @@
   "name": "zation-server",
   "version": "0.4.1",
   "license": "MIT",
-  "description": "Appication Framework Master",
+  "description": "Server for the zation framework",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -83,6 +83,9 @@
     "gulp-optimize-js": "1.1.0",
     "terser": "3.8.0",
     "gulp-terser": "1.0.1",
-    "gulp-clean": "0.4.0"
+    "gulp-clean": "0.4.0",
+    "@types/jquery": "3.3.22",
+    "browserify": "16.2.3",
+    "vinyl-source-stream": "2.0.0"
   }
 }
