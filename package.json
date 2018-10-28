@@ -1,6 +1,6 @@
 {
   "name": "zation-server",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "license": "MIT",
   "description": "Appication Framework Master",
   "main": "dist/index.js",
@@ -54,7 +54,7 @@
     "socketcluster": "14.3.2",
     "socketcluster-client": "14.2.1",
     "validator": "10.4.0",
-    "zation-client": "0.2.7",
+    "zation-client": "0.2.9",
     "node-fetch": "2.1.2",
     "sc-hasher": "1.0.0",
     "cache-require-paths": "0.3.0",
@@ -67,7 +67,8 @@
     "uniqid": "5.0.3",
     "net": "1.0.2",
     "crypto2": "2.0.0",
-    "process": "0.11.10"
+    "process": "0.11.10",
+    "url": "0.11.0"
   },
   "devDependencies": {
     "@types/gulp-sass": "0.0.31",

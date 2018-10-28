@@ -13,6 +13,7 @@ import express = require('express');
 import cookieParser = require('cookie-parser');
 import bodyParser = require('body-parser');
 import fileUpload = require('express-fileupload');
+import url        = require('url');
 
 import Zation = require('./zation');
 import ZationConfig = require('./zationConfig');
@@ -602,7 +603,26 @@ class ZationWorker extends SCWorker
             (Const.Event.SC_MIDDLEWARE_HANDSHAKE_SC,next,this.getPreparedSmallBag(),req);
 
             if(userMidRes) {
-                next();
+                //check for version and system info
+                const urlParts = url.parse(req.socket.request.url, true);
+                const query = urlParts.query;
+                if
+                (
+                    typeof query === 'object' &&
+                    (typeof query.version === 'string' || typeof query.version === 'number') &&
+                    typeof query.system === 'string')
+                {
+                    req.socket.zationClient = {
+                            version : parseFloat(query.version),
+                            system : query.system
+                        };
+                    next();
+                }
+                else{
+                    const err = new Error('Cannot connect without providing a valid version and system key in URL query argument.');
+                    err.name = 'BadQueryUrlArguments';
+                    next(err)
+                }
             }
         });
 

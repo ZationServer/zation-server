@@ -844,19 +844,19 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the system that requests.
+     * Returns the system from the client that requests.
      */
-    getRequestSystem() : string {
-        return this.shBridge.getZationData()[Const.Settings.REQUEST_INPUT.SYSTEM];
+    getClientSystem() : string {
+        return this.shBridge.getSystem();
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the version that requests.
+     * Returns the system version from the client that requests.
      */
-    getRequestVersion() : string {
-        return this.shBridge.getZationData()[Const.Settings.REQUEST_INPUT.VERSION];
+    getClientVersion() : number {
+        return this.shBridge.getVersion();
     }
 
     //Part new publish overwrite (with src)

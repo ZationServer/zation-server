@@ -10,10 +10,12 @@ import JsonConverter      = require("./jsonConverter");
 
 class ZationReqTools
 {
-    static isValidReqStructure(zationReq : object) : boolean
+    static isValidReqStructure(zationReq : object,isWsReq : boolean) : boolean
     {
-        return typeof zationReq[Const.Settings.REQUEST_INPUT.VERSION] === 'number'&&
-            typeof zationReq[Const.Settings.REQUEST_INPUT.SYSTEM] === 'string' &&
+        return (isWsReq || (
+            typeof zationReq[Const.Settings.REQUEST_INPUT.VERSION] === 'number'&&
+            typeof zationReq[Const.Settings.REQUEST_INPUT.SYSTEM] === 'string'
+            )) &&
             (
                 (
                     typeof zationReq[Const.Settings.REQUEST_INPUT.TASK] === 'object' &&

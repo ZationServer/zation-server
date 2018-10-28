@@ -8,8 +8,7 @@ class KEYS {
     static readonly AUTH_CONTROLLER         = 'authController';
     static readonly CONTROLLER              = 'controller';
     static readonly USER_GROUPS             = 'userGroups';
-    static readonly VERSION_CONTROL         = 'versionControl';
-    static readonly CONTROLLER_DEFAULT      = 'controllerDefault';
+    static readonly CONTROLLER_DEFAULTS     = 'controllerDefaults';
     static readonly OBJECTS                 = 'objects';
     static readonly VALIDATION_GROUPS       = 'validationGroups';
     static readonly BACKGROUND_TASKS        = 'backgroundTasks';
@@ -38,8 +37,8 @@ class OBJECTS {
 }
 
 class CONTROLLER {
-    static readonly NAME                = 'name';
-    static readonly PATH                = 'path';
+    static readonly FILE_NAME           = 'fileName';
+    static readonly FILE_PATH           = 'filePath';
     static readonly INPUT               = 'input';
     static readonly BEFORE_HANDLE       = 'beforeHandle';
     static readonly SYSTEM_CONTROLLER   = 'systemController';
@@ -49,8 +48,9 @@ class CONTROLLER {
     static readonly WS_ACCESS           = 'wsAccess';
     static readonly INPUT_VALIDATION    = 'inputValidation';
     static readonly INPUT_ALL_ALLOW     = 'inputAllAllow';
-    static readonly NOT_ACCESS          = 'notAccess';
     static readonly ACCESS              = 'access';
+    static readonly NOT_ACCESS          = 'notAccess';
+    static readonly VERSION_ACCESS      = 'versionAccess';
 }
 
 class ACCESS {

@@ -53,6 +53,26 @@ class SHBridge
         }
     }
 
+    getVersion() : number
+    {
+        if(this.webSocket) {
+            return this.socket.zationClient.version;
+        }
+        else {
+            return this.getZationData()[Const.Settings.REQUEST_INPUT.VERSION];
+        }
+    }
+
+    getSystem() : string
+    {
+        if(this.webSocket) {
+            return this.socket.zationClient.system;
+        }
+        else {
+            return this.getZationData()[Const.Settings.REQUEST_INPUT.SYSTEM];
+        }
+    }
+
     getTokenBridge() : TokenBridge
     {
         return this.tokenBridge;

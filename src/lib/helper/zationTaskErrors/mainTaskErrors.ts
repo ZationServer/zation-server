@@ -36,23 +36,23 @@ export = {
         fromZationSystem : true
     },
 
-    systemNotFound  : {
-        name          : 'systemNotFound',
-        description   : 'System not found on Server.',
+    systemNotCompatible  : {
+        name          : 'systemNotCompatible',
+        description   : 'System is not compatible for this controller.',
         type          : ErrorType.COMPATIBILITY_ERROR,
         sendInfo      : false,
         //INFO
-        // systemName (From missing system)
+        // system
         fromZationSystem : true
     },
 
-    versionToOld    : {
-        name          : 'versionToOld',
-        description   : 'Version is to old.',
+    versionNotCompatible    : {
+        name          : 'versionNotCompatible',
+        description   : 'Version is not compatible for this controller.',
         type          : ErrorType.COMPATIBILITY_ERROR,
         sendInfo      : true,
         //INFO
-        // minVersion (Version you need min)
+        // version
         fromZationSystem : true
     },
 

@@ -13,8 +13,7 @@ export interface AppConfig
     [Const.App.KEYS.AUTH_CONTROLLER] ?: string;
     [Const.App.KEYS.CONTROLLER] ?: Record<string,ControllerConfig>;
     [Const.App.KEYS.USER_GROUPS] ?: UserGroupsConfig;
-    [Const.App.KEYS.VERSION_CONTROL] ?: Record<string,number>;
-    [Const.App.KEYS.CONTROLLER_DEFAULT] ?: ControllerConfig;
+    [Const.App.KEYS.CONTROLLER_DEFAULTS] ?: ControllerDefaultsConfig;
     [Const.App.KEYS.OBJECTS] ?: Record<string,ObjectConfig>;
     [Const.App.KEYS.VALIDATION_GROUPS] ?: Record<string,InputValidationConfig>;
     [Const.App.KEYS.BACKGROUND_TASKS] ?: Record<string,BackgroundTask>
@@ -52,7 +51,7 @@ export interface AuthUserGroupConfig
     [Const.App.AUTH_USER_GROUP.PANEL_DISPLAY_NAME] ?: string;
 }
 
-export interface ControllerConfig
+export interface ControllerDefaultsConfig
 {
     [Const.App.CONTROLLER.INPUT] ?: Record<string,InputConfig | ObjectConfig | ArrayConfig | string | ArrayShortSyntax>;
     [Const.App.CONTROLLER.BEFORE_HANDLE] ?: BeforeHandleFunction[] | BeforeHandleFunction;
@@ -63,10 +62,15 @@ export interface ControllerConfig
     [Const.App.CONTROLLER.HTTP_POST_ALLOWED] ?: boolean;
     [Const.App.CONTROLLER.INPUT_VALIDATION] ?: boolean;
     [Const.App.CONTROLLER.INPUT_ALL_ALLOW] ?: boolean;
-    [Const.App.CONTROLLER.PATH] ?: string;
-    [Const.App.CONTROLLER.NAME] ?: string;
     [Const.App.CONTROLLER.ACCESS] ?: string | number | (string | number)[] | ControllerAccessFunction;
     [Const.App.CONTROLLER.NOT_ACCESS] ?: string | number | (string | number)[] | ControllerAccessFunction;
+    [Const.App.CONTROLLER.VERSION_ACCESS] ?: string | Record<string,number | number[]>
+}
+
+export interface ControllerConfig extends ControllerDefaultsConfig
+{
+    [Const.App.CONTROLLER.FILE_PATH] ?: string;
+    [Const.App.CONTROLLER.FILE_NAME] ?: string;
 }
 
 export type BeforeHandleFunction = (bag : Bag) => Promise<void> | void;

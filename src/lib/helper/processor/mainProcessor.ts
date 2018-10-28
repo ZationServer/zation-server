@@ -29,11 +29,9 @@ class MainProcessor
     {
         let reqData = shBridge.getZationData();
 
-        if(ZationReqTools.isValidReqStructure(reqData))
+        if(ZationReqTools.isValidReqStructure(reqData,shBridge.isWebSocket()))
         //THROWS TASK ERROR
         {
-            SystemVersionChecker.checkSystemAndVersion(zc,reqData);
-
             //Check for a auth req
             if(ZationReqTools.isZationAuthReq(reqData)) {
                 if(!zc.isApp(Const.App.KEYS.AUTH_CONTROLLER)) {
@@ -55,6 +53,8 @@ class MainProcessor
 
             const controllerConfig =
                 worker.getControllerPrepare().getControllerConfig(controllerName,isSystemController);
+
+            SystemVersionChecker.checkSystemAndVersion(shBridge,controllerConfig);
 
             const tokenEngine = new TokenEngine(shBridge,worker,zc);
 

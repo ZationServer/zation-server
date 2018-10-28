@@ -64,8 +64,8 @@ class ControllerTools
     //this method can be use to get the path without the pre compile
     static getControllerFPathForCheck(controllerConfig : object,cName : string) : string
     {
-        let controllerPath = controllerConfig[Const.App.CONTROLLER.PATH];
-        let controllerName = controllerConfig[Const.App.CONTROLLER.NAME];
+        let controllerPath = controllerConfig[Const.App.CONTROLLER.FILE_PATH];
+        let controllerName = controllerConfig[Const.App.CONTROLLER.FILE_NAME];
 
         if(!controllerName)
         {

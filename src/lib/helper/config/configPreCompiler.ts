@@ -46,7 +46,7 @@ class ConfigPeCompiler
     {
         this.controllerDefaults = {};
 
-        let cd = this.zc.getApp(Const.App.KEYS.CONTROLLER_DEFAULT);
+        let cd = this.zc.getApp(Const.App.KEYS.CONTROLLER_DEFAULTS);
 
         //setDefaults if not set!
         if(cd !== undefined) {
@@ -384,9 +384,9 @@ class ConfigPeCompiler
             if(controller.hasOwnProperty(k))
             {
                 //set name property to key if not there
-                if(controller[k][Const.App.CONTROLLER.NAME] === undefined)
+                if(controller[k][Const.App.CONTROLLER.FILE_NAME] === undefined)
                 {
-                    controller[k][Const.App.CONTROLLER.NAME] = k;
+                    controller[k][Const.App.CONTROLLER.FILE_NAME] = k;
                 }
 
                 //set the defaults if property missing

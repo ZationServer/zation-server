@@ -8,16 +8,18 @@ export =
     {
         'zation/system/ping' :
             {
-                name   : 'zationSC_Ping',
+                fileName   : 'zationSC_Ping',
                 systemController : true,
                 access : 'all',
+                versionAccess : 'all',
                 input : {}
             },
         'zation/panel/auth' :
             {
-                name   : 'zationSPC_Auth',
+                fileName   : 'zationSPC_Auth',
                 systemController : true,
                 access : 'all',
+                versionAccess : 'all',
                 input : {
                     userName : {
                         type : 'string'

@@ -79,7 +79,7 @@ class ConfigChecker {
             groups = Object.keys(authGroups);
         }
 
-        //checkAuthGroups don't have a all/allAuth/allNotAuth NAME
+        //checkAuthGroups don't have a all/allAuth/allNotAuth name
         for (let i = 0; i < groups.length; i++) {
             if (groups[i].indexOf('.') !== -1) {
                 this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
@@ -130,7 +130,6 @@ class ConfigChecker {
         this.checkAppConfigMain();
         this.checkObjectsConfig();
         this.checkValidationGroups();
-        this.checkVersionControl();
         this.checkControllerConfigs();
         this.checkAuthController();
         this.checkBackgroundTasks();
@@ -283,10 +282,10 @@ class ConfigChecker {
 
     private checkAccessControllerDefaultIsSet() {
         let access = ObjectPath.get(this.zc.getAppConfig(),
-            [Const.App.KEYS.CONTROLLER_DEFAULT, Const.App.CONTROLLER.ACCESS]);
+            [Const.App.KEYS.CONTROLLER_DEFAULTS, Const.App.CONTROLLER.ACCESS]);
 
         let notAccess = ObjectPath.get(this.zc.getAppConfig(),
-            [Const.App.KEYS.CONTROLLER_DEFAULT, Const.App.CONTROLLER.NOT_ACCESS]);
+            [Const.App.KEYS.CONTROLLER_DEFAULTS, Const.App.CONTROLLER.NOT_ACCESS]);
 
         if (access === undefined && notAccess === undefined) {
             Logger.printConfigWarning(Const.Settings.CN.APP, 'It is recommended to set a controller default value for protocolAccess or notAccess.');
@@ -593,37 +592,54 @@ class ConfigChecker {
        }
 
        //check controllerDefault
-       if (this.zc.isApp(Const.App.KEYS.CONTROLLER_DEFAULT))
+       if (this.zc.isApp(Const.App.KEYS.CONTROLLER_DEFAULTS))
        {
-           let controller = this.zc.getApp(Const.App.KEYS.CONTROLLER_DEFAULT);
-           this.checkController(controller,new Target(`ControllerDefault`),'controllerDefault');
+           let controller = this.zc.getApp(Const.App.KEYS.CONTROLLER_DEFAULTS);
+           this.checkController(controller,new Target(Const.App.KEYS.CONTROLLER_DEFAULTS));
        }
 
        this.checkControllerPaths();
    }
 
-   private checkController(cc,target,cName)
+   // noinspection JSMethodCanBeStatic
+    private checkControllerVersionAccess(cc : object,target : Target)
    {
-       this.checkControllerAccessKey(cc,target);
-       ConfigCheckerTools.assertStructure(Structures.AppController,cc,Const.Settings.CN.APP,this.ceb,target);
-       this.checkControllerInput(cc,target);
-       this.checkControllerClass(cc,target,cName);
+       if(typeof cc[Const.App.CONTROLLER.VERSION_ACCESS] === 'object' &&
+           Object.keys(cc[Const.App.CONTROLLER.VERSION_ACCESS]).length === 0)
+       {
+           Logger.printConfigWarning
+           (
+               Const.Settings.CN.APP,
+               target.getTarget()+' It is recommended that versionAccess has at least one system!'
+           );
+       }
+
    }
 
-   private checkControllerClass(cc,target,cName)
+   private checkController(cc : object,target : Target,cName ? : string)
+   {
+       this.checkControllerAccessKey(cc,target);
+
+       const structure = cName ? Structures.AppController : Structures.AppControllerDefaults;
+       ConfigCheckerTools.assertStructure(structure,cc,Const.Settings.CN.APP,this.ceb,target);
+
+       this.checkControllerInput(cc,target);
+       this.checkControllerVersionAccess(cc,target);
+
+       if(cName) {
+           this.checkControllerClass(cc,target,cName);
+       }
+   }
+
+   private checkControllerClass(cc : object,target : Target,cName : string)
    {
        let cPath = ControllerCheckTools.getControllerFPathForCheck(cc,cName);
        this.addControllerPaths(cPath,cName);
 
-       if(cPath === 'controllerDefault')
-       {
-           return;
-       }
-
        if(!ControllerCheckTools.controllerFileExist(cc,cPath,this.zc))
        {
            this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
-               `${target.getTarget()} on Path: '${cPath}', can not found controller file.`));
+               `${target.getTarget()} on Path: '${cPath}', can not found the controller file.`));
        }
        else if(!ControllerCheckTools.canControllerRequire(cc,cPath,this.zc))
        {
@@ -963,39 +979,6 @@ class ConfigChecker {
                    checkDependency(e);
                }
            })
-       }
-   }
-
-   private checkVersionControl()
-   {
-       let versionControlConfig = this.zc.getApp(Const.App.KEYS.VERSION_CONTROL);
-       if(versionControlConfig !== undefined)
-       {
-           if(Object.keys(versionControlConfig).length === 0)
-           {
-               Logger.printConfigWarning
-               (
-                   Const.Settings.CN.APP,
-                   'It is recommended that VersionControl has at least one version!'
-               );
-           }
-
-           for(let k in versionControlConfig)
-           {
-               if(versionControlConfig.hasOwnProperty(k))
-               {
-                   ConfigCheckerTools.assertProperty
-                   (
-                       k,
-                       versionControlConfig,
-                       'number',
-                       true,
-                       Const.Settings.CN.APP,
-                       this.ceb,
-                       new Target(Const.App.KEYS.VERSION_CONTROL),
-                   );
-               }
-           }
        }
    }
 

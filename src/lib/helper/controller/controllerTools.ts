@@ -16,8 +16,8 @@ class ControllerTools
     //Part Controller Paths
     static getControllerFullPath(controllerConfig : object) : string
     {
-        let controllerPath = controllerConfig[Const.App.CONTROLLER.PATH];
-        let controllerName = controllerConfig[Const.App.CONTROLLER.NAME];
+        let controllerPath = controllerConfig[Const.App.CONTROLLER.FILE_PATH];
+        let controllerName = controllerConfig[Const.App.CONTROLLER.FILE_NAME];
 
         if(controllerPath === undefined)
         {

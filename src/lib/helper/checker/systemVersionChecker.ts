@@ -4,31 +4,33 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationConfig = require("../../main/zationConfig");
 import Const        = require('../constants/constWrapper');
 import TaskError    = require('../../api/TaskError');
 import MainErrors   = require('../zationTaskErrors/mainTaskErrors');
+import SHBridge     = require("../bridges/shBridge");
 
 class SystemVersionChecker
 {
 
-    static checkSystemAndVersion(zc : ZationConfig,zationReq : object) : void
+    static checkSystemAndVersion(shBridge : SHBridge,controllerConfig : object) : void
     {
-        if(zc.isApp(Const.App.KEYS.VERSION_CONTROL))
-        {
-            if(zc.getApp(Const.App.KEYS.VERSION_CONTROL).hasOwnProperty(zationReq[Const.Settings.REQUEST_INPUT.SYSTEM]))
-            {
-                let serverMinVersion =
-                    parseFloat(zc.getApp(Const.App.KEYS.VERSION_CONTROL)[zationReq[Const.Settings.REQUEST_INPUT.SYSTEM]]);
+        const versionAccess = controllerConfig[Const.App.CONTROLLER.VERSION_ACCESS];
 
-                if(serverMinVersion > parseFloat(zationReq[Const.Settings.REQUEST_INPUT.VERSION]))
+        if(typeof versionAccess === 'object')
+        {
+            const system = shBridge.getSystem();
+
+            if(versionAccess.hasOwnProperty(system))
+            {
+                const version = shBridge.getVersion();
+                const sVersion = versionAccess[system];
+                if((Array.isArray(sVersion) && !sVersion.includes(version)) || (typeof sVersion === 'number' && sVersion > version))
                 {
-                    throw new TaskError(MainErrors.versionToOld,{minVersion : serverMinVersion});
+                    throw new TaskError(MainErrors.versionNotCompatible,{version : version});
                 }
             }
-            else
-            {
-                throw new TaskError(MainErrors.systemNotFound,{systemName : zationReq[Const.Settings.REQUEST_INPUT.SYSTEM]});
+            else {
+                throw new TaskError(MainErrors.systemNotCompatible,{system : system});
             }
         }
     }
