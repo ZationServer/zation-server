@@ -383,16 +383,7 @@ class ConfigChecker {
         ConfigCheckerTools.assertStructure(Structures.Main, this.zc.getMainConfig(), Const.Settings.CN.MAIN, this.ceb);
 
         this.checkHttpsMainConfig();
-        this.checkPanelClientPrepare();
         this.checkPanelUserMainConfig();
-    }
-
-    private checkPanelClientPrepare()
-    {
-        if(this.zc.getMain(Const.Main.KEYS.USE_PANEL) && !this.zc.getMain(Const.Main.KEYS.CLIENT_JS_PREPARE)) {
-            this.ceb.addConfigError(new ConfigError(Const.Settings.CN.MAIN,
-                `For using the zation panel (usePanel) you need to set the clientJsPrepare in the main config to true.`));
-        }
     }
 
    private checkHttpsMainConfig()

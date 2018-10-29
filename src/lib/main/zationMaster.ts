@@ -16,7 +16,7 @@ import ConfigChecker         = require('../helper/config/configChecker');
 import ConfigErrorBag        = require('../helper/config/configErrorBag');
 import HashSet               = require('hashset');
 import TimeTools             = require('../helper/tools/timeTools');
-import PrepareClientJs       = require('../helper/client/prepareClientJs');
+import ClientPrepare         = require('../helper/client/clientPrepare');
 import BackgroundTasksSetter = require("../helper/background/backgroundTasksSetter");
 const  isWindows             = require('is-windows');
 import StateServerEngine     = require("../helper/cluster/stateServerEngine");
@@ -42,6 +42,10 @@ class ZationMaster {
     //backgroundTasks
     private backgroundTaskActive: boolean = true;
     private backgroundTaskInit: boolean = false;
+
+    //prepareClient
+    private fullClientJs : string;
+    private serverSettingsJs : string;
 
     constructor(options) {
         if (ZationMaster.instance === null) {
@@ -87,6 +91,16 @@ class ZationMaster {
         Logger.startStopWatch();
         this.zc.loadOtherConfigs();
         Logger.printStartDebugInfo(`Master has loaded the other config files.`, true);
+
+        Logger.startStopWatch();
+        this.serverSettingsJs = ClientPrepare.createServerSettingsFile(this.zc);
+        Logger.printStartDebugInfo(`Master has prepared the server settings js file.`, true);
+
+        if(this.zc.getMain(Const.Main.KEYS.CLIENT_JS_PREPARE)) {
+            Logger.startStopWatch();
+            this.fullClientJs = ClientPrepare.buildClientJs(this.serverSettingsJs);
+            Logger.printStartDebugInfo(`Master has prepared the client js file.`, true);
+        }
 
         Logger.startStopWatch();
         configChecker.checkAllConfigs();
@@ -172,7 +186,8 @@ class ZationMaster {
             zationConfigWorkerTransport : this.zc.getWorkerTransport(),
             zationServerVersion : ZationMaster.version,
             zationServerStartedTimeStamp : this.serverStartedTimeStamp,
-            zationServerSettingsFile : PrepareClientJs.createServerSettingsFile(this.zc),
+            zationServerSettingsJsFile : this.serverSettingsJs,
+            zationFullClientJsFile : this.fullClientJs,
             logLevel : scLogLevel,
             clusterAuthKey : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_AUTH_KEY),
             clusterStateServerHost : this.clusterStateServerHost,

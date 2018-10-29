@@ -85,7 +85,7 @@ gulp.task('bundlePanel', function () {
         entries: 'dist/lib/public/panel/ts/index.js',
     })
         .bundle()
-        .pipe(source('index.js'))
+        .pipe(source('panel.js'))
         .pipe(gulp.dest('dist/lib/public/panel/js'));
 });
 

@@ -488,6 +488,12 @@ class ZationConfig
         //Brokers Default
         this.mainConfig[Const.Main.KEYS.BROKERS] =
             ZationConfig.createValueWithOsAuto(this.mainConfig[Const.Main.KEYS.BROKERS]);
+
+        //path slash check
+        const path = this.mainConfig[Const.Main.KEYS.PATH];
+        if(path && typeof path === 'string' && path.charAt(0) !== '/') {
+            this.mainConfig[Const.Main.KEYS.PATH] = '/' + path;
+        }
     }
 }
 

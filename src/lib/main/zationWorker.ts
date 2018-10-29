@@ -22,7 +22,6 @@ import Logger = require('../helper/logger/logger');
 import Const = require('../helper/constants/constWrapper');
 import ServiceEngine = require('../helper/services/serviceEngine');
 import SmallBag = require('../api/SmallBag');
-import PrepareClientJs = require('../helper/client/prepareClientJs');
 import AEPreparedPart = require('../helper/auth/aePreparedPart');
 import ChConfigManager = require("../helper/channel/chConfigManager");
 import ControllerPrepare = require('../helper/controller/controllerPrepare');
@@ -54,7 +53,6 @@ class ZationWorker extends SCWorker
     private zc : ZationConfig;
 
     public scServer : ScServer;
-    private preparedClientJs : PrepareClientJs;
     private serviceEngine : ServiceEngine;
     private preparedSmallBag : SmallBag;
     private controllerPrepare : ControllerPrepare;
@@ -117,12 +115,6 @@ class ZationWorker extends SCWorker
         let preCompiler = new ConfigPreCompiler(this.zc);
         preCompiler.preCompile();
         Logger.printStartDebugInfo(`Worker with id ${this.id} preCompile configs.`, true);
-
-        if(this.zc.getMain(Const.Main.KEYS.CLIENT_JS_PREPARE)) {
-            Logger.startStopWatch();
-            this.preparedClientJs = PrepareClientJs.buildClientJs(this.options.zationServerSettingsFile);
-            Logger.printStartDebugInfo(`Worker with id ${this.id} prepares client js.`, true);
-        }
 
         //Services
         Logger.startStopWatch();
@@ -288,12 +280,19 @@ class ZationWorker extends SCWorker
             this.app.use(`${path}/panel`, express.static(__dirname + '/../public/panel'));
         }
 
+        // noinspection JSUnresolvedFunction
+        this.app.get(`/zation/serverSettings.js`,(req,res) =>
+        {
+            res.type('.js');
+            res.send(this.options.zationServerSettingsJsFile);
+        });
+
         if(this.zc.getMain(Const.Main.KEYS.CLIENT_JS_PREPARE)) {
             // noinspection JSUnresolvedFunction
             this.app.get(`${path}/client.js`,(req,res) =>
             {
                 res.type('.js');
-                res.send(this.preparedClientJs);
+                res.send(this.options.zationFullClientJsFile);
             });
         }
 

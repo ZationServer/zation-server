@@ -8,13 +8,13 @@ import fs           = require('fs');
 import Const        = require('../constants/constWrapper');
 import ZationConfig = require("../../main/zationConfig");
 
-class PrepareClientJs
+class ClientPrepare
 {
     static buildClientJs(serverSettingsFile : string) : string
     {
         let res = '';
         // noinspection JSUnresolvedVariable,JSUnresolvedFunction
-        res += PrepareClientJs.loadZationMinifyClient();
+        res += ClientPrepare.loadZationMinifyClient();
         res += serverSettingsFile;
         return res;
     }
@@ -40,4 +40,4 @@ class PrepareClientJs
 
 }
 
-export = PrepareClientJs;
+export = ClientPrepare;

@@ -1,11 +1,10 @@
-import {create} from 'zation-client';
+import * as Zation from "zation-client";
 
 (async () => {
 
-    const client = create({
-        hostname : 'localhost',
-        port : 8080,
-        postKey : 'zation', 
+    const client = Zation.create({
+        hostname : window.location.hostname,
+        port : parseInt(window.location.port),
         debug : false
     });
 

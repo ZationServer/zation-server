@@ -85,7 +85,7 @@ class ChConfigManager {
     private processChannel(key: string): object {
         const res = {};
         if (this.cc.hasOwnProperty(key)) {
-            res['sgop'] = (this.cc[key][Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH]);
+            res['sgop'] = this.getSgop(this.cc[key][Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH]);
             res['onSub'] = (this.cc[key][Const.Channel.CHANNEL.ON_SUBSCRIPTION]);
             res['onUnsub'] = (this.cc[key][Const.Channel.CHANNEL.ON_UNSUBSCRIPTION]);
             res['onBagPub'] = (this.cc[key][Const.Channel.CHANNEL.ON_BAG_PUBLISH]);
