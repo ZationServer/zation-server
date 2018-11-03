@@ -9,6 +9,30 @@ import ErrorGroups = require("../constants/errorGroups");
 
 export = {
 
+    inputIsNotTypeObject : {
+        name          : 'inputIsNotTypeObject',
+        group         : ErrorGroups.TYPE_ERROR,
+        description   : 'Input is not from type Object!',
+        type          : ErrorType.VALIDATION_ERROR,
+        sendInfo      : true,
+        //INFO
+        // inputValue (inputValue)
+        // inputPath (inputPath)
+        fromZationSystem : true
+    },
+
+    inputIsNotTypeArray : {
+        name          : 'inputIsNotTypeArray',
+        group         : ErrorGroups.TYPE_ERROR,
+        description   : 'Input is not from type Array!',
+        type          : ErrorType.VALIDATION_ERROR,
+        sendInfo      : true,
+        //INFO
+        // inputValue (inputValue)
+        // inputPath (inputPath)
+        fromZationSystem : true
+    },
+
     inputIsNotTypeString : {
         name          : 'inputIsNotTypeString',
         group         : ErrorGroups.TYPE_ERROR,
@@ -37,6 +61,18 @@ export = {
         name          : 'inputIsNotTypeFloat',
         group         : ErrorGroups.TYPE_ERROR,
         description   : 'Input is not from type Float!',
+        type          : ErrorType.VALIDATION_ERROR,
+        sendInfo      : true,
+        //INFO
+        // inputValue (inputValue)
+        // inputPath (inputPath)
+        fromZationSystem : true
+    },
+
+    inputIsNotTypeNumber : {
+        name          : 'inputIsNotTypeNumber',
+        group         : ErrorGroups.TYPE_ERROR,
+        description   : 'Input is not from type number!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -309,18 +345,6 @@ export = {
         fromZationSystem : true
     },
 
-    inputIsNotTypeLatLong : {
-        name          : 'inputIsNotTypeLatLong',
-        group         : ErrorGroups.TYPE_ERROR,
-        description   : 'Input is not from type LatLong!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
-        //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
-        fromZationSystem : true
-    },
-
     inputIsNotTypeBase64 : {
         name          : 'inputIsNotTypeBase64',
         group         : ErrorGroups.TYPE_ERROR,
@@ -337,18 +361,6 @@ export = {
         name          : 'inputIsNotTypeAscii',
         group         : ErrorGroups.TYPE_ERROR,
         description   : 'Input is not from type Ascii!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
-        //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
-        fromZationSystem : true
-    },
-
-    inputIsNotTypeNumber : {
-        name          : 'inputIsNotTypeNumber',
-        group         : ErrorGroups.TYPE_ERROR,
-        description   : 'Input is not from type number!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
@@ -490,7 +502,7 @@ export = {
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        // regex (regex)
+        // regexName
         fromZationSystem : true
     },
 

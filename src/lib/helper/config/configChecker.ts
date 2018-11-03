@@ -16,18 +16,12 @@ import Structures           = require('./structures');
 import Target               = require('./target');
 import ConfigErrorBag       = require("./configErrorBag");
 
-//todo
-/*
-app config
-if type = file -> only file functions
- */
-
 class ConfigChecker {
     private readonly zc: ZationConfig;
     private readonly ceb: ConfigErrorBag;
 
     private objectsConfig: object;
-    private validationGroupConfig: object;
+    private inputGroupConfig: object;
     private cNames: object;
     private validAccessValues: any[];
     private objectImports: any[];
@@ -55,9 +49,9 @@ class ConfigChecker {
             this.zc.isApp(Const.App.KEYS.OBJECTS) && typeof this.zc.getApp(Const.App.KEYS.OBJECTS) === 'object'
                 ? this.zc.getApp(Const.App.KEYS.OBJECTS) : {};
 
-        this.validationGroupConfig =
-            this.zc.isApp(Const.App.KEYS.VALIDATION_GROUPS) && typeof this.zc.getApp(Const.App.KEYS.VALIDATION_GROUPS) === 'object'
-                ? this.zc.getApp(Const.App.KEYS.VALIDATION_GROUPS) : {};
+        this.inputGroupConfig =
+            this.zc.isApp(Const.App.KEYS.INPUT_GROUPS) && typeof this.zc.getApp(Const.App.KEYS.INPUT_GROUPS) === 'object'
+                ? this.zc.getApp(Const.App.KEYS.INPUT_GROUPS) : {};
 
         this.cNames = {};
     }
@@ -129,7 +123,7 @@ class ConfigChecker {
         this.checkAccessControllerDefaultIsSet();
         this.checkAppConfigMain();
         this.checkObjectsConfig();
-        this.checkValidationGroups();
+        this.checkInputGroups();
         this.checkControllerConfigs();
         this.checkAuthController();
         this.checkBackgroundTasks();
@@ -297,9 +291,16 @@ class ConfigChecker {
         this.objectExtensions = [];
         for (let objName in this.objectsConfig) {
             if (this.objectsConfig.hasOwnProperty(objName)) {
+
+                if (objName.indexOf('.') !== -1) {
+                    this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+                        `${objName} is not a valid object name! Dot/s in name are not allowed.`));
+                }
+
                 if (!Array.isArray(this.objectsConfig[objName]) && typeof this.objectsConfig[objName] === 'object') {
                     this.checkObject(this.objectsConfig[objName], new Target(`Object: ${objName}`, 'propertyPath'), objName);
-                } else {
+                }
+                else {
                     this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
                         `Object: '${objName}' value must be an object!`));
                 }
@@ -344,14 +345,20 @@ class ConfigChecker {
         return false;
     }
 
-    private checkValidationGroups() {
-        for (let group in this.validationGroupConfig) {
-            if (this.validationGroupConfig.hasOwnProperty(group)) {
-                let groupConfig = this.validationGroupConfig[group];
-                ConfigCheckerTools.assertStructure
-                (Structures.ValidationGroup, groupConfig, Const.Settings.CN.APP, this.ceb, new Target(`validationGroup '${group}'`));
+    private checkInputGroups() {
+        for (let group in this.inputGroupConfig) {
+            if (this.inputGroupConfig.hasOwnProperty(group)) {
 
-                this.checkOnlyValidationFunctions(groupConfig, `validation group ${group}`);
+                if (group.indexOf('.') !== -1) {
+                    this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+                        `${group} is not a valid input group name! Dot/s in name are not allowed.`));
+                }
+
+                const groupConfig = this.inputGroupConfig[group];
+                ConfigCheckerTools.assertStructure
+                (Structures.InputBody, groupConfig, Const.Settings.CN.APP, this.ceb, new Target(`inputGroup '${group}'`));
+
+                this.checkValidationFunctions(groupConfig, `input group ${group}`);
             }
         }
     }
@@ -727,8 +734,7 @@ class ConfigChecker {
            this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
                `${target.getTarget()} the link dependency to object: '${objLinkName}' can not be resolved, Object not found.`));
        }
-       else
-       {
+       else {
            //check if object import it self (by controller objName will be undefined)
            if(objName === objLinkName)
            {
@@ -803,7 +809,13 @@ class ConfigChecker {
    {
        if(typeof value === 'string')
        {
-           this.checkPropertyByObjLink(value,target,objName);
+           if(value.startsWith('g.')) {
+               //check inputGroups
+               this.checkValidInputGroup(value.replace('g.',''),target);
+           }
+           else {
+               this.checkPropertyByObjLink(value.replace('o.',''),target,objName);
+           }
        }
        else if(Array.isArray(value))
        {
@@ -852,8 +864,7 @@ class ConfigChecker {
                    target.getLastPath() === 'Array' &&
                    typeof value[Const.App.INPUT.IS_OPTIONAL] === 'boolean' &&
                    value[Const.App.INPUT.IS_OPTIONAL]
-               )
-               {
+               ) {
                    Logger.printConfigWarning
                    (
                        Const.Settings.CN.APP,
@@ -865,13 +876,7 @@ class ConfigChecker {
                ConfigCheckerTools.assertStructure(Structures.InputBody,value,Const.Settings.CN.APP,this.ceb,target);
 
                //check for only number/string functions
-               this.checkOnlyValidationFunctions(value,target);
-
-               //check validationGroups
-               if(value.hasOwnProperty(Const.App.INPUT.VALIDATION_GROUP))
-               {
-                   this.checkValidValidationGroup(value[Const.App.INPUT.VALIDATION_GROUP],target);
-               }
+               this.checkValidationFunctions(value,target);
            }
        }
        else
@@ -881,19 +886,24 @@ class ConfigChecker {
        }
    }
 
-   private checkValidValidationGroup(value,target)
+   private checkValidInputGroup(value,target)
    {
-       if(!this.validationGroupConfig.hasOwnProperty(value))
-       {
+       if(!this.inputGroupConfig.hasOwnProperty(value)) {
            this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
                `${target.getTarget()} the dependency to validation group: '${value}' can not be resolved, Group not found.`));
        }
    }
 
-   private checkOnlyValidationFunctions(value,target)
+   private checkValidationFunctions(value,target)
    {
-       let type = value[Const.App.INPUT.TYPE];
-       let isNumber =  type === Const.Validator.TYPE.INT || type === Const.Validator.TYPE.FLOAT;
+       this.checkOnlyValidationFunction(value,target);
+       this.checkRegexFunction(value,target);
+   }
+
+   private checkOnlyValidationFunction(value,target)
+   {
+       const type = value[Const.Validator.KEYS.TYPE];
+       const isNumber =  type === Const.Validator.TYPE.INT || type === Const.Validator.TYPE.FLOAT || type === Const.Validator.TYPE.NUMBER;
 
        if (isNumber && ObjectTools.hasOneOf(value,Const.Validator.ONLY_STRING_FUNCTIONS))
        {
@@ -907,6 +917,32 @@ class ConfigChecker {
            let useFunctions = ObjectTools.getFoundKeys(value,Const.Validator.ONLY_NUMBER_FUNCTIONS);
            this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
                `${target.getTarget()} not number type can't use this function${useFunctions.length>1 ? 's' : ''}: ${useFunctions.toString()}.`));
+       }
+   }
+
+   private checkRegexFunction(value,target : Target)
+   {
+       const regex = value[Const.Validator.KEYS.FUNCTION_REGEX];
+       const regexTarget = target.addPath('regex');
+
+       if(typeof regex === 'object' && !(regex instanceof RegExp)){
+           for(let regexName in regex)
+           {
+               if(regex.hasOwnProperty(regexName)) {
+                   this.checkRegex(regex[regexName],regexTarget.addPath(regexName));
+               }
+           }
+       }
+       else if(regex !== undefined){
+           this.checkRegex(value,regexTarget);
+       }
+   }
+
+   private checkRegex(value,target)
+   {
+       if(!(typeof value === 'string' || value instanceof RegExp)){
+           this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+               `${target.getTarget()} is not a string or an ReqExp object.`));
        }
    }
 

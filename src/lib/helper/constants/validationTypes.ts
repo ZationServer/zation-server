@@ -6,10 +6,13 @@ GitHub: LucaCode
 class ValidationTypes
 {
     //TYPES FOR VALIDATOR
+    static readonly OBJECT           = 'object';
+    static readonly ARRAY            = 'array';
     static readonly STRING           = 'string';
     static readonly ALL              = 'all';
     static readonly INT              = 'int';
     static readonly FLOAT            = 'float';
+    static readonly NUMBER           = 'number';
     static readonly DATE             = 'date';
     static readonly EMAIL            = 'email';
     static readonly BOOLEAN          = 'boolean';
@@ -32,15 +35,9 @@ class ValidationTypes
     static readonly UUID_3           = 'uuid3';
     static readonly UUID_4           = 'uuid4';
     static readonly UUID_5           = 'uuid5';
-    static readonly LAT_LONG         = 'latLong';
     static readonly BASE64           = 'base64';
     static readonly ASCII            = 'ascii';
-    static readonly NUMBER           = 'number';
     static readonly USER_ID          = 'userId';
-
-    //Not supported
-    static readonly FILE             = 'file';
-    //File Extensions
 }
 
 export = ValidationTypes;

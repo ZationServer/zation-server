@@ -8,7 +8,8 @@ import ValidationTypes = require("./validationTypes");
 
 class KEYS
 {
-    static readonly TYPE                  = 'type';
+    static readonly TYPE                          = 'type';
+    static readonly STRICT_TYPE                   = 'strictType';
 
     //VALIDATOR FUNCTIONS
     static readonly FUNCTION_ENUM                 = 'enum';
@@ -26,6 +27,9 @@ class KEYS
 
     //VALIDATOR FORMAT
     static readonly FORMAT_IS_LETTERS             = 'isLetters';
+
+    //Own validate functions
+    static readonly VALIDATE                      = 'validate';
 }
 
 class FORMAT_LETTERS

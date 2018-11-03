@@ -7,6 +7,7 @@ import Const           = require('./../constants/constWrapper');
 import Bag             = require("../../api/Bag");
 import SmallBag        = require("../../api/SmallBag");
 import ZationToken     = require("../infoObjects/zationToken");
+import TaskErrorBag = require("../../api/TaskErrorBag");
 
 export interface AppConfig
 {
@@ -15,7 +16,7 @@ export interface AppConfig
     [Const.App.KEYS.USER_GROUPS] ?: UserGroupsConfig;
     [Const.App.KEYS.CONTROLLER_DEFAULTS] ?: ControllerDefaultsConfig;
     [Const.App.KEYS.OBJECTS] ?: Record<string,ObjectConfig>;
-    [Const.App.KEYS.VALIDATION_GROUPS] ?: Record<string,InputValidationConfig>;
+    [Const.App.KEYS.INPUT_GROUPS] ?: Record<string,InputConfig>;
     [Const.App.KEYS.BACKGROUND_TASKS] ?: Record<string,BackgroundTask>
 }
 
@@ -76,9 +77,12 @@ export interface ControllerConfig extends ControllerDefaultsConfig
 export type BeforeHandleFunction = (bag : Bag) => Promise<void> | void;
 export type ControllerAccessFunction = (smallBag : SmallBag,token : ZationToken) => Promise<boolean> | boolean;
 
-export interface InputValidationConfig
+export type ValidatorFunction = (value : any,taskErrorBag : TaskErrorBag,inputPath : string,smallBag : SmallBag) => Promise<void> | void;
+
+export interface InputConfig
 {
-    [Const.App.INPUT.TYPE] ?: string | string[];
+    [Const.Validator.KEYS.TYPE] ?: string | string[];
+    [Const.Validator.KEYS.STRICT_TYPE] ?: boolean;
     [Const.Validator.KEYS.FUNCTION_ENUM] ?: any [];
     [Const.Validator.KEYS.FUNCTION_PRIVATE_ENUM] ?: any [];
     [Const.Validator.KEYS.FUNCTION_MIN_LENGTH] ?: number;
@@ -88,16 +92,15 @@ export interface InputValidationConfig
     [Const.Validator.KEYS.FUNCTION_EQUALS] ?: string | number | object;
     [Const.Validator.KEYS.FUNCTION_BIGGER_THAN] ?: number;
     [Const.Validator.KEYS.FUNCTION_LESSER_THAN] ?: number;
-    [Const.Validator.KEYS.FUNCTION_REGEX] ?: string;
+    [Const.Validator.KEYS.FUNCTION_REGEX] ?: string | RegExp | Record<string,RegExp | string>;
     [Const.Validator.KEYS.FUNCTION_ENDS_WITH] ?: string;
     [Const.Validator.KEYS.FUNCTION_STARTS_WITH] ?: string;
     [Const.Validator.KEYS.FORMAT_IS_LETTERS] ?: string;
-}
+    [Const.Validator.KEYS.VALIDATE] ?: ValidatorFunction | ValidatorFunction[];
 
-export interface InputConfig extends InputValidationConfig
-{
     [Const.App.INPUT.IS_OPTIONAL] ?: boolean;
-    [Const.App.INPUT.VALIDATION_GROUP] ?: string;
+    [Const.App.INPUT.CONVERT] ?: ConstructValueFunction;
+    [Const.App.INPUT.CONVERT_TYPE] ?: boolean;
 }
 
 export type ObjectProperties = Record<string,InputConfig | ObjectConfig | ArrayConfig | string | ArrayShortSyntax>;
@@ -105,7 +108,7 @@ export type ObjectProperties = Record<string,InputConfig | ObjectConfig | ArrayC
 export interface ObjectConfig
 {
     [Const.App.OBJECTS.PROPERTIES] : ObjectProperties;
-    [Const.App.OBJECTS.CONSTRUCT] ?: ConstructFunction;
+    [Const.App.OBJECTS.CONSTRUCT] ?: ConstructObjectFunction;
     [Const.App.OBJECTS.EXTENDS] ?: string;
 }
 
@@ -128,4 +131,5 @@ export interface ArrayShortSyntax extends Array<string | ArrayShortSyntax | Inpu
     1 : ArraySettings
 }
 
-export type ConstructFunction = (obj: object, smallBag : SmallBag) => Promise<any> | any;
+export type ConstructObjectFunction = (obj: object, smallBag : SmallBag) => Promise<any> | any;
+export type ConstructValueFunction = (value : any, smallBag : SmallBag) => Promise<any> | any;

@@ -57,13 +57,13 @@ import
 {
     AppConfig,
     BeforeHandleFunction,
-    ConstructFunction,
+    ConstructObjectFunction,
     ControllerAccessFunction,
     ControllerConfig,
     ControllerInput, InputProperty,
-    InputValidationConfig,
+    InputConfig,
     ObjectConfig, ObjectProperties,
-    TaskFunction
+    TaskFunction, ValidatorFunction
 } from "../helper/configEditTool/appConfigStructure";
 import
 {
@@ -114,8 +114,9 @@ class Config
     static starterConfig(config : StarterConfig) : StarterConfig {return config;}
 
     //Part App Config functions
-    static construct(func : ConstructFunction) : ConstructFunction {return func;}
+    static construct(func : ConstructObjectFunction) : ConstructObjectFunction {return func;}
     static beforeHandle(func : BeforeHandleFunction) : BeforeHandleFunction {return func;}
+    static validate(func : ValidatorFunction) : ValidatorFunction {return func;}
     static controllerAccess(func : ControllerAccessFunction) : ControllerAccessFunction {return func;}
     static task(func : TaskFunction) :  TaskFunction {return func;}
 
@@ -124,7 +125,7 @@ class Config
     static inputProperty(c : InputProperty) :  InputProperty {return c;}
     static object(c : ObjectConfig) :  ObjectConfig {return c;}
     static objectProperties(c : ObjectProperties) :  ObjectProperties {return c;}
-    static validationGroup(c : InputValidationConfig) :  InputValidationConfig {return c;}
+    static inputGroup(c : InputConfig) : InputConfig {return c;}
 
     //Part Channel Config functions
     static cIdChClientPubAccess(func : CIdChannelClientPubAccessFunction) : CIdChannelClientPubAccessFunction {return func;}

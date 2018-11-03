@@ -9,21 +9,19 @@ import ObjectTools         = require('../tools/objectTools');
 import TaskError           = require('../../api/TaskError');
 import TaskErrorBag        = require('../../api/TaskErrorBag');
 import MainErrors          = require('../zationTaskErrors/mainTaskErrors');
-import InputValueProcessor = require('./inputValueProcessor');
+import InputMainProcessor  = require('./inputMainProcessor');
 import SmallBag             = require("../../api/SmallBag");
+import {ProcessTaskEngine}  from "./processTaskEngine";
 
-class InputProcessor
+class InputReqProcessor
 {
     private static async processInputObject
     (
-        controllerInput : object,
         input : any,
-        useInputValidation : boolean,
-        preparedSmallBag : SmallBag
+        controllerInput : object,
+        inputValueProcessor : InputMainProcessor
     ) : Promise<object>
     {
-        let inputValueProcessor = new InputValueProcessor(useInputValidation,true,preparedSmallBag);
-
         let promises : Promise<void>[] = [];
         let taskErrorBag = new TaskErrorBag();
         let result = {};
@@ -34,13 +32,12 @@ class InputProcessor
                 promises.push(new Promise<void>(async (resolve) => {
                     result[inputName] = await
                         inputValueProcessor.
-                        processValue(input[inputName],controllerInput[inputName],inputName,taskErrorBag);
+                        processInput(result,inputName,controllerInput[inputName],inputName,taskErrorBag);
                     resolve();
                 }));
             }
         }
         await Promise.all(promises);
-
         taskErrorBag.throwIfHasError();
         return result;
     }
@@ -50,12 +47,9 @@ class InputProcessor
         input : any,
         controllerInputKeys : string[],
         controllerInput : object,
-        useInputValidation : boolean,
-        preparedSmallBag : SmallBag
+        inputValueProcessor : InputMainProcessor
     ) : Promise<object>
     {
-        let inputValueProcessor = new InputValueProcessor(useInputValidation,true,preparedSmallBag);
-
         let promises : Promise<void>[] = [];
         let taskErrorBag = new TaskErrorBag();
         let result = {};
@@ -64,7 +58,7 @@ class InputProcessor
             promises.push(new Promise<void>(async (resolve) => {
                 let config = controllerInput[controllerInputKeys[i]];
                 result[controllerInputKeys[i]] = await
-                inputValueProcessor.processValue(input[i],config,controllerInputKeys[i],taskErrorBag);
+                inputValueProcessor.processInput(input[i],config,controllerInputKeys[i],taskErrorBag);
                 resolve();
             }))
         }
@@ -81,15 +75,12 @@ class InputProcessor
 
         for(let i = inputLength; i < controllerInputKeys.length; i++)
         {
-            if(controllerInput[controllerInputKeys[i]][Const.App.INPUT.IS_OPTIONAL])
-            {
-                if(optionalToo)
-                {
+            if(controllerInput[controllerInputKeys[i]][Const.App.INPUT.IS_OPTIONAL]) {
+                if(optionalToo) {
                     missing.push(controllerInputKeys[i]);
                 }
             }
-            else
-            {
+            else {
                 missing.push(controllerInputKeys[i]);
             }
         }
@@ -100,21 +91,16 @@ class InputProcessor
     {
         let missing : any[] = [];
 
-        for(let inputName in controllerInput)
-        {
-            if(controllerInput.hasOwnProperty(inputName))
-            {
-                if(input[inputName] === undefined)
-                {
+        for(let inputName in controllerInput) {
+            if(controllerInput.hasOwnProperty(inputName)) {
+                if(input[inputName] === undefined) {
                     if(controllerInput[inputName][Const.App.INPUT.IS_OPTIONAL])
                     {
-                        if(optionalToo)
-                        {
+                        if(optionalToo) {
                             missing.push(inputName);
                         }
                     }
-                    else
-                    {
+                    else {
                         missing.push(inputName);
                     }
                 }
@@ -136,8 +122,7 @@ class InputProcessor
         }
 
         let useInputValidation = true;
-        if(controller.hasOwnProperty(Const.App.CONTROLLER.INPUT_VALIDATION))
-        {
+        if(controller.hasOwnProperty(Const.App.CONTROLLER.INPUT_VALIDATION)) {
             useInputValidation = controller[Const.App.CONTROLLER.INPUT_VALIDATION];
         }
 
@@ -162,9 +147,9 @@ class InputProcessor
             let controllerInputKeys = Object.keys(controllerInput);
 
             let inputValueMissing = isArray ?
-                InputProcessor.getMissingInputFromArray(input,controllerInputKeys,controllerInput,false)
+                InputReqProcessor.getMissingInputFromArray(input,controllerInputKeys,controllerInput,false)
                 :
-                InputProcessor.getMissingInputFromObject(input,controllerInput,false);
+                InputReqProcessor.getMissingInputFromObject(input,controllerInput,false);
 
 
             if(inputValueMissing.length !== 0)
@@ -176,21 +161,24 @@ class InputProcessor
             }
             else
             {
+                const inputValueProcessor = new InputMainProcessor(useInputValidation,preparedSmallBag,true);
+
                 let result = input;
-                if(isArray)
-                {
+                if(isArray) {
                     result = await
-                        InputProcessor.processInputArray(input,controllerInputKeys,controllerInput,useInputValidation,preparedSmallBag);
+                        //throws if the validation has an error
+                        InputReqProcessor.processInputArray(input,controllerInputKeys,controllerInput,inputValueProcessor);
                 }
-                else
-                {
+                else {
                     result = await
-                        InputProcessor.processInputObject(controllerInput,input,useInputValidation,preparedSmallBag);
+                        //throws if the validation has an error
+                        InputReqProcessor.processInputObject(input,controllerInput,inputValueProcessor);
                 }
+                await ProcessTaskEngine.processTasks(inputValueProcessor.getProcessTaskList());
                 return result;
             }
         }
     }
 }
 
-export = InputProcessor;
+export = InputReqProcessor;

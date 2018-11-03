@@ -10,7 +10,7 @@ class KEYS {
     static readonly USER_GROUPS             = 'userGroups';
     static readonly CONTROLLER_DEFAULTS     = 'controllerDefaults';
     static readonly OBJECTS                 = 'objects';
-    static readonly VALIDATION_GROUPS       = 'validationGroups';
+    static readonly INPUT_GROUPS            = 'inputGroups';
     static readonly BACKGROUND_TASKS        = 'backgroundTasks';
 }
 
@@ -60,10 +60,10 @@ class ACCESS {
 }
 
 class INPUT {
-    static readonly TYPE                     = 'type';
     static readonly IS_OPTIONAL              = 'isOptional';
     static readonly ARRAY                    = 'array';
-    static readonly VALIDATION_GROUP         = 'validationGroup';
+    static readonly CONVERT                  = 'convert';
+    static readonly CONVERT_TYPE             = 'convertType';
 }
 
 class ARRAY {

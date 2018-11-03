@@ -10,12 +10,28 @@ class EasyValidator
 {
     static isString(data)
     {
-        return (typeof data === 'string' || data instanceof String);
+        return typeof data === 'string';
     }
 
-    static isInt(data)
+    static isObject(data)
     {
-        let isIntRegex = /^[-+]?[0-9]+$/;
+        return typeof data === 'object';
+    }
+
+    static isNumber(data)
+    {
+        return typeof data === 'number';
+    }
+
+    static isArray(data)
+    {
+        return Array.isArray(data);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    static isStringInt(data)
+    {
+        const isIntRegex = /^[-+]?[0-9]+$/;
         return isIntRegex.test(data);
     }
 
@@ -24,169 +40,296 @@ class EasyValidator
         return p1 === p2;
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    static isStringFloat(data)
+    {
+        return EasyValidator.isFloat(parseFloat(data));
+    }
+
+    static isStringNumber(data)
+    {
+        return !isNaN(data);
+    }
+
     static isFloat(data)
     {
-        let isFloatRegex = /^(?:[-+])?(?:[0-9]+)?(?:\.[0-9]*)?(?:[eE][+-]?(?:[0-9]+))?$/;
-        return isFloatRegex.test(data);
+        return EasyValidator.isNumber(data) && data % 1 !== 0;
     }
 
     static isSha512(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isHash(data,'Sha512');
+        try {
+            return Validator.isHash(data,'Sha512');
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isSha384(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isHash(data,'Sha384');
+        try {
+            return Validator.isHash(data,'Sha384');
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isSha256(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isHash(data,'Sha256');
+        try {
+            return Validator.isHash(data,'Sha256');
+        }
+        catch (e) {
+            return false;
+        }
+
     }
 
     static isSha1(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isHash(data,'Sha1');
+        try {
+            return Validator.isHash(data,'Sha1');
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isHexColor(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isHexColor(data);
+        try {
+            return Validator.isHexColor(data);
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isMd5(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isHash(data,'md5');
+        try {
+            return Validator.isHash(data,'md5');
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isJSON(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isJSON(data);
+        try {
+            return Validator.isJSON(data);
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isHexadecimal(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isHexadecimal(data);
+        try {
+            return Validator.isHexadecimal(data);
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isIP4(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isIP(data,'4');
+        try {
+            return Validator.isIP(data,'4');
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isIP6(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isIP(data,'6');
+        try {
+            return Validator.isIP(data,'6');
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isISB10(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isISBN(data,'10');
+        try {
+            return Validator.isISBN(data,'10');
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isISB13(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isISBN(data,'13');
+        try {
+            return Validator.isISBN(data,'13');
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isUrl(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isURL(data);
+        try {
+            return Validator.isURL(data);
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isMimeType(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isMimeType(data);
+        try {
+            return Validator.isMimeType(data);
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isMACAddress(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isMACAddress(data);
+        try {
+            return Validator.isMACAddress(data);
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isMobilePhone(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isMobilePhone(data);
+        try {
+            return Validator.isMobilePhone(data);
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isUUID3(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isUUID(data,'3');
+        try {
+            return Validator.isUUID(data,'3');
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isUUID4(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isUUID(data,'4');
+        try {
+            return Validator.isUUID(data,'4');
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isUUID5(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isUUID(data,'5');
+        try {
+            return Validator.isUUID(data,'5');
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isBase64(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isBase64(data);
-    }
-
-    static isLatLong(data)
-    {
-        // noinspection JSUnresolvedFunction
-        return Validator.isLatLong(data);
+        try {
+            return Validator.isBase64(data);
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     static isAscii(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isAscii(data);
+        try {
+            return Validator.isAscii(data);
+        }
+        catch (e) {
+            return false;
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    static isStringBoolean(data)
+    {
+        // noinspection JSUnresolvedFunction
+        if(EasyValidator.isString(data)) {
+            return ['true', 'false', '1', '0'].indexOf(data) >= 0;
+        }
+        else{
+            return false;
+        }
+    }
+
+    static isNumberBoolean(data)
+    {
+        if(EasyValidator.isNumber(data)) {
+            return data === 0 || data === 1;
+        }
+        else{
+            return false;
+        }
     }
 
     static isBoolean(data)
     {
-        // noinspection JSUnresolvedFunction
-        return Validator.isBoolean(data);
+        return typeof data === 'boolean';
     }
 
-    static isUpperCase(data)
+    static isUpperCase(data : string)
     {
-        if (typeof data === 'string' || data instanceof String)
-        {
-            return data.toUpperCase() === data;
-        }
-        else
-        {
-            return false;
-        }
+        return data === data.toUpperCase();
+    }
+
+    static isLowerCase(data : string)
+    {
+        return data === data.toLowerCase();
     }
 
     static validEnum(enumValues,input)
     {
         let found = false;
-        for(let i = 0; i < enumValues.length; i++)
-        {
-            if(enumValues[i] === input)
-            {
+        for(let i = 0; i < enumValues.length; i++) {
+            if(enumValues[i] === input) {
                 found = true;
                 break;
             }
@@ -194,47 +337,37 @@ class EasyValidator
         return found;
     }
 
-    static isLowerCase(data)
-    {
-        if (typeof data === 'string' || data instanceof String)
-        {
-            return data.toLowerCase() === data;
+    static missingContains(input : string,contain : any | any[]) : string[]{
+        const missing : any[] = [];
+        if (Array.isArray(contain)) {
+            for(let i = 0; i < contain.length; i++) {
+                if(input.indexOf(contain[i]) === -1){
+                    missing.push(contain[i]);
+                }
+            }
         }
-        else
-        {
-            return false;
+        else{
+            if(input.indexOf(contain) === -1) {
+                missing.push(contain);
+            }
         }
+        return missing;
     }
 
-    static isDate(date)
+    static isDate(data)
     {
-        if(EasyValidator.isString(date))
-        {
-            // noinspection JSUnresolvedFunction
-            date = Date.parse(date);
-            return !isNaN(date) ? new Date(date) : null;
-        }
-        return null;
-    }
-
-    static stringToBool(data)
-    {
-        let result = false;
-        if(data !== '1' || data !== '0' )
-        {
-            result = data.toUpperCase() === 'true'
-        }
-        else
-        {
-            result = data === '1';
-        }
-        return result;
+        return !isNaN(Date.parse(data));
     }
 
     static isEmail(data)
     {
         // noinspection JSUnresolvedFunction
-        return Validator.isEmail(data);
+        try {
+            return Validator.isEmail(data);
+        }
+        catch (e) {
+            return false;
+        }
     }
 }
 

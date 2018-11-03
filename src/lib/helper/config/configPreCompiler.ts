@@ -7,7 +7,6 @@ GitHub: LucaCode
 import ZationConfig      = require("../../main/zationConfig");
 import Const             = require('../constants/constWrapper');
 import ObjectTools       = require('../tools/objectTools');
-import Structure         = require('./structures');
 
 class ConfigPeCompiler
 {
@@ -15,7 +14,7 @@ class ConfigPeCompiler
 
     private controllerDefaults : object;
     private objectsConfig : object;
-    private validationGroupConfig : object;
+    private inputGroupConfig : object;
     
     constructor(zationConfig)
     {
@@ -31,15 +30,15 @@ class ConfigPeCompiler
         this.preCompileErrorConfig();
 
         //view precompiled app config
-        //console.dir(this.zc.getAppConfig(),{depth:null})
-        //console.dir(this.zc.getChannelConfig(),{depth:null})
+        console.dir(this.zc.getAppConfig(),{depth:null});
+        console.dir(this.zc.getChannelConfig(),{depth:null});
     }
 
     private prepare() : void
     {
         this.prepareControllerDefaults();
         this.prepareObjectsConfig();
-        this.prepareValidationGroupConfig();
+        this.prepareInputGroupConfig();
     }
 
     private prepareControllerDefaults() : void
@@ -156,10 +155,10 @@ class ConfigPeCompiler
             = this.zc.isApp(Const.App.KEYS.OBJECTS) ? this.zc.getApp(Const.App.KEYS.OBJECTS) : {};
     }
 
-    private prepareValidationGroupConfig() : void
+    private prepareInputGroupConfig() : void
     {
-        this.validationGroupConfig
-            = this.zc.isApp(Const.App.KEYS.VALIDATION_GROUPS) ? this.zc.getApp(Const.App.KEYS.VALIDATION_GROUPS) : {};
+        this.inputGroupConfig
+            = this.zc.isApp(Const.App.KEYS.INPUT_GROUPS) ? this.zc.getApp(Const.App.KEYS.INPUT_GROUPS) : {};
     }
 
     private preCompileObjects() : void
@@ -169,7 +168,7 @@ class ConfigPeCompiler
         {
             if(this.objectsConfig.hasOwnProperty(objName))
             {
-                this.preCompileObjectValidationGroup(this.objectsConfig[objName]);
+                this.preCompileObjectInputGroup(this.objectsConfig[objName]);
             }
         }
 
@@ -203,13 +202,13 @@ class ConfigPeCompiler
         }
     }
 
-    private preCompileObjectValidationGroup(obj : object) : void
+    private preCompileObjectInputGroup(obj : object) : void
     {
         let properties = obj[Const.App.OBJECTS.PROPERTIES];
         for(let propName in properties) {
             if (properties.hasOwnProperty(propName))
             {
-                this.preCompileValidationGroups(properties[propName]);
+                this.preCompileInputGroups(propName,properties);
             }
         }
     }
@@ -221,28 +220,28 @@ class ConfigPeCompiler
         if(typeof nowValue === 'string')
         {
             //resolve object import
-            let objConfig = this.objectsConfig[nowValue];
-            obj[key] = {};
-            ObjectTools.addObToOb(obj[key],objConfig);
+            if(!nowValue.startsWith('g.')) {
+                obj[key] = this.objectsConfig[nowValue.replace('o.','')];
+            }
         }
         else if(Array.isArray(nowValue))
         {
             let inArray = {};
             let isNewObj = false;
 
-            if(typeof nowValue[0] === 'string')
-            {
-                inArray =  this.objectsConfig[nowValue[0]];
+            if(typeof nowValue[0] === 'string') {
+                const value = nowValue[0];
+                if(!value.startsWith('g.')) {
+                    inArray = this.objectsConfig[value.replace('o.','')];
+                }
             }
-            else if(typeof nowValue[0] === 'object' || Array.isArray(nowValue[0]))
-            {
+            else if(typeof nowValue[0] === 'object' || Array.isArray(nowValue[0])) {
                 inArray = nowValue[0];
                 isNewObj = true;
             }
 
             let arrayExtras = {};
-            if(nowValue.length === 2 && typeof nowValue[1] === 'object')
-            {
+            if(nowValue.length === 2 && typeof nowValue[1] === 'object') {
                 arrayExtras = nowValue[1];
             }
 
@@ -250,8 +249,7 @@ class ConfigPeCompiler
             ObjectTools.addObToOb(obj[key],arrayExtras);
             obj[key][Const.App.INPUT.ARRAY] = inArray;
 
-            if(isNewObj)
-            {
+            if(isNewObj) {
                 this.preCompileResolveExtras(Const.App.INPUT.ARRAY,obj[key]);
             }
         }
@@ -320,15 +318,21 @@ class ConfigPeCompiler
         }
     }
 
-    private preCompileValidationGroups(value : any) : void
+    private preCompileInputGroups(key : string | number, obj : object) : void
     {
-        if(Array.isArray(value))
+        const value = obj[key];
+
+        if(typeof value === 'string')
+        {
+            //resolve object import
+            if(value.startsWith('g.')) {
+                obj[key] = this.inputGroupConfig[value.replace('g.','')];
+            }
+        }
+        else if(Array.isArray(value))
         {
             //arrayShortCut
-            if(typeof value[0] === 'object' || Array.isArray(value[0]))
-            {
-                this.preCompileValidationGroups(value[0]);
-            }
+            this.preCompileInputGroups(0,value);
         }
         else if(typeof value === "object")
         {
@@ -336,35 +340,12 @@ class ConfigPeCompiler
             if(value.hasOwnProperty(Const.App.OBJECTS.PROPERTIES))
             {
                 //isObject
-                this.preCompileObjectValidationGroup(value);
+                this.preCompileObjectInputGroup(value);
             }
             else if(value.hasOwnProperty(Const.App.INPUT.ARRAY))
             {
                 //is array
-                let inArray = value[Const.App.INPUT.ARRAY];
-                this.preCompileValidationGroups(inArray);
-            }
-            else
-            {
-                //isNormalInputBody
-                if(value.hasOwnProperty(Const.App.INPUT.VALIDATION_GROUP))
-                {
-                    let validationGroupName = value[Const.App.INPUT.VALIDATION_GROUP];
-                    let group = this.validationGroupConfig[validationGroupName];
-
-                    //remove old validation if there
-                    for(let k in value)
-                    {
-                        if(value.hasOwnProperty(k))
-                        {
-                            if(!Structure.InputBodyMainKeys.hasOwnProperty(k))
-                            {
-                                delete value[k];
-                            }
-                        }
-                    }
-                    ObjectTools.addObToOb(value,group,true);
-                }
+                this.preCompileInputGroups(Const.App.INPUT.ARRAY,value);
             }
         }
     }
@@ -405,7 +386,7 @@ class ConfigPeCompiler
                     if(input.hasOwnProperty(inputName))
                     {
                         //Compile validation groups and resolve object links
-                        this.preCompileValidationGroups(input[inputName]);
+                        this.preCompileInputGroups(inputName,input);
                         this.preCompileResolveExtras(inputName,input);
                         this.preCompileInheritance(input[inputName]);
                     }

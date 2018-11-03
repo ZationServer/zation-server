@@ -10,7 +10,7 @@ import MainErrors            = require('../zationTaskErrors/mainTaskErrors');
 import TaskError             = require('../../api/TaskError');
 import TaskErrorBag          = require('../../api/TaskErrorBag');
 import ZationReqTools        = require('../tools/zationReqTools');
-import InputValueProcessor   = require('../input/inputValueProcessor');
+import InputValueProcessor   = require('../input/inputMainProcessor');
 
 class ValidChProcessor
 {
@@ -75,7 +75,8 @@ class ValidChProcessor
 
                         if(specificConfig !== undefined)
                         {
-                            await InputValueProcessor.checkIsValid(value,specificConfig,keyPath,errorBag,useInputValidation);
+                            await InputValueProcessor.checkIsValid
+                            (value,specificConfig,keyPath,errorBag,worker.getPreparedSmallBag(),useInputValidation);
                             resolve();
                         }
                         else

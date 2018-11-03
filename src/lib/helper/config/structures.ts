@@ -23,7 +23,7 @@ App[Const.App.KEYS.CONTROLLER]           = {types : ['object'],isOptional : true
 App[Const.App.KEYS.USER_GROUPS]          = {types : ['object'],isOptional : true};
 App[Const.App.KEYS.CONTROLLER_DEFAULTS]  = {types : ['object'],isOptional : true};
 App[Const.App.KEYS.OBJECTS]              = {types : ['object'],isOptional : true};
-App[Const.App.KEYS.VALIDATION_GROUPS]    = {types : ['object'],isOptional : true};
+App[Const.App.KEYS.INPUT_GROUPS]         = {types : ['object'],isOptional : true};
 App[Const.App.KEYS.BACKGROUND_TASKS]     = {types : ['object'],isOptional : true};
 
 const BackgroundTask = {};
@@ -161,17 +161,16 @@ StarterConfig[Const.Starter.KEYS.EVENT_CONFIG]        = {types : ['string','obje
 StarterConfig[Const.Starter.KEYS.CHANNEL_CONFIG]      = {types : ['string','object'],isOptional : true};
 StarterConfig[Const.Starter.KEYS.MAIN_CONFIG]         = {types : ['string','object'],isOptional : true};
 
-const InputBodyMainKeys = {};
-InputBodyMainKeys[Const.App.INPUT.IS_OPTIONAL]             = {types : ['boolean'],isOptional : true};
-
 const allValidationTypes = ObjectTools.getObjValues(Const.Validator.TYPE);
 const allFormatLetters = ObjectTools.getObjValues(Const.Validator.FORMAT_LETTERS);
 
 const InputBody = {};
-InputBody[Const.App.INPUT.TYPE]                    = {types : ['string','array'],isOptional : true,enum:allValidationTypes};
 InputBody[Const.App.INPUT.IS_OPTIONAL]             = {types : ['boolean'],isOptional : true};
-InputBody[Const.App.INPUT.VALIDATION_GROUP]        = {types : ['string'],isOptional : true};
-InputBody[Const.Validator.KEYS.FUNCTION_ENUM]      = {types : ['array'],isOptional : true};
+InputBody[Const.App.INPUT.CONVERT]                 = {types : ['function'],isOptional : true};
+InputBody[Const.Validator.KEYS.TYPE]                    = {types : ['string','array'],isOptional : true,enum:allValidationTypes};
+InputBody[Const.Validator.KEYS.STRICT_TYPE]             = {types : ['boolean'],isOptional : true};
+InputBody[Const.App.INPUT.CONVERT_TYPE]                 = {types : ['boolean'],isOptional : true};
+InputBody[Const.Validator.KEYS.FUNCTION_ENUM]           = {types : ['array'],isOptional : true};
 InputBody[Const.Validator.KEYS.FUNCTION_PRIVATE_ENUM]   = {types : ['array'],isOptional : true};
 InputBody[Const.Validator.KEYS.FUNCTION_MIN_LENGTH]     = {types : ['number'],isOptional : true};
 InputBody[Const.Validator.KEYS.FUNCTION_MAX_LENGTH]     = {types : ['number'],isOptional : true};
@@ -180,26 +179,11 @@ InputBody[Const.Validator.KEYS.FUNCTION_CONTAINS]       = {types : ['string'],is
 InputBody[Const.Validator.KEYS.FUNCTION_EQUALS]         = {types : ['string','number'],isOptional : true};
 InputBody[Const.Validator.KEYS.FUNCTION_BIGGER_THAN]    = {types : ['number'],isOptional : true};
 InputBody[Const.Validator.KEYS.FUNCTION_LESSER_THAN]    = {types : ['number'],isOptional : true};
-InputBody[Const.Validator.KEYS.FUNCTION_REGEX]          = {types : ['string'],isOptional : true};
+InputBody[Const.Validator.KEYS.FUNCTION_REGEX]          = {types : ['string','object'],isOptional : true};
 InputBody[Const.Validator.KEYS.FUNCTION_ENDS_WITH]      = {types : ['string'],isOptional : true};
 InputBody[Const.Validator.KEYS.FUNCTION_STARTS_WITH]    = {types : ['string'],isOptional : true};
 InputBody[Const.Validator.KEYS.FORMAT_IS_LETTERS]       = {types : ['string'],isOptional : true,enum:allFormatLetters};
-
-const ValidationGroup = {};
-ValidationGroup[Const.App.INPUT.TYPE]                    = {types : ['string','array'],isOptional : true,enum:allValidationTypes};
-ValidationGroup[Const.Validator.KEYS.FUNCTION_ENUM]      = {types : ['array'],isOptional : true};
-ValidationGroup[Const.Validator.KEYS.FUNCTION_PRIVATE_ENUM]   = {types : ['array'],isOptional : true};
-ValidationGroup[Const.Validator.KEYS.FUNCTION_MIN_LENGTH]     = {types : ['number'],isOptional : true};
-ValidationGroup[Const.Validator.KEYS.FUNCTION_MAX_LENGTH]     = {types : ['number'],isOptional : true};
-ValidationGroup[Const.Validator.KEYS.FUNCTION_LENGTH]         = {types : ['number'],isOptional : true};
-ValidationGroup[Const.Validator.KEYS.FUNCTION_CONTAINS]       = {types : ['string'],isOptional : true};
-ValidationGroup[Const.Validator.KEYS.FUNCTION_EQUALS]         = {types : ['string','number','object'],isOptional : true};
-ValidationGroup[Const.Validator.KEYS.FUNCTION_BIGGER_THAN]    = {types : ['number'],isOptional : true};
-ValidationGroup[Const.Validator.KEYS.FUNCTION_LESSER_THAN]    = {types : ['number'],isOptional : true};
-ValidationGroup[Const.Validator.KEYS.FUNCTION_REGEX]          = {types : ['string'],isOptional : true};
-ValidationGroup[Const.Validator.KEYS.FUNCTION_ENDS_WITH]      = {types : ['string'],isOptional : true};
-ValidationGroup[Const.Validator.KEYS.FUNCTION_STARTS_WITH]    = {types : ['string'],isOptional : true};
-ValidationGroup[Const.Validator.KEYS.FORMAT_IS_LETTERS]       = {types : ['string'],isOptional : true,enum:allFormatLetters};
+InputBody[Const.Validator.KEYS.VALIDATE]                = {types : ['function','array'],isOptional : true};
 
 const ChannelConfig = {};
 ChannelConfig[Const.Channel.KEYS.CUSTOM_CHANNELS]         = {types : ['object'],isOptional : true};
@@ -322,9 +306,7 @@ class Structures
     public static readonly AppControllerDefaults = AppControllerDefaults;
     public static readonly Main = Main;
     public static readonly StarterConfig = StarterConfig;
-    public static readonly InputBodyMainKeys = InputBodyMainKeys;
     public static readonly InputBody = InputBody;
-    public static readonly ValidationGroup = ValidationGroup;
     public static readonly ChannelConfig = ChannelConfig;
     public static readonly ServiceConfig = ServiceConfig;
     public static readonly ChannelFullItem = ChannelFullItem;
