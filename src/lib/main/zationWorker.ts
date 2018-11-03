@@ -346,18 +346,18 @@ class ZationWorker extends SCWorker
                         if (channel.indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1) {
                             if(id !== undefined) {
                                 if (Const.Settings.CHANNEL.USER_CHANNEL_PREFIX + id === channel) {
-                                    Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes user channel ${id}`);
+                                    Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes user channel '${id}'`);
                                     next();
                                 }
                                 else {
-                                    let err : any = new Error(`User: ${id} can\'t subscribe an other User Channel: ${channel}!`);
+                                    let err : any = new Error(`User: ${id} can\'t subscribe an other User Channel: '${channel}'!`);
                                     err.code = 4543;
                                     next(err); //Block!
 
                                 }
                             }
                             else {
-                                let err : any = new Error(`User: with undefined id can\'t subscribe User Channel: ${channel}!`);
+                                let err : any = new Error(`User: with undefined id can\'t subscribe User Channel: '${channel}'!`);
                                 err.code = 4542;
                                 next(err); //Block!
                             }
@@ -367,7 +367,7 @@ class ZationWorker extends SCWorker
                                 if (Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX + group === channel) {
 
                                     Logger.printDebugInfo
-                                    (`Socket with id: ${req.socket.id} subscribes group channel ${group}`);
+                                    (`Socket with id: ${req.socket.id} subscribes auth group channel '${group}'`);
                                     next();
                                 }
                                 else {
@@ -413,7 +413,7 @@ class ZationWorker extends SCWorker
                             next(err); //Block!
                         }
                         else {
-                            Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes ${channel}`);
+                            Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes '${channel}'`);
                             next();
                         }
                     }
@@ -443,7 +443,7 @@ class ZationWorker extends SCWorker
                             next(err); //Block!
                         }
                         else {
-                            Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes ${channel}`);
+                            Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes '${channel}'`);
                             next();
                         }
                     }

@@ -20,7 +20,7 @@ class TokenTools
     {
         let suc = false;
         if(data !== undefined) {
-            if (!updateOnly || (updateOnly && !data.hasOwnProperty(Const.Settings.TOKEN.TOKEN_ID))) {
+            if (!updateOnly || (updateOnly && !data.hasOwnProperty(Const.Settings.TOKEN.TOKEN_ID) && !data.hasOwnProperty(Const.Settings.TOKEN.CHECK_KEY))) {
                 const token = tokenBridge.getToken();
                 if((typeof token === 'object') || (!updateOnly)) {
                     await tokenBridge.setToken(TokenTools.combineTokenAndProcess(token,data));

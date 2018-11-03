@@ -23,6 +23,7 @@ class ZationReqTools
                         typeof zationReq[Const.Settings.REQUEST_INPUT.TASK][Const.Settings.REQ_IN_C.CONTROLLER] === 'string' ||
                         typeof zationReq[Const.Settings.REQUEST_INPUT.TASK][Const.Settings.REQ_IN_C.SYSTEM_CONTROLLER] === 'string'
                     ) &&
+                        //input is object or array
                     typeof zationReq[Const.Settings.REQUEST_INPUT.TASK][Const.Settings.REQUEST_INPUT.INPUT] === 'object'
                 ) || (
                     typeof zationReq[Const.Settings.REQUEST_INPUT.AUTH] === 'object' &&

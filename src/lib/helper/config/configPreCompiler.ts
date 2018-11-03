@@ -30,8 +30,8 @@ class ConfigPeCompiler
         this.preCompileErrorConfig();
 
         //view precompiled app config
-        console.dir(this.zc.getAppConfig(),{depth:null});
-        console.dir(this.zc.getChannelConfig(),{depth:null});
+        //console.dir(this.zc.getAppConfig(),{depth:null});
+        //console.dir(this.zc.getChannelConfig(),{depth:null});
     }
 
     private prepare() : void

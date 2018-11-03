@@ -33,6 +33,7 @@ class TokenEngine
     async createToken(data : object) : Promise<boolean> {
         data[Const.Settings.TOKEN.EXPIRE] = this.generateExpiry();
         data[Const.Settings.TOKEN.TOKEN_ID]  = uniqid();
+        data[Const.Settings.TOKEN.CHECK_KEY] = this.zc.getInternal(Const.Settings.INTERNAL_DATA.TOKEN_CHECK_KEY);
         return TokenTools.createNewToken(data,this.shBridge.getTokenBridge(),this.worker);
     }
 

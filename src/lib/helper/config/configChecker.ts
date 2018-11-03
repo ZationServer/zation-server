@@ -358,7 +358,7 @@ class ConfigChecker {
                 ConfigCheckerTools.assertStructure
                 (Structures.InputBody, groupConfig, Const.Settings.CN.APP, this.ceb, new Target(`inputGroup '${group}'`));
 
-                this.checkValidationFunctions(groupConfig, `input group ${group}`);
+                this.checkValidationFunctions(groupConfig, new Target(`inputGroup '${group}'`));
             }
         }
     }
@@ -772,7 +772,7 @@ class ConfigChecker {
         }
     }
 
-   private checkArrayShortCut(value,target,objName)
+   private checkArrayShortCut(value,target : Target,objName)
    {
        if(value.length === 0)
        {
@@ -890,11 +890,11 @@ class ConfigChecker {
    {
        if(!this.inputGroupConfig.hasOwnProperty(value)) {
            this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
-               `${target.getTarget()} the dependency to validation group: '${value}' can not be resolved, Group not found.`));
+               `${target.getTarget()} the dependency to input group: '${value}' can not be resolved, Group not found.`));
        }
    }
 
-   private checkValidationFunctions(value,target)
+   private checkValidationFunctions(value,target : Target)
    {
        this.checkOnlyValidationFunction(value,target);
        this.checkRegexFunction(value,target);

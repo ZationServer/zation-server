@@ -17,34 +17,32 @@ class InputReqProcessor
 {
     private static async processInputObject
     (
-        input : any,
+        input : object,
         controllerInput : object,
         inputValueProcessor : InputMainProcessor
     ) : Promise<object>
     {
         let promises : Promise<void>[] = [];
         let taskErrorBag = new TaskErrorBag();
-        let result = {};
         for(let inputName in controllerInput)
         {
             if(controllerInput.hasOwnProperty(inputName) && input[inputName] !== undefined)
             {
                 promises.push(new Promise<void>(async (resolve) => {
-                    result[inputName] = await
-                        inputValueProcessor.
-                        processInput(result,inputName,controllerInput[inputName],inputName,taskErrorBag);
+                    await inputValueProcessor.
+                    processInput(input,inputName,controllerInput[inputName],inputName,taskErrorBag);
                     resolve();
                 }));
             }
         }
         await Promise.all(promises);
         taskErrorBag.throwIfHasError();
-        return result;
+        return input;
     }
 
     private static async processInputArray
     (
-        input : any,
+        input : any[],
         controllerInputKeys : string[],
         controllerInput : object,
         inputValueProcessor : InputMainProcessor
@@ -56,14 +54,14 @@ class InputReqProcessor
         for(let i = 0; i < input.length; i++)
         {
             promises.push(new Promise<void>(async (resolve) => {
-                let config = controllerInput[controllerInputKeys[i]];
-                result[controllerInputKeys[i]] = await
-                inputValueProcessor.processInput(input[i],config,controllerInputKeys[i],taskErrorBag);
+                const config = controllerInput[controllerInputKeys[i]];
+                result[controllerInputKeys[i]] = input[i];
+                await inputValueProcessor.processInput
+                (result,controllerInputKeys[i],config,controllerInputKeys[i],taskErrorBag);
                 resolve();
             }))
         }
         await Promise.all(promises);
-
         taskErrorBag.throwIfHasError();
         return result;
     }
@@ -162,17 +160,14 @@ class InputReqProcessor
             else
             {
                 const inputValueProcessor = new InputMainProcessor(useInputValidation,preparedSmallBag,true);
-
                 let result = input;
                 if(isArray) {
-                    result = await
-                        //throws if the validation has an error
-                        InputReqProcessor.processInputArray(input,controllerInputKeys,controllerInput,inputValueProcessor);
+                    //throws if the validation has an error
+                    result = await InputReqProcessor.processInputArray(input,controllerInputKeys,controllerInput,inputValueProcessor);
                 }
                 else {
-                    result = await
-                        //throws if the validation has an error
-                        InputReqProcessor.processInputObject(input,controllerInput,inputValueProcessor);
+                    //throws if the validation has an error
+                    result = await InputReqProcessor.processInputObject(input,controllerInput,inputValueProcessor);
                 }
                 await ProcessTaskEngine.processTasks(inputValueProcessor.getProcessTaskList());
                 return result;

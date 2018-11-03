@@ -13,6 +13,7 @@ class ConvertEngine
         if(type !== undefined && ConverterLibrary.hasOwnProperty(type)) {
             return ConverterLibrary[type](input,strictType);
         }
+        return input;
     }
 }
 

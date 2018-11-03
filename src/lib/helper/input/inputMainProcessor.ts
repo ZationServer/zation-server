@@ -11,7 +11,7 @@ import TaskError        = require('../../api/TaskError');
 import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
 import {ProcessTask}     from "./processTaskEngine";
 import SmallBag         = require("../../api/SmallBag");
-import ConvertEngine = require("../convert/convertEngine");
+import ConvertEngine    = require("../convert/convertEngine");
 
 class InputMainProcessor
 {
@@ -31,29 +31,29 @@ class InputMainProcessor
     static async checkIsValid(input : any,config : object,inputPath : string,errorBag : TaskErrorBag,smallBag : SmallBag,useInputValidation : boolean = true) : Promise<void>
     {
         let inputValueProcessor = new InputMainProcessor(useInputValidation,smallBag,false);
-        await inputValueProcessor.processInput(input,config,inputPath,errorBag);
+        await inputValueProcessor.processInput({i : input},'i',config,inputPath,errorBag);
     }
 
-    async processInput(srcObj : object,srcKey : string, config : object, currentInputPath : string, errorBag : TaskErrorBag) : Promise<any>
+    async processInput(srcObj : object,srcKey : string | number, config : object, currentInputPath : string, errorBag : TaskErrorBag) : Promise<any>
     {
-
         if(typeof config[Const.App.INPUT.ARRAY] === 'object') {
             //Array reference
-            input = await this.processArray(input,config,currentInputPath,errorBag);
+            await this.processArray(srcObj,srcKey,config,currentInputPath,errorBag);
         }
         else if(typeof config[Const.App.OBJECTS.PROPERTIES] === 'object') {
             //Object reference
-            input = await this.processObject(input,config,currentInputPath,errorBag);
+            await this.processObject(srcObj,srcKey,config,currentInputPath,errorBag);
         }
         else {
             //normal Input
-            input = await this.processValue(input,config,currentInputPath,errorBag);
+            await this.processValue(srcObj,srcKey,config,currentInputPath,errorBag);
         }
     }
 
-    private async processObject(input : any,config : object,currentInputPath : string,errorBag : TaskErrorBag) : Promise<any>
+    private async processObject(srcObj : object,srcKey : string | number,config : object,currentInputPath : string,errorBag : TaskErrorBag) : Promise<any>
     {
         let props = config[Const.App.OBJECTS.PROPERTIES];
+        const input = srcObj[srcKey];
         if(typeof input === 'object')
         {
             //check if the input has unknown property
@@ -80,17 +80,15 @@ class InputMainProcessor
             {
                 if(props.hasOwnProperty(propName))
                 {
-                    let currentInputPathNew = `${currentInputPath}.${propName}`;
+                    const currentInputPathNew = `${currentInputPath}.${propName}`;
 
                     if(input.hasOwnProperty(propName))
                     {
                         //allOk lets check the prop
                         promises.push(new Promise(async (resolve) =>
                         {
-                            input[propName] =
-                                await this.processInput
-                            (input[propName],props[propName],currentInputPathNew,errorBag);
-
+                            await this.processInput
+                            (input,propName,props[propName],currentInputPathNew,errorBag);
                             resolve();
                         }))
                     }
@@ -122,10 +120,8 @@ class InputMainProcessor
                 this.createProcessTaskList &&
                 typeof config[Const.App.OBJECTS.CONSTRUCT] === 'function')
             {
-                this.processTaskList.push(async  () =>
-                {
-                    const res = await config[Const.App.OBJECTS.CONSTRUCT]();
-
+                this.processTaskList.push(async  () => {
+                    srcObj[srcKey] = await config[Const.App.OBJECTS.CONSTRUCT](input,this.preparedSmallBag);
                 });
             }
         }
@@ -142,11 +138,12 @@ class InputMainProcessor
                 )
             );
         }
-        return input;
     }
 
-    private async processValue(input : any,config : object,currentInputPath : string,errorBag : TaskErrorBag) : Promise<any>
+    private async processValue(srcObj : object,srcKey : string | number,config : object,currentInputPath : string,errorBag : TaskErrorBag) : Promise<any>
     {
+        const input = srcObj[srcKey];
+
         const preparedErrorData = {
             inputValue : input,
             inputPath : currentInputPath
@@ -170,7 +167,7 @@ class InputMainProcessor
         if(currentErrorCount === errorBag.getTaskErrorCount()){
             //no type error so convert maybe
             if(convertType) {
-                input = ConvertEngine.convert(input,type,strictType);
+                srcObj[srcKey] = ConvertEngine.convert(input,type,strictType);
             }
         }
 
@@ -180,14 +177,16 @@ class InputMainProcessor
 
         //check for convertTask
         if(this.createProcessTaskList && typeof config[Const.App.INPUT.CONVERT] === 'function'){
-
+            this.processTaskList.push(async  () => {
+                srcObj[srcKey] = await config[Const.App.INPUT.CONVERT](input,this.preparedSmallBag);
+            });
         }
-
-        return input;
     }
 
-    private async processArray(input : any,config : object,currentInputPath : string,errorBag : TaskErrorBag) : Promise<any>
+    private async processArray(srcObj : object,srcKey : string | number,config : object,currentInputPath : string,errorBag : TaskErrorBag) : Promise<any>
     {
+        const input = srcObj[srcKey];
+
         if(Array.isArray(input)) {
             let isOk = !this.inputValidation;
 
@@ -205,9 +204,7 @@ class InputMainProcessor
                 {
                     promises.push(new Promise(async (resolve) => {
                         let currentInputPathNew = `${currentInputPath}.${i}`;
-                        input[i] =
-                            await this.processInput
-                            (input[i],arrayInputConfig,currentInputPathNew,errorBag);
+                        await this.processInput(input,i,arrayInputConfig,currentInputPathNew,errorBag);
                         resolve();
                     }));
                 }
@@ -227,7 +224,6 @@ class InputMainProcessor
                 )
             );
         }
-        return input;
     }
 
     getProcessTaskList() : ProcessTask[] {

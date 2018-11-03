@@ -88,7 +88,7 @@ export interface InputConfig
     [Const.Validator.KEYS.FUNCTION_MIN_LENGTH] ?: number;
     [Const.Validator.KEYS.FUNCTION_MAX_LENGTH] ?: number;
     [Const.Validator.KEYS.FUNCTION_LENGTH] ?: number;
-    [Const.Validator.KEYS.FUNCTION_CONTAINS] ?: string;
+    [Const.Validator.KEYS.FUNCTION_CONTAINS] ?: string | string[];
     [Const.Validator.KEYS.FUNCTION_EQUALS] ?: string | number | object;
     [Const.Validator.KEYS.FUNCTION_BIGGER_THAN] ?: number;
     [Const.Validator.KEYS.FUNCTION_LESSER_THAN] ?: number;
