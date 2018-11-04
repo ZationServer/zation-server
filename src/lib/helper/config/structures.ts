@@ -23,7 +23,7 @@ App[Const.App.KEYS.CONTROLLER]           = {types : ['object'],isOptional : true
 App[Const.App.KEYS.USER_GROUPS]          = {types : ['object'],isOptional : true};
 App[Const.App.KEYS.CONTROLLER_DEFAULTS]  = {types : ['object'],isOptional : true};
 App[Const.App.KEYS.OBJECTS]              = {types : ['object'],isOptional : true};
-App[Const.App.KEYS.INPUT_GROUPS]         = {types : ['object'],isOptional : true};
+App[Const.App.KEYS.VALUES]         = {types : ['object'],isOptional : true};
 App[Const.App.KEYS.BACKGROUND_TASKS]     = {types : ['object'],isOptional : true};
 
 const BackgroundTask = {};
@@ -32,9 +32,11 @@ BackgroundTask[Const.App.BACKGROUND_TASKS.AT]       = {types : ['number','array'
 BackgroundTask[Const.App.BACKGROUND_TASKS.TASK]     = {types : ['function','array'],isOptional : true};
 
 const AppObject = {};
-AppObject[Const.App.OBJECTS.PROPERTIES]        = {types : ['object'],isOptional : false};
-AppObject[Const.App.OBJECTS.CONSTRUCT]         = {types : ['function'],isOptional : true};
-AppObject[Const.App.OBJECTS.EXTENDS]           = {types : ['string'],isOptional : true};
+AppObject[Const.App.OBJECT.PROPERTIES]        = {types : ['object'],isOptional : false};
+AppObject[Const.App.OBJECT.CONSTRUCT]         = {types : ['function'],isOptional : true};
+AppObject[Const.App.OBJECT.EXTENDS]           = {types : ['string'],isOptional : true};
+AppObject[Const.App.OBJECT.IS_OPTIONAL]       = {types : ['boolean'],isOptional: true};
+AppObject[Const.App.OBJECT.PROTOTYPE]           = {types : ['object'],isOptional : true};
 
 const AppController = {};   
 AppController[Const.App.CONTROLLER.INPUT]             = {types : ['object'],isOptional : true};
@@ -165,11 +167,11 @@ const allValidationTypes = ObjectTools.getObjValues(Const.Validator.TYPE);
 const allFormatLetters = ObjectTools.getObjValues(Const.Validator.FORMAT_LETTERS);
 
 const InputBody = {};
-InputBody[Const.App.INPUT.IS_OPTIONAL]             = {types : ['boolean'],isOptional : true};
-InputBody[Const.App.INPUT.CONVERT]                 = {types : ['function'],isOptional : true};
+InputBody[Const.App.VALUE.IS_OPTIONAL]             = {types : ['boolean'],isOptional : true};
+InputBody[Const.App.VALUE.CONVERT]                 = {types : ['function'],isOptional : true};
 InputBody[Const.Validator.KEYS.TYPE]                    = {types : ['string','array'],isOptional : true,enum:allValidationTypes};
 InputBody[Const.Validator.KEYS.STRICT_TYPE]             = {types : ['boolean'],isOptional : true};
-InputBody[Const.App.INPUT.CONVERT_TYPE]                 = {types : ['boolean'],isOptional : true};
+InputBody[Const.App.VALUE.CONVERT_TYPE]                 = {types : ['boolean'],isOptional : true};
 InputBody[Const.Validator.KEYS.FUNCTION_ENUM]           = {types : ['array'],isOptional : true};
 InputBody[Const.Validator.KEYS.FUNCTION_PRIVATE_ENUM]   = {types : ['array'],isOptional : true};
 InputBody[Const.Validator.KEYS.FUNCTION_MIN_LENGTH]     = {types : ['number'],isOptional : true};
@@ -229,16 +231,17 @@ Services[Const.Service.SERVICES.POSTGRES_SQL]           = {types : ['object'],is
 Services[Const.Service.SERVICES.MONGO_DB]               = {types : ['object'],isOptional : true};
 
 const AppArray = {};
-AppArray[Const.App.INPUT.ARRAY]                    = {types : ['object'],isOptional : true};
+AppArray[Const.App.VALUE.ARRAY]                    = {types : ['object'],isOptional : true};
 AppArray[Const.App.ARRAY.MIN_LENGTH]               = {types : ['number'],isOptional : true};
 AppArray[Const.App.ARRAY.MAX_LENGTH]               = {types : ['number'],isOptional : true};
 AppArray[Const.App.ARRAY.LENGTH]                   = {types : ['number'],isOptional : true};
-AppArray[Const.App.INPUT.IS_OPTIONAL]              = {types : ['boolean'],isOptional: true};
+AppArray[Const.App.ARRAY.IS_OPTIONAL]              = {types : ['boolean'],isOptional: true};
 
 const ArrayShortCutSpecify = {};
 ArrayShortCutSpecify[Const.App.ARRAY.MIN_LENGTH]               = {types : ['number'],isOptional : true};
 ArrayShortCutSpecify[Const.App.ARRAY.MAX_LENGTH]               = {types : ['number'],isOptional : true};
 ArrayShortCutSpecify[Const.App.ARRAY.LENGTH]                   = {types : ['number'],isOptional : true};
+ArrayShortCutSpecify[Const.App.ARRAY.IS_OPTIONAL]              = {types : ['boolean'],isOptional: true};
 
 
 const AuthUserGroup = {};

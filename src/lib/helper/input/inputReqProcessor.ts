@@ -73,7 +73,7 @@ class InputReqProcessor
 
         for(let i = inputLength; i < controllerInputKeys.length; i++)
         {
-            if(controllerInput[controllerInputKeys[i]][Const.App.INPUT.IS_OPTIONAL]) {
+            if(controllerInput[controllerInputKeys[i]][Const.App.VALUE.IS_OPTIONAL]) {
                 if(optionalToo) {
                     missing.push(controllerInputKeys[i]);
                 }
@@ -92,7 +92,7 @@ class InputReqProcessor
         for(let inputName in controllerInput) {
             if(controllerInput.hasOwnProperty(inputName)) {
                 if(input[inputName] === undefined) {
-                    if(controllerInput[inputName][Const.App.INPUT.IS_OPTIONAL])
+                    if(controllerInput[inputName][Const.App.VALUE.IS_OPTIONAL])
                     {
                         if(optionalToo) {
                             missing.push(inputName);
@@ -114,8 +114,7 @@ class InputReqProcessor
         let input = task[Const.Settings.REQUEST_INPUT.INPUT];
 
         if(typeof controller[Const.App.CONTROLLER.INPUT_ALL_ALLOW] === 'boolean'&&
-            controller[Const.App.CONTROLLER.INPUT_ALL_ALLOW])
-        {
+            controller[Const.App.CONTROLLER.INPUT_ALL_ALLOW]) {
             return input;
         }
 

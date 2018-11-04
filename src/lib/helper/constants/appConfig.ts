@@ -9,8 +9,9 @@ class KEYS {
     static readonly CONTROLLER              = 'controller';
     static readonly USER_GROUPS             = 'userGroups';
     static readonly CONTROLLER_DEFAULTS     = 'controllerDefaults';
+    static readonly VALUES                  = 'values';
     static readonly OBJECTS                 = 'objects';
-    static readonly INPUT_GROUPS            = 'inputGroups';
+    static readonly ARRAYS                  = 'arrays';
     static readonly BACKGROUND_TASKS        = 'backgroundTasks';
 }
 
@@ -30,10 +31,25 @@ class AUTH_USER_GROUP {
     static readonly PANEL_DISPLAY_NAME = 'panelDisplayName';
 }
 
-class OBJECTS {
+class OBJECT {
     static readonly PROPERTIES             = 'properties';
-    static readonly CONSTRUCT              = 'construct';
+    static readonly IS_OPTIONAL            = 'isOptional';
     static readonly EXTENDS                = 'extends';
+    static readonly PROTOTYPE              = 'prototype';
+    static readonly CONSTRUCT              = 'construct';
+    static readonly CONVERT                = 'convert'
+}
+
+class VALUE {
+    static readonly IS_OPTIONAL              = 'isOptional';
+    static readonly CONVERT                  = 'convert';
+    static readonly CONVERT_TYPE             = 'convertType';
+}
+
+class ARRAY {
+    static readonly ARRAY                    = 'array';
+    static readonly IS_OPTIONAL              = 'isOptional';
+    static readonly CONVERT                  = 'convert';
 }
 
 class CONTROLLER {
@@ -59,28 +75,15 @@ class ACCESS {
     static readonly ALL                     = 'all';
 }
 
-class INPUT {
-    static readonly IS_OPTIONAL              = 'isOptional';
-    static readonly ARRAY                    = 'array';
-    static readonly CONVERT                  = 'convert';
-    static readonly CONVERT_TYPE             = 'convertType';
-}
-
-class ARRAY {
-    static readonly MIN_LENGTH               = 'minLength';
-    static readonly MAX_LENGTH               = 'maxLength';
-    static readonly LENGTH                   = 'length';
-}
-
 class AppConfig
 {
     public static readonly KEYS = KEYS;
     public static readonly USER_GROUPS = USER_GROUPS;
     public static readonly AUTH_USER_GROUP = AUTH_USER_GROUP;
-    public static readonly OBJECTS = OBJECTS;
     public static readonly CONTROLLER = CONTROLLER;
     public static readonly ACCESS = ACCESS;
-    public static readonly INPUT = INPUT;
+    public static readonly OBJECT = OBJECT;
+    public static readonly VALUE = VALUE;
     public static readonly ARRAY = ARRAY;
     public static readonly BACKGROUND_TASKS = BACKGROUND_TASKS;
 }

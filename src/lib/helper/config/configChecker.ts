@@ -50,8 +50,8 @@ class ConfigChecker {
                 ? this.zc.getApp(Const.App.KEYS.OBJECTS) : {};
 
         this.inputGroupConfig =
-            this.zc.isApp(Const.App.KEYS.INPUT_GROUPS) && typeof this.zc.getApp(Const.App.KEYS.INPUT_GROUPS) === 'object'
-                ? this.zc.getApp(Const.App.KEYS.INPUT_GROUPS) : {};
+            this.zc.isApp(Const.App.KEYS.VALUES) && typeof this.zc.getApp(Const.App.KEYS.VALUES) === 'object'
+                ? this.zc.getApp(Const.App.KEYS.VALUES) : {};
 
         this.cNames = {};
     }
@@ -363,21 +363,58 @@ class ConfigChecker {
         }
     }
 
-    private checkObject(obj, target, objName) {
+    private checkObject(obj, target : Target, objName) {
+
         ConfigCheckerTools.assertStructure(Structures.AppObject, obj, Const.Settings.CN.APP, this.ceb, target);
 
-        //check property body
-        if (typeof obj[Const.App.OBJECTS.PROPERTIES] === 'object') {
-            let props = obj[Const.App.OBJECTS.PROPERTIES];
+        let prototype = typeof obj[Const.App.OBJECT.PROTOTYPE] === 'object' ?
+            obj[Const.App.OBJECT.PROTOTYPE] : {};
+
+        //check property body and method property name problem
+        if (typeof obj[Const.App.OBJECT.PROPERTIES] === 'object') {
+            let props = obj[Const.App.OBJECT.PROPERTIES];
             for (let k in props) {
                 if (props.hasOwnProperty(k)) {
                     this.checkInputBody(props[k], target.addPath(k), objName);
+
+                    if(prototype.hasOwnProperty(k)) {
+                        Logger.printConfigWarning(
+                            Const.Settings.CN.APP,
+                            `${target.getTarget()} Property '${k}' will override the prototype property '${k}'.`);
+                    }
                 }
             }
         }
         //check for extend
-        if (typeof obj[Const.App.OBJECTS.EXTENDS] === 'string') {
-            this.checkPropertyByObjExtend(obj[Const.App.OBJECTS.EXTENDS], target, objName);
+        if (typeof obj[Const.App.OBJECT.EXTENDS] === 'string') {
+            this.checkObjExtend(obj[Const.App.OBJECT.EXTENDS],target,objName);
+            this.checkOverrideProp(obj[Const.App.OBJECT.PROPERTIES],target,obj[Const.App.OBJECT.EXTENDS]);
+
+        }
+    }
+
+    private checkOverrideProp(props,target,superName)
+    {
+        if(typeof this.objectsConfig[superName] === 'object' && typeof props === 'object')
+        {
+            const superObj = this.objectsConfig[superName];
+            if(typeof superObj[Const.App.OBJECT.PROTOTYPE] === 'object')
+            {
+                const superMethods = superObj[Const.App.OBJECT.PROTOTYPE];
+                for(let prop in props)
+                {
+                    if(props.hasOwnProperty(prop)) {
+                        if(superMethods.hasOwnProperty(prop)) {
+                            Logger.printConfigWarning(
+                                Const.Settings.CN.APP,
+                                `${target.getTarget()} Property '${prop}' will override an inherited prototype property '${prop}' from object '${superName}'.`);
+                        }
+                    }
+                }
+            }
+            if(typeof superObj[Const.App.OBJECT.EXTENDS] === 'string'){
+                this.checkOverrideProp(props,target,superObj[Const.App.OBJECT.EXTENDS]);
+            }
         }
     }
 
@@ -621,11 +658,27 @@ class ConfigChecker {
        const structure = cName ? Structures.AppController : Structures.AppControllerDefaults;
        ConfigCheckerTools.assertStructure(structure,cc,Const.Settings.CN.APP,this.ceb,target);
 
+       this.checkInputAllAllow(cc,target);
+
        this.checkControllerInput(cc,target);
        this.checkControllerVersionAccess(cc,target);
 
        if(cName) {
            this.checkControllerClass(cc,target,cName);
+       }
+   }
+
+   // noinspection JSMethodCanBeStatic
+    private checkInputAllAllow(cc : object,target : Target)
+   {
+       if(typeof cc[Const.App.CONTROLLER.INPUT_ALL_ALLOW] === 'boolean' &&
+           cc[Const.App.CONTROLLER.INPUT_ALL_ALLOW] && typeof cc[Const.App.CONTROLLER.INPUT] === 'object')
+       {
+           Logger.printConfigWarning(
+               Const.Settings.CN.APP,
+               `${target.getTarget()} the property input is ignored with inputAllAllow true.`
+           );
+
        }
    }
 
@@ -706,8 +759,8 @@ class ConfigChecker {
         let wasLastOptional = false;
         for(let i = keys.length-1; i >= 0; i--)
         {
-            if(input[keys[i]][Const.App.INPUT.IS_OPTIONAL] !== undefined &&
-                input[keys[i]][Const.App.INPUT.IS_OPTIONAL])
+            if(input[keys[i]][Const.App.VALUE.IS_OPTIONAL] !== undefined &&
+                input[keys[i]][Const.App.VALUE.IS_OPTIONAL])
             {
                 if((keys.length-1) !== i && !wasLastOptional)
                 {
@@ -749,28 +802,25 @@ class ConfigChecker {
        }
    }
 
-    private checkPropertyByObjExtend(objExtendName,target,objName)
-    {
-        if(!this.objectsConfig.hasOwnProperty(objExtendName))
-        {
-            this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
-                `${target.getTarget()} the inheritance dependency to object: '${objExtendName}' can not be resolved, Object not found.`));
-        }
-        else
-        {
-            //check if object extend it self (by controller objName will be undefined)
-            if(objName === objExtendName)
-            {
-                this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
-                    `${target.getTarget()} object self inheritance, will create an infinite loop.`));
-            }
-            else if(objName !== undefined)
-            {
-                //add to extend table to check later the extensions
-                this.objectExtensions.push({s:objName,t:objExtendName});
-            }
-        }
-    }
+   private checkObjExtend(objExtendName,target,objName)
+   {
+       if(!this.objectsConfig.hasOwnProperty(objExtendName))
+       {
+           this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+               `${target.getTarget()} the inheritance dependency to object: '${objExtendName}' can not be resolved, Object not found.`));
+       }
+       else {
+           //check if object extend it self (by controller objName will be undefined)
+           if(objName === objExtendName) {
+               this.ceb.addConfigError(new ConfigError(Const.Settings.CN.APP,
+                   `${target.getTarget()} object self inheritance, will create an infinite loop.`));
+           }
+           else if(objName !== undefined) {
+               //add to extend table to check later the extensions
+               this.objectExtensions.push({s:objName,t:objExtendName});
+           }
+       }
+   }
 
    private checkArrayShortCut(value,target : Target,objName)
    {
@@ -824,36 +874,16 @@ class ConfigChecker {
        else if(typeof value === "object")
        {
            //check input
-           if(value.hasOwnProperty(Const.App.OBJECTS.PROPERTIES))
-           {
-               //isObject
-               ConfigCheckerTools.assertStructure(Structures.AppObject,value,Const.Settings.CN.APP,this.ceb,target);
-
-               //Check for extension
-               if(typeof value[Const.App.OBJECTS.EXTENDS] === 'string') {
-                   this.checkPropertyByObjExtend(value[Const.App.OBJECTS.EXTENDS],target,objName);
-               }
-
-               if(typeof value[Const.App.OBJECTS.PROPERTIES] === 'object')
-               {
-                   let props = value[Const.App.OBJECTS.PROPERTIES];
-                   //check properties
-                   for(let k in props)
-                   {
-                       if(props.hasOwnProperty(k))
-                       {
-                           this.checkInputBody(props[k],target.addPath(k),objName);
-                       }
-                   }
-               }
+           if(value.hasOwnProperty(Const.App.OBJECT.PROPERTIES)) {
+               this.checkObject(value,target,objName);
            }
-           else if(value.hasOwnProperty(Const.App.INPUT.ARRAY))
+           else if(value.hasOwnProperty(Const.App.VALUE.ARRAY))
            {
                //isArray
                ConfigCheckerTools.assertStructure(Structures.AppArray,value,Const.Settings.CN.APP,this.ceb,target);
-               if(typeof value[Const.App.INPUT.ARRAY] === 'object')
+               if(typeof value[Const.App.VALUE.ARRAY] === 'object')
                {
-                   let inArray = value[Const.App.INPUT.ARRAY];
+                   let inArray = value[Const.App.VALUE.ARRAY];
                    this.checkInputBody(inArray,target.addPath('Array'),objName);
                }
            }
@@ -862,8 +892,8 @@ class ConfigChecker {
                //is this in body from an array?
                if(
                    target.getLastPath() === 'Array' &&
-                   typeof value[Const.App.INPUT.IS_OPTIONAL] === 'boolean' &&
-                   value[Const.App.INPUT.IS_OPTIONAL]
+                   typeof value[Const.App.VALUE.IS_OPTIONAL] === 'boolean' &&
+                   value[Const.App.VALUE.IS_OPTIONAL]
                ) {
                    Logger.printConfigWarning
                    (

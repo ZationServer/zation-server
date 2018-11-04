@@ -60,9 +60,9 @@ import
     ConstructObjectFunction,
     ControllerAccessFunction,
     ControllerConfig,
-    ControllerInput, InputProperty,
-    InputConfig,
-    ObjectConfig, ObjectProperties,
+    ControllerInput,
+    ValuePropertyConfig,
+    ObjectPropertyConfig, ObjectProperties,
     TaskFunction, ValidatorFunction
 } from "../helper/configEditTool/appConfigStructure";
 import
@@ -122,10 +122,10 @@ class Config
 
     static controller(c : ControllerConfig) :  ControllerConfig {return c;}
     static controllerInput(c : ControllerInput) :  ControllerInput {return c;}
-    static inputProperty(c : InputProperty) :  InputProperty {return c;}
-    static object(c : ObjectConfig) :  ObjectConfig {return c;}
+    static value(c : ValuePropertyConfig) :  ValuePropertyConfig {return c;}
+    static object(c : ObjectPropertyConfig) :  ObjectPropertyConfig {return c;}
     static objectProperties(c : ObjectProperties) :  ObjectProperties {return c;}
-    static inputGroup(c : InputConfig) : InputConfig {return c;}
+    static inputGroup(c : ValuePropertyConfig) : ValuePropertyConfig {return c;}
 
     //Part Channel Config functions
     static cIdChClientPubAccess(func : CIdChannelClientPubAccessFunction) : CIdChannelClientPubAccessFunction {return func;}

@@ -90,9 +90,9 @@ class ControllerTools
 
             if(tempConfig.hasOwnProperty(k) && typeof tempConfig[k] === 'object')
             {
-                if(tempConfig[k].hasOwnProperty(Const.App.OBJECTS.PROPERTIES))
+                if(tempConfig[k].hasOwnProperty(Const.App.OBJECT.PROPERTIES))
                 {
-                    tempConfig = tempConfig[k][Const.App.OBJECTS.PROPERTIES];
+                    tempConfig = tempConfig[k][Const.App.OBJECT.PROPERTIES];
                 }
                 else
                 {

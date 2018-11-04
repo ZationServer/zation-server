@@ -30,15 +30,15 @@ class ConfigPeCompiler
         this.preCompileErrorConfig();
 
         //view precompiled app config
-        //console.dir(this.zc.getAppConfig(),{depth:null});
-        //console.dir(this.zc.getChannelConfig(),{depth:null});
+        console.dir(this.zc.getAppConfig(),{depth:null});
+        console.dir(this.zc.getChannelConfig(),{depth:null});
     }
 
     private prepare() : void
     {
         this.prepareControllerDefaults();
         this.prepareObjectsConfig();
-        this.prepareInputGroupConfig();
+        this.preparePropertiesConfig();
     }
 
     private prepareControllerDefaults() : void
@@ -155,10 +155,10 @@ class ConfigPeCompiler
             = this.zc.isApp(Const.App.KEYS.OBJECTS) ? this.zc.getApp(Const.App.KEYS.OBJECTS) : {};
     }
 
-    private prepareInputGroupConfig() : void
+    private preparePropertiesConfig() : void
     {
         this.inputGroupConfig
-            = this.zc.isApp(Const.App.KEYS.INPUT_GROUPS) ? this.zc.getApp(Const.App.KEYS.INPUT_GROUPS) : {};
+            = this.zc.isApp(Const.App.KEYS.VALUES) ? this.zc.getApp(Const.App.KEYS.VALUES) : {};
     }
 
     private preCompileObjects() : void
@@ -193,7 +193,7 @@ class ConfigPeCompiler
 
     private preCompileObjectResolveExtras(obj : object) : void
     {
-        let properties = obj[Const.App.OBJECTS.PROPERTIES];
+        let properties = obj[Const.App.OBJECT.PROPERTIES];
         for(let propName in properties) {
             if (properties.hasOwnProperty(propName))
             {
@@ -204,7 +204,7 @@ class ConfigPeCompiler
 
     private preCompileObjectInputGroup(obj : object) : void
     {
-        let properties = obj[Const.App.OBJECTS.PROPERTIES];
+        let properties = obj[Const.App.OBJECT.PROPERTIES];
         for(let propName in properties) {
             if (properties.hasOwnProperty(propName))
             {
@@ -247,24 +247,24 @@ class ConfigPeCompiler
 
             obj[key] = {};
             ObjectTools.addObToOb(obj[key],arrayExtras);
-            obj[key][Const.App.INPUT.ARRAY] = inArray;
+            obj[key][Const.App.VALUE.ARRAY] = inArray;
 
             if(isNewObj) {
-                this.preCompileResolveExtras(Const.App.INPUT.ARRAY,obj[key]);
+                this.preCompileResolveExtras(Const.App.VALUE.ARRAY,obj[key]);
             }
         }
         else if(typeof nowValue === "object")
         {
-            if(nowValue.hasOwnProperty(Const.App.OBJECTS.PROPERTIES))
+            if(nowValue.hasOwnProperty(Const.App.OBJECT.PROPERTIES))
             {
                 //isObject
                 //check all properties of object!
                 this.preCompileObjectResolveExtras(nowValue);
             }
-            else if(nowValue.hasOwnProperty(Const.App.INPUT.ARRAY))
+            else if(nowValue.hasOwnProperty(Const.App.VALUE.ARRAY))
             {
                 //we have array look in the array body!
-                this.preCompileResolveExtras(Const.App.INPUT.ARRAY,nowValue);
+                this.preCompileResolveExtras(Const.App.VALUE.ARRAY,nowValue);
             }
         }
     }
@@ -274,45 +274,55 @@ class ConfigPeCompiler
         if(typeof value === "object")
         {
             //check input
-            if(value.hasOwnProperty(Const.App.OBJECTS.PROPERTIES))
+            if(value.hasOwnProperty(Const.App.OBJECT.PROPERTIES))
             {
                 //isObject
-                if(typeof value[Const.App.OBJECTS.EXTENDS] === 'string')
+                if(typeof value[Const.App.OBJECT.EXTENDS] === 'string')
                 {
                     //extends there
                     //check super extends before this
-                    const superName = value[Const.App.OBJECTS.EXTENDS];
+                    const superName = value[Const.App.OBJECT.EXTENDS];
                     this.preCompileInheritance(this.objectsConfig[superName]);
 
                     //lastExtend
                     //extend Props
-                    const superProps = this.objectsConfig[superName][Const.App.OBJECTS.PROPERTIES];
-                    ObjectTools.addObToOb(value[Const.App.OBJECTS.PROPERTIES],superProps,false);
+                    const superProps = this.objectsConfig[superName][Const.App.OBJECT.PROPERTIES];
+                    ObjectTools.addObToOb(value[Const.App.OBJECT.PROPERTIES],superProps,false);
+                    //extend Methods
+                    let superMethods = this.objectsConfig[superName][Const.App.OBJECT.PROTOTYPE];
+
+                    if(superMethods){
+                        if(!value[Const.App.OBJECT.PROTOTYPE]){
+                            value[Const.App.OBJECT.PROTOTYPE] = {};
+                        }
+                        Object.setPrototypeOf(value[Const.App.OBJECT.PROTOTYPE],superMethods);
+                    }
+
                     //extend construct
                     const superObj = this.objectsConfig[superName];
 
                     const superConstruct =
-                        typeof superObj[Const.App.OBJECTS.CONSTRUCT] === 'function' ?
-                        superObj[Const.App.OBJECTS.CONSTRUCT] :
+                        typeof superObj[Const.App.OBJECT.CONSTRUCT] === 'function' ?
+                        superObj[Const.App.OBJECT.CONSTRUCT] :
                         async (obj) => {return obj;};
 
                     const currentConstruct =
-                        typeof value[Const.App.OBJECTS.CONSTRUCT] === 'function' ?
-                        value[Const.App.OBJECTS.CONSTRUCT] :
+                        typeof value[Const.App.OBJECT.CONSTRUCT] === 'function' ?
+                        value[Const.App.OBJECT.CONSTRUCT] :
                         async (obj) => {return obj;};
 
-                    value[Const.App.OBJECTS.CONSTRUCT] = async (obj, smallBag) => {
+                    value[Const.App.OBJECT.CONSTRUCT] = async (obj, smallBag) => {
                         return await currentConstruct(await superConstruct(obj,smallBag),smallBag);
                     };
 
                     //remove extension
-                    delete value[Const.App.OBJECTS.EXTENDS];
+                    delete value[Const.App.OBJECT.EXTENDS];
                 }
             }
-            else if(value.hasOwnProperty(Const.App.INPUT.ARRAY))
+            else if(value.hasOwnProperty(Const.App.VALUE.ARRAY))
             {
                 //is array
-                let inArray = value[Const.App.INPUT.ARRAY];
+                let inArray = value[Const.App.VALUE.ARRAY];
                 this.preCompileInheritance(inArray);
             }
         }
@@ -337,15 +347,15 @@ class ConfigPeCompiler
         else if(typeof value === "object")
         {
             //check input
-            if(value.hasOwnProperty(Const.App.OBJECTS.PROPERTIES))
+            if(value.hasOwnProperty(Const.App.OBJECT.PROPERTIES))
             {
                 //isObject
                 this.preCompileObjectInputGroup(value);
             }
-            else if(value.hasOwnProperty(Const.App.INPUT.ARRAY))
+            else if(value.hasOwnProperty(Const.App.VALUE.ARRAY))
             {
                 //is array
-                this.preCompileInputGroups(Const.App.INPUT.ARRAY,value);
+                this.preCompileInputGroups(Const.App.VALUE.ARRAY,value);
             }
         }
     }

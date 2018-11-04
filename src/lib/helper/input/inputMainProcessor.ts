@@ -9,9 +9,10 @@ import Const            = require('../constants/constWrapper');
 import ValidationEngine = require('../validator/validatorEngine');
 import TaskError        = require('../../api/TaskError');
 import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
-import {ProcessTask}     from "./processTaskEngine";
+import {ProcessTask}      from "./processTaskEngine";
 import SmallBag         = require("../../api/SmallBag");
 import ConvertEngine    = require("../convert/convertEngine");
+import ObjectTools = require("../tools/objectTools");
 
 class InputMainProcessor
 {
@@ -36,11 +37,11 @@ class InputMainProcessor
 
     async processInput(srcObj : object,srcKey : string | number, config : object, currentInputPath : string, errorBag : TaskErrorBag) : Promise<any>
     {
-        if(typeof config[Const.App.INPUT.ARRAY] === 'object') {
+        if(typeof config[Const.App.VALUE.ARRAY] === 'object') {
             //Array reference
             await this.processArray(srcObj,srcKey,config,currentInputPath,errorBag);
         }
-        else if(typeof config[Const.App.OBJECTS.PROPERTIES] === 'object') {
+        else if(typeof config[Const.App.OBJECT.PROPERTIES] === 'object') {
             //Object reference
             await this.processObject(srcObj,srcKey,config,currentInputPath,errorBag);
         }
@@ -52,7 +53,7 @@ class InputMainProcessor
 
     private async processObject(srcObj : object,srcKey : string | number,config : object,currentInputPath : string,errorBag : TaskErrorBag) : Promise<any>
     {
-        let props = config[Const.App.OBJECTS.PROPERTIES];
+        const props = config[Const.App.OBJECT.PROPERTIES];
         const input = srcObj[srcKey];
         if(typeof input === 'object')
         {
@@ -96,7 +97,7 @@ class InputMainProcessor
                     {
                         //is this input optional?
                         //or is it really missing?
-                        if(!props[propName][Const.App.INPUT.IS_OPTIONAL])
+                        if(!props[propName][Const.App.VALUE.IS_OPTIONAL])
                         {
                             //oh its missing!
                             errorBag.addTaskError(new TaskError
@@ -115,19 +116,29 @@ class InputMainProcessor
 
             await Promise.all(promises);
 
-            //construct obj
+            //methods and construct obj
             if(
                 this.createProcessTaskList &&
-                typeof config[Const.App.OBJECTS.CONSTRUCT] === 'function')
+                (typeof config[Const.App.OBJECT.CONSTRUCT] === 'function'||
+                typeof config[Const.App.OBJECT.PROTOTYPE] === 'object'))
             {
-                this.processTaskList.push(async  () => {
-                    srcObj[srcKey] = await config[Const.App.OBJECTS.CONSTRUCT](input,this.preparedSmallBag);
+                this.processTaskList.push(async  () =>
+                {
+                    if(typeof config[Const.App.OBJECT.PROTOTYPE] === 'object') {
+                        Object.setPrototypeOf(srcObj[srcKey],config[Const.App.OBJECT.PROTOTYPE]);
+                    }
+                    if(config[Const.App.OBJECT.CONSTRUCT] === 'function') {
+                        const res = await config[Const.App.OBJECT.CONSTRUCT](input,this.preparedSmallBag);
+                        if(res !== undefined){
+                            srcObj[srcKey] = res;
+                        }
+                    }
                 });
             }
         }
-        else
+        else if(!config[Const.App.OBJECT.IS_OPTIONAL])
         {
-            //ups wrong input we can't processing it
+            //ups wrong input or missing and not optional we can't processing it
             errorBag.addTaskError(new TaskError
                 (
                     MainErrors.objectWasExpected,
@@ -154,8 +165,8 @@ class InputMainProcessor
         const strictType = typeof config[Const.Validator.KEYS.STRICT_TYPE] === 'boolean'?
             config[Const.Validator.KEYS.STRICT_TYPE] : true;
 
-        const convertType = typeof config[Const.App.INPUT.CONVERT_TYPE] === 'boolean'?
-            config[Const.App.INPUT.CONVERT_TYPE] : true;
+        const convertType = typeof config[Const.App.VALUE.CONVERT_TYPE] === 'boolean'?
+            config[Const.App.VALUE.CONVERT_TYPE] : true;
 
         const currentErrorCount = errorBag.getTaskErrorCount();
 
@@ -176,9 +187,9 @@ class InputMainProcessor
         }
 
         //check for convertTask
-        if(this.createProcessTaskList && typeof config[Const.App.INPUT.CONVERT] === 'function'){
+        if(this.createProcessTaskList && typeof config[Const.App.VALUE.CONVERT] === 'function'){
             this.processTaskList.push(async  () => {
-                srcObj[srcKey] = await config[Const.App.INPUT.CONVERT](input,this.preparedSmallBag);
+                srcObj[srcKey] = await config[Const.App.VALUE.CONVERT](input,this.preparedSmallBag);
             });
         }
     }
@@ -197,7 +208,7 @@ class InputMainProcessor
 
             if(isOk)
             {
-                let arrayInputConfig = config[Const.App.INPUT.ARRAY];
+                let arrayInputConfig = config[Const.App.VALUE.ARRAY];
                 let promises : Promise<any>[] = [];
                 //input reference so we can return it normal
                 for(let i = 0; i < input.length; i++)
@@ -212,8 +223,8 @@ class InputMainProcessor
                 await Promise.all(promises);
             }
         }
-        else {
-            //ups wrong input we can't processing it
+        else if(!config[Const.App.ARRAY.IS_OPTIONAL]){
+            //ups wrong input or missing and not optional we can't processing it
             errorBag.addTaskError(new TaskError
                 (
                     MainErrors.arrayWasExpected,

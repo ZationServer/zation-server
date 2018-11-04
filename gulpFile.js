@@ -44,6 +44,14 @@ const replaceConst = (match) =>
     return `'${tempRes}' `;
 };
 
+gulp.task('fix',function () {
+    return gulp
+        .src('src/**/*.ts')
+        .pipe(gulpIgnore.include(isConfigEditorFile))
+        .pipe(gulpReplace(/\[Const[a-zA-Z_.]*]/g,replaceConst))
+        .pipe(gulp.dest('tmp'));
+});
+
 gulp.task('cetTs', function () {
     return gulp
         .src('src/**/*.ts')

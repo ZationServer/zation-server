@@ -24,14 +24,13 @@ class ValidChProcessor
             const cName = ZationReqTools.getControllerName(validReq,isSystemController);
 
             //Trows if not exists
-            worker.getControllerPrepare.checkControllerExist(cName,isSystemController);
+            worker.getControllerPrepare().checkControllerExist(cName,isSystemController);
 
             let controller = worker.getControllerPrepare().getControllerConfig(cName,isSystemController);
 
             //end here if all is allow
             if(typeof controller[Const.App.CONTROLLER.INPUT_ALL_ALLOW] === 'boolean' &&
-                controller[Const.App.CONTROLLER.INPUT_ALL_ALLOW])
-            {
+                controller[Const.App.CONTROLLER.INPUT_ALL_ALLOW]) {
                 return {};
             }
 
