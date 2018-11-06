@@ -3,17 +3,19 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-import Const          = require('../constants/constWrapper');
+
 import Logger         = require('../logger/logger');
 import TaskError      = require('../../api/TaskError');
 import AEPreparedPart = require('./aePreparedPart');
 import SHBridge       = require("../bridges/shBridge");
 import TokenEngine    = require("../token/tokenEngine");
 import MainErrors     = require("../zationTaskErrors/mainTaskErrors");
-import ZationToken    = require("../infoObjects/zationToken");
+import ZationTokenInfo    = require("../infoObjects/zationTokenInfo");
 import {ChAccessEngine} from "../channel/chAccessEngine";
 import AuthenticationError = require("../error/authenticationError");
 import ZationWorker        = require("../../main/zationWorker");
+import {PrepareZationToken, ZationAccess, ZationToken} from "../constants/internal";
+import {ControllerConfig} from "../configs/appConfig";
 
 class AuthEngine
 {
@@ -48,14 +50,12 @@ class AuthEngine
     private async processGroupAndId(): Promise<void>
     {
         // noinspection JSUnresolvedFunction
-        let authToken = this.shBridge.getTokenBridge().getToken();
+        const authToken : ZationToken | null = this.shBridge.getTokenBridge().getToken();
         if(authToken !== null && authToken !== undefined)
         {
-            this.currentUserId =
-                !!authToken[Const.Settings.TOKEN.USER_ID] ?
-                    authToken[Const.Settings.TOKEN.USER_ID] : undefined;
+            this.currentUserId = !!authToken.zationUserId ? authToken.zationUserId : undefined;
+            const authUserGroup = authToken.zationAuthUserGroup;
 
-            let authUserGroup = authToken[Const.Settings.TOKEN.AUTH_USER_GROUP];
             if(authUserGroup !== undefined) {
                 if (this.checkIsIn(authUserGroup)) {
                     this.currentUserGroup = authUserGroup;
@@ -65,7 +65,6 @@ class AuthEngine
                     //saved authGroup is in Server not define
                     //noinspection JSUnresolvedFunction
                     await this.deauthenticate();
-
                     throw new TaskError(MainErrors.inTokenSavedAuthGroupIsNotFound,
                         {
                             savedAuthGroup: authUserGroup,
@@ -74,9 +73,7 @@ class AuthEngine
                 }
             }
             else {
-                if(!(typeof authUserGroup[Const.Settings.TOKEN.ONLY_PANEL_TOKEN] === 'boolean' &&
-                    authUserGroup[Const.Settings.TOKEN.ONLY_PANEL_TOKEN]))
-                {
+                if(!(typeof authToken.zationOnlyPanelToken === 'boolean' && authToken.zationOnlyPanelToken)) {
                     //token without auth group and it is not a only panel token.
                     await this.deauthenticate();
                     throw new TaskError(MainErrors.tokenWithoutAuthGroup);
@@ -136,17 +133,17 @@ class AuthEngine
     {
         if(this.checkIsIn(authUserGroup)) {
 
-            let obj = {};
-            obj[Const.Settings.TOKEN.AUTH_USER_GROUP] = authUserGroup;
+            const obj : PrepareZationToken = {};
+            obj.zationAuthUserGroup = authUserGroup;
 
             //Id to setBoth in time
             if(userId !== undefined) {
-                obj[Const.Settings.TOKEN.USER_ID] = userId;
+                obj.zationUserId = userId;
             }
 
             //check auto panelAccess
             if(this.aePreparedPart.authUserGroupPanelAccess(authUserGroup)) {
-                obj[Const.Settings.TOKEN.PANEL_ACCESS] = true;
+                obj.zationPanelAccess = true;
             }
 
             //create AuthEngine Token!
@@ -179,8 +176,8 @@ class AuthEngine
     async setPanelAccess(access : boolean) : Promise<void>
     {
         if(this.isAuth()) {
-            let obj = {};
-            obj[Const.Settings.TOKEN.PANEL_ACCESS] = access;
+            const obj : PrepareZationToken = {};
+            obj.zationPanelAccess = access;
             await this.tokenEngine.updateTokenVariable(obj);
         }
         else {
@@ -191,8 +188,8 @@ class AuthEngine
     async setUserId(userId : number | string) : Promise<void>
     {
         if(this.isAuth()) {
-            let obj = {};
-            obj[Const.Settings.TOKEN.USER_ID] = userId;
+            const obj : PrepareZationToken = {};
+            obj.zationUserId = userId;
             //is only set if the client has a auth token (than he has also a user group)
             const suc = await this.tokenEngine.updateTokenVariable(obj);
 
@@ -211,8 +208,8 @@ class AuthEngine
     async removeUserId() : Promise<void>
     {
         if(this.isAuth()) {
-            let obj = {};
-            obj[Const.Settings.TOKEN.USER_ID] = null;
+            const obj : PrepareZationToken = {};
+            obj.zationUserId = null;
             const suc = await this.tokenEngine.updateTokenVariable(obj);
 
             if(suc) {
@@ -270,13 +267,13 @@ class AuthEngine
 
         if(typeof value === 'string')
         {
-            if(value === Const.App.ACCESS.ALL) {
+            if(value === ZationAccess.ALL) {
                 access = AuthEngine.accessKeyWordChanger(key,true);
             }
-            else if(value === Const.App.ACCESS.ALL_AUTH) {
+            else if(value === ZationAccess.ALL_AUTH) {
                 access = AuthEngine.accessKeyWordChanger(key,this.isAuth());
             }
-            else if(value === Const.App.ACCESS.ALL_NOT_AUTH) {
+            else if(value === ZationAccess.ALL_NOT_AUTH) {
                 access = AuthEngine.accessKeyWordChanger(key,this.isDefault());
             }
             else if(this.checkIsIn(value)) {
@@ -300,7 +297,7 @@ class AuthEngine
         else if(typeof value === 'function') {
             let token = this.shBridge.getTokenBridge().getToken();
             let smallBag = this.aePreparedPart.getWorker().getPreparedSmallBag();
-            access = AuthEngine.accessKeyWordChanger(key,value(smallBag,new ZationToken(token)));
+            access = AuthEngine.accessKeyWordChanger(key,value(smallBag,token !== null ? new ZationTokenInfo(token) : null));
         }
         else if(Number.isInteger(value)) {
             access = AuthEngine.accessKeyWordChanger(key, this.getUserId() === value);
@@ -310,7 +307,7 @@ class AuthEngine
 
     private static accessKeyWordChanger(key : string,access : boolean) : boolean
     {
-        if(key === Const.App.CONTROLLER.NOT_ACCESS) {
+        if(key === nameof<ControllerConfig>(s => s.notAccess)) {
             return !access;
         }
         return access;

@@ -6,8 +6,8 @@ GitHub: LucaCode
 
 import TokenBridge   = require('./tokenBridge');
 import ZationConfig  = require("../../main/zationConfig");
-import Const         = require("../constants/constWrapper");
 import {Socket}        from "../sc/socket";
+import {ZationHttpInfo, ZationRequest} from "../constants/internal";
 const  IP : any      = require('ip');
 
 //Socket and Http Bridge
@@ -43,7 +43,7 @@ class SHBridge
         }
     }
 
-    getZationData() : object
+    getZationData() : ZationRequest
     {
         if(this.webSocket) {
             return this.socketData;
@@ -59,7 +59,9 @@ class SHBridge
             return this.socket.zationClient.version;
         }
         else {
-            return this.getZationData()[Const.Settings.REQUEST_INPUT.VERSION];
+            //is checked before
+            // @ts-ignore
+            return this.getZationData().v;
         }
     }
 
@@ -69,7 +71,9 @@ class SHBridge
             return this.socket.zationClient.system;
         }
         else {
-            return this.getZationData()[Const.Settings.REQUEST_INPUT.SYSTEM];
+            //is checked before
+            // @ts-ignore
+            return this.getZationData().v;
         }
     }
 
@@ -83,7 +87,7 @@ class SHBridge
         this.getTokenBridge().deauthenticate();
         if(!this.isWebSocket())
         {
-            this.httpRes['zationInfo'].push(Const.Settings.ZATION_HTTP_INFO.DEAUTHENTICATE);
+            this.httpRes['zationInfo'].push(ZationHttpInfo.DEAUTHENTICATE);
         }
     }
 

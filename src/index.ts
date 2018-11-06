@@ -11,7 +11,7 @@ import {Controller}            from'./lib/api/Controller';
 import Result                = require('./lib/api/Result');
 import TaskError             = require('./lib/api/TaskError');
 import TaskErrorBag          = require('./lib/api/TaskErrorBag');
-import ErrorType             = require('./lib/helper/constants/errorTypes');
+import ErrorType             = require('./lib/helper/constants/errorType');
 import ServiceNotFoundError  = require('./lib/helper/services/serviceNotFoundError');
 import Config                = require('./lib/api/Config');
 import ValidationTypes       = require('./lib/helper/constants/validationTypes');

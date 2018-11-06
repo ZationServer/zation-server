@@ -5,13 +5,13 @@ GitHub: LucaCode
  */
 
 import ZationConfig     = require("../../main/zationConfig");
-import Const            = require('../constants/constWrapper');
 import TaskError        = require('../../api/TaskError');
 import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
 import systemController = require('../systemController/systemControler.config');
 import ControllerTools  = require('./controllerTools');
 import ZationWorker     = require("../../main/zationWorker");
 import {Controller}       from'../../api/Controller';
+import {ControllerConfig, InternControllerConfig} from "../configs/appConfig";
 
 class ControllerPrepare
 {
@@ -35,7 +35,7 @@ class ControllerPrepare
         return this.getController(name,isSystemController).instance;
     }
 
-    getControllerConfig(name : string,isSystemController : boolean) : object
+    getControllerConfig(name : string,isSystemController : boolean) : ControllerConfig
     {
         return this.getController(name,isSystemController).config;
     }
@@ -81,22 +81,19 @@ class ControllerPrepare
 
     async prepare() : Promise<void>
     {
-        let uController = this.zc.getApp(Const.App.KEYS.CONTROLLER);
+        // @ts-ignore
+        const uController : Record<string,InternControllerConfig> = this.zc.appConfig.controller;
 
         let promises : Promise<void>[] = [];
 
-        for(let cName in uController)
-        {
-            if(uController.hasOwnProperty(cName))
-            {
+        for(let cName in uController) {
+            if(uController.hasOwnProperty(cName)) {
                 promises.push(this.addController(cName,uController[cName]));
             }
         }
 
-        for(let cName in systemController)
-        {
-            if(systemController.hasOwnProperty(cName))
-            {
+        for(let cName in systemController) {
+            if(systemController.hasOwnProperty(cName)) {
                 promises.push(this.addController(cName,systemController[cName]));
             }
         }
@@ -104,7 +101,7 @@ class ControllerPrepare
         await Promise.all(promises);
     }
 
-    async addController(name : string,config : object) : Promise<void>
+    async addController(name : string,config : InternControllerConfig) : Promise<void>
     {
         let isSystemC    = ControllerTools.isSystemController(config);
         let cClass : any = ControllerTools.getControllerClass(config,this.zc);
@@ -112,30 +109,28 @@ class ControllerPrepare
         this.addControllerConfigAccessKey(config);
 
         await cInstance.initialize(this.worker.getPreparedSmallBag());
-        if(!isSystemC)
-        {
+        if(!isSystemC) {
             this.appController[name] = {config : config,instance : cInstance};
         }
-        else
-        {
+        else {
             this.systemController[name] = {config : config,instance : cInstance};
         }
     }
 
     // noinspection JSMethodCanBeStatic
-    addControllerConfigAccessKey(config : object) : void
+    addControllerConfigAccessKey(config : ControllerConfig) : void
     {
-        let notAccess = config[Const.App.CONTROLLER.NOT_ACCESS];
-        let access    = config[Const.App.CONTROLLER.ACCESS];
+        let notAccess = config.notAccess;
+        let access    = config.access;
         let keyWord = '';
 
         //double keyword is checked in the starter checkConfig
         //search One
         if(notAccess !== undefined && access === undefined) {
-            keyWord = Const.App.CONTROLLER.NOT_ACCESS;
+            keyWord = nameof<ControllerConfig>(s => s.notAccess);
         }
         else if(notAccess === undefined && access !== undefined) {
-            keyWord = Const.App.CONTROLLER.ACCESS;
+            keyWord = nameof<ControllerConfig>(s => s.access);
         }
         config['speedAccessKey'] = keyWord;
     }

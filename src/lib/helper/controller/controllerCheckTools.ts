@@ -4,80 +4,70 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const            = require('../constants/constWrapper');
 import {Controller}       from '../../api/Controller';
 import ZationConfig     = require("../../main/zationConfig");
 import fs               = require('fs');
+import {ControllerConfig} from "../configs/appConfig";
 
 
 const systemControllerPath   = __dirname + './../systemController/controller';
 
 class ControllerTools
 {
-    static controllerFileExist(cConfig : object,cFullPath : string,zc : ZationConfig) : boolean
+    static controllerFileExist(cConfig : ControllerConfig,cFullPath : string,zc : ZationConfig) : boolean
     {
-        if(cConfig[Const.App.CONTROLLER.SYSTEM_CONTROLLER])
-        {
+        if(cConfig.systemController) {
             return fs.existsSync(systemControllerPath + '/' + cFullPath + '.js');
         }
-        else
-        {
-            return fs.existsSync(zc.getStarter(Const.Starter.KEYS.CONTROLLER) + '/' + cFullPath + '.js');
+        else {
+            return fs.existsSync(zc.starterConfig.controller + '/' + cFullPath + '.js');
         }
     }
 
-    static canControllerRequire(cConfig : object,cFullPath : string,zc : ZationConfig) : boolean
+    static canControllerRequire(cConfig : ControllerConfig,cFullPath : string,zc : ZationConfig) : boolean
     {
         try
         {
-            if(cConfig[Const.App.CONTROLLER.SYSTEM_CONTROLLER])
-            {
+            if(cConfig.systemController) {
                 require(systemControllerPath + '/' + cFullPath);
                 return true;
             }
-            else
-            {
-                require(zc.getStarter(Const.Starter.KEYS.CONTROLLER) + '/' + cFullPath);
+            else {
+                require(zc.starterConfig.controller + '/' + cFullPath);
                 return true;
             }
         }
-        catch(e)
-        {
+        catch(e) {
             return false;
         }
     }
 
-    static isControllerExtendsController(cConfig : object,cFullPath : string,zc : ZationConfig) : boolean
+    static isControllerExtendsController(cConfig : ControllerConfig,cFullPath : string,zc : ZationConfig) : boolean
     {
         let controller : any = {};
-
-        if (cConfig[Const.App.CONTROLLER.SYSTEM_CONTROLLER]) {
+        if (cConfig.systemController) {
             controller = require(systemControllerPath + '/' + cFullPath);
         }
         else {
-            controller = require(zc.getStarter(Const.Starter.KEYS.CONTROLLER) + '/' + cFullPath);
+            controller = require(zc.starterConfig.controller + '/' + cFullPath);
         }
-
         return controller.prototype instanceof Controller;
     }
 
     //this method can be use to get the path without the pre compile
-    static getControllerFPathForCheck(controllerConfig : object,cName : string) : string
+    static getControllerFPathForCheck(controllerConfig : ControllerConfig,cName : string) : string
     {
-        let controllerPath = controllerConfig[Const.App.CONTROLLER.FILE_PATH];
-        let controllerName = controllerConfig[Const.App.CONTROLLER.FILE_NAME];
+        let controllerPath = controllerConfig.filePath;
+        let controllerName = controllerConfig.fileName;
 
-        if(!controllerName)
-        {
+        if(!controllerName) {
             controllerName = cName;
         }
 
-        if(controllerPath === undefined)
-        {
+        if(controllerPath === undefined) {
             return controllerName;
         }
-        else
-        {
+        else {
             return controllerPath + '/' + controllerName;
         }
     }

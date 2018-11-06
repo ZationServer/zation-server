@@ -5,7 +5,6 @@ GitHub: LucaCode
  */
 
 import ZationConfig = require("../../main/zationConfig");
-import Const        = require('./../constants/constWrapper');
 
 class ZationInfo
 {
@@ -17,29 +16,34 @@ class ZationInfo
 
     constructor(zc : ZationConfig)
     {
-        this._port     = zc.getMain(Const.Main.KEYS.PORT);
-        this._appName  = zc.getMain(Const.Main.KEYS.APP_NAME);
-        this._hostname = zc.getMain(Const.Main.KEYS.HOSTNAME);
-        this._timeZone = zc.getMain(Const.Main.KEYS.TIME_ZONE);
+        this._port     = zc.mainConfig.port;
+        this._appName  = zc.mainConfig.appName;
+        this._hostname = zc.mainConfig.hostname;
+        this._timeZone = zc.mainConfig.timeZone;
         this._zationConfig = zc;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get port(): number {
         return this._port;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get appName(): string {
         return this._appName;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get hostname(): string {
         return this._hostname;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get timeZone(): string {
         return this._timeZone;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get zationConfig(): ZationConfig {
         return this._zationConfig;
     }

@@ -8,7 +8,7 @@ import Net = require("net");
 
 class PortChecker
 {
-    public static async isPortAvailable(port : number) : Promise<boolean>
+    public static async isPortAvailable(port : number | undefined) : Promise<boolean>
     {
         return new Promise<boolean>(((resolve, reject) => {
             const tester = Net.createServer()

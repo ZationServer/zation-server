@@ -17,6 +17,7 @@ class AuthenticationError extends CodeError
         this.reason = reason;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getReason(): string {
         return this.reason;
     }

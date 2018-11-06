@@ -5,8 +5,14 @@ GitHub: LucaCode
  */
 
 import ZationConfig      = require("../../main/zationConfig");
-import Const             = require('../constants/constWrapper');
 import ObjectTools       = require('../tools/objectTools');
+import {
+    ChannelConfig,
+    ChannelDefault,
+    ChannelSettings,
+    CustomChannelConfig
+} from "../configs/channelConfig";
+import {ArrayPropertyConfig, ControllerConfig, ObjectPropertyConfig} from "../configs/appConfig";
 
 class ConfigPeCompiler
 {
@@ -30,8 +36,8 @@ class ConfigPeCompiler
         this.preCompileErrorConfig();
 
         //view precompiled app config
-        console.dir(this.zc.getAppConfig(),{depth:null});
-        console.dir(this.zc.getChannelConfig(),{depth:null});
+        //console.dir(this.zc.appConfig,{depth:null});
+        //console.dir(this.zc.channelConfig,{depth:null});
     }
 
     private prepare() : void
@@ -45,7 +51,7 @@ class ConfigPeCompiler
     {
         this.controllerDefaults = {};
 
-        let cd = this.zc.getApp(Const.App.KEYS.CONTROLLER_DEFAULTS);
+        let cd = this.zc.appConfig.controllerDefaults;
 
         //setDefaults if not set!
         if(cd !== undefined) {
@@ -55,16 +61,18 @@ class ConfigPeCompiler
 
     private preCompileChannelConfig() : void
     {
-        const channelConfig = this.zc.getChannelConfig();
+        const channelConfig = this.zc.channelConfig;
 
         for(let k in channelConfig)
         {
             if(channelConfig.hasOwnProperty(k))
             {
-                if(typeof channelConfig[k] === 'object')
+                const ch = channelConfig[k];
+                if(typeof ch === 'object')
                 {
-                    if(k === Const.Channel.KEYS.CUSTOM_ID_CHANNELS || k === Const.Channel.KEYS.CUSTOM_CHANNELS) {
-                        this.preCompileChannelDefault(channelConfig[k]);
+                    if(k === nameof<ChannelConfig>(s => s.customIdChannels) ||
+                        k === nameof<ChannelConfig>(s => s.customChannels)) {
+                        this.preCompileChannelDefault(ch);
                     }
                 }
                 else {
@@ -77,14 +85,13 @@ class ConfigPeCompiler
 
     private preCompileErrorConfig() : void
     {
-        if(typeof this.zc.getErrorConfig() === 'object')
+        if(typeof this.zc.errorConfig === 'object')
         {
-            let errors = this.zc.getErrorConfig();
+            const errors = this.zc.errorConfig;
             for(let k in errors)
             {
-                if(errors.hasOwnProperty(k) && errors[k][Const.Settings.ERROR.NAME] === undefined)
-                {
-                    errors[k][Const.Settings.ERROR.NAME] = k;
+                if(errors.hasOwnProperty(k) && errors[k].name === undefined) {
+                    errors[k].name= k;
                 }
             }
         }
@@ -92,50 +99,42 @@ class ConfigPeCompiler
 
     private preCompileChannelDefault(channels : object) : void
     {
-        if(channels[Const.Channel.CHANNEL_DEFAULT.DEFAULT])
+        if(channels[nameof<ChannelDefault>(s => s.default)])
         {
-            let defaultCh = channels[Const.Channel.CHANNEL_DEFAULT.DEFAULT];
+            const defaultCh : CustomChannelConfig =
+                channels[nameof<ChannelDefault>(s => s.default)]
+            ;
             for(let chName in channels)
             {
-                if(channels.hasOwnProperty(chName) && chName !== Const.Channel.CHANNEL_DEFAULT.DEFAULT)
+                if(channels.hasOwnProperty(chName) && chName !== channels[nameof<ChannelDefault>(s => s.default)])
                 {
-                    if(!(channels[chName].hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_ACCESS) ||
-                        channels[chName].hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS)))
-                    {
-                        if(defaultCh[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS] !== undefined)
-                        {
-                            channels[chName][Const.Channel.CHANNEL.SUBSCRIBE_ACCESS] =
-                                defaultCh[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS];
+                    const channel : CustomChannelConfig = channels[chName];
+
+                    if(!(channel.subscribeAccess !== undefined || channel.subscribeNotAccess !== undefined)) {
+                        if(defaultCh.subscribeAccess !== undefined) {
+                            channel.subscribeAccess = defaultCh.subscribeAccess;
                         }
-                        if(defaultCh[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS] !== undefined)
-                        {
-                            channels[chName][Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS] =
-                                defaultCh[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS];
+                        if(defaultCh.subscribeNotAccess !== undefined) {
+                            channel.subscribeNotAccess = defaultCh.subscribeNotAccess
                         }
                     }
 
-                    if(!(channels[chName].hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS) ||
-                        channels[chName].hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS)))
-                    {
-                        if(defaultCh[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS] !== undefined)
-                        {
-                            channels[chName][Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS] =
-                                defaultCh[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS];
+                    if(!(channel.clientPublishAccess !== undefined || channel.clientPublishNotAccess !== undefined)) {
+                        if(defaultCh.clientPublishAccess !== undefined) {
+                            channel.clientPublishAccess = defaultCh.clientPublishAccess;
                         }
-                        if(defaultCh[Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS] !== undefined)
-                        {
-                            channels[chName][Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS] =
-                                defaultCh[Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS];
+                        if(defaultCh.clientPublishNotAccess !== undefined) {
+                            channel.clientPublishNotAccess = defaultCh.clientPublishNotAccess
                         }
                     }
 
-                    this.processDefaultValue(channels[chName],defaultCh,Const.Channel.CHANNEL.ON_CLIENT_PUBLISH);
-                    this.processDefaultValue(channels[chName],defaultCh,Const.Channel.CHANNEL.ON_SUBSCRIPTION);
-                    this.processDefaultValue(channels[chName],defaultCh,Const.Channel.CHANNEL.ON_UNSUBSCRIPTION);
-                    this.processDefaultValue(channels[chName],defaultCh,Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH);
+                    this.processDefaultValue(channel,defaultCh,nameof<CustomChannelConfig>(s => s.onClientPublish));
+                    this.processDefaultValue(channel,defaultCh,nameof<CustomChannelConfig>(s => s.onSubscription));
+                    this.processDefaultValue(channel,defaultCh,nameof<CustomChannelConfig>(s => s.onUnsubscription));
+                    this.processDefaultValue(channel,defaultCh,nameof<ChannelSettings>(s => s.socketGetOwnPublish));
                 }
             }
-            delete channels[Const.Channel.CHANNEL_DEFAULT.DEFAULT];
+            delete channels[nameof<ChannelDefault>(s => s.default)];
         }
     }
 
@@ -149,65 +148,56 @@ class ConfigPeCompiler
         }
     }
 
-    private prepareObjectsConfig() : void
-    {
-        this.objectsConfig
-            = this.zc.isApp(Const.App.KEYS.OBJECTS) ? this.zc.getApp(Const.App.KEYS.OBJECTS) : {};
+    private prepareObjectsConfig() : void {
+        this.objectsConfig = typeof this.zc.appConfig.objects === 'object' ?
+            this.zc.appConfig.objects : {};
     }
 
-    private preparePropertiesConfig() : void
-    {
+    private preparePropertiesConfig() : void {
         this.inputGroupConfig
-            = this.zc.isApp(Const.App.KEYS.VALUES) ? this.zc.getApp(Const.App.KEYS.VALUES) : {};
+            = typeof this.zc.appConfig.values === 'object' ?
+            this.zc.appConfig.values : {};
     }
 
     private preCompileObjects() : void
     {
         //compile first validation groups form every object
-        for(let objName in this.objectsConfig)
-        {
-            if(this.objectsConfig.hasOwnProperty(objName))
-            {
+        for(let objName in this.objectsConfig) {
+            if(this.objectsConfig.hasOwnProperty(objName)) {
                 this.preCompileObjectInputGroup(this.objectsConfig[objName]);
             }
         }
 
         //than resolve the objects links
-        for(let objName in this.objectsConfig)
-        {
-            if(this.objectsConfig.hasOwnProperty(objName))
-            {
+        for(let objName in this.objectsConfig) {
+            if(this.objectsConfig.hasOwnProperty(objName)) {
                 this.preCompileObjectResolveExtras(this.objectsConfig[objName]);
             }
         }
 
         //than resolve the objects inheritance
-        for(let objName in this.objectsConfig)
-        {
-            if(this.objectsConfig.hasOwnProperty(objName))
-            {
+        for(let objName in this.objectsConfig) {
+            if(this.objectsConfig.hasOwnProperty(objName)) {
                 this.preCompileInheritance(this.objectsConfig[objName]);
             }
         }
     }
 
-    private preCompileObjectResolveExtras(obj : object) : void
+    private preCompileObjectResolveExtras(obj : ObjectPropertyConfig) : void
     {
-        let properties = obj[Const.App.OBJECT.PROPERTIES];
+        const properties = obj.properties;
         for(let propName in properties) {
-            if (properties.hasOwnProperty(propName))
-            {
+            if (properties.hasOwnProperty(propName)) {
                 this.preCompileResolveExtras(propName,properties);
             }
         }
     }
 
-    private preCompileObjectInputGroup(obj : object) : void
+    private preCompileObjectInputGroup(obj : ObjectPropertyConfig) : void
     {
-        let properties = obj[Const.App.OBJECT.PROPERTIES];
+        const properties = obj.properties;
         for(let propName in properties) {
-            if (properties.hasOwnProperty(propName))
-            {
+            if (properties.hasOwnProperty(propName)) {
                 this.preCompileInputGroups(propName,properties);
             }
         }
@@ -247,24 +237,22 @@ class ConfigPeCompiler
 
             obj[key] = {};
             ObjectTools.addObToOb(obj[key],arrayExtras);
-            obj[key][Const.App.VALUE.ARRAY] = inArray;
+            obj[key][nameof<ArrayPropertyConfig>(s => s.array)] = inArray;
 
             if(isNewObj) {
-                this.preCompileResolveExtras(Const.App.VALUE.ARRAY,obj[key]);
+                this.preCompileResolveExtras(nameof<ArrayPropertyConfig>(s => s.array),obj[key]);
             }
         }
         else if(typeof nowValue === "object")
         {
-            if(nowValue.hasOwnProperty(Const.App.OBJECT.PROPERTIES))
-            {
+            if(nowValue.hasOwnProperty(nameof<ObjectPropertyConfig>(s => s.properties))) {
                 //isObject
                 //check all properties of object!
                 this.preCompileObjectResolveExtras(nowValue);
             }
-            else if(nowValue.hasOwnProperty(Const.App.VALUE.ARRAY))
-            {
+            else if(nowValue.hasOwnProperty(nameof<ArrayPropertyConfig>(s => s.array))) {
                 //we have array look in the array body!
-                this.preCompileResolveExtras(Const.App.VALUE.ARRAY,nowValue);
+                this.preCompileResolveExtras(nameof<ArrayPropertyConfig>(s => s.array),nowValue);
             }
         }
     }
@@ -274,55 +262,55 @@ class ConfigPeCompiler
         if(typeof value === "object")
         {
             //check input
-            if(value.hasOwnProperty(Const.App.OBJECT.PROPERTIES))
+            if(value.hasOwnProperty(nameof<ObjectPropertyConfig>(s => s.properties)))
             {
                 //isObject
-                if(typeof value[Const.App.OBJECT.EXTENDS] === 'string')
+                if(typeof value[nameof<ObjectPropertyConfig>(s => s.extends)] === 'string')
                 {
                     //extends there
                     //check super extends before this
-                    const superName = value[Const.App.OBJECT.EXTENDS];
+                    const superName = value[nameof<ObjectPropertyConfig>(s => s.extends)];
                     this.preCompileInheritance(this.objectsConfig[superName]);
 
                     //lastExtend
                     //extend Props
-                    const superProps = this.objectsConfig[superName][Const.App.OBJECT.PROPERTIES];
-                    ObjectTools.addObToOb(value[Const.App.OBJECT.PROPERTIES],superProps,false);
+                    const superProps = this.objectsConfig[superName][nameof<ObjectPropertyConfig>(s => s.properties)];
+                    ObjectTools.addObToOb(value[nameof<ObjectPropertyConfig>(s => s.properties)],superProps,false);
                     //extend Methods
-                    let superMethods = this.objectsConfig[superName][Const.App.OBJECT.PROTOTYPE];
+                    let superMethods = this.objectsConfig[superName][nameof<ObjectPropertyConfig>(s => s.prototype)];
 
                     if(superMethods){
-                        if(!value[Const.App.OBJECT.PROTOTYPE]){
-                            value[Const.App.OBJECT.PROTOTYPE] = {};
+                        if(!value[nameof<ObjectPropertyConfig>(s => s.prototype)]){
+                            value[nameof<ObjectPropertyConfig>(s => s.prototype)] = {};
                         }
-                        Object.setPrototypeOf(value[Const.App.OBJECT.PROTOTYPE],superMethods);
+                        Object.setPrototypeOf(value[nameof<ObjectPropertyConfig>(s => s.prototype)],superMethods);
                     }
 
                     //extend construct
                     const superObj = this.objectsConfig[superName];
 
                     const superConstruct =
-                        typeof superObj[Const.App.OBJECT.CONSTRUCT] === 'function' ?
-                        superObj[Const.App.OBJECT.CONSTRUCT] :
+                        typeof superObj[nameof<ObjectPropertyConfig>(s => s.construct)] === 'function' ?
+                        superObj[nameof<ObjectPropertyConfig>(s => s.construct)] :
                         async (obj) => {return obj;};
 
                     const currentConstruct =
-                        typeof value[Const.App.OBJECT.CONSTRUCT] === 'function' ?
-                        value[Const.App.OBJECT.CONSTRUCT] :
+                        typeof value[nameof<ObjectPropertyConfig>(s => s.construct)] === 'function' ?
+                        value[nameof<ObjectPropertyConfig>(s => s.construct)] :
                         async (obj) => {return obj;};
 
-                    value[Const.App.OBJECT.CONSTRUCT] = async (obj, smallBag) => {
+                    value[nameof<ObjectPropertyConfig>(s => s.construct)] = async (obj, smallBag) => {
                         return await currentConstruct(await superConstruct(obj,smallBag),smallBag);
                     };
 
                     //remove extension
-                    delete value[Const.App.OBJECT.EXTENDS];
+                    delete value[nameof<ObjectPropertyConfig>(s => s.extends)];
                 }
             }
-            else if(value.hasOwnProperty(Const.App.VALUE.ARRAY))
+            else if(value.hasOwnProperty(nameof<ArrayPropertyConfig>(s => s.array)))
             {
                 //is array
-                let inArray = value[Const.App.VALUE.ARRAY];
+                let inArray = value[nameof<ArrayPropertyConfig>(s => s.array)];
                 this.preCompileInheritance(inArray);
             }
         }
@@ -347,15 +335,15 @@ class ConfigPeCompiler
         else if(typeof value === "object")
         {
             //check input
-            if(value.hasOwnProperty(Const.App.OBJECT.PROPERTIES))
+            if(value.hasOwnProperty(nameof<ObjectPropertyConfig>(s => s.properties)))
             {
                 //isObject
                 this.preCompileObjectInputGroup(value);
             }
-            else if(value.hasOwnProperty(Const.App.VALUE.ARRAY))
+            else if(value.hasOwnProperty(nameof<ArrayPropertyConfig>(s => s.array)))
             {
                 //is array
-                this.preCompileInputGroups(Const.App.VALUE.ARRAY,value);
+                this.preCompileInputGroups(nameof<ArrayPropertyConfig>(s => s.array),value);
             }
         }
     }
@@ -363,35 +351,32 @@ class ConfigPeCompiler
     private preCompileController() : void
     {
         //set if controller property is not found
-        if(!this.zc.getApp(Const.App.KEYS.CONTROLLER))
-        {
-            this.zc.getAppConfig()[Const.App.KEYS.CONTROLLER] = {};
+        if(!this.zc.appConfig.controller) {
+            this.zc.appConfig.controller = {};
         }
 
         //iterate over controller
-        let controller = this.zc.getApp(Const.App.KEYS.CONTROLLER);
+        const controller = this.zc.appConfig.controller;
         for(let k in controller)
         {
             if(controller.hasOwnProperty(k))
             {
+                const currentC : ControllerConfig = controller[k];
                 //set name property to key if not there
-                if(controller[k][Const.App.CONTROLLER.FILE_NAME] === undefined)
-                {
-                    controller[k][Const.App.CONTROLLER.FILE_NAME] = k;
+                if(currentC.fileName === undefined) {
+                    currentC.fileName = k;
                 }
 
                 //set the defaults if property missing
-                for(let property in this.controllerDefaults)
-                {
-                    if(this.controllerDefaults.hasOwnProperty(property) && controller[k][property] === undefined)
-                    {
-                        controller[k][property] = this.controllerDefaults[property];
+                for(let property in this.controllerDefaults) {
+                    if(this.controllerDefaults.hasOwnProperty(property) && currentC[property] === undefined) {
+                        currentC[property] = this.controllerDefaults[property];
                     }
                 }
 
-                if(controller[k].hasOwnProperty(Const.App.CONTROLLER.INPUT))
+                if(typeof currentC.input === 'object')
                 {
-                    let input = controller[k][Const.App.CONTROLLER.INPUT];
+                    const input = currentC.input;
                     for(let inputName in input)
                     if(input.hasOwnProperty(inputName))
                     {

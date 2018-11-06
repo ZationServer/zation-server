@@ -5,12 +5,11 @@ GitHub: LucaCode
  */
 
 import ZationConfig     = require("../../main/zationConfig");
-import Const            = require("../constants/constWrapper");
-import {BackgroundTask} from "../configEditTool/appConfigStructure";
+import {BackgroundTask}   from "../configs/appConfig";
 
 type SetTask = (name : string,time : any,task : any) => void;
 
-class BackgroundTasksSetter
+class BackgroundTasksLoader
 {
    private readonly setEvery : SetTask;
    private readonly setAt : SetTask;
@@ -24,13 +23,10 @@ class BackgroundTasksSetter
 
    setUserBackgroundTasks (zc : ZationConfig)
    {
-       const bkt = zc.getApp(Const.App.KEYS.BACKGROUND_TASKS);
-       if(typeof bkt === 'object')
-       {
-           for(let name in bkt)
-           {
-               if(bkt.hasOwnProperty(name))
-               {
+       const bkt = zc.appConfig.backgroundTasks;
+       if(typeof bkt === 'object') {
+           for(let name in bkt) {
+               if(bkt.hasOwnProperty(name)) {
                    this.setTask(name,bkt[name]);
                }
            }
@@ -39,14 +35,13 @@ class BackgroundTasksSetter
 
    private setTask(name : string,bkTask : BackgroundTask)
    {
-       const task = bkTask[Const.App.BACKGROUND_TASKS.TASK];
-       if(task !== undefined)
-       {
-           BackgroundTasksSetter.timeSetter
-           (this.setEvery,Const.App.BACKGROUND_TASKS.EVERY,task,name,bkTask);
+       const task = bkTask.task;
+       if(task !== undefined) {
+           BackgroundTasksLoader.timeSetter
+           (this.setEvery,nameof<BackgroundTask>(s => s.every),task,name,bkTask);
 
-           BackgroundTasksSetter.timeSetter
-           (this.setAt,Const.App.BACKGROUND_TASKS.AT,task,name,bkTask);
+           BackgroundTasksLoader.timeSetter
+           (this.setAt,nameof<BackgroundTask>(s => s.at),task,name,bkTask);
        }
    }
 
@@ -64,4 +59,4 @@ class BackgroundTasksSetter
 
 }
 
-export = BackgroundTasksSetter;
+export = BackgroundTasksLoader;

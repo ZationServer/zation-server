@@ -23,6 +23,7 @@ class ObjectPathSequence
         return this;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     delete(path ?: string | string[]) : ObjectPathSequence {
         if(!!path) {
             ObjectPath.del(this.object,path);
@@ -33,6 +34,7 @@ class ObjectPathSequence
         return this;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     async commit() {
         await this.commitFunction(this.object);
     }

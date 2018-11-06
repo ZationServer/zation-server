@@ -6,9 +6,9 @@ GitHub: LucaCode
 
 import Timer            = NodeJS.Timer;
 import ZationWorker     = require("../../main/zationWorker");
-import Const            = require("../constants/constWrapper");
 import ChExchangeEngine = require("../channel/chExchangeEngine");
-import {PanelUserConfig} from "../configEditTool/mainConfigStructure";
+import {PanelUserConfig}  from "../configs/mainConfig";
+import {ZationChannel} from "../constants/internal";
 
 class PanelEngine
 {
@@ -25,7 +25,7 @@ class PanelEngine
     constructor(zw : ZationWorker)
     {
         this.zw = zw;
-        if(zw.getZationConfig().getMain(Const.Main.KEYS.USE_PANEL)) {
+        if(zw.getZationConfig().mainConfig.usePanel) {
             this.loadPanelAccessData();
             this.registerPanelInEvent();
         }
@@ -33,7 +33,7 @@ class PanelEngine
 
     private loadPanelAccessData()
     {
-        const user = this.zw.getZationConfig().getMain(Const.Main.KEYS.PANEL_USER);
+        const user = this.zw.getZationConfig().mainConfig.panelUser;
         if(Array.isArray(user)) {
             for(let i = 0; i < user.length; i++) {
                 this.addUser(user[i]);
@@ -47,14 +47,14 @@ class PanelEngine
     private addUser(config : PanelUserConfig) : void
     {
         const data = {};
-        data['p'] = this.zw.getPreparedSmallBag().hashSha512(config[Const.Main.PANEL_USER.PASSWORD]);
-        data['u'] = config[Const.Main.PANEL_USER.USER_NAME];
+        data['p'] = this.zw.getPreparedSmallBag().hashSha512(config.password);
+        data['u'] = config.userName;
         this.panelAccessData.push(data);
     }
 
     private registerPanelInEvent()
     {
-        const channel = this.zw.exchange.subscribe(Const.Settings.CHANNEL.PANEL_IN);
+        const channel = this.zw.exchange.subscribe(ZationChannel.PANEL_IN);
         channel.watch(async (data) =>
         {
             if(data.action === 'ping') {
@@ -90,11 +90,12 @@ class PanelEngine
 
     }
 
+    // noinspection JSUnusedGlobalSymbols
     pubInPanel(eventName : string,data : object)
     {
         if(this.isPanelInUse()) {
             // noinspection TypeScriptValidateJSTypes
-            this.zw.scServer.exchange.publish(Const.Settings.CHANNEL.PANEL_OUT,ChExchangeEngine.buildData(eventName,data));
+            this.zw.scServer.exchange.publish(ZationChannel.PANEL_OUT,ChExchangeEngine.buildData(eventName,data));
         }
     }
 

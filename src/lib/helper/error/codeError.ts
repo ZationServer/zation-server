@@ -9,7 +9,7 @@ This Marks error in code
 Example try to set custom auth token, but sc is not authenticated
  */
 
-import {ErrorConstruct}   from "../configEditTool/errorConfigStructure";
+import {ErrorConstruct}     from "../configs/errorConfig";
 import TaskError          = require("../../api/TaskError");
 
 class CodeError extends TaskError

@@ -4,36 +4,35 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const         = require('../constants/constWrapper');
 import Logger        = require('../logger/logger');
-import ZationConfig  = require("../../main/zationConfig");
+import {ZationChannel} from "../constants/internal";
 
 class ChTools
 {
     static buildCustomIdChannelName(name ?: string,id : string = '') : string
     {
         if(!!name) {
-            return Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX + name
-                + Const.Settings.CHANNEL.CUSTOM_CHANNEL_ID + id;
+            return ZationChannel.CUSTOM_ID_CHANNEL_PREFIX + name
+                + ZationChannel.CUSTOM_CHANNEL_ID + id;
         }
         else {
-            return Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX;
+            return ZationChannel.CUSTOM_ID_CHANNEL_PREFIX;
         }
     }
 
     static buildCustomChannelName(name : string = '') : string
     {
-        return Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX + name;
+        return ZationChannel.CUSTOM_CHANNEL_PREFIX + name;
     }
 
     static buildAuthUserGroupChName(authUserGroup : string = '') : string
     {
-        return Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX + authUserGroup;
+        return ZationChannel.AUTH_USER_GROUP_PREFIX + authUserGroup;
     }
 
     static buildUserChName(id : number | string) : string
     {
-        return Const.Settings.CHANNEL.USER_CHANNEL_PREFIX+id;
+        return ZationChannel.USER_CHANNEL_PREFIX+id;
     }
 
     static kickOut(socket,channel : string) : void
@@ -45,8 +44,8 @@ class ChTools
 
     static getCustomIdChannelInfo(ch : string) : any
     {
-        let nameAndId = ch.replace(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX,'')
-            .split(Const.Settings.CHANNEL.CUSTOM_CHANNEL_ID);
+        let nameAndId = ch.replace(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX,'')
+            .split(ZationChannel.CUSTOM_CHANNEL_ID);
 
         if(nameAndId.length === 2)
         {
@@ -75,23 +74,10 @@ class ChTools
         return ch.split('.')[2];
     }
 
-    static getCustomIdChConfig(zc : ZationConfig,name : string) : object
-    {
-        //precompiler creates {} if is not set!
-        return zc.getChannel(Const.Channel.KEYS.CUSTOM_ID_CHANNELS)[name];
-    }
-
-    static getCustomChConfig(zc : ZationConfig,name : string) : object
-    {
-        //precompiler creates {} if is not set!
-        return zc.getChannel(Const.Channel.KEYS.CUSTOM_CHANNELS)[name];
-    }
-
     static getCustomChannelName(ch : string) : string
     {
-        return ch.replace(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX,'');
+        return ch.replace(ZationChannel.CUSTOM_CHANNEL_PREFIX,'');
     }
-
 
 }
 

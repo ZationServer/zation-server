@@ -5,10 +5,10 @@ GitHub: LucaCode
  */
 
 import TokenTools     = require('./tokenTools');
-import Const          = require('../constants/constWrapper');
 import SHBridge       = require("../bridges/shBridge");
 import ZationWorker   = require("../../main/zationWorker");
 import ZationConfig   = require("../../main/zationConfig");
+import {PrepareZationToken, ZationToken} from "../constants/internal";
 const uniqid          = require('uniqid');
 
 class TokenEngine
@@ -25,57 +25,57 @@ class TokenEngine
     }
 
     private generateExpiry() : number {
-        const defaultExp = this.zc.getMain(Const.Main.KEYS.AUTH_DEFAULT_EXPIRY);
+        const defaultExp : number = this.zc.mainConfig.authDefaultExpiry;
         return Math.floor(Date.now() / 1000) +  defaultExp;
     }
 
     //to create a new Token
     async createToken(data : object) : Promise<boolean> {
-        data[Const.Settings.TOKEN.EXPIRE] = this.generateExpiry();
-        data[Const.Settings.TOKEN.TOKEN_ID]  = uniqid();
-        data[Const.Settings.TOKEN.CHECK_KEY] = this.zc.getInternal(Const.Settings.INTERNAL_DATA.TOKEN_CHECK_KEY);
+        data[nameof<ZationToken>(s => s.exp)] = this.generateExpiry();
+        data[nameof<ZationToken>(s => s.zationTokenId)]  = uniqid();
+        data[nameof<ZationToken>(s => s.zationCheckKey)] = this.zc.internalData.tokenCheckKey;
         return TokenTools.createNewToken(data,this.shBridge.getTokenBridge(),this.worker);
     }
 
-    private updateWorkerMap(data : object) : void
+    private updateWorkerMap(data : PrepareZationToken) : void
     {
         //update worker mapper
         if(this.shBridge.isWebSocket()) {
             //update worker mapper
-            if(!this.shBridge.getTokenBridge().hasToken()) {
+            const oldToken = this.shBridge.getTokenBridge().getToken();
+            if(oldToken === null) {
                 //take new id and tokenId
-                if(!!data[Const.Settings.TOKEN.USER_ID]) {
-                    this.worker.getUserToScIdMapper().map(data[Const.Settings.TOKEN.USER_ID].toString(), this.shBridge.getSocket());
+                if(!!data.zationUserId) {
+                    this.worker.getUserToScIdMapper().map(data.zationUserId.toString(), this.shBridge.getSocket());
                 }
-                if(!!data[Const.Settings.TOKEN.TOKEN_ID]) {
-                    this.worker.getTokenIdToScIdMapper().map(data[Const.Settings.TOKEN.TOKEN_ID].toString(),this.shBridge.getSocket());
+                if(!!data.zationTokenId) {
+                    this.worker.getTokenIdToScIdMapper().map(data.zationTokenId.toString(),this.shBridge.getSocket());
                 }
             }
             else {
-                const oldToken = this.shBridge.getTokenBridge().getToken();
                 //check changed (tokenId can't change)
-                if(oldToken[Const.Settings.TOKEN.USER_ID] !== data[Const.Settings.TOKEN.USER_ID]) {
+                if(oldToken.zationUserId !== data.zationUserId) {
                     //userId Changed
-                    if(!!data[Const.Settings.TOKEN.TOKEN_ID]) {
+                    if(!!data.zationTokenId && !!data.zationUserId) {
                         //take new user id
-                        this.worker.getUserToScIdMapper().map(data[Const.Settings.TOKEN.USER_ID].toString(), this.shBridge.getSocket());
+                        this.worker.getUserToScIdMapper().map(data.zationUserId.toString(), this.shBridge.getSocket());
                     }
-                    if(!!oldToken[Const.Settings.TOKEN.USER_ID]) {
+                    if(!!oldToken.zationUserId) {
                         //remove old token user id
-                        this.worker.getUserToScIdMapper().removeValueFromKey(oldToken[Const.Settings.TOKEN.USER_ID].toString(), this.shBridge.getSocket());
+                        this.worker.getUserToScIdMapper().removeValueFromKey(oldToken.zationUserId.toString(), this.shBridge.getSocket());
                     }
                 }
 
                 //update authUserGroup Mapper
-                if(oldToken[Const.Settings.TOKEN.AUTH_USER_GROUP] !== data[Const.Settings.TOKEN.AUTH_USER_GROUP]) {
+                if(oldToken.zationAuthUserGroup !== data.zationAuthUserGroup) {
                     //authUserGroup Changed
-                    if(!!data[Const.Settings.TOKEN.AUTH_USER_GROUP]) {
-                        //take new user id
-                        this.worker.getAuthUserGroupToScMapper().map(data[Const.Settings.TOKEN.AUTH_USER_GROUP], this.shBridge.getSocket());
+                    if(!!data.zationAuthUserGroup) {
+                        //take new auth user group
+                        this.worker.getAuthUserGroupToScMapper().map(data.zationAuthUserGroup, this.shBridge.getSocket());
                     }
-                    if(!!oldToken[Const.Settings.TOKEN.AUTH_USER_GROUP]) {
-                        //remove old token user id
-                        this.worker.getAuthUserGroupToScMapper().removeValueFromKey(oldToken[Const.Settings.TOKEN.USER_ID],this.shBridge.getSocket());
+                    if(!!oldToken.zationAuthUserGroup) {
+                        //remove old token auth user group
+                        this.worker.getAuthUserGroupToScMapper().removeValueFromKey(oldToken.zationAuthUserGroup,this.shBridge.getSocket());
                     }
                 }
 
@@ -83,18 +83,20 @@ class TokenEngine
         }
     }
 
-    async updateTokenVariable(data : object) : Promise<boolean> {
+    async updateTokenVariable(data : PrepareZationToken) : Promise<boolean> {
         this.updateWorkerMap(data);
         return await TokenTools.updateToken(data,this.shBridge.getTokenBridge(),this.worker);
     }
 
     //getATokenVariable
+    // noinspection JSUnusedGlobalSymbols
     getTokenVariable(key : any) : any {
         return TokenTools.getTokenVariable(key,this.shBridge.getTokenBridge());
     }
 
     getCustomTokenVar() : object {
-        return TokenTools.getTokenVariable(Const.Settings.TOKEN.CUSTOM_VARIABLES,this.shBridge.getTokenBridge());
+        return TokenTools.getTokenVariable
+        (nameof<ZationToken>(s => s.zationCustomVariables),this.shBridge.getTokenBridge());
     }
 
     async setCustomTokenVar(data : object) : Promise<boolean> {

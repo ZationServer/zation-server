@@ -4,9 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ErrorConstruct}     from "../helper/configEditTool/errorConfigStructure";
+import {ErrorConstruct}     from "../helper/configs/errorConfig";
 import TaskErrorBuilder   = require("../helper/builder/taskErrorBuilder");
-let Const                 = require('../helper/constants/constWrapper');
+import {ErrorType}         from "../helper/constants/errorType";
+import {ResponseTaskError, TaskErrorInfo} from "../helper/constants/internal";
 
 class TaskError extends Error
 {
@@ -29,7 +30,7 @@ class TaskError extends Error
      * new TaskError({name : 'inputNotMatchWithMinLength'},{minLength : 5, inputLength : 3}).throw();
      * @param errorConstruct
      * Create a new error construct
-     * or get one from the error.config by using the method getErrorConstruct on the bag/smallBag.
+     * or get one from the errorConfig by using the method getErrorConstruct on the bag/smallBag.
      * @param info
      * The error info is a dynamic object which contains more detailed information.
      * For example, with an inputNotMatchWithMinLength error,
@@ -40,18 +41,18 @@ class TaskError extends Error
     {
         super();
         //defaultValues
-        this.name        = errorConstruct[Const.Settings.ERROR.NAME] || 'TaskError';
-        this.group       = errorConstruct[Const.Settings.ERROR.GROUP];
-        this.description = errorConstruct[Const.Settings.ERROR.DESCRIPTION] || 'No Description define in Error';
-        this.type        = errorConstruct[Const.Settings.ERROR.TYPE] || Const.Error.NORMAL_ERROR;
-        this.sendInfo    = errorConstruct[Const.Settings.ERROR.SEND_INFO] || false;
+        this.name        = errorConstruct.name || 'TaskError';
+        this.group       = errorConstruct.group;
+        this.description = errorConstruct.description || 'No Description define in Error';
+        this.type        = errorConstruct.type || ErrorType.NORMAL_ERROR;
+        this.sendInfo    = errorConstruct.sendInfo || false;
         this.info        = {};
-        this.privateE    = errorConstruct[Const.Settings.ERROR.PRIVATE] || false;
-        this.fromZationSystem = errorConstruct[Const.Settings.ERROR.FROM_ZATION_SYSTEM] || false;
+        this.privateE    = errorConstruct.private || false;
+        this.fromZationSystem = errorConstruct.fromZationSystem || false;
 
         if(info) {
             if (typeof info === 'string') {
-                this.info[Const.Settings.ERROR.INFO.MAIN] = info;
+                this.info[TaskErrorInfo.MAIN] = info;
             }
             else {
                 this.info = info;
@@ -75,27 +76,30 @@ class TaskError extends Error
      * This method is used internal!
      * @param withDesc
      */
-    _getJsonObj(withDesc : boolean = false) : object
+    _getJsonObj(withDesc : boolean = false) : ResponseTaskError
     {
-        const obj : any = {
-            [Const.Settings.RESPONSE.ERROR.TYPE] : this.type,
-            [Const.Settings.RESPONSE.ERROR.FROM_ZATION_SYSTEM] : this.fromZationSystem
-        };
+        if(this.privateE){
+            return {
+                n : 'TaskError',
+                t : this.type,
+                zs : this.fromZationSystem
+            }
+        }
+        else{
+            const err : ResponseTaskError = {
+                n : this.name,
+                g : this.group,
+                t : this.type,
+                zs : this.fromZationSystem,
+                i : this.sendInfo ? this.info : {}
+            };
 
-        if(this.privateE) {
-            obj[Const.Settings.RESPONSE.ERROR.NAME] = 'TaskError';
-        }
-        else {
-            obj[Const.Settings.RESPONSE.ERROR.NAME] = this.name;
-            obj[Const.Settings.RESPONSE.ERROR.GROUP] = this.group;
-            if(withDesc) {
-                obj[Const.Settings.RESPONSE.ERROR.DESCRIPTION] = this.description;
+            if(withDesc){
+                err.d = this.description;
             }
-            if(this.sendInfo) {
-                obj[Const.Settings.RESPONSE.ERROR.INFO] = this.info;
-            }
+
+            return err;
         }
-        return obj;
     }
 
     // noinspection JSUnusedGlobalSymbols

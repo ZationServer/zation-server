@@ -17,10 +17,12 @@ class ServiceNotFoundError extends CodeError
         super(MainTaskErrors.serviceNotFound,{serviceKey,serviceName});
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getServiceName(): string {
         return this.serviceName;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getServiceKey(): string {
         return this.serviceKey;
     }

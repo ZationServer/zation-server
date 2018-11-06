@@ -5,7 +5,6 @@ GitHub: LucaCode
  */
 
 import fs           = require('fs');
-import Const        = require('../constants/constWrapper');
 import ZationConfig = require("../../main/zationConfig");
 
 class ClientPrepare
@@ -29,11 +28,11 @@ class ClientPrepare
     {
         let res = '';
         res += 'var ZATION_SERVER_SETTINGS = {';
-        res += `HOSTNAME : '${zc.getMain(Const.Main.KEYS.HOSTNAME)}',`;
-        res += `PORT : ${zc.getMain(Const.Main.KEYS.PORT)},`;
-        res += `SECURE : ${zc.getMain(Const.Main.KEYS.SECURE)},`;
-        res += `POST_KEY : '${zc.getMain(Const.Main.KEYS.POST_KEY)}',`;
-        res += `PATH : '${zc.getMain(Const.Main.KEYS.PATH)}'`;
+        res += `HOSTNAME : '${zc.mainConfig.hostname}',`;
+        res += `PORT : ${zc.mainConfig.port},`;
+        res += `SECURE : ${zc.mainConfig.secure},`;
+        res += `POST_KEY : '${zc.mainConfig.postKey}',`;
+        res += `PATH : '${zc.mainConfig.path}'`;
         res += '}; \n';
         return res;
     }

@@ -18,7 +18,6 @@ import ChExchangeEngine     = require("../helper/channel/chExchangeEngine");
 import ServiceEngine        = require("../helper/services/serviceEngine");
 import ZationConfig         = require("../main/zationConfig");
 import ZationWorker         = require("../main/zationWorker");
-import Const                = require('../helper/constants/constWrapper');
 const  uuidV4               = require('uuid/v4');
 const uniqid                = require('uniqid');
 import ExchangeEngine       = require('../helper/channel/chExchangeEngine');
@@ -32,8 +31,9 @@ import ObjectPath           = require("../helper/tools/objectPath");
 import TokenTools           = require("../helper/token/tokenTools");
 import {AsymmetricKeyPairs}   from "../helper/infoObjects/asymmetricKeyPairs";
 import {WorkerMessageActions} from "../helper/constants/workerMessageActions";
-import {ErrorConstruct} from "../helper/configEditTool/errorConfigStructure";
-import TaskErrorBag = require("./TaskErrorBag");
+import {ErrorConstruct}       from "../helper/configs/errorConfig";
+import TaskErrorBag         = require("./TaskErrorBag");
+import {ZationChannel, ZationToken} from "../helper/constants/internal";
 
 class SmallBag
 {
@@ -69,7 +69,7 @@ class SmallBag
      */
     getServerPort() : number
     {
-        return this.zc.getMain(Const.Main.KEYS.PORT);
+        return this.zc.mainConfig.port;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -89,7 +89,7 @@ class SmallBag
      */
     getAppName() : string
     {
-        return this.zc.getMain(Const.Main.KEYS.APP_NAME);
+        return this.zc.mainConfig.appName;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -864,7 +864,7 @@ class SmallBag
      * Returns a new taskError by using the constructor.
      * @param errorConstruct
      * Create a new error construct
-     * or get one from the error.config by using the method getErrorConstruct on the bag/smallBag.
+     * or get one from the errorConfig by using the method getErrorConstruct on the bag/smallBag.
      * @param info
      * The error info is a dynamic object which contains more detailed information.
      * For example, with an inputNotMatchWithMinLength error,
@@ -1012,7 +1012,7 @@ class SmallBag
     async kickUserAllCh(userId : number | string | (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
         await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.USER_IDS,WorkerChTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : Const.Settings.CHANNEL.ALL});
+        (WorkerChTargets.USER_IDS,WorkerChTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : ZationChannel.ALL});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1048,7 +1048,7 @@ class SmallBag
     async kickUserDefaultUserGroupCh(userId : number | string | (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
         await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.USER_IDS,WorkerChTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : Const.Settings.CHANNEL.DEFAULT_USER_GROUP});
+        (WorkerChTargets.USER_IDS,WorkerChTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : ZationChannel.DEFAULT_USER_GROUP});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1102,7 +1102,7 @@ class SmallBag
     async kickTokenAllCh(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
         await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : Const.Settings.CHANNEL.ALL});
+        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : ZationChannel.ALL});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1136,7 +1136,7 @@ class SmallBag
     async kickTokenDefaultUserGroupCh(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
         await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : Const.Settings.CHANNEL.DEFAULT_USER_GROUP});
+        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : ZationChannel.DEFAULT_USER_GROUP});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1183,7 +1183,7 @@ class SmallBag
     async kickAllSocketsAllCh(exceptSocketSids : string[] | string = []) : Promise<void>
     {
         await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch : Const.Settings.CHANNEL.ALL});
+        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ZationChannel.ALL});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1213,7 +1213,7 @@ class SmallBag
     async kickAllSocketsDefaultUserGroupCh(exceptSocketSids : string[] | string = []) : Promise<void>
     {
         await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch : Const.Settings.CHANNEL.DEFAULT_USER_GROUP});
+        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ZationChannel.DEFAULT_USER_GROUP});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1263,7 +1263,7 @@ class SmallBag
     async kickSocketsAllCh(socketSid : string | string[]) : Promise<void>
     {
         await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS,WorkerChTaskActions.KICK_OUT,socketSid,[],{ch : Const.Settings.CHANNEL.ALL});
+        (WorkerChTargets.SOCKETS_SIDS,WorkerChTaskActions.KICK_OUT,socketSid,[],{ch : ZationChannel.ALL});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1295,7 +1295,7 @@ class SmallBag
     async kickSocketsDefaultUserGroupCh(socketSid : string | string[]) : Promise<void>
     {
         await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS,WorkerChTaskActions.KICK_OUT,socketSid,[],{ch : Const.Settings.CHANNEL.DEFAULT_USER_GROUP});
+        (WorkerChTargets.SOCKETS_SIDS,WorkerChTaskActions.KICK_OUT,socketSid,[],{ch : ZationChannel.DEFAULT_USER_GROUP});
     }
 
     //Part Extra Emit
@@ -1509,7 +1509,7 @@ class SmallBag
      * @param socket
      */
     getUserIdFromSocket(socket : Socket) : string | number | undefined {
-        return TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.USER_ID,socket);
+        return TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationUserId),socket);
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
@@ -1521,7 +1521,7 @@ class SmallBag
      * @param socket
      */
     getAuthUserGroupFromSocket(socket : Socket) : string | undefined {
-        return TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.AUTH_USER_GROUP,socket);
+        return TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationAuthUserGroup),socket);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -1578,7 +1578,7 @@ class SmallBag
      */
     setSocketVariableWithSocket(socket : Socket,path : string | string[],value : any) : void
     {
-        ObjectPath.set(socket[Const.Settings.SOCKET.VARIABLES],path,value);
+        ObjectPath.set(socket.zationSocketVariables,path,value);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -1593,7 +1593,7 @@ class SmallBag
      */
     hasSocketVariableWithSocket(socket : Socket,path ?: string | string[]) : boolean
     {
-        return ObjectPath.has(socket[Const.Settings.SOCKET.VARIABLES],path);
+        return ObjectPath.has(socket.zationSocketVariables,path);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -1608,7 +1608,7 @@ class SmallBag
      */
     getSocketVariableWithSocket(socket : Socket,path ?: string | string[]) : any
     {
-        return ObjectPath.get(socket[Const.Settings.SOCKET.VARIABLES],path);
+        return ObjectPath.get(socket.zationSocketVariables,path);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -1624,10 +1624,10 @@ class SmallBag
     deleteSocketVariableWithSocket(socket : Socket,path ?: string | string[]) : void
     {
         if(!!path) {
-            ObjectPath.del(socket[Const.Settings.SOCKET.VARIABLES],path);
+            ObjectPath.del(socket.zationSocketVariables,path);
         }
         else {
-            socket[Const.Settings.SOCKET.VARIABLES] = {};
+            socket.zationSocketVariables = {};
         }
     }
 

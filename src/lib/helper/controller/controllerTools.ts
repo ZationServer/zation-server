@@ -4,9 +4,14 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const            = require('../constants/constWrapper');
 import ZationConfig     = require("../../main/zationConfig");
 import Bag              = require("../../api/Bag");
+import {
+    ArrayPropertyConfig,
+    ControllerConfig,
+    InternControllerConfig,
+    ObjectPropertyConfig
+} from "../configs/appConfig";
 
 const systemControllerPath   = __dirname + './../systemController/controller';
 
@@ -14,46 +19,40 @@ class ControllerTools
 {
 
     //Part Controller Paths
-    static getControllerFullPath(controllerConfig : object) : string
+    static getControllerFullPath(controllerConfig : InternControllerConfig) : string
     {
-        let controllerPath = controllerConfig[Const.App.CONTROLLER.FILE_PATH];
-        let controllerName = controllerConfig[Const.App.CONTROLLER.FILE_NAME];
+        let controllerPath = controllerConfig.filePath;
+        let controllerName = controllerConfig.fileName;
 
-        if(controllerPath === undefined)
-        {
+        if(controllerPath === undefined) {
             return controllerName;
         }
-        else
-        {
+        else {
             return controllerPath + '/' + controllerName;
         }
     }
 
     //Part Load Controller
-    static getControllerClass(cConfig : object,zc : ZationConfig) : any
+    static getControllerClass(cConfig : InternControllerConfig,zc : ZationConfig) : any
     {
-        let path = ControllerTools.getControllerFullPath(cConfig);
-
-        if(ControllerTools.isSystemController(cConfig))
-        {
+        const path = ControllerTools.getControllerFullPath(cConfig);
+        if(ControllerTools.isSystemController(cConfig)) {
             return require(systemControllerPath + '/' + path);
         }
-        else
-        {
-            return require(zc.getStarter(Const.Starter.KEYS.CONTROLLER) + '/' + path);
+        else {
+            return require(zc.starterConfig.controller + '/' + path);
         }
     }
 
     //Part is SystemController
-    static isSystemController(cConfig : object) : boolean
-    {
-        return cConfig[Const.App.CONTROLLER.SYSTEM_CONTROLLER];
+    static isSystemController(cConfig : ControllerConfig) : boolean {
+        return !!cConfig.systemController;
     }
 
     //Part Before Handle
-    static async processBeforeHandleEvents(controllerConfig : object,bag : Bag) : Promise<void>
+    static async processBeforeHandleEvents(controllerConfig : ControllerConfig,bag : Bag) : Promise<void>
     {
-        let beforeHandle = controllerConfig[Const.App.CONTROLLER.BEFORE_HANDLE];
+        const beforeHandle = controllerConfig.beforeHandle;
         if(beforeHandle !== undefined)
         {
             if(Array.isArray(beforeHandle))
@@ -86,21 +85,17 @@ class ControllerTools
         let tempConfig = controllerInput;
         for(let i = 0; i < path.length; i++)
         {
-            let k = path[i];
-
+            const k = path[i];
             if(tempConfig.hasOwnProperty(k) && typeof tempConfig[k] === 'object')
             {
-                if(tempConfig[k].hasOwnProperty(Const.App.OBJECT.PROPERTIES))
-                {
-                    tempConfig = tempConfig[k][Const.App.OBJECT.PROPERTIES];
+                if(tempConfig[k].hasOwnProperty(nameof<ObjectPropertyConfig>(s => s.properties))) {
+                    tempConfig = tempConfig[k][nameof<ObjectPropertyConfig>(s => s.properties)];
                 }
-                else
-                {
+                else {
                     tempConfig = tempConfig[k];
                 }
             }
-            else
-            {
+            else {
                 return undefined;
             }
         }

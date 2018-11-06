@@ -4,14 +4,15 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const               = require('../constants/constWrapper');
 import ObjectTools         = require('../tools/objectTools');
 import TaskError           = require('../../api/TaskError');
 import TaskErrorBag        = require('../../api/TaskErrorBag');
 import MainErrors          = require('../zationTaskErrors/mainTaskErrors');
 import InputMainProcessor  = require('./inputMainProcessor');
 import SmallBag             = require("../../api/SmallBag");
-import {ProcessTaskEngine}  from "./processTaskEngine";
+import {ProcessTaskEngine}    from "./processTaskEngine";
+import {ControllerConfig, PropertyOptional} from "../configs/appConfig";
+import {ZationTask}                         from "../constants/internal";
 
 class InputReqProcessor
 {
@@ -73,7 +74,7 @@ class InputReqProcessor
 
         for(let i = inputLength; i < controllerInputKeys.length; i++)
         {
-            if(controllerInput[controllerInputKeys[i]][Const.App.VALUE.IS_OPTIONAL]) {
+            if(controllerInput[controllerInputKeys[i]][nameof<PropertyOptional>(s => s.isOptional)]) {
                 if(optionalToo) {
                     missing.push(controllerInputKeys[i]);
                 }
@@ -92,7 +93,7 @@ class InputReqProcessor
         for(let inputName in controllerInput) {
             if(controllerInput.hasOwnProperty(inputName)) {
                 if(input[inputName] === undefined) {
-                    if(controllerInput[inputName][Const.App.VALUE.IS_OPTIONAL])
+                    if(controllerInput[inputName][nameof<PropertyOptional>(s => s.isOptional)])
                     {
                         if(optionalToo) {
                             missing.push(inputName);
@@ -109,25 +110,25 @@ class InputReqProcessor
 
     //fast Checks of the input
     //than create the checked Data
-    static async processInput(task : object, controller : object, preparedSmallBag : SmallBag) : Promise<object>
+    static async processInput(task : ZationTask, controller : ControllerConfig, preparedSmallBag : SmallBag) : Promise<object>
     {
-        let input = task[Const.Settings.REQUEST_INPUT.INPUT];
+        let input = task.i;
 
-        if(typeof controller[Const.App.CONTROLLER.INPUT_ALL_ALLOW] === 'boolean'&&
-            controller[Const.App.CONTROLLER.INPUT_ALL_ALLOW]) {
+        if(typeof controller.inputAllAllow === 'boolean'&& controller.inputAllAllow) {
             return input;
         }
 
         let useInputValidation = true;
-        if(controller.hasOwnProperty(Const.App.CONTROLLER.INPUT_VALIDATION)) {
-            useInputValidation = controller[Const.App.CONTROLLER.INPUT_VALIDATION];
+        if(typeof controller.inputValidation === 'boolean') {
+            useInputValidation = controller.inputValidation;
         }
 
-        let controllerInput = controller.hasOwnProperty(Const.App.CONTROLLER.INPUT) ?
-            controller[Const.App.CONTROLLER.INPUT] : {};
+        let controllerInput = typeof controller.input === 'object' ? controller.input : {};
         let controllerInputCount = ObjectTools.objectSize(controllerInput);
 
-        let isArray     = Array.isArray(input);
+        let isArray = Array.isArray(input);
+        // noinspection TypeScriptUnresolvedVariable
+        // @ts-ignore
         let inputCount = isArray ? input.length : ObjectTools.objectSize(input);
 
         //to much input
@@ -162,6 +163,8 @@ class InputReqProcessor
                 let result = input;
                 if(isArray) {
                     //throws if the validation has an error
+                    // noinspection TypeScriptValidateTypes
+                    // @ts-ignore
                     result = await InputReqProcessor.processInputArray(input,controllerInputKeys,controllerInput,inputValueProcessor);
                 }
                 else {

@@ -17,6 +17,7 @@ class ErrorNotFoundError extends CodeError
         this.errorName = errorName;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getErrorName(): string {
         return this.errorName;
     }

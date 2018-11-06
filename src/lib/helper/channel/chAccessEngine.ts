@@ -10,7 +10,7 @@ This class is to check the access for publish or subscribe channels.
 It is used to check the access in the middleware or to check when the
 token is changed.
  */
-import Const                = require('../constants/constWrapper');
+
 import Logger               = require('../logger/logger');
 import ChTools              = require('./chTools');
 import SmallBag             = require("../../api/SmallBag");
@@ -20,7 +20,8 @@ import CIdChInfo             = require("../infoObjects/cIdChInfo");
 import CChInfo               = require("../infoObjects/cChInfo");
 import SocketInfo            = require("../infoObjects/socketInfo");
 import FuncTools             = require("../tools/funcTools");
-import PubData               = require("../infoObjects/pubData");
+import PubData               = require("../infoObjects/pubDataInfo");
+import {ZationAccess, ZationChannel, ZationToken} from "../constants/internal";
 
 export class ChAccessEngine
 {
@@ -52,13 +53,13 @@ export class ChAccessEngine
 
             if(typeof value === 'string')
             {
-                if(value === Const.Channel.ACCESS.ALL) {
+                if(value === ZationAccess.ALL) {
                     access = true;
                 }
-                else if(value === Const.Channel.ACCESS.ALL_AUTH) {
+                else if(value === ZationAccess.ALL_AUTH) {
                     access = socketInfo.isAuthIn;
                 }
-                else if(value === Const.Channel.ACCESS.ALL_NOT_AUTH) {
+                else if(value === ZationAccess.ALL_NOT_AUTH) {
                     access = !socketInfo.isAuthIn;
                 }
                 else if(socketInfo.authUserGroup === value) {
@@ -363,7 +364,7 @@ export class ChAccessEngine
 
             for(let i = 0; i < subs.length; i++)
             {
-                if(subs[i].indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1)
+                if(subs[i].indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1)
                 {
                     //custom id channel
                     const {name,id} = ChTools.getCustomIdChannelInfo(subs[i]);
@@ -378,7 +379,7 @@ export class ChAccessEngine
                         ChTools.kickOut(socket,subs[i]);
                     }
                 }
-                else if(subs[i].indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1)
+                else if(subs[i].indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1)
                 {
                     //custom channel
 
@@ -402,53 +403,45 @@ export class ChAccessEngine
         if(socket !== undefined)
         {
             // noinspection JSUnresolvedFunction
-            const token = socket.getAuthToken();
+            const token : ZationToken | null = socket.getAuthToken();
             const subs = socket.subscriptions();
 
-            let authUserGroup = undefined;
-            let userId = undefined;
-            let panelAccess = undefined;
+            let authUserGroup : undefined | string = undefined;
+            let userId : undefined | number | string = undefined;
+            let panelAccess : undefined | boolean = undefined;
 
-            if(token !== undefined && token !== null)
-            {
-                authUserGroup = token[Const.Settings.TOKEN.AUTH_USER_GROUP];
-                userId = token[Const.Settings.TOKEN.USER_ID];
-                panelAccess = token[Const.Settings.TOKEN.PANEL_ACCESS]
+            if(token !== null) {
+                authUserGroup = token.zationAuthUserGroup;
+                userId = token.zationUserId;
+                panelAccess = token.zationPanelAccess;
             }
 
             for(let i = 0; i < subs.length; i++)
             {
                 //Default group channel
-                if(subs[i] === Const.Settings.CHANNEL.DEFAULT_USER_GROUP
+                if(subs[i] === ZationChannel.DEFAULT_USER_GROUP
                     && authUserGroup !== ''
-                    && authUserGroup !== undefined)
-                {
-                    ChTools.kickOut(socket,Const.Settings.CHANNEL.DEFAULT_USER_GROUP);
+                    && authUserGroup !== undefined) {
+                    ChTools.kickOut(socket,ZationChannel.DEFAULT_USER_GROUP);
                 }
-
                 //Auth GROUP
-                else if(subs[i].indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1)
+                else if(subs[i].indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1)
                 {
-                    let authGroupSub = subs[i].replace(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX,'');
-                    if(authUserGroup !== authGroupSub)
-                    {
+                    const authGroupSub = subs[i].replace(ZationChannel.AUTH_USER_GROUP_PREFIX,'');
+                    if(authUserGroup !== authGroupSub) {
                         ChTools.kickOut(socket,subs[i]);
                     }
                 }
-
                 //User Channel
-                else if(subs[i].indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1)
+                else if(subs[i].indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1)
                 {
-                    let userIdSub = subs[i].replace(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX,'');
-                    if(userId !== userIdSub)
-                    {
+                    const userIdSub = subs[i].replace(ZationChannel.USER_CHANNEL_PREFIX,'');
+                    if(userId !== userIdSub) {
                         ChTools.kickOut(socket,subs[i]);
                     }
                 }
-
                 //Panel Channel
-                else if(subs[i] === Const.Settings.CHANNEL.PANEL_OUT && !panelAccess)
-                {
+                else if(subs[i] === ZationChannel.PANEL_OUT && !panelAccess) {
                     ChTools.kickOut(socket,subs[i]);
                 }
 

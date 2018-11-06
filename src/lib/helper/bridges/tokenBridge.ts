@@ -6,11 +6,13 @@ GitHub: LucaCode
 
 import ZationConfig = require("../../main/zationConfig");
 import TokenTools   = require('../token/tokenTools');
+import {ZationToken} from "../constants/internal";
+import {Socket}      from "../sc/socket";
 
 class TokenBridge
 {
     private readonly webSocket : boolean;
-    private readonly socket : any;
+    private readonly socket : Socket;
     private readonly req : any;
     private readonly zc : ZationConfig;
 
@@ -41,8 +43,7 @@ class TokenBridge
 
     deauthenticate() : void
     {
-        if(this.webSocket)
-        {
+        if(this.webSocket) {
             this.socket.deauthenticate();
         }
     }
@@ -53,22 +54,20 @@ class TokenBridge
         return  token !== undefined && token !== null;
     }
 
-    getToken() : any
+    getToken() : ZationToken | null
     {
-        if(this.webSocket)
-        {
+        if(this.webSocket) {
             // noinspection JSUnresolvedFunction
             return this.socket.getAuthToken();
         }
         else
         {
             // noinspection JSUnresolvedVariable
-            if(this.newToken)
-            {
+            if(this.newToken) {
+                // @ts-ignore
                 return this.plainTokenTemp;
             }
-            else
-            {
+            else {
                 return this.req.zationToken;
             }
         }
@@ -91,8 +90,9 @@ class TokenBridge
         return await TokenTools.signToken(this.plainTokenTemp,this.zc);
     }
 
-    getPlainToken() : object
+    getPlainToken() : ZationToken
     {
+        // @ts-ignore
         return this.plainTokenTemp;
     }
 

@@ -5,29 +5,24 @@ GitHub: LucaCode
  */
 
 import ZationConfig     = require("../../main/zationConfig");
-import Const            = require("../constants/constWrapper");
-import {BackgroundTask} from "../configEditTool/appConfigStructure";
+import {BackgroundTask}   from "../configs/appConfig";
 
 type SaveTask = (name : string, task : any) => void;
 
-class BackgroundTasksSaver
+class BackgroundTasksWorkerSaver
 {
     private readonly saveTask : SaveTask;
 
-    constructor(saveTask : SaveTask)
-    {
+    constructor(saveTask : SaveTask) {
         this.saveTask = saveTask;
     }
 
     saveUserBackgroundTasks (zc : ZationConfig)
     {
-        const bkt = zc.getApp(Const.App.KEYS.BACKGROUND_TASKS);
-        if(typeof bkt === 'object')
-        {
-            for(let name in bkt)
-            {
-                if(bkt.hasOwnProperty(name))
-                {
+        const bkt = zc.appConfig.backgroundTasks;
+        if(typeof bkt === 'object') {
+            for(let name in bkt) {
+                if(bkt.hasOwnProperty(name)) {
                     this.setTask(name,bkt[name]);
                 }
             }
@@ -36,13 +31,12 @@ class BackgroundTasksSaver
 
     private setTask(name : string,bkTask : BackgroundTask)
     {
-        const task = bkTask[Const.App.BACKGROUND_TASKS.TASK];
-        if(task !== undefined)
-        {
+        const task = bkTask.task;
+        if(task !== undefined) {
             this.saveTask(name,task);
         }
     }
 
 }
 
-export = BackgroundTasksSaver;
+export = BackgroundTasksWorkerSaver;

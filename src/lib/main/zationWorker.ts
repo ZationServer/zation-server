@@ -19,16 +19,14 @@ import Zation = require('./zation');
 import ZationConfig = require('./zationConfig');
 import ConfigPreCompiler = require('../helper/config/configPreCompiler');
 import Logger = require('../helper/logger/logger');
-import Const = require('../helper/constants/constWrapper');
 import ServiceEngine = require('../helper/services/serviceEngine');
 import SmallBag = require('../api/SmallBag');
 import AEPreparedPart = require('../helper/auth/aePreparedPart');
 import ChConfigManager = require("../helper/channel/chConfigManager");
 import ControllerPrepare = require('../helper/controller/controllerPrepare');
 
-import BackgroundTasksSaver = require("../helper/background/backgroundTasksSaver");
+import BackgroundTasksSaver = require("../helper/background/backgroundTasksWorkerSaver");
 import Mapper = require("../helper/tools/mapper");
-import ZationToken = require("../helper/infoObjects/zationToken");
 import IdTools = require("../helper/tools/idTools");
 import CIdChInfo = require("../helper/infoObjects/cIdChInfo");
 import SocketInfo = require("../helper/infoObjects/socketInfo");
@@ -42,6 +40,8 @@ import {WorkerChTaskActions} from "../helper/constants/workerChTaskActions";
 import {Socket} from "../helper/sc/socket";
 import {WorkerChTargets} from "../helper/constants/workerChTargets";
 import PanelEngine = require("../helper/panel/panelEngine");
+import {ZationChannel, ZationToken} from "../helper/constants/internal";
+import ZationTokenInfo = require("../helper/infoObjects/zationTokenInfo");
 
 class ZationWorker extends SCWorker
 {
@@ -130,7 +130,7 @@ class ZationWorker extends SCWorker
         this.panelEngine = new PanelEngine(this);
         Logger.printStartDebugInfo
         (
-            this.zc.getMain(Const.Main.KEYS.USE_PANEL) ?
+            this.zc.mainConfig.usePanel ?
                 `Worker with id ${this.id} creates panel engine.` :
                 `Worker with id ${this.id} checks for panel engine.`,
             true
@@ -185,19 +185,19 @@ class ZationWorker extends SCWorker
 
         //Fire ExpressEvent
         Logger.startStopWatch();
-        await this.zc.emitEvent(Const.Event.ZATION_EXPRESS,this.preparedSmallBag,this.app);
+        await this.zc.emitEvent(this.zc.eventConfig.express,this.preparedSmallBag,this.app);
         Logger.printStartDebugInfo(`Worker with id ${this.id} process express event.`,true);
 
         //Fire ScServerEvent
         Logger.startStopWatch();
-        await this.zc.emitEvent(Const.Event.ZATION_SC_SERVER,this.preparedSmallBag,this.scServer);
+        await this.zc.emitEvent(this.zc.eventConfig.scServer,this.preparedSmallBag,this.scServer);
         Logger.printStartDebugInfo(`Worker with id ${this.id} process scServer event.`,true);
 
         Logger.printStartDebugInfo(`Worker with id ${this.id} is started.`,false);
 
         //Fire event is started
         await this.zc.emitEvent
-        (Const.Event.ZATION_WORKER_IS_STARTED,this.preparedSmallBag,this.zc.getSomeInformation(),this);
+        (this.zc.eventConfig.workerIsStarted,this.preparedSmallBag,this.zc.getSomeInformation(),this);
     }
 
     private async setUpLogInfo()
@@ -222,7 +222,7 @@ class ZationWorker extends SCWorker
         this.scServer.on('connection', async (socket : Socket,conSate) => {
 
             //init sc variables
-            socket[Const.Settings.SOCKET.VARIABLES] = {};
+            socket.zationSocketVariables = {};
             socket.sid = IdTools.buildSid(this.options.instanceId,this.id,socket.id);
 
             this.initSocketEvents(socket);
@@ -241,19 +241,19 @@ class ZationWorker extends SCWorker
                      });
             });
 
-            await this.zc.emitEvent(Const.Event.SC_SERVER_CONNECTION,this.getPreparedSmallBag(),socket,conSate);
-            await this.zc.emitEvent(Const.Event.ZATION_SOCKET,this.getPreparedSmallBag(),new SocketInfo(socket));
+            await this.zc.emitEvent(this.zc.eventConfig.scServerConnection,this.getPreparedSmallBag(),socket,conSate);
+            await this.zc.emitEvent(this.zc.eventConfig.socket,this.getPreparedSmallBag(),new SocketInfo(socket));
 
         });
 
-        await this.zc.emitEvent(Const.Event.ZATION_WS_SERVER_IS_STARTED,this.zc.getSomeInformation());
+        await this.zc.emitEvent(this.zc.eventConfig.wsServerIsStarted,this.zc.getSomeInformation());
     }
 
     private async startHttpServer()
     {
         this.app = express();
 
-        const path = this.zc.getMain(Const.Main.KEYS.PATH);
+        const path = this.zc.mainConfig.path;
 
         //startCookieParser
         // noinspection JSUnresolvedFunction
@@ -275,7 +275,7 @@ class ZationWorker extends SCWorker
         // noinspection JSUnresolvedFunction,TypeScriptValidateJSTypes
         this.app.use(`/zation/assets`, express.static(__dirname + '/../public/assets'));
 
-        if(this.zc.getMain(Const.Main.KEYS.USE_PANEL)) {
+        if(this.zc.mainConfig.usePanel) {
             // noinspection JSUnresolvedFunction,TypeScriptValidateJSTypes
             this.app.use(`${path}/panel`, express.static(__dirname + '/../public/panel'));
         }
@@ -287,7 +287,7 @@ class ZationWorker extends SCWorker
             res.send(this.options.zationServerSettingsJsFile);
         });
 
-        if(this.zc.getMain(Const.Main.KEYS.CLIENT_JS_PREPARE)) {
+        if(this.zc.mainConfig.clientJsPrepare) {
             // noinspection JSUnresolvedFunction
             this.app.get(`${path}/client.js`,(req,res) =>
             {
@@ -310,7 +310,7 @@ class ZationWorker extends SCWorker
                 });
         });
 
-        await this.zc.emitEvent(Const.Event.ZATION_HTTP_SERVER_IS_STARTED,this.zc.getSomeInformation());
+        await this.zc.emitEvent(this.zc.eventConfig.httpServerIsStarted,this.zc.getSomeInformation());
     }
 
     getFullWorkerId()
@@ -324,7 +324,7 @@ class ZationWorker extends SCWorker
 
             const userMidRes = await
                 this.zc.checkScMiddlewareEvent
-                (Const.Event.SC_MIDDLEWARE_SUBSCRIBE,next,this.getPreparedSmallBag(),req);
+                (this.zc.eventConfig.scMiddlewareSubscribe,next,this.getPreparedSmallBag(),req);
 
             if(userMidRes)
             {
@@ -332,20 +332,20 @@ class ZationWorker extends SCWorker
                 let authToken = req.socket.getAuthToken();
                 let channel = req.channel;
 
-                if (channel.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
+                if (channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
                     next(await this.chAccessEngine.checkAccessSubCustomIdCh(req.socket,channel));
                 }
-                else if (channel.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
+                else if (channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
                     next(await this.chAccessEngine.checkAccessSubCustomCh(req.socket,channel));
                 }
                 else {
                     if (authToken !== null) {
-                        const id = authToken[Const.Settings.TOKEN.USER_ID];
-                        const group = authToken[Const.Settings.TOKEN.AUTH_USER_GROUP];
+                        const id = authToken[nameof<ZationToken>(s => s.zationUserId)];
+                        const group = authToken[nameof<ZationToken>(s => s.zationAuthUserGroup)];
 
-                        if (channel.indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1) {
+                        if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
                             if(id !== undefined) {
-                                if (Const.Settings.CHANNEL.USER_CHANNEL_PREFIX + id === channel) {
+                                if (ZationChannel.USER_CHANNEL_PREFIX + id === channel) {
                                     Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes user channel '${id}'`);
                                     next();
                                 }
@@ -362,9 +362,9 @@ class ZationWorker extends SCWorker
                                 next(err); //Block!
                             }
                         }
-                        else if (channel.indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1) {
+                        else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
                             if(group !== undefined) {
-                                if (Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX + group === channel) {
+                                if (ZationChannel.AUTH_USER_GROUP_PREFIX + group === channel) {
 
                                     Logger.printDebugInfo
                                     (`Socket with id: ${req.socket.id} subscribes auth group channel '${group}'`);
@@ -382,15 +382,15 @@ class ZationWorker extends SCWorker
                                 next(err); //Block!
                             }
                         }
-                        else if (channel === Const.Settings.CHANNEL.DEFAULT_USER_GROUP) {
+                        else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
                             let err : any = new Error('Auth User can\' subscribe default User GROUP Channel!');
                             err.code = 4521;
                             next(err); //Block!
                         }
-                        else if (channel === Const.Settings.CHANNEL.PANEL_OUT)
+                        else if (channel === ZationChannel.PANEL_OUT)
                         {
-                            if (authToken[Const.Settings.TOKEN.PANEL_ACCESS] !== undefined &&
-                                authToken[Const.Settings.TOKEN.PANEL_ACCESS]) {
+                            if (authToken[nameof<ZationToken>(s => s.zationPanelAccess)] !== undefined &&
+                                authToken[nameof<ZationToken>(s => s.zationPanelAccess)]) {
 
                                 Logger.printDebugInfo
                                 (`Socket with id: ${req.socket.id} subscribes panel out channel`);
@@ -402,12 +402,12 @@ class ZationWorker extends SCWorker
                                 next(err); //Block!
                             }
                         }
-                        else if(channel === Const.Settings.CHANNEL.PANEL_IN) {
+                        else if(channel === ZationChannel.PANEL_IN) {
                             let err : any = new Error('User can\'t subscribe panel in channel!');
                             err.code = 4901;
                             next(err); //Block!
                         }
-                        else if(channel === Const.Settings.CHANNEL.ALL_WORKER) {
+                        else if(channel === ZationChannel.ALL_WORKER) {
                             let err : any = new Error('User can\'t subscribe all worker channel!');
                             err.code = 4503;
                             next(err); //Block!
@@ -418,26 +418,26 @@ class ZationWorker extends SCWorker
                         }
                     }
                     else {
-                        if (channel.indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1) {
+                        if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
                             let err : any = new Error('Anonymous user can\'t subscribe a User Channel!');
                             err.code = 4541;
                             next(err); //Block!
                         }
-                        else if (channel.indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1) {
+                        else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
                             let err : any = new Error('Anonymous user can\'t subscribe a User GROUP Channel!');
                             err.code = 4531;
                             next(err); //Block!
                         }
-                        else if (channel === Const.Settings.CHANNEL.DEFAULT_USER_GROUP) {
+                        else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
                             Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes default group channel`);
                             next();
                         }
-                        else if(channel === Const.Settings.CHANNEL.PANEL_IN || channel  === Const.Settings.CHANNEL.PANEL_OUT) {
+                        else if(channel === ZationChannel.PANEL_IN || channel  === ZationChannel.PANEL_OUT) {
                             let err : any = new Error('Anonymous user can\'t subscribe panel in or out Channel!');
                             err.code = 4501;
                             next(err); //Block!
                         }
-                        else if(channel === Const.Settings.CHANNEL.ALL_WORKER) {
+                        else if(channel === ZationChannel.ALL_WORKER) {
                             let err : any = new Error('User can\'t subscribe all worker Channel!');
                             err.code = 4504;
                             next(err); //Block!
@@ -465,48 +465,48 @@ class ZationWorker extends SCWorker
 
             const userMidRes = await
             this.zc.checkScMiddlewareEvent
-            (Const.Event.SC_MIDDLEWARE_PUBLISH_IN,next,this.getPreparedSmallBag(),req);
+            (this.zc.eventConfig.scMiddlewarePublishIn,next,this.getPreparedSmallBag(),req);
 
             if(userMidRes)
             {
-                if (req.channel.indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1) {
+                if (req.channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
                     let err : any = new Error('User can\'t publish in a User Channel!');
                     err.code = 4546;
                     next(err); //Block!
                 }
-                else if (req.channel.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
+                else if (req.channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
                     addSrcSid();
                     next(await this.chAccessEngine.checkAccessClientPubCustomIdCh(req.socket,channel,req.data));
                 }
-                else if (req.channel.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
+                else if (req.channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
                     addSrcSid();
                     next(await this.chAccessEngine.checkAccessClientPubCustomCh(req.socket,channel,req.data));
                 }
-                else if (req.channel.indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1) {
+                else if (req.channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
                     let err : any = new Error('User can\'t publish in a User GROUP Channel!');
                     err.code = 4536;
                     next(err); //Block!
                 }
-                else if (req.channel === Const.Settings.CHANNEL.ALL) {
+                else if (req.channel === ZationChannel.ALL) {
                     let err : any = new Error('User can\'t publish in a all Channel!');
                     err.code = 4556;
                     next(err); //Block!
                 }
-                else if (req.channel === Const.Settings.CHANNEL.DEFAULT_USER_GROUP) {
+                else if (req.channel === ZationChannel.DEFAULT_USER_GROUP) {
                     let err : any = new Error('User can\'t publish in default user GROUP Channel!');
                     err.code = 4526;
                     next(err); //Block!
                 }
-                else if(req.channel === Const.Settings.CHANNEL.PANEL_OUT) {
+                else if(req.channel === ZationChannel.PANEL_OUT) {
                     let err : any = new Error('User can\'t publish in panel out channel!');
                     err.code = 4506;
                     next(err); //Block!
                 }
-                else if(req.channel === Const.Settings.CHANNEL.PANEL_IN) {
+                else if(req.channel === ZationChannel.PANEL_IN) {
                     const authToken = req.socket.getAuthToken();
                     if(authToken !== null &&
-                        authToken[Const.Settings.TOKEN.PANEL_ACCESS] !== undefined &&
-                        authToken[Const.Settings.TOKEN.PANEL_ACCESS])
+                        authToken[nameof<ZationToken>(s => s.zationPanelAccess)] !== undefined &&
+                        authToken[nameof<ZationToken>(s => s.zationPanelAccess)])
                     {
                         addSrcSid();
                         next();
@@ -518,7 +518,7 @@ class ZationWorker extends SCWorker
                         next(err); //Block!
                     }
                 }
-                else if(req.channel === Const.Settings.CHANNEL.ALL_WORKER) {
+                else if(req.channel === ZationChannel.ALL_WORKER) {
                     let err : any = new Error('User can\'t publish in all worker channel!');
                     err.code = 4507;
                     next(err); //Block!
@@ -534,7 +534,7 @@ class ZationWorker extends SCWorker
         {
             const userMidRes = await
                 this.zc.checkScMiddlewareEvent
-                (Const.Event.SC_MIDDLEWARE_PUBLISH_OUT,next,this.getPreparedSmallBag(),req);
+                (this.zc.eventConfig.scMiddlewarePublishOut,next,this.getPreparedSmallBag(),req);
 
             if(userMidRes)
             {
@@ -544,32 +544,32 @@ class ZationWorker extends SCWorker
                         if
                         (
                             (
-                                req.channel.indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1 &&
+                                req.channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1 &&
                                 !this.chConfigManager.getSocketGetOwnPubUserCh()
                             )
                             ||
                             (
-                                req.channel.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1 &&
+                                req.channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1 &&
                                 !this.chConfigManager.getSocketGetOwnPubCustomIdCh(ChTools.getCustomIdChannelName(req.channel))
                             )
                             ||
                             (
-                                req.channel.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1 &&
+                                req.channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1 &&
                                 !this.chConfigManager.getSocketGetOwnPubCustomCh(ChTools.getCustomChannelName(req.channel))
                             )
                             ||
                             (
-                                req.channel.indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1 &&
+                                req.channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1 &&
                                 !this.chConfigManager.getSocketGetOwnPubAuthUserGroupCh()
                             )
                             ||
                             (
-                                req.channel === Const.Settings.CHANNEL.ALL &&
+                                req.channel === ZationChannel.ALL &&
                                 !this.chConfigManager.getSocketGetOwnPubAllCh()
                             )
                             ||
                             (
-                                req.channel === Const.Settings.CHANNEL.DEFAULT_USER_GROUP &&
+                                req.channel === ZationChannel.DEFAULT_USER_GROUP &&
                                 !this.chConfigManager.getSocketGetOwnPubDefaultUserGroupCh()
 
                             )
@@ -599,7 +599,7 @@ class ZationWorker extends SCWorker
         {
             const userMidRes = await
             this.zc.checkScMiddlewareEvent
-            (Const.Event.SC_MIDDLEWARE_HANDSHAKE_SC,next,this.getPreparedSmallBag(),req);
+            (this.zc.eventConfig.scMiddlewareHandshakeSc,next,this.getPreparedSmallBag(),req);
 
             if(userMidRes) {
                 //check for version and system info
@@ -611,7 +611,8 @@ class ZationWorker extends SCWorker
                     (typeof query.version === 'string' || typeof query.version === 'number') &&
                     typeof query.system === 'string')
                 {
-                    req.socket.zationClient = {
+                    const socket : Socket = req.socket;
+                    socket.zationClient = {
                             version : parseFloat(query.version),
                             system : query.system
                         };
@@ -630,7 +631,7 @@ class ZationWorker extends SCWorker
         {
             const userMidRes = await
             this.zc.checkScMiddlewareEvent
-            (Const.Event.SC_MIDDLEWARE_HANDSHAKE_WS,next,this.getPreparedSmallBag(),req);
+            (this.zc.eventConfig.scMiddlewareHandshakeWs,next,this.getPreparedSmallBag(),req);
 
             if(userMidRes) {
                 next();
@@ -642,7 +643,7 @@ class ZationWorker extends SCWorker
         {
             const userMidRes = await
             this.zc.checkScMiddlewareEvent
-            (Const.Event.SC_MIDDLEWARE_EMIT,next,this.getPreparedSmallBag(),req);
+            (this.zc.eventConfig.scMiddlewareEmit,next,this.getPreparedSmallBag(),req);
 
             if(userMidRes) {
                 next();
@@ -657,15 +658,15 @@ class ZationWorker extends SCWorker
 
             const userMidRes = await
             this.zc.checkScMiddlewareEvent
-            (Const.Event.SC_MIDDLEWARE_AUTHENTICATE,next,this.getPreparedSmallBag(),req);
+            (this.zc.eventConfig.scMiddlewareAuthenticate,next,this.getPreparedSmallBag(),req);
 
             const zationAuthMid = await
             this.zc.checkAuthenticationMiddlewareEvent
-            (Const.Event.MIDDLEWARE_AUTHENTICATE,next,this.getPreparedSmallBag(),new ZationToken(token));
+            (this.zc.eventConfig.middlewareAuthenticate,next,this.getPreparedSmallBag(),new ZationTokenInfo(token));
 
             if(userMidRes && zationAuthMid) {
-                if(this.zc.getMain(Const.Main.KEYS.USE_TOKEN_CHECK_KEY)) {
-                    if(token[Const.Settings.TOKEN.CHECK_KEY] === this.zc.getInternal(Const.Settings.INTERNAL_DATA.TOKEN_CHECK_KEY)) {
+                if(this.zc.mainConfig.useTokenCheckKey) {
+                    if(token[nameof<ZationToken>(s => s.zationCheckKey)] === this.zc.internalData.tokenCheckKey) {
                         next();
                     }
                     else {
@@ -683,40 +684,40 @@ class ZationWorker extends SCWorker
     {
         this.scServer.on('error', async (err) =>
         {
-            await this.zc.emitEvent(Const.Event.SC_SERVER_ERROR,this.getPreparedSmallBag(),err);
+            await this.zc.emitEvent(this.zc.eventConfig.scServerError,this.getPreparedSmallBag(),err);
         });
 
         this.scServer.on('notice', async (note) =>
         {
-            await this.zc.emitEvent(Const.Event.SC_SERVER_NOTICE,this.getPreparedSmallBag(),note);
+            await this.zc.emitEvent(this.zc.eventConfig.scServerNotice,this.getPreparedSmallBag(),note);
         });
 
         this.scServer.on('handshake', async (socket) =>
         {
-            await this.zc.emitEvent(Const.Event.SC_SERVER_HANDSHAKE,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.scServerHandshake,this.getPreparedSmallBag(),socket);
         });
 
         this.scServer.on('connectionAbort', async (socket) =>
         {
-            await this.zc.emitEvent(Const.Event.SC_SERVER_CONNECTION_ABORT,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.scServerConnectionAbort,this.getPreparedSmallBag(),socket);
         });
 
         this.scServer.on('disconnection', async (socket) =>
         {
-            await this.zc.emitEvent(Const.Event.ZATION_SOCKET_DISCONNECTION,this.getPreparedSmallBag(),new SocketInfo(socket));
-            await this.zc.emitEvent(Const.Event.SC_SERVER_DISCONNECTION,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.socketDisconnection,this.getPreparedSmallBag(),new SocketInfo(socket));
+            await this.zc.emitEvent(this.zc.eventConfig.scServerDisconnection,this.getPreparedSmallBag(),socket);
         });
 
         this.scServer.on('closure', async (socket) =>
         {
-            await this.zc.emitEvent(Const.Event.SC_SERVER_CLOSURE,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.scServerClosure,this.getPreparedSmallBag(),socket);
         });
 
         this.scServer.on('subscription', async (socket,chName,chOptions) =>
         {
             let pro : Promise<void>[] = [];
             //trigger sub customCh event and update mapper
-            if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
+            if(chName.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
                 const {name,id} = ChTools.getCustomIdChannelInfo(chName);
                 this.mapCustomIdChToSc.map(`${name}.${id}`,socket);
                 let func = this.chConfigManager.getOnSubCustomIdCh(name);
@@ -724,7 +725,7 @@ class ZationWorker extends SCWorker
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket)));
                 }
             }
-            else if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
+            else if(chName.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
                 const name = ChTools.getCustomChannelName(chName);
                 this.mapCustomChToSc.map(name,socket);
                 let func = this.chConfigManager.getOnSubCustomCh(name);
@@ -732,33 +733,33 @@ class ZationWorker extends SCWorker
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket)));
                 }
             }
-            else if(chName.indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1) {
+            else if(chName.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
                 let func = this.chConfigManager.getOnSubUserCh();
                 if(!!func) {
                     const id = ChTools.getUserIdFromCh(chName);
                     pro.push(FuncTools.emitEvent(func,this.smallBag,id,new SocketInfo(socket)));
                 }
             }
-            else if(chName.indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1) {
+            else if(chName.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
                 let func = this.chConfigManager.getOnSubAuthUserGroupCh();
                 if(!!func) {
                     const group = ChTools.getUserAuthGroupFromCh(chName);
                     pro.push(FuncTools.emitEvent(func,this.smallBag,group,new SocketInfo(socket)));
                 }
             }
-            else if(chName === Const.Settings.CHANNEL.DEFAULT_USER_GROUP) {
+            else if(chName === ZationChannel.DEFAULT_USER_GROUP) {
                 let func = this.chConfigManager.getOnSubDefaultUserGroupCh();
                 if(!!func) {
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new SocketInfo(socket)));
                 }
             }
-            else if(chName === Const.Settings.CHANNEL.ALL) {
+            else if(chName === ZationChannel.ALL) {
                 let func = this.chConfigManager.getOnSubAllCh();
                 if(!!func) {
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new SocketInfo(socket)));
                 }
             }
-            pro.push(this.zc.emitEvent(Const.Event.SC_SERVER_SUBSCRIPTION,this.getPreparedSmallBag(),socket,chName,chOptions));
+            pro.push(this.zc.emitEvent(this.zc.eventConfig.scServerSubscription,this.getPreparedSmallBag(),socket,chName,chOptions));
             await Promise.all(pro);
         });
 
@@ -766,7 +767,7 @@ class ZationWorker extends SCWorker
         {
             let pro : Promise<void>[] = [];
             //trigger sub customCh event and update mapper
-            if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
+            if(chName.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
                 const {name,id} = ChTools.getCustomIdChannelInfo(chName);
                 this.mapCustomIdChToSc.removeValueFromKey(`${name}.${id}`,socket);
                 let func = this.chConfigManager.getOnUnsubCustomIdCh(name);
@@ -774,7 +775,7 @@ class ZationWorker extends SCWorker
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket)));
                 }
             }
-            else if(chName.indexOf(Const.Settings.CHANNEL.CUSTOM_CHANNEL_PREFIX) !== -1) {
+            else if(chName.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
                 const name = ChTools.getCustomChannelName(chName);
                 this.mapCustomChToSc.removeValueFromKey(name,socket);
                 let func = this.chConfigManager.getOnUnsubCustomCh(name);
@@ -782,55 +783,55 @@ class ZationWorker extends SCWorker
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket)));
                 }
             }
-            else if(chName.indexOf(Const.Settings.CHANNEL.USER_CHANNEL_PREFIX) !== -1) {
+            else if(chName.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
                 let func = this.chConfigManager.getOnUnsubUserCh();
                 if(!!func) {
                     const id = ChTools.getUserIdFromCh(chName);
                     pro.push(FuncTools.emitEvent(func,this.smallBag,id,new SocketInfo(socket)));
                 }
             }
-            else if(chName.indexOf(Const.Settings.CHANNEL.AUTH_USER_GROUP_PREFIX) !== -1) {
+            else if(chName.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
                 let func = this.chConfigManager.getOnUnsubAuthUserGroupCh();
                 if(!!func) {
                     const group = ChTools.getUserAuthGroupFromCh(chName);
                     pro.push(FuncTools.emitEvent(func,this.smallBag,group,new SocketInfo(socket)));
                 }
             }
-            else if(chName === Const.Settings.CHANNEL.DEFAULT_USER_GROUP) {
+            else if(chName === ZationChannel.DEFAULT_USER_GROUP) {
                 let func = this.chConfigManager.getOnUnsubDefaultUserGroupCh();
                 if(!!func) {
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new SocketInfo(socket)));
                 }
             }
-            else if(chName === Const.Settings.CHANNEL.ALL) {
+            else if(chName === ZationChannel.ALL) {
                 let func = this.chConfigManager.getOnUnsubAllCh();
                 if(!!func) {
                     pro.push(FuncTools.emitEvent(func,this.smallBag,new SocketInfo(socket)));
                 }
             }
-            pro.push(this.zc.emitEvent(Const.Event.SC_SERVER_UNSUBSCRIPTION,this.getPreparedSmallBag(),socket,chName));
+            pro.push(this.zc.emitEvent(this.zc.eventConfig.scServerUnsubscription,this.getPreparedSmallBag(),socket,chName));
             await Promise.all(pro);
         });
 
         this.scServer.on('authentication', async (socket,authToken) =>
         {
-            await this.zc.emitEvent(Const.Event.SC_SERVER_AUTHENTICATION,this.getPreparedSmallBag(),socket,authToken);
+            await this.zc.emitEvent(this.zc.eventConfig.scServerAuthentication,this.getPreparedSmallBag(),socket,authToken);
         });
 
         this.scServer.on('deauthentication', async (socket,oldAuthToken) =>
         {
-            await this.zc.emitEvent(Const.Event.SC_SERVER_DEAUTHENTICATION,this.getPreparedSmallBag(),socket,oldAuthToken);
+            await this.zc.emitEvent(this.zc.eventConfig.scServerDeauthentication,this.getPreparedSmallBag(),socket,oldAuthToken);
         });
 
         this.scServer.on('badSocketAuthToken', async (socket,obj) =>
         {
             socket.emit('zationBadAuthToken',{});
-            await this.zc.emitEvent(Const.Event.SC_SERVER_BAD_SOCKET_AUTH_TOKEN,this.getPreparedSmallBag(),socket,obj);
+            await this.zc.emitEvent(this.zc.eventConfig.scServerBadSocketAuthToken,this.getPreparedSmallBag(),socket,obj);
         });
 
         this.scServer.on('ready', async () =>
         {
-            await this.zc.emitEvent(Const.Event.SC_SERVER_READY,this.getPreparedSmallBag());
+            await this.zc.emitEvent(this.zc.eventConfig.scServerReady,this.getPreparedSmallBag());
         });
 
     }
@@ -839,28 +840,28 @@ class ZationWorker extends SCWorker
     {
         socket.on('error', async (err) =>
         {
-            await this.zc.emitEvent(Const.Event.SOCKET_ERROR,this.getPreparedSmallBag(),socket,err);
+            await this.zc.emitEvent(this.zc.eventConfig.socketError,this.getPreparedSmallBag(),socket,err);
         });
 
         socket.on('raw', async () =>
         {
-            await this.zc.emitEvent(Const.Event.SOCKET_RAW,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.socketRaw,this.getPreparedSmallBag(),socket);
         });
 
         socket.on('connect', async (scConState) =>
         {
             // noinspection JSUnresolvedFunction
-            await this.zc.emitEvent(Const.Event.SOCKET_CONNECT,this.getPreparedSmallBag(),socket,scConState);
+            await this.zc.emitEvent(this.zc.eventConfig.socketConnect,this.getPreparedSmallBag(),socket,scConState);
         });
 
         socket.on('disconnect', async () =>
         {
-            await this.zc.emitEvent(Const.Event.SOCKET_DISCONNECT,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.socketDisconnect,this.getPreparedSmallBag(),socket);
         });
 
         socket.on('connectAbort', async () =>
         {
-            await this.zc.emitEvent(Const.Event.SOCKET_CONNECT_ABORT,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.socketConnectAbort,this.getPreparedSmallBag(),socket);
         });
 
         socket.on('close', async () =>
@@ -869,81 +870,81 @@ class ZationWorker extends SCWorker
             let token = socket.getAuthToken();
 
             if(token!==null) {
-                if(!!token[Const.Settings.TOKEN.TOKEN_ID]) {
-                    this.mapTokenIdToScId.removeValueFromKey(token[Const.Settings.TOKEN.TOKEN_ID],socket);
+                if(!!token.zationTokenId) {
+                    this.mapTokenIdToScId.removeValueFromKey(token.zationTokenId,socket);
                 }
-                if(!!token[Const.Settings.TOKEN.USER_ID]) {
-                    this.mapUserIdToScId.removeValueFromKey(token[Const.Settings.TOKEN.USER_ID],socket);
+                if(!!token.zationUserId) {
+                    this.mapUserIdToScId.removeValueFromKey(token.zationUserId,socket);
                 }
-                if(!!token[Const.Settings.TOKEN.AUTH_USER_GROUP]) {
-                    this.mapAuthUserGroupToSc.removeValueFromKey(token[Const.Settings.TOKEN.AUTH_USER_GROUP],socket);
+                if(!!token.zationAuthUserGroup) {
+                    this.mapAuthUserGroupToSc.removeValueFromKey(token.zationAuthUserGroup,socket);
                 }
             }
 
             this.defaultUserGroup.remove(socket);
 
-            await this.zc.emitEvent(Const.Event.SOCKET_CLOSE,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.socketClose,this.getPreparedSmallBag(),socket);
         });
 
         socket.on('subscribe', async () =>
         {
-            await this.zc.emitEvent(Const.Event.SOCKET_SUBSCRIBE,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.socketSubscribe,this.getPreparedSmallBag(),socket);
         });
 
         socket.on('unsubscribe', async () =>
         {
-            await this.zc.emitEvent(Const.Event.SOCKET_UNSUBSCRIBE,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.socketUnsubscribe,this.getPreparedSmallBag(),socket);
         });
 
         socket.on('badAuthToken', async (arg) =>
         {
-            await this.zc.emitEvent(Const.Event.SOCKET_BAD_AUTH_TOKEN,this.getPreparedSmallBag(),socket,arg);
+            await this.zc.emitEvent(this.zc.eventConfig.socketBadAuthToken,this.getPreparedSmallBag(),socket,arg);
         });
 
-        socket.on('authenticate', async (token) =>
+        socket.on('authenticate', async (token : ZationToken) =>
         {
             if(token!==null) {
-                if(!!token[Const.Settings.TOKEN.TOKEN_ID]) {
-                    this.mapTokenIdToScId.map(token[Const.Settings.TOKEN.TOKEN_ID],socket);
+                if(!!token.zationTokenId) {
+                    this.mapTokenIdToScId.map(token.zationTokenId,socket);
                 }
-                if(!!token[Const.Settings.TOKEN.USER_ID]) {
-                    this.mapUserIdToScId.map(token[Const.Settings.TOKEN.USER_ID],socket);
+                if(!!token.zationUserId) {
+                    this.mapUserIdToScId.map(token.zationUserId.toString(),socket);
                 }
-                if(!!token[Const.Settings.TOKEN.AUTH_USER_GROUP]) {
-                    this.mapAuthUserGroupToSc.map(token[Const.Settings.TOKEN.AUTH_USER_GROUP],socket);
+                if(!!token.zationAuthUserGroup) {
+                    this.mapAuthUserGroupToSc.map(token.zationAuthUserGroup,socket);
                     this.defaultUserGroup.remove(socket);
                 }
             }
-            await this.zc.emitEvent(Const.Event.SOCKET_AUTHENTICATE,this.getPreparedSmallBag(),socket,token);
+            await this.zc.emitEvent(this.zc.eventConfig.socketAuthenticate,this.getPreparedSmallBag(),socket,token);
         });
 
-        socket.on('deauthenticate', async (token) =>
+        socket.on('deauthenticate', async (token : ZationToken) =>
         {
             if(token!==null) {
-                if(!!token[Const.Settings.TOKEN.TOKEN_ID]) {
-                    this.mapTokenIdToScId.removeValueFromKey(token[Const.Settings.TOKEN.TOKEN_ID],socket);
+                if(!!token.zationTokenId) {
+                    this.mapTokenIdToScId.removeValueFromKey(token.zationTokenId,socket);
                 }
-                if(!!token[Const.Settings.TOKEN.USER_ID]) {
-                    this.mapUserIdToScId.removeValueFromKey(token[Const.Settings.TOKEN.USER_ID],socket);
+                if(!!token.zationUserId) {
+                    this.mapUserIdToScId.removeValueFromKey(token.zationUserId.toString(),socket);
                 }
-                if(!!token[Const.Settings.TOKEN.AUTH_USER_GROUP]) {
-                    this.mapAuthUserGroupToSc.removeValueFromKey(token[Const.Settings.TOKEN.AUTH_USER_GROUP],socket);
+                if(!!token.zationAuthUserGroup) {
+                    this.mapAuthUserGroupToSc.removeValueFromKey(token.zationAuthUserGroup,socket);
                 }
             }
             //no token = default
             this.defaultUserGroup.add(socket);
 
-            await this.zc.emitEvent(Const.Event.SOCKET_DEAUTHENTICATE,this.getPreparedSmallBag(),socket,token);
+            await this.zc.emitEvent(this.zc.eventConfig.socketDeauthenticate,this.getPreparedSmallBag(),socket,token);
         });
 
         socket.on('authStateChange', async () =>
         {
-            await this.zc.emitEvent(Const.Event.SOCKET_AUTH_STATE_CHANGE,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.socketAuthStateChange,this.getPreparedSmallBag(),socket);
         });
 
         socket.on('message', async (msg) =>
         {
-            await this.zc.emitEvent(Const.Event.SOCKET_MESSAGE,this.getPreparedSmallBag(),socket,msg);
+            await this.zc.emitEvent(this.zc.eventConfig.socketMessage,this.getPreparedSmallBag(),socket,msg);
         });
 
     }
@@ -964,7 +965,7 @@ class ZationWorker extends SCWorker
     //Part Channel Socket Access
     private async registerWorkerChannel()
     {
-        const channel = this.exchange.subscribe(Const.Settings.CHANNEL.ALL_WORKER);
+        const channel = this.exchange.subscribe(ZationChannel.ALL_WORKER);
         channel.watch(async (data) =>
         {
             if(!Array.isArray(data.ids)) {
@@ -1066,7 +1067,7 @@ class ZationWorker extends SCWorker
                 case WorkerChTaskActions.MESSAGE:
                     switch (data.target) {
                         case WorkerChTargets.THIS_WORKER:
-                            await this.zc.emitEvent(Const.Event.ZATION_WORKER_MESSAGE,this.preparedSmallBag,emitData);
+                            await this.zc.emitEvent(this.zc.eventConfig.workerMessage,this.preparedSmallBag,emitData);
                             break;
                     }
                     break;
@@ -1142,9 +1143,8 @@ class ZationWorker extends SCWorker
     {
         this.on('masterMessage',async (data,respond) =>
         {
-            if(data['userBackgroundTask'] !== undefined)
-            {
-                let id = data['userBackgroundTask'];
+            if(data['userBackgroundTask'] !== undefined) {
+                const id = data['userBackgroundTask'];
                 if(this.userBackgroundTasks.hasOwnProperty(id)) {
                     await this.invokeUserBackgroundTask(this.userBackgroundTasks[id]);
                 }
@@ -1169,13 +1169,13 @@ class ZationWorker extends SCWorker
 
     private checkAuthStart()
     {
-        if(this.zc.getMain(Const.Main.KEYS.AUTH_START))
+        if(this.zc.mainConfig.authStart)
         {
             this.authStartActive = true;
             setTimeout(() =>
             {
                 this.authStartActive = false;
-            },this.zc.getMain(Const.Main.KEYS.AUTH_START_DURATION_MS));
+            },this.zc.mainConfig.authStartDuration);
         }
     }
 

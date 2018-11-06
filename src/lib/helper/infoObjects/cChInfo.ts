@@ -13,6 +13,7 @@ class CChInfo
         this._channelName = chName;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get channelName(): string {
         return this._channelName;
     }

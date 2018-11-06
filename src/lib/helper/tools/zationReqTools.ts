@@ -4,119 +4,106 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const              = require('../constants/constWrapper');
 import ZationConfig       = require("../../main/zationConfig");
 import JsonConverter      = require("./jsonConverter");
+import {HttpGetRequest, ZationRequest, ZationTask, ZationValidationCheck} from "../constants/internal";
 
 class ZationReqTools
 {
-    static isValidReqStructure(zationReq : object,isWsReq : boolean) : boolean
+    static isValidReqStructure(zationReq : ZationRequest,isWsReq : boolean) : boolean
     {
         return (isWsReq || (
-            typeof zationReq[Const.Settings.REQUEST_INPUT.VERSION] === 'number'&&
-            typeof zationReq[Const.Settings.REQUEST_INPUT.SYSTEM] === 'string'
+            typeof zationReq.v === 'number' && typeof zationReq.s === 'string'
             )) &&
             (
                 (
-                    typeof zationReq[Const.Settings.REQUEST_INPUT.TASK] === 'object' &&
+                    typeof zationReq.t === 'object' &&
                     (
-                        typeof zationReq[Const.Settings.REQUEST_INPUT.TASK][Const.Settings.REQ_IN_C.CONTROLLER] === 'string' ||
-                        typeof zationReq[Const.Settings.REQUEST_INPUT.TASK][Const.Settings.REQ_IN_C.SYSTEM_CONTROLLER] === 'string'
+                        typeof zationReq.t.c === 'string' || typeof zationReq.t.sc === 'string'
                     ) &&
                         //input is object or array
-                    typeof zationReq[Const.Settings.REQUEST_INPUT.TASK][Const.Settings.REQUEST_INPUT.INPUT] === 'object'
+                    typeof zationReq.t.i === 'object'
                 ) || (
-                    typeof zationReq[Const.Settings.REQUEST_INPUT.AUTH] === 'object' &&
-                    typeof zationReq[Const.Settings.REQUEST_INPUT.AUTH][Const.Settings.REQUEST_INPUT.INPUT] === 'object'
+                    typeof zationReq.a === 'object' &&
+                    typeof zationReq.a.i === 'object'
                 ));
     }
 
-    static isSystemControllerReq(task : object) : boolean
-    {
-        return typeof task[Const.Settings.REQ_IN_C.SYSTEM_CONTROLLER] === 'string' &&
-            !task[Const.Settings.REQ_IN_C.CONTROLLER];
+    static isSystemControllerReq(task : ZationTask) : boolean {
+        return typeof task.sc === 'string' && !task.c;
     }
 
     public static async convertGetRequest(query : object) : Promise<object>
     {
-        const res = {};
-
+        const res : ZationRequest = {};
         //input convert
-        const input = await JsonConverter.parse(query[Const.Settings.HTTP_GET_REQ.INPUT]);
-
+        const input = await JsonConverter.parse(query[HttpGetRequest.INPUT]);
         //version,system,token
-        res[Const.Settings.REQUEST_INPUT.SYSTEM] = query[Const.Settings.HTTP_GET_REQ.SYSTEM_CONTROLLER];
-        res[Const.Settings.REQUEST_INPUT.VERSION] = query[Const.Settings.HTTP_GET_REQ.VERSION];
-        res[Const.Settings.REQUEST_INPUT.TOKEN] = query[Const.Settings.HTTP_GET_REQ.TOKEN];
-
+        res.s = query[HttpGetRequest.SYSTEM];
+        res.v = query[HttpGetRequest.VERSION];
+        res.to = query[HttpGetRequest.TOKEN];
         //task
-        if(query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.CONTROLLER) || query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.SYSTEM_CONTROLLER)) {
-            const task = {};
-
-            if(query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.CONTROLLER)) {
-                task[Const.Settings.REQ_IN_C.CONTROLLER] = query[Const.Settings.HTTP_GET_REQ.CONTROLLER];
+        if(query.hasOwnProperty(HttpGetRequest.CONTROLLER) || query.hasOwnProperty(HttpGetRequest.SYSTEM_CONTROLLER)) {
+            res.t = {
+                i : input
+            };
+            if(query.hasOwnProperty(HttpGetRequest.CONTROLLER)) {
+                res.t.c = query[HttpGetRequest.CONTROLLER];
             }
             else {
-                task[Const.Settings.REQ_IN_C.SYSTEM_CONTROLLER] = query[Const.Settings.HTTP_GET_REQ.SYSTEM_CONTROLLER];
+                res.t.sc = query[HttpGetRequest.SYSTEM_CONTROLLER];
             }
-
-            task[Const.Settings.REQUEST_INPUT.INPUT] = input;
-            res[Const.Settings.REQUEST_INPUT.TASK] = task;
         }
-        else if(query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.AUTH_REQ)) {
-            res[Const.Settings.REQUEST_INPUT.AUTH] = {};
-            res[Const.Settings.REQUEST_INPUT.AUTH][Const.Settings.REQUEST_INPUT.INPUT] = input;
+        else if(query.hasOwnProperty(HttpGetRequest.AUTH_REQ)) {
+            res.a = {
+                i : input
+            };
         }
-
         return res;
     }
 
     public static async convertValidationGetRequest(query : object) : Promise<object>
     {
-        const res = {};
-
+        const res : ZationRequest = {};
         //input convert
-        const input = await JsonConverter.parse(query[Const.Settings.HTTP_GET_REQ.INPUT]);
+        const input : any = await JsonConverter.parse(query[HttpGetRequest.INPUT]);
 
-        const main = {};
-
-        if(query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.CONTROLLER)) {
-            main[Const.Settings.REQ_IN_C.CONTROLLER] = query[Const.Settings.HTTP_GET_REQ.CONTROLLER];
+        const main : ZationValidationCheck = {
+            i : input
+        };
+        if(query.hasOwnProperty(HttpGetRequest.CONTROLLER)) {
+            main.c = query[HttpGetRequest.CONTROLLER];
         }
         else {
-            main[Const.Settings.REQ_IN_C.SYSTEM_CONTROLLER] = query[Const.Settings.HTTP_GET_REQ.SYSTEM_CONTROLLER];
+            main.sc = query[HttpGetRequest.SYSTEM_CONTROLLER];
         }
-        //input
-        main[Const.Settings.VALIDATION_REQUEST_INPUT.INPUT] = input;
-
-        res[Const.Settings.VALIDATION_REQUEST_INPUT.MAIN] = main;
-
+        res.v = main;
         return res;
     }
 
     public static isValidGetReq(query : object) : boolean
     {
         return((
-            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.SYSTEM) &&
-            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.VERSION)
+            query.hasOwnProperty(HttpGetRequest.SYSTEM) &&
+            query.hasOwnProperty(HttpGetRequest.VERSION)
             )
             && (
-            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.AUTH_REQ) ||
-            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.CONTROLLER) ||
-            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.SYSTEM_CONTROLLER)
+            query.hasOwnProperty(HttpGetRequest.AUTH_REQ) ||
+            query.hasOwnProperty(HttpGetRequest.CONTROLLER) ||
+            query.hasOwnProperty(HttpGetRequest.SYSTEM_CONTROLLER)
             ) &&
-            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.INPUT));
+            query.hasOwnProperty(HttpGetRequest.INPUT));
     }
 
     public static isValidValidationGetReq(query : object) : boolean
     {
         return (
             //validationReq
-            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.VALI_REQ) &&
-            query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.INPUT) &&
+            query.hasOwnProperty(HttpGetRequest.VALI_REQ) &&
+            query.hasOwnProperty(HttpGetRequest.INPUT) &&
             (
-                query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.CONTROLLER) ||
-                query.hasOwnProperty(Const.Settings.HTTP_GET_REQ.SYSTEM_CONTROLLER)
+                query.hasOwnProperty(HttpGetRequest.CONTROLLER) ||
+                query.hasOwnProperty(HttpGetRequest.SYSTEM_CONTROLLER)
             )
         );
     }
@@ -124,48 +111,37 @@ class ZationReqTools
     static getControllerName(task : object, isSystemController : boolean) : string
     {
         if(!isSystemController) {
-            return task[Const.Settings.REQ_IN_C.CONTROLLER];
+            return task[nameof<ZationTask>(s => s.c)];
         }
         else {
-            return task[Const.Settings.REQ_IN_C.SYSTEM_CONTROLLER];
+            return task[nameof<ZationTask>(s => s.sc)];
         }
     }
 
-    static isValidationCheckReq(zationReq : object) : boolean
-    {
-        return typeof zationReq[Const.Settings.VALIDATION_REQUEST_INPUT.MAIN] === 'object'
-               &&     zationReq[Const.Settings.REQUEST_INPUT.TASK] === undefined
-               &&     zationReq[Const.Settings.REQUEST_INPUT.AUTH] === undefined;
+    static isValidationCheckReq(zationReq : ZationRequest) : boolean {
+        return typeof zationReq.v === 'object' && zationReq.t === undefined && zationReq.a === undefined;
     }
 
-    static isValidValidationStructure(zationReq : object) : boolean
+    static isValidValidationStructure(zationReq : ZationRequest) : boolean
     {
-        return typeof zationReq[Const.Settings.VALIDATION_REQUEST_INPUT.MAIN] === 'object' &&
-            (
-                (
-                    typeof zationReq[Const.Settings.VALIDATION_REQUEST_INPUT.MAIN]
-                        [Const.Settings.REQ_IN_C.CONTROLLER] === 'string' ||
-                    typeof zationReq[Const.Settings.VALIDATION_REQUEST_INPUT.MAIN]
-                        [Const.Settings.REQ_IN_C.SYSTEM_CONTROLLER] === 'string'
-                ) &&
-                Array.isArray(zationReq[Const.Settings.VALIDATION_REQUEST_INPUT.MAIN]
-                    [Const.Settings.VALIDATION_REQUEST_INPUT.INPUT])
+        return typeof zationReq.v === 'object' &&
+            ((
+                    typeof zationReq.v.c  === 'string' || typeof zationReq.v.sc === 'string'
+                ) && Array.isArray(zationReq.v.i)
             );
     }
 
-    static isZationAuthReq(zationReq : object) : boolean
-    {
-        return zationReq[Const.Settings.REQUEST_INPUT.AUTH] !== undefined;
+    static isZationAuthReq(zationReq : ZationRequest) : boolean {
+        return zationReq.a !== undefined;
     }
 
-    static dissolveZationAuthReq(zc : ZationConfig,zationReq : object) : object
+    static dissolveZationAuthReq(zc : ZationConfig,zationReq : ZationRequest) : object
     {
-        zationReq[Const.Settings.REQUEST_INPUT.TASK] = zationReq[Const.Settings.REQUEST_INPUT.AUTH];
-        delete zationReq[Const.Settings.REQUEST_INPUT.AUTH];
-
-        zationReq[Const.Settings.REQUEST_INPUT.TASK][Const.Settings.REQ_IN_C.CONTROLLER] =
-            zc.getApp(Const.App.KEYS.AUTH_CONTROLLER);
-
+        zationReq.t = zationReq.a;
+        delete zationReq.a;
+        //is checked before
+        // @ts-ignore
+        zationReq.t.c = zc.appConfig.authController;
         return zationReq;
     }
 }

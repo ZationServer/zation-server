@@ -13,18 +13,14 @@ class ConfigCheckerTools
     static assertProperty(key : string,obj : object,types : string[] | string,isOptional : boolean,configName : string,configErrorBag : ConfigErrorBag,target : Target = new Target()) : boolean
     {
         let targetText = `${target.getTarget()} property '${key}'`;
-        if(obj[key] === undefined)
-        {
-            if(!isOptional)
-            {
+        if(obj[key] === undefined) {
+            if(!isOptional) {
                 configErrorBag.addConfigError(new ConfigError(configName,`${targetText} need to be set.`));
                 return false;
             }
         }
-        else
-        {
-            if(!ConfigCheckerTools.isCorrectType(obj[key],types))
-            {
+        else {
+            if(!ConfigCheckerTools.isCorrectType(obj[key],types)) {
                 const type = ConfigCheckerTools.getTypeOf(obj[key]);
                 configErrorBag.addConfigError(new ConfigError(configName,
                     `${targetText} has a not allowed type '${type}'! This types are allowed: ${types.toString()}.`));
@@ -36,17 +32,15 @@ class ConfigCheckerTools
 
     static getTypeOf(value)
     {
-        if(Array.isArray(value))
-        {
+        if(Array.isArray(value)) {
             return 'array';
         }
-        else
-        {
+        else {
             return typeof value;
         }
     }
 
-    static assertStructure(structure : object,obj : object,configName : string,configErrorBag : ConfigErrorBag,target : Target = new Target())
+    static assertStructure(structure : object,obj : object | undefined,configName : string,configErrorBag : ConfigErrorBag,target : Target = new Target())
     {
         if(typeof obj !== 'object')
         {
@@ -108,10 +102,8 @@ class ConfigCheckerTools
         }
 
         //check only allowed keys in
-        for(let k in obj)
-        {
-            if(obj.hasOwnProperty(k) && !allowedKeys.includes(k))
-            {
+        for(let k in obj) {
+            if(obj.hasOwnProperty(k) && !allowedKeys.includes(k)) {
                 configErrorBag.addConfigError(new ConfigError(configName,
                     `${target.getTarget()} property: '${k}' is not allowed. Allowed keys are: ${allowedKeys.toString()}.`));
             }
@@ -122,16 +114,13 @@ class ConfigCheckerTools
     static assertEqualsOne(values : any[],searchValue,configName : string,configErrorBag : ConfigErrorBag,message : string,target : Target = new Target()) : boolean
     {
         let found = false;
-        for(let i = 0; i < values.length; i++)
-        {
-            if(values[i] === searchValue)
-            {
+        for(let i = 0; i < values.length; i++) {
+            if(values[i] === searchValue) {
                 found = true;
                 break;
             }
         }
-        if(!found)
-        {
+        if(!found) {
             configErrorBag.addConfigError(new ConfigError(configName,
                 `${target.getTarget()} ${message}`));
             return false;
@@ -141,28 +130,22 @@ class ConfigCheckerTools
 
     private static isCorrectType(value : any,types : any[] | any) : boolean | undefined
     {
-        let typeOk = (value,type) =>
-        {
-            if(type === 'array')
-            {
+        const typeOk = (value,type) => {
+            if(type === 'array') {
                 return Array.isArray(value);
             }
-            if(type === 'null')
-            {
+            if(type === 'null') {
                 return value === null;
             }
-            if(type === 'object')
-            {
+            if(type === 'object') {
                 return typeof value === 'object' && !Array.isArray(value);
             }
-            else
-            {
+            else {
                 return typeof value === type;
             }
         };
 
-        if(Array.isArray(types))
-        {
+        if(Array.isArray(types)) {
             for(let i = 0; i < types.length; i++)
             {
                 if(typeOk(value,types[i]))
@@ -171,8 +154,7 @@ class ConfigCheckerTools
                 }
             }
         }
-        else
-        {
+        else {
             return typeOk(value,types);
         }
     }

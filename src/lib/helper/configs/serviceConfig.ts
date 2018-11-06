@@ -3,7 +3,7 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-import Const                         = require('./../constants/constWrapper');
+
 import {PoolConfig}                  from "mysql";
 import * as SMTPTransport            from "nodemailer/lib/smtp-transport";
 import * as SMTPPool                 from "nodemailer/lib/smtp-pool";
@@ -18,10 +18,8 @@ import {MongoClientOptions}          from "mongodb";
 
 export interface ServiceConfig
 {
-    [Const.Service.KEYS.SERVICES] ?: Service;
-
-    [Const.Service.KEYS.CUSTOM_SERVICES] ?:
-        Record<string,(CustomService | Record<string,object> | DefaultConfig<object>)>;
+    services  ?: Service;
+    customServices  ?: Record<string,MainCustomService>;
 }
 
 export type MainCustomService = CustomService | Record<string,object> | DefaultConfig<object>;
@@ -37,8 +35,8 @@ export type NodeMailerConfig = (
     );
 
 type MongoDbUrl = {
-        url : string
-    }
+    url : string
+}
 
 export type MongoDbConfig = (
     MongoClientOptions & MongoDbUrl
@@ -46,10 +44,10 @@ export type MongoDbConfig = (
 
 export interface Service
 {
-    [Const.Service.SERVICES.MYSQL] ?: Record<string,PoolConfig> | DefaultConfig<PoolConfig>;
-    [Const.Service.SERVICES.NODE_MAILER] ?: Record<string,NodeMailerConfig> | DefaultConfig<NodeMailerConfig>;
-    [Const.Service.SERVICES.POSTGRES_SQL] ?: Record<string,ConnectionConfig> | DefaultConfig<ConnectionConfig>;
-    [Const.Service.SERVICES.MONGO_DB] ?: Record<string,MongoDbConfig> | DefaultConfig<MongoDbConfig>;
+    mySql  ?: Record<string,PoolConfig> | DefaultConfig<PoolConfig>;
+    nodeMailer  ?: Record<string,NodeMailerConfig> | DefaultConfig<NodeMailerConfig>;
+    postgresSql  ?: Record<string,ConnectionConfig> | DefaultConfig<ConnectionConfig>;
+    mongoDb  ?: Record<string,MongoDbConfig> | DefaultConfig<MongoDbConfig>;
 }
 
 export type CustomServiceCreateFunction<T> = (config : object) => Promise<T>;
@@ -57,8 +55,8 @@ export type CustomServiceGetFunction<T,R> = (service : T) => Promise<R>;
 
 export interface CustomService
 {
-    [Const.Service.CUSTOM_SERVICES.CREATE] ?: CustomServiceCreateFunction<any>;
-    [Const.Service.CUSTOM_SERVICES.GET] ?: CustomServiceGetFunction<any,any>
+    create  ?: CustomServiceCreateFunction<any>;
+    get  ?: CustomServiceGetFunction<any,any>
 }
 
 export interface DefaultConfig<T>

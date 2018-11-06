@@ -3,14 +3,14 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-import Const                         = require('./../constants/constWrapper');
+
 import ExpressCore                   = require("express-serve-static-core");
 import SmallBag                      = require("../../api/SmallBag");
 import ZationInfoObj                 = require("../infoObjects/zationInfo");
 import ZationWorker                  = require("../../main/zationWorker");
 import TaskError                     = require("../../api/TaskError");
 import TaskErrorBag                  = require("../../api/TaskErrorBag");
-import ZationToken                   = require("../infoObjects/zationToken");
+import ZationToken                   = require("../infoObjects/zationTokenInfo");
 import SocketInfo                    = require("../infoObjects/socketInfo");
 import {ScServer}                      from "../sc/scServer";
 import {Socket}                        from "../sc/socket";
@@ -54,55 +54,55 @@ export type ScMiddlewareFunction = (smallBag : SmallBag, req : object) => Promis
 
 export interface EventConfig
 {
-    [Const.Event.ZATION_EXPRESS] ?: ExpressFunction | ExpressFunction[];
-    [Const.Event.ZATION_SC_SERVER] ?: ScServerFunction | ScServerFunction[];
-    [Const.Event.ZATION_SOCKET] ?: ZationSocketFunction | ZationSocketFunction[];
-    [Const.Event.ZATION_WORKER_IS_STARTED] ?: WorkerIsStartedFunction | WorkerIsStartedFunction[];
-    [Const.Event.ZATION_HTTP_SERVER_IS_STARTED] ?: HttpServerIsStartedFunction | HttpServerIsStartedFunction[];
-    [Const.Event.ZATION_WS_SERVER_IS_STARTED] ?: WsServerIsStartedFunction | WsServerIsStartedFunction[];
-    [Const.Event.ZATION_IS_STARTED] ?: IsStartedFunction | IsStartedFunction[];
-    [Const.Event.ZATION_BEFORE_ERROR] ?: BeforeErrorFunction | BeforeErrorFunction[];
-    [Const.Event.ZATION_BEFORE_TASK_ERROR] ?: BeforeTaskErrorFunction | BeforeTaskErrorFunction[];
-    [Const.Event.ZATION_BEFORE_CODE_ERROR] ?: BeforeCodeErrorFunction | BeforeCodeErrorFunction[];
-    [Const.Event.ZATION_BEFORE_TASK_ERROR_BAG] ?: BeforeTaskErrorBagFunction | BeforeTaskErrorBagFunction[];
-    [Const.Event.ZATION_SOCKET_DISCONNECTION] ?: ZationSocketDisconnectionFunction | ZationSocketDisconnectionFunction[];
-    [Const.Event.ZATION_WORKER_MESSAGE] ?: ZationWorkerMessageFunction | ZationWorkerMessageFunction[];
+    express  ?: ExpressFunction | ExpressFunction[];
+    scServer  ?: ScServerFunction | ScServerFunction[];
+    socket  ?: ZationSocketFunction | ZationSocketFunction[];
+    workerIsStarted  ?: WorkerIsStartedFunction | WorkerIsStartedFunction[];
+    httpServerIsStarted  ?: HttpServerIsStartedFunction | HttpServerIsStartedFunction[];
+    wsServerIsStarted  ?: WsServerIsStartedFunction | WsServerIsStartedFunction[];
+    isStarted  ?: IsStartedFunction | IsStartedFunction[];
+    beforeError  ?: BeforeErrorFunction | BeforeErrorFunction[];
+    beforeTaskError  ?: BeforeTaskErrorFunction | BeforeTaskErrorFunction[];
+    beforeCodeError  ?: BeforeCodeErrorFunction | BeforeCodeErrorFunction[];
+    beforeTaskErrorBag  ?: BeforeTaskErrorBagFunction | BeforeTaskErrorBagFunction[];
+    socketDisconnection  ?: ZationSocketDisconnectionFunction | ZationSocketDisconnectionFunction[];
+    workerMessage  ?: ZationWorkerMessageFunction | ZationWorkerMessageFunction[];
 
-    [Const.Event.MIDDLEWARE_AUTHENTICATE] ?: MiddlewareAuthenticationFunction;
+    middlewareAuthenticate  ?: MiddlewareAuthenticationFunction;
 
-    [Const.Event.SOCKET_ERROR] ?: SocketErrorFunction | SocketErrorFunction[];
-    [Const.Event.SOCKET_RAW] ?: SocketFunction | SocketFunction[];
-    [Const.Event.SOCKET_CONNECT] ?: SocketConnectionFunction | SocketConnectionFunction[];
-    [Const.Event.SOCKET_DISCONNECT] ?: SocketFunction | SocketFunction[];
-    [Const.Event.SOCKET_CONNECT_ABORT] ?: SocketFunction | SocketFunction[];
-    [Const.Event.SOCKET_CLOSE] ?: SocketFunction | SocketFunction[];
-    [Const.Event.SOCKET_SUBSCRIBE] ?: SocketFunction | SocketFunction[];
-    [Const.Event.SOCKET_UNSUBSCRIBE] ?: SocketFunction | SocketFunction[];
-    [Const.Event.SOCKET_BAD_AUTH_TOKEN] ?: SocketObjFunction | SocketObjFunction[];
-    [Const.Event.SOCKET_AUTHENTICATE] ?: SocketAuthenticateFunction | SocketAuthenticateFunction[];
-    [Const.Event.SOCKET_DEAUTHENTICATE] ?: SocketDeauthenticateFunction | SocketDeauthenticateFunction[];
-    [Const.Event.SOCKET_AUTH_STATE_CHANGE] ?: SocketFunction | SocketFunction[];
-    [Const.Event.SOCKET_MESSAGE] ?: SocketMessageFunction | SocketMessageFunction[];
+    socketError  ?: SocketErrorFunction | SocketErrorFunction[];
+    socketRaw  ?: SocketFunction | SocketFunction[];
+    socketConnect  ?: SocketConnectionFunction | SocketConnectionFunction[];
+    socketDisconnect  ?: SocketFunction | SocketFunction[];
+    socketConnectAbort  ?: SocketFunction | SocketFunction[];
+    socketClose  ?: SocketFunction | SocketFunction[];
+    socketSubscribe  ?: SocketFunction | SocketFunction[];
+    socketUnsubscribe  ?: SocketFunction | SocketFunction[];
+    socketBadAuthToken  ?: SocketObjFunction | SocketObjFunction[];
+    socketAuthenticate  ?: SocketAuthenticateFunction | SocketAuthenticateFunction[];
+    socketDeauthenticate  ?: SocketDeauthenticateFunction | SocketDeauthenticateFunction[];
+    socketAuthStateChange  ?: SocketFunction | SocketFunction[];
+    socketMessage  ?: SocketMessageFunction | SocketMessageFunction[];
 
-    [Const.Event.SC_SERVER_ERROR] ?: ScServerErrorFunction | ScServerErrorFunction[];
-    [Const.Event.SC_SERVER_NOTICE] ?: ScServerNoticeFunction | ScServerNoticeFunction[];
-    [Const.Event.SC_SERVER_HANDSHAKE] ?: ScServerSocketFunction | ScServerSocketFunction[];
-    [Const.Event.SC_SERVER_CONNECTION_ABORT] ?: ScServerSocketFunction | ScServerSocketFunction[];
-    [Const.Event.SC_SERVER_CONNECTION] ?: ScServerConnectionFunction | ScServerConnectionFunction[];
-    [Const.Event.SC_SERVER_DISCONNECTION] ?: ScServerSocketFunction | ScServerSocketFunction[];
-    [Const.Event.SC_SERVER_CLOSURE] ?: ScServerSocketFunction | ScServerSocketFunction[];
-    [Const.Event.SC_SERVER_SUBSCRIPTION] ?: ScServerSubscriptionFunction | ScServerSubscriptionFunction[];
-    [Const.Event.SC_SERVER_UNSUBSCRIPTION] ?: ScServerUnsubscriptionFunction | ScServerUnsubscriptionFunction[];
-    [Const.Event.SC_SERVER_AUTHENTICATION] ?: ScServerAuthenticationFunction | ScServerAuthenticationFunction[];
-    [Const.Event.SC_SERVER_DEAUTHENTICATION] ?: ScServerDeauthenticationFunction | ScServerDeauthenticationFunction[];
-    [Const.Event.SC_SERVER_BAD_SOCKET_AUTH_TOKEN] ?: ScServerBadSocketAuthTokenFunction | ScServerBadSocketAuthTokenFunction[];
-    [Const.Event.SC_SERVER_READY] ?: ScServerReadyFunction | ScServerReadyFunction[];
+    scServerError  ?: ScServerErrorFunction | ScServerErrorFunction[];
+    scServerNotice  ?: ScServerNoticeFunction | ScServerNoticeFunction[];
+    scServerHandshake  ?: ScServerSocketFunction | ScServerSocketFunction[];
+    scServerConnectionAbort  ?: ScServerSocketFunction | ScServerSocketFunction[];
+    scServerConnection  ?: ScServerConnectionFunction | ScServerConnectionFunction[];
+    scServerDisconnection  ?: ScServerSocketFunction | ScServerSocketFunction[];
+    scServerClosure  ?: ScServerSocketFunction | ScServerSocketFunction[];
+    scServerSubscription  ?: ScServerSubscriptionFunction | ScServerSubscriptionFunction[];
+    scServerUnsubscription  ?: ScServerUnsubscriptionFunction | ScServerUnsubscriptionFunction[];
+    scServerAuthentication  ?: ScServerAuthenticationFunction | ScServerAuthenticationFunction[];
+    scServerDeauthentication  ?: ScServerDeauthenticationFunction | ScServerDeauthenticationFunction[];
+    scServerBadSocketAuthToken  ?: ScServerBadSocketAuthTokenFunction | ScServerBadSocketAuthTokenFunction[];
+    scServerReady  ?: ScServerReadyFunction | ScServerReadyFunction[];
 
-    [Const.Event.SC_MIDDLEWARE_AUTHENTICATE] ?: ScMiddlewareFunction;
-    [Const.Event.SC_MIDDLEWARE_HANDSHAKE_WS] ?: ScMiddlewareFunction;
-    [Const.Event.SC_MIDDLEWARE_HANDSHAKE_SC] ?: ScMiddlewareFunction;
-    [Const.Event.SC_MIDDLEWARE_SUBSCRIBE] ?: ScMiddlewareFunction;
-    [Const.Event.SC_MIDDLEWARE_PUBLISH_IN] ?: ScMiddlewareFunction;
-    [Const.Event.SC_MIDDLEWARE_PUBLISH_OUT] ?: ScMiddlewareFunction;
-    [Const.Event.SC_MIDDLEWARE_EMIT] ?: ScMiddlewareFunction;
+    scMiddlewareAuthenticate  ?: ScMiddlewareFunction;
+    scMiddlewareHandshakeWs  ?: ScMiddlewareFunction;
+    scMiddlewareHandshakeSc  ?: ScMiddlewareFunction;
+    scMiddlewareSubscribe  ?: ScMiddlewareFunction;
+    scMiddlewarePublishIn  ?: ScMiddlewareFunction;
+    scMiddlewarePublishOut  ?: ScMiddlewareFunction;
+    scMiddlewareEmit  ?: ScMiddlewareFunction;
 }

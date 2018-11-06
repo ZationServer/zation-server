@@ -4,8 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import TaskError = require("./TaskError");
-import {ErrorConstruct} from "../helper/configEditTool/errorConfigStructure";
+import TaskError        = require("./TaskError");
+import {ErrorConstruct}   from "../helper/configs/errorConfig";
 
 class TaskErrorBag
 {
@@ -36,7 +36,7 @@ class TaskErrorBag
      * addNewTaskError({name : 'inputNotMatchWithMinLength'},{minLength : 5, inputLength : 3});
      * @param errorConstruct
      * Create a new error construct
-     * or get one from the error.config by using the method getErrorConstruct on the bag/smallBag.
+     * or get one from the errorConfig by using the method getErrorConstruct on the bag/smallBag.
      * @param info
      * The error info is a dynamic object which contains more detailed information.
      * For example, with an inputNotMatchWithMinLength error,

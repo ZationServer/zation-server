@@ -10,7 +10,6 @@ import SHBridge      = require("../helper/bridges/shBridge");
 import AuthEngine    = require("../helper/auth/authEngine");
 import TokenEngine   = require("../helper/token/tokenEngine");
 import ZationWorker  = require("../main/zationWorker");
-import Const         = require("../helper/constants/constWrapper");
 import ObjectPath    = require("../helper/tools/objectPath");
 import MethodIsNotCompatible = require("../helper/error/methodIsNotCompatible");
 import ObjectPathSequence    = require("../helper/tools/objectPathSequence");
@@ -146,7 +145,7 @@ class Bag extends SmallBag
     setSocketVariable(path : string | string[],value : any) : void
     {
         if(this.shBridge.isWebSocket()) {
-            ObjectPath.set(this.shBridge.getSocket()[Const.Settings.SOCKET.VARIABLES],path,value);
+            ObjectPath.set(this.shBridge.getSocket().zationSocketVariables,path,value);
         }
         else {
             throw new MethodIsNotCompatible(this.getProtocol(),'ws');
@@ -167,7 +166,7 @@ class Bag extends SmallBag
     hasSocketVariable(path ?: string | string[]) : boolean
     {
         if(this.shBridge.isWebSocket()) {
-            return ObjectPath.has(this.shBridge.getSocket()[Const.Settings.SOCKET.VARIABLES],path);
+            return ObjectPath.has(this.shBridge.getSocket().zationSocketVariables,path);
         }
         else {
             throw new MethodIsNotCompatible(this.getProtocol(),'ws');
@@ -188,7 +187,7 @@ class Bag extends SmallBag
     getSocketVariable(path ?: string | string[]) : any
     {
         if(this.shBridge.isWebSocket()) {
-            return ObjectPath.get(this.shBridge.getSocket()[Const.Settings.SOCKET.VARIABLES],path);
+            return ObjectPath.get(this.shBridge.getSocket().zationSocketVariables,path);
         }
         else {
             throw new MethodIsNotCompatible(this.getProtocol(),'ws');
@@ -210,10 +209,10 @@ class Bag extends SmallBag
     {
         if(this.shBridge.isWebSocket()) {
             if(!!path) {
-                ObjectPath.del(this.shBridge.getSocket()[Const.Settings.SOCKET.VARIABLES],path);
+                ObjectPath.del(this.shBridge.getSocket().zationSocketVariables,path);
             }
             else {
-                this.shBridge.getSocket()[Const.Settings.SOCKET.VARIABLES] = {};
+                this.shBridge.getSocket().zationSocketVariables = {};
             }
         }
         else {
@@ -268,7 +267,7 @@ class Bag extends SmallBag
      * This method will throw errors if the process fails.
      * @example
      * await authenticate('user','tom12',{email : 'example@gmail.com'});
-     * @param authUserGroup The authUserGroup must exist in the app.config. Otherwise an error will be thrown.
+     * @param authUserGroup The authUserGroup must exist in the appConfig. Otherwise an error will be thrown.
      * @param userId
      * @param customTokenVar If this parameter is used all previous variables will be deleted.
      * @throws AuthenticationError
@@ -598,7 +597,7 @@ class Bag extends SmallBag
     getTokenId() : string
     {
         if(this.shBridge.getTokenBridge().hasToken()){
-            return this.tokenEngine.getTokenVariable(Const.Settings.TOKEN.TOKEN_ID);
+            return this.shBridge.getTokenBridge().getPlainToken().zationTokenId;
         }
         else {
             throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
@@ -614,7 +613,7 @@ class Bag extends SmallBag
     getTokenExpire() : number
     {
         if(this.shBridge.getTokenBridge().hasToken()){
-            return this.tokenEngine.getTokenVariable(Const.Settings.TOKEN.EXPIRE);
+            return this.shBridge.getTokenBridge().getPlainToken().exp;
         }
         else {
             throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
@@ -630,7 +629,7 @@ class Bag extends SmallBag
     getPanelAccess() : boolean
     {
         if(this.shBridge.getTokenBridge().hasToken()){
-            return this.tokenEngine.getTokenVariable(Const.Settings.TOKEN.PANEL_ACCESS);
+            return !!this.shBridge.getTokenBridge().getPlainToken().zationPanelAccess;
         }
         else {
             throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);

@@ -4,319 +4,191 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const             = require('../helper/constants/constWrapper');
 import ObjectTools       = require('../helper/tools/objectTools');
-
 import path              = require('path');
 import fs                = require('fs');
 import crypto            = require('crypto');
 import ZationInfoObj     = require("../helper/infoObjects/zationInfo");
 import Structures        = require('./../helper/config/structures');
 import FuncTools         = require("../helper/tools/funcTools");
-import {ErrorConstruct}    from "../helper/configEditTool/errorConfigStructure";
+import {ErrorConstruct}    from "../helper/configs/errorConfig";
 import ErrorNotFound     = require("../helper/error/errorNotFoundError");
 import SmallBag          = require("../api/SmallBag");
 const  uuidV4            = require('uuid/v4');
 import moment            = require('moment-timezone');
-import ZationToken       = require("../helper/infoObjects/zationToken");
-import {EventConfig}       from "../helper/configEditTool/eventConfigStructure";
-import {AppConfig}         from "../helper/configEditTool/appConfigStructure";
-import {ChannelConfig}     from "../helper/configEditTool/channelConfigStructure";
-import {ErrorConfig}       from "../helper/configEditTool/errorConfigStructure";
-import {MainConfig}        from "../helper/configEditTool/mainConfigStructure";
-import {ServiceConfig}     from "../helper/configEditTool/serviceConfigStructure";
-import {StarterConfig}     from "../helper/configEditTool/starterConfigStructure";
+import ZationToken       = require("../helper/infoObjects/zationTokenInfo");
+import {EventConfig}       from "../helper/configs/eventConfig";
+import {AppConfig}         from "../helper/configs/appConfig";
+import {ChannelConfig}     from "../helper/configs/channelConfig";
+import {ErrorConfig}       from "../helper/configs/errorConfig";
+import {InternMainConfig, OptionAuto} from "../helper/configs/mainConfig";
+import {ServiceConfig}     from "../helper/configs/serviceConfig";
+import {StarterConfig}     from "../helper/configs/starterConfig";
+import {InternalData}      from "../helper/constants/internalData";
 
 class ZationConfig
 {
-    private eventConfig : EventConfig = {};
-    private appConfig : AppConfig = {};
-    private channelConfig : ChannelConfig = {};
-    private errorConfig : ErrorConfig = {};
-    private readonly mainConfig : MainConfig = {};
-    private serviceConfig : ServiceConfig = {};
-    private readonly starterConfig : StarterConfig = {};
-    private readonly internalData : object = {};
+    private _eventConfig : EventConfig = {};
+    private _appConfig : AppConfig = {};
+    private _channelConfig : ChannelConfig = {};
+    private _errorConfig : ErrorConfig = {};
+    private _mainConfig : InternMainConfig;
+    private _serviceConfig : ServiceConfig = {};
+    private readonly _starterConfig : StarterConfig = {};
+    private readonly _internalData : InternalData = {};
 
     constructor(starterData : object = {},workerTransport : boolean = false)
     {
         if(!workerTransport)
         {
-            this.starterConfig = starterData;
+            this._starterConfig = starterData;
             this.loadDefaults();
             this.loadUserDataLocations();
             this.loadMainConfig();
 
             //override env
             if(Number(process.env.PORT) || Number(process.env.p)) {
-                this.mainConfig[Const.Main.KEYS.PORT] = Number(process.env.PORT) || Number(process.env.p)
+                this._mainConfig.port = Number(process.env.PORT) || Number(process.env.p)
             }
             if(process.env.STATE_SERVER_HOST || process.env.ssh) {
-                this.mainConfig[Const.Main.KEYS.STATE_SERVER_HOST] =
+                this._mainConfig.stateServerHost =
                     process.env.STATE_SERVER_HOST || process.env.ssh;
             }
             if(Number(process.env.STATE_SERVER_PORT) || Number(process.env.ssp)) {
-                this.mainConfig[Const.Main.KEYS.STATE_SERVER_PORT] =
+                this._mainConfig.stateServerPort =
                     Number(process.env.STATE_SERVER_PORT) || Number(process.env.ssh);
             }
 
-            this.addToMainConfig(this.starterConfig,true,Structures.Main);
+            this.addToMainConfig(this._starterConfig,true,Structures.Main);
             this.processMainConfig();
 
-            this.internalData[Const.Settings.INTERNAL_DATA.TOKEN_CHECK_KEY]
-                = crypto.randomBytes(32).toString('hex');
+            this._internalData.tokenCheckKey = crypto.randomBytes(32).toString('hex');
         }
         else
         {
-            this.starterConfig = starterData['starterConfig'];
-            this.mainConfig = starterData['mainConfig'];
-            this.internalData = starterData['internalData'];
+            this._starterConfig = starterData['starterConfig'];
+            this._mainConfig = starterData['mainConfig'];
+            this._internalData = starterData['internalData'];
         }
     }
 
     loadDefaults()
     {
         //Create Defaults
-        this.mainConfig[Const.Main.KEYS.DEBUG] = false;
-        this.mainConfig[Const.Main.KEYS.START_DEBUG] = false;
-        this.mainConfig[Const.Main.KEYS.SHOW_CONFIG_WARNINGS] = true;
-        this.mainConfig[Const.Main.KEYS.PORT] = 3000;
-        this.mainConfig[Const.Main.KEYS.HOSTNAME] = 'localhost';
-        this.mainConfig[Const.Main.KEYS.ENVIRONMENT] = 'dev';
-        this.mainConfig[Const.Main.KEYS.POST_KEY] = 'zation';
-        this.mainConfig[Const.Main.KEYS.PATH] = '/zation';
-        this.mainConfig[Const.Main.KEYS.USE_AUTH] = true;
-        this.mainConfig[Const.Main.KEYS.APP_NAME] = 'AppWithoutName';
-        this.mainConfig[Const.Main.KEYS.SECURE] = false;
-        this.mainConfig[Const.Main.KEYS.USE_PROTOCOL_CHECK] = true;
-        this.mainConfig[Const.Main.KEYS.USE_HTTP_METHOD_CHECK] = true;
-        this.mainConfig[Const.Main.KEYS.SEND_ERRORS_DESC] = false;
-        this.mainConfig[Const.Main.KEYS.AUTH_KEY] = crypto.randomBytes(32).toString('hex');
-        this.mainConfig[Const.Main.KEYS.AUTH_PUBLIC_KEY] = null;
-        this.mainConfig[Const.Main.KEYS.AUTH_PRIVATE_KEY] = null;
-        this.mainConfig[Const.Main.KEYS.AUTH_DEFAULT_EXPIRY] = 86400;
-        this.mainConfig[Const.Main.KEYS.TIME_ZONE] = moment.tz.guess() || 'Europe/Berlin';
-        this.mainConfig[Const.Main.KEYS.AUTH_START] = false;
-        this.mainConfig[Const.Main.KEYS.AUTH_START_DURATION_MS] = 20000;
-        this.mainConfig[Const.Main.KEYS.WORKERS] = Const.Main.OPTIONS.AUTO;
-        this.mainConfig[Const.Main.KEYS.ZATION_CONSOLE_LOG] = true;
-        this.mainConfig[Const.Main.KEYS.SC_CONSOLE_LOG] = false;
-        this.mainConfig[Const.Main.KEYS.USE_SC_UWS] = true;
-        this.mainConfig[Const.Main.KEYS.CLUSTER_AUTH_KEY] = null;
-        this.mainConfig[Const.Main.KEYS.STATE_SERVER_HOST] = null;
-        this.mainConfig[Const.Main.KEYS.STATE_SERVER_PORT] = null;
-        this.mainConfig[Const.Main.KEYS.SC_LOG_LEVEL] = 2;
-        this.mainConfig[Const.Main.KEYS.SOCKET_CHANNEL_LIMIT] = 1000;
-        this.mainConfig[Const.Main.KEYS.CRASH_WORKER_ON_ERROR] = true;
-        this.mainConfig[Const.Main.KEYS.REBOOT_WORKER_ON_CRASH] = true;
-        this.mainConfig[Const.Main.KEYS.KILL_MASTER_ON_SIGNAL] = false;
-        this.mainConfig[Const.Main.KEYS.CONNECT_TIMEOUT] = 10000;
-        this.mainConfig[Const.Main.KEYS.HANDSHAKE_TIMEOUT] = 10000;
-        this.mainConfig[Const.Main.KEYS.ACK_TIMEOUT] = 10000;
-        this.mainConfig[Const.Main.KEYS.IPC_ACK_TIMEOUT] = 3000;
-        this.mainConfig[Const.Main.KEYS.SOCKET_UPGRADE_TIMEOUT] = 1000;
-        this.mainConfig[Const.Main.KEYS.ORIGINS] = '*:*';
-        this.mainConfig[Const.Main.KEYS.PING_INTERVAL] = 8000;
-        this.mainConfig[Const.Main.KEYS.PING_TIMEOUT] = 20000;
-        this.mainConfig[Const.Main.KEYS.PROCESS_TERM_TIME_OUT] = 10000;
-        this.mainConfig[Const.Main.KEYS.PROPAGATE_ERRORS] = true;
-        this.mainConfig[Const.Main.KEYS.PROPAGATE_WARNINGS] = true;
-        this.mainConfig[Const.Main.KEYS.MIDDLEWARE_EMIT_WARNINGS] = true;
-        this.mainConfig[Const.Main.KEYS.REBOOT_ON_SIGNAL] = true;
-        this.mainConfig[Const.Main.KEYS.DOWNGRADE_TO_USER] = false;
-        this.mainConfig[Const.Main.KEYS.ALLOW_CLIENT_PUBLISH] = true;
-        this.mainConfig[Const.Main.KEYS.WORKER_STATUS_INTERVAL] = 10000;
-        this.mainConfig[Const.Main.KEYS.CLUSTER_SHARE_TOKEN_AUTH] = true;
-        this.mainConfig[Const.Main.KEYS.INSTANCE_ID] = uuidV4();
-        this.mainConfig[Const.Main.KEYS.USE_TOKEN_CHECK_KEY] = true;
-        this.mainConfig[Const.Main.KEYS.CLIENT_JS_PREPARE] = true;
-        this.mainConfig[Const.Main.KEYS.USE_PANEL] = false;
+        this._mainConfig = {
+            debug : false,
+            startDebug : false,
+            showConfigWarnings : true,
+            port : 3000,
+            hostname : 'localhost',
+            environment : 'dev',
+            postKey : 'zation',
+            path : '/zation',
+            useAuth : true,
+            appName : 'AppWithoutName',
+            secure : false,
+            useProtocolCheck : true,
+            useHttpMethodCheck : true,
+            sendErrorDescription : false,
+            authKey : crypto.randomBytes(32).toString('hex'),
+            authPublicKey : null,
+            authPrivateKey : null,
+            authDefaultExpiry : 86400,
+            timeZone : moment.tz.guess() || 'Europe/Berlin',
+            authStart : false,
+            authStartDuration : 20000,
+            workers : "auto",
+            zationConsoleLog : true,
+            scConsoleLog : false,
+            useScUws : true,
+            clusterAuthKey : null,
+            stateServerHost : null,
+            stateServerPort : null,
+            scLogLevel : 2,
+            socketChannelLimit : 1000,
+            crashWorkerOnError : true,
+            rebootWorkerOnCrash : true,
+            killMasterOnSignal : false,
+            connectTimeout : 10000,
+            handshakeTimeout : 10000,
+            ackTimeout : 10000,
+            ipcAckTimeout : 3000,
+            socketUpgradeTimeout : 1000,
+            origins : '*:*',
+            pingInterval : 8000,
+            pingTimeout : 20000,
+            processTermTimeout : 10000,
+            propagateErrors : true,
+            propagateWarnings : true,
+            middlewareEmitWarnings : true,
+            rebootOnSignal : true,
+            downgradeToUser : false,
+            allowClientPublish : true,
+            workerStatusInterval : 10000,
+            clusterShareTokenAuth : true,
+            instanceId : uuidV4(),
+            useTokenCheckKey : true,
+            clientJsPrepare : true,
+            usePanel : false
+        };
     }
 
     getWorkerTransport() : object
     {
-        return {mainConfig : this.mainConfig,starterConfig : this.starterConfig,internalData : this.internalData};
+        return {mainConfig : this._mainConfig,starterConfig : this._starterConfig,internalData : this._internalData};
     }
 
     isDebug() : boolean
     {
-        return this.getMain(Const.Main.KEYS.DEBUG);
+        return !!this._mainConfig.debug;
     }
 
     isStartDebug() : boolean
     {
-        return this.getMain(Const.Main.KEYS.START_DEBUG);
+        return !!this._mainConfig.startDebug;
     }
 
     isShowConfigWarning() : boolean
     {
-        return this.getMain(Const.Main.KEYS.SHOW_CONFIG_WARNINGS);
+        return !!this._mainConfig.showConfigWarnings;
     }
 
     isUsePanel() : boolean
     {
-        return this.getMain(Const.Main.KEYS.USE_PANEL);
+        return !!this._mainConfig.usePanel
     }
 
-    addToMainConfig(toAdd : object,overwrite : boolean,onlyAddKeys ?: object) : void
+    addToMainConfig(toAdd : object,overwrite : boolean,onlyAddKeys : object | undefined) : void
     {
         if(onlyAddKeys === undefined) {
-            ObjectTools.addObToOb(this.mainConfig,toAdd,overwrite);
+            ObjectTools.addObToOb(this._mainConfig,toAdd,overwrite);
         }
         else {
-            ObjectTools.onlyAddObToOb(this.mainConfig,toAdd,overwrite,onlyAddKeys);
+            ObjectTools.onlyAddObToOb(this._mainConfig,toAdd,overwrite,onlyAddKeys);
         }
     }
 
-    getStarter(key : any) : any
-    {
-        return this.starterConfig[key];
-    }
-
-    getStarterConfig() : object
-    {
-        return this.starterConfig;
-    }
-
-    getMain(key : any) : any
-    {
-        return this.mainConfig[key];
-    }
-
-    getInternal(key : any) : any
-    {
-        return this.internalData[key];
-    }
-
-    setInternal(key : any,value : any) : void
-    {
-        return this.internalData[key] = value;
-    }
-
-    getMainOrNull(key : any) : any
-    {
-        return this.mainConfig[key] || null;
-    }
-
-    isMain(key : any) : boolean
-    {
-        return this.mainConfig[key] !== undefined;
-    }
-
-    setMain(key : any,value : any) : void
-    {
-        this.mainConfig[key] = value;
-    }
-
-    getMainConfig() : object
-    {
-        return this.mainConfig;
-    }
-
-    getService(key : any) : any
-    {
-        return this.serviceConfig[key];
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    isService(key : any) : boolean
-    {
-        return this.serviceConfig[key] !== undefined;
-    }
-
-    getServiceConfig() : object
-    {
-        return this.serviceConfig;
-    }
-
-    getChannel(key : any) : any
-    {
-        return this.channelConfig[key];
-    }
-
-    isChannel(key : any) : boolean
-    {
-        return this.channelConfig[key] !== undefined;
-    }
-
-    getChannelConfig() : object
-    {
-        return this.channelConfig;
-    }
-
-    getEvent(key : any) : any
-    {
-        return this.eventConfig[key];
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    isEvent(key : any) : boolean
-    {
-        return this.eventConfig[key] !== undefined;
-    }
-
-    getEventConfig() : object
-    {
-        return this.eventConfig;
-    }
-
-    getApp(key : any) : any
-    {
-        return this.appConfig[key];
-    }
-
-    isApp(key : any) : boolean
-    {
-        return this.appConfig[key] !== undefined;
-    }
-
-    getAppConfig() : object
-    {
-        return this.appConfig;
-    }
-
-    getErrorConfig() : object
-    {
-        return this.errorConfig;
-    }
-
-    getError(name : string) : ErrorConstruct
-    {
-        if(this.errorConfig.hasOwnProperty(name)) {
-            return this.errorConfig[name];
+    getError(name : string) : ErrorConstruct {
+        if(this._errorConfig.hasOwnProperty(name)) {
+            return this._errorConfig[name];
         }
         else {
             throw new ErrorNotFound(name);
         }
     }
 
-    isError(name : string) : boolean
-    {
-        return this.errorConfig.hasOwnProperty(name);
+    isError(name : string) : boolean {
+        return this._errorConfig.hasOwnProperty(name);
     }
 
     getVerifyKey() : any
     {
-        if(this.getMain(Const.Main.KEYS.AUTH_PUBLIC_KEY) !== null)
-        {
-            return this.getMain(Const.Main.KEYS.AUTH_PUBLIC_KEY);
-        }
-        else
-        {
-            return this.getMain(Const.Main.KEYS.AUTH_KEY);
-        }
+        return this._mainConfig.authPublicKey || this._mainConfig.authKey;
     }
 
     getSignKey() : any
     {
-        if(this.getMain(Const.Main.KEYS.AUTH_PRIVATE_KEY) !== null)
-        {
-            return this.getMain(Const.Main.KEYS.AUTH_PRIVATE_KEY);
-        }
-        else
-        {
-            return this.getMain(Const.Main.KEYS.AUTH_KEY);
-        }
+        return this._mainConfig.authPrivateKey || this._mainConfig.authKey;
     }
 
     getSomeInformation() : ZationInfoObj
@@ -327,36 +199,31 @@ class ZationConfig
     loadOtherConfigs() : void
     {
         //Add Other Configs
-        this.eventConfig = ZationConfig.loadZationConfig
-        (
+        this._eventConfig = ZationConfig.loadZationConfig(
             'event.config',
-            this.getStarter(Const.Starter.KEYS.EVENT_CONFIG),
+            this._starterConfig.eventConfig,
         );
 
-        this.channelConfig = ZationConfig.loadZationConfig
-        (
+        this._channelConfig = ZationConfig.loadZationConfig(
             'channel.config',
-            this.getStarter(Const.Starter.KEYS.CHANNEL_CONFIG),
+            this._starterConfig.channelConfig,
         );
 
-        this.appConfig = ZationConfig.loadZationConfig
-        (
+        this._appConfig = ZationConfig.loadZationConfig(
             'app.config',
-            this.getStarter(Const.Starter.KEYS.APP_CONFIG),
+            this._starterConfig.appConfig,
             false
         );
 
         // @ts-ignore
-        this.errorConfig = ZationConfig.loadZationConfig
-        (
+        this._errorConfig = ZationConfig.loadZationConfig(
             'error.config',
-            this.getStarter(Const.Starter.KEYS.ERROR_CONFIG),
+            this._starterConfig.errorConfig,
         );
 
-        this.serviceConfig = ZationConfig.loadZationConfig
-        (
+        this._serviceConfig = ZationConfig.loadZationConfig(
             'service.config',
-            this.getStarter(Const.Starter.KEYS.SERVICE_CONFIG),
+            this._starterConfig.serviceConfig,
         );
     }
 
@@ -369,8 +236,7 @@ class ZationConfig
 
     static loadZationConfig(name : string,value : any,optional : boolean = true) : object
     {
-        if(typeof value === 'string')
-        {
+        if(typeof value === 'string') {
             if(value.lastIndexOf('.js') === -1) {
                 value += '.js';
             }
@@ -403,97 +269,116 @@ class ZationConfig
     {
         let result = 1;
         if(checkValue !== undefined &&
-            checkValue === Const.Main.OPTIONS.AUTO)
-        {
+            checkValue === OptionAuto) {
             result = require('os').cpus().length;
         }
-        else if(checkValue !== undefined)
-        {
+        else if(checkValue !== undefined) {
             result = checkValue;
         }
         return result;
     }
 
-    async checkMiddlewareEvent(event : string,next : Function,...params : any[]) : Promise<boolean> {
-        const func = this.getEvent(event);
-        return await FuncTools.checkMiddlewareFunc(func,next,...params);
+    // noinspection JSMethodCanBeStatic
+    async checkMiddlewareEvent(event : Function | undefined,next : Function,...params : any[]) : Promise<boolean> {
+        return await FuncTools.checkMiddlewareFunc(event,next,...params);
     }
 
-    async checkScMiddlewareEvent(event : string,next : Function,smallBag : SmallBag,req : object) : Promise<boolean> {
+    async checkScMiddlewareEvent(event : Function | undefined,next : Function,smallBag : SmallBag,req : object) : Promise<boolean> {
         return await this.checkMiddlewareEvent(event,next,smallBag,req);
     }
 
-    async checkAuthenticationMiddlewareEvent(event : string,next : Function,smallBag : SmallBag,zationToken : ZationToken) : Promise<boolean> {
+    async checkAuthenticationMiddlewareEvent(event : Function | undefined,next : Function,smallBag : SmallBag,zationToken : ZationToken) : Promise<boolean> {
         return await this.checkMiddlewareEvent(event,next,smallBag,zationToken);
     }
 
-    async emitEvent(event : string,...params : any[]) : Promise<void> {
-        await FuncTools.emitEvent(this.getEvent(event),...params);
+    // noinspection JSMethodCanBeStatic
+    async emitEvent(event : Function | Function[] | undefined,...params : any[]) : Promise<void> {
+        await FuncTools.emitEvent(event,...params);
     }
 
     private loadUserDataLocations() : void
     {
-        this.loadZationConfigLocation(Const.Starter.KEYS.MAIN_CONFIG,'main.config');
-        this.loadZationConfigLocation(Const.Starter.KEYS.APP_CONFIG,'app.config');
-        this.loadZationConfigLocation(Const.Starter.KEYS.CHANNEL_CONFIG,'channel.config');
-        this.loadZationConfigLocation(Const.Starter.KEYS.ERROR_CONFIG,'error.config');
-        this.loadZationConfigLocation(Const.Starter.KEYS.EVENT_CONFIG,'event.config');
-        this.loadZationConfigLocation(Const.Starter.KEYS.SERVICE_CONFIG,'service.config');
+        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.mainConfig),'main.config');
+        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.appConfig),'app.config');
+        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.channelConfig),'channel.config');
+        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.errorConfig),'error.config');
+        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.eventConfig),'event.config');
+        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.serviceConfig),'service.config');
 
-        if(!this.starterConfig.hasOwnProperty(Const.Starter.KEYS.CONTROLLER))
-        {
-            this.starterConfig[Const.Starter.KEYS.CONTROLLER] = ZationConfig._getRootPath() + '/controller';
+        if(!this._starterConfig.controller) {
+            this._starterConfig.controller = ZationConfig._getRootPath() + '/controller';
         }
     }
 
     private loadZationConfigLocation(key : string,defaultName : string) : void
     {
-        if(!this.starterConfig.hasOwnProperty(key)) {
-            if(this.starterConfig.hasOwnProperty(Const.Starter.KEYS.CONFIG)) {
-                this.starterConfig[key] =  this.starterConfig[Const.Starter.KEYS.CONFIG] + '/' + defaultName;
-            }
-            else {
-                this.starterConfig[key] = ZationConfig._getRootPath() + '/config/' + defaultName;
-            }
+        const path = this._starterConfig.configs ? this._starterConfig.configs + '/'
+            : ZationConfig._getRootPath() + '/config/';
+
+        if(!(typeof this._starterConfig[key] === 'string')) {
+            this._starterConfig[key] =  path + defaultName;
         }
-        else
-        {
-            const value = this.getStarter(key);
-            if(typeof value === "string" && this.starterConfig.hasOwnProperty(Const.Starter.KEYS.CONFIG))
-            {
-                const configLocation = this.starterConfig[key];
-                const configPath = this.starterConfig[Const.Starter.KEYS.CONFIG];
-                this.starterConfig[key] =  configPath + '/' + configLocation;
-            }
+        else {
+            this._starterConfig[key] =  path + this._starterConfig[key];
         }
     }
 
     private loadMainConfig() : void
     {
-        let mainConfig = ZationConfig.loadZationConfig
-        (
+        const mainConfig = ZationConfig.loadZationConfig(
             'main.config',
-            this.starterConfig[Const.Starter.KEYS.MAIN_CONFIG]
+            this._starterConfig.mainConfig
         );
-
-        ObjectTools.addObToOb(this.mainConfig,mainConfig,true);
+        ObjectTools.addObToOb(this._mainConfig,mainConfig,true);
     }
 
     private processMainConfig() : void
     {
         //Workers Default
-        this.mainConfig[Const.Main.KEYS.WORKERS] =
-            ZationConfig.createValueWithOsAuto(this.mainConfig[Const.Main.KEYS.WORKERS]);
+        this._mainConfig.workers =
+            ZationConfig.createValueWithOsAuto(this._mainConfig.workers);
 
         //Brokers Default
-        this.mainConfig[Const.Main.KEYS.BROKERS] =
-            ZationConfig.createValueWithOsAuto(this.mainConfig[Const.Main.KEYS.BROKERS]);
+        this._mainConfig.brokers =
+            ZationConfig.createValueWithOsAuto(this._mainConfig.brokers);
 
         //path slash check
-        const path = this.mainConfig[Const.Main.KEYS.PATH];
+        const path = this._mainConfig.path;
         if(path && typeof path === 'string' && path.charAt(0) !== '/') {
-            this.mainConfig[Const.Main.KEYS.PATH] = '/' + path;
+            this._mainConfig.path = '/' + path;
         }
+    }
+
+    get eventConfig() : EventConfig {
+        return this._eventConfig;
+    }
+
+    get appConfig(): AppConfig {
+        return this._appConfig;
+    }
+
+    get channelConfig(): ChannelConfig {
+        return this._channelConfig;
+    }
+
+    get errorConfig(): ErrorConfig {
+        return this._errorConfig;
+    }
+
+    get mainConfig(): InternMainConfig {
+        return this._mainConfig;
+    }
+
+    get serviceConfig(): ServiceConfig {
+        return this._serviceConfig;
+    }
+
+    get internalData(): InternalData {
+        return this._internalData;
+    }
+
+    get starterConfig(): StarterConfig {
+        return this._starterConfig;
     }
 }
 

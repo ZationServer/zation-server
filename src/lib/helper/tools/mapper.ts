@@ -36,6 +36,7 @@ class Mapper<T>
         }
     }
 
+    // noinspection JSUnusedGlobalSymbols
     removeKey(k : string)
     {
         delete this.data[k];
@@ -49,6 +50,7 @@ class Mapper<T>
         }
     }
 
+    // noinspection JSUnusedGlobalSymbols
     removeAllValues(v : T)
     {
         for(let k in this.data)

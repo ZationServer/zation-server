@@ -4,7 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const                = require('../constants/constWrapper');
 import ServiceBox           = require('./serviceBox');
 import ServiceNotFoundError = require("./serviceNotFoundError");
 
@@ -13,6 +12,8 @@ import Pg                   = require('pg');
 import nodeMailer           = require('nodemailer');
 import mongodb              = require('mongodb');
 import {MongoClient}          from "mongodb";
+import ZationConfig         = require("../../main/zationConfig");
+import {CustomService, Service} from "../configs/serviceConfig";
 
 class ServiceEngine
 {
@@ -26,10 +27,12 @@ class ServiceEngine
     private postgresSqlBox : ServiceBox;
     private mongoDbBox : ServiceBox;
 
-    constructor(zc)
+    constructor(zc : ZationConfig)
     {
-        this.sc = zc.getService(Const.Service.KEYS.SERVICES);
-        this.csc = zc.getService(Const.Service.KEYS.CUSTOM_SERVICES);
+        // @ts-ignore
+        this.sc = zc.serviceConfig.services;
+        // @ts-ignore
+        this.csc = zc.serviceConfig.customServices;
 
         if(this.sc === undefined) {this.sc = {};}
         if(this.csc === undefined) {this.csc = {};}
@@ -42,7 +45,7 @@ class ServiceEngine
         let promises : Promise<void>[] = [];
 
         this.mySqlServiceBox =
-            new ServiceBox(Const.Service.SERVICES.MYSQL,this.sc[Const.Service.SERVICES.MYSQL],
+            new ServiceBox(nameof<Service>(s => s.mySql),this.sc[nameof<Service>(s => s.mySql)],
                 async (c) : Promise<MySql.Pool> =>
             {
                 return MySql.createPool(c);
@@ -50,7 +53,7 @@ class ServiceEngine
         promises.push(this.mySqlServiceBox.init());
 
         this.nodeMailerServiceBox =
-            new ServiceBox(Const.Service.SERVICES.NODE_MAILER,this.sc[Const.Service.SERVICES.NODE_MAILER],
+            new ServiceBox(nameof<Service>(s => s.nodeMailer),this.sc[nameof<Service>(s => s.nodeMailer)],
                 async (c) : Promise<nodeMailer.Transporter> =>
             {
                 return nodeMailer.createTransport(c);
@@ -58,7 +61,7 @@ class ServiceEngine
         promises.push(this.nodeMailerServiceBox.init());
 
         this.postgresSqlBox =
-            new ServiceBox(Const.Service.SERVICES.POSTGRES_SQL,this.sc[Const.Service.SERVICES.POSTGRES_SQL],
+            new ServiceBox(nameof<Service>(s => s.postgresSql),this.sc[nameof<Service>(s => s.postgresSql)],
                async (c) : Promise<Pg.Pool> =>
             {
                 return new Pg.Pool(c);
@@ -70,7 +73,7 @@ class ServiceEngine
         promises.push(this.postgresSqlBox.init());
 
         this.mongoDbBox =
-            new ServiceBox(Const.Service.SERVICES.MONGO_DB,this.sc[Const.Service.SERVICES.MONGO_DB],
+            new ServiceBox(nameof<Service>(s => s.mongoDb),this.sc[nameof<Service>(s => s.mongoDb)],
                 async (c : object) : Promise<MongoClient> => {
                 let url : string = c['url'];
                 return await mongodb.MongoClient.connect(url,c);
@@ -82,11 +85,11 @@ class ServiceEngine
         {
             if(this.csc.hasOwnProperty(k))
             {
-                let howToCreate = this.csc[k][Const.Service.CUSTOM_SERVICES.CREATE];
-                let howToGet    = this.csc[k][Const.Service.CUSTOM_SERVICES.GET];
+                let howToCreate = this.csc[k][nameof<CustomService>(s => s.create)];
+                let howToGet    = this.csc[k][nameof<CustomService>(s => s.get)];
                 //remove
-                delete this.csc[k][Const.Service.CUSTOM_SERVICES.CREATE];
-                delete this.csc[k][Const.Service.CUSTOM_SERVICES.GET];
+                delete this.csc[k][nameof<CustomService>(s => s.create)];
+                delete this.csc[k][nameof<CustomService>(s => s.get)];
 
                 this.customServices[k] = new ServiceBox(k,this.csc[k],howToCreate,howToGet);
                 promises.push(this.customServices[k].init());

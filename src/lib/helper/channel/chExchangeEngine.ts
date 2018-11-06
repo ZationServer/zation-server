@@ -10,7 +10,6 @@ This class is to publish into channels with the scServer.exchange object.
 It is used by the SmallBag and the ChannelEngine.
  */
 
-import Const             = require('../constants/constWrapper');
 import ChTools           = require('./chTools');
 import ZationConfig      = require("../../main/zationConfig");
 import Logger            = require("../logger/logger");
@@ -19,9 +18,10 @@ import FuncTools         = require("../tools/funcTools");
 import ZationWorker      = require("../../main/zationWorker");
 import CIdChInfo         = require("../infoObjects/cIdChInfo");
 import CChInfo           = require("../infoObjects/cChInfo");
-import {WorkerChTargets} from "../constants/workerChTargets";
-import PubData = require("../infoObjects/pubData");
-import {ScServer} from "../sc/scServer";
+import {WorkerChTargets}   from "../constants/workerChTargets";
+import PubData           = require("../infoObjects/pubDataInfo");
+import {ScServer}          from "../sc/scServer";
+import {ZationChannel} from "../constants/internal";
 
 class ChExchangeEngine
 {
@@ -74,7 +74,7 @@ class ChExchangeEngine
     async publishToWorker(data : any) : Promise<void>
     {
         try {
-            await this.pubAsyncInternal(Const.Settings.CHANNEL.ALL_WORKER,data);
+            await this.pubAsyncInternal(ZationChannel.ALL_WORKER,data);
         }
         catch (e) {
             Logger.printDebugWarning(`Failed to publish data: '${data.toString()}' in worker channel!`);
@@ -126,7 +126,7 @@ class ChExchangeEngine
                 await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), new PubData(eventName,data,srcSocketSid));
             })();
         }
-        await this.pubAsync(Const.Settings.CHANNEL.DEFAULT_USER_GROUP,eventName,data,srcSocketSid);
+        await this.pubAsync(ZationChannel.DEFAULT_USER_GROUP,eventName,data,srcSocketSid);
     }
 
     async publishInAllCh(eventName : string,data : any,srcSocketSid ?: string) : Promise<void>
@@ -137,7 +137,7 @@ class ChExchangeEngine
                 await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), new PubData(eventName,data,srcSocketSid));
             })();
         }
-        await this.pubAsync(Const.Settings.CHANNEL.ALL,eventName,data,srcSocketSid);
+        await this.pubAsync(ZationChannel.ALL,eventName,data,srcSocketSid);
     }
 
     async publishInAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : any,srcSocketSid ?: string) : Promise<void>
@@ -177,7 +177,8 @@ class ChExchangeEngine
 
     async publishToAllAuthUserGroupCh(eventName : string, data : any,zc : ZationConfig,srcSocketSid ?: string) : Promise<void>
     {
-        let groups = zc.getApp(Const.App.KEYS.USER_GROUPS)[Const.App.USER_GROUPS.AUTH];
+        // @ts-ignore
+        const groups : object = zc.appConfig.userGroups.auth;
         await this.publishInAuthUserGroupCh(Object.keys(groups),eventName,data,srcSocketSid);
     }
 

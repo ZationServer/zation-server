@@ -7,11 +7,11 @@ GitHub: LucaCode
 import Result          = require('../../api/Result');
 import TaskError       = require('../../api/TaskError');
 import TaskErrorBag    = require('../../api/TaskErrorBag');
-import Const           = require('../constants/constWrapper');
 import Logger          = require('../logger/logger');
 import MainErrors      = require('../zationTaskErrors/mainTaskErrors');
 import ZationConfig    = require("../../main/zationConfig");
 import TokenBridge     = require("../bridges/tokenBridge");
+import {ZationResponse} from "../constants/internal";
 
 class Returner
 {
@@ -30,17 +30,15 @@ class Returner
         this.res        = res;
         this.zc         = zc;
         this.reqId      = reqId;
-        this.sendErrorDesc = this.zc.getMain(Const.Main.KEYS.SEND_ERRORS_DESC);
+        this.sendErrorDesc = !!this.zc.mainConfig.sendErrorDescription;
     }
 
     async reactOnResult(data : any) : Promise<void>
     {
-        if(data !== undefined)
-        {
+        if(data !== undefined) {
             this.sendBack(await this.createResult(data.result,data.tb));
         }
-        else
-        {
+        else {
             this.endRequest();
         }
     }
@@ -97,33 +95,24 @@ class Returner
 
     private async createResult(res : any,tb : TokenBridge,errors : any[] = []) : Promise<object>
     {
-        let obj = {};
-
-        //result
-        if (res instanceof Result) {
-            obj[Const.Settings.RESPONSE.RESULT] = res._getJsonObj();
-        }
-        else {
-            obj[Const.Settings.RESPONSE.RESULT] = {};
-        }
+        const obj : ZationResponse = {
+            r : res instanceof Result ? res._getJsonObj() : {},
+            e : errors,
+            s : errors.length === 0,
+        };
 
         //token
-        if(tb !== undefined && !this.webSocket && tb.isNewToken())
-        {
-            let tokenInfo = {};
-            tokenInfo[Const.Settings.RESPONSE.TOKEN_SIGNED] = await tb.getSignedToken();
-            tokenInfo[Const.Settings.RESPONSE.TOKEN_PLAIN] = tb.getPlainToken();
-            obj[Const.Settings.RESPONSE.TOKEN] = tokenInfo;
+        if(tb !== undefined && !this.webSocket && tb.isNewToken()) {
+            obj.t = {
+                st : await tb.getSignedToken(),
+                pt : tb.getPlainToken()
+            } ;
         }
 
         //info for http
         if(!this.webSocket && Array.isArray(this.res['zationInfo']) && this.res['zationInfo'].length > 0) {
-            obj[Const.Settings.RESPONSE.ZATION_HTTP_INFO] = this.res['zationInfo'];
+            obj.zhi = this.res['zationInfo'];
         }
-
-        //error
-        obj[Const.Settings.RESPONSE.ERRORS] = errors;
-        obj[Const.Settings.RESPONSE.SUCCESSFUL] = errors.length === 0;
 
         return obj;
     }

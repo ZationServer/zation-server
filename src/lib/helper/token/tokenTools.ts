@@ -4,7 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const            = require('../constants/constWrapper');
 import TaskError        = require('../../api/TaskError');
 import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
 import {ChAccessEngine}   from '../channel/chAccessEngine';
@@ -12,6 +11,7 @@ import TokenBridge      = require("../bridges/tokenBridge");
 import ZationWorker     = require("../../main/zationWorker");
 import ZationConfig     = require("../../main/zationConfig");
 import {Socket}           from "../sc/socket";
+import {ZationToken} from "../constants/internal";
 const  Jwt : any        = require('jsonwebtoken');
 
 class TokenTools
@@ -20,7 +20,8 @@ class TokenTools
     {
         let suc = false;
         if(data !== undefined) {
-            if (!updateOnly || (updateOnly && !data.hasOwnProperty(Const.Settings.TOKEN.TOKEN_ID) && !data.hasOwnProperty(Const.Settings.TOKEN.CHECK_KEY))) {
+            if (!updateOnly || (updateOnly && !data.hasOwnProperty(nameof<ZationToken>(s => s.zationTokenId)) &&
+                !data.hasOwnProperty(nameof<ZationToken>(s => s.zationCheckKey)))) {
                 const token = tokenBridge.getToken();
                 if((typeof token === 'object') || (!updateOnly)) {
                     await tokenBridge.setToken(TokenTools.combineTokenAndProcess(token,data));
@@ -40,8 +41,8 @@ class TokenTools
         let suc = false;
         if(typeof customVar === 'object') {
             const token = tokenBridge.getToken();
-            if(typeof token === 'object') {
-                token[Const.Settings.TOKEN.CUSTOM_VARIABLES] = customVar;
+            if(typeof token === 'object' && token !== null) {
+                token.zationCustomVariables = customVar;
                 await tokenBridge.setToken(token);
                 suc = true;
             }
@@ -52,7 +53,7 @@ class TokenTools
         return suc;
     }
 
-    private static combineTokenAndProcess(token : object,newData : object) : object
+    private static combineTokenAndProcess(token : object | null,newData : object) : object
     {
         if(token === null) {
             return newData;
@@ -87,8 +88,9 @@ class TokenTools
     //ClientData
     static getTokenVariable(key : any,tokenBridge : TokenBridge) : any
     {
-        if(tokenBridge.hasToken()) {
-            return tokenBridge.getToken()[key];
+        const token = tokenBridge.getToken();
+        if(token !== null) {
+            return token[key];
         }
         else {
             return undefined;
@@ -112,7 +114,7 @@ class TokenTools
     {
         return new Promise((resolve, reject) =>
         {
-            let algorithm = zc.getMain(Const.Main.KEYS.AUTH_ALGORITHM);
+            let algorithm = zc.mainConfig.authAlgorithm;
 
             Jwt.verify(token,zc.getVerifyKey(),{algorithm : algorithm},(err,decoded) => {
                 if(err) {
@@ -138,10 +140,10 @@ class TokenTools
         return new Promise((resolve, reject) =>
         {
             let options = {};
-            options['algorithm'] = zc.getMain(Const.Main.KEYS.AUTH_ALGORITHM);
+            options['algorithm'] = zc.mainConfig.authAlgorithm;
 
             if(data['exp'] === undefined) {
-                options['expiresIn'] = zc.getMain(Const.Main.KEYS.AUTH_DEFAULT_EXPIRY);
+                options['expiresIn'] = zc.mainConfig.authDefaultExpiry;
             }
 
             Jwt.sign(data,zc.getSignKey(),options,(err,signedToken) => {

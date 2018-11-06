@@ -44,14 +44,14 @@ import
     ScMiddlewareFunction,
     MiddlewareAuthenticationFunction,
     ScServerFunction, ZationSocketFunction, ZationSocketDisconnectionFunction, ZationWorkerMessageFunction
-} from "../helper/configEditTool/eventConfigStructure";
+} from "../helper/configs/eventConfig";
 
 import
 {
     MainCustomService, MongoDbConfig,
     NodeMailerConfig,
     ServiceConfig
-} from "../helper/configEditTool/serviceConfigStructure";
+} from "../helper/configs/serviceConfig";
 
 import
 {
@@ -64,12 +64,12 @@ import
     ValuePropertyConfig,
     ObjectPropertyConfig, ObjectProperties,
     TaskFunction, ValidatorFunction
-} from "../helper/configEditTool/appConfigStructure";
+} from "../helper/configs/appConfig";
 import
 {
     ErrorConfig,
     ErrorConstruct
-} from "../helper/configEditTool/errorConfigStructure";
+} from "../helper/configs/errorConfig";
 import {
     AuthUserGroupChannel, AuthUserGroupChOnBagPubFunction, AuthUserGroupChOnSubFunction, AuthUserGroupChOnUnsubFunction,
     CChannelClientPubAccessFunction,
@@ -92,10 +92,10 @@ import {
     UserChOnBagPubFunction,
     UserChOnSubFunction,
     UserChOnUnsubFunction
-} from "../helper/configEditTool/channelConfigStructure";
+} from "../helper/configs/channelConfig";
 import ObjectTools = require("../helper/tools/objectTools");
-import {StarterConfig} from "../helper/configEditTool/starterConfigStructure";
-import {MainConfig} from "../helper/configEditTool/mainConfigStructure";
+import {StarterConfig} from "../helper/configs/starterConfig";
+import {MainConfig} from "../helper/configs/mainConfig";
 
 class Config
 {

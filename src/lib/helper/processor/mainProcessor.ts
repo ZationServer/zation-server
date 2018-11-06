@@ -4,7 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const                 = require('../constants/constWrapper');
 import ControllerTools       = require('../controller/controllerTools');
 import Result                = require('../../api/Result');
 import MainErrors            = require('../zationTaskErrors/mainTaskErrors');
@@ -22,6 +21,7 @@ import ZationWorker          = require("../../main/zationWorker");
 import {Controller}            from'../../api/Controller';
 import TokenBridge           = require("../bridges/tokenBridge");
 import ProtocolAccessChecker = require("../protocolAccess/protocolAccessChecker");
+import {ZationTask} from "../constants/internal";
 
 class MainProcessor
 {
@@ -34,7 +34,7 @@ class MainProcessor
         {
             //Check for a auth req
             if(ZationReqTools.isZationAuthReq(reqData)) {
-                if(!zc.isApp(Const.App.KEYS.AUTH_CONTROLLER)) {
+                if(!(zc.appConfig.authController !== undefined)) {
                     throw new TaskError(MainErrors.authControllerNotSet);
                 }
                 reqData = ZationReqTools.dissolveZationAuthReq(zc,reqData);
@@ -43,7 +43,9 @@ class MainProcessor
                 throw new TaskError(MainErrors.authStartActive);
             }
 
-            const task = reqData[Const.Settings.REQUEST_INPUT.TASK];
+            //is checked by isValidReqStructure!
+            // @ts-ignore
+            const task : ZationTask = reqData.t;
 
             const isSystemController = ZationReqTools.isSystemControllerReq(task);
             const controllerName = ZationReqTools.getControllerName(task,isSystemController);
@@ -63,17 +65,17 @@ class MainProcessor
 
             await authEngine.init();
 
-            const useProtocolCheck = zc.getMain(Const.Main.KEYS.USE_PROTOCOL_CHECK);
+            const useProtocolCheck = zc.mainConfig.useProtocolCheck;
             if(!useProtocolCheck || ProtocolAccessChecker.hasProtocolAccess(shBridge,controllerConfig)) {
 
-                const useHttpMethodCheck = zc.getMain(Const.Main.KEYS.USE_HTTP_METHOD_CHECK);
+                const useHttpMethodCheck = zc.mainConfig.useHttpMethodCheck;
                 if
                 (
                     (!shBridge.isWebSocket() && (!useHttpMethodCheck || ProtocolAccessChecker.hasHttpMethodAccess(shBridge,controllerConfig)))
                     || shBridge.isWebSocket()
                 )
                 {
-                    let useAuth = zc.getMain(Const.Main.KEYS.USE_AUTH);
+                    let useAuth = zc.mainConfig.useAuth;
                     if(!useAuth || authEngine.hasAccessToController(controllerConfig)) {
                         let controllerInstance =
                             worker.getControllerPrepare().getControllerInstance(controllerName,isSystemController);
@@ -90,7 +92,7 @@ class MainProcessor
                             //invoke controller wrong input function
                             if(e instanceof TaskError || e instanceof TaskErrorBag)
                             {
-                                let input = task[Const.Settings.REQUEST_INPUT.INPUT];
+                                let input = task.i;
                                 let bag = new Bag(shBridge,worker,authEngine,tokenEngine,input);
                                 await controllerInstance.wrongInput(bag,input);
                             }

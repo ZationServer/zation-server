@@ -28,8 +28,6 @@ class IdTools
     static socketSidToWorkerId(socketSid : string) {
         return this.splitSid(socketSid)[1];
     }
-
-    static socketIdToSid
 }
 
 export = IdTools;

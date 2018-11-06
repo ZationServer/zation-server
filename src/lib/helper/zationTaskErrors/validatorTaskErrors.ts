@@ -4,14 +4,14 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ErrorType   = require('../constants/errorTypes');
-import ErrorGroups = require("../constants/errorGroups");
+import {ErrorGroup} from "../constants/errorGroup";
+import {ErrorType}  from "../constants/errorType";
 
 export = {
 
     inputIsNotTypeObject : {
         name          : 'inputIsNotTypeObject',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Object!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -23,7 +23,7 @@ export = {
 
     inputIsNotTypeArray : {
         name          : 'inputIsNotTypeArray',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Array!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -35,7 +35,7 @@ export = {
 
     inputIsNotTypeString : {
         name          : 'inputIsNotTypeString',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type String!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -47,7 +47,7 @@ export = {
 
     inputIsNotTypeInt : {
         name          : 'inputIsNotTypeInt',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Int!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -59,7 +59,7 @@ export = {
 
     inputIsNotTypeFloat : {
         name          : 'inputIsNotTypeFloat',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Float!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -71,7 +71,7 @@ export = {
 
     inputIsNotTypeNumber : {
         name          : 'inputIsNotTypeNumber',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type number!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -83,7 +83,7 @@ export = {
 
     inputIsNotTypeDate : {
         name          : 'inputIsNotTypeDate',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Date!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -95,7 +95,7 @@ export = {
 
     inputIsNotTypeEmail : {
         name          : 'inputIsNotTypeEmail',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Email!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -107,7 +107,7 @@ export = {
 
     inputIsNotTypeBoolean : {
         name          : 'inputIsNotTypeBoolean',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Boolean!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -119,7 +119,7 @@ export = {
 
     inputIsNotTypeSha512 : {
         name          : 'inputIsNotTypeSha512',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Sha512!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -131,7 +131,7 @@ export = {
 
     inputIsNotTypeSha256 : {
         name          : 'inputIsNotTypeSha256',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Sha256!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -143,7 +143,7 @@ export = {
 
     inputIsNotTypeSha384 : {
         name          : 'inputIsNotTypeSha384',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Sha384!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -155,7 +155,7 @@ export = {
 
     inputIsNotTypeSha1 : {
         name          : 'inputIsNotTypeSha1',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Sha1!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -167,7 +167,7 @@ export = {
 
     inputIsNotTypeMd5 : {
         name          : 'inputIsNotTypeMd5',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Md5!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -179,7 +179,7 @@ export = {
 
     inputIsNotTypeHexColor : {
         name          : 'inputIsNotTypeHexColor',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type HexColor!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -191,7 +191,7 @@ export = {
 
     inputIsNotTypeHexadecimal : {
         name          : 'inputIsNotTypeHexadecimal',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type hexadecimal!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -203,7 +203,7 @@ export = {
 
     inputIsNotTypeIp4 : {
         name          : 'inputIsNotTypeIp4',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Ip Version 4!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -215,7 +215,7 @@ export = {
 
     inputIsNotTypeIp6 : {
         name          : 'inputIsNotTypeIp6',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Ip Version 6!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -227,7 +227,7 @@ export = {
 
     inputIsNotTypeIsbn10 : {
         name          : 'inputIsNotTypeIsbn10',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Isbn Version 10!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -239,7 +239,7 @@ export = {
 
     inputIsNotTypeIsbn13 : {
         name          : 'inputIsNotTypeIsbn13',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Isbn Version 13!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -251,7 +251,7 @@ export = {
 
     inputIsNotTypeJson : {
         name          : 'inputIsNotTypeJson',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type JsonConverter!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -263,7 +263,7 @@ export = {
 
     inputIsNotTypeUrl : {
         name          : 'inputIsNotTypeUrl',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Url!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -275,7 +275,7 @@ export = {
 
     inputIsNotTypeMimeType : {
         name          : 'inputIsNotTypeMimeType',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Mime Type!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -287,7 +287,7 @@ export = {
 
     inputIsNotTypeMacAddress : {
         name          : 'inputIsNotTypeMacAddress',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Max Address!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -299,7 +299,7 @@ export = {
 
     inputIsNotTypeMobileNumber : {
         name          : 'inputIsNotTypeMobileNumber',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Mobile Number!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -311,7 +311,7 @@ export = {
 
     inputIsNotTypeUuid3 : {
         name          : 'inputIsNotTypeUuid3',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type UUID Version 3!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -323,7 +323,7 @@ export = {
 
     inputIsNotTypeUuid4 : {
         name          : 'inputIsNotTypeUuid4',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type UUID Version 4!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -335,7 +335,7 @@ export = {
 
     inputIsNotTypeUuid5 : {
         name          : 'inputIsNotTypeUuid5',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type UUID Version 5!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -347,7 +347,7 @@ export = {
 
     inputIsNotTypeBase64 : {
         name          : 'inputIsNotTypeBase64',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Base64!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -359,7 +359,7 @@ export = {
 
     inputIsNotTypeAscii : {
         name          : 'inputIsNotTypeAscii',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type Ascii!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -371,7 +371,7 @@ export = {
 
     inputIsNotTypeUserId : {
         name          : 'inputIsNotTypeUserId',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'Input is not from type user id!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -383,7 +383,7 @@ export = {
 
     inputNotMatchWithMinLength : {
         name          : 'inputNotMatchWithMinLength',
-        group         : ErrorGroups.VALUE_LENGTH_ERROR,
+        group         : ErrorGroup.VALUE_LENGTH_ERROR,
         description   : 'Input not match with min length!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -396,7 +396,7 @@ export = {
 
     inputNotMatchWithMaxLength : {
         name          : 'inputNotMatchWithMaxLength',
-        group         : ErrorGroups.VALUE_LENGTH_ERROR,
+        group         : ErrorGroup.VALUE_LENGTH_ERROR,
         description   : 'Input not match with max length!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -409,7 +409,7 @@ export = {
 
     inputNotMatchWithLength : {
         name          : 'inputNotMatchWithLength',
-        group         : ErrorGroups.VALUE_LENGTH_ERROR,
+        group         : ErrorGroup.VALUE_LENGTH_ERROR,
         description   : 'Input not match with length!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -422,7 +422,7 @@ export = {
 
     inputIsNotUppercase : {
         name          : 'inputIsNotUpperCase',
-        group         : ErrorGroups.LETTERS_FORMAT_ERROR,
+        group         : ErrorGroup.LETTERS_FORMAT_ERROR,
         description   : 'Input is not uppercase!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -434,7 +434,7 @@ export = {
 
     inputIsNotLowercase : {
         name          : 'inputIsNotLowercase',
-        group         : ErrorGroups.LETTERS_FORMAT_ERROR,
+        group         : ErrorGroup.LETTERS_FORMAT_ERROR,
         description   : 'Input is not lowercase!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -470,7 +470,7 @@ export = {
 
     inputIsNotBiggerThan : {
         name          : 'inputIsNotBiggerThan',
-        group         : ErrorGroups.NUMBER_SIZE_ERROR,
+        group         : ErrorGroup.NUMBER_SIZE_ERROR,
         description   : 'Input is not bigger than!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -483,7 +483,7 @@ export = {
 
     inputIsNotLesserThan : {
         name          : 'inputIsNotLesserThan',
-        group         : ErrorGroups.NUMBER_SIZE_ERROR,
+        group         : ErrorGroup.NUMBER_SIZE_ERROR,
         description   : 'Input is not lesser than!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -532,7 +532,7 @@ export = {
 
     inputIsNotMatchWithEnum : {
         name          : 'inputIsNotMatchWithEnum',
-        group         : ErrorGroups.ENUM_ERROR,
+        group         : ErrorGroup.ENUM_ERROR,
         description   : 'Input is not match with enum!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -545,7 +545,7 @@ export = {
 
     inputIsNotMatchWithPrivateEnum : {
         name          : 'inputIsNotMatchWithPrivateEnum',
-        group         : ErrorGroups.ENUM_ERROR,
+        group         : ErrorGroup.ENUM_ERROR,
         description   : 'Input is not match with private enum!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -557,7 +557,7 @@ export = {
 
     inputArrayNotMatchWithMaxLength : {
         name          : 'inputArrayNotMatchWithMaxLength',
-        group         : ErrorGroups.ARRAY_LENGTH_ERROR,
+        group         : ErrorGroup.ARRAY_LENGTH_ERROR,
         description   : 'Input array not match with max length!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -570,7 +570,7 @@ export = {
 
     inputArrayNotMatchWithMinLength : {
         name          : 'inputArrayNotMatchWithMinLength',
-        group         : ErrorGroups.ARRAY_LENGTH_ERROR,
+        group         : ErrorGroup.ARRAY_LENGTH_ERROR,
         description   : 'Input array not match with min length!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -583,7 +583,7 @@ export = {
 
     inputArrayNotMatchWithLength : {
         name          : 'inputArrayNotMatchWithLength',
-        group         : ErrorGroups.ARRAY_LENGTH_ERROR,
+        group         : ErrorGroup.ARRAY_LENGTH_ERROR,
         description   : 'Input array not match with length!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
@@ -596,7 +596,7 @@ export = {
 
     noValidTypeWasFound : {
         name          : 'noValidTypeWasFound',
-        group         : ErrorGroups.TYPE_ERROR,
+        group         : ErrorGroup.TYPE_ERROR,
         description   : 'No valid type was found!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,

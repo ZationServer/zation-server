@@ -6,7 +6,6 @@ GitHub: LucaCode
 
 import ZationConfig   = require("../../main/zationConfig");
 import ConfigErrorBag = require("../config/configErrorBag");
-import Const          = require("../constants/constWrapper");
 
 class Logger
 {
@@ -106,7 +105,7 @@ class Logger
 
     static log(message?: any, ...optionalParams: any[])
     {
-        if(Logger.zc.getMain(Const.Main.KEYS.ZATION_CONSOLE_LOG))
+        if(Logger.zc.mainConfig.zationConsoleLog)
         {
             console.log(message,...optionalParams);
         }

@@ -4,20 +4,19 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const        = require('../constants/constWrapper');
 import TaskError    = require('../../api/TaskError');
 import MainErrors   = require('../zationTaskErrors/mainTaskErrors');
 import SHBridge     = require("../bridges/shBridge");
+import {ControllerConfig} from "../configs/appConfig";
 
 class SystemVersionChecker
 {
 
-    static checkSystemAndVersion(shBridge : SHBridge,controllerConfig : object) : void
+    static checkSystemAndVersion(shBridge : SHBridge,controllerConfig : ControllerConfig) : void
     {
-        const versionAccess = controllerConfig[Const.App.CONTROLLER.VERSION_ACCESS];
+        const versionAccess = controllerConfig.versionAccess;
 
-        if(typeof versionAccess === 'object')
-        {
+        if(typeof versionAccess === 'object') {
             const system = shBridge.getSystem();
 
             if(versionAccess.hasOwnProperty(system))

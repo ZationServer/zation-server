@@ -1,5 +1,4 @@
 const gulp              = require('gulp');
-const gulpIgnore        = require('gulp-ignore');
 const gulpReplace       = require('gulp-replace');
 const typescript        = require('gulp-typescript');
 const sass              = require('gulp-sass');
@@ -7,9 +6,9 @@ const tscConfig         = require('./tsconfig.json');
 const OptimizeJs        = require('gulp-optimize-js');
 const terser            = require('gulp-terser');
 const clean             = require('gulp-clean');
-const path              = require('path');
 const browserify        = require('browserify');
 const source            = require('vinyl-source-stream');
+//const tsNameOf          = require('ts-nameof');
 
 gulp.task('scss', function() {
     return gulp.src('src/**/*.scss')
@@ -23,48 +22,16 @@ gulp.task('cof', function() {
         .pipe(gulp.dest('dist'));
 });
 
-const isConfigEditorFile = (file) =>
-{
-    return file.path.match(`^.*src${path.sep}lib${path.sep}helper${path.sep}configEditTool${path.sep}.*[.ts]$`);
+
+const nameOf = (match) => {
+    return `'${match.substring(match.indexOf('s.')+2,match.indexOf(')')).trim()}'`;
 };
 
-const replaceConst = (match) =>
-{
-    const Const          = require('./dist/lib/helper/constants/constWrapper');
-    const pathToConstant =  match.replace(new RegExp(/[\[\]]*/, 'g'),'').split('.');
-    let tempRes = Const;
-    for(let i= 1; i < pathToConstant.length; i++) {
-        if(tempRes.hasOwnProperty(pathToConstant[i])) {
-            tempRes = tempRes[pathToConstant[i]];
-        }
-        else {
-            return undefined;
-        }
-    }
-    return `'${tempRes}' `;
-};
-
-gulp.task('fix',function () {
+gulp.task('ts', function () {
     return gulp
         .src('src/**/*.ts')
-        .pipe(gulpIgnore.include(isConfigEditorFile))
-        .pipe(gulpReplace(/\[Const[a-zA-Z_.]*]/g,replaceConst))
-        .pipe(gulp.dest('tmp'));
-});
-
-gulp.task('cetTs', function () {
-    return gulp
-        .src('src/**/*.ts')
-        .pipe(gulpIgnore.include(isConfigEditorFile))
-        .pipe(gulpReplace(/\[Const[a-zA-Z_.]*]/g,replaceConst))
-        .pipe(typescript(tscConfig.compilerOptions))
-        .pipe(gulp.dest('dist'));
-});
-
-gulp.task('mainTs', function () {
-    return gulp
-        .src('src/**/*.ts')
-        .pipe(gulpIgnore.exclude(isConfigEditorFile))
+        .pipe(gulpReplace(/nameof<[a-zA-Z]*>[(][s =>.a-zA-Z]*[)]/g,nameOf))
+        //.pipe(tsNameOf.stream())
         .pipe(typescript(tscConfig.compilerOptions))
         .pipe(gulp.dest('dist'));
 });
@@ -96,9 +63,6 @@ gulp.task('bundlePanel', function () {
         .pipe(source('panel.js'))
         .pipe(gulp.dest('dist/lib/public/panel/js'));
 });
-
-
-gulp.task('ts', gulp.series('mainTs','cetTs'));
 
 gulp.task('buildPanel',gulp.series('bundlePanel','cleanPanelBuild'));
 

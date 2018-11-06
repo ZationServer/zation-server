@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 class FuncTools
 {
-    static async emitEvent(func : Function | Function[],...params : any[]) : Promise<void>
+    static async emitEvent(func : Function | Function[] | undefined,...params : any[]) : Promise<void>
     {
         if(func !== undefined && typeof func === 'function') {
             await func(...params);

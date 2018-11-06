@@ -4,21 +4,24 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const                 = require('../constants/constWrapper');
 import ControllerTools       = require('../controller/controllerTools');
 import MainErrors            = require('../zationTaskErrors/mainTaskErrors');
 import TaskError             = require('../../api/TaskError');
 import TaskErrorBag          = require('../../api/TaskErrorBag');
 import ZationReqTools        = require('../tools/zationReqTools');
 import InputValueProcessor   = require('../input/inputMainProcessor');
+import {ControllerConfig}      from "../configs/appConfig";
+import {ZationRequest, ZationValidationCheck} from "../constants/internal";
 
 class ValidChProcessor
 {
-    static async process(reqData,zc,worker)
+    static async process(reqData : ZationRequest,zc,worker)
     {
         if(ZationReqTools.isValidValidationStructure(reqData))
         {
-            const validReq = reqData[Const.Settings.VALIDATION_REQUEST_INPUT.MAIN];
+            //is checked in isValidValidationStructure
+            // @ts-ignore
+            const validReq : ZationValidationCheck = reqData.v;
 
             const isSystemController = ZationReqTools.isSystemControllerReq(validReq);
             const cName = ZationReqTools.getControllerName(validReq,isSystemController);
@@ -29,21 +32,19 @@ class ValidChProcessor
             let controller = worker.getControllerPrepare().getControllerConfig(cName,isSystemController);
 
             //end here if all is allow
-            if(typeof controller[Const.App.CONTROLLER.INPUT_ALL_ALLOW] === 'boolean' &&
-                controller[Const.App.CONTROLLER.INPUT_ALL_ALLOW]) {
+            if(typeof controller.inputAllAllow === 'boolean' && controller.inputAllAllow) {
                 return {};
             }
 
-            let controllerInput = controller.hasOwnProperty(Const.App.CONTROLLER.INPUT) ?
-                controller[Const.App.CONTROLLER.INPUT] : {};
+            let controllerInput = controller.hasOwnProperty(nameof<ControllerConfig>(s => s.input)) ?
+                controller.input : {};
 
             let useInputValidation = true;
-            if(controller.hasOwnProperty(Const.App.CONTROLLER.INPUT_VALIDATION))
-            {
-                useInputValidation = controller[Const.App.CONTROLLER.INPUT_VALIDATION];
+            if(controller.hasOwnProperty(nameof<ControllerConfig>(s => s.inputValidation))) {
+                useInputValidation = controller.inputValidation;
             }
 
-            let inputToCheck = validReq[Const.Settings.VALIDATION_REQUEST_INPUT.INPUT];
+            let inputToCheck = validReq.i;
 
             let promises : Promise<void>[] = [];
             let errorBag = new TaskErrorBag();
@@ -55,18 +56,22 @@ class ValidChProcessor
                     (
                         typeof inputToCheck[i] === 'object' &&
                         (
-                            Array.isArray(inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.INPUT_PATH]) ||
-                            typeof inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.INPUT_PATH] === 'string'
+                            Array.isArray(inputToCheck[i].ip) ||
+                            typeof inputToCheck[i].ip === 'string'
                         )
                         &&
-                        inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.INPUT_VALUE] !== undefined
+                        inputToCheck[i].v !== undefined
                     )
                     {
-                        let keyPath = inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.INPUT_PATH];
-                        let value   = inputToCheck[i][Const.Settings.VALIDATION_REQUEST_INPUT.INPUT_VALUE];
+                        let keyPath : string[];
+                        let value   = inputToCheck[i].v;
+                        let path    = inputToCheck[i].ip;
 
-                        if(typeof keyPath === 'string') {
-                            keyPath = keyPath.split('.');
+                        if(typeof path === 'string') {
+                            keyPath = path.split('.');
+                        }
+                        else{
+                            keyPath = path;
                         }
 
                         let specificConfig =
@@ -75,7 +80,7 @@ class ValidChProcessor
                         if(specificConfig !== undefined)
                         {
                             await InputValueProcessor.checkIsValid
-                            (value,specificConfig,keyPath,errorBag,worker.getPreparedSmallBag(),useInputValidation);
+                            (value,specificConfig,path,errorBag,worker.getPreparedSmallBag(),useInputValidation);
                             resolve();
                         }
                         else

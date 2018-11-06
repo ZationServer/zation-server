@@ -3,33 +3,34 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-import Const          = require('../constants/constWrapper');
+
 import SHBridge       = require("../bridges/shBridge");
+import {ControllerConfig} from "../configs/appConfig";
 
 class ProtocolAccessChecker
 {
-    static hasProtocolAccess(shBridge : SHBridge,controller : object) : boolean
+    static hasProtocolAccess(shBridge : SHBridge,controller : ControllerConfig) : boolean
     {
         let hasAccess = true;
-        if(shBridge.isWebSocket() && !!controller[Const.App.CONTROLLER.WS_ACCESS]) {
-            hasAccess = controller[Const.App.CONTROLLER.WS_ACCESS];
+        if(shBridge.isWebSocket() && !!controller.wsAccess) {
+            hasAccess = controller.wsAccess;
         }
-        else if(!!controller[Const.App.CONTROLLER.HTTP_ACCESS]) {
-            hasAccess = controller[Const.App.CONTROLLER.HTTP_ACCESS];
+        else if(!!controller.httpAccess) {
+            hasAccess = controller.httpAccess;
         }
         return hasAccess;
     }
 
-    static hasHttpMethodAccess(shBridge : SHBridge,controller : object) : boolean
+    static hasHttpMethodAccess(shBridge : SHBridge,controller : ControllerConfig) : boolean
     {
         let hasAccess = true;
         const method = shBridge.getRequest().method;
 
-        if(method === 'GET' && !!controller[Const.App.CONTROLLER.HTTP_GET_ALLOWED]) {
-            hasAccess = controller[Const.App.CONTROLLER.HTTP_GET_ALLOWED];
+        if(method === 'GET' && !!controller.httpGetAllowed) {
+            hasAccess = controller.httpGetAllowed;
         }
-        else if(method === 'POST' && !!controller[Const.App.CONTROLLER.HTTP_POST_ALLOWED]) {
-            hasAccess = controller[Const.App.CONTROLLER.HTTP_POST_ALLOWED];
+        else if(method === 'POST' && !!controller.httpPostAllowed) {
+            hasAccess = controller.httpPostAllowed;
         }
         return hasAccess;
     }

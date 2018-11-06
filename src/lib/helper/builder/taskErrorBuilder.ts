@@ -4,18 +4,17 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const              = require('../constants/constWrapper');
-import {ErrorConstruct} from "../configEditTool/errorConfigStructure";
+import {ErrorConstruct}     from "../configs/errorConfig";
 import TaskError          = require("../../api/TaskError");
+import {ErrorType}         from "../constants/errorType";
 
 class TaskErrorBuilder
 {
     private errorSettings : ErrorConstruct = {};
     private errorInfo : object = {};
 
-    constructor()
-    {
-        this.errorSettings[Const.Settings.ERROR.TYPE] = Const.Error.NORMAL_ERROR;
+    constructor() {
+        this.errorSettings.type = ErrorType.NORMAL_ERROR;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -26,7 +25,7 @@ class TaskErrorBuilder
      * @param name
      */
     name(name : string) : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.NAME] = name;
+        this.errorSettings.name = name;
         return this;
     }
 
@@ -40,7 +39,7 @@ class TaskErrorBuilder
      * @param group
      */
     group(group : string | undefined) : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.GROUP] = group;
+        this.errorSettings.group = group;
         return this;
     }
 
@@ -53,7 +52,7 @@ class TaskErrorBuilder
      * @param type
      */
     typ(type : string) : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.TYPE] = type;
+        this.errorSettings.type = type;
         return this;
     }
 
@@ -63,7 +62,7 @@ class TaskErrorBuilder
      * Set the task error type to system error.
      */
     typeSystemError() : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.TYPE] = Const.Error.SYSTEM_ERROR;
+        this.errorSettings.type = ErrorType.SYSTEM_ERROR;
         return this;
     }
 
@@ -73,7 +72,7 @@ class TaskErrorBuilder
      * Set the task error type to input error.
      */
     typeInputError() : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.TYPE] = Const.Error.INPUT_ERROR;
+        this.errorSettings.type = ErrorType.INPUT_ERROR;
         return this;
     }
 
@@ -83,7 +82,7 @@ class TaskErrorBuilder
      * Set the task error type to validation error.
      */
     typeValidationError() : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.TYPE] = Const.Error.VALIDATION_ERROR;
+        this.errorSettings.type = ErrorType.VALIDATION_ERROR;
         return this;
     }
 
@@ -93,7 +92,7 @@ class TaskErrorBuilder
      * Set the task error type to auth error.
      */
     typeAuthError() : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.TYPE] = Const.Error.AUTH_ERROR;
+        this.errorSettings.type = ErrorType.AUTH_ERROR;
         return this;
     }
 
@@ -103,7 +102,7 @@ class TaskErrorBuilder
      * Set the task error type to protocol error.
      */
     typeProtocolError() : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.TYPE] = Const.Error.PROTOCOL_ERROR;
+        this.errorSettings.type = ErrorType.PROTOCOL_ERROR;
         return this;
     }
 
@@ -113,7 +112,7 @@ class TaskErrorBuilder
      * Set the task error type to token error.
      */
     typeTokenError() : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.TYPE] = Const.Error.TOKEN_ERROR;
+        this.errorSettings.type = ErrorType.TOKEN_ERROR;
         return this;
     }
 
@@ -123,7 +122,7 @@ class TaskErrorBuilder
      * Set the task error type to database error.
      */
     typeDatabaseError() : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.TYPE] = Const.Error.DATABASE_ERROR;
+        this.errorSettings.type = ErrorType.DATABASE_ERROR;
         return this;
     }
 
@@ -133,7 +132,7 @@ class TaskErrorBuilder
      * Set the task error type to compatibility error.
      */
     typeCompatibilityError() : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.TYPE] = Const.Error.COMPATIBILITY_ERROR;
+        this.errorSettings.type = ErrorType.COMPATIBILITY_ERROR;
         return this;
     }
 
@@ -143,7 +142,7 @@ class TaskErrorBuilder
      * Set the task error type to time error.
      */
     typeTimeError() : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.TYPE] = Const.Error.TIME_ERROR;
+        this.errorSettings.type = ErrorType.TIME_ERROR;
         return this;
     }
 
@@ -153,7 +152,7 @@ class TaskErrorBuilder
      * Set the task error type to normal error.
      */
     typeNormalError() : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.TYPE] = Const.Error.NORMAL_ERROR;
+        this.errorSettings.type = ErrorType.NORMAL_ERROR;
         return this;
     }
 
@@ -163,7 +162,7 @@ class TaskErrorBuilder
      * Set the task error description.
      */
     description(description : string) : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.DESCRIPTION] = description;
+        this.errorSettings.description = description;
         return this;
     }
 
@@ -173,7 +172,7 @@ class TaskErrorBuilder
      * Set if the task error sends the info.
      */
     sendInfo(sendInfo : boolean) : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.SEND_INFO] = sendInfo;
+        this.errorSettings.sendInfo = sendInfo;
         return this;
     }
 
@@ -183,7 +182,7 @@ class TaskErrorBuilder
      * Set if the task error is private.
      */
     private(isPrivate : boolean) : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.PRIVATE] = isPrivate;
+        this.errorSettings.private = isPrivate;
         return this;
     }
 
@@ -193,7 +192,7 @@ class TaskErrorBuilder
      * Set if the task error is from zation system.
      */
     fromZationSystem(fromZationSystem : boolean) : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.FROM_ZATION_SYSTEM] = fromZationSystem;
+        this.errorSettings.fromZationSystem = fromZationSystem;
         return this;
     }
 
@@ -208,7 +207,7 @@ class TaskErrorBuilder
      * Notice that you override the info property.
      */
     setInfo(info : object) : TaskErrorBuilder {
-        this.errorSettings[Const.Settings.ERROR.INFO] = info;
+        this.errorInfo = info;
         return this;
     }
 

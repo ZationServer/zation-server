@@ -4,42 +4,41 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const        = require('../constants/constWrapper');
 import ZationWorker = require("../../main/zationWorker");
 import ZationConfig = require("../../main/zationConfig");
+import {AuthUserGroupConfig, UserGroupsConfig} from "../configs/appConfig";
+import {DefaultUserGroupFallBack} from "../constants/internal";
 
 class AEPreparedPart
 {
     private readonly zc : ZationConfig;
     private readonly useAuth : boolean;
     private readonly worker : ZationWorker;
-    private readonly groupsConfig : object;
-    private readonly authGroups : object;
+    private readonly groupsConfig : UserGroupsConfig = {};
+    private readonly authGroups : Record<string,AuthUserGroupConfig>;
     private readonly defaultGroup : string;
 
     //prepares and check the config
     constructor(zc : ZationConfig,worker : ZationWorker)
     {
         this.zc = zc;
-        this.useAuth = this.zc.getMain(Const.Main.KEYS.USE_AUTH);
+        this.useAuth = this.zc.mainConfig.useAuth;
         this.worker = worker;
 
         if(this.isUseAuth)
         {
-            this.groupsConfig = this.zc.getApp(Const.App.KEYS.USER_GROUPS);
-
-            if(this.groupsConfig !== undefined)
+            if(this.zc.appConfig.userGroups !== undefined)
             {
-                let authGroups = this.groupsConfig[Const.App.USER_GROUPS.AUTH];
+                this.groupsConfig = this.zc.appConfig.userGroups;
+
+                const authGroups = this.groupsConfig.auth;
                 this.authGroups = authGroups !== undefined ? authGroups : {};
 
-                let defaultGroup = this.groupsConfig[Const.App.USER_GROUPS.DEFAULT];
-                if(defaultGroup === undefined)
-                {
-                    this.defaultGroup = Const.Settings.DEFAULT_USER_GROUP.FALLBACK;
+                const defaultGroup = this.groupsConfig.default;
+                if(defaultGroup === undefined) {
+                    this.defaultGroup = DefaultUserGroupFallBack;
                 }
-                else
-                {
+                else {
                     this.defaultGroup = defaultGroup;
                 }
             }
@@ -51,12 +50,7 @@ class AEPreparedPart
         }
     }
 
-    getZationConfig() : ZationConfig
-    {
-        return this.zc;
-    }
-
-    getAuthGroups() : object
+    getAuthGroups() : Record<string,AuthUserGroupConfig>
     {
         return this.authGroups;
     }
@@ -65,8 +59,7 @@ class AEPreparedPart
     {
         const tempGroup = this.getAuthGroups()[authUserGroup];
         if(!!tempGroup){
-            return !!tempGroup[Const.App.AUTH_USER_GROUP.PANEL_ACCESS] ?
-                tempGroup[Const.App.AUTH_USER_GROUP.PANEL_ACCESS] : false;
+            return !!tempGroup.panelAccess ? tempGroup.panelAccess : false;
         }
         else{
             return false;

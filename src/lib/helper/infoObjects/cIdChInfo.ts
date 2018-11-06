@@ -16,6 +16,7 @@ class CIdChInfo extends  CChInfo
         this._channelId = chId;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get channelId(): string | undefined {
         return this._channelId;
     }

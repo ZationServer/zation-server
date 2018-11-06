@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 import {Controller}     from "../../../api/Controller";
-import Const          = require("../../constants/constWrapper");
 import TaskError      = require("../../../api/TaskError");
 import MainTaskErrors = require("./../../zationTaskErrors/mainTaskErrors");
+import {ZationToken} from "../../constants/internal";
 
 class ZationSC_Ping extends Controller
 {
@@ -16,8 +16,8 @@ class ZationSC_Ping extends Controller
             throw new TaskError(MainTaskErrors.wrongPanelAuthData);
         }
         const token = {};
-        token[Const.Settings.TOKEN.PANEL_ACCESS] = true;
-        token[Const.Settings.TOKEN.ONLY_PANEL_TOKEN] = true;
+        token[nameof<ZationToken>(s => s.zationPanelAccess)] = true;
+        token[nameof<ZationToken>(s => s.zationOnlyPanelToken)] = true;
         bag.getSocket().setAuthToken(token)
     }
 }

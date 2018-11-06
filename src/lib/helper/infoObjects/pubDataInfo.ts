@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-class PubData
+class PubDataInfo
 {
     private readonly _event : string;
     private readonly _data : any;
@@ -17,21 +17,25 @@ class PubData
         this._srcSocketSid = srcSocketSid;
     }
 
-    static getFromBuild(data : object) : PubData {
-        return new PubData(data['e'],data['d'],data['ssi']);
+    // noinspection JSUnusedGlobalSymbols
+    static getFromBuild(data : object) : PubDataInfo {
+        return new PubDataInfo(data['e'],data['d'],data['ssi']);
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get event(): string {
         return this._event;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get data(): any {
         return this._data;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get srcSocketSid() : string | undefined {
         return this._srcSocketSid;
     }
 }
 
-export = PubData;
+export = PubDataInfo;

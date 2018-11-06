@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const        = require('./../constants/constWrapper');
 import ObjectPath   = require("../tools/objectPath");
+import {ZationToken}  from "../constants/internal";
 
-class ZationToken
+class ZationTokenInfo
 {
     private readonly _userId : number | string | undefined;
     private readonly _authUserGroup : string | undefined;
@@ -17,42 +17,47 @@ class ZationToken
     private readonly _token : object;
     private readonly _ctv : object;
 
-    constructor(token : Object)
+    constructor(token : ZationToken)
     {
-        this._userId         = token[Const.Settings.TOKEN.USER_ID];
-        this._authUserGroup  = token[Const.Settings.TOKEN.AUTH_USER_GROUP];
-        this._tokenId        = token[Const.Settings.TOKEN.TOKEN_ID];
-        this._expire         = token[Const.Settings.TOKEN.EXPIRE];
-        this._panelAccess    = token[Const.Settings.TOKEN.PANEL_ACCESS];
-
-        this._ctv = !!token[Const.Settings.TOKEN.CUSTOM_VARIABLES] ?
-            token[Const.Settings.TOKEN.CUSTOM_VARIABLES] : {};
+        this._userId         = token.zationUserId;
+        this._authUserGroup  = token.zationAuthUserGroup;
+        this._tokenId        = token.zationTokenId;
+        this._expire         = token.exp;
+        this._panelAccess    = !!token.zationPanelAccess;
+        this._ctv = !!token.zationCustomVariables ? token.zationCustomVariables : {};
     }
 
+    // noinspection JSUnusedGlobalSymbols
     isAuthIn() : boolean {
         return this._authUserGroup !== undefined;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get userId(): number | string | undefined {
         return this._userId;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get authUserGroup(): string | undefined {
         return this._authUserGroup;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get tokenId(): string {
         return this._tokenId;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get expire(): number {
         return this._expire;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get panelAccess(): boolean {
         return this._panelAccess;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getToken(): object {
         return this._token;
     }
@@ -84,4 +89,4 @@ class ZationToken
     }
 }
 
-export = ZationToken;
+export = ZationTokenInfo;

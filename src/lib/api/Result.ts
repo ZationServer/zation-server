@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const = require("../helper/constants/constWrapper");
+import {ResponseResult} from "../helper/constants/internal";
 
 class Result
 {
@@ -35,12 +35,12 @@ class Result
      * @description
      * This method is used internal!
      */
-    _getJsonObj() : object
+    _getJsonObj() : ResponseResult
     {
-        let obj = {};
-        obj[Const.Settings.RESPONSE.RESULT_MAIN] = this.result;
-        obj[Const.Settings.RESPONSE.RESULT_STATUS] = this.statusCode;
-        return obj;
+        return {
+            r : this.result,
+            s : this.statusCode
+        };
     }
 
     // noinspection JSUnusedGlobalSymbols

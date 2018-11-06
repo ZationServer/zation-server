@@ -4,15 +4,14 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 import moment = require('moment-timezone');
-import Const  = require('../constants/constWrapper');
 import Logger = require('../logger/logger');
+import ZationConfig = require("../../main/zationConfig");
 
 class TimeTools
 {
-    static getMoment(zc)
-    {
+    static getMoment(zc : ZationConfig) {
         // noinspection JSUnresolvedFunction
-        return moment().tz(zc.getMain(Const.Main.KEYS.TIME_ZONE));
+        return moment().tz(zc.mainConfig.timeZone);
     }
 
     static processTaskTriggerTime({hour,minute,second,millisecond},zc)

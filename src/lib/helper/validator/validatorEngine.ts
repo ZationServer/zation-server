@@ -8,10 +8,12 @@ import ValidatorLibrary  = require('./validatorLibrary');
 import TaskError         = require('../../api/TaskError');
 import TaskErrorBag      = require('../../api/TaskErrorBag');
 import ValidatorErrors   = require('../zationTaskErrors/validatorTaskErrors');
-import Const             = require('../constants/constWrapper');
 import Logger            = require('../logger/logger');
 import FuncTools         = require("../tools/funcTools");
 import SmallBag          = require("../../api/SmallBag");
+import {ArraySettings, ValuePropertyConfig} from "../configs/appConfig";
+import {ConfigNames}       from "../constants/internal";
+import {ValidationTypes}   from "../constants/validationTypes";
 
 class ValidatorEngine
 {
@@ -22,7 +24,7 @@ class ValidatorEngine
             if(config.hasOwnProperty(cKey))
             {
                 const cValue = config[cKey];
-                if(cKey === Const.Validator.KEYS.VALIDATE) {
+                if(cKey === nameof<ValuePropertyConfig>(s => s.validate)) {
                     //own validate
                     await FuncTools.emitEvent(cValue,input,errorBag,preparedErrorData.inputPath,preparedSmallBag);
                 }
@@ -35,7 +37,7 @@ class ValidatorEngine
 
     static validateValueType(input,type,strictType,preparedErrorData : {inputPath : string,inputValue : any},errorBag : TaskErrorBag)
     {
-        if(type !== undefined && type !== Const.Validator.TYPE.ALL) {
+        if(type !== undefined && type !== ValidationTypes.ALL) {
             if(Array.isArray(type))
             {
                 let foundAValidTyp = false;
@@ -70,20 +72,20 @@ class ValidatorEngine
         }
         else if(type === '') {
            Logger.printConfigWarning
-           (Const.Settings.CN.APP,`No validator type in inputPath: '${preparedErrorData.inputPath}' found.`)
+           (ConfigNames.APP,`No validator type in inputPath: '${preparedErrorData.inputPath}' found.`)
         }
         else if(type.length > 0) {
             Logger.printConfigWarning
-            (Const.Settings.CN.APP,`No valid validator type in inputPath: '${preparedErrorData.inputPath}'.`)
+            (ConfigNames.APP,`No valid validator type in inputPath: '${preparedErrorData.inputPath}'.`)
         }
     }
 
-    static validateArray(array,arrayConfig,currentPath,errorBag)
+    static validateArray(array,arrayConfig : ArraySettings,currentPath,errorBag)
     {
         let isOk = true;
-        if(arrayConfig.hasOwnProperty(Const.App.ARRAY.LENGTH))
+        if(arrayConfig.length !== undefined)
         {
-            const length = arrayConfig[Const.App.ARRAY.LENGTH];
+            const length = arrayConfig.length;
             if(array.length !== length)
             {
                 isOk = false;
@@ -95,9 +97,9 @@ class ValidatorEngine
                     }));
             }
         }
-        if(arrayConfig.hasOwnProperty(Const.App.ARRAY.MIN_LENGTH))
+        if(arrayConfig.minLength !== undefined)
         {
-            const minLength = arrayConfig[Const.App.ARRAY.MIN_LENGTH];
+            const minLength = arrayConfig.minLength;
             if(array.length < minLength)
             {
                 isOk = false;
@@ -109,9 +111,9 @@ class ValidatorEngine
                     }));
             }
         }
-        if(arrayConfig.hasOwnProperty(Const.App.ARRAY.MAX_LENGTH))
+        if(arrayConfig.maxLength !== undefined)
         {
-            const maxLength = arrayConfig[Const.App.ARRAY.MAX_LENGTH];
+            const maxLength = arrayConfig.maxLength;
             if(array.length > maxLength)
             {
                 isOk = false;

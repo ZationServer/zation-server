@@ -3,6 +3,7 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
+
 import ZationMaster = require("../../main/zationMaster");
 import TimeTools     = require("../tools/timeTools");
 import ZationConfig  = require("../../main/zationConfig");
@@ -28,7 +29,7 @@ class BackgroundTasksSender
         }
         else if(typeof time === 'object')
         {
-            let set = () => {
+            const set = () => {
                 let tillTime = TimeTools.processTaskTriggerTime(time,this.zc);
                 if(tillTime && tillTime > 0)
                 {
@@ -60,7 +61,7 @@ class BackgroundTasksSender
         }
         else if(typeof time === 'object')
         {
-            let tillTime = TimeTools.processTaskTriggerTime(time,this.zc);
+            const tillTime = TimeTools.processTaskTriggerTime(time,this.zc);
             if(tillTime && tillTime > 0)
             {
                 setTimeout(() => {

@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ErrorType = require('../constants/errorTypes');
+import {ErrorType} from "../constants/errorType";
 
 export = {
 

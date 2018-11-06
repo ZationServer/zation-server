@@ -29,8 +29,7 @@ class ChannelEngine extends ChExchangeEngine
 
     async emitToSocket(eventName : string,data : any) : Promise<object>
     {
-        return new Promise<object>((resolve, reject) =>
-        {
+        return new Promise<object>((resolve, reject) => {
             if(this.isWebSocket) {
                 this.socket.emit(eventName,data,(err,data) => {
                     if(err) {
@@ -59,13 +58,10 @@ class ChannelEngine extends ChExchangeEngine
 
     kickWithIndex(search : string) : void
     {
-        if(this.isWebSocket)
-        {
+        if(this.isWebSocket) {
             let subs : any = this.getSubChannels();
-            for(let i = 0; i < subs.length; i++)
-            {
-                if(subs[i].indexOf(search)!== -1)
-                {
+            for(let i = 0; i < subs.length; i++) {
+                if(subs[i].indexOf(search)!== -1) {
                     ChTools.kickOut(this.socket,search);
                 }
             }
@@ -73,13 +69,11 @@ class ChannelEngine extends ChExchangeEngine
     }
 
 
-    kickCustomIdChannel(name : string,id : string) : void
-    {
+    kickCustomIdChannel(name : string,id : string) : void {
         this.kickWithIndex(ChTools.buildCustomIdChannelName(name,id));
     }
 
-    kickCustomChannel(name : string) : void
-    {
+    kickCustomChannel(name : string) : void {
         this.kickWithIndex(ChTools.buildCustomChannelName(name));
     }
 

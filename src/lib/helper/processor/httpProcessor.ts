@@ -4,7 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const                 = require('../constants/constWrapper');
 import HtmlTools             = require('../tools/htmlTools');
 import MainProcessor         = require('./mainProcessor');
 import SHBridge              = require('../bridges/shBridge');
@@ -15,8 +14,9 @@ import TaskError             = require("../../api/TaskError");
 import MainErrors            = require('../zationTaskErrors/mainTaskErrors');
 import ZationWorker          = require("../../main/zationWorker");
 import ZationConfig          = require("../../main/zationConfig");
-import ZationToken           = require("../infoObjects/zationToken");
+import ZationToken           = require("../infoObjects/zationTokenInfo");
 import JsonConverter         = require("../tools/jsonConverter");
+import {ZationRequest} from "../constants/internal";
 
 const helper   = __dirname + '/../';
 const views    = helper + 'views/';
@@ -26,9 +26,11 @@ class HttpProcessor
     //HTTP Extra Layer
     static async runHttpProcess(req,res,zc : ZationConfig,worker : ZationWorker)
     {
-        if (req.method === 'POST' && !!req.body[zc.getMain(Const.Main.KEYS.POST_KEY)]) {
+        // @ts-ignore
+        if (req.method === 'POST' && !!req.body[zc.mainConfig.postKey]) {
             HttpProcessor.setHeader(res);
-            const zationData = await JsonConverter.parse(req.body[zc.getMain(Const.Main.KEYS.POST_KEY)]);
+            // @ts-ignore
+            const zationData = await JsonConverter.parse(req.body[zc.mainConfig.postKey]);
             return await HttpProcessor.mainProcess(req,res,zc,worker,zationData);
         }
         else if(req.method === 'GET' && !(Object.keys(req.query).length === 0))
@@ -54,7 +56,7 @@ class HttpProcessor
         }
     }
 
-    private static async mainProcess(req,res,zc : ZationConfig,worker : ZationWorker,zationData : object)
+    private static async mainProcess(req,res,zc : ZationConfig,worker : ZationWorker,zationData : ZationRequest)
     {
         //check for validationCheckRequest
         if(ZationReqTools.isValidationCheckReq(zationData)) {
@@ -64,8 +66,8 @@ class HttpProcessor
         else
         {
             //normal Req
-            if(!!zationData[Const.Settings.REQUEST_INPUT.TOKEN]) {
-                req.zationToken = await TokenTools.verifyToken(zationData[Const.Settings.REQUEST_INPUT.TOKEN],zc);
+            if(!!zationData.to) {
+                req.zationToken = await TokenTools.verifyToken(zationData.to,zc);
                 const token = req.zationToken;
 
                 const next = (err) => {
@@ -74,7 +76,7 @@ class HttpProcessor
                     }
                 };
                 await zc.checkAuthenticationMiddlewareEvent
-                (Const.Event.MIDDLEWARE_AUTHENTICATE,next,worker.getPreparedSmallBag(),new ZationToken(token));
+                (zc.eventConfig.middlewareAuthenticate,next,worker.getPreparedSmallBag(),new ZationToken(token));
             }
 
             let shBridge = new SHBridge(

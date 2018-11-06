@@ -19,10 +19,12 @@ class MethodIsNotCompatible extends CodeError
         this.requiredReqType = requiredReqType;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getReqType(): string {
         return this.reqType;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getRequiredReqType(): string {
         return this.requiredReqType;
     }

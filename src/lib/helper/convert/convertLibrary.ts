@@ -4,8 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const           = require('../constants/constWrapper');
 import Converter       = require("./converter");
+import {ValidationTypes} from "../constants/validationTypes";
 
 /*
 Converter Library from Zation
@@ -13,7 +13,7 @@ Converter Library from Zation
 
 const converterLibrary = {};
 
-converterLibrary[Const.Validator.TYPE.INT] = (input,strictType) =>
+converterLibrary[ValidationTypes.INT] = (input,strictType) =>
 {
     if(!strictType){
         return parseInt(input);
@@ -21,7 +21,7 @@ converterLibrary[Const.Validator.TYPE.INT] = (input,strictType) =>
     return input;
 };
 
-converterLibrary[Const.Validator.TYPE.FLOAT] = (input,strictType) =>
+converterLibrary[ValidationTypes.FLOAT] = (input,strictType) =>
 {
     if(!strictType){
         return parseFloat(input);
@@ -29,7 +29,7 @@ converterLibrary[Const.Validator.TYPE.FLOAT] = (input,strictType) =>
     return input;
 };
 
-converterLibrary[Const.Validator.TYPE.NUMBER] = (input,strictType) =>
+converterLibrary[ValidationTypes.NUMBER] = (input,strictType) =>
 {
     if(!strictType){
         return parseFloat(input);
@@ -37,12 +37,12 @@ converterLibrary[Const.Validator.TYPE.NUMBER] = (input,strictType) =>
     return input;
 };
 
-converterLibrary[Const.Validator.TYPE.DATE] = (input) =>
+converterLibrary[ValidationTypes.DATE] = (input) =>
 {
     return new Date(input);
 };
 
-converterLibrary[Const.Validator.TYPE.BOOLEAN] = (input,strictType) =>
+converterLibrary[ValidationTypes.BOOLEAN] = (input,strictType) =>
 {
     if(!strictType){
         if(typeof input === 'string'){

@@ -6,7 +6,6 @@ GitHub: LucaCode
 
 import ZationConfig          = require("../../main/zationConfig");
 const  ScClient : any        = require('socketcluster-client');
-import Const                 = require('../constants/constWrapper');
 import ZationMaster          = require("../../main/zationMaster");
 import Encoder               = require("../tools/encoder");
 import Logger                = require("../logger/logger");
@@ -17,7 +16,7 @@ class StateServerEngine
     private zc : ZationConfig;
     private zm : ZationMaster;
     private stateSocket : any;
-    private readonly useClusterEncode : boolean;
+    private readonly useSecretKey : boolean;
     private encoder : Encoder;
 
     private inBootProcess : boolean = true;
@@ -37,14 +36,15 @@ class StateServerEngine
         this.zc = zc;
         this.zm = zm;
 
+        this.useSharedTokenAuth = !!this.zc.mainConfig.clusterShareTokenAuth;
+        this.useSecretKey = !!this.zc.mainConfig.clusterSecretKey;
+
         this.buildConnectSettings();
         this.buildServerSettings();
 
-        this.useSharedTokenAuth = !!this.zc.getMain(Const.Main.KEYS.CLUSTER_SHARE_TOKEN_AUTH);
-        this.useClusterEncode = !!this.zc.getMain(Const.Main.KEYS.CLUSTER_SECRET_KEY);
-
-        if(this.useClusterEncode) {
-            this.encoder = new Encoder(this.zc.getMain(Const.Main.KEYS.CLUSTER_SECRET_KEY));
+        if(this.useSecretKey) {
+            // @ts-ignore
+            this.encoder = new Encoder(this.zc.mainConfig.clusterSecretKey);
         }
 
         this.buildServerSharedData();
@@ -53,25 +53,25 @@ class StateServerEngine
     private buildServerSettings()
     {
         this.serverSettings = {
-            useShareTokenAuth : this.zc.getMain(Const.Main.KEYS.CLUSTER_SHARE_TOKEN_AUTH),
-            useSecretKey : this.zc.isMain(Const.Main.KEYS.CLUSTER_SECRET_KEY)
+            useShareTokenAuth : this.useSharedTokenAuth,
+            useSecretKey : this.useSecretKey
         };
     }
 
     private buildServerSharedData()
     {
         const sharedVar = {
-                tokenCheckKey : this.zc.getInternal(Const.Settings.INTERNAL_DATA.TOKEN_CHECK_KEY)
+                tokenCheckKey : this.zc.internalData.tokenCheckKey
             };
 
         if(this.useSharedTokenAuth) {
-            sharedVar['authPubKey'] = this.zc.getMain(Const.Main.KEYS.AUTH_PUBLIC_KEY);
-            sharedVar['authPriKey'] = this.zc.getMain(Const.Main.KEYS.AUTH_PRIVATE_KEY);
-            sharedVar['authKey'] = this.zc.getMain(Const.Main.KEYS.AUTH_KEY);
-            sharedVar['authAlgorithm'] = this.zc.getMain(Const.Main.KEYS.AUTH_ALGORITHM);
+            sharedVar['authPubKey'] = this.zc.mainConfig.authPublicKey;
+            sharedVar['authPriKey'] = this.zc.mainConfig.authPrivateKey;
+            sharedVar['authKey'] = this.zc.mainConfig.authKey;
+            sharedVar['authAlgorithm'] = this.zc.mainConfig.authAlgorithm;
         }
 
-        if(this.useClusterEncode) {
+        if(this.useSecretKey) {
             this.serverSharedData = this.encoder.encrypt(sharedVar);
         }
         else {
@@ -83,7 +83,7 @@ class StateServerEngine
     {
         let sharedVarDec;
 
-        if(this.useClusterEncode && typeof sharedVar === 'string') {
+        if(this.useSecretKey && typeof sharedVar === 'string') {
             try {
                 sharedVarDec = this.encoder.decrypt(sharedVar);
             }
@@ -98,14 +98,14 @@ class StateServerEngine
 
         if(typeof sharedVarDec === 'object')
         {
-            this.zc.setInternal(Const.Settings.INTERNAL_DATA.TOKEN_CHECK_KEY,sharedVarDec.tokenCheckKey);
+            this.zc.internalData.tokenCheckKey = sharedVarDec.tokenCheckKey;
 
             if(this.useSharedTokenAuth)
             {
-                this.zc.setMain(Const.Main.KEYS.AUTH_PUBLIC_KEY,sharedVarDec['authPubKey']);
-                this.zc.setMain(Const.Main.KEYS.AUTH_PRIVATE_KEY,sharedVarDec['authPriKey']);
-                this.zc.setMain(Const.Main.KEYS.AUTH_KEY,sharedVarDec['authKey']);
-                this.zc.setMain(Const.Main.KEYS.AUTH_ALGORITHM,sharedVarDec['authAlgorithm']);
+                this.zc.mainConfig.authPublicKey = sharedVarDec['authPubKey'];
+                this.zc.mainConfig.authPrivateKey = sharedVarDec['authPriKey'];
+                this.zc.mainConfig.authKey = sharedVarDec['authKey'];
+                this.zc.mainConfig.authAlgorithm = sharedVarDec['authAlgorithm'];
             }
         }
         else {
@@ -122,21 +122,21 @@ class StateServerEngine
         const DEFAULT_STATE_SERVER_ACK_TIMEOUT = 10000;
         const DEFAULT_RECONNECT_RANDOMNESS = 1000;
         const retryDelay = DEFAULT_RETRY_DELAY;
-        const reconnectRandomness = this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_STATE_SERVER_RECONNECT_RANDOMNESS)
+        const reconnectRandomness = this.zc.mainConfig.clusterStateServerReconnectRandomness
             || DEFAULT_RECONNECT_RANDOMNESS;
 
-        const authKey = this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_AUTH_KEY) || null;
+        const authKey = this.zc.mainConfig.clusterAuthKey || null;
 
         this.connectSettings = {
 
-            hostname: this.zc.getMainOrNull(Const.Main.KEYS.STATE_SERVER_HOST), // Required option
+            hostname: this.zc.mainConfig.stateServerHost, // Required option
 
-            port: this.zc.getMainOrNull(Const.Main.KEYS.STATE_SERVER_PORT) || DEFAULT_PORT,
+            port: this.zc.mainConfig.stateServerPort || DEFAULT_PORT,
 
-            connectTimeout: this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_STATE_SERVER_CONNECT_TIMEOUT)
+            connectTimeout: this.zc.mainConfig.clusterStateServerConnectTimeout
                 || DEFAULT_STATE_SERVER_CONNECT_TIMEOUT,
 
-            ackTimeout: this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_STATE_SERVER_ACK_TIMEOUT)
+            ackTimeout: this.zc.mainConfig.clusterStateServerAckTimeout
                 || DEFAULT_STATE_SERVER_ACK_TIMEOUT,
 
             autoReconnectOptions: {
@@ -147,7 +147,7 @@ class StateServerEngine
             },
             query: {
                 authKey,
-                instancePort: this.zc.getMain(Const.Main.KEYS.PORT),
+                instancePort: this.zc.mainConfig.port,
                 instanceType: 'zation-master',
             }
         };
@@ -235,7 +235,7 @@ class StateServerEngine
                 {
                     settings : this.serverSettings,
                     sharedData : this.serverSharedData,
-                    instanceId : this.zc.getMain(Const.Main.KEYS.INSTANCE_ID)
+                    instanceId : this.zc.mainConfig.instanceId
                 },
                 async (err,data) =>
                 {
@@ -279,13 +279,13 @@ class StateServerEngine
             `Try to shut down all servers and start the server with the new settings to accept the other settings.`);
         }
         else if(info === 'instanceIdAlreadyReg') {
-            const oldInstanceId = this.zc.getMain(Const.Main.KEYS.INSTANCE_ID);
+            const oldInstanceId = this.zc.mainConfig.instanceId;
 
             Logger.printStartDebugInfo
             (`InstanceId: ${oldInstanceId} is already registered.` +
              `Master tries to generate a new instanceID and to register to the state server again.`);
 
-            this.zc.setMain(Const.Main.KEYS.INSTANCE_ID,uuidV4());
+            this.zc.mainConfig.instanceId = uuidV4();
             await this.registerMaster();
         }
         else {
@@ -327,7 +327,7 @@ class StateServerEngine
                     reconnectUUID : this.reconnectUUID,
                     settings : this.serverSettings,
                     sharedData : this.serverSharedData,
-                    instanceId : this.zc.getMain(Const.Main.KEYS.INSTANCE_ID),
+                    instanceId : this.zc.mainConfig.instanceId,
                     wasLeader : this.isClusterLeader
                 }
                 ,

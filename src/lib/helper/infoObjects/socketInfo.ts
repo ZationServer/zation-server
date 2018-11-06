@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Const        = require('./../constants/constWrapper');
 import TokenTools   = require("../token/tokenTools");
 import ObjectPath   = require("../tools/objectPath");
 import {Socket}       from "../sc/socket";
+import {ZationToken} from "../constants/internal";
 
 class SocketInfo
 {
@@ -17,40 +17,49 @@ class SocketInfo
         this._socket = socket;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get authUserGroup(): string | undefined {
-        return TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.AUTH_USER_GROUP,this._socket);
+        return TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationAuthUserGroup),this._socket);
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get userId(): string | number | undefined {
-        return TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.USER_ID,this._socket);
+        return TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationUserId),this._socket);
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get socket(): object {
         return this._socket;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get socketSid(): string {
         return this._socket.sid;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get socketId(): string {
         return this._socket.id;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get tokenId(): string | undefined {
-        return TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.TOKEN_ID,this._socket);
+        return TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationTokenId),this._socket);
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get isAuthIn(): boolean {
         return this.authUserGroup !== undefined;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get tokenExpire(): number | undefined{
-        return TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.EXPIRE,this._socket);
+        return TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.exp),this._socket);
     }
 
+    // noinspection JSUnusedGlobalSymbols
     get panelAccess(): number | undefined{
-        return TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.PANEL_ACCESS,this._socket);
+        return TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationPanelAccess),this._socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -63,7 +72,7 @@ class SocketInfo
      * @param path
      */
     hasCustomTokenVar(path ?: string | string[]) : boolean {
-        let ctv = TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.CUSTOM_VARIABLES,this._socket);
+        let ctv = TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationCustomVariables),this._socket);
         return ObjectPath.has(!!ctv ? ctv : {},path);
     }
 
@@ -77,7 +86,7 @@ class SocketInfo
      * @param path
      */
     getCustomTokenVar(path ?: string | string[]) : any {
-        let ctv = TokenTools.getSocketTokenVariable(Const.Settings.TOKEN.CUSTOM_VARIABLES,this._socket);
+        let ctv = TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationCustomVariables),this._socket);
         return ObjectPath.get(!!ctv ? ctv : {},path);
     }
 }

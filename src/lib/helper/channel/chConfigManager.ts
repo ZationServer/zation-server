@@ -8,8 +8,8 @@ GitHub: LucaCode
 For performance speed in publish in channels, sub channels..
  */
 
-import Const             = require('../constants/constWrapper');
 import ZationConfig      = require("../../main/zationConfig");
+import {ChannelConfig, ChannelDefault, CustomChannelConfig, ZationChannelConfig} from "../configs/channelConfig";
 
 class ChConfigManager {
     private zc: ZationConfig;
@@ -25,17 +25,17 @@ class ChConfigManager {
 
     constructor(zc: ZationConfig) {
         this.zc = zc;
-        this.cc = this.zc.getChannelConfig();
+        this.cc = this.zc.channelConfig;
         this.readConfig();
     }
 
     readConfig() {
-        this.infoUserCh = this.processChannel(Const.Channel.KEYS.USER_CH);
-        this.infoAuthUserGroupCh = this.processChannel(Const.Channel.KEYS.AUTH_USER_GROUP_CH);
-        this.infoDefaultUserGroupCh = this.processChannel(Const.Channel.KEYS.DEFAULT_USER_GROUP_CH);
-        this.infoAllCh = this.processChannel(Const.Channel.KEYS.ALL_CH);
-        this.infoCustomCh = this.processCustomChannel(Const.Channel.KEYS.CUSTOM_CHANNELS);
-        this.infoCustomIdCh = this.processCustomChannel(Const.Channel.KEYS.CUSTOM_ID_CHANNELS);
+        this.infoUserCh = this.processChannel(nameof<ChannelConfig>(s => s.userCh));
+        this.infoAuthUserGroupCh = this.processChannel(nameof<ChannelConfig>(s => s.authUserGroupCh));
+        this.infoDefaultUserGroupCh = this.processChannel(nameof<ChannelConfig>(s => s.defaultUserGroupCh));
+        this.infoAllCh = this.processChannel(nameof<ChannelConfig>(s => s.allCh));
+        this.infoCustomCh = this.processCustomChannel(nameof<ChannelConfig>(s => s.customChannels));
+        this.infoCustomIdCh = this.processCustomChannel(nameof<ChannelConfig>(s => s.customIdChannels));
     }
 
     private processCustomChannel(key: string): object {
@@ -43,39 +43,38 @@ class ChConfigManager {
         if (this.cc.hasOwnProperty(key)) {
             const channels = this.cc[key];
             for (let ch in channels) {
-                if (channels.hasOwnProperty(ch) && ch !== Const.Channel.CHANNEL_DEFAULT.DEFAULT) {
-                    const chConfig = channels[ch];
-
+                if (channels.hasOwnProperty(ch) && ch !== nameof<ChannelDefault>(s => s.default)) {
+                    const chConfig : CustomChannelConfig = channels[ch];
                     res[ch] = {};
-                    res[ch]['sgop'] = this.getSgop(chConfig[Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH]);
-                    if (chConfig.hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS)) {
-                        res[ch]['pa'] = chConfig[Const.Channel.CHANNEL.CLIENT_PUBLISH_ACCESS];
+                    res[ch]['sgop'] = this.getSgop(chConfig.socketGetOwnPublish);
+                    if (chConfig.clientPublishAccess !== undefined) {
+                        res[ch]['pa'] = chConfig.clientPublishAccess;
                         res[ch]['pak'] = 1;
                     }
-                    else if (chConfig.hasOwnProperty(Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS)) {
-                        res[ch]['pa'] = chConfig[Const.Channel.CHANNEL.CLIENT_PUBLISH_NOT_ACCESS];
+                    else if (chConfig.clientPublishNotAccess !== undefined) {
+                        res[ch]['pa'] = chConfig.clientPublishNotAccess;
                         res[ch]['pak'] = 2;
                     }
                     else {
                         res[ch]['pak'] = 0;
                     }
 
-                    if (chConfig.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_ACCESS)) {
-                        res[ch]['sa'] = chConfig[Const.Channel.CHANNEL.SUBSCRIBE_ACCESS];
+                    if (chConfig.subscribeAccess !== undefined) {
+                        res[ch]['sa'] = chConfig.subscribeAccess;
                         res[ch]['sak'] = 1;
                     }
-                    else if (chConfig.hasOwnProperty(Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS)) {
-                        res[ch]['sa'] = chConfig[Const.Channel.CHANNEL.SUBSCRIBE_NOT_ACCESS];
+                    else if (chConfig.subscribeNotAccess !== undefined) {
+                        res[ch]['sa'] = chConfig.subscribeNotAccess;
                         res[ch]['sak'] = 2;
                     }
                     else {
                         res[ch]['sak'] = 0;
                     }
 
-                    res[ch]['onClientPub'] = chConfig[Const.Channel.CHANNEL.ON_CLIENT_PUBLISH];
-                    res[ch]['onBagPub'] = chConfig[Const.Channel.CHANNEL.ON_BAG_PUBLISH];
-                    res[ch]['onSub'] = chConfig[Const.Channel.CHANNEL.ON_SUBSCRIPTION];
-                    res[ch]['onUnsub'] = chConfig[Const.Channel.CHANNEL.ON_UNSUBSCRIPTION];
+                    res[ch]['onClientPub'] = chConfig.onClientPublish;
+                    res[ch]['onBagPub'] = chConfig.onBagPublish;
+                    res[ch]['onSub'] = chConfig.onSubscription;
+                    res[ch]['onUnsub'] = chConfig.onUnsubscription;
                 }
             }
         }
@@ -85,10 +84,11 @@ class ChConfigManager {
     private processChannel(key: string): object {
         const res = {};
         if (this.cc.hasOwnProperty(key)) {
-            res['sgop'] = this.getSgop(this.cc[key][Const.Channel.CHANNEL_SETTINGS.SOCKET_GET_OWN_PUBLISH]);
-            res['onSub'] = (this.cc[key][Const.Channel.CHANNEL.ON_SUBSCRIPTION]);
-            res['onUnsub'] = (this.cc[key][Const.Channel.CHANNEL.ON_UNSUBSCRIPTION]);
-            res['onBagPub'] = (this.cc[key][Const.Channel.CHANNEL.ON_BAG_PUBLISH]);
+            const channel : ZationChannelConfig = this.cc[key];
+            res['sgop'] = this.getSgop(channel.socketGetOwnPublish);
+            res['onSub'] = channel.onSubscription;
+            res['onUnsub'] = channel.onUnsubscription;
+            res['onBagPub'] = channel.onBagPublish;
         }
         return res;
     }

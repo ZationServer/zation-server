@@ -9,7 +9,6 @@ import PortChecker = require("../helper/tools/portChecker");
 require('cache-require-paths');
 import BackgroundTaskSender  = require("../helper/background/backgroundTasksSender");
 const  SocketCluster : any   = require('socketcluster');
-import Const                 = require('../helper/constants/constWrapper');
 import Logger                = require('../helper/logger/logger');
 import ZationConfig          = require('./zationConfig');
 import ConfigChecker         = require('../helper/config/configChecker');
@@ -17,7 +16,7 @@ import ConfigErrorBag        = require('../helper/config/configErrorBag');
 import HashSet               = require('hashset');
 import TimeTools             = require('../helper/tools/timeTools');
 import ClientPrepare         = require('../helper/client/clientPrepare');
-import BackgroundTasksSetter = require("../helper/background/backgroundTasksSetter");
+import BackgroundTasksSetter = require("../helper/background/backgroundTasksLoader");
 const  isWindows             = require('is-windows');
 import StateServerEngine     = require("../helper/cluster/stateServerEngine");
 import {WorkerMessageActions} from "../helper/constants/workerMessageActions";
@@ -96,7 +95,7 @@ class ZationMaster {
         this.serverSettingsJs = ClientPrepare.createServerSettingsFile(this.zc);
         Logger.printStartDebugInfo(`Master has prepared the server settings js file.`, true);
 
-        if(this.zc.getMain(Const.Main.KEYS.CLIENT_JS_PREPARE)) {
+        if(this.zc.mainConfig.clientJsPrepare) {
             Logger.startStopWatch();
             this.fullClientJs = ClientPrepare.buildClientJs(this.serverSettingsJs);
             Logger.printStartDebugInfo(`Master has prepared the client js file.`, true);
@@ -135,7 +134,7 @@ class ZationMaster {
     private async checkPort()
     {
         Logger.startStopWatch();
-        const port = this.zc.getMain(Const.Main.KEYS.PORT);
+        const port = this.zc.mainConfig.port;
         const portIsAvailable = await PortChecker.isPortAvailable(port);
         if(!portIsAvailable) {
             this.crashServer(`The port ${port} is not available! try with a different port!`);
@@ -149,85 +148,83 @@ class ZationMaster {
             require("sc-uws");
         }
         catch (e) {
-            if(this.zc.getMain(Const.Main.KEYS.USE_SC_UWS)) {
+            if(this.zc.mainConfig.useScUws) {
                 Logger.printStartFail
                 (`Failed to load sc-uws! Error -> ${e.toString()}.`);
-
                 if(isWindows()) {
                     Logger.printStartFail(`Try to install c++ compiler with command 'npm install --global --production windows-build-tools'`);
                 }
-
                 Logger.printStartFail
                 (`${isWindows() ? 'Also you' : 'You'} can try to set the property 'useScUws' in Main or Start config to false. But you will lose performance!`);
                 process.exit();
             }
         }
 
-        const scLogLevel = this.zc.getMain(Const.Main.KEYS.SC_CONSOLE_LOG) ?
-            this.zc.getMainOrNull(Const.Main.KEYS.SC_LOG_LEVEL) : 0;
+        const scLogLevel = this.zc.mainConfig.scConsoleLog ?
+            this.zc.mainConfig.scLogLevel || null : 0;
 
         let scOptions = {
-            workers : this.zc.getMain(Const.Main.KEYS.WORKERS),
-            brokers : this.zc.getMain(Const.Main.KEYS.BROKERS),
-            appName: this.zc.getMain(Const.Main.KEYS.APP_NAME),
+            workers : this.zc.mainConfig.workers,
+            brokers : this.zc.mainConfig.brokers,
+            appName: this.zc.mainConfig.appName,
             workerController:__dirname + '/zationWorker.js',
             brokerController:__dirname  + '/zationBroker.js',
             workerClusterController: null,
-            environment : this.zc.getMain(Const.Main.KEYS.ENVIRONMENT),
-            port   : this.zc.getMain(Const.Main.KEYS.PORT),
-            path   : this.zc.getMain(Const.Main.KEYS.PATH),
-            protocol : this.zc.getMain(Const.Main.KEYS.SECURE) ? 'https' : 'http',
-            protocolOptions: this.zc.getMain(Const.Main.KEYS.HTTPS_CONFIG),
-            authKey: this.zc.getMain(Const.Main.KEYS.AUTH_KEY),
-            authAlgorithm: this.zc.getMain(Const.Main.KEYS.AUTH_ALGORITHM),
-            authPublicKey: this.zc.getMain(Const.Main.KEYS.AUTH_PUBLIC_KEY),
-            authPrivateKey: this.zc.getMain(Const.Main.KEYS.AUTH_PRIVATE_KEY),
-            authDefaultExpiry: this.zc.getMain(Const.Main.KEYS.AUTH_DEFAULT_EXPIRY),
+            environment : this.zc.mainConfig.environment,
+            port   : this.zc.mainConfig.port,
+            path   : this.zc.mainConfig.path,
+            protocol : this.zc.mainConfig.secure ? 'https' : 'http',
+            protocolOptions: this.zc.mainConfig.httpsConfig,
+            authKey: this.zc.mainConfig.authKey,
+            authAlgorithm: this.zc.mainConfig.authAlgorithm,
+            authPublicKey: this.zc.mainConfig.authPublicKey,
+            authPrivateKey: this.zc.mainConfig.authPrivateKey,
+            authDefaultExpiry: this.zc.mainConfig.authDefaultExpiry,
             zationConfigWorkerTransport : this.zc.getWorkerTransport(),
             zationServerVersion : ZationMaster.version,
             zationServerStartedTimeStamp : this.serverStartedTimeStamp,
             zationServerSettingsJsFile : this.serverSettingsJs,
             zationFullClientJsFile : this.fullClientJs,
             logLevel : scLogLevel,
-            clusterAuthKey : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_AUTH_KEY),
+            clusterAuthKey : this.zc.mainConfig.clusterAuthKey || null,
             clusterStateServerHost : this.clusterStateServerHost,
-            clusterStateServerPort : this.zc.getMainOrNull(Const.Main.KEYS.STATE_SERVER_PORT),
-            clusterMappingEngine : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_MAPPING_ENGINE),
-            clusterClientPoolSize : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_CLIENT_POOL_SIZE),
-            clusterInstanceIp : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_INSTANCE_IP),
-            clusterInstanceIpFamily : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_INSTANCE_IP_FAMILY),
-            clusterStateServerConnectTimeout : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_STATE_SERVER_CONNECT_TIMEOUT),
-            clusterStateServerAckTimeout : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_STATE_SERVER_ACK_TIMEOUT),
-            clusterStateServerReconnectRandomness : this.zc.getMainOrNull(Const.Main.KEYS.CLUSTER_STATE_SERVER_RECONNECT_RANDOMNESS),
-            socketChannelLimit : this.zc.getMainOrNull(Const.Main.KEYS.SOCKET_CHANNEL_LIMIT),
-            crashWorkerOnError : this.zc.getMainOrNull(Const.Main.KEYS.CRASH_WORKER_ON_ERROR),
-            rebootWorkerOnCrash: this.zc.getMainOrNull(Const.Main.KEYS.REBOOT_WORKER_ON_CRASH),
-            killMasterOnSignal : this.zc.getMainOrNull(Const.Main.KEYS.KILL_MASTER_ON_SIGNAL),
-            instanceId : this.zc.getMainOrNull(Const.Main.KEYS.INSTANCE_ID),
-            killWorkerMemoryThreshold : this.zc.getMainOrNull(Const.Main.KEYS.KILL_WORKER_MEMORY_THRESHOLD),
-            connectTimeout : this.zc.getMainOrNull(Const.Main.KEYS.CONNECT_TIMEOUT),
-            handshakeTimeout : this.zc.getMainOrNull(Const.Main.KEYS.HANDSHAKE_TIMEOUT),
-            ackTimeout : this.zc.getMainOrNull(Const.Main.KEYS.ACK_TIMEOUT),
-            ipcAckTimeout : this.zc.getMainOrNull(Const.Main.KEYS.IPC_ACK_TIMEOUT),
-            socketUpgradeTimeout : this.zc.getMainOrNull(Const.Main.KEYS.SOCKET_UPGRADE_TIMEOUT),
-            origins : this.zc.getMainOrNull(Const.Main.KEYS.ORIGINS),
-            pingInterval : this.zc.getMainOrNull(Const.Main.KEYS.PING_INTERVAL),
-            pingTimeout : this.zc.getMainOrNull(Const.Main.KEYS.PING_TIMEOUT),
-            processTermTimeout : this.zc.getMainOrNull(Const.Main.KEYS.PROCESS_TERM_TIME_OUT),
-            propagateErrors : this.zc.getMainOrNull(Const.Main.KEYS.PROPAGATE_ERRORS),
-            propagateWarnings : this.zc.getMainOrNull(Const.Main.KEYS.PROPAGATE_WARNINGS),
-            middlewareEmitWarnings : this.zc.getMainOrNull(Const.Main.KEYS.MIDDLEWARE_EMIT_WARNINGS),
-            rebootOnSignal : this.zc.getMainOrNull(Const.Main.KEYS.REBOOT_ON_SIGNAL),
-            downgradeToUser : this.zc.getMainOrNull(Const.Main.KEYS.DOWNGRADE_TO_USER),
-            socketRoot : this.zc.getMainOrNull(Const.Main.KEYS.SOCKET_ROOT),
-            schedulingPolicy : this.zc.getMainOrNull(Const.Main.KEYS.SCHEDULING_POLICY),
-            allowClientPublish : this.zc.getMainOrNull(Const.Main.KEYS.ALLOW_CLIENT_PUBLISH),
-            tcpSynBacklog : this.zc.getMainOrNull(Const.Main.KEYS.TCP_SYN_BACKLOG),
-            workerStatusInterval : this.zc.getMainOrNull(Const.Main.KEYS.WORKER_STATUS_INTERVAL),
-            pubSubBatchDuration : this.zc.getMainOrNull(Const.Main.KEYS.PUB_SUB_BATCH_DURATION),
+            clusterStateServerPort : this.zc.mainConfig.stateServerPort || null,
+            clusterMappingEngine : this.zc.mainConfig.clusterMappingEngine || null,
+            clusterClientPoolSize : this.zc.mainConfig.clusterClientPoolSize || null,
+            clusterInstanceIp : this.zc.mainConfig.clusterInstanceIp || null,
+            clusterInstanceIpFamily : this.zc.mainConfig.clusterInstanceIpFamily || null,
+            clusterStateServerConnectTimeout : this.zc.mainConfig.clusterStateServerConnectTimeout || null,
+            clusterStateServerAckTimeout : this.zc.mainConfig.clusterStateServerAckTimeout || null,
+            clusterStateServerReconnectRandomness : this.zc.mainConfig.clusterStateServerReconnectRandomness || null,
+            socketChannelLimit : this.zc.mainConfig.socketChannelLimit || null,
+            crashWorkerOnError : this.zc.mainConfig.crashWorkerOnError || null,
+            rebootWorkerOnCrash: this.zc.mainConfig.rebootWorkerOnCrash || null,
+            killMasterOnSignal : this.zc.mainConfig.killMasterOnSignal || null,
+            instanceId : this.zc.mainConfig.instanceId || null,
+            killWorkerMemoryThreshold : this.zc.mainConfig.killWorkerMemoryThreshold || null,
+            connectTimeout : this.zc.mainConfig.connectTimeout || null,
+            handshakeTimeout : this.zc.mainConfig.handshakeTimeout || null,
+            ackTimeout : this.zc.mainConfig.ackTimeout || null,
+            ipcAckTimeout : this.zc.mainConfig.ipcAckTimeout || null,
+            socketUpgradeTimeout : this.zc.mainConfig.socketUpgradeTimeout || null,
+            origins : this.zc.mainConfig.origins || null,
+            pingInterval : this.zc.mainConfig.pingInterval || null,
+            pingTimeout : this.zc.mainConfig.pingTimeout || null,
+            processTermTimeout : this.zc.mainConfig.processTermTimeout || null,
+            propagateErrors : this.zc.mainConfig.propagateErrors || null,
+            propagateWarnings : this.zc.mainConfig.propagateWarnings || null,
+            middlewareEmitWarnings : this.zc.mainConfig.middlewareEmitWarnings || null,
+            rebootOnSignal : this.zc.mainConfig.rebootOnSignal || null,
+            downgradeToUser : this.zc.mainConfig.downgradeToUser || null,
+            socketRoot : this.zc.mainConfig.socketRoot || null,
+            schedulingPolicy : this.zc.mainConfig.schedulingPolicy || null,
+            allowClientPublish : this.zc.mainConfig.allowClientPublish || null,
+            tcpSynBacklog : this.zc.mainConfig.tcpSynBacklog || null,
+            workerStatusInterval : this.zc.mainConfig.workerStatusInterval || null,
+            pubSubBatchDuration : this.zc.mainConfig.pubSubBatchDuration || null,
         };
 
-        if(this.zc.getMain(Const.Main.KEYS.USE_SC_UWS)) {
+        if(this.zc.mainConfig.useScUws) {
             scOptions['wsEngine'] = 'sc-uws';
         }
         else {
@@ -253,7 +250,7 @@ class ZationMaster {
            }
 
            this.printStartedInformation();
-           await this.zc.emitEvent(Const.Event.ZATION_IS_STARTED, this.zc.getSomeInformation());
+           await this.zc.emitEvent(this.zc.eventConfig.isStarted, this.zc.getSomeInformation());
         });
 
         // noinspection JSUnresolvedFunction
@@ -310,29 +307,29 @@ class ZationMaster {
 
     private printStartedInformation()
     {
-        const hostName = this.zc.getMain(Const.Main.KEYS.HOSTNAME);
-        const port     = this.zc.getMain(Const.Main.KEYS.PORT);
-        const path     = this.zc.getMain(Const.Main.KEYS.PATH);
-        const protocol = this.zc.getMain(Const.Main.KEYS.SECURE) ? 'https' : 'http';
+        const hostName = this.zc.mainConfig.hostname;
+        const port     = this.zc.mainConfig.port;
+        const path     = this.zc.mainConfig.path;
+        const protocol = this.zc.mainConfig.secure ? 'https' : 'http';
         const server   = `${protocol}://${hostName}:${port}${path}`;
 
         Logger.log('\x1b[32m%s\x1b[0m', '   [ACTIVE]','Zation started');
         Logger.log(`            Version: ${ZationMaster.version}`);
-        Logger.log(`            Your app: ${this.zc.getMain(Const.Main.KEYS.APP_NAME)}`);
+        Logger.log(`            Your app: ${this.zc.mainConfig.appName}`);
         Logger.log(`            Hostname: ${hostName}`);
         Logger.log(`            Port: ${port}`);
         Logger.log(`            Time: ${TimeTools.getMoment(this.zc)}`);
-        Logger.log(`            Time zone: ${this.zc.getMain(Const.Main.KEYS.TIME_ZONE)}`);
+        Logger.log(`            Time zone: ${this.zc.mainConfig.timeZone}`);
         Logger.log(`            Instance id: ${this.master.options.instanceId}`);
         Logger.log(`            WebSocket engine: ${this.master.options.wsEngine}`);
         Logger.log(`            Machine scaling active: ${this.stateServerActive}`);
         Logger.log(`            Worker count: ${this.master.options.workers}`);
         Logger.log(`            Broker count: ${this.master.options.brokers}`);
         Logger.log(`            Server: ${server}`);
-        if(this.zc.getMain(Const.Main.KEYS.USE_PANEL)) {
+        if(this.zc.mainConfig.usePanel) {
             Logger.log(`            Panel: ${server}/panel`);
         }
-        if(this.zc.getMain(Const.Main.KEYS.CLIENT_JS_PREPARE)) {
+        if(this.zc.mainConfig.clientJsPrepare) {
             Logger.log(`            ClientJs: ${server}/client.js`);
         }
         Logger.log('            GitHub: https://github.com/ZationServer');
@@ -348,7 +345,7 @@ class ZationMaster {
 
     //PART Scaling
     private checkClusterMode() {
-        this.clusterStateServerHost = this.zc.getMainOrNull(Const.Main.KEYS.STATE_SERVER_HOST);
+        this.clusterStateServerHost = this.zc.mainConfig.stateServerHost || null;
         this.stateServerActive =  !!this.clusterStateServerHost;
     }
 
