@@ -2,108 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="big update part1 for&#10;code improvement &#10;and add new covert for object and array&#10;add isOptional for object and array&#10;new value,object,array property option in app config,&#10;new prototype key in object&#10;bug fix">
-      <change afterPath="$PROJECT_DIR$/src/lib/helper/constants/errorGroup.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/helper/constants/errorType.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/helper/constants/internalData.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/helper/constants/validation.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/lucascaringella.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/lucascaringella.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gulpFile.js" beforeDir="false" afterPath="$PROJECT_DIR$/gulpFile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/api/Bag.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api/Bag.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/api/Config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api/Config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/api/Result.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api/Result.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/api/SmallBag.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api/SmallBag.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/api/TaskError.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api/TaskError.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/api/TaskErrorBag.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api/TaskErrorBag.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/auth/aePreparedPart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/auth/aePreparedPart.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/auth/authEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/auth/authEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/background/backgroundTasksSaver.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/background/backgroundTasksWorkerSaver.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/background/backgroundTasksSender.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/background/backgroundTasksSender.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/background/backgroundTasksSetter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/background/backgroundTasksLoader.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/bridges/memoryMasterBridge.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/bridges/shBridge.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/bridges/shBridge.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/bridges/tokenBridge.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/bridges/tokenBridge.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/builder/taskErrorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/builder/taskErrorBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/channel/chAccessEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/channel/chAccessEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/channel/chConfigManager.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/channel/chConfigManager.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/channel/chExchangeEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/channel/chExchangeEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/channel/chTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/channel/chTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/channel/channelEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/channel/channelEngine.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib/helper/client/clientPrepare.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/client/clientPrepare.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/cluster/stateServerEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/cluster/stateServerEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/config/configChecker.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/config/configChecker.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/config/configCheckerTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/config/configCheckerTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/config/configPreCompiler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/config/configPreCompiler.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/config/structures.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/config/structures.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/configEditTool/appConfigStructure.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/configs/appConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/configEditTool/channelConfigStructure.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/configs/channelConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/configEditTool/errorConfigStructure.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/configs/errorConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/configEditTool/eventConfigStructure.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/configs/eventConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/configEditTool/mainConfigStructure.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/configs/mainConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/configEditTool/serviceConfigStructure.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/configs/serviceConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/configEditTool/starterConfigStructure.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/configs/starterConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/appConfig.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/channelConfig.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/constWrapper.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/errorGroups.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/errorTypes.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/events.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/mainConfig.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/serviceConfig.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/settings.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/constants/internal.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/starterConfig.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/validationTypes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/constants/validationTypes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/constants/validator.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/controller/controllerCheckTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/controller/controllerCheckTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/controller/controllerPrepare.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/controller/controllerPrepare.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/controller/controllerTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/controller/controllerTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/convert/convertLibrary.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/convert/convertLibrary.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/error/authenticationError.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/error/authenticationError.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/error/codeError.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/error/codeError.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/error/errorNotFoundError.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/error/errorNotFoundError.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/error/methodIsNotCompatible.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/error/methodIsNotCompatible.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/infoObjects/cChInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/infoObjects/cChInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/infoObjects/cIdChInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/infoObjects/cIdChInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/infoObjects/pubData.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/infoObjects/pubDataInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/infoObjects/socketInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/infoObjects/socketInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/infoObjects/zationInfo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/infoObjects/zationInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/infoObjects/zationToken.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/infoObjects/zationTokenInfo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/input/inputMainProcessor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/input/inputMainProcessor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/input/inputReqProcessor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/input/inputReqProcessor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/logger/logger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/logger/logger.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/panel/panelEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/panel/panelEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/processor/httpProcessor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/processor/httpProcessor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/processor/mainProcessor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/processor/mainProcessor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/processor/validChProcessor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/processor/validChProcessor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/protocolAccess/protocolAccessChecker.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/protocolAccess/protocolAccessChecker.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/response/returner.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/response/returner.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/sc/socket.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/sc/socket.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/services/serviceEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/services/serviceEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/services/serviceNotFoundError.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/services/serviceNotFoundError.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/systemController/controller/zationSPC_Auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/systemController/controller/zationSPC_Auth.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/token/tokenEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/token/tokenEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/token/tokenTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/token/tokenTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/tools/brokerKeyHasher.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/tools/funcTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/funcTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/tools/idTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/idTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/tools/mapper.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/mapper.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/tools/objectPathSequence.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/objectPathSequence.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/tools/portChecker.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/portChecker.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/tools/timeTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/timeTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/tools/zationReqTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/zationReqTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/validator/validatorEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/validator/validatorEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/validator/validatorLibrary.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/validator/validatorLibrary.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/version/systemVersionChecker.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/version/systemVersionChecker.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/zationTaskErrors/mainTaskErrors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/zationTaskErrors/mainTaskErrors.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/zationTaskErrors/validatorTaskErrors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/zationTaskErrors/validatorTaskErrors.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/main/zation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zation.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/main/zationBroker.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationBroker.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/main/zationConfig.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/main/zationMaster.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationMaster.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/main/zationWorker.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationWorker.ts" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -144,10 +43,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gulpFile.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="217">
+            <state relative-caret-position="119">
               <caret line="41" column="8" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="8" />
             </state>
           </provider>
@@ -206,6 +105,18 @@
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="e#157#210#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/lib/helper/client/clientPrepare.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="360">
+              <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -295,8 +206,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/lib/helper/constants/errorGroups.ts" />
-        <option value="$PROJECT_DIR$/src/lib/helper/constants/errorGroup.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/zationTaskErrors/mainTaskErrors.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/zationTaskErrors/validatorTaskErrors.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/systemController/controller/zationSPC_Auth.ts" />
@@ -346,6 +255,8 @@
         <option value="$PROJECT_DIR$/gulpFile.js" />
         <option value="$PROJECT_DIR$/../../testZone/41Test/src/index.ts" />
         <option value="$PROJECT_DIR$/../../testZone/41Test/src/config/app.config.ts" />
+        <option value="$PROJECT_DIR$/../../testZone/server/src/config/app.config.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/client/clientPrepare.ts" />
       </list>
     </option>
   </component>
@@ -357,9 +268,8 @@
   </component>
   <component name="ProjectFrameBounds" fullScreen="true">
     <option name="x" value="726" />
-    <option name="y" value="23" />
     <option name="width" value="714" />
-    <option name="height" value="832" />
+    <option name="height" value="900" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -390,6 +300,14 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
               <item name="helper" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="helper" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
@@ -627,7 +545,7 @@
       <workItem from="1541196160922" duration="10832000" />
       <workItem from="1541215941148" duration="40757000" />
       <workItem from="1541507620138" duration="52000" />
-      <workItem from="1541511795171" duration="33373000" />
+      <workItem from="1541511795171" duration="33629000" />
     </task>
     <task id="LOCAL-00018" summary="update version to 0.3.3">
       <created>1537179593020</created>
@@ -976,7 +894,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1490602000" />
+    <option name="totallyTimeSpent" value="1490858000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -991,7 +909,7 @@
     <frame x="0" y="0" width="1440" height="900" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.8044515" visible="true" weight="0.32487667" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.8044515" visible="true" weight="0.32487667" />
       <window_info id="Structure" order="1" sideWeight="0.19554849" side_tool="true" visible="true" weight="0.32487667" />
       <window_info id="Favorites" order="2" sideWeight="0.10449927" side_tool="true" weight="0.2081138" />
       <window_info id="Gulp" order="3" side_tool="true" />
@@ -1006,7 +924,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Statistic" order="8" weight="0.7180723" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50317127" side_tool="true" weight="0.27108434" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" sideWeight="0.49682876" visible="true" weight="0.24216868" />
+      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49682876" visible="true" weight="0.24216868" />
       <window_info anchor="bottom" id="Version Control" order="11" weight="0.24096386" />
       <window_info anchor="bottom" id="Messages" order="12" weight="0.32289156" />
       <window_info anchor="bottom" id="TypeScript" order="13" weight="0.19518073" />
@@ -1073,17 +991,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="big update part1 for&#10;code improvement &#10;and add new covert for object and array&#10;add isOptional for object and array&#10;new value,object,array property option in app config,&#10;new prototype key in object&#10;bug fix" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/input/inputMainProcessor.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3315">
-          <caret line="221" column="17" lean-forward="true" selection-start-line="221" selection-start-column="17" selection-end-line="221" selection-end-column="17" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="n#TaskErrorBag#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/helper/input/processTaskEngine.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -1525,8 +1432,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/gulpFile.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
+        <state relative-caret-position="119">
           <caret line="41" column="8" selection-start-line="41" selection-start-column="8" selection-end-line="41" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/client/clientPrepare.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -27,7 +27,7 @@ class ClientPrepare
     static createServerSettingsFile(zc : ZationConfig) : string
     {
         let res = '';
-        res += 'var ZATION_SERVER_SETTINGS = {';
+        res += 'const ZATION_SERVER_SETTINGS = {';
         res += `HOSTNAME : '${zc.mainConfig.hostname}',`;
         res += `PORT : ${zc.mainConfig.port},`;
         res += `SECURE : ${zc.mainConfig.secure},`;
