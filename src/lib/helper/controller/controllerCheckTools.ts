@@ -24,33 +24,18 @@ class ControllerTools
         }
     }
 
-    static canControllerRequire(cConfig : ControllerConfig,cFullPath : string,zc : ZationConfig) : boolean
+    static requireController(cConfig : ControllerConfig,cFullPath : string,zc : ZationConfig) : boolean
     {
-        try
-        {
-            if(cConfig.systemController) {
-                require(systemControllerPath + '/' + cFullPath);
-                return true;
-            }
-            else {
-                require(zc.starterConfig.controller + '/' + cFullPath);
-                return true;
-            }
+        if(cConfig.systemController) {
+            return require(systemControllerPath + '/' + cFullPath);
         }
-        catch(e) {
-            return false;
+        else {
+            return require(zc.starterConfig.controller + '/' + cFullPath);
         }
     }
 
-    static isControllerExtendsController(cConfig : ControllerConfig,cFullPath : string,zc : ZationConfig) : boolean
+    static isControllerExtendsController(controller) : boolean
     {
-        let controller : any = {};
-        if (cConfig.systemController) {
-            controller = require(systemControllerPath + '/' + cFullPath);
-        }
-        else {
-            controller = require(zc.starterConfig.controller + '/' + cFullPath);
-        }
         return controller.prototype instanceof Controller;
     }
 

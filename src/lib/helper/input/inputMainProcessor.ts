@@ -57,20 +57,23 @@ class InputMainProcessor
         if(typeof input === 'object')
         {
             //check if the input has unknown property
-            for(let k in input)
+            if(!config[nameof<ObjectPropertyConfig>(s => s.moreInputAllowed)])
             {
-                if(input.hasOwnProperty(k) && !props.hasOwnProperty(k))
+                for(let k in input)
                 {
-                    //ups unknown key
-                    errorBag.addTaskError(new TaskError
-                        (
-                            MainErrors.unknownObjectProperty,
-                            {
-                                propertyName : k
-                            }
-                        )
-                    );
+                    if(input.hasOwnProperty(k) && !props.hasOwnProperty(k))
+                    {
+                        //ups unknown key
+                        errorBag.addTaskError(new TaskError
+                            (
+                                MainErrors.unknownObjectProperty,
+                                {
+                                    propertyName : k
+                                }
+                            )
+                        );
 
+                    }
                 }
             }
 
@@ -115,22 +118,31 @@ class InputMainProcessor
 
             await Promise.all(promises);
 
-            //methods and construct obj
-            if(
-                this.createProcessTaskList &&
-                (typeof config[nameof<ObjectPropertyConfig>(s => s.construct)] === 'function'||
-                typeof config[nameof<ObjectPropertyConfig>(s => s.prototype)] === 'object'))
+            const processConstruct = typeof config[nameof<ObjectPropertyConfig>(s => s.construct)] === 'function';
+            const processConvert = typeof config[nameof<ObjectPropertyConfig>(s => s.convert)] === 'function';
+            const processPrototype = typeof config[nameof<ObjectPropertyConfig>(s => s.prototype)] === 'object';
+
+
+            //process prototype,construct,convert
+            if(this.createProcessTaskList && errorBag.isEmpty() &&
+                (processConstruct || processConvert || processPrototype)
+            )
             {
                 this.processTaskList.push(async  () =>
                 {
-                    if(typeof config[nameof<ObjectPropertyConfig>(s => s.prototype)] === 'object') {
-                        Object.setPrototypeOf(srcObj[srcKey],config[nameof<ObjectPropertyConfig>(s => s.prototype)]);
+                    //1.prototype
+                    if(processPrototype) {
+                        Object.setPrototypeOf(input,config[nameof<ObjectPropertyConfig>(s => s.prototype)]);
                     }
-                    if(config[nameof<ObjectPropertyConfig>(s => s.construct)] === 'function') {
-                        const res = await config[nameof<ObjectPropertyConfig>(s => s.construct)](input,this.preparedSmallBag);
-                        if(res !== undefined){
-                            srcObj[srcKey] = res;
-                        }
+
+                    //2.construct
+                    if(processConstruct) {
+                        await config[nameof<ObjectPropertyConfig>(s => s.construct)](input,this.preparedSmallBag);
+                    }
+
+                    //3.convert
+                    if(processConvert) {
+                        srcObj[srcKey] = await config[nameof<ObjectPropertyConfig>(s => s.convert)](input,this.preparedSmallBag);
                     }
                 });
             }
@@ -186,11 +198,13 @@ class InputMainProcessor
         }
 
         //check for convertTask
-        if(this.createProcessTaskList && typeof config[nameof<ValuePropertyConfig>
-        (s => s.convertType)] === 'function'){
+        if(
+            this.createProcessTaskList &&
+            errorBag.isEmpty() &&
+            typeof config[nameof<ValuePropertyConfig>(s => s.convertType)] === 'function')
+        {
             this.processTaskList.push(async  () => {
-                srcObj[srcKey] = await
-                    config[nameof<ValuePropertyConfig>(s => s.convertType)](input,this.preparedSmallBag);
+                srcObj[srcKey] = await config[nameof<ValuePropertyConfig>(s => s.convertType)](input,this.preparedSmallBag);
             });
         }
     }
@@ -207,8 +221,7 @@ class InputMainProcessor
                 isOk = ValidationEngine.validateArray(input,config,currentInputPath,errorBag)
             }
 
-            if(isOk)
-            {
+            if(isOk) {
                 let arrayInputConfig = config[nameof<ArrayPropertyConfig>(s => s.array)];
                 let promises : Promise<any>[] = [];
                 //input reference so we can return it normal
@@ -220,8 +233,18 @@ class InputMainProcessor
                         resolve();
                     }));
                 }
-
                 await Promise.all(promises);
+
+                //check for convertTask
+                if(
+                    this.createProcessTaskList &&
+                    errorBag.isEmpty() &&
+                    typeof config[nameof<ArrayPropertyConfig>(s => s.convert)] === 'function')
+                {
+                    this.processTaskList.push(async  () => {
+                        srcObj[srcKey] = await config[nameof<ArrayPropertyConfig>(s => s.convert)](input,this.preparedSmallBag);
+                    });
+                }
             }
         }
         else if(!config[nameof<ArrayPropertyConfig>(s => s.isOptional)]){

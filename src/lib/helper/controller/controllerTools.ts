@@ -7,7 +7,6 @@ GitHub: LucaCode
 import ZationConfig     = require("../../main/zationConfig");
 import Bag              = require("../../api/Bag");
 import {
-    ArrayPropertyConfig,
     ControllerConfig,
     InternControllerConfig,
     ObjectPropertyConfig
@@ -83,12 +82,15 @@ class ControllerTools
     static getControllerConfigFromInputPath(path : string[],controllerInput : object) : object | undefined
     {
         let tempConfig = controllerInput;
+        let lastIrritate = path.length -1;
         for(let i = 0; i < path.length; i++)
         {
             const k = path[i];
             if(tempConfig.hasOwnProperty(k) && typeof tempConfig[k] === 'object')
             {
-                if(tempConfig[k].hasOwnProperty(nameof<ObjectPropertyConfig>(s => s.properties))) {
+                if(tempConfig[k].hasOwnProperty(nameof<ObjectPropertyConfig>(s => s.properties))
+                && i < lastIrritate) {
+                    //if not end of inputPath return the properties of the object
                     tempConfig = tempConfig[k][nameof<ObjectPropertyConfig>(s => s.properties)];
                 }
                 else {

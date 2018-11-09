@@ -36,8 +36,8 @@ class ConfigPeCompiler
         this.preCompileErrorConfig();
 
         //view precompiled app config
-        //console.dir(this.zc.appConfig,{depth:null});
-        //console.dir(this.zc.channelConfig,{depth:null});
+        console.dir(this.zc.appConfig,{depth:null});
+        console.dir(this.zc.channelConfig,{depth:null});
     }
 
     private prepare() : void
@@ -273,35 +273,54 @@ class ConfigPeCompiler
                     this.preCompileInheritance(this.objectsConfig[superName]);
 
                     //lastExtend
-                    //extend Props
-                    const superProps = this.objectsConfig[superName][nameof<ObjectPropertyConfig>(s => s.properties)];
-                    ObjectTools.addObToOb(value[nameof<ObjectPropertyConfig>(s => s.properties)],superProps,false);
-                    //extend Methods
-                    let superMethods = this.objectsConfig[superName][nameof<ObjectPropertyConfig>(s => s.prototype)];
 
-                    if(superMethods){
+                    const superObj = this.objectsConfig[superName];
+
+                    //extend Props
+                    const superProps = superObj[nameof<ObjectPropertyConfig>(s => s.properties)];
+                    ObjectTools.addObToOb(value[nameof<ObjectPropertyConfig>(s => s.properties)],superProps,false);
+
+                    //check for prototype
+                    const superPrototype = superObj[nameof<ObjectPropertyConfig>(s => s.prototype)];
+                    if(superPrototype){
                         if(!value[nameof<ObjectPropertyConfig>(s => s.prototype)]){
                             value[nameof<ObjectPropertyConfig>(s => s.prototype)] = {};
                         }
-                        Object.setPrototypeOf(value[nameof<ObjectPropertyConfig>(s => s.prototype)],superMethods);
+                        Object.setPrototypeOf(value[nameof<ObjectPropertyConfig>(s => s.prototype)],superPrototype);
                     }
 
                     //extend construct
-                    const superObj = this.objectsConfig[superName];
-
                     const superConstruct =
                         typeof superObj[nameof<ObjectPropertyConfig>(s => s.construct)] === 'function' ?
                         superObj[nameof<ObjectPropertyConfig>(s => s.construct)] :
-                        async (obj) => {return obj;};
+                        async () => {};
+                    const currentConstruct = value[nameof<ObjectPropertyConfig>(s => s.construct)];
+                    if(typeof currentConstruct === 'function') {
+                        value[nameof<ObjectPropertyConfig>(s => s.construct)] = async (obj, smallBag) => {
+                            await superConstruct(obj,smallBag);
+                            await currentConstruct(obj,smallBag);
+                        };
+                    }else {
+                        value[nameof<ObjectPropertyConfig>(s => s.construct)] = async (obj, smallBag) => {
+                            await superConstruct(obj,smallBag);
+                        };
+                    }
 
-                    const currentConstruct =
-                        typeof value[nameof<ObjectPropertyConfig>(s => s.construct)] === 'function' ?
-                        value[nameof<ObjectPropertyConfig>(s => s.construct)] :
-                        async (obj) => {return obj;};
-
-                    value[nameof<ObjectPropertyConfig>(s => s.construct)] = async (obj, smallBag) => {
-                        return await currentConstruct(await superConstruct(obj,smallBag),smallBag);
-                    };
+                    //extend convert
+                    const superConvert =
+                        typeof superObj[nameof<ObjectPropertyConfig>(s => s.convert)] === 'function' ?
+                            superObj[nameof<ObjectPropertyConfig>(s => s.convert)] :
+                            async (obj) => {return obj;};
+                    const currentConvert = value[nameof<ObjectPropertyConfig>(s => s.convert)];
+                    if(typeof currentConvert === 'function') {
+                        value[nameof<ObjectPropertyConfig>(s => s.convert)] = async (obj, smallBag) => {
+                            return await currentConvert(await superConvert(obj,smallBag),smallBag);
+                        };
+                    }else {
+                        value[nameof<ObjectPropertyConfig>(s => s.convert)] = async (obj, smallBag) => {
+                            return await superConvert(obj,smallBag);
+                        };
+                    }
 
                     //remove extension
                     delete value[nameof<ObjectPropertyConfig>(s => s.extends)];

@@ -25,206 +25,246 @@ import {InternMainConfig, OptionAuto} from "../helper/configs/mainConfig";
 import {ServiceConfig}     from "../helper/configs/serviceConfig";
 import {StarterConfig}     from "../helper/configs/starterConfig";
 import {InternalData}      from "../helper/constants/internalData";
+import {ConfigScriptSave}  from "../helper/constants/internal";
+const {NodeVM}           = require('vm2');
 
-class ZationConfig
-{
-    private _eventConfig : EventConfig = {};
-    private _appConfig : AppConfig = {};
-    private _channelConfig : ChannelConfig = {};
-    private _errorConfig : ErrorConfig = {};
-    private _mainConfig : InternMainConfig;
-    private _serviceConfig : ServiceConfig = {};
-    private readonly _starterConfig : StarterConfig = {};
-    private readonly _internalData : InternalData = {};
+class ZationConfig {
+    private _eventConfig: EventConfig = {};
+    private _appConfig: AppConfig = {};
+    private _channelConfig: ChannelConfig = {};
+    private _errorConfig: ErrorConfig = {};
+    private _mainConfig: InternMainConfig;
+    private _serviceConfig: ServiceConfig = {};
+    private _configScriptSaver : ConfigScriptSave;
+    private readonly _starterConfig: StarterConfig = {};
+    private readonly _internalData: InternalData = {};
 
-    constructor(starterData : object = {},workerTransport : boolean = false)
-    {
-        if(!workerTransport)
-        {
+    constructor(starterData: object = {}, workerTransport: boolean = false) {
+        if (!workerTransport) {
             this._starterConfig = starterData;
-            this.loadDefaults();
-            this.loadUserDataLocations();
-            this.loadMainConfig();
-
-            //override env
-            if(Number(process.env.PORT) || Number(process.env.p)) {
-                this._mainConfig.port = Number(process.env.PORT) || Number(process.env.p)
-            }
-            if(process.env.STATE_SERVER_HOST || process.env.ssh) {
-                this._mainConfig.stateServerHost =
-                    process.env.STATE_SERVER_HOST || process.env.ssh;
-            }
-            if(Number(process.env.STATE_SERVER_PORT) || Number(process.env.ssp)) {
-                this._mainConfig.stateServerPort =
-                    Number(process.env.STATE_SERVER_PORT) || Number(process.env.ssh);
-            }
-
-            this.addToMainConfig(this._starterConfig,true,Structures.Main);
-            this.processMainConfig();
-
-            this._internalData.tokenCheckKey = crypto.randomBytes(32).toString('hex');
-        }
-        else
-        {
+        } else {
             this._starterConfig = starterData['starterConfig'];
             this._mainConfig = starterData['mainConfig'];
             this._internalData = starterData['internalData'];
+            this._configScriptSaver = starterData['configScript'];
         }
     }
 
-    loadDefaults()
+    async masterInit()
     {
+        this.loadDefaults();
+        this.loadUserDataLocations();
+        await this.loadMainConfig();
+
+        //override env
+        if (Number(process.env.PORT) || Number(process.env.p)) {
+            this._mainConfig.port = Number(process.env.PORT) || Number(process.env.p)
+        }
+        if (process.env.STATE_SERVER_HOST || process.env.ssh) {
+            this._mainConfig.stateServerHost =
+                process.env.STATE_SERVER_HOST || process.env.ssh;
+        }
+        if (Number(process.env.STATE_SERVER_PORT) || Number(process.env.ssp)) {
+            this._mainConfig.stateServerPort =
+                Number(process.env.STATE_SERVER_PORT) || Number(process.env.ssh);
+        }
+
+        this.addToMainConfig(this._starterConfig, true, Structures.Main);
+        this.processMainConfig();
+
+        this._internalData.tokenCheckKey = crypto.randomBytes(32).toString('hex');
+    }
+
+    loadDefaults() {
         //Create Defaults
         this._mainConfig = {
-            debug : false,
-            startDebug : false,
-            showConfigWarnings : true,
-            port : 3000,
-            hostname : 'localhost',
-            environment : 'dev',
-            postKey : 'zation',
-            path : '/zation',
-            useAuth : true,
-            appName : 'AppWithoutName',
-            secure : false,
-            useProtocolCheck : true,
-            useHttpMethodCheck : true,
-            sendErrorDescription : false,
-            authKey : crypto.randomBytes(32).toString('hex'),
-            authPublicKey : null,
-            authPrivateKey : null,
-            authDefaultExpiry : 86400,
-            timeZone : moment.tz.guess() || 'Europe/Berlin',
-            authStart : false,
-            authStartDuration : 20000,
-            workers : "auto",
-            zationConsoleLog : true,
-            scConsoleLog : false,
-            useScUws : true,
-            clusterAuthKey : null,
-            stateServerHost : null,
-            stateServerPort : null,
-            scLogLevel : 2,
-            socketChannelLimit : 1000,
-            crashWorkerOnError : true,
-            rebootWorkerOnCrash : true,
-            killMasterOnSignal : false,
-            connectTimeout : 10000,
-            handshakeTimeout : 10000,
-            ackTimeout : 10000,
-            ipcAckTimeout : 3000,
-            socketUpgradeTimeout : 1000,
-            origins : '*:*',
-            pingInterval : 8000,
-            pingTimeout : 20000,
-            processTermTimeout : 10000,
-            propagateErrors : true,
-            propagateWarnings : true,
-            middlewareEmitWarnings : true,
-            rebootOnSignal : true,
-            downgradeToUser : false,
-            allowClientPublish : true,
-            workerStatusInterval : 10000,
-            clusterShareTokenAuth : true,
-            instanceId : uuidV4(),
-            useTokenCheckKey : true,
-            clientJsPrepare : true,
-            usePanel : false
+            debug: false,
+            startDebug: false,
+            showConfigWarnings: true,
+            port: 3000,
+            hostname: 'localhost',
+            environment: 'dev',
+            postKey: 'zation',
+            path: '/zation',
+            useAuth: true,
+            appName: 'AppWithoutName',
+            secure: false,
+            useProtocolCheck: true,
+            useHttpMethodCheck: true,
+            sendErrorDescription: false,
+            authKey: crypto.randomBytes(32).toString('hex'),
+            authPublicKey: null,
+            authPrivateKey: null,
+            authDefaultExpiry: 86400,
+            timeZone: moment.tz.guess() || 'Europe/Berlin',
+            authStart: false,
+            authStartDuration: 20000,
+            workers: "auto",
+            zationConsoleLog: true,
+            scConsoleLog: false,
+            useScUws: true,
+            clusterAuthKey: null,
+            stateServerHost: null,
+            stateServerPort: null,
+            scLogLevel: 2,
+            socketChannelLimit: 1000,
+            crashWorkerOnError: true,
+            rebootWorkerOnCrash: true,
+            killMasterOnSignal: false,
+            connectTimeout: 10000,
+            handshakeTimeout: 10000,
+            ackTimeout: 10000,
+            ipcAckTimeout: 3000,
+            socketUpgradeTimeout: 1000,
+            origins: '*:*',
+            pingInterval: 8000,
+            pingTimeout: 20000,
+            processTermTimeout: 10000,
+            propagateErrors: true,
+            propagateWarnings: true,
+            middlewareEmitWarnings: true,
+            rebootOnSignal: true,
+            downgradeToUser: false,
+            allowClientPublish: true,
+            workerStatusInterval: 10000,
+            clusterShareTokenAuth: true,
+            instanceId: uuidV4(),
+            useTokenCheckKey: true,
+            clientJsPrepare: true,
+            usePanel: false
         };
     }
 
-    getWorkerTransport() : object
-    {
-        return {mainConfig : this._mainConfig,starterConfig : this._starterConfig,internalData : this._internalData};
+    getWorkerTransport(): object {
+        return {
+            mainConfig: this._mainConfig,
+            starterConfig: this._starterConfig,
+            internalData: this._internalData,
+            configScript : this._configScriptSaver
+        };
     }
 
-    isDebug() : boolean
-    {
+    isDebug(): boolean {
         return !!this._mainConfig.debug;
     }
 
-    isStartDebug() : boolean
-    {
+    isStartDebug(): boolean {
         return !!this._mainConfig.startDebug;
     }
 
-    isShowConfigWarning() : boolean
-    {
+    isShowConfigWarning(): boolean {
         return !!this._mainConfig.showConfigWarnings;
     }
 
-    isUsePanel() : boolean
-    {
+    isUsePanel(): boolean {
         return !!this._mainConfig.usePanel
     }
 
-    addToMainConfig(toAdd : object,overwrite : boolean,onlyAddKeys : object | undefined) : void
-    {
-        if(onlyAddKeys === undefined) {
-            ObjectTools.addObToOb(this._mainConfig,toAdd,overwrite);
-        }
-        else {
-            ObjectTools.onlyAddObToOb(this._mainConfig,toAdd,overwrite,onlyAddKeys);
+    addToMainConfig(toAdd: object, overwrite: boolean, onlyAddKeys: object | undefined): void {
+        if (onlyAddKeys === undefined) {
+            ObjectTools.addObToOb(this._mainConfig, toAdd, overwrite);
+        } else {
+            ObjectTools.onlyAddObToOb(this._mainConfig, toAdd, overwrite, onlyAddKeys);
         }
     }
 
-    getError(name : string) : ErrorConstruct {
-        if(this._errorConfig.hasOwnProperty(name)) {
+    getError(name: string): ErrorConstruct {
+        if (this._errorConfig.hasOwnProperty(name)) {
             return this._errorConfig[name];
-        }
-        else {
+        } else {
             throw new ErrorNotFound(name);
         }
     }
 
-    isError(name : string) : boolean {
+    isError(name: string): boolean {
         return this._errorConfig.hasOwnProperty(name);
     }
 
-    getVerifyKey() : any
-    {
+    getVerifyKey(): any {
         return this._mainConfig.authPublicKey || this._mainConfig.authKey;
     }
 
-    getSignKey() : any
-    {
+    getSignKey(): any {
         return this._mainConfig.authPrivateKey || this._mainConfig.authKey;
     }
 
-    getSomeInformation() : ZationInfoObj
-    {
+    getSomeInformation(): ZationInfoObj {
         return new ZationInfoObj(this);
     }
 
-    loadOtherConfigs() : void
-    {
+    async loadOtherConfigs() {
+        await this.loadOtherConfigScripts();
+        this.loadOtherConfigFromScript();
+    }
+
+    loadOtherConfigFromScript() {
+        this._eventConfig = ZationConfig.loadScript(this._configScriptSaver.eventConfig);
+        this._channelConfig = ZationConfig.loadScript(this._configScriptSaver.channelConfig);
+        this._appConfig = ZationConfig.loadScript(this._configScriptSaver.appConfig);
+        this._errorConfig = ZationConfig.loadScript(this._configScriptSaver.errorConfig);
+        this._serviceConfig = ZationConfig.loadScript(this._configScriptSaver.serviceConfig);
+    }
+
+    async loadOtherConfigScripts(): Promise<void> {
+        this._configScriptSaver = {};
+        let promises: Promise<void>[] = [];
         //Add Other Configs
-        this._eventConfig = ZationConfig.loadZationConfig(
-            'event.config',
-            this._starterConfig.eventConfig,
-        );
+        promises.push(new Promise<void>((async (resolve) => {
+            this._configScriptSaver.eventConfig = await ZationConfig.loadZationConfig(
+                'event.config',
+                this._starterConfig.eventConfig,
+            );
+            resolve();
+        })));
+        promises.push(new Promise<void>((async (resolve) => {
+            this._configScriptSaver.channelConfig = await ZationConfig.loadZationConfig(
+                'channel.config',
+                this._starterConfig.channelConfig,
+            );
+            resolve();
+        })));
+        promises.push(new Promise<void>((async (resolve) => {
+            this._configScriptSaver.appConfig = await ZationConfig.loadZationConfig(
+                'app.config',
+                this._starterConfig.appConfig,
+                false
+            );
+            resolve();
+        })));
+        promises.push(new Promise<void>((async (resolve) => {
+            // @ts-ignore
+            this._configScriptSaver.errorConfig = await ZationConfig.loadZationConfig(
+                'error.config',
+                this._starterConfig.errorConfig,
+            );
+            resolve();
+        })));
+        promises.push(new Promise<void>((async (resolve) => {
+            // @ts-ignore
+            this._configScriptSaver.serviceConfig = await ZationConfig.loadZationConfig(
+                'service.config',
+                this._starterConfig.serviceConfig,
+            );
+            resolve();
+        })));
+        await Promise.all(promises);
+    }
 
-        this._channelConfig = ZationConfig.loadZationConfig(
-            'channel.config',
-            this._starterConfig.channelConfig,
-        );
-
-        this._appConfig = ZationConfig.loadZationConfig(
-            'app.config',
-            this._starterConfig.appConfig,
-            false
-        );
-
-        // @ts-ignore
-        this._errorConfig = ZationConfig.loadZationConfig(
-            'error.config',
-            this._starterConfig.errorConfig,
-        );
-
-        this._serviceConfig = ZationConfig.loadZationConfig(
-            'service.config',
-            this._starterConfig.serviceConfig,
-        );
+    static loadScript(script ?: object | string)
+    {
+        if(typeof script === 'string') {
+            return (new NodeVM({
+                require: {
+                    external: true
+                }
+            })).run(script,'config');
+        }
+        else if(typeof script === 'object'){
+            return script;
+        }
+        else{
+            return {};
+        }
     }
 
     static _getRootPath() : any
@@ -234,35 +274,48 @@ class ZationConfig
         return path.dirname(require.main.filename || process.mainModule.filename);
     }
 
-    static loadZationConfig(name : string,value : any,optional : boolean = true) : object
+    static async loadZationConfig(name : string,value : any,optional : boolean = true) : Promise<string | object>
     {
-        if(typeof value === 'string') {
-            if(value.lastIndexOf('.js') === -1) {
-                value += '.js';
+        return new Promise<string | object>(((resolve, reject) => {
+            if(typeof value === 'string') {
+                if(value.lastIndexOf('.js') === -1) {
+                    value += '.js';
+                }
+                fs.stat(value,async (err) =>
+                {
+                    if(err) {
+                        if(optional) {
+                            resolve({});
+                        }
+                        else {
+                            reject(new Error(`Config ${name} not found in path ${path}`));
+                        }
+                    }
+                    else {
+                        fs.readFile(value,(err,data)=> {
+                            if(err){
+                                reject(err);
+                            }
+                            else{
+                                resolve(data.toString());
+                            }
+                        })
+                    }
+                });
             }
-
-            if(fs.existsSync(value)) {
-                return require(value);
-            }
-            else if(optional) {
-                return {};
+            else if(typeof value === 'object') {
+                return value;
             }
             else {
-                throw new Error(`Config ${name} not found in path ${path}`);
-            }
-        }
-        else if(typeof value === 'object') {
-            return value;
-        }
-        else {
-            if(optional) {
-                return {};
-            }
-            else {
-                throw new Error(`Error to load Config ${name}`);
-            }
-        }
 
+                if(optional) {
+                    return {};
+                }
+                else {
+                    throw new Error(`Error to load Config ${name}`);
+                }
+            }
+        }));
     }
 
     static createValueWithOsAuto(checkValue : any)
@@ -323,12 +376,12 @@ class ZationConfig
         }
     }
 
-    private loadMainConfig() : void
+    private async loadMainConfig() : Promise<void>
     {
-        const mainConfig = ZationConfig.loadZationConfig(
+        const mainConfig = ZationConfig.loadScript(await ZationConfig.loadZationConfig(
             'main.config',
             this._starterConfig.mainConfig
-        );
+        ));
         ObjectTools.addObToOb(this._mainConfig,mainConfig,true);
     }
 

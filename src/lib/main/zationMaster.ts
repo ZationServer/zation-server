@@ -51,14 +51,18 @@ class ZationMaster {
             ZationMaster.instance = this;
 
             this.serverStartedTimeStamp = Date.now();
-            this.zc = new ZationConfig(options);
-
-            //setLogger
-            Logger.setZationConfig(this.zc);
             this.workerIds = new HashSet();
             this.brokerIds = new HashSet();
+            this.zc = new ZationConfig(options);
 
             (async () => {
+
+                //loads main config and defaults
+                await this.zc.masterInit();
+
+                //setLogger
+                Logger.setZationConfig(this.zc);
+
                 try {
                     await this.start();
                 }
@@ -88,7 +92,7 @@ class ZationMaster {
         Logger.printStartDebugInfo(`Master has checked the start config.`, true);
 
         Logger.startStopWatch();
-        this.zc.loadOtherConfigs();
+        await this.zc.loadOtherConfigs();
         Logger.printStartDebugInfo(`Master has loaded the other config files.`, true);
 
         Logger.startStopWatch();

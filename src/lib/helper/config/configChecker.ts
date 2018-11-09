@@ -304,15 +304,24 @@ class ConfigChecker {
                 }
             }
         }
-        this.checkCrossImportsOrExtends();
+        this.checkImportsOrExtendsInfiniteLoops();
     }
 
-    private checkCrossImportsOrExtends() {
+    private checkImportsOrExtendsInfiniteLoops() {
+
+        for(let i = 0; i < this.objectImports.length; i++) {
+            let objDep = this.objectImports[i];
+            if(this.isCrossIn(objDep,this.objectExtensions)) {
+                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    `Object: '${objDep['s']}' uses '${objDep['t']}' and Object: '${objDep['t']}' extends '${objDep['s']}' the inheritance will create an self import and a self import will create an infinite loop.`));
+            }
+        }
+
+
         for (let i = 0; i < this.objectImports.length; i++) {
             let objDep = this.objectImports[i];
             if (this.isCrossIn(objDep, this.objectImports)) {
                 this.objectImports[i] = {};
-
                 this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                     `Object: '${objDep['s']}' uses '${objDep['t']}' Object: '${objDep['t']}' uses '${objDep['s']}' a cyclic import, it will create an infinite loop.`));
             }
@@ -637,13 +646,19 @@ class ConfigChecker {
         if (!ControllerCheckTools.controllerFileExist(cc, cPath, this.zc)) {
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} on Path: '${cPath}', can not found the controller file.`));
-        } else if (!ControllerCheckTools.canControllerRequire(cc, cPath, this.zc)) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                `${target.getTarget()} on Path: '${cPath}', can not require, syntax errors.`));
-        } else {
-            if (!ControllerCheckTools.isControllerExtendsController(cc, cPath, this.zc)) {
+        }
+        else
+        {
+            try {
+                const controller = ControllerCheckTools.requireController(cc, cPath, this.zc);
+                if (!ControllerCheckTools.isControllerExtendsController(controller)) {
+                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                        `${target.getTarget()} on Path: '${cPath}', is not extends from main Controller class.`));
+                }
+            }
+            catch (e) {
                 this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `${target.getTarget()} on Path: '${cPath}', is not extends from main Controller class.`));
+                    `${target.getTarget()} on Path: '${cPath}', can not require, syntax errors.`));
             }
         }
     }

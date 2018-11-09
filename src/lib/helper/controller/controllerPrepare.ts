@@ -42,16 +42,13 @@ class ControllerPrepare
 
     private getController(name : string,isSystemController : boolean) : any
     {
-        if(!isSystemController)
-        {
+        if(!isSystemController) {
             return this.appController[name];
         }
-        else if(isSystemController)
-        {
+        else if(isSystemController) {
             return this.systemController[name];
         }
-        else
-        {
+        else {
             return {};
         }
     }

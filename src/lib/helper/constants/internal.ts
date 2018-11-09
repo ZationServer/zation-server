@@ -145,6 +145,14 @@ export interface PrepareZationToken {
     zationCustomVariables ?: object
 }
 
+export interface ConfigScriptSave {
+    appConfig ?: string | object,
+    channelConfig ?: string | object,
+    errorConfig ?: string | object,
+    eventConfig ?: string | object,
+    serviceConfig ?: string | object
+}
+
 export enum ZationChannel {
     //Zation Main Channels
     USER_CHANNEL_PREFIX         = 'ZATION.USER.',

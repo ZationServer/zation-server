@@ -112,21 +112,22 @@ export interface PropertyOptional {
 }
 
 export type ObjectProperties = Record<string,Property>;
-export type ConvertObjectFunction = (obj: object, smallBag : SmallBag) => Promise<any> | any;
-export type ConstructObjectFunction = (self : object, smallBag : SmallBag) => Promise<void> | void;
+export type ConvertObjectFunction = (obj: any, smallBag : SmallBag) => Promise<any> | any;
+export type ConstructObjectFunction = (self : any, smallBag : SmallBag) => Promise<void> | void;
 
 export interface ObjectPropertyConfig extends PropertyOptional
 {
-    properties  : ObjectProperties;
+    properties : ObjectProperties;
     extends  ?: string;
     prototype  ?: object;
     construct  ?: ConstructObjectFunction;
     convert  ?: ConvertObjectFunction;
+    moreInputAllowed ?: boolean;
 }
 
 export interface ArrayPropertyConfig extends ArraySettings
 {
-    array : Property;
+    array : Property
 }
 
 export type ConvertArrayFunction = (array: any[], smallBag : SmallBag) => Promise<any> | any;
@@ -144,3 +145,4 @@ export interface ArrayShortSyntax extends Array<Property | ArraySettings>
     0 : Property
     1 : ArraySettings
 }
+

@@ -108,7 +108,7 @@ class ZationWorker extends SCWorker
         Logger.printStartDebugInfo(`Worker with id ${this.id} begin start process.`,false,true);
 
         Logger.startStopWatch();
-        this.zc.loadOtherConfigs();
+        this.zc.loadOtherConfigFromScript();
         Logger.printStartDebugInfo(`Worker with id ${this.id} loads other zation config files.`,true);
 
         Logger.startStopWatch();
