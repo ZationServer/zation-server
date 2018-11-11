@@ -44,6 +44,13 @@ typeLibrary[ValidationTypes.STRING] = (input,taskErrorBag,prepareErrorData) =>
     }
 };
 
+typeLibrary[ValidationTypes.NULL] = (input,taskErrorBag,prepareErrorData) =>
+{
+    if(!EasyValidator.isNull(input)) {
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeNull,prepareErrorData));
+    }
+};
+
 typeLibrary[ValidationTypes.INT] = (input,taskErrorBag,prepareErrorData,strictType) =>
 {
     if(!Number.isInteger(input)){
@@ -368,27 +375,27 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.equals)] = (input, settings, 
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.biggerThan)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValuePropertyConfig>(s => s.minValue)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === 'number' && input < settings) {
-        taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotBiggerThan,
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithMinValue,
             {
                 inputValue : prepareErrorData.inputValue,
                 inputPath : prepareErrorData.inputPath,
-                shouldBiggerThan : settings
+                minValue : settings
 
             });
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.lesserThan)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValuePropertyConfig>(s => s.maxValue)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === 'number' && input > settings) {
-        taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotLesserThan,
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithMaxValue,
             {
                 inputValue : prepareErrorData.inputValue,
                 inputPath : prepareErrorData.inputPath,
-                shouldLesserThan : settings
+                maxValue : settings
             });
     }
 };

@@ -13,14 +13,19 @@ import {
     CustomChannelConfig
 } from "../configs/channelConfig";
 import {ArrayPropertyConfig, ControllerConfig, ObjectPropertyConfig} from "../configs/appConfig";
+import PropertyImportEngine = require("./propertyImportEngine");
 
 class ConfigPeCompiler
 {
     private readonly zc : ZationConfig;
 
     private controllerDefaults : object;
+
     private objectsConfig : object;
-    private inputGroupConfig : object;
+    private valuesConfig : object;
+    private arraysConfig : object;
+
+    private propertyImportEngine : PropertyImportEngine;
     
     constructor(zationConfig)
     {
@@ -30,7 +35,9 @@ class ConfigPeCompiler
 
     preCompile() : void
     {
-        this.preCompileObjects();
+        this.preCompileArrays(this.arraysConfig);
+        this.preCompileObjects(this.objectsConfig);
+        this.preCompileTmpBuilds();
         this.preCompileController();
         this.preCompileChannelConfig();
         this.preCompileErrorConfig();
@@ -44,7 +51,11 @@ class ConfigPeCompiler
     {
         this.prepareControllerDefaults();
         this.prepareObjectsConfig();
-        this.preparePropertiesConfig();
+        this.prepareValuesConfig();
+        this.prepareArraysConfig();
+
+        this.propertyImportEngine =
+            new PropertyImportEngine(this.objectsConfig,this.valuesConfig,this.arraysConfig);
     }
 
     private prepareControllerDefaults() : void
@@ -153,34 +164,54 @@ class ConfigPeCompiler
             this.zc.appConfig.objects : {};
     }
 
-    private preparePropertiesConfig() : void {
-        this.inputGroupConfig
-            = typeof this.zc.appConfig.values === 'object' ?
+    private prepareValuesConfig() : void {
+        this.valuesConfig = typeof this.zc.appConfig.values === 'object' ?
             this.zc.appConfig.values : {};
     }
 
-    private preCompileObjects() : void
-    {
-        //compile first validation groups form every object
-        for(let objName in this.objectsConfig) {
-            if(this.objectsConfig.hasOwnProperty(objName)) {
-                this.preCompileObjectInputGroup(this.objectsConfig[objName]);
-            }
-        }
+    private prepareArraysConfig() : void {
+        this.arraysConfig = typeof this.zc.appConfig.arrays === 'object' ?
+            this.zc.appConfig.arrays : {};
+    }
 
-        //than resolve the objects links
-        for(let objName in this.objectsConfig) {
-            if(this.objectsConfig.hasOwnProperty(objName)) {
-                this.preCompileObjectResolveExtras(this.objectsConfig[objName]);
+    private preCompileObjects(objects : object) : void
+    {
+        //than resolve the links and short syntax
+        for(let objName in objects) {
+            if(objects.hasOwnProperty(objName)) {
+                this.preCompileObjectResolveExtras(objects[objName]);
             }
         }
 
         //than resolve the objects inheritance
-        for(let objName in this.objectsConfig) {
-            if(this.objectsConfig.hasOwnProperty(objName)) {
-                this.preCompileInheritance(this.objectsConfig[objName]);
+        for(let objName in objects) {
+            if(objects.hasOwnProperty(objName)) {
+                this.preCompileInheritance(objects[objName]);
             }
         }
+    }
+
+    private preCompileArrays(arrays : object) : void
+    {
+        //first pre compile the array short syntax on main level
+        //to get references for fix import issues array
+        for(let arrayName in arrays) {
+            if(arrays.hasOwnProperty(arrayName)) {
+                this.preCompileArrayShortSynatx(arrayName,arrays)
+            }
+        }
+
+        //than resolve the links and short array syntax
+        for(let arrayName in arrays) {
+            if(arrays.hasOwnProperty(arrayName)) {
+               this.preCompileResolveExtras(arrayName,arrays)
+            }
+        }
+    }
+
+    private preCompileTmpBuilds() : void {
+        this.preCompileArrays(this.propertyImportEngine.tmpCreatedArrays);
+        this.preCompileObjects(this.propertyImportEngine.tmpCreatedObjects);
     }
 
     private preCompileObjectResolveExtras(obj : ObjectPropertyConfig) : void
@@ -193,41 +224,45 @@ class ConfigPeCompiler
         }
     }
 
-    private preCompileObjectInputGroup(obj : ObjectPropertyConfig) : void
+    // noinspection JSMethodCanBeStatic
+    private preCompileArrayShortSynatx(key : string,obj : object) : void
     {
-        const properties = obj.properties;
-        for(let propName in properties) {
-            if (properties.hasOwnProperty(propName)) {
-                this.preCompileInputGroups(propName,properties);
+        const nowValue = obj[key];
+        if(Array.isArray(nowValue))
+        {
+            const inArray = nowValue[0];
+            let arrayExtras = {};
+
+            if(nowValue.length === 2 && typeof nowValue[1] === 'object') {
+                arrayExtras = nowValue[1];
             }
+
+            obj[key] = {};
+            ObjectTools.addObToOb(obj[key],arrayExtras);
+            obj[key][nameof<ArrayPropertyConfig>(s => s.array)] = inArray;
         }
     }
 
     private preCompileResolveExtras(key : string, obj : object) : void
     {
-        let nowValue = obj[key];
+        const nowValue = obj[key];
 
         if(typeof nowValue === 'string')
         {
             //resolve object import
-            if(!nowValue.startsWith('g.')) {
-                obj[key] = this.objectsConfig[nowValue.replace('o.','')];
-            }
+            obj[key] = this.propertyImportEngine.resolve(nowValue);
         }
         else if(Array.isArray(nowValue))
         {
             let inArray = {};
-            let isNewObj = false;
+            let needArrayPreCompile = false;
 
             if(typeof nowValue[0] === 'string') {
-                const value = nowValue[0];
-                if(!value.startsWith('g.')) {
-                    inArray = this.objectsConfig[value.replace('o.','')];
-                }
+                inArray = this.propertyImportEngine.resolve(nowValue[0]);
             }
             else if(typeof nowValue[0] === 'object' || Array.isArray(nowValue[0])) {
                 inArray = nowValue[0];
-                isNewObj = true;
+                needArrayPreCompile = true;
             }
 
             let arrayExtras = {};
@@ -239,7 +274,7 @@ class ConfigPeCompiler
             ObjectTools.addObToOb(obj[key],arrayExtras);
             obj[key][nameof<ArrayPropertyConfig>(s => s.array)] = inArray;
 
-            if(isNewObj) {
+            if(needArrayPreCompile) {
                 this.preCompileResolveExtras(nameof<ArrayPropertyConfig>(s => s.array),obj[key]);
             }
         }
@@ -335,38 +370,6 @@ class ConfigPeCompiler
         }
     }
 
-    private preCompileInputGroups(key : string | number, obj : object) : void
-    {
-        const value = obj[key];
-
-        if(typeof value === 'string')
-        {
-            //resolve object import
-            if(value.startsWith('g.')) {
-                obj[key] = this.inputGroupConfig[value.replace('g.','')];
-            }
-        }
-        else if(Array.isArray(value))
-        {
-            //arrayShortCut
-            this.preCompileInputGroups(0,value);
-        }
-        else if(typeof value === "object")
-        {
-            //check input
-            if(value.hasOwnProperty(nameof<ObjectPropertyConfig>(s => s.properties)))
-            {
-                //isObject
-                this.preCompileObjectInputGroup(value);
-            }
-            else if(value.hasOwnProperty(nameof<ArrayPropertyConfig>(s => s.array)))
-            {
-                //is array
-                this.preCompileInputGroups(nameof<ArrayPropertyConfig>(s => s.array),value);
-            }
-        }
-    }
-
     private preCompileController() : void
     {
         //set if controller property is not found
@@ -399,8 +402,7 @@ class ConfigPeCompiler
                     for(let inputName in input)
                     if(input.hasOwnProperty(inputName))
                     {
-                        //Compile validation groups and resolve object links
-                        this.preCompileInputGroups(inputName,input);
+                        //resolve values,object,array links and resolve inheritance
                         this.preCompileResolveExtras(inputName,input);
                         this.preCompileInheritance(input[inputName]);
                     }

@@ -96,16 +96,6 @@ class ZationMaster {
         Logger.printStartDebugInfo(`Master has loaded the other config files.`, true);
 
         Logger.startStopWatch();
-        this.serverSettingsJs = ClientPrepare.createServerSettingsFile(this.zc);
-        Logger.printStartDebugInfo(`Master has prepared the server settings js file.`, true);
-
-        if(this.zc.mainConfig.clientJsPrepare) {
-            Logger.startStopWatch();
-            this.fullClientJs = ClientPrepare.buildClientJs(this.serverSettingsJs);
-            Logger.printStartDebugInfo(`Master has prepared the client js file.`, true);
-        }
-
-        Logger.startStopWatch();
         configChecker.checkAllConfigs();
         if (configErrorBag.hasConfigError()) {
             Logger.printConfigErrorBag(configErrorBag);
@@ -114,6 +104,16 @@ class ZationMaster {
         Logger.printStartDebugInfo(`Master has checked the config files.`, true);
 
         await this.checkPort();
+
+        Logger.startStopWatch();
+        this.serverSettingsJs = ClientPrepare.createServerSettingsFile(this.zc);
+        Logger.printStartDebugInfo(`Master has prepared the server settings js file.`, true);
+
+        if(this.zc.mainConfig.clientJsPrepare) {
+            Logger.startStopWatch();
+            this.fullClientJs = ClientPrepare.buildClientJs(this.serverSettingsJs);
+            Logger.printStartDebugInfo(`Master has prepared the client js file.`, true);
+        }
 
         this.checkClusterMode();
         if (this.stateServerActive) {

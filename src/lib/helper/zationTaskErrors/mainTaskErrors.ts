@@ -101,24 +101,35 @@ export = {
         fromZationSystem : true
     },
 
-    inputMissing    : {
-        name          : 'inputMissing',
-        description   : 'Input input are Missing.',
+    inputPropertyIsMissing    : {
+        name          : 'inputPropertyIsMissing',
+        description   : 'Input property is missing.',
         type          : ErrorType.INPUT_ERROR,
-        sendInfo      : false,
+        sendInfo      : true,
         //INFO
-        // inputMissing[] (All input keys are missing)
+        // propertyName (the name of the missing property)
+        // input (the input object where the property is missing)
+        fromZationSystem : true
+    },
+
+    unknownInputProperty : {
+        name          : 'unknownInputProperty',
+        description   : 'Unknown input property was in input.',
+        type          : ErrorType.INPUT_ERROR,
+        sendInfo      : true,
+        //INFO
+        // propertyName (the unknown input property name)
         fromZationSystem : true
     },
 
     tooMuchInput    : {
         name          : 'tooMuchInput',
-        description   : 'Too much Input in Controller.',
+        description   : 'Too much input.',
         type          : ErrorType.INPUT_ERROR,
-        sendInfo      : false,
+        sendInfo      : true,
         //INFO
-        //sendCount : send input Count,
-        //expectedMaxCount : controller config max input Count
+        //sendCount (send input count)
+        //maxCount (controller config max input count)
         fromZationSystem : true
     },
 
@@ -126,10 +137,10 @@ export = {
         name          : 'arrayWasExpected',
         description   : 'Array was expected.',
         type          : ErrorType.INPUT_ERROR,
-        sendInfo      : false,
+        sendInfo      : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // inputPath (full path to the value where an array was expected)
+        // inputValue (the input value that is not from type array)
         fromZationSystem : true
     },
 
@@ -137,10 +148,10 @@ export = {
         name          : 'objectWasExpected',
         description   : 'Object was expected.',
         type          : ErrorType.INPUT_ERROR,
-        sendInfo      : false,
+        sendInfo      : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // inputValue (the input value that is not from type object)
+        // inputPath (full path to the value where an object was expected)
         fromZationSystem : true
     },
 
@@ -148,10 +159,11 @@ export = {
         name          : 'objectPropertyIsMissing',
         description   : 'Object property is missing (because its not optional).',
         type          : ErrorType.INPUT_ERROR,
-        sendInfo      : false,
+        sendInfo      : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPathMissing (input path to missing property)
+        // object (the input object where the property is missing)
+        // propertyName (name of missing property)
+        // inputPath (the full input path to missing property)
         fromZationSystem : true
     },
 
@@ -159,9 +171,10 @@ export = {
         name          : 'unknownObjectProperty',
         description   : 'Unknown object property was in an object input.',
         type          : ErrorType.INPUT_ERROR,
-        sendInfo      : false,
+        sendInfo      : true,
         //INFO
-        // propertyName
+        // propertyName (name of the unknown property)
+        // inputPath (full input path to unknown property)
         fromZationSystem : true
     },
 
@@ -241,6 +254,17 @@ export = {
         sendInfo      : true,
         //INFO
         //controllerName (name of controller)
+        //inputPath
+        fromZationSystem : true
+    },
+
+    inputPathNotHasAtLeastOneEntry : {
+        name          : 'inputPathNotHasAtLeastOneEntry',
+        description   : 'Input path not has at least one entry!',
+        type          : ErrorType.INPUT_ERROR,
+        private       : false,
+        sendInfo      : true,
+        //INFO
         //inputPath
         fromZationSystem : true
     },

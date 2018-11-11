@@ -197,8 +197,8 @@ InputBody[nameof<ValuePropertyConfig>(s => s.maxLength)]    = {types : ['number'
 InputBody[nameof<ValuePropertyConfig>(s => s.length)]       = {types : ['number'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.contains)]     = {types : ['string','array'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.equals)]       = {types : ['string','number','array','object','boolean','function'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.biggerThan)]   = {types : ['number'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.lesserThan)]   = {types : ['number'],isOptional : true};
+InputBody[nameof<ValuePropertyConfig>(s => s.minValue)]     = {types : ['number'],isOptional : true};
+InputBody[nameof<ValuePropertyConfig>(s => s.maxValue)]     = {types : ['number'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.regex)]        = {types : ['string','object'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.endsWith)]     = {types : ['string'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.startsWith)]   = {types : ['string'],isOptional : true};

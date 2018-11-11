@@ -13,6 +13,11 @@ class EasyValidator
         return typeof data === 'string';
     }
 
+    static isNull(data)
+    {
+        return typeof data === null;
+    }
+
     static isObject(data)
     {
         return typeof data === 'object';

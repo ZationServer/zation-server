@@ -16,10 +16,10 @@ import Target = require('./target');
 import ConfigErrorBag = require("./configErrorBag");
 import {ConfigNames, DefaultUserGroupFallBack, ZationAccess} from "../constants/internal";
 import {
-    AppConfig, ArrayPropertyConfig,
+    AppConfig, ArrayPropertyConfig, ArrayShortSyntax,
     ControllerConfig,
     ControllerInput,
-    ObjectPropertyConfig,
+    ObjectPropertyConfig, PropertyOptional,
     ValuePropertyConfig
 } from "../configs/appConfig";
 import {PanelUserConfig} from "../configs/mainConfig";
@@ -27,17 +27,22 @@ import {CustomService} from "../configs/serviceConfig";
 import {ValidationTypes} from "../constants/validationTypes";
 import {ChannelConfig, ChannelDefault, CustomChannelConfig} from "../configs/channelConfig";
 import {OnlyNumberFunctions, OnlyStringFunctions} from "../constants/validation";
+import PropertyImportEngine = require("./propertyImportEngine");
 
-class ConfigChecker {
+class ConfigChecker
+{
     private readonly zc: ZationConfig;
     private readonly ceb: ConfigErrorBag;
 
     private objectsConfig: Record<string, ObjectPropertyConfig>;
     private valuesConfig: Record<string, ValuePropertyConfig>;
+    private arraysConfig : Record<string, ArrayPropertyConfig | ArrayShortSyntax>;
     private cNames: object;
     private validAccessValues: any[];
     private objectImports: any[];
     private objectExtensions: any[];
+
+    private propertyImportEngine : PropertyImportEngine;
 
     constructor(zationConfig, configErrorBag) {
         this.zc = zationConfig;
@@ -59,6 +64,8 @@ class ConfigChecker {
         this.prepareAllValidUserGroupsAndCheck();
         this.objectsConfig = typeof this.zc.appConfig.objects === 'object' ? this.zc.appConfig.objects : {};
         this.valuesConfig = typeof this.zc.appConfig.values === 'object' ? this.zc.appConfig.values : {};
+        this.arraysConfig = typeof this.zc.appConfig.arrays === 'object' ? this.zc.appConfig.arrays : {};
+        this.propertyImportEngine = new PropertyImportEngine(this.objectsConfig,this.valuesConfig,this.arraysConfig);
         this.cNames = {};
     }
 
@@ -125,7 +132,8 @@ class ConfigChecker {
         this.checkAccessControllerDefaultIsSet();
         this.checkAppConfigMain();
         this.checkObjectsConfig();
-        this.checkInputGroups();
+        this.checkValuesConfig();
+        this.checkArraysConfig();
         this.checkControllerConfigs();
         this.checkAuthController();
         this.checkBackgroundTasks();
@@ -172,6 +180,7 @@ class ConfigChecker {
             const errors = this.zc.errorConfig;
             for (let k in errors) {
                 if (errors.hasOwnProperty(k)) {
+                    this.checkCustomName(k,'error');
                     this.checkError(errors[k], new Target(`error '${k}'`));
                 }
             }
@@ -198,11 +207,7 @@ class ConfigChecker {
                     {
                         for (let chName in chPart) {
                             if (chPart.hasOwnProperty(chName)) {
-
-                                if (chName.indexOf('.') !== -1) {
-                                    this.ceb.addConfigError(new ConfigError(ConfigNames.CHANNEL,
-                                        `${firstTarget.getTarget()} Channel name ${chName} is not valid! Dot/s in name are not allowed.`));
-                                }
+                                this.checkCustomName(chName,'channel name',firstTarget.getTarget() + ' ');
                                 if(typeof chPart[chName] === 'object') {
                                     this.checkFullChannelItem(chPart[chName], firstTarget, chName);
                                 }
@@ -290,17 +295,12 @@ class ConfigChecker {
         this.objectExtensions = [];
         for (let objName in this.objectsConfig) {
             if (this.objectsConfig.hasOwnProperty(objName)) {
-
-                if (objName.indexOf('.') !== -1) {
-                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                        `${objName} is not a valid object name! Dot/s in name are not allowed.`));
-                }
-
+                this.checkCustomName(objName,'object property','Objects: ');
                 if (!Array.isArray(this.objectsConfig[objName]) && typeof this.objectsConfig[objName] === 'object') {
-                    this.checkObject(this.objectsConfig[objName], new Target(`Object: ${objName}`, 'propertyPath'), objName);
+                    this.checkObject(this.objectsConfig[objName], new Target(`Objects: ${objName}`, 'propertyPath'), objName);
                 } else {
                     this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                        `Object: '${objName}' value must be an object!`));
+                        `Objects: '${objName}' value must be an object!`));
                 }
             }
         }
@@ -352,20 +352,36 @@ class ConfigChecker {
         return false;
     }
 
-    private checkInputGroups() {
-        for (let group in this.valuesConfig) {
-            if (this.valuesConfig.hasOwnProperty(group)) {
-
-                if (group.indexOf('.') !== -1) {
-                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                        `${group} is not a valid input group name! Dot/s in name are not allowed.`));
+    private checkValuesConfig() {
+        for (let valueName in this.valuesConfig) {
+            if (this.valuesConfig.hasOwnProperty(valueName)) {
+                const valueConfig = this.valuesConfig[valueName];
+                if(!Array.isArray(valueConfig) && typeof this.valuesConfig[valueName] === 'object'){
+                    this.checkCustomName(valueName,'value property','Values: ');
+                    this.checkValueProperty( this.valuesConfig[valueName],new Target(`Values: '${valueName}'`));
                 }
+                else{
+                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                        `Values: '${valueName}' value must be an object!`));
+                }
+            }
+        }
+    }
 
-                const groupConfig = this.valuesConfig[group];
-                ConfigCheckerTools.assertStructure
-                (Structures.InputBody, groupConfig, ConfigNames.APP, this.ceb, new Target(`inputGroup '${group}'`));
-
-                this.checkValidationFunctions(groupConfig, new Target(`inputGroup '${group}'`));
+    private checkArraysConfig()
+    {
+        for(let arrayName in this.arraysConfig)
+        {
+            if(this.arraysConfig.hasOwnProperty(arrayName)) {
+                const arrayConfig = this.arraysConfig[arrayName];
+                if(Array.isArray(arrayConfig) || typeof arrayConfig === 'object') {
+                    this.checkCustomName(arrayName,'array property','Arrays: ');
+                    this.checkProperty(this.arraysConfig[arrayName],new Target(`Arrays: '${arrayName}'`));
+                }
+                else{
+                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                        `Arrays: '${arrayName}' value must be an object or array!`));
+                }
             }
         }
     }
@@ -373,16 +389,14 @@ class ConfigChecker {
     private checkObject(obj: ObjectPropertyConfig, target: Target, objName) {
 
         ConfigCheckerTools.assertStructure(Structures.AppObject, obj, ConfigNames.APP, this.ceb, target);
-
-        let prototype = typeof obj.prototype === 'object' ? obj.prototype : {};
-
+        const prototype = typeof obj.prototype === 'object' ? obj.prototype : {};
         //check property body and method property name problem
         if (typeof obj.properties === 'object') {
             let props = obj.properties;
             for (let k in props) {
                 if (props.hasOwnProperty(k)) {
-                    this.checkInputBody(props[k], target.addPath(k), objName);
-
+                    this.checkCustomName(k,'property',target.getTarget()+' ');
+                    this.checkProperty(props[k], target.addPath(k), objName);
                     if (prototype.hasOwnProperty(k)) {
                         Logger.printConfigWarning(
                             ConfigNames.APP,
@@ -516,6 +530,9 @@ class ConfigChecker {
         if (typeof cs === 'object') {
             for (let serviceName in cs) {
                 if (cs.hasOwnProperty(serviceName)) {
+
+                    this.checkCustomName(serviceName,'custom service');
+
                     //check only objects in
                     ConfigCheckerTools.assertProperty
                     (
@@ -693,7 +710,8 @@ class ConfigChecker {
             for (let k in input) {
                 if (input.hasOwnProperty(k)) {
                     keys.push(k);
-                    this.checkInputBody(input[k], target.addPath(k));
+                    this.checkCustomName(k,'controller input property',target.getTarget() + ' ');
+                    this.checkProperty(input[k], target.addPath(k));
                 }
             }
             this.checkOptionalRecommendation(keys, input, target);
@@ -720,6 +738,25 @@ class ConfigChecker {
         }
     }
 
+    private checkLink(link : string,target : Target)
+    {
+        if(PropertyImportEngine.correctSyntax(link)) {
+            const {type,exist,name,isOp} = this.propertyImportEngine.check(link);
+            if(!exist) {
+                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    `${target.getTarget()} the link dependency to ${type}: '${name}' can not be resolved, ${type} not found.`));
+            }
+            else {
+                this.checkOptionalArrayWarning(isOp,target);
+            }
+        }
+        else {
+            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                `${target.getTarget()} the link dependency definition '${link}' has syntax errors.`))
+        }
+    }
+
+    // noinspection JSUnusedLocalSymbols
     private checkPropertyByObjLink(objLinkName, target, objName) {
         if (!this.objectsConfig.hasOwnProperty(objLinkName)) {
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
@@ -757,34 +794,31 @@ class ConfigChecker {
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} you have to specify an object link (string) or an inputBody (object) or an new array shortcut.`));
         } else if (value.length === 1) {
-            this.checkInputBody(value[0], target.addPath('Array'), objName);
+            this.checkProperty(value[0], target.addPath('ArrayItem'), objName);
         } else if (value.length === 2) {
             let newTarget = target.setExtraInfo('Array Shortcut Element 2');
             if (typeof value[1] !== 'object') {
                 this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                     `${newTarget.getTarget()} the second shortCut item should be from typ object and can specify the array. Given typ is: '${typeof value[1]}'`));
             } else {
+                this.checkOptionalArrayWarning(value,target);
                 ConfigCheckerTools.assertStructure(Structures.ArrayShortCutSpecify, value[1], ConfigNames.APP, this.ceb, newTarget);
             }
 
-            this.checkInputBody(value[0], target.addPath('Array'), objName);
+            this.checkProperty(value[0], target.addPath('ArrayItem'), objName);
         } else {
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} invalid shortCut length: '${value.length}', 2 values are valid. First specify content and second to specify array.`));
         }
     }
 
-    private checkInputBody(value, target, objName ?: object) {
+    private checkProperty(value, target, objName ?: object) {
         if (typeof value === 'string') {
-            if (value.startsWith('g.')) {
-                //check inputGroups
-                this.checkValidInputGroup(value.replace('g.', ''), target);
-            } else {
-                this.checkPropertyByObjLink(value.replace('o.', ''), target, objName);
-            }
+           this.checkLink(value,target);
         } else if (Array.isArray(value)) {
             this.checkArrayShortCut(value, target, objName);
         } else if (typeof value === "object") {
+            this.checkOptionalArrayWarning(value,target);
             //check input
             if (value.hasOwnProperty(nameof<ObjectPropertyConfig>(s => s.properties))) {
                 this.checkObject(value, target, objName);
@@ -793,26 +827,10 @@ class ConfigChecker {
                 ConfigCheckerTools.assertStructure(Structures.AppArray, value, ConfigNames.APP, this.ceb, target);
                 if (typeof value[nameof<ArrayPropertyConfig>(s => s.array)] === 'object') {
                     const inArray = value[nameof<ArrayPropertyConfig>(s => s.array)];
-                    this.checkInputBody(inArray, target.addPath('Array'), objName);
+                    this.checkProperty(inArray,target.addPath('ArrayItem'), objName);
                 }
             } else {
-                //is this in body from an array?
-                if (
-                    target.getLastPath() === 'Array' &&
-                    typeof value[nameof<ValuePropertyConfig>(s => s.isOptional)] === 'boolean' &&
-                    value[nameof<ValuePropertyConfig>(s => s.isOptional)]
-                ) {
-                    Logger.printConfigWarning(
-                        ConfigNames.APP,
-                        `${target.getTarget()} Optional param in an array is useless.`
-                    );
-                }
-
-                //isNormalInputBody
-                ConfigCheckerTools.assertStructure(Structures.InputBody, value, ConfigNames.APP, this.ceb, target);
-
-                //check for only number/string functions
-                this.checkValidationFunctions(value, target);
+                this.checkValueProperty(value,target);
             }
         } else {
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
@@ -820,11 +838,34 @@ class ConfigChecker {
         }
     }
 
-    private checkValidInputGroup(value, target) {
-        if (!this.valuesConfig.hasOwnProperty(value)) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                `${target.getTarget()} the dependency to input group: '${value}' can not be resolved, Group not found.`));
+    // noinspection JSMethodCanBeStatic
+    checkOptionalArrayWarning(value : object | boolean,target : Target)
+    {
+        if (
+            target.getLastPath() === 'ArrayItem' && (
+                (typeof value === 'boolean' && value) ||
+                (
+                    typeof value === 'object' &&
+                    typeof value[nameof<PropertyOptional>(s => s.isOptional)] === 'boolean' &&
+                    target[nameof<PropertyOptional>(s => s.isOptional)]
+                )
+            )
+        )
+        {
+            Logger.printConfigWarning(
+                ConfigNames.APP,
+                `${target.getTarget()} Optional param in an array is useless.`
+            );
         }
+    }
+
+    private checkValueProperty(config : object,target : Target)
+    {
+        //isNormalInputBody
+        ConfigCheckerTools.assertStructure(Structures.InputBody, config, ConfigNames.APP, this.ceb, target);
+
+        //check for only number/string functions
+        this.checkValidationFunctions(config, target);
     }
 
     private checkValidationFunctions(value, target: Target) {
@@ -916,6 +957,14 @@ class ConfigChecker {
                     checkDependency(e);
                 }
             })
+        }
+    }
+
+    private checkCustomName(name : string,type : string,preString : string = '') : void
+    {
+        if (!name.match(/^[a-zA-Z0-9-]*$/)) {
+            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                `${preString}'${name}' is not a valid ${type} name! Only letters, numbers and the minus symbol are allowed.`));
         }
     }
 

@@ -12,8 +12,8 @@ export enum FormatLetters {
 }
 
 export const OnlyNumberFunctions = [
-    nameof<ValuePropertyConfig>(s => s.lesserThan),
-    nameof<ValuePropertyConfig>(s => s.biggerThan)
+    nameof<ValuePropertyConfig>(s => s.maxValue),
+    nameof<ValuePropertyConfig>(s => s.minValue)
 ];
 
 export const OnlyStringFunctions = [

@@ -45,6 +45,18 @@ export = {
         fromZationSystem : true
     },
 
+    inputIsNotTypeNull : {
+        name          : 'inputIsNotTypeNull',
+        group         : ErrorGroup.TYPE_ERROR,
+        description   : 'Input is not from type Null!',
+        type          : ErrorType.VALIDATION_ERROR,
+        sendInfo      : true,
+        //INFO
+        // inputValue (inputValue)
+        // inputPath (inputPath)
+        fromZationSystem : true
+    },
+
     inputIsNotTypeInt : {
         name          : 'inputIsNotTypeInt',
         group         : ErrorGroup.TYPE_ERROR,
@@ -468,29 +480,29 @@ export = {
         fromZationSystem : true
     },
 
-    inputIsNotBiggerThan : {
-        name          : 'inputIsNotBiggerThan',
+    inputNotMatchWithMinValue : {
+        name          : 'inputNotMatchWithMinValue',
         group         : ErrorGroup.NUMBER_SIZE_ERROR,
-        description   : 'Input is not bigger than!',
+        description   : 'Input is not match with min value!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        // shouldBiggerThan (shouldBiggerThan)
+        // minValue (min value)
         fromZationSystem : true
     },
 
-    inputIsNotLesserThan : {
-        name          : 'inputIsNotLesserThan',
+    inputNotMatchWithMaxValue : {
+        name          : 'inputNotMatchWithMaxValue',
         group         : ErrorGroup.NUMBER_SIZE_ERROR,
-        description   : 'Input is not lesser than!',
+        description   : 'Input is not match with max value!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        // shouldLesserThan (shouldLesserThan)
+        // maxValue (max value)
         fromZationSystem : true
     },
 

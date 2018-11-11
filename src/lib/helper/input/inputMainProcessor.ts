@@ -66,8 +66,8 @@ class InputMainProcessor
                         //ups unknown key
                         errorBag.addTaskError(new TaskError
                             (
-                                MainErrors.unknownObjectProperty,
-                                {
+                                MainErrors.unknownObjectProperty, {
+                                    inputPath : `${currentInputPath}.${k}`,
                                     propertyName : k
                                 }
                             )
@@ -106,8 +106,9 @@ class InputMainProcessor
                                 (
                                     MainErrors.objectPropertyIsMissing,
                                     {
-                                        inputPathMissing : currentInputPathNew,
-                                        inputValue : input
+                                        object : input,
+                                        propertyName : propName,
+                                        inputPath : currentInputPathNew
                                     }
                                 )
                             );
@@ -121,7 +122,6 @@ class InputMainProcessor
             const processConstruct = typeof config[nameof<ObjectPropertyConfig>(s => s.construct)] === 'function';
             const processConvert = typeof config[nameof<ObjectPropertyConfig>(s => s.convert)] === 'function';
             const processPrototype = typeof config[nameof<ObjectPropertyConfig>(s => s.prototype)] === 'object';
-
 
             //process prototype,construct,convert
             if(this.createProcessTaskList && errorBag.isEmpty() &&
@@ -147,9 +147,9 @@ class InputMainProcessor
                 });
             }
         }
-        else if(!config[nameof<ObjectPropertyConfig>(s => s.isOptional)])
+        else
         {
-            //ups wrong input or missing and not optional we can't processing it
+            //ups wrong input we can't processing it
             errorBag.addTaskError(new TaskError
                 (
                     MainErrors.objectWasExpected,
@@ -247,8 +247,8 @@ class InputMainProcessor
                 }
             }
         }
-        else if(!config[nameof<ArrayPropertyConfig>(s => s.isOptional)]){
-            //ups wrong input or missing and not optional we can't processing it
+        else {
+            //ups wrong input we can't processing it
             errorBag.addTaskError(new TaskError
                 (
                     MainErrors.arrayWasExpected,

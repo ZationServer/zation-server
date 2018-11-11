@@ -74,17 +74,22 @@ class ValidChProcessor
                             keyPath = path;
                         }
 
+                        if(keyPath.length === 0) {
+                            reject(new TaskError(MainErrors.inputPathNotHasAtLeastOneEntry,
+                                {
+                                    inputPath : keyPath
+                                }));
+                        }
+
                         let specificConfig =
                             ControllerTools.getControllerConfigFromInputPath(keyPath,controllerInput);
 
-                        if(specificConfig !== undefined)
-                        {
+                        if(specificConfig !== undefined) {
                             await InputValueProcessor.checkIsValid
                             (value,specificConfig,path,errorBag,worker.getPreparedSmallBag(),useInputValidation);
                             resolve();
                         }
-                        else
-                        {
+                        else {
                             reject(new TaskError(MainErrors.inputPathInControllerNotFound,
                                 {
                                     controllerName : cName,

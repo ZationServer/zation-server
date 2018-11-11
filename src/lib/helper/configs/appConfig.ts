@@ -96,8 +96,8 @@ export interface ValuePropertyConfig extends PropertyOptional
     length  ?: number;
     contains  ?: string | string[];
     equals  ?: string | number | object;
-    biggerThan  ?: number;
-    lesserThan  ?: number;
+    minValue  ?: number;
+    maxValue  ?: number;
     regex  ?: string | RegExp | Record<string,RegExp | string>;
     endsWith  ?: string;
     startsWith  ?: string;
@@ -140,9 +140,9 @@ export interface ArraySettings extends PropertyOptional
     convert  ?: ConvertArrayFunction
 }
 
-export interface ArrayShortSyntax extends Array<Property | ArraySettings>
+export interface ArrayShortSyntax extends Array<Property | ArraySettings | undefined>
 {
     0 : Property
-    1 : ArraySettings
+    1 ?: ArraySettings
 }
 

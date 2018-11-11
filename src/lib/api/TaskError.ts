@@ -45,7 +45,7 @@ class TaskError extends Error
         this.group       = errorConstruct.group;
         this.description = errorConstruct.description || 'No Description define in Error';
         this.type        = errorConstruct.type || ErrorType.NORMAL_ERROR;
-        this.sendInfo    = errorConstruct.sendInfo || false;
+        this.sendInfo    = errorConstruct.sendInfo || true;
         this.info        = {};
         this.privateE    = errorConstruct.private || false;
         this.fromZationSystem = errorConstruct.fromZationSystem || false;
