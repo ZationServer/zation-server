@@ -122,14 +122,14 @@ export = {
         fromZationSystem : true
     },
 
-    tooMuchInput    : {
-        name          : 'tooMuchInput',
-        description   : 'Too much input.',
+    inputNotAssignable    : {
+        name          : 'inputNotAssignable',
+        description   : 'Input not assignable.',
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : true,
         //INFO
-        //sendCount (send input count)
-        //maxCount (controller config max input count)
+        // index (index of input that is not assignable)
+        // value (input value that is not assignable)
         fromZationSystem : true
     },
 
@@ -246,6 +246,17 @@ export = {
         fromZationSystem : true
     },
 
+    wrongValidationCheckStructure : {
+        name          : 'wrongValidationCheckStructure',
+        description   : 'Wrong validation check structure!',
+        type          : ErrorType.INPUT_ERROR,
+        private       : false,
+        sendInfo      : true,
+        //INFO
+        // checkIndex
+        fromZationSystem : true
+    },
+
     inputPathInControllerNotFound : {
         name          : 'inputPathInControllerNotFound',
         description   : 'Input path in controller not found!',
@@ -253,8 +264,9 @@ export = {
         private       : false,
         sendInfo      : true,
         //INFO
-        //controllerName (name of controller)
-        //inputPath
+        // controllerName (name of controller)
+        // inputPath
+        // checkIndex
         fromZationSystem : true
     },
 
@@ -265,7 +277,8 @@ export = {
         private       : false,
         sendInfo      : true,
         //INFO
-        //inputPath
+        // inputPath
+        // checkIndex
         fromZationSystem : true
     },
 

@@ -89,11 +89,11 @@ class InputReqProcessor
             }
         }
         //check to much input
-        if(input.length > controllerInputKeys.length){
-            taskErrorBag.addTaskError(new TaskError(MainErrors.tooMuchInput,
+        for(let i = controllerInputKeys.length; i < input.length; i++) {
+            taskErrorBag.addTaskError(new TaskError(MainErrors.inputNotAssignable,
                 {
-                    sendCount : input.length,
-                    maxCount : controllerInputKeys.length
+                    index : i,
+                    value : input[i]
                 }));
         }
         await Promise.all(promises);

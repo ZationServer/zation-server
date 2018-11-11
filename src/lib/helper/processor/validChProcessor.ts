@@ -50,7 +50,7 @@ class ValidChProcessor
             let errorBag = new TaskErrorBag();
             for(let i = 0; i < inputToCheck.length; i++)
             {
-                promises.push(new Promise<void>(async (resolve,reject) =>
+                promises.push(new Promise<void>(async (resolve) =>
                 {
                     if
                     (
@@ -64,7 +64,7 @@ class ValidChProcessor
                     )
                     {
                         let keyPath : string[];
-                        let value   = inputToCheck[i].v;
+                        const value   = inputToCheck[i].v;
                         let path    = inputToCheck[i].ip;
 
                         if(typeof path === 'string') {
@@ -75,9 +75,10 @@ class ValidChProcessor
                         }
 
                         if(keyPath.length === 0) {
-                            reject(new TaskError(MainErrors.inputPathNotHasAtLeastOneEntry,
+                            errorBag.addTaskError(new TaskError(MainErrors.inputPathNotHasAtLeastOneEntry,
                                 {
-                                    inputPath : keyPath
+                                    inputPath : keyPath,
+                                    checkIndex : i
                                 }));
                         }
 
@@ -90,16 +91,20 @@ class ValidChProcessor
                             resolve();
                         }
                         else {
-                            reject(new TaskError(MainErrors.inputPathInControllerNotFound,
+                            errorBag.addTaskError(new TaskError(MainErrors.inputPathInControllerNotFound,
                                 {
                                     controllerName : cName,
-                                    inputPath : keyPath
+                                    inputPath : keyPath,
+                                    checkIndex : i
                                 }));
                         }
                     }
                     else
                     {
-                        reject(new TaskError(MainErrors.wrongInputDataStructure));
+                        errorBag.addTaskError(new TaskError(MainErrors.wrongValidationCheckStructure,
+                            {
+                                checkIndex : i
+                            }));
                     }
                 }));
             }
@@ -110,8 +115,7 @@ class ValidChProcessor
 
             return {};
         }
-        else
-        {
+        else {
             throw new TaskError(MainErrors.wrongInputDataStructure);
         }
     }

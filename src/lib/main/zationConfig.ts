@@ -26,7 +26,6 @@ import {ServiceConfig}     from "../helper/configs/serviceConfig";
 import {StarterConfig}     from "../helper/configs/starterConfig";
 import {InternalData}      from "../helper/constants/internalData";
 import {ConfigScriptSave}  from "../helper/constants/internal";
-const {NodeVM}           = require('vm2');
 
 class ZationConfig {
     private _eventConfig: EventConfig = {};
@@ -253,11 +252,7 @@ class ZationConfig {
     static loadScript(script ?: object | string)
     {
         if(typeof script === 'string') {
-            return (new NodeVM({
-                require: {
-                    external: true
-                }
-            })).run(script,'config');
+           return eval(script);
         }
         else if(typeof script === 'object'){
             return script;
