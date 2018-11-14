@@ -293,7 +293,7 @@ class ConfigChecker
             if (this.objectsConfig.hasOwnProperty(objName)) {
                 this.checkCustomName(objName,'object property','Objects: ');
                 if (!Array.isArray(this.objectsConfig[objName]) && typeof this.objectsConfig[objName] === 'object') {
-                    this.checkObject(this.objectsConfig[objName], new Target(`Objects: ${objName}`, 'propertyPath'), {name : objName, isObj : true});
+                    this.checkObject(this.objectsConfig[objName], new Target(`Objects: ${objName}`, 'propertyPath'), objName);
                     this.circularCheck(this.objectsConfig[objName], new Target(`Objects: ${objName}`, 'propertyPath'), {name : objName, isObj : true});
                 } else {
                     this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
@@ -328,7 +328,7 @@ class ConfigChecker
                 const arrayConfig = this.arraysConfig[arrayName];
                 if(Array.isArray(arrayConfig) || typeof arrayConfig === 'object') {
                     this.checkCustomName(arrayName,'array property','Arrays: ');
-                    this.checkProperty(this.arraysConfig[arrayName],new Target(`Arrays: '${arrayName}'`),{name : arrayName,isObj : false});
+                    this.checkProperty(this.arraysConfig[arrayName],new Target(`Arrays: '${arrayName}'`));
                     this.circularCheck(this.arraysConfig[arrayName], new Target(`Arrays: ${arrayName}`), {name : arrayName, isObj : false});
                 }
                 else{
@@ -339,29 +339,29 @@ class ConfigChecker
         }
     }
 
-    private checkObject(obj: ObjectPropertyConfig, target: Target, mainSrc ?: {name : string,isObj : boolean}) {
+    private checkObject(obj: ObjectPropertyConfig, target: Target, objName ?: string) {
 
         ConfigCheckerTools.assertStructure(Structures.AppObject, obj, ConfigNames.APP, this.ceb, target);
         const prototype = typeof obj.prototype === 'object' ? obj.prototype : {};
-        //check property body and method property name problem
+        //check property body and prototype property name problem
         if (typeof obj.properties === 'object') {
             let props = obj.properties;
             for (let k in props) {
                 if (props.hasOwnProperty(k)) {
                     this.checkCustomName(k,'property',target.getTarget()+' ');
-                    this.checkProperty(props[k], target.addPath(k), mainSrc);
+                    this.checkProperty(props[k], target.addPath(k), objName);
                     if (prototype.hasOwnProperty(k)) {
                         Logger.printConfigWarning(
                             ConfigNames.APP,
-                            `${target.getTarget()} Property '${k}' will override the prototype property '${k}'.`);
+                            `${target.getTarget()} Property '${k}' will shadowing the prototype property '${k}'.`);
                     }
                 }
             }
         }
         //check for extend
         if (typeof obj.extends === 'string') {
-            this.checkObjExtend(obj.extends, target,mainSrc && mainSrc.isObj ? mainSrc.name : undefined);
-            //this.checkOverrideProp(obj.properties, target, obj.extends);
+            this.checkObjExtend(obj.extends, target,objName);
+            this.checkOverrideProp(obj.properties, target.addPath(`extends=>${obj.extends}`), obj.extends);
 
         }
     }
@@ -377,23 +377,24 @@ class ConfigChecker
         }
     }
 
-    private checkOverrideProp(props, target, superName) {
+    private checkOverrideProp(props, target, superName,ex : string[] = []) {
         if (typeof this.objectsConfig[superName] === 'object' && typeof props === 'object') {
             const superObj = this.objectsConfig[superName];
             if (typeof superObj.prototype === 'object') {
-                const superMethods = superObj.prototype;
+                const superPrototype = superObj.prototype;
                 for (let prop in props) {
                     if (props.hasOwnProperty(prop)) {
-                        if (superMethods.hasOwnProperty(prop)) {
+                        if (superPrototype.hasOwnProperty(prop)) {
                             Logger.printConfigWarning(
                                 ConfigNames.APP,
-                                `${target.getTarget()} Property '${prop}' will override an inherited prototype property '${prop}' from object '${superName}'.`);
+                                `${target.getTarget()} Property '${prop}' will shadowing an inherited prototype property '${prop}' from object '${superName}'.`);
                         }
                     }
                 }
             }
-            if (typeof superObj.extends === 'string') {
-                this.checkOverrideProp(props, target, superObj.extends);
+            if (typeof superObj.extends === 'string' && !ex.includes(superObj.extends)) {
+                ex.push(superObj.extends);
+                this.checkOverrideProp(props, target.addPath(`extends=>${superObj.extends}`), superObj.extends,ex);
             }
         }
     }
@@ -535,22 +536,11 @@ class ConfigChecker
                             this.ceb,
                             target
                         );
-                        ConfigCheckerTools.assertProperty
-                        (
-                            nameof<CustomService>(s => s.check),
-                            service,
-                            'function',
-                            true,
-                            ConfigNames.SERVICE,
-                            this.ceb,
-                            target
-                        );
 
                         for (let k in service) {
                             if (service.hasOwnProperty(k)) {
                                 if (k === nameof<CustomService>(s => s.get) ||
-                                    k === nameof<CustomService>(s => s.create) ||
-                                    k === nameof<CustomService>(s => s.check)) {
+                                    k === nameof<CustomService>(s => s.create)) {
                                     continue;
                                 }
                                 ConfigCheckerTools.assertProperty
@@ -755,7 +745,6 @@ class ConfigChecker
 
     private circularCheck(value,target,mainSrc : {name : string,isObj : boolean},otherSrc : {array : string[],object : string[],ex : string[]} = {array:[],object:[],ex:[]})
     {
-        console.log(target.getTarget(),mainSrc,otherSrc);
         if (typeof value === 'string') {
             if(PropertyImportEngine.correctSyntax(value)) {
                 const {exist,obj,name,type} = this.propertyImportEngine.check(value);
@@ -796,7 +785,6 @@ class ConfigChecker
             typeof extend === 'string' && typeof this.objectsConfig[extend] === 'object' &&
             ((mainSrc.isObj && mainSrc.name !== extend) || !mainSrc.isObj) && !otherSrc.ex.includes(extend)
         ) {
-            console.log(extend);
             otherSrc.ex.push(extend);
             this.circularObjectCheck(this.objectsConfig[extend],target.addPath(`extends=>${extend}`),Object.keys(props),mainSrc,otherSrc);
         }
@@ -808,22 +796,22 @@ class ConfigChecker
         }
     }
 
-    private checkProperty(value, target, mainSrc ?: {name : string, isObj : boolean}) {
+    private checkProperty(value, target, objName ?: string) {
         if (typeof value === 'string') {
            this.checkLink(value,target);
         } else if (Array.isArray(value)) {
-            this.checkArrayShortCut(value, target, mainSrc);
+            this.checkArrayShortCut(value, target, objName);
         } else if (typeof value === "object") {
             this.checkOptionalArrayWarning(value,target);
             //check input
             if (value.hasOwnProperty(nameof<ObjectPropertyConfig>(s => s.properties))) {
-                this.checkObject(value, target, mainSrc);
+                this.checkObject(value, target, objName);
             } else if (value.hasOwnProperty(nameof<ArrayPropertyConfig>(s => s.array))) {
                 //isArray
                 ConfigCheckerTools.assertStructure(Structures.AppArray, value, ConfigNames.APP, this.ceb, target);
                 if (typeof value[nameof<ArrayPropertyConfig>(s => s.array)] === 'object') {
                     const inArray = value[nameof<ArrayPropertyConfig>(s => s.array)];
-                    this.checkProperty(inArray,target.addPath('ArrayItem'), mainSrc);
+                    this.checkProperty(inArray,target.addPath('ArrayItem'), objName);
                 }
             } else {
                 this.checkValueProperty(value,target);

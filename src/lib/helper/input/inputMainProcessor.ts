@@ -113,6 +113,10 @@ class InputMainProcessor
                                 )
                             );
                         }
+                        else if(props[propName].hasOwnProperty(nameof<PropertyOptional>(s => s.default))) {
+                            //set default param if it is not set
+                            input[propName] = props[propName][nameof<PropertyOptional>(s => s.default)];
+                        }
                     }
                 }
             }

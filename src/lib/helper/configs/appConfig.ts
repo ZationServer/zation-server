@@ -109,6 +109,7 @@ export interface ValuePropertyConfig extends PropertyOptional
 
 export interface PropertyOptional {
     isOptional  ?: boolean;
+    default ?: any
 }
 
 export type ObjectProperties = Record<string,Property>;

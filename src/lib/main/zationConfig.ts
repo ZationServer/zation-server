@@ -134,9 +134,7 @@ class ZationConfig {
             useTokenCheckKey: true,
             clientJsPrepare: true,
             usePanel: false,
-            checkServices : true,
-            killServerOnServicesError : true,
-            onlyWorkerLeaderChecksServices : true
+            killServerOnServicesCreateError : true,
         };
     }
 

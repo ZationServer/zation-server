@@ -53,6 +53,7 @@ AppObject[nameof<ObjectPropertyConfig>(s => s.properties)] = {types : ['object']
 AppObject[nameof<ObjectPropertyConfig>(s => s.construct)]  = {types : ['function'],isOptional : true};
 AppObject[nameof<ObjectPropertyConfig>(s => s.extends)]    = {types : ['string'],isOptional : true};
 AppObject[nameof<ObjectPropertyConfig>(s => s.isOptional)] = {types : ['boolean'],isOptional: true};
+AppObject[nameof<ValuePropertyConfig>(s => s.default)]     = {types : ['string','array','number','boolean','object','function'],isOptional : true};
 AppObject[nameof<ObjectPropertyConfig>(s => s.prototype)]  = {types : ['object'],isOptional : true};
 AppObject[nameof<ObjectPropertyConfig>(s => s.convert)]    = {types : ['function'],isOptional : true};
 
@@ -127,9 +128,7 @@ Main[nameof<MainConfig>(s => s.authPrivateKey)]     = {types : ['string','object
 Main[nameof<MainConfig>(s => s.authPublicKey)]      = {types : ['string','object'],isOptional : true};
 
 //service
-Main[nameof<MainConfig>(s => s.checkServices)]                   = {types : ['boolean'],isOptional : true};
-Main[nameof<MainConfig>(s => s.killServerOnServicesError)]       = {types : ['boolean'],isOptional : true};
-Main[nameof<MainConfig>(s => s.onlyWorkerLeaderChecksServices)]  = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.killServerOnServicesCreateError)] = {types : ['boolean'],isOptional : true};
 
 //Cluster
 Main[nameof<MainConfig>(s => s.clusterAuthKey)]     = {types : ['string','null'],isOptional : true};
@@ -191,6 +190,7 @@ const allFormatLetters = ObjectTools.getObjValues(FormatLetters);
 
 const InputBody = {};
 InputBody[nameof<ValuePropertyConfig>(s => s.isOptional)]   = {types : ['boolean'],isOptional : true};
+InputBody[nameof<ValuePropertyConfig>(s => s.default)]      = {types : ['string','array','number','boolean','object','function'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.convert)]      = {types : ['function'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.type)]         = {types : ['string','array'],isOptional : true,enum:allValidationTypes};
 InputBody[nameof<ValuePropertyConfig>(s => s.strictType)]   = {types : ['boolean'],isOptional : true};
@@ -254,6 +254,7 @@ ArrayShortCutSpecify[nameof<ArraySettings>(s => s.minLength)]         = {types :
 ArrayShortCutSpecify[nameof<ArraySettings>(s => s.maxLength)]         = {types : ['number'],isOptional : true};
 ArrayShortCutSpecify[nameof<ArraySettings>(s => s.length)]            = {types : ['number'],isOptional : true};
 ArrayShortCutSpecify[nameof<ArraySettings>(s => s.isOptional)]        = {types : ['boolean'],isOptional: true};
+ArrayShortCutSpecify[nameof<ValuePropertyConfig>(s => s.default)]     = {types : ['string','array','number','boolean','object','function'],isOptional : true};
 ArrayShortCutSpecify[nameof<ArraySettings>(s => s.convert)]           = {types : ['function'],isOptional: true};
 
 const AppArray = {};
@@ -262,6 +263,7 @@ AppArray[nameof<ArrayPropertyConfig>(s => s.minLength)]         = {types : ['num
 AppArray[nameof<ArrayPropertyConfig>(s => s.maxLength)]         = {types : ['number'],isOptional : true};
 AppArray[nameof<ArrayPropertyConfig>(s => s.length)]            = {types : ['number'],isOptional : true};
 AppArray[nameof<ArrayPropertyConfig>(s => s.isOptional)]        = {types : ['boolean'],isOptional: true};
+AppArray[nameof<ValuePropertyConfig>(s => s.default)]           = {types : ['string','array','number','boolean','object','function'],isOptional : true};
 AppArray[nameof<ArrayPropertyConfig>(s => s.convert)]           = {types : ['function'],isOptional: true};
 
 const AuthUserGroup = {};

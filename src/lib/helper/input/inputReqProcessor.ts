@@ -41,6 +41,10 @@ class InputReqProcessor
                         input : input
                     }));
             }
+            else if(controllerInput[inputName].hasOwnProperty(nameof<PropertyOptional>(s => s.default))) {
+                //set default param if it is not set
+                input[inputName] = controllerInput[inputName][nameof<PropertyOptional>(s => s.default)];
+            }
         }
         //check for unknown input properties
         for(let inputName in input) {
@@ -86,6 +90,10 @@ class InputReqProcessor
                         propertyName : controllerInputKeys[i],
                         input : input
                     }));
+            }
+            else if(controllerInput[controllerInputKeys[i]].hasOwnProperty(nameof<PropertyOptional>(s => s.default))) {
+                //set default param if it is not set
+                result[controllerInputKeys[i]] = controllerInput[controllerInputKeys[i]][nameof<PropertyOptional>(s => s.default)];
             }
         }
         //check to much input

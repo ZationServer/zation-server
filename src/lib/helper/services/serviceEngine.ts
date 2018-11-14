@@ -48,36 +48,6 @@ class ServiceEngine
         this.customServices = {};
     }
 
-    async check() : Promise<void>
-    {
-        let errorBox : string[] = [];
-        let promises : Promise<void>[] = [];
-
-        promises.push(this.mySqlBox.check(errorBox));
-        promises.push(this.nodeMailerBox.check(errorBox));
-        promises.push(this.postgresSqlBox.check(errorBox));
-        promises.push(this.mongoDbBox.check(errorBox));
-
-        //custom services
-        for(let k in this.customServices){
-            if(this.customServices.hasOwnProperty(k)){
-                promises.push(this.customServices[k].check(errorBox));
-            }
-        }
-
-        await Promise.all(promises);
-
-        if(errorBox.length > 0){
-            const info = `Worker with id:${this.worker.id} has errors while checking the services -> \n ${errorBox.join('\n')}`;
-            if(this.zc.mainConfig.killServerOnServicesError){
-                await this.worker.killServer(info);
-            }
-            else{
-                Logger.printDebugWarning(info);
-            }
-        }
-    }
-
     async init() : Promise<void>
     {
         let promises : Promise<void>[] = [];
@@ -89,13 +59,9 @@ class ServiceEngine
                 nameof<Service>(s => s.mySql),
                 this.sc[nameof<Service>(s => s.mySql)],
                 async (c) : Promise<MySql.Pool> => {
-                    return MySql.createPool(c);
-                },
-                undefined,
-                async (s) : Promise<void> =>
-                {
+                    const mySql = MySql.createPool(c);
                     await new Promise<void | string>((resolve, reject) => {
-                        s.getConnection((err,connection)=>{
+                        mySql.getConnection((err,connection)=>{
                             if(err){reject(err);}
                             else{
                                 connection.release();
@@ -103,6 +69,7 @@ class ServiceEngine
                             }
                         });
                     });
+                    return mySql;
                 }
             );
         promises.push(this.mySqlBox.init(errorBox));
@@ -112,18 +79,16 @@ class ServiceEngine
             (
                 nameof<Service>(s => s.nodeMailer),
                 this.sc[nameof<Service>(s => s.nodeMailer)],
-                async (c) : Promise<nodeMailer.Transporter> => {
-                    return nodeMailer.createTransport(c);
-                },
-                undefined,
-                async (t) : Promise<void> =>
+                async (c) : Promise<nodeMailer.Transporter> =>
                 {
+                    const transport = nodeMailer.createTransport(c);
                     await new Promise<void | string>((resolve, reject) => {
-                        t.verify(function(err) {
+                        transport.verify(function(err) {
                             if (err) {reject(err);}
                             else {resolve();}
                         });
                     });
+                    return transport;
                 }
             );
         promises.push(this.nodeMailerBox.init(errorBox));
@@ -134,12 +99,9 @@ class ServiceEngine
                 nameof<Service>(s => s.postgresSql),
                 this.sc[nameof<Service>(s => s.postgresSql)],
                 async (c) : Promise<Pg.Pool> => {
-                   return new Pg.Pool(c);
-                   },
-                undefined,
-                async (s : Pg.Pool) : Promise<void | string> => {
+                    const pgPool = new Pg.Pool(c);
                     await new Promise<void | string>((resolve, reject) => {
-                        s.connect((err,client,release)=>{
+                        pgPool.connect((err,client,release)=>{
                             if(err){reject(err);}
                             else{
                                 release();
@@ -147,7 +109,9 @@ class ServiceEngine
                             }
                         });
                     });
-                });
+                    return pgPool;
+                }
+            );
         promises.push(this.postgresSqlBox.init(errorBox));
 
         this.mongoDbBox =
@@ -159,10 +123,6 @@ class ServiceEngine
                 {
                     let url : string = c['url'];
                     return await mongodb.MongoClient.connect(url,c);
-                },
-                undefined,
-                async (s) : Promise<void | string> => {
-
                 }
             );
         promises.push(this.mongoDbBox.init(errorBox));
@@ -186,7 +146,7 @@ class ServiceEngine
 
         if(errorBox.length > 0){
             const info = `Worker with id:${this.worker.id} has errors while creating the services -> \n ${errorBox.join('\n')}`;
-            if(this.zc.mainConfig.killServerOnServicesError){
+            if(this.zc.mainConfig.killServerOnServicesCreateError){
                 await this.worker.killServer(info);
             }
             else{

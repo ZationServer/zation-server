@@ -124,12 +124,6 @@ class ZationWorker extends SCWorker
         await this.serviceEngine.init();
         Logger.printStartDebugInfo(`Worker with id ${this.id} creates service engine.`,true);
 
-        if(this.isLeader || !this.zc.mainConfig.onlyWorkerLeaderChecksServices) {
-            Logger.startStopWatch();
-            await this.serviceEngine.check();
-            Logger.printStartDebugInfo(`Worker with id ${this.id} checks the services.`,true);
-        }
-
         Logger.startStopWatch();
         this.preparedSmallBag = new SmallBag(this);
         Logger.printStartDebugInfo(`Worker with id ${this.id} prepares a small bag.`,true);
