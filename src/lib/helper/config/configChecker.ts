@@ -39,8 +39,6 @@ class ConfigChecker
     private arraysConfig : Record<string, ArrayPropertyConfig | ArrayShortSyntax>;
     private cNames: object;
     private validAccessValues: any[];
-    private objectImports: any[];
-    private objectExtensions: any[];
 
     private propertyImportEngine : PropertyImportEngine;
 
@@ -291,66 +289,20 @@ class ConfigChecker
     }
 
     private checkObjectsConfig() {
-        this.objectImports = [];
-        this.objectExtensions = [];
         for (let objName in this.objectsConfig) {
             if (this.objectsConfig.hasOwnProperty(objName)) {
                 this.checkCustomName(objName,'object property','Objects: ');
                 if (!Array.isArray(this.objectsConfig[objName]) && typeof this.objectsConfig[objName] === 'object') {
-                    this.checkObject(this.objectsConfig[objName], new Target(`Objects: ${objName}`, 'propertyPath'), objName);
+                    this.checkObject(this.objectsConfig[objName], new Target(`Objects: ${objName}`, 'propertyPath'), {name : objName, isObj : true});
+                    this.circularCheck(this.objectsConfig[objName], new Target(`Objects: ${objName}`, 'propertyPath'), {name : objName, isObj : true});
                 } else {
                     this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                         `Objects: '${objName}' value must be an object!`));
                 }
             }
         }
-        this.checkImportsOrExtendsInfiniteLoops();
     }
 
-    private checkImportsOrExtendsInfiniteLoops() {
-
-        for(let i = 0; i < this.objectImports.length; i++) {
-            let objDep = this.objectImports[i];
-            if(this.isCrossIn(objDep,this.objectExtensions)) {
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `Object: '${objDep['s']}' uses '${objDep['t']}' and Object: '${objDep['t']}' extends '${objDep['s']}' the inheritance will create an self import and a self import will create an infinite loop.`));
-            }
-        }
-
-
-        for (let i = 0; i < this.objectImports.length; i++) {
-            let objDep = this.objectImports[i];
-            if (this.isCrossIn(objDep, this.objectImports)) {
-                this.objectImports[i] = {};
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `Object: '${objDep['s']}' uses '${objDep['t']}' Object: '${objDep['t']}' uses '${objDep['s']}' a cyclic import, it will create an infinite loop.`));
-            }
-        }
-
-        for (let i = 0; i < this.objectExtensions.length; i++) {
-            let objDep = this.objectExtensions[i];
-            if (this.isCrossIn(objDep, this.objectExtensions)) {
-                this.objectExtensions[i] = {};
-
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `Object: '${objDep['s']}' extends '${objDep['t']}' Object: '${objDep['t']}' extends '${objDep['s']}' a cyclic inheritance, it will create an infinite loop.`));
-            }
-        }
-    }
-
-    // noinspection JSMethodCanBeStatic
-    private isCrossIn(objDep, array: object[]) {
-        for (let i = 0; i < array.length; i++) {
-            if
-            (
-                array[i]['s'] === objDep['t'] &&
-                array[i]['t'] === objDep['s']
-            ) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private checkValuesConfig() {
         for (let valueName in this.valuesConfig) {
@@ -376,7 +328,8 @@ class ConfigChecker
                 const arrayConfig = this.arraysConfig[arrayName];
                 if(Array.isArray(arrayConfig) || typeof arrayConfig === 'object') {
                     this.checkCustomName(arrayName,'array property','Arrays: ');
-                    this.checkProperty(this.arraysConfig[arrayName],new Target(`Arrays: '${arrayName}'`));
+                    this.checkProperty(this.arraysConfig[arrayName],new Target(`Arrays: '${arrayName}'`),{name : arrayName,isObj : false});
+                    this.circularCheck(this.arraysConfig[arrayName], new Target(`Arrays: ${arrayName}`), {name : arrayName, isObj : false});
                 }
                 else{
                     this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
@@ -386,7 +339,7 @@ class ConfigChecker
         }
     }
 
-    private checkObject(obj: ObjectPropertyConfig, target: Target, objName) {
+    private checkObject(obj: ObjectPropertyConfig, target: Target, mainSrc ?: {name : string,isObj : boolean}) {
 
         ConfigCheckerTools.assertStructure(Structures.AppObject, obj, ConfigNames.APP, this.ceb, target);
         const prototype = typeof obj.prototype === 'object' ? obj.prototype : {};
@@ -396,7 +349,7 @@ class ConfigChecker
             for (let k in props) {
                 if (props.hasOwnProperty(k)) {
                     this.checkCustomName(k,'property',target.getTarget()+' ');
-                    this.checkProperty(props[k], target.addPath(k), objName);
+                    this.checkProperty(props[k], target.addPath(k), mainSrc);
                     if (prototype.hasOwnProperty(k)) {
                         Logger.printConfigWarning(
                             ConfigNames.APP,
@@ -407,9 +360,20 @@ class ConfigChecker
         }
         //check for extend
         if (typeof obj.extends === 'string') {
-            this.checkObjExtend(obj.extends, target, objName);
-            this.checkOverrideProp(obj.properties, target, obj.extends);
+            this.checkObjExtend(obj.extends, target,mainSrc && mainSrc.isObj ? mainSrc.name : undefined);
+            //this.checkOverrideProp(obj.properties, target, obj.extends);
 
+        }
+    }
+
+    private checkObjExtend(objExtendName, target, objName) {
+        if (!this.objectsConfig.hasOwnProperty(objExtendName)) {
+            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                `${target.getTarget()} the inheritance dependency to object: '${objExtendName}' can not be resolved, Object not found.`));
+        } else if (objName === objExtendName) {
+            //check if object extend it self (by controller objName will be undefined)
+            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                `${target.getTarget()} object cyclic inheritance, is forbidden.`));
         }
     }
 
@@ -563,7 +527,17 @@ class ConfigChecker
                         );
                         ConfigCheckerTools.assertProperty
                         (
-                            nameof<CustomService>(s => s.get),
+                            nameof<CustomService>(s => s.create),
+                            service,
+                            'function',
+                            true,
+                            ConfigNames.SERVICE,
+                            this.ceb,
+                            target
+                        );
+                        ConfigCheckerTools.assertProperty
+                        (
+                            nameof<CustomService>(s => s.check),
                             service,
                             'function',
                             true,
@@ -572,11 +546,11 @@ class ConfigChecker
                             target
                         );
 
-
                         for (let k in service) {
                             if (service.hasOwnProperty(k)) {
                                 if (k === nameof<CustomService>(s => s.get) ||
-                                    k === nameof<CustomService>(s => s.get)) {
+                                    k === nameof<CustomService>(s => s.create) ||
+                                    k === nameof<CustomService>(s => s.check)) {
                                     continue;
                                 }
                                 ConfigCheckerTools.assertProperty
@@ -756,39 +730,6 @@ class ConfigChecker
         }
     }
 
-    // noinspection JSUnusedLocalSymbols
-    private checkPropertyByObjLink(objLinkName, target, objName) {
-        if (!this.objectsConfig.hasOwnProperty(objLinkName)) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                `${target.getTarget()} the link dependency to object: '${objLinkName}' can not be resolved, Object not found.`));
-        } else {
-            //check if object import it self (by controller objName will be undefined)
-            if (objName === objLinkName) {
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `${target.getTarget()} object self import, will create an infinite loop.`));
-            } else if (objName !== undefined) {
-                //add to import table to check later the imports
-                this.objectImports.push({s: objName, t: objLinkName});
-            }
-        }
-    }
-
-    private checkObjExtend(objExtendName, target, objName) {
-        if (!this.objectsConfig.hasOwnProperty(objExtendName)) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                `${target.getTarget()} the inheritance dependency to object: '${objExtendName}' can not be resolved, Object not found.`));
-        } else {
-            //check if object extend it self (by controller objName will be undefined)
-            if (objName === objExtendName) {
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `${target.getTarget()} object self inheritance, will create an infinite loop.`));
-            } else if (objName !== undefined) {
-                //add to extend table to check later the extensions
-                this.objectExtensions.push({s: objName, t: objExtendName});
-            }
-        }
-    }
-
     private checkArrayShortCut(value, target: Target, objName) {
         if (value.length === 0) {
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
@@ -812,22 +753,77 @@ class ConfigChecker
         }
     }
 
-    private checkProperty(value, target, objName ?: object) {
+    private circularCheck(value,target,mainSrc : {name : string,isObj : boolean},otherSrc : {array : string[],object : string[],ex : string[]} = {array:[],object:[],ex:[]})
+    {
+        console.log(target.getTarget(),mainSrc,otherSrc);
+        if (typeof value === 'string') {
+            if(PropertyImportEngine.correctSyntax(value)) {
+                const {exist,obj,name,type} = this.propertyImportEngine.check(value);
+                const typeSrc = type === 'Object' ? otherSrc.object : otherSrc.array;
+                if(name === mainSrc.name && ((mainSrc.isObj && type === 'Object') || (!mainSrc.isObj && type === 'Array'))){
+                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                        `${target.getTarget()} creates a circular import.`));
+                }
+                else if(exist && type !== 'Value' && !typeSrc.includes(name)) {
+                    typeSrc.push(name);
+                    this.circularCheck(obj,target.addPath(`import-${type}=>${name}`),mainSrc,otherSrc);
+                }
+            }
+        } else if (Array.isArray(value)) {
+            if(value.length > 0){
+                this.circularCheck(value[0], target.addPath('ArrayItem'), mainSrc,otherSrc);
+            }
+        } else if (typeof value === "object") {
+            if (typeof value[nameof<ObjectPropertyConfig>(s => s.properties)] === 'object') {
+                this.circularObjectCheck(value,target,[],mainSrc,otherSrc);
+
+            } else if (typeof value[nameof<ArrayPropertyConfig>(s => s.array)] === 'object') {
+                //isArray
+                const inArray = value[nameof<ArrayPropertyConfig>(s => s.array)];
+                this.circularCheck(inArray,target.addPath('ArrayItem'), mainSrc,otherSrc);
+            }
+        }
+    }
+
+    circularObjectCheck(value,target,excludeProps : string[],mainSrc : {name : string,isObj : boolean},otherSrc : {array : string[],object : string[],ex : string[]})
+    {
+        const props = value[nameof<ObjectPropertyConfig>(s => s.properties)];
+
+        //ex check
+        const extend = value[nameof<ObjectPropertyConfig>(s => s.extends)];
+
+        if (
+            typeof extend === 'string' && typeof this.objectsConfig[extend] === 'object' &&
+            ((mainSrc.isObj && mainSrc.name !== extend) || !mainSrc.isObj) && !otherSrc.ex.includes(extend)
+        ) {
+            console.log(extend);
+            otherSrc.ex.push(extend);
+            this.circularObjectCheck(this.objectsConfig[extend],target.addPath(`extends=>${extend}`),Object.keys(props),mainSrc,otherSrc);
+        }
+
+        for(let propName in props){
+            if(props.hasOwnProperty(propName) && !excludeProps.includes(propName)) {
+                this.circularCheck(props[propName],target.addPath(propName), mainSrc,otherSrc);
+            }
+        }
+    }
+
+    private checkProperty(value, target, mainSrc ?: {name : string, isObj : boolean}) {
         if (typeof value === 'string') {
            this.checkLink(value,target);
         } else if (Array.isArray(value)) {
-            this.checkArrayShortCut(value, target, objName);
+            this.checkArrayShortCut(value, target, mainSrc);
         } else if (typeof value === "object") {
             this.checkOptionalArrayWarning(value,target);
             //check input
             if (value.hasOwnProperty(nameof<ObjectPropertyConfig>(s => s.properties))) {
-                this.checkObject(value, target, objName);
+                this.checkObject(value, target, mainSrc);
             } else if (value.hasOwnProperty(nameof<ArrayPropertyConfig>(s => s.array))) {
                 //isArray
                 ConfigCheckerTools.assertStructure(Structures.AppArray, value, ConfigNames.APP, this.ceb, target);
                 if (typeof value[nameof<ArrayPropertyConfig>(s => s.array)] === 'object') {
                     const inArray = value[nameof<ArrayPropertyConfig>(s => s.array)];
-                    this.checkProperty(inArray,target.addPath('ArrayItem'), objName);
+                    this.checkProperty(inArray,target.addPath('ArrayItem'), mainSrc);
                 }
             } else {
                 this.checkValueProperty(value,target);
@@ -837,6 +833,8 @@ class ConfigChecker
                 `${target.getTarget()} wrong value type. Use a string to link to an object or an object to define the input body or an array shortcut.`));
         }
     }
+
+
 
     // noinspection JSMethodCanBeStatic
     checkOptionalArrayWarning(value : object | boolean,target : Target)

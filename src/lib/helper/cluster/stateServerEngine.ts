@@ -88,7 +88,7 @@ class StateServerEngine
                 sharedVarDec = this.encoder.decrypt(sharedVar);
             }
             catch (e) {
-                this.zm.crashServer(`Decrypting the shared variables failed.` +
+                this.zm.killServer(`Decrypting the shared variables failed.` +
                     `Check if every zation server has the same cluster secret key`)
             }
         }
@@ -109,7 +109,7 @@ class StateServerEngine
             }
         }
         else {
-            this.zm.crashServer(`Load the shared variables failed.` +
+            this.zm.killServer(`Load the shared variables failed.` +
                 `Check if every zation server has the same cluster secret key setting`)
         }
     }
@@ -162,14 +162,14 @@ class StateServerEngine
             this.stateSocket.on('error',async (e) =>
             {
                 if(e.name === 'BadClusterAuthError') {
-                    this.zm.crashServer(`The provided 'clusterAuthKey' is wrong. Can't connect to zation-cluster-state server.`);
+                    this.zm.killServer(`The provided 'clusterAuthKey' is wrong. Can't connect to zation-cluster-state server.`);
                 }
             });
 
             this.stateSocket.on('disconnect',async ()=>
             {
                 if(this.inBootProcess) {
-                    this.zm.crashServer(`Connection to state server is lost in boot process!`);
+                    this.zm.killServer(`Connection to state server is lost in boot process!`);
                 }
                 else {
                     //lost connection by running server
@@ -181,7 +181,7 @@ class StateServerEngine
             this.stateSocket.on('connectAbort',async ()=>
             {
                 if(this.inBootProcess) {
-                    this.zm.crashServer(`Connection to state server is failed in start process!`);
+                    this.zm.killServer(`Connection to state server is failed in start process!`);
                 }
                 else {
                     Logger.printDebugWarning
@@ -275,7 +275,7 @@ class StateServerEngine
             });
         }
         else if(info === 'notSameSettings') {
-            this.zm.crashServer(`Other connected servers with the zation-cluster-state server have different settings.`+
+            this.zm.killServer(`Other connected servers with the zation-cluster-state server have different settings.`+
             `Try to shut down all servers and start the server with the new settings to accept the other settings.`);
         }
         else if(info === 'instanceIdAlreadyReg') {
@@ -289,7 +289,7 @@ class StateServerEngine
             await this.registerMaster();
         }
         else {
-            this.zm.crashServer(`The respond info from the zation-cluster-state server could not be found`);
+            this.zm.killServer(`The respond info from the zation-cluster-state server could not be found`);
         }
     }
 
@@ -307,7 +307,7 @@ class StateServerEngine
         {
             this.stateSocket.emit('zMasterJoin',{},(err) => {
                 if(err) {
-                    this.zm.crashServer(`Error by trying to join the cluster. Error -> ${err.toString()}`);
+                    this.zm.killServer(`Error by trying to join the cluster. Error -> ${err.toString()}`);
                 }
                 else {
                     resolve();
@@ -337,10 +337,10 @@ class StateServerEngine
                     {
                         const info = data.info;
                         if(info === 'wrongReconnectUUID') {
-                            this.zm.crashServer(`Failed to reconnect to state server -> wrong reconnect uuid!`);
+                            this.zm.killServer(`Failed to reconnect to state server -> wrong reconnect uuid!`);
                         }
                         else if(info === 'failedToRemoveLeader') {
-                            this.zm.crashServer(`Failed to remove leadership!`);
+                            this.zm.killServer(`Failed to remove leadership!`);
                         }
                         else {
                             if(info === 'ok') {

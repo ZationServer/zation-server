@@ -5,6 +5,12 @@ GitHub: LucaCode
  */
 
 import {ScServer} from "../helper/sc/scServer";
+import {ChAccessEngine} from '../helper/channel/chAccessEngine';
+import {WorkerChTaskActions} from "../helper/constants/workerChTaskActions";
+import {Socket} from "../helper/sc/socket";
+import {WorkerChTargets} from "../helper/constants/workerChTargets";
+import {ZationChannel, ZationToken} from "../helper/constants/internal";
+import {WorkerMessageActions} from "../helper/constants/workerMessageActions";
 
 require('cache-require-paths');
 import ChTools = require("../helper/channel/chTools");
@@ -13,7 +19,7 @@ import express = require('express');
 import cookieParser = require('cookie-parser');
 import bodyParser = require('body-parser');
 import fileUpload = require('express-fileupload');
-import url        = require('url');
+import url = require('url');
 
 import Zation = require('./zation');
 import ZationConfig = require('./zationConfig');
@@ -33,15 +39,11 @@ import SocketInfo = require("../helper/infoObjects/socketInfo");
 import CChInfo = require("../helper/infoObjects/cChInfo");
 import HashSet = require('hashset');
 import process = require("process");
+import PanelEngine = require("../helper/panel/panelEngine");
+import ZationTokenInfo = require("../helper/infoObjects/zationTokenInfo");
 
 const  SCWorker : any        = require('socketcluster/scworker');
-import {ChAccessEngine} from '../helper/channel/chAccessEngine';
-import {WorkerChTaskActions} from "../helper/constants/workerChTaskActions";
-import {Socket} from "../helper/sc/socket";
-import {WorkerChTargets} from "../helper/constants/workerChTargets";
-import PanelEngine = require("../helper/panel/panelEngine");
-import {ZationChannel, ZationToken} from "../helper/constants/internal";
-import ZationTokenInfo = require("../helper/infoObjects/zationTokenInfo");
+
 
 class ZationWorker extends SCWorker
 {
@@ -118,9 +120,15 @@ class ZationWorker extends SCWorker
 
         //Services
         Logger.startStopWatch();
-        this.serviceEngine = new ServiceEngine(this.zc);
+        this.serviceEngine = new ServiceEngine(this.zc,this);
         await this.serviceEngine.init();
         Logger.printStartDebugInfo(`Worker with id ${this.id} creates service engine.`,true);
+
+        if(this.isLeader || !this.zc.mainConfig.onlyWorkerLeaderChecksServices) {
+            Logger.startStopWatch();
+            await this.serviceEngine.check();
+            Logger.printStartDebugInfo(`Worker with id ${this.id} checks the services.`,true);
+        }
 
         Logger.startStopWatch();
         this.preparedSmallBag = new SmallBag(this);
@@ -197,7 +205,13 @@ class ZationWorker extends SCWorker
 
         //Fire event is started
         await this.zc.emitEvent
-        (this.zc.eventConfig.workerIsStarted,this.preparedSmallBag,this.zc.getSomeInformation(),this);
+        (this.zc.eventConfig.workerIsStarted,this.preparedSmallBag,this.zc.getZationInfo(),this);
+
+        if(this.isLeader){
+            await this.zc.emitEvent
+            (this.zc.eventConfig.workerLeaderIsStarted,this.preparedSmallBag,this.zc.getZationInfo(),this);
+        }
+
     }
 
     private async setUpLogInfo()
@@ -246,7 +260,7 @@ class ZationWorker extends SCWorker
 
         });
 
-        await this.zc.emitEvent(this.zc.eventConfig.wsServerIsStarted,this.zc.getSomeInformation());
+        await this.zc.emitEvent(this.zc.eventConfig.wsServerIsStarted,this.zc.getZationInfo());
     }
 
     private async startHttpServer()
@@ -310,7 +324,7 @@ class ZationWorker extends SCWorker
                 });
         });
 
-        await this.zc.emitEvent(this.zc.eventConfig.httpServerIsStarted,this.zc.getSomeInformation());
+        await this.zc.emitEvent(this.zc.eventConfig.httpServerIsStarted,this.zc.getZationInfo());
     }
 
     getFullWorkerId()
@@ -1177,6 +1191,26 @@ class ZationWorker extends SCWorker
                 this.authStartActive = false;
             },this.zc.mainConfig.authStartDuration);
         }
+    }
+
+    public sendToZationMaster(data : {action : WorkerMessageActions} | any) : Promise<any>
+    {
+        return new Promise<boolean>((resolve,reject) =>
+        {
+            this.worker.sendToMaster(data,(err,data) => {
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(data.isLeader);
+                }
+            });
+        });
+    }
+
+    public async killServer(error : Error | string) : Promise<void>
+    {
+        await this.sendToZationMaster({action : WorkerMessageActions.KILL_SERVER, data : error});
     }
 
     getServerVersion() : string

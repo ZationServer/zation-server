@@ -45,6 +45,11 @@ export interface MainConfig
     authPrivateKey  ?: string | null;
     authPublicKey  ?: string | null;
 
+    //service
+    checkServices ?: boolean;
+    killServerOnServicesError ?: boolean;
+    onlyWorkerLeaderChecksServices ?: boolean;
+
     //Cluster
     clusterAuthKey  ?: string | null;
     clusterSecretKey  ?: string | null;
@@ -144,6 +149,9 @@ export interface InternMainConfig extends MainConfig{
     downgradeToUser  : boolean;
     allowClientPublish  : boolean;
     workerStatusInterval  : number;
+    checkServices : boolean;
+    killServerOnServicesError : boolean;
+    onlyWorkerLeaderChecksServices : boolean;
 }
 
 export interface PanelUserConfig {

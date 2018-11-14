@@ -6,5 +6,6 @@ GitHub: LucaCode
 
 export enum WorkerMessageActions
 {
-   IS_LEADER
+   IS_LEADER,
+   KILL_SERVER
 }

@@ -58,6 +58,7 @@ export interface EventConfig
     scServer  ?: ScServerFunction | ScServerFunction[];
     socket  ?: ZationSocketFunction | ZationSocketFunction[];
     workerIsStarted  ?: WorkerIsStartedFunction | WorkerIsStartedFunction[];
+    workerLeaderIsStarted ?: WorkerIsStartedFunction | WorkerIsStartedFunction[];
     httpServerIsStarted  ?: HttpServerIsStartedFunction | HttpServerIsStartedFunction[];
     wsServerIsStarted  ?: WsServerIsStartedFunction | WsServerIsStartedFunction[];
     isStarted  ?: IsStartedFunction | IsStartedFunction[];

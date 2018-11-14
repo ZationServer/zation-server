@@ -26,6 +26,7 @@ import {ServiceConfig}     from "../helper/configs/serviceConfig";
 import {StarterConfig}     from "../helper/configs/starterConfig";
 import {InternalData}      from "../helper/constants/internalData";
 import {ConfigScriptSave}  from "../helper/constants/internal";
+import ZationInfo        = require("../helper/infoObjects/zationInfo");
 
 class ZationConfig {
     private _eventConfig: EventConfig = {};
@@ -37,6 +38,8 @@ class ZationConfig {
     private _configScriptSaver : ConfigScriptSave;
     private readonly _starterConfig: StarterConfig = {};
     private readonly _internalData: InternalData = {};
+
+    private readonly preparedZationInfo : ZationInfo = new ZationInfo(this);
 
     constructor(starterData: object = {}, workerTransport: boolean = false) {
         if (!workerTransport) {
@@ -130,7 +133,10 @@ class ZationConfig {
             instanceId: uuidV4(),
             useTokenCheckKey: true,
             clientJsPrepare: true,
-            usePanel: false
+            usePanel: false,
+            checkServices : true,
+            killServerOnServicesError : true,
+            onlyWorkerLeaderChecksServices : true
         };
     }
 
@@ -187,8 +193,8 @@ class ZationConfig {
         return this._mainConfig.authPrivateKey || this._mainConfig.authKey;
     }
 
-    getSomeInformation(): ZationInfoObj {
-        return new ZationInfoObj(this);
+    getZationInfo(): ZationInfoObj {
+        return this.preparedZationInfo;
     }
 
     async loadOtherConfigs() {

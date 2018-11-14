@@ -126,6 +126,11 @@ Main[nameof<MainConfig>(s => s.authAlgorithm)]      = {types : ['string'],isOpti
 Main[nameof<MainConfig>(s => s.authPrivateKey)]     = {types : ['string','object'],isOptional : true};
 Main[nameof<MainConfig>(s => s.authPublicKey)]      = {types : ['string','object'],isOptional : true};
 
+//service
+Main[nameof<MainConfig>(s => s.checkServices)]                   = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.killServerOnServicesError)]       = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.onlyWorkerLeaderChecksServices)]  = {types : ['boolean'],isOptional : true};
+
 //Cluster
 Main[nameof<MainConfig>(s => s.clusterAuthKey)]     = {types : ['string','null'],isOptional : true};
 Main[nameof<MainConfig>(s => s.clusterSecretKey)]   = {types : ['string','null'],isOptional : true};
@@ -268,6 +273,7 @@ EventConfig[nameof<EventConfig>(s => s.express)]                = {types : ['fun
 EventConfig[nameof<EventConfig>(s => s.scServer)]               = {types : ['function','array'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.socket)]                 = {types : ['function','array'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.workerIsStarted)]        = {types : ['function','array'],isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.workerLeaderIsStarted)]  = {types : ['function','array'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.httpServerIsStarted)]    = {types : ['function','array'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.wsServerIsStarted)]      = {types : ['function','array'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.isStarted)]              = {types : ['function','array'],isOptional : true};

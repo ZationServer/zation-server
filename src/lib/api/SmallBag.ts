@@ -4,36 +4,38 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Socket}             from "../helper/sc/socket";
-import {MongoClient}        from "mongodb";
-import {Options}            from "nodemailer/lib/mailer";
+import {Socket}      from "../helper/sc/socket";
+import {MongoClient} from "mongodb";
+import {Options}     from "nodemailer/lib/mailer";
 import fetch, {Request, RequestInit, Response} from 'node-fetch';
-import {WorkerChTaskActions} from "../helper/constants/workerChTaskActions";
-import {WorkerChTargets}     from "../helper/constants/workerChTargets";
+import {WorkerChTaskActions}        from "../helper/constants/workerChTaskActions";
+import {WorkerChTargets}            from "../helper/constants/workerChTargets";
+import {AsymmetricKeyPairs}         from "../helper/infoObjects/asymmetricKeyPairs";
+import {WorkerMessageActions}       from "../helper/constants/workerMessageActions";
+import {ErrorConstruct}             from "../helper/configs/errorConfig";
+import {ZationChannel, ZationToken} from "../helper/constants/internal";
 
 const    crypto : any       = require('crypto');
 const    IP : any           = require('ip');
 const    crypto2 : any      = require("crypto2");
-import ChExchangeEngine     = require("../helper/channel/chExchangeEngine");
-import ServiceEngine        = require("../helper/services/serviceEngine");
-import ZationConfig         = require("../main/zationConfig");
-import ZationWorker         = require("../main/zationWorker");
-const  uuidV4               = require('uuid/v4');
+import ChExchangeEngine = require("../helper/channel/chExchangeEngine");
+import ServiceEngine   = require("../helper/services/serviceEngine");
+import ZationConfig    = require("../main/zationConfig");
+import ZationWorker    = require("../main/zationWorker");
+import ExchangeEngine  = require('../helper/channel/chExchangeEngine');
+import MySql           = require("mysql");
+import Pg              = require('pg');
+import nodeMailer      = require('nodemailer');
+import TaskError       = require("./TaskError");
+import ChTools         = require("../helper/channel/chTools");
+import IdTools         = require("../helper/tools/idTools");
+import ObjectPath      = require("../helper/tools/objectPath");
+import TokenTools      = require("../helper/token/tokenTools");
+import TaskErrorBag    = require("./TaskErrorBag");
+
+const uuidV4                = require('uuid/v4');
 const uniqid                = require('uniqid');
-import ExchangeEngine       = require('../helper/channel/chExchangeEngine');
-import MySql                = require("mysql");
-import Pg                   = require('pg');
-import nodeMailer           = require('nodemailer');
-import TaskError            = require("./TaskError");
-import ChTools              = require("../helper/channel/chTools");
-import IdTools              = require("../helper/tools/idTools");
-import ObjectPath           = require("../helper/tools/objectPath");
-import TokenTools           = require("../helper/token/tokenTools");
-import {AsymmetricKeyPairs}   from "../helper/infoObjects/asymmetricKeyPairs";
-import {WorkerMessageActions} from "../helper/constants/workerMessageActions";
-import {ErrorConstruct}       from "../helper/configs/errorConfig";
-import TaskErrorBag         = require("./TaskErrorBag");
-import {ZationChannel, ZationToken} from "../helper/constants/internal";
+
 
 class SmallBag
 {
@@ -192,19 +194,21 @@ class SmallBag
      * If cluster mode is not active (means only one server is running without state server)
      * it will returns always true.
      */
-    isLeaderServer() : Promise<boolean>
+    async isLeaderServer() : Promise<boolean>
     {
-        return new Promise<boolean>((resolve,reject) =>
-        {
-            this.worker.sendToMaster({action : WorkerMessageActions.IS_LEADER},(err,data) => {
-               if(err) {
-                   reject(err);
-               }
-               else {
-                   resolve(data.isLeader);
-               }
-            });
-        });
+        return (await this.worker.sendToZationMaster({action : WorkerMessageActions.IS_LEADER})).isLeader;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Kill all workers,brokers and the master.
+     * @param error
+     * Error or message for server crash information.
+     */
+    async killServer(error : Error | string) : Promise<void>
+    {
+        await this.worker.killServer(error);
     }
 
     //Part Crypto
@@ -722,7 +726,7 @@ class SmallBag
      * @param  serviceKey
      * the key to the service.
      */
-    async getPostgreSql(serviceKey : string = 'default') : Promise<Pg.Client>
+    async getPostgreSql(serviceKey : string = 'default') : Promise<Pg.Pool>
     {
         return this.serviceEngine.getPostgresSqlService(serviceKey);
     }
@@ -837,9 +841,9 @@ class SmallBag
      * @param  serviceKey
      * the key to the service.
      */
-    async getCustomService(name : string,serviceKey : string = 'default') : Promise<any>
+    async getCustomService<S>(name : string,serviceKey : string = 'default') : Promise<S>
     {
-        return await this.serviceEngine.getCustomService(name,serviceKey);
+        return await this.serviceEngine.getCustomService<S>(name,serviceKey);
     }
 
     // noinspection JSUnusedGlobalSymbols

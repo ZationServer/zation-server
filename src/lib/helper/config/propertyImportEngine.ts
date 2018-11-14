@@ -28,7 +28,7 @@ class PropertyImportEngine
         return !!importDefinition.match(/^([or]=>)?([ova].)?[a-zA-Z0-9-]*$/);
     }
 
-    check(importDefinition : string) : {exist : boolean,type : string,name : string,isOp : boolean}
+    check(importDefinition : string) : {exist : boolean,type : string,name : string,isOp : boolean,obj : object | undefined}
     {
         let isOp : boolean | null = null;
 
@@ -45,6 +45,7 @@ class PropertyImportEngine
             const name = importDefinition.replace('o.','');
             return {
                 exist : this.objects.hasOwnProperty(name),
+                obj : this.objects[name],
                 type : 'Object',
                 name : name,
                 isOp : this.checkOptional(isOp,this.objects,name)
@@ -54,6 +55,7 @@ class PropertyImportEngine
             const name = importDefinition.replace('v.','');
             return {
                 exist : this.values.hasOwnProperty(name),
+                obj : this.values[name],
                 type : 'Value',
                 name : name,
                 isOp : this.checkOptional(isOp,this.values,name)
@@ -63,6 +65,7 @@ class PropertyImportEngine
             const name = importDefinition.replace('a.','');
             return {
                 exist : this.arrays.hasOwnProperty(name),
+                obj : this.arrays[name],
                 type : 'Array',
                 name : name,
                 isOp : this.checkOptional(isOp,this.arrays,name)
@@ -71,6 +74,7 @@ class PropertyImportEngine
         else {
             return {
                 exist : this.objects.hasOwnProperty(importDefinition),
+                obj : this.objects[importDefinition],
                 type : 'Object',
                 name : importDefinition,
                 isOp : this.checkOptional(isOp,this.objects,importDefinition)

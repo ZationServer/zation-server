@@ -123,7 +123,7 @@ class ZationMaster {
                 await this.stateServerEngine.registerStateServer();
             }
             catch (e) {
-                this.crashServer(e);
+                this.killServer(e);
             }
         }
         this.startSocketClusterWithLog();
@@ -141,7 +141,7 @@ class ZationMaster {
         const port = this.zc.mainConfig.port;
         const portIsAvailable = await PortChecker.isPortAvailable(port);
         if(!portIsAvailable) {
-            this.crashServer(`The port ${port} is not available! try with a different port!`);
+            this.killServer(`The port ${port} is not available! try with a different port!`);
         }
         Logger.printStartDebugInfo('Master checked port is available.', true);
     }
@@ -254,7 +254,7 @@ class ZationMaster {
            }
 
            this.printStartedInformation();
-           await this.zc.emitEvent(this.zc.eventConfig.isStarted, this.zc.getSomeInformation());
+           await this.zc.emitEvent(this.zc.eventConfig.isStarted, this.zc.getZationInfo());
         });
 
         // noinspection JSUnresolvedFunction
@@ -283,8 +283,14 @@ class ZationMaster {
         this.master.on('workerMessage', (workerId,data,respond) =>
         {
             const action = data.action;
-            if(action === WorkerMessageActions.IS_LEADER) {
-                respond(null,{isLeader : this.clusterLeader});
+            switch (action) {
+                case WorkerMessageActions.IS_LEADER:
+                    respond(null,{isLeader : this.clusterLeader});
+                    break;
+                case WorkerMessageActions.KILL_SERVER:
+                    this.killServer(data.data);
+                    respond(null);
+                    break;
             }
         });
 
@@ -376,7 +382,7 @@ class ZationMaster {
 
     //PART Crash
     // noinspection JSMethodCanBeStatic
-    public crashServer(error : Error | string)
+    public killServer(error : Error | string)
     {
         if(this.master) {
             this.master.killWorkers();
