@@ -293,8 +293,9 @@ class ConfigChecker
             if (this.objectsConfig.hasOwnProperty(objName)) {
                 this.checkCustomName(objName,'object property','Objects: ');
                 if (!Array.isArray(this.objectsConfig[objName]) && typeof this.objectsConfig[objName] === 'object') {
-                    this.checkObject(this.objectsConfig[objName], new Target(`Objects: ${objName}`, 'propertyPath'), objName);
-                    this.circularCheck(this.objectsConfig[objName], new Target(`Objects: ${objName}`, 'propertyPath'), {name : objName, isObj : true});
+                    const target = new Target(`Objects: ${objName}`, 'propertyPath');
+                    this.checkObject(this.objectsConfig[objName],target,objName);
+                    this.circularCheck(this.objectsConfig[objName],target, {name : objName, isObj : true});
                 } else {
                     this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                         `Objects: '${objName}' value must be an object!`));
@@ -328,8 +329,9 @@ class ConfigChecker
                 const arrayConfig = this.arraysConfig[arrayName];
                 if(Array.isArray(arrayConfig) || typeof arrayConfig === 'object') {
                     this.checkCustomName(arrayName,'array property','Arrays: ');
-                    this.checkProperty(this.arraysConfig[arrayName],new Target(`Arrays: '${arrayName}'`));
-                    this.circularCheck(this.arraysConfig[arrayName], new Target(`Arrays: ${arrayName}`), {name : arrayName, isObj : false});
+                    const target = new Target(`Arrays: '${arrayName}'`);
+                    this.checkProperty(this.arraysConfig[arrayName],target);
+                    this.circularCheck(this.arraysConfig[arrayName],target, {name : arrayName, isObj : false});
                 }
                 else{
                     this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
