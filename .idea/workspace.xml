@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="update dependencies">
+    <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="fix service engine error log &#10;fix config can't import relative dependencies">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/services/serviceEngine.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/services/serviceEngine.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/main/zationConfig.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/main/zationMaster.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationMaster.ts" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -95,7 +91,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/config/configPreCompiler.ts">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="321">
@@ -108,11 +104,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/services/serviceEngine.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="341">
-              <caret line="153" column="115" lean-forward="true" selection-start-line="153" selection-start-column="115" selection-end-line="153" selection-end-column="115" />
+            <state relative-caret-position="491">
+              <caret line="163" column="5" lean-forward="true" selection-start-line="163" selection-start-column="5" selection-end-line="163" selection-end-column="5" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="n#ServiceBox#0" expanded="true" />
@@ -732,14 +728,7 @@
       <workItem from="1541511795171" duration="33785000" />
       <workItem from="1541579777633" duration="35768000" />
       <workItem from="1541867359996" duration="68416000" />
-      <workItem from="1542275366439" duration="1352000" />
-    </task>
-    <task id="LOCAL-00027" summary="fix returner bug">
-      <created>1537271390147</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1537271390147</updated>
+      <workItem from="1542275366439" duration="1470000" />
     </task>
     <task id="LOCAL-00028" summary="fix returner bug">
       <created>1537355513483</created>
@@ -1077,11 +1066,18 @@
       <option name="project" value="LOCAL" />
       <updated>1542274329816</updated>
     </task>
-    <option name="localTasksCounter" value="76" />
+    <task id="LOCAL-00076" summary="fix service engine error log &#10;fix config can't import relative dependencies">
+      <created>1542277688546</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1542277688547</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1596550000" />
+    <option name="totallyTimeSpent" value="1596668000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1150,7 +1146,6 @@
     <option name="version" value="1" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add api documentation for taskErrorBuilder" />
     <MESSAGE value="change name,&#10;add group to validation type errors" />
     <MESSAGE value="add new smallBag methods&#10;improve zation errors and api&#10;fix bugs" />
     <MESSAGE value="add no error log to broker lost connection to state server" />
@@ -1175,7 +1170,8 @@
     <MESSAGE value="update config class&#10;custom service get method to optional&#10;custom services create is required&#10;fix mongo db error&#10;improve log of warning by creating services&#10;fix bugs&#10;update to version 0.4.3&#10;add better nameof replace" />
     <MESSAGE value="improve config checker" />
     <MESSAGE value="update dependencies" />
-    <option name="LAST_COMMIT_MESSAGE" value="update dependencies" />
+    <MESSAGE value="fix service engine error log &#10;fix config can't import relative dependencies" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix service engine error log &#10;fix config can't import relative dependencies" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/lib/helper/controller/controllerCheckTools.ts">
@@ -1614,6 +1610,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/services/serviceEngine.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="491">
+          <caret line="163" column="5" lean-forward="true" selection-start-line="163" selection-start-column="5" selection-end-line="163" selection-end-column="5" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#ServiceBox#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/helper/config/configPreCompiler.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="321">
@@ -1621,17 +1628,6 @@
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="n#ZationConfig#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/services/serviceEngine.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="341">
-          <caret line="153" column="115" lean-forward="true" selection-start-line="153" selection-start-column="115" selection-end-line="153" selection-end-column="115" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="n#ServiceBox#0" expanded="true" />
           </folding>
         </state>
       </provider>
