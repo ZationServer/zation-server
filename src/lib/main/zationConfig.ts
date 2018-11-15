@@ -16,6 +16,7 @@ import ErrorNotFound     = require("../helper/error/errorNotFoundError");
 import SmallBag          = require("../api/SmallBag");
 const  uuidV4            = require('uuid/v4');
 import moment            = require('moment-timezone');
+import nodeEval          = require('node-eval');
 import ZationToken       = require("../helper/infoObjects/zationTokenInfo");
 import {EventConfig}       from "../helper/configs/eventConfig";
 import {AppConfig}         from "../helper/configs/appConfig";
@@ -201,11 +202,11 @@ class ZationConfig {
     }
 
     loadOtherConfigFromScript() {
-        this._eventConfig = ZationConfig.loadScript(this._configScriptSaver.eventConfig);
-        this._channelConfig = ZationConfig.loadScript(this._configScriptSaver.channelConfig);
-        this._appConfig = ZationConfig.loadScript(this._configScriptSaver.appConfig);
-        this._errorConfig = ZationConfig.loadScript(this._configScriptSaver.errorConfig);
-        this._serviceConfig = ZationConfig.loadScript(this._configScriptSaver.serviceConfig);
+        this._eventConfig = ZationConfig.loadScript(this._configScriptSaver.eventConfig,this.starterConfig.eventConfig);
+        this._channelConfig = ZationConfig.loadScript(this._configScriptSaver.channelConfig,this.starterConfig.channelConfig);
+        this._appConfig = ZationConfig.loadScript(this._configScriptSaver.appConfig,this.starterConfig.appConfig);
+        this._errorConfig = ZationConfig.loadScript(this._configScriptSaver.errorConfig,this.starterConfig.errorConfig);
+        this._serviceConfig = ZationConfig.loadScript(this._configScriptSaver.serviceConfig,this.starterConfig.serviceConfig);
     }
 
     async loadOtherConfigScripts(): Promise<void> {
@@ -253,10 +254,10 @@ class ZationConfig {
         await Promise.all(promises);
     }
 
-    static loadScript(script ?: object | string)
+    static loadScript(script : object | string | undefined,relativePath : string | undefined)
     {
         if(typeof script === 'string') {
-           return eval(script);
+           return nodeEval(script,relativePath);
         }
         else if(typeof script === 'object'){
             return script;
@@ -380,7 +381,7 @@ class ZationConfig {
         const mainConfig = ZationConfig.loadScript(await ZationConfig.loadZationConfig(
             'main.config',
             this._starterConfig.mainConfig
-        ));
+        ),this._starterConfig.mainConfig);
         ObjectTools.addObToOb(this._mainConfig,mainConfig,true);
     }
 

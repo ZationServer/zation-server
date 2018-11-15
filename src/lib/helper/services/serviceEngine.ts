@@ -153,7 +153,7 @@ class ServiceEngine
         if(errorBox.length > 0){
             const whiteSpace = this.zc.mainConfig.killServerOnServicesCreateError ? '          ' : '             ';
             const info =
-                `Worker with id ${this.worker.id} has errors while creating the services -> \n${whiteSpace}${errorBox.join(whiteSpace+'\n')}`;
+                `Worker with id ${this.worker.id} has errors while creating the services -> \n${whiteSpace}${errorBox.join('\n'+whiteSpace)}`;
             if(this.zc.mainConfig.killServerOnServicesCreateError){
                 await this.worker.killServer(info);
             }

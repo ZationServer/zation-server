@@ -344,6 +344,7 @@ class ZationMaster {
         }
         Logger.log('            GitHub: https://github.com/ZationServer');
         Logger.log(`            StartTime: ${Date.now()-this.serverStartedTimeStamp} ms`);
+        Logger.log('            Copyright by Luca Scaringella');
     }
 
     private getRandomWorkerId()
