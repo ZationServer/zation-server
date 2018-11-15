@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="improve config checker">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="update dependencies">
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -90,8 +90,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="59" column="33" selection-start-line="59" selection-start-column="33" selection-end-line="59" selection-end-column="33" />
+            <state relative-caret-position="231">
+              <caret line="77" column="37" selection-start-line="77" selection-start-column="37" selection-end-line="77" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -719,14 +719,7 @@
       <workItem from="1541507620138" duration="52000" />
       <workItem from="1541511795171" duration="33785000" />
       <workItem from="1541579777633" duration="35768000" />
-      <workItem from="1541867359996" duration="68128000" />
-    </task>
-    <task id="LOCAL-00025" summary="fix controller import">
-      <created>1537263935769</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1537263935769</updated>
+      <workItem from="1541867359996" duration="68266000" />
     </task>
     <task id="LOCAL-00026" summary="update version 0.3.6">
       <created>1537268245375</created>
@@ -1064,11 +1057,18 @@
       <option name="project" value="LOCAL" />
       <updated>1542274015484</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="update dependencies">
+      <created>1542274218419</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1542274218419</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1594910000" />
+    <option name="totallyTimeSpent" value="1595048000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1137,7 +1137,6 @@
     <option name="version" value="1" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add new error functions to the smallBag Api" />
     <MESSAGE value="add api documentation for taskErrorBuilder" />
     <MESSAGE value="change name,&#10;add group to validation type errors" />
     <MESSAGE value="add new smallBag methods&#10;improve zation errors and api&#10;fix bugs" />
@@ -1162,7 +1161,8 @@
     <MESSAGE value="improve checker&#10;update service engine &#10;add new property default support" />
     <MESSAGE value="update config class&#10;custom service get method to optional&#10;custom services create is required&#10;fix mongo db error&#10;improve log of warning by creating services&#10;fix bugs&#10;update to version 0.4.3&#10;add better nameof replace" />
     <MESSAGE value="improve config checker" />
-    <option name="LAST_COMMIT_MESSAGE" value="improve config checker" />
+    <MESSAGE value="update dependencies" />
+    <option name="LAST_COMMIT_MESSAGE" value="update dependencies" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/lib/helper/controller/controllerCheckTools.ts">
@@ -1618,8 +1618,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="59" column="33" selection-start-line="59" selection-start-column="33" selection-end-line="59" selection-end-column="33" />
+        <state relative-caret-position="231">
+          <caret line="77" column="37" selection-start-line="77" selection-start-column="37" selection-end-line="77" selection-end-column="37" />
         </state>
       </provider>
     </entry>
