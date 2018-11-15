@@ -23,7 +23,7 @@ import {WorkerMessageActions} from "../helper/constants/workerMessageActions";
 
 class ZationMaster {
     private static instance: ZationMaster | null = null;
-    private static readonly version: string = '0.4.2';
+    private static readonly version: string = '0.4.3';
 
     private readonly serverStartedTimeStamp: number;
     private readonly zc: ZationConfig;
@@ -388,7 +388,7 @@ class ZationMaster {
             this.master.killWorkers();
             this.master.killBrokers();
         }
-        let txt = typeof error === 'object' ?
+        const txt = typeof error === 'object' ?
             error.message : error;
         Logger.printStartFail(txt);
         process.exit();

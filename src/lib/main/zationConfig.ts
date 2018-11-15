@@ -134,7 +134,7 @@ class ZationConfig {
             useTokenCheckKey: true,
             clientJsPrepare: true,
             usePanel: false,
-            killServerOnServicesCreateError : true,
+            killServerOnServicesCreateError : false,
         };
     }
 

@@ -121,8 +121,14 @@ class ServiceEngine
                 this.sc[nameof<Service>(s => s.mongoDb)],
                 async (c : object) : Promise<MongoClient> =>
                 {
-                    let url : string = c['url'];
-                    return await mongodb.MongoClient.connect(url,c);
+                    const url : string = c['url'];
+                    delete c['url'];
+                    return await new Promise<MongoClient>((resolve, reject) => {
+                        mongodb.MongoClient.connect(url,c,(err,client) => {
+                           if(err){reject(err);}
+                           else{resolve(client);}
+                        });
+                    });
                 }
             );
         promises.push(this.mongoDbBox.init(errorBox));
@@ -132,8 +138,8 @@ class ServiceEngine
         {
             if(this.csc.hasOwnProperty(k))
             {
-                let howToCreate = this.csc[k][nameof<CustomService>(s => s.create)];
-                let howToGet    = this.csc[k][nameof<CustomService>(s => s.get)];
+                const howToCreate = this.csc[k][nameof<CustomService>(s => s.create)];
+                const howToGet    = this.csc[k][nameof<CustomService>(s => s.get)];
                 //remove
                 delete this.csc[k][nameof<CustomService>(s => s.create)];
                 delete this.csc[k][nameof<CustomService>(s => s.get)];
@@ -145,7 +151,9 @@ class ServiceEngine
         await Promise.all(promises);
 
         if(errorBox.length > 0){
-            const info = `Worker with id:${this.worker.id} has errors while creating the services -> \n ${errorBox.join('\n')}`;
+            const whiteSpace = this.zc.mainConfig.killServerOnServicesCreateError ? '          ' : '             ';
+            const info =
+                `Worker with id ${this.worker.id} has errors while creating the services -> \n${whiteSpace}${errorBox.join(whiteSpace+'\n')}`;
             if(this.zc.mainConfig.killServerOnServicesCreateError){
                 await this.worker.killServer(info);
             }

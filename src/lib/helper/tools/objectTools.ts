@@ -27,18 +27,13 @@ class ObjectTools
     //Merge objects on all layers (needs more performance)
     static mergeObjToObj(mainObj : object, toMergeObj : object, override : boolean = false)
     {
-        if(typeof mainObj === "object" && typeof toMergeObj === "object")
-        {
-            for(let k in toMergeObj)
-            {
-                if(toMergeObj.hasOwnProperty(k))
-                {
-                    if(!mainObj.hasOwnProperty(k) || (typeof mainObj[k] !== 'object' && override))
-                    {
+        if(typeof mainObj === "object" && typeof toMergeObj === "object") {
+            for(let k in toMergeObj) {
+                if(toMergeObj.hasOwnProperty(k)) {
+                    if(!mainObj.hasOwnProperty(k) || (typeof mainObj[k] !== 'object' && override)) {
                         mainObj[k] = toMergeObj[k];
                     }
-                    else
-                    {
+                    else {
                         mainObj[k] = ObjectTools.mergeObjToObj(toMergeObj[k],toMergeObj[k],override);
                     }
                 }
@@ -50,12 +45,9 @@ class ObjectTools
     //Only adds obj to obj on the first Layer
     static addObToOb(mainOb : object,addOb : object,overwrite : boolean = false) : void
     {
-        for(let key in addOb)
-        {
-            if(addOb.hasOwnProperty(key))
-            {
-                if(overwrite || !mainOb.hasOwnProperty(key))
-                {
+        for(let key in addOb) {
+            if(addOb.hasOwnProperty(key)) {
+                if(overwrite || !mainOb.hasOwnProperty(key)) {
                     mainOb[key] = addOb[key];
                 }
             }
@@ -64,12 +56,9 @@ class ObjectTools
 
     static onlyAddObToOb(mainOb : object,addOb : object,overwrite : boolean = false, onlyAddKeys : object) : void
     {
-        for(let key in addOb)
-        {
-            if(addOb.hasOwnProperty(key))
-            {
-                if(onlyAddKeys.hasOwnProperty(key) && (overwrite || !mainOb.hasOwnProperty(key)))
-                {
+        for(let key in addOb) {
+            if(addOb.hasOwnProperty(key)) {
+                if(onlyAddKeys.hasOwnProperty(key) && (overwrite || !mainOb.hasOwnProperty(key))) {
                     mainOb[key] = addOb[key];
                 }
             }
@@ -79,10 +68,8 @@ class ObjectTools
     static getObjValues(obj : object) : any[]
     {
         let values : any[] = [];
-        for(let k in obj)
-        {
-            if(obj.hasOwnProperty(k))
-            {
+        for(let k in obj) {
+            if(obj.hasOwnProperty(k)) {
                 values.push(obj[k]);
             }
         }
@@ -91,10 +78,8 @@ class ObjectTools
 
     static hasOneOf(obj : object,keys : any[]) : boolean
     {
-        for(let i = 0; i < keys.length; i++)
-        {
-            if(obj.hasOwnProperty(keys[i]))
-            {
+        for(let i = 0; i < keys.length; i++) {
+            if(obj.hasOwnProperty(keys[i])) {
                 return true;
             }
         }
@@ -103,29 +88,14 @@ class ObjectTools
 
     static getFoundKeys(obj : object,keys : any[]) : any[]
     {
-        let found : any[] = [];
+        const found : any[] = [];
 
-        for(let i = 0; i < keys.length; i++)
-        {
-            if(obj.hasOwnProperty(keys[i]))
-            {
+        for(let i = 0; i < keys.length; i++) {
+            if(obj.hasOwnProperty(keys[i])) {
                 found.push(keys[i]);
             }
         }
         return found;
-    }
-
-    static objectSize(obj : object) : number
-    {
-        let size = 0;
-        for(let k in obj)
-        {
-            if(obj.hasOwnProperty(k))
-            {
-                size++;
-            }
-        }
-        return size;
     }
 }
 

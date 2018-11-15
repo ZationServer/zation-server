@@ -24,13 +24,13 @@ gulp.task('cof', function() {
 
 
 const nameOf = (match) => {
-    return `'${match.substring(match.indexOf('s.')+2,match.indexOf(')')).trim()}'`;
+    return `'${match.substring(match.indexOf('.')+1,match.indexOf(')')).trim()}'`;
 };
 
 gulp.task('ts', function () {
     return gulp
         .src('src/**/*.ts')
-        .pipe(gulpReplace(/nameof<[a-zA-Z]*>[(][s =>.a-zA-Z]*[)]/g,nameOf))
+        .pipe(gulpReplace(/nameof<[a-zA-Z]*>[(][ =>.a-zA-Z]*[)]/g,nameOf))
         //.pipe(tsNameOf.stream())
         .pipe(typescript(tscConfig.compilerOptions))
         .pipe(gulp.dest('dist'));

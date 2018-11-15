@@ -521,7 +521,7 @@ class ConfigChecker
                             nameof<CustomService>(s => s.get),
                             service,
                             'function',
-                            false,
+                            true,
                             ConfigNames.SERVICE,
                             this.ceb,
                             target

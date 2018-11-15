@@ -1191,7 +1191,7 @@ class ZationWorker extends SCWorker
     {
         return new Promise<boolean>((resolve,reject) =>
         {
-            this.worker.sendToMaster(data,(err,data) => {
+            this.sendToMaster(data,(err,data) => {
                 if(err) {
                     reject(err);
                 }

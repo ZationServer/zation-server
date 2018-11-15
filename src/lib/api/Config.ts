@@ -62,8 +62,15 @@ import
     ControllerConfig,
     ControllerInput,
     ValuePropertyConfig,
-    ObjectPropertyConfig, ObjectProperties,
-    TaskFunction, ValidatorFunction
+    ObjectPropertyConfig,
+    ObjectProperties,
+    TaskFunction,
+    ValidatorFunction,
+    Property,
+    ArrayPropertyConfig,
+    ConvertObjectFunction,
+    ConvertValueFunction,
+    ConvertArrayFunction, BackgroundTask
 } from "../helper/configs/appConfig";
 import
 {
@@ -99,94 +106,187 @@ import {MainConfig} from "../helper/configs/mainConfig";
 
 class Config
 {
-    //Part config tools
+
+    /**
+     * @description
+     * Merge configs together.
+     * If config has name conflicts the first one will be taken.
+     * @example
+     * merge(appConfig1,appConfig2,appConfig3);
+     * @param configs
+     */
     static merge(...configs : object[]) : object {
         return ObjectTools.mergeObjects(configs);
     }
 
     //Part main configs
+    // noinspection JSUnusedGlobalSymbols
     static appConfig(config : AppConfig) : AppConfig {return config;}
+    // noinspection JSUnusedGlobalSymbols
     static eventConfig(config : EventConfig) : EventConfig {return config;}
+    // noinspection JSUnusedGlobalSymbols
     static serviceConfig(config : ServiceConfig) : ServiceConfig {return config;}
+    // noinspection JSUnusedGlobalSymbols
     static mainConfig(config : MainConfig) : MainConfig {return config;}
+    // noinspection JSUnusedGlobalSymbols
     static channelConfig(config : ChannelConfig) : ChannelConfig {return config;}
+    // noinspection JSUnusedGlobalSymbols
     static errorConfig(config : ErrorConfig) : ErrorConfig {return config;}
+    // noinspection JSUnusedGlobalSymbols
     static starterConfig(config : StarterConfig) : StarterConfig {return config;}
 
-    //Part App Config functions
+    //Object
+    // noinspection JSUnusedGlobalSymbols
+    static objectProperty(c : ObjectPropertyConfig) :  ObjectPropertyConfig {return c;}
+    // noinspection JSUnusedGlobalSymbols
+    static object(c : ObjectPropertyConfig) :  ObjectPropertyConfig {return c;}
+    // noinspection JSUnusedGlobalSymbols
     static construct(func : ConstructObjectFunction) : ConstructObjectFunction {return func;}
-    static beforeHandle(func : BeforeHandleFunction) : BeforeHandleFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static objectProperties(c : ObjectProperties) :  ObjectProperties {return c;}
+    // noinspection JSUnusedGlobalSymbols
+    static convertObject(c : ConvertObjectFunction) :  ConvertObjectFunction {return c;}
+
+    //Value
+    // noinspection JSUnusedGlobalSymbols
+    static valueProperty(c : ValuePropertyConfig) :  ValuePropertyConfig {return c;}
+    // noinspection JSUnusedGlobalSymbols
+    static value(c : ValuePropertyConfig) :  ValuePropertyConfig {return c;}
+    // noinspection JSUnusedGlobalSymbols
+    static convertValue(c : ConvertValueFunction) :  ConvertValueFunction {return c;}
+    // noinspection JSUnusedGlobalSymbols
     static validate(func : ValidatorFunction) : ValidatorFunction {return func;}
+
+    //Array
+    // noinspection JSUnusedGlobalSymbols
+    static arrayProperty(c : ArrayPropertyConfig) :  ArrayPropertyConfig {return c;}
+    // noinspection JSUnusedGlobalSymbols
+    static array(c : ArrayPropertyConfig) :  ArrayPropertyConfig {return c;}
+    // noinspection JSUnusedGlobalSymbols
+    static convertArray(c : ConvertArrayFunction) :  ConvertArrayFunction {return c;}
+
+    //Controller
+    // noinspection JSUnusedGlobalSymbols
+    static controller(c : ControllerConfig) :  ControllerConfig {return c;}
+    // noinspection JSUnusedGlobalSymbols
+    static controllerInput(c : ControllerInput) :  ControllerInput {return c;}
+    // noinspection JSUnusedGlobalSymbols
+    static beforeHandle(func : BeforeHandleFunction) : BeforeHandleFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static controllerAccess(func : ControllerAccessFunction) : ControllerAccessFunction {return func;}
+
+    //Part Background tasks
+    // noinspection JSUnusedGlobalSymbols
+    static backgroundTask(c : BackgroundTask) :  BackgroundTask {return c;}
+    // noinspection JSUnusedGlobalSymbols
     static task(func : TaskFunction) :  TaskFunction {return func;}
 
-    static controller(c : ControllerConfig) :  ControllerConfig {return c;}
-    static controllerInput(c : ControllerInput) :  ControllerInput {return c;}
-    static value(c : ValuePropertyConfig) :  ValuePropertyConfig {return c;}
-    static object(c : ObjectPropertyConfig) :  ObjectPropertyConfig {return c;}
-    static objectProperties(c : ObjectProperties) :  ObjectProperties {return c;}
-    static inputGroup(c : ValuePropertyConfig) : ValuePropertyConfig {return c;}
+    //Part Properties
+    // noinspection JSUnusedGlobalSymbols
+    static property(c : Property) :  Property {return c;}
+
 
     //Part Channel Config functions
+    // noinspection JSUnusedGlobalSymbols
     static cIdChClientPubAccess(func : CIdChannelClientPubAccessFunction) : CIdChannelClientPubAccessFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static cChClientPubAccess(func : CChannelClientPubAccessFunction) : CChannelClientPubAccessFunction  {return func;}
 
+    // noinspection JSUnusedGlobalSymbols
     static cIdChSubAccess(func : CIdChannelSubAccessFunction) : CIdChannelSubAccessFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static cChSubAccess(func : CChannelSubAccessFunction) : CChannelSubAccessFunction {return func;}
 
+    // noinspection JSUnusedGlobalSymbols
     static cChOnClientPub(func : CChannelOnClientPubFunction) : CChannelOnClientPubFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static cIdChOnClientPub(func : CIdChannelOnClientPubFunction) : CIdChannelOnClientPubFunction {return func;}
 
+    // noinspection JSUnusedGlobalSymbols
     static cChOnBagPub(func : CChannelOnBagPubFunction) : CChannelOnBagPubFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static cIdChOnBagPub(func : CIdChannelOnBagPubFunction) : CIdChannelOnBagPubFunction {return func;}
 
+    // noinspection JSUnusedGlobalSymbols
     static cChOnSub(func : CChannelOnSubFunction) : CChannelOnSubFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static cIdChOnSub(func : CIdChannelOnSubFunction) : CIdChannelOnSubFunction {return func;}
 
+    // noinspection JSUnusedGlobalSymbols
     static cChOnUnsub(func : CChannelOnSubFunction) : CChannelOnSubFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static cIdChOnUnsub(func : CIdChannelOnSubFunction) : CIdChannelOnSubFunction {return func;}
 
+    // noinspection JSUnusedGlobalSymbols
     static customCh(c :  Record<string,(ChannelSettings | CustomIdCh)> | CChannelDefault) :
         Record<string,(ChannelSettings | CustomIdCh)> | CChannelDefault  {return c;}
 
+    // noinspection JSUnusedGlobalSymbols
     static customIdCh(c : Record<string,(ChannelSettings | CustomCh)> | CIdChannelDefault) :
         Record<string,(ChannelSettings | CustomCh)> | CIdChannelDefault{return c;}
 
+    // noinspection JSUnusedGlobalSymbols
     static userCh(c : ChannelSettings | UserChannel) : ChannelSettings | UserChannel {return c;}
+    // noinspection JSUnusedGlobalSymbols
     static userChOnSub(func : UserChOnSubFunction) : UserChOnSubFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static userChOnUnsub(func : UserChOnUnsubFunction) : UserChOnUnsubFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static userChOnBagPub(func : UserChOnBagPubFunction) : UserChOnBagPubFunction {return func;}
 
+    // noinspection JSUnusedGlobalSymbols
     static authUserGroupCh(c : ChannelSettings | AuthUserGroupChannel) : ChannelSettings | AuthUserGroupChannel {return c;}
+    // noinspection JSUnusedGlobalSymbols
     static authUserGroupChOnSub(func : AuthUserGroupChOnSubFunction) : AuthUserGroupChOnSubFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static authUserGroupChOnUnsub(func : AuthUserGroupChOnUnsubFunction) : AuthUserGroupChOnUnsubFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static authUserGroupChOnBagPub(func : AuthUserGroupChOnBagPubFunction) : AuthUserGroupChOnBagPubFunction {return func;}
 
+    // noinspection JSUnusedGlobalSymbols
     static normalCh(c : ChannelSettings | NormalChannel) : ChannelSettings | NormalChannel {return c;}
+    // noinspection JSUnusedGlobalSymbols
     static normalChOnSub(func : NormalChOnSubFunction) : NormalChOnSubFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static normalChOnUnsub(func : NormalChOnUnsubFunction) : NormalChOnUnsubFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static normalChOnBagPub(func : NormalChOnBagPubFunction) : NormalChOnBagPubFunction {return func;}
 
     //Part Service Config
+    // noinspection JSUnusedGlobalSymbols
     static customService(c : MainCustomService) : MainCustomService {return c;}
 
     //Part Error Config
+    // noinspection JSUnusedGlobalSymbols
     static taskError(c : ErrorConstruct) : ErrorConstruct {return c;}
 
     //Part Event Config events
 
     //Part Zation Events
     static workerIsStarted(func : WorkerIsStartedFunction) : WorkerIsStartedFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static workerLeaderIsStarted(func : WorkerIsStartedFunction) : WorkerIsStartedFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static express(func : ExpressFunction) : ExpressFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static scServer(func : ScServerFunction) : ScServerFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static socketConnection(func : ZationSocketFunction) : ZationSocketFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static beforeError(func : BeforeErrorFunction) : BeforeErrorFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static beforeTaskError(func : BeforeTaskErrorFunction) : BeforeTaskErrorFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static beforeTaskErrorBag(func : BeforeTaskErrorBagFunction) : BeforeTaskErrorBagFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static httpServerStarted(func : HttpServerIsStartedFunction) : HttpServerIsStartedFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static wsServerIsStarted(func : WsServerIsStartedFunction) : WsServerIsStartedFunction{return func;}
+    // noinspection JSUnusedGlobalSymbols
     static isStarted(func : IsStartedFunction) : IsStartedFunction{return func;}
+    // noinspection JSUnusedGlobalSymbols
     static socketDisconnection(func : ZationSocketDisconnectionFunction) : ZationSocketDisconnectionFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static workerMessage(func : ZationWorkerMessageFunction) : ZationWorkerMessageFunction {return func;}
 
     //Zation Middleware
@@ -249,7 +349,7 @@ class Config
 
     //Part Create easy service configs
     // noinspection JSUnusedGlobalSymbols
-    static mySqlConfig(config : PoolConfig) : PoolConfig {return config;}
+    static mySql(config : PoolConfig) : PoolConfig {return config;}
     // noinspection JSUnusedGlobalSymbols
     static postgreSql(config : ConnectionConfig) : ConnectionConfig {return config;}
     // noinspection JSUnusedGlobalSymbols

@@ -55,8 +55,8 @@ export type CustomServiceGetFunction<T,R> = (service : T) => Promise<R> | R;
 
 export interface CustomService
 {
-    create  ?: CustomServiceCreateFunction<any>;
-    get  ?: CustomServiceGetFunction<any,any>
+    create : CustomServiceCreateFunction<any>;
+    get ?: CustomServiceGetFunction<any,any>
 }
 
 export interface DefaultConfig<T>
