@@ -45,6 +45,18 @@ export = {
         fromZationSystem : true
     },
 
+    inputIsNotTypeChar : {
+        name          : 'inputIsNotTypeChar',
+        group         : ErrorGroup.TYPE_ERROR,
+        description   : 'Input is not from type Char!',
+        type          : ErrorType.VALIDATION_ERROR,
+        sendInfo      : true,
+        //INFO
+        // inputValue (inputValue)
+        // inputPath (inputPath)
+        fromZationSystem : true
+    },
+
     inputIsNotTypeNull : {
         name          : 'inputIsNotTypeNull',
         group         : ErrorGroup.TYPE_ERROR,

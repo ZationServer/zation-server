@@ -238,10 +238,12 @@ ChannelFullItem[nameof<CustomChannelConfig>(s => s.onUnsubscription)]         = 
 ChannelFullItem[nameof<ChannelSettings>(s => s.socketGetOwnPublish)]          = {types : ['boolean','array'],isOptional : true};
 
 const ChannelNormalItem = {};
-ChannelNormalItem[nameof<ChannelSettings>(s => s.socketGetOwnPublish)] = {types : ['boolean'],isOptional : true};
-ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onBagPublish)]    = {types : ['function','array'],isOptional : true};
-ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onSubscription)]  = {types : ['function','array'],isOptional : true};
-ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onUnsubscription)]= {types : ['function','array'],isOptional : true};
+ChannelNormalItem[nameof<ChannelSettings>(s => s.socketGetOwnPublish)]    = {types : ['boolean'],isOptional : true};
+ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onClientPublish)]    = {types : ['function','array'],isOptional : true};
+ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onBagPublish)]       = {types : ['function','array'],isOptional : true};
+ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onSubscription)]     = {types : ['function','array'],isOptional : true};
+ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onUnsubscription)]   = {types : ['function','array'],isOptional : true};
+ChannelNormalItem[nameof<ZationChannelConfig>(s => s.allowClientPublish)] = {types : ['boolean'],isOptional : true};
 
 const Services = {};
 Services[nameof<Service>(s => s.mySql)]                 = {types : ['object'],isOptional : true};
@@ -297,9 +299,10 @@ EventConfig[nameof<EventConfig>(s => s.scServerClosure)]         = {types : ['fu
 EventConfig[nameof<EventConfig>(s => s.scServerSubscription)]    = {types : ['function','array'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.scServerUnsubscription)]  = {types : ['function','array'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.scServerAuthentication)]  = {types : ['function','array'],isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.scServerDeauthentication)]   = {types : ['function','array'],isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.scServerBadSocketAuthToken)] = {types : ['function','array'],isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.scServerReady)]              = {types : ['function','array'],isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.scServerDeauthentication)]          = {types : ['function','array'],isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.scServerAuthenticationStateChange)] = {types : ['function','array'],isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.scServerBadSocketAuthToken)]        = {types : ['function','array'],isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.scServerReady)]                     = {types : ['function','array'],isOptional : true};
 
 EventConfig[nameof<EventConfig>(s => s.socketError)]              = {types : ['function','array'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.socketRaw)]                = {types : ['function','array'],isOptional : true};

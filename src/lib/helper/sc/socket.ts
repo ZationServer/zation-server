@@ -5,6 +5,7 @@ GitHub: LucaCode
  */
 
 import {ZationToken} from "../constants/internal";
+import SocketInfo = require("../infoObjects/socketInfo");
 export type OnHandlerFunction = (data : any, response : ResponseFunction) => void
 export type ResponseFunction = (err ?: any | number, responseData ?: any) => void
 
@@ -38,6 +39,7 @@ export interface Socket
     isSubscribed(channelName : string) : boolean;
 
     //Zation
+    socketInfo : SocketInfo,
     zationSocketVariables : object,
     zationClient : {
         version : number,

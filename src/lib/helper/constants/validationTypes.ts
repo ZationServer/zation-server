@@ -10,6 +10,7 @@ export enum ValidationTypes
     OBJECT           = 'object',
     ARRAY            = 'array',
     STRING           = 'string',
+    CHAR             = 'char',
     NULL             = 'null',
     ALL              = 'all',
     INT              = 'int',

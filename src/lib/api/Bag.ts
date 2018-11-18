@@ -876,7 +876,9 @@ class Bag extends SmallBag
      */
     async publishToUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.exchangeEngine.publishInUserCh(userId,eventName,data,this._processSrcSocketSid(srcSocketSid));
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
+        return await this.exchangeEngine.publishInUserCh
+        (userId,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -912,7 +914,9 @@ class Bag extends SmallBag
      */
     async publishToAll(eventName : string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.exchangeEngine.publishInAllCh(eventName,data,this._processSrcSocketSid(srcSocketSid));
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
+        return await this.exchangeEngine.publishInAllCh
+        (eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -948,7 +952,9 @@ class Bag extends SmallBag
      */
     async publishToAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.exchangeEngine.publishInAuthUserGroupCh(authUserGroup,eventName,data,this._processSrcSocketSid(srcSocketSid));
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
+        return await this.exchangeEngine.publishInAuthUserGroupCh
+        (authUserGroup,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -984,7 +990,9 @@ class Bag extends SmallBag
      */
     async publishToDefaultUserGroup(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.exchangeEngine.publishInDefaultUserGroupCh(eventName,data,this._processSrcSocketSid(srcSocketSid));
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
+        return await this.exchangeEngine.publishInDefaultUserGroupCh
+        (eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1018,7 +1026,9 @@ class Bag extends SmallBag
      */
     async publishToAllAuthUserGroups(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.exchangeEngine.publishToAllAuthUserGroupCh(eventName,data,this.zc,this._processSrcSocketSid(srcSocketSid));
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
+        return await this.exchangeEngine.publishToAllAuthUserGroupCh
+        (eventName,data,this.zc,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1054,7 +1064,9 @@ class Bag extends SmallBag
      */
     async publishToCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.exchangeEngine.publishToCustomIdChannel(channel,id,eventName,data,this._processSrcSocketSid(srcSocketSid));
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
+        return await this.exchangeEngine.publishToCustomIdChannel
+        (channel,id,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1092,7 +1104,9 @@ class Bag extends SmallBag
      */
     async publishToCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return this.exchangeEngine.publishToCustomChannel(channel,eventName,data,this._processSrcSocketSid(srcSocketSid));
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
+        return this.exchangeEngine.publishToCustomChannel
+        (channel,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
     // noinspection JSUnusedGlobalSymbols

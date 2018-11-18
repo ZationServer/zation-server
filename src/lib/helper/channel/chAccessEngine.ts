@@ -14,7 +14,6 @@ token is changed.
 import Logger               = require('../logger/logger');
 import ChTools              = require('./chTools');
 import SmallBag             = require("../../api/SmallBag");
-import ChConfigManager      = require("./chConfigManager");
 import {Socket}               from "../sc/socket";
 import CIdChInfo             = require("../infoObjects/cIdChInfo");
 import CChInfo               = require("../infoObjects/cChInfo");
@@ -22,6 +21,7 @@ import SocketInfo            = require("../infoObjects/socketInfo");
 import FuncTools             = require("../tools/funcTools");
 import PubData               = require("../infoObjects/pubDataInfo");
 import {ZationAccess, ZationChannel, ZationToken} from "../constants/internal";
+import {AccessKey, ChConfigManager}               from "./chConfigManager";
 
 export class ChAccessEngine
 {
@@ -49,7 +49,7 @@ export class ChAccessEngine
             else {
                 chInfo = new CChInfo(chName);
             }
-            const socketInfo : SocketInfo = new SocketInfo(socket);
+            const socketInfo : SocketInfo = socket.socketInfo;
 
             if(typeof value === 'string')
             {
@@ -106,11 +106,11 @@ export class ChAccessEngine
     //Part CustomCh Access
     private async hasAccessToSub(socket : Socket,accessKey : number,accessValue : any,chName : string,chId ?: string) : Promise<boolean>
     {
-        if(accessKey === 1) {
+        if(accessKey === AccessKey.ACCESS) {
             //normal
             return await this.hasAccessTo(accessValue,socket,chName,{isPub : false,pubData : {}},chId);
         }
-        else if(accessKey === 2) {
+        else if(accessKey === AccessKey.NOT_ACCESS) {
             //not
             return !(await this.hasAccessTo(accessValue,socket,chName,{isPub : false,pubData : {}},chId));
         }
@@ -144,14 +144,14 @@ export class ChAccessEngine
 
         if(name === undefined || name === '')
         {
-            let err = new Error('You need an name, to sub an customIdChannel!');
+            const err = new Error('You need an name, to sub an customIdChannel!');
             // @ts-ignore'
             err.code = 4592;
             return Error;
         }
         if(id === undefined || id === '')
         {
-            let err = new Error('You need an id, to sub an customIdChannel!');
+            const err = new Error('You need an id, to sub an customIdChannel!');
             // @ts-ignore'
             err.code = 4591;
             return Error;
@@ -159,7 +159,7 @@ export class ChAccessEngine
 
         if(!this.chConfigManager.isCustomIdCh(name))
         {
-            let err = new Error('Unknown customIdChannel!');
+            const err = new Error('Unknown customIdChannel!');
             // @ts-ignore'
             err.code = 4593;
             Logger.printDebugInfo
@@ -183,7 +183,7 @@ export class ChAccessEngine
             }
             else
             {
-                let err = new Error('No access to sub this customIdChannel!');
+                const err = new Error('No access to sub this customIdChannel!');
                 // @ts-ignore'
                 err.code = 4594;
                 return err;
@@ -198,14 +198,14 @@ export class ChAccessEngine
 
         if(name === undefined || name === '')
         {
-            let err = new Error('You need an name, to pub in customIdChannel!');
+            const err = new Error('You need an name, to pub in customIdChannel!');
             // @ts-ignore'
             err.code = 4595;
             return Error;
         }
         if(id === undefined || id === '')
         {
-            let err = new Error('You need an id, to pub in customIdChannel!');
+            const err = new Error('You need an id, to pub in customIdChannel!');
             // @ts-ignore'
             err.code = 4596;
             return Error;
@@ -213,7 +213,7 @@ export class ChAccessEngine
 
         if(!this.chConfigManager.isCustomIdCh(name))
         {
-            let err = new Error('Unknown customIdChannel!');
+            const err = new Error('Unknown customIdChannel!');
             // @ts-ignore'
             err.code = 4597;
             Logger.printDebugInfo
@@ -233,7 +233,7 @@ export class ChAccessEngine
             )))
             {
                 //allOk
-                let func = this.chConfigManager.getOnClientPubCustomIdCh(name);
+                const func = this.chConfigManager.getOnClientPubCustomIdCh(name);
                 if(!!func) {
                     (async () => {
                         await FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket),PubData.getFromBuild(pubData));
@@ -246,7 +246,7 @@ export class ChAccessEngine
             }
             else
             {
-                let err = new Error('No access to publish in this customIdChannel!');
+                const err = new Error('No access to publish in this customIdChannel!');
                 // @ts-ignore'
                 err.code = 4598;
                 return err;
@@ -260,7 +260,7 @@ export class ChAccessEngine
 
         if(name === undefined || name === '')
         {
-            let err = new Error('You need an name, to sub a customChannel!');
+            const err = new Error('You need an name, to sub a customChannel!');
             // @ts-ignore'
             err.code = 4582;
             return Error;
@@ -268,7 +268,7 @@ export class ChAccessEngine
 
         if(!this.chConfigManager.isCustomCh(name))
         {
-            let err = new Error('Unknown customChannel!');
+            const err = new Error('Unknown customChannel!');
             // @ts-ignore'
             err.code = 4583;
             Logger.printDebugInfo
@@ -291,7 +291,7 @@ export class ChAccessEngine
             }
             else
             {
-                let err = new Error('No access to subscribe this customChannel!');
+                const err = new Error('No access to subscribe this customChannel!');
                 // @ts-ignore'
                 err.code = 4584;
                 return err;
@@ -305,7 +305,7 @@ export class ChAccessEngine
 
         if(name === undefined || name === '')
         {
-            let err = new Error('You need an name, to pub in customChannel!');
+            const err = new Error('You need an name, to pub in customChannel!');
             // @ts-ignore'
             err.code = 4585;
             return Error;
@@ -313,7 +313,7 @@ export class ChAccessEngine
 
         if(!this.chConfigManager.isCustomCh(name))
         {
-            let err = new Error('Unknown customChannel!');
+            const err = new Error('Unknown customChannel!');
             // @ts-ignore'
             err.code = 4586;
             Logger.printDebugInfo
@@ -332,7 +332,7 @@ export class ChAccessEngine
             )))
             {
                 //allOk
-                let func = this.chConfigManager.getOnClientPubCustomCh(name);
+                const func = this.chConfigManager.getOnClientPubCustomCh(name);
                 if(!!func) {
                     (async () => {
                         await FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket),PubData.getFromBuild(pubData));
@@ -345,7 +345,7 @@ export class ChAccessEngine
             }
             else
             {
-                let err = new Error('No access to publish in this customChannel!');
+                const err = new Error('No access to publish in this customChannel!');
                 // @ts-ignore'
                 err.code = 4587;
                 return err;
@@ -360,7 +360,7 @@ export class ChAccessEngine
     {
         if(socket !== undefined)
         {
-            let subs = socket.subscriptions();
+            const subs = socket.subscriptions();
 
             for(let i = 0; i < subs.length; i++)
             {
@@ -383,7 +383,7 @@ export class ChAccessEngine
                 {
                     //custom channel
 
-                    let name = ChTools.getCustomChannelName(subs[i]);
+                    const name = ChTools.getCustomChannelName(subs[i]);
                     if(! (await this.hasAccessToSub
                     (
                         socket,

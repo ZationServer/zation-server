@@ -21,7 +21,8 @@ import CChInfo           = require("../infoObjects/cChInfo");
 import {WorkerChTargets}   from "../constants/workerChTargets";
 import PubData           = require("../infoObjects/pubDataInfo");
 import {ScServer}          from "../sc/scServer";
-import {ZationChannel} from "../constants/internal";
+import {ZationChannel}     from "../constants/internal";
+import SocketInfo        = require("../infoObjects/socketInfo");
 
 class ChExchangeEngine
 {
@@ -91,14 +92,15 @@ class ChExchangeEngine
 
     //Part Zation Channels
 
-    async publishInUserCh(id : number | string | (string | number)[],eventName : string,data : any,srcSocketSid ?: string) : Promise<void>
+    async publishInUserCh(id : number | string | (string | number)[],eventName : string,data : any,srcSocketSid ?: string,socketInfo ?: SocketInfo) : Promise<void>
     {
         const eventTrigger = (id : number | string) => {
             //trigger pub bag userCh event
             const func = this.worker.getChConfigManager().getOnBagPubUserCh();
             if(!!func) {
                 (async () => {
-                    await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), id, new PubData(eventName,data,srcSocketSid));
+                    await FuncTools.emitEvent
+                    (func, this.worker.getPreparedSmallBag(), id, new PubData(eventName,data,srcSocketSid),socketInfo);
                 })();
             }
         };
@@ -118,36 +120,39 @@ class ChExchangeEngine
     }
 
 
-    async publishInDefaultUserGroupCh(eventName : string, data : any,srcSocketSid ?: string) : Promise<void>
+    async publishInDefaultUserGroupCh(eventName : string, data : any,srcSocketSid ?: string,socketInfo ?: SocketInfo) : Promise<void>
     {
         const func = this.worker.getChConfigManager().getOnBagPubDefaultUserUserCh();
         if(!!func) {
             (async () => {
-                await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), new PubData(eventName,data,srcSocketSid));
+                await FuncTools.emitEvent
+                (func, this.worker.getPreparedSmallBag(), new PubData(eventName,data,srcSocketSid),socketInfo);
             })();
         }
         await this.pubAsync(ZationChannel.DEFAULT_USER_GROUP,eventName,data,srcSocketSid);
     }
 
-    async publishInAllCh(eventName : string,data : any,srcSocketSid ?: string) : Promise<void>
+    async publishInAllCh(eventName : string,data : any,srcSocketSid ?: string,socketInfo ?: SocketInfo) : Promise<void>
     {
         const func = this.worker.getChConfigManager().getOnBagPubAllCh();
         if(!!func) {
             (async () => {
-                await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), new PubData(eventName,data,srcSocketSid));
+                await FuncTools.emitEvent
+                (func, this.worker.getPreparedSmallBag(), new PubData(eventName,data,srcSocketSid),socketInfo);
             })();
         }
         await this.pubAsync(ZationChannel.ALL,eventName,data,srcSocketSid);
     }
 
-    async publishInAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : any,srcSocketSid ?: string) : Promise<void>
+    async publishInAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : any,srcSocketSid ?: string,socketInfo ?: SocketInfo) : Promise<void>
     {
         const eventTrigger = (group : string) => {
             //trigger pub bag auth user group Ch event
             const func = this.worker.getChConfigManager().getOnBagPubAuthUserUserCh();
             if(!!func) {
                 (async () => {
-                    await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), group, new PubData(eventName,data,srcSocketSid));
+                    await FuncTools.emitEvent
+                    (func, this.worker.getPreparedSmallBag(), group, new PubData(eventName,data,srcSocketSid),socketInfo);
                 })();
             }
         };
@@ -175,27 +180,28 @@ class ChExchangeEngine
         };
     }
 
-    async publishToAllAuthUserGroupCh(eventName : string, data : any,zc : ZationConfig,srcSocketSid ?: string) : Promise<void>
+    async publishToAllAuthUserGroupCh(eventName : string, data : any,zc : ZationConfig,srcSocketSid ?: string,socketInfo ?: SocketInfo) : Promise<void>
     {
         // @ts-ignore
         const groups : object = zc.appConfig.userGroups.auth;
-        await this.publishInAuthUserGroupCh(Object.keys(groups),eventName,data,srcSocketSid);
+        await this.publishInAuthUserGroupCh(Object.keys(groups),eventName,data,srcSocketSid,socketInfo);
     }
 
-    async publishToCustomIdChannel(channel : string, id : any, eventName : string, data : any,srcSocketSid ?: string) : Promise<void>
+    async publishToCustomIdChannel(channel : string, id : any, eventName : string, data : any,srcSocketSid ?: string,socketInfo ?: SocketInfo) : Promise<void>
     {
         const channelFullName = ChTools.buildCustomIdChannelName(channel,id);
         //trigger pub bag customCh event
         const func = this.worker.getChConfigManager().getOnBagPubCustomIdCh(channel);
         if(!!func) {
             (async () => {
-                await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), new CIdChInfo(channel, id), new PubData(eventName,data,srcSocketSid));
+                await FuncTools.emitEvent
+                (func, this.worker.getPreparedSmallBag(), new CIdChInfo(channel, id), new PubData(eventName,data,srcSocketSid),socketInfo);
             })();
         }
         await this.pubAsync(channelFullName,eventName,data,srcSocketSid);
     }
 
-    async publishToCustomChannel(channel : string | string[], eventName : string, data : any,srcSocketSid ?: string) : Promise<void>
+    async publishToCustomChannel(channel : string | string[], eventName : string, data : any,srcSocketSid ?: string,socketInfo ?: SocketInfo) : Promise<void>
     {
         const eventTrigger = (chName : string) =>
         {
@@ -203,7 +209,8 @@ class ChExchangeEngine
             const func = this.worker.getChConfigManager().getOnBagPubCustomCh(chName);
             if(!!func) {
                 (async () => {
-                    await FuncTools.emitEvent(func, this.worker.getPreparedSmallBag(), new CChInfo(chName), new PubData(eventName,data,srcSocketSid));
+                    await FuncTools.emitEvent
+                    (func, this.worker.getPreparedSmallBag(), new CChInfo(chName), new PubData(eventName,data,srcSocketSid),socketInfo);
                 })();
             }
         };

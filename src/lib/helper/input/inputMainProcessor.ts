@@ -205,10 +205,10 @@ class InputMainProcessor
         if(
             this.createProcessTaskList &&
             errorBag.isEmpty() &&
-            typeof config[nameof<ValuePropertyConfig>(s => s.convertType)] === 'function')
+            typeof config[nameof<ValuePropertyConfig>(s => s.convert)] === 'function')
         {
             this.processTaskList.push(async  () => {
-                srcObj[srcKey] = await config[nameof<ValuePropertyConfig>(s => s.convertType)](input,this.preparedSmallBag);
+                srcObj[srcKey] = await config[nameof<ValuePropertyConfig>(s => s.convert)](input,this.preparedSmallBag);
             });
         }
     }

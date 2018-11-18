@@ -32,18 +32,27 @@ import
     ScServerSocketFunction,
     ScServerSubscriptionFunction,
     ScServerUnsubscriptionFunction,
-    SocketConnectionFunction,
     SocketErrorFunction,
-    SocketFunction,
     SocketMessageFunction,
-    SocketObjFunction,
     SocketAuthenticateFunction,
     WorkerIsStartedFunction,
     WsServerIsStartedFunction,
     SocketDeauthenticateFunction,
     ScMiddlewareFunction,
     MiddlewareAuthenticationFunction,
-    ScServerFunction, ZationSocketFunction, ZationSocketDisconnectionFunction, ZationWorkerMessageFunction
+    ScServerFunction,
+    ZationSocketFunction,
+    ZationSocketDisconnectionFunction,
+    ZationWorkerMessageFunction,
+    ScServerAuthenticationStateChangeFunction,
+    SocketRawFunction,
+    SocketConnectFunction,
+    SocketCodeDataFunction,
+    SocketSubscribeFunction,
+    SocketUnsubscribeFunction,
+    SocketBadAuthTokenFunction,
+    SocketAuthStateChangeFunction,
+    ScServerSocketCodeDataFunction
 } from "../helper/configs/eventConfig";
 
 import
@@ -78,31 +87,45 @@ import
     ErrorConstruct
 } from "../helper/configs/errorConfig";
 import {
-    AuthUserGroupChannel, AuthUserGroupChOnBagPubFunction, AuthUserGroupChOnSubFunction, AuthUserGroupChOnUnsubFunction,
+    AuthUserGroupChannel,
+    AuthUserGroupChOnBagPubFunction,
+    AuthUserGroupChOnClientPubFunction,
+    AuthUserGroupChOnSubFunction,
+    AuthUserGroupChOnUnsubFunction,
     CChannelClientPubAccessFunction,
-    CChannelDefault,
     CChannelOnBagPubFunction,
     CChannelOnClientPubFunction,
     CChannelOnSubFunction,
+    CChannelOnUnsubFunction,
     CChannelSubAccessFunction,
     ChannelConfig,
-    ChannelSettings,
     CIdChannelClientPubAccessFunction,
-    CIdChannelDefault,
     CIdChannelOnBagPubFunction,
     CIdChannelOnClientPubFunction,
     CIdChannelOnSubFunction,
+    CIdChannelOnUnsubFunction,
     CIdChannelSubAccessFunction,
     CustomCh,
-    CustomIdCh, NormalChannel, NormalChOnBagPubFunction, NormalChOnSubFunction, NormalChOnUnsubFunction,
+    CustomIdCh,
+    NormalChannel,
+    NormalChOnBagPubFunction, NormalChOnClientPubFunction,
+    NormalChOnSubFunction,
+    NormalChOnUnsubFunction,
     UserChannel,
     UserChOnBagPubFunction,
+    UserChOnClientPubFunction,
     UserChOnSubFunction,
     UserChOnUnsubFunction
 } from "../helper/configs/channelConfig";
 import ObjectTools = require("../helper/tools/objectTools");
 import {StarterConfig} from "../helper/configs/starterConfig";
 import {MainConfig} from "../helper/configs/mainConfig";
+import CChInfo = require("../helper/infoObjects/cChInfo");
+import CIdChInfo = require("../helper/infoObjects/cIdChInfo");
+import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
+import SocketInfo = require("../helper/infoObjects/socketInfo");
+import ZationInfo = require("../helper/infoObjects/zationInfo");
+import ZationTokenInfo = require("../helper/infoObjects/zationTokenInfo");
 
 class Config
 {
@@ -213,44 +236,59 @@ class Config
     static cIdChOnSub(func : CIdChannelOnSubFunction) : CIdChannelOnSubFunction {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static cChOnUnsub(func : CChannelOnSubFunction) : CChannelOnSubFunction {return func;}
+    static cChOnUnsub(func : CChannelOnUnsubFunction) : CChannelOnUnsubFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cIdChOnUnsub(func : CIdChannelOnSubFunction) : CIdChannelOnSubFunction {return func;}
+    static cIdChOnUnsub(func : CIdChannelOnUnsubFunction) : CIdChannelOnUnsubFunction {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static customCh(c :  Record<string,(ChannelSettings | CustomIdCh)> | CChannelDefault) :
-        Record<string,(ChannelSettings | CustomIdCh)> | CChannelDefault  {return c;}
+    static customCh(c : CustomCh) : CustomCh {return c;}
 
     // noinspection JSUnusedGlobalSymbols
-    static customIdCh(c : Record<string,(ChannelSettings | CustomCh)> | CIdChannelDefault) :
-        Record<string,(ChannelSettings | CustomCh)> | CIdChannelDefault{return c;}
+    static customIdCh(c : CustomIdCh) : CustomIdCh {return c;}
 
     // noinspection JSUnusedGlobalSymbols
-    static userCh(c : ChannelSettings | UserChannel) : ChannelSettings | UserChannel {return c;}
+    static userCh(c : UserChannel) : UserChannel {return c;}
+    // noinspection JSUnusedGlobalSymbols
+    static userChOnClientPub(func : UserChOnClientPubFunction) : UserChOnClientPubFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static userChOnBagPub(func : UserChOnBagPubFunction) : UserChOnBagPubFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static userChOnSub(func : UserChOnSubFunction) : UserChOnSubFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static userChOnUnsub(func : UserChOnUnsubFunction) : UserChOnUnsubFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static userChOnBagPub(func : UserChOnBagPubFunction) : UserChOnBagPubFunction {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static authUserGroupCh(c : ChannelSettings | AuthUserGroupChannel) : ChannelSettings | AuthUserGroupChannel {return c;}
+    static authUserGroupCh(c : AuthUserGroupChannel) : AuthUserGroupChannel {return c;}
+    // noinspection JSUnusedGlobalSymbols
+    static authUserGroupChOnClientPub(func : AuthUserGroupChOnClientPubFunction) : AuthUserGroupChOnClientPubFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static authUserGroupChOnBagPub(func : AuthUserGroupChOnBagPubFunction) : AuthUserGroupChOnBagPubFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static authUserGroupChOnSub(func : AuthUserGroupChOnSubFunction) : AuthUserGroupChOnSubFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static authUserGroupChOnUnsub(func : AuthUserGroupChOnUnsubFunction) : AuthUserGroupChOnUnsubFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static authUserGroupChOnBagPub(func : AuthUserGroupChOnBagPubFunction) : AuthUserGroupChOnBagPubFunction {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static normalCh(c : ChannelSettings | NormalChannel) : ChannelSettings | NormalChannel {return c;}
+    static defaultUserGroupCh(c : NormalChannel) : NormalChannel {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static normalChOnSub(func : NormalChOnSubFunction) : NormalChOnSubFunction {return func;}
+    static defaultUserGroupChOnClientPub(func : NormalChOnClientPubFunction) : NormalChOnClientPubFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static normalChOnUnsub(func : NormalChOnUnsubFunction) : NormalChOnUnsubFunction {return func;}
+    static defaultUserGroupChOnBagPub(func : NormalChOnBagPubFunction) : NormalChOnBagPubFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static normalChOnBagPub(func : NormalChOnBagPubFunction) : NormalChOnBagPubFunction {return func;}
+    static defaultUserGroupChOnSub(func : NormalChOnSubFunction) : NormalChOnSubFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static defaultUserGroupChOnUnsub(func : NormalChOnUnsubFunction) : NormalChOnUnsubFunction {return func;}
+
+    // noinspection JSUnusedGlobalSymbols
+    static allCh(c : NormalChannel) : NormalChannel {return c;}
+    // noinspection JSUnusedGlobalSymbols
+    static allChOnClientPub(func : NormalChOnClientPubFunction) : NormalChOnClientPubFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static allChOnBagPub(func : NormalChOnBagPubFunction) : NormalChOnBagPubFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static allChOnSub(func : NormalChOnSubFunction) : NormalChOnSubFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static allChOnUnsub(func : NormalChOnUnsubFunction) : NormalChOnUnsubFunction {return func;}
 
     //Part Service Config
     // noinspection JSUnusedGlobalSymbols
@@ -290,48 +328,84 @@ class Config
     static workerMessage(func : ZationWorkerMessageFunction) : ZationWorkerMessageFunction {return func;}
 
     //Zation Middleware
+    // noinspection JSUnusedGlobalSymbols
     static middlewareAuthenticate(func : MiddlewareAuthenticationFunction) : MiddlewareAuthenticationFunction {return func;}
 
     //Part Socket Events (SC)
+    // noinspection JSUnusedGlobalSymbols
     static socketError(func : SocketErrorFunction) : SocketErrorFunction {return func;}
-    static socketRaw(func : SocketFunction) : SocketFunction {return func;}
-    static socketConnect(func : SocketConnectionFunction) : SocketConnectionFunction {return func;}
-    static socketDisconnect(func : SocketFunction) : SocketFunction {return func;}
-    static socketConnectAbort(func : SocketFunction) : SocketFunction {return func;}
-    static socketClose(func : SocketFunction) : SocketFunction {return func;}
-    static socketSubscribe(func : SocketFunction) : SocketFunction {return func;}
-    static socketUnsubscribe(func : SocketFunction) : SocketFunction{return func;}
-    static socketBadAuthToken(func : SocketObjFunction) : SocketObjFunction{return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static socketRaw(func : SocketRawFunction) : SocketRawFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static socketConnect(func : SocketConnectFunction) : SocketConnectFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static socketDisconnect(func : SocketCodeDataFunction) : SocketCodeDataFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static socketConnectAbort(func : SocketCodeDataFunction) : SocketCodeDataFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static socketClose(func : SocketCodeDataFunction) : SocketCodeDataFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static socketSubscribe(func : SocketSubscribeFunction) : SocketSubscribeFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static socketUnsubscribe(func : SocketUnsubscribeFunction) : SocketUnsubscribeFunction{return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static socketBadAuthToken(func : SocketBadAuthTokenFunction) : SocketBadAuthTokenFunction{return func;}
+    // noinspection JSUnusedGlobalSymbols
     static socketAuthenticate(func : SocketAuthenticateFunction) : SocketAuthenticateFunction{return func;}
+    // noinspection JSUnusedGlobalSymbols
     static socketDeauthenticate(func : SocketDeauthenticateFunction) : SocketDeauthenticateFunction{return func;}
-    static socketAuthStateChange(func : SocketFunction) : SocketFunction{return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static socketAuthStateChange(func : SocketAuthStateChangeFunction) : SocketAuthStateChangeFunction{return func;}
+    // noinspection JSUnusedGlobalSymbols
     static socketMessage(func : SocketMessageFunction) : SocketMessageFunction{return func;}
 
     //Part ScServer Events (SC)
+    // noinspection JSUnusedGlobalSymbols
     static scServerError(func : ScServerErrorFunction) : ScServerErrorFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static scServerNotice(func : ScServerNoticeFunction) : ScServerNoticeFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static scServerHandshake(func : ScServerSocketFunction) : ScServerSocketFunction {return func;}
-    static scServerConnectionAbort(func : ScServerSocketFunction) : ScServerSocketFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static scServerConnectionAbort(func : ScServerSocketCodeDataFunction) : ScServerSocketCodeDataFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static scServerDisconnection(func : ScServerSocketCodeDataFunction) : ScServerSocketCodeDataFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static scServerClosure(func : ScServerSocketCodeDataFunction) : ScServerSocketCodeDataFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static scServerConnection(func : ScServerConnectionFunction) : ScServerConnectionFunction {return func;}
-    static scServerDisconnection(func : ScServerSocketFunction) : ScServerSocketFunction {return func;}
-    static scServerClosure(func : ScServerSocketFunction) : ScServerSocketFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static scServerSubscription(func : ScServerSubscriptionFunction) : ScServerSubscriptionFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static scServerUnsubscription(func : ScServerUnsubscriptionFunction) : ScServerUnsubscriptionFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static scServerAuthentication(func : ScServerAuthenticationFunction) : ScServerAuthenticationFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static scServerDeauthentication(func : ScServerDeauthenticationFunction) : ScServerDeauthenticationFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static scServerAuthenticationStateChange(func : ScServerAuthenticationStateChangeFunction) : ScServerAuthenticationStateChangeFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static scServerBadSocketAuthToken(func : ScServerBadSocketAuthTokenFunction) : ScServerBadSocketAuthTokenFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static scServerReady(func : ScServerReadyFunction) : ScServerReadyFunction {return func;}
 
     //Part Middleware Events (SC)
+    // noinspection JSUnusedGlobalSymbols
     static scMiddlewareAuthenticate(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static scMiddlewareHandshakeWs(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static scMiddlewareHandshakeSc(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static scMiddlewareSubscribe(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static scMiddlewarePublishIn(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static scMiddlewarePublishOut(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static scMiddlewareEmit(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
 
-    //Part Type
+    //Part Types
     // noinspection JSUnusedGlobalSymbols
     static typeSmallBag(smallBag : SmallBag) : SmallBag {return smallBag;}
     // noinspection JSUnusedGlobalSymbols
@@ -346,6 +420,20 @@ class Config
     static typeController(controller : Controller) : Controller {return controller;}
     // noinspection JSUnusedGlobalSymbols
     static typeExpress(express : ExpressCore.Express) : ExpressCore.Express {return express;}
+
+    //Info Types
+    // noinspection JSUnusedGlobalSymbols
+    static customChInfo(cChInfo : CChInfo) : CChInfo {return cChInfo;}
+    // noinspection JSUnusedGlobalSymbols
+    static customIdChInfo(cIdChInfo : CIdChInfo) : CIdChInfo {return cIdChInfo;}
+    // noinspection JSUnusedGlobalSymbols
+    static pubDataInfo(pubDataInfo : PubDataInfo) : PubDataInfo {return pubDataInfo;}
+    // noinspection JSUnusedGlobalSymbols
+    static socketInfo(socketInfo : SocketInfo) : SocketInfo {return socketInfo;}
+    // noinspection JSUnusedGlobalSymbols
+    static zationInfo(zationInfo : ZationInfo) : ZationInfo {return zationInfo;}
+    // noinspection JSUnusedGlobalSymbols
+    static zationTokenInfo(zationTokenInfo : ZationTokenInfo) : ZationTokenInfo {return zationTokenInfo;}
 
     //Part Create easy service configs
     // noinspection JSUnusedGlobalSymbols

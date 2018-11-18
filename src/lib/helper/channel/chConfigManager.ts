@@ -11,17 +11,43 @@ For performance speed in publish in channels, sub channels..
 import ZationConfig      = require("../../main/zationConfig");
 import {ChannelConfig, ChannelDefault, CustomChannelConfig, ZationChannelConfig} from "../configs/channelConfig";
 
-class ChConfigManager {
+export enum AccessKey {
+    NOT_SET = 0,
+    ACCESS = 1,
+    NOT_ACCESS = 2
+}
+
+interface Events {
+    onClientPub ?: Function | Function[],
+    onBagPub ?: Function | Function[],
+    onSub ?: Function | Function[],
+    onUnsub ?: Function | Function[]
+}
+
+interface CustomChStorage extends Events {
+    sgop : boolean,
+    pa ?: Function,
+    pak : AccessKey,
+    sa ?: Function,
+    sak : AccessKey
+}
+
+interface ChStorage extends Events{
+    sgop : boolean,
+    acp : boolean
+}
+
+export class ChConfigManager {
     private zc: ZationConfig;
     private readonly cc: object;
 
-    private infoUserCh: object = {};
-    private infoAuthUserGroupCh: object = {};
-    private infoDefaultUserGroupCh: object = {};
-    private infoAllCh: object = {};
+    private infoUserCh: ChStorage = {sgop : true,acp : false};
+    private infoAuthUserGroupCh: ChStorage = {sgop : true,acp : false};
+    private infoDefaultUserGroupCh: ChStorage = {sgop : true,acp : false};
+    private infoAllCh: ChStorage = {sgop : true,acp : false};
 
-    private infoCustomCh: object = {};
-    private infoCustomIdCh: object = {};
+    private infoCustomCh: Record<string,CustomChStorage> = {};
+    private infoCustomIdCh: Record<string,CustomChStorage> = {};
 
     constructor(zc: ZationConfig) {
         this.zc = zc;
@@ -30,67 +56,81 @@ class ChConfigManager {
     }
 
     readConfig() {
-        this.infoUserCh = this.processChannel(nameof<ChannelConfig>(s => s.userCh));
-        this.infoAuthUserGroupCh = this.processChannel(nameof<ChannelConfig>(s => s.authUserGroupCh));
-        this.infoDefaultUserGroupCh = this.processChannel(nameof<ChannelConfig>(s => s.defaultUserGroupCh));
-        this.infoAllCh = this.processChannel(nameof<ChannelConfig>(s => s.allCh));
+
+        if(this.cc.hasOwnProperty(nameof<ChannelConfig>(s => s.userCh))) {
+            this.infoUserCh = this.processChannel(this.cc[nameof<ChannelConfig>(s => s.userCh)]);
+        }
+        if(this.cc.hasOwnProperty(nameof<ChannelConfig>(s => s.authUserGroupCh))) {
+            this.infoAuthUserGroupCh = this.processChannel(this.cc[nameof<ChannelConfig>(s => s.authUserGroupCh)]);
+        }
+        if(this.cc.hasOwnProperty(nameof<ChannelConfig>(s => s.defaultUserGroupCh))) {
+            this.infoDefaultUserGroupCh = this.processChannel(this.cc[nameof<ChannelConfig>(s => s.defaultUserGroupCh)]);
+        }
+        if(this.cc.hasOwnProperty(nameof<ChannelConfig>(s => s.allCh))) {
+            this.infoAllCh = this.processChannel(this.cc[nameof<ChannelConfig>(s => s.allCh)]);
+        }
         this.infoCustomCh = this.processCustomChannel(nameof<ChannelConfig>(s => s.customChannels));
         this.infoCustomIdCh = this.processCustomChannel(nameof<ChannelConfig>(s => s.customIdChannels));
     }
 
-    private processCustomChannel(key: string): object {
-        const res = {};
+    private processCustomChannel(key: string): Record<string,CustomChStorage> {
+        const res : Record<string,CustomChStorage> = {};
         if (this.cc.hasOwnProperty(key)) {
             const channels = this.cc[key];
             for (let ch in channels) {
-                if (channels.hasOwnProperty(ch) && ch !== nameof<ChannelDefault>(s => s.default)) {
+                if (channels.hasOwnProperty(ch) && ch !== nameof<ChannelDefault>(s => s.default))
+                {
                     const chConfig : CustomChannelConfig = channels[ch];
-                    res[ch] = {};
-                    res[ch]['sgop'] = this.getSgop(chConfig.socketGetOwnPublish);
+
+                    let pubAccess;
+                    let pubAccessKey = AccessKey.NOT_SET;
+                    let subAccess;
+                    let subAccessKey = AccessKey.NOT_SET;
+
                     if (chConfig.clientPublishAccess !== undefined) {
-                        res[ch]['pa'] = chConfig.clientPublishAccess;
-                        res[ch]['pak'] = 1;
+                        pubAccess = chConfig.clientPublishAccess;
+                        pubAccessKey = AccessKey.ACCESS;
                     }
                     else if (chConfig.clientPublishNotAccess !== undefined) {
-                        res[ch]['pa'] = chConfig.clientPublishNotAccess;
-                        res[ch]['pak'] = 2;
-                    }
-                    else {
-                        res[ch]['pak'] = 0;
+                        pubAccess = chConfig.clientPublishNotAccess;
+                        pubAccessKey = AccessKey.NOT_ACCESS;
                     }
 
                     if (chConfig.subscribeAccess !== undefined) {
-                        res[ch]['sa'] = chConfig.subscribeAccess;
-                        res[ch]['sak'] = 1;
+                        subAccess = chConfig.subscribeAccess;
+                        subAccessKey = AccessKey.ACCESS;
                     }
                     else if (chConfig.subscribeNotAccess !== undefined) {
-                        res[ch]['sa'] = chConfig.subscribeNotAccess;
-                        res[ch]['sak'] = 2;
-                    }
-                    else {
-                        res[ch]['sak'] = 0;
+                        subAccess = chConfig.subscribeNotAccess;
+                        subAccessKey = AccessKey.NOT_ACCESS;
                     }
 
-                    res[ch]['onClientPub'] = chConfig.onClientPublish;
-                    res[ch]['onBagPub'] = chConfig.onBagPublish;
-                    res[ch]['onSub'] = chConfig.onSubscription;
-                    res[ch]['onUnsub'] = chConfig.onUnsubscription;
+                    res[ch] = {
+                        sgop : this.getSgop(chConfig.socketGetOwnPublish),
+                        onClientPub : chConfig.onClientPublish,
+                        onBagPub : chConfig.onBagPublish,
+                        onSub : chConfig.onSubscription,
+                        onUnsub : chConfig.onUnsubscription,
+                        pa : pubAccess,
+                        pak : pubAccessKey,
+                        sa : subAccess,
+                        sak : subAccessKey
+                    };
                 }
             }
         }
         return res;
     }
 
-    private processChannel(key: string): object {
-        const res = {};
-        if (this.cc.hasOwnProperty(key)) {
-            const channel : ZationChannelConfig = this.cc[key];
-            res['sgop'] = this.getSgop(channel.socketGetOwnPublish);
-            res['onSub'] = channel.onSubscription;
-            res['onUnsub'] = channel.onUnsubscription;
-            res['onBagPub'] = channel.onBagPublish;
-        }
-        return res;
+    private processChannel(channel : ZationChannelConfig): ChStorage {
+        return {
+            sgop : this.getSgop(channel.socketGetOwnPublish),
+            acp : !!channel.allowClientPublish,
+            onClientPub : channel.onClientPublish,
+            onBagPub : channel.onBagPublish,
+            onSub : channel.onSubscription,
+            onUnsub : channel.onUnsubscription,
+        };
     }
 
     // noinspection JSMethodCanBeStatic
@@ -104,21 +144,38 @@ class ChConfigManager {
         }
     }
 
+    //sc normal ch allow client pub
+    getAllowClientPubUserCh(): boolean {
+        return this.infoUserCh.acp;
+    }
+
+    getAllowClientAuthUserGroupCh(): boolean {
+        return this.infoAuthUserGroupCh.acp;
+    }
+
+    getAllowClientDefaultUserGroupCh(): boolean {
+        return this.infoAuthUserGroupCh.acp;
+    }
+
+    getAllowClientAllCh(): boolean {
+        return this.infoAllCh.acp;
+    }
+
     //sc get own pub fast
     getSocketGetOwnPubUserCh(): boolean {
-        return this.infoUserCh['sgop'];
+        return this.infoUserCh.sgop;
     }
 
     getSocketGetOwnPubAuthUserGroupCh(): boolean {
-        return this.infoAuthUserGroupCh['sgop'];
+        return this.infoAuthUserGroupCh.sgop;
     }
 
     getSocketGetOwnPubDefaultUserGroupCh(): boolean {
-        return this.infoDefaultUserGroupCh['sgop'];
+        return this.infoAuthUserGroupCh.sgop;
     }
 
     getSocketGetOwnPubAllCh(): boolean {
-        return this.infoAllCh['sgop'];
+        return this.infoAllCh.sgop;
     }
 
     getSocketGetOwnPubCustomCh(chName: string): boolean {
@@ -126,7 +183,7 @@ class ChConfigManager {
     }
 
     getSocketGetOwnPubCustomIdCh(chName: string): boolean {
-        return this.getCustomIdChInfo(chName).sgop;
+        return this.getCustomIdChInfo(chName).sgop
     }
 
     //ch is there
@@ -138,18 +195,18 @@ class ChConfigManager {
         return this.infoCustomIdCh.hasOwnProperty(chName);
     }
 
-    //ch is there
-    getCustomChInfo(chName: string): any {
+    //ch get info with default fallback
+    getCustomChInfo(chName: string): CustomChStorage {
         return this.infoCustomCh.hasOwnProperty(chName) ?
-            this.infoCustomCh[chName] : {};
+            this.infoCustomCh[chName] : {pak : AccessKey.NOT_SET,sak : AccessKey.NOT_SET,sgop : true};
     }
 
-    getCustomIdChInfo(chName: string): any {
+    getCustomIdChInfo(chName: string): CustomChStorage {
         return this.infoCustomIdCh.hasOwnProperty(chName) ?
-            this.infoCustomIdCh[chName] : {};
+            this.infoCustomIdCh[chName] : {pak : AccessKey.NOT_SET,sak : AccessKey.NOT_SET,sgop : true};
     }
 
-    //pub protocolAccess
+    //pub access
     getPubAccessValueCustomCh(chName: string): any {
         return this.getCustomChInfo(chName).pa;
     }
@@ -166,7 +223,7 @@ class ChConfigManager {
         return this.getCustomIdChInfo(chName).pak;
     }
 
-    //sub protocolAccess
+    //sub access
     getSubAccessValueCustomCh(chName: string): any {
         return this.getCustomChInfo(chName).sa;
     }
@@ -183,87 +240,107 @@ class ChConfigManager {
         return this.getCustomIdChInfo(chName).sak;
     }
 
-    //events
+    //events custom/id channel
     getOnClientPubCustomCh(chName: string): any {
-        return this.getCustomChInfo(chName)['onClientPub'];
+        return this.getCustomChInfo(chName).onClientPub;
     }
 
     getOnClientPubCustomIdCh(chName: string): any {
-        return this.getCustomIdChInfo(chName)['onClientPub'];
+        return this.getCustomIdChInfo(chName).onClientPub;
     }
 
     getOnBagPubCustomCh(chName: string): any {
-        return this.getCustomChInfo(chName)['onBagPub'];
+        return this.getCustomChInfo(chName).onBagPub;
     }
 
     getOnBagPubCustomIdCh(chName: string): any {
-
-        return this.getCustomIdChInfo(chName)['onBagPub'];
+        return this.getCustomIdChInfo(chName).onBagPub;
     }
 
     getOnSubCustomCh(chName: string): any {
-        return this.getCustomChInfo(chName)['onSub'];
+        return this.getCustomChInfo(chName).onSub;
     }
 
     getOnSubCustomIdCh(chName: string): any {
-        return this.getCustomIdChInfo(chName)['onSub'];
+        return this.getCustomIdChInfo(chName).onSub;
     }
 
     getOnUnsubCustomCh(chName: string): any {
-        return this.getCustomChInfo(chName)['onUnsub'];
+        return this.getCustomChInfo(chName).onUnsub;
     }
 
     getOnUnsubCustomIdCh(chName: string): any {
-        return this.getCustomIdChInfo(chName)['onUnsub'];
+        return this.getCustomIdChInfo(chName).onUnsub;
     }
 
-    getOnSubUserCh(): any {
-        return this.infoUserCh['onSub'];
-    }
 
-    getOnUnsubUserCh(): any {
-        return this.infoUserCh['onUnsub'];
+    //events user,authUserGroup,defaultUserGroup and all channel
+
+    getOnClientPubUserCh(): any {
+        return this.infoUserCh.onClientPub;
     }
 
     getOnBagPubUserCh(): any {
-        return this.infoUserCh['onBagPub'];
+        return this.infoUserCh.onBagPub;
     }
 
-    getOnSubAuthUserGroupCh(): any {
-        return this.infoAuthUserGroupCh['onSub'];
+    getOnSubUserCh(): any {
+        return this.infoUserCh.onSub;
     }
 
-    getOnUnsubAuthUserGroupCh(): any {
-        return this.infoAuthUserGroupCh['onUnsub'];
+    getOnUnsubUserCh(): any {
+        return this.infoUserCh.onUnsub;
+    }
+
+
+    getOnClientPubAuthUserUserCh(): any {
+        return this.infoAuthUserGroupCh.onClientPub;
     }
 
     getOnBagPubAuthUserUserCh(): any {
-        return this.infoAuthUserGroupCh['onBagPub'];
+        return this.infoAuthUserGroupCh.onBagPub;
     }
 
-    getOnSubDefaultUserGroupCh(): any {
-        return this.infoDefaultUserGroupCh['onSub'];
+    getOnSubAuthUserGroupCh(): any {
+        return this.infoAuthUserGroupCh.onSub;
     }
 
-    getOnUnsubDefaultUserGroupCh(): any {
-        return this.infoDefaultUserGroupCh['onUnsub'];
+    getOnUnsubAuthUserGroupCh(): any {
+        return this.infoAuthUserGroupCh.onUnsub;
+    }
+
+
+    getOnClientPubDefaultUserUserCh(): any {
+        return this.infoDefaultUserGroupCh.onClientPub;
     }
 
     getOnBagPubDefaultUserUserCh(): any {
-        return this.infoDefaultUserGroupCh['onBagPub'];
+        return this.infoDefaultUserGroupCh.onBagPub;
     }
 
-    getOnSubAllCh(): any {
-        return this.infoAllCh['onSub'];
+    getOnSubDefaultUserGroupCh(): any {
+        return this.infoDefaultUserGroupCh.onSub;
     }
 
-    getOnUnsubAllCh(): any {
-        return this.infoAllCh['onUnsub'];
+    getOnUnsubDefaultUserGroupCh(): any {
+        return this.infoDefaultUserGroupCh.onUnsub;
+    }
+
+
+    getOnClientPubAllCh(): any {
+        return this.infoAllCh.onClientPub;
     }
 
     getOnBagPubAllCh(): any {
-        return this.infoDefaultUserGroupCh['onBagPub'];
+        return this.infoAllCh.onBagPub;
+    }
+
+    getOnSubAllCh(): any {
+        return this.infoAllCh.onSub;
+    }
+
+    getOnUnsubAllCh(): any {
+        return this.infoAllCh.onUnsub;
     }
 }
 
-export = ChConfigManager;

@@ -28,7 +28,6 @@ import Logger = require('../helper/logger/logger');
 import ServiceEngine = require('../helper/services/serviceEngine');
 import SmallBag = require('../api/SmallBag');
 import AEPreparedPart = require('../helper/auth/aePreparedPart');
-import ChConfigManager = require("../helper/channel/chConfigManager");
 import ControllerPrepare = require('../helper/controller/controllerPrepare');
 
 import BackgroundTasksSaver = require("../helper/background/backgroundTasksWorkerSaver");
@@ -41,6 +40,8 @@ import HashSet = require('hashset');
 import process = require("process");
 import PanelEngine = require("../helper/panel/panelEngine");
 import ZationTokenInfo = require("../helper/infoObjects/zationTokenInfo");
+import {ChConfigManager} from "../helper/channel/chConfigManager";
+import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -227,11 +228,12 @@ class ZationWorker extends SCWorker
         this.initScServerEvents();
 
         //START SOCKET SERVER
-        this.scServer.on('connection', async (socket : Socket,conSate) => {
+        this.scServer.on('connection', async (socket : Socket,conState) => {
 
             //init sc variables
             socket.zationSocketVariables = {};
             socket.sid = IdTools.buildSid(this.options.instanceId,this.id,socket.id);
+            socket.socketInfo = new SocketInfo(socket);
 
             this.initSocketEvents(socket);
             this.defaultUserGroup.add(socket);
@@ -249,7 +251,7 @@ class ZationWorker extends SCWorker
                      });
             });
 
-            await this.zc.emitEvent(this.zc.eventConfig.scServerConnection,this.getPreparedSmallBag(),socket,conSate);
+            await this.zc.emitEvent(this.zc.eventConfig.scServerConnection,this.getPreparedSmallBag(),socket,conState);
             await this.zc.emitEvent(this.zc.eventConfig.socket,this.getPreparedSmallBag(),new SocketInfo(socket));
 
         });
@@ -459,17 +461,9 @@ class ZationWorker extends SCWorker
             }
         });
 
-        //BLOCK USER CAN CLIENT_PUBLISH_ACCESS IN ZATION CHANNELS
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_PUBLISH_IN, async (req, next) =>
         {
             const channel = req.channel;
-
-            //add ssi to pub data
-            const addSrcSid = ()=> {
-                if(typeof req.data === "object") {
-                    req.data['ssi'] = req.socket.sid;
-                }
-            };
 
             const userMidRes = await
             this.zc.checkScMiddlewareEvent
@@ -477,46 +471,96 @@ class ZationWorker extends SCWorker
 
             if(userMidRes)
             {
-                if (req.channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
-                    let err : any = new Error('User can\'t publish in a User Channel!');
-                    err.code = 4546;
-                    next(err); //Block!
+                if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
+                    if(this.chConfigManager.getAllowClientPubUserCh()) {
+                        const func = this.chConfigManager.getOnClientPubUserCh();
+                        if(!!func) {
+                            const id = ChTools.getUserIdFromCh(channel);
+                            (async () => {
+                                await FuncTools.emitEvent
+                                (func,this.preparedSmallBag,id,new SocketInfo(req.socket),PubDataInfo.getFromBuild(req.data));
+                            })();
+                        }
+                        next();
+                    }
+                    else{
+                        const err : any = new Error('No client publication allowed in a user channel!');
+                        err.code = 4546;
+                        next(err); //Block!
+                    }
                 }
-                else if (req.channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
-                    addSrcSid();
+                else if (channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
+                    ChTools.pubDataAddSocketSrcSid(req,req.socket);
                     next(await this.chAccessEngine.checkAccessClientPubCustomIdCh(req.socket,channel,req.data));
                 }
-                else if (req.channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
-                    addSrcSid();
+                else if (channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
+                    ChTools.pubDataAddSocketSrcSid(req,req.socket);
                     next(await this.chAccessEngine.checkAccessClientPubCustomCh(req.socket,channel,req.data));
                 }
-                else if (req.channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
-                    let err : any = new Error('User can\'t publish in a User GROUP Channel!');
-                    err.code = 4536;
-                    next(err); //Block!
+                else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
+                    if(this.chConfigManager.getAllowClientAuthUserGroupCh()) {
+                        const func = this.chConfigManager.getOnClientPubAuthUserUserCh();
+                        if(!!func) {
+                            const group = ChTools.getUserAuthGroupFromCh(channel);
+                            (async () => {
+                                await FuncTools.emitEvent
+                                (func,this.preparedSmallBag,group,new SocketInfo(req.socket),PubDataInfo.getFromBuild(req.data));
+                            })();
+                        }
+                        next();
+                    }
+                    else{
+                        const err : any = new Error('No client publication allowed in a auth user group channel!');
+                        err.code = 4536;
+                        next(err); //Block!
+                    }
                 }
-                else if (req.channel === ZationChannel.ALL) {
-                    let err : any = new Error('User can\'t publish in a all Channel!');
-                    err.code = 4556;
-                    next(err); //Block!
+                else if (channel === ZationChannel.ALL) {
+                    if(this.chConfigManager.getAllowClientAllCh()) {
+                        const func = this.chConfigManager.getOnClientPubAllCh();
+                        if(!!func) {
+                            (async () => {
+                                await FuncTools.emitEvent
+                                (func,this.preparedSmallBag,new SocketInfo(req.socket),PubDataInfo.getFromBuild(req.data));
+                            })();
+                        }
+                        next();
+                    }
+                    else{
+                        const err : any = new Error('No client publication allowed in all channel!');
+                        err.code = 4556;
+                        next(err); //Block!
+                    }
                 }
-                else if (req.channel === ZationChannel.DEFAULT_USER_GROUP) {
-                    let err : any = new Error('User can\'t publish in default user GROUP Channel!');
-                    err.code = 4526;
-                    next(err); //Block!
+                else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
+                    if(this.chConfigManager.getAllowClientDefaultUserGroupCh()) {
+                        const func = this.chConfigManager.getOnClientPubDefaultUserUserCh();
+                        if(!!func) {
+                            (async () => {
+                                await FuncTools.emitEvent
+                                (func,this.preparedSmallBag,new SocketInfo(req.socket),PubDataInfo.getFromBuild(req.data));
+                            })();
+                        }
+                        next();
+                    }
+                    else{
+                        const err : any = new Error('No client publication allowed in default user group channel!');
+                        err.code = 4526;
+                        next(err); //Block!
+                    }
                 }
-                else if(req.channel === ZationChannel.PANEL_OUT) {
-                    let err : any = new Error('User can\'t publish in panel out channel!');
+                else if(channel === ZationChannel.PANEL_OUT) {
+                    const err : any = new Error('No client publication allowed in panel out channel!');
                     err.code = 4506;
                     next(err); //Block!
                 }
-                else if(req.channel === ZationChannel.PANEL_IN) {
+                else if(channel === ZationChannel.PANEL_IN) {
                     const authToken = req.socket.getAuthToken();
                     if(authToken !== null &&
                         authToken[nameof<ZationToken>(s => s.zationPanelAccess)] !== undefined &&
                         authToken[nameof<ZationToken>(s => s.zationPanelAccess)])
                     {
-                        addSrcSid();
+                        ChTools.pubDataAddSocketSrcSid(req,req.socket);
                         next();
                     }
                     else
@@ -702,23 +746,33 @@ class ZationWorker extends SCWorker
 
         this.scServer.on('handshake', async (socket) =>
         {
+            //register before
+            socket.on('connect', async (scConState) =>
+            {
+                // noinspection JSUnresolvedFunction
+                await this.zc.emitEvent(this.zc.eventConfig.socketConnect,this.getPreparedSmallBag(),socket,scConState);
+            });
+
             await this.zc.emitEvent(this.zc.eventConfig.scServerHandshake,this.getPreparedSmallBag(),socket);
         });
 
-        this.scServer.on('connectionAbort', async (socket) =>
+        this.scServer.on('connectionAbort', async (socket,code,data) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.scServerConnectionAbort,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.scServerConnectionAbort,this.getPreparedSmallBag(),socket,code,data);
         });
 
-        this.scServer.on('disconnection', async (socket) =>
+        this.scServer.on('disconnection', async (socket,code,data) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.socketDisconnection,this.getPreparedSmallBag(),new SocketInfo(socket));
-            await this.zc.emitEvent(this.zc.eventConfig.scServerDisconnection,this.getPreparedSmallBag(),socket);
+            if(!!this.zc.eventConfig.socketDisconnection){
+                await this.zc.emitEvent(this.zc.eventConfig.socketDisconnection,this.getPreparedSmallBag(),new SocketInfo(socket),code,data);
+            }
+
+            await this.zc.emitEvent(this.zc.eventConfig.scServerDisconnection,this.getPreparedSmallBag(),socket,code,data);
         });
 
-        this.scServer.on('closure', async (socket) =>
+        this.scServer.on('closure', async (socket,code,data) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.scServerClosure,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.scServerClosure,this.getPreparedSmallBag(),socket,code,data);
         });
 
         this.scServer.on('subscription', async (socket,chName,chOptions) =>
@@ -730,7 +784,7 @@ class ZationWorker extends SCWorker
                 this.mapCustomIdChToSc.map(`${name}.${id}`,socket);
                 let func = this.chConfigManager.getOnSubCustomIdCh(name);
                 if(!!func) {
-                    pro.push(FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket)));
+                    pro.push(FuncTools.emitEvent(func,this.preparedSmallBag,new CIdChInfo(name,id),new SocketInfo(socket)));
                 }
             }
             else if(chName.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
@@ -738,33 +792,33 @@ class ZationWorker extends SCWorker
                 this.mapCustomChToSc.map(name,socket);
                 let func = this.chConfigManager.getOnSubCustomCh(name);
                 if(!!func) {
-                    pro.push(FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket)));
+                    pro.push(FuncTools.emitEvent(func,this.preparedSmallBag,new CChInfo(name),new SocketInfo(socket)));
                 }
             }
             else if(chName.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
-                let func = this.chConfigManager.getOnSubUserCh();
+                const func = this.chConfigManager.getOnSubUserCh();
                 if(!!func) {
                     const id = ChTools.getUserIdFromCh(chName);
-                    pro.push(FuncTools.emitEvent(func,this.smallBag,id,new SocketInfo(socket)));
+                    pro.push(FuncTools.emitEvent(func,this.preparedSmallBag,id,new SocketInfo(socket)));
                 }
             }
             else if(chName.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
-                let func = this.chConfigManager.getOnSubAuthUserGroupCh();
+                const func = this.chConfigManager.getOnSubAuthUserGroupCh();
                 if(!!func) {
                     const group = ChTools.getUserAuthGroupFromCh(chName);
-                    pro.push(FuncTools.emitEvent(func,this.smallBag,group,new SocketInfo(socket)));
+                    pro.push(FuncTools.emitEvent(func,this.preparedSmallBag,group,new SocketInfo(socket)));
                 }
             }
             else if(chName === ZationChannel.DEFAULT_USER_GROUP) {
-                let func = this.chConfigManager.getOnSubDefaultUserGroupCh();
+                const func = this.chConfigManager.getOnSubDefaultUserGroupCh();
                 if(!!func) {
-                    pro.push(FuncTools.emitEvent(func,this.smallBag,new SocketInfo(socket)));
+                    pro.push(FuncTools.emitEvent(func,this.preparedSmallBag,new SocketInfo(socket)));
                 }
             }
             else if(chName === ZationChannel.ALL) {
-                let func = this.chConfigManager.getOnSubAllCh();
+                const func = this.chConfigManager.getOnSubAllCh();
                 if(!!func) {
-                    pro.push(FuncTools.emitEvent(func,this.smallBag,new SocketInfo(socket)));
+                    pro.push(FuncTools.emitEvent(func,this.preparedSmallBag,new SocketInfo(socket)));
                 }
             }
             pro.push(this.zc.emitEvent(this.zc.eventConfig.scServerSubscription,this.getPreparedSmallBag(),socket,chName,chOptions));
@@ -780,7 +834,7 @@ class ZationWorker extends SCWorker
                 this.mapCustomIdChToSc.removeValueFromKey(`${name}.${id}`,socket);
                 let func = this.chConfigManager.getOnUnsubCustomIdCh(name);
                 if(!!func) {
-                    pro.push(FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket)));
+                    pro.push(FuncTools.emitEvent(func,this.preparedSmallBag,new CIdChInfo(name,id),new SocketInfo(socket)));
                 }
             }
             else if(chName.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
@@ -788,33 +842,33 @@ class ZationWorker extends SCWorker
                 this.mapCustomChToSc.removeValueFromKey(name,socket);
                 let func = this.chConfigManager.getOnUnsubCustomCh(name);
                 if(!!func) {
-                    pro.push(FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket)));
+                    pro.push(FuncTools.emitEvent(func,this.preparedSmallBag,new CChInfo(name),new SocketInfo(socket)));
                 }
             }
             else if(chName.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
                 let func = this.chConfigManager.getOnUnsubUserCh();
                 if(!!func) {
                     const id = ChTools.getUserIdFromCh(chName);
-                    pro.push(FuncTools.emitEvent(func,this.smallBag,id,new SocketInfo(socket)));
+                    pro.push(FuncTools.emitEvent(func,this.preparedSmallBag,id,new SocketInfo(socket)));
                 }
             }
             else if(chName.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
                 let func = this.chConfigManager.getOnUnsubAuthUserGroupCh();
                 if(!!func) {
                     const group = ChTools.getUserAuthGroupFromCh(chName);
-                    pro.push(FuncTools.emitEvent(func,this.smallBag,group,new SocketInfo(socket)));
+                    pro.push(FuncTools.emitEvent(func,this.preparedSmallBag,group,new SocketInfo(socket)));
                 }
             }
             else if(chName === ZationChannel.DEFAULT_USER_GROUP) {
                 let func = this.chConfigManager.getOnUnsubDefaultUserGroupCh();
                 if(!!func) {
-                    pro.push(FuncTools.emitEvent(func,this.smallBag,new SocketInfo(socket)));
+                    pro.push(FuncTools.emitEvent(func,this.preparedSmallBag,new SocketInfo(socket)));
                 }
             }
             else if(chName === ZationChannel.ALL) {
                 let func = this.chConfigManager.getOnUnsubAllCh();
                 if(!!func) {
-                    pro.push(FuncTools.emitEvent(func,this.smallBag,new SocketInfo(socket)));
+                    pro.push(FuncTools.emitEvent(func,this.preparedSmallBag,new SocketInfo(socket)));
                 }
             }
             pro.push(this.zc.emitEvent(this.zc.eventConfig.scServerUnsubscription,this.getPreparedSmallBag(),socket,chName));
@@ -831,10 +885,15 @@ class ZationWorker extends SCWorker
             await this.zc.emitEvent(this.zc.eventConfig.scServerDeauthentication,this.getPreparedSmallBag(),socket,oldAuthToken);
         });
 
-        this.scServer.on('badSocketAuthToken', async (socket,obj) =>
+        this.scServer.on('authenticationStateChange', async (socket,stateChangeData : any) =>
+        {
+            await this.zc.emitEvent(this.zc.eventConfig.scServerAuthenticationStateChange,this.getPreparedSmallBag(),socket,stateChangeData);
+        });
+
+        this.scServer.on('badSocketAuthToken', async (socket,badAuthStatus) =>
         {
             socket.emit('zationBadAuthToken',{});
-            await this.zc.emitEvent(this.zc.eventConfig.scServerBadSocketAuthToken,this.getPreparedSmallBag(),socket,obj);
+            await this.zc.emitEvent(this.zc.eventConfig.scServerBadSocketAuthToken,this.getPreparedSmallBag(),socket,badAuthStatus);
         });
 
         this.scServer.on('ready', async () =>
@@ -851,28 +910,22 @@ class ZationWorker extends SCWorker
             await this.zc.emitEvent(this.zc.eventConfig.socketError,this.getPreparedSmallBag(),socket,err);
         });
 
-        socket.on('raw', async () =>
+        socket.on('raw', async (data) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.socketRaw,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.socketRaw,this.getPreparedSmallBag(),socket,data);
         });
 
-        socket.on('connect', async (scConState) =>
+        socket.on('disconnect', async (code,data) =>
         {
-            // noinspection JSUnresolvedFunction
-            await this.zc.emitEvent(this.zc.eventConfig.socketConnect,this.getPreparedSmallBag(),socket,scConState);
+            await this.zc.emitEvent(this.zc.eventConfig.socketDisconnect,this.getPreparedSmallBag(),socket,code,data);
         });
 
-        socket.on('disconnect', async () =>
+        socket.on('connectAbort', async (code,data) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.socketDisconnect,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.socketConnectAbort,this.getPreparedSmallBag(),socket,code,data);
         });
 
-        socket.on('connectAbort', async () =>
-        {
-            await this.zc.emitEvent(this.zc.eventConfig.socketConnectAbort,this.getPreparedSmallBag(),socket);
-        });
-
-        socket.on('close', async () =>
+        socket.on('close', async (code,data) =>
         {
             // noinspection JSUnresolvedFunction
             let token = socket.getAuthToken();
@@ -891,22 +944,22 @@ class ZationWorker extends SCWorker
 
             this.defaultUserGroup.remove(socket);
 
-            await this.zc.emitEvent(this.zc.eventConfig.socketClose,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.socketClose,this.getPreparedSmallBag(),socket,code,data);
         });
 
-        socket.on('subscribe', async () =>
+        socket.on('subscribe', async (channel,channelOptions) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.socketSubscribe,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.socketSubscribe,this.getPreparedSmallBag(),socket,channel,channelOptions);
         });
 
-        socket.on('unsubscribe', async () =>
+        socket.on('unsubscribe', async (channel) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.socketUnsubscribe,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.socketUnsubscribe,this.getPreparedSmallBag(),socket,channel);
         });
 
-        socket.on('badAuthToken', async (arg) =>
+        socket.on('badAuthToken', async (badAuthStatus) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.socketBadAuthToken,this.getPreparedSmallBag(),socket,arg);
+            await this.zc.emitEvent(this.zc.eventConfig.socketBadAuthToken,this.getPreparedSmallBag(),socket,badAuthStatus);
         });
 
         socket.on('authenticate', async (token : ZationToken) =>
@@ -945,9 +998,9 @@ class ZationWorker extends SCWorker
             await this.zc.emitEvent(this.zc.eventConfig.socketDeauthenticate,this.getPreparedSmallBag(),socket,token);
         });
 
-        socket.on('authStateChange', async () =>
+        socket.on('authStateChange', async (stateChangeData : any) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.socketAuthStateChange,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.socketAuthStateChange,this.getPreparedSmallBag(),socket,stateChangeData);
         });
 
         socket.on('message', async (msg) =>

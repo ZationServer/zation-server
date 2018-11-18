@@ -8,46 +8,64 @@ import SmallBag                      = require("../../api/SmallBag");
 import CChInfo                       = require("../infoObjects/cChInfo");
 import CIdChInfo                     = require("../infoObjects/cIdChInfo");
 import SocketInfo                    = require("../infoObjects/socketInfo");
-import PubData                       = require("../infoObjects/pubDataInfo");
+import PubDataInfo                   = require("../infoObjects/pubDataInfo");
 
 export type CIdChannelSubAccessFunction =
     (smallBag : SmallBag, chInfo : CIdChInfo, socketInfo : SocketInfo) => Promise<boolean> | boolean;
 
-export type CChannelSubAccessFunction =
-    (smallBag : SmallBag, chInfo : CChInfo, socketInfo : SocketInfo) => Promise<boolean> | boolean;
-
 export type CIdChannelClientPubAccessFunction =
-    (smallBag : SmallBag, chInfo : CIdChInfo, socketInfo : SocketInfo, pubData : PubData) => Promise<boolean> | boolean;
-
-export type CChannelClientPubAccessFunction =
-    (smallBag : SmallBag, chInfo : CChInfo, socketInfo : SocketInfo, pubData : PubData) => Promise<boolean> | boolean;
+    (smallBag : SmallBag, chInfo : CIdChInfo, socketInfo : SocketInfo, pubData : PubDataInfo) => Promise<boolean> | boolean;
 
 export type CIdChannelOnClientPubFunction =
-    (smallBag : SmallBag, chInfo : CIdChInfo, socketInfo : SocketInfo, pubData : PubData) => Promise<void> | void;
-
-export type CChannelOnClientPubFunction =
-    (smallBag : SmallBag, chInfo : CChInfo, socketInfo : SocketInfo, pubData : PubData) => Promise<void> | void;
+    (smallBag : SmallBag, chInfo : CIdChInfo, socketInfo : SocketInfo, pubData : PubDataInfo) => Promise<void> | void;
 
 export type CIdChannelOnBagPubFunction =
-    (smallBag : SmallBag, chInfo : CIdChInfo, pubData : PubData) => Promise<void> | void;
-
-export type CChannelOnBagPubFunction =
-    (smallBag : SmallBag, chInfo : CChInfo, pubData : PubData) => Promise<void> | void;
+    (smallBag : SmallBag, chInfo : CIdChInfo, pubData : PubDataInfo, socketInfo : SocketInfo | undefined) => Promise<void> | void;
 
 export type CIdChannelOnSubFunction =
     (smallBag : SmallBag, chInfo : CIdChInfo, socketInfo : SocketInfo) => Promise<void> | void;
 
+export type CIdChannelOnUnsubFunction =
+    (smallBag : SmallBag, chInfo : CIdChInfo, socketInfo : SocketInfo) => Promise<void> | void;
+
+
+export type CChannelSubAccessFunction =
+    (smallBag : SmallBag, chInfo : CChInfo, socketInfo : SocketInfo) => Promise<boolean> | boolean;
+
+export type CChannelClientPubAccessFunction =
+    (smallBag : SmallBag, chInfo : CChInfo, socketInfo : SocketInfo, pubData : PubDataInfo) => Promise<boolean> | boolean;
+
+export type CChannelOnClientPubFunction =
+    (smallBag : SmallBag, chInfo : CChInfo, socketInfo : SocketInfo, pubData : PubDataInfo) => Promise<void> | void;
+
+export type CChannelOnBagPubFunction =
+    (smallBag : SmallBag, chInfo : CChInfo, pubData : PubDataInfo, socketInfo : SocketInfo | undefined) => Promise<void> | void;
+
 export type CChannelOnSubFunction =
     (smallBag : SmallBag, chInfo : CChInfo, socketInfo : SocketInfo) => Promise<void> | void;
 
-export type UserChOnSubFunction =
-    (smallBag : SmallBag, userId : string, socketInfo : SocketInfo) => Promise<void> | void;
+export type CChannelOnUnsubFunction =
+    (smallBag : SmallBag, chInfo : CChInfo, socketInfo : SocketInfo) => Promise<void> | void;
 
-export type UserChOnUnsubFunction =
-    (smallBag : SmallBag, userId : string, socketInfo : SocketInfo) => Promise<void> | void;
+
+export type UserChOnClientPubFunction =
+    (smallBag : SmallBag, userId : string | number, socketInfo : SocketInfo, pubData : PubDataInfo) => Promise<void> | void;
 
 export type UserChOnBagPubFunction =
-    (smallBag : SmallBag, userId : string, pubData : PubData) => Promise<void> | void;
+    (smallBag : SmallBag, userId : string | number, pubData : PubDataInfo, socketInfo : SocketInfo | undefined) => Promise<void> | void;
+
+export type UserChOnSubFunction =
+    (smallBag : SmallBag, userId : string | number, socketInfo : SocketInfo) => Promise<void> | void;
+
+export type UserChOnUnsubFunction =
+    (smallBag : SmallBag, userId : string | number, socketInfo : SocketInfo) => Promise<void> | void;
+
+
+export type AuthUserGroupChOnClientPubFunction =
+    (smallBag : SmallBag, userGroup  : string, socketInfo : SocketInfo, pubData : PubDataInfo) => Promise<void> | void;
+
+export type AuthUserGroupChOnBagPubFunction =
+    (smallBag : SmallBag, userGroup  : string, pubData : PubDataInfo, socketInfo : SocketInfo | undefined) => Promise<void> | void;
 
 export type AuthUserGroupChOnSubFunction =
     (smallBag : SmallBag, userGroup : string, socketInfo : SocketInfo) => Promise<void> | void;
@@ -55,17 +73,18 @@ export type AuthUserGroupChOnSubFunction =
 export type AuthUserGroupChOnUnsubFunction =
     (smallBag : SmallBag, userGroup  : string, socketInfo : SocketInfo) => Promise<void> | void;
 
-export type AuthUserGroupChOnBagPubFunction =
-    (smallBag : SmallBag, userGroup  : string, pubData : PubData) => Promise<void> | void;
+
+export type NormalChOnClientPubFunction =
+    (smallBag : SmallBag, socketInfo : SocketInfo, pubData : PubDataInfo) => Promise<void> | void;
+
+export type NormalChOnBagPubFunction =
+    (smallBag : SmallBag, pubData : PubDataInfo, socketInfo : SocketInfo | undefined) => Promise<void> | void;
 
 export type NormalChOnSubFunction =
     (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
 
 export type NormalChOnUnsubFunction =
     (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
-
-export type NormalChOnBagPubFunction =
-    (smallBag : SmallBag, pubData : PubData) => Promise<void> | void;
 
 export interface ChannelConfig
 {
@@ -94,27 +113,32 @@ export interface ChannelSettings {
 }
 
 export interface UserChannel extends ZationChannelConfig{
+    onClientPublish  ?: UserChOnClientPubFunction | UserChOnClientPubFunction[];
+    onBagPublish  ?: UserChOnBagPubFunction | UserChOnBagPubFunction [];
     onSubscription  ?: UserChOnSubFunction | UserChOnSubFunction[];
     onUnsubscription  ?: UserChOnUnsubFunction | UserChOnUnsubFunction[];
-    onBagPublish  ?: UserChOnBagPubFunction | UserChOnBagPubFunction [];
 }
 
 export interface AuthUserGroupChannel extends ZationChannelConfig{
+    onClientPublish  ?: AuthUserGroupChOnClientPubFunction | AuthUserGroupChOnClientPubFunction[];
+    onBagPublish  ?: AuthUserGroupChOnBagPubFunction | AuthUserGroupChOnBagPubFunction[];
     onSubscription  ?: AuthUserGroupChOnSubFunction | AuthUserGroupChOnSubFunction[];
     onUnsubscription  ?: AuthUserGroupChOnUnsubFunction | AuthUserGroupChOnUnsubFunction[];
-    onBagPublish  ?: AuthUserGroupChOnBagPubFunction | AuthUserGroupChOnBagPubFunction[];
 }
 
 export interface NormalChannel extends ZationChannelConfig{
+    onClientPublish  ?: NormalChOnClientPubFunction | NormalChOnClientPubFunction[];
+    onBagPublish  ?: NormalChOnBagPubFunction | NormalChOnBagPubFunction[];
     onSubscription  ?: NormalChOnSubFunction | NormalChOnSubFunction[];
     onUnsubscription  ?: NormalChOnUnsubFunction | NormalChOnUnsubFunction[];
-    onBagPublish  ?: NormalChOnBagPubFunction | NormalChOnBagPubFunction[];
 }
 
 export interface ZationChannelConfig extends ChannelSettings{
+    onClientPublish  ?: Function | Function[];
+    onBagPublish  ?: Function | Function[];
     onSubscription  ?: Function | Function[];
     onUnsubscription  ?: Function | Function[];
-    onBagPublish  ?: Function | Function[];
+    allowClientPublish ?: boolean;
 }
 
 export interface CustomIdCh extends CustomChannelConfig {
@@ -126,7 +150,7 @@ export interface CustomIdCh extends CustomChannelConfig {
     onClientPublish  ?: CIdChannelOnClientPubFunction | CIdChannelOnClientPubFunction[];
     onBagPublish  ?: CIdChannelOnBagPubFunction | CIdChannelOnBagPubFunction[];
     onSubscription  ?: CIdChannelOnSubFunction | CIdChannelOnSubFunction[];
-    onUnsubscription  ?: CIdChannelOnSubFunction | CIdChannelOnSubFunction[];
+    onUnsubscription  ?: CIdChannelOnUnsubFunction | CIdChannelOnUnsubFunction[];
 }
 
 export interface CustomCh extends CustomChannelConfig{
@@ -138,7 +162,7 @@ export interface CustomCh extends CustomChannelConfig{
     onClientPublish  ?: CChannelOnClientPubFunction | CChannelOnClientPubFunction[];
     onBagPublish  ?: CChannelOnBagPubFunction | CChannelOnBagPubFunction[];
     onSubscription  ?: CChannelOnSubFunction | CChannelOnSubFunction[];
-    onUnsubscription  ?: CChannelOnSubFunction | CChannelOnSubFunction[];
+    onUnsubscription  ?: CChannelOnUnsubFunction | CChannelOnUnsubFunction[];
 }
 
 export interface CustomChannelConfig extends ChannelSettings{

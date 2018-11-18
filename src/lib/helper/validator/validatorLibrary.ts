@@ -44,6 +44,13 @@ typeLibrary[ValidationTypes.STRING] = (input,taskErrorBag,prepareErrorData) =>
     }
 };
 
+typeLibrary[ValidationTypes.CHAR] = (input,taskErrorBag,prepareErrorData) =>
+{
+    if(!EasyValidator.isChar(input)) {
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeChar,prepareErrorData));
+    }
+};
+
 typeLibrary[ValidationTypes.NULL] = (input,taskErrorBag,prepareErrorData) =>
 {
     if(!EasyValidator.isNull(input)) {

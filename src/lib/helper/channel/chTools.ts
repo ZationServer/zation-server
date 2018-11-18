@@ -6,6 +6,7 @@ GitHub: LucaCode
 
 import Logger        = require('../logger/logger');
 import {ZationChannel} from "../constants/internal";
+import {Socket} from "../sc/socket";
 
 class ChTools
 {
@@ -77,6 +78,13 @@ class ChTools
     static getCustomChannelName(ch : string) : string
     {
         return ch.replace(ZationChannel.CUSTOM_CHANNEL_PREFIX,'');
+    }
+
+    static pubDataAddSocketSrcSid(req : any,socket : Socket)
+    {
+        if(typeof req.data === "object") {
+            req.data['ssi'] = socket.sid;
+        }
     }
 
 }

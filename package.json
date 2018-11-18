@@ -54,7 +54,7 @@
     "socketcluster": "14.3.2",
     "socketcluster-client": "14.2.1",
     "validator": "10.4.0",
-    "zation-client": "0.3.1",
+    "zation-client": "0.3.2",
     "node-fetch": "2.1.2",
     "sc-hasher": "1.0.0",
     "cache-require-paths": "0.3.0",
