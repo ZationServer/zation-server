@@ -10,6 +10,7 @@ import ObjectTools = require('../tools/objectTools');
 import {EventConfig} from "../configs/eventConfig";
 import {ErrorConstruct} from "../configs/errorConfig";
 import {
+    AnyOfProperty,
     AppConfig, ArrayPropertyConfig, ArraySettings,
     AuthUserGroupConfig,
     BackgroundTask,
@@ -72,6 +73,9 @@ AppController[nameof<ControllerConfig>(s => s.fileName)]         = {types : ['st
 AppController[nameof<ControllerConfig>(s => s.access)]           = {types : ['string','function','number','array'],isOptional : true};
 AppController[nameof<ControllerConfig>(s => s.notAccess)]        = {types : ['string','function','number','array'],isOptional : true};
 AppController[nameof<ControllerConfig>(s => s.versionAccess)]    = {types : ['string','object'],isOptional : true};
+
+const AnyOf = {};
+AnyOf[nameof<AnyOfProperty>(s => s.anyOf)]                       = {types : ['array','object'],isOptional : false};
 
 const AppControllerDefaults = {};
 AppControllerDefaults[nameof<ControllerConfig>(s => s.input)]            = {types : ['object'],isOptional : true};
@@ -349,6 +353,7 @@ const Structures = {
     EventConfig : EventConfig,
     Error : Error,
     PanelUserConfig : PanelUserConfig,
-    AuthUserGroup : AuthUserGroup
+    AuthUserGroup : AuthUserGroup,
+    AnyOf : AnyOf
 };
 export = Structures;

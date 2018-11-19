@@ -12,8 +12,15 @@ import {
     ChannelSettings,
     CustomChannelConfig
 } from "../configs/channelConfig";
-import {ArrayPropertyConfig, ControllerConfig, ObjectPropertyConfig, ValuePropertyConfig} from "../configs/appConfig";
+import {
+    AnyOfProperty,
+    ArrayPropertyConfig,
+    ControllerConfig,
+    ObjectPropertyConfig,
+    ValuePropertyConfig
+} from "../configs/appConfig";
 import PropertyImportEngine = require("./propertyImportEngine");
+import Iterator = require("../tools/iterator");
 
 class ConfigPeCompiler
 {
@@ -299,6 +306,13 @@ class ConfigPeCompiler
                 //we have array look in the array body!
                 this.preCompileProperty(nameof<ArrayPropertyConfig>(s => s.array),nowValue);
             }
+            else if(nowValue.hasOwnProperty(nameof<AnyOfProperty>(s => s.anyOf)))
+            {
+                //anyOf
+                Iterator.iterateSync((key,value,src) => {
+                    this.preCompileProperty(key,src);
+                },nowValue[nameof<AnyOfProperty>(s => s.anyOf)]);
+            }
             else {
                 //value!
                 this.preCompileValidationFunctions(nowValue);
@@ -343,8 +357,17 @@ class ConfigPeCompiler
                     //check super extends before this
                     const superName = value[nameof<ObjectPropertyConfig>(s => s.extends)];
                     this.preCompileInheritance(this.objectsConfig[superName]);
-
                     //lastExtend
+
+                    //check props
+                    const props = value[nameof<ObjectPropertyConfig>(s => s.properties)];
+                    if(typeof props === 'object'){
+                        for(let propName in props) {
+                            if(props.hasOwnProperty(propName)) {
+                                this.preCompileInheritance(props[propName]);
+                            }
+                        }
+                    }
 
                     const superObj = this.objectsConfig[superName];
 
@@ -403,6 +426,13 @@ class ConfigPeCompiler
                 //is array
                 let inArray = value[nameof<ArrayPropertyConfig>(s => s.array)];
                 this.preCompileInheritance(inArray);
+            }
+            else if(value.hasOwnProperty(nameof<AnyOfProperty>(s => s.anyOf)))
+            {
+                //any of
+                Iterator.iterateSync((key,value) => {
+                    this.preCompileInheritance(value);
+                },value[nameof<AnyOfProperty>(s => s.anyOf)]);
             }
         }
     }

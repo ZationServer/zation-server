@@ -23,6 +23,11 @@ export interface AppConfig
 
 export type Property = ValuePropertyConfig | ObjectPropertyConfig | ArrayPropertyConfig | ArrayShortSyntax | string;
 
+export interface AnyOfProperty
+{
+    anyOf : Record<string,Property> | Property[]
+}
+
 export type TaskFunction = (smallBag : SmallBag) => Promise<void> | void;
 
 export interface BackgroundTask
@@ -52,7 +57,7 @@ export interface AuthUserGroupConfig
     panelDisplayName  ?: string;
 }
 
-export type ControllerInput = Record<string,Property>;
+export type ControllerInput = Record<string,Property | AnyOfProperty>;
 export type BeforeHandleFunction = (bag : Bag) => Promise<void> | void;
 export type ControllerAccessFunction = (smallBag : SmallBag,token : ZationToken | null) => Promise<boolean> | boolean;
 
@@ -116,7 +121,7 @@ export interface PropertyOptional {
     default ?: any
 }
 
-export type ObjectProperties = Record<string,Property>;
+export type ObjectProperties = Record<string,Property | AnyOfProperty>;
 export type ConvertObjectFunction = (obj: any, smallBag : SmallBag) => Promise<any> | any;
 export type ConstructObjectFunction = (self : any, smallBag : SmallBag) => Promise<void> | void;
 
@@ -132,7 +137,7 @@ export interface ObjectPropertyConfig extends PropertyOptional
 
 export interface ArrayPropertyConfig extends ArraySettings
 {
-    array : Property
+    array : Property | AnyOfProperty
 }
 
 export type ConvertArrayFunction = (array: any[], smallBag : SmallBag) => Promise<any> | any;
@@ -145,9 +150,9 @@ export interface ArraySettings extends PropertyOptional
     convert  ?: ConvertArrayFunction
 }
 
-export interface ArrayShortSyntax extends Array<Property | ArraySettings | undefined>
+export interface ArrayShortSyntax extends Array<Property | AnyOfProperty | ArraySettings | undefined>
 {
-    0 : Property
+    0 : Property | AnyOfProperty
     1 ?: ArraySettings
 }
 

@@ -668,5 +668,16 @@ export = {
         // inputPath (inputPath)
         // types (types was checked on value)
         fromZationSystem : true
+    },
+
+    noAnyOfMatch : {
+        name          : 'noAnyOfMatch',
+        description   : 'No anyOf match!',
+        type          : ErrorType.VALIDATION_ERROR,
+        sendInfo      : true,
+        //INFO
+        // inputValue (inputValue)
+        // inputPath (inputPath)
+        fromZationSystem : true
     }
 };

@@ -16,6 +16,7 @@ import Target = require('./target');
 import ConfigErrorBag = require("./configErrorBag");
 import {ConfigNames, DefaultUserGroupFallBack, ZationAccess} from "../constants/internal";
 import {
+    AnyOfProperty,
     AppConfig, ArrayPropertyConfig, ArrayShortSyntax,
     ControllerConfig,
     ControllerInput,
@@ -28,6 +29,7 @@ import {ValidationTypes} from "../constants/validationTypes";
 import {ChannelConfig, ChannelDefault, CustomChannelConfig} from "../configs/channelConfig";
 import {OnlyDateFunctions, OnlyNumberFunctions, OnlyStringFunctions} from "../constants/validation";
 import PropertyImportEngine = require("./propertyImportEngine");
+import Iterator = require("../tools/iterator");
 
 class ConfigChecker
 {
@@ -767,11 +769,18 @@ class ConfigChecker
         } else if (typeof value === "object") {
             if (typeof value[nameof<ObjectPropertyConfig>(s => s.properties)] === 'object') {
                 this.circularObjectCheck(value,target,[],mainSrc,otherSrc);
-
             } else if (typeof value[nameof<ArrayPropertyConfig>(s => s.array)] === 'object') {
                 //isArray
                 const inArray = value[nameof<ArrayPropertyConfig>(s => s.array)];
                 this.circularCheck(inArray,target.addPath('ArrayItem'), mainSrc,otherSrc);
+            } else if(value.hasOwnProperty(nameof<AnyOfProperty>(s => s.anyOf)))
+            {
+                const anyOf = value[nameof<AnyOfProperty>(s => s.anyOf)];
+                if(typeof anyOf === 'object' || Array.isArray(anyOf)) {
+                    Iterator.iterateSync((key,value) => {
+                        this.circularCheck(value,target.addPath(key),mainSrc,otherSrc);
+                    },anyOf);
+                }
             }
         }
     }
@@ -791,9 +800,11 @@ class ConfigChecker
             this.circularObjectCheck(this.objectsConfig[extend],target.addPath(`extends=>${extend}`),Object.keys(props),mainSrc,otherSrc);
         }
 
-        for(let propName in props){
-            if(props.hasOwnProperty(propName) && !excludeProps.includes(propName)) {
-                this.circularCheck(props[propName],target.addPath(propName), mainSrc,otherSrc);
+        if(typeof props === 'object') {
+            for(let propName in props){
+                if(props.hasOwnProperty(propName) && !excludeProps.includes(propName)) {
+                    this.circularCheck(props[propName],target.addPath(propName), mainSrc,otherSrc);
+                }
             }
         }
     }
@@ -815,7 +826,17 @@ class ConfigChecker
                     const inArray = value[nameof<ArrayPropertyConfig>(s => s.array)];
                     this.checkProperty(inArray,target.addPath('ArrayItem'), objName);
                 }
-            } else {
+            } else if(value.hasOwnProperty(nameof<AnyOfProperty>(s => s.anyOf)))
+            {
+                ConfigCheckerTools.assertStructure(Structures.AnyOf, value, ConfigNames.APP, this.ceb, target);
+                const anyOf = value[nameof<AnyOfProperty>(s => s.anyOf)];
+                if(typeof anyOf === 'object' || Array.isArray(anyOf)) {
+                    Iterator.iterateSync((key,value) => {
+                        this.checkProperty(value,target.addPath(key),objName)
+                    },anyOf);
+                }
+            }
+            else {
                 this.checkValueProperty(value,target);
             }
         } else {
@@ -823,8 +844,6 @@ class ConfigChecker
                 `${target.getTarget()} wrong value type. Use a string to link to an object or an object to define the input body or an array shortcut.`));
         }
     }
-
-
 
     // noinspection JSMethodCanBeStatic
     checkOptionalArrayWarning(value : object | boolean,target : Target)
