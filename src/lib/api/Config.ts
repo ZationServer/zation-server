@@ -79,7 +79,7 @@ import
     ArrayPropertyConfig,
     ConvertObjectFunction,
     ConvertValueFunction,
-    ConvertArrayFunction, BackgroundTask
+    ConvertArrayFunction, BackgroundTask, GetDateFunction
 } from "../helper/configs/appConfig";
 import
 {
@@ -179,6 +179,8 @@ class Config
     static convertValue(c : ConvertValueFunction) :  ConvertValueFunction {return c;}
     // noinspection JSUnusedGlobalSymbols
     static validate(func : ValidatorFunction) : ValidatorFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static getDate(func : GetDateFunction) : GetDateFunction {return func;}
 
     //Array
     // noinspection JSUnusedGlobalSymbols

@@ -24,6 +24,11 @@ export const OnlyStringFunctions = [
     nameof<ValuePropertyConfig>(s => s.length),
     nameof<ValuePropertyConfig>(s => s.minLength),
     nameof<ValuePropertyConfig>(s => s.maxLength),
-    nameof<ValuePropertyConfig>(s => s.isLetters)
+    nameof<ValuePropertyConfig>(s => s.isLetters),
+    nameof<ValuePropertyConfig>(s => s.charClass)
 ];
 
+export const OnlyDateFunctions = [
+    nameof<ValuePropertyConfig>(s => s.before),
+    nameof<ValuePropertyConfig>(s => s.after)
+];

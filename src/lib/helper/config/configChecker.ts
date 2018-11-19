@@ -26,7 +26,7 @@ import {PanelUserConfig} from "../configs/mainConfig";
 import {CustomService} from "../configs/serviceConfig";
 import {ValidationTypes} from "../constants/validationTypes";
 import {ChannelConfig, ChannelDefault, CustomChannelConfig} from "../configs/channelConfig";
-import {OnlyNumberFunctions, OnlyStringFunctions} from "../constants/validation";
+import {OnlyDateFunctions, OnlyNumberFunctions, OnlyStringFunctions} from "../constants/validation";
 import PropertyImportEngine = require("./propertyImportEngine");
 
 class ConfigChecker
@@ -859,6 +859,7 @@ class ConfigChecker
     private checkValidationFunctions(value, target: Target) {
         this.checkOnlyValidationFunction(value, target);
         this.checkRegexFunction(value, target);
+        this.checkCharClassFunction(value,target);
     }
 
     private checkOnlyValidationFunction(value: ValuePropertyConfig, target) {
@@ -866,21 +867,36 @@ class ConfigChecker
         const isNumber = type === ValidationTypes.INT || type === ValidationTypes.FLOAT || type === ValidationTypes.NUMBER;
 
         if (isNumber && ObjectTools.hasOneOf(value, OnlyStringFunctions)) {
-            let useFunctions = ObjectTools.getFoundKeys(value, OnlyStringFunctions);
+            const useFunctions = ObjectTools.getFoundKeys(value, OnlyStringFunctions);
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} number type can't use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
         }
 
-        if (!isNumber && ObjectTools.hasOneOf(value, OnlyNumberFunctions)) {
-            let useFunctions = ObjectTools.getFoundKeys(value, OnlyNumberFunctions);
+        if (!isNumber && (ObjectTools.hasOneOf(value, OnlyNumberFunctions))) {
+            const useFunctions = ObjectTools.getFoundKeys(value, OnlyNumberFunctions);
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} not number type can't use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
         }
+
+        //check date functions
+        if(type !== ValidationTypes.DATE && ObjectTools.hasOneOf(value,OnlyDateFunctions))
+        {
+            const useFunctions = ObjectTools.getFoundKeys(value, OnlyDateFunctions);
+            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                `${target.getTarget()} not date type can't use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
+        }
+    }
+
+    private checkCharClassFunction(value : ValuePropertyConfig,target) {
+       if(typeof value.charClass === 'string'){
+           this.checkValidStringRegex
+           (value.charClass,target.addPath(nameof<ValuePropertyConfig>(s => s.charClass)),'is not a valid regex char class. Do not forget to escape special characters.');
+       }
     }
 
     private checkRegexFunction(value: ValuePropertyConfig, target: Target) {
         const regex = value.regex;
-        const regexTarget = target.addPath('regex');
+        const regexTarget = target.addPath(nameof<ValuePropertyConfig>(s => s.regex));
 
         if (typeof regex === 'object' && !(regex instanceof RegExp)) {
             for (let regexName in regex) {
@@ -897,6 +913,18 @@ class ConfigChecker
         if (!(typeof value === 'string' || value instanceof RegExp)) {
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} is not a string or an ReqExp object.`));
+        }
+        else if(typeof value === 'string') {
+            this.checkValidStringRegex(value,target);
+        }
+    }
+
+    private checkValidStringRegex(value,target,error : string = 'is not a valid regex.') {
+        try {
+            new RegExp(value);
+        } catch(e) {
+            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                `${target.getTarget()} ${error}`));
         }
     }
 

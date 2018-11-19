@@ -208,6 +208,10 @@ InputBody[nameof<ValuePropertyConfig>(s => s.regex)]        = {types : ['string'
 InputBody[nameof<ValuePropertyConfig>(s => s.endsWith)]     = {types : ['string'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.startsWith)]   = {types : ['string'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.isLetters)]    = {types : ['string'],isOptional : true,enum:allFormatLetters};
+InputBody[nameof<ValuePropertyConfig>(s => s.charClass)]    = {types : ['string'],isOptional : true};
+InputBody[nameof<ValuePropertyConfig>(s => s.before)]       = {types : ['object','function'],isOptional : true};
+InputBody[nameof<ValuePropertyConfig>(s => s.after)]        = {types : ['object','function'],isOptional : true};
+InputBody[nameof<ValuePropertyConfig>(s => s.charClass)]    = {types : ['string'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.validate)]     = {types : ['function','array'],isOptional : true};
 
 const ChannelConfig = {};

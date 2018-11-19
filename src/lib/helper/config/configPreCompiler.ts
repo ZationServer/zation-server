@@ -12,7 +12,7 @@ import {
     ChannelSettings,
     CustomChannelConfig
 } from "../configs/channelConfig";
-import {ArrayPropertyConfig, ControllerConfig, ObjectPropertyConfig} from "../configs/appConfig";
+import {ArrayPropertyConfig, ControllerConfig, ObjectPropertyConfig, ValuePropertyConfig} from "../configs/appConfig";
 import PropertyImportEngine = require("./propertyImportEngine");
 
 class ConfigPeCompiler
@@ -35,6 +35,7 @@ class ConfigPeCompiler
 
     preCompile() : void
     {
+        this.preCompileValues(this.valuesConfig);
         this.preCompileArrays(this.arraysConfig);
         this.preCompileObjects(this.objectsConfig);
         this.preCompileTmpBuilds();
@@ -179,7 +180,7 @@ class ConfigPeCompiler
         //than resolve the links and short syntax
         for(let objName in objects) {
             if(objects.hasOwnProperty(objName)) {
-                this.preCompileObjectResolveExtras(objects[objName]);
+                this.preCompileObjectProperty(objects[objName]);
             }
         }
 
@@ -191,20 +192,29 @@ class ConfigPeCompiler
         }
     }
 
+    private preCompileValues(values : object) : void
+    {
+        for(let valueName in values) {
+            if(values.hasOwnProperty(valueName)) {
+                this.preCompileProperty(valueName,values)
+            }
+        }
+    }
+
     private preCompileArrays(arrays : object) : void
     {
         //first pre compile the array short syntax on main level
         //to get references for fix import issues array
         for(let arrayName in arrays) {
             if(arrays.hasOwnProperty(arrayName)) {
-                this.preCompileArrayShortSynatx(arrayName,arrays)
+                this.preCompileArrayShortSyntax(arrayName,arrays)
             }
         }
 
         //than resolve the links and short array syntax
         for(let arrayName in arrays) {
             if(arrays.hasOwnProperty(arrayName)) {
-               this.preCompileResolveExtras(arrayName,arrays)
+               this.preCompileProperty(arrayName,arrays)
             }
         }
     }
@@ -214,18 +224,18 @@ class ConfigPeCompiler
         this.preCompileObjects(this.propertyImportEngine.tmpCreatedObjects);
     }
 
-    private preCompileObjectResolveExtras(obj : ObjectPropertyConfig) : void
+    private preCompileObjectProperty(obj : ObjectPropertyConfig) : void
     {
         const properties = obj.properties;
         for(let propName in properties) {
             if (properties.hasOwnProperty(propName)) {
-                this.preCompileResolveExtras(propName,properties);
+                this.preCompileProperty(propName,properties);
             }
         }
     }
 
     // noinspection JSMethodCanBeStatic
-    private preCompileArrayShortSynatx(key : string,obj : object) : void
+    private preCompileArrayShortSyntax(key : string,obj : object) : void
     {
         const nowValue = obj[key];
         if(Array.isArray(nowValue))
@@ -243,7 +253,7 @@ class ConfigPeCompiler
         }
     }
 
-    private preCompileResolveExtras(key : string, obj : object) : void
+    private preCompileProperty(key : string, obj : object) : void
     {
         const nowValue = obj[key];
 
@@ -275,7 +285,7 @@ class ConfigPeCompiler
             obj[key][nameof<ArrayPropertyConfig>(s => s.array)] = inArray;
 
             if(needArrayPreCompile) {
-                this.preCompileResolveExtras(nameof<ArrayPropertyConfig>(s => s.array),obj[key]);
+                this.preCompileProperty(nameof<ArrayPropertyConfig>(s => s.array),obj[key]);
             }
         }
         else if(typeof nowValue === "object")
@@ -283,11 +293,38 @@ class ConfigPeCompiler
             if(nowValue.hasOwnProperty(nameof<ObjectPropertyConfig>(s => s.properties))) {
                 //isObject
                 //check all properties of object!
-                this.preCompileObjectResolveExtras(nowValue);
+                this.preCompileObjectProperty(nowValue);
             }
             else if(nowValue.hasOwnProperty(nameof<ArrayPropertyConfig>(s => s.array))) {
                 //we have array look in the array body!
-                this.preCompileResolveExtras(nameof<ArrayPropertyConfig>(s => s.array),nowValue);
+                this.preCompileProperty(nameof<ArrayPropertyConfig>(s => s.array),nowValue);
+            }
+            else {
+                //value!
+                this.preCompileValidationFunctions(nowValue);
+            }
+        }
+    }
+
+    // noinspection JSMethodCanBeStatic
+    private preCompileValidationFunctions(value : ValuePropertyConfig) : void
+    {
+        //charClass function
+        if(typeof value.charClass === "string") {
+            // @ts-ignore
+            //ignore because its used internal for performance speed
+            value.charClass = new RegExp("^["+value.charClass+"]*$");
+        }
+
+        //regex
+        if(typeof value.regex === "string"){
+            value.regex = new RegExp(value.regex);
+        }
+        else if(typeof value.regex === "object"){
+            for(let regexName in value.regex) {
+                if(value.regex.hasOwnProperty(regexName) && typeof value.regex[regexName] === 'string'){
+                    value.regex[regexName] = new RegExp(value.regex[regexName]);
+                }
             }
         }
     }
@@ -403,7 +440,7 @@ class ConfigPeCompiler
                     if(input.hasOwnProperty(inputName))
                     {
                         //resolve values,object,array links and resolve inheritance
-                        this.preCompileResolveExtras(inputName,input);
+                        this.preCompileProperty(inputName,input);
                         this.preCompileInheritance(input[inputName]);
                     }
                 }

@@ -269,8 +269,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.regex)] = (input, settings, t
         if(typeof settings === 'object' && !(settings instanceof RegExp)) {
             for(let name in settings) {
                 if(settings.hasOwnProperty(name)){
-                    const regex  = new RegExp(settings[name]);
-                    if(!regex.test(input)) {
+                    if(!input.match(settings[name])) {
                         taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotMatchWithRegex,
                             {
                                 inputValue : prepareErrorData.inputValue,
@@ -283,8 +282,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.regex)] = (input, settings, t
             }
         }
         else {
-            const regex  = new RegExp(settings);
-            if(!regex.test(input)) {
+            if(!input.match(settings)) {
                 taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotMatchWithRegex,
                     {
                         inputValue : prepareErrorData.inputValue,
@@ -441,6 +439,54 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.isLetters)] = (input, setting
         }
         else if((settings === FormatLetters.LOWER_CASE) && (!EasyValidator.isLowerCase(input))) {
             taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotLowercase,prepareErrorData);
+        }
+    }
+};
+
+functionLibrary[nameof<ValuePropertyConfig>(s => s.charClass)] = (input, settings, taskErrorBag, prepareErrorData) =>
+{
+    if(typeof input === 'string') {
+        if(!input.match(settings)) {
+            taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotMatchWithCharClass,
+                {
+                    inputValue : prepareErrorData.inputValue,
+                    inputPath : prepareErrorData.inputPath,
+                    regex : settings
+                });
+        }
+    }
+};
+
+functionLibrary[nameof<ValuePropertyConfig>(s => s.before)] = async (input, settings, taskErrorBag, prepareErrorData, preparedSmallBag) =>
+{
+    if((typeof input === "string" && EasyValidator.isDate(input)) || input instanceof Date)
+    {
+        const inputDate : Date = typeof input === 'string' ? new Date(input) : input;
+        const checkDate : Date = typeof settings === 'function' ? await settings(preparedSmallBag) : settings;
+        if(inputDate > checkDate) {
+            taskErrorBag.addNewTaskError(ValidatorErrors.inputDateIsNotBefore,
+                {
+                    inputValue : prepareErrorData.inputValue,
+                    inputPath : prepareErrorData.inputPath,
+                    shouldBefore : checkDate
+                });
+        }
+    }
+};
+
+functionLibrary[nameof<ValuePropertyConfig>(s => s.after)] = async (input, settings, taskErrorBag, prepareErrorData, preparedSmallBag) =>
+{
+    if((typeof input === "string" && EasyValidator.isDate(input)) || input instanceof Date)
+    {
+        const inputDate : Date = typeof input === 'string' ? new Date(input) : input;
+        const checkDate : Date = typeof settings === 'function' ? await settings(preparedSmallBag) : settings;
+        if(inputDate < checkDate) {
+            taskErrorBag.addNewTaskError(ValidatorErrors.inputDateIsNotAfter,
+                {
+                    inputValue : prepareErrorData.inputValue,
+                    inputPath : prepareErrorData.inputPath,
+                    shouldAfter : checkDate
+                });
         }
     }
 };

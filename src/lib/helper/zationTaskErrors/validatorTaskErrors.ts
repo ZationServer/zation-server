@@ -468,6 +468,44 @@ export = {
         fromZationSystem : true
     },
 
+    inputIsNotMatchWithCharClass : {
+        name          : 'inputIsNotMatchWithCharClass',
+        description   : 'Input is not match with char class!',
+        type          : ErrorType.VALIDATION_ERROR,
+        sendInfo      : true,
+        //INFO
+        // inputValue (inputValue)
+        // inputPath (inputPath)
+        // regex
+        fromZationSystem : true
+    },
+
+    inputDateIsNotBefore : {
+        name          : 'inputDateIsNotBefore',
+        group         : ErrorGroup.DATE_ERROR,
+        description   : 'Input date is not before date!',
+        type          : ErrorType.VALIDATION_ERROR,
+        sendInfo      : true,
+        //INFO
+        // inputValue (inputValue)
+        // inputPath (inputPath)
+        // shouldBefore
+        fromZationSystem : true
+    },
+
+    inputDateIsNotAfter : {
+        name          : 'inputDateIsNotAfter',
+        group         : ErrorGroup.DATE_ERROR,
+        description   : 'Input date is not after date!',
+        type          : ErrorType.VALIDATION_ERROR,
+        sendInfo      : true,
+        //INFO
+        // inputValue (inputValue)
+        // inputPath (inputPath)
+        // shouldAfter
+        fromZationSystem : true
+    },
+
     inputIsNotContains : {
         name          : 'inputIsNotContains',
         description   : 'Input is not contains!',
@@ -527,6 +565,7 @@ export = {
         // inputValue (inputValue)
         // inputPath (inputPath)
         // regexName
+        // regex
         fromZationSystem : true
     },
 

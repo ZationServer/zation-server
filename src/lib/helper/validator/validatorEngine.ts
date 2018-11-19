@@ -19,6 +19,7 @@ class ValidatorEngine
 {
     static async validateValue(input,config : object,preparedErrorData : {inputPath : string,inputValue : any},errorBag : TaskErrorBag,preparedSmallBag : SmallBag) : Promise<any>
     {
+        let promises : Promise<void>[] = [];
         for(let cKey in config)
         {
             if(config.hasOwnProperty(cKey))
@@ -26,13 +27,14 @@ class ValidatorEngine
                 const cValue = config[cKey];
                 if(cKey === nameof<ValuePropertyConfig>(s => s.validate)) {
                     //own validate
-                    await FuncTools.emitEvent(cValue,input,errorBag,preparedErrorData.inputPath,preparedSmallBag);
+                    promises.push(FuncTools.emitEvent(cValue,input,errorBag,preparedErrorData.inputPath,preparedSmallBag));
                 }
                 else if(ValidatorLibrary.function.hasOwnProperty(cKey)) {
-                    ValidatorLibrary.function[cKey](input,cValue,errorBag,preparedErrorData);
+                    promises.push(ValidatorLibrary.function[cKey](input,cValue,errorBag,preparedErrorData,preparedSmallBag));
                 }
             }
         }
+        await Promise.all(promises);
     }
 
     static validateValueType(input,type,strictType,preparedErrorData : {inputPath : string,inputValue : any},errorBag : TaskErrorBag)
