@@ -33,6 +33,7 @@ import ObjectPath      = require("../helper/tools/objectPath");
 import TokenTools      = require("../helper/token/tokenTools");
 import TaskErrorBag    = require("./TaskErrorBag");
 import TaskErrorBuilder = require("../helper/builder/taskErrorBuilder");
+import {SentMessageInfo}  from "nodemailer";
 
 const uuidV4                = require('uuid/v4');
 const uniqid                = require('uniqid');
@@ -793,7 +794,7 @@ class SmallBag
      * @return Promise<object>
      * The object is an info object.
      */
-    sendMail(mailOptions : Options,serviceKey : string = 'default') : Promise<object>
+    sendMail(mailOptions : Options,serviceKey : string = 'default') : Promise<SentMessageInfo>
     {
         return new Promise(async (resolve, reject) =>
         {
