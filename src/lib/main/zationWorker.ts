@@ -11,6 +11,7 @@ import {Socket} from "../helper/sc/socket";
 import {WorkerChTargets} from "../helper/constants/workerChTargets";
 import {ZationChannel, ZationToken} from "../helper/constants/internal";
 import {WorkerMessageActions} from "../helper/constants/workerMessageActions";
+import {ChConfigManager} from "../helper/channel/chConfigManager";
 
 require('cache-require-paths');
 import ChTools = require("../helper/channel/chTools");
@@ -40,7 +41,6 @@ import HashSet = require('hashset');
 import process = require("process");
 import PanelEngine = require("../helper/panel/panelEngine");
 import ZationTokenInfo = require("../helper/infoObjects/zationTokenInfo");
-import {ChConfigManager} from "../helper/channel/chConfigManager";
 import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
 
 const  SCWorker : any        = require('socketcluster/scworker');
@@ -80,6 +80,10 @@ class ZationWorker extends SCWorker
 
     private variableStorage : object = {};
 
+    //prepareClient
+    private fullClientJs : string;
+    private serverSettingsJs : string;
+
     constructor() {
         super();
     }
@@ -94,9 +98,7 @@ class ZationWorker extends SCWorker
         this.serverStartedTimeStamp = this.options.zationServerStartedTimeStamp;
         this.serverVersion = this.options.zationServerVersion;
 
-        let zcOptions = this.options.zationConfigWorkerTransport;
-
-        this.zc = new ZationConfig(zcOptions,true);
+        this.zc = new ZationConfig(this.options.zationConfigWorkerTransport,true);
 
         //setLogger
         Logger.setZationConfig(this.zc);
@@ -111,8 +113,11 @@ class ZationWorker extends SCWorker
         Logger.printStartDebugInfo(`Worker with id ${this.id} begin start process.`,false,true);
 
         Logger.startStopWatch();
-        this.zc.loadOtherConfigFromScript();
+        await this.zc.loadOtherConfigs();
         Logger.printStartDebugInfo(`Worker with id ${this.id} loads other zation config files.`,true);
+
+        //start loading client js
+        const clientJs = this.loadClientJsData();
 
         Logger.startStopWatch();
         let preCompiler = new ConfigPreCompiler(this.zc);
@@ -176,6 +181,9 @@ class ZationWorker extends SCWorker
         Logger.startStopWatch();
         this.checkAuthStart();
         Logger.printStartDebugInfo(`Worker with id ${this.id} checks for authStart.`,true);
+
+        //wait for client js before http server
+        await clientJs;
 
         //Server
         Logger.startStopWatch();
@@ -294,7 +302,7 @@ class ZationWorker extends SCWorker
         this.app.get(`/zation/serverSettings.js`,(req,res) =>
         {
             res.type('.js');
-            res.send(this.options.zationServerSettingsJsFile);
+            res.send(this.serverSettingsJs);
         });
 
         if(this.zc.mainConfig.clientJsPrepare) {
@@ -302,7 +310,7 @@ class ZationWorker extends SCWorker
             this.app.get(`${path}/client.js`,(req,res) =>
             {
                 res.type('.js');
-                res.send(this.options.zationFullClientJsFile);
+                res.send(this.fullClientJs);
             });
         }
 
@@ -1240,6 +1248,25 @@ class ZationWorker extends SCWorker
         }
     }
 
+    private async loadClientJsData() : Promise<void>
+    {
+        try{
+            let promises : Promise<void>[] = [];
+            promises.push(new Promise<void>(async (resolve) => {
+                this.serverSettingsJs = await this.sendToZationMaster({action : WorkerMessageActions.SERVER_SETTINGS_JS});
+                resolve();
+            }));
+            promises.push(new Promise<void>(async (resolve) => {
+                this.fullClientJs = await this.sendToZationMaster({action : WorkerMessageActions.FULL_CLIENT_JS});
+                resolve();
+            }));
+            await Promise.all(promises);
+        }
+        catch (e) {
+            throw new Error('Failed to load client js data from master!');
+        }
+    }
+
     public sendToZationMaster(data : {action : WorkerMessageActions} | any) : Promise<any>
     {
         return new Promise<boolean>((resolve,reject) =>
@@ -1249,7 +1276,7 @@ class ZationWorker extends SCWorker
                     reject(err);
                 }
                 else {
-                    resolve(data.isLeader);
+                    resolve(data);
                 }
             });
         });

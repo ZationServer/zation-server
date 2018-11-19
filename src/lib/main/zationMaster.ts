@@ -156,7 +156,7 @@ class ZationMaster {
                 Logger.printStartFail
                 (`Failed to load sc-uws! Error -> ${e.toString()}.`);
                 if(isWindows()) {
-                    Logger.printStartFail(`Try to install c++ compiler with command 'npm install --global --production windows-build-tools'`);
+                    Logger.printStartFail(`Try to install c++ compiler with command 'npm install --global --production windows-build-tools' and 'npm install -g node-gyp'`);
                 }
                 Logger.printStartFail
                 (`${isWindows() ? 'Also you' : 'You'} can try to set the property 'useScUws' in Main or Start config to false. But you will lose performance!`);
@@ -187,8 +187,6 @@ class ZationMaster {
             zationConfigWorkerTransport : this.zc.getWorkerTransport(),
             zationServerVersion : ZationMaster.version,
             zationServerStartedTimeStamp : this.serverStartedTimeStamp,
-            zationServerSettingsJsFile : this.serverSettingsJs,
-            zationFullClientJsFile : this.fullClientJs,
             logLevel : scLogLevel,
             clusterAuthKey : this.zc.mainConfig.clusterAuthKey || null,
             clusterStateServerHost : this.clusterStateServerHost,
@@ -286,6 +284,12 @@ class ZationMaster {
             switch (action) {
                 case WorkerMessageActions.IS_LEADER:
                     respond(null,{isLeader : this.clusterLeader});
+                    break;
+                case WorkerMessageActions.FULL_CLIENT_JS:
+                    respond(null,this.fullClientJs);
+                    break;
+                case WorkerMessageActions.SERVER_SETTINGS_JS:
+                    respond(null,this.serverSettingsJs);
                     break;
                 case WorkerMessageActions.KILL_SERVER:
                     this.killServer(data.data);

@@ -49,7 +49,6 @@ class ZationConfig {
             this._starterConfig = starterData['starterConfig'];
             this._mainConfig = starterData['mainConfig'];
             this._internalData = starterData['internalData'];
-            this._configScriptSaver = starterData['configScript'];
         }
     }
 
@@ -144,7 +143,6 @@ class ZationConfig {
             mainConfig: this._mainConfig,
             starterConfig: this._starterConfig,
             internalData: this._internalData,
-            configScript : this._configScriptSaver
         };
     }
 

@@ -11,7 +11,7 @@ class Logger
 {
     private static zc : ZationConfig;
 
-    private static stopWatchStartTime : any = new Date();
+    private static stopWatchStartTime : any = Date.now();
 
     static setZationConfig(zc : ZationConfig) : void
     {
@@ -22,7 +22,7 @@ class Logger
     {
         if(Logger.zc.isStartDebug())
         {
-            Logger.stopWatchStartTime = new Date();
+            Logger.stopWatchStartTime = Date.now();
         }
     }
 

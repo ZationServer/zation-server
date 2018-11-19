@@ -7,5 +7,7 @@ GitHub: LucaCode
 export enum WorkerMessageActions
 {
    IS_LEADER,
-   KILL_SERVER
+   KILL_SERVER,
+   FULL_CLIENT_JS,
+   SERVER_SETTINGS_JS
 }
