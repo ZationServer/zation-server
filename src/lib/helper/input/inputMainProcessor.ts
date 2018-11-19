@@ -168,10 +168,8 @@ class InputMainProcessor
 
     private async processValue(srcObj : object,srcKey : string | number,config : object,currentInputPath : string,errorBag : TaskErrorBag) : Promise<any>
     {
-        const input = srcObj[srcKey];
-
         const preparedErrorData = {
-            inputValue : input,
+            inputValue : srcObj[srcKey],
             inputPath : currentInputPath
         };
 
@@ -187,18 +185,18 @@ class InputMainProcessor
 
         //type
         if(this.inputValidation) {
-            ValidationEngine.validateValueType(input,type,strictType,preparedErrorData,errorBag);
+            ValidationEngine.validateValueType(srcObj[srcKey],type,strictType,preparedErrorData,errorBag);
         }
 
         if(currentErrorCount === errorBag.getTaskErrorCount()){
             //no type error so convert maybe
             if(convertType) {
-                srcObj[srcKey] = ConvertEngine.convert(input,type,strictType);
+                srcObj[srcKey] = ConvertEngine.convert(srcObj[srcKey],type,strictType);
             }
         }
 
         if(this.inputValidation){
-            await ValidationEngine.validateValue(input,config,preparedErrorData,errorBag,this.preparedSmallBag);
+            await ValidationEngine.validateValue(srcObj[srcKey],config,preparedErrorData,errorBag,this.preparedSmallBag);
         }
 
         //check for convertTask
@@ -208,7 +206,7 @@ class InputMainProcessor
             typeof config[nameof<ValuePropertyConfig>(s => s.convert)] === 'function')
         {
             this.processTaskList.push(async  () => {
-                srcObj[srcKey] = await config[nameof<ValuePropertyConfig>(s => s.convert)](input,this.preparedSmallBag);
+                srcObj[srcKey] = await config[nameof<ValuePropertyConfig>(s => s.convert)](srcObj[srcKey],this.preparedSmallBag);
             });
         }
     }

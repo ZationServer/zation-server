@@ -32,6 +32,7 @@ import IdTools         = require("../helper/tools/idTools");
 import ObjectPath      = require("../helper/tools/objectPath");
 import TokenTools      = require("../helper/token/tokenTools");
 import TaskErrorBag    = require("./TaskErrorBag");
+import TaskErrorBuilder = require("../helper/builder/taskErrorBuilder");
 
 const uuidV4                = require('uuid/v4');
 const uniqid                = require('uniqid');
@@ -661,12 +662,12 @@ class SmallBag
      * @return Promise<object>
      * The object has 2 fields, one for the result 'result' and one for the fields information 'fields'.
      */
-    mySqlQuery(query ,serviceKey : string = 'default') : Promise<object>
+    mySqlQuery(query ,serviceKey : string = 'default') : Promise<{results : any,fields : MySql.FieldInfo[]}>
     {
         return new Promise(async (resolve, reject) =>
         {
             const service = await this.serviceEngine.getMySqlService(serviceKey);
-            service.query(query,(error, results : object[], fields : MySql.FieldInfo[]) =>
+            service.query(query,(error, results : any, fields : MySql.FieldInfo[]) =>
             {
                 if(error) {reject(error);}
                 else{resolve({results : results, fields : fields});}
@@ -865,6 +866,16 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
+     * Returns a taskError builder.
+     * For easy create an task error.
+     */
+    buildTaskError() : TaskErrorBuilder {
+        return new TaskErrorBuilder();
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
      * Returns a new taskError by using the constructor.
      * @param errorConstruct
      * Create a new error construct
@@ -875,7 +886,7 @@ class SmallBag
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    buildTaskError(errorConstruct : ErrorConstruct = {}, info ?: object | string) : TaskError
+    newTaskError(errorConstruct : ErrorConstruct = {}, info ?: object | string) : TaskError
     {
         return new TaskError(errorConstruct,info);
     }
@@ -891,7 +902,7 @@ class SmallBag
      * buildTaskErrorBag(myError,myError2).throw();
      * @param taskError
      */
-    buildTaskErrorBag(...taskError : TaskError[]) : TaskErrorBag
+    newTaskErrorBag(...taskError : TaskError[]) : TaskErrorBag
     {
         return new TaskErrorBag(...taskError);
     }
