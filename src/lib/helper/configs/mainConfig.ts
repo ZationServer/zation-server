@@ -95,7 +95,7 @@ export interface MainConfig
 }
 
 //These settings are always set
-export interface InternMainConfig extends MainConfig{
+export interface InternMainConfig extends MainConfig {
     port  : number;
     hostname  : string;
     path  : string;

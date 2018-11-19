@@ -24,7 +24,7 @@ import {ChannelConfig}     from "../helper/configs/channelConfig";
 import {ErrorConfig}       from "../helper/configs/errorConfig";
 import {InternMainConfig, OptionAuto} from "../helper/configs/mainConfig";
 import {ServiceConfig}     from "../helper/configs/serviceConfig";
-import {StarterConfig}     from "../helper/configs/starterConfig";
+import {StarterConfig, StarterConfigMain} from "../helper/configs/starterConfig";
 import {InternalData}      from "../helper/constants/internalData";
 import {ConfigScriptSave}  from "../helper/constants/internal";
 import ZationInfo        = require("../helper/infoObjects/zationInfo");
@@ -139,9 +139,24 @@ class ZationConfig {
     }
 
     getWorkerTransport(): object {
+
+        //only send important starter config settings
+        //other is merged with main config
+        const starterConfigMain : StarterConfigMain = {
+            controller : this._starterConfig.controller,
+            configs : this._starterConfig.configs,
+
+            appConfig : this._starterConfig.appConfig,
+            channelConfig : this._starterConfig.channelConfig,
+            mainConfig : this._starterConfig.mainConfig,
+            errorConfig : this._starterConfig.errorConfig,
+            eventConfig : this._starterConfig.eventConfig,
+            serviceConfig : this._starterConfig.serviceConfig
+        };
+
         return {
             mainConfig: this._mainConfig,
-            starterConfig: this._starterConfig,
+            starterConfig : starterConfigMain,
             internalData: this._internalData,
         };
     }
