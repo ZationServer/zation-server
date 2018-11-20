@@ -837,14 +837,9 @@ class ConfigChecker
                     }, anyOf);
                 }
 
-                if (count === 0) {
+                if (count < 2) {
                     this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                        `${target.getTarget()} anyOf modifier with 0 properties is not allowed.`));
-                } else if (count === 1) {
-                    Logger.printConfigWarning(
-                        ConfigNames.APP,
-                        `${target.getTarget()} anyOf modifier with 1 property is useless.`
-                    );
+                        `${target.getTarget()} anyOf modifier must have at least two properties.`));
                 }
             }
             else {
