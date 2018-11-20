@@ -198,6 +198,7 @@ const InputBody = {};
 InputBody[nameof<ValuePropertyConfig>(s => s.isOptional)]   = {types : ['boolean'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.default)]      = {types : ['string','array','number','boolean','object','function'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.convert)]      = {types : ['function'],isOptional : true};
+InputBody[nameof<ValuePropertyConfig>(s => s.extends)]      = {types : ['string'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.type)]         = {types : ['string','array'],isOptional : true,enum:allValidationTypes};
 InputBody[nameof<ValuePropertyConfig>(s => s.strictType)]   = {types : ['boolean'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.convertType)]  = {types : ['boolean'],isOptional : true};

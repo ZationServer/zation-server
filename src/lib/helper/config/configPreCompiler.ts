@@ -316,7 +316,16 @@ class ConfigPeCompiler
             else {
                 //value!
                 this.preCompileValidationFunctions(nowValue);
+                this.preCompileValueExtend(nowValue,nowValue);
             }
+        }
+    }
+
+    private preCompileValueExtend(mainValue : ValuePropertyConfig,exValueConfig : ValuePropertyConfig) {
+        if(typeof exValueConfig.extends === 'string'){
+            const nextExValueConfig = this.valuesConfig[exValueConfig.extends];
+            ObjectTools.addObToOb(mainValue,nextExValueConfig);
+            return this.preCompileValueExtend(mainValue,nextExValueConfig);
         }
     }
 

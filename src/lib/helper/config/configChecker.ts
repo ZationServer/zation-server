@@ -295,7 +295,7 @@ class ConfigChecker
             if (this.objectsConfig.hasOwnProperty(objName)) {
                 this.checkCustomName(objName,'object property','Objects: ');
                 if (!Array.isArray(this.objectsConfig[objName]) && typeof this.objectsConfig[objName] === 'object') {
-                    const target = new Target(`Objects: ${objName}`, 'propertyPath');
+                    const target = new Target(`Objects: ${objName}`);
                     this.checkObject(this.objectsConfig[objName],target,objName);
                     this.circularCheck(this.objectsConfig[objName],target, {name : objName, isObj : true});
                 } else {
@@ -313,7 +313,7 @@ class ConfigChecker
                 const valueConfig = this.valuesConfig[valueName];
                 if(!Array.isArray(valueConfig) && typeof this.valuesConfig[valueName] === 'object'){
                     this.checkCustomName(valueName,'value property','Values: ');
-                    this.checkValueProperty( this.valuesConfig[valueName],new Target(`Values: '${valueName}'`));
+                    this.checkValueProperty( this.valuesConfig[valueName],new Target(`Values: '${valueName}'`),valueName);
                 }
                 else{
                     this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
@@ -364,20 +364,16 @@ class ConfigChecker
         }
         //check for extend
         if (typeof obj.extends === 'string') {
-            this.checkObjExtend(obj.extends, target,objName);
+            this.checkObjExtendResolve(obj.extends, target);
             this.checkOverrideProp(obj.properties, target.addPath(`extends=>${obj.extends}`), obj.extends);
 
         }
     }
 
-    private checkObjExtend(objExtendName, target, objName) {
+    private checkObjExtendResolve(objExtendName, target) {
         if (!this.objectsConfig.hasOwnProperty(objExtendName)) {
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} the inheritance dependency to object: '${objExtendName}' can not be resolved, Object not found.`));
-        } else if (objName === objExtendName) {
-            //check if object extend it self (by controller objName will be undefined)
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                `${target.getTarget()} object cyclic inheritance, is forbidden.`));
         }
     }
 
@@ -792,12 +788,15 @@ class ConfigChecker
         //ex check
         const extend = value[nameof<ObjectPropertyConfig>(s => s.extends)];
 
-        if (
-            typeof extend === 'string' && typeof this.objectsConfig[extend] === 'object' &&
-            ((mainSrc.isObj && mainSrc.name !== extend) || !mainSrc.isObj) && !otherSrc.ex.includes(extend)
-        ) {
-            otherSrc.ex.push(extend);
-            this.circularObjectCheck(this.objectsConfig[extend],target.addPath(`extends=>${extend}`),Object.keys(props),mainSrc,otherSrc);
+        if (typeof extend === 'string' && typeof this.objectsConfig[extend] === 'object' && !otherSrc.ex.includes(extend)) {
+            if(mainSrc.isObj && mainSrc.name === extend) {
+                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    `${target.addPath(`extends=>${extend}`).getTarget()} creates a circular inheritance.`));
+            }
+            else {
+                otherSrc.ex.push(extend);
+                this.circularObjectCheck(this.objectsConfig[extend],target.addPath(`extends=>${extend}`),Object.keys(props),mainSrc,otherSrc);
+            }
         }
 
         if(typeof props === 'object') {
@@ -872,43 +871,76 @@ class ConfigChecker
         }
     }
 
-    private checkValueProperty(config : object,target : Target)
+    private checkValueProperty(config : object,target : Target,valueName ?: string)
     {
         //isNormalInputBody
         ConfigCheckerTools.assertStructure(Structures.InputBody, config, ConfigNames.APP, this.ceb, target);
+        //check all that is not depend on full config
+        this.checkRegexFunction(config, target);
+        this.checkCharClassFunction(config,target);
+
+        //check extends
+        const ex = config[nameof<ValuePropertyConfig>(s => s.extends)];
+        if(typeof ex === 'string') {
+            if(!this.valuesConfig.hasOwnProperty(ex)) {
+                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    `${target.getTarget()} the inheritance dependency to value: '${ex}' can not be resolved, Value not found.`));
+            }else if(typeof valueName === 'string') {
+                //check no self import
+                config = this.checkProcessValueInheritance(target,config,config,valueName);
+                target.setExtraInfo('Compiled with inheritance');
+            }
+        }
 
         //check for only number/string functions
-        this.checkValidationFunctions(config, target);
+        this.checkOnlyValidationFunction(config,target);
     }
 
-    private checkValidationFunctions(value, target: Target) {
-        this.checkOnlyValidationFunction(value, target);
-        this.checkRegexFunction(value, target);
-        this.checkCharClassFunction(value,target);
+    private checkProcessValueInheritance(target : Target,mainConfig : object,exConfig : object,valueName : string,otherSrc : string[] = []) : object
+    {
+        const ex = exConfig[nameof<ValuePropertyConfig>(s => s.extends)];
+        if(this.valuesConfig.hasOwnProperty(ex) && typeof this.valuesConfig[ex] === 'object') {
+            if(ex === valueName) {
+                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    `${target.addPath(`extends=>${ex}`).getTarget()} creates a circular inheritance.`));
+                return mainConfig;
+            }
+            else if(!otherSrc.includes(ex)) {
+                otherSrc.push(ex);
+                const exValueConfig = this.valuesConfig[ex];
+                ObjectTools.addObToOb(mainConfig,exValueConfig);
+                return this.checkProcessValueInheritance
+                (target.addPath(`extends=>${ex}`),mainConfig,exValueConfig,valueName,otherSrc);
+            }
+        }
+        return mainConfig;
     }
 
     private checkOnlyValidationFunction(value: ValuePropertyConfig, target) {
-        const type = value.type;
-        const isNumber = type === ValidationTypes.INT || type === ValidationTypes.FLOAT || type === ValidationTypes.NUMBER;
-
-        if (isNumber && ObjectTools.hasOneOf(value, OnlyStringFunctions)) {
-            const useFunctions = ObjectTools.getFoundKeys(value, OnlyStringFunctions);
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                `${target.getTarget()} number type can't use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
-        }
-
-        if (!isNumber && (ObjectTools.hasOneOf(value, OnlyNumberFunctions))) {
-            const useFunctions = ObjectTools.getFoundKeys(value, OnlyNumberFunctions);
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                `${target.getTarget()} not number type can't use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
-        }
-
-        //check date functions
-        if(type !== ValidationTypes.DATE && ObjectTools.hasOneOf(value,OnlyDateFunctions))
+        if(value.type !== undefined)
         {
-            const useFunctions = ObjectTools.getFoundKeys(value, OnlyDateFunctions);
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                `${target.getTarget()} not date type can't use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
+            const type = value.type;
+            const isNumber = type === ValidationTypes.INT || type === ValidationTypes.FLOAT || type === ValidationTypes.NUMBER;
+
+            if (isNumber && ObjectTools.hasOneOf(value, OnlyStringFunctions)) {
+                const useFunctions = ObjectTools.getFoundKeys(value, OnlyStringFunctions);
+                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    `${target.getTarget()} number type can't use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
+            }
+
+            if (!isNumber && (ObjectTools.hasOneOf(value, OnlyNumberFunctions))) {
+                const useFunctions = ObjectTools.getFoundKeys(value, OnlyNumberFunctions);
+                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    `${target.getTarget()} not number type can't use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
+            }
+
+            //check date functions
+            if(type !== ValidationTypes.DATE && ObjectTools.hasOneOf(value,OnlyDateFunctions))
+            {
+                const useFunctions = ObjectTools.getFoundKeys(value, OnlyDateFunctions);
+                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    `${target.getTarget()} not date type can't use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
+            }
         }
     }
 

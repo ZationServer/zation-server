@@ -114,7 +114,7 @@ export interface ValuePropertyConfig extends PropertyOptional
     validate  ?: ValidatorFunction | ValidatorFunction[];
     convert  ?: ConvertValueFunction;
     convertType  ?: boolean;
-    prototypeValue ?: string | string[];
+    extends ?: string;
 }
 
 export interface PropertyOptional {
