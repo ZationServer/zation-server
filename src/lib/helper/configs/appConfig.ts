@@ -23,7 +23,7 @@ export interface AppConfig
 
 export type Property = ValuePropertyConfig | ObjectPropertyConfig | ArrayPropertyConfig | ArrayShortSyntax | string;
 
-export interface AnyOfProperty
+export interface AnyOfProperty extends PropertyOptional
 {
     anyOf : Record<string,Property> | Property[]
 }

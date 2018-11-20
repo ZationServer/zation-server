@@ -50,7 +50,7 @@ class ConfigPeCompiler
         this.preCompileChannelConfig();
         this.preCompileErrorConfig();
 
-        //view precompiled app config
+        //view precompiled configs
         //console.dir(this.zc.appConfig,{depth:null});
         //console.dir(this.zc.channelConfig,{depth:null});
     }

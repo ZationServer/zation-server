@@ -15,7 +15,7 @@ import {
     AuthUserGroupConfig,
     BackgroundTask,
     ControllerConfig,
-    ObjectPropertyConfig, ValuePropertyConfig
+    ObjectPropertyConfig, PropertyOptional, ValuePropertyConfig
 } from "../configs/appConfig";
 import {MainConfig, OptionAuto, PanelUserConfig} from "../configs/mainConfig";
 import {StarterConfig} from "../configs/starterConfig";
@@ -75,7 +75,9 @@ AppController[nameof<ControllerConfig>(s => s.notAccess)]        = {types : ['st
 AppController[nameof<ControllerConfig>(s => s.versionAccess)]    = {types : ['string','object'],isOptional : true};
 
 const AnyOf = {};
-AnyOf[nameof<AnyOfProperty>(s => s.anyOf)]                       = {types : ['array','object'],isOptional : false};
+AnyOf[nameof<AnyOfProperty>(s => s.anyOf)]           = {types : ['array','object'],isOptional : false};
+AnyOf[nameof<PropertyOptional>(s => s.isOptional)]   = {types : ['boolean'],isOptional : true};
+AnyOf[nameof<PropertyOptional>(s => s.default)]      = {types : ['string','array','number','boolean','object','function'],isOptional : true};
 
 const AppControllerDefaults = {};
 AppControllerDefaults[nameof<ControllerConfig>(s => s.input)]            = {types : ['object'],isOptional : true};
@@ -215,7 +217,6 @@ InputBody[nameof<ValuePropertyConfig>(s => s.isLetters)]    = {types : ['string'
 InputBody[nameof<ValuePropertyConfig>(s => s.charClass)]    = {types : ['string'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.before)]       = {types : ['object','function'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.after)]        = {types : ['object','function'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.charClass)]    = {types : ['string'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.validate)]     = {types : ['function','array'],isOptional : true};
 
 const ChannelConfig = {};

@@ -826,14 +826,25 @@ class ConfigChecker
                     const inArray = value[nameof<ArrayPropertyConfig>(s => s.array)];
                     this.checkProperty(inArray,target.addPath('ArrayItem'), objName);
                 }
-            } else if(value.hasOwnProperty(nameof<AnyOfProperty>(s => s.anyOf)))
-            {
+            } else if(value.hasOwnProperty(nameof<AnyOfProperty>(s => s.anyOf))) {
                 ConfigCheckerTools.assertStructure(Structures.AnyOf, value, ConfigNames.APP, this.ceb, target);
                 const anyOf = value[nameof<AnyOfProperty>(s => s.anyOf)];
-                if(typeof anyOf === 'object' || Array.isArray(anyOf)) {
-                    Iterator.iterateSync((key,value) => {
-                        this.checkProperty(value,target.addPath(key),objName)
-                    },anyOf);
+                let count = 0;
+                if (typeof anyOf === 'object' || Array.isArray(anyOf)) {
+                    Iterator.iterateSync((key, value) => {
+                        count++;
+                        this.checkProperty(value, target.addPath(key), objName)
+                    }, anyOf);
+                }
+
+                if (count === 0) {
+                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                        `${target.getTarget()} anyOf modifier with 0 properties is not allowed.`));
+                } else if (count === 1) {
+                    Logger.printConfigWarning(
+                        ConfigNames.APP,
+                        `${target.getTarget()} anyOf modifier with 1 property is useless.`
+                    );
                 }
             }
             else {

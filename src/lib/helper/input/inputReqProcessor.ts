@@ -8,10 +8,11 @@ import TaskError           = require('../../api/TaskError');
 import TaskErrorBag        = require('../../api/TaskErrorBag');
 import MainErrors          = require('../zationTaskErrors/mainTaskErrors');
 import InputMainProcessor  = require('./inputMainProcessor');
-import SmallBag             = require("../../api/SmallBag");
-import {ProcessTaskEngine}    from "./processTaskEngine";
-import {ControllerConfig, PropertyOptional} from "../configs/appConfig";
-import {ZationTask}                         from "../constants/internal";
+import SmallBag            = require("../../api/SmallBag");
+import {ProcessTaskEngine}   from "./processTaskEngine";
+import {ControllerConfig}    from "../configs/appConfig";
+import {ZationTask}          from "../constants/internal";
+import {OptionalProcessor}   from "./optionalProcessor";
 
 class InputReqProcessor
 {
@@ -33,17 +34,21 @@ class InputReqProcessor
                     resolve();
                 }));
             }
-            else if(!controllerInput[inputName][nameof<PropertyOptional>(s => s.isOptional)]){
-                //ups something is missing
-                taskErrorBag.addTaskError(new TaskError(MainErrors.inputPropertyIsMissing,
-                    {
-                        propertyName : inputName,
-                        input : input
-                    }));
-            }
-            else if(controllerInput[inputName].hasOwnProperty(nameof<PropertyOptional>(s => s.default))) {
-                //set default param if it is not set
-                input[inputName] = controllerInput[inputName][nameof<PropertyOptional>(s => s.default)];
+            else
+            {
+                const {defaultValue,isOptional} = await OptionalProcessor.process(controllerInput[inputName]);
+                if(!isOptional){
+                    //ups something is missing
+                    taskErrorBag.addTaskError(new TaskError(MainErrors.inputPropertyIsMissing,
+                        {
+                            propertyName : inputName,
+                            input : input
+                        }));
+                }
+                else {
+                    //set default value
+                    input[inputName] = defaultValue;
+                }
             }
         }
         //check for unknown input properties
@@ -83,17 +88,20 @@ class InputReqProcessor
                     resolve();
                 }))
             }
-            else if(!controllerInput[controllerInputKeys[i]][nameof<PropertyOptional>(s => s.isOptional)]){
-                //ups something is missing
-                taskErrorBag.addTaskError(new TaskError(MainErrors.inputPropertyIsMissing,
-                    {
-                        propertyName : controllerInputKeys[i],
-                        input : input
-                    }));
-            }
-            else if(controllerInput[controllerInputKeys[i]].hasOwnProperty(nameof<PropertyOptional>(s => s.default))) {
-                //set default param if it is not set
-                result[controllerInputKeys[i]] = controllerInput[controllerInputKeys[i]][nameof<PropertyOptional>(s => s.default)];
+            else {
+                const {defaultValue,isOptional} = await OptionalProcessor.process(controllerInput[controllerInputKeys[i]]);
+                if(!isOptional){
+                    //ups something is missing
+                    taskErrorBag.addTaskError(new TaskError(MainErrors.inputPropertyIsMissing,
+                        {
+                            propertyName : controllerInputKeys[i],
+                            input : input
+                        }));
+                }
+                else {
+                    //set default value
+                    result[controllerInputKeys[i]] = defaultValue;
+                }
             }
         }
         //check to much input

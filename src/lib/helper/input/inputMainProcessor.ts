@@ -16,10 +16,10 @@ import {
     AnyOfProperty,
     ArrayPropertyConfig,
     ObjectPropertyConfig,
-    PropertyOptional,
     ValuePropertyConfig
 } from "../configs/appConfig";
 import Iterator = require("../tools/iterator");
+import {OptionalProcessor} from "./optionalProcessor";
 
 interface ProcessInfo {
     errorBag : TaskErrorBag,
@@ -124,8 +124,8 @@ class InputMainProcessor
                     {
                         //is this input optional?
                         //or is it really missing?
-                        if(!props[propName][nameof<PropertyOptional>(s => s.isOptional)])
-                        {
+                        const {defaultValue,isOptional} = await OptionalProcessor.process(props[propName]);
+                        if(!isOptional){
                             //oh its missing!
                             errorBag.addTaskError(new TaskError
                                 (
@@ -138,9 +138,9 @@ class InputMainProcessor
                                 )
                             );
                         }
-                        else if(props[propName].hasOwnProperty(nameof<PropertyOptional>(s => s.default))) {
-                            //set default param if it is not set
-                            input[propName] = props[propName][nameof<PropertyOptional>(s => s.default)];
+                        else {
+                            //set default value
+                            input[propName] = defaultValue;
                         }
                     }
                 }
