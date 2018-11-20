@@ -275,7 +275,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.regex)] = (input, settings, t
                                 inputValue : prepareErrorData.inputValue,
                                 inputPath : prepareErrorData.inputPath,
                                 regexName : name,
-                                regex : settings
+                                regex : settings.toString()
                             });
                     }
                 }
@@ -287,7 +287,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.regex)] = (input, settings, t
                     {
                         inputValue : prepareErrorData.inputValue,
                         inputPath : prepareErrorData.inputPath,
-                        regex : settings
+                        regex : settings.toString()
                     });
             }
         }
@@ -451,7 +451,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.charClass)] = (input, setting
                 {
                     inputValue : prepareErrorData.inputValue,
                     inputPath : prepareErrorData.inputPath,
-                    regex : settings
+                    regex : settings.toString()
                 });
         }
     }

@@ -20,7 +20,7 @@ class EasyValidator
 
     static isNull(data)
     {
-        return typeof data === null;
+        return data === null;
     }
 
     static isObject(data)
