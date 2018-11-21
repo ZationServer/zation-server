@@ -84,7 +84,7 @@ class ZationTokenInfo
      * getCustomTokenVar('person.email');
      * @param path
      */
-    getCustomTokenVar(path ?: string | string[]) : any {
+    getCustomTokenVar<R>(path ?: string | string[]) : R {
         return ObjectPath.get(this._ctv,path);
     }
 }

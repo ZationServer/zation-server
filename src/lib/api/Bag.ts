@@ -77,7 +77,7 @@ class Bag extends SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getBagVariable(path ?: string | string[]) : any {
+    getBagVariable<R>(path ?: string | string[]) : R {
         return ObjectPath.get(this.bagVariables,path);
     }
 
@@ -111,7 +111,7 @@ class Bag extends SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getInput(path ?: string | string[]) : any {
+    getInput<R>(path ?: string | string[]) : R {
         return ObjectPath.get(this.input,path);
     }
 
@@ -184,7 +184,7 @@ class Bag extends SmallBag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws MethodIsNotCompatible
      */
-    getSocketVariable(path ?: string | string[]) : any
+    getSocketVariable<R>(path ?: string | string[]) : R
     {
         if(this.shBridge.isWebSocket()) {
             return ObjectPath.get(this.shBridge.getSocket().zationSocketVariables,path);
@@ -367,7 +367,7 @@ class Bag extends SmallBag
      * @throws MethodIsNotCompatible
      * @param key
      */
-    getCookieVariable(key : string) : any
+    getCookieVariable<R>(key : string) : R
     {
         if(this.shBridge.isWebSocket()) {
             throw new MethodIsNotCompatible(this.getProtocol(),'http');
@@ -577,7 +577,7 @@ class Bag extends SmallBag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError
      */
-    getCustomTokenVar(path ?: string | string[]) : any {
+    getCustomTokenVar<R>(path ?: string | string[]) : R {
         if(this.shBridge.getTokenBridge().hasToken()) {
             return ObjectPath.get(this.tokenEngine.getCustomTokenVar(),path);
         }

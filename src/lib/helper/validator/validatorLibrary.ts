@@ -275,7 +275,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.regex)] = (input, settings, t
                                 inputValue : prepareErrorData.inputValue,
                                 inputPath : prepareErrorData.inputPath,
                                 regexName : name,
-                                regex : settings.toString()
+                                regex : settings[name].toString()
                             });
                     }
                 }

@@ -78,7 +78,7 @@ export class Controller
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    protected getControllerVariable(path ?: string | string[]) : any {
+    protected getControllerVariable<R>(path ?: string | string[]) : R {
         return ObjectPath.get(this._storage,path);
     }
 

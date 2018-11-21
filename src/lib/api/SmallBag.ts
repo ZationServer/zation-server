@@ -12,7 +12,7 @@ import {WorkerChTaskActions}        from "../helper/constants/workerChTaskAction
 import {WorkerChTargets}            from "../helper/constants/workerChTargets";
 import {AsymmetricKeyPairs}         from "../helper/infoObjects/asymmetricKeyPairs";
 import {WorkerMessageActions}       from "../helper/constants/workerMessageActions";
-import {ErrorConstruct}             from "../helper/configs/errorConfig";
+import {ErrorConfig, ErrorConstruct} from "../helper/configs/errorConfig";
 import {ZationChannel, ZationToken} from "../helper/constants/internal";
 
 const    crypto : any       = require('crypto');
@@ -34,6 +34,11 @@ import TokenTools      = require("../helper/token/tokenTools");
 import TaskErrorBag    = require("./TaskErrorBag");
 import TaskErrorBuilder = require("../helper/builder/taskErrorBuilder");
 import {SentMessageInfo}  from "nodemailer";
+import {InternMainConfig} from "../helper/configs/mainConfig";
+import {AppConfig} from "../helper/configs/appConfig";
+import {ChannelConfig} from "../helper/configs/channelConfig";
+import {EventConfig} from "../helper/configs/eventConfig";
+import {ServiceConfig} from "../helper/configs/serviceConfig";
 
 const uuidV4                = require('uuid/v4');
 const uniqid                = require('uniqid');
@@ -54,8 +59,78 @@ class SmallBag
         this.worker = worker;
     }
 
-    //PART Server
+    //PART CONFIG ACCESS
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns the zation config.
+     */
+    getZationConfig() : ZationConfig {
+        // noinspection TypeScriptValidateJSTypes
+        return this.zc;
+    }
 
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns the app config.
+     */
+    getAppConfig() : AppConfig {
+        // noinspection TypeScriptValidateJSTypes
+        return this.zc.appConfig;
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns the channel config.
+     */
+    getChannelConfig() : ChannelConfig {
+        // noinspection TypeScriptValidateJSTypes
+        return this.zc.channelConfig;
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns the error config.
+     */
+    getErrorConfig() : ErrorConfig {
+        // noinspection TypeScriptValidateJSTypes
+        return this.zc.errorConfig;
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns the event config.
+     */
+    getEventConfig() : EventConfig {
+        // noinspection TypeScriptValidateJSTypes
+        return this.zc.eventConfig;
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns the main config.
+     */
+    getMainConfig() : InternMainConfig {
+        // noinspection TypeScriptValidateJSTypes
+        return this.zc.mainConfig;
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns the service config.
+     */
+    getServiceConfig() : ServiceConfig {
+        // noinspection TypeScriptValidateJSTypes
+        return this.zc.serviceConfig;
+    }
+
+    //PART Server
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
@@ -104,6 +179,46 @@ class SmallBag
     isDebugMode() : boolean
     {
         return this.zc.isDebug();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns if the server is running in debug mode.
+     */
+    isDebug() : boolean
+    {
+        return this.zc.isDebug();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns if the server hostname.
+     */
+    getServerHostname() : string
+    {
+        return this.zc.mainConfig.hostname;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns if the server is running in secure.
+     */
+    getServerSecure() : boolean
+    {
+        return this.zc.mainConfig.secure;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the server path.
+     */
+    getServerPath() : string
+    {
+        return this.zc.mainConfig.path;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -213,6 +328,30 @@ class SmallBag
         await this.worker.killServer(error);
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the server url with protocol,hostname and port.
+     * @example
+     * https://myhost:3000
+     */
+    getServerUrl() : string
+    {
+        return `${this.zc.mainConfig.secure ? 'https' : 'http'}://${this.zc.mainConfig.hostname}:${this.zc.mainConfig.port}`;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the zation server url with protocol,hostname,port and path.
+     * @example
+     * https://myhost:3000/path
+     */
+    getZationServerUrl() : string
+    {
+        return`${this.zc.mainConfig.secure ? 'https' : 'http'}://${this.zc.mainConfig.hostname}:${this.zc.mainConfig.port}${this.zc.mainConfig.path}`;
+    }
+
     //Part Crypto
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -251,9 +390,20 @@ class SmallBag
      * Returns an random string.
      * @param length
      */
-    getRandomString(length : number = 16) : string
+    generateRandomString(length : number = 16) : string
     {
         return crypto.randomBytes(Math.ceil(length/2)).toString('hex').slice(0,length);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns an random number.
+     * @param length
+     */
+    generateRandomNumber(length : number = 8) : number
+    {
+        return Math.floor(Math.pow(10, length-1) + Math.random() * 9 * Math.pow(10, length-1));
     }
 
     //Asymmetric Encryption
@@ -307,7 +457,7 @@ class SmallBag
      * const password = await generatePassword();
      * @param secret
      */
-    async generatePassword(secret : String = this.getRandomString()) : Promise<string>
+    async generatePassword(secret : String = this.generateRandomString()) : Promise<string>
     {
         return await crypto2.createPassword(secret);
     }
@@ -946,6 +1096,19 @@ class SmallBag
     {
         const errorOp = this.zc.getError(name);
         throw new TaskError(errorOp,info);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Throws an new taskError with info that is build with the taskError constructor.
+     * @throws ErrorNotFoundError
+     * @param errorConstruct
+     * @param info
+     */
+    throwNewTaskError(errorConstruct : ErrorConstruct = {}, info ?: object | string) : void
+    {
+        throw this.newTaskError(errorConstruct,info);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1622,7 +1785,7 @@ class SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getSocketVariableWithSocket(socket : Socket,path ?: string | string[]) : any
+    getSocketVariableWithSocket<R>(socket : Socket,path ?: string | string[]) : R
     {
         return ObjectPath.get(socket.zationSocketVariables,path);
     }
@@ -1684,7 +1847,7 @@ class SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getWorkerVariable(path ?: string | string[]) : any {
+    getWorkerVariable<R>(path ?: string | string[]) : R {
         return ObjectPath.get(this.worker.getWorkerVariableStorage(),path);
     }
 
@@ -1697,7 +1860,7 @@ class SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    protected deleteWorkerVariable(path ?: string | string[]) : void {
+    deleteWorkerVariable(path ?: string | string[]) : void {
         if(!!path) {
             ObjectPath.del(this.worker.getWorkerVariableStorage(),path);
         }

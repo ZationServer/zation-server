@@ -85,7 +85,7 @@ class SocketInfo
      * getCustomTokenVar('person.email');
      * @param path
      */
-    getCustomTokenVar(path ?: string | string[]) : any {
+    getCustomTokenVar<R>(path ?: string | string[]) : R {
         let ctv = TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationCustomVariables),this._socket);
         return ObjectPath.get(!!ctv ? ctv : {},path);
     }
