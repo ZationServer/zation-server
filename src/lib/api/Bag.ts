@@ -317,6 +317,24 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * Returns the user id of token from the current socket.
+     */
+    getUserId() : number | string | undefined {
+        return this.authEngine.getUserId();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns if token has a user id of the current socket.
+     */
+    hasUserId() : boolean {
+        return this.authEngine.getUserId() !== undefined;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * Set the panel access for this socket.
      * @example
      * await setPanelAccess(true);
@@ -325,15 +343,6 @@ class Bag extends SmallBag
      */
     async setPanelAccess(access : boolean) : Promise<void> {
         await this.authEngine.setPanelAccess(access);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns the user id of the current socket.
-     */
-    getUserId() : number | string | undefined {
-        return this.authEngine.getUserId();
     }
 
     // noinspection JSUnusedGlobalSymbols

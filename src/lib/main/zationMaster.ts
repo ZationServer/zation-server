@@ -23,7 +23,7 @@ import {WorkerMessageActions} from "../helper/constants/workerMessageActions";
 
 class ZationMaster {
     private static instance: ZationMaster | null = null;
-    private static readonly version: string = '0.4.8';
+    private static readonly version: string = '0.4.9';
 
     private readonly serverStartedTimeStamp: number;
     private readonly zc: ZationConfig;

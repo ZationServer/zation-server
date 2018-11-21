@@ -27,7 +27,7 @@ class AuthEngine
 
     private currentDefault : boolean;
     private currentUserGroup :string | undefined;
-    private currentUserId : any;
+    private currentUserId : string | number | undefined;
 
     constructor(shBridge : SHBridge,tokenEngine :TokenEngine,worker : ZationWorker)
     {
