@@ -65,26 +65,30 @@ class ZationTokenInfo
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Has a custom token variable with object path
-     * You can protocolAccess this variables on client and server side
+     * Has a token variable with object path.
+     * Notice that the token variables are separated from the main zation token variables.
+     * That means there can be no naming conflicts with zation variables.
+     * You can access this variables on client and server side.
      * @example
-     * hasCustomTokenVar('person.email');
+     * hasTokenVariable('person.email');
      * @param path
      */
-    hasCustomTokenVar(path ?: string | string[]) : boolean {
+    hasTokenVariable(path ?: string | string[]) : boolean {
         return ObjectPath.has(this._ctv,path);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Get a custom token variable with object path
-     * You can protocolAccess this variables on client and server side
+     * Get a token variable with object path.
+     * Notice that the token variables are separated from the main zation token variables.
+     * That means there can be no naming conflicts with zation variables.
+     * You can access this variables on client and server side.
      * @example
-     * getCustomTokenVar('person.email');
+     * getTokenVariable('person.email');
      * @param path
      */
-    getCustomTokenVar<R>(path ?: string | string[]) : R {
+    getTokenVariable<R>(path ?: string | string[]) : R {
         return ObjectPath.get(this._ctv,path);
     }
 }

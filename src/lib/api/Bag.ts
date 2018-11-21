@@ -269,11 +269,13 @@ class Bag extends SmallBag
      * await authenticate('user','tom12',{email : 'example@gmail.com'});
      * @param authUserGroup The authUserGroup must exist in the appConfig. Otherwise an error will be thrown.
      * @param userId
-     * @param customTokenVar If this parameter is used all previous variables will be deleted.
+     * @param tokenVariables
+     * If this parameter is used all previous variables will be deleted.
+     * Notice that the token variables are separated from the main zation token variables.
      * @throws AuthenticationError
      */
-    async authenticate(authUserGroup : string,userId ?: string | number,customTokenVar ?: object) : Promise<void> {
-        await this.authEngine.authenticate(authUserGroup,userId,customTokenVar);
+    async authenticate(authUserGroup : string,userId ?: string | number,tokenVariables ?: object) : Promise<void> {
+        await this.authEngine.authenticate(authUserGroup,userId,tokenVariables);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -466,123 +468,130 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set a custom token variable with object path.
+     * Set a token variable with object path.
+     * Notice that the token variables are separated from the main zation token variables.
+     * That means there can be no naming conflicts with zation variables.
      * You can access this variables on client and server side.
      * Check that the socket is authenticated (has a token).
      * @example
-     * await setCustomTokenVar('person.email','example@gmail.com');
+     * await setTokenVariable('person.email','example@gmail.com');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
      * @throws AuthenticationError
      */
-    async setCustomTokenVar(path : string | string[],value : any) : Promise<void> {
+    async setTokenVariable(path : string | string[],value : any) : Promise<void> {
         if(this.shBridge.getTokenBridge().hasToken()) {
-            const ctv = this.tokenEngine.getCustomTokenVar();
+            const ctv = this.tokenEngine.getCustomTokenVariable();
             ObjectPath.set(ctv,path,value);
-            await this.tokenEngine.setCustomTokenVar(ctv);
+            await this.tokenEngine.setCustomTokenVariable(ctv);
         }
         else {
-            throw new AuthenticationError(`Can't set custom token variable when socket is not authenticated!`);
+            throw new AuthenticationError(`Can't set token variable when socket is not authenticated!`);
         }
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Delete a custom token variable with object path.
+     * Delete a token variable with object path.
+     * Notice that the token variables are separated from the main zation token variables.
      * You can access this variables on client and server side.
      * Check that the socket is authenticated (has a token).
      * @example
-     * await deleteCustomTokenVar('person.email');
+     * await deleteTokenVariable('person.email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError
      */
-    async deleteCustomTokenVar(path ?: string | string[]) : Promise<void> {
+    async deleteTokenVariable(path ?: string | string[]) : Promise<void> {
         if(this.shBridge.getTokenBridge().hasToken()) {
             if(!!path) {
-                const ctv = this.tokenEngine.getCustomTokenVar();
+                const ctv = this.tokenEngine.getCustomTokenVariable();
                 ObjectPath.del(ctv,path);
-                await this.tokenEngine.setCustomTokenVar(ctv);
+                await this.tokenEngine.setCustomTokenVariable(ctv);
             }
             else {
-                await this.tokenEngine.setCustomTokenVar({});
+                await this.tokenEngine.setCustomTokenVariable({});
             }
         }
         else {
-            throw new AuthenticationError(`Can't set custom token variable when socket is not authenticated!`);
+            throw new AuthenticationError(`Can't set token variable when socket is not authenticated!`);
         }
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Sequence edit the custom token variables.
+     * Sequence edit the token variables.
      * Useful if you want to make several changes.
      * This will do everything in one and saves performance.
+     * Notice that the token variables are separated from the main zation token variables.
+     * That means there can be no naming conflicts with zation variables.
      * You can access this variables on client and server side.
      * Check that the socket is authenticated (has a token).
      * @example
-     * await seqEditCustomTokenVar()
+     * await seqEditTokenVariables()
      *       .delete('person.lastName')
      *       .set('person.name','Luca')
      *       .set('person.email','example@gmail.com')
      *       .commit();
      * @throws AuthenticationError
      */
-    seqEditCustomTokenVar() : ObjectPathSequence
+    seqEditTokenVariables() : ObjectPathSequence
     {
         if(this.shBridge.getTokenBridge().hasToken()) {
-            return new ObjectPathSequence(this.tokenEngine.getCustomTokenVar(),
+            return new ObjectPathSequence(this.tokenEngine.getCustomTokenVariable(),
                 async (obj)=> {
-                    await  this.tokenEngine.setCustomTokenVar(obj);
+                    await  this.tokenEngine.setCustomTokenVariable(obj);
                 });
         }
         else {
-            throw new AuthenticationError(`Can't set custom token variable when socket is not authenticated!`);
+            throw new AuthenticationError(`Can't set token variable when socket is not authenticated!`);
         }
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Check has a custom token variable with object path.
+     * Check has a token variable with object path.
+     * Notice that the token variables are separated from the main zation token variables.
      * You can access this variables on client and server side.
      * Check that the socket is authenticated (has a token).
      * @example
-     * hasCustomTokenVar('person.email');
+     * hasTokenVariable('person.email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError
      */
-    hasCustomTokenVar(path ?: string | string[]) : boolean {
+    hasTokenVariable(path ?: string | string[]) : boolean {
         if(this.shBridge.getTokenBridge().hasToken()) {
-            return ObjectPath.has(this.tokenEngine.getCustomTokenVar(),path);
+            return ObjectPath.has(this.tokenEngine.getCustomTokenVariable(),path);
         }
         else {
-            throw new AuthenticationError(`Can't access custom token variable when socket is not authenticated!`);
+            throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
         }
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Get a custom token variable with object path.
+     * Get a token variable with object path.
+     * Notice that the token variables are separated from the main zation token variables.
      * You can access this variables on client and server side.
      * Check that the socket is authenticated (has a token).
      * @example
-     * getCustomTokenVar('person.email');
+     * getTokenVariable('person.email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError
      */
-    getCustomTokenVar<R>(path ?: string | string[]) : R {
+    getTokenVariable<R>(path ?: string | string[]) : R {
         if(this.shBridge.getTokenBridge().hasToken()) {
-            return ObjectPath.get(this.tokenEngine.getCustomTokenVar(),path);
+            return ObjectPath.get(this.tokenEngine.getCustomTokenVariable(),path);
         }
         else {
-            throw new AuthenticationError(`Can't access custom token variable when socket is not authenticated!`);
+            throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
         }
     }
 

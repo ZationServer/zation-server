@@ -17,27 +17,27 @@ class ZationInfo
 
     // noinspection JSUnusedGlobalSymbols
     get port(): number {
-        return this.zationConfig.mainConfig.port;
+        return this._zationConfig.mainConfig.port;
     }
 
     // noinspection JSUnusedGlobalSymbols
     get appName(): string {
-        return this.zationConfig.mainConfig.appName;
+        return this._zationConfig.mainConfig.appName;
     }
 
     // noinspection JSUnusedGlobalSymbols
     get hostname(): string {
-        return this.zationConfig.mainConfig.hostname;
+        return this._zationConfig.mainConfig.hostname;
     }
 
     // noinspection JSUnusedGlobalSymbols
     get timeZone(): string {
-        return this.zationConfig.mainConfig.timeZone;
+        return this._zationConfig.mainConfig.timeZone;
     }
 
     // noinspection JSUnusedGlobalSymbols
     get zationConfig(): ZationConfig {
-        return this.zationConfig;
+        return this._zationConfig;
     }
 }
 

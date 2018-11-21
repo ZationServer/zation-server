@@ -161,7 +161,7 @@ class AuthEngine
                 this.currentUserGroup = authUserGroup;
 
                 if(!!tokenCustomVar) {
-                    await this.tokenEngine.setCustomTokenVar(tokenCustomVar);
+                    await this.tokenEngine.setCustomTokenVariable(tokenCustomVar);
                 }
             }
             else {

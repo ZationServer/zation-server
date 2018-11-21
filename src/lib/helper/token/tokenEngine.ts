@@ -94,12 +94,12 @@ class TokenEngine
         return TokenTools.getTokenVariable(key,this.shBridge.getTokenBridge());
     }
 
-    getCustomTokenVar() : object {
+    getCustomTokenVariable() : object {
         return TokenTools.getTokenVariable
         (nameof<ZationToken>(s => s.zationCustomVariables),this.shBridge.getTokenBridge());
     }
 
-    async setCustomTokenVar(data : object) : Promise<boolean> {
+    async setCustomTokenVariable(data : object) : Promise<boolean> {
         return await TokenTools.updateCustomTokenVar(data,this.shBridge.getTokenBridge(),this.worker);
     }
 }
