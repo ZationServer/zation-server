@@ -24,7 +24,7 @@ class Result
      * @param result
      * @param statusCode
      */
-    constructor(result : any,statusCode ?: string | number)
+    constructor(result ?: any,statusCode ?: string | number)
     {
         this.result = result;
         this.statusCode = statusCode;
