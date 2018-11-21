@@ -472,6 +472,7 @@ class Bag extends SmallBag
      * Notice that the token variables are separated from the main zation token variables.
      * That means there can be no naming conflicts with zation variables.
      * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
      * Check that the socket is authenticated (has a token).
      * @example
      * await setTokenVariable('person.email','example@gmail.com');
@@ -497,6 +498,7 @@ class Bag extends SmallBag
      * Delete a token variable with object path.
      * Notice that the token variables are separated from the main zation token variables.
      * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
      * Check that the socket is authenticated (has a token).
      * @example
      * await deleteTokenVariable('person.email');
@@ -529,6 +531,7 @@ class Bag extends SmallBag
      * Notice that the token variables are separated from the main zation token variables.
      * That means there can be no naming conflicts with zation variables.
      * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
      * Check that the socket is authenticated (has a token).
      * @example
      * await seqEditTokenVariables()
@@ -557,6 +560,7 @@ class Bag extends SmallBag
      * Check has a token variable with object path.
      * Notice that the token variables are separated from the main zation token variables.
      * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
      * Check that the socket is authenticated (has a token).
      * @example
      * hasTokenVariable('person.email');
@@ -579,6 +583,7 @@ class Bag extends SmallBag
      * Get a token variable with object path.
      * Notice that the token variables are separated from the main zation token variables.
      * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
      * Check that the socket is authenticated (has a token).
      * @example
      * getTokenVariable('person.email');

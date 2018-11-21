@@ -68,6 +68,7 @@ class SocketInfo
      * Has a token variable with object path.
      * Notice that the token variables are separated from the main zation token variables.
      * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
      * @example
      * hasTokenVariable('person.email');
      * @param path
@@ -83,6 +84,7 @@ class SocketInfo
      * Get a token variable with object path.
      * Notice that the token variables are separated from the main zation token variables.
      * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
      * @example
      * getTokenVariable('person.email');
      * @param path
