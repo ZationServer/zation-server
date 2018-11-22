@@ -11,12 +11,16 @@ import AuthEngine    = require("../helper/auth/authEngine");
 import TokenEngine   = require("../helper/token/tokenEngine");
 import ZationWorker  = require("../main/zationWorker");
 import ObjectPath    = require("../helper/tools/objectPath");
+import useragent     = require('useragent');
 import MethodIsNotCompatible = require("../helper/error/methodIsNotCompatible");
 import ObjectPathSequence    = require("../helper/tools/objectPathSequence");
 import {Socket}                from "../helper/sc/socket";
 import AuthenticationError   = require("../helper/error/authenticationError");
 import ProtocolAccessChecker = require("../helper/protocolAccess/protocolAccessChecker");
 import {ScServer}              from "../helper/sc/scServer";
+import * as core               from "express-serve-static-core";
+import {IncomingHttpHeaders, IncomingMessage} from "http";
+import {Agent} from "useragent";
 
 class Bag extends SmallBag
 {
@@ -384,7 +388,7 @@ class Bag extends SmallBag
             throw new MethodIsNotCompatible(this.getProtocol(),'http');
         }
         else {
-            return this.shBridge.getResponse().cookies[key];
+            return this.shBridge.getRequest().cookies[key];
         }
     }
 
@@ -434,7 +438,7 @@ class Bag extends SmallBag
      * Return the http response.
      * @throws MethodIsNotCompatible
      */
-    getHttpResponse() : Express.Response {
+    getHttpResponse() : core.Response {
         if(this.shBridge.isWebSocket()) {
             throw new MethodIsNotCompatible(this.getProtocol(),'http');
         }
@@ -449,7 +453,7 @@ class Bag extends SmallBag
      * Return the http request.
      * @throws MethodIsNotCompatible
      */
-    getHttpRequest() : Express.Request {
+    getHttpRequest() : core.Request {
         if(this.shBridge.isWebSocket()) {
             throw new MethodIsNotCompatible(this.getProtocol(),'http');
         }
@@ -471,6 +475,28 @@ class Bag extends SmallBag
         else {
             return this.shBridge.getRequest().method;
         }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * If it is an http request it returns the request.
+     * Otherwise (webSocket request) it returns the handshake request.
+     */
+    getHandshakeRequest() : IncomingMessage
+    {
+       return this.shBridge.getHandshakeRequest();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * If it is an http request it returns the request header.
+     * Otherwise (webSocket request) it returns the handshake request header.
+     */
+    getHandshakeHeader() : IncomingHttpHeaders
+    {
+       return this.shBridge.getHandshakeRequest().headers;
     }
 
     //Part Token Variable
@@ -861,6 +887,48 @@ class Bag extends SmallBag
     getPublicRemoteAddress() : string
     {
         return this.shBridge.getPublicRemoteAddress();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the raw user agent of the client.
+     * @example
+     * Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.107 Safari/537.36
+     */
+    getRawUserAgent() : string
+    {
+        // @ts-ignore
+        return this.getHandshakeHeader()["user-agent"];
+    }
+
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the agent of the client
+     * with using the npm package 'useragent' to parse it.
+     * @example
+     * //get operating system
+     * getUserAgent().os.toString(); // 'Mac OSX 10.8.1'
+     * //get device
+     * getUserAgent().device.toString(); // 'Asus A100'
+     */
+    getUserAgent() : Agent
+    {
+        return useragent.parse(this.getRawUserAgent());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the accept language of the client.
+     * @example
+     * en-US,en;q=0.8,et;q=0.6"
+     */
+    getAcceptLanguage() : undefined | string | string[]
+    {
+        return this.getHandshakeHeader()["accept-language"];
     }
 
     // noinspection JSUnusedGlobalSymbols

@@ -8,6 +8,8 @@ import TokenBridge   = require('./tokenBridge');
 import ZationConfig  = require("../../main/zationConfig");
 import {Socket}        from "../sc/socket";
 import {ZationHttpInfo, ZationRequest} from "../constants/internal";
+import * as core         from "express-serve-static-core";
+import {IncomingMessage} from "http";
 const  IP : any      = require('ip');
 
 //Socket and Http Bridge
@@ -16,9 +18,9 @@ class SHBridge
     private readonly webSocket : boolean;
     private readonly socketData : object;
     private readonly socketRespond : Function;
-    private readonly socket : any;
-    private readonly httpRes : any;
-    private readonly httpReq : any;
+    private readonly socket : Socket;
+    private readonly httpRes : core.Response;
+    private readonly httpReq : core.Request;
     private readonly httpData : object;
     private readonly zc : ZationConfig;
 
@@ -40,6 +42,16 @@ class SHBridge
         if(!this.isWebSocket() && this.httpRes['zationInfo'] === undefined)
         {
             this.httpRes['zationInfo'] = [];
+        }
+    }
+
+    getHandshakeRequest() : IncomingMessage
+    {
+        if(this.isWebSocket()) {
+            return this.socket.request;
+        }
+        else {
+            return this.httpReq;
         }
     }
 
@@ -121,12 +133,12 @@ class SHBridge
         }
     }
 
-    getResponse() : any
+    getResponse() : core.Response
     {
         return this.httpRes;
     }
 
-    getRequest() : any {
+    getRequest() : core.Request {
         return this.httpReq;
     }
 

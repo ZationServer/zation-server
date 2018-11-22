@@ -6,6 +6,7 @@ GitHub: LucaCode
 
 import {ZationToken} from "../constants/internal";
 import SocketInfo = require("../infoObjects/socketInfo");
+import {IncomingMessage} from "http";
 export type OnHandlerFunction = (data : any, response : ResponseFunction) => void
 export type ResponseFunction = (err ?: any | number, responseData ?: any) => void
 
@@ -13,7 +14,7 @@ export interface Socket
 {
     id : string;
     sid : string;
-    request : any;
+    request : IncomingMessage;
     remoteAddress : string;
     exchange : any;
     state : string;
