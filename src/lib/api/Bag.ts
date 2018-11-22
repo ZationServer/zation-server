@@ -892,11 +892,23 @@ class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * Returns if the user agent of the client is set.
+     */
+    hasUserAgent() : boolean
+    {
+        return this.getHandshakeHeader()["user-agent"] !== undefined;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * Returns the raw user agent of the client.
+     * Note that it is possible that no user agent was included in the header.
+     * You can check it with the method hasUserAgent().
      * @example
      * Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.107 Safari/537.36
      */
-    getRawUserAgent() : string
+    getRawUserAgent() : string | undefined
     {
         // @ts-ignore
         return this.getHandshakeHeader()["user-agent"];
@@ -908,6 +920,8 @@ class Bag extends SmallBag
      * @description
      * Returns the agent of the client
      * with using the npm package 'useragent' to parse it.
+     * Note that it is possible that no user agent was included in the header.
+     * You can check it with the method hasUserAgent().
      * @example
      * //get operating system
      * getUserAgent().os.toString(); // 'Mac OSX 10.8.1'
@@ -923,12 +937,24 @@ class Bag extends SmallBag
     /**
      * @description
      * Returns the accept language of the client.
+     * Note that it is possible that no accept language was included in the header.
+     * You can check it with the method hasAcceptLanguage().
      * @example
      * en-US,en;q=0.8,et;q=0.6"
      */
     getAcceptLanguage() : undefined | string | string[]
     {
         return this.getHandshakeHeader()["accept-language"];
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns if the accept language of the client is set.
+     */
+    hasAcceptLanguage() : boolean
+    {
+        return this.getHandshakeHeader()["accept-language"] !== undefined;
     }
 
     // noinspection JSUnusedGlobalSymbols

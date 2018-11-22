@@ -398,12 +398,35 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Returns an random number.
-     * @param length
+     * Returns an random number with fixed digits count.
+     * @param digits
      */
-    generateRandomNumber(length : number = 8) : number
+    generateFixedRandomNumber(digits : number = 8) : number
     {
-        return Math.floor(Math.pow(10, length-1) + Math.random() * 9 * Math.pow(10, length-1));
+        return Math.floor(Math.pow(10, digits-1) + Math.random() * 9 * Math.pow(10, digits-1));
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns an random number in a range.
+     * @param min
+     * @param max
+     */
+    generateRangeRandomNumber(min : number = 0, max : number = 10) : number
+    {
+        return Math.floor(Math.random()*(max-min+1)+min);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns an random boolean.
+     * @param chanceForTrue
+     */
+    generateRandomBoolean(chanceForTrue : number = 0.5) : boolean
+    {
+        return Math.random() <= chanceForTrue;
     }
 
     //Asymmetric Encryption
