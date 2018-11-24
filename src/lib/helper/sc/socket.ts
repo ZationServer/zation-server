@@ -33,7 +33,7 @@ export interface Socket
     off(event ?: string, handler ?: Function) : void;
     send(data : any, options ?: object) : void;
     getAuthToken() : ZationToken | null;
-    setAuthToken(data : object, options ?: object) : void;
+    setAuthToken(data : object, options ?: object,callback ?: Function) : void;
     deauthenticate() : void;
     kickOut(channel ?: string, message ?: string, callback ?: Function) : void;
     subscriptions() : string[];

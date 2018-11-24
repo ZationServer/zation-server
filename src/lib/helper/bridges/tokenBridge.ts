@@ -8,6 +8,7 @@ import ZationConfig = require("../../main/zationConfig");
 import TokenTools   = require('../token/tokenTools');
 import {ZationToken} from "../constants/internal";
 import {Socket}      from "../sc/socket";
+import AuthenticationError = require("../error/authenticationError");
 
 class TokenBridge
 {
@@ -73,16 +74,24 @@ class TokenBridge
         }
     }
 
-    setToken(data : object) : void
+    async setToken(data : object) : Promise<void>
     {
-        this.newToken = true;
-        if(this.webSocket) {
-            // noinspection JSUnresolvedFunction
-            this.socket.setAuthToken(data);
-        }
-        else {
-            this.plainTokenTemp = data;
-        }
+        return new Promise<void>((resolve, reject) => {
+            this.newToken = true;
+            if(this.webSocket) {
+                this.socket.setAuthToken(data,{},(err) => {
+                    if(err){
+                        reject(new AuthenticationError('Failed to set the auth token. Error => ' +
+                        err.toString()))
+                    }
+                    else {resolve();}
+                });
+            }
+            else {
+                this.plainTokenTemp = data;
+                resolve();
+            }
+        });
     }
 
     async getSignedToken() : Promise<any>
