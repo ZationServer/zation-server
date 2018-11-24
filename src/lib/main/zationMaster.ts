@@ -19,11 +19,11 @@ import ClientPrepare         = require('../helper/client/clientPrepare');
 import BackgroundTasksSetter = require("../helper/background/backgroundTasksLoader");
 const  isWindows             = require('is-windows');
 import StateServerEngine     = require("../helper/cluster/stateServerEngine");
-import {WorkerMessageActions} from "../helper/constants/workerMessageActions";
+import {WorkerMessageActions}  from "../helper/constants/workerMessageActions";
 
 class ZationMaster {
     private static instance: ZationMaster | null = null;
-    private static readonly version: string = '0.5.1';
+    private static readonly version: string = '0.5.2';
 
     private readonly serverStartedTimeStamp: number;
     private readonly zc: ZationConfig;
