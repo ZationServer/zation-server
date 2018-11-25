@@ -10,13 +10,16 @@ import SHBridge              = require('../bridges/shBridge');
 import ZationReqTools        = require('../tools/zationReqTools');
 import ZationWorker          = require("../../main/zationWorker");
 import ZationConfig          = require("../../main/zationConfig");
+import Logger                = require("../logger/logger");
 import {Socket}                from "../sc/socket";
 
 class SocketProcessor
 {
     //SOCKET Extra Layer
-    static async runSocketProcess(socket : Socket, input, respond, zc : ZationConfig, worker : ZationWorker)
+    static async runSocketProcess(socket : Socket, input, respond, zc : ZationConfig, worker : ZationWorker,reqId : string)
     {
+        Logger.printDebugInfo(`Socket Request id: ${reqId} -> `,input,true);
+
         //check for validationCheckRequest
         if(ZationReqTools.isValidationCheckReq(input))
         {
@@ -31,7 +34,8 @@ class SocketProcessor
                     isWebSocket : true,
                     socketData : input,
                     socketRespond : respond,
-                    socket : socket
+                    socket : socket,
+                    reqId : reqId
                 },zc);
             return await MainProcessor.process(shBridge,zc,worker);
         }

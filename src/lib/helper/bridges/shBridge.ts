@@ -22,11 +22,12 @@ class SHBridge
     private readonly httpRes : core.Response;
     private readonly httpReq : core.Request;
     private readonly httpData : object;
+    private readonly reqId : string;
     private readonly zc : ZationConfig;
 
     private readonly tokenBridge : TokenBridge;
-    
-    constructor({isWebSocket,socketData,socketRespond,socket,httpRes,httpReq,httpData} : any, zc : ZationConfig)
+
+    constructor({isWebSocket,socketData,socketRespond,socket,httpRes,httpReq,httpData,reqId} : any, zc : ZationConfig)
     {
         this.webSocket = isWebSocket;
         this.socketData = socketData;
@@ -35,6 +36,7 @@ class SHBridge
         this.httpRes = httpRes;
         this.httpReq = httpReq;
         this.httpData = httpData;
+        this.reqId = reqId;
         this.zc = zc;
 
         this.tokenBridge = new TokenBridge(isWebSocket,socket,httpReq,zc);
@@ -92,6 +94,11 @@ class SHBridge
     getTokenBridge() : TokenBridge
     {
         return this.tokenBridge;
+    }
+
+    getReqId() : string
+    {
+        return this.reqId;
     }
 
     deauthenticate() : void

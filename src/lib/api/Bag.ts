@@ -793,6 +793,19 @@ class Bag extends SmallBag
         return this.isHttpProtocol();
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the unique request id for this request,
+     * based on instanceId, workerFullId, request count and timestamp.
+     * @Example
+     * 7dd60337-bdeb-494a-ae5d-a92188b0c535-2.90-1543143397178.0.0
+     */
+    getRequestId() : string
+    {
+        return this.shBridge.getReqId();
+    }
+
     //Part Socket
 
     // noinspection JSUnusedGlobalSymbols

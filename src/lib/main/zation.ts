@@ -34,42 +34,21 @@ class Zation
         const reqId = this.reqIdCounter.getId();
 
         // scalable unique id for every req based on instanceId-workerId-time/count
-        const fullReqId = `${this.worker.options.instanceId}-${this.worker.getFullWorkerId()}-${reqId}`;
-
-        if(data.isWebSocket)
-        {
-            Logger.printDebugInfo(`Socket Request id: ${fullReqId} -> `
-                ,data.input,true);
-
-            data.reqId = fullReqId;
-        }
-        else
-        {
-
-            const reqContent = data.req.body[this.zc.mainConfig.postKey];
-
-            Logger.printDebugInfo(`Http Request id: ${fullReqId} -> `,
-                reqContent !== undefined ? reqContent : 'Nothing in post key!',true);
-
-            if(this.zc.isDebug() || this.zc.isUsePanel()) {
-                data.reqId = fullReqId;
-            }
-        }
+        data.reqId = `${this.worker.options.instanceId}-${this.worker.getFullWorkerId()}-${reqId}`;
 
         const returner = new Returner(data,this.zc);
 
         try {
             if(data.isWebSocket) {
-                await returner.reactOnResult(await SocketProcessor.runSocketProcess(data.socket,data.input,data.respond,this.zc,this.worker));
+                await returner.reactOnResult(await SocketProcessor.runSocketProcess(data.socket,data.input,data.respond,this.zc,this.worker,data.reqId));
             }
             else {
-                await returner.reactOnResult(await HttpProcessor.runHttpProcess(data.req,data.res,this.zc,this.worker));
+                await returner.reactOnResult(await HttpProcessor.runHttpProcess(data.req,data.res,this.zc,this.worker,data.reqId));
             }
         }
         catch(data)
         {
             let e = data;
-
             if(data['tb'] !== undefined) {
                 e = data['e'];
             }
@@ -91,13 +70,11 @@ class Zation
                 (this.zc.eventConfig.beforeTaskError,this.worker.getPreparedSmallBag(),e));
             }
             else { // noinspection SuspiciousInstanceOfGuard
-                if(e instanceof TaskErrorBag)
-                {
+                if(e instanceof TaskErrorBag) {
                     promises.push(this.zc.emitEvent
                     (this.zc.eventConfig.beforeTaskErrorBag,this.worker.getPreparedSmallBag(),e));
                 }
-                else
-                {
+                else {
                     Logger.printDebugWarning('EXCEPTION ON SERVER ->',e);
                 }
             }

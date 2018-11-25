@@ -115,15 +115,12 @@ class Logger
     {
         if (Logger.zc.isDebug())
         {
-            if(jsonStringify)
-            {
+            if(jsonStringify) {
                 Logger.log('\x1b[34m%s\x1b[0m','   [INFO]',txt + JSON.stringify(obj));
             }
-            else
-            {
+            else {
                 Logger.log('\x1b[34m%s\x1b[0m','   [INFO]',txt);
-                if(obj !== undefined)
-                {
+                if(obj !== undefined) {
                     Logger.log(obj);
                 }
             }

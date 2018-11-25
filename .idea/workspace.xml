@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="update to version 0.5.2 and client to 0.4.1">
+    <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="update to version 0.5.3&#10;add host to sc config">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/api/Bag.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/api/Bag.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/helper/bridges/shBridge.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/bridges/shBridge.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/helper/logger/logger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/logger/logger.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/helper/processor/httpProcessor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/processor/httpProcessor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/helper/processor/mainProcessor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/processor/mainProcessor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/helper/processor/socketProcessor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/processor/socketProcessor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/helper/response/returner.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/response/returner.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/helper/tools/idCounter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/idCounter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/main/zation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zation.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib/main/zationMaster.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationMaster.ts" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -57,24 +66,23 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/gulpFile.js">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/configs/mainConfig.ts">
+        <entry file="file://$PROJECT_DIR$/src/lib/api/Bag.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="367">
-              <caret line="110" column="31" selection-start-line="110" selection-start-column="31" selection-end-line="110" selection-end-column="31" />
+            <state relative-caret-position="495">
+              <caret line="811" column="7" selection-start-line="811" selection-start-column="7" selection-end-line="811" selection-end-column="7" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+                <element signature="n#ChannelEngine#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/channel/chAccessEngine.ts">
+        <entry file="file://$PROJECT_DIR$/src/lib/helper/processor/mainProcessor.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4905">
-              <caret line="337" column="45" selection-start-line="337" selection-start-column="45" selection-end-line="337" selection-end-column="45" />
+            <state>
+              <caret line="24" selection-start-line="24" selection-end-line="24" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -83,46 +91,70 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/tools/funcTools.ts">
+        <entry file="file://$PROJECT_DIR$/src/lib/helper/processor/httpProcessor.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="11" column="34" selection-start-line="11" selection-start-column="34" selection-end-line="11" selection-end-column="34" />
+            <state relative-caret-position="222">
+              <caret line="34" column="37" selection-start-line="34" selection-start-column="37" selection-end-line="34" selection-end-column="37" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+                <element signature="n#HtmlTools#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/auth/authEngine.ts">
+        <entry file="file://$PROJECT_DIR$/src/lib/api/SmallBag.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="37" column="36" selection-start-line="37" selection-start-column="36" selection-end-line="37" selection-end-column="36" />
+            <state relative-caret-position="324">
+              <caret line="241" column="5" selection-start-line="241" selection-start-column="5" selection-end-line="241" selection-end-column="5" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+                <element signature="n#ChExchangeEngine#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/token/tokenEngine.ts">
+        <entry file="file://$PROJECT_DIR$/src/lib/main/zation.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1185">
-              <caret line="87" column="36" selection-start-line="87" selection-start-column="36" selection-end-line="87" selection-end-column="36" />
+            <state relative-caret-position="464">
+              <caret line="31" column="5" lean-forward="true" selection-start-line="31" selection-start-column="5" selection-end-line="31" selection-end-column="5" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+                <element signature="n#ZationConfig#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/token/tokenTools.ts">
+        <entry file="file://$PROJECT_DIR$/src/lib/helper/response/returner.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="26" column="42" selection-start-line="26" selection-start-column="42" selection-end-line="26" selection-end-column="42" />
+            <state relative-caret-position="465">
+              <caret line="42" column="5" lean-forward="true" selection-start-line="42" selection-start-column="5" selection-end-line="42" selection-end-column="5" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/bridges/tokenBridge.ts">
+        <entry file="file://$PROJECT_DIR$/src/lib/helper/logger/logger.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1170">
-              <caret line="86" column="37" selection-start-line="86" selection-start-column="37" selection-end-line="86" selection-end-column="37" />
+            <state relative-caret-position="337">
+              <caret line="127" column="5" selection-start-line="127" selection-start-column="5" selection-end-line="127" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/lib/helper/processor/socketProcessor.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="495">
+              <caret line="38" column="22" selection-start-line="38" selection-start-column="22" selection-end-line="38" selection-end-column="22" />
+              <folding>
+                <element signature="n#MainProcessor#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -214,13 +246,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/controller/confirmEmail.ts" />
-        <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/controller/register.ts" />
-        <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/controller/generateEmailConfirmCode.ts" />
-        <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/template/confirmEmail.html" />
-        <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/template/resetPasswordEmail.html" />
-        <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/template/passwordResetLinkExpired.html" />
-        <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/template/passwordRestSuccess.html" />
         <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/config/event.config.ts" />
         <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/config/service.config.ts" />
         <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/index.ts" />
@@ -238,7 +263,6 @@
         <option value="$PROJECT_DIR$/src/lib/helper/auth/authEngine.ts" />
         <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/controller/auth/passwordReset.ts" />
         <option value="$PROJECT_DIR$/src/lib/api/Result.ts" />
-        <option value="$PROJECT_DIR$/src/lib/helper/bridges/shBridge.ts" />
         <option value="$PROJECT_DIR$/../../testZone/41Test/src/config/app.config.ts" />
         <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/controller/auth/generateEmailConfirmCode.ts" />
         <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/controller/auth/resetPassword.ts" />
@@ -248,8 +272,6 @@
         <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/controller/auth/login.ts" />
         <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/config/app.config.ts" />
         <option value="$PROJECT_DIR$/../../testZone/41Test/src/controller/test.ts" />
-        <option value="$PROJECT_DIR$/src/lib/api/SmallBag.ts" />
-        <option value="$PROJECT_DIR$/src/lib/api/Bag.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/sc/socket.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/bridges/tokenBridge.ts" />
         <option value="$PROJECT_DIR$/../zation-js-client/src/lib/helper/channel/channelEngine.ts" />
@@ -261,8 +283,18 @@
         <option value="$PROJECT_DIR$/../zation-js-client/src/lib/helper/error/authenticationFailedError.ts" />
         <option value="$PROJECT_DIR$/../zation-js-client/src/lib/api/zation.ts" />
         <option value="$PROJECT_DIR$/../zation-js-client/package.json" />
-        <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/config/main.config.ts" />
         <option value="$PROJECT_DIR$/../huettencheck-app/implementation/client/testClient/src/index.ts" />
+        <option value="$PROJECT_DIR$/../huettencheck-app/implementation/server/mainZationServer/huettencheckServer/src/config/main.config.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/processor/mainProcessor.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/tools/idCounter.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/bridges/shBridge.ts" />
+        <option value="$PROJECT_DIR$/src/lib/api/SmallBag.ts" />
+        <option value="$PROJECT_DIR$/src/lib/api/Bag.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/processor/httpProcessor.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/logger/logger.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/processor/socketProcessor.ts" />
+        <option value="$PROJECT_DIR$/src/lib/main/zation.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/response/returner.ts" />
         <option value="$PROJECT_DIR$/src/lib/main/zationMaster.ts" />
         <option value="$PROJECT_DIR$/package.json" />
       </list>
@@ -274,7 +306,7 @@
     <other-services-enabled>true</other-services-enabled>
     <auto-save>true</auto-save>
   </component>
-  <component name="ProjectFrameBounds" fullScreen="true">
+  <component name="ProjectFrameBounds" extendedState="6" fullScreen="true">
     <option name="y" value="23" />
     <option name="width" value="1440" />
     <option name="height" value="833" />
@@ -302,6 +334,28 @@
               <item name="zation-server" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="api" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="helper" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="helper" type="462c0819:PsiDirectoryNode" />
+              <item name="processor" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
@@ -536,14 +590,8 @@
       <workItem from="1542843454230" duration="177000" />
       <workItem from="1542899523016" duration="16248000" />
       <workItem from="1543087510963" duration="787000" />
-      <workItem from="1543112503297" duration="920000" />
-    </task>
-    <task id="LOCAL-00055" summary="validation check req&#10;change input key path to input path&#10;add support for path split by dot">
-      <created>1539923226005</created>
-      <option name="number" value="00055" />
-      <option name="presentableId" value="LOCAL-00055" />
-      <option name="project" value="LOCAL" />
-      <updated>1539923226005</updated>
+      <workItem from="1543112503297" duration="985000" />
+      <workItem from="1543141840876" duration="4441000" />
     </task>
     <task id="LOCAL-00056" summary="add support for validation check request with http get method">
       <created>1539951823051</created>
@@ -881,11 +929,18 @@
       <option name="project" value="LOCAL" />
       <updated>1543087953280</updated>
     </task>
-    <option name="localTasksCounter" value="104" />
+    <task id="LOCAL-00104" summary="update to version 0.5.3&#10;add host to sc config">
+      <created>1543113941372</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1543113941372</updated>
+    </task>
+    <option name="localTasksCounter" value="105" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1689252000" />
+    <option name="totallyTimeSpent" value="1693758000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -900,8 +955,8 @@
     <frame x="0" y="0" width="1440" height="900" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.77710843" visible="true" weight="0.17829457" />
-      <window_info id="Structure" order="1" sideWeight="0.22289157" side_tool="true" visible="true" weight="0.17829457" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.7756714" visible="true" weight="0.17829457" />
+      <window_info id="Structure" order="1" sideWeight="0.22432859" side_tool="true" visible="true" weight="0.17829457" />
       <window_info id="Favorites" order="2" sideWeight="0.10449927" side_tool="true" weight="0.2081138" />
       <window_info id="Gulp" order="3" side_tool="true" />
       <window_info id="npm" order="4" side_tool="true" />
@@ -915,7 +970,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Statistic" order="8" weight="0.7180723" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50599015" side_tool="true" weight="0.23373494" />
-      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49400985" weight="0.23734939" />
+      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49400985" visible="true" weight="0.23734939" />
       <window_info anchor="bottom" id="Version Control" order="11" sideWeight="0.49964765" weight="0.24096386" />
       <window_info anchor="bottom" id="Messages" order="12" weight="0.14337349" />
       <window_info anchor="bottom" id="TypeScript" order="13" weight="0.19518073" />
@@ -954,7 +1009,6 @@
     <option name="version" value="1" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix sendToMaster bug&#10;improve start up&#10;fix windows env to big bug" />
     <MESSAGE value="update to version 0.4.5" />
     <MESSAGE value="update worker config transport only transport important properties of starter config" />
     <MESSAGE value="update to version 0.4.6" />
@@ -979,81 +1033,10 @@
     <MESSAGE value="fix for authenticate time bug () (waiting for client has set auth token)" />
     <MESSAGE value="update to version 0.5.1 and client to 0.3.7" />
     <MESSAGE value="update to version 0.5.2 and client to 0.4.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="update to version 0.5.2 and client to 0.4.1" />
+    <MESSAGE value="update to version 0.5.3&#10;add host to sc config" />
+    <option name="LAST_COMMIT_MESSAGE" value="update to version 0.5.3&#10;add host to sc config" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/tools/objectTools.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="78" column="11" selection-start-line="78" selection-start-column="11" selection-end-line="78" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/validation.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="333">
-          <caret line="23" column="46" selection-start-line="23" selection-start-column="46" selection-end-line="23" selection-end-column="46" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/main/zationWorker.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10845">
-          <caret line="723" column="37" selection-start-line="723" selection-start-column="37" selection-end-line="723" selection-end-column="37" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="e#81#128#0" expanded="true" />
-            <element signature="n#ChTools#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/config/configPreCompiler.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="900">
-          <caret line="60" column="35" selection-start-line="60" selection-start-column="35" selection-end-line="60" selection-end-column="35" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="n#ZationConfig#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/configs/appConfig.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1920">
-          <caret line="128" column="52" selection-start-line="128" selection-start-column="52" selection-end-line="128" selection-end-column="52" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="n#Bag#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/config/configChecker.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11850">
-          <caret line="790" column="56" selection-start-line="790" selection-start-column="56" selection-end-line="790" selection-end-column="56" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="n#ZationConfig#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/validator/validatorEngine.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="19" column="17" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="17" />
-          <folding>
-            <element signature="n#ValidatorLibrary#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/helper/validator/validatorLibrary.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="254">
@@ -1130,16 +1113,6 @@
     <entry file="file://$PROJECT_DIR$/src/lib/helper/infoObjects/asymmetricKeyPairs.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state>
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/processor/mainProcessor.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1920">
-          <caret line="145" column="39" selection-start-line="145" selection-start-column="39" selection-end-line="145" selection-end-column="39" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -1223,17 +1196,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/bridges/shBridge.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="54" column="9" selection-start-line="54" selection-start-column="9" selection-end-line="54" selection-end-column="9" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="n#TokenBridge#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/node-fetch/browser.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
@@ -1294,15 +1256,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/main/zation.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-82">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/@types/random-string/index.d.ts" />
     <entry file="file://$PROJECT_DIR$/src/lib/helper/sc/socket.ts">
       <provider selected="true" editor-type-id="text-editor">
@@ -1331,28 +1284,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/api/Bag.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9450">
-          <caret line="630" column="73" selection-start-line="630" selection-start-column="60" selection-end-line="630" selection-end-column="73" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="n#ChannelEngine#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/LICENSE">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/api/SmallBag.ts">
+    <entry file="file://$PROJECT_DIR$/gulpFile.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/configs/mainConfig.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6165">
-          <caret line="420" column="23" selection-start-line="420" selection-start-column="23" selection-end-line="420" selection-end-column="23" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="n#ChExchangeEngine#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="1590">
+          <caret line="110" column="31" selection-start-line="110" selection-start-column="31" selection-end-line="110" selection-end-column="31" />
         </state>
       </provider>
     </entry>
@@ -1401,10 +1342,115 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/configs/mainConfig.ts">
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/zationTaskErrors/mainTaskErrors.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="367">
-          <caret line="110" column="31" selection-start-line="110" selection-start-column="31" selection-end-line="110" selection-end-column="31" />
+        <state relative-caret-position="202">
+          <caret line="230" column="4" selection-start-line="230" selection-start-column="4" selection-end-line="230" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/processor/validChProcessor.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/tools/idCounter.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="24" column="32" lean-forward="true" selection-start-line="24" selection-start-column="32" selection-end-line="24" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/bridges/shBridge.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1202">
+          <caret line="88" column="22" selection-start-line="88" selection-start-column="22" selection-end-line="88" selection-end-column="22" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#TokenBridge#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/api/Bag.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="811" column="7" selection-start-line="811" selection-start-column="7" selection-end-line="811" selection-end-column="7" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#ChannelEngine#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/api/SmallBag.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="241" column="5" selection-start-line="241" selection-start-column="5" selection-end-line="241" selection-end-column="5" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#ChExchangeEngine#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/processor/mainProcessor.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="24" selection-start-line="24" selection-end-line="24" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/logger/logger.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="337">
+          <caret line="127" column="5" selection-start-line="127" selection-start-column="5" selection-end-line="127" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/processor/socketProcessor.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="38" column="22" selection-start-line="38" selection-start-column="22" selection-end-line="38" selection-end-column="22" />
+          <folding>
+            <element signature="n#MainProcessor#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/processor/httpProcessor.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="222">
+          <caret line="34" column="37" selection-start-line="34" selection-start-column="37" selection-end-line="34" selection-end-column="37" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#HtmlTools#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/response/returner.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="42" column="5" lean-forward="true" selection-start-line="42" selection-start-column="5" selection-end-line="42" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/main/zation.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="464">
+          <caret line="31" column="5" lean-forward="true" selection-start-line="31" selection-start-column="5" selection-end-line="31" selection-end-column="5" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#ZationConfig#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1419,9 +1465,6 @@
           </folding>
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gulpFile.js">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">

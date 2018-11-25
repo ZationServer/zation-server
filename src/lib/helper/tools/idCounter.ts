@@ -19,47 +19,38 @@ class IdCounter
 
     increase() : void
     {
-        let newTimeStamp = Date.now();
+        const newTimeStamp = Date.now();
 
-        if(this.lastTimeStamp < newTimeStamp)
-        {
+        if(this.lastTimeStamp < newTimeStamp) {
             this.resetCounter();
             this.lastTimeStamp = newTimeStamp;
         }
-        else
-        {
+        else {
             this.increaseCounter();
         }
     }
 
-    getId() : string
-    {
+    getId() : string {
         return `${this.lastTimeStamp}.${this.counter1}.${this.counter2}`;
     }
 
     private increaseCounter()
     {
-        if(this.counter2 < Number.MAX_SAFE_INTEGER)
-        {
+        if(this.counter2 < Number.MAX_SAFE_INTEGER) {
             this.counter2++;
         }
-        else
-        {
+        else {
             this.counter2 = 0;
-
-            if(this.counter1 < Number.MAX_SAFE_INTEGER)
-            {
+            if(this.counter1 < Number.MAX_SAFE_INTEGER) {
                 this.counter1++;
             }
-            else
-            {
+            else {
                 this.resetCounter();
             }
         }
     }
 
-    private resetCounter()
-    {
+    private resetCounter() {
        this.counter1 = 0;
        this.counter2 = 0;
     }

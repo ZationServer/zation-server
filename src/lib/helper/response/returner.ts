@@ -23,8 +23,7 @@ class Returner
     private readonly reqId    : string;
     private readonly sendErrorDesc : boolean;
     
-    constructor({isWebSocket,respond,res,reqId},zc : ZationConfig)
-    {
+    constructor({isWebSocket,respond,res,reqId},zc : ZationConfig) {
         this.webSocket  = isWebSocket;
         this.respond    = respond;
         this.res        = res;
