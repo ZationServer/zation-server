@@ -23,7 +23,7 @@ import {WorkerMessageActions}  from "../helper/constants/workerMessageActions";
 
 class ZationMaster {
     private static instance: ZationMaster | null = null;
-    private static readonly version: string = '0.5.2';
+    private static readonly version: string = '0.5.3';
 
     private readonly serverStartedTimeStamp: number;
     private readonly zc: ZationConfig;
@@ -175,8 +175,9 @@ class ZationMaster {
             brokerController:__dirname  + '/zationBroker.js',
             workerClusterController: null,
             environment : this.zc.mainConfig.environment,
-            port   : this.zc.mainConfig.port,
-            path   : this.zc.mainConfig.path,
+            port  : this.zc.mainConfig.port,
+            path  : this.zc.mainConfig.path,
+            host : this.zc.mainConfig.hostname,
             protocol : this.zc.mainConfig.secure ? 'https' : 'http',
             protocolOptions: this.zc.mainConfig.httpsConfig,
             authKey: this.zc.mainConfig.authKey,
