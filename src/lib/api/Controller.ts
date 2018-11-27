@@ -11,7 +11,7 @@ import ObjectPath = require("../helper/tools/objectPath");
 export class Controller
 {
     private _storage : object = {};
-    private smallBag : SmallBag;
+    protected smallBag : SmallBag;
 
     constructor(smallBag : SmallBag) {
         this.smallBag = smallBag;
