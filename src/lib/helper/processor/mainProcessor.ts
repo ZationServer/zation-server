@@ -13,7 +13,7 @@ import ZationReqTools        = require('../tools/zationReqTools');
 import SystemVersionChecker  = require('../version/systemVersionChecker');
 import InputProcessor        = require('../input/inputReqProcessor');
 import AuthEngine            = require('../auth/authEngine');
-import Bag                   = require('../../api/Bag');
+import {Bag}                   from '../../api/Bag';
 import TokenEngine           = require('../token/tokenEngine');
 import SHBridge              = require("../bridges/shBridge");
 import ZationConfig          = require("../../main/zationConfig");

@@ -22,7 +22,7 @@ import * as core               from "express-serve-static-core";
 import {IncomingHttpHeaders, IncomingMessage} from "http";
 import {Agent} from "useragent";
 
-class Bag extends SmallBag
+export class Bag extends SmallBag
 {
     private bagVariables : object;
     private readonly shBridge : SHBridge;
@@ -1263,4 +1263,3 @@ class Bag extends SmallBag
     }
 }
 
-export = Bag;

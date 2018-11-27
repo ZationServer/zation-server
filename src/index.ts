@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import ZationStarter         = require('./lib/main/zationMaster');
-import Bag                   = require('./lib/api/Bag');
+import {Bag}                   from './lib/api/Bag';
 import SmallBag              = require('./lib/api/SmallBag');
 import {Controller}            from'./lib/api/Controller';
 import Result                = require('./lib/api/Result');

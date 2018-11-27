@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 import SmallBag              = require("./SmallBag");
-import Bag                   = require("./Bag");
+import {Bag}                   from './Bag';
 import ExpressCore           = require("express-serve-static-core");
 import TaskError             = require("./TaskError");
 import TaskErrorBag          = require("./TaskErrorBag");

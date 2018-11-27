@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Bag             = require("../../api/Bag");
+import {Bag}             from '../../api/Bag';
 import SmallBag        = require("../../api/SmallBag");
 import ZationToken     = require("../infoObjects/zationTokenInfo");
 import TaskErrorBag    = require("../../api/TaskErrorBag");

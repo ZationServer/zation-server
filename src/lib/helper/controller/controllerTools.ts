@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import ZationConfig     = require("../../main/zationConfig");
-import Bag              = require("../../api/Bag");
+import {Bag}              from '../../api/Bag';
 import {
     ControllerConfig,
     InternControllerConfig,
