@@ -45,6 +45,8 @@ export interface MainConfig
     authPrivateKey  ?: string | null;
     authPublicKey  ?: string | null;
 
+    variables ?: object,
+
     //service
     killServerOnServicesCreateError ?: boolean;
 
@@ -148,6 +150,7 @@ export interface InternMainConfig extends MainConfig {
     allowClientPublish  : boolean;
     workerStatusInterval  : number;
     killServerOnServicesCreateError : boolean;
+    variables : any;
 }
 
 export interface PanelUserConfig {

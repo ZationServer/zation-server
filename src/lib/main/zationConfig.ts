@@ -135,6 +135,7 @@ class ZationConfig {
             clientJsPrepare: true,
             usePanel: false,
             killServerOnServicesCreateError : false,
+            variables : {}
         };
     }
 
@@ -173,6 +174,7 @@ class ZationConfig {
         return !!this._mainConfig.showConfigWarnings;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     isUsePanel(): boolean {
         return !!this._mainConfig.usePanel
     }

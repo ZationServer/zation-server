@@ -130,6 +130,18 @@ class SmallBag
         return this.zc.serviceConfig;
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns an main config variable with object path.
+     * Which you can define in the variables property in the main config.
+     * @param path
+     */
+    getMainConfigVariable<V>(path ?: string | string[]) : V
+    {
+        return ObjectPath.get(this.zc.mainConfig.variables,path);
+    }
+
     //PART Server
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**

@@ -50,12 +50,12 @@ export interface Service
     mongoDb  ?: Record<string,MongoDbConfig> | DefaultConfig<MongoDbConfig>;
 }
 
-export type CustomServiceCreateFunction<T> = (config : object,name : string) => Promise<T> | T;
+export type CustomServiceCreateFunction<T,C> = (config : C,name : string) => Promise<T> | T;
 export type CustomServiceGetFunction<T,R> = (service : T) => Promise<R> | R;
 
 export interface CustomService
 {
-    create : CustomServiceCreateFunction<any>;
+    create : CustomServiceCreateFunction<any,any>;
     get ?: CustomServiceGetFunction<any,any>
 }
 

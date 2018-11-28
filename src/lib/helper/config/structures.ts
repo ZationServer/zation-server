@@ -133,6 +133,8 @@ Main[nameof<MainConfig>(s => s.authAlgorithm)]      = {types : ['string'],isOpti
 Main[nameof<MainConfig>(s => s.authPrivateKey)]     = {types : ['string','object'],isOptional : true};
 Main[nameof<MainConfig>(s => s.authPublicKey)]      = {types : ['string','object'],isOptional : true};
 
+Main[nameof<MainConfig>(s => s.variables)]          = {types : ['object'],isOptional : true};
+
 //service
 Main[nameof<MainConfig>(s => s.killServerOnServicesCreateError)] = {types : ['boolean'],isOptional : true};
 
