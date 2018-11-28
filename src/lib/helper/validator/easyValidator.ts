@@ -278,13 +278,8 @@ class EasyValidator
 
     static isBase64(data)
     {
-        // noinspection JSUnresolvedFunction
-        try {
-            return Validator.isBase64(data);
-        }
-        catch (e) {
-            return false;
-        }
+        return EasyValidator.isString(data) && (new RegExp('^(data:\\w+\\/[a-zA-Z+\\-.]+;base64,)?(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0-9+\/]{3}=)?$', 'gi')).
+        test(data);
     }
 
     static isAscii(data)
