@@ -80,6 +80,8 @@ class ValidChProcessor
                                     inputPath : keyPath,
                                     checkIndex : i
                                 }));
+                            resolve();
+                            return;
                         }
 
                         let specificConfig =
@@ -97,6 +99,7 @@ class ValidChProcessor
                                     inputPath : keyPath,
                                     checkIndex : i
                                 }));
+                            resolve();
                         }
                     }
                     else
@@ -105,6 +108,7 @@ class ValidChProcessor
                             {
                                 checkIndex : i
                             }));
+                        resolve();
                     }
                 }));
             }

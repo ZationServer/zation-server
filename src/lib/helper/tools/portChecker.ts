@@ -4,18 +4,19 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Net = require("net");
+import PortScanner = require('portscanner');
+
 
 class PortChecker
 {
     public static async isPortAvailable(port : number | undefined) : Promise<boolean>
     {
-        return new Promise<boolean>(((resolve, reject) => {
-            const tester = Net.createServer()
-                .once('error', err => (err['code'] == 'EADDRINUSE' ? resolve(false) : reject(err)))
-                .once('listening', () => tester.once('close', () => resolve(true)).close())
-                .listen(port)
-        }));
+        return new Promise<boolean>((resolve, reject) => {
+            PortScanner.checkPortStatus(port, '127.0.0.1', function(error, status) {
+                if(error){reject(error)}
+                else{resolve(status === 'closed');}
+            })
+        });
     }
 }
 
