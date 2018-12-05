@@ -20,7 +20,8 @@ import ProtocolAccessChecker = require("../helper/protocolAccess/protocolAccessC
 import {ScServer}              from "../helper/sc/scServer";
 import * as core               from "express-serve-static-core";
 import {IncomingHttpHeaders, IncomingMessage} from "http";
-import {Agent} from "useragent";
+import {Agent}        from "useragent";
+import {UploadedFile} from "express-fileupload";
 
 export class Bag extends SmallBag
 {
@@ -474,6 +475,43 @@ export class Bag extends SmallBag
         }
         else {
             return this.shBridge.getRequest().method;
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the attached files from the http request.
+     * By using the npm package express-fileupload.
+     * You can attach files on the client side
+     * by using the method attachHttpContent.
+     * @throws MethodIsNotCompatible
+     */
+    getHttpFiles() : Record<string,UploadedFile> {
+        if(this.shBridge.isWebSocket()) {
+            throw new MethodIsNotCompatible(this.getProtocol(),'http');
+        }
+        else {
+            //using express-fileupload
+            // @ts-ignore
+            return this.shBridge.getRequest().files;
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the http request body.
+     * You can use it to access attached http content.
+     * @throws MethodIsNotCompatible
+     */
+    getHttpBody() : Record<string,any>
+    {
+        if(this.shBridge.isWebSocket()) {
+            throw new MethodIsNotCompatible(this.getProtocol(),'http');
+        }
+        else {
+            return this.shBridge.getRequest().body;
         }
     }
 
