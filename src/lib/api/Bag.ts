@@ -945,7 +945,7 @@ export class Bag extends SmallBag
      * @description
      * Returns if the user agent of the client is set.
      */
-    xfgent() : boolean
+    hasUserAgent() : boolean
     {
         return this.getHandshakeHeader()["user-agent"] !== undefined;
     }
