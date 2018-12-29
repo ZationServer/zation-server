@@ -58,40 +58,24 @@ AppObject[nameof<ValuePropertyConfig>(s => s.default)]     = {types : ['string',
 AppObject[nameof<ObjectPropertyConfig>(s => s.prototype)]  = {types : ['object'],isOptional : true};
 AppObject[nameof<ObjectPropertyConfig>(s => s.convert)]    = {types : ['function'],isOptional : true};
 
-const AppController = {};   
-AppController[nameof<ControllerConfig>(s => s.input)]            = {types : ['object'],isOptional : true};
-AppController[nameof<ControllerConfig>(s => s.beforeHandle)]     = {types : ['function','array'],isOptional : true};
-AppController[nameof<ControllerConfig>(s => s.systemController)] = {types : ['boolean'],isOptional : true};
-AppController[nameof<ControllerConfig>(s => s.wsAccess)]         = {types : ['boolean'],isOptional : true};
-AppController[nameof<ControllerConfig>(s => s.httpAccess)]       = {types : ['boolean'],isOptional : true};
-AppController[nameof<ControllerConfig>(s => s.httpGetAllowed)]   = {types : ['boolean'],isOptional : true};
-AppController[nameof<ControllerConfig>(s => s.httpPostAllowed)]  = {types : ['boolean'],isOptional : true};
-AppController[nameof<ControllerConfig>(s => s.inputValidation)]  = {types : ['boolean'],isOptional : true};
-AppController[nameof<ControllerConfig>(s => s.inputAllAllow)]    = {types : ['boolean'],isOptional : true};
-AppController[nameof<ControllerConfig>(s => s.filePath)]         = {types : ['string'],isOptional : true};
-AppController[nameof<ControllerConfig>(s => s.fileName)]         = {types : ['string'],isOptional : true};
-AppController[nameof<ControllerConfig>(s => s.access)]           = {types : ['string','function','number','array'],isOptional : true};
-AppController[nameof<ControllerConfig>(s => s.notAccess)]        = {types : ['string','function','number','array'],isOptional : true};
-AppController[nameof<ControllerConfig>(s => s.versionAccess)]    = {types : ['string','object'],isOptional : true};
+const ControllerConfig = {};   
+ControllerConfig[nameof<ControllerConfig>(s => s.input)]            = {types : ['object'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.beforeHandle)]     = {types : ['function','array'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.systemController)] = {types : ['boolean'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.wsAccess)]         = {types : ['boolean'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.httpAccess)]       = {types : ['boolean'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.httpGetAllowed)]   = {types : ['boolean'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.httpPostAllowed)]  = {types : ['boolean'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.inputValidation)]  = {types : ['boolean'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.inputAllAllow)]    = {types : ['boolean'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.access)]           = {types : ['string','function','number','array'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.notAccess)]        = {types : ['string','function','number','array'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.versionAccess)]    = {types : ['string','object'],isOptional : true};
 
 const AnyOf = {};
 AnyOf[nameof<AnyOfProperty>(s => s.anyOf)]           = {types : ['array','object'],isOptional : false};
 AnyOf[nameof<PropertyOptional>(s => s.isOptional)]   = {types : ['boolean'],isOptional : true};
 AnyOf[nameof<PropertyOptional>(s => s.default)]      = {types : ['string','array','number','boolean','object','function'],isOptional : true};
-
-const AppControllerDefaults = {};
-AppControllerDefaults[nameof<ControllerConfig>(s => s.input)]            = {types : ['object'],isOptional : true};
-AppControllerDefaults[nameof<ControllerConfig>(s => s.beforeHandle)]     = {types : ['function','array'],isOptional : true};
-AppControllerDefaults[nameof<ControllerConfig>(s => s.systemController)] = {types : ['boolean'],isOptional : true};
-AppControllerDefaults[nameof<ControllerConfig>(s => s.wsAccess)]         = {types : ['boolean'],isOptional : true};
-AppControllerDefaults[nameof<ControllerConfig>(s => s.httpAccess)]       = {types : ['boolean'],isOptional : true};
-AppControllerDefaults[nameof<ControllerConfig>(s => s.httpGetAllowed)]   = {types : ['boolean'],isOptional : true};
-AppControllerDefaults[nameof<ControllerConfig>(s => s.httpPostAllowed)]  = {types : ['boolean'],isOptional : true};
-AppControllerDefaults[nameof<ControllerConfig>(s => s.inputValidation)]  = {types : ['boolean'],isOptional : true};
-AppControllerDefaults[nameof<ControllerConfig>(s => s.inputAllAllow)]    = {types : ['boolean'],isOptional : true};
-AppControllerDefaults[nameof<ControllerConfig>(s => s.access)]           = {types : ['string','function','number','array'],isOptional : true};
-AppControllerDefaults[nameof<ControllerConfig>(s => s.notAccess)]        = {types : ['string','function','number','array'],isOptional : true};
-AppControllerDefaults[nameof<ControllerConfig>(s => s.versionAccess)]    = {types : ['string','object'],isOptional : true};
 
 const Main = {};
 Main[nameof<MainConfig>(s => s.port)]               = {types : ['number'],isOptional : true};
@@ -342,8 +326,7 @@ const Structures = {
     App : App,
     BackgroundTask : BackgroundTask,
     AppObject : AppObject,
-    AppController : AppController,
-    AppControllerDefaults : AppControllerDefaults,
+    ControllerConfig : ControllerConfig,
     Main : Main,
     StarterConfig : StarterConfig,
     InputBody : InputBody,

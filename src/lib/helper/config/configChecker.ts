@@ -8,7 +8,6 @@ import ZationConfig = require("../../main/zationConfig");
 import Logger = require('../logger/logger');
 import ConfigError = require('./configError');
 import ConfigCheckerTools = require('./configCheckerTools');
-import ControllerCheckTools = require('../controller/controllerCheckTools');
 import ObjectPath = require('../tools/objectPath');
 import ObjectTools = require('../tools/objectTools');
 import Structures = require('./structures');
@@ -30,6 +29,8 @@ import {ChannelConfig, ChannelDefault, CustomChannelConfig} from "../configs/cha
 import {OnlyDateFunctions, OnlyNumberFunctions, OnlyStringFunctions} from "../constants/validation";
 import PropertyImportEngine = require("./propertyImportEngine");
 import Iterator = require("../tools/iterator");
+// noinspection TypeScriptPreferShortImport
+import {Controller, ControllerClass} from "../../api/Controller";
 
 class ConfigChecker
 {
@@ -161,7 +162,7 @@ class ConfigChecker
                     `AuthController: '${authControllerName}' is not found.`));
             } else {
                 //checkAuthControllerAccess value
-                let authController = controller[authControllerName];
+                let authController = controller[authControllerName].config;
                 if (authController.access !== ZationAccess.ALL) {
                     Logger.printConfigWarning
                     (ConfigNames.APP, `It is recommended to set the access of the authController directly to 'all'.`);
@@ -567,7 +568,7 @@ class ConfigChecker
             const controller = this.zc.appConfig.controller;
             for (let cName in controller) {
                 if (controller.hasOwnProperty(cName)) {
-                    this.checkController(controller[cName], new Target(`Controller: '${cName}'`), cName);
+                    this.checkController(controller[cName], new Target(`Controller: '${cName}'`));
                 }
             }
         }
@@ -575,10 +576,9 @@ class ConfigChecker
         //check controllerDefault
         if (typeof this.zc.appConfig.controllerDefaults === 'object') {
             const controller = this.zc.appConfig.controllerDefaults;
-            this.checkController(controller, new Target(nameof<AppConfig>(s => s.controllerDefaults)));
+            this.checkControllerConfig(controller, new Target(nameof<AppConfig>(s => s.controllerDefaults)));
         }
 
-        this.checkControllerPaths();
     }
 
     // noinspection JSMethodCanBeStatic
@@ -593,20 +593,23 @@ class ConfigChecker
 
     }
 
-    private checkController(cc: object, target: Target, cName ?: string) {
-        this.checkControllerAccessKey(cc, target);
-
-        const structure = cName ? Structures.AppController : Structures.AppControllerDefaults;
-        ConfigCheckerTools.assertStructure(structure, cc, ConfigNames.APP, this.ceb, target);
-
-        this.checkInputAllAllow(cc, target);
-
-        this.checkControllerInput(cc, target);
-        this.checkControllerVersionAccess(cc, target);
-
-        if (cName) {
-            this.checkControllerClass(cc, target, cName);
+    private checkController(cv: ControllerClass, target: Target) {
+        if(cv.prototype instanceof Controller) {
+            this.checkControllerConfig(cv.config,target);
         }
+        else {
+            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                `${target.getTarget()} is not extends from main Controller class.`));
+        }
+    }
+
+    private checkControllerConfig(config : ControllerConfig,target : Target)
+    {
+        ConfigCheckerTools.assertStructure(Structures.ControllerConfig, config, ConfigNames.APP, this.ceb, target);
+        this.checkControllerAccessKey(config, target);
+        this.checkInputAllAllow(config, target);
+        this.checkControllerInput(config,target);
+        this.checkControllerVersionAccess(config, target);
     }
 
     // noinspection JSMethodCanBeStatic
@@ -617,53 +620,6 @@ class ConfigChecker
                 ConfigNames.APP,
                 `${target.getTarget()} the property input is ignored with inputAllAllow true.`
             );
-        }
-    }
-
-    private checkControllerClass(cc: object, target: Target, cName: string) {
-        let cPath = ControllerCheckTools.getControllerFPathForCheck(cc, cName);
-        this.addControllerPaths(cPath, cName);
-
-        if (!ControllerCheckTools.controllerFileExist(cc, cPath, this.zc)) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                `${target.getTarget()} on Path: '${cPath}', can not found the controller file.`));
-        }
-        else
-        {
-            try {
-                const controller = ControllerCheckTools.requireController(cc, cPath, this.zc);
-                if (!ControllerCheckTools.isControllerExtendsController(controller)) {
-                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                        `${target.getTarget()} on Path: '${cPath}', is not extends from main Controller class.`));
-                }
-            }
-            catch (e) {
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `${target.getTarget()} on Path: '${cPath}', can not require, syntax errors.`));
-            }
-        }
-    }
-
-    private checkControllerPaths() {
-        for (let p in this.cNames) {
-            if (this.cNames.hasOwnProperty(p) && Array.isArray(this.cNames[p])
-                && this.cNames[p].length > 1) {
-                Logger.printConfigWarning
-                (
-                    ConfigNames.APP,
-                    `Controller: '${this.cNames[p].toString()}' have the same lowercase path (Warning for case insensitive systems) or path: '${p}'.`
-                );
-            }
-        }
-    }
-
-    private addControllerPaths(path, cName) {
-        let sPath = path.toLowerCase();
-
-        if (Array.isArray(this.cNames[sPath])) {
-            this.cNames[sPath].push(cName);
-        } else {
-            this.cNames[sPath] = [cName];
         }
     }
 

@@ -20,6 +20,7 @@ import BackgroundTasksSetter = require("../helper/background/backgroundTasksLoad
 const  isWindows             = require('is-windows');
 import StateServerEngine     = require("../helper/cluster/stateServerEngine");
 import {WorkerMessageActions}  from "../helper/constants/workerMessageActions";
+import {StarterConfig} from "../helper/configs/starterConfig";
 
 class ZationMaster {
     private static instance: ZationMaster | null = null;
@@ -46,7 +47,7 @@ class ZationMaster {
     private fullClientJs : string;
     private serverSettingsJs : string;
 
-    constructor(options) {
+    constructor(options : StarterConfig) {
         if (ZationMaster.instance === null) {
             ZationMaster.instance = this;
 

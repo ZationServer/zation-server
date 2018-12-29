@@ -10,7 +10,6 @@ export type StarterConfig = StarterConfigMain & MainConfig;
 
 export interface StarterConfigMain
 {
-    controller  ?: string;
     configs  ?: string;
 
     appConfig  ?: string;

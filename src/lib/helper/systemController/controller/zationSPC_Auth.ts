@@ -3,13 +3,29 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
+// noinspection TypeScriptPreferShortImport
 import {Controller}     from "../../../api/Controller";
 import TaskError      = require("../../../api/TaskError");
 import MainTaskErrors = require("./../../zationTaskErrors/mainTaskErrors");
-import {ZationToken} from "../../constants/internal";
+import {ZationToken}      from "../../constants/internal";
+import {ControllerConfig} from "../../../..";
 
-class ZationSC_Ping extends Controller
+class ZationSPC_Auth extends Controller
 {
+    static config : ControllerConfig = {
+        systemController : true,
+        access : 'all',
+        versionAccess : 'all',
+        input : {
+            userName : {
+                type : 'string'
+            },
+            hashPassword : {
+                type : 'string'
+            }
+        }
+    };
+
     async handle(bag,{userName,hashPassword})
     {
         if(!bag.getWorker().getPanelEngine().isPanelLoginDataValid(userName,hashPassword)) {
@@ -22,4 +38,4 @@ class ZationSC_Ping extends Controller
     }
 }
 
-export = ZationSC_Ping;
+export = ZationSPC_Auth;

@@ -4,44 +4,16 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationConfig     = require("../../main/zationConfig");
+// noinspection TypeScriptPreferShortImport
 import {Bag}              from '../../api/Bag';
 import {
     ControllerConfig,
-    InternControllerConfig,
     ObjectPropertyConfig
 } from "../configs/appConfig";
 
-const systemControllerPath   = __dirname + './../systemController/controller';
 
 class ControllerTools
 {
-
-    //Part Controller Paths
-    static getControllerFullPath(controllerConfig : InternControllerConfig) : string
-    {
-        let controllerPath = controllerConfig.filePath;
-        let controllerName = controllerConfig.fileName;
-
-        if(controllerPath === undefined) {
-            return controllerName;
-        }
-        else {
-            return controllerPath + '/' + controllerName;
-        }
-    }
-
-    //Part Load Controller
-    static getControllerClass(cConfig : InternControllerConfig,zc : ZationConfig) : any
-    {
-        const path = ControllerTools.getControllerFullPath(cConfig);
-        if(ControllerTools.isSystemController(cConfig)) {
-            return require(systemControllerPath + '/' + path);
-        }
-        else {
-            return require(zc.starterConfig.controller + '/' + path);
-        }
-    }
 
     //Part is SystemController
     static isSystemController(cConfig : ControllerConfig) : boolean {
@@ -72,8 +44,7 @@ class ControllerTools
 
     private static async fireBeforeHandleEvent(func : Function,bag : Bag) : Promise<void>
     {
-        if(typeof func === "function")
-        {
+        if(typeof func === "function") {
             await func(bag);
         }
     }

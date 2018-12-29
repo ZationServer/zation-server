@@ -9,7 +9,7 @@ import ExpressCore           = require("express-serve-static-core");
 import TaskError             = require("./TaskError");
 import TaskErrorBag          = require("./TaskErrorBag");
 import Result                = require("./Result");
-import {Controller}            from "./Controller";
+import {Controller, ControllerClass} from "./Controller";
 import {ConnectionConfig}      from "pg";
 import {PoolConfig}            from "mysql";
 
@@ -130,6 +130,7 @@ import ZationTokenInfo = require("../helper/infoObjects/zationTokenInfo");
 class Config
 {
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * @description
      * Merge configs together.
@@ -140,6 +141,25 @@ class Config
      */
     static merge(...configs : object[]) : object {
         return ObjectTools.mergeObjects(configs);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Changes the configuration of a controller.
+     * Can be used for setting the configuration in the app config.
+     * @example
+     * merge(LoginController,{httpAccess : false});
+     * @param controller
+     * The controller that should be updated.
+     * @param config
+     * The new configuration.
+     * @param overrideControllerConfig
+     * If the new configuration properties override the controller properties.
+     */
+    static buildController(controller : ControllerClass,config : ControllerConfig,overrideControllerConfig : boolean = false) : ControllerClass {
+        ObjectTools.addObToOb(controller.config,config,overrideControllerConfig);
+        return controller;
     }
 
     //Part main configs
@@ -192,7 +212,7 @@ class Config
 
     //Controller
     // noinspection JSUnusedGlobalSymbols
-    static controller(c : ControllerConfig) :  ControllerConfig {return c;}
+    static controllerConfig(c : ControllerConfig) :  ControllerConfig {return c;}
     // noinspection JSUnusedGlobalSymbols
     static controllerInput(c : ControllerInput) :  ControllerInput {return c;}
     // noinspection JSUnusedGlobalSymbols

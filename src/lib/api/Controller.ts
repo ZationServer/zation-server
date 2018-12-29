@@ -7,6 +7,7 @@ GitHub: LucaCode
 import SmallBag   = require("./SmallBag");
 import {Bag}        from './Bag';
 import ObjectPath = require("../helper/tools/objectPath");
+import {ControllerConfig} from "../helper/configs/appConfig";
 
 export class Controller
 {
@@ -16,6 +17,12 @@ export class Controller
     constructor(smallBag : SmallBag) {
         this.smallBag = smallBag;
     }
+
+    /**
+     * @description
+     * This property is used for getting the configuration of this controller.
+     */
+    public static config : ControllerConfig = {};
 
     /**
      * @description
@@ -104,3 +111,8 @@ export class Controller
     }
 }
 
+export interface ControllerClass {
+    config : ControllerConfig;
+    new (smallBag : SmallBag): Controller;
+    prototype : any;
+}

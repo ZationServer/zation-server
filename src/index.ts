@@ -19,19 +19,21 @@ import AuthenticationError   = require("./lib/helper/error/authenticationError")
 import ErrorNotFoundError    = require("./lib/helper/error/errorNotFoundError");
 import CodeError             = require("./lib/helper/error/codeError");
 import MethodIsNotCompatible = require("./lib/helper/error/methodIsNotCompatible");
-const  FsUtil : any          = require('socketcluster/fsutil');
+import {ControllerConfig}      from "./lib/helper/configs/appConfig";
+import {StarterConfig}         from "./lib/helper/configs/starterConfig";
+const  FsUtil : any           = require('socketcluster/fsutil');
 
 //starter
-const start = (options) => {
+const start = (options : StarterConfig) => {
     new ZationStarter(options);
 };
 
-export =
-    {
+export {
         start,
         Bag,
         SmallBag,
         Controller,
+        ControllerConfig,
         Result,
         TaskError,
         TaskErrorBag,
@@ -43,5 +45,5 @@ export =
         ErrorNotFoundError,
         CodeError,
         MethodIsNotCompatible,
-        FsUtil
+        FsUtil,
     };

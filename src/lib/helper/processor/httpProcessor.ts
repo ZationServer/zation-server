@@ -61,6 +61,7 @@ class HttpProcessor
         }
         else {
             Logger.printDebugInfo(`Http Request id: ${reqId} -> No zation data found`);
+            //todo load default html site from the worker
             HttpProcessor.printDefaultHtmlSite(res);
         }
     }

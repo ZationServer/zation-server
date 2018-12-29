@@ -10,16 +10,18 @@ import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
 import systemController = require('../systemController/systemControler.config');
 import ControllerTools  = require('./controllerTools');
 import ZationWorker     = require("../../main/zationWorker");
-import {Controller}       from'../../api/Controller';
-import {ControllerConfig, InternControllerConfig} from "../configs/appConfig";
+// noinspection TypeScriptPreferShortImport
+import {Controller, ControllerClass} from '../../api/Controller';
+// noinspection TypeScriptPreferShortImport
+import {ControllerConfig} from "../configs/appConfig";
 
 class ControllerPrepare
 {
     private readonly zc : ZationConfig;
     private readonly worker : ZationWorker;
 
-    private readonly systemController : object;
-    private readonly appController : object;
+    private readonly systemController : Record<string,{config : ControllerConfig,instance : Controller}>;
+    private readonly appController : Record<string,{config : ControllerConfig,instance : Controller}>;
     
     constructor(zc,worker)
     {
@@ -98,14 +100,17 @@ class ControllerPrepare
         await Promise.all(promises);
     }
 
-    async addController(name : string,config : InternControllerConfig) : Promise<void>
+    async addController(name : string,controllerClass : ControllerClass) : Promise<void>
     {
-        let isSystemC    = ControllerTools.isSystemController(config);
-        let cClass : any = ControllerTools.getControllerClass(config,this.zc);
-        let cInstance : Controller = new cClass(this.worker.getPreparedSmallBag());
+        const config : ControllerConfig = controllerClass.config;
+
+        const isSystemC = ControllerTools.isSystemController(config);
+        const cInstance : Controller = new controllerClass(this.worker.getPreparedSmallBag());
+
         this.addControllerConfigAccessKey(config);
 
         await cInstance.initialize(this.worker.getPreparedSmallBag());
+
         if(!isSystemC) {
             this.appController[name] = {config : config,instance : cInstance};
         }

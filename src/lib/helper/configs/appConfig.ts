@@ -8,13 +8,21 @@ import {Bag}             from '../../api/Bag';
 import SmallBag        = require("../../api/SmallBag");
 import ZationToken     = require("../infoObjects/zationTokenInfo");
 import TaskErrorBag    = require("../../api/TaskErrorBag");
+import {ControllerClass} from "../../api/Controller";
 
 export interface AppConfig
 {
     authController  ?: string;
-    controller  ?: Record<string,ControllerConfig>;
+    controller  ?: Record<string,(ControllerClass)>;
+    //todo
+    //add new panelCommands property where you can add
+    //array with arg names
+    //handle method what should happen
+    //password confirm needed
+    //in the handle method you will get the smallBag and arg object.
+
     userGroups  ?: UserGroupsConfig;
-    controllerDefaults  ?: ControllerDefaultsConfig;
+    controllerDefaults  ?: ControllerConfig;
     values  ?: Record<string,ValuePropertyConfig>;
     objects  ?: Record<string,ObjectPropertyConfig>;
     arrays  ?: Record<string,ArrayPropertyConfig | ArrayShortSyntax>;
@@ -61,7 +69,7 @@ export type ControllerInput = Record<string,Property | AnyOfProperty>;
 export type BeforeHandleFunction = (bag : Bag) => Promise<void> | void;
 export type ControllerAccessFunction = (smallBag : SmallBag,token : ZationToken | null) => Promise<boolean> | boolean;
 
-export interface ControllerDefaultsConfig
+export interface ControllerConfig
 {
     input  ?: ControllerInput;
     beforeHandle  ?: BeforeHandleFunction[] | BeforeHandleFunction;
@@ -75,16 +83,6 @@ export interface ControllerDefaultsConfig
     access  ?: string | number | (string | number)[] | ControllerAccessFunction;
     notAccess  ?: string | number | (string | number)[] | ControllerAccessFunction;
     versionAccess  ?: string | Record<string,number | number[]>
-}
-
-export interface ControllerConfig extends ControllerDefaultsConfig
-{
-    filePath  ?: string;
-    fileName  ?: string;
-}
-
-export interface InternControllerConfig extends ControllerConfig {
-    fileName : string
 }
 
 export type ValidatorFunction = (value : any,taskErrorBag : TaskErrorBag,inputPath : string,smallBag : SmallBag) => Promise<void> | void;

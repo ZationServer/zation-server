@@ -22,6 +22,7 @@ import {
 import PropertyImportEngine = require("./propertyImportEngine");
 import Iterator = require("../tools/iterator");
 
+
 class ConfigPeCompiler
 {
     private readonly zc : ZationConfig;
@@ -459,22 +460,18 @@ class ConfigPeCompiler
         {
             if(controller.hasOwnProperty(k))
             {
-                const currentC : ControllerConfig = controller[k];
-                //set name property to key if not there
-                if(currentC.fileName === undefined) {
-                    currentC.fileName = k;
-                }
+                const config : ControllerConfig = controller[k].config;
 
                 //set the defaults if property missing
                 for(let property in this.controllerDefaults) {
-                    if(this.controllerDefaults.hasOwnProperty(property) && currentC[property] === undefined) {
-                        currentC[property] = this.controllerDefaults[property];
+                    if(this.controllerDefaults.hasOwnProperty(property) && config[property] === undefined) {
+                        config[property] = this.controllerDefaults[property];
                     }
                 }
 
-                if(typeof currentC.input === 'object')
+                if(typeof config.input === 'object')
                 {
-                    const input = currentC.input;
+                    const input = config.input;
                     for(let inputName in input)
                     if(input.hasOwnProperty(inputName))
                     {

@@ -144,7 +144,6 @@ class ZationConfig {
         //only send important starter config settings
         //other is merged with main config
         const starterConfigMain : StarterConfigMain = {
-            controller : this._starterConfig.controller,
             configs : this._starterConfig.configs,
 
             appConfig : this._starterConfig.appConfig,
@@ -372,10 +371,6 @@ class ZationConfig {
         this.loadZationConfigLocation(nameof<StarterConfig>(s => s.errorConfig),'error.config');
         this.loadZationConfigLocation(nameof<StarterConfig>(s => s.eventConfig),'event.config');
         this.loadZationConfigLocation(nameof<StarterConfig>(s => s.serviceConfig),'service.config');
-
-        if(!this._starterConfig.controller) {
-            this._starterConfig.controller = ZationConfig._getRootPath() + '/controller';
-        }
     }
 
     private loadZationConfigLocation(key : string,defaultName : string) : void
