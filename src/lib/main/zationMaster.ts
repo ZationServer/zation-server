@@ -90,11 +90,11 @@ class ZationMaster {
             Logger.printConfigErrorBag(configErrorBag);
             process.exit();
         }
-        Logger.printStartDebugInfo(`Master has checked the start config.`, true);
+        Logger.printStartDebugInfo(`The Master has checked the starter config.`, true);
 
         Logger.startStopWatch();
         await this.zc.loadOtherConfigs();
-        Logger.printStartDebugInfo(`Master has loaded the other config files.`, true);
+        Logger.printStartDebugInfo(`The Master has loaded the other config files.`, true);
 
         Logger.startStopWatch();
         configChecker.checkAllConfigs();
@@ -102,18 +102,18 @@ class ZationMaster {
             Logger.printConfigErrorBag(configErrorBag);
             process.exit();
         }
-        Logger.printStartDebugInfo(`Master has checked the config files.`, true);
+        Logger.printStartDebugInfo(`The Master has checked the config files.`, true);
 
         await this.checkPort();
 
         Logger.startStopWatch();
         this.serverSettingsJs = ClientPrepare.createServerSettingsFile(this.zc);
-        Logger.printStartDebugInfo(`Master has prepared the server settings js file.`, true);
+        Logger.printStartDebugInfo(`The Master has prepared the server settings js file.`, true);
 
         if(this.zc.mainConfig.clientJsPrepare) {
             Logger.startStopWatch();
             this.fullClientJs = ClientPrepare.buildClientJs(this.serverSettingsJs);
-            Logger.printStartDebugInfo(`Master has prepared the client js file.`, true);
+            Logger.printStartDebugInfo(`The Master has prepared the client js file.`, true);
         }
 
         this.checkClusterMode();
@@ -133,7 +133,7 @@ class ZationMaster {
     public startSocketClusterWithLog() {
         Logger.startStopWatch();
         this.startSocketCluster();
-        Logger.printStartDebugInfo('Master starts sc cluster.', true);
+        Logger.printStartDebugInfo('The Master has started sc-cluster.', true);
     }
 
     private async checkPort()
@@ -144,7 +144,7 @@ class ZationMaster {
         if(!portIsAvailable) {
             this.killServer(`The port ${port} is not available! try with a different port!`);
         }
-        Logger.printStartDebugInfo('Master checked port is available.', true);
+        Logger.printStartDebugInfo('The Master has checked that the port is available.', true);
     }
 
     private startSocketCluster()
@@ -435,12 +435,12 @@ class ZationMaster {
             if(obj.userBackgroundTask !== undefined)
             {
                 Logger.printDebugInfo
-                (`Worker with id: ${workerId}, start to invoke background task : '${obj.userBackgroundTask}'`);
+                (`The Worker with id: ${workerId}, starts to invoke background task : '${obj.userBackgroundTask}'`);
             }
             else if(obj.systemBackgroundTasks !== undefined && obj.systemBackgroundTasks)
             {
                 Logger.printDebugInfo
-                (`Worker with id: ${workerId}, start to invoke system background tasks`);
+                (`The Worker with id: ${workerId}, starts to invoke system background tasks`);
             }
 
             this.master.sendToWorker(workerId,obj)

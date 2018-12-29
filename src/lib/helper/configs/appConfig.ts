@@ -14,13 +14,6 @@ export interface AppConfig
 {
     authController  ?: string;
     controller  ?: Record<string,(ControllerClass)>;
-    //todo
-    //add new panelCommands property where you can add
-    //array with arg names
-    //handle method what should happen
-    //password confirm needed
-    //in the handle method you will get the smallBag and arg object.
-
     userGroups  ?: UserGroupsConfig;
     controllerDefaults  ?: ControllerConfig;
     values  ?: Record<string,ValuePropertyConfig>;

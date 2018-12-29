@@ -149,13 +149,14 @@ class Config
      * Changes the configuration of a controller.
      * Can be used for setting the configuration in the app config.
      * @example
-     * merge(LoginController,{httpAccess : false});
+     * buildController(LoginController,{httpAccess : false});
      * @param controller
      * The controller that should be updated.
      * @param config
      * The new configuration.
      * @param overrideControllerConfig
      * If the new configuration properties override the controller properties.
+     * Default value is false.
      */
     static buildController(controller : ControllerClass,config : ControllerConfig,overrideControllerConfig : boolean = false) : ControllerClass {
         ObjectTools.addObToOb(controller.config,config,overrideControllerConfig);

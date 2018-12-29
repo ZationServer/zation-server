@@ -42,6 +42,7 @@ import process = require("process");
 import PanelEngine = require("../helper/panel/panelEngine");
 import ZationTokenInfo = require("../helper/infoObjects/zationTokenInfo");
 import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
+import ViewEngine = require("../helper/views/viewEngine");
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -84,6 +85,9 @@ class ZationWorker extends SCWorker
     private fullClientJs : string;
     private serverSettingsJs : string;
 
+    //prepareView
+    private viewEngine : ViewEngine = new ViewEngine();
+
     constructor() {
         super();
     }
@@ -110,11 +114,15 @@ class ZationWorker extends SCWorker
 
     private async startZWorker()
     {
-        Logger.printStartDebugInfo(`Worker with id ${this.id} begin start process.`,false,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} begins the start process.`,false,true);
+
+        Logger.startStopWatch();
+        this.viewEngine.loadViews();
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has loaded the views.`, true);
 
         Logger.startStopWatch();
         await this.zc.loadOtherConfigs();
-        Logger.printStartDebugInfo(`Worker with id ${this.id} loads other zation config files.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has loaded other zation configuration files.`,true);
 
         //start loading client js
         const clientJs = this.loadClientJsData();
@@ -122,25 +130,25 @@ class ZationWorker extends SCWorker
         Logger.startStopWatch();
         let preCompiler = new ConfigPreCompiler(this.zc);
         preCompiler.preCompile();
-        Logger.printStartDebugInfo(`Worker with id ${this.id} preCompile configs.`, true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has pre compiled configurations.`, true);
 
         //Services
         Logger.startStopWatch();
         this.serviceEngine = new ServiceEngine(this.zc,this);
         await this.serviceEngine.init();
-        Logger.printStartDebugInfo(`Worker with id ${this.id} creates service engine.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created service engine.`,true);
 
         Logger.startStopWatch();
         this.preparedSmallBag = new SmallBag(this);
-        Logger.printStartDebugInfo(`Worker with id ${this.id} prepares a small bag.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared an small bag.`,true);
 
         Logger.startStopWatch();
         this.panelEngine = new PanelEngine(this);
         Logger.printStartDebugInfo
         (
             this.zc.mainConfig.usePanel ?
-                `Worker with id ${this.id} creates panel engine.` :
-                `Worker with id ${this.id} checks for panel engine.`,
+                `The Worker with id ${this.id} has created the panel engine.` :
+                `The Worker with id ${this.id} has checked for the panel engine.`,
             true
         );
 
@@ -148,39 +156,39 @@ class ZationWorker extends SCWorker
         Logger.startStopWatch();
         this.controllerPrepare = new ControllerPrepare(this.zc,this);
         await this.controllerPrepare.prepare();
-        Logger.printStartDebugInfo(`Worker with id ${this.id} prepares controller.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the controllers.`,true);
 
         Logger.startStopWatch();
         this.aePreparedPart = new AEPreparedPart(this.zc,this);
-        Logger.printStartDebugInfo(`Worker with id ${this.id} prepares auth engine part.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared an auth engine part.`,true);
 
         Logger.startStopWatch();
         this.chConfigManager = new ChConfigManager(this.zc);
-        Logger.printStartDebugInfo(`Worker with id ${this.id} init channel config manager.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has initialized the channel config manager.`,true);
 
         Logger.startStopWatch();
         this.chAccessEngine= new ChAccessEngine(this.chConfigManager,this.preparedSmallBag);
-        Logger.printStartDebugInfo(`Worker with id ${this.id} init channel access engine.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has initialized the channel access engine.`,true);
 
         Logger.startStopWatch();
         this.loadUserBackgroundTasks();
-        Logger.printStartDebugInfo(`Worker with id ${this.id} loads user background tasks.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has loaded the user background tasks.`,true);
 
         Logger.startStopWatch();
         this.registerMasterEvent();
-        Logger.printStartDebugInfo(`Worker with id ${this.id} registers by master event.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has registered by the master event.`,true);
 
         Logger.startStopWatch();
         await this.registerWorkerChannel();
-        Logger.printStartDebugInfo(`Worker with id ${this.id} registers worker channel.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has registered to the worker channel.`,true);
 
         Logger.startStopWatch();
         this.zation = new Zation(this);
-        Logger.printStartDebugInfo(`Worker with id ${this.id} creates zation.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created zation.`,true);
 
         Logger.startStopWatch();
         this.checkAuthStart();
-        Logger.printStartDebugInfo(`Worker with id ${this.id} checks for authStart.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has checked for authStart.`,true);
 
         //wait for client js before http server
         await clientJs;
@@ -188,23 +196,23 @@ class ZationWorker extends SCWorker
         //Server
         Logger.startStopWatch();
         await this.startHttpServer();
-        Logger.printStartDebugInfo(`Worker with id ${this.id} starts http server.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has started the http server.`,true);
 
         Logger.startStopWatch();
         await this.startWebSocketServer();
-        Logger.printStartDebugInfo(`Worker with id ${this.id} starts web socket server.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has started the web socket server.`,true);
 
         //Fire ExpressEvent
         Logger.startStopWatch();
         await this.zc.emitEvent(this.zc.eventConfig.express,this.preparedSmallBag,this.app);
-        Logger.printStartDebugInfo(`Worker with id ${this.id} process express event.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has processed the express event.`,true);
 
         //Fire ScServerEvent
         Logger.startStopWatch();
         await this.zc.emitEvent(this.zc.eventConfig.scServer,this.preparedSmallBag,this.scServer);
-        Logger.printStartDebugInfo(`Worker with id ${this.id} process scServer event.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has processed the scServer event.`,true);
 
-        Logger.printStartDebugInfo(`Worker with id ${this.id} is started.`,false);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} is started.`,false);
 
         //Fire event is started
         await this.zc.emitEvent
@@ -1396,6 +1404,12 @@ class ZationWorker extends SCWorker
     getPanelEngine() : PanelEngine
     {
         return this.panelEngine;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getViewEngine() : ViewEngine
+    {
+        return this.viewEngine;
     }
 
     // noinspection JSUnusedGlobalSymbols

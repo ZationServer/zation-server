@@ -47,8 +47,8 @@ class ZationBroker extends SCBroker
 
         //setLogger
         Logger.setZationConfig(this.zc);
-        Logger.printStartDebugInfo(`Broker with id ${this.id} begin start process.`,false,true);
-        Logger.printStartDebugInfo(`Broker with id ${this.id} is started.`,false);
+        Logger.printStartDebugInfo(`The Broker with id ${this.id} begins the start process.`,false,true);
+        Logger.printStartDebugInfo(`The Broker with id ${this.id} is started.`,false);
     }
 }
 

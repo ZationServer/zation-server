@@ -7,6 +7,7 @@ GitHub: LucaCode
 import SmallBag   = require("./SmallBag");
 import {Bag}        from './Bag';
 import ObjectPath = require("../helper/tools/objectPath");
+// noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../helper/configs/appConfig";
 
 export class Controller

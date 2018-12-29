@@ -4,7 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import HtmlTools             = require('../tools/htmlTools');
 import MainProcessor         = require('./mainProcessor');
 import SHBridge              = require('../bridges/shBridge');
 import TokenTools            = require('../token/tokenTools');
@@ -18,9 +17,6 @@ import ZationToken           = require("../infoObjects/zationTokenInfo");
 import JsonConverter         = require("../tools/jsonConverter");
 import Logger                = require("../logger/logger");
 import {ZationRequest}         from "../constants/internal";
-
-const helper   = __dirname + '/../';
-const views    = helper + 'views/';
 
 class HttpProcessor
 {
@@ -61,8 +57,7 @@ class HttpProcessor
         }
         else {
             Logger.printDebugInfo(`Http Request id: ${reqId} -> No zation data found`);
-            //todo load default html site from the worker
-            HttpProcessor.printDefaultHtmlSite(res);
+            HttpProcessor.printDefaultHtmlSite(res,worker);
         }
     }
 
@@ -102,8 +97,10 @@ class HttpProcessor
         }
     }
 
-    private static printDefaultHtmlSite(resp) : void {
-        HtmlTools.writeHtml(resp, views + 'zationServer.html');
+    private static printDefaultHtmlSite(resp, worker : ZationWorker) : void {
+        resp.setHeader('content-type', 'text/html');
+        resp.write(worker.getViewEngine().getZationDefaultView());
+        resp.end();
     }
 
     private static setHeader(resp) : void {
