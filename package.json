@@ -73,6 +73,7 @@
     "uuid": "3.3.2",
     "validator": "10.4.0",
     "ws": "6.1.0",
+    "byte-length": "1.0.2",
     "zation-client": "0.4.1"
   },
   "devDependencies": {

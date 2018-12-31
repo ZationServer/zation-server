@@ -657,6 +657,58 @@ export = {
         fromZationSystem : true
     },
 
+    inputNotMatchWithMinByteSize : {
+        name          : 'inputNotMatchWithMinByteSize',
+        group         : ErrorGroup.BYTE_SIZE_ERROR,
+        description   : 'Input is not match with min byte size!',
+        type          : ErrorType.VALIDATION_ERROR,
+        sendInfo      : true,
+        //INFO
+        // inputValue (inputValue)
+        // inputPath (inputPath)
+        // minByteSize (min byte size)
+        fromZationSystem : true
+    },
+
+    inputNotMatchWithMaxByteSize : {
+        name          : 'inputNotMatchWithMaxByteSize',
+        group         : ErrorGroup.BYTE_SIZE_ERROR,
+        description   : 'Input is not match with max byte size!',
+        type          : ErrorType.VALIDATION_ERROR,
+        sendInfo      : true,
+        //INFO
+        // inputValue (inputValue)
+        // inputPath (inputPath)
+        // maxByteSize (max byte size)
+        fromZationSystem : true
+    },
+
+    inputNotMatchWithMimeType : {
+        name          : 'inputNotMatchWithMimeType',
+        group         : ErrorGroup.CONTENT_TYPE_ERROR,
+        description   : 'Input is not match with mime type!',
+        type          : ErrorType.VALIDATION_ERROR,
+        sendInfo      : true,
+        //INFO
+        // inputValue (inputValue)
+        // inputPath (inputPath)
+        // mimeType (mime type that is allow)
+        fromZationSystem : true
+    },
+
+    inputNotMatchWithSubType : {
+        name          : 'inputNotMatchWithSubType',
+        group         : ErrorGroup.CONTENT_TYPE_ERROR,
+        description   : 'Input is not match with sub type!',
+        type          : ErrorType.VALIDATION_ERROR,
+        sendInfo      : true,
+        //INFO
+        // inputValue (inputValue)
+        // inputPath (inputPath)
+        // subType (sub type that is allow)
+        fromZationSystem : true
+    },
+
     noValidTypeWasFound : {
         name          : 'noValidTypeWasFound',
         group         : ErrorGroup.TYPE_ERROR,

@@ -168,7 +168,6 @@ Main[nameof<MainConfig>(s => s.pubSubBatchDuration)]        = {types : ['number'
 
 const StarterConfig = {};
 ObjectTools.addObToOb(StarterConfig,Main);
-StarterConfig[nameof<StarterConfig>(s => s.controller)]    = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.configs)]       = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.appConfig)]     = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.serviceConfig)] = {types : ['string'],isOptional : true};
@@ -202,6 +201,10 @@ InputBody[nameof<ValuePropertyConfig>(s => s.endsWith)]     = {types : ['string'
 InputBody[nameof<ValuePropertyConfig>(s => s.startsWith)]   = {types : ['string'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.isLetters)]    = {types : ['string'],isOptional : true,enum:allFormatLetters};
 InputBody[nameof<ValuePropertyConfig>(s => s.charClass)]    = {types : ['string'],isOptional : true};
+InputBody[nameof<ValuePropertyConfig>(s => s.maxByteSize)]  = {types : ['number'],isOptional : true};
+InputBody[nameof<ValuePropertyConfig>(s => s.minByteSize)]  = {types : ['number'],isOptional : true};
+InputBody[nameof<ValuePropertyConfig>(s => s.mimeType)]     = {types : ['string','array','null'],isOptional : true};
+InputBody[nameof<ValuePropertyConfig>(s => s.subType)]      = {types : ['string','array','null'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.before)]       = {types : ['object','function'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.after)]        = {types : ['object','function'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.validate)]     = {types : ['function','array'],isOptional : true};

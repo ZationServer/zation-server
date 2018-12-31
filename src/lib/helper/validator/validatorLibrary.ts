@@ -17,7 +17,9 @@ import EasyValidator   = require('./easyValidator');
 import TaskError       = require('../../api/TaskError');
 import {ValidationTypes} from "../constants/validationTypes";
 import {ValuePropertyConfig} from "../configs/appConfig";
-import {FormatLetters} from "../constants/validation";
+import {FormatLetters}   from "../constants/validation";
+import ByteTools       = require("../tools/byteTools");
+import Base64Tools     = require("../tools/base64Tools");
 
 const functionLibrary = {};
 const typeLibrary = {};
@@ -488,6 +490,94 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.after)] = async (input, setti
                     shouldAfter : checkDate
                 });
         }
+    }
+};
+
+functionLibrary[nameof<ValuePropertyConfig>(s => s.minByteSize)] = async (input, settings, taskErrorBag, prepareErrorData, preparedSmallBag,type) =>
+{
+    if(typeof input === "string" && ByteTools.getByteSize(input,type) < settings)
+    {
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithMinByteSize,
+            {
+                inputValue : prepareErrorData.inputValue,
+                inputPath : prepareErrorData.inputPath,
+                minByteSize : settings
+            });
+    }
+};
+
+functionLibrary[nameof<ValuePropertyConfig>(s => s.maxByteSize)] = async (input, settings, taskErrorBag, prepareErrorData, preparedSmallBag,type) =>
+{
+    if(typeof input === "string" && ByteTools.getByteSize(input,type) > settings)
+    {
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithMaxByteSize,
+            {
+                inputValue : prepareErrorData.inputValue,
+                inputPath : prepareErrorData.inputPath,
+                maxByteSize : settings
+            });
+    }
+};
+
+functionLibrary[nameof<ValuePropertyConfig>(s => s.mimeType)] = async (input, settings, taskErrorBag, prepareErrorData) =>
+{
+    if(typeof input === "string")
+    {
+        if(!Array.isArray(settings)){
+            settings = [settings];
+        }
+
+        const mime = Base64Tools.getMimeType(input);
+        const fails : string[] = [];
+
+        for(let i = 0; i < settings.length; i++)
+        {
+            if(settings[i] === mime){
+               return;
+            }
+            else {
+                fails.push(settings[i]);
+            }
+        }
+
+        //if found a mime than it already exists with return.
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithMimeType,
+            {
+                inputValue : prepareErrorData.inputValue,
+                inputPath : prepareErrorData.inputPath,
+                mimeType : fails
+            });
+    }
+};
+
+functionLibrary[nameof<ValuePropertyConfig>(s => s.subType)] = async (input, settings, taskErrorBag, prepareErrorData) =>
+{
+    if(typeof input === "string")
+    {
+        if(!Array.isArray(settings)){
+            settings = [settings];
+        }
+
+        const sub = Base64Tools.getSubType(input);
+        const fails : string[] = [];
+
+        for(let i = 0; i < settings.length; i++)
+        {
+            if(settings[i] === sub){
+                return;
+            }
+            else {
+                fails.push(settings[i]);
+            }
+        }
+
+        //if found a sub than it already exists with return.
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithSubType,
+            {
+                inputValue : prepareErrorData.inputValue,
+                inputPath : prepareErrorData.inputPath,
+                subType : fails
+            });
     }
 };
 

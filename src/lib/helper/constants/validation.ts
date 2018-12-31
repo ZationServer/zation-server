@@ -25,10 +25,19 @@ export const OnlyStringFunctions = [
     nameof<ValuePropertyConfig>(s => s.minLength),
     nameof<ValuePropertyConfig>(s => s.maxLength),
     nameof<ValuePropertyConfig>(s => s.isLetters),
-    nameof<ValuePropertyConfig>(s => s.charClass)
+    nameof<ValuePropertyConfig>(s => s.charClass),
+
+    //base64 is also a string
+    nameof<ValuePropertyConfig>(s => s.minByteSize),
+    nameof<ValuePropertyConfig>(s => s.maxByteSize)
 ];
 
 export const OnlyDateFunctions = [
     nameof<ValuePropertyConfig>(s => s.before),
     nameof<ValuePropertyConfig>(s => s.after)
+];
+
+export const OnlyBase64Functions = [
+    nameof<ValuePropertyConfig>(s => s.mimeType),
+    nameof<ValuePropertyConfig>(s => s.subType)
 ];

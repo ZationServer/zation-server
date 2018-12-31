@@ -26,7 +26,12 @@ import {PanelUserConfig} from "../configs/mainConfig";
 import {CustomService} from "../configs/serviceConfig";
 import {ValidationTypes} from "../constants/validationTypes";
 import {ChannelConfig, ChannelDefault, CustomChannelConfig} from "../configs/channelConfig";
-import {OnlyDateFunctions, OnlyNumberFunctions, OnlyStringFunctions} from "../constants/validation";
+import {
+    OnlyBase64Functions,
+    OnlyDateFunctions,
+    OnlyNumberFunctions,
+    OnlyStringFunctions
+} from "../constants/validation";
 import PropertyImportEngine = require("./propertyImportEngine");
 import Iterator = require("../tools/iterator");
 // noinspection TypeScriptPreferShortImport
@@ -881,13 +886,13 @@ class ConfigChecker
             if (isNumber && ObjectTools.hasOneOf(value, OnlyStringFunctions)) {
                 const useFunctions = ObjectTools.getFoundKeys(value, OnlyStringFunctions);
                 this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `${target.getTarget()} number type can't use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
+                    `${target.getTarget()} the type number can't use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
             }
 
             if (!isNumber && (ObjectTools.hasOneOf(value, OnlyNumberFunctions))) {
                 const useFunctions = ObjectTools.getFoundKeys(value, OnlyNumberFunctions);
                 this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `${target.getTarget()} not number type can't use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
+                    `${target.getTarget()} only a type from number can use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
             }
 
             //check date functions
@@ -895,7 +900,15 @@ class ConfigChecker
             {
                 const useFunctions = ObjectTools.getFoundKeys(value, OnlyDateFunctions);
                 this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `${target.getTarget()} not date type can't use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
+                    `${target.getTarget()} only the type date can use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
+            }
+
+            //check base64 functions
+            if(type !== ValidationTypes.BASE64 && ObjectTools.hasOneOf(value,OnlyBase64Functions))
+            {
+                const useFunctions = ObjectTools.getFoundKeys(value, OnlyBase64Functions);
+                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    `${target.getTarget()} only the type base64 can use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
             }
         }
     }

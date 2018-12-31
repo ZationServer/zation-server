@@ -11,6 +11,8 @@ export enum ErrorGroup {
     LETTERS_FORMAT_ERROR  = 'LETTERS_FORMAT_ERROR',
     NUMBER_SIZE_ERROR     = 'NUMBER_SIZE_ERROR',
     ENUM_ERROR            = 'ENUM_ERROR',
-    DATE_ERROR            = 'DATE_ERROR'
+    DATE_ERROR            = 'DATE_ERROR',
+    BYTE_SIZE_ERROR       = 'BYTE_SIZE_ERROR',
+    CONTENT_TYPE_ERROR    = 'CONTENT_TYPE_ERROR'
 }
 

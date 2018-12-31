@@ -214,19 +214,14 @@ class InputMainProcessor
         }
 
         if(currentErrorCount === errorBag.getTaskErrorCount()){
-            //todo
-            //try to parse information from the value
-            //Base64 -> byte size, mime-type
-
             //no type error so convert maybe
             if(convertType) {
-                //parse information in the convert method for creating base64 file object.
                 srcObj[srcKey] = ConvertEngine.convert(srcObj[srcKey],type,strictType);
             }
         }
 
         if(this.inputValidation){
-            await ValidationEngine.validateValue(srcObj[srcKey],config,preparedErrorData,errorBag,this.preparedSmallBag);
+            await ValidationEngine.validateValue(srcObj[srcKey],config,preparedErrorData,errorBag,this.preparedSmallBag,type);
         }
 
         //check for convertTask

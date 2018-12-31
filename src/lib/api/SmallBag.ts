@@ -35,10 +35,12 @@ import TaskErrorBag    = require("./TaskErrorBag");
 import TaskErrorBuilder = require("../helper/builder/taskErrorBuilder");
 import {SentMessageInfo}  from "nodemailer";
 import {InternMainConfig} from "../helper/configs/mainConfig";
-import {AppConfig} from "../helper/configs/appConfig";
-import {ChannelConfig} from "../helper/configs/channelConfig";
-import {EventConfig} from "../helper/configs/eventConfig";
-import {ServiceConfig} from "../helper/configs/serviceConfig";
+import {AppConfig}        from "../helper/configs/appConfig";
+import {ChannelConfig}    from "../helper/configs/channelConfig";
+import {EventConfig}      from "../helper/configs/eventConfig";
+import {ServiceConfig}    from "../helper/configs/serviceConfig";
+import Base64Tools      = require("../helper/tools/base64Tools");
+import {byteLength}       from "byte-length";
 
 const uuidV4                = require('uuid/v4');
 const uniqid                = require('uniqid');
@@ -1902,6 +1904,53 @@ class SmallBag
         else {
             this.worker.setWorkerVariableStorage({});
         }
+    }
+
+    //Part Base64Tools
+
+    // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Calculate the byte size from an encoded base64 string.
+     * @example
+     * base64ByteSize("ENCODED-BASE64");
+     * @param encodedBase64
+     * The encoded base64 string.
+     */
+    base64ByteSize(encodedBase64 : string) : number {
+        return Base64Tools.getByteSize(encodedBase64);
+    }
+
+    // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the mime and subType of an encoded base64 string.
+     * @example
+     * base64ContentInfo("ENCODED-BASE64");
+     * @param encodedBase64
+     * The encoded base64 string.
+     * @return
+     * Can be null if the base64 string has no content type.
+     * Otherwise, it is an object with the properties: subType, mimeType.
+     */
+    base64ContentInfo(encodedBase64 : string) : null | {subType : string, mimeType : string} {
+        return Base64Tools.getContentInfo(encodedBase64);
+    }
+
+    // ByteTools
+
+    // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Calculate the byte size from an utf-8 string.
+     * By using the npm package byte-length.
+     * @example
+     * stringByteSize("UTF-8_STRING");
+     * @param string
+     * The utf-8 string.
+     */
+    stringByteSize(string : string) : number {
+        return byteLength(string);
     }
 
     //Part Worker

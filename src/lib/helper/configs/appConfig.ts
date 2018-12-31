@@ -78,7 +78,7 @@ export interface ControllerConfig
     versionAccess  ?: string | Record<string,number | number[]>
 }
 
-export type ValidatorFunction = (value : any,taskErrorBag : TaskErrorBag,inputPath : string,smallBag : SmallBag) => Promise<void> | void;
+export type ValidatorFunction = (value : any,taskErrorBag : TaskErrorBag,inputPath : string,smallBag : SmallBag,type ?: string) => Promise<void> | void;
 export type ConvertValueFunction = (value : any, smallBag : SmallBag) => Promise<any> | any;
 export type GetDateFunction = (smallBag : SmallBag) => Promise<Date> | Date;
 
@@ -100,6 +100,10 @@ export interface ValuePropertyConfig extends PropertyOptional
     startsWith  ?: string;
     isLetters  ?: string;
     charClass ?: string;
+    maxByteSize ?: number;
+    minByteSize ?: number;
+    mimeType ?: string | null | (string | null)[];
+    subType ?: string | null | (string | null)[];
     before ?: Date | GetDateFunction;
     after ?: Date | GetDateFunction;
     validate  ?: ValidatorFunction | ValidatorFunction[];
