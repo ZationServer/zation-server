@@ -93,7 +93,18 @@ class ZationMaster {
         Logger.printStartDebugInfo(`The Master has checked the starter config.`, true);
 
         Logger.startStopWatch();
-        await this.zc.loadOtherConfigs();
+        await this.zc.loadOtherConfigScripts();
+
+        if(this.zc.loadedConfigs.length > 0) {
+            const moreConfigs = this.zc.loadedConfigs.length>1;
+            Logger.printDebugInfo
+            (`The config${moreConfigs ? 's' : ''}: ${this.zc.loadedConfigs.toString()} ${moreConfigs ? 'are' : 'is'} found and will be loaded.`);
+        }
+        else {
+            Logger.printDebugInfo(`No config file was found.`)
+        }
+
+        this.zc.loadOtherConfigFromScript();
         Logger.printStartDebugInfo(`The Master has loaded the other config files.`, true);
 
         Logger.startStopWatch();

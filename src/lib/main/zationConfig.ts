@@ -40,15 +40,20 @@ class ZationConfig {
     private readonly _starterConfig: StarterConfig = {};
     private readonly _internalData: InternalData = {};
 
+    private readonly _loadedConfigs: string[] = [];
+    private readonly _workerProcess: boolean;
+
     private readonly preparedZationInfo : ZationInfo = new ZationInfo(this);
 
     constructor(starterData: object = {}, workerTransport: boolean = false) {
         if (!workerTransport) {
             this._starterConfig = starterData;
+            this._workerProcess = false;
         } else {
             this._starterConfig = starterData['starterConfig'];
             this._mainConfig = starterData['mainConfig'];
             this._internalData = starterData['internalData'];
+            this._workerProcess = true;
         }
     }
 
@@ -228,36 +233,66 @@ class ZationConfig {
         let promises: Promise<void>[] = [];
         //Add Other Configs
         promises.push((async () => {
-            this._configScriptSaver.eventConfig = await ZationConfig.loadZationConfig(
-                'event.config',
-                this._starterConfig.eventConfig,
-            );
+            try {
+                this._configScriptSaver.eventConfig = await ZationConfig.loadZationConfig(
+                    'event.config',
+                    this._starterConfig.eventConfig,
+                );
+                if(!this._workerProcess){
+                    this._loadedConfigs.push(nameof<StarterConfig>(s => s.eventConfig));
+                }
+            }
+            catch (e) {}
         })());
         promises.push((async () => {
-            this._configScriptSaver.channelConfig = await ZationConfig.loadZationConfig(
-                'channel.config',
-                this._starterConfig.channelConfig,
-            );
+            try {
+                this._configScriptSaver.channelConfig = await ZationConfig.loadZationConfig(
+                    'channel.config',
+                    this._starterConfig.channelConfig,
+                );
+                if(!this._workerProcess){
+                    this._loadedConfigs.push(nameof<StarterConfig>(s => s.channelConfig));
+                }
+            }
+            catch (e) {}
         })());
         promises.push((async () => {
-            this._configScriptSaver.appConfig = await ZationConfig.loadZationConfig(
-                'app.config',
-                this._starterConfig.appConfig,
-            );
+            try {
+                this._configScriptSaver.appConfig = await ZationConfig.loadZationConfig(
+                    'app.config',
+                    this._starterConfig.appConfig,
+                );
+                if(!this._workerProcess){
+                    this._loadedConfigs.push(nameof<StarterConfig>(s => s.appConfig));
+                }
+
+            }
+            catch (e) {}
         })());
         promises.push((async () => {
-            // @ts-ignore
-            this._configScriptSaver.errorConfig = await ZationConfig.loadZationConfig(
-                'error.config',
-                this._starterConfig.errorConfig,
-            );
+            try {
+                this._configScriptSaver.errorConfig = await ZationConfig.loadZationConfig(
+                    'error.config',
+                    this._starterConfig.errorConfig,
+                );
+                if(!this._workerProcess){
+                    this._loadedConfigs.push(nameof<StarterConfig>(s => s.errorConfig));
+                }
+            }
+            catch (e) {}
         })());
         promises.push((async () => {
-            // @ts-ignore
-            this._configScriptSaver.serviceConfig = await ZationConfig.loadZationConfig(
-                'service.config',
-                this._starterConfig.serviceConfig,
-            );
+            try {
+                this._configScriptSaver.serviceConfig = await ZationConfig.loadZationConfig(
+                    'service.config',
+                    this._starterConfig.serviceConfig,
+                );
+                if(!this._workerProcess){
+                    this._loadedConfigs.push(nameof<StarterConfig>(s => s.serviceConfig));
+                }
+
+            }
+            catch (e) {}
         })());
         await Promise.all(promises);
     }
@@ -282,7 +317,7 @@ class ZationConfig {
         return path.dirname(require.main.filename || process.mainModule.filename);
     }
 
-    static async loadZationConfig(name : string,value : any,optional : boolean = true) : Promise<string | object>
+    static async loadZationConfig(name : string,value : any) : Promise<string | object>
     {
         return await new Promise<string | object>(((resolve, reject) => {
             if(typeof value === 'string') {
@@ -292,12 +327,7 @@ class ZationConfig {
                 fs.stat(value,async (err) =>
                 {
                     if(err) {
-                        if(optional) {
-                            resolve({});
-                        }
-                        else {
-                            reject(new Error(`Config ${name} not found in path ${value}`));
-                        }
+                        reject(new Error(`Config ${name} not found in path ${value}`));
                     }
                     else {
                         fs.readFile(value,(err,data)=> {
@@ -315,12 +345,7 @@ class ZationConfig {
                 return value;
             }
             else {
-                if(optional) {
-                    return {};
-                }
-                else {
-                    reject(new Error(`Error to load Config ${name}`));
-                }
+                reject(new Error(`Error to load Config ${name}`));
             }
         }));
     }
@@ -381,11 +406,15 @@ class ZationConfig {
 
     private async loadMainConfig() : Promise<void>
     {
-        const mainConfig = ZationConfig.loadScript(await ZationConfig.loadZationConfig(
-            'main.config',
-            this._starterConfig.mainConfig
-        ),this._starterConfig.mainConfig);
-        ObjectTools.addObToOb(this._mainConfig,mainConfig,true);
+        try {
+            const mainConfig = ZationConfig.loadScript(await ZationConfig.loadZationConfig(
+                'main.config',
+                this._starterConfig.mainConfig
+            ),this._starterConfig.mainConfig);
+            ObjectTools.addObToOb(this._mainConfig,mainConfig,true);
+            this._loadedConfigs.push(nameof<StarterConfig>(s => s.mainConfig));
+        }
+        catch (e) {}
     }
 
     private processMainConfig() : void
@@ -435,6 +464,10 @@ class ZationConfig {
 
     get starterConfig(): StarterConfig {
         return this._starterConfig;
+    }
+
+    get loadedConfigs(): string[] {
+        return this._loadedConfigs;
     }
 }
 
