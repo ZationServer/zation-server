@@ -24,6 +24,7 @@ import {
 } from "../configs/appConfig";
 import {PanelUserConfig} from "../configs/mainConfig";
 import {CustomService} from "../configs/serviceConfig";
+// noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../constants/validationTypes";
 import {ChannelConfig, ChannelDefault, CustomChannelConfig} from "../configs/channelConfig";
 import {
@@ -140,7 +141,7 @@ class ConfigChecker
         this.checkObjectsConfig();
         this.checkValuesConfig();
         this.checkArraysConfig();
-        this.checkControllerConfigs();
+        this.checkControllersConfigs();
         this.checkAuthController();
         this.checkBackgroundTasks();
     }
@@ -161,7 +162,7 @@ class ConfigChecker
     private checkAuthController() {
         const authControllerName = this.zc.appConfig.authController;
         if (typeof authControllerName === "string") {
-            const controller = this.zc.appConfig.controller || {};
+            const controller = this.zc.appConfig.controllers || {};
             if (!controller.hasOwnProperty(authControllerName)) {
                 this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                     `AuthController: '${authControllerName}' is not found.`));
@@ -567,10 +568,10 @@ class ConfigChecker
         }
     }
 
-    private checkControllerConfigs() {
+    private checkControllersConfigs() {
         //check Controller
-        if (typeof this.zc.appConfig.controller === 'object') {
-            const controller = this.zc.appConfig.controller;
+        if (typeof this.zc.appConfig.controllers === 'object') {
+            const controller = this.zc.appConfig.controllers;
             for (let cName in controller) {
                 if (controller.hasOwnProperty(cName)) {
                     this.checkController(controller[cName], new Target(`Controller: '${cName}'`));

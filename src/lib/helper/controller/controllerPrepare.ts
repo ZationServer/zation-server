@@ -81,7 +81,7 @@ class ControllerPrepare
     async prepare() : Promise<void>
     {
         // @ts-ignore
-        const uController : Record<string,InternControllerConfig> = this.zc.appConfig.controller;
+        const uController : Record<string,InternControllerConfig> = this.zc.appConfig.controllers;
 
         let promises : Promise<void>[] = [];
 

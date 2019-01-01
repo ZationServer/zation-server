@@ -47,6 +47,7 @@ class ZationMaster {
     private fullClientJs : string;
     private serverSettingsJs : string;
 
+
     constructor(options : StarterConfig) {
         if (ZationMaster.instance === null) {
             ZationMaster.instance = this;
@@ -57,18 +58,17 @@ class ZationMaster {
             this.zc = new ZationConfig(options);
 
             (async () => {
-
-                //loads main config and defaults
-                await this.zc.masterInit();
-
-                //setLogger
-                Logger.setZationConfig(this.zc);
-
                 try {
+                    //loads main config and defaults
+                    await this.zc.masterInit();
+
+                    //setLogger
+                    Logger.setZationConfig(this.zc);
+
                     await this.start();
                 }
                 catch (e) {
-                    Logger.printStartFail(`Exception when trying to start server -> ${e.toString()}`);
+                    Logger.printStartFail(`Exception when trying to start server -> ${e.stack}`);
                 }
             })();
         }

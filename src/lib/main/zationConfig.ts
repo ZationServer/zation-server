@@ -227,44 +227,38 @@ class ZationConfig {
         this._configScriptSaver = {};
         let promises: Promise<void>[] = [];
         //Add Other Configs
-        promises.push(new Promise<void>((async (resolve) => {
+        promises.push((async () => {
             this._configScriptSaver.eventConfig = await ZationConfig.loadZationConfig(
                 'event.config',
                 this._starterConfig.eventConfig,
             );
-            resolve();
-        })));
-        promises.push(new Promise<void>((async (resolve) => {
+        })());
+        promises.push((async () => {
             this._configScriptSaver.channelConfig = await ZationConfig.loadZationConfig(
                 'channel.config',
                 this._starterConfig.channelConfig,
             );
-            resolve();
-        })));
-        promises.push(new Promise<void>((async (resolve) => {
+        })());
+        promises.push((async () => {
             this._configScriptSaver.appConfig = await ZationConfig.loadZationConfig(
                 'app.config',
                 this._starterConfig.appConfig,
-                false
             );
-            resolve();
-        })));
-        promises.push(new Promise<void>((async (resolve) => {
+        })());
+        promises.push((async () => {
             // @ts-ignore
             this._configScriptSaver.errorConfig = await ZationConfig.loadZationConfig(
                 'error.config',
                 this._starterConfig.errorConfig,
             );
-            resolve();
-        })));
-        promises.push(new Promise<void>((async (resolve) => {
+        })());
+        promises.push((async () => {
             // @ts-ignore
             this._configScriptSaver.serviceConfig = await ZationConfig.loadZationConfig(
                 'service.config',
                 this._starterConfig.serviceConfig,
             );
-            resolve();
-        })));
+        })());
         await Promise.all(promises);
     }
 
@@ -290,7 +284,7 @@ class ZationConfig {
 
     static async loadZationConfig(name : string,value : any,optional : boolean = true) : Promise<string | object>
     {
-        return new Promise<string | object>(((resolve, reject) => {
+        return await new Promise<string | object>(((resolve, reject) => {
             if(typeof value === 'string') {
                 if(value.lastIndexOf('.js') === -1) {
                     value += '.js';
@@ -302,7 +296,7 @@ class ZationConfig {
                             resolve({});
                         }
                         else {
-                            reject(new Error(`Config ${name} not found in path ${path}`));
+                            reject(new Error(`Config ${name} not found in path ${value}`));
                         }
                     }
                     else {
@@ -321,12 +315,11 @@ class ZationConfig {
                 return value;
             }
             else {
-
                 if(optional) {
                     return {};
                 }
                 else {
-                    throw new Error(`Error to load Config ${name}`);
+                    reject(new Error(`Error to load Config ${name}`));
                 }
             }
         }));
@@ -375,8 +368,8 @@ class ZationConfig {
 
     private loadZationConfigLocation(key : string,defaultName : string) : void
     {
-        const path = this._starterConfig.configs ? this._starterConfig.configs + '/'
-            : ZationConfig._getRootPath() + '/config/';
+        const path = ZationConfig._getRootPath() + '/' +
+            (this._starterConfig.configs ? this._starterConfig.configs : 'configs') + '/';
 
         if(!(typeof this._starterConfig[key] === 'string')) {
             this._starterConfig[key] =  path + defaultName;

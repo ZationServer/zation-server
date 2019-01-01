@@ -13,7 +13,7 @@ import {ControllerClass} from "../../api/Controller";
 export interface AppConfig
 {
     authController  ?: string;
-    controller  ?: Record<string,(ControllerClass)>;
+    controllers  ?: Record<string,(ControllerClass)>;
     userGroups  ?: UserGroupsConfig;
     controllerDefaults  ?: ControllerConfig;
     values  ?: Record<string,ValuePropertyConfig>;

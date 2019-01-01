@@ -36,7 +36,7 @@ Error[nameof<ErrorConstruct>(s => s.sendInfo)]         = {types : ['object'],isO
 
 const App = {};
 App[nameof<AppConfig>(s => s.authController)]     = {types : ['string'],isOptional : true};
-App[nameof<AppConfig>(s => s.controller)]         = {types : ['object'],isOptional : true};
+App[nameof<AppConfig>(s => s.controllers)]        = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.userGroups)]         = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.controllerDefaults)] = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.objects)]            = {types : ['object'],isOptional : true};

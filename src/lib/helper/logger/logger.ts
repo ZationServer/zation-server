@@ -105,7 +105,7 @@ class Logger
 
     static log(message?: any, ...optionalParams: any[])
     {
-        if(Logger.zc.mainConfig.zationConsoleLog)
+        if((Logger.zc && Logger.zc.mainConfig.zationConsoleLog) || true)
         {
             console.log(message,...optionalParams);
         }

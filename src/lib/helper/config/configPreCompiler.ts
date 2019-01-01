@@ -450,12 +450,12 @@ class ConfigPeCompiler
     private preCompileController() : void
     {
         //set if controller property is not found
-        if(!this.zc.appConfig.controller) {
-            this.zc.appConfig.controller = {};
+        if(!this.zc.appConfig.controllers) {
+            this.zc.appConfig.controllers = {};
         }
 
         //iterate over controller
-        const controller = this.zc.appConfig.controller;
+        const controller = this.zc.appConfig.controllers;
         for(let k in controller)
         {
             if(controller.hasOwnProperty(k))
