@@ -20,11 +20,11 @@ import BackgroundTasksSetter = require("../helper/background/backgroundTasksLoad
 const  isWindows             = require('is-windows');
 import StateServerEngine     = require("../helper/cluster/stateServerEngine");
 import {WorkerMessageActions}  from "../helper/constants/workerMessageActions";
-import {StarterConfig} from "../helper/configs/starterConfig";
+import {StarterConfig}         from "../helper/configs/starterConfig";
 
 class ZationMaster {
     private static instance: ZationMaster | null = null;
-    private static readonly version: string = '0.6.3';
+    private static readonly version: string = '0.6.4';
 
     private readonly serverStartedTimeStamp: number;
     private readonly zc: ZationConfig;
@@ -98,7 +98,7 @@ class ZationMaster {
         if(this.zc.loadedConfigs.length > 0) {
             const moreConfigs = this.zc.loadedConfigs.length>1;
             Logger.printDebugInfo
-            (`The config${moreConfigs ? 's' : ''}: ${this.zc.loadedConfigs.toString()} ${moreConfigs ? 'are' : 'is'} found and will be loaded.`);
+            (`The configuration${moreConfigs ? 's' : ''}: ${this.zc.loadedConfigs.toString()} ${moreConfigs ? 'are' : 'is'} found and will be loaded.`);
         }
         else {
             Logger.printDebugInfo(`No config file was found.`)
