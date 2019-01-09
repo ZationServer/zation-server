@@ -1,0 +1,39 @@
+<svg version="1.1" style="width:30em; margin-bottom:2vh; enable-background:new 0 0 1197.4 1256.9;" id="logo"
+     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+     viewBox="0 0 1197.4 1256.9" xml:space="preserve">
+                    <style type="text/css">
+	                    .st0{fill:none;stroke:#3099BB;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;}
+                        @keyframes aPath1 {
+  0% {
+    transform: translatey(0px) translateX(0px) rotateX(0);
+  }
+  100% {
+    transform: translatey(-20px) translateX(10px) rotateX(5deg);
+  }
+}
+@keyframes aPath2 {
+  0% {
+    transform: translatey(0px) translateX(0px) rotateX(0);
+  }
+  100% {
+    transform: translatey(-20px) translateX(-10px) rotateX(-5deg);
+  }
+}
+
+#path1
+{
+  animation: aPath1 6s ease-in-out infinite;
+  animation-direction: alternate;
+}
+
+#path2
+{
+  animation: aPath2 6s ease-in-out infinite;
+  animation-direction: alternate;
+}
+                    </style>
+    <path class="st0" id="path1"
+          d="M608.9,50l117.7,70.9l-61.8,35.2l-52.8-26.6l-441,256L169.4,666l351.5,215.2l-70.4,38.2L100,706.7V344.2 L608.9,50z M754.8,339.8l-74,37.5l342.1,211l-0.2,283.6l-426.6,257.7l-48-28.1l-60.7,34.3l110.6,71.1l497.4-295.4l2.1-360.1 L754.8,339.8z"/>
+    <path class="st0" id="path2"
+          d="M273.5,450.2l512.6-291.1l311.3,173v133.6l-74-45.2v-46.6L783.9,238.4L338.1,492l1.1,191.8l-65.7-36.3V450.2z M100,924.2l308.8,172.6l511.8-288.6V609l-64.8-34.4l0.9,192.3l-447.6,254.2L167.9,884.9v-49.2L100,794.4L100,924.2z"/>
+</svg>
