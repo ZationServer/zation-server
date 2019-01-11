@@ -9,8 +9,8 @@ class Base64Tools
     static getByteSize(base64 : string) : number
     {
         return (
-            (Buffer.from(base64.replace(/^data:image\/\w+;base64,/, ""), 'base64'))
-                .byteLength / Math.pow(1024,2) - (base64.endsWith("==") ? 2 : (base64.endsWith('=') ? 1 : 0))
+            (4*Math.ceil(base64.replace(/^data:image\/\w+;base64,/, "").length/3)) -
+            (base64.endsWith("==") ? 2 : (base64.endsWith('=') ? 1 : 0))
         );
     }
 
