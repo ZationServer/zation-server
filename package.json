@@ -8,7 +8,7 @@
   "scripts": {
     "prepublishOnly": "npm run build",
     "build": "gulp build",
-    "test": "mocha -- ./test/**/*.test.js"
+    "test": "nyc --reporter=html mocha -- ./test/**/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -91,6 +91,7 @@
     "gulp-typescript": "5.0.0-alpha.3",
     "minimatch": "3.0.4",
     "mocha": "^5.2.0",
+    "nyc": "13.1.0",
     "assert": "1.4.1",
     "terser": "3.8.0",
     "ts-nameof": "1.0.3",
