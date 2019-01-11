@@ -1,7 +1,9 @@
-const assert = require('assert');
-const TaskErrorBag    = require('../../../dist/lib/api/TaskErrorBag');
-const funcValidator   = require('../../../dist/lib/helper/validator/validatorLibrary').function;
-const FormatLetters   = require('../../../dist/lib/helper/constants/validation').FormatLetters;
+const assert          = require("chai").assert;
+const TaskErrorBag    = require('../../../../dist/lib/api/TaskErrorBag');
+const funcValidator   = require('../../../../dist/lib/helper/validator/validatorLibrary').function;
+const FormatLetters   = require('../../../../dist/lib/helper/constants/validation').FormatLetters;
+const ConfigPreCompiler = require('../../../../dist/lib/helper/config/configPreCompiler');
+const ZationConfigStub  = require('./../../../stubs/zationConfig');
 
 describe('Function Validation',() => {
 
@@ -304,6 +306,33 @@ describe('Function Validation',() => {
             assert(eb.isEmpty());
         });
 
+    });
+
+    describe('CharClass',() => {
+
+        /*
+           Use pre compiler for compile the char class
+        */
+        let config={charClass : 'a-z'};
+        new ConfigPreCompiler(ZationConfigStub).preCompileValidationFunctions(config);
+
+        it('Not matching input should produce an error',() => {
+            const eb = new TaskErrorBag;
+            funcValidator.charClass('lucA',config.charClass,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Matching should produce no error',() => {
+            const eb = new TaskErrorBag;
+            funcValidator.charClass('luca',config.charClass,eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Not a string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            funcValidator.charClass(5,config.charClass,eb,{});
+            assert(eb.isEmpty());
+        });
     });
 
 });

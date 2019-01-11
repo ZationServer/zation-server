@@ -90,12 +90,15 @@
     "gulp-terser": "1.0.1",
     "gulp-typescript": "5.0.0-alpha.3",
     "minimatch": "3.0.4",
-    "mocha": "^5.2.0",
-    "nyc": "13.1.0",
-    "assert": "1.4.1",
     "terser": "3.8.0",
     "ts-nameof": "1.0.3",
     "typescript": "2.9.2",
-    "vinyl-source-stream": "2.0.0"
+    "vinyl-source-stream": "2.0.0",
+    "mocha": "5.2.0",
+    "@types/mocha": "5.2.5",
+    "chai": "4.2.0",
+    "@types/chai": "4.1.7",
+    "nyc": "13.1.0",
+    "sinon": "7.2.2"
   }
 }
