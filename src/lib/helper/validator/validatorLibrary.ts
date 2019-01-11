@@ -15,6 +15,7 @@ It not contains the type check.
 import ValidatorErrors = require('../zationTaskErrors/validatorTaskErrors');
 import EasyValidator   = require('./easyValidator');
 import TaskError       = require('../../api/TaskError');
+// noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../constants/validationTypes";
 import {ValuePropertyConfig} from "../configs/appConfig";
 import {FormatLetters}   from "../constants/validation";

@@ -2,6 +2,7 @@ const assert = require('assert');
 const TaskErrorBag    = require('../../../dist/lib/api/TaskErrorBag');
 const typeValidator   = require('../../../dist/lib/helper/validator/validatorLibrary').type;
 const validationTypes = require('../../../dist/lib/helper/constants/validationTypes').ValidationTypes;
+
 describe('Type Validation',() => {
 
     describe('Object',() => {
