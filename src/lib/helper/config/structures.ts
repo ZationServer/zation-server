@@ -199,7 +199,7 @@ InputBody[nameof<ValuePropertyConfig>(s => s.maxValue)]     = {types : ['number'
 InputBody[nameof<ValuePropertyConfig>(s => s.regex)]        = {types : ['string','object'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.endsWith)]     = {types : ['string'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.startsWith)]   = {types : ['string'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.isLetters)]    = {types : ['string'],isOptional : true,enum:allFormatLetters};
+InputBody[nameof<ValuePropertyConfig>(s => s.letters)]      = {types : ['string'],isOptional : true,enum:allFormatLetters};
 InputBody[nameof<ValuePropertyConfig>(s => s.charClass)]    = {types : ['string'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.maxByteSize)]  = {types : ['number'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.minByteSize)]  = {types : ['number'],isOptional : true};

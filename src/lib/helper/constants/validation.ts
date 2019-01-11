@@ -24,7 +24,7 @@ export const OnlyStringFunctions = [
     nameof<ValuePropertyConfig>(s => s.length),
     nameof<ValuePropertyConfig>(s => s.minLength),
     nameof<ValuePropertyConfig>(s => s.maxLength),
-    nameof<ValuePropertyConfig>(s => s.isLetters),
+    nameof<ValuePropertyConfig>(s => s.letters),
     nameof<ValuePropertyConfig>(s => s.charClass),
 
     //base64 is also a string

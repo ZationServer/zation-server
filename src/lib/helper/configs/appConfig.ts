@@ -98,7 +98,7 @@ export interface ValuePropertyConfig extends PropertyOptional
     regex  ?: string | RegExp | Record<string,RegExp | string>;
     endsWith  ?: string;
     startsWith  ?: string;
-    isLetters  ?: string;
+    letters  ?: string;
     charClass ?: string;
     maxByteSize ?: number;
     minByteSize ?: number;

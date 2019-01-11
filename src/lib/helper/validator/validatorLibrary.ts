@@ -434,7 +434,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.endsWith)] = (input, settings
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.isLetters)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValuePropertyConfig>(s => s.letters)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === 'string') {
         if((settings === FormatLetters.UPPER_CASE) && (!EasyValidator.isUpperCase(input))) {
