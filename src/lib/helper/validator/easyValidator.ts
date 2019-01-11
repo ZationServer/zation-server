@@ -25,7 +25,7 @@ class EasyValidator
 
     static isObject(data)
     {
-        return typeof data === 'object';
+        return data !== null && typeof data === 'object';
     }
 
     static isNumber(data)
