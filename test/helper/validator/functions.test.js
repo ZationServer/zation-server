@@ -41,4 +41,38 @@ describe('Function Validation',() => {
         });
     });
 
+    describe('Enum',() => {
+
+        it('Not matching input should produce an error with info',() => {
+            const eb = new TaskErrorBag;
+            funcValidator.enum('c',['m','w'],eb,{});
+            assert(!eb.isEmpty());
+            assert(eb.getTaskErrors()[0].getInfo().enum !== undefined);
+        });
+
+        it('Matching should produce no error',() => {
+            const eb = new TaskErrorBag;
+            funcValidator.enum('m',['m','w'],eb,{});
+            assert(eb.isEmpty());
+        });
+
+    });
+
+    describe('PrivateEnum',() => {
+
+        it('Not matching input should produce an error with no info',() => {
+            const eb = new TaskErrorBag;
+            funcValidator.privateEnum('c',['m','w'],eb,{});
+            assert(!eb.isEmpty());
+            assert(eb.getTaskErrors()[0].getInfo().enum === undefined);
+        });
+
+        it('Matching should produce no error',() => {
+            const eb = new TaskErrorBag;
+            funcValidator.privateEnum('m',['m','w'],eb,{});
+            assert(eb.isEmpty());
+        });
+
+    });
+
 });
