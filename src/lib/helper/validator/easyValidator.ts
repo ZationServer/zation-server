@@ -41,6 +41,10 @@ class EasyValidator
     // noinspection JSUnusedGlobalSymbols
     static isStringInt(data)
     {
+        if(typeof data !== 'string'){
+            return false;
+        }
+
         const isIntRegex = /^[-+]?[0-9]+$/;
         return isIntRegex.test(data);
     }
@@ -53,11 +57,21 @@ class EasyValidator
     // noinspection JSUnusedGlobalSymbols
     static isStringFloat(data)
     {
-        return EasyValidator.isFloat(parseFloat(data));
+        if(typeof data !== 'string'){
+            return false;
+        }
+
+        const parse = parseFloat(data);
+        return !isNaN(parse) && EasyValidator.isFloat(parse);
     }
 
     static isStringNumber(data)
     {
+        if(typeof data !== 'string'){
+            return false;
+        }
+
+        // @ts-ignore
         return !isNaN(data);
     }
 
