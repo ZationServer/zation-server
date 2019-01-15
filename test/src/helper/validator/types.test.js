@@ -1143,4 +1143,36 @@ describe('Type Validation',() => {
         });
     });
 
+    describe('LatLong',() => {
+        it('LatLong string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.LAT_LONG]('22.319589',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('LatLong number should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.LAT_LONG](22.319589,eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Hello String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.LAT_LONG]("hello",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number 100 should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.LAT_LONG](100,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.LAT_LONG]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
 });
