@@ -10,6 +10,7 @@ import SmallBag              = require('./lib/api/SmallBag');
 import {Controller}            from'./lib/api/Controller';
 import Result                = require('./lib/api/Result');
 import TaskError             = require('./lib/api/TaskError');
+import TaskErrorBuilder      = require("./lib/helper/builder/taskErrorBuilder");
 import TaskErrorBag          = require('./lib/api/TaskErrorBag');
 import {ErrorType}             from "./lib/helper/constants/errorType";
 import ServiceNotFoundError  = require('./lib/helper/services/serviceNotFoundError');
@@ -36,6 +37,7 @@ export {
         ControllerConfig,
         Result,
         TaskError,
+        TaskErrorBuilder,
         TaskErrorBag,
         ErrorType,
         Config,
