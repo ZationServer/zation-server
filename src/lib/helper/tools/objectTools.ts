@@ -9,7 +9,7 @@ class ObjectTools
 {
     static mergeObjects(objects : object[]) : object
     {
-        if(objects.length >= 1) {
+        if(objects.length > 1) {
 
             let mainObj = objects[0];
 
@@ -18,6 +18,9 @@ class ObjectTools
             }
 
             return mainObj;
+        }
+        else if(objects.length === 1){
+            return objects[0];
         }
         else {
             return {};
@@ -33,8 +36,8 @@ class ObjectTools
                     if(!mainObj.hasOwnProperty(k) || (typeof mainObj[k] !== 'object' && override)) {
                         mainObj[k] = toMergeObj[k];
                     }
-                    else {
-                        mainObj[k] = ObjectTools.mergeObjToObj(toMergeObj[k],toMergeObj[k],override);
+                    else if(typeof mainObj[k] === 'object'){
+                        mainObj[k] = ObjectTools.mergeObjToObj(mainObj[k],toMergeObj[k],override);
                     }
                 }
             }
