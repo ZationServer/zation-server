@@ -10,13 +10,10 @@ class ObjectTools
     static mergeObjects(objects : object[]) : object
     {
         if(objects.length > 1) {
-
             let mainObj = objects[0];
-
             for(let i = 1; i < objects.length; i++) {
                 mainObj = ObjectTools.mergeObjToObj(mainObj,objects[i]);
             }
-
             return mainObj;
         }
         else if(objects.length === 1){
