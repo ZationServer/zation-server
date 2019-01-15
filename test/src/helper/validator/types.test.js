@@ -876,5 +876,57 @@ describe('Type Validation',() => {
         });
     });
 
+    describe('MimeType',() => {
+        it('MimeType string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MIME_TYPE]('application/json',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Hello String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MIME_TYPE]("test",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MIME_TYPE](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MIME_TYPE]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
+    describe('MacAddress',() => {
+        it('MacAddress string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MAC_ADDRESS]('00:80:41:ae:fd:7e',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Hello String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MAC_ADDRESS]("test",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MAC_ADDRESS](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MAC_ADDRESS]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
 
 });
