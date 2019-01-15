@@ -662,5 +662,219 @@ describe('Type Validation',() => {
         });
     });
 
+    describe('HexColor',() => {
+        it('HexColor string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.HEX_COLOR]('#66ff99',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Hello String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.HEX_COLOR]("test",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.HEX_COLOR](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.HEX_COLOR]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
+    describe('Hexadecimal',() => {
+        it('Hexadecimal string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.HEXADECIMAL]('3E8',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Hello String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.HEXADECIMAL]("test",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.HEXADECIMAL](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.HEXADECIMAL]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
+    describe('Ip4',() => {
+        it('Ip4 version-1 string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.IP_4]('198.18.0.0',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Ip4 version-2 string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.IP_4]('192.168.179.1',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Hello String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.IP_4]("test",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.IP_4](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.IP_4]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
+    describe('Ip6',() => {
+        it('Ip6 string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.IP_6]('2001:0db8:85a3:08d3:1319:8a2e:0370:7344',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Hello String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.IP_6]("test",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.IP_6](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.IP_6]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
+    describe('ISBN-10',() => {
+        it('ISBN 10 string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.ISBN_10]('3-88229-192-3',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Hello String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.ISBN_10]("test",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.ISBN_10](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.ISBN_10]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
+    describe('ISBN-13',() => {
+        it('ISBN 13 string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.ISBN_13]('978-3-88229-192-6',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Hello String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.ISBN_13]("test",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.ISBN_13](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.ISBN_13]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
+    describe('JSON',() => {
+        it('JSON string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.JSON]('{"name":"hello","age":10}',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Hello String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.JSON]("test",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.JSON](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.JSON]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
+    describe('URL',() => {
+        it('URL string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.URL]('https://www.google.de/?gws_rd=ssl',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Hello String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.URL]("test",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.URL](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.URL]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
 
 });
