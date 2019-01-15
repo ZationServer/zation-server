@@ -1117,4 +1117,30 @@ describe('Type Validation',() => {
         });
     });
 
+    describe('MongoId',() => {
+        it('MongoId string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MONGO_ID]('507f191e810c19729de860ea',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Hello String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MONGO_ID]("test",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MONGO_ID](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MONGO_ID]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
 });
