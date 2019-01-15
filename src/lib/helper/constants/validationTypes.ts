@@ -41,5 +41,6 @@ export enum ValidationTypes
     BASE64           = 'base64',
     ASCII            = 'ascii',
     USER_ID          = 'userId',
-    MONGO_ID         = 'mongoId'
+    MONGO_ID         = 'mongoId',
+    LAT_LONG         = 'latLong'
 }

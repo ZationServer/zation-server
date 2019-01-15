@@ -272,6 +272,13 @@ typeLibrary[ValidationTypes.MONGO_ID] = (input,taskErrorBag,prepareErrorData) =>
     }
 };
 
+typeLibrary[ValidationTypes.LAT_LONG] = (input,taskErrorBag,prepareErrorData) =>
+{
+    if(!EasyValidator.isLatLong(input)) {
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeLatLong,prepareErrorData));
+    }
+};
+
 functionLibrary[nameof<ValuePropertyConfig>(s => s.regex)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === 'string') {

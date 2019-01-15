@@ -417,6 +417,18 @@ export = {
         fromZationSystem : true
     },
 
+    inputIsNotTypeLatLong : {
+        name          : 'inputIsNotTypeLatLong',
+        group         : ErrorGroup.TYPE_ERROR,
+        description   : 'Input is not from type lat long!',
+        type          : ErrorType.VALIDATION_ERROR,
+        sendInfo      : true,
+        //INFO
+        // inputValue (inputValue)
+        // inputPath (inputPath)
+        fromZationSystem : true
+    },
+
     inputNotMatchWithMinLength : {
         name          : 'inputNotMatchWithMinLength',
         group         : ErrorGroup.VALUE_LENGTH_ERROR,
