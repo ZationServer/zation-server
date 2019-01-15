@@ -40,5 +40,6 @@ export enum ValidationTypes
     UUID_5           = 'uuid5',
     BASE64           = 'base64',
     ASCII            = 'ascii',
-    USER_ID          = 'userId'
+    USER_ID          = 'userId',
+    MONGO_ID         = 'mongoId'
 }

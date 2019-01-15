@@ -277,6 +277,17 @@ class EasyValidator
         }
     }
 
+    static isMongoId(data)
+    {
+        // noinspection JSUnresolvedFunction
+        try {
+            return Validator.isMongoId(data);
+        }
+        catch (e) {
+            return false;
+        }
+    }
+
     static isBase64(data)
     {
         return EasyValidator.isString(data) && (new RegExp('^(data:\\w+\\/[a-zA-Z+\\-.]+;base64,)?(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0-9+\/]{3}=)?$', 'gi')).

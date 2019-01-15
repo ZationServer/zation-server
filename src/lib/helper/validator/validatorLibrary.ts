@@ -265,6 +265,12 @@ typeLibrary[ValidationTypes.USER_ID] = (input,taskErrorBag,prepareErrorData) =>
     }
 };
 
+typeLibrary[ValidationTypes.MONGO_ID] = (input,taskErrorBag,prepareErrorData) =>
+{
+    if(!EasyValidator.isMongoId(input)) {
+        taskErrorBag.addTaskError(new TaskError(ValidatorErrors.inputIsNotTypeMongoId,prepareErrorData));
+    }
+};
 
 functionLibrary[nameof<ValuePropertyConfig>(s => s.regex)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
