@@ -57,6 +57,16 @@ class Result
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * Returns the current result.
+     */
+    getResult() : any
+    {
+        return this.result;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * Removes the result.
      */
     removeResult() : void
@@ -88,6 +98,16 @@ class Result
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * Returns the current status code.
+     */
+    getStatusCode() : string | number | undefined
+    {
+        return this.statusCode;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * Removes the status code.
      */
     removeStatusCode() : void
@@ -114,6 +134,18 @@ class Result
     {
         return typeof this.result;
     }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the complete information as a string.
+     */
+    toString() : string
+    {
+        return `Result: ${this.result} StatusCode: ${this.statusCode}`;
+    }
+
+
 }
 
 export = Result;
