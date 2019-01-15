@@ -43,7 +43,7 @@ class TaskErrorBag
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    addNewTaskError(errorConstruct : ErrorConstruct, info ?: object | string) : void
+    addNewTaskError(errorConstruct : ErrorConstruct = {}, info ?: object | string) : void
     {
         this.addTaskError(new TaskError(errorConstruct,info));
     }
