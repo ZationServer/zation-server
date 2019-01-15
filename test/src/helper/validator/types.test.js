@@ -2,6 +2,7 @@ const assert          = require("chai").assert;
 const TaskErrorBag    = require('../../../../dist/lib/api/TaskErrorBag');
 const typeValidator   = require('../../../../dist/lib/helper/validator/validatorLibrary').type;
 const validationTypes = require('../../../../dist/lib/helper/constants/validationTypes').ValidationTypes;
+const Base64TestData  = require('./../../../testData/base64');
 
 describe('Type Validation',() => {
 
@@ -928,5 +929,192 @@ describe('Type Validation',() => {
         });
     });
 
+    describe('MobileNumber',() => {
+        it('MobileNumber version-1 string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MOBILE_NUMBER]('+447700900068',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('MobileNumber version-2 string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MOBILE_NUMBER]('07700 900068',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Hello String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MOBILE_NUMBER]("test",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MOBILE_NUMBER](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.MOBILE_NUMBER]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
+    describe('UUID-3',() => {
+        it('UUID-3 string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.UUID_3]('9125a8dc-52ee-365b-a5aa-81b0b3681cf6',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Hello String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.UUID_3]("test",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.UUID_3](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.UUID_3]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
+    describe('UUID-4',() => {
+        it('UUID-4 string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.UUID_4]('10ba038e-48da-487b-96e8-8d3b99b6d18a',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Hello String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.UUID_4]("test",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.UUID_4](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.UUID_4]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
+    describe('UUID-5',() => {
+        it('UUID-5 string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.UUID_5]('fdda765f-fc57-5604-a269-52a7df8164ec',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Hello String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.UUID_5]("test",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.UUID_5](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.UUID_5]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
+    describe('Base64',() => {
+        it('Base64 version-1 string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.BASE64](Base64TestData.d1.data,eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Base64 version-2 string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.BASE64](Base64TestData.d2.data,eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Number String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.BASE64]("2",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.BASE64](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.BASE64]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
+    describe('ASCII',() => {
+        it('ASCII string should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.ASCII]('hello',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('No ASCII String should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.ASCII]("\t\ud83d\ude34",eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Number should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.ASCII](1,eb,{});
+            assert(!eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.ASCII]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
+
+    describe('UserId',() => {
+        it('String should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.USER_ID]('user3',eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Number should produce no error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.USER_ID](1,eb,{});
+            assert(eb.isEmpty());
+        });
+
+        it('Object should produce an error',() => {
+            const eb = new TaskErrorBag;
+            typeValidator[validationTypes.USER_ID]({},eb,{});
+            assert(!eb.isEmpty());
+        });
+    });
 
 });
