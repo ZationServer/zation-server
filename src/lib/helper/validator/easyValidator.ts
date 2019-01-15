@@ -238,12 +238,10 @@ class EasyValidator
     static isMobilePhone(data)
     {
         // noinspection JSUnresolvedFunction
-        try {
-            return Validator.isMobilePhone(data);
-        }
-        catch (e) {
+        if(typeof data !== 'string'){
             return false;
         }
+        return data.match(/^[+]*[(]?[0-9]{1,4}[)]?[-\s\./0-9]*$/);
     }
 
     static isUUID3(data)
