@@ -82,38 +82,22 @@ class EasyValidator
 
     static isSha512(data)
     {
-        // noinspection JSUnresolvedFunction
-        if(typeof data !== 'string'){
-            return false;
-        }
-        return data.match(/^[a-fA-F0-9]{128}$/);
+        return typeof data === 'string' && data.match(/^[a-fA-F0-9]{128}$/);
     }
 
     static isSha384(data)
     {
-        // noinspection JSUnresolvedFunction
-        if(typeof data !== 'string'){
-            return false;
-        }
-        return data.match(/^[a-fA-F0-9]{96}$/);
+        return typeof data === 'string' && data.match(/^[a-fA-F0-9]{96}$/);
     }
 
     static isSha256(data)
     {
-        // noinspection JSUnresolvedFunction
-        if(typeof data !== 'string'){
-            return false;
-        }
-        return data.match(/^[a-fA-F0-9]{64}$/);
+        return typeof data === 'string' && data.match(/^[a-fA-F0-9]{64}$/);
     }
 
     static isSha1(data)
     {
-        // noinspection JSUnresolvedFunction
-        if(typeof data !== 'string'){
-            return false;
-        }
-        return data.match(/^[a-fA-F0-9]{40}$/);
+        return typeof data === 'string' && data.match(/^[a-fA-F0-9]{40}$/);
     }
 
     static isHexColor(data)
@@ -237,11 +221,7 @@ class EasyValidator
 
     static isMobilePhone(data)
     {
-        // noinspection JSUnresolvedFunction
-        if(typeof data !== 'string'){
-            return false;
-        }
-        return data.match(/^[+]*[(]?[0-9]{1,4}[)]?[-\s\./0-9]*$/);
+        return typeof data === 'string' && data.match(/^[+]*[(]?[0-9]{1,4}[)]?[-\s\./0-9]*$/);
     }
 
     static isUUID3(data)
@@ -277,6 +257,12 @@ class EasyValidator
         }
     }
 
+    static isLatLong(data)
+    {
+        return (typeof data === 'number' && data <= 90 && data >= -90) ||
+            (typeof data === 'string' && data.match(/^[+]*[(]?[0-9]{1,4}[)]?[-\s\./0-9]*$/));
+    }
+
     static isMongoId(data)
     {
         // noinspection JSUnresolvedFunction
@@ -308,23 +294,12 @@ class EasyValidator
     // noinspection JSUnusedGlobalSymbols
     static isStringBoolean(data)
     {
-        // noinspection JSUnresolvedFunction
-        if(EasyValidator.isString(data)) {
-            return ['true', 'false', '1', '0'].indexOf(data) >= 0;
-        }
-        else{
-            return false;
-        }
+        return EasyValidator.isString(data) && ['true', 'false', '1', '0'].indexOf(data) >= 0;
     }
 
     static isNumberBoolean(data)
     {
-        if(EasyValidator.isNumber(data)) {
-            return data === 0 || data === 1;
-        }
-        else{
-            return false;
-        }
+        return EasyValidator.isNumber(data) && data === 0 || data === 1;
     }
 
     static isBoolean(data)
