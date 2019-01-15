@@ -83,46 +83,37 @@ class EasyValidator
     static isSha512(data)
     {
         // noinspection JSUnresolvedFunction
-        try {
-            return Validator.isHash(data,'Sha512');
-        }
-        catch (e) {
+        if(typeof data !== 'string'){
             return false;
         }
+        return data.match(/^[a-fA-F0-9]{128}$/);
     }
 
     static isSha384(data)
     {
         // noinspection JSUnresolvedFunction
-        try {
-            return Validator.isHash(data,'Sha384');
-        }
-        catch (e) {
+        if(typeof data !== 'string'){
             return false;
         }
+        return data.match(/^[a-fA-F0-9]{96}$/);
     }
 
     static isSha256(data)
     {
         // noinspection JSUnresolvedFunction
-        try {
-            return Validator.isHash(data,'Sha256');
-        }
-        catch (e) {
+        if(typeof data !== 'string'){
             return false;
         }
-
+        return data.match(/^[a-fA-F0-9]{64}$/);
     }
 
     static isSha1(data)
     {
         // noinspection JSUnresolvedFunction
-        try {
-            return Validator.isHash(data,'Sha1');
-        }
-        catch (e) {
+        if(typeof data !== 'string'){
             return false;
         }
+        return data.match(/^[a-fA-F0-9]{40}$/);
     }
 
     static isHexColor(data)
@@ -139,12 +130,10 @@ class EasyValidator
     static isMd5(data)
     {
         // noinspection JSUnresolvedFunction
-        try {
-            return Validator.isHash(data,'md5');
-        }
-        catch (e) {
+        if(typeof data !== 'string'){
             return false;
         }
+        return data.match(/^[a-fA-F0-9]{32}$/);
     }
 
     static isJSON(data)
