@@ -525,47 +525,47 @@ describe('Function Validation',() => {
         });
     });
 
-    describe('SubType',() => {
+    describe('MimeSubType',() => {
 
-        describe('SubType Normal',() => {
+        describe('MimeSubType Normal',() => {
 
             it('Not matching input should produce an error (string)',() => {
                 const eb = new TaskErrorBag;
-                funcValidator.subType(Base64TestData.d2.data,'jpg',eb,{});
+                funcValidator.mimeSubType(Base64TestData.d2.data,'jpg',eb,{});
                 assert(!eb.isEmpty());
             });
 
             it('Matching should produce no error (string)',() => {
                 const eb = new TaskErrorBag;
-                funcValidator.subType(Base64TestData.d2.data,Base64TestData.d2.subType,eb,{});
+                funcValidator.mimeSubType(Base64TestData.d2.data,Base64TestData.d2.subType,eb,{});
                 assert(eb.isEmpty());
             });
 
             it('A number should produce no error',() => {
                 const eb = new TaskErrorBag;
-                funcValidator.subType(5,'image',eb,{});
+                funcValidator.mimeSubType(5,'image',eb,{});
                 assert(eb.isEmpty());
             });
         });
 
-        describe('SubType Array',() => {
+        describe('MimeSubType Array',() => {
 
             it('Not matching input should produce an error (array)',() => {
                 const eb = new TaskErrorBag;
-                funcValidator.subType(Base64TestData.d2.data,['jpg','svg'],eb,{});
+                funcValidator.mimeSubType(Base64TestData.d2.data,['jpg','svg'],eb,{});
                 assert(!eb.isEmpty());
             });
 
 
             it('Matching should produce no error (array)',() => {
                 const eb = new TaskErrorBag;
-                funcValidator.subType(Base64TestData.d2.data,[Base64TestData.d2.subType,'jpg'],eb,{});
+                funcValidator.mimeSubType(Base64TestData.d2.data,[Base64TestData.d2.subType,'jpg'],eb,{});
                 assert(eb.isEmpty());
             });
 
             it('A number should produce no error',() => {
                 const eb = new TaskErrorBag;
-                funcValidator.subType(5,['jpg','png'],eb,{});
+                funcValidator.mimeSubType(5,['jpg','png'],eb,{});
                 assert(eb.isEmpty());
             });
         });
