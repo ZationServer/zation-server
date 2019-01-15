@@ -15,6 +15,7 @@ import {ChAccessEngine} from "../channel/chAccessEngine";
 import AuthenticationError = require("../error/authenticationError");
 import ZationWorker        = require("../../main/zationWorker");
 import {PrepareZationToken, ZationAccess, ZationToken} from "../constants/internal";
+// noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../configs/appConfig";
 
 class AuthEngine

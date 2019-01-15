@@ -6,7 +6,8 @@ GitHub: LucaCode
 
 import {ErrorConstruct}     from "../helper/configs/errorConfig";
 import TaskErrorBuilder   = require("../helper/builder/taskErrorBuilder");
-import {ErrorType}         from "../helper/constants/errorType";
+// noinspection TypeScriptPreferShortImport
+import {ErrorType}          from "../helper/constants/errorType";
 import {ResponseTaskError, TaskErrorInfo} from "../helper/constants/internal";
 
 class TaskError extends Error
@@ -65,7 +66,7 @@ class TaskError extends Error
      * @description
      * Returns the complete information as a string.
      */
-    toString()
+    toString() : string
     {
         return `TaskError  Name: ${this.name} Group: ${this.group}  Description: ${this.description}  Type: ${this.type}  Info: ${JSON.stringify(this.info)}  isPrivate:${this.privateE}  isFromZationSystem:${this.fromZationSystem}`;
     }
@@ -319,17 +320,6 @@ class TaskError extends Error
     throw() : void
     {
        throw this;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns an task error builder.
-     * For easy build an task error.
-     */
-    static build() : TaskErrorBuilder
-    {
-        return new TaskErrorBuilder();
     }
 }
 
