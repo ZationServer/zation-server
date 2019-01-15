@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="I">
-      <change beforePath="$PROJECT_DIR$/test/src/helper/validator/functions.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/helper/validator/functions.test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/helper/configs/appConfig.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/configs/appConfig.ts" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -54,11 +55,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/configs/appConfig.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="120" column="17" selection-start-line="120" selection-start-column="17" selection-end-line="120" selection-end-column="17" />
+            <state relative-caret-position="239">
+              <caret line="99" column="24" lean-forward="true" selection-start-line="99" selection-start-column="24" selection-end-line="99" selection-end-column="24" />
               <folding>
                 <element signature="e#81#127#0" expanded="true" />
               </folding>
@@ -67,12 +68,25 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/config/structures.ts">
+        <entry file="file://$PROJECT_DIR$/src/lib/api/Config.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="313">
-              <caret line="206" column="60" selection-start-line="206" selection-start-column="60" selection-end-line="206" selection-end-column="60" />
+            <state relative-caret-position="285">
+              <caret line="141" column="50" lean-forward="true" selection-start-line="141" selection-start-column="50" selection-end-line="141" selection-end-column="50" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/index.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="585">
+              <caret line="39" column="18" lean-forward="true" selection-start-line="39" selection-start-column="18" selection-end-line="39" selection-end-column="18" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+                <element signature="n#ZationStarter#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -103,16 +117,16 @@
         <entry file="file://$PROJECT_DIR$/test/src/helper/validator/types.test.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="230">
-              <caret line="878" column="18" lean-forward="true" selection-start-line="878" selection-start-column="18" selection-end-line="878" selection-end-column="18" />
+              <caret line="878" column="18" selection-start-line="878" selection-start-column="18" selection-end-line="878" selection-end-column="18" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/src/helper/validator/functions.test.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="469">
-              <caret line="571" column="7" lean-forward="true" selection-start-line="571" selection-start-column="7" selection-end-line="571" selection-end-column="7" />
+            <state relative-caret-position="1649">
+              <caret line="571" column="7" selection-start-line="571" selection-start-column="7" selection-end-line="571" selection-end-column="7" />
             </state>
           </provider>
         </entry>
@@ -120,17 +134,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/validationTypes.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="-5">
               <caret column="1" selection-start-column="1" selection-end-column="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/validator/easyValidator.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="559">
-              <caret line="230" column="46" selection-start-line="230" selection-start-column="46" selection-end-line="230" selection-end-column="46" />
             </state>
           </provider>
         </entry>
@@ -228,7 +233,6 @@
         <option value="$PROJECT_DIR$/src/lib/helper/systemController/controller/zationSPC_Auth.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/systemController/systemControler.config.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/tools/templateEngine.ts" />
-        <option value="$PROJECT_DIR$/src/lib/api/Config.ts" />
         <option value="$PROJECT_DIR$/src/lib/api/Controller.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/views/viewEngine.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/processor/httpProcessor.ts" />
@@ -240,7 +244,6 @@
         <option value="$PROJECT_DIR$/src/lib/helper/constants/errorGroup.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/tools/byteTools.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/constants/validation.ts" />
-        <option value="$PROJECT_DIR$/src/index.ts" />
         <option value="$PROJECT_DIR$/gulpFile.js" />
         <option value="$PROJECT_DIR$/src/lib/helper/logger/logger.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/config/configChecker.ts" />
@@ -265,7 +268,6 @@
         <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/test/testData/base64.js" />
         <option value="$PROJECT_DIR$/src/lib/helper/validator/easyValidator.ts" />
-        <option value="$PROJECT_DIR$/src/lib/helper/configs/appConfig.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/config/structures.ts" />
         <option value="$PROJECT_DIR$/src/lib/api/SmallBag.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/tools/base64Tools.ts" />
@@ -273,6 +275,9 @@
         <option value="$PROJECT_DIR$/src/lib/helper/zationTaskErrors/validatorTaskErrors.ts" />
         <option value="$PROJECT_DIR$/test/src/helper/validator/types.test.js" />
         <option value="$PROJECT_DIR$/test/src/helper/validator/functions.test.js" />
+        <option value="$PROJECT_DIR$/src/lib/api/Config.ts" />
+        <option value="$PROJECT_DIR$/src/index.ts" />
+        <option value="$PROJECT_DIR$/src/lib/helper/configs/appConfig.ts" />
       </list>
     </option>
   </component>
@@ -665,7 +670,7 @@
       <workItem from="1547165297952" duration="525000" />
       <workItem from="1547214455142" duration="13575000" />
       <workItem from="1547230453661" duration="1297000" />
-      <workItem from="1547505631533" duration="8824000" />
+      <workItem from="1547505631533" duration="9250000" />
     </task>
     <task id="LOCAL-00064" summary="improve validation engine&#10;add new regex name option&#10;add strictType and convertType option&#10;improve config checker">
       <created>1541205117372</created>
@@ -1031,7 +1036,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1797813000" />
+    <option name="totallyTimeSpent" value="1798239000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1104,14 +1109,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="add support for attached http content in bag" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/auth/authEngine.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4215">
-          <caret line="296" column="26" selection-start-line="296" selection-start-column="26" selection-end-line="296" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/public/assets/favicon/android-chrome-384x384.png" />
     <entry file="file://$PROJECT_DIR$/src/lib/public/assets/logo/zationLogo.svg" />
     <entry file="file://$PROJECT_DIR$/src/lib/public/assets/logo/zationLogo_animated.svg" />
     <entry file="file://$PROJECT_DIR$/src/lib/public/assets/logo/zation-logo.png">
@@ -1368,29 +1365,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/validationTypes.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="1" selection-start-column="1" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/helper/config/structures.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="313">
           <caret line="206" column="60" selection-start-line="206" selection-start-column="60" selection-end-line="206" selection-end-column="60" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/configs/appConfig.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="120" column="17" selection-start-line="120" selection-start-column="17" selection-end-line="120" selection-end-column="17" />
-          <folding>
-            <element signature="e#81#127#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1434,14 +1414,52 @@
     <entry file="file://$PROJECT_DIR$/test/src/helper/validator/types.test.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="230">
-          <caret line="878" column="18" lean-forward="true" selection-start-line="878" selection-start-column="18" selection-end-line="878" selection-end-column="18" />
+          <caret line="878" column="18" selection-start-line="878" selection-start-column="18" selection-end-line="878" selection-end-column="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/src/helper/validator/functions.test.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="469">
-          <caret line="571" column="7" lean-forward="true" selection-start-line="571" selection-start-column="7" selection-end-line="571" selection-end-column="7" />
+        <state relative-caret-position="1649">
+          <caret line="571" column="7" selection-start-line="571" selection-start-column="7" selection-end-line="571" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/constants/validationTypes.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-5">
+          <caret column="1" selection-start-column="1" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/api/Config.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="141" column="50" lean-forward="true" selection-start-line="141" selection-start-column="50" selection-end-line="141" selection-end-column="50" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/index.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="585">
+          <caret line="39" column="18" lean-forward="true" selection-start-line="39" selection-start-column="18" selection-end-line="39" selection-end-column="18" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#ZationStarter#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/configs/appConfig.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="239">
+          <caret line="99" column="24" lean-forward="true" selection-start-line="99" selection-start-column="24" selection-end-line="99" selection-end-column="24" />
+          <folding>
+            <element signature="e#81#127#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -4,11 +4,14 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+// noinspection TypeScriptPreferShortImport
 import {Bag}             from '../../api/Bag';
 import SmallBag        = require("../../api/SmallBag");
 import ZationToken     = require("../infoObjects/zationTokenInfo");
 import TaskErrorBag    = require("../../api/TaskErrorBag");
 import {ControllerClass} from "../../api/Controller";
+// noinspection TypeScriptPreferShortImport
+import {ValidationTypes} from "../constants/validationTypes";
 
 export interface AppConfig
 {
@@ -84,7 +87,7 @@ export type GetDateFunction = (smallBag : SmallBag) => Promise<Date> | Date;
 
 export interface ValuePropertyConfig extends PropertyOptional
 {
-    type  ?: string | string[];
+    type  ?: ValidationTypes | string | (ValidationTypes | string)[];
     strictType  ?: boolean;
     enum  ?: any [];
     privateEnum  ?: any [];
