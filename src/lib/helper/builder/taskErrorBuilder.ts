@@ -5,8 +5,9 @@ GitHub: LucaCode
  */
 
 import {ErrorConstruct}     from "../configs/errorConfig";
+// noinspection TypeScriptPreferShortImport
+import {ErrorType}          from "../constants/errorType";
 import TaskError          = require("../../api/TaskError");
-import {ErrorType}         from "../constants/errorType";
 
 class TaskErrorBuilder
 {
@@ -237,6 +238,16 @@ class TaskErrorBuilder
         return new TaskError(this.errorSettings,this.errorInfo);
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns an task error builder.
+     * For easy build an task error.
+     */
+    static build() : TaskErrorBuilder
+    {
+        return new TaskErrorBuilder();
+    }
 }
 
 export = TaskErrorBuilder;
