@@ -1,6 +1,6 @@
 {
   "name": "zation-server",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "license": "MIT",
   "description": "Server for the zation framework",
   "main": "dist/index.js",
@@ -73,7 +73,7 @@
     "validator": "10.4.0",
     "ws": "6.1.0",
     "byte-length": "1.0.2",
-    "zation-client": "0.4.7"
+    "zation-client": "0.4.8"
   },
   "devDependencies": {
     "@types/gulp-sass": "0.0.31",
