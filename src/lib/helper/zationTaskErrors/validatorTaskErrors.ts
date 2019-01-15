@@ -696,16 +696,16 @@ export = {
         fromZationSystem : true
     },
 
-    inputNotMatchWithSubType : {
-        name          : 'inputNotMatchWithSubType',
+    inputNotMatchWithMimeSubType : {
+        name          : 'inputNotMatchWithMimeSubType',
         group         : ErrorGroup.CONTENT_TYPE_ERROR,
-        description   : 'Input is not match with sub type!',
+        description   : 'Input is not match with mime sub type!',
         type          : ErrorType.VALIDATION_ERROR,
         sendInfo      : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        // subType (sub type that is allow)
+        // mimeSubType (mime sub type that is allow)
         fromZationSystem : true
     },
 

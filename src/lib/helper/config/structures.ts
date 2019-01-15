@@ -204,7 +204,7 @@ InputBody[nameof<ValuePropertyConfig>(s => s.charClass)]    = {types : ['string'
 InputBody[nameof<ValuePropertyConfig>(s => s.maxByteSize)]  = {types : ['number'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.minByteSize)]  = {types : ['number'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.mimeType)]     = {types : ['string','array','null'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.subType)]      = {types : ['string','array','null'],isOptional : true};
+InputBody[nameof<ValuePropertyConfig>(s => s.mimeSubType)]  = {types : ['string','array','null'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.before)]       = {types : ['object','function'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.after)]        = {types : ['object','function'],isOptional : true};
 InputBody[nameof<ValuePropertyConfig>(s => s.validate)]     = {types : ['function','array'],isOptional : true};

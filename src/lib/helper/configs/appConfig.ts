@@ -103,7 +103,7 @@ export interface ValuePropertyConfig extends PropertyOptional
     maxByteSize ?: number;
     minByteSize ?: number;
     mimeType ?: string | null | (string | null)[];
-    subType ?: string | null | (string | null)[];
+    mimeSubType ?: string | null | (string | null)[];
     before ?: Date | GetDateFunction;
     after ?: Date | GetDateFunction;
     validate  ?: ValidatorFunction | ValidatorFunction[];

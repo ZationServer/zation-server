@@ -39,5 +39,5 @@ export const OnlyDateFunctions = [
 
 export const OnlyBase64Functions = [
     nameof<ValuePropertyConfig>(s => s.mimeType),
-    nameof<ValuePropertyConfig>(s => s.subType)
+    nameof<ValuePropertyConfig>(s => s.mimeSubType)
 ];

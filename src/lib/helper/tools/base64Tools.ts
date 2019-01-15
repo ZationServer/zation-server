@@ -31,15 +31,15 @@ class Base64Tools
         return result;
     }
 
-    public static getContentInfo(base64 : string) : null | {subType : string, mimeType : string}
+    public static getContentInfo(base64 : string) : null | {mimeSubType : string, mimeType : string}
     {
-        let res : null | {subType : string, mimeType : string} = null;
+        let res : null | {mimeSubType : string, mimeType : string} = null;
         const contentType = Base64Tools.getContentType(base64);
         if(contentType) {
             let tmpSplit = contentType.split('/');
             res = {
                 mimeType : tmpSplit[0],
-                subType : tmpSplit[1]
+                mimeSubType : tmpSplit[1]
             }
         }
         return res;
@@ -55,7 +55,7 @@ class Base64Tools
         return res;
     }
 
-    public static getSubType(base64 : string) : null | string
+    public static getMimeSubType(base64 : string) : null | string
     {
         let res : null | string = null;
         const contentType = Base64Tools.getContentType(base64);

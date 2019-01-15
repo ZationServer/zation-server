@@ -551,7 +551,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.mimeType)] = async (input, se
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.subType)] = async (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValuePropertyConfig>(s => s.mimeSubType)] = async (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === "string")
     {
@@ -559,7 +559,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.subType)] = async (input, set
             settings = [settings];
         }
 
-        const sub = Base64Tools.getSubType(input);
+        const sub = Base64Tools.getMimeSubType(input);
         const fails : string[] = [];
 
         for(let i = 0; i < settings.length; i++)
@@ -573,11 +573,11 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.subType)] = async (input, set
         }
 
         //if found a sub than it already exists with return.
-        taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithSubType,
+        taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithMimeSubType,
             {
                 inputValue : prepareErrorData.inputValue,
                 inputPath : prepareErrorData.inputPath,
-                subType : fails
+                mimeSubType : fails
             });
     }
 };

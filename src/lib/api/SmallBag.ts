@@ -1924,16 +1924,16 @@ class SmallBag
     // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the mime and subType of an encoded base64 string.
+     * Returns the mimeType and mimeSubType of an encoded base64 string.
      * @example
      * base64ContentInfo("ENCODED-BASE64");
      * @param encodedBase64
      * The encoded base64 string.
      * @return
      * Can be null if the base64 string has no content type.
-     * Otherwise, it is an object with the properties: subType, mimeType.
+     * Otherwise, it is an object with the properties: mimeSubType, mimeType.
      */
-    base64ContentInfo(encodedBase64 : string) : null | {subType : string, mimeType : string} {
+    base64ContentInfo(encodedBase64 : string) : null | {mimeSubType : string, mimeType : string} {
         return Base64Tools.getContentInfo(encodedBase64);
     }
 
