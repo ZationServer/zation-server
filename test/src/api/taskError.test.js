@@ -70,6 +70,55 @@ describe('API.TaskError',() => {
             assert.equal(te.getName(),'error2');
         });
 
+        it('setGroup',() => {
+            const te = new TaskError({group : 'g1'});
+            te.setGroup('g2');
+            assert.equal(te.getGroup(),'g2');
+        });
+
+        it('setDescription',() => {
+            const te = new TaskError({description : 'desc'});
+            te.setDescription('desc2');
+            assert.equal(te.getDescription(),'desc2');
+        });
+
+        it('setType',() => {
+            const te = new TaskError({type : 't1'});
+            te.setType('t2');
+            assert.equal(te.getType(),'t2');
+        });
+
+        it('setPrivate',() => {
+            const te = new TaskError({private: false});
+            te.setPrivate(true);
+            assert(te.isPrivate());
+        });
+
+        it('setSendInfo',() => {
+            const te = new TaskError({sendInfo: false});
+            te.setSendInfo(true);
+            assert(te.isSendInfo());
+        });
+
+        it('setIsFromZationSystem',() => {
+            const te = new TaskError({fromZationSystem : false});
+            te.setFromZationSystem(true);
+            assert(te.isFromZationSystem());
+        });
+
+        it('setInfo',() => {
+            const te = new TaskError({},{length : 1});
+            te.setInfo({length : 5});
+            assert.deepEqual(te.getInfo(),{length : 5});
+        });
+
+        it('throw',() => {
+            const te = new TaskError({},{length : 1});
+            expect(() => {
+                te.throw();
+            }).to.throw();
+        });
+
         it('toString',() => {
             const eb = new TaskError({name : 'error1'});
             assert.equal(eb.toString(),'TaskError  Name: error1 Group: undefined  Description: No Description define in Error  Type: NORMAL_ERROR  Info: {}  isPrivate:false  isFromZationSystem:false');
