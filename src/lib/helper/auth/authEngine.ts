@@ -253,7 +253,7 @@ class AuthEngine
         let keyWord = controller['speedAccessKey'];
 
         if(keyWord === '') {
-            Logger.printDebugWarning('No controller protocolAccess config found! Access will denied!');
+            Logger.printDebugWarning('No controller access config found! Access will denied!');
             return false;
         }
         else {
