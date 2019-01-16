@@ -293,7 +293,7 @@ class ConfigChecker
             [nameof<AppConfig>(s => s.controllerDefaults), nameof<ControllerConfig>(s => s.notAccess)]);
 
         if (access === undefined && notAccess === undefined) {
-            Logger.printConfigWarning(ConfigNames.APP, 'It is recommended to set a controller default value for protocolAccess or notAccess.');
+            Logger.printConfigWarning(ConfigNames.APP, 'It is recommended to set a controller default value for access or notAccess.');
         }
     }
 

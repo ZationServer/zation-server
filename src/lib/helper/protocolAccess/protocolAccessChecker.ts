@@ -12,11 +12,15 @@ class ProtocolAccessChecker
     static hasProtocolAccess(shBridge : SHBridge,controller : ControllerConfig) : boolean
     {
         let hasAccess = true;
-        if(shBridge.isWebSocket() && !!controller.wsAccess) {
-            hasAccess = controller.wsAccess;
+        if(shBridge.isWebSocket()) {
+            if(!!controller.wsAccess) {
+                hasAccess = controller.wsAccess;
+            }
         }
-        else if(!!controller.httpAccess) {
-            hasAccess = controller.httpAccess;
+        else {
+            if(!!controller.httpAccess){
+                hasAccess = controller.httpAccess;
+            }
         }
         return hasAccess;
     }
