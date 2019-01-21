@@ -35,6 +35,7 @@
     "@types/nodemailer": "4.6.2",
     "@types/pg-pool": "0.0.3",
     "@types/useragent": "2.1.1",
+    "@types/moment-timezone": "0.5.10",
     "body-parser": "1.18.3",
     "cache-require-paths": "0.3.0",
     "connect-mongo": "2.0.1",

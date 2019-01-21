@@ -3,20 +3,19 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-import moment = require('moment-timezone');
+import momentTz = require('moment-timezone');
 import Logger = require('../logger/logger');
+import {Moment as MomentType} from "moment-timezone";
 
-class TimeTools
-{
-    static getMoment(timeZone : string) {
+class TimeTools {
+    static getMoment(timeZone: string) {
         // noinspection JSUnresolvedFunction
-        return moment().tz(timeZone);
+        return momentTz().tz(timeZone);
     }
 
-    static processTaskTriggerTime({hour,minute,second,millisecond},timeZone : string)
-    {
-        let now = TimeTools.getMoment(timeZone);
-        let fireMoment = TimeTools.getMoment(timeZone);
+    static processTaskTriggerTime({hour, minute, second, millisecond}, startMoment: MomentType, printInfo: boolean = true) {
+        let now: MomentType = startMoment;
+        let fireMoment: MomentType = now.clone();
 
         let isHour = hour !== undefined;
         let isMinute = minute !== undefined;
@@ -24,79 +23,88 @@ class TimeTools
         let isMillisecond = millisecond !== undefined;
 
         //load only set values
-        if(isMillisecond) {fireMoment.set({ms : millisecond});}
-        if(isSecond) {fireMoment.set({s : second});}
-        if(isMinute) {fireMoment.set({m : minute});}
-        if(isHour) {fireMoment.set({h : hour});}
+        if (isMillisecond) {
+            fireMoment.set({ms: millisecond});
+        }
+        if (isSecond) {
+            fireMoment.set({s: second});
+        }
+        if (isMinute) {
+            fireMoment.set({m: minute});
+        }
+        if (isHour) {
+            fireMoment.set({h: hour});
+        }
 
         //Zero setter
-        if(isHour)
-        {
-            if(!isMinute) {fireMoment.set({m : 0});}
-            if(!isSecond) {fireMoment.set({s : 0});}
-            if(!isMillisecond) {fireMoment.set({ms : 0});}
-        }
-        else if(isMinute)
-        {
-            if(!isSecond) {fireMoment.set({s : 0});}
-            if(!isMillisecond) {fireMoment.set({ms : 0});}
-        }
-        else if(isSecond)
-        {
-            if(!isMillisecond) {fireMoment.set({ms : 0});}
+        if (isHour) {
+            if (!isMinute) {
+                fireMoment.set({m: 0});
+            }
+            if (!isSecond) {
+                fireMoment.set({s: 0});
+            }
+            if (!isMillisecond) {
+                fireMoment.set({ms: 0});
+            }
+        } else if (isMinute) {
+            if (!isSecond) {
+                fireMoment.set({s: 0});
+            }
+            if (!isMillisecond) {
+                fireMoment.set({ms: 0});
+            }
+        } else if (isSecond) {
+            if (!isMillisecond) {
+                fireMoment.set({ms: 0});
+            }
         }
 
-        const process = (fireMoment) =>
-        {
-            Logger.printDebugInfo(`Background Task is planed to -> ${fireMoment.format('dddd, MMMM Do YYYY, k:mm:ss:SSSS ')}`);
-            return moment.duration(fireMoment.diff(now)).asMilliseconds();
+        const process = (fireMoment) => {
+            if (printInfo) {
+                Logger.printDebugInfo(`Background Task is planed to -> ${fireMoment.format('dddd, MMMM Do YYYY, k:mm:ss:SSSS ')}`);
+            }
+
+
+            return momentTz.duration(fireMoment.diff(now)).asMilliseconds();
         };
 
 
-        if(fireMoment.isSameOrBefore(now))
-        {
-            if(!millisecond)
-            {
-                let tempDate = fireMoment.clone();
-                tempDate.millisecond = now.millisecond;
-                tempDate.add(1,'millisecond');
-                if(tempDate.isAfter(now))
-                {
-                    return process(tempDate);
+        if (fireMoment.isSameOrBefore(now)) {
+            if (!isHour) {
+                if (!isMinute) {
+                    if (!isSecond) {
+                        if (!isMillisecond) {
+                            let tempDate = fireMoment.clone();
+                            tempDate.millisecond = now.millisecond;
+                            tempDate.add(1, 'millisecond');
+                            if (tempDate.isAfter(now)) {
+                                return process(tempDate);
+                            }
+                        }
+                        let tempDate = fireMoment.clone();
+                        tempDate.second = now.second;
+                        tempDate.add(1, 'seconds');
+                        if (tempDate.isAfter(now)) {
+                            return process(tempDate);
+                        }
+                    }
+                    let tempDate = fireMoment.clone();
+                    tempDate.minute = now.minute;
+                    tempDate.add(1, 'minutes');
+                    if (tempDate.isAfter(now)) {
+                        return process(tempDate);
+                    }
                 }
-            }
-            if(!second)
-            {
-                let tempDate = fireMoment.clone();
-                tempDate.second = now.second;
-                tempDate.add(1,'seconds');
-                if(tempDate.isAfter(now))
-                {
-                    return process(tempDate);
-                }
-            }
-            if(!minute)
-            {
-                let tempDate = fireMoment.clone();
-                tempDate.minute = now.minute;
-                tempDate.add(1,'minutes');
-                if(tempDate.isAfter(now))
-                {
-                    return process(tempDate);
-                }
-            }
-            if(!hour)
-            {
                 let tempDate = fireMoment.clone();
                 tempDate.hour = now.hour;
-                tempDate.add(1,'hours');
-                if(tempDate.isAfter(now))
-                {
+                tempDate.add(1, 'hours');
+                if (tempDate.isAfter(now)) {
                     return process(tempDate);
                 }
             }
 
-            fireMoment.add(1,'days');
+            fireMoment.add(1, 'days');
             return process(fireMoment);
         }
         return process(fireMoment);

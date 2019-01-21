@@ -2,12 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="I">
+      <change afterPath="$PROJECT_DIR$/test/src/helper/tools/timeTools.test.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib/helper/background/backgroundTasksSender.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/background/backgroundTasksSender.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib/helper/tools/timeTools.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/tools/timeTools.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/helper/views/html/zationDefault.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/helper/views/html/zationDefault.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/main/zationMaster.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationMaster.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/public/panel/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/panel/index.html" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -36,11 +36,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/package.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="37" column="39" selection-start-line="37" selection-start-column="39" selection-end-line="37" selection-end-column="39" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/tools/timeTools.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="233">
-              <caret line="16" column="5" lean-forward="true" selection-start-line="16" selection-start-column="5" selection-end-line="16" selection-end-column="5" />
+            <state relative-caret-position="60">
+              <caret line="79" column="41" selection-start-line="79" selection-start-column="41" selection-end-line="79" selection-end-column="41" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="n#moment#0" expanded="true" />
@@ -49,11 +58,38 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/test/src/helper/tools/timeTools.test.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="360">
+              <caret line="24" column="33" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/node_modules/@types/moment-timezone/index.d.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="416">
+              <caret line="62" column="65" selection-start-line="62" selection-start-column="65" selection-end-line="62" selection-end-column="65" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/node_modules/moment/moment.d.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="6836">
+              <caret line="646" column="7" selection-start-line="646" selection-start-column="7" selection-end-line="646" selection-end-column="7" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/background/backgroundTasksSender.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="355">
-              <caret line="67" column="53" selection-start-line="67" selection-start-column="53" selection-end-line="67" selection-end-column="53" />
+            <state relative-caret-position="384">
+              <caret line="67" selection-start-line="67" selection-end-line="67" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -62,22 +98,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/main/zationMaster.ts">
+        <entry file="file://$PROJECT_DIR$/test/src/helper/tools/idCounter.test.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="347" column="21" selection-start-line="347" selection-start-column="21" selection-end-line="347" selection-end-column="21" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/views/html/zationDefault.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="70">
-              <caret line="17" column="59" selection-start-line="17" selection-start-column="59" selection-end-line="17" selection-end-column="59" />
+            <state relative-caret-position="285">
+              <caret line="19" column="11" selection-end-line="23" selection-end-column="3" />
             </state>
           </provider>
         </entry>
@@ -87,46 +111,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="295">
               <caret line="37" column="9" selection-start-line="37" selection-start-column="9" selection-end-line="37" selection-end-column="9" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/public/assets/logo/zation-logo-animated.svg">
-          <provider selected="true" editor-type-id="images" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/public/assets/logo/zation-logo.png">
-          <provider selected="true" editor-type-id="images" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/input/inputMainProcessor.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="37" column="21" selection-start-line="37" selection-start-column="21" selection-end-line="37" selection-end-column="21" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/protocolAccess/protocolAccessChecker.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="29" column="29" selection-start-line="29" selection-start-column="29" selection-end-line="29" selection-end-column="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/version/systemVersionChecker.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="16" column="47" selection-start-line="16" selection-start-column="47" selection-end-line="16" selection-end-column="47" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -145,8 +129,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>authentica</find>
-      <find>authenticate</find>
       <find>tokenVariable</find>
       <find>genera</find>
       <find>host</find>
@@ -175,6 +157,8 @@
       <find>Base64</find>
       <find>TaskError</find>
       <find>MethodIs</find>
+      <find>duration</find>
+      <find>moment</find>
     </findStrings>
     <replaceStrings>
       <replace>construct</replace>
@@ -218,7 +202,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/LICENSE" />
         <option value="$PROJECT_DIR$/test/test.js" />
         <option value="$PROJECT_DIR$/test/validation/types.js" />
         <option value="$PROJECT_DIR$/test/validation/types.test.js" />
@@ -259,16 +242,17 @@
         <option value="$PROJECT_DIR$/src/lib/helper/zationTaskErrors/validatorTaskErrors.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/validator/validatorLibrary.ts" />
         <option value="$PROJECT_DIR$/test/src/helper/validator/types.test.js" />
-        <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/gulpFile.js" />
         <option value="$PROJECT_DIR$/src/lib/helper/config/configChecker.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/protocolAccess/protocolAccessChecker.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/auth/authEngine.ts" />
-        <option value="$PROJECT_DIR$/src/lib/helper/background/backgroundTasksSender.ts" />
         <option value="$PROJECT_DIR$/src/lib/main/zationMaster.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/views/html/zationDefault.html" />
         <option value="$PROJECT_DIR$/src/lib/public/panel/index.html" />
+        <option value="$PROJECT_DIR$/src/lib/helper/background/backgroundTasksSender.ts" />
+        <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/src/lib/helper/tools/timeTools.ts" />
+        <option value="$PROJECT_DIR$/test/src/helper/tools/timeTools.test.js" />
       </list>
     </option>
   </component>
@@ -400,22 +384,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.HELPER.TOOLS.ObjectTools">
-    <configuration name="API.TaskErrorBag" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>project</node-interpreter>
-      <node-options />
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options />
-      <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/test/src/api/taskErrorBag.test.js</test-file>
-      <test-names>
-        <name value="API.TaskErrorBag" />
-      </test-names>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Mocha.HELPER.TOOLS.TIME-TOOLS">
     <configuration name="HELPER.TOOLS.IdCounter" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>project</node-interpreter>
       <node-options />
@@ -446,7 +415,7 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="HELPER.TaskErrorBuilder" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="HELPER.TOOLS.TIME-TOOLS" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>project</node-interpreter>
       <node-options />
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
@@ -455,42 +424,54 @@
       <ui>bdd</ui>
       <extra-mocha-options />
       <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/test/src/helper/builder/taskErrorBuilder.test.js</test-file>
+      <test-file>$PROJECT_DIR$/test/src/helper/tools/timeTools.test.js</test-file>
       <test-names>
-        <name value="HELPER.TaskErrorBuilder" />
+        <name value="HELPER.TOOLS.TIME-TOOLS" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Type Validation.Object" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="HELPER.TOOLS.TIME-TOOLS.Methods" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>project</node-interpreter>
       <node-options />
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
       <working-directory>$PROJECT_DIR$</working-directory>
       <pass-parent-env>true</pass-parent-env>
       <ui>bdd</ui>
-      <extra-mocha-options>--require ts-node/register</extra-mocha-options>
+      <extra-mocha-options />
       <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/test/helper/validator/types.test.ts</test-file>
+      <test-file>$PROJECT_DIR$/test/src/helper/tools/timeTools.test.js</test-file>
       <test-names>
-        <name value="Type Validation" />
-        <name value="Object" />
+        <name value="HELPER.TOOLS.TIME-TOOLS" />
+        <name value="Methods" />
       </test-names>
       <method v="2" />
     </configuration>
+    <configuration name="test/src/helper/tools/timeTools.test.js" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options />
+      <test-kind>TEST_FILE</test-kind>
+      <test-file>$PROJECT_DIR$/test/src/helper/tools/timeTools.test.js</test-file>
+      <method v="2" />
+    </configuration>
     <list>
-      <item itemvalue="Mocha.Type Validation.Object" />
-      <item itemvalue="Mocha.API.TaskErrorBag" />
-      <item itemvalue="Mocha.HELPER.TaskErrorBuilder" />
       <item itemvalue="Mocha.HELPER.TOOLS.IdCounter" />
       <item itemvalue="Mocha.HELPER.TOOLS.ObjectTools" />
+      <item itemvalue="Mocha.test/src/helper/tools/timeTools.test.js" />
+      <item itemvalue="Mocha.HELPER.TOOLS.TIME-TOOLS.Methods" />
+      <item itemvalue="Mocha.HELPER.TOOLS.TIME-TOOLS" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.HELPER.TOOLS.TIME-TOOLS" />
+        <item itemvalue="Mocha.HELPER.TOOLS.TIME-TOOLS.Methods" />
+        <item itemvalue="Mocha.test/src/helper/tools/timeTools.test.js" />
         <item itemvalue="Mocha.HELPER.TOOLS.ObjectTools" />
         <item itemvalue="Mocha.HELPER.TOOLS.IdCounter" />
-        <item itemvalue="Mocha.HELPER.TaskErrorBuilder" />
-        <item itemvalue="Mocha.API.TaskErrorBag" />
-        <item itemvalue="Mocha.Type Validation.Object" />
       </list>
     </recent_temporary>
   </component>
@@ -680,7 +661,7 @@
       <workItem from="1547230453661" duration="1297000" />
       <workItem from="1547505631533" duration="23756000" />
       <workItem from="1547651248973" duration="5921000" />
-      <workItem from="1547855478522" duration="1849000" />
+      <workItem from="1547855478522" duration="5660000" />
     </task>
     <task id="LOCAL-00064" summary="improve validation engine&#10;add new regex name option&#10;add strictType and convertType option&#10;improve config checker">
       <created>1541205117372</created>
@@ -1029,39 +1010,39 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Function_Validation - 2019.01.11 at 14h 54m 14s.xml">
-      <configuration name="Function Validation" configurationId="mocha-javascript-test-runner" />
+    <history-entry file="HELPER_TOOLS_TIME-TOOLS_Methods - 2019.01.21 at 02h 16m 36s.xml">
+      <configuration name="HELPER.TOOLS.TIME-TOOLS.Methods" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="Function_Validation_Regex - 2019.01.11 at 15h 02m 59s.xml">
-      <configuration name="Function Validation.Regex" configurationId="mocha-javascript-test-runner" />
+    <history-entry file="HELPER_TOOLS_TIME-TOOLS_Methods - 2019.01.21 at 02h 22m 05s.xml">
+      <configuration name="HELPER.TOOLS.TIME-TOOLS.Methods" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="Function_Validation - 2019.01.11 at 15h 03m 18s.xml">
-      <configuration name="Function Validation" configurationId="mocha-javascript-test-runner" />
+    <history-entry file="HELPER_TOOLS_TIME-TOOLS - 2019.01.21 at 02h 22m 16s.xml">
+      <configuration name="HELPER.TOOLS.TIME-TOOLS" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="Function_Validation_Regex_(1) - 2019.01.11 at 16h 40m 38s.xml">
-      <configuration name="Function Validation.Regex (1)" configurationId="mocha-javascript-test-runner" />
+    <history-entry file="HELPER_TOOLS_TIME-TOOLS_Methods - 2019.01.21 at 02h 24m 23s.xml">
+      <configuration name="HELPER.TOOLS.TIME-TOOLS.Methods" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="Type_Validation_Object - 2019.01.11 at 16h 41m 37s.xml">
-      <configuration name="Type Validation.Object" configurationId="mocha-javascript-test-runner" />
+    <history-entry file="HELPER_TOOLS_TIME-TOOLS_Methods - 2019.01.21 at 02h 24m 50s.xml">
+      <configuration name="HELPER.TOOLS.TIME-TOOLS.Methods" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="API_TaskErrorBag - 2019.01.15 at 17h 58m 26s.xml">
-      <configuration name="API.TaskErrorBag" configurationId="mocha-javascript-test-runner" />
+    <history-entry file="test_src_helper_tools_timeTools_test_js - 2019.01.21 at 02h 24m 58s.xml">
+      <configuration name="test/src/helper/tools/timeTools.test.js" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="HELPER_TaskErrorBuilder - 2019.01.15 at 19h 36m 05s.xml">
-      <configuration name="HELPER.TaskErrorBuilder" configurationId="mocha-javascript-test-runner" />
+    <history-entry file="HELPER_TOOLS_TIME-TOOLS_Methods - 2019.01.21 at 02h 26m 56s.xml">
+      <configuration name="HELPER.TOOLS.TIME-TOOLS.Methods" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="HELPER_TaskErrorBuilder - 2019.01.15 at 19h 36m 18s.xml">
-      <configuration name="HELPER.TaskErrorBuilder" configurationId="mocha-javascript-test-runner" />
+    <history-entry file="HELPER_TOOLS_TIME-TOOLS_Methods - 2019.01.21 at 02h 30m 47s.xml">
+      <configuration name="HELPER.TOOLS.TIME-TOOLS.Methods" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="HELPER_TOOLS_IdCounter - 2019.01.15 at 20h 02m 43s.xml">
-      <configuration name="HELPER.TOOLS.IdCounter" configurationId="mocha-javascript-test-runner" />
+    <history-entry file="HELPER_TOOLS_TIME-TOOLS_Methods - 2019.01.21 at 02h 33m 13s.xml">
+      <configuration name="HELPER.TOOLS.TIME-TOOLS.Methods" configurationId="mocha-javascript-test-runner" />
     </history-entry>
-    <history-entry file="HELPER_TOOLS_ObjectTools - 2019.01.15 at 20h 23m 47s.xml">
-      <configuration name="HELPER.TOOLS.ObjectTools" configurationId="mocha-javascript-test-runner" />
+    <history-entry file="HELPER_TOOLS_TIME-TOOLS - 2019.01.21 at 02h 34m 43s.xml">
+      <configuration name="HELPER.TOOLS.TIME-TOOLS" configurationId="mocha-javascript-test-runner" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1820515000" />
+    <option name="totallyTimeSpent" value="1824326000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1076,7 +1057,7 @@
     <frame x="0" y="0" width="1680" height="1050" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.7275495" visible="true" weight="0.19107896" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7275495" visible="true" weight="0.19107896" />
       <window_info id="Structure" order="1" sideWeight="0.27245054" side_tool="true" visible="true" weight="0.19107896" />
       <window_info id="Favorites" order="2" sideWeight="0.10449927" side_tool="true" weight="0.2081138" />
       <window_info id="Gulp" order="3" side_tool="true" />
@@ -1084,14 +1065,14 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49964765" weight="0.24387754" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32857144" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39978448" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3989796" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.327551" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Statistic" order="8" weight="0.71734697" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5063291" side_tool="true" weight="0.99897957" />
-      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49367088" visible="true" weight="0.32959184" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" sideWeight="0.49367088" visible="true" weight="0.32959184" />
       <window_info anchor="bottom" id="Version Control" order="11" sideWeight="0.49964765" weight="0.24081632" />
       <window_info anchor="bottom" id="Messages" order="12" visible="true" weight="0.14337349" />
       <window_info anchor="bottom" id="TypeScript" order="13" weight="0.19518073" />
@@ -1134,35 +1115,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="add support for attached http content in bag" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/builder/taskErrorCreator.ts" />
-    <entry file="file://$PROJECT_DIR$/test/src/api/taskErrorBag.test.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/index.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="520">
-          <caret line="50" column="6" selection-start-line="50" selection-start-column="6" selection-end-line="50" selection-end-column="6" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="n#ZationStarter#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/coverage/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="44" selection-start-line="6" selection-start-column="44" selection-end-line="6" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/src/helper/validator/functions.test.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/api/TaskError.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4304">
@@ -1242,13 +1194,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/src/helper/tools/idCounter.test.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="11" selection-end-line="23" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/api/Config.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -1306,13 +1251,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-229">
           <caret line="8" column="11" selection-start-line="8" selection-start-column="11" selection-end-line="8" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="19" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
         </state>
       </provider>
     </entry>
@@ -1495,16 +1433,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/background/backgroundTasksSender.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="355">
-          <caret line="67" column="53" selection-start-line="67" selection-start-column="53" selection-end-line="67" selection-end-column="53" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/main/zationMaster.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
@@ -1535,14 +1463,73 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/background/backgroundTasksSender.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="384">
+          <caret line="67" selection-start-line="67" selection-end-line="67" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/src/helper/tools/idCounter.test.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" column="11" selection-end-line="23" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/logger/logger.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="113" column="11" selection-start-line="113" selection-start-column="11" selection-end-line="113" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/moment/moment.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6836">
+          <caret line="646" column="7" selection-start-line="646" selection-start-column="7" selection-end-line="646" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="37" column="39" selection-start-line="37" selection-start-column="39" selection-end-line="37" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dist/lib/helper/tools/timeTools.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="13" selection-start-column="13" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/helper/tools/timeTools.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="16" column="5" lean-forward="true" selection-start-line="16" selection-start-column="5" selection-end-line="16" selection-end-column="5" />
+        <state relative-caret-position="60">
+          <caret line="79" column="41" selection-start-line="79" selection-start-column="41" selection-end-line="79" selection-end-column="41" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="n#moment#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/@types/moment-timezone/index.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="416">
+          <caret line="62" column="65" selection-start-line="62" selection-start-column="65" selection-end-line="62" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/src/helper/tools/timeTools.test.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="24" column="33" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
         </state>
       </provider>
     </entry>
