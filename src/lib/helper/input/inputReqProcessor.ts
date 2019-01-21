@@ -121,11 +121,11 @@ class InputReqProcessor
     //than create the checked Data
     static async processInput(task : ZationTask, controller : ControllerConfig, preparedSmallBag : SmallBag) : Promise<object>
     {
-        const input = task.i;
-
         if(typeof controller.inputAllAllow === 'boolean'&& controller.inputAllAllow) {
-            return input;
+            return task.i;
         }
+
+        const input = typeof task.i === "object" ? task.i : {};
 
         let useInputValidation = true;
         if(typeof controller.inputValidation === 'boolean') {

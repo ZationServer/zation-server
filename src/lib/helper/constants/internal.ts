@@ -58,7 +58,7 @@ c = controller
 sc = systemController
  */
 export interface ZationTask {
-    i : object | any[],
+    i ?: any,
     c ?: string,
     sc ?: string
 }

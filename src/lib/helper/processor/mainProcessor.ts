@@ -128,7 +128,7 @@ class MainProcessor
             }
         }
         else {
-            throw new TaskError(MainErrors.wrongInputDataStructure, {type : 'ws',input : reqData});
+            throw new TaskError(MainErrors.wrongInputDataStructure, {type : shBridge.isWebSocket() ? 'ws' : 'http',input : reqData});
         }
     }
 

@@ -4,6 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+// noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../constants/validationTypes";
 import Base64Tools     = require("./base64Tools");
 import {byteLength}      from "byte-length";
