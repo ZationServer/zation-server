@@ -30,7 +30,7 @@ class BackgroundTasksSender
         else if(typeof time === 'object')
         {
             const set = () => {
-                let tillTime = TimeTools.processTaskTriggerTime(time,this.zc);
+                let tillTime = TimeTools.processTaskTriggerTime(time,this.zc.mainConfig.timeZone);
                 if(tillTime && tillTime > 0)
                 {
                     setTimeout(() => {
@@ -61,7 +61,7 @@ class BackgroundTasksSender
         }
         else if(typeof time === 'object')
         {
-            const tillTime = TimeTools.processTaskTriggerTime(time,this.zc);
+            const tillTime = TimeTools.processTaskTriggerTime(time,this.zc.mainConfig.timeZone);
             if(tillTime && tillTime > 0)
             {
                 setTimeout(() => {

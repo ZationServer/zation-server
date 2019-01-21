@@ -5,19 +5,18 @@ GitHub: LucaCode
  */
 import moment = require('moment-timezone');
 import Logger = require('../logger/logger');
-import ZationConfig = require("../../main/zationConfig");
 
 class TimeTools
 {
-    static getMoment(zc : ZationConfig) {
+    static getMoment(timeZone : string) {
         // noinspection JSUnresolvedFunction
-        return moment().tz(zc.mainConfig.timeZone);
+        return moment().tz(timeZone);
     }
 
-    static processTaskTriggerTime({hour,minute,second,millisecond},zc)
+    static processTaskTriggerTime({hour,minute,second,millisecond},timeZone : string)
     {
-        let now = TimeTools.getMoment(zc);
-        let fireMoment = TimeTools.getMoment(zc);
+        let now = TimeTools.getMoment(timeZone);
+        let fireMoment = TimeTools.getMoment(timeZone);
 
         let isHour = hour !== undefined;
         let isMinute = minute !== undefined;

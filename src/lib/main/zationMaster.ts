@@ -340,12 +340,12 @@ class ZationMaster {
         const protocol = this.zc.mainConfig.secure ? 'https' : 'http';
         const server   = `${protocol}://${hostName}:${port}${path}`;
 
-        Logger.log('\x1b[32m%s\x1b[0m', '   [ACTIVE]','Zation started');
+        Logger.log('\x1b[32m%s\x1b[0m', '   [ACTIVE]','Zation started 🚀');
         Logger.log(`            Version: ${ZationMaster.version}`);
         Logger.log(`            Your app: ${this.zc.mainConfig.appName}`);
         Logger.log(`            Hostname: ${hostName}`);
         Logger.log(`            Port: ${port}`);
-        Logger.log(`            Time: ${TimeTools.getMoment(this.zc)}`);
+        Logger.log(` ️          Time️: ${TimeTools.getMoment(this.zc.mainConfig.timeZone)}`);
         Logger.log(`            Time zone: ${this.zc.mainConfig.timeZone}`);
         Logger.log(`            Instance id: ${this.master.options.instanceId}`);
         Logger.log(`            WebSocket engine: ${this.master.options.wsEngine}`);
