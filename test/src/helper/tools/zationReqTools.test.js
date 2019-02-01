@@ -1,4 +1,3 @@
-const moment          = require("moment");
 const assert          = require("chai").assert;
 const ZationReqTools  = require('../../../../dist/lib/helper/tools/zationReqTools');
 
@@ -13,7 +12,7 @@ describe('HELPER.TOOLS.ZATION_REQ_TOOLS',() => {
                 [{t : {i : [], sc : 'hallo'}},true,true],
                 [{t : {i : [], c : 'hallo'}},true,true],
                 [{t : {i : []}},true,false],
-                [{t : {c : ''}},true,false],
+                [{t : {c : ''}},true,true],
             ].forEach(([req,wsReq,expect],index) =>
             {
                 it('test-'+index,() => {
