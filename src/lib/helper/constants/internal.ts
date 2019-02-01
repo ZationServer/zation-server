@@ -37,15 +37,15 @@ export interface ZationRequest {
     s ?: string,
     to ?: string,
     t ?: {
-        i : object | any[]
+        i : any
         c ?: string,
         sc ?: string
     }
     a ?: {
-        i : object | any[],
+        i : any,
     },
     v ?: {
-        i : any[] | object,
+        i : any,
         c ?: string,
         sc ?: string
     } | number

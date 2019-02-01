@@ -19,7 +19,8 @@ import {ValidationTypes}       from './lib/helper/constants/validationTypes';
 import AuthenticationError   = require("./lib/helper/error/authenticationError");
 import ErrorNotFoundError    = require("./lib/helper/error/errorNotFoundError");
 import CodeError             = require("./lib/helper/error/codeError");
-import MethodIsNotCompatible = require("./lib/helper/error/methodIsNotCompatible");
+import MethodIsNotCompatible = require("./lib/helper/error/methodIsNotCompatibleError");
+import InputIsNotCompatible  = require("./lib/helper/error/inputIsNotCompatibleError");
 import {ControllerConfig}      from "./lib/helper/configs/appConfig";
 import {StarterConfig}         from "./lib/helper/configs/starterConfig";
 const  FsUtil : any           = require('socketcluster/fsutil');
@@ -47,5 +48,6 @@ export {
         ErrorNotFoundError,
         CodeError,
         MethodIsNotCompatible,
+        InputIsNotCompatible,
         FsUtil,
     };

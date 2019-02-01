@@ -59,8 +59,6 @@ class ValidChProcessor
                             Array.isArray(inputToCheck[i].ip) ||
                             typeof inputToCheck[i].ip === 'string'
                         )
-                        &&
-                        inputToCheck[i].v !== undefined
                     )
                     {
                         let keyPath : string[];

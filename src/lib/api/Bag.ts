@@ -12,7 +12,8 @@ import TokenEngine   = require("../helper/token/tokenEngine");
 import ZationWorker  = require("../main/zationWorker");
 import ObjectPath    = require("../helper/tools/objectPath");
 import useragent     = require('useragent');
-import MethodIsNotCompatible = require("../helper/error/methodIsNotCompatible");
+import MethodIsNotCompatibleError = require("../helper/error/methodIsNotCompatibleError");
+import InputIsNotCompatibleError  = require("../helper/error/inputIsNotCompatibleError");
 import ObjectPathSequence    = require("../helper/tools/objectPathSequence");
 import {Socket}                from "../helper/sc/socket";
 import AuthenticationError   = require("../helper/error/authenticationError");
@@ -30,7 +31,7 @@ export class Bag extends SmallBag
     private readonly authEngine : AuthEngine;
     private readonly channelEngine : ChannelEngine;
     private readonly tokenEngine : TokenEngine;
-    private readonly input : object;
+    private readonly input : any;
 
     constructor(shBridge : SHBridge,worker : ZationWorker,authEngine : AuthEngine,tokenEngine : TokenEngine,input : object,channelEngine : ChannelEngine = new ChannelEngine(worker,shBridge))
     {
@@ -115,9 +116,16 @@ export class Bag extends SmallBag
      * getInput('person.name');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
+     * @throws InputIsNotCompatibleError
+     * Can happen if inputAllAllow is activated and input is not from type object.
      */
     getInput<R>(path ?: string | string[]) : R {
-        return ObjectPath.get(this.input,path);
+        if(typeof this.input === 'object'){
+            return ObjectPath.get(this.input,path);
+        }
+        else {
+            throw new InputIsNotCompatibleError();
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -128,9 +136,38 @@ export class Bag extends SmallBag
      * hasInput('person.name');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
+     * @throws InputIsNotCompatibleError
+     * Can happen if inputAllAllow is activated and input is not from type object.
      */
     hasInput(path: string | string[]) : boolean {
-        return ObjectPath.has(this.input,path);
+        if(typeof this.input === 'object'){
+            return ObjectPath.has(this.input,path);
+        }
+        else {
+            throw new InputIsNotCompatibleError();
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns if the input is an object.
+     * @example
+     * inputIsObject();
+     */
+    inputIsObject() : boolean {
+        return typeof this.input === 'object';
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the type of the input.
+     * @example
+     * getInputType();
+     */
+    getInputType() : string {
+       return typeof this.input;
     }
 
     //Part ServerSocketVariable
@@ -145,7 +182,7 @@ export class Bag extends SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      */
     setSocketVariable(path : string | string[],value : any) : void
     {
@@ -153,7 +190,7 @@ export class Bag extends SmallBag
             ObjectPath.set(this.shBridge.getSocket().zationSocketVariables,path,value);
         }
         else {
-            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
         }
     }
 
@@ -166,7 +203,7 @@ export class Bag extends SmallBag
      * hasSocketVariable('email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      */
     hasSocketVariable(path ?: string | string[]) : boolean
     {
@@ -174,7 +211,7 @@ export class Bag extends SmallBag
             return ObjectPath.has(this.shBridge.getSocket().zationSocketVariables,path);
         }
         else {
-            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
         }
     }
 
@@ -187,7 +224,7 @@ export class Bag extends SmallBag
      * getSocketVariable('email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      */
     getSocketVariable<R>(path ?: string | string[]) : R
     {
@@ -195,7 +232,7 @@ export class Bag extends SmallBag
             return ObjectPath.get(this.shBridge.getSocket().zationSocketVariables,path);
         }
         else {
-            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
         }
     }
 
@@ -208,7 +245,7 @@ export class Bag extends SmallBag
      * deleteSocketVariable('email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      */
     deleteSocketVariable(path ?: string | string[]) : void
     {
@@ -221,7 +258,7 @@ export class Bag extends SmallBag
             }
         }
         else {
-            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
         }
     }
 
@@ -380,13 +417,13 @@ export class Bag extends SmallBag
      * @description
      * Get cookie variable.
      * Requires http request!
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      * @param key
      */
     getCookieVariable<R>(key : string) : R
     {
         if(this.shBridge.isWebSocket()) {
-            throw new MethodIsNotCompatible(this.getProtocol(),'http');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'http');
         }
         else {
             return this.shBridge.getRequest().cookies[key];
@@ -398,7 +435,7 @@ export class Bag extends SmallBag
      * @description
      * Set cookie variable.
      * Requires http request!
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      * @param key
      * @param value
      * @param settings
@@ -406,7 +443,7 @@ export class Bag extends SmallBag
     setCookieVariable(key : string,value : any,settings  : object= { maxAge: 900000}) : void
     {
         if(this.shBridge.isWebSocket()) {
-            throw new MethodIsNotCompatible(this.getProtocol(),'http');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'http');
         }
         else {
             this.shBridge.getResponse().cookie(key,value,settings);
@@ -418,13 +455,13 @@ export class Bag extends SmallBag
      * @description
      * Clear cookie variable.
      * Requires http request!
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      * @param key
      */
     clearCookie(key : string) : void
     {
         if(this.shBridge.isWebSocket()) {
-            throw new MethodIsNotCompatible(this.getProtocol(),'http');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'http');
         }
         else {
             this.shBridge.getResponse().clearCookie(key);
@@ -437,11 +474,11 @@ export class Bag extends SmallBag
     /**
      * @description
      * Return the http response.
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      */
     getHttpResponse() : core.Response {
         if(this.shBridge.isWebSocket()) {
-            throw new MethodIsNotCompatible(this.getProtocol(),'http');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'http');
         }
         else {
             return this.shBridge.getResponse();
@@ -452,11 +489,11 @@ export class Bag extends SmallBag
     /**
      * @description
      * Return the http request.
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      */
     getHttpRequest() : core.Request {
         if(this.shBridge.isWebSocket()) {
-            throw new MethodIsNotCompatible(this.getProtocol(),'http');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'http');
         }
         else {
             return this.shBridge.getRequest();
@@ -467,11 +504,11 @@ export class Bag extends SmallBag
     /**
      * @description
      * Return the http method.
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      */
     getHttpMethod() : string {
         if(this.shBridge.isWebSocket()) {
-            throw new MethodIsNotCompatible(this.getProtocol(),'http');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'http');
         }
         else {
             return this.shBridge.getRequest().method;
@@ -485,11 +522,11 @@ export class Bag extends SmallBag
      * By using the npm package express-fileupload.
      * You can attach files on the client side
      * by using the method attachHttpContent.
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      */
     getHttpFiles() : Record<string,UploadedFile> {
         if(this.shBridge.isWebSocket()) {
-            throw new MethodIsNotCompatible(this.getProtocol(),'http');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'http');
         }
         else {
             //using express-fileupload
@@ -503,12 +540,12 @@ export class Bag extends SmallBag
      * @description
      * Returns the http request body.
      * You can use it to access attached http content.
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      */
     getHttpBody() : Record<string,any>
     {
         if(this.shBridge.isWebSocket()) {
-            throw new MethodIsNotCompatible(this.getProtocol(),'http');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'http');
         }
         else {
             return this.shBridge.getRequest().body;
@@ -729,7 +766,7 @@ export class Bag extends SmallBag
      * @description
      * Returns the socket id of the current socket.
      * Requires ws request!
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      */
     getSocketId() : string
     {
@@ -737,7 +774,7 @@ export class Bag extends SmallBag
             return this.shBridge.getSocket().id;
         }
         else {
-            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
         }
     }
 
@@ -747,7 +784,7 @@ export class Bag extends SmallBag
      * Returns the socket sid of the current socket.
      * The sid is unique in scalable process.
      * Requires ws request!
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      */
     getSocketSid() : string
     {
@@ -755,7 +792,7 @@ export class Bag extends SmallBag
             return this.shBridge.getSocket().sid;
         }
         else {
-            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
         }
     }
 
@@ -763,14 +800,14 @@ export class Bag extends SmallBag
     /**
      * @description
      * Returns the socket.
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      */
     getSocket() : Socket {
         if(this.shBridge.isWebSocket) {
             return this.shBridge.getSocket();
         }
         else {
-            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
         }
     }
 
@@ -853,7 +890,7 @@ export class Bag extends SmallBag
      * If this method is used in an http request, an error is thrown.
      * If an error occurs while emitting to socket, this error is also thrown.
      * @desc Require web socket request!
-     * @throws Error,MethodIsNotCompatible
+     * @throws Error,MethodIsNotCompatibleError
      * @param eventName
      * @param data
      */
@@ -867,7 +904,7 @@ export class Bag extends SmallBag
      * @description
      * Returns the current channel subscriptions of the socket.
      * Requires ws request!
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      */
     getSubChannels() : string[]
     {
@@ -875,7 +912,7 @@ export class Bag extends SmallBag
             return this.channelEngine.getSubChannels();
         }
         else {
-            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
         }
     }
 
@@ -888,7 +925,7 @@ export class Bag extends SmallBag
      * kickFromCustomIdCh('messageStreams');
      * @param name
      * @param id if it is not provided the socket will be kicked from all ids.
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      */
     kickFromCustomIdCh(name : string,id : string = '') : void
     {
@@ -896,7 +933,7 @@ export class Bag extends SmallBag
             this.channelEngine.kickCustomIdChannel(name,id);
         }
         else {
-            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
         }
     }
 
@@ -907,7 +944,7 @@ export class Bag extends SmallBag
      * @example
      * kickFromCustomCh('stream');
      * @param name
-     * @throws MethodIsNotCompatible
+     * @throws MethodIsNotCompatibleError
      */
     kickFromCustomCh(name : string) : void
     {
@@ -915,7 +952,7 @@ export class Bag extends SmallBag
             this.channelEngine.kickCustomChannel(name);
         }
         else {
-            throw new MethodIsNotCompatible(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
         }
     }
 

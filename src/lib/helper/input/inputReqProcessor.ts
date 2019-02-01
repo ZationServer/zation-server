@@ -10,6 +10,7 @@ import MainErrors          = require('../zationTaskErrors/mainTaskErrors');
 import InputMainProcessor  = require('./inputMainProcessor');
 import SmallBag            = require("../../api/SmallBag");
 import {ProcessTaskEngine}   from "./processTaskEngine";
+// noinspection TypeScriptPreferShortImport
 import {ControllerConfig}    from "../configs/appConfig";
 import {ZationTask}          from "../constants/internal";
 import {OptionalProcessor}   from "./optionalProcessor";
@@ -119,13 +120,21 @@ class InputReqProcessor
 
     //fast Checks of the input
     //than create the checked Data
-    static async processInput(task : ZationTask, controller : ControllerConfig, preparedSmallBag : SmallBag) : Promise<object>
+    static async processInput(task : ZationTask, controller : ControllerConfig, preparedSmallBag : SmallBag) : Promise<any>
     {
-        if(typeof controller.inputAllAllow === 'boolean'&& controller.inputAllAllow) {
+        if(typeof controller.inputAllAllow === 'boolean' && controller.inputAllAllow) {
             return task.i;
         }
 
-        const input = typeof task.i === "object" ? task.i : {};
+        let input = task.i;
+
+        if(input === undefined){
+            input = {};
+        }
+        else if(typeof input !== "object") {
+            //throw input type needs to be an object or array
+            throw new TaskError(MainErrors.wrongControllerInputType,{inputType : typeof input});
+        }
 
         let useInputValidation = true;
         if(typeof controller.inputValidation === 'boolean') {

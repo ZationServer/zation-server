@@ -91,6 +91,15 @@ export = {
         fromZationSystem : true
     },
 
+    inputIsNotCompatible  : {
+        name          : 'inputIsNotCompatible',
+        description   : 'The input is not compatible with this operation.',
+        type          : ErrorType.CODE_ERROR,
+        sendInfo      : false,
+        private       : true,
+        fromZationSystem : true
+    },
+
     authenticationError  : {
         name          : 'authenticationError',
         description   : 'Authenticate error by trying to authenticate an sc.',
@@ -234,6 +243,16 @@ export = {
         type          : ErrorType.INPUT_ERROR,
         private       : false,
         sendInfo      : false,
+        fromZationSystem : true
+    },
+
+    wrongControllerInputType : {
+        name          : 'wrongControllerInputType',
+        description   : 'Wrong controller input type. Type needs to be an array or object.',
+        type          : ErrorType.INPUT_ERROR,
+        //INFO
+        // inputType
+        sendInfo      : true,
         fromZationSystem : true
     },
 

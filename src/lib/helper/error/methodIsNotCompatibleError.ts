@@ -7,7 +7,7 @@ GitHub: LucaCode
 import MainTaskErrors  = require('./../zationTaskErrors/mainTaskErrors');
 import CodeError       = require("./codeError");
 
-class MethodIsNotCompatible extends CodeError
+class MethodIsNotCompatibleError extends CodeError
 {
     private readonly reqType : string;
     private readonly requiredReqType : string;
@@ -30,4 +30,4 @@ class MethodIsNotCompatible extends CodeError
     }
 }
 
-export = MethodIsNotCompatible;
+export = MethodIsNotCompatibleError;

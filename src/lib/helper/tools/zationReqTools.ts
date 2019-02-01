@@ -20,12 +20,9 @@ class ZationReqTools
                     typeof zationReq.t === 'object' &&
                     (
                         typeof zationReq.t.c === 'string' || typeof zationReq.t.sc === 'string'
-                    ) &&
-                        //input is object or array
-                    typeof zationReq.t.i === 'object'
+                    )
                 ) || (
-                    typeof zationReq.a === 'object' &&
-                    typeof zationReq.a.i === 'object'
+                    typeof zationReq.a === 'object'
                 ));
     }
 
@@ -37,7 +34,9 @@ class ZationReqTools
     {
         const res : ZationRequest = {};
         //input convert
-        const input = await JsonConverter.parse(query[HttpGetRequest.INPUT]);
+        const input = typeof query[HttpGetRequest.INPUT] === 'string' ?
+            await JsonConverter.parse(query[HttpGetRequest.INPUT]) : undefined;
+
         //version,system,token
         res.s = query[HttpGetRequest.SYSTEM];
         res.v = query[HttpGetRequest.VERSION];
@@ -91,8 +90,7 @@ class ZationReqTools
             query.hasOwnProperty(HttpGetRequest.AUTH_REQ) ||
             query.hasOwnProperty(HttpGetRequest.CONTROLLER) ||
             query.hasOwnProperty(HttpGetRequest.SYSTEM_CONTROLLER)
-            ) &&
-            query.hasOwnProperty(HttpGetRequest.INPUT));
+            ));
     }
 
     public static isValidValidationGetReq(query : object) : boolean
@@ -100,7 +98,7 @@ class ZationReqTools
         return (
             //validationReq
             query.hasOwnProperty(HttpGetRequest.VALI_REQ) &&
-            query.hasOwnProperty(HttpGetRequest.INPUT) &&
+            typeof query[HttpGetRequest.INPUT] === 'string' &&
             (
                 query.hasOwnProperty(HttpGetRequest.CONTROLLER) ||
                 query.hasOwnProperty(HttpGetRequest.SYSTEM_CONTROLLER)
