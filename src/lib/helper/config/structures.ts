@@ -122,6 +122,15 @@ Main[nameof<MainConfig>(s => s.variables)]          = {types : ['object'],isOpti
 //service
 Main[nameof<MainConfig>(s => s.killServerOnServicesCreateError)] = {types : ['boolean'],isOptional : true};
 
+//log
+Main[nameof<MainConfig>(s => s.logToFile)]        = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logDirectory)]     = {types : ['string'],isOptional : true};
+
+Main[nameof<MainConfig>(s => s.logRequests)]      = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logServerErrors)]  = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logCodeErrors)]    = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logStarted)]       = {types : ['boolean'],isOptional : true};
+
 //Cluster
 Main[nameof<MainConfig>(s => s.clusterAuthKey)]     = {types : ['string','null'],isOptional : true};
 Main[nameof<MainConfig>(s => s.clusterSecretKey)]   = {types : ['string','null'],isOptional : true};

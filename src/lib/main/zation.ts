@@ -64,6 +64,9 @@ class Zation
                     Logger.printDebugWarning(`Code error -> ${e.toString()}/n stack-> ${e.stack}`);
                     promises.push(this.zc.emitEvent
                     (this.zc.eventConfig.beforeCodeError,this.worker.getPreparedSmallBag(),e));
+                    if(this.zc.mainConfig.logCodeErrors){
+                        Logger.logFileError(`Code error -> ${e.toString()}/n stack-> ${e.stack}`);
+                    }
                 }
 
                 promises.push(this.zc.emitEvent
@@ -76,6 +79,9 @@ class Zation
                 }
                 else {
                     Logger.printDebugWarning('EXCEPTION ON SERVER ->',e);
+                    if(this.zc.mainConfig.logServerErrors){
+                        Logger.logFileError(`Exception on server -> ${e.stack}`);
+                    }
                 }
             }
 

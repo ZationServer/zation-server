@@ -20,6 +20,10 @@ class SocketProcessor
     {
         Logger.printDebugInfo(`Socket Request id: ${reqId} -> `,input,true);
 
+        if(zc.mainConfig.logRequests){
+            Logger.logFileInfo(`Socket Request id: ${reqId} -> `,input,true);
+        }
+
         //check for validationCheckRequest
         if(ZationReqTools.isValidationCheckReq(input))
         {

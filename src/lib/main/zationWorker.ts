@@ -109,6 +109,9 @@ class ZationWorker extends SCWorker
 
         await this.setUpLogInfo();
 
+        //Check LogToFile
+        Logger.initFileLog();
+
         await this.startZWorker();
     }
 

@@ -140,6 +140,12 @@ class ZationConfig {
             clientJsPrepare: true,
             usePanel: false,
             killServerOnServicesCreateError : false,
+            logToFile: false,
+            logDirectory : '',
+            logRequests : false,
+            logServerErrors : true,
+            logCodeErrors : true,
+            logStarted : true,
             variables : {}
         };
     }

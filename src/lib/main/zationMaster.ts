@@ -65,6 +65,9 @@ class ZationMaster {
                     //setLogger
                     Logger.setZationConfig(this.zc);
 
+                    //Check LogToFile
+                    Logger.initFileLog();
+
                     await this.start();
                 }
                 catch (e) {
@@ -362,6 +365,12 @@ class ZationMaster {
         Logger.log('            GitHub: https://github.com/ZationServer');
         Logger.log(`            StartTime: ${Date.now()-this.serverStartedTimeStamp} ms`);
         Logger.log('            Copyright by Luca Scaringella');
+
+        if(this.zc.mainConfig.logStarted){
+            Logger.logFileInfo
+            (`Zation started 🚀 with Version ${ZationMaster.version} on Server Url ${server}`+
+                ` with options -> Machine scaling: ${this.stateServerActive}, WebSocket Engine: ${this.master.options.wsEngine}.`);
+        }
     }
 
     private getRandomWorkerId()

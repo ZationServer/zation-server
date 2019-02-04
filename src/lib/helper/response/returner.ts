@@ -81,11 +81,19 @@ class Returner
         {
             Logger.printDebugInfo(`Socket Result id: ${this.reqId} ->`,resObj,true);
 
+            if(this.zc.mainConfig.logRequests){
+                Logger.logFileInfo(`Socket Result id: ${this.reqId} ->`,resObj,true);
+            }
+
             this.respond(null,resObj);
         }
         else
         {
             Logger.printDebugInfo(`Http Result id: ${this.reqId} ->`,resObj,true);
+
+            if(this.zc.mainConfig.logRequests){
+                Logger.logFileInfo(`Http Result id: ${this.reqId} ->`,resObj,true);
+            }
 
             this.res.write(JSON.stringify(resObj));
             this.res.end();

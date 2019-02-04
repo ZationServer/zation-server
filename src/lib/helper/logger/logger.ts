@@ -6,12 +6,58 @@ GitHub: LucaCode
 
 import ZationConfig   = require("../../main/zationConfig");
 import ConfigErrorBag = require("../config/configErrorBag");
+import * as cluster     from "cluster";
+const SimpleNodeLogger  = require('simple-node-logger');
 
 class Logger
 {
     private static zc : ZationConfig;
+    private static sl;
 
     private static stopWatchStartTime : any = Date.now();
+
+    static initFileLog() : void
+    {
+        if(Logger.zc.mainConfig.logToFile) {
+
+            let path;
+            if(cluster.isMaster){
+                path = ZationConfig._getRootPath() + '/' + Logger.zc.mainConfig.logDirectory;
+                if(!path.endsWith('/')){path+='/'}
+                Logger.zc.mainConfig.logDirectory = path;
+            }
+            else {
+                path = Logger.zc.mainConfig.logDirectory;
+            }
+
+            Logger.sl = SimpleNodeLogger.createSimpleFileLogger({
+                logFilePath: path + 'ZATION_LOG_FILE.log',
+                timestampFormat:'YYYY-MM-DD HH:mm:ss.SSS'
+            });
+        }
+    }
+
+    static logFileInfo(txt : string,obj ?: object,jsonStringify : boolean = false) : void
+    {
+        if(Logger.sl){
+            if(jsonStringify) {
+                Logger.sl.info(txt + JSON.stringify(obj));
+            }
+            else {
+                Logger.sl.info(txt);
+                if(obj !== undefined) {
+                    Logger.sl.info(obj);
+                }
+            }
+        }
+    }
+
+    static logFileError(string : string) : void
+    {
+        if(Logger.sl){
+            Logger.sl.error(string);
+        }
+    }
 
     static setZationConfig(zc : ZationConfig) : void
     {

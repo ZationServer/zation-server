@@ -28,6 +28,7 @@
     "@types/express-fileupload": "0.1.1",
     "@types/hashset": "3.0.28",
     "@types/http-server": "0.10.0",
+    "@types/moment-timezone": "0.5.10",
     "@types/mongodb": "3.1.1",
     "@types/mysql": "2.15.5",
     "@types/node": "10.5.2",
@@ -35,8 +36,8 @@
     "@types/nodemailer": "4.6.2",
     "@types/pg-pool": "0.0.3",
     "@types/useragent": "2.1.1",
-    "@types/moment-timezone": "0.5.10",
     "body-parser": "1.18.3",
+    "byte-length": "1.0.2",
     "cache-require-paths": "0.3.0",
     "connect-mongo": "2.0.1",
     "connect-redis": "3.3.3 ",
@@ -65,6 +66,7 @@
     "sc-hasher": "1.0.0",
     "sc-uws": "10.148.2",
     "scc-broker-client": "6.1.0",
+    "simple-node-logger": "18.12.21",
     "socketcluster": "14.3.3",
     "socketcluster-client": "14.2.1",
     "uniqid": "5.0.3",
@@ -73,7 +75,6 @@
     "uuid": "3.3.2",
     "validator": "10.4.0",
     "ws": "6.1.0",
-    "byte-length": "1.0.2",
     "zation-client": "0.4.9"
   },
   "devDependencies": {

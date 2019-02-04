@@ -50,6 +50,15 @@ export interface MainConfig
     //service
     killServerOnServicesCreateError ?: boolean;
 
+    //log
+    logToFile ?: boolean;
+    logDirectory ?: string;
+
+    logRequests ?: boolean;
+    logServerErrors ?: boolean;
+    logCodeErrors ?: boolean;
+    logStarted ?: boolean;
+
     //Cluster
     clusterAuthKey  ?: string | null;
     clusterSecretKey  ?: string | null;
@@ -150,6 +159,12 @@ export interface InternMainConfig extends MainConfig {
     allowClientPublish  : boolean;
     workerStatusInterval  : number;
     killServerOnServicesCreateError : boolean;
+    logToFile : boolean;
+    logDirectory : string;
+    logRequests : boolean;
+    logServerErrors : boolean;
+    logCodeErrors : boolean;
+    logStarted : boolean;
     variables : any;
 }
 

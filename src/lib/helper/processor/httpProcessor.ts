@@ -26,6 +26,11 @@ class HttpProcessor
         // @ts-ignore
         if (req.method === 'POST' && !!req.body[zc.mainConfig.postKey]) {
             Logger.printDebugInfo(`Http Post Request id: ${reqId} -> `,req.body[zc.mainConfig.postKey]);
+
+            if(zc.mainConfig.logRequests){
+                Logger.logFileInfo(`Http Post Request id: ${reqId} -> `,req.body[zc.mainConfig.postKey]);
+            }
+
             HttpProcessor.setHeader(res);
             // @ts-ignore
             const zationData = await JsonConverter.parse(req.body[zc.mainConfig.postKey]);
@@ -35,6 +40,11 @@ class HttpProcessor
         {
             const query = req.query;
             Logger.printDebugInfo(`Http Get Request id: ${reqId} -> `,query,true);
+
+            if(zc.mainConfig.logRequests){
+                Logger.logFileInfo(`Http Get Request id: ${reqId} -> `,query,true);
+            }
+
             if(ZationReqTools.isValidGetReq(query)) {
                 HttpProcessor.setHeader(res);
                 const zationData = await ZationReqTools.convertGetRequest(query);
