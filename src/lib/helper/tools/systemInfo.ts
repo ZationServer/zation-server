@@ -28,7 +28,7 @@ class SystemInfo {
     {
         return new Promise<object>((resolve, reject) => {
             pidUsage(process.pid, (err, stats) => {
-                reject(err);
+                if(err){reject(err);}
                 resolve(stats);
             });
         });

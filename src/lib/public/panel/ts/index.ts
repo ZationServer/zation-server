@@ -14,6 +14,23 @@ import * as Zation from "zation-client";
         for(let i = 1; i < 6; i++) {
             $('body').append($('<p/>').text(`Ping ${i}: ${await client.ping()}ms`));
         }
+
+        await client.request()
+            .systemController(true)
+            .controller('zation/panel/auth')
+            .data({userName : 'luca', password : '123'})
+            .onSuccessful(() => {alert('yeah');})
+            .onError((e) => {alert(JSON.stringify(e));})
+            .send();
+
+        await client.subPanelOutCh();
+
+        client.channelReact().onPubPanelOutCh(null,(data) => {
+            alert(JSON.stringify(data));
+        });
+
+        await client.pubPanelInCh('firstPing',{});
+
     }
     catch (e) {
         $('body').append($('<p/>').text(e));

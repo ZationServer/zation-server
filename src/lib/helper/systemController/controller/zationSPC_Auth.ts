@@ -20,16 +20,16 @@ class ZationSPC_Auth extends Controller
             userName : {
                 type : 'string'
             },
-            hashPassword : {
+            password : {
                 type : 'string'
             }
         }
     };
 
-    async handle(bag,{userName,hashPassword})
+    async handle(bag,{userName,password})
     {
         if(bag.getZationConfig().mainConfig.usePanel) {
-            if(!bag.getWorker().getPanelEngine().isPanelLoginDataValid(userName,hashPassword)) {
+            if(!bag.getWorker().getPanelEngine().isPanelLoginDataValid(userName,password)) {
                 throw new TaskError(MainTaskErrors.wrongPanelAuthData);
             }
             const token = {};

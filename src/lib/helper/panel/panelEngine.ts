@@ -68,14 +68,14 @@ class PanelEngine
         const channel = this.zw.exchange.subscribe(ZationChannel.PANEL_IN);
         channel.watch(async (data) =>
         {
-            if(data.action === 'ping') {
+            if(data.e === 'ping') {
                 this.renewPanelInUse();
                 //if the worker is new
                 if(!this.alreadyFirstPong) {
                     await this.sendFirstPong();
                 }
             }
-            else if(data.action === 'firstPing') {
+            else if(data.e === 'firstPing') {
                 this.renewPanelInUse();
                 await this.sendFirstPong();
             }
@@ -97,7 +97,10 @@ class PanelEngine
     }
 
     private async sendFirstPong() : Promise<void> {
-        this.pubInPanel('firstPong',(await this.zw.getFirstPanelInfo()));
+        try {
+            this.pubInPanel('firstPong',(await this.zw.getFirstPanelInfo()));
+        }
+        catch (e) {}
     }
 
     update(type : string,data : object) {
@@ -117,14 +120,16 @@ class PanelEngine
         return this.panelInUse;
     }
 
-    isPanelLoginDataValid(userName : string,hashPassword : string) : boolean
+    isPanelLoginDataValid(userName : string,password : string) : boolean
     {
+        const passwordHash =
+            this.zw.getPreparedSmallBag().hashSha512(password);
+
         let foundUser = false;
         for(let i = 0; i < this.panelAccessData.length; i++)
         {
             if(this.panelAccessData[i]['u'] === userName &&
-               this.panelAccessData[i]['p'] === hashPassword)
-            {
+               this.panelAccessData[i]['p'] === passwordHash) {
                 foundUser = true;
                 break;
             }
