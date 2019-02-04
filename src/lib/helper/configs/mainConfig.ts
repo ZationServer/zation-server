@@ -52,7 +52,7 @@ export interface MainConfig
 
     //log
     logToFile ?: boolean;
-    logDirectory ?: string;
+    logPath ?: string;
 
     logRequests ?: boolean;
     logServerErrors ?: boolean;
@@ -160,7 +160,7 @@ export interface InternMainConfig extends MainConfig {
     workerStatusInterval  : number;
     killServerOnServicesCreateError : boolean;
     logToFile : boolean;
-    logDirectory : string;
+    logPath : string;
     logRequests : boolean;
     logServerErrors : boolean;
     logCodeErrors : boolean;

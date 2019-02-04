@@ -22,12 +22,12 @@ class Logger
 
             let path;
             if(cluster.isMaster){
-                path = ZationConfig._getRootPath() + '/' + Logger.zc.mainConfig.logDirectory;
+                path = ZationConfig._getRootPath() + '/' + Logger.zc.mainConfig.logPath;
                 if(!path.endsWith('/')){path+='/'}
-                Logger.zc.mainConfig.logDirectory = path;
+                Logger.zc.mainConfig.logPath = path;
             }
             else {
-                path = Logger.zc.mainConfig.logDirectory;
+                path = Logger.zc.mainConfig.logPath;
             }
 
             Logger.sl = SimpleNodeLogger.createSimpleFileLogger({

@@ -141,7 +141,7 @@ class ZationConfig {
             usePanel: false,
             killServerOnServicesCreateError : false,
             logToFile: false,
-            logDirectory : '',
+            logPath : '',
             logRequests : false,
             logServerErrors : true,
             logCodeErrors : true,

@@ -124,7 +124,7 @@ Main[nameof<MainConfig>(s => s.killServerOnServicesCreateError)] = {types : ['bo
 
 //log
 Main[nameof<MainConfig>(s => s.logToFile)]        = {types : ['boolean'],isOptional : true};
-Main[nameof<MainConfig>(s => s.logDirectory)]     = {types : ['string'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logPath)]          = {types : ['string'],isOptional : true};
 
 Main[nameof<MainConfig>(s => s.logRequests)]      = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.logServerErrors)]  = {types : ['boolean'],isOptional : true};
