@@ -217,6 +217,15 @@ export = {
         fromZationSystem : true
     },
 
+    panelIsNotActivated  : {
+        name          : 'panelIsNotActivated',
+        description   : 'Panel is not activated!',
+        type          : ErrorType.INPUT_ERROR,
+        private       : false,
+        sendInfo      : false,
+        fromZationSystem : true
+    },
+
     authStartActive    : {
         name          : 'authStartActive',
         description   : 'Auth start is active, zation only accept auth request for a time!',

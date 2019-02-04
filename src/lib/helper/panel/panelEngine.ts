@@ -8,7 +8,8 @@ import Timer            = NodeJS.Timer;
 import ZationWorker     = require("../../main/zationWorker");
 import ChExchangeEngine = require("../channel/chExchangeEngine");
 import {PanelUserConfig}  from "../configs/mainConfig";
-import {ZationChannel} from "../constants/internal";
+import {ZationChannel}    from "../constants/internal";
+import ZationConfig     = require("../../main/zationConfig");
 
 class PanelEngine
 {
@@ -17,6 +18,7 @@ class PanelEngine
     private panelInUseTimeout : Timer;
 
     private zw : ZationWorker;
+    private zc : ZationConfig;
 
     private readonly panelAccessData : object[] = [];
 
@@ -25,15 +27,17 @@ class PanelEngine
     constructor(zw : ZationWorker)
     {
         this.zw = zw;
-        if(zw.getZationConfig().mainConfig.usePanel) {
+        this.zc = this.zw.getZationConfig();
+        if(this.zc.mainConfig.usePanel) {
             this.loadPanelAccessData();
+            this.createPingInterval();
             this.registerPanelInEvent();
         }
     }
 
     private loadPanelAccessData()
     {
-        const user = this.zw.getZationConfig().mainConfig.panelUser;
+        const user = this.zc.mainConfig.panelUser;
         if(Array.isArray(user)) {
             for(let i = 0; i < user.length; i++) {
                 this.addUser(user[i]);
@@ -52,6 +56,13 @@ class PanelEngine
         this.panelAccessData.push(data);
     }
 
+    private createPingInterval()
+    {
+        setInterval(() => {
+            this.pubInPanel('ping')
+        },5000);
+    }
+
     private registerPanelInEvent()
     {
         const channel = this.zw.exchange.subscribe(ZationChannel.PANEL_IN);
@@ -59,13 +70,14 @@ class PanelEngine
         {
             if(data.action === 'ping') {
                 this.renewPanelInUse();
+                //if the worker is new
                 if(!this.alreadyFirstPong) {
-                    this.sendFirstPong();
+                    await this.sendFirstPong();
                 }
             }
             else if(data.action === 'firstPing') {
                 this.renewPanelInUse();
-                this.sendFirstPong();
+                await this.sendFirstPong();
             }
         });
     }
@@ -84,14 +96,16 @@ class PanelEngine
         },5000);
     }
 
-    private sendFirstPong() : void
-    {
-        this.alreadyFirstPong = true;
+    private async sendFirstPong() : Promise<void> {
+        this.pubInPanel('firstPong',(await this.zw.getFirstPanelInfo()));
+    }
 
+    update(type : string,data : object) {
+        this.pubInPanel('update-'+type,data);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    pubInPanel(eventName : string,data : object)
+    private pubInPanel(eventName : string,data : object = {})
     {
         if(this.isPanelInUse()) {
             // noinspection TypeScriptValidateJSTypes

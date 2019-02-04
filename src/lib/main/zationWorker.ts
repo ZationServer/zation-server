@@ -43,6 +43,7 @@ import PanelEngine = require("../helper/panel/panelEngine");
 import ZationTokenInfo = require("../helper/infoObjects/zationTokenInfo");
 import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
 import ViewEngine = require("../helper/views/viewEngine");
+import SystemInfo = require("../helper/tools/systemInfo");
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -147,13 +148,14 @@ class ZationWorker extends SCWorker
 
         Logger.startStopWatch();
         this.panelEngine = new PanelEngine(this);
-        Logger.printStartDebugInfo
-        (
-            this.zc.mainConfig.usePanel ?
-                `The Worker with id ${this.id} has created the panel engine.` :
-                `The Worker with id ${this.id} has checked for the panel engine.`,
-            true
-        );
+        if(this.zc.mainConfig.usePanel) {
+            await this.initPanelUpdates();
+            Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the panel engine.`,true);
+        }
+        else {
+            Logger.printStartDebugInfo(`The Worker with id ${this.id} has checked for the panel engine.`,true);
+        }
+
 
         //prepareController
         Logger.startStopWatch();
@@ -503,7 +505,7 @@ class ZationWorker extends SCWorker
                         next();
                     }
                     else{
-                        const err : any = new Error('No client publication allowed in a user channel!');
+                        const err : any = new Error('Client publication not allowed in a user channel!');
                         err.code = 4546;
                         next(err); //Block!
                     }
@@ -529,7 +531,7 @@ class ZationWorker extends SCWorker
                         next();
                     }
                     else{
-                        const err : any = new Error('No client publication allowed in a auth user group channel!');
+                        const err : any = new Error('Client publication not allowed in a auth user group channel!');
                         err.code = 4536;
                         next(err); //Block!
                     }
@@ -546,7 +548,7 @@ class ZationWorker extends SCWorker
                         next();
                     }
                     else{
-                        const err : any = new Error('No client publication allowed in all channel!');
+                        const err : any = new Error('Client publication not allowed in all channel!');
                         err.code = 4556;
                         next(err); //Block!
                     }
@@ -563,13 +565,13 @@ class ZationWorker extends SCWorker
                         next();
                     }
                     else{
-                        const err : any = new Error('No client publication allowed in default user group channel!');
+                        const err : any = new Error('Client publication not allowed in default user group channel!');
                         err.code = 4526;
                         next(err); //Block!
                     }
                 }
                 else if(channel === ZationChannel.PANEL_OUT) {
-                    const err : any = new Error('No client publication allowed in panel out channel!');
+                    const err : any = new Error('Client publication not allowed in panel out channel!');
                     err.code = 4506;
                     next(err); //Block!
                 }
@@ -1296,6 +1298,26 @@ class ZationWorker extends SCWorker
     public async killServer(error : Error | string) : Promise<void>
     {
         await this.sendToZationMaster({action : WorkerMessageActions.KILL_SERVER, data : error});
+    }
+
+    public async getFirstPanelInfo() : Promise<object>
+    {
+        return {
+            instanceId  : this.options.instanceId,
+            pid         : process.pid,
+            clientCount : this.scServer.clientsCount,
+            brokerCount : this.zc.mainConfig.brokers,
+            systemInfo  : (await SystemInfo.getInfo())
+        }
+    }
+
+    private async initPanelUpdates() : Promise<void>
+    {
+        setInterval(async () => {
+            if(this.panelEngine.isPanelInUse()) {
+                this.panelEngine.update('systemInfo',(await SystemInfo.getUpdatedInfo()));
+            }
+        },1000);
     }
 
     getServerVersion() : string

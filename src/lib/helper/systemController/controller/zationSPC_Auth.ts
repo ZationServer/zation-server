@@ -28,13 +28,18 @@ class ZationSPC_Auth extends Controller
 
     async handle(bag,{userName,hashPassword})
     {
-        if(!bag.getWorker().getPanelEngine().isPanelLoginDataValid(userName,hashPassword)) {
-            throw new TaskError(MainTaskErrors.wrongPanelAuthData);
+        if(bag.getZationConfig().mainConfig.usePanel) {
+            if(!bag.getWorker().getPanelEngine().isPanelLoginDataValid(userName,hashPassword)) {
+                throw new TaskError(MainTaskErrors.wrongPanelAuthData);
+            }
+            const token = {};
+            token[nameof<ZationToken>(s => s.zationPanelAccess)] = true;
+            token[nameof<ZationToken>(s => s.zationOnlyPanelToken)] = true;
+            bag.getSocket().setAuthToken(token);
         }
-        const token = {};
-        token[nameof<ZationToken>(s => s.zationPanelAccess)] = true;
-        token[nameof<ZationToken>(s => s.zationOnlyPanelToken)] = true;
-        bag.getSocket().setAuthToken(token)
+        else {
+            throw new TaskError(MainTaskErrors.panelIsNotActivated);
+        }
     }
 }
 

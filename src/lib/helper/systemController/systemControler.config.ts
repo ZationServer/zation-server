@@ -9,5 +9,5 @@ import ZationSC_Ping  = require("./controller/zationSC_Ping");
 
 export = {
         'zation/system/ping' : ZationSC_Ping,
-        'zation/panel/auth' : ZationSPC_Auth
+        'zation/panel/auth'  : ZationSPC_Auth
     };
