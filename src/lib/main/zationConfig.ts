@@ -133,7 +133,7 @@ class ZationConfig {
             rebootOnSignal: true,
             downgradeToUser: false,
             allowClientPublish: true,
-            workerStatusInterval: 10000,
+            workerStatusInterval: 3000,
             clusterShareTokenAuth: true,
             instanceId: uuidV4(),
             useTokenCheckKey: true,

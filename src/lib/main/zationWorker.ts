@@ -47,10 +47,11 @@ import SystemInfo = require("../helper/tools/systemInfo");
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
-
 class ZationWorker extends SCWorker
 {
     private userBackgroundTasks : object;
+
+    private workerFullId : string;
 
     private workerStartedTimeStamp : number;
     private serverStartedTimeStamp : number;
@@ -82,6 +83,8 @@ class ZationWorker extends SCWorker
 
     private variableStorage : object = {};
 
+    private workerStatusUpdate : () => void;
+
     //prepareClient
     private fullClientJs : string;
     private serverSettingsJs : string;
@@ -102,6 +105,8 @@ class ZationWorker extends SCWorker
         this.workerStartedTimeStamp = Date.now();
         this.serverStartedTimeStamp = this.options.zationServerStartedTimeStamp;
         this.serverVersion = this.options.zationServerVersion;
+
+        this.workerFullId = this.id + '.' + process.pid;
 
         this.zc = new ZationConfig(this.options.zationConfigWorkerTransport,true);
 
@@ -344,9 +349,8 @@ class ZationWorker extends SCWorker
         await this.zc.emitEvent(this.zc.eventConfig.httpServerIsStarted,this.zc.getZationInfo());
     }
 
-    getFullWorkerId()
-    {
-        return `${this.id}.${process.pid}`;
+    getFullWorkerId() {
+        return this.workerFullId;
     }
 
     private initSocketMiddleware()
@@ -1302,12 +1306,41 @@ class ZationWorker extends SCWorker
 
     public async getFirstPanelInfo() : Promise<object>
     {
+
+        //todo
+        /**
+         * missing panel user group display names
+         */
+
         return {
+            //static props
             instanceId  : this.options.instanceId,
             pid         : process.pid,
-            clientCount : this.scServer.clientsCount,
+            workerFullId: this.workerFullId,
             brokerCount : this.zc.mainConfig.brokers,
-            systemInfo  : (await SystemInfo.getInfo())
+            hostname    : this.zc.mainConfig.hostname,
+            port        : this.zc.mainConfig.port,
+            path        : this.zc.mainConfig.path,
+            postKey     : this.zc.mainConfig.postKey,
+            secure      : this.zc.mainConfig.secure,
+            appName     : this.zc.mainConfig.appName,
+            environment : this.zc.mainConfig.environment,
+            debug       : this.zc.mainConfig.debug,
+            useScUws    : this.zc.mainConfig.useScUws,
+            workerStarted : this.workerStartedTimeStamp,
+            serverStarted : this.serverStartedTimeStamp,
+            panelUserMap : {
+                'admin' : 'Admin'
+            },
+            //dynamic properties
+            clientCount : this.scServer.clientsCount,
+            systemInfo  : (await SystemInfo.getInfo()),
+            user: {
+                defaultUserGroupCount : this.getPreparedSmallBag().getWorkerDefaultUserGroupCount(),
+                authUserGroups : this.getPreparedSmallBag().getWorkerAuthUserGroupsCount()
+            },
+            avgHttpRequests : this.getStatus().httpRPM,
+            avgWsRequests : this.worker.getStatus().wsRPM
         }
     }
 
@@ -1315,9 +1348,51 @@ class ZationWorker extends SCWorker
     {
         setInterval(async () => {
             if(this.panelEngine.isPanelInUse()) {
-                this.panelEngine.update('systemInfo',(await SystemInfo.getUpdatedInfo()));
+                this.panelEngine.update('mainUpdate',{
+                    systemInfo : (await SystemInfo.getUpdatedInfo()),
+                    clientCount : this.scServer.clientsCount,
+                    user: {
+                        defaultUserGroupCount : this.getPreparedSmallBag().getWorkerDefaultUserGroupCount(),
+                        authUserGroups : this.getPreparedSmallBag().getWorkerAuthUserGroupsCount()
+                    }
+                });
             }
         },1000);
+
+        this.workerStatusUpdate = () => {
+            if(this.panelEngine.isPanelInUse()) {
+                const status = this.getStatus();
+                this.panelEngine.update('workerStatus',{
+                    avgHttpRequests : status.httpRPM,
+                    avgWsRequests : status.wsRPM
+                });
+            }
+        };
+    }
+
+    //override
+    start()
+    {
+        this._httpRequestCount = 0;
+        this._wsRequestCount = 0;
+        this._httpRPM = 0;
+        this._wsRPM = 0;
+
+        if (this._statusInterval != null) {
+            clearInterval(this._statusInterval);
+        }
+
+        this._statusInterval = setInterval(() => {
+            this._calculateStatus.bind(this);
+            if(this.workerStatusUpdate){
+                this.workerStatusUpdate();
+            }
+        }, this.options.workerStatusInterval);
+
+        const runResult = this.run();
+
+        return Promise.resolve(runResult)
+            .then(this.startHTTPServer.bind(this));
     }
 
     getServerVersion() : string

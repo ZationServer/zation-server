@@ -25,6 +25,10 @@ import * as Zation from "zation-client";
 
         await client.subPanelOutCh();
 
+        //await client.panelOutCh().subscribe();
+
+        await client.subAuthUserGroupCh();
+
         client.channelReact().onPubPanelOutCh(null,(data) => {
             alert(JSON.stringify(data));
         });
