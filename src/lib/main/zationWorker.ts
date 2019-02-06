@@ -151,17 +151,6 @@ class ZationWorker extends SCWorker
         this.preparedSmallBag = new SmallBag(this);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared an small bag.`,true);
 
-        Logger.startStopWatch();
-        this.panelEngine = new PanelEngine(this);
-        if(this.zc.mainConfig.usePanel) {
-            await this.initPanelUpdates();
-            Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the panel engine.`,true);
-        }
-        else {
-            Logger.printStartDebugInfo(`The Worker with id ${this.id} has checked for the panel engine.`,true);
-        }
-
-
         //prepareController
         Logger.startStopWatch();
         this.controllerPrepare = new ControllerPrepare(this.zc,this);
@@ -171,6 +160,16 @@ class ZationWorker extends SCWorker
         Logger.startStopWatch();
         this.aePreparedPart = new AEPreparedPart(this.zc,this);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared an auth engine part.`,true);
+
+        Logger.startStopWatch();
+        this.panelEngine = new PanelEngine(this,this.aePreparedPart.getAuthGroups());
+        if(this.zc.mainConfig.usePanel) {
+            await this.initPanelUpdates();
+            Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the panel engine.`,true);
+        }
+        else {
+            Logger.printStartDebugInfo(`The Worker with id ${this.id} has checked for the panel engine.`,true);
+        }
 
         Logger.startStopWatch();
         this.chConfigManager = new ChConfigManager(this.zc);
@@ -1306,12 +1305,6 @@ class ZationWorker extends SCWorker
 
     public async getFirstPanelInfo() : Promise<object>
     {
-
-        //todo
-        /**
-         * missing panel user group display names
-         */
-
         return {
             //static props
             instanceId  : this.options.instanceId,
@@ -1329,9 +1322,7 @@ class ZationWorker extends SCWorker
             useScUws    : this.zc.mainConfig.useScUws,
             workerStarted : this.workerStartedTimeStamp,
             serverStarted : this.serverStartedTimeStamp,
-            panelUserMap : {
-                'admin' : 'Admin'
-            },
+            panelUserMap : this.panelEngine.getPanelUserMap(),
             //dynamic properties
             clientCount : this.scServer.clientsCount,
             systemInfo  : (await SystemInfo.getInfo()),
@@ -1340,7 +1331,7 @@ class ZationWorker extends SCWorker
                 authUserGroups : this.getPreparedSmallBag().getWorkerAuthUserGroupsCount()
             },
             avgHttpRequests : this.getStatus().httpRPM,
-            avgWsRequests : this.worker.getStatus().wsRPM
+            avgWsRequests : this.getStatus().wsRPM
         }
     }
 
@@ -1359,13 +1350,20 @@ class ZationWorker extends SCWorker
             }
         },1000);
 
+        let tmpHttpRPM;
+        let tmpWsRPM;
         this.workerStatusUpdate = () => {
             if(this.panelEngine.isPanelInUse()) {
                 const status = this.getStatus();
-                this.panelEngine.update('workerStatus',{
-                    avgHttpRequests : status.httpRPM,
-                    avgWsRequests : status.wsRPM
-                });
+                if(status.wsRPM !== tmpWsRPM || status.httpRPM !== tmpHttpRPM) {
+                    tmpWsRPM = status.wsRPM;
+                    tmpHttpRPM = status.httpRPM;
+                    this.panelEngine.update('workerStatus',{
+                        avgHttpRequests : status.httpRPM,
+                        avgWsRequests : status.wsRPM
+                    });
+                }
+
             }
         };
     }

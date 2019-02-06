@@ -10,6 +10,7 @@ import ChExchangeEngine = require("../channel/chExchangeEngine");
 import {PanelUserConfig}  from "../configs/mainConfig";
 import {ZationChannel}    from "../constants/internal";
 import ZationConfig     = require("../../main/zationConfig");
+import {AuthUserGroupConfig} from "../configs/appConfig";
 
 class PanelEngine
 {
@@ -20,19 +21,36 @@ class PanelEngine
     private zw : ZationWorker;
     private zc : ZationConfig;
 
+    private panelUserMap : Record<string,string>;
+
     private readonly panelAccessData : object[] = [];
 
     private alreadyFirstPong : boolean = false;
 
-    constructor(zw : ZationWorker)
+    constructor(zw : ZationWorker,authUserGroups : Record<string,AuthUserGroupConfig>)
     {
         this.zw = zw;
         this.zc = this.zw.getZationConfig();
+        this.panelUserMap = this.initPanelUserMap(authUserGroups);
         if(this.zc.mainConfig.usePanel) {
             this.loadPanelAccessData();
             this.createPingInterval();
             this.registerPanelInEvent();
         }
+    }
+
+    // noinspection JSMethodCanBeStatic
+    private initPanelUserMap(authUserGroups : Record<string,AuthUserGroupConfig>) : Record<string,string>
+    {
+        let map = {};
+        for(let k in authUserGroups) {
+            if(authUserGroups.hasOwnProperty(k) &&
+                typeof authUserGroups[k].panelDisplayName === 'string')
+            {
+                map[k] = authUserGroups[k].panelDisplayName;
+            }
+        }
+        return map;
     }
 
     private loadPanelAccessData()
@@ -100,7 +118,7 @@ class PanelEngine
         try {
             this.pubInPanel('firstPong',(await this.zw.getFirstPanelInfo()));
         }
-        catch (e) {}
+        catch (e) {console.log(e);}
     }
 
     update(type : string,data : object) {
@@ -135,6 +153,10 @@ class PanelEngine
             }
         }
         return foundUser;
+    }
+
+    getPanelUserMap() : Record<string,string> {
+        return this.panelUserMap;
     }
 
 }

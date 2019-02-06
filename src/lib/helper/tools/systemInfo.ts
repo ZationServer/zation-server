@@ -42,8 +42,6 @@ class SystemInfo {
         // in mb
         memoryInfo.pidMemory = pidUsage.memory / 1048576;
 
-        //todo cpu usage not really makes sense
-
         return {
             driveInfo : (await osu.drive.used()),
             memoryInfo : memoryInfo,
