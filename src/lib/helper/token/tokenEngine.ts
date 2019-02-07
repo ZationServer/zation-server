@@ -34,6 +34,7 @@ class TokenEngine
         data[nameof<ZationToken>(s => s.exp)] = this.generateExpiry();
         data[nameof<ZationToken>(s => s.zationTokenId)]  = uniqid();
         data[nameof<ZationToken>(s => s.zationCheckKey)] = this.zc.internalData.tokenCheckKey;
+        data[nameof<ZationToken>(s => s.zationCustomVariables)] = {};
         return TokenTools.createNewToken(data,this.shBridge.getTokenBridge(),this.worker);
     }
 
@@ -95,8 +96,9 @@ class TokenEngine
     }
 
     getCustomTokenVariable() : object {
-        return TokenTools.getTokenVariable
+        const ctv = TokenTools.getTokenVariable
         (nameof<ZationToken>(s => s.zationCustomVariables),this.shBridge.getTokenBridge());
+        return ctv !== undefined ? ctv : {};
     }
 
     async setCustomTokenVariable(data : object) : Promise<boolean> {
