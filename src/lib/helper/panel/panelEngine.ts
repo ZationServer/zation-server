@@ -70,7 +70,7 @@ class PanelEngine
     {
         const data = {};
         data['p'] = this.zw.getPreparedSmallBag().hashSha512(config.password);
-        data['u'] = config.userName;
+        data['u'] = config.username;
         this.panelAccessData.push(data);
     }
 

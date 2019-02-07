@@ -21,7 +21,7 @@ import cookieParser = require('cookie-parser');
 import bodyParser = require('body-parser');
 import fileUpload = require('express-fileupload');
 import url = require('url');
-
+import path = require("path");
 import Zation = require('./zation');
 import ZationConfig = require('./zationConfig');
 import ConfigPreCompiler = require('../helper/config/configPreCompiler');
@@ -288,7 +288,7 @@ class ZationWorker extends SCWorker
     {
         this.app = express();
 
-        const path = this.zc.mainConfig.path;
+        const serverPath = this.zc.mainConfig.path;
 
         //startCookieParser
         // noinspection JSUnresolvedFunction
@@ -312,7 +312,8 @@ class ZationWorker extends SCWorker
 
         if(this.zc.mainConfig.usePanel) {
             // noinspection JSUnresolvedFunction,TypeScriptValidateJSTypes
-            this.app.use(`${path}/panel`, express.static(__dirname + '/../public/panel'));
+            this.app.use(`${serverPath}/panel`,
+                express.static(path.dirname(require.resolve('zation-panel/package.json'))+'/build'));
         }
 
         // noinspection JSUnresolvedFunction
@@ -324,7 +325,7 @@ class ZationWorker extends SCWorker
 
         if(this.zc.mainConfig.clientJsPrepare) {
             // noinspection JSUnresolvedFunction
-            this.app.get(`${path}/client.js`,(req,res) =>
+            this.app.get(`${serverPath}/client.js`,(req,res) =>
             {
                 res.type('.js');
                 res.send(this.fullClientJs);
@@ -332,9 +333,8 @@ class ZationWorker extends SCWorker
         }
 
         //REQUEST
-
         // noinspection JSUnresolvedFunction
-        this.app.all(`${path}`, (req, res) => {
+        this.app.all(`${serverPath}`, (req, res) => {
             //Run Zation
             // noinspection JSUnusedLocalSymbols
             let p = this.zation.run(

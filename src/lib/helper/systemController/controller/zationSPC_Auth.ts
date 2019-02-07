@@ -17,7 +17,7 @@ class ZationSPC_Auth extends Controller
         access : 'all',
         versionAccess : 'all',
         input : {
-            userName : {
+            username : {
                 type : 'string'
             },
             password : {
@@ -26,16 +26,24 @@ class ZationSPC_Auth extends Controller
         }
     };
 
-    async handle(bag,{userName,password})
+    async handle(bag,{username,password})
     {
         if(bag.getZationConfig().mainConfig.usePanel) {
-            if(!bag.getWorker().getPanelEngine().isPanelLoginDataValid(userName,password)) {
+
+            //wait 2seconds for avoiding brute force attacks
+            await new Promise((resolve) => {setTimeout(()=>{resolve();},2000)})
+
+            if(!bag.getWorker().getPanelEngine().isPanelLoginDataValid(username,password)) {
                 throw new TaskError(MainTaskErrors.wrongPanelAuthData);
             }
             const token = {};
             token[nameof<ZationToken>(s => s.zationPanelAccess)] = true;
             token[nameof<ZationToken>(s => s.zationOnlyPanelToken)] = true;
             bag.getSocket().setAuthToken(token);
+
+            console.log(bag.getTokenVariable());
+
+            await bag.setTokenVariable('ZATION-PANEL-USER-NAME',username);
         }
         else {
             throw new TaskError(MainTaskErrors.panelIsNotActivated);

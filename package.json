@@ -77,7 +77,8 @@
     "uuid": "3.3.2",
     "validator": "10.4.0",
     "ws": "6.1.0",
-    "zation-client": "0.5.0"
+    "zation-client": "0.5.0",
+    "zation-panel": "0.0.2"
   },
   "devDependencies": {
     "@types/gulp-sass": "0.0.31",

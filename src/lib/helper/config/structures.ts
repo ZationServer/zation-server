@@ -231,7 +231,7 @@ ServiceConfig[nameof<ServiceConfig>(s => s.services)]         = {types : ['objec
 ServiceConfig[nameof<ServiceConfig>(s => s.customServices)]   = {types : ['object'],isOptional : true};
 
 const PanelUserConfig = {};
-PanelUserConfig[nameof<PanelUserConfig>(s => s.userName)]     = {types : ['string'],isOptional : false};
+PanelUserConfig[nameof<PanelUserConfig>(s => s.username)]     = {types : ['string'],isOptional : false};
 PanelUserConfig[nameof<PanelUserConfig>(s => s.password)]     = {types : ['string'],isOptional : false};
 
 const ChannelFullItem = {};

@@ -439,16 +439,32 @@ class ConfigChecker
 
     }
 
-    private checkPanelUserConfig(config: PanelUserConfig, target ?: Target) {
+    private checkPanelUserConfig(config: PanelUserConfig, target : Target) {
         //checkStructure
         ConfigCheckerTools.assertStructure(Structures.PanelUserConfig, config, ConfigNames.MAIN, this.ceb, target);
 
+        if(typeof config.password === 'string' && config.password.length < 4) {
+            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                `${target.getTarget()} panel user password must be at least 4 characters long.`));
+        }
+
+        if(typeof config.username === 'string' && config.username.length < 1) {
+            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                `${target.getTarget()} panel username must be at least 1 character long.`));
+        }
+
         if (config.password === 'admin' &&
-            config.userName === 'admin' &&
+            config.username === 'admin' &&
             this.zc.mainConfig.usePanel) {
             Logger.printConfigWarning
             (ConfigNames.MAIN, `Its recommend to not use the default panel access credentials!` +
                 ` So please change them in the main config!`);
+        }
+
+        if(typeof config.username === 'string' && config.username !== 'admin' &&
+        config.username === config.password) {
+            Logger.printConfigWarning
+            (ConfigNames.MAIN, `It's not recommended to use the panel username as a password also!`);
         }
     }
 

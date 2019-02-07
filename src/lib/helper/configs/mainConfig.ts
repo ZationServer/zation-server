@@ -169,7 +169,7 @@ export interface InternMainConfig extends MainConfig {
 }
 
 export interface PanelUserConfig {
-    userName  : string;
+    username  : string;
     password  : string;
 }
 
