@@ -139,6 +139,7 @@ class ZationConfig {
             useTokenCheckKey: true,
             clientJsPrepare: true,
             usePanel: false,
+            panelModule: 'zation-panel',
             killServerOnServicesCreateError : false,
             logToFile: false,
             logPath : '',

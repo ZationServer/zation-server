@@ -105,6 +105,7 @@ Main[nameof<MainConfig>(s => s.useHttpMethodCheck)]   = {types : ['boolean'],isO
 Main[nameof<MainConfig>(s => s.sendErrorDescription)] = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.usePanel)]             = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.panelUser)]            = {types : ['object','array'],isOptional : true};
+Main[nameof<MainConfig>(s => s.panelModule)]          = {types : ['string'],isOptional : true};
 Main[nameof<MainConfig>(s => s.clientJsPrepare)]      = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.path)]                 = {types : ['string'],isOptional : true};
 

@@ -313,7 +313,8 @@ class ZationWorker extends SCWorker
         if(this.zc.mainConfig.usePanel) {
             // noinspection JSUnresolvedFunction,TypeScriptValidateJSTypes
             this.app.use(`${serverPath}/panel`,
-                express.static(path.dirname(require.resolve('zation-panel/package.json'))+'/build'));
+                express.static
+                (path.dirname(require.resolve(this.zc.mainConfig.panelModule+'/package.json'))+'/build'));
         }
 
         // noinspection JSUnresolvedFunction
