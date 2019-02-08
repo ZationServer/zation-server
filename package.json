@@ -83,7 +83,6 @@
   "devDependencies": {
     "@types/gulp-sass": "0.0.31",
     "@types/jquery": "3.3.22",
-    "browserify": "16.2.3",
     "cached-path-relative": "1.0.2",
     "graceful-fs": "4.1.11",
     "gulp": "4.0.0",
@@ -98,7 +97,6 @@
     "terser": "3.8.0",
     "ts-nameof": "1.0.3",
     "typescript": "2.9.2",
-    "vinyl-source-stream": "2.0.0",
     "mocha": "5.2.0",
     "@types/mocha": "5.2.5",
     "chai": "4.2.0",
