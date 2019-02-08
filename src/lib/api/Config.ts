@@ -158,22 +158,22 @@ class Config
      * If the new configuration properties override the controller properties.
      * Default value is false.
      */
-    static buildController(controller : ControllerClass,config : ControllerConfig,overrideControllerConfig : boolean = false) : ControllerClass {
+    static buildController<SB = {},B = {}>(controller : ControllerClass<SB,B>,config : ControllerConfig<SB,B>,overrideControllerConfig : boolean = false) : ControllerClass<SB,B> {
         ObjectTools.addObToOb(controller.config,config,overrideControllerConfig);
         return controller;
     }
 
     //Part main configs
     // noinspection JSUnusedGlobalSymbols
-    static appConfig(config : AppConfig) : AppConfig {return config;}
+    static appConfig<SB = {},B = {}>(config : AppConfig<SB,B>) : AppConfig<SB,B> {return config;}
     // noinspection JSUnusedGlobalSymbols
-    static eventConfig(config : EventConfig) : EventConfig {return config;}
+    static eventConfig<SB = {}>(config : EventConfig<SB>) : EventConfig<SB> {return config;}
     // noinspection JSUnusedGlobalSymbols
     static serviceConfig(config : ServiceConfig) : ServiceConfig {return config;}
     // noinspection JSUnusedGlobalSymbols
     static mainConfig(config : MainConfig) : MainConfig {return config;}
     // noinspection JSUnusedGlobalSymbols
-    static channelConfig(config : ChannelConfig) : ChannelConfig {return config;}
+    static channelConfig<SB = {}>(config : ChannelConfig<SB>) : ChannelConfig<SB> {return config;}
     // noinspection JSUnusedGlobalSymbols
     static errorConfig(config : ErrorConfig) : ErrorConfig {return config;}
     // noinspection JSUnusedGlobalSymbols
@@ -181,137 +181,137 @@ class Config
 
     //Object
     // noinspection JSUnusedGlobalSymbols
-    static objectProperty(c : ObjectPropertyConfig) :  ObjectPropertyConfig {return c;}
+    static objectProperty<SB = {}>(c : ObjectPropertyConfig<SB>) :  ObjectPropertyConfig<SB> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static object(c : ObjectPropertyConfig) :  ObjectPropertyConfig {return c;}
+    static object<SB = {}>(c : ObjectPropertyConfig<SB>) :  ObjectPropertyConfig<SB> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static construct(func : ConstructObjectFunction) : ConstructObjectFunction {return func;}
+    static construct<SB = {}>(func : ConstructObjectFunction<SB>) : ConstructObjectFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static objectProperties(c : ObjectProperties) :  ObjectProperties {return c;}
+    static objectProperties<SB = {}>(c : ObjectProperties<SB>) :  ObjectProperties<SB> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static convertObject(c : ConvertObjectFunction) :  ConvertObjectFunction {return c;}
+    static convertObject<SB = {}>(c : ConvertObjectFunction<SB>) :  ConvertObjectFunction<SB> {return c;}
 
     //Value
     // noinspection JSUnusedGlobalSymbols
-    static valueProperty(c : ValuePropertyConfig) :  ValuePropertyConfig {return c;}
+    static valueProperty<SB = {}>(c : ValuePropertyConfig<SB>) :  ValuePropertyConfig<SB> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static value(c : ValuePropertyConfig) :  ValuePropertyConfig {return c;}
+    static value<SB = {}>(c : ValuePropertyConfig<SB>) :  ValuePropertyConfig<SB> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static convertValue(c : ConvertValueFunction) :  ConvertValueFunction {return c;}
+    static convertValue<SB = {}>(c : ConvertValueFunction<SB>) :  ConvertValueFunction<SB> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static validate(func : ValidatorFunction) : ValidatorFunction {return func;}
+    static validate<SB = {}>(func : ValidatorFunction<SB>) : ValidatorFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static getDate(func : GetDateFunction) : GetDateFunction {return func;}
+    static getDate<SB = {}>(func : GetDateFunction<SB>) : GetDateFunction<SB> {return func;}
 
     //Array
     // noinspection JSUnusedGlobalSymbols
-    static arrayProperty(c : ArrayPropertyConfig) :  ArrayPropertyConfig {return c;}
+    static arrayProperty<SB = {}>(c : ArrayPropertyConfig<SB>) :  ArrayPropertyConfig<SB> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static array(c : ArrayPropertyConfig) :  ArrayPropertyConfig {return c;}
+    static array<SB = {}>(c : ArrayPropertyConfig<SB>) :  ArrayPropertyConfig<SB> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static convertArray(c : ConvertArrayFunction) :  ConvertArrayFunction {return c;}
+    static convertArray<SB = {}>(c : ConvertArrayFunction<SB>) :  ConvertArrayFunction<SB> {return c;}
 
     //Controller
     // noinspection JSUnusedGlobalSymbols
-    static controllerConfig(c : ControllerConfig) :  ControllerConfig {return c;}
+    static controllerConfig<SB = {},B = {}>(c : ControllerConfig<SB,B>) :  ControllerConfig<SB,B> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static controllerInput(c : ControllerInput) :  ControllerInput {return c;}
+    static controllerInput<SB = {}>(c : ControllerInput<SB>) :  ControllerInput<SB> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static beforeHandle(func : BeforeHandleFunction) : BeforeHandleFunction {return func;}
+    static beforeHandle<SB = {},B = {}>(func : BeforeHandleFunction<SB,B>) : BeforeHandleFunction<SB,B> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static controllerAccess(func : ControllerAccessFunction) : ControllerAccessFunction {return func;}
+    static controllerAccess<SB = {}>(func : ControllerAccessFunction<SB>) : ControllerAccessFunction<SB> {return func;}
 
     //Part Background tasks
     // noinspection JSUnusedGlobalSymbols
-    static backgroundTask(c : BackgroundTask) :  BackgroundTask {return c;}
+    static backgroundTask<SB = {}>(c : BackgroundTask<SB>) :  BackgroundTask<SB> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static task(func : TaskFunction) :  TaskFunction {return func;}
+    static task<SB = {}>(func : TaskFunction<SB>) :  TaskFunction<SB> {return func;}
 
     //Part Properties
     // noinspection JSUnusedGlobalSymbols
-    static property(c : Property) :  Property {return c;}
+    static property<SB = {}>(c : Property<SB>) :  Property<SB> {return c;}
 
 
     //Part Channel Config functions
     // noinspection JSUnusedGlobalSymbols
-    static cIdChClientPubAccess(func : CIdChannelClientPubAccessFunction) : CIdChannelClientPubAccessFunction {return func;}
+    static cIdChClientPubAccess<SB = {}>(func : CIdChannelClientPubAccessFunction<SB>) : CIdChannelClientPubAccessFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cChClientPubAccess(func : CChannelClientPubAccessFunction) : CChannelClientPubAccessFunction  {return func;}
+    static cChClientPubAccess<SB = {}>(func : CChannelClientPubAccessFunction<SB>) : CChannelClientPubAccessFunction<SB>  {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static cIdChSubAccess(func : CIdChannelSubAccessFunction) : CIdChannelSubAccessFunction {return func;}
+    static cIdChSubAccess<SB = {}>(func : CIdChannelSubAccessFunction<SB>) : CIdChannelSubAccessFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cChSubAccess(func : CChannelSubAccessFunction) : CChannelSubAccessFunction {return func;}
+    static cChSubAccess<SB = {}>(func : CChannelSubAccessFunction<SB>) : CChannelSubAccessFunction<SB> {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static cChOnClientPub(func : CChannelOnClientPubFunction) : CChannelOnClientPubFunction {return func;}
+    static cChOnClientPub<SB = {}>(func : CChannelOnClientPubFunction<SB>) : CChannelOnClientPubFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cIdChOnClientPub(func : CIdChannelOnClientPubFunction) : CIdChannelOnClientPubFunction {return func;}
+    static cIdChOnClientPub<SB = {}>(func : CIdChannelOnClientPubFunction<SB>) : CIdChannelOnClientPubFunction<SB> {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static cChOnBagPub(func : CChannelOnBagPubFunction) : CChannelOnBagPubFunction {return func;}
+    static cChOnBagPub<SB = {}>(func : CChannelOnBagPubFunction<SB>) : CChannelOnBagPubFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cIdChOnBagPub(func : CIdChannelOnBagPubFunction) : CIdChannelOnBagPubFunction {return func;}
+    static cIdChOnBagPub<SB = {}>(func : CIdChannelOnBagPubFunction<SB>) : CIdChannelOnBagPubFunction<SB> {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static cChOnSub(func : CChannelOnSubFunction) : CChannelOnSubFunction {return func;}
+    static cChOnSub<SB = {}>(func : CChannelOnSubFunction<SB>) : CChannelOnSubFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cIdChOnSub(func : CIdChannelOnSubFunction) : CIdChannelOnSubFunction {return func;}
+    static cIdChOnSub<SB = {}>(func : CIdChannelOnSubFunction<SB>) : CIdChannelOnSubFunction<SB> {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static cChOnUnsub(func : CChannelOnUnsubFunction) : CChannelOnUnsubFunction {return func;}
+    static cChOnUnsub<SB = {}>(func : CChannelOnUnsubFunction<SB>) : CChannelOnUnsubFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cIdChOnUnsub(func : CIdChannelOnUnsubFunction) : CIdChannelOnUnsubFunction {return func;}
+    static cIdChOnUnsub<SB = {}>(func : CIdChannelOnUnsubFunction<SB>) : CIdChannelOnUnsubFunction<SB> {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static customCh(c : CustomCh) : CustomCh {return c;}
+    static customCh<SB = {}>(c : CustomCh<SB>) : CustomCh<SB> {return c;}
 
     // noinspection JSUnusedGlobalSymbols
-    static customIdCh(c : CustomIdCh) : CustomIdCh {return c;}
+    static customIdCh<SB = {}>(c : CustomIdCh<SB>) : CustomIdCh<SB> {return c;}
 
     // noinspection JSUnusedGlobalSymbols
-    static userCh(c : UserChannel) : UserChannel {return c;}
+    static userCh<SB = {}>(c : UserChannel<SB>) : UserChannel<SB> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static userChOnClientPub(func : UserChOnClientPubFunction) : UserChOnClientPubFunction {return func;}
+    static userChOnClientPub<SB = {}>(func : UserChOnClientPubFunction<SB>) : UserChOnClientPubFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static userChOnBagPub(func : UserChOnBagPubFunction) : UserChOnBagPubFunction {return func;}
+    static userChOnBagPub<SB = {}>(func : UserChOnBagPubFunction<SB>) : UserChOnBagPubFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static userChOnSub(func : UserChOnSubFunction) : UserChOnSubFunction {return func;}
+    static userChOnSub<SB = {}>(func : UserChOnSubFunction<SB>) : UserChOnSubFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static userChOnUnsub(func : UserChOnUnsubFunction) : UserChOnUnsubFunction {return func;}
+    static userChOnUnsub<SB = {}>(func : UserChOnUnsubFunction<SB>) : UserChOnUnsubFunction<SB> {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static authUserGroupCh(c : AuthUserGroupChannel) : AuthUserGroupChannel {return c;}
+    static authUserGroupCh<SB = {}>(c : AuthUserGroupChannel<SB>) : AuthUserGroupChannel<SB> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static authUserGroupChOnClientPub(func : AuthUserGroupChOnClientPubFunction) : AuthUserGroupChOnClientPubFunction {return func;}
+    static authUserGroupChOnClientPub<SB = {}>(func : AuthUserGroupChOnClientPubFunction<SB>) : AuthUserGroupChOnClientPubFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static authUserGroupChOnBagPub(func : AuthUserGroupChOnBagPubFunction) : AuthUserGroupChOnBagPubFunction {return func;}
+    static authUserGroupChOnBagPub<SB = {}>(func : AuthUserGroupChOnBagPubFunction<SB>) : AuthUserGroupChOnBagPubFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static authUserGroupChOnSub(func : AuthUserGroupChOnSubFunction) : AuthUserGroupChOnSubFunction {return func;}
+    static authUserGroupChOnSub<SB = {}>(func : AuthUserGroupChOnSubFunction<SB>) : AuthUserGroupChOnSubFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static authUserGroupChOnUnsub(func : AuthUserGroupChOnUnsubFunction) : AuthUserGroupChOnUnsubFunction {return func;}
+    static authUserGroupChOnUnsub<SB = {}>(func : AuthUserGroupChOnUnsubFunction<SB>) : AuthUserGroupChOnUnsubFunction<SB> {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static defaultUserGroupCh(c : NormalChannel) : NormalChannel {return c;}
+    static defaultUserGroupCh<SB = {}>(c : NormalChannel<SB>) : NormalChannel<SB> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static defaultUserGroupChOnClientPub(func : NormalChOnClientPubFunction) : NormalChOnClientPubFunction {return func;}
+    static defaultUserGroupChOnClientPub<SB = {}>(func : NormalChOnClientPubFunction<SB>) : NormalChOnClientPubFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static defaultUserGroupChOnBagPub(func : NormalChOnBagPubFunction) : NormalChOnBagPubFunction {return func;}
+    static defaultUserGroupChOnBagPub<SB = {}>(func : NormalChOnBagPubFunction<SB>) : NormalChOnBagPubFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static defaultUserGroupChOnSub(func : NormalChOnSubFunction) : NormalChOnSubFunction {return func;}
+    static defaultUserGroupChOnSub<SB = {}>(func : NormalChOnSubFunction<SB>) : NormalChOnSubFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static defaultUserGroupChOnUnsub(func : NormalChOnUnsubFunction) : NormalChOnUnsubFunction {return func;}
+    static defaultUserGroupChOnUnsub<SB = {}>(func : NormalChOnUnsubFunction<SB>) : NormalChOnUnsubFunction<SB> {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static allCh(c : NormalChannel) : NormalChannel {return c;}
+    static allCh<SB = {}>(c : NormalChannel<SB>) : NormalChannel<SB> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static allChOnClientPub(func : NormalChOnClientPubFunction) : NormalChOnClientPubFunction {return func;}
+    static allChOnClientPub<SB = {}>(func : NormalChOnClientPubFunction<SB>) : NormalChOnClientPubFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static allChOnBagPub(func : NormalChOnBagPubFunction) : NormalChOnBagPubFunction {return func;}
+    static allChOnBagPub<SB = {}>(func : NormalChOnBagPubFunction<SB>) : NormalChOnBagPubFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static allChOnSub(func : NormalChOnSubFunction) : NormalChOnSubFunction {return func;}
+    static allChOnSub<SB = {}>(func : NormalChOnSubFunction<SB>) : NormalChOnSubFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static allChOnUnsub(func : NormalChOnUnsubFunction) : NormalChOnUnsubFunction {return func;}
+    static allChOnUnsub<SB = {}>(func : NormalChOnUnsubFunction<SB>) : NormalChOnUnsubFunction<SB> {return func;}
 
     //Part Service Config
     // noinspection JSUnusedGlobalSymbols
@@ -324,115 +324,115 @@ class Config
     //Part Event Config events
 
     //Part Zation Events
-    static workerIsStarted(func : WorkerIsStartedFunction) : WorkerIsStartedFunction {return func;}
+    static workerIsStarted<SB = {}>(func : WorkerIsStartedFunction<SB>) : WorkerIsStartedFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static workerLeaderIsStarted(func : WorkerIsStartedFunction) : WorkerIsStartedFunction {return func;}
+    static workerLeaderIsStarted<SB = {}>(func : WorkerIsStartedFunction<SB>) : WorkerIsStartedFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static express(func : ExpressFunction) : ExpressFunction {return func;}
+    static express<SB = {}>(func : ExpressFunction<SB>) : ExpressFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServer(func : ScServerFunction) : ScServerFunction {return func;}
+    static scServer<SB = {}>(func : ScServerFunction<SB>) : ScServerFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketConnection(func : ZationSocketFunction) : ZationSocketFunction {return func;}
+    static socketConnection<SB = {}>(func : ZationSocketFunction<SB>) : ZationSocketFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static beforeError(func : BeforeErrorFunction) : BeforeErrorFunction {return func;}
+    static beforeError<SB = {}>(func : BeforeErrorFunction<SB>) : BeforeErrorFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static beforeTaskError(func : BeforeTaskErrorFunction) : BeforeTaskErrorFunction {return func;}
+    static beforeTaskError<SB = {}>(func : BeforeTaskErrorFunction<SB>) : BeforeTaskErrorFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static beforeTaskErrorBag(func : BeforeTaskErrorBagFunction) : BeforeTaskErrorBagFunction {return func;}
+    static beforeTaskErrorBag<SB = {}>(func : BeforeTaskErrorBagFunction<SB>) : BeforeTaskErrorBagFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static httpServerStarted(func : HttpServerIsStartedFunction) : HttpServerIsStartedFunction {return func;}
+    static httpServerStarted<SB = {}>(func : HttpServerIsStartedFunction<SB>) : HttpServerIsStartedFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static wsServerIsStarted(func : WsServerIsStartedFunction) : WsServerIsStartedFunction{return func;}
+    static wsServerIsStarted<SB = {}>(func : WsServerIsStartedFunction<SB>) : WsServerIsStartedFunction<SB>{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static isStarted(func : IsStartedFunction) : IsStartedFunction{return func;}
+    static isStarted<SB = {}>(func : IsStartedFunction<SB>) : IsStartedFunction<SB>{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketDisconnection(func : ZationSocketDisconnectionFunction) : ZationSocketDisconnectionFunction {return func;}
+    static socketDisconnection<SB = {}>(func : ZationSocketDisconnectionFunction<SB>) : ZationSocketDisconnectionFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static workerMessage(func : ZationWorkerMessageFunction) : ZationWorkerMessageFunction {return func;}
+    static workerMessage<SB = {}>(func : ZationWorkerMessageFunction<SB>) : ZationWorkerMessageFunction<SB> {return func;}
 
     //Zation Middleware
     // noinspection JSUnusedGlobalSymbols
-    static middlewareAuthenticate(func : MiddlewareAuthenticationFunction) : MiddlewareAuthenticationFunction {return func;}
+    static middlewareAuthenticate<SB = {}>(func : MiddlewareAuthenticationFunction<SB>) : MiddlewareAuthenticationFunction<SB> {return func;}
 
     //Part Socket Events (SC)
     // noinspection JSUnusedGlobalSymbols
-    static socketError(func : SocketErrorFunction) : SocketErrorFunction {return func;}
+    static socketError<SB = {}>(func : SocketErrorFunction<SB>) : SocketErrorFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketRaw(func : SocketRawFunction) : SocketRawFunction {return func;}
+    static socketRaw<SB = {}>(func : SocketRawFunction<SB>) : SocketRawFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketConnect(func : SocketConnectFunction) : SocketConnectFunction {return func;}
+    static socketConnect<SB = {}>(func : SocketConnectFunction<SB>) : SocketConnectFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketDisconnect(func : SocketCodeDataFunction) : SocketCodeDataFunction {return func;}
+    static socketDisconnect<SB = {}>(func : SocketCodeDataFunction<SB>) : SocketCodeDataFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketConnectAbort(func : SocketCodeDataFunction) : SocketCodeDataFunction {return func;}
+    static socketConnectAbort<SB = {}>(func : SocketCodeDataFunction<SB>) : SocketCodeDataFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketClose(func : SocketCodeDataFunction) : SocketCodeDataFunction {return func;}
+    static socketClose<SB = {}>(func : SocketCodeDataFunction<SB>) : SocketCodeDataFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketSubscribe(func : SocketSubscribeFunction) : SocketSubscribeFunction {return func;}
+    static socketSubscribe<SB = {}>(func : SocketSubscribeFunction<SB>) : SocketSubscribeFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketUnsubscribe(func : SocketUnsubscribeFunction) : SocketUnsubscribeFunction{return func;}
+    static socketUnsubscribe<SB = {}>(func : SocketUnsubscribeFunction<SB>) : SocketUnsubscribeFunction<SB>{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketBadAuthToken(func : SocketBadAuthTokenFunction) : SocketBadAuthTokenFunction{return func;}
+    static socketBadAuthToken<SB = {}>(func : SocketBadAuthTokenFunction<SB>) : SocketBadAuthTokenFunction<SB>{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketAuthenticate(func : SocketAuthenticateFunction) : SocketAuthenticateFunction{return func;}
+    static socketAuthenticate<SB = {}>(func : SocketAuthenticateFunction<SB>) : SocketAuthenticateFunction<SB>{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketDeauthenticate(func : SocketDeauthenticateFunction) : SocketDeauthenticateFunction{return func;}
+    static socketDeauthenticate<SB = {}>(func : SocketDeauthenticateFunction<SB>) : SocketDeauthenticateFunction<SB>{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketAuthStateChange(func : SocketAuthStateChangeFunction) : SocketAuthStateChangeFunction{return func;}
+    static socketAuthStateChange<SB = {}>(func : SocketAuthStateChangeFunction<SB>) : SocketAuthStateChangeFunction<SB>{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketMessage(func : SocketMessageFunction) : SocketMessageFunction{return func;}
+    static socketMessage<SB = {}>(func : SocketMessageFunction<SB>) : SocketMessageFunction<SB>{return func;}
 
     //Part ScServer Events (SC)
     // noinspection JSUnusedGlobalSymbols
-    static scServerError(func : ScServerErrorFunction) : ScServerErrorFunction {return func;}
+    static scServerError<SB = {}>(func : ScServerErrorFunction<SB>) : ScServerErrorFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerNotice(func : ScServerNoticeFunction) : ScServerNoticeFunction {return func;}
+    static scServerNotice<SB = {}>(func : ScServerNoticeFunction<SB>) : ScServerNoticeFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerHandshake(func : ScServerSocketFunction) : ScServerSocketFunction {return func;}
+    static scServerHandshake<SB = {}>(func : ScServerSocketFunction<SB>) : ScServerSocketFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerConnectionAbort(func : ScServerSocketCodeDataFunction) : ScServerSocketCodeDataFunction {return func;}
+    static scServerConnectionAbort<SB = {}>(func : ScServerSocketCodeDataFunction<SB>) : ScServerSocketCodeDataFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerDisconnection(func : ScServerSocketCodeDataFunction) : ScServerSocketCodeDataFunction {return func;}
+    static scServerDisconnection<SB = {}>(func : ScServerSocketCodeDataFunction<SB>) : ScServerSocketCodeDataFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerClosure(func : ScServerSocketCodeDataFunction) : ScServerSocketCodeDataFunction {return func;}
+    static scServerClosure<SB = {}>(func : ScServerSocketCodeDataFunction<SB>) : ScServerSocketCodeDataFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerConnection(func : ScServerConnectionFunction) : ScServerConnectionFunction {return func;}
+    static scServerConnection<SB = {}>(func : ScServerConnectionFunction<SB>) : ScServerConnectionFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerSubscription(func : ScServerSubscriptionFunction) : ScServerSubscriptionFunction {return func;}
+    static scServerSubscription<SB = {}>(func : ScServerSubscriptionFunction<SB>) : ScServerSubscriptionFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerUnsubscription(func : ScServerUnsubscriptionFunction) : ScServerUnsubscriptionFunction {return func;}
+    static scServerUnsubscription<SB = {}>(func : ScServerUnsubscriptionFunction<SB>) : ScServerUnsubscriptionFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerAuthentication(func : ScServerAuthenticationFunction) : ScServerAuthenticationFunction {return func;}
+    static scServerAuthentication<SB = {}>(func : ScServerAuthenticationFunction<SB>) : ScServerAuthenticationFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerDeauthentication(func : ScServerDeauthenticationFunction) : ScServerDeauthenticationFunction {return func;}
+    static scServerDeauthentication<SB = {}>(func : ScServerDeauthenticationFunction<SB>) : ScServerDeauthenticationFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerAuthenticationStateChange(func : ScServerAuthenticationStateChangeFunction) : ScServerAuthenticationStateChangeFunction {return func;}
+    static scServerAuthenticationStateChange<SB = {}>(func : ScServerAuthenticationStateChangeFunction<SB>) : ScServerAuthenticationStateChangeFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerBadSocketAuthToken(func : ScServerBadSocketAuthTokenFunction) : ScServerBadSocketAuthTokenFunction {return func;}
+    static scServerBadSocketAuthToken<SB = {}>(func : ScServerBadSocketAuthTokenFunction<SB>) : ScServerBadSocketAuthTokenFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerReady(func : ScServerReadyFunction) : ScServerReadyFunction {return func;}
+    static scServerReady<SB = {}>(func : ScServerReadyFunction<SB>) : ScServerReadyFunction<SB> {return func;}
 
     //Part Middleware Events (SC)
     // noinspection JSUnusedGlobalSymbols
-    static scMiddlewareAuthenticate(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static scMiddlewareAuthenticate<SB = {}>(func : ScMiddlewareFunction<SB>) : ScMiddlewareFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scMiddlewareHandshakeWs(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static scMiddlewareHandshakeWs<SB = {}>(func : ScMiddlewareFunction<SB>) : ScMiddlewareFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scMiddlewareHandshakeSc(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static scMiddlewareHandshakeSc<SB = {}>(func : ScMiddlewareFunction<SB>) : ScMiddlewareFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scMiddlewareSubscribe(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static scMiddlewareSubscribe<SB = {}>(func : ScMiddlewareFunction<SB>) : ScMiddlewareFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scMiddlewarePublishIn(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static scMiddlewarePublishIn<SB = {}>(func : ScMiddlewareFunction<SB>) : ScMiddlewareFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scMiddlewarePublishOut(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static scMiddlewarePublishOut<SB = {}>(func : ScMiddlewareFunction<SB>) : ScMiddlewareFunction<SB> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scMiddlewareEmit(func : ScMiddlewareFunction) : ScMiddlewareFunction {return func;}
+    static scMiddlewareEmit<SB = {}>(func : ScMiddlewareFunction<SB>) : ScMiddlewareFunction<SB> {return func;}
 
     //Part Types
     // noinspection JSUnusedGlobalSymbols
-    static typeSmallBag(smallBag : SmallBag) : SmallBag {return smallBag;}
+    static typeSmallBag<SB = {}>(smallBag : (SmallBag & SB)) : (SmallBag & SB) {return smallBag;}
     // noinspection JSUnusedGlobalSymbols
-    static typeBag(bag : Bag) : Bag {return bag;}
+    static typeBag<SB = {},B = {}>(bag : (Bag & SB & B)) : (Bag & SB & B) {return bag;}
     // noinspection JSUnusedGlobalSymbols
     static typeResult(result : Result) : Result {return result;}
     // noinspection JSUnusedGlobalSymbols
@@ -440,7 +440,7 @@ class Config
     // noinspection JSUnusedGlobalSymbols
     static typeTaskErrorBag(taskErrorBag : TaskErrorBag) : TaskErrorBag {return taskErrorBag;}
     // noinspection JSUnusedGlobalSymbols
-    static typeController(controller : Controller) : Controller {return controller;}
+    static typeController<SB = {},B = {}>(controller : Controller<SB,B>) : Controller<SB,B> {return controller;}
     // noinspection JSUnusedGlobalSymbols
     static typeExpress(express : ExpressCore.Express) : ExpressCore.Express {return express;}
 

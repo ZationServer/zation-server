@@ -44,6 +44,7 @@ import ZationTokenInfo = require("../helper/infoObjects/zationTokenInfo");
 import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
 import ViewEngine = require("../helper/views/viewEngine");
 import SystemInfo = require("../helper/tools/systemInfo");
+import BagExtensionEngine from "../helper/bagExtension/bagExtensionEngine";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -60,6 +61,7 @@ class ZationWorker extends SCWorker
 
     public scServer : ScServer;
     private serviceEngine : ServiceEngine;
+    private bagExtensionEngine : BagExtensionEngine;
     private preparedSmallBag : SmallBag;
     private controllerPrepare : ControllerPrepare;
     private aePreparedPart : AEPreparedPart;
@@ -146,6 +148,12 @@ class ZationWorker extends SCWorker
         this.serviceEngine = new ServiceEngine(this.zc,this);
         await this.serviceEngine.init();
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has created service engine.`,true);
+
+        //BagExtensions
+        Logger.startStopWatch();
+        this.bagExtensionEngine = new BagExtensionEngine(this.zc);
+        this.bagExtensionEngine.extendBag();
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has processed the bag extensions.`,true);
 
         Logger.startStopWatch();
         this.preparedSmallBag = new SmallBag(this);

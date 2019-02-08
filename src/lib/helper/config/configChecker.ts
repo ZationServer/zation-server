@@ -12,14 +12,23 @@ import ObjectPath = require('../tools/objectPath');
 import ObjectTools = require('../tools/objectTools');
 import Structures = require('./structures');
 import Target = require('./target');
+import SmallBag = require('./../../api/SmallBag');
 import ConfigErrorBag = require("./configErrorBag");
+import PropertyImportEngine = require("./propertyImportEngine");
+import Iterator = require("../tools/iterator");
+// noinspection TypeScriptPreferShortImport
+import {Bag} from './../../api/Bag';
 import {ConfigNames, DefaultUserGroupFallBack, ZationAccess} from "../constants/internal";
 import {
     AnyOfProperty,
-    AppConfig, ArrayPropertyConfig, ArrayShortSyntax,
+    AppConfig,
+    ArrayPropertyConfig,
+    ArrayShortSyntax,
+    BagExtension,
     ControllerConfig,
     ControllerInput,
-    ObjectPropertyConfig, PropertyOptional,
+    ObjectPropertyConfig,
+    PropertyOptional,
     ValuePropertyConfig
 } from "../configs/appConfig";
 import {PanelUserConfig} from "../configs/mainConfig";
@@ -33,8 +42,6 @@ import {
     OnlyNumberFunctions,
     OnlyStringFunctions
 } from "../constants/validation";
-import PropertyImportEngine = require("./propertyImportEngine");
-import Iterator = require("../tools/iterator");
 // noinspection TypeScriptPreferShortImport
 import {Controller, ControllerClass} from "../../api/Controller";
 
@@ -48,6 +55,7 @@ class ConfigChecker
     private arraysConfig : Record<string, ArrayPropertyConfig | ArrayShortSyntax>;
     private cNames: object;
     private validAccessValues: any[];
+    private methodExNames : string[] = [];
 
     private propertyImportEngine : PropertyImportEngine;
 
@@ -74,6 +82,54 @@ class ConfigChecker
         this.arraysConfig = typeof this.zc.appConfig.arrays === 'object' ? this.zc.appConfig.arrays : {};
         this.propertyImportEngine = new PropertyImportEngine(this.objectsConfig,this.valuesConfig,this.arraysConfig);
         this.cNames = {};
+    }
+
+    private checkAppBagExtensions()
+    {
+        if(Array.isArray(this.zc.appConfig.bagExtensions)){
+            this.checkBagExtensions(this.zc.appConfig.bagExtensions,
+                new Target('BagExtensions -> '),true,ConfigNames.APP);
+        }
+    }
+
+    private checkBagExtensions(extensions : BagExtension[],target : Target,addIndex : boolean,configName : ConfigNames)
+    {
+        for(let i = 0; i < extensions.length; i++) {
+            let curTarget;
+            if(addIndex) {
+                curTarget = target.addPath('index ' + i.toString());
+            }
+            else {
+                curTarget = target;
+            }
+            ConfigCheckerTools.assertStructure
+            (Structures.BagExtension, extensions[i], configName, this.ceb, curTarget);
+
+            if(typeof extensions[i] === 'object' && typeof extensions[i].methods === 'object'){
+                const methods = extensions[i].methods;
+                for(let k in methods){
+                    if(methods.hasOwnProperty(k)){
+                        if(this.methodExNames.includes(k)){
+                            this.ceb.addConfigError(new ConfigError(configName,
+                                `${curTarget.getTarget()} conflict with method name: ${k}.`));
+                        }
+                        if(Bag.prototype.hasOwnProperty(k)){
+                            this.ceb.addConfigError(new ConfigError(configName,
+                                `${curTarget.getTarget()} conflict with Bag method name: ${k}.`));
+                        }
+                        if(extensions[i].smallBagCompatible && SmallBag.prototype.hasOwnProperty(k)){
+                            this.ceb.addConfigError(new ConfigError(configName,
+                                `${curTarget.getTarget()} conflict with SmallBag method name: ${k}.`));
+                        }
+                        if(typeof methods[k] !== "function"){
+                            this.ceb.addConfigError(new ConfigError(configName,
+                                `${curTarget.getTarget()} extension method '${k}' is not a function.`));
+                        }
+                        this.methodExNames.push(k);
+                    }
+                }
+            }
+        }
     }
 
     private checkUserGroupName(name: string, notAllowed: string[], isAuth: boolean) {
@@ -144,6 +200,7 @@ class ConfigChecker
         this.checkControllersConfigs();
         this.checkAuthController();
         this.checkBackgroundTasks();
+        this.checkAppBagExtensions();
     }
 
     private checkBackgroundTasks() {

@@ -13,7 +13,7 @@ import {
     AnyOfProperty,
     AppConfig, ArrayPropertyConfig, ArraySettings,
     AuthUserGroupConfig,
-    BackgroundTask,
+    BackgroundTask, BagExtension,
     ControllerConfig,
     ObjectPropertyConfig, PropertyOptional, ValuePropertyConfig
 } from "../configs/appConfig";
@@ -43,11 +43,16 @@ App[nameof<AppConfig>(s => s.objects)]            = {types : ['object'],isOption
 App[nameof<AppConfig>(s => s.values)]             = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.arrays)]             = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.backgroundTasks)]    = {types : ['object'],isOptional : true};
+App[nameof<AppConfig>(s => s.bagExtensions)]      = {types : ['array'],isOptional : true};
 
 const BackgroundTask = {};
 BackgroundTask[nameof<BackgroundTask>(s => s.every)] = {types : ['number','array','object'],isOptional : true};
 BackgroundTask[nameof<BackgroundTask>(s => s.at)]    = {types : ['number','array','object'],isOptional : true};
 BackgroundTask[nameof<BackgroundTask>(s => s.task)]  = {types : ['function','array'],isOptional : true};
+
+const BagExtension = {};
+BagExtension[nameof<BagExtension>(s => s.smallBagCompatible)] = {types : ['boolean'],isOptional : false};
+BagExtension[nameof<BagExtension>(s => s.methods)]            = {types : ['object'],isOptional : false};
 
 const AppObject = {};
 AppObject[nameof<ObjectPropertyConfig>(s => s.properties)] = {types : ['object'],isOptional : false};
@@ -354,6 +359,7 @@ const Structures = {
     Error : Error,
     PanelUserConfig : PanelUserConfig,
     AuthUserGroup : AuthUserGroup,
-    AnyOf : AnyOf
+    AnyOf : AnyOf,
+    BagExtension : BagExtension
 };
 export = Structures;

@@ -10,12 +10,12 @@ import ObjectPath = require("../helper/tools/objectPath");
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../helper/configs/appConfig";
 
-export class Controller
+export class Controller<SB = {},B = {}>
 {
     private _storage : object = {};
-    protected smallBag : SmallBag;
+    protected smallBag : (SmallBag & SB);
 
-    constructor(smallBag : SmallBag) {
+    constructor(smallBag : (SmallBag & SB)) {
         this.smallBag = smallBag;
     }
 
@@ -30,7 +30,7 @@ export class Controller
      * Gets invokes when the zation system is creating instance of the controller (in worker start).
      * @param smallBag
      */
-    async initialize(smallBag : SmallBag) : Promise<void> {}
+    async initialize(smallBag : (SmallBag & SB)) : Promise<void> {}
 
     /**
      * @description
@@ -42,7 +42,7 @@ export class Controller
      * @throws
      * You can also throw TaskErrors, which are sent to the client with a not success response.
      */
-    async handle(bag : Bag,input : any) : Promise<any> {}
+    async handle(bag : (Bag & SB & B),input : any) : Promise<any> {}
 
     /**
      * @description
@@ -50,7 +50,7 @@ export class Controller
      * @param bag
      * @param input
      */
-    async wrongInput(bag : Bag,input : any) : Promise<void> {}
+    async wrongInput(bag : (Bag & SB & B),input : any) : Promise<void> {}
 
     //Controller storage
     // noinspection JSUnusedGlobalSymbols
@@ -112,8 +112,8 @@ export class Controller
     }
 }
 
-export interface ControllerClass {
+export interface ControllerClass<SB = {},B = {}> {
     config : ControllerConfig;
-    new (smallBag : SmallBag): Controller;
+    new (smallBag : (SmallBag & SB)): Controller;
     prototype : any;
 }
