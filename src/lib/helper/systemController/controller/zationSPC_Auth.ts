@@ -31,7 +31,7 @@ class ZationSPC_Auth extends Controller
         if(bag.getZationConfig().mainConfig.usePanel) {
 
             //wait 2seconds for avoiding brute force attacks
-            await new Promise((resolve) => {setTimeout(()=>{resolve();},2000)})
+            await new Promise((resolve) => {setTimeout(()=>{resolve();},2000)});
 
             if(!bag.getWorker().getPanelEngine().isPanelLoginDataValid(username,password)) {
                 throw new TaskError(MainTaskErrors.wrongPanelAuthData);
