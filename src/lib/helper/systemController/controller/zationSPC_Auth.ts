@@ -41,8 +41,6 @@ class ZationSPC_Auth extends Controller
             token[nameof<ZationToken>(s => s.zationOnlyPanelToken)] = true;
             bag.getSocket().setAuthToken(token);
 
-            console.log(bag.getTokenVariable());
-
             await bag.setTokenVariable('ZATION-PANEL-USER-NAME',username);
         }
         else {
