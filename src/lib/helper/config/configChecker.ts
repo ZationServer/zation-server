@@ -560,7 +560,7 @@ class ConfigChecker
             ls.forEach((c,i) => {
 
                 ConfigCheckerTools.assertStructure
-                (Structures.serviceModule, this.zc.serviceConfig, ConfigNames.SERVICE, this.ceb, new Target('Service Module index: ' + i));
+                (Structures.serviceModule, c, ConfigNames.SERVICE, this.ceb, new Target('Service Module index: ' + i));
 
                if(typeof c.serviceName === 'string') {
                    this.checkService(c.serviceName,c.service,'Service Module');

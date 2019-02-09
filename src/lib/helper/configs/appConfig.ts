@@ -17,7 +17,7 @@ import BagExtension      from "../bagExtension/bagExtension";
 export interface AppConfig<E extends BagExtension = {smallBag:{},bag:{}}>
 {
     authController  ?: string;
-    controllers  ?: Record<string,(ControllerClass<E>)>;
+    controllers  ?: Record<string,(ControllerClass<any>)>;
     userGroups  ?: UserGroupsConfig;
     controllerDefaults  ?: ControllerConfig<E>;
     values  ?: Record<string,ValuePropertyConfig<E>>;

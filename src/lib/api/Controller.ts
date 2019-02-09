@@ -114,7 +114,7 @@ export class Controller<E extends BagExtension = { smallBag: {}, bag: {} }> impl
     }
 }
 
-interface IController<E extends BagExtension = { smallBag: {}, bag: {} }> {
+export interface IController<E extends BagExtension = { smallBag: {}, bag: {} }> {
     /**
      * @description
      * Gets invokes when the zation system is creating instance of the controller (in worker start).
