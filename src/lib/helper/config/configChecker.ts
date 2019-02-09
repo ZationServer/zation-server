@@ -19,7 +19,7 @@ import Iterator = require("../tools/iterator");
 // noinspection TypeScriptPreferShortImport
 import {Bag} from './../../api/Bag';
 import {ConfigNames, DefaultUserGroupFallBack, ZationAccess} from "../constants/internal";
-import {
+import BagExtension, {
     AnyOfProperty,
     AppConfig,
     ArrayPropertyConfig,
@@ -43,7 +43,6 @@ import {
 } from "../constants/validation";
 // noinspection TypeScriptPreferShortImport
 import {Controller, ControllerClass} from "../../api/Controller";
-import BagExtension from "../bagExtension/bagExtension";
 
 class ConfigChecker
 {

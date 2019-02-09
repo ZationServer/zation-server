@@ -9,7 +9,7 @@ GitHub: LucaCode
 import ObjectTools = require('../tools/objectTools');
 import {EventConfig} from "../configs/eventConfig";
 import {ErrorConstruct} from "../configs/errorConfig";
-import {
+import BagExtension, {
     AnyOfProperty,
     AppConfig, ArrayPropertyConfig, ArraySettings,
     AuthUserGroupConfig,
@@ -24,7 +24,6 @@ import {FormatLetters} from "../constants/validation";
 import {ServiceConfig} from "../configs/serviceConfig";
 import {ChannelConfig, ChannelSettings, CustomChannelConfig, ZationChannelConfig} from "../configs/channelConfig";
 import {ServiceModule} from "zation-service";
-import BagExtension from "../bagExtension/bagExtension";
 
 const Error = {};
 Error[nameof<ErrorConstruct>(s => s.name)]             = {types : ['string'],isOptional : true};

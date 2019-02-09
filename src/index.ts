@@ -7,7 +7,7 @@ GitHub: LucaCode
 import ZationStarter         = require('./lib/main/zationMaster');
 import {Bag}                   from './lib/api/Bag';
 import SmallBag              = require('./lib/api/SmallBag');
-import {Controller, IController} from './lib/api/Controller';
+import {Controller}            from './lib/api/Controller';
 import Result                = require('./lib/api/Result');
 import TaskError             = require('./lib/api/TaskError');
 import TaskErrorBuilder      = require("./lib/helper/builder/taskErrorBuilder");
@@ -35,7 +35,6 @@ export {
         Bag,
         SmallBag,
         Controller,
-        IController,
         ControllerConfig,
         Result,
         TaskError,

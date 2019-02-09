@@ -9,13 +9,12 @@ import {Bag} from './Bag';
 import ObjectPath = require("../helper/tools/objectPath");
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../helper/configs/appConfig";
-import BagExtension from "../helper/bagExtension/bagExtension";
 
-export class Controller<E extends BagExtension = { smallBag: {}, bag: {} }> implements IController<E> {
+export class Controller {
     private _storage: object = {};
-    protected smallBag: (SmallBag & E["smallBag"]);
+    protected smallBag: SmallBag;
 
-    constructor(smallBag: (SmallBag & E["smallBag"])) {
+    constructor(smallBag: SmallBag) {
         this.smallBag = smallBag;
     }
 
@@ -30,7 +29,7 @@ export class Controller<E extends BagExtension = { smallBag: {}, bag: {} }> impl
      * Gets invokes when the zation system is creating instance of the controller (in worker start).
      * @param smallBag
      */
-    async initialize(smallBag: (SmallBag & E["smallBag"])): Promise<void> {
+    async initialize(smallBag: SmallBag): Promise<void> {
     }
 
     /**
@@ -43,7 +42,7 @@ export class Controller<E extends BagExtension = { smallBag: {}, bag: {} }> impl
      * @throws
      * You can also throw TaskErrors, which are sent to the client with a not success response.
      */
-    async handle(bag: (Bag & E["smallBag"] & E["bag"]), input: any): Promise<any> {
+    async handle(bag: Bag, input: any): Promise<any> {
     }
 
     /**
@@ -52,7 +51,7 @@ export class Controller<E extends BagExtension = { smallBag: {}, bag: {} }> impl
      * @param bag
      * @param input
      */
-    async wrongInput(bag: (Bag & E["smallBag"] & E["bag"]), input: any): Promise<void> {
+    async wrongInput(bag: Bag, input: any): Promise<void> {
     }
 
     //Controller storage
@@ -114,37 +113,10 @@ export class Controller<E extends BagExtension = { smallBag: {}, bag: {} }> impl
     }
 }
 
-export interface IController<E extends BagExtension = { smallBag: {}, bag: {} }> {
-    /**
-     * @description
-     * Gets invokes when the zation system is creating instance of the controller (in worker start).
-     * @param smallBag
-     */
-    initialize(smallBag: (SmallBag & E["smallBag"])): Promise<void>;
-    /**
-     * @description
-     * Gets invokes when the controller gets an request and input is correct.
-     * @param bag
-     * @param input
-     * @return
-     * The Return value of the function is send to the client with an success response.
-     * @throws
-     * You can also throw TaskErrors, which are sent to the client with a not success response.
-     */
-    handle(bag: (Bag & E["smallBag"] & E["bag"]), input: any): Promise<any>
-    /**
-     * @description
-     * Gets invokes when the controller gets an request with wrong input.
-     * @param bag
-     * @param input
-     */
-    wrongInput(bag: (Bag & E["smallBag"] & E["bag"]), input: any): Promise<void>
-}
-
-export interface ControllerClass<E extends BagExtension = { smallBag: {}, bag: {} }> {
+export interface ControllerClass {
     config: ControllerConfig;
 
-    new(smallBag: (SmallBag & E["smallBag"])): Controller<E>;
+    new(smallBag: SmallBag): Controller;
 
     prototype: any;
 }
