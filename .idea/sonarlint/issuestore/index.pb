@@ -160,5 +160,5 @@ O
 src/lib/public/panel/index.html,2/c/2cb05abc2611568dcf82433e52f3b185ad681cf0
 Z
 *src/lib/helper/config/configPreCompiler.ts,7/5/7506e2731a79d4e121c0fce21bde47c5a45c0da1
-[
-+src/lib/helper/bagExtension/bagExtension.ts,2/5/251f8026ed92991058815daa94082fe08c58f225
+O
+src/lib/helper/config/target.ts,4/0/40d964e7a0d4dc674b4fe4f7499e84f188f8da88

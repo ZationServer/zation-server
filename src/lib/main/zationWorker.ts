@@ -1349,8 +1349,11 @@ class ZationWorker extends SCWorker
         setInterval(async () => {
             if(this.panelEngine.isPanelInUse()) {
                 this.panelEngine.update('mainUpdate',{
-                    systemInfo : (await SystemInfo.getUpdatedInfo()),
-                    clientCount : this.scServer.clientsCount,
+                    instanceId   : this.options.instanceId,
+                    pid          : process.pid,
+                    workerFullId : this.workerFullId,
+                    systemInfo   : (await SystemInfo.getUpdatedInfo()),
+                    clientCount  : this.scServer.clientsCount,
                     user: {
                         defaultUserGroupCount : this.getPreparedSmallBag().getWorkerDefaultUserGroupCount(),
                         authUserGroups : this.getPreparedSmallBag().getWorkerAuthUserGroupsCount()
@@ -1368,8 +1371,11 @@ class ZationWorker extends SCWorker
                     tmpWsRPM = status.wsRPM;
                     tmpHttpRPM = status.httpRPM;
                     this.panelEngine.update('workerStatus',{
+                        instanceId      : this.options.instanceId,
+                        pid             : process.pid,
+                        workerFullId    : this.workerFullId,
                         avgHttpRequests : status.httpRPM,
-                        avgWsRequests : status.wsRPM
+                        avgWsRequests   : status.wsRPM
                     });
                 }
 
