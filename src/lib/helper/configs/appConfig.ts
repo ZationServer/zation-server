@@ -12,39 +12,35 @@ import TaskErrorBag    = require("../../api/TaskErrorBag");
 import {ControllerClass} from "../../api/Controller";
 // noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../constants/validationTypes";
+import BagExtension      from "../bagExtension/bagExtension";
 
-export interface AppConfig<SB = {},B = {}>
+export interface AppConfig<E extends BagExtension = {smallBag:{},bag:{}}>
 {
     authController  ?: string;
-    controllers  ?: Record<string,(ControllerClass<SB & B>)>;
+    controllers  ?: Record<string,(ControllerClass<E>)>;
     userGroups  ?: UserGroupsConfig;
-    controllerDefaults  ?: ControllerConfig<SB,B>;
-    values  ?: Record<string,ValuePropertyConfig<SB>>;
-    objects  ?: Record<string,ObjectPropertyConfig<SB>>;
-    arrays  ?: Record<string,ArrayPropertyConfig<SB> | ArrayShortSyntax<SB>>;
-    backgroundTasks  ?: Record<string,BackgroundTask<SB>>,
+    controllerDefaults  ?: ControllerConfig<E>;
+    values  ?: Record<string,ValuePropertyConfig<E>>;
+    objects  ?: Record<string,ObjectPropertyConfig<E>>;
+    arrays  ?: Record<string,ArrayPropertyConfig<E> | ArrayShortSyntax<E>>;
+    backgroundTasks  ?: Record<string,BackgroundTask<E>>,
     bagExtensions ?: BagExtension[];
 }
 
-export type Property<SB = {}> = ValuePropertyConfig<SB> | ObjectPropertyConfig<SB> | ArrayPropertyConfig<SB> | ArrayShortSyntax<SB> | string;
+export type Property<E extends BagExtension = {smallBag:{},bag:{}}> = ValuePropertyConfig<E> | ObjectPropertyConfig<E> | ArrayPropertyConfig<E> | ArrayShortSyntax<E> | string;
 
-export interface AnyOfProperty<SB = {}> extends PropertyOptional
+export interface AnyOfProperty<E extends BagExtension = {smallBag:{},bag:{}}> extends PropertyOptional
 {
-    anyOf : Record<string,Property<SB>> | Property<SB>[]
+    anyOf : Record<string,Property<E>> | Property<E>[]
 }
 
-export interface BagExtension {
-    smallBagCompatible  : boolean;
-    methods : Record<string,any>;
-}
+export type TaskFunction<E extends BagExtension = {smallBag:{},bag:{}}> = (smallBag : (SmallBag & E["smallBag"])) => Promise<void> | void;
 
-export type TaskFunction<SB = {}> = (smallBag : (SmallBag & SB)) => Promise<void> | void;
-
-export interface BackgroundTask<SB = {}>
+export interface BackgroundTask<E extends BagExtension = {smallBag:{},bag:{}}>
 {
     at  ?: number | TimeObj | TimeObj[] | number[];
     every  ?: number | TimeObj | TimeObj[] | number[];
-    task  ?: TaskFunction<SB> | TaskFunction<SB>[];
+    task  ?: TaskFunction<E> | TaskFunction<E>[];
 }
 
 export interface TimeObj
@@ -67,14 +63,14 @@ export interface AuthUserGroupConfig
     panelDisplayName  ?: string;
 }
 
-export type ControllerInput<SB = {}> = Record<string,Property<SB> | AnyOfProperty<SB>>;
-export type BeforeHandleFunction<SB = {},B = {}> = (bag : (Bag & SB & B)) => Promise<void> | void;
-export type ControllerAccessFunction<SB = {}> = (smallBag : (SmallBag & SB),token : ZationToken | null) => Promise<boolean> | boolean;
+export type ControllerInput<E extends BagExtension = {smallBag:{},bag:{}}> = Record<string,Property<E> | AnyOfProperty<E>>;
+export type BeforeHandleFunction<E extends BagExtension = {smallBag:{},bag:{}}> = (bag : (Bag & E["smallBag"] & E["bag"])) => Promise<void> | void;
+export type ControllerAccessFunction<E extends BagExtension = {smallBag:{},bag:{}}> = (smallBag : (SmallBag & E["smallBag"]),token : ZationToken | null) => Promise<boolean> | boolean;
 
-export interface ControllerConfig<SB = {},B = {}>
+export interface ControllerConfig<E extends BagExtension = {smallBag:{},bag:{}}>
 {
-    input  ?: ControllerInput<SB>;
-    beforeHandle  ?: BeforeHandleFunction<SB,B>[] | BeforeHandleFunction<SB,B>;
+    input  ?: ControllerInput<E>;
+    beforeHandle  ?: BeforeHandleFunction<E>[] | BeforeHandleFunction<E>;
     systemController  ?: boolean;
     wsAccess  ?: boolean;
     httpAccess  ?: boolean;
@@ -82,16 +78,16 @@ export interface ControllerConfig<SB = {},B = {}>
     httpPostAllowed  ?: boolean;
     inputValidation  ?: boolean;
     inputAllAllow  ?: boolean;
-    access  ?: string | number | (string | number)[] | ControllerAccessFunction<SB>;
-    notAccess  ?: string | number | (string | number)[] | ControllerAccessFunction<SB>;
+    access  ?: string | number | (string | number)[] | ControllerAccessFunction<E>;
+    notAccess  ?: string | number | (string | number)[] | ControllerAccessFunction<E>;
     versionAccess  ?: string | Record<string,number | number[]>
 }
 
-export type ValidatorFunction<SB = {}> = (value : any,taskErrorBag : TaskErrorBag,inputPath : string,smallBag : (SmallBag & SB),type ?: string) => Promise<void> | void;
-export type ConvertValueFunction<SB = {}> = (value : any, smallBag : (SmallBag & SB)) => Promise<any> | any;
-export type GetDateFunction<SB = {}> = (smallBag : (SmallBag & SB)) => Promise<Date> | Date;
+export type ValidatorFunction<E extends BagExtension = {smallBag:{},bag:{}}> = (value : any,taskErrorBag : TaskErrorBag,inputPath : string,smallBag : (SmallBag & E["smallBag"]),type ?: string) => Promise<void> | void;
+export type ConvertValueFunction<E extends BagExtension = {smallBag:{},bag:{}}> = (value : any, smallBag : (SmallBag & E["smallBag"])) => Promise<any> | any;
+export type GetDateFunction<E extends BagExtension = {smallBag:{},bag:{}}> = (smallBag : (SmallBag & E["smallBag"])) => Promise<Date> | Date;
 
-export interface ValuePropertyConfig<SB = {}> extends PropertyOptional
+export interface ValuePropertyConfig<E extends BagExtension = {smallBag:{},bag:{}}> extends PropertyOptional
 {
     type  ?: ValidationTypes | string | (ValidationTypes | string)[];
     strictType  ?: boolean;
@@ -113,10 +109,10 @@ export interface ValuePropertyConfig<SB = {}> extends PropertyOptional
     minByteSize ?: number;
     mimeType ?: string | null | (string | null)[];
     mimeSubType ?: string | null | (string | null)[];
-    before ?: Date | GetDateFunction<SB>;
-    after ?: Date | GetDateFunction<SB>;
-    validate  ?: ValidatorFunction<SB> | ValidatorFunction<SB>[];
-    convert  ?: ConvertValueFunction<SB>;
+    before ?: Date | GetDateFunction<E>;
+    after ?: Date | GetDateFunction<E>;
+    validate  ?: ValidatorFunction<E> | ValidatorFunction<E>[];
+    convert  ?: ConvertValueFunction<E>;
     convertType  ?: boolean;
     extends ?: string;
 }
@@ -126,38 +122,38 @@ export interface PropertyOptional {
     default ?: any
 }
 
-export type ObjectProperties<SB = {}> = Record<string,Property<SB> | AnyOfProperty<SB>>;
-export type ConvertObjectFunction<SB = {}> = (obj: any, smallBag : (SmallBag & SB)) => Promise<any> | any;
-export type ConstructObjectFunction<SB = {}> = (self : any, smallBag : (SmallBag & SB)) => Promise<void> | void;
+export type ObjectProperties<E extends BagExtension = {smallBag:{},bag:{}}> = Record<string,Property<E> | AnyOfProperty<E>>;
+export type ConvertObjectFunction<E extends BagExtension = {smallBag:{},bag:{}}> = (obj: any, smallBag : (SmallBag & E["smallBag"])) => Promise<any> | any;
+export type ConstructObjectFunction<E extends BagExtension = {smallBag:{},bag:{}}> = (self : any, smallBag : (SmallBag & E["smallBag"])) => Promise<void> | void;
 
-export interface ObjectPropertyConfig<SB = {}> extends PropertyOptional
+export interface ObjectPropertyConfig<E extends BagExtension = {smallBag:{},bag:{}}> extends PropertyOptional
 {
-    properties : ObjectProperties<SB>;
+    properties : ObjectProperties<E>;
     extends  ?: string;
     prototype  ?: object;
-    construct  ?: ConstructObjectFunction<SB>;
-    convert  ?: ConvertObjectFunction<SB>;
+    construct  ?: ConstructObjectFunction<E>;
+    convert  ?: ConvertObjectFunction<E>;
     moreInputAllowed ?: boolean;
 }
 
-export interface ArrayPropertyConfig<SB = {}> extends ArraySettings<SB>
+export interface ArrayPropertyConfig<E extends BagExtension = {smallBag:{},bag:{}}> extends ArraySettings<E>
 {
-    array : Property<SB> | AnyOfProperty<SB>
+    array : Property<E> | AnyOfProperty<E>
 }
 
-export type ConvertArrayFunction<SB = {}> = (array: any[], smallBag : (SmallBag & SB)) => Promise<any> | any;
+export type ConvertArrayFunction<E extends BagExtension = {smallBag:{},bag:{}}> = (array: any[], smallBag : (SmallBag & E["smallBag"])) => Promise<any> | any;
 
-export interface ArraySettings<SB = {}> extends PropertyOptional
+export interface ArraySettings<E extends BagExtension = {smallBag:{},bag:{}}> extends PropertyOptional
 {
     minLength  ?: number;
     maxLength  ?: number;
     length  ?: number;
-    convert  ?: ConvertArrayFunction<SB>
+    convert  ?: ConvertArrayFunction<E>
 }
 
-export interface ArrayShortSyntax<SB = {}> extends Array<Property<SB> | AnyOfProperty<SB> | ArraySettings<SB> | undefined>
+export interface ArrayShortSyntax<E extends BagExtension = {smallBag:{},bag:{}}> extends Array<Property<E> | AnyOfProperty<E> | ArraySettings<E> | undefined>
 {
-    0 : Property<SB> | AnyOfProperty<SB>
-    1 ?: ArraySettings<SB>
+    0 : Property<E> | AnyOfProperty<E>
+    1 ?: ArraySettings<E>
 }
 

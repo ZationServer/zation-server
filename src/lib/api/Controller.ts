@@ -4,18 +4,18 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import SmallBag   = require("./SmallBag");
-import {Bag}        from './Bag';
+import SmallBag = require("./SmallBag");
+import {Bag} from './Bag';
 import ObjectPath = require("../helper/tools/objectPath");
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../helper/configs/appConfig";
+import BagExtension from "../helper/bagExtension/bagExtension";
 
-export class Controller<SB = {},B = {}>
-{
-    private _storage : object = {};
-    protected smallBag : (SmallBag & SB);
+export class Controller<E extends BagExtension = { smallBag: {}, bag: {} }> implements IController<E> {
+    private _storage: object = {};
+    protected smallBag: (SmallBag & E["smallBag"]);
 
-    constructor(smallBag : (SmallBag & SB)) {
+    constructor(smallBag: (SmallBag & E["smallBag"])) {
         this.smallBag = smallBag;
     }
 
@@ -23,14 +23,15 @@ export class Controller<SB = {},B = {}>
      * @description
      * This property is used for getting the configuration of this controller.
      */
-    public static config : ControllerConfig = {};
+    public static config: ControllerConfig = {};
 
     /**
      * @description
      * Gets invokes when the zation system is creating instance of the controller (in worker start).
      * @param smallBag
      */
-    async initialize(smallBag : (SmallBag & SB)) : Promise<void> {}
+    async initialize(smallBag: (SmallBag & E["smallBag"])): Promise<void> {
+    }
 
     /**
      * @description
@@ -42,7 +43,8 @@ export class Controller<SB = {},B = {}>
      * @throws
      * You can also throw TaskErrors, which are sent to the client with a not success response.
      */
-    async handle(bag : (Bag & SB & B),input : any) : Promise<any> {}
+    async handle(bag: (Bag & E["smallBag"] & E["bag"]), input: any): Promise<any> {
+    }
 
     /**
      * @description
@@ -50,7 +52,8 @@ export class Controller<SB = {},B = {}>
      * @param bag
      * @param input
      */
-    async wrongInput(bag : (Bag & SB & B),input : any) : Promise<void> {}
+    async wrongInput(bag: (Bag & E["smallBag"] & E["bag"]), input: any): Promise<void> {
+    }
 
     //Controller storage
     // noinspection JSUnusedGlobalSymbols
@@ -63,8 +66,8 @@ export class Controller<SB = {},B = {}>
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
      */
-    protected setControllerVariable(path : string | string[],value : any) : void {
-        ObjectPath.set(this._storage,path,value);
+    protected setControllerVariable(path: string | string[], value: any): void {
+        ObjectPath.set(this._storage, path, value);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -76,8 +79,8 @@ export class Controller<SB = {},B = {}>
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    protected hasControllerVariable(path ?: string | string[]) : boolean {
-        return ObjectPath.has(this._storage,path);
+    protected hasControllerVariable(path ?: string | string[]): boolean {
+        return ObjectPath.has(this._storage, path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -89,8 +92,8 @@ export class Controller<SB = {},B = {}>
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    protected getControllerVariable<R>(path ?: string | string[]) : R {
-        return ObjectPath.get(this._storage,path);
+    protected getControllerVariable<R>(path ?: string | string[]): R {
+        return ObjectPath.get(this._storage, path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -102,18 +105,46 @@ export class Controller<SB = {},B = {}>
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    protected deleteControllerVariable(path ?: string | string[]) : void {
-        if(!!path) {
-            ObjectPath.del(this._storage,path);
-        }
-        else {
+    protected deleteControllerVariable(path ?: string | string[]): void {
+        if (!!path) {
+            ObjectPath.del(this._storage, path);
+        } else {
             this._storage = {};
         }
     }
 }
 
-export interface ControllerClass<SB = {},B = {}> {
-    config : ControllerConfig;
-    new (smallBag : (SmallBag & SB)): Controller;
-    prototype : any;
+interface IController<E extends BagExtension = { smallBag: {}, bag: {} }> {
+    /**
+     * @description
+     * Gets invokes when the zation system is creating instance of the controller (in worker start).
+     * @param smallBag
+     */
+    initialize(smallBag: (SmallBag & E["smallBag"])): Promise<void>;
+    /**
+     * @description
+     * Gets invokes when the controller gets an request and input is correct.
+     * @param bag
+     * @param input
+     * @return
+     * The Return value of the function is send to the client with an success response.
+     * @throws
+     * You can also throw TaskErrors, which are sent to the client with a not success response.
+     */
+    handle(bag: (Bag & E["smallBag"] & E["bag"]), input: any): Promise<any>
+    /**
+     * @description
+     * Gets invokes when the controller gets an request with wrong input.
+     * @param bag
+     * @param input
+     */
+    wrongInput(bag: (Bag & E["smallBag"] & E["bag"]), input: any): Promise<void>
+}
+
+export interface ControllerClass<E extends BagExtension = { smallBag: {}, bag: {} }> {
+    config: ControllerConfig;
+
+    new(smallBag: (SmallBag & E["smallBag"])): Controller<E>;
+
+    prototype: any;
 }

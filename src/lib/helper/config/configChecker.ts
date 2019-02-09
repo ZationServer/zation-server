@@ -24,7 +24,6 @@ import {
     AppConfig,
     ArrayPropertyConfig,
     ArrayShortSyntax,
-    BagExtension,
     ControllerConfig,
     ControllerInput,
     ObjectPropertyConfig,
@@ -44,6 +43,7 @@ import {
 } from "../constants/validation";
 // noinspection TypeScriptPreferShortImport
 import {Controller, ControllerClass} from "../../api/Controller";
+import BagExtension from "../bagExtension/bagExtension";
 
 class ConfigChecker
 {
@@ -106,31 +106,47 @@ class ConfigChecker
             ConfigCheckerTools.assertStructure
             (Structures.BagExtension, extensions[i], configName, this.ceb, curTarget);
 
-            if(typeof extensions[i] === 'object' && typeof extensions[i].methods === 'object'){
-                const methods = extensions[i].methods;
-                for(let k in methods){
-                    if(methods.hasOwnProperty(k)){
-                        if(this.methodBagExNames.includes(k)){
-                            this.ceb.addConfigError(new ConfigError(configName,
-                                `${curTarget.getTarget()} conflict with method name: ${k}.`));
-                        }
-                        if(Bag.prototype.hasOwnProperty(k)){
-                            this.ceb.addConfigError(new ConfigError(configName,
-                                `${curTarget.getTarget()} conflict with Bag method name: ${k}.`));
-                        }
-                        if(extensions[i].smallBagCompatible && SmallBag.prototype.hasOwnProperty(k)){
-                            this.ceb.addConfigError(new ConfigError(configName,
-                                `${curTarget.getTarget()} conflict with SmallBag method name: ${k}.`));
-                        }
-                        if(typeof methods[k] !== "function"){
-                            this.ceb.addConfigError(new ConfigError(configName,
-                                `${curTarget.getTarget()} extension method '${k}' is not a function.`));
-                        }
-                        this.methodBagExNames.push(k);
+            if(typeof extensions[i] === 'object' &&
+                typeof extensions[i].smallBag === 'object' &&
+                typeof extensions[i].bag === 'object'
+            ){
+                const bagMethods = extensions[i].bag;
+                const smallBagMethods = extensions[i].smallBag;
+
+                for(let k in bagMethods){
+                    if(bagMethods.hasOwnProperty(k)){
+                        this.checkBagExtensionMethod(k,bagMethods,false,configName,target);
+                    }
+                }
+
+                for(let k in smallBagMethods){
+                    if(smallBagMethods.hasOwnProperty(k)){
+                        this.checkBagExtensionMethod(k,smallBagMethods,true,configName,target);
                     }
                 }
             }
         }
+    }
+
+    private checkBagExtensionMethod(methodName : string,methods,isSmallBag : boolean,configName : ConfigNames,target : Target)
+    {
+        if(this.methodBagExNames.includes(methodName)){
+            this.ceb.addConfigError(new ConfigError(configName,
+                `${target.getTarget()} conflict with method name: ${methodName}.`));
+        }
+        if(Bag.prototype.hasOwnProperty(methodName)){
+            this.ceb.addConfigError(new ConfigError(configName,
+                `${target.getTarget()} conflict with Bag method name: ${methodName}.`));
+        }
+        if(isSmallBag && SmallBag.prototype.hasOwnProperty(methodName)){
+            this.ceb.addConfigError(new ConfigError(configName,
+                `${target.getTarget()} conflict with SmallBag method name: ${methodName}.`));
+        }
+        if(typeof methods[methodName] !== "function"){
+            this.ceb.addConfigError(new ConfigError(configName,
+                `${target.getTarget()} extension method '${methodName}' is not a function.`));
+        }
+        this.methodBagExNames.push(methodName);
     }
 
     private checkUserGroupName(name: string, notAllowed: string[], isAuth: boolean) {

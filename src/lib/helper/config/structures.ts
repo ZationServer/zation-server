@@ -13,7 +13,7 @@ import {
     AnyOfProperty,
     AppConfig, ArrayPropertyConfig, ArraySettings,
     AuthUserGroupConfig,
-    BackgroundTask, BagExtension,
+    BackgroundTask,
     ControllerConfig,
     ObjectPropertyConfig, PropertyOptional, ValuePropertyConfig
 } from "../configs/appConfig";
@@ -24,6 +24,7 @@ import {FormatLetters} from "../constants/validation";
 import {ServiceConfig} from "../configs/serviceConfig";
 import {ChannelConfig, ChannelSettings, CustomChannelConfig, ZationChannelConfig} from "../configs/channelConfig";
 import {ServiceModule} from "zation-service";
+import BagExtension from "../bagExtension/bagExtension";
 
 const Error = {};
 Error[nameof<ErrorConstruct>(s => s.name)]             = {types : ['string'],isOptional : true};
@@ -52,8 +53,8 @@ BackgroundTask[nameof<BackgroundTask>(s => s.at)]    = {types : ['number','array
 BackgroundTask[nameof<BackgroundTask>(s => s.task)]  = {types : ['function','array'],isOptional : true};
 
 const BagExtension = {};
-BagExtension[nameof<BagExtension>(s => s.smallBagCompatible)] = {types : ['boolean'],isOptional : false};
-BagExtension[nameof<BagExtension>(s => s.methods)]            = {types : ['object'],isOptional : false};
+BagExtension[nameof<BagExtension>(s => s.bag)]          = {types : ['object'],isOptional : false};
+BagExtension[nameof<BagExtension>(s => s.smallBag)]     = {types : ['object'],isOptional : false};
 
 type ServiceModuleDefault = ServiceModule<any,any,any>;
 const ServiceModule = {};

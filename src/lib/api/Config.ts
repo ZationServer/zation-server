@@ -122,6 +122,7 @@ import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
 import SocketInfo = require("../helper/infoObjects/socketInfo");
 import ZationInfo = require("../helper/infoObjects/zationInfo");
 import ZationTokenInfo = require("../helper/infoObjects/zationTokenInfo");
+import BagExtension from "../helper/bagExtension/bagExtension";
 
 class Config
 {
@@ -154,22 +155,22 @@ class Config
      * If the new configuration properties override the controller properties.
      * Default value is false.
      */
-    static buildController<SB = {},B = {}>(controller : ControllerClass<SB,B>,config : ControllerConfig<SB,B>,overrideControllerConfig : boolean = false) : ControllerClass<SB,B> {
+    static buildController<E extends BagExtension = {smallBag:{},bag:{}}>(controller : ControllerClass<E>,config : ControllerConfig<E>,overrideControllerConfig : boolean = false) : ControllerClass<E> {
         ObjectTools.addObToOb(controller.config,config,overrideControllerConfig);
         return controller;
     }
 
     //Part main configs
     // noinspection JSUnusedGlobalSymbols
-    static appConfig<SB = {},B = {}>(config : AppConfig<SB,B>) : AppConfig<SB,B> {return config;}
+    static appConfig<E extends BagExtension = {smallBag:{},bag:{}}>(config : AppConfig<E>) : AppConfig<E> {return config;}
     // noinspection JSUnusedGlobalSymbols
-    static eventConfig<SB = {}>(config : EventConfig<SB>) : EventConfig<SB> {return config;}
+    static eventConfig<E extends BagExtension = {smallBag:{},bag:{}}>(config : EventConfig<E>) : EventConfig<E> {return config;}
     // noinspection JSUnusedGlobalSymbols
     static serviceConfig(config : ServiceConfig) : ServiceConfig {return config;}
     // noinspection JSUnusedGlobalSymbols
     static mainConfig(config : MainConfig) : MainConfig {return config;}
     // noinspection JSUnusedGlobalSymbols
-    static channelConfig<SB = {}>(config : ChannelConfig<SB>) : ChannelConfig<SB> {return config;}
+    static channelConfig<E extends BagExtension = {smallBag:{},bag:{}}>(config : ChannelConfig<E>) : ChannelConfig<E> {return config;}
     // noinspection JSUnusedGlobalSymbols
     static errorConfig(config : ErrorConfig) : ErrorConfig {return config;}
     // noinspection JSUnusedGlobalSymbols
@@ -177,137 +178,137 @@ class Config
 
     //Object
     // noinspection JSUnusedGlobalSymbols
-    static objectProperty<SB = {}>(c : ObjectPropertyConfig<SB>) :  ObjectPropertyConfig<SB> {return c;}
+    static objectProperty<E extends BagExtension = {smallBag:{},bag:{}}>(c : ObjectPropertyConfig<E>) :  ObjectPropertyConfig<E> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static object<SB = {}>(c : ObjectPropertyConfig<SB>) :  ObjectPropertyConfig<SB> {return c;}
+    static object<E extends BagExtension = {smallBag:{},bag:{}}>(c : ObjectPropertyConfig<E>) :  ObjectPropertyConfig<E> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static construct<SB = {}>(func : ConstructObjectFunction<SB>) : ConstructObjectFunction<SB> {return func;}
+    static construct<E extends BagExtension = {smallBag:{},bag:{}}>(func : ConstructObjectFunction<E>) : ConstructObjectFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static objectProperties<SB = {}>(c : ObjectProperties<SB>) :  ObjectProperties<SB> {return c;}
+    static objectProperties<E extends BagExtension = {smallBag:{},bag:{}}>(c : ObjectProperties<E>) :  ObjectProperties<E> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static convertObject<SB = {}>(c : ConvertObjectFunction<SB>) :  ConvertObjectFunction<SB> {return c;}
+    static convertObject<E extends BagExtension = {smallBag:{},bag:{}}>(c : ConvertObjectFunction<E>) :  ConvertObjectFunction<E> {return c;}
 
     //Value
     // noinspection JSUnusedGlobalSymbols
-    static valueProperty<SB = {}>(c : ValuePropertyConfig<SB>) :  ValuePropertyConfig<SB> {return c;}
+    static valueProperty<E extends BagExtension = {smallBag:{},bag:{}}>(c : ValuePropertyConfig<E>) :  ValuePropertyConfig<E> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static value<SB = {}>(c : ValuePropertyConfig<SB>) :  ValuePropertyConfig<SB> {return c;}
+    static value<E extends BagExtension = {smallBag:{},bag:{}}>(c : ValuePropertyConfig<E>) :  ValuePropertyConfig<E> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static convertValue<SB = {}>(c : ConvertValueFunction<SB>) :  ConvertValueFunction<SB> {return c;}
+    static convertValue<E extends BagExtension = {smallBag:{},bag:{}}>(c : ConvertValueFunction<E>) :  ConvertValueFunction<E> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static validate<SB = {}>(func : ValidatorFunction<SB>) : ValidatorFunction<SB> {return func;}
+    static validate<E extends BagExtension = {smallBag:{},bag:{}}>(func : ValidatorFunction<E>) : ValidatorFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static getDate<SB = {}>(func : GetDateFunction<SB>) : GetDateFunction<SB> {return func;}
+    static getDate<E extends BagExtension = {smallBag:{},bag:{}}>(func : GetDateFunction<E>) : GetDateFunction<E> {return func;}
 
     //Array
     // noinspection JSUnusedGlobalSymbols
-    static arrayProperty<SB = {}>(c : ArrayPropertyConfig<SB>) :  ArrayPropertyConfig<SB> {return c;}
+    static arrayProperty<E extends BagExtension = {smallBag:{},bag:{}}>(c : ArrayPropertyConfig<E>) :  ArrayPropertyConfig<E> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static array<SB = {}>(c : ArrayPropertyConfig<SB>) :  ArrayPropertyConfig<SB> {return c;}
+    static array<E extends BagExtension = {smallBag:{},bag:{}}>(c : ArrayPropertyConfig<E>) :  ArrayPropertyConfig<E> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static convertArray<SB = {}>(c : ConvertArrayFunction<SB>) :  ConvertArrayFunction<SB> {return c;}
+    static convertArray<E extends BagExtension = {smallBag:{},bag:{}}>(c : ConvertArrayFunction<E>) :  ConvertArrayFunction<E> {return c;}
 
     //Controller
     // noinspection JSUnusedGlobalSymbols
-    static controllerConfig<SB = {},B = {}>(c : ControllerConfig<SB,B>) :  ControllerConfig<SB,B> {return c;}
+    static controllerConfig<E extends BagExtension = {smallBag:{},bag:{}}>(c : ControllerConfig<E>) :  ControllerConfig<E> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static controllerInput<SB = {}>(c : ControllerInput<SB>) :  ControllerInput<SB> {return c;}
+    static controllerInput<E extends BagExtension = {smallBag:{},bag:{}}>(c : ControllerInput<E>) :  ControllerInput<E> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static beforeHandle<SB = {},B = {}>(func : BeforeHandleFunction<SB,B>) : BeforeHandleFunction<SB,B> {return func;}
+    static beforeHandle<E extends BagExtension = {smallBag:{},bag:{}}>(func : BeforeHandleFunction<E>) : BeforeHandleFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static controllerAccess<SB = {}>(func : ControllerAccessFunction<SB>) : ControllerAccessFunction<SB> {return func;}
+    static controllerAccess<E extends BagExtension = {smallBag:{},bag:{}}>(func : ControllerAccessFunction<E>) : ControllerAccessFunction<E> {return func;}
 
     //Part Background tasks
     // noinspection JSUnusedGlobalSymbols
-    static backgroundTask<SB = {}>(c : BackgroundTask<SB>) :  BackgroundTask<SB> {return c;}
+    static backgroundTask<E extends BagExtension = {smallBag:{},bag:{}}>(c : BackgroundTask<E>) :  BackgroundTask<E> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static task<SB = {}>(func : TaskFunction<SB>) :  TaskFunction<SB> {return func;}
+    static task<E extends BagExtension = {smallBag:{},bag:{}}>(func : TaskFunction<E>) :  TaskFunction<E> {return func;}
 
     //Part Properties
     // noinspection JSUnusedGlobalSymbols
-    static property<SB = {}>(c : Property<SB>) :  Property<SB> {return c;}
+    static property<E extends BagExtension = {smallBag:{},bag:{}}>(c : Property<E>) :  Property<E> {return c;}
 
 
     //Part Channel Config functions
     // noinspection JSUnusedGlobalSymbols
-    static cIdChClientPubAccess<SB = {}>(func : CIdChannelClientPubAccessFunction<SB>) : CIdChannelClientPubAccessFunction<SB> {return func;}
+    static cIdChClientPubAccess<E extends BagExtension = {smallBag:{},bag:{}}>(func : CIdChannelClientPubAccessFunction<E>) : CIdChannelClientPubAccessFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cChClientPubAccess<SB = {}>(func : CChannelClientPubAccessFunction<SB>) : CChannelClientPubAccessFunction<SB>  {return func;}
+    static cChClientPubAccess<E extends BagExtension = {smallBag:{},bag:{}}>(func : CChannelClientPubAccessFunction<E>) : CChannelClientPubAccessFunction<E>  {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static cIdChSubAccess<SB = {}>(func : CIdChannelSubAccessFunction<SB>) : CIdChannelSubAccessFunction<SB> {return func;}
+    static cIdChSubAccess<E extends BagExtension = {smallBag:{},bag:{}}>(func : CIdChannelSubAccessFunction<E>) : CIdChannelSubAccessFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cChSubAccess<SB = {}>(func : CChannelSubAccessFunction<SB>) : CChannelSubAccessFunction<SB> {return func;}
+    static cChSubAccess<E extends BagExtension = {smallBag:{},bag:{}}>(func : CChannelSubAccessFunction<E>) : CChannelSubAccessFunction<E> {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static cChOnClientPub<SB = {}>(func : CChannelOnClientPubFunction<SB>) : CChannelOnClientPubFunction<SB> {return func;}
+    static cChOnClientPub<E extends BagExtension = {smallBag:{},bag:{}}>(func : CChannelOnClientPubFunction<E>) : CChannelOnClientPubFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cIdChOnClientPub<SB = {}>(func : CIdChannelOnClientPubFunction<SB>) : CIdChannelOnClientPubFunction<SB> {return func;}
+    static cIdChOnClientPub<E extends BagExtension = {smallBag:{},bag:{}}>(func : CIdChannelOnClientPubFunction<E>) : CIdChannelOnClientPubFunction<E> {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static cChOnBagPub<SB = {}>(func : CChannelOnBagPubFunction<SB>) : CChannelOnBagPubFunction<SB> {return func;}
+    static cChOnBagPub<E extends BagExtension = {smallBag:{},bag:{}}>(func : CChannelOnBagPubFunction<E>) : CChannelOnBagPubFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cIdChOnBagPub<SB = {}>(func : CIdChannelOnBagPubFunction<SB>) : CIdChannelOnBagPubFunction<SB> {return func;}
+    static cIdChOnBagPub<E extends BagExtension = {smallBag:{},bag:{}}>(func : CIdChannelOnBagPubFunction<E>) : CIdChannelOnBagPubFunction<E> {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static cChOnSub<SB = {}>(func : CChannelOnSubFunction<SB>) : CChannelOnSubFunction<SB> {return func;}
+    static cChOnSub<E extends BagExtension = {smallBag:{},bag:{}}>(func : CChannelOnSubFunction<E>) : CChannelOnSubFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cIdChOnSub<SB = {}>(func : CIdChannelOnSubFunction<SB>) : CIdChannelOnSubFunction<SB> {return func;}
+    static cIdChOnSub<E extends BagExtension = {smallBag:{},bag:{}}>(func : CIdChannelOnSubFunction<E>) : CIdChannelOnSubFunction<E> {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static cChOnUnsub<SB = {}>(func : CChannelOnUnsubFunction<SB>) : CChannelOnUnsubFunction<SB> {return func;}
+    static cChOnUnsub<E extends BagExtension = {smallBag:{},bag:{}}>(func : CChannelOnUnsubFunction<E>) : CChannelOnUnsubFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cIdChOnUnsub<SB = {}>(func : CIdChannelOnUnsubFunction<SB>) : CIdChannelOnUnsubFunction<SB> {return func;}
+    static cIdChOnUnsub<E extends BagExtension = {smallBag:{},bag:{}}>(func : CIdChannelOnUnsubFunction<E>) : CIdChannelOnUnsubFunction<E> {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static customCh<SB = {}>(c : CustomCh<SB>) : CustomCh<SB> {return c;}
+    static customCh<E extends BagExtension = {smallBag:{},bag:{}}>(c : CustomCh<E>) : CustomCh<E> {return c;}
 
     // noinspection JSUnusedGlobalSymbols
-    static customIdCh<SB = {}>(c : CustomIdCh<SB>) : CustomIdCh<SB> {return c;}
+    static customIdCh<E extends BagExtension = {smallBag:{},bag:{}}>(c : CustomIdCh<E>) : CustomIdCh<E> {return c;}
 
     // noinspection JSUnusedGlobalSymbols
-    static userCh<SB = {}>(c : UserChannel<SB>) : UserChannel<SB> {return c;}
+    static userCh<E extends BagExtension = {smallBag:{},bag:{}}>(c : UserChannel<E>) : UserChannel<E> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static userChOnClientPub<SB = {}>(func : UserChOnClientPubFunction<SB>) : UserChOnClientPubFunction<SB> {return func;}
+    static userChOnClientPub<E extends BagExtension = {smallBag:{},bag:{}}>(func : UserChOnClientPubFunction<E>) : UserChOnClientPubFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static userChOnBagPub<SB = {}>(func : UserChOnBagPubFunction<SB>) : UserChOnBagPubFunction<SB> {return func;}
+    static userChOnBagPub<E extends BagExtension = {smallBag:{},bag:{}}>(func : UserChOnBagPubFunction<E>) : UserChOnBagPubFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static userChOnSub<SB = {}>(func : UserChOnSubFunction<SB>) : UserChOnSubFunction<SB> {return func;}
+    static userChOnSub<E extends BagExtension = {smallBag:{},bag:{}}>(func : UserChOnSubFunction<E>) : UserChOnSubFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static userChOnUnsub<SB = {}>(func : UserChOnUnsubFunction<SB>) : UserChOnUnsubFunction<SB> {return func;}
+    static userChOnUnsub<E extends BagExtension = {smallBag:{},bag:{}}>(func : UserChOnUnsubFunction<E>) : UserChOnUnsubFunction<E> {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static authUserGroupCh<SB = {}>(c : AuthUserGroupChannel<SB>) : AuthUserGroupChannel<SB> {return c;}
+    static authUserGroupCh<E extends BagExtension = {smallBag:{},bag:{}}>(c : AuthUserGroupChannel<E>) : AuthUserGroupChannel<E> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static authUserGroupChOnClientPub<SB = {}>(func : AuthUserGroupChOnClientPubFunction<SB>) : AuthUserGroupChOnClientPubFunction<SB> {return func;}
+    static authUserGroupChOnClientPub<E extends BagExtension = {smallBag:{},bag:{}}>(func : AuthUserGroupChOnClientPubFunction<E>) : AuthUserGroupChOnClientPubFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static authUserGroupChOnBagPub<SB = {}>(func : AuthUserGroupChOnBagPubFunction<SB>) : AuthUserGroupChOnBagPubFunction<SB> {return func;}
+    static authUserGroupChOnBagPub<E extends BagExtension = {smallBag:{},bag:{}}>(func : AuthUserGroupChOnBagPubFunction<E>) : AuthUserGroupChOnBagPubFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static authUserGroupChOnSub<SB = {}>(func : AuthUserGroupChOnSubFunction<SB>) : AuthUserGroupChOnSubFunction<SB> {return func;}
+    static authUserGroupChOnSub<E extends BagExtension = {smallBag:{},bag:{}}>(func : AuthUserGroupChOnSubFunction<E>) : AuthUserGroupChOnSubFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static authUserGroupChOnUnsub<SB = {}>(func : AuthUserGroupChOnUnsubFunction<SB>) : AuthUserGroupChOnUnsubFunction<SB> {return func;}
+    static authUserGroupChOnUnsub<E extends BagExtension = {smallBag:{},bag:{}}>(func : AuthUserGroupChOnUnsubFunction<E>) : AuthUserGroupChOnUnsubFunction<E> {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static defaultUserGroupCh<SB = {}>(c : NormalChannel<SB>) : NormalChannel<SB> {return c;}
+    static defaultUserGroupCh<E extends BagExtension = {smallBag:{},bag:{}}>(c : NormalChannel<E>) : NormalChannel<E> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static defaultUserGroupChOnClientPub<SB = {}>(func : NormalChOnClientPubFunction<SB>) : NormalChOnClientPubFunction<SB> {return func;}
+    static defaultUserGroupChOnClientPub<E extends BagExtension = {smallBag:{},bag:{}}>(func : NormalChOnClientPubFunction<E>) : NormalChOnClientPubFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static defaultUserGroupChOnBagPub<SB = {}>(func : NormalChOnBagPubFunction<SB>) : NormalChOnBagPubFunction<SB> {return func;}
+    static defaultUserGroupChOnBagPub<E extends BagExtension = {smallBag:{},bag:{}}>(func : NormalChOnBagPubFunction<E>) : NormalChOnBagPubFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static defaultUserGroupChOnSub<SB = {}>(func : NormalChOnSubFunction<SB>) : NormalChOnSubFunction<SB> {return func;}
+    static defaultUserGroupChOnSub<E extends BagExtension = {smallBag:{},bag:{}}>(func : NormalChOnSubFunction<E>) : NormalChOnSubFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static defaultUserGroupChOnUnsub<SB = {}>(func : NormalChOnUnsubFunction<SB>) : NormalChOnUnsubFunction<SB> {return func;}
+    static defaultUserGroupChOnUnsub<E extends BagExtension = {smallBag:{},bag:{}}>(func : NormalChOnUnsubFunction<E>) : NormalChOnUnsubFunction<E> {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static allCh<SB = {}>(c : NormalChannel<SB>) : NormalChannel<SB> {return c;}
+    static allCh<E extends BagExtension = {smallBag:{},bag:{}}>(c : NormalChannel<E>) : NormalChannel<E> {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static allChOnClientPub<SB = {}>(func : NormalChOnClientPubFunction<SB>) : NormalChOnClientPubFunction<SB> {return func;}
+    static allChOnClientPub<E extends BagExtension = {smallBag:{},bag:{}}>(func : NormalChOnClientPubFunction<E>) : NormalChOnClientPubFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static allChOnBagPub<SB = {}>(func : NormalChOnBagPubFunction<SB>) : NormalChOnBagPubFunction<SB> {return func;}
+    static allChOnBagPub<E extends BagExtension = {smallBag:{},bag:{}}>(func : NormalChOnBagPubFunction<E>) : NormalChOnBagPubFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static allChOnSub<SB = {}>(func : NormalChOnSubFunction<SB>) : NormalChOnSubFunction<SB> {return func;}
+    static allChOnSub<E extends BagExtension = {smallBag:{},bag:{}}>(func : NormalChOnSubFunction<E>) : NormalChOnSubFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static allChOnUnsub<SB = {}>(func : NormalChOnUnsubFunction<SB>) : NormalChOnUnsubFunction<SB> {return func;}
+    static allChOnUnsub<E extends BagExtension = {smallBag:{},bag:{}}>(func : NormalChOnUnsubFunction<E>) : NormalChOnUnsubFunction<E> {return func;}
 
     //Part Service Config
     // noinspection JSUnusedGlobalSymbols
@@ -320,115 +321,115 @@ class Config
     //Part Event Config events
 
     //Part Zation Events
-    static workerIsStarted<SB = {}>(func : WorkerIsStartedFunction<SB>) : WorkerIsStartedFunction<SB> {return func;}
+    static workerIsStarted<E extends BagExtension = {smallBag:{},bag:{}}>(func : WorkerIsStartedFunction<E>) : WorkerIsStartedFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static workerLeaderIsStarted<SB = {}>(func : WorkerIsStartedFunction<SB>) : WorkerIsStartedFunction<SB> {return func;}
+    static workerLeaderIsStarted<E extends BagExtension = {smallBag:{},bag:{}}>(func : WorkerIsStartedFunction<E>) : WorkerIsStartedFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static express<SB = {}>(func : ExpressFunction<SB>) : ExpressFunction<SB> {return func;}
+    static express<E extends BagExtension = {smallBag:{},bag:{}}>(func : ExpressFunction<E>) : ExpressFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServer<SB = {}>(func : ScServerFunction<SB>) : ScServerFunction<SB> {return func;}
+    static scServer<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScServerFunction<E>) : ScServerFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketConnection<SB = {}>(func : ZationSocketFunction<SB>) : ZationSocketFunction<SB> {return func;}
+    static socketConnection<E extends BagExtension = {smallBag:{},bag:{}}>(func : ZationSocketFunction<E>) : ZationSocketFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static beforeError<SB = {}>(func : BeforeErrorFunction<SB>) : BeforeErrorFunction<SB> {return func;}
+    static beforeError<E extends BagExtension = {smallBag:{},bag:{}}>(func : BeforeErrorFunction<E>) : BeforeErrorFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static beforeTaskError<SB = {}>(func : BeforeTaskErrorFunction<SB>) : BeforeTaskErrorFunction<SB> {return func;}
+    static beforeTaskError<E extends BagExtension = {smallBag:{},bag:{}}>(func : BeforeTaskErrorFunction<E>) : BeforeTaskErrorFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static beforeTaskErrorBag<SB = {}>(func : BeforeTaskErrorBagFunction<SB>) : BeforeTaskErrorBagFunction<SB> {return func;}
+    static beforeTaskErrorBag<E extends BagExtension = {smallBag:{},bag:{}}>(func : BeforeTaskErrorBagFunction<E>) : BeforeTaskErrorBagFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static httpServerStarted<SB = {}>(func : HttpServerIsStartedFunction<SB>) : HttpServerIsStartedFunction<SB> {return func;}
+    static httpServerStarted<E extends BagExtension = {smallBag:{},bag:{}}>(func : HttpServerIsStartedFunction<E>) : HttpServerIsStartedFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static wsServerIsStarted<SB = {}>(func : WsServerIsStartedFunction<SB>) : WsServerIsStartedFunction<SB>{return func;}
+    static wsServerIsStarted<E extends BagExtension = {smallBag:{},bag:{}}>(func : WsServerIsStartedFunction<E>) : WsServerIsStartedFunction<E>{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static isStarted<SB = {}>(func : IsStartedFunction<SB>) : IsStartedFunction<SB>{return func;}
+    static isStarted<E extends BagExtension = {smallBag:{},bag:{}}>(func : IsStartedFunction<E>) : IsStartedFunction<E>{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketDisconnection<SB = {}>(func : ZationSocketDisconnectionFunction<SB>) : ZationSocketDisconnectionFunction<SB> {return func;}
+    static socketDisconnection<E extends BagExtension = {smallBag:{},bag:{}}>(func : ZationSocketDisconnectionFunction<E>) : ZationSocketDisconnectionFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static workerMessage<SB = {}>(func : ZationWorkerMessageFunction<SB>) : ZationWorkerMessageFunction<SB> {return func;}
+    static workerMessage<E extends BagExtension = {smallBag:{},bag:{}}>(func : ZationWorkerMessageFunction<E>) : ZationWorkerMessageFunction<E> {return func;}
 
     //Zation Middleware
     // noinspection JSUnusedGlobalSymbols
-    static middlewareAuthenticate<SB = {}>(func : MiddlewareAuthenticationFunction<SB>) : MiddlewareAuthenticationFunction<SB> {return func;}
+    static middlewareAuthenticate<E extends BagExtension = {smallBag:{},bag:{}}>(func : MiddlewareAuthenticationFunction<E>) : MiddlewareAuthenticationFunction<E> {return func;}
 
     //Part Socket Events (SC)
     // noinspection JSUnusedGlobalSymbols
-    static socketError<SB = {}>(func : SocketErrorFunction<SB>) : SocketErrorFunction<SB> {return func;}
+    static socketError<E extends BagExtension = {smallBag:{},bag:{}}>(func : SocketErrorFunction<E>) : SocketErrorFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketRaw<SB = {}>(func : SocketRawFunction<SB>) : SocketRawFunction<SB> {return func;}
+    static socketRaw<E extends BagExtension = {smallBag:{},bag:{}}>(func : SocketRawFunction<E>) : SocketRawFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketConnect<SB = {}>(func : SocketConnectFunction<SB>) : SocketConnectFunction<SB> {return func;}
+    static socketConnect<E extends BagExtension = {smallBag:{},bag:{}}>(func : SocketConnectFunction<E>) : SocketConnectFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketDisconnect<SB = {}>(func : SocketCodeDataFunction<SB>) : SocketCodeDataFunction<SB> {return func;}
+    static socketDisconnect<E extends BagExtension = {smallBag:{},bag:{}}>(func : SocketCodeDataFunction<E>) : SocketCodeDataFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketConnectAbort<SB = {}>(func : SocketCodeDataFunction<SB>) : SocketCodeDataFunction<SB> {return func;}
+    static socketConnectAbort<E extends BagExtension = {smallBag:{},bag:{}}>(func : SocketCodeDataFunction<E>) : SocketCodeDataFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketClose<SB = {}>(func : SocketCodeDataFunction<SB>) : SocketCodeDataFunction<SB> {return func;}
+    static socketClose<E extends BagExtension = {smallBag:{},bag:{}}>(func : SocketCodeDataFunction<E>) : SocketCodeDataFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketSubscribe<SB = {}>(func : SocketSubscribeFunction<SB>) : SocketSubscribeFunction<SB> {return func;}
+    static socketSubscribe<E extends BagExtension = {smallBag:{},bag:{}}>(func : SocketSubscribeFunction<E>) : SocketSubscribeFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketUnsubscribe<SB = {}>(func : SocketUnsubscribeFunction<SB>) : SocketUnsubscribeFunction<SB>{return func;}
+    static socketUnsubscribe<E extends BagExtension = {smallBag:{},bag:{}}>(func : SocketUnsubscribeFunction<E>) : SocketUnsubscribeFunction<E>{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketBadAuthToken<SB = {}>(func : SocketBadAuthTokenFunction<SB>) : SocketBadAuthTokenFunction<SB>{return func;}
+    static socketBadAuthToken<E extends BagExtension = {smallBag:{},bag:{}}>(func : SocketBadAuthTokenFunction<E>) : SocketBadAuthTokenFunction<E>{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketAuthenticate<SB = {}>(func : SocketAuthenticateFunction<SB>) : SocketAuthenticateFunction<SB>{return func;}
+    static socketAuthenticate<E extends BagExtension = {smallBag:{},bag:{}}>(func : SocketAuthenticateFunction<E>) : SocketAuthenticateFunction<E>{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketDeauthenticate<SB = {}>(func : SocketDeauthenticateFunction<SB>) : SocketDeauthenticateFunction<SB>{return func;}
+    static socketDeauthenticate<E extends BagExtension = {smallBag:{},bag:{}}>(func : SocketDeauthenticateFunction<E>) : SocketDeauthenticateFunction<E>{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketAuthStateChange<SB = {}>(func : SocketAuthStateChangeFunction<SB>) : SocketAuthStateChangeFunction<SB>{return func;}
+    static socketAuthStateChange<E extends BagExtension = {smallBag:{},bag:{}}>(func : SocketAuthStateChangeFunction<E>) : SocketAuthStateChangeFunction<E>{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketMessage<SB = {}>(func : SocketMessageFunction<SB>) : SocketMessageFunction<SB>{return func;}
+    static socketMessage<E extends BagExtension = {smallBag:{},bag:{}}>(func : SocketMessageFunction<E>) : SocketMessageFunction<E>{return func;}
 
     //Part ScServer Events (SC)
     // noinspection JSUnusedGlobalSymbols
-    static scServerError<SB = {}>(func : ScServerErrorFunction<SB>) : ScServerErrorFunction<SB> {return func;}
+    static scServerError<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScServerErrorFunction<E>) : ScServerErrorFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerNotice<SB = {}>(func : ScServerNoticeFunction<SB>) : ScServerNoticeFunction<SB> {return func;}
+    static scServerNotice<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScServerNoticeFunction<E>) : ScServerNoticeFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerHandshake<SB = {}>(func : ScServerSocketFunction<SB>) : ScServerSocketFunction<SB> {return func;}
+    static scServerHandshake<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScServerSocketFunction<E>) : ScServerSocketFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerConnectionAbort<SB = {}>(func : ScServerSocketCodeDataFunction<SB>) : ScServerSocketCodeDataFunction<SB> {return func;}
+    static scServerConnectionAbort<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScServerSocketCodeDataFunction<E>) : ScServerSocketCodeDataFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerDisconnection<SB = {}>(func : ScServerSocketCodeDataFunction<SB>) : ScServerSocketCodeDataFunction<SB> {return func;}
+    static scServerDisconnection<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScServerSocketCodeDataFunction<E>) : ScServerSocketCodeDataFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerClosure<SB = {}>(func : ScServerSocketCodeDataFunction<SB>) : ScServerSocketCodeDataFunction<SB> {return func;}
+    static scServerClosure<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScServerSocketCodeDataFunction<E>) : ScServerSocketCodeDataFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerConnection<SB = {}>(func : ScServerConnectionFunction<SB>) : ScServerConnectionFunction<SB> {return func;}
+    static scServerConnection<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScServerConnectionFunction<E>) : ScServerConnectionFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerSubscription<SB = {}>(func : ScServerSubscriptionFunction<SB>) : ScServerSubscriptionFunction<SB> {return func;}
+    static scServerSubscription<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScServerSubscriptionFunction<E>) : ScServerSubscriptionFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerUnsubscription<SB = {}>(func : ScServerUnsubscriptionFunction<SB>) : ScServerUnsubscriptionFunction<SB> {return func;}
+    static scServerUnsubscription<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScServerUnsubscriptionFunction<E>) : ScServerUnsubscriptionFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerAuthentication<SB = {}>(func : ScServerAuthenticationFunction<SB>) : ScServerAuthenticationFunction<SB> {return func;}
+    static scServerAuthentication<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScServerAuthenticationFunction<E>) : ScServerAuthenticationFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerDeauthentication<SB = {}>(func : ScServerDeauthenticationFunction<SB>) : ScServerDeauthenticationFunction<SB> {return func;}
+    static scServerDeauthentication<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScServerDeauthenticationFunction<E>) : ScServerDeauthenticationFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerAuthenticationStateChange<SB = {}>(func : ScServerAuthenticationStateChangeFunction<SB>) : ScServerAuthenticationStateChangeFunction<SB> {return func;}
+    static scServerAuthenticationStateChange<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScServerAuthenticationStateChangeFunction<E>) : ScServerAuthenticationStateChangeFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerBadSocketAuthToken<SB = {}>(func : ScServerBadSocketAuthTokenFunction<SB>) : ScServerBadSocketAuthTokenFunction<SB> {return func;}
+    static scServerBadSocketAuthToken<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScServerBadSocketAuthTokenFunction<E>) : ScServerBadSocketAuthTokenFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerReady<SB = {}>(func : ScServerReadyFunction<SB>) : ScServerReadyFunction<SB> {return func;}
+    static scServerReady<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScServerReadyFunction<E>) : ScServerReadyFunction<E> {return func;}
 
     //Part Middleware Events (SC)
     // noinspection JSUnusedGlobalSymbols
-    static scMiddlewareAuthenticate<SB = {}>(func : ScMiddlewareFunction<SB>) : ScMiddlewareFunction<SB> {return func;}
+    static scMiddlewareAuthenticate<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScMiddlewareFunction<E>) : ScMiddlewareFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scMiddlewareHandshakeWs<SB = {}>(func : ScMiddlewareFunction<SB>) : ScMiddlewareFunction<SB> {return func;}
+    static scMiddlewareHandshakeWs<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScMiddlewareFunction<E>) : ScMiddlewareFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scMiddlewareHandshakeSc<SB = {}>(func : ScMiddlewareFunction<SB>) : ScMiddlewareFunction<SB> {return func;}
+    static scMiddlewareHandshakeSc<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScMiddlewareFunction<E>) : ScMiddlewareFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scMiddlewareSubscribe<SB = {}>(func : ScMiddlewareFunction<SB>) : ScMiddlewareFunction<SB> {return func;}
+    static scMiddlewareSubscribe<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScMiddlewareFunction<E>) : ScMiddlewareFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scMiddlewarePublishIn<SB = {}>(func : ScMiddlewareFunction<SB>) : ScMiddlewareFunction<SB> {return func;}
+    static scMiddlewarePublishIn<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScMiddlewareFunction<E>) : ScMiddlewareFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scMiddlewarePublishOut<SB = {}>(func : ScMiddlewareFunction<SB>) : ScMiddlewareFunction<SB> {return func;}
+    static scMiddlewarePublishOut<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScMiddlewareFunction<E>) : ScMiddlewareFunction<E> {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scMiddlewareEmit<SB = {}>(func : ScMiddlewareFunction<SB>) : ScMiddlewareFunction<SB> {return func;}
+    static scMiddlewareEmit<E extends BagExtension = {smallBag:{},bag:{}}>(func : ScMiddlewareFunction<E>) : ScMiddlewareFunction<E> {return func;}
 
     //Part Types
     // noinspection JSUnusedGlobalSymbols
-    static typeSmallBag<SB = {}>(smallBag : (SmallBag & SB)) : (SmallBag & SB) {return smallBag;}
+    static typeSmallBag<E extends BagExtension = {smallBag:{},bag:{}}>(smallBag : (SmallBag & E["smallBag"])) : (SmallBag & E["smallBag"]) {return smallBag;}
     // noinspection JSUnusedGlobalSymbols
-    static typeBag<SB = {},B = {}>(bag : (Bag & SB & B)) : (Bag & SB & B) {return bag;}
+    static typeBag<E extends BagExtension = {smallBag:{},bag:{}}>(bag : (Bag & E["smallBag"] & E["bag"])) : (Bag & E["smallBag"] & E["bag"]) {return bag;}
     // noinspection JSUnusedGlobalSymbols
     static typeResult(result : Result) : Result {return result;}
     // noinspection JSUnusedGlobalSymbols
@@ -436,7 +437,7 @@ class Config
     // noinspection JSUnusedGlobalSymbols
     static typeTaskErrorBag(taskErrorBag : TaskErrorBag) : TaskErrorBag {return taskErrorBag;}
     // noinspection JSUnusedGlobalSymbols
-    static typeController<SB = {},B = {}>(controller : Controller<SB,B>) : Controller<SB,B> {return controller;}
+    static typeController<E extends BagExtension = {smallBag:{},bag:{}}>(controller : Controller<E>) : Controller<E> {return controller;}
     // noinspection JSUnusedGlobalSymbols
     static typeExpress(express : ExpressCore.Express) : ExpressCore.Express {return express;}
 

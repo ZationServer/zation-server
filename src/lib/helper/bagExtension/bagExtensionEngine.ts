@@ -22,12 +22,8 @@ export default class BagExtensionEngine
         {
             const extensions = this.zc.appConfig.bagExtensions;
             for(let i = 0; i < extensions.length; i++) {
-                if(extensions[i].smallBagCompatible){
-                    this.add(SmallBag,extensions[i].methods);
-                }
-                else {
-                    this.add(Bag,extensions[i].methods);
-                }
+                this.add(SmallBag,extensions[i].smallBag);
+                this.add(Bag,extensions[i].bag);
             }
         }
     }
