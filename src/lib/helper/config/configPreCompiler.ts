@@ -49,6 +49,7 @@ class ConfigPeCompiler
         this.preCompileTmpBuilds();
         this.preCompileController();
         this.preCompileChannelConfig();
+        this.preCompileServiceModules();
         this.preCompileErrorConfig();
 
         //view precompiled configs
@@ -115,6 +116,26 @@ class ConfigPeCompiler
                 }
             }
         }
+    }
+
+    private preCompileServiceModules()
+    {
+        const sm = this.zc.serviceConfig.serviceModules ? this.zc.serviceConfig.serviceModules : [];
+
+        if(typeof this.zc.serviceConfig.services !== 'object'){
+            this.zc.serviceConfig.services = {};
+        }
+
+        if(!Array.isArray(this.zc.appConfig.bagExtensions)) {
+            this.zc.appConfig.bagExtensions = [];
+        }
+
+        sm.forEach((sm) => {
+            // @ts-ignore
+            this.zc.serviceConfig.services[sm.serviceName] = sm.service;
+            // @ts-ignore
+            this.zc.appConfig.bagExtensions.push(sm.bagExtensions);
+        });
     }
 
     private preCompileChannelDefault(channels : object) : void

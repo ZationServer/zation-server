@@ -21,8 +21,9 @@ import {MainConfig, OptionAuto, PanelUserConfig} from "../configs/mainConfig";
 import {StarterConfig} from "../configs/starterConfig";
 import {ValidationTypes} from "../constants/validationTypes";
 import {FormatLetters} from "../constants/validation";
-import {Service, ServiceConfig} from "../configs/serviceConfig";
+import {ServiceConfig} from "../configs/serviceConfig";
 import {ChannelConfig, ChannelSettings, CustomChannelConfig, ZationChannelConfig} from "../configs/channelConfig";
+import {ServiceModule} from "zation-service";
 
 const Error = {};
 Error[nameof<ErrorConstruct>(s => s.name)]             = {types : ['string'],isOptional : true};
@@ -53,6 +54,12 @@ BackgroundTask[nameof<BackgroundTask>(s => s.task)]  = {types : ['function','arr
 const BagExtension = {};
 BagExtension[nameof<BagExtension>(s => s.smallBagCompatible)] = {types : ['boolean'],isOptional : false};
 BagExtension[nameof<BagExtension>(s => s.methods)]            = {types : ['object'],isOptional : false};
+
+type ServiceModuleDefault = ServiceModule<any,any,any>;
+const ServiceModule = {};
+ServiceModule[nameof<ServiceModuleDefault>(s => s.serviceName)]    = {types : ['string'],isOptional : false};
+ServiceModule[nameof<ServiceModuleDefault>(s => s.bagExtensions)]  = {types : ['object'],isOptional : false};
+ServiceModule[nameof<ServiceModuleDefault>(s => s.service)]        = {types : ['object'],isOptional : false};
 
 const AppObject = {};
 AppObject[nameof<ObjectPropertyConfig>(s => s.properties)] = {types : ['object'],isOptional : false};
@@ -110,7 +117,6 @@ Main[nameof<MainConfig>(s => s.useHttpMethodCheck)]   = {types : ['boolean'],isO
 Main[nameof<MainConfig>(s => s.sendErrorDescription)] = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.usePanel)]             = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.panelUser)]            = {types : ['object','array'],isOptional : true};
-Main[nameof<MainConfig>(s => s.panelModule)]          = {types : ['string'],isOptional : true};
 Main[nameof<MainConfig>(s => s.clientJsPrepare)]      = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.path)]                 = {types : ['string'],isOptional : true};
 
@@ -233,8 +239,8 @@ ChannelConfig[nameof<ChannelConfig>(s => s.defaultUserGroupCh)]   = {types : ['o
 ChannelConfig[nameof<ChannelConfig>(s => s.allCh)]                = {types : ['object'],isOptional : true};
 
 const ServiceConfig = {};
-ServiceConfig[nameof<ServiceConfig>(s => s.services)]         = {types : ['object'],isOptional : true};
-ServiceConfig[nameof<ServiceConfig>(s => s.customServices)]   = {types : ['object'],isOptional : true};
+ServiceConfig[nameof<ServiceConfig>(s => s.services)]               = {types : ['object'],isOptional : true};
+ServiceConfig[nameof<ServiceConfig>(s => s.serviceModules)]         = {types : ['array'],isOptional : true};
 
 const PanelUserConfig = {};
 PanelUserConfig[nameof<PanelUserConfig>(s => s.username)]     = {types : ['string'],isOptional : false};
@@ -258,12 +264,6 @@ ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onBagPublish)]       = {typ
 ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onSubscription)]     = {types : ['function','array'],isOptional : true};
 ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onUnsubscription)]   = {types : ['function','array'],isOptional : true};
 ChannelNormalItem[nameof<ZationChannelConfig>(s => s.allowClientPublish)] = {types : ['boolean'],isOptional : true};
-
-const Services = {};
-Services[nameof<Service>(s => s.mySql)]                 = {types : ['object'],isOptional : true};
-Services[nameof<Service>(s => s.nodeMailer)]            = {types : ['object'],isOptional : true};
-Services[nameof<Service>(s => s.postgresSql)]           = {types : ['object'],isOptional : true};
-Services[nameof<Service>(s => s.mongoDb)]               = {types : ['object'],isOptional : true};
 
 const ArrayShortCutSpecify = {};
 ArrayShortCutSpecify[nameof<ArraySettings>(s => s.minLength)]         = {types : ['number'],isOptional : true};
@@ -352,7 +352,6 @@ const Structures = {
     ServiceConfig : ServiceConfig,
     ChannelFullItem : ChannelFullItem,
     ChannelNormalItem : ChannelNormalItem,
-    Services : Services,
     AppArray : AppArray,
     ArrayShortCutSpecify : ArrayShortCutSpecify,
     EventConfig : EventConfig,
@@ -360,6 +359,7 @@ const Structures = {
     PanelUserConfig : PanelUserConfig,
     AuthUserGroup : AuthUserGroup,
     AnyOf : AnyOf,
-    BagExtension : BagExtension
+    BagExtension : BagExtension,
+    serviceModule : ServiceModule
 };
 export = Structures;

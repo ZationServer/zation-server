@@ -10,8 +10,6 @@ import TaskError             = require("./TaskError");
 import TaskErrorBag          = require("./TaskErrorBag");
 import Result                = require("./Result");
 import {Controller, ControllerClass} from "./Controller";
-import {ConnectionConfig}      from "pg";
-import {PoolConfig}            from "mysql";
 
 import
 {
@@ -57,9 +55,7 @@ import
 
 import
 {
-    MainCustomService, MongoDbConfig,
-    NodeMailerConfig,
-    ServiceConfig
+    MainService, ServiceConfig
 } from "../helper/configs/serviceConfig";
 
 import
@@ -315,7 +311,7 @@ class Config
 
     //Part Service Config
     // noinspection JSUnusedGlobalSymbols
-    static customService(c : MainCustomService) : MainCustomService {return c;}
+    static service<Config,Created,Get>(c : MainService<Config,Created,Get>) : MainService<Config,Created,Get> {return c;}
 
     //Part Error Config
     // noinspection JSUnusedGlobalSymbols
@@ -457,16 +453,6 @@ class Config
     static zationInfo(zationInfo : ZationInfo) : ZationInfo {return zationInfo;}
     // noinspection JSUnusedGlobalSymbols
     static zationTokenInfo(zationTokenInfo : ZationTokenInfo) : ZationTokenInfo {return zationTokenInfo;}
-
-    //Part Create easy service configs
-    // noinspection JSUnusedGlobalSymbols
-    static mySql(config : PoolConfig) : PoolConfig {return config;}
-    // noinspection JSUnusedGlobalSymbols
-    static postgreSql(config : ConnectionConfig) : ConnectionConfig {return config;}
-    // noinspection JSUnusedGlobalSymbols
-    static nodeMailer(config : NodeMailerConfig) : NodeMailerConfig {return config;}
-    // noinspection JSUnusedGlobalSymbols
-    static mongoDb(config : MongoDbConfig) : MongoDbConfig {return config;}
 }
 
 export = Config;

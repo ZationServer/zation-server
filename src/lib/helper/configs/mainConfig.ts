@@ -33,7 +33,6 @@ export interface MainConfig
 
     usePanel  ?: boolean;
     panelUser  ?: PanelUserConfig | PanelUserConfig[];
-    panelModule ?: string;
     clientJsPrepare  ?: boolean;
 
     authStart  ?: boolean;
@@ -127,7 +126,6 @@ export interface InternMainConfig extends MainConfig {
     scConsoleLog  : boolean;
     useScUws  : boolean;
     usePanel  : boolean;
-    panelModule : string;
     clientJsPrepare  : boolean;
     authStart  : boolean;
     authStartDuration  : number;

@@ -5,8 +5,6 @@ GitHub: LucaCode
  */
 
 import {Socket}      from "../helper/sc/socket";
-import {MongoClient} from "mongodb";
-import {Options}     from "nodemailer/lib/mailer";
 import fetch, {Request, RequestInit, Response} from 'node-fetch';
 import {WorkerChTaskActions}        from "../helper/constants/workerChTaskActions";
 import {WorkerChTargets}            from "../helper/constants/workerChTargets";
@@ -23,9 +21,6 @@ import ServiceEngine   = require("../helper/services/serviceEngine");
 import ZationConfig    = require("../main/zationConfig");
 import ZationWorker    = require("../main/zationWorker");
 import ExchangeEngine  = require('../helper/channel/chExchangeEngine');
-import MySql           = require("mysql");
-import Pg              = require('pg');
-import nodeMailer      = require('nodemailer');
 import TaskError       = require("./TaskError");
 import ChTools         = require("../helper/channel/chTools");
 import IdTools         = require("../helper/tools/idTools");
@@ -33,7 +28,6 @@ import ObjectPath      = require("../helper/tools/objectPath");
 import TokenTools      = require("../helper/token/tokenTools");
 import TaskErrorBag    = require("./TaskErrorBag");
 import TaskErrorBuilder = require("../helper/builder/taskErrorBuilder");
-import {SentMessageInfo}  from "nodemailer";
 import {InternMainConfig} from "../helper/configs/mainConfig";
 import {AppConfig}        from "../helper/configs/appConfig";
 import {ChannelConfig}    from "../helper/configs/channelConfig";
@@ -833,191 +827,6 @@ class SmallBag
         return await this.publishToCustomChannel(channel,eventName,data,srcSocketSid);
     }
 
-    //Part Database -> MySql
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Is for an mysql query.
-     * Throws an ServiceNotFoundError if the service is not found.
-     * @example
-     * const res = mySqlQuery('SELECT 1 + 1 AS solution');
-     * const solution = res.results[0];
-     * @throws ServiceNotFoundError
-     * @param  query
-     * @param  serviceKey
-     * the key to the service.
-     * @return Promise<object>
-     * The object has 2 fields, one for the result 'result' and one for the fields information 'fields'.
-     */
-    mySqlQuery(query ,serviceKey : string = 'default') : Promise<{results : any,fields : MySql.FieldInfo[]}>
-    {
-        return new Promise(async (resolve, reject) =>
-        {
-            const service = await this.serviceEngine.getMySqlService(serviceKey);
-            service.query(query,(error, results : any, fields : MySql.FieldInfo[]) =>
-            {
-                if(error) {reject(error);}
-                else{resolve({results : results, fields : fields});}
-            });
-        });
-    }
-
-    // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Format an mySql query.
-     * @example
-     * mySqlFormat('SELECT * FROM ?? WHERE ?? = ?',['users', 'id', 10]);
-     * @param  query
-     * @param inserts
-     * @param stringifyObjects?
-     * @param  timeZone?
-     * @return string
-     */
-    mySqlFormat(query: string, inserts: any[], stringifyObjects?: boolean, timeZone?: string) : string
-    {
-        return MySql.format(query,inserts,stringifyObjects,timeZone);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns this service, if it exist otherwise it will throw an ServiceNotFoundError error.
-     * @throws ServiceNotFoundError
-     * @param  serviceKey
-     * the key to the service.
-     */
-    async getMySql(serviceKey : string = 'default') : Promise<MySql.Pool>
-    {
-        return await this.serviceEngine.getMySqlService(serviceKey);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Checks if the service with this key is exist and can be used.
-     * @param  serviceKey
-     * the key to the service.
-     */
-    isMySql(serviceKey : string = 'default') : boolean
-    {
-        return this.serviceEngine.isMySqlService(serviceKey);
-    }
-
-    //Part Database -> PostgreSql
-
-    // noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns this service, if it exist otherwise it will throw an ServiceNotFoundError error.
-     * @throws ServiceNotFoundError
-     * @param  serviceKey
-     * the key to the service.
-     */
-    async getPostgreSql(serviceKey : string = 'default') : Promise<Pg.Pool>
-    {
-        return this.serviceEngine.getPostgresSqlService(serviceKey);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Checks if the service with this key is exist and can be used.
-     * @param  serviceKey
-     * the key to the service.
-     */
-    isPostgreSql(serviceKey : string = 'default') : boolean
-    {
-        return this.serviceEngine.isPostgresSqlService(serviceKey);
-    }
-
-    //Part Database -> MongoDb
-
-    // noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns this service, if it exist otherwise it will throw an ServiceNotFoundError error.
-     * @throws ServiceNotFoundError
-     * @param  serviceKey
-     * the key to the service.
-     */
-    async getMongoDb(serviceKey : string = 'default') : Promise<MongoClient>
-    {
-        return this.serviceEngine.getMongoDbService(serviceKey);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Checks if the service with this key is exist and can be used.
-     * @param  serviceKey
-     * the key to the service.
-     */
-    isMongoDb(serviceKey : string = 'default') : boolean
-    {
-        return this.serviceEngine.isMongoDbService(serviceKey);
-    }
-
-    //Part NodeMailer
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Send an email, with the node mailer service.
-     * Throws an ServiceNotFoundError if the service is not found.
-     * @example
-     * let mailOptions = {
-     *  from: '"Fred Foo 👻" <foo@example.com>', // sender address
-     *  to: 'bar@example.com, baz@example.com', // list of receivers
-     *  subject: 'Hello ✔', // Subject line
-     *  text: 'Hello world?', // plain text body
-     *  html: '<b>Hello world?</b>' // html body
-     *  };
-     * const info = await sendMail(mailOptions);
-     * @throws ServiceNotFoundError
-     * @param mailOptions
-     * @param  serviceKey
-     * @return Promise<object>
-     * The object is an info object.
-     */
-    sendMail(mailOptions : Options,serviceKey : string = 'default') : Promise<SentMessageInfo>
-    {
-        return new Promise(async (resolve, reject) =>
-        {
-            const service = await this.serviceEngine.getNodeMailerService(serviceKey);
-            service.sendMail(mailOptions,(error, info) =>
-            {
-                if(error) {reject(error);}
-                else {resolve(info);}
-            });
-        });
-    }
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns this service, if it exist otherwise it will throw an ServiceNotFoundError error.
-     * @throws ServiceNotFoundError
-     * @param  serviceKey
-     * the key to the service.
-     */
-    async getNodeMailer(serviceKey : string = 'default') : Promise<nodeMailer.Transporter>
-    {
-        return await this.serviceEngine.getNodeMailerService(serviceKey);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Checks if the service with this key is exist and can be used.
-     * @param  serviceKey
-     * the key to the service.
-     */
-    isNodeMailer(serviceKey : string = 'default') : boolean
-    {
-        return this.serviceEngine.isNodeMailerService(serviceKey);
-    }
-
     //Part Custom Services
 
     // noinspection JSUnusedGlobalSymbols
@@ -1026,13 +835,13 @@ class SmallBag
      * Returns this service, if it exist otherwise it will throw an ServiceNotFoundError error.
      * @throws ServiceNotFoundError
      * @param  name
-     * the name of the custom service.
+     * the name of the service.
      * @param  serviceKey
      * the key to the service.
      */
-    async getCustomService<S>(name : string,serviceKey : string = 'default') : Promise<S>
+    async getService<S>(name : string,serviceKey : string = 'default') : Promise<S>
     {
-        return await this.serviceEngine.getCustomService<S>(name,serviceKey);
+        return await this.serviceEngine.getService<S>(name,serviceKey);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1040,13 +849,13 @@ class SmallBag
      * @description
      * Checks if the service with this key is exist and can be used.
      * @param name
-     * the name of the custom service.
+     * the name of the service.
      * @param  serviceKey
      * the key to the service.
      */
-    isCustomService(name : string,serviceKey : string = 'default') : boolean
+    isService(name : string,serviceKey : string = 'default') : boolean
     {
-        return this.serviceEngine.isCustomService(name,serviceKey);
+        return this.serviceEngine.isService(name,serviceKey);
     }
 
     //Part Errors

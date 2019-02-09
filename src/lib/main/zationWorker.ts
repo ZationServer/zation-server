@@ -143,6 +143,8 @@ class ZationWorker extends SCWorker
         preCompiler.preCompile();
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has pre compiled configurations.`, true);
 
+
+
         //Services
         Logger.startStopWatch();
         this.serviceEngine = new ServiceEngine(this.zc,this);
@@ -320,9 +322,7 @@ class ZationWorker extends SCWorker
 
         if(this.zc.mainConfig.usePanel) {
             // noinspection JSUnresolvedFunction,TypeScriptValidateJSTypes
-            this.app.use(`${serverPath}/panel`,
-                express.static
-                (path.dirname(require.resolve(this.zc.mainConfig.panelModule+'/package.json'))+'/build'));
+            this.app.use(`${serverPath}/panel`, express.static(__dirname + '/../public/panel'));
         }
 
         // noinspection JSUnresolvedFunction
