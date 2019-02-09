@@ -603,7 +603,7 @@ class ConfigChecker
                 nameof<Service>(s => s.create),
                 service,
                 'function',
-                true,
+                false,
                 ConfigNames.SERVICE,
                 this.ceb,
                 target
