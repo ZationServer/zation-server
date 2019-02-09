@@ -2,51 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="I">
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/asset-manifest.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/favicon/android-chrome-192x192.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/favicon/android-chrome-512x512.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/favicon/apple-touch-icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/favicon/browserconfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/favicon/favicon-16x16.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/favicon/favicon-32x32.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/favicon/favicon.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/favicon/mstile-150x150.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/favicon/safari-pinned-tab.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/favicon/site.webmanifest" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/manifest.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/precache-manifest.cffd4aa49ba7ff99acc4130dcdd6da8a.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/service-worker.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/css/1.37a21e24.chunk.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/css/1.37a21e24.chunk.css.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/css/main.e23f6c91.chunk.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/css/main.e23f6c91.chunk.css.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/1.d7bbb770.chunk.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/1.d7bbb770.chunk.js.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/main.efb8df13.chunk.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/main.efb8df13.chunk.js.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/runtime~main.91619c98.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/runtime~main.91619c98.js.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/NexaBold.c9f309b3.otf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/NexaLight.12108809.otf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/fa-brands-400.3186ebd2.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/fa-brands-400.662c24d0.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/fa-brands-400.a995bae1.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/fa-brands-400.c7d7a2a1.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/fa-brands-400.e4fed0a5.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/fa-regular-400.304f31f4.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/fa-regular-400.6a9d786e.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/fa-regular-400.72f15fa7.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/fa-regular-400.80efa56b.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/fa-regular-400.fcb220ee.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/fa-solid-900.20c189aa.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/fa-solid-900.3638e62e.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/fa-solid-900.9a52a4e9.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/fa-solid-900.9c73abbd.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/fa-solid-900.c8ea4c79.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/zation-logo.d46e3e57.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/media/zationLogo.fe76f2a9.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/panel/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/main/zationMaster.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationMaster.ts" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -75,11 +32,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="376">
-              <caret line="57" column="23" selection-start-line="57" selection-start-column="23" selection-end-line="57" selection-end-column="23" />
+            <state relative-caret-position="30">
+              <caret line="2" column="19" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/lib/main/zationMaster.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="26" column="52" selection-start-line="26" selection-start-column="52" selection-end-line="26" selection-end-column="52" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -254,7 +223,6 @@
         <option value="$PROJECT_DIR$/src/lib/helper/tools/zationReqTools.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/input/inputReqProcessor.ts" />
         <option value="$PROJECT_DIR$/test/src/helper/tools/zationReqTools.test.js" />
-        <option value="$PROJECT_DIR$/src/lib/main/zationMaster.ts" />
         <option value="$PROJECT_DIR$/src/lib/main/zation.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/processor/socketProcessor.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/response/returner.ts" />
@@ -291,6 +259,7 @@
         <option value="$PROJECT_DIR$/src/lib/helper/configs/mainConfig.ts" />
         <option value="$PROJECT_DIR$/src/lib/main/zationConfig.ts" />
         <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/src/lib/main/zationMaster.ts" />
       </list>
     </option>
   </component>
@@ -334,53 +303,7 @@
               <item name="zation-server" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="config" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="configs" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="helper" type="462c0819:PsiDirectoryNode" />
-              <item name="services" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -1101,7 +1024,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1906574000" />
+    <option name="totallyTimeSpent" value="1906677000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1193,16 +1116,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
           <caret line="6" selection-start-line="6" selection-end-line="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/main/zationMaster.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="602">
-          <caret line="252" selection-start-line="252" selection-end-line="252" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1522,8 +1435,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="376">
-          <caret line="57" column="23" selection-start-line="57" selection-start-column="23" selection-end-line="57" selection-end-column="23" />
+        <state relative-caret-position="30">
+          <caret line="2" column="19" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/main/zationMaster.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="26" column="52" selection-start-line="26" selection-start-column="52" selection-end-line="26" selection-end-column="52" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
