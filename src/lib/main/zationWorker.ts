@@ -1327,7 +1327,7 @@ class ZationWorker extends SCWorker
             useScUws    : this.zc.mainConfig.useScUws,
             workerStartedTimestamp : this.workerStartedTimeStamp,
             serverStartedTimestamp : this.serverStartedTimeStamp,
-            panelUserMap : this.panelEngine.getPanelUserMap(),
+            panelAuthUserMap : this.panelEngine.getPanelUserMap(),
             generalSystemInfo : (await SystemInfo.getGeneralInfo()),
             defaultUserName : this.aePreparedPart.getDefaultGroup(),
             //dynamic properties
