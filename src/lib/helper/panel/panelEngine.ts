@@ -21,11 +21,13 @@ class PanelEngine
     private zw : ZationWorker;
     private zc : ZationConfig;
 
-    private panelUserMap : Record<string,string>;
+    private readonly panelUserMap : Record<string,string>;
 
     private readonly panelAccessData : object[] = [];
 
     private alreadyFirstPong : boolean = false;
+
+    private readonly idData;
 
     constructor(zw : ZationWorker,authUserGroups : Record<string,AuthUserGroupConfig>)
     {
@@ -36,6 +38,10 @@ class PanelEngine
             this.loadPanelAccessData();
             this.createPingInterval();
             this.registerPanelInEvent();
+            this.idData = {
+                instanceId  : this.zw.options.instanceId,
+                workerFullId: this.zw.getFullWorkerId()
+            }
         }
     }
 
@@ -77,7 +83,7 @@ class PanelEngine
     private createPingInterval()
     {
         setInterval(() => {
-            this.pubInPanel('ping')
+            this.pubInPanel('ping');
         },5000);
     }
 
@@ -130,7 +136,11 @@ class PanelEngine
     {
         if(this.isPanelInUse()) {
             // noinspection TypeScriptValidateJSTypes
-            this.zw.scServer.exchange.publish(ZationChannel.PANEL_OUT,ChExchangeEngine.buildData(eventName,data));
+            this.zw.scServer.exchange.publish(ZationChannel.PANEL_OUT,ChExchangeEngine.buildData(eventName,
+                {
+                id : this.idData,
+                info : data
+            }));
         }
     }
 

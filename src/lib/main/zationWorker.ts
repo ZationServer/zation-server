@@ -21,7 +21,6 @@ import cookieParser = require('cookie-parser');
 import bodyParser = require('body-parser');
 import fileUpload = require('express-fileupload');
 import url = require('url');
-import path = require("path");
 import Zation = require('./zation');
 import ZationConfig = require('./zationConfig');
 import ConfigPreCompiler = require('../helper/config/configPreCompiler');
@@ -1316,9 +1315,6 @@ class ZationWorker extends SCWorker
     {
         return {
             //static props
-            instanceId  : this.options.instanceId,
-            pid         : process.pid,
-            workerFullId: this.workerFullId,
             brokerCount : this.zc.mainConfig.brokers,
             hostname    : this.zc.mainConfig.hostname,
             port        : this.zc.mainConfig.port,
@@ -1329,12 +1325,14 @@ class ZationWorker extends SCWorker
             environment : this.zc.mainConfig.environment,
             debug       : this.zc.mainConfig.debug,
             useScUws    : this.zc.mainConfig.useScUws,
-            workerStarted : this.workerStartedTimeStamp,
-            serverStarted : this.serverStartedTimeStamp,
+            workerStartedTimestamp : this.workerStartedTimeStamp,
+            serverStartedTimestamp : this.serverStartedTimeStamp,
             panelUserMap : this.panelEngine.getPanelUserMap(),
+            generalSystemInfo : (await SystemInfo.getGeneralInfo()),
+            defaultUserName : this.aePreparedPart.getDefaultGroup(),
             //dynamic properties
             clientCount : this.scServer.clientsCount,
-            systemInfo  : (await SystemInfo.getInfo()),
+            systemInfo  : (await SystemInfo.getUpdatedInfo()),
             user: {
                 defaultUserGroupCount : this.getPreparedSmallBag().getWorkerDefaultUserGroupCount(),
                 authUserGroups : this.getPreparedSmallBag().getWorkerAuthUserGroupsCount()
@@ -1349,9 +1347,6 @@ class ZationWorker extends SCWorker
         setInterval(async () => {
             if(this.panelEngine.isPanelInUse()) {
                 this.panelEngine.update('mainUpdate',{
-                    instanceId   : this.options.instanceId,
-                    pid          : process.pid,
-                    workerFullId : this.workerFullId,
                     systemInfo   : (await SystemInfo.getUpdatedInfo()),
                     clientCount  : this.scServer.clientsCount,
                     user: {
@@ -1371,9 +1366,6 @@ class ZationWorker extends SCWorker
                     tmpWsRPM = status.wsRPM;
                     tmpHttpRPM = status.httpRPM;
                     this.panelEngine.update('workerStatus',{
-                        instanceId      : this.options.instanceId,
-                        pid             : process.pid,
-                        workerFullId    : this.workerFullId,
                         avgHttpRequests : status.httpRPM,
                         avgWsRequests   : status.wsRPM
                     });
