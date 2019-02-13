@@ -36,7 +36,6 @@ class PanelEngine
         this.panelUserMap = this.initPanelUserMap(authUserGroups);
         if(this.zc.mainConfig.usePanel) {
             this.loadPanelAccessData();
-            this.createPingInterval();
             this.registerPanelInEvent();
             this.idData = {
                 instanceId  : this.zw.options.instanceId,
@@ -78,13 +77,6 @@ class PanelEngine
         data['p'] = this.zw.getPreparedSmallBag().hashSha512(config.password);
         data['u'] = config.username;
         this.panelAccessData.push(data);
-    }
-
-    private createPingInterval()
-    {
-        setInterval(() => {
-            this.pubInPanel('ping');
-        },5000);
     }
 
     private registerPanelInEvent()

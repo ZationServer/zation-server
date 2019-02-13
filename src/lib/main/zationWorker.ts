@@ -84,7 +84,8 @@ class ZationWorker extends SCWorker
 
     private variableStorage : object = {};
 
-    private workerStatusUpdate : () => void;
+    private httpRequestCount = 0;
+    private wsRequestCount = 0;
 
     //prepareClient
     private fullClientJs : string;
@@ -261,6 +262,16 @@ class ZationWorker extends SCWorker
         this.initSocketMiddleware();
         this.initScServerEvents();
 
+        if(this.zc.mainConfig.usePanel) {
+            this.scServer.on('_connection', (socket) => {
+                // The connection event counts as a WS request
+                this.wsRequestCount++;
+                socket.on('message', () => {
+                    this.wsRequestCount++;
+                });
+            });
+        }
+
         //START SOCKET SERVER
         this.scServer.on('connection', async (socket : Socket,conState) => {
 
@@ -275,6 +286,7 @@ class ZationWorker extends SCWorker
             Logger.printDebugInfo(`Socket with id: ${socket.id} is connected!`);
 
             socket.on('ZATION.SERVER.REQUEST', (data, respond) => {
+
                 // noinspection JSUnusedLocalSymbols
                 const p = this.zation.run(
                     {
@@ -295,6 +307,12 @@ class ZationWorker extends SCWorker
 
     private async startHttpServer()
     {
+        if(this.zc.mainConfig.usePanel) {
+            this.httpServer.on('request', () => {
+                this.httpRequestCount++;
+            });
+        }
+
         this.app = express();
 
         const serverPath = this.zc.mainConfig.path;
@@ -1337,13 +1355,16 @@ class ZationWorker extends SCWorker
                 defaultUserGroupCount : this.getPreparedSmallBag().getWorkerDefaultUserGroupCount(),
                 authUserGroups : this.getPreparedSmallBag().getWorkerAuthUserGroupsCount()
             },
-            avgHttpRequests : this.getStatus().httpRPM,
-            avgWsRequests : this.getStatus().wsRPM
+            httpRequests : this.httpRequestCount,
+            wsRequests : this.wsRequestCount
         }
     }
 
     private async initPanelUpdates() : Promise<void>
     {
+        let tmpWsReq = 0;
+        let tmpHttpReq = 0;
+
         setInterval(async () => {
             if(this.panelEngine.isPanelInUse()) {
                 this.panelEngine.update('mainUpdate',{
@@ -1354,50 +1375,20 @@ class ZationWorker extends SCWorker
                         authUserGroups : this.getPreparedSmallBag().getWorkerAuthUserGroupsCount()
                     }
                 });
-            }
-        },1000);
 
-        let tmpHttpRPM;
-        let tmpWsRPM;
-        this.workerStatusUpdate = () => {
-            if(this.panelEngine.isPanelInUse()) {
-                const status = this.getStatus();
-                if(status.wsRPM !== tmpWsRPM || status.httpRPM !== tmpHttpRPM) {
-                    tmpWsRPM = status.wsRPM;
-                    tmpHttpRPM = status.httpRPM;
+                if(this.wsRequestCount !== tmpWsReq || this.httpRequestCount !== tmpHttpReq) {
+                    tmpWsReq = this.wsRequestCount;
+                    tmpHttpReq = this.httpRequestCount;
                     this.panelEngine.update('workerStatus',{
-                        avgHttpRequests : status.httpRPM,
-                        avgWsRequests   : status.wsRPM
+                        httpRequests : this.httpRequestCount,
+                        wsRequests   : this.wsRequestCount
                     });
                 }
-
             }
-        };
-    }
 
-    //override
-    start()
-    {
-        this._httpRequestCount = 0;
-        this._wsRequestCount = 0;
-        this._httpRPM = 0;
-        this._wsRPM = 0;
-
-        if (this._statusInterval != null) {
-            clearInterval(this._statusInterval);
-        }
-
-        this._statusInterval = setInterval(() => {
-            this._calculateStatus.bind(this);
-            if(this.workerStatusUpdate){
-                this.workerStatusUpdate();
-            }
-        }, this.options.workerStatusInterval);
-
-        const runResult = this.run();
-
-        return Promise.resolve(runResult)
-            .then(this.startHTTPServer.bind(this));
+            this.httpRequestCount = 0;
+            this.wsRequestCount = 0;
+        },1000);
     }
 
     getServerVersion() : string
