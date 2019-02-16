@@ -44,6 +44,7 @@ import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
 import ViewEngine = require("../helper/views/viewEngine");
 import SystemInfo = require("../helper/tools/systemInfo");
 import BagExtensionEngine from "../helper/bagExtension/bagExtensionEngine";
+import {NodeInfo} from "../helper/tools/nodeInfo";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -1331,7 +1332,7 @@ class ZationWorker extends SCWorker
 
     public async getFirstPanelInfo() : Promise<object>
     {
-        return {
+        const infos =  {
             //static props
             brokerCount : this.zc.mainConfig.brokers,
             hostname    : this.zc.mainConfig.hostname,
@@ -1340,9 +1341,9 @@ class ZationWorker extends SCWorker
             postKey     : this.zc.mainConfig.postKey,
             secure      : this.zc.mainConfig.secure,
             appName     : this.zc.mainConfig.appName,
-            environment : this.zc.mainConfig.environment,
             debug       : this.zc.mainConfig.debug,
             useScUws    : this.zc.mainConfig.useScUws,
+            ip          : this.getPreparedSmallBag().getServerIpAddress(),
             workerStartedTimestamp : this.workerStartedTimeStamp,
             serverStartedTimestamp : this.serverStartedTimeStamp,
             panelAuthUserMap : this.panelEngine.getPanelUserMap(),
@@ -1357,7 +1358,15 @@ class ZationWorker extends SCWorker
             },
             httpRequests : this.httpRequestCount,
             wsRequests : this.wsRequestCount
+        };
+        if(this.isLeader){
+            //nodeInfo
+            const brokerInfo = (await NodeInfo.getBrokerInfo(this));
+            infos['brokers'] = brokerInfo.brokers;
+            infos['cBrokers'] = brokerInfo.cBrokers;
+            infos['master'] = await NodeInfo.getMasterInfo(this);
         }
+        return infos;
     }
 
     private async initPanelUpdates() : Promise<void>
@@ -1389,6 +1398,21 @@ class ZationWorker extends SCWorker
             this.httpRequestCount = 0;
             this.wsRequestCount = 0;
         },1000);
+
+        if(this.isLeader){
+            //brokerInfo
+            setInterval(async () => {
+                if(this.panelEngine.isPanelInUse()){
+                    const brokerInfo = (await NodeInfo.getBrokerInfo(this));
+                    this.panelEngine.update('node',{
+                        brokers : brokerInfo.brokers,
+                        cBrokers : brokerInfo.cBrokers,
+                        master : (await NodeInfo.getMasterInfo(this))
+                    });
+                }
+            },4000);
+        }
+
     }
 
     getServerVersion() : string

@@ -6,6 +6,8 @@ GitHub: LucaCode
 
 import ZationConfig         = require("./zationConfig");
 import Logger               = require("../helper/logger/logger");
+import SystemInfo = require("../helper/tools/systemInfo");
+import {BrokerMessageActions} from "../helper/constants/brokerMessageActions";
 const SCBroker              = require('socketcluster/scbroker');
 const scClusterBrokerClient = require('scc-broker-client');
 
@@ -22,8 +24,6 @@ class ZationBroker extends SCBroker
     // noinspection JSUnusedGlobalSymbols
     async run()
     {
-        await this.startZBroker();
-
         if (this.options.clusterStateServerHost) {
             this.clusterClient =
                 scClusterBrokerClient.attach(this, {
@@ -36,6 +36,8 @@ class ZationBroker extends SCBroker
                 noErrorLogging : !this.zc.mainConfig.scConsoleLog
             });
         }
+
+        await this.startZBroker();
     }
 
     private async startZBroker()
@@ -48,7 +50,32 @@ class ZationBroker extends SCBroker
         //setLogger
         Logger.setZationConfig(this.zc);
         Logger.printStartDebugInfo(`The Broker with id ${this.id} begins the start process.`,false,true);
+
+        Logger.startStopWatch();
+        this.initBrokerEvents();
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has init broker events.`,true);
+
         Logger.printStartDebugInfo(`The Broker with id ${this.id} is started.`,false);
+    }
+
+    private initBrokerEvents()
+    {
+        this.on('message', async (data, respond) => {
+            if(data.action === BrokerMessageActions.INFO){
+                respond(null,{
+                    id : this.id,
+                    broker : {
+                        pid    : process.pid,
+                        system : (await SystemInfo.getPidInfo()),
+                        brokerStartedTimestamp  : this.brokerStartedTimeStamp
+                    },
+                    cBrokers : this.clusterClient ? this.clusterClient.sccBrokerURIList : []
+                });
+            }
+            else{
+                respond(new Error('Unknown action'));
+            }
+        });
     }
 }
 

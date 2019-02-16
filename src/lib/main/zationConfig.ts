@@ -90,7 +90,7 @@ class ZationConfig {
             showConfigWarnings: true,
             port: 3000,
             hostname: 'localhost',
-            environment: 'dev',
+            environment: 'prod',
             postKey: 'zation',
             path: '/zation',
             useAuth: true,

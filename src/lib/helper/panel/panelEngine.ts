@@ -39,7 +39,8 @@ class PanelEngine
             this.registerPanelInEvent();
             this.idData = {
                 instanceId  : this.zw.options.instanceId,
-                workerFullId: this.zw.getFullWorkerId()
+                workerFullId: this.zw.getFullWorkerId(),
+                workerId    : this.zw.id
             }
         }
     }

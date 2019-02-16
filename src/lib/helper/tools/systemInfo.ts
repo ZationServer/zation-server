@@ -47,6 +47,14 @@ class SystemInfo {
         }
     }
 
+    static async getPidInfo() : Promise<object>
+    {
+        const pidUsage = await SystemInfo.getPidUsage();
+        return {
+            cpu : pidUsage.cpu,
+            memory : pidUsage.memory / 1048576
+        }
+    }
 
 }
 
