@@ -73,7 +73,6 @@
   },
   "devDependencies": {
     "@types/chai": "4.1.7",
-    "@types/gulp-sass": "0.0.31",
     "@types/jquery": "3.3.22",
     "@types/mocha": "5.2.5",
     "cached-path-relative": "1.0.2",
@@ -84,7 +83,6 @@
     "gulp-ignore": "2.0.2",
     "gulp-optimize-js": "1.1.0",
     "gulp-replace": "1.0.0",
-    "gulp-sass": "4.0.1",
     "gulp-terser": "1.0.1",
     "gulp-typescript": "5.0.0-alpha.3",
     "minimatch": "3.0.4",
