@@ -24,6 +24,9 @@ class ZationBroker extends SCBroker
     // noinspection JSUnusedGlobalSymbols
     async run()
     {
+        let zcOptions = this.options.zationConfigWorkerTransport;
+        this.zc = new ZationConfig(zcOptions,true);
+
         if (this.options.clusterStateServerHost) {
             this.clusterClient =
                 scClusterBrokerClient.attach(this, {
@@ -43,9 +46,6 @@ class ZationBroker extends SCBroker
     private async startZBroker()
     {
         this.brokerStartedTimeStamp = Date.now();
-
-        let zcOptions = this.options.zationConfigWorkerTransport;
-        this.zc = new ZationConfig(zcOptions,true);
 
         //setLogger
         Logger.setZationConfig(this.zc);
