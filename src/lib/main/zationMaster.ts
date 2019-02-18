@@ -24,7 +24,7 @@ import {StarterConfig}         from "../helper/configs/starterConfig";
 
 class ZationMaster {
     private static instance: ZationMaster | null = null;
-    private static readonly version: string = '0.7.5';
+    private static readonly version: string = '0.7.6';
 
     private readonly serverStartedTimeStamp: number;
     private readonly zc: ZationConfig;

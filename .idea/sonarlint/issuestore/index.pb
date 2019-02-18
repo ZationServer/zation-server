@@ -170,3 +170,5 @@ O
 0src/lib/helper/constants/brokerMessageActions.ts,8/8/88cda7304681efac63b48be4e8c918fa3fe28de6
 P
  src/lib/helper/tools/nodeInfo.ts,0/6/0653425a2225c1bf1d89ffa7326d04905f36183e
+i
+9src/lib/public/assets/panel/static/js/2.13f19072.chunk.js,c/e/ce4f784bda59ce30cba3a5ed206e1b6cde5b3de0

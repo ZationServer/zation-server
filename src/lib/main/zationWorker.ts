@@ -1371,9 +1371,6 @@ class ZationWorker extends SCWorker
 
     private async initPanelUpdates() : Promise<void>
     {
-        let tmpWsReq = 0;
-        let tmpHttpReq = 0;
-
         setInterval(async () => {
             if(this.panelEngine.isPanelInUse()) {
                 this.panelEngine.update('mainUpdate',{
@@ -1382,19 +1379,11 @@ class ZationWorker extends SCWorker
                     user: {
                         defaultUserGroupCount : this.getPreparedSmallBag().getWorkerDefaultUserGroupCount(),
                         authUserGroups : this.getPreparedSmallBag().getWorkerAuthUserGroupsCount()
-                    }
+                    },
+                    httpRequests : this.httpRequestCount,
+                    wsRequests   : this.wsRequestCount
                 });
-
-                if(this.wsRequestCount !== tmpWsReq || this.httpRequestCount !== tmpHttpReq) {
-                    tmpWsReq = this.wsRequestCount;
-                    tmpHttpReq = this.httpRequestCount;
-                    this.panelEngine.update('workerStatus',{
-                        httpRequests : this.httpRequestCount,
-                        wsRequests   : this.wsRequestCount
-                    });
-                }
             }
-
             this.httpRequestCount = 0;
             this.wsRequestCount = 0;
         },1000);
