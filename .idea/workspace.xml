@@ -2,11 +2,31 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="I">
+      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/css/2.e443d524.chunk.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/css/2.e443d524.chunk.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/css/main.1d57b01f.chunk.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/css/main.1d57b01f.chunk.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/2.13f19072.chunk.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/2.13f19072.chunk.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/main.29fdf5db.chunk.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/main.29fdf5db.chunk.js.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gulpFile.js" beforeDir="false" afterPath="$PROJECT_DIR$/gulpFile.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/main/zationBroker.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationBroker.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/asset-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/asset-manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/precache-manifest.faeea7cefaea5a1565718b908a131c59.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/precache-manifest.09d36fa406b1863524d47bff80e373c2.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/service-worker.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/service-worker.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/static/css/1.55a787a1.chunk.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/static/css/1.55a787a1.chunk.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/static/css/main.28f091ad.chunk.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/static/css/main.28f091ad.chunk.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/1.dd06cf44.chunk.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/1.dd06cf44.chunk.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/main.0c8c8cee.chunk.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/main.0c8c8cee.chunk.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/runtime~main.91619c98.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/runtime~main.07c19649.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/runtime~main.91619c98.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/runtime~main.07c19649.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/public/panel/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/panel/index.html" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -85,10 +105,20 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="164">
-              <caret line="59" column="15" lean-forward="true" selection-start-line="59" selection-start-column="15" selection-end-line="59" selection-end-column="15" />
+            <state relative-caret-position="425">
+              <caret line="79" column="22" selection-start-line="79" selection-start-column="22" selection-end-line="79" selection-end-column="22" />
             </state>
           </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/lib/public/assets/panel/static/js/2.13f19072.chunk.js">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/lib/public/panel/index.html">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -563,21 +593,6 @@
               <item name="lib" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="zation-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="zation-server" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -923,7 +938,7 @@
       <workItem from="1549744812042" duration="19426000" />
       <workItem from="1550004078763" duration="940000" />
       <workItem from="1550044063704" duration="3422000" />
-      <workItem from="1550218738569" duration="22079000" />
+      <workItem from="1550218738569" duration="23560000" />
     </task>
     <task id="LOCAL-00064" summary="improve validation engine&#10;add new regex name option&#10;add strictType and convertType option&#10;improve config checker">
       <created>1541205117372</created>
@@ -1304,7 +1319,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1965300000" />
+    <option name="totallyTimeSpent" value="1966781000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1319,7 +1334,7 @@
     <frame x="0" y="0" width="1680" height="1050" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.7041139" visible="true" weight="0.16395418" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7041139" visible="true" weight="0.16395418" />
       <window_info id="Structure" order="1" sideWeight="0.29588607" side_tool="true" weight="0.16395418" />
       <window_info id="Favorites" order="2" sideWeight="0.10449927" side_tool="true" weight="0.2081138" />
       <window_info id="Gulp" order="3" side_tool="true" />
@@ -1334,7 +1349,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Statistic" order="8" weight="0.71734697" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5081374" side_tool="true" visible="true" weight="0.35510203" />
-      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49186257" visible="true" weight="0.35510203" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" sideWeight="0.49186257" visible="true" weight="0.35510203" />
       <window_info anchor="bottom" id="Version Control" order="11" sideWeight="0.49964765" weight="0.24081632" />
       <window_info anchor="bottom" id="Messages" order="12" visible="true" weight="0.14337349" />
       <window_info anchor="bottom" id="TypeScript" order="13" weight="0.19489796" />
@@ -1405,7 +1420,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="add support for attached http content in bag" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/lib/public/panel/favicon/mstile-150x150.png" />
     <entry file="file://$PROJECT_DIR$/src/lib/public/panel/favicon/apple-touch-icon.png" />
     <entry file="file://$PROJECT_DIR$/src/lib/public/panel/favicon/safari-pinned-tab.svg" />
     <entry file="file://$PROJECT_DIR$/src/lib/public/panel/favicon/android-chrome-192x192.png" />
@@ -1628,9 +1642,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/public/panel/index.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/helper/auth/aePreparedPart.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="915">
@@ -1814,10 +1825,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/public/assets/panel/static/js/2.13f19072.chunk.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/public/panel/index.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="59" column="15" lean-forward="true" selection-start-line="59" selection-start-column="15" selection-end-line="59" selection-end-column="15" />
+        <state relative-caret-position="425">
+          <caret line="79" column="22" selection-start-line="79" selection-start-column="22" selection-end-line="79" selection-end-column="22" />
         </state>
       </provider>
     </entry>
