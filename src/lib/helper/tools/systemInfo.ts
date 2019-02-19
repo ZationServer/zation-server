@@ -45,8 +45,6 @@ class SystemInfo {
         promises.push(OsUtils.getMemoryUsage().then((r) => memMb = r));
         await Promise.all(promises);
 
-        console.log(drive);
-
         // noinspection JSUnusedAssignment
         return {
             instance : {
