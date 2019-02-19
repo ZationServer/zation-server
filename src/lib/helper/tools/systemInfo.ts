@@ -4,18 +4,20 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const osu : any    = require('node-os-utils');
+import OsUtils from "./osUtils";
+
 const pidUsage     = require('pidusage');
+import {cpus,platform}        from 'os';
 
 class SystemInfo {
 
     static async getGeneralInfo() : Promise<object> {
-        const oos = await osu.os.oos();
+        const cpusInfo = cpus();
         return {
-            cpuModel : osu.cpu.model(),
-            cpuCount : osu.cpu.count(),
-            platform : osu.os.platform(),
-            oos : oos
+            cpuModel : cpusInfo[0].model,
+            cpuCount : cpusInfo.length,
+            platform : platform(),
+            oos : (await OsUtils.getOs())
         };
     }
 
@@ -31,17 +33,33 @@ class SystemInfo {
 
     static async getUpdatedInfo() : Promise<object>
     {
-        const pidUsage = await SystemInfo.getPidUsage();
+        let pidUsage;
+        let drive;
+        let cpuUsage;
+        let memMb;
 
+        let promises : Promise<any>[] = [];
+        promises.push(SystemInfo.getPidUsage().then((r) => pidUsage = r));
+        promises.push(OsUtils.getDriveUsed().then((r) => drive = r));
+        promises.push(OsUtils.getCpuUsage().then((r) => cpuUsage = r));
+        promises.push(OsUtils.getMemoryUsage().then((r) => memMb = r));
+        await Promise.all(promises);
+
+        console.log(drive);
+
+        // noinspection JSUnusedAssignment
         return {
             instance : {
-                drive : (await osu.drive.used()),
-                memory : (await osu.mem.used()),
-                cpu : (await osu.cpu.usage())
+                drive : drive,
+                memory : {
+                    totalMemMb : memMb.totalMemMb,
+                    usedMemMb : memMb.usedMemMb
+                },
+                cpu : cpuUsage
             },
             pid : {
                 cpu : pidUsage.cpu,
-                memory : pidUsage.memory / 1048576
+                memory : pidUsage.memory / 1e+6
             }
         }
     }
@@ -51,7 +69,7 @@ class SystemInfo {
         const pidUsage = await SystemInfo.getPidUsage();
         return {
             cpu : pidUsage.cpu,
-            memory : pidUsage.memory / 1048576
+            memory : pidUsage.memory / 1e+6
         }
     }
 
