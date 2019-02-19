@@ -1,10 +1,10 @@
 self.__precacheManifest = [
   {
-    "revision": "c7d7a2a1781e8da1dc85deb1e4f39b84",
-    "url": "/zation/assets/panel/static/media/fa-brands-400.c7d7a2a1.woff"
+    "revision": "662c24d02ff1711bd01ec3868df8680b",
+    "url": "/zation/assets/panel/static/media/fa-brands-400.662c24d0.woff2"
   },
   {
-    "revision": "42cbb7351c53e32ccf0a",
+    "revision": "15630ce1965e2c69f365",
     "url": "/zation/assets/panel/static/css/main.7ffc63bb.chunk.css"
   },
   {
@@ -32,16 +32,12 @@ self.__precacheManifest = [
     "url": "/zation/assets/panel/static/media/user.c50d87dc.svg"
   },
   {
-    "revision": "c9f309b3d47969ecac64a77a6c672594",
-    "url": "/zation/assets/panel/static/media/NexaBold.c9f309b3.otf"
-  },
-  {
     "revision": "12108809f49c49bcdc126dcecc938761",
     "url": "/zation/assets/panel/static/media/NexaLight.12108809.otf"
   },
   {
-    "revision": "662c24d02ff1711bd01ec3868df8680b",
-    "url": "/zation/assets/panel/static/media/fa-brands-400.662c24d0.woff2"
+    "revision": "c9f309b3d47969ecac64a77a6c672594",
+    "url": "/zation/assets/panel/static/media/NexaBold.c9f309b3.otf"
   },
   {
     "revision": "3186ebd2918491445ea391a4f74e8dd7",
@@ -52,8 +48,12 @@ self.__precacheManifest = [
     "url": "/zation/assets/panel/static/media/fa-brands-400.a995bae1.ttf"
   },
   {
-    "revision": "42cbb7351c53e32ccf0a",
-    "url": "/zation/assets/panel/static/js/main.42cbb735.chunk.js"
+    "revision": "c7d7a2a1781e8da1dc85deb1e4f39b84",
+    "url": "/zation/assets/panel/static/media/fa-brands-400.c7d7a2a1.woff"
+  },
+  {
+    "revision": "15630ce1965e2c69f365",
+    "url": "/zation/assets/panel/static/js/main.15630ce1.chunk.js"
   },
   {
     "revision": "6a9d786e67d54419d8629081fbb555d6",
@@ -84,12 +84,12 @@ self.__precacheManifest = [
     "url": "/zation/assets/panel/static/media/fa-solid-900.9a52a4e9.eot"
   },
   {
-    "revision": "3638e62ea50e6f5859b6a15276c25c87",
-    "url": "/zation/assets/panel/static/media/fa-solid-900.3638e62e.woff2"
-  },
-  {
     "revision": "9c73abbdbd6492778680163269b68345",
     "url": "/zation/assets/panel/static/media/fa-solid-900.9c73abbd.woff"
+  },
+  {
+    "revision": "3638e62ea50e6f5859b6a15276c25c87",
+    "url": "/zation/assets/panel/static/media/fa-solid-900.3638e62e.woff2"
   },
   {
     "revision": "20c189aa192501e4ec907d5f84e8fbb1",
@@ -100,7 +100,7 @@ self.__precacheManifest = [
     "url": "/zation/assets/panel/static/css/2.e443d524.chunk.css"
   },
   {
-    "revision": "bb202a076e2e74985d34694108f5f6e0",
+    "revision": "f1432c005f09ae65b9ee47a052271033",
     "url": "/zation/assets/panel/index.html"
   }
 ];

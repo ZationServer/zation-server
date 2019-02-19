@@ -58,6 +58,11 @@ class AuthEngine
             const authUserGroup = authToken.zationAuthUserGroup;
 
             if(authUserGroup !== undefined) {
+
+                if(authToken.zationOnlyPanelToken){
+                    throw new TaskError(MainErrors.tokenWithAuthGroupAndOnlyPanel);
+                }
+
                 if (this.checkIsIn(authUserGroup)) {
                     this.currentUserGroup = authUserGroup;
                     this.currentDefault = false;

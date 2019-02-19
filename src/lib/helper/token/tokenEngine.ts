@@ -80,6 +80,13 @@ class TokenEngine
                     }
                 }
 
+                //update panel user set
+                if(!oldToken.zationOnlyPanelToken && data.zationOnlyPanelToken){
+                    this.worker.getPanelUserSet().add(this.shBridge.getSocket());
+                }
+                else if(oldToken.zationOnlyPanelToken && !data.zationOnlyPanelToken) {
+                    this.worker.getPanelUserSet().remove(this.shBridge.getSocket());
+                }
             }
         }
     }

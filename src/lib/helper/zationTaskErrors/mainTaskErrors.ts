@@ -208,6 +208,15 @@ export = {
         fromZationSystem : true
     },
 
+    tokenWithAuthGroupAndOnlyPanel   : {
+        name          : 'tokenWithAuthGroupAndOnlyPanel',
+        description   : 'Token with auth group and only panel!',
+        type          : ErrorType.TOKEN_ERROR,
+        private       : true,
+        sendInfo      : false,
+        fromZationSystem : true
+    },
+
     wrongPanelAuthData   : {
         name          : 'wrongPanelAuthData',
         description   : 'Wrong panel auth data!',

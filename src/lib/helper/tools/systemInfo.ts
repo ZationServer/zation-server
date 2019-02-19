@@ -37,7 +37,6 @@ class SystemInfo {
             instance : {
                 drive : (await osu.drive.used()),
                 memory : (await osu.mem.used()),
-                net : (await osu.netstat.inOut()).total,
                 cpu : (await osu.cpu.usage())
             },
             pid : {

@@ -1901,7 +1901,7 @@ class SmallBag
        const authGroups = this.worker.getAEPreparedPart().getAuthGroups();
        for(let group in authGroups) {
            if(authGroups.hasOwnProperty(group)) {
-               res[group] = this.worker.getAuthUserGroupToScMapper().getValues(group).length;
+               res[group] = this.worker.getAuthUserGroupToScMapper().getLengthFromKey(group);
            }
        }
        return res;
@@ -1913,7 +1913,16 @@ class SmallBag
      * Returns count of connected default user groups sockets (only this worker).
      */
     getWorkerDefaultUserGroupCount() : number {
-        return this.worker.getDefaultUserGroupsMap().length;
+        return this.worker.getDefaultUserGroupSet().getLength();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns count of connected only panel sockets (only this worker).
+     */
+    getWorkerOnlyPanelSocketsCount() : number {
+        return this.worker.getDefaultUserGroupSet().getLength();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1922,7 +1931,7 @@ class SmallBag
      * Returns count of auth user group sockets (only this worker).
      */
     getWorkerAuthUserGroupCount(authUserGroup : string) : number {
-        return this.worker.getAuthUserGroupToScMapper().getValues(authUserGroup).length;
+        return this.worker.getAuthUserGroupToScMapper().getLengthFromKey(authUserGroup);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1947,7 +1956,16 @@ class SmallBag
      * Returns array of default user group sockets (only this worker).
      */
     getWorkerDefaultUserGroupSockets() : Socket[] {
-        return this.worker.getDefaultUserGroupsMap().toArray();
+        return this.worker.getDefaultUserGroupSet().toArray();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns array of only panel sockets (only this worker).
+     */
+    getWorkerOnlyPanelSockets() : Socket[] {
+        return this.worker.getPanelUserSet().toArray();
     }
 
     // noinspection JSUnusedGlobalSymbols

@@ -36,7 +36,6 @@ import IdTools = require("../helper/tools/idTools");
 import CIdChInfo = require("../helper/infoObjects/cIdChInfo");
 import SocketInfo = require("../helper/infoObjects/socketInfo");
 import CChInfo = require("../helper/infoObjects/cChInfo");
-import HashSet = require('hashset');
 import process = require("process");
 import PanelEngine = require("../helper/panel/panelEngine");
 import ZationTokenInfo = require("../helper/infoObjects/zationTokenInfo");
@@ -45,6 +44,7 @@ import ViewEngine = require("../helper/views/viewEngine");
 import SystemInfo = require("../helper/tools/systemInfo");
 import BagExtensionEngine from "../helper/bagExtension/bagExtensionEngine";
 import {NodeInfo} from "../helper/tools/nodeInfo";
+import {SocketSet} from "../helper/tools/socketSet";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -81,7 +81,8 @@ class ZationWorker extends SCWorker
     private mapCustomIdChToSc : Mapper<Socket> = new Mapper<Socket>();
 
     private mapAuthUserGroupToSc : Mapper<Socket> = new Mapper<Socket>();
-    private defaultUserGroup  = new HashSet();
+    private defaultUserGroupSet  = new SocketSet();
+    private panelUserSet = new SocketSet();
 
     private variableStorage : object = {};
 
@@ -279,10 +280,11 @@ class ZationWorker extends SCWorker
             //init sc variables
             socket.zationSocketVariables = {};
             socket.sid = IdTools.buildSid(this.options.instanceId,this.id,socket.id);
+            socket.tid = Date.now() + socket.id;
             socket.socketInfo = new SocketInfo(socket);
 
             this.initSocketEvents(socket);
-            this.defaultUserGroup.add(socket);
+            this.defaultUserGroupSet.add(socket);
 
             Logger.printDebugInfo(`Socket with id: ${socket.id} is connected!`);
 
@@ -991,9 +993,12 @@ class ZationWorker extends SCWorker
                 if(!!token.zationAuthUserGroup) {
                     this.mapAuthUserGroupToSc.removeValueFromKey(token.zationAuthUserGroup,socket);
                 }
+                if(token.zationOnlyPanelToken){
+                    this.panelUserSet.remove(socket);
+                }
             }
 
-            this.defaultUserGroup.remove(socket);
+            this.defaultUserGroupSet.remove(socket);
 
             await this.zc.emitEvent(this.zc.eventConfig.socketClose,this.getPreparedSmallBag(),socket,code,data);
         });
@@ -1024,7 +1029,11 @@ class ZationWorker extends SCWorker
                 }
                 if(!!token.zationAuthUserGroup) {
                     this.mapAuthUserGroupToSc.map(token.zationAuthUserGroup,socket);
-                    this.defaultUserGroup.remove(socket);
+                    this.defaultUserGroupSet.remove(socket);
+                }
+                else if(token.zationOnlyPanelToken){
+                    this.panelUserSet.add(socket);
+                    this.defaultUserGroupSet.remove(socket);
                 }
             }
             await this.zc.emitEvent(this.zc.eventConfig.socketAuthenticate,this.getPreparedSmallBag(),socket,token);
@@ -1042,9 +1051,12 @@ class ZationWorker extends SCWorker
                 if(!!token.zationAuthUserGroup) {
                     this.mapAuthUserGroupToSc.removeValueFromKey(token.zationAuthUserGroup,socket);
                 }
+                if(token.zationOnlyPanelToken){
+                    this.panelUserSet.remove(socket);
+                }
             }
             //no token = default
-            this.defaultUserGroup.add(socket);
+            this.defaultUserGroupSet.add(socket);
 
             await this.zc.emitEvent(this.zc.eventConfig.socketDeauthenticate,this.getPreparedSmallBag(),socket,token);
         });
@@ -1353,6 +1365,7 @@ class ZationWorker extends SCWorker
             clientCount : this.scServer.clientsCount,
             systemInfo  : (await SystemInfo.getUpdatedInfo()),
             user: {
+                panelUserCount : this.getPanelUserSet().getLength(),
                 defaultUserGroupCount : this.getPreparedSmallBag().getWorkerDefaultUserGroupCount(),
                 authUserGroups : this.getPreparedSmallBag().getWorkerAuthUserGroupsCount()
             },
@@ -1377,6 +1390,7 @@ class ZationWorker extends SCWorker
                     systemInfo   : (await SystemInfo.getUpdatedInfo()),
                     clientCount  : this.scServer.clientsCount,
                     user: {
+                        panelUserCount : this.getPanelUserSet().getLength(),
                         defaultUserGroupCount : this.getPreparedSmallBag().getWorkerDefaultUserGroupCount(),
                         authUserGroups : this.getPreparedSmallBag().getWorkerAuthUserGroupsCount()
                     },
@@ -1498,9 +1512,15 @@ class ZationWorker extends SCWorker
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getDefaultUserGroupsMap() : any
+    getDefaultUserGroupSet() : SocketSet
     {
-        return this.defaultUserGroup;
+        return this.defaultUserGroupSet;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    getPanelUserSet() : SocketSet
+    {
+        return this.panelUserSet;
     }
 
     // noinspection JSUnusedGlobalSymbols

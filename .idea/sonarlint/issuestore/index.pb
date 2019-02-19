@@ -170,5 +170,11 @@ O
 0src/lib/helper/constants/brokerMessageActions.ts,8/8/88cda7304681efac63b48be4e8c918fa3fe28de6
 P
  src/lib/helper/tools/nodeInfo.ts,0/6/0653425a2225c1bf1d89ffa7326d04905f36183e
-i
-9src/lib/public/assets/panel/static/js/2.13f19072.chunk.js,c/e/ce4f784bda59ce30cba3a5ed206e1b6cde5b3de0
+K
+src/lib/helper/sc/socket.ts,6/4/64bd52f7bd1c99227417b794404bf3a79fc1520f
+N
+src/lib/helper/tools/mapper.ts,f/5/f5615d19eb9324e48287bd1edb60f08fd6851ca5
+Q
+!src/lib/helper/tools/socketSet.ts,c/d/cd3d3bb2fd299c4e4b69e13a7c9b5d88836b18df
+Q
+!src/lib/helper/tools/simpleSet.ts,b/7/b7b15a17dd78663477a04776e6d2b720ac8152f2

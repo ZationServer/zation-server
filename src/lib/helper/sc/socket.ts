@@ -14,6 +14,7 @@ export interface Socket
 {
     id : string;
     sid : string;
+    tid : string;
     request : IncomingMessage;
     remoteAddress : string;
     exchange : any;

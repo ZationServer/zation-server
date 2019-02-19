@@ -13,7 +13,6 @@ import Logger                = require('../helper/logger/logger');
 import ZationConfig          = require('./zationConfig');
 import ConfigChecker         = require('../helper/config/configChecker');
 import ConfigErrorBag        = require('../helper/config/configErrorBag');
-import HashSet               = require('hashset');
 import TimeTools             = require('../helper/tools/timeTools');
 import ClientPrepare         = require('../helper/client/clientPrepare');
 import BackgroundTasksSetter = require("../helper/background/backgroundTasksLoader");
@@ -21,15 +20,16 @@ const  isWindows             = require('is-windows');
 import StateServerEngine     = require("../helper/cluster/stateServerEngine");
 import {WorkerMessageActions}  from "../helper/constants/workerMessageActions";
 import {StarterConfig}         from "../helper/configs/starterConfig";
+import {StringSet} from "../helper/tools/simpleSet";
 
 class ZationMaster {
     private static instance: ZationMaster | null = null;
-    private static readonly version: string = '0.7.8';
+    private static readonly version: string = '0.7.9';
 
     private readonly serverStartedTimeStamp: number;
     private readonly zc: ZationConfig;
-    private workerIds: any;
-    private brokerIds: any;
+    private workerIds: StringSet;
+    private brokerIds: StringSet;
     private master: any;
 
     //cluster
@@ -53,8 +53,8 @@ class ZationMaster {
             ZationMaster.instance = this;
 
             this.serverStartedTimeStamp = Date.now();
-            this.workerIds = new HashSet();
-            this.brokerIds = new HashSet();
+            this.workerIds = new StringSet();
+            this.brokerIds = new StringSet();
             this.zc = new ZationConfig(options);
 
             (async () => {
@@ -275,9 +275,7 @@ class ZationMaster {
         this.master.on('workerStart', (info) =>
         {
             let id = info.id;
-            // noinspection JSUnresolvedFunction
-            if(id  !== undefined && !this.workerIds.contains(id)) {
-                // noinspection JSUnresolvedFunction
+            if(id  !== undefined) {
                 this.workerIds.add(id);
             }
         });
@@ -286,9 +284,7 @@ class ZationMaster {
         this.master.on('brokerStart', (info) =>
         {
             let id = info.id;
-            // noinspection JSUnresolvedFunction
-            if(id  !== undefined && !this.brokerIds.contains(id)) {
-                // noinspection JSUnresolvedFunction
+            if(id  !== undefined) {
                 this.brokerIds.add(id);
             }
         });
@@ -322,7 +318,6 @@ class ZationMaster {
         {
             let id = info.id;
             if(id  !== undefined) {
-                // noinspection JSUnresolvedFunction
                 this.workerIds.remove(id);
             }
         });
@@ -332,7 +327,6 @@ class ZationMaster {
         {
             let id = info.id;
             if(id  !== undefined) {
-                // noinspection JSUnresolvedFunction
                 this.brokerIds.remove(id);
             }
         });
