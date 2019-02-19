@@ -178,3 +178,7 @@ Q
 !src/lib/helper/tools/socketSet.ts,c/d/cd3d3bb2fd299c4e4b69e13a7c9b5d88836b18df
 Q
 !src/lib/helper/tools/simpleSet.ts,b/7/b7b15a17dd78663477a04776e6d2b720ac8152f2
+c
+3src/lib/public/assets/favicon/safari-pinned-tab.svg,e/4/e46415b741a6cd3a9ac8dbd9b28c231a0f609db4
+O
+src/lib/helper/tools/osUtils.ts,b/9/b915749747813ab36e27a970dca7eacc65aeca45
