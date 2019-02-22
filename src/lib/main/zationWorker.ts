@@ -45,6 +45,7 @@ import SystemInfo = require("../helper/tools/systemInfo");
 import BagExtensionEngine from "../helper/bagExtension/bagExtensionEngine";
 import {NodeInfo} from "../helper/tools/nodeInfo";
 import {SocketSet} from "../helper/tools/socketSet";
+import OriginsEngine from "../helper/origins/originsEngine";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -67,6 +68,7 @@ class ZationWorker extends SCWorker
     private aePreparedPart : AEPreparedPart;
     private panelEngine : PanelEngine;
     private chAccessEngine : ChAccessEngine;
+    private originsEngine : OriginsEngine;
     private chConfigManager : ChConfigManager;
     private zation : Zation;
 
@@ -145,7 +147,10 @@ class ZationWorker extends SCWorker
         preCompiler.preCompile();
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has pre compiled configurations.`, true);
 
-
+        //Origins engine
+        Logger.startStopWatch();
+        this.originsEngine = new OriginsEngine(this.zc.mainConfig.origins);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the origins engine.`,true);
 
         //Services
         Logger.startStopWatch();
@@ -319,6 +324,23 @@ class ZationWorker extends SCWorker
         this.app = express();
 
         const serverPath = this.zc.mainConfig.path;
+        const serverPort = this.zc.mainConfig.port.toString();
+
+        this.app.use((req, res, next) => {
+            if(this.originsEngine.check(req.hostname,req.protocol,serverPort)){
+                res.setHeader('Access-Control-Allow-Origin', `${req.protocol}://${req.hostname}`);
+                res.header('Access-Control-Allow-Methods', 'GET, POST');
+                res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,contenttype');
+                res.header('Access-Control-Allow-Credentials', true);
+                return next();
+            }
+            else{
+                res.status(401);
+                res.write('Failed - Invalid origin: ' +
+                    `${req.protocol}://${req.hostname}:${serverPort}`);
+                res.end();
+            }
+        });
 
         //startCookieParser
         // noinspection JSUnresolvedFunction
@@ -342,7 +364,7 @@ class ZationWorker extends SCWorker
 
         if(this.zc.mainConfig.usePanel) {
             // noinspection JSUnresolvedFunction,TypeScriptValidateJSTypes
-            this.app.use(`${serverPath}/panel`, express.static(__dirname + '/../public/panel'));
+            this.app.use(`${serverPath}/panel/*`, express.static(__dirname + '/../public/panel'));
         }
 
         // noinspection JSUnresolvedFunction
@@ -731,26 +753,28 @@ class ZationWorker extends SCWorker
             }
         });
 
-        //ZATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
+        //ZATION CHECK ORIGINS
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_HANDSHAKE_WS, async (req, next) =>
         {
-            const userMidRes = await
-            this.zc.checkScMiddlewareEvent
-            (this.zc.eventConfig.scMiddlewareHandshakeWs,next,this.getPreparedSmallBag(),req);
-
-            if(userMidRes) {
-                next();
+            const parts = url.parse(req.headers.origin);
+            // @ts-ignore
+            if(this.originsEngine.check(parts.hostname,parts.protocol,parts.port)) {
+                if(await this.zc.checkScMiddlewareEvent
+                    (this.zc.eventConfig.scMiddlewareHandshakeWs,next,this.getPreparedSmallBag(),req)) {
+                    next();
+                }
+            }
+            else {
+                //origin fail
+                next(new Error('Failed to authorize socket handshake - Invalid origin: ' + req.origin));
             }
         });
 
         //ZATION NEED NOTHING TO DO, ONLY CHECK USER EVENT
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_EMIT, async (req, next) =>
         {
-            const userMidRes = await
-            this.zc.checkScMiddlewareEvent
-            (this.zc.eventConfig.scMiddlewareEmit,next,this.getPreparedSmallBag(),req);
-
-            if(userMidRes) {
+            if(await this.zc.checkScMiddlewareEvent
+                (this.zc.eventConfig.scMiddlewareEmit,next,this.getPreparedSmallBag(),req)) {
                 next();
             }
         });

@@ -225,7 +225,7 @@ class ZationMaster {
             ackTimeout : this.zc.mainConfig.ackTimeout || null,
             ipcAckTimeout : this.zc.mainConfig.ipcAckTimeout || null,
             socketUpgradeTimeout : this.zc.mainConfig.socketUpgradeTimeout || null,
-            origins : this.zc.mainConfig.origins || null,
+            origins : this.zc.mainConfig.scOrigins ? this.zc.mainConfig.scOrigins : '*:*',
             pingInterval : this.zc.mainConfig.pingInterval || null,
             pingTimeout : this.zc.mainConfig.pingTimeout || null,
             processTermTimeout : this.zc.mainConfig.processTermTimeout || null,

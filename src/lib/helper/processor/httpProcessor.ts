@@ -31,7 +31,7 @@ class HttpProcessor
                 Logger.logFileInfo(`Http Post Request id: ${reqId} -> `,req.body[zc.mainConfig.postKey]);
             }
 
-            HttpProcessor.setHeader(res,zc);
+            HttpProcessor.setHeader(res);
             // @ts-ignore
             const zationData = await JsonConverter.parse(req.body[zc.mainConfig.postKey]);
             return await HttpProcessor.mainProcess(req,res,zc,worker,zationData,reqId);
@@ -46,13 +46,13 @@ class HttpProcessor
             }
 
             if(ZationReqTools.isValidGetReq(query)) {
-                HttpProcessor.setHeader(res,zc);
+                HttpProcessor.setHeader(res);
                 const zationData = await ZationReqTools.convertGetRequest(query);
                 return await HttpProcessor.mainProcess(req,res,zc,worker,zationData,reqId);
             }
             else if(ZationReqTools.isValidValidationGetReq(query))
             {
-                HttpProcessor.setHeader(res,zc);
+                HttpProcessor.setHeader(res);
                 const zationData = await ZationReqTools.convertValidationGetRequest(query);
                 return await HttpProcessor.mainProcess(req,res,zc,worker,zationData,reqId);
             }
@@ -113,12 +113,8 @@ class HttpProcessor
         resp.end();
     }
 
-    private static setHeader(resp,zc : ZationConfig) : void {
+    private static setHeader(resp) : void {
         resp.setHeader('Content-Type', 'application/json');
-        resp.setHeader('Access-Control-Allow-Origin', zc.mainConfig.origins);
-        resp.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-        resp.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,contenttype');
-        resp.setHeader('Access-Control-Allow-Credentials', true);
     }
 
 }

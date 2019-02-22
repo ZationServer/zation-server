@@ -119,6 +119,7 @@ Main[nameof<MainConfig>(s => s.usePanel)]             = {types : ['boolean'],isO
 Main[nameof<MainConfig>(s => s.panelUser)]            = {types : ['object','array'],isOptional : true};
 Main[nameof<MainConfig>(s => s.clientJsPrepare)]      = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.path)]                 = {types : ['string'],isOptional : true};
+Main[nameof<MainConfig>(s => s.origins)]              = {types : ['string','null','array'],isOptional : true};
 
 Main[nameof<MainConfig>(s => s.authStart)]          = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.authStartDuration)]  = {types : ['number'],isOptional : true};
@@ -160,6 +161,7 @@ Main[nameof<MainConfig>(s => s.clusterStateServerReconnectRandomness)] = {types 
 
 //Sc
 Main[nameof<MainConfig>(s => s.scLogLevel)]                 = {types : ['number'],isOptional : true};
+Main[nameof<MainConfig>(s => s.scOrigins)]                  = {types : ['string','null'],isOptional : true};
 Main[nameof<MainConfig>(s => s.socketChannelLimit)]         = {types : ['number'],isOptional : true};
 Main[nameof<MainConfig>(s => s.crashWorkerOnError)]         = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.rebootWorkerOnCrash)]        = {types : ['boolean'],isOptional : true};
@@ -171,7 +173,6 @@ Main[nameof<MainConfig>(s => s.handshakeTimeout)]           = {types : ['number'
 Main[nameof<MainConfig>(s => s.ackTimeout)]                 = {types : ['number'],isOptional : true};
 Main[nameof<MainConfig>(s => s.ipcAckTimeout)]              = {types : ['number'],isOptional : true};
 Main[nameof<MainConfig>(s => s.socketUpgradeTimeout)]       = {types : ['number',],isOptional : true};
-Main[nameof<MainConfig>(s => s.origins)]                    = {types : ['string'],isOptional : true};
 Main[nameof<MainConfig>(s => s.pingInterval)]               = {types : ['number'],isOptional : true};
 Main[nameof<MainConfig>(s => s.pingTimeout)]                = {types : ['number'],isOptional : true};
 Main[nameof<MainConfig>(s => s.processTermTimeout)]         = {types : ['number'],isOptional : true};

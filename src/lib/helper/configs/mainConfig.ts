@@ -13,6 +13,7 @@ export interface MainConfig
     port  ?: number;
     hostname  ?: string;
     path  ?: string;
+    origins  ?: string | null | string[];
     debug  ?: boolean;
     startDebug  ?: boolean;
     showConfigWarnings  ?: boolean;
@@ -77,6 +78,7 @@ export interface MainConfig
 
     //Sc
     scLogLevel  ?: number;
+    scOrigins ?: string | null;
     socketChannelLimit  ?: number;
     crashWorkerOnError  ?: boolean;
     rebootWorkerOnCrash  ?: boolean;
@@ -88,7 +90,6 @@ export interface MainConfig
     ackTimeout  ?: number;
     ipcAckTimeout  ?: number;
     socketUpgradeTimeout  ?: number;
-    origins  ?: string;
     pingInterval  ?: number;
     pingTimeout  ?: number;
     processTermTimeout  ?: number;
@@ -110,6 +111,8 @@ export interface InternMainConfig extends MainConfig {
     port  : number;
     hostname  : string;
     path  : string;
+    origins  : string | null | string[];
+    scOrigins ?: string | null;
     debug  : boolean;
     startDebug  : boolean;
     showConfigWarnings : boolean;
@@ -147,7 +150,6 @@ export interface InternMainConfig extends MainConfig {
     ackTimeout  : number;
     ipcAckTimeout  : number;
     socketUpgradeTimeout  : number;
-    origins  : string;
     pingInterval  : number;
     pingTimeout  : number;
     processTermTimeout  : number;

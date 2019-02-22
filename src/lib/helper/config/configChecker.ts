@@ -487,6 +487,19 @@ class ConfigChecker
         //checkStructure
         ConfigCheckerTools.assertStructure(Structures.Main, this.zc.mainConfig, ConfigNames.MAIN, this.ceb);
         this.checkPanelUserMainConfig();
+        this.checkOrigins();
+    }
+
+    private checkOrigins()
+    {
+        if(Array.isArray(this.zc.mainConfig.origins)) {
+            this.zc.mainConfig.origins.forEach(((o,i) => {
+                if(typeof o !== 'string'){
+                    this.ceb.addConfigError(new ConfigError(ConfigNames.MAIN,
+                        `Origin: '${i}' must be a string.`));
+                }
+            }));
+        }
     }
 
     private checkPanelUserMainConfig() {
