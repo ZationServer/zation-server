@@ -75,7 +75,7 @@ import
     ArrayPropertyConfig,
     ConvertObjectFunction,
     ConvertValueFunction,
-    ConvertArrayFunction, BackgroundTask, GetDateFunction
+    ConvertArrayFunction, BackgroundTask, GetDateFunction, ArrayShortSyntax
 } from "../helper/configs/appConfig";
 import
 {
@@ -177,6 +177,8 @@ class Config
 
     //Object
     // noinspection JSUnusedGlobalSymbols
+    static objects(c : Record<string,ObjectPropertyConfig>) :  Record<string,ObjectPropertyConfig> {return c;}
+    // noinspection JSUnusedGlobalSymbols
     static objectProperty(c : ObjectPropertyConfig) :  ObjectPropertyConfig {return c;}
     // noinspection JSUnusedGlobalSymbols
     static object(c : ObjectPropertyConfig) :  ObjectPropertyConfig {return c;}
@@ -189,6 +191,8 @@ class Config
 
     //Value
     // noinspection JSUnusedGlobalSymbols
+    static values(c : Record<string,ValuePropertyConfig>) :  Record<string,ValuePropertyConfig> {return c;}
+    // noinspection JSUnusedGlobalSymbols
     static valueProperty(c : ValuePropertyConfig) :  ValuePropertyConfig {return c;}
     // noinspection JSUnusedGlobalSymbols
     static value(c : ValuePropertyConfig) :  ValuePropertyConfig {return c;}
@@ -200,6 +204,9 @@ class Config
     static getDate(func : GetDateFunction) : GetDateFunction {return func;}
 
     //Array
+    // noinspection JSUnusedGlobalSymbols
+    static arrays(c : Record<string,ArrayPropertyConfig | ArrayShortSyntax>) :
+        Record<string,ArrayPropertyConfig | ArrayShortSyntax> {return c;}
     // noinspection JSUnusedGlobalSymbols
     static arrayProperty(c : ArrayPropertyConfig) :  ArrayPropertyConfig {return c;}
     // noinspection JSUnusedGlobalSymbols
