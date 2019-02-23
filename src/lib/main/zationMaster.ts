@@ -20,11 +20,11 @@ const  isWindows             = require('is-windows');
 import StateServerEngine     = require("../helper/cluster/stateServerEngine");
 import {WorkerMessageActions}  from "../helper/constants/workerMessageActions";
 import {StarterConfig}         from "../helper/configs/starterConfig";
-import {StringSet} from "../helper/tools/simpleSet";
+import {StringSet}             from "../helper/tools/simpleSet";
 
 class ZationMaster {
     private static instance: ZationMaster | null = null;
-    private static readonly version: string = '0.8.1';
+    private static readonly version: string = '0.8.2';
 
     private readonly serverStartedTimeStamp: number;
     private readonly zc: ZationConfig;
