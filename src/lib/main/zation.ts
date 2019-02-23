@@ -20,21 +20,22 @@ class Zation
     private readonly zc : ZationConfig;
     private readonly worker : ZationWorker;
     private reqIdCounter : IdCounter;
+    private readonly reqIdPreFix : string;
     
     constructor(worker)
     {
         this.zc = worker.getZationConfig();
         this.worker = worker;
         this.reqIdCounter = new IdCounter();
+        this.reqIdPreFix = `${this.worker.options.instanceId}-${this.worker.getFullWorkerId()}-`;
     }
 
     async run(data)
     {
         this.reqIdCounter.increase();
-        const reqId = this.reqIdCounter.getId();
 
         // scalable unique id for every req based on instanceId-workerId-time/count
-        data.reqId = `${this.worker.options.instanceId}-${this.worker.getFullWorkerId()}-${reqId}`;
+        data.reqId = this.reqIdPreFix + this.reqIdCounter.getId();
 
         const returner = new Returner(data,this.zc);
 
