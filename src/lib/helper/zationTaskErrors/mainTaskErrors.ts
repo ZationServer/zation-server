@@ -246,7 +246,7 @@ export = {
 
     noAccessToController  : {
         name          : 'noAccessToController',
-        description   : 'You have no protocolAccess to this controller!',
+        description   : 'You have no access to this controller!',
         type          : ErrorType.AUTH_ERROR,
         sendInfo      : true,
         //INFO
