@@ -757,7 +757,11 @@ class ZationWorker extends SCWorker
         //ZATION CHECK ORIGINS
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_HANDSHAKE_WS, async (req, next) =>
         {
-            const parts = url.parse(req.headers.origin);
+            let origin = req.headers.origin;
+            if (origin === 'null' || origin == null) {
+                origin = '*';
+            }
+            let parts = url.parse(origin);
             // @ts-ignore
             if(this.originsEngine.check(parts.hostname,parts.protocol,parts.port)) {
                 if(await this.zc.checkScMiddlewareEvent
