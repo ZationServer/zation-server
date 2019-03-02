@@ -1257,7 +1257,7 @@ class ZationWorker extends SCWorker
         const filteredIds : string[] = [];
         socketSids.forEach((sid) =>{
             const splitSid = IdTools.splitSid(sid);
-            if (this.options.instanceId === splitSid[0] && this.id === splitSid[1]) {
+            if (this.options.instanceId === splitSid[0] && this.id == splitSid[1]) {
                 filteredIds.push(splitSid[2]);
             }
         });
