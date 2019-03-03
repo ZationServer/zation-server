@@ -39,6 +39,14 @@ class Mapper<T extends Socket>
         }
     }
 
+    forEach(k : string,func : (socket : Socket) => void)
+    {
+        if(this.data[k] instanceof SocketSet) {
+            // @ts-ignore
+            return this.data[k].forEach(func);
+        }
+    }
+
     // noinspection JSUnusedGlobalSymbols
     removeKey(k : string) {
        this.data[k] = undefined;

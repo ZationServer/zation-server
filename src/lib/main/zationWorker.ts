@@ -1267,20 +1267,12 @@ class ZationWorker extends SCWorker
     private forMappingSC(mapper : Mapper<Socket>,ids : (string | number)[],exceptSocketSids : string[],action : Function) : void
     {
         const filterExceptSocketIds : string[] = this.socketSidsFilter(exceptSocketSids);
-        for(let i = 0; i < ids.length; i++)
-        {
-            const id = ids[i].toString();
-            if(mapper.isKeyExist(id))
-            {
-                const sockets = mapper.getValues(id);
-                for(let i = 0; i < sockets.length; i++)
-                {
-                    if(!filterExceptSocketIds.includes(sockets[i].id))
-                    {
-                        action(sockets[i]);
-                    }
+        for(let i = 0; i < ids.length; i++) {
+            mapper.forEach(ids[i].toString(),(socket : Socket) => {
+                if(!filterExceptSocketIds.includes(socket.id)) {
+                    action(socket);
                 }
-            }
+            });
         }
     }
 
