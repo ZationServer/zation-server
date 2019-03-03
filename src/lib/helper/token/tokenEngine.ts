@@ -47,10 +47,10 @@ class TokenEngine
             if(oldToken === null) {
                 //take new id and tokenId
                 if(!!data.zationUserId) {
-                    this.worker.getUserToScIdMapper().map(data.zationUserId.toString(), this.shBridge.getSocket());
+                    this.worker.getUserToScMapper().map(data.zationUserId.toString(), this.shBridge.getSocket());
                 }
                 if(!!data.zationTokenId) {
-                    this.worker.getTokenIdToScIdMapper().map(data.zationTokenId.toString(),this.shBridge.getSocket());
+                    this.worker.getTokenIdToScMapper().map(data.zationTokenId.toString(),this.shBridge.getSocket());
                 }
             }
             else {
@@ -59,11 +59,11 @@ class TokenEngine
                     //userId Changed
                     if(!!data.zationTokenId && !!data.zationUserId) {
                         //take new user id
-                        this.worker.getUserToScIdMapper().map(data.zationUserId.toString(), this.shBridge.getSocket());
+                        this.worker.getUserToScMapper().map(data.zationUserId.toString(), this.shBridge.getSocket());
                     }
                     if(!!oldToken.zationUserId) {
                         //remove old token user id
-                        this.worker.getUserToScIdMapper().removeValueFromKey(oldToken.zationUserId.toString(), this.shBridge.getSocket());
+                        this.worker.getUserToScMapper().removeValueFromKey(oldToken.zationUserId.toString(), this.shBridge.getSocket());
                     }
                 }
 

@@ -43,7 +43,18 @@ class Mapper<T extends Socket>
     {
         if(this.data[k] instanceof SocketSet) {
             // @ts-ignore
-            return this.data[k].forEach(func);
+            this.data[k].forEach(func);
+        }
+    }
+
+    forAllEach(func : (socket : Socket) => void)
+    {
+        for(let k in this.data){
+            if(this.data.hasOwnProperty(k) &&
+                this.data[k] instanceof SocketSet) {
+                // @ts-ignore
+                this.data[k].forEach(func);
+            }
         }
     }
 

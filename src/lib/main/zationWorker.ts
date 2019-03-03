@@ -76,8 +76,8 @@ class ZationWorker extends SCWorker
 
     private app : any;
 
-    private mapUserIdToScId : Mapper<Socket> = new Mapper<Socket>();
-    private mapTokenIdToScId : Mapper<Socket> = new Mapper<Socket>();
+    private mapUserIdToSc : Mapper<Socket> = new Mapper<Socket>();
+    private mapTokenIdToSc : Mapper<Socket> = new Mapper<Socket>();
 
     private mapCustomChToSc : Mapper<Socket> = new Mapper<Socket>();
     private mapCustomIdChToSc : Mapper<Socket> = new Mapper<Socket>();
@@ -1014,10 +1014,10 @@ class ZationWorker extends SCWorker
 
             if(token!==null) {
                 if(!!token.zationTokenId) {
-                    this.mapTokenIdToScId.removeValueFromKey(token.zationTokenId,socket);
+                    this.mapTokenIdToSc.removeValueFromKey(token.zationTokenId,socket);
                 }
                 if(!!token.zationUserId) {
-                    this.mapUserIdToScId.removeValueFromKey(token.zationUserId,socket);
+                    this.mapUserIdToSc.removeValueFromKey(token.zationUserId,socket);
                 }
                 if(!!token.zationAuthUserGroup) {
                     this.mapAuthUserGroupToSc.removeValueFromKey(token.zationAuthUserGroup,socket);
@@ -1051,10 +1051,10 @@ class ZationWorker extends SCWorker
         {
             if(token!==null) {
                 if(!!token.zationTokenId) {
-                    this.mapTokenIdToScId.map(token.zationTokenId,socket);
+                    this.mapTokenIdToSc.map(token.zationTokenId,socket);
                 }
                 if(!!token.zationUserId) {
-                    this.mapUserIdToScId.map(token.zationUserId.toString(),socket);
+                    this.mapUserIdToSc.map(token.zationUserId.toString(),socket);
                 }
                 if(!!token.zationAuthUserGroup) {
                     this.mapAuthUserGroupToSc.map(token.zationAuthUserGroup,socket);
@@ -1072,10 +1072,10 @@ class ZationWorker extends SCWorker
         {
             if(token!==null) {
                 if(!!token.zationTokenId) {
-                    this.mapTokenIdToScId.removeValueFromKey(token.zationTokenId,socket);
+                    this.mapTokenIdToSc.removeValueFromKey(token.zationTokenId,socket);
                 }
                 if(!!token.zationUserId) {
-                    this.mapUserIdToScId.removeValueFromKey(token.zationUserId.toString(),socket);
+                    this.mapUserIdToSc.removeValueFromKey(token.zationUserId.toString(),socket);
                 }
                 if(!!token.zationAuthUserGroup) {
                     this.mapAuthUserGroupToSc.removeValueFromKey(token.zationAuthUserGroup,socket);
@@ -1157,6 +1157,12 @@ class ZationWorker extends SCWorker
                             case WorkerChTargets.SOCKETS_SIDS:
                                 this.forAllSocketSids(ids,kickOutAction);
                                 break;
+                            case WorkerChTargets.AUTH_USER_GROUPS:
+                                this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,kickOutAction);
+                                break;
+                            case WorkerChTargets.DEFAULT_USER_GROUP:
+                                this.forDefaultUserGroup(exceptSocketSids,kickOutAction);
+                                break;
                         }
                     }
                     break;
@@ -1177,6 +1183,12 @@ class ZationWorker extends SCWorker
                         case WorkerChTargets.SOCKETS_SIDS:
                             this.forAllSocketSids(ids,emitAction);
                             break;
+                        case WorkerChTargets.AUTH_USER_GROUPS:
+                            this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,emitAction);
+                            break;
+                        case WorkerChTargets.DEFAULT_USER_GROUP:
+                            this.forDefaultUserGroup(exceptSocketSids,emitAction);
+                            break;
                     }
                     break;
                 case WorkerChTaskActions.DISCONNECT:
@@ -1196,6 +1208,12 @@ class ZationWorker extends SCWorker
                         case WorkerChTargets.SOCKETS_SIDS:
                             this.forAllSocketSids(ids,disconnectAction);
                             break;
+                        case WorkerChTargets.AUTH_USER_GROUPS:
+                            this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,disconnectAction);
+                            break;
+                        case WorkerChTargets.DEFAULT_USER_GROUP:
+                            this.forDefaultUserGroup(exceptSocketSids,disconnectAction);
+                            break;
                     }
                     break;
                 case WorkerChTaskActions.DEAUTHENTICATE:
@@ -1214,6 +1232,12 @@ class ZationWorker extends SCWorker
                             break;
                         case WorkerChTargets.SOCKETS_SIDS:
                             this.forAllSocketSids(ids,deauthenticateAction);
+                            break;
+                        case WorkerChTargets.AUTH_USER_GROUPS:
+                            this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,deauthenticateAction);
+                            break;
+                        case WorkerChTargets.DEFAULT_USER_GROUP:
+                            this.forDefaultUserGroup(exceptSocketSids,deauthenticateAction);
                             break;
                     }
                     break;
@@ -1264,7 +1288,7 @@ class ZationWorker extends SCWorker
         return filteredIds;
     }
 
-    private forMappingSC(mapper : Mapper<Socket>,ids : (string | number)[],exceptSocketSids : string[],action : Function) : void
+    private forMappingSCId(mapper : Mapper<Socket>,ids : (string | number)[],exceptSocketSids : string[],action : Function) : void
     {
         const filterExceptSocketIds : string[] = this.socketSidsFilter(exceptSocketSids);
         for(let i = 0; i < ids.length; i++) {
@@ -1276,13 +1300,43 @@ class ZationWorker extends SCWorker
         }
     }
 
+    private forMappingSCAll(mapper : Mapper<Socket>,exceptSocketSids : string[],action : Function) : void
+    {
+        const filterExceptSocketIds : string[] = this.socketSidsFilter(exceptSocketSids);
+        mapper.forAllEach((socket : Socket) => {
+            if(!filterExceptSocketIds.includes(socket.id)) {
+                action(socket);
+            }
+        });
+    }
+
     private forTokenIds(tokenIds : (number | string)[],exceptSocketSids : string[],action : Function) : void {
-        this.forMappingSC(this.mapTokenIdToScId,tokenIds,exceptSocketSids,action);
+        this.forMappingSCId(this.mapTokenIdToSc,tokenIds,exceptSocketSids,action);
+    }
+
+    private forAuthUserGroups(groups : string[],all : boolean,exceptSocketSids : string[],action : Function) : void {
+        if(all){
+            this.forMappingSCAll(this.mapAuthUserGroupToSc,exceptSocketSids,action);
+        }
+        else{
+            this.forMappingSCId(this.mapAuthUserGroupToSc,groups,exceptSocketSids,action);
+        }
+    }
+
+    private forDefaultUserGroup(exceptSocketSids : string[],action : Function) : void {
+        const filterExceptSocketIds : string[] = this.socketSidsFilter(exceptSocketSids);
+        this.defaultUserGroupSet.forEach((socket : Socket) => {
+            if(!filterExceptSocketIds.includes(socket.id)) {
+                action(socket);
+            }
+        });
     }
 
     private forUserIds(userIds : (number | string)[],exceptSocketSids : string[],action : Function) : void {
-        this.forMappingSC(this.mapUserIdToScId,userIds,exceptSocketSids,action);
+        this.forMappingSCId(this.mapUserIdToSc,userIds,exceptSocketSids,action);
     }
+
+    //Part background tasks
 
     private registerMasterEvent()
     {
@@ -1503,15 +1557,15 @@ class ZationWorker extends SCWorker
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getUserToScIdMapper() : Mapper<Socket>
+    getUserToScMapper() : Mapper<Socket>
     {
-        return this.mapUserIdToScId;
+        return this.mapUserIdToSc;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getTokenIdToScIdMapper() : Mapper<Socket>
+    getTokenIdToScMapper() : Mapper<Socket>
     {
-        return this.mapTokenIdToScId;
+        return this.mapTokenIdToSc;
     }
 
     // noinspection JSUnusedGlobalSymbols

@@ -85,7 +85,7 @@ class ChExchangeEngine
 
     async publishTaskToWorker(target : WorkerChTargets,action : WorkerChTaskActions, ids : string | number | (string | number)[], exceptSocketSids : string[] | string, mainData : object = {}) : Promise<void>
     {
-        const tmpIds : (string | number)[]  = Array.isArray(ids) ? ids : [ids];
+        const tmpIds : (string | number | null)[]  = Array.isArray(ids) ? ids : [ids];
         const tmpExceptSocketSids : string[] = Array.isArray(exceptSocketSids) ? exceptSocketSids : [exceptSocketSids];
         await this.publishToWorker({ids : tmpIds,action : action,target : target,mainData : mainData,exceptSocketSids : tmpExceptSocketSids});
     }
