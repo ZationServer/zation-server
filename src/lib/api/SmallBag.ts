@@ -1089,7 +1089,7 @@ class SmallBag
      * @param id is optional, if it is not given the sockets with tokenId will be kicked out from all ids of this channel.
      * @param exceptSocketSids
      */
-    async kickTokenCustomIdCh(tokenId : string | string[], channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
+    async kickTokensCustomIdCh(tokenId : string | string[], channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         const ch = ChTools.buildCustomIdChannelName(channel,id);
         await this.exchangeEngine.publishTaskToWorker
@@ -1107,7 +1107,7 @@ class SmallBag
      * @param channel is optional, if it is not given the sockets with tokenId will be kicked out from all custom channels.
      * @param exceptSocketSids
      */
-    async kickTokenCustomCh(tokenId : string | string[], channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
+    async kickTokensCustomCh(tokenId : string | string[], channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         const ch = ChTools.buildCustomChannelName(channel);
         await this.exchangeEngine.publishTaskToWorker
@@ -1124,7 +1124,7 @@ class SmallBag
      * @param tokenId or more tokenIds in an array.
      * @param exceptSocketSids
      */
-    async kickTokenAllCh(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
+    async kickTokensAllCh(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
         await this.exchangeEngine.publishTaskToWorker
         (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : ZationChannel.ALL});
@@ -1141,7 +1141,7 @@ class SmallBag
      * @param authUserGroup is optional, if it is not given the socket with token id will be kicked out from all auth user group channels.
      * @param exceptSocketSids
      */
-    async kickTokenAuthUserGroupCh(tokenId : string | string[],authUserGroup ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
+    async kickTokensAuthUserGroupCh(tokenId : string | string[],authUserGroup ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         const ch = ChTools.buildAuthUserGroupChName(authUserGroup);
         await this.exchangeEngine.publishTaskToWorker
@@ -1158,7 +1158,7 @@ class SmallBag
      * @param tokenId or more tokenIds in an array.
      * @param exceptSocketSids
      */
-    async kickTokenDefaultUserGroupCh(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
+    async kickTokensDefaultUserGroupCh(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
         await this.exchangeEngine.publishTaskToWorker
         (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : ZationChannel.DEFAULT_USER_GROUP});
@@ -1466,7 +1466,7 @@ class SmallBag
      * @param data
      * @param exceptSocketSids
      */
-    async emitToken(tokenId : string | string[],event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
+    async emitTokens(tokenId : string | string[],event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
     {
         await this.exchangeEngine.publishTaskToWorker
         (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.EMIT,tokenId,exceptSocketSids,{event,data});
@@ -1572,7 +1572,7 @@ class SmallBag
      * @param tokenId or more tokenIds in an array.
      * @param exceptSocketSids
      */
-    async disconnectToken(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
+    async disconnectTokens(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
         await this.exchangeEngine.publishTaskToWorker
         (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.DISCONNECT,tokenId,exceptSocketSids);
@@ -1667,7 +1667,7 @@ class SmallBag
      * @param tokenId or more tokenIds in an array.
      * @param exceptSocketSids
      */
-    async deauthenticateToken(tokenId : string | string[] | string,exceptSocketSids : string[] | string = []) : Promise<void>
+    async deauthenticateTokens(tokenId : string | string[] | string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         await this.exchangeEngine.publishTaskToWorker
         (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.DEAUTHENTICATE,tokenId,exceptSocketSids);
