@@ -184,3 +184,9 @@ O
 src/lib/helper/tools/osUtils.ts,b/9/b915749747813ab36e27a970dca7eacc65aeca45
 W
 'src/lib/helper/origins/originsEngine.ts,d/c/dcaf326dd88ba7b2e9cfd233a7d34fe1d1235d32
+_
+/src/lib/helper/constants/workerChTaskActions.ts,8/a/8a3fa047473295850fbe2dd0d75f0dc6c1a5990b
+S
+#src/lib/helper/tools/portChecker.ts,9/5/95a841e7ab1814d79e198af28a836cbc426f6d4a
+[
++src/lib/helper/constants/workerChTargets.ts,b/2/b2964a6b504dc65f7a198c61cc54a2219a8eee5d

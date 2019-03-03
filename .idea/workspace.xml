@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="I">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -31,11 +33,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="629">
-              <caret line="96" column="15" selection-start-line="96" selection-start-column="15" selection-end-line="96" selection-end-column="15" />
+            <state relative-caret-position="467">
+              <caret line="89" column="25" selection-start-line="89" selection-start-column="25" selection-end-line="89" selection-end-column="25" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/gulpFile.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="347">
+              <caret line="33" column="23" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
             </state>
           </provider>
         </entry>
@@ -44,7 +55,7 @@
         <entry file="file://$PROJECT_DIR$/src/lib/api/SmallBag.ts">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="339">
-              <caret line="1059" column="5" lean-forward="true" selection-start-line="1059" selection-start-column="5" selection-end-line="1059" selection-end-column="5" />
+              <caret line="1059" column="5" selection-start-line="1059" selection-start-column="5" selection-end-line="1059" selection-end-column="5" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="e#81#129#0" expanded="true" />
@@ -65,7 +76,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/lib/main/zationMaster.ts">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="357">
@@ -128,18 +139,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="165">
               <caret line="15" column="1" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/helper/tools/portChecker.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret selection-end-line="22" selection-end-column="21" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -668,7 +667,7 @@
       <workItem from="1550915457784" duration="462000" />
       <workItem from="1551046102788" duration="407000" />
       <workItem from="1551380382113" duration="2989000" />
-      <workItem from="1551519348045" duration="15090000" />
+      <workItem from="1551519348045" duration="15677000" />
     </task>
     <task id="LOCAL-00064" summary="improve validation engine&#10;add new regex name option&#10;add strictType and convertType option&#10;improve config checker">
       <created>1541205117372</created>
@@ -1049,7 +1048,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2023173000" />
+    <option name="totallyTimeSpent" value="2023760000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1062,9 +1061,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6896552" visible="true" weight="0.10488246" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6896552" visible="true" weight="0.10488246" />
       <window_info id="Structure" order="1" sideWeight="0.31034482" side_tool="true" visible="true" weight="0.10488246" />
       <window_info id="Favorites" order="2" sideWeight="0.10449927" side_tool="true" weight="0.2081138" />
       <window_info id="Gulp" order="3" side_tool="true" />
@@ -1079,7 +1077,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Statistic" order="8" weight="0.71734697" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.51898736" side_tool="true" visible="true" weight="0.23061225" />
-      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.48101267" visible="true" weight="0.23061225" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" sideWeight="0.48101267" visible="true" weight="0.23061225" />
       <window_info anchor="bottom" id="Version Control" order="11" sideWeight="0.49909583" weight="0.24081632" />
       <window_info anchor="bottom" id="Messages" order="12" visible="true" weight="0.14337349" />
       <window_info anchor="bottom" id="TypeScript" order="13" sideWeight="0.4996986" weight="0.19489796" />
@@ -1406,13 +1404,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gulpFile.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="33" column="23" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/api/Bag.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="226">
@@ -1516,12 +1507,26 @@
     <entry file="file://$PROJECT_DIR$/src/lib/api/SmallBag.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="339">
-          <caret line="1059" column="5" lean-forward="true" selection-start-line="1059" selection-start-column="5" selection-end-line="1059" selection-end-column="5" />
+          <caret line="1059" column="5" selection-start-line="1059" selection-start-column="5" selection-end-line="1059" selection-end-column="5" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="e#81#129#0" expanded="true" />
             <element signature="n#ChExchangeEngine#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="467">
+          <caret line="89" column="25" selection-start-line="89" selection-start-column="25" selection-end-line="89" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gulpFile.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="347">
+          <caret line="33" column="23" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
         </state>
       </provider>
     </entry>
@@ -1534,13 +1539,6 @@
             <element signature="n#Logger#0" expanded="true" />
             <element signature="n#StateServerEngine#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="96" column="15" selection-start-line="96" selection-start-column="15" selection-end-line="96" selection-end-column="15" />
         </state>
       </provider>
     </entry>
