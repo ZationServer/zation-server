@@ -579,6 +579,7 @@ export class Bag extends SmallBag
     /**
      * @description
      * Set a token variable with object path.
+     * Every change on the token will update the authentication of the socket. (Like a new authentication on top)
      * Notice that the token variables are separated from the main zation token variables.
      * That means there can be no naming conflicts with zation variables.
      * You can access this variables on client and server side.
@@ -606,6 +607,7 @@ export class Bag extends SmallBag
     /**
      * @description
      * Delete a token variable with object path.
+     * Every change on the token will update the authentication of the socket. (Like a new authentication on top)
      * Notice that the token variables are separated from the main zation token variables.
      * You can access this variables on client and server side.
      * But only change, delete or set on the server.
@@ -638,6 +640,7 @@ export class Bag extends SmallBag
      * Sequence edit the token variables.
      * Useful if you want to make several changes.
      * This will do everything in one and saves performance.
+     * Every change on the token will update the authentication of the socket. (Like a new authentication on top)
      * Notice that the token variables are separated from the main zation token variables.
      * That means there can be no naming conflicts with zation variables.
      * You can access this variables on client and server side.
