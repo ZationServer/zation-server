@@ -1936,7 +1936,7 @@ class SmallBag
      * The encoded base64 string.
      * @return
      * Can be null if the base64 string has no content type.
-     * Otherwise, it is an object with the properties: mimeSubType, mimeType.
+     * Otherwise, it is an object with the properties: mimeSubType (png,jpg...), mimeType (image,video...).
      */
     base64ContentInfo(encodedBase64 : string) : null | {mimeSubType : string, mimeType : string} {
         return Base64Tools.getContentInfo(encodedBase64);
