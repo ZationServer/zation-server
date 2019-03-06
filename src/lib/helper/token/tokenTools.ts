@@ -12,6 +12,7 @@ import ZationWorker     = require("../../main/zationWorker");
 import ZationConfig     = require("../../main/zationConfig");
 import {Socket}           from "../sc/socket";
 import {ZationToken} from "../constants/internal";
+import AuthenticationError = require("../error/authenticationError");
 const  Jwt : any        = require('jsonwebtoken');
 
 class TokenTools
@@ -49,6 +50,29 @@ class TokenTools
             if(tokenBridge.isWebSocket()) {
                 await worker.getChAccessEngine().checkSocketCustomChAccess(tokenBridge.getSocket());
             }
+        }
+        return suc;
+    }
+
+    static async changeCustomVarWithSocket(customVar : object,socket : Socket,worker : ZationWorker) : Promise<boolean>
+    {
+        let suc = false;
+        if(typeof customVar === 'object') {
+            const token = socket.getAuthToken();
+            if(typeof token === 'object' && token !== null) {
+                token.zationCustomVariables = customVar;
+                await new Promise((resolve,reject) => {
+                    socket.setAuthToken(token,{},(err) => {
+                        if(err){
+                            reject(new AuthenticationError('Failed to set the auth token. Error => ' +
+                                err.toString()))
+                        }
+                        else {resolve();}
+                    });
+                });
+                suc = true;
+            }
+            await worker.getChAccessEngine().checkSocketCustomChAccess(socket);
         }
         return suc;
     }
@@ -95,6 +119,12 @@ class TokenTools
         else {
             return undefined;
         }
+    }
+
+    static getCustomTokenVariablesWithSocket(socket : Socket) : object {
+        const ctv = TokenTools.getSocketTokenVariable(
+        nameof<ZationToken>(s => s.zationCustomVariables),socket);
+        return ctv !== undefined ? ctv : {};
     }
 
     static getSocketTokenVariable(key : any,socket : Socket) : any

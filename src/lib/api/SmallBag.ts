@@ -35,6 +35,8 @@ import {EventConfig}      from "../helper/configs/eventConfig";
 import {ServiceConfig}    from "../helper/configs/serviceConfig";
 import Base64Tools      = require("../helper/tools/base64Tools");
 import {byteLength}       from "byte-length";
+import ObjectPathSequence = require("../helper/tools/objectPathSequence");
+import AuthenticationError = require("../helper/error/authenticationError");
 
 const uuidV4                = require('uuid/v4');
 const uniqid                = require('uniqid');
@@ -1791,7 +1793,7 @@ class SmallBag
      * @description
      * Set socket variable (server side) with object path.
      * @example
-     * setSocketVariable('email','example@gmail.com');
+     * setSocketVariable(socket,'email','example@gmail.com');
      * @param socket
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
@@ -1807,7 +1809,7 @@ class SmallBag
      * @description
      * Has socket variable (server side) with object path.
      * @example
-     * hasSocketVariable('email');
+     * hasSocketVariable(socket,'email');
      * @param socket
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
@@ -1822,7 +1824,7 @@ class SmallBag
      * @description
      * Get socket variable (server side) with object path.
      * @example
-     * getSocketVariable('email');
+     * getSocketVariable(socket,'email');
      * @param socket
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
@@ -1837,7 +1839,7 @@ class SmallBag
      * @description
      * Delete socket variable (server side) with object path.
      * @example
-     * deleteSocketVariable('email');
+     * deleteSocketVariable(socket,'email');
      * @param socket
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
@@ -1849,6 +1851,150 @@ class SmallBag
         }
         else {
             socket.zationSocketVariables = {};
+        }
+    }
+
+    //token variables
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Set a token variable with object path on a socket.
+     * Every change on the token will update the authentication of the socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * That means there can be no naming conflicts with zation variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * Check that the socket is authenticated (has a token).
+     * @example
+     * await setTokenVariableWithSocket(socket,'person.email','example@gmail.com');
+     * @param socket
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @param value
+     * @throws AuthenticationError
+     */
+    async setTokenVariableWithSocket(socket : Socket,path : string | string[],value : any) : Promise<void> {
+        if(socket.getAuthToken() !== null) {
+            const ctv = TokenTools.getCustomTokenVariablesWithSocket(socket);
+            ObjectPath.set(ctv,path,value);
+            await TokenTools.changeCustomVarWithSocket(ctv,socket,this.worker);
+        }
+        else {
+            throw new AuthenticationError(`Can't set token variable when socket is not authenticated!`);
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Delete a token variable with object path on a socket.
+     * Every change on the token will update the authentication of the socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * Check that the socket is authenticated (has a token).
+     * @example
+     * await deleteTokenVariableWithSocket(socket,'person.email');
+     * @param socket
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @throws AuthenticationError
+     */
+    async deleteTokenVariableWithSocket(socket : Socket,path ?: string | string[]) : Promise<void> {
+        if(socket.getAuthToken() !== null) {
+            if(!!path) {
+                const ctv = TokenTools.getCustomTokenVariablesWithSocket(socket);
+                ObjectPath.del(ctv,path);
+                await TokenTools.changeCustomVarWithSocket(ctv,socket,this.worker);
+            }
+            else {
+                await TokenTools.changeCustomVarWithSocket({},socket,this.worker);
+            }
+        }
+        else {
+            throw new AuthenticationError(`Can't set token variable when socket is not authenticated!`);
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Sequence edit the token variables on a socket.
+     * Useful if you want to make several changes.
+     * This will do everything in one and saves performance.
+     * Every change on the token will update the authentication of the socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * That means there can be no naming conflicts with zation variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * Check that the socket is authenticated (has a token).
+     * @example
+     * await seqEditTokenVariablesWithSocket()
+     *       .delete('person.lastName')
+     *       .set('person.name','Luca')
+     *       .set('person.email','example@gmail.com')
+     *       .commit();
+     * @throws AuthenticationError
+     */
+    seqEditTokenVariablesWithSocket(socket : Socket) : ObjectPathSequence
+    {
+        if(socket.getAuthToken() !== null) {
+            return new ObjectPathSequence(TokenTools.getCustomTokenVariablesWithSocket(socket),
+                async (obj)=> {
+                    await TokenTools.changeCustomVarWithSocket(obj,socket,this.worker);
+                });
+        }
+        else {
+            throw new AuthenticationError(`Can't set token variable when socket is not authenticated!`);
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Check has a token variable with object path on a socket.
+     * Notice that the token variables are separated from the main zation token variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * Check that the socket is authenticated (has a token).
+     * @example
+     * hasTokenVariableWithSocket(socket,'person.email');
+     * @param socket
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @throws AuthenticationError
+     */
+    hasTokenVariableWithSocket(socket : Socket,path ?: string | string[]) : boolean {
+        if(socket.getAuthToken() !== null) {
+            return ObjectPath.has(TokenTools.getCustomTokenVariablesWithSocket(socket),path);
+        }
+        else {
+            throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Get a token variable with object path from a socket.
+     * Notice that the token variables are separated from the main zation token variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * Check that the socket is authenticated (has a token).
+     * @example
+     * getTokenVariableWithSocket(socket,'person.email');
+     * @param socket
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @throws AuthenticationError
+     */
+    getTokenVariableWithSocket<R>(socket : Socket,path ?: string | string[]) : R {
+        if(socket.getAuthToken() !== null) {
+            return ObjectPath.get(TokenTools.getCustomTokenVariablesWithSocket(socket),path);
+        }
+        else {
+            throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
         }
     }
 
