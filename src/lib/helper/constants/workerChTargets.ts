@@ -11,6 +11,5 @@ export enum WorkerChTargets
     ALL_SOCKETS,
     SOCKETS_SIDS,
     AUTH_USER_GROUPS,
-    DEFAULT_USER_GROUP,
-    THIS_WORKER
+    DEFAULT_USER_GROUP
 }

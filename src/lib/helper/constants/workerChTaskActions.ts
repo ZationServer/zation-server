@@ -4,12 +4,16 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-export enum WorkerChTaskActions
+export enum WorkerChMapTaskActions
 {
     DISCONNECT,
     DEAUTHENTICATE,
     KICK_OUT,
-    EMIT,
-    SYNC_TOKEN,
+    EMIT
+}
+
+export enum WorkerChSpecialTaskActions
+{
+    UPDATE_USER_TOKENS,
     MESSAGE
 }

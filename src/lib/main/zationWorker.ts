@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {ScServer} from "../helper/sc/scServer";
 import {ChAccessEngine} from '../helper/channel/chAccessEngine';
-import {WorkerChTaskActions} from "../helper/constants/workerChTaskActions";
+import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../helper/constants/workerChTaskActions";
 import {Socket} from "../helper/sc/socket";
 import {WorkerChTargets} from "../helper/constants/workerChTargets";
 import {ZationChannel, ZationToken} from "../helper/constants/internal";
@@ -47,6 +47,7 @@ import ZationTokenInfo = require("../helper/infoObjects/zationTokenInfo");
 import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
 import ViewEngine = require("../helper/views/viewEngine");
 import SystemInfo = require("../helper/tools/systemInfo");
+import {WorkerChTaskType} from "../helper/constants/workerChTaskType";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -1122,149 +1123,163 @@ class ZationWorker extends SCWorker
         const channel = this.exchange.subscribe(ZationChannel.ALL_WORKER);
         channel.watch(async (data) =>
         {
-            if(!Array.isArray(data.ids)) {
-                return;
-            }
-
-            const ids : any[] = data.ids;
-            const exceptSocketSids = data.exceptSocketSids;
-            const mainData = data.mainData;
-            const emitData = mainData.data;
-
-            switch (data.action) {
-                case WorkerChTaskActions.KICK_OUT:
-                    const ch = mainData.ch;
-                    if(ch)
-                    {
-                        const kickOutAction = (s : Socket) => {
-                            const subs = s.subscriptions();
-                            for(let i = 0; i < subs.length; i++) {
-                                if(subs[i].indexOf(ch) !== -1) {
-                                    // noinspection TypeScriptValidateJSTypes
-                                    s.kickOut(ch);
-                                }
-                            }
-                        };
-                        switch (data.target) {
-                            case WorkerChTargets.USER_IDS:
-                                this.forUserIds(ids,exceptSocketSids,kickOutAction);
-                                break;
-                            case WorkerChTargets.TOKEN_IDS:
-                                this.forTokenIds(ids,exceptSocketSids,kickOutAction);
-                                break;
-                            case WorkerChTargets.ALL_SOCKETS:
-                                this.forAllSockets(exceptSocketSids,kickOutAction);
-                                break;
-                            case WorkerChTargets.SOCKETS_SIDS:
-                                this.forAllSocketSids(ids,kickOutAction);
-                                break;
-                            case WorkerChTargets.AUTH_USER_GROUPS:
-                                this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,kickOutAction);
-                                break;
-                            case WorkerChTargets.DEFAULT_USER_GROUP:
-                                this.forDefaultUserGroup(exceptSocketSids,kickOutAction);
-                                break;
-                        }
-                    }
-                    break;
-                case WorkerChTaskActions.EMIT:
-                    const emitAction = (s : Socket) => {
-                        s.emit(mainData.event,emitData);
-                    };
-                    switch (data.target) {
-                        case WorkerChTargets.USER_IDS:
-                            this.forUserIds(ids,exceptSocketSids,emitAction);
-                            break;
-                        case WorkerChTargets.TOKEN_IDS:
-                            this.forTokenIds(ids,exceptSocketSids,emitAction);
-                            break;
-                        case WorkerChTargets.ALL_SOCKETS:
-                            this.forAllSockets(exceptSocketSids,emitAction);
-                            break;
-                        case WorkerChTargets.SOCKETS_SIDS:
-                            this.forAllSocketSids(ids,emitAction);
-                            break;
-                        case WorkerChTargets.AUTH_USER_GROUPS:
-                            this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,emitAction);
-                            break;
-                        case WorkerChTargets.DEFAULT_USER_GROUP:
-                            this.forDefaultUserGroup(exceptSocketSids,emitAction);
-                            break;
-                    }
-                    break;
-                case WorkerChTaskActions.DISCONNECT:
-                    const disconnectAction = (s : Socket) => {
-                        s.disconnect();
-                    };
-                    switch (data.target) {
-                        case WorkerChTargets.USER_IDS:
-                            this.forUserIds(ids,exceptSocketSids,disconnectAction);
-                            break;
-                        case WorkerChTargets.TOKEN_IDS:
-                            this.forTokenIds(ids,exceptSocketSids,disconnectAction);
-                            break;
-                        case WorkerChTargets.ALL_SOCKETS:
-                            this.forAllSockets(exceptSocketSids,disconnectAction);
-                            break;
-                        case WorkerChTargets.SOCKETS_SIDS:
-                            this.forAllSocketSids(ids,disconnectAction);
-                            break;
-                        case WorkerChTargets.AUTH_USER_GROUPS:
-                            this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,disconnectAction);
-                            break;
-                        case WorkerChTargets.DEFAULT_USER_GROUP:
-                            this.forDefaultUserGroup(exceptSocketSids,disconnectAction);
-                            break;
-                    }
-                    break;
-                case WorkerChTaskActions.DEAUTHENTICATE:
-                    const deauthenticateAction = (s : Socket) => {
-                        s.deauthenticate();
-                    };
-                    switch (data.target) {
-                        case WorkerChTargets.USER_IDS:
-                            this.forUserIds(ids,exceptSocketSids,deauthenticateAction);
-                            break;
-                        case WorkerChTargets.TOKEN_IDS:
-                            this.forTokenIds(ids,exceptSocketSids,deauthenticateAction);
-                            break;
-                        case WorkerChTargets.ALL_SOCKETS:
-                            this.forAllSockets(exceptSocketSids,deauthenticateAction);
-                            break;
-                        case WorkerChTargets.SOCKETS_SIDS:
-                            this.forAllSocketSids(ids,deauthenticateAction);
-                            break;
-                        case WorkerChTargets.AUTH_USER_GROUPS:
-                            this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,deauthenticateAction);
-                            break;
-                        case WorkerChTargets.DEFAULT_USER_GROUP:
-                            this.forDefaultUserGroup(exceptSocketSids,deauthenticateAction);
-                            break;
-                    }
-                    break;
-                case WorkerChTaskActions.SYNC_TOKEN:
-                    await this.syncTokens(mainData.actions,mainData.id,exceptSocketSids);
-                    break;
-                case WorkerChTaskActions.MESSAGE:
-                    switch (data.target) {
-                        case WorkerChTargets.THIS_WORKER:
-                            await this.zc.emitEvent(this.zc.eventConfig.workerMessage,this.preparedSmallBag,emitData);
-                            break;
-                    }
+            switch (data.actionType) {
+                case WorkerChTaskType.MAP_TASK:
+                     await this.processMapTask(data);
+                     break;
+                case WorkerChTaskType.SPECIAL_TASK:
+                    await this.processSpecialTask(data);
                     break;
             }
-
         });
     }
 
-    private async syncTokens(actions : {actions : SyncTokenActions,params : any[]}[],userId,exceptSocketSids : string[]) {
+    async processSpecialTask(data : any)
+    {
+        const mainData = data.mainData;
+        switch (data.action) {
+            case WorkerChSpecialTaskActions.UPDATE_USER_TOKENS:
+                await this.updateUserTokens(mainData.actions,mainData.id,mainData.exceptSocketSids);
+                break;
+            case WorkerChSpecialTaskActions.MESSAGE:
+                await this.zc.emitEvent(this.zc.eventConfig.workerMessage,this.preparedSmallBag,mainData.data);
+                break;
+        }
+    }
+
+    async processMapTask(data : any)
+    {
+        if(!Array.isArray(data.ids)) {
+            return;
+        }
+
+        const ids : any[] = data.ids;
+        const exceptSocketSids = data.exceptSocketSids;
+        const mainData = data.mainData;
+        const emitData = mainData.data;
+
+        switch (data.action) {
+            case WorkerChMapTaskActions.KICK_OUT:
+                const ch = mainData.ch;
+                if(ch)
+                {
+                    const kickOutAction = (s : Socket) => {
+                        const subs = s.subscriptions();
+                        for(let i = 0; i < subs.length; i++) {
+                            if(subs[i].indexOf(ch) !== -1) {
+                                // noinspection TypeScriptValidateJSTypes
+                                s.kickOut(ch);
+                            }
+                        }
+                    };
+                    switch (data.target) {
+                        case WorkerChTargets.USER_IDS:
+                            this.forUserIds(ids,exceptSocketSids,kickOutAction);
+                            break;
+                        case WorkerChTargets.TOKEN_IDS:
+                            this.forTokenIds(ids,exceptSocketSids,kickOutAction);
+                            break;
+                        case WorkerChTargets.ALL_SOCKETS:
+                            this.forAllSockets(exceptSocketSids,kickOutAction);
+                            break;
+                        case WorkerChTargets.SOCKETS_SIDS:
+                            this.forAllSocketSids(ids,kickOutAction);
+                            break;
+                        case WorkerChTargets.AUTH_USER_GROUPS:
+                            this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,kickOutAction);
+                            break;
+                        case WorkerChTargets.DEFAULT_USER_GROUP:
+                            this.forDefaultUserGroup(exceptSocketSids,kickOutAction);
+                            break;
+                    }
+                }
+                break;
+            case WorkerChMapTaskActions.EMIT:
+                const emitAction = (s : Socket) => {
+                    s.emit(mainData.event,emitData);
+                };
+                switch (data.target) {
+                    case WorkerChTargets.USER_IDS:
+                        this.forUserIds(ids,exceptSocketSids,emitAction);
+                        break;
+                    case WorkerChTargets.TOKEN_IDS:
+                        this.forTokenIds(ids,exceptSocketSids,emitAction);
+                        break;
+                    case WorkerChTargets.ALL_SOCKETS:
+                        this.forAllSockets(exceptSocketSids,emitAction);
+                        break;
+                    case WorkerChTargets.SOCKETS_SIDS:
+                        this.forAllSocketSids(ids,emitAction);
+                        break;
+                    case WorkerChTargets.AUTH_USER_GROUPS:
+                        this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,emitAction);
+                        break;
+                    case WorkerChTargets.DEFAULT_USER_GROUP:
+                        this.forDefaultUserGroup(exceptSocketSids,emitAction);
+                        break;
+                }
+                break;
+            case WorkerChMapTaskActions.DISCONNECT:
+                const disconnectAction = (s : Socket) => {
+                    s.disconnect();
+                };
+                switch (data.target) {
+                    case WorkerChTargets.USER_IDS:
+                        this.forUserIds(ids,exceptSocketSids,disconnectAction);
+                        break;
+                    case WorkerChTargets.TOKEN_IDS:
+                        this.forTokenIds(ids,exceptSocketSids,disconnectAction);
+                        break;
+                    case WorkerChTargets.ALL_SOCKETS:
+                        this.forAllSockets(exceptSocketSids,disconnectAction);
+                        break;
+                    case WorkerChTargets.SOCKETS_SIDS:
+                        this.forAllSocketSids(ids,disconnectAction);
+                        break;
+                    case WorkerChTargets.AUTH_USER_GROUPS:
+                        this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,disconnectAction);
+                        break;
+                    case WorkerChTargets.DEFAULT_USER_GROUP:
+                        this.forDefaultUserGroup(exceptSocketSids,disconnectAction);
+                        break;
+                }
+                break;
+            case WorkerChMapTaskActions.DEAUTHENTICATE:
+                const deauthenticateAction = (s : Socket) => {
+                    s.deauthenticate();
+                };
+                switch (data.target) {
+                    case WorkerChTargets.USER_IDS:
+                        this.forUserIds(ids,exceptSocketSids,deauthenticateAction);
+                        break;
+                    case WorkerChTargets.TOKEN_IDS:
+                        this.forTokenIds(ids,exceptSocketSids,deauthenticateAction);
+                        break;
+                    case WorkerChTargets.ALL_SOCKETS:
+                        this.forAllSockets(exceptSocketSids,deauthenticateAction);
+                        break;
+                    case WorkerChTargets.SOCKETS_SIDS:
+                        this.forAllSocketSids(ids,deauthenticateAction);
+                        break;
+                    case WorkerChTargets.AUTH_USER_GROUPS:
+                        this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,deauthenticateAction);
+                        break;
+                    case WorkerChTargets.DEFAULT_USER_GROUP:
+                        this.forDefaultUserGroup(exceptSocketSids,deauthenticateAction);
+                        break;
+                }
+                break;
+        }
+    }
+
+    private async updateUserTokens(actions : {action : SyncTokenActions,params : any[]}[],userId,exceptSocketSids : string[]) {
         const filterExceptSocketIds : string[] = this.socketSidsFilter(exceptSocketSids);
         const promises : Promise<void>[] = [];
-        this.mapUserIdToSc.forEach(userId,(socket : Socket) => {
+        this.mapUserIdToSc.forEach(userId.toString(),(socket : Socket) => {
             if(!filterExceptSocketIds.includes(socket.id)) {
                 const edit = this.preparedSmallBag.seqEditTokenVariablesWithSocket(socket);
                 for(let i = 0; i < actions.length; i++) {
-                    switch (actions[i].actions) {
+                    switch (actions[i].action) {
                         case SyncTokenActions.SET :
                             edit.set(actions[i].params[0],actions[i].params[1]);
                             break;

@@ -4,39 +4,41 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Socket}      from "../helper/sc/socket";
+import {Socket} from "../helper/sc/socket";
 import fetch, {Request, RequestInit, Response} from 'node-fetch';
-import {WorkerChTaskActions}        from "../helper/constants/workerChTaskActions";
-import {WorkerChTargets}            from "../helper/constants/workerChTargets";
-import {AsymmetricKeyPairs}         from "../helper/infoObjects/asymmetricKeyPairs";
-import {WorkerMessageActions}       from "../helper/constants/workerMessageActions";
+import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../helper/constants/workerChTaskActions";
+import {WorkerChTargets} from "../helper/constants/workerChTargets";
+import {AsymmetricKeyPairs} from "../helper/infoObjects/asymmetricKeyPairs";
+import {WorkerMessageActions} from "../helper/constants/workerMessageActions";
 import {ErrorConfig, ErrorConstruct} from "../helper/configs/errorConfig";
 import {ZationChannel, ZationToken} from "../helper/constants/internal";
+import {InternMainConfig} from "../helper/configs/mainConfig";
+import {AppConfig} from "../helper/configs/appConfig";
+import {ChannelConfig} from "../helper/configs/channelConfig";
+import {EventConfig} from "../helper/configs/eventConfig";
+import {ServiceConfig} from "../helper/configs/serviceConfig";
+import {byteLength} from "byte-length";
 
 const    crypto : any       = require('crypto');
 const    IP : any           = require('ip');
 const    crypto2 : any      = require("crypto2");
 import ChExchangeEngine = require("../helper/channel/chExchangeEngine");
-import ServiceEngine   = require("../helper/services/serviceEngine");
-import ZationConfig    = require("../main/zationConfig");
-import ZationWorker    = require("../main/zationWorker");
-import ExchangeEngine  = require('../helper/channel/chExchangeEngine');
-import TaskError       = require("./TaskError");
-import ChTools         = require("../helper/channel/chTools");
-import IdTools         = require("../helper/tools/idTools");
-import ObjectPath      = require("../helper/tools/objectPath");
-import TokenTools      = require("../helper/token/tokenTools");
-import TaskErrorBag    = require("./TaskErrorBag");
+import ServiceEngine = require("../helper/services/serviceEngine");
+import ZationConfig = require("../main/zationConfig");
+import ZationWorker = require("../main/zationWorker");
+import ExchangeEngine = require('../helper/channel/chExchangeEngine');
+import TaskError = require("./TaskError");
+import ChTools = require("../helper/channel/chTools");
+import IdTools = require("../helper/tools/idTools");
+import ObjectPath = require("../helper/tools/objectPath");
+import TokenTools = require("../helper/token/tokenTools");
+import TaskErrorBag = require("./TaskErrorBag");
 import TaskErrorBuilder = require("../helper/builder/taskErrorBuilder");
-import {InternMainConfig} from "../helper/configs/mainConfig";
-import {AppConfig}        from "../helper/configs/appConfig";
-import {ChannelConfig}    from "../helper/configs/channelConfig";
-import {EventConfig}      from "../helper/configs/eventConfig";
-import {ServiceConfig}    from "../helper/configs/serviceConfig";
-import Base64Tools      = require("../helper/tools/base64Tools");
-import {byteLength}       from "byte-length";
+import Base64Tools = require("../helper/tools/base64Tools");
 import ObjectPathSequence = require("../helper/tools/objectPathSequence");
 import AuthenticationError = require("../helper/error/authenticationError");
+import {SyncTokenActions} from "../helper/constants/syncTokenActions";
+import ObjectPathActionSequence = require("../helper/tools/objectPathActionSequence");
 
 const uuidV4                = require('uuid/v4');
 const uniqid                = require('uniqid');
@@ -1002,8 +1004,8 @@ class SmallBag
     async kickUserCustomIdCh(userId : number | string | (number | string)[], channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         const ch = ChTools.buildCustomIdChannelName(channel,id);
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.USER_IDS, WorkerChTaskActions.KICK_OUT,userId,exceptSocketSids,{ch});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.KICK_OUT,userId,exceptSocketSids,{ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1021,8 +1023,8 @@ class SmallBag
     async kickUserCustomCh(userId : number | string | (number | string)[], channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         const ch = ChTools.buildCustomChannelName(channel);
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.USER_IDS, WorkerChTaskActions.KICK_OUT,userId,exceptSocketSids,{ch});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.KICK_OUT,userId,exceptSocketSids,{ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1038,8 +1040,8 @@ class SmallBag
      */
     async kickUserAllCh(userId : number | string | (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.USER_IDS,WorkerChTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : ZationChannel.ALL});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.USER_IDS,WorkerChMapTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : ZationChannel.ALL});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1057,8 +1059,8 @@ class SmallBag
     async kickUserAuthUserGroupCh(userId : number | string | (number | string)[],authUserGroup ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         const ch = ChTools.buildAuthUserGroupChName(authUserGroup);
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.USER_IDS,WorkerChTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : ch});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.USER_IDS,WorkerChMapTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1074,8 +1076,8 @@ class SmallBag
      */
     async kickUserDefaultUserGroupCh(userId : number | string | (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.USER_IDS,WorkerChTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : ZationChannel.DEFAULT_USER_GROUP});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.USER_IDS,WorkerChMapTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : ZationChannel.DEFAULT_USER_GROUP});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1094,8 +1096,8 @@ class SmallBag
     async kickTokensCustomIdCh(tokenId : string | string[], channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         const ch = ChTools.buildCustomIdChannelName(channel,id);
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1112,8 +1114,8 @@ class SmallBag
     async kickTokensCustomCh(tokenId : string | string[], channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         const ch = ChTools.buildCustomChannelName(channel);
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1128,8 +1130,8 @@ class SmallBag
      */
     async kickTokensAllCh(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : ZationChannel.ALL});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : ZationChannel.ALL});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1146,8 +1148,8 @@ class SmallBag
     async kickTokensAuthUserGroupCh(tokenId : string | string[],authUserGroup ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         const ch = ChTools.buildAuthUserGroupChName(authUserGroup);
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : ch});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1162,8 +1164,8 @@ class SmallBag
      */
     async kickTokensDefaultUserGroupCh(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : ZationChannel.DEFAULT_USER_GROUP});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : ZationChannel.DEFAULT_USER_GROUP});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1179,8 +1181,8 @@ class SmallBag
     async kickAllSocketsCustomIdCh(channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         const ch = ChTools.buildCustomIdChannelName(channel, id);
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ch});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1195,8 +1197,8 @@ class SmallBag
     async kickAllSocketsCustomCh(channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         const ch = ChTools.buildCustomChannelName(channel);
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ch});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1209,8 +1211,8 @@ class SmallBag
      */
     async kickAllSocketsAllCh(exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ZationChannel.ALL});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ZationChannel.ALL});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1225,8 +1227,8 @@ class SmallBag
     async kickAllSocketsAuthUserGroupCh(authUserGroup ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         const ch = ChTools.buildAuthUserGroupChName(authUserGroup);
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ch});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1239,8 +1241,8 @@ class SmallBag
      */
     async kickAllSocketsDefaultUserGroupCh(exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ZationChannel.DEFAULT_USER_GROUP});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ZationChannel.DEFAULT_USER_GROUP});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1257,8 +1259,8 @@ class SmallBag
     async kickSocketsCustomIdCh(socketSid : string | string[], channel ?: string, id ?: string) : Promise<void>
     {
         const ch = ChTools.buildCustomIdChannelName(channel,id);
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS, WorkerChTaskActions.KICK_OUT,socketSid,[],{ch});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.KICK_OUT,socketSid,[],{ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1274,8 +1276,8 @@ class SmallBag
     async kickSocketsCustomCh(socketSid : string | string[], channel ?: string) : Promise<void>
     {
         const ch = ChTools.buildCustomChannelName(channel);
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS, WorkerChTaskActions.KICK_OUT,socketSid,[],{ch});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.KICK_OUT,socketSid,[],{ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1289,8 +1291,8 @@ class SmallBag
      */
     async kickSocketsAllCh(socketSid : string | string[]) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS,WorkerChTaskActions.KICK_OUT,socketSid,[],{ch : ZationChannel.ALL});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.SOCKETS_SIDS,WorkerChMapTaskActions.KICK_OUT,socketSid,[],{ch : ZationChannel.ALL});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1306,8 +1308,8 @@ class SmallBag
     async kickSocketsAuthUserGroupCh(socketSid : string | string[],authUserGroup ?: string) : Promise<void>
     {
         const ch = ChTools.buildAuthUserGroupChName(authUserGroup);
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS,WorkerChTaskActions.KICK_OUT,socketSid,[],{ch : ch});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.SOCKETS_SIDS,WorkerChMapTaskActions.KICK_OUT,socketSid,[],{ch : ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1321,8 +1323,8 @@ class SmallBag
      */
     async kickSocketsDefaultUserGroupCh(socketSid : string | string[]) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS,WorkerChTaskActions.KICK_OUT,socketSid,[],{ch : ZationChannel.DEFAULT_USER_GROUP});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.SOCKETS_SIDS,WorkerChMapTaskActions.KICK_OUT,socketSid,[],{ch : ZationChannel.DEFAULT_USER_GROUP});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1342,8 +1344,8 @@ class SmallBag
     async kickAuthUserGroupsCustomIdCh(authUserGroup : string | null | (string)[],channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         const ch = ChTools.buildCustomIdChannelName(channel,id);
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChTaskActions.KICK_OUT,
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChMapTaskActions.KICK_OUT,
             authUserGroup || [],exceptSocketSids,{ch,all : authUserGroup === null});
     }
 
@@ -1362,8 +1364,8 @@ class SmallBag
     async kickAuthUserGroupsCustomCh(authUserGroup : string | null | (string)[],channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         const ch = ChTools.buildCustomChannelName(channel);
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChTaskActions.KICK_OUT,
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChMapTaskActions.KICK_OUT,
             authUserGroup || [],exceptSocketSids,{ch,all : authUserGroup === null});
     }
 
@@ -1380,8 +1382,8 @@ class SmallBag
      */
     async kickAuthUserGroupsAllCh(authUserGroup : string | null | (string)[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChTaskActions.KICK_OUT,
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChMapTaskActions.KICK_OUT,
             authUserGroup || [],exceptSocketSids,{ch : ZationChannel.ALL,all : authUserGroup === null});
     }
 
@@ -1400,8 +1402,8 @@ class SmallBag
     async kickDefaultUserGroupCustomIdCh(channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         const ch = ChTools.buildCustomIdChannelName(channel,id);
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1418,8 +1420,8 @@ class SmallBag
     async kickDefaultUserGroupCustomCh(channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
         const ch = ChTools.buildCustomChannelName(channel);
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1433,8 +1435,8 @@ class SmallBag
      */
     async kickDefaultUserGroupAllCh(exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ZationChannel.ALL});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ZationChannel.ALL});
     }
 
     //Part Extra Emit
@@ -1452,8 +1454,8 @@ class SmallBag
      */
     async emitUser(userId : number | string | (number | string)[],event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.USER_IDS,WorkerChTaskActions.EMIT,userId,exceptSocketSids,{event,data});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.USER_IDS,WorkerChMapTaskActions.EMIT,userId,exceptSocketSids,{event,data});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1470,8 +1472,8 @@ class SmallBag
      */
     async emitTokens(tokenId : string | string[],event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.EMIT,tokenId,exceptSocketSids,{event,data});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.EMIT,tokenId,exceptSocketSids,{event,data});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1487,8 +1489,8 @@ class SmallBag
      */
     async emitAllSockets(event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.EMIT,[],exceptSocketSids,{event,data});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.EMIT,[],exceptSocketSids,{event,data});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1504,8 +1506,8 @@ class SmallBag
      */
     async emitSockets(socketSid : string | string[],event : string,data : any = {}) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS,WorkerChTaskActions.EMIT,socketSid,[],{event,data});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.SOCKETS_SIDS,WorkerChMapTaskActions.EMIT,socketSid,[],{event,data});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1523,8 +1525,8 @@ class SmallBag
      */
     async emitAuthUserGroups(authUserGroup : string | null | (string)[],event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChTaskActions.EMIT,authUserGroup || [],exceptSocketSids,{event,data,all : authUserGroup === null});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChMapTaskActions.EMIT,authUserGroup || [],exceptSocketSids,{event,data,all : authUserGroup === null});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1540,8 +1542,8 @@ class SmallBag
      */
     async emitDefaultUserGroup(event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChTaskActions.EMIT,[],exceptSocketSids,{event,data});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChMapTaskActions.EMIT,[],exceptSocketSids,{event,data});
     }
 
     //Part Security
@@ -1559,8 +1561,8 @@ class SmallBag
      */
     async disconnectUser(userId : number | string | (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.USER_IDS,WorkerChTaskActions.DISCONNECT,userId,exceptSocketSids);
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.USER_IDS,WorkerChMapTaskActions.DISCONNECT,userId,exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1576,8 +1578,8 @@ class SmallBag
      */
     async disconnectTokens(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.DISCONNECT,tokenId,exceptSocketSids);
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.DISCONNECT,tokenId,exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1590,8 +1592,8 @@ class SmallBag
      */
     async disconnectAllSockets(exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.DISCONNECT,[],exceptSocketSids);
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.DISCONNECT,[],exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1605,8 +1607,8 @@ class SmallBag
      */
     async disconnectSockets(socketSid : string | string[]) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS,WorkerChTaskActions.DISCONNECT,socketSid,[]);
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.SOCKETS_SIDS,WorkerChMapTaskActions.DISCONNECT,socketSid,[]);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1622,8 +1624,8 @@ class SmallBag
      */
     async disconnectAuthUserGroups(authUserGroup : string | null | (string)[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChTaskActions.DISCONNECT,authUserGroup || [],exceptSocketSids,{all : authUserGroup === null});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChMapTaskActions.DISCONNECT,authUserGroup || [],exceptSocketSids,{all : authUserGroup === null});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1637,8 +1639,8 @@ class SmallBag
      */
     async disconnectDefaultUserGroup(exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChTaskActions.DISCONNECT,[],exceptSocketSids);
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChMapTaskActions.DISCONNECT,[],exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1654,8 +1656,8 @@ class SmallBag
      */
     async deauthenticateUser(userId : number | string | (number | string)[] | number | string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.USER_IDS,WorkerChTaskActions.DEAUTHENTICATE,userId,exceptSocketSids);
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.USER_IDS,WorkerChMapTaskActions.DEAUTHENTICATE,userId,exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1671,8 +1673,8 @@ class SmallBag
      */
     async deauthenticateTokens(tokenId : string | string[] | string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChTaskActions.DEAUTHENTICATE,tokenId,exceptSocketSids);
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.DEAUTHENTICATE,tokenId,exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1685,8 +1687,8 @@ class SmallBag
      */
     async deauthenticateAllSockets(exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChTaskActions.DEAUTHENTICATE,[],exceptSocketSids);
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.DEAUTHENTICATE,[],exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1700,8 +1702,8 @@ class SmallBag
      */
     async deauthenticateSockets(socketSid : string | string[] | string) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS,WorkerChTaskActions.DEAUTHENTICATE,socketSid,[]);
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.SOCKETS_SIDS,WorkerChMapTaskActions.DEAUTHENTICATE,socketSid,[]);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1717,8 +1719,8 @@ class SmallBag
      */
     async deauthenticateAuthUserGroups(authUserGroup : string | null | (string)[],exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChTaskActions.DEAUTHENTICATE,authUserGroup || [],exceptSocketSids,{all : authUserGroup === null});
+        await this.exchangeEngine.publishMapTaskToWorker
+        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChMapTaskActions.DEAUTHENTICATE,authUserGroup || [],exceptSocketSids,{all : authUserGroup === null});
     }
 
     //Part Socket Tools
@@ -1996,6 +1998,76 @@ class SmallBag
         else {
             throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
         }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Set a token variable on all tokens with a specific user id with object path.
+     * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * That means there can be no naming conflicts with zation variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * @example
+     * await setTokenVariableOnUserId('USER_ID','person.email','example@gmail.com');
+     * @param userId
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @param value
+     * @param exceptSocketSids
+     */
+    async setTokenVariableOnUserId(userId : string | number,path : string | string[],value : any,exceptSocketSids : string[] | string = []) : Promise<void> {
+        await this.exchangeEngine.publishUpdateUserTokenWorkerTask
+        ([{action : SyncTokenActions.SET, params : [path,value]}],userId,exceptSocketSids);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Delete a token variable on all tokens with a specific user id with object path.
+     * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * @example
+     * await deleteTokenVariableOnUserId('USER_ID','person.email');
+     * @param userId
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @param exceptSocketSids
+     */
+    async deleteTokenVariableOnUserId(userId : string | number,path ?: string | string[],exceptSocketSids : string[] | string = []) : Promise<void> {
+        await this.exchangeEngine.publishUpdateUserTokenWorkerTask
+        ([{action : SyncTokenActions.DELETE, params : [path]}],userId,exceptSocketSids);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Sequence edit the token variables on all tokens with a specific user id.
+     * Useful if you want to make several changes.
+     * This will do everything in one and saves performance.
+     * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * That means there can be no naming conflicts with zation variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * @example
+     * await seqEditTokenVariablesOnUserId('USER_ID')
+     *       .delete('person.lastName')
+     *       .set('person.name','Luca')
+     *       .set('person.email','example@gmail.com')
+     *       .commit();
+     * @param userId
+     * @param exceptSocketSids
+     */
+    seqEditTokenVariablesOnUserId(userId : string | number,exceptSocketSids : string[] | string = []) : ObjectPathActionSequence
+    {
+        return new ObjectPathActionSequence(async (actions)=> {
+            await this.exchangeEngine.publishUpdateUserTokenWorkerTask
+            (actions,userId,exceptSocketSids);
+        });
     }
 
     //Worker storage
@@ -2326,8 +2398,8 @@ class SmallBag
      * You can react on the message with the workerMessage event in the event config.
      */
     async sendWorkerMessage(data : any) : Promise<void> {
-        await this.exchangeEngine.publishTaskToWorker
-        (WorkerChTargets.THIS_WORKER,WorkerChTaskActions.MESSAGE, [],[],{data : data});
+        await this.exchangeEngine.publishSpecialTaskToWorker
+        (WorkerChSpecialTaskActions.MESSAGE, {data : data});
     }
 }
 

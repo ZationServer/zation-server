@@ -10,60 +10,56 @@ This class is to publish into channels with the scServer.exchange object.
 It is used by the SmallBag and the ChannelEngine.
  */
 
-import ChTools           = require('./chTools');
-import ZationConfig      = require("../../main/zationConfig");
-import Logger            = require("../logger/logger");
-import {WorkerChTaskActions} from "../constants/workerChTaskActions";
-import FuncTools         = require("../tools/funcTools");
-import ZationWorker      = require("../../main/zationWorker");
-import CIdChInfo         = require("../infoObjects/cIdChInfo");
-import CChInfo           = require("../infoObjects/cChInfo");
-import {WorkerChTargets}   from "../constants/workerChTargets";
-import PubData           = require("../infoObjects/pubDataInfo");
-import {ScServer}          from "../sc/scServer";
-import {ZationChannel}     from "../constants/internal";
-import SocketInfo        = require("../infoObjects/socketInfo");
+import ChTools = require('./chTools');
+import ZationConfig = require("../../main/zationConfig");
+import Logger = require("../logger/logger");
+import FuncTools = require("../tools/funcTools");
+import ZationWorker = require("../../main/zationWorker");
+import CIdChInfo = require("../infoObjects/cIdChInfo");
+import CChInfo = require("../infoObjects/cChInfo");
+import PubData = require("../infoObjects/pubDataInfo");
+import SocketInfo = require("../infoObjects/socketInfo");
+import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../constants/workerChTaskActions";
+import {WorkerChTargets} from "../constants/workerChTargets";
+import {ScServer} from "../sc/scServer";
+import {ZationChannel} from "../constants/internal";
+import {SyncTokenActions} from "../constants/syncTokenActions";
+import {WorkerChTaskType} from "../constants/workerChTaskType";
 
-class ChExchangeEngine
-{
-    private readonly scServer : ScServer;
+class ChExchangeEngine {
+    private readonly scServer: ScServer;
     private readonly worker: ZationWorker;
 
-    constructor(worker : ZationWorker) {
+    constructor(worker: ZationWorker) {
         this.worker = worker;
         this.scServer = worker.scServer;
     }
 
     //PART Publish
 
-    publish(channel : string,eventName : string,data : any,cb ?: Function,srcSocketSid ?: string) : void
-    {
+    publish(channel: string, eventName: string, data: any, cb ?: Function, srcSocketSid ?: string): void {
         // noinspection TypeScriptValidateJSTypes
-        this.scServer.exchange.publish(channel,ChExchangeEngine.buildData(eventName,data,srcSocketSid),cb);
+        this.scServer.exchange.publish(channel, ChExchangeEngine.buildData(eventName, data, srcSocketSid), cb);
     }
 
-    private pubAsync(channel : string,eventName : string,data : any,srcSocketSid ?: string) : Promise<void>
-    {
+    private pubAsync(channel: string, eventName: string, data: any, srcSocketSid ?: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            this.publish(channel,eventName,data,(err) => {
-                if(!!err) {
+            this.publish(channel, eventName, data, (err) => {
+                if (!!err) {
                     reject(err);
-                }
-                else {
+                } else {
                     resolve();
                 }
-            },srcSocketSid);
+            }, srcSocketSid);
         });
     }
 
-    private pubAsyncInternal(channel : string,data : any) : Promise<void>
-    {
+    private pubAsyncInternal(channel: string, data: any): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            this.scServer.exchange.publish(channel,data,(err) => {
-                if(!!err) {
+            this.scServer.exchange.publish(channel, data, (err) => {
+                if (!!err) {
                     reject(err);
-                }
-                else {
+                } else {
                     resolve();
                 }
             });
@@ -72,22 +68,46 @@ class ChExchangeEngine
 
     //Part Worker sync channel
 
-    async publishToWorker(data : any) : Promise<void>
-    {
+    async publishToWorker(data: any): Promise<void> {
         try {
-            await this.pubAsyncInternal(ZationChannel.ALL_WORKER,data);
-        }
-        catch (e) {
+            await this.pubAsyncInternal(ZationChannel.ALL_WORKER, data);
+        } catch (e) {
             Logger.printDebugWarning(`Failed to publish data: '${data.toString()}' in worker channel!`);
             throw e;
         }
     }
 
-    async publishTaskToWorker(target : WorkerChTargets,action : WorkerChTaskActions, ids : string | number | (string | number)[], exceptSocketSids : string[] | string, mainData : object = {}) : Promise<void>
-    {
-        const tmpIds : (string | number | null)[]  = Array.isArray(ids) ? ids : [ids];
-        const tmpExceptSocketSids : string[] = Array.isArray(exceptSocketSids) ? exceptSocketSids : [exceptSocketSids];
-        await this.publishToWorker({ids : tmpIds,action : action,target : target,mainData : mainData,exceptSocketSids : tmpExceptSocketSids});
+    async publishMapTaskToWorker(target: WorkerChTargets, action: WorkerChMapTaskActions, ids: string | number | (string | number)[], exceptSocketSids: string[] | string, mainData: object = {}): Promise<void> {
+        const tmpIds: (string | number | null)[] = Array.isArray(ids) ? ids : [ids];
+        const tmpExceptSocketSids: string[] = Array.isArray(exceptSocketSids) ? exceptSocketSids : [exceptSocketSids];
+        await this.publishToWorker({
+            ids: tmpIds,
+            actionType : WorkerChTaskType.MAP_TASK,
+            action: action,
+            target: target,
+            mainData: mainData,
+            exceptSocketSids: tmpExceptSocketSids
+        });
+    }
+
+    async publishSpecialTaskToWorker(action : WorkerChSpecialTaskActions,mainData : any): Promise<void> {
+        await this.publishToWorker({
+            actionType : WorkerChTaskType.SPECIAL_TASK,
+            action: action,
+            mainData: mainData
+        });
+    }
+
+    async publishUpdateUserTokenWorkerTask(actions: { action: SyncTokenActions, params: any[] }[], userId, exceptSocketSids: string[] | string): Promise<void> {
+        const tmpExceptSocketSids: string[] = Array.isArray(exceptSocketSids) ? exceptSocketSids : [exceptSocketSids];
+        await this.publishSpecialTaskToWorker(
+            WorkerChSpecialTaskActions.UPDATE_USER_TOKENS,
+            {
+                actions : actions,
+                id : userId,
+                exceptSocketSids : tmpExceptSocketSids
+            }
+        );
     }
 
     //Part Zation Channels

@@ -5,24 +5,26 @@ GitHub: LucaCode
  */
 
 import ChannelEngine = require('./../helper/channel/channelEngine');
-import SmallBag      = require('./SmallBag');
-import SHBridge      = require("../helper/bridges/shBridge");
-import AuthEngine    = require("../helper/auth/authEngine");
-import TokenEngine   = require("../helper/token/tokenEngine");
-import ZationWorker  = require("../main/zationWorker");
-import ObjectPath    = require("../helper/tools/objectPath");
-import useragent     = require('useragent');
+import SmallBag = require('./SmallBag');
+import SHBridge = require("../helper/bridges/shBridge");
+import AuthEngine = require("../helper/auth/authEngine");
+import TokenEngine = require("../helper/token/tokenEngine");
+import ZationWorker = require("../main/zationWorker");
+import ObjectPath = require("../helper/tools/objectPath");
+import useragent = require('useragent');
 import MethodIsNotCompatibleError = require("../helper/error/methodIsNotCompatibleError");
-import InputIsNotCompatibleError  = require("../helper/error/inputIsNotCompatibleError");
-import ObjectPathSequence    = require("../helper/tools/objectPathSequence");
-import {Socket}                from "../helper/sc/socket";
-import AuthenticationError   = require("../helper/error/authenticationError");
+import InputIsNotCompatibleError = require("../helper/error/inputIsNotCompatibleError");
+import ObjectPathSequence = require("../helper/tools/objectPathSequence");
+import AuthenticationError = require("../helper/error/authenticationError");
 import ProtocolAccessChecker = require("../helper/protocolAccess/protocolAccessChecker");
-import {ScServer}              from "../helper/sc/scServer";
-import * as core               from "express-serve-static-core";
+import {Socket} from "../helper/sc/socket";
+import {ScServer} from "../helper/sc/scServer";
+import * as core from "express-serve-static-core";
 import {IncomingHttpHeaders, IncomingMessage} from "http";
-import {Agent}        from "useragent";
+import {Agent} from "useragent";
 import {UploadedFile} from "express-fileupload";
+import {SyncTokenActions} from "../helper/constants/syncTokenActions";
+import {ObjectPathCombineSequence} from "../helper/tools/objectPathCombineSequence";
 
 export class Bag extends SmallBag
 {
@@ -665,6 +667,78 @@ export class Bag extends SmallBag
         else {
             throw new AuthenticationError(`Can't set token variable when socket is not authenticated!`);
         }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Set a token variable on every token with the current userId with object path.
+     * But first on the current socket, afterward on all other tokens with the same user id.
+     * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * That means there can be no naming conflicts with zation variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * Check that the socket is authenticated (has a token).
+     * @example
+     * await syncSetTokenVariable('person.email','example@gmail.com');
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @param value
+     * @throws AuthenticationError
+     */
+    async syncSetTokenVariable(path : string | string[],value : any) : Promise<void> {
+        await this.setTokenVariable(path,value);
+        // @ts-ignore
+        await this.setTokenVariableOnUserId(this.getUserId(),path,value,this.getSocketSid());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Delete a token variable on every token with the current userId with object path.
+     * But first on the current socket, afterward on all other tokens with the same user id.
+     * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * Check that the socket is authenticated (has a token).
+     * @example
+     * await syncDeleteTokenVariable('person.email');
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @throws AuthenticationError
+     */
+    async syncDeleteTokenVariable(path ?: string | string[]) : Promise<void> {
+        await this.deleteTokenVariable(path);
+        // @ts-ignore
+        await this.deleteTokenVariableOnUserId(this.getUserId(),path,this.getSocketSid());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Sequence edit the token variables on every token with the current userId.
+     * But first on the current socket, afterward on all other tokens with the same user id.
+     * Useful if you want to make several changes.
+     * This will do everything in one and saves performance.
+     * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * That means there can be no naming conflicts with zation variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * Check that the socket is authenticated (has a token).
+     * @example
+     * await syncSeqEditTokenVariables()
+     *       .delete('person.lastName')
+     *       .set('person.name','Luca')
+     *       .set('person.email','example@gmail.com')
+     *       .commit();
+     * @throws AuthenticationError
+     */
+    syncSeqEditTokenVariables() : ObjectPathCombineSequence {
+        // @ts-ignore
+        return new ObjectPathCombineSequence(this.getUserId(),this.getSocketSid(),this);
     }
 
     // noinspection JSUnusedGlobalSymbols
