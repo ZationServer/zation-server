@@ -192,3 +192,15 @@ S
 +src/lib/helper/constants/workerChTargets.ts,b/2/b2964a6b504dc65f7a198c61cc54a2219a8eee5d
 G
 test/testData/base64.js,d/d/dd0a45ed72f2d7eb7f7337bd1d9f216dbf10b7dc
+X
+(src/lib/helper/infoObjects/socketInfo.ts,1/0/10c3cc4c72cadeb4ea288b653d38224884b93590
+\
+,src/lib/helper/constants/syncTokenActions.ts,b/e/bef412af2b6fc52bd15b6107ce42600bb074646b
+\
+,src/lib/helper/constants/workerChTaskType.ts,4/a/4ab4bef96571f70e4b8361601b359fdaccc715fd
+a
+1src/lib/helper/tools/objectPathCombineSequence.ts,7/9/79b7c5987a50f8eecc57dcfe6c8dc421c38d5de7
+Z
+*src/lib/helper/tools/objectPathSequence.ts,8/9/891e0e284fb0cb6212f8f50ea4ae4e1a25235014
+`
+0src/lib/helper/tools/objectPathActionSequence.ts,2/f/2fc6ae739014cca26e0b03f44ce0d1ecb50ed5a0

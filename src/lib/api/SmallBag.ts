@@ -2065,8 +2065,10 @@ class SmallBag
     seqEditTokenVariablesOnUserId(userId : string | number,exceptSocketSids : string[] | string = []) : ObjectPathActionSequence
     {
         return new ObjectPathActionSequence(async (actions)=> {
-            await this.exchangeEngine.publishUpdateUserTokenWorkerTask
-            (actions,userId,exceptSocketSids);
+            if(actions.length>0) {
+                await this.exchangeEngine.publishUpdateUserTokenWorkerTask
+                (actions,userId,exceptSocketSids);
+            }
         });
     }
 
