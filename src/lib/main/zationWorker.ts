@@ -12,6 +12,11 @@ import {WorkerChTargets} from "../helper/constants/workerChTargets";
 import {ZationChannel, ZationToken} from "../helper/constants/internal";
 import {WorkerMessageActions} from "../helper/constants/workerMessageActions";
 import {ChConfigManager} from "../helper/channel/chConfigManager";
+import BagExtensionEngine from "../helper/bagExtension/bagExtensionEngine";
+import {NodeInfo} from "../helper/tools/nodeInfo";
+import {SocketSet} from "../helper/tools/socketSet";
+import OriginsEngine from "../helper/origins/originsEngine";
+import {SyncTokenActions} from "../helper/constants/syncTokenActions";
 
 require('cache-require-paths');
 import ChTools = require("../helper/channel/chTools");
@@ -42,10 +47,6 @@ import ZationTokenInfo = require("../helper/infoObjects/zationTokenInfo");
 import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
 import ViewEngine = require("../helper/views/viewEngine");
 import SystemInfo = require("../helper/tools/systemInfo");
-import BagExtensionEngine from "../helper/bagExtension/bagExtensionEngine";
-import {NodeInfo} from "../helper/tools/nodeInfo";
-import {SocketSet} from "../helper/tools/socketSet";
-import OriginsEngine from "../helper/origins/originsEngine";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -1241,6 +1242,9 @@ class ZationWorker extends SCWorker
                             break;
                     }
                     break;
+                case WorkerChTaskActions.SYNC_TOKEN:
+                    await this.syncTokens(mainData.actions,mainData.id,exceptSocketSids);
+                    break;
                 case WorkerChTaskActions.MESSAGE:
                     switch (data.target) {
                         case WorkerChTargets.THIS_WORKER:
@@ -1251,6 +1255,28 @@ class ZationWorker extends SCWorker
             }
 
         });
+    }
+
+    private async syncTokens(actions : {actions : SyncTokenActions,params : any[]}[],userId,exceptSocketSids : string[]) {
+        const filterExceptSocketIds : string[] = this.socketSidsFilter(exceptSocketSids);
+        const promises : Promise<void>[] = [];
+        this.mapUserIdToSc.forEach(userId,(socket : Socket) => {
+            if(!filterExceptSocketIds.includes(socket.id)) {
+                const edit = this.preparedSmallBag.seqEditTokenVariablesWithSocket(socket);
+                for(let i = 0; i < actions.length; i++) {
+                    switch (actions[i].actions) {
+                        case SyncTokenActions.SET :
+                            edit.set(actions[i].params[0],actions[i].params[1]);
+                            break;
+                        case SyncTokenActions.DELETE :
+                            edit.delete(actions[i].params[0]);
+                            break;
+                    }
+                }
+                promises.push(edit.commit());
+            }
+        });
+        await Promise.all(promises);
     }
 
     private forAllSocketSids(ids : string[],action : Function)

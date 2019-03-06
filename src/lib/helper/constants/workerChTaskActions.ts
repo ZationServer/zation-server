@@ -10,5 +10,6 @@ export enum WorkerChTaskActions
     DEAUTHENTICATE,
     KICK_OUT,
     EMIT,
+    SYNC_TOKEN,
     MESSAGE
 }
