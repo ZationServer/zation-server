@@ -681,13 +681,13 @@ export class Bag extends SmallBag
      * But only change, delete or set on the server.
      * Check that the socket is authenticated (has a token).
      * @example
-     * await syncSetTokenVariable('person.email','example@gmail.com');
+     * await setTokenVariableIdSync('person.email','example@gmail.com');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
      * @throws AuthenticationError
      */
-    async syncSetTokenVariable(path : string | string[],value : any) : Promise<void> {
+    async setTokenVariableIdSync(path : string | string[],value : any) : Promise<void> {
         await this.setTokenVariable(path,value);
         // @ts-ignore
         await this.setTokenVariableOnUserId(this.getUserId(),path,value,this.getSocketSid());
@@ -704,12 +704,12 @@ export class Bag extends SmallBag
      * But only change, delete or set on the server.
      * Check that the socket is authenticated (has a token).
      * @example
-     * await syncDeleteTokenVariable('person.email');
+     * await deleteTokenVariableIdSync('person.email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError
      */
-    async syncDeleteTokenVariable(path ?: string | string[]) : Promise<void> {
+    async deleteTokenVariableIdSync(path ?: string | string[]) : Promise<void> {
         await this.deleteTokenVariable(path);
         // @ts-ignore
         await this.deleteTokenVariableOnUserId(this.getUserId(),path,this.getSocketSid());
@@ -729,14 +729,14 @@ export class Bag extends SmallBag
      * But only change, delete or set on the server.
      * Check that the socket is authenticated (has a token).
      * @example
-     * await syncSeqEditTokenVariables()
+     * await seqEditTokenVariablesIdSync()
      *       .delete('person.lastName')
      *       .set('person.name','Luca')
      *       .set('person.email','example@gmail.com')
      *       .commit();
      * @throws AuthenticationError
      */
-    syncSeqEditTokenVariables() : ObjectPathCombineSequence {
+    seqEditTokenVariablesIdSync() : ObjectPathCombineSequence {
         // @ts-ignore
         return new ObjectPathCombineSequence(this.getUserId(),this.getSocketSid(),this);
     }
