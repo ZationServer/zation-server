@@ -672,8 +672,8 @@ export class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set a token variable on every token with the current userId with object path.
-     * But first on the current socket, afterward on all other tokens with the same user id.
+     * Set a token variable on every token with the current userId (synchronized on user id) with object path.
+     * But first on the current socket, afterwards on all other tokens with the same user id.
      * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
      * Notice that the token variables are separated from the main zation token variables.
      * That means there can be no naming conflicts with zation variables.
@@ -696,8 +696,8 @@ export class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Delete a token variable on every token with the current userId with object path.
-     * But first on the current socket, afterward on all other tokens with the same user id.
+     * Delete a token variable on every token with the current userId (synchronized on user id) with object path.
+     * But first on the current socket, afterwards on all other tokens with the same user id.
      * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
      * Notice that the token variables are separated from the main zation token variables.
      * You can access this variables on client and server side.
@@ -718,8 +718,8 @@ export class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Sequence edit the token variables on every token with the current userId.
-     * But first on the current socket, afterward on all other tokens with the same user id.
+     * Sequence edit the token variables on every token with the current userId (synchronized on user id).
+     * But first on the current socket, afterwards on all other tokens with the same user id.
      * Useful if you want to make several changes.
      * This will do everything in one and saves performance.
      * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
