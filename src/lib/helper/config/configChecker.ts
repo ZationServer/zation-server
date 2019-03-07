@@ -33,14 +33,7 @@ import BagExtension, {
 import {PanelUserConfig} from "../configs/mainConfig";
 import {MainService, Service} from "../configs/serviceConfig";
 // noinspection TypeScriptPreferShortImport
-import {ValidationTypes} from "../constants/validationTypes";
 import {ChannelConfig, ChannelDefault, CustomChannelConfig} from "../configs/channelConfig";
-import {
-    OnlyBase64Functions,
-    OnlyDateFunctions,
-    OnlyNumberFunctions,
-    OnlyStringFunctions
-} from "../constants/validation";
 // noinspection TypeScriptPreferShortImport
 import {Controller, ControllerClass} from "../../api/Controller";
 
@@ -940,13 +933,10 @@ class ConfigChecker
                     `${target.getTarget()} the inheritance dependency to value: '${ex}' can not be resolved, Value not found.`));
             }else if(typeof valueName === 'string') {
                 //check no self import
-                config = this.checkProcessValueInheritance(target,config,config,valueName);
+                this.checkProcessValueInheritance(target,config,config,valueName);
                 target.setExtraInfo('Compiled with inheritance');
             }
         }
-
-        //check for only number/string functions
-        this.checkOnlyValidationFunction(config,target);
     }
 
     private checkProcessValueInheritance(target : Target,mainConfig : object,exConfig : object,valueName : string,otherSrc : string[] = []) : object
@@ -967,42 +957,6 @@ class ConfigChecker
             }
         }
         return mainConfig;
-    }
-
-    private checkOnlyValidationFunction(value: ValuePropertyConfig, target) {
-        if(value.type !== undefined)
-        {
-            const type = value.type;
-            const isNumber = type === ValidationTypes.INT || type === ValidationTypes.FLOAT || type === ValidationTypes.NUMBER;
-
-            if (isNumber && ObjectTools.hasOneOf(value, OnlyStringFunctions)) {
-                const useFunctions = ObjectTools.getFoundKeys(value, OnlyStringFunctions);
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `${target.getTarget()} the type number can't use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
-            }
-
-            if (!isNumber && (ObjectTools.hasOneOf(value, OnlyNumberFunctions))) {
-                const useFunctions = ObjectTools.getFoundKeys(value, OnlyNumberFunctions);
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `${target.getTarget()} only a type from number can use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
-            }
-
-            //check date functions
-            if(type !== ValidationTypes.DATE && ObjectTools.hasOneOf(value,OnlyDateFunctions))
-            {
-                const useFunctions = ObjectTools.getFoundKeys(value, OnlyDateFunctions);
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `${target.getTarget()} only the type date can use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
-            }
-
-            //check base64 functions
-            if(type !== ValidationTypes.BASE64 && ObjectTools.hasOneOf(value,OnlyBase64Functions))
-            {
-                const useFunctions = ObjectTools.getFoundKeys(value, OnlyBase64Functions);
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `${target.getTarget()} only the type base64 can use this function${useFunctions.length > 1 ? 's' : ''}: ${useFunctions.toString()}.`));
-            }
-        }
     }
 
     private checkCharClassFunction(value : ValuePropertyConfig,target) {
