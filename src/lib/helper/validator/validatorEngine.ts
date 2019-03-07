@@ -45,7 +45,7 @@ class ValidatorEngine
                 let foundAValidTyp = false;
                 let errorBagTemp = new TaskErrorBag();
                 for(let i = 0; i < type.length; i++) {
-                    let tempErrorCount = errorBag.getTaskErrorCount();
+                    let tempErrorCount = errorBagTemp.getTaskErrorCount();
                     ValidatorEngine.validateType(input,type[i],strictType,errorBagTemp,preparedErrorData);
                     if(tempErrorCount === errorBagTemp.getTaskErrorCount()) {
                         foundAValidTyp = true;
