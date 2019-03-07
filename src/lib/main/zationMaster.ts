@@ -24,7 +24,7 @@ import {StringSet}             from "../helper/tools/simpleSet";
 
 class ZationMaster {
     private static instance: ZationMaster | null = null;
-    private static readonly version: string = '0.8.8';
+    private static readonly version: string = '0.8.9';
 
     private readonly serverStartedTimeStamp: number;
     private readonly zc: ZationConfig;
