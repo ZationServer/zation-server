@@ -436,7 +436,7 @@ export class ChAccessEngine
                 else if(subs[i].indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1)
                 {
                     const userIdSub = subs[i].replace(ZationChannel.USER_CHANNEL_PREFIX,'');
-                    if(userId !== userIdSub) {
+                    if(userId != userIdSub) {
                         ChTools.kickOut(socket,subs[i]);
                     }
                 }
