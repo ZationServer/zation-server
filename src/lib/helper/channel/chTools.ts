@@ -40,7 +40,7 @@ class ChTools
     {
         // noinspection JSUnresolvedFunction,JSValidateTypes,TypeScriptValidateJSTypes
         socket.kickOut(channel);
-        Logger.printDebugInfo(`Socket with id: ${socket.id} is kick out from channel ${channel}`);
+        Logger.printDebugInfo(`Socket with id: ${socket.id} is kicked from channel ${channel}`);
     }
 
     static getCustomIdChannelInfo(ch : string) : any

@@ -8,7 +8,7 @@ class FuncTools
 {
     static async emitEvent(func : Function | Function[] | undefined,...params : any[]) : Promise<void>
     {
-        if(func !== undefined && typeof func === 'function') {
+        if(typeof func === 'function') {
             await func(...params);
         }
         else if(Array.isArray(func)) {
@@ -22,7 +22,7 @@ class FuncTools
 
     static async checkMiddlewareFunc(func : Function | undefined,next : Function,...params : any[]) : Promise<boolean>
     {
-        if(func !== undefined && typeof func === 'function') {
+        if(typeof func === 'function') {
             let res  = await func(...params);
             if(typeof res === "boolean" && res) {
                 return true;
