@@ -214,3 +214,21 @@ V
 &src/lib/helper/constants/validation.ts,d/6/d62f057938d69bdc3d9b03b0511115055fc3884f
 Y
 )src/lib/helper/validator/easyValidator.ts,f/f/ffb7fba8b6775e03f20596a015049fedbabc2570
+Q
+!src/lib/helper/tools/funcTools.ts,b/b/bb1925dde3d0968397b79f3a4fa0836aeb37e215
+Y
+)src/lib/helper/channel/chConfigManager.ts,d/2/d21231886b579ebc54a69498a9a3d3c93d56286d
+X
+(src/lib/helper/channel/chAccessEngine.ts,7/0/70f38a3abe56e72fdcfd49bf0d3cc4a5a26265c9
+Q
+!src/lib/helper/channel/chTools.ts,9/4/945eec8fcbf004b35a6ca3b31380641f52f15be3
+W
+'src/lib/helper/channel/channelEngine.ts,2/f/2f877646c2bb681ebfb2a8b15cfa4a94b4db5e17
+W
+'src/lib/helper/convert/convertEngine.ts,0/5/05fa8fdf472a17aae85deac6496f4ba6b5c0a464
+R
+"src/lib/helper/bridges/shBridge.ts,b/7/b7cdf86574fc365fd5ab9504deb3a44acb3ba96d
+i
+9src/lib/public/assets/panel/static/js/2.93fce5b7.chunk.js,3/0/30a213dfa1c8c3ba296845c31a01f58a67f58a03
+O
+dist/lib/main/zationMaster.d.ts,2/e/2edb7fa138898caa44e5276c41b9bfd9888fe686
