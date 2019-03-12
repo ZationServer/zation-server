@@ -104,7 +104,19 @@ class ChExchangeEngine {
             WorkerChSpecialTaskActions.UPDATE_USER_TOKENS,
             {
                 actions : actions,
-                id : userId,
+                target : userId,
+                exceptSocketSids : tmpExceptSocketSids
+            }
+        );
+    }
+
+    async publishUpdateGroupTokenWorkerTask(actions: { action: SyncTokenActions, params: any[] }[], authUserGroup, exceptSocketSids: string[] | string): Promise<void> {
+        const tmpExceptSocketSids: string[] = Array.isArray(exceptSocketSids) ? exceptSocketSids : [exceptSocketSids];
+        await this.publishSpecialTaskToWorker(
+            WorkerChSpecialTaskActions.UPDATE_GROUP_TOKENS,
+            {
+                actions : actions,
+                target : authUserGroup,
                 exceptSocketSids : tmpExceptSocketSids
             }
         );

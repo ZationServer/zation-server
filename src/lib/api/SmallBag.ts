@@ -2072,6 +2072,78 @@ class SmallBag
         });
     }
 
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Set a token variable on all tokens with a specific auth user group with object path.
+     * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * That means there can be no naming conflicts with zation variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * @example
+     * await setTokenVariableOnGroup('AUTH-USER-GROUP','person.email','example@gmail.com');
+     * @param authUserGroup
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @param value
+     * @param exceptSocketSids
+     */
+    async setTokenVariableOnGroup(authUserGroup : string,path : string | string[],value : any,exceptSocketSids : string[] | string = []) : Promise<void> {
+        await this.exchangeEngine.publishUpdateGroupTokenWorkerTask
+        ([{action : SyncTokenActions.SET, params : [path,value]}],authUserGroup,exceptSocketSids);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Delete a token variable on all tokens with a specific auth user group with object path.
+     * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * @example
+     * await deleteTokenVariableOnGroup('AUTH-USER-GROUP','person.email');
+     * @param authUserGroup
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @param exceptSocketSids
+     */
+    async deleteTokenVariableOnGroup(authUserGroup : string,path ?: string | string[],exceptSocketSids : string[] | string = []) : Promise<void> {
+        await this.exchangeEngine.publishUpdateGroupTokenWorkerTask
+        ([{action : SyncTokenActions.DELETE, params : [path]}],authUserGroup,exceptSocketSids);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Sequence edit the token variables on all tokens with a specific auth user group.
+     * Useful if you want to make several changes.
+     * This will do everything in one and saves performance.
+     * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * That means there can be no naming conflicts with zation variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * @example
+     * await seqEditTokenVariablesOnGroup('AUTH-USER-GROUP')
+     *       .delete('person.lastName')
+     *       .set('person.name','Luca')
+     *       .set('person.email','example@gmail.com')
+     *       .commit();
+     * @param authUserGroup
+     * @param exceptSocketSids
+     */
+    seqEditTokenVariablesOnGroup(authUserGroup : string,exceptSocketSids : string[] | string = []) : ObjectPathActionSequence
+    {
+        return new ObjectPathActionSequence(async (actions)=> {
+            if(actions.length>0) {
+                await this.exchangeEngine.publishUpdateGroupTokenWorkerTask
+                (actions,authUserGroup,exceptSocketSids);
+            }
+        });
+    }
+
     //Worker storage
     // noinspection JSUnusedGlobalSymbols
     /**

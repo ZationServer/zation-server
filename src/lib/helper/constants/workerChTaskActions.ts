@@ -15,5 +15,6 @@ export enum WorkerChMapTaskActions
 export enum WorkerChSpecialTaskActions
 {
     UPDATE_USER_TOKENS,
+    UPDATE_GROUP_TOKENS,
     MESSAGE
 }

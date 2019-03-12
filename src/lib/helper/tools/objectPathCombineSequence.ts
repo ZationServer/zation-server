@@ -6,7 +6,6 @@ GitHub: LucaCode
 
 
 // noinspection TypeScriptPreferShortImport
-import {Bag}                      from "../../api/Bag";
 import ObjectPathActionSequence = require("./objectPathActionSequence");
 import ObjectPathSequence =       require("./objectPathSequence");
 
@@ -15,9 +14,9 @@ export class ObjectPathCombineSequence
     private objActions : ObjectPathActionSequence;
     private objNormal : ObjectPathSequence;
 
-    constructor(userId : string | number,socketSid : string,bag : Bag) {
-       this.objNormal  = bag.seqEditTokenVariables();
-       this.objActions = bag.seqEditTokenVariablesOnUserId(userId,socketSid);
+    constructor(objNormal : ObjectPathSequence, objActions : ObjectPathActionSequence){
+       this.objNormal  = objNormal;
+       this.objActions = objActions;
     }
 
     set(path : string | string[],value : any) : ObjectPathCombineSequence {

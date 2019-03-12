@@ -737,8 +737,86 @@ export class Bag extends SmallBag
      * @throws AuthenticationError
      */
     seqEditTokenVariablesIdSync() : ObjectPathCombineSequence {
+        return new ObjectPathCombineSequence(
+            this.seqEditTokenVariables(),
+            // @ts-ignore
+            this.seqEditTokenVariablesOnUserId(this.getUserId(),this.getSocketSid())
+        );
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Set a token variable on every token with the current auth user group (synchronized on auth user group) with object path.
+     * But first on the current socket, afterwards on all other tokens with the same auth user group.
+     * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * That means there can be no naming conflicts with zation variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * Check that the socket is authenticated (has a token).
+     * @example
+     * await setTokenVariableGroupSync('person.email','example@gmail.com');
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @param value
+     * @throws AuthenticationError
+     */
+    async setTokenVariableGroupSync(path : string | string[],value : any) : Promise<void> {
+        await this.setTokenVariable(path,value);
         // @ts-ignore
-        return new ObjectPathCombineSequence(this.getUserId(),this.getSocketSid(),this);
+        await this.setTokenVariableOnGroup(this.getAuthUserGroup(),path,value,this.getSocketSid());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Delete a token variable on every token with the current auth user group (synchronized on auth user group) with object path.
+     * But first on the current socket, afterwards on all other tokens with the same auth user group.
+     * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * Check that the socket is authenticated (has a token).
+     * @example
+     * await deleteTokenVariableGroupSync('person.email');
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @throws AuthenticationError
+     */
+    async deleteTokenVariableGroupSync(path ?: string | string[]) : Promise<void> {
+        await this.deleteTokenVariable(path);
+        // @ts-ignore
+        await this.deleteTokenVariableOnGroup(this.getAuthUserGroup(),path,this.getSocketSid());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Sequence edit the token variables on every token with the current auth user group (synchronized on auth user group).
+     * But first on the current socket, afterwards on all other tokens with the same auth user group.
+     * Useful if you want to make several changes.
+     * This will do everything in one and saves performance.
+     * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * That means there can be no naming conflicts with zation variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * Check that the socket is authenticated (has a token).
+     * @example
+     * await seqEditTokenVariablesGroupSync()
+     *       .delete('person.lastName')
+     *       .set('person.name','Luca')
+     *       .set('person.email','example@gmail.com')
+     *       .commit();
+     * @throws AuthenticationError
+     */
+    seqEditTokenVariablesGroupSync() : ObjectPathCombineSequence {
+        return new ObjectPathCombineSequence(
+            this.seqEditTokenVariables(),
+            // @ts-ignore
+            this.seqEditTokenVariablesOnGroup(this.getAuthUserGroup(),this.getSocketSid())
+        );
     }
 
     // noinspection JSUnusedGlobalSymbols

@@ -1139,7 +1139,12 @@ class ZationWorker extends SCWorker
         const mainData = data.mainData;
         switch (data.action) {
             case WorkerChSpecialTaskActions.UPDATE_USER_TOKENS:
-                await this.updateUserTokens(mainData.actions,mainData.id,mainData.exceptSocketSids);
+                await this.updateTokens
+                (this.mapUserIdToSc,mainData.actions,mainData.target.toString(),mainData.exceptSocketSids);
+                break;
+            case WorkerChSpecialTaskActions.UPDATE_GROUP_TOKENS:
+                await this.updateTokens
+                (this.mapAuthUserGroupToSc,mainData.actions,mainData.target,mainData.exceptSocketSids);
                 break;
             case WorkerChSpecialTaskActions.MESSAGE:
                 await this.zc.emitEvent(this.zc.eventConfig.workerMessage,this.preparedSmallBag,mainData.data);
@@ -1272,10 +1277,10 @@ class ZationWorker extends SCWorker
         }
     }
 
-    private async updateUserTokens(actions : {action : SyncTokenActions,params : any[]}[],userId,exceptSocketSids : string[]) {
+    private async updateTokens(map : Mapper<Socket>,actions : {action : SyncTokenActions,params : any[]}[],target,exceptSocketSids : string[]) {
         const filterExceptSocketIds : string[] = this.socketSidsFilter(exceptSocketSids);
         const promises : Promise<void>[] = [];
-        this.mapUserIdToSc.forEach(userId.toString(),(socket : Socket) => {
+        map.forEach(target,(socket : Socket) => {
             if(!filterExceptSocketIds.includes(socket.id)) {
                 const edit = this.preparedSmallBag.seqEditTokenVariablesWithSocket(socket);
                 for(let i = 0; i < actions.length; i++) {
