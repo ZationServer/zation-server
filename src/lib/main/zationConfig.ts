@@ -43,6 +43,8 @@ class ZationConfig {
     private readonly _loadedConfigs: string[] = [];
     private readonly _workerProcess: boolean;
 
+    private _preLoadJwtOptions = {};
+
     private readonly preparedZationInfo : ZationInfo = new ZationInfo(this);
 
     constructor(starterData: object = {}, workerTransport: boolean = false) {
@@ -54,6 +56,7 @@ class ZationConfig {
             this._mainConfig = starterData['mainConfig'];
             this._internalData = starterData['internalData'];
             this._workerProcess = true;
+            this._loadJwtOptions();
         }
     }
 
@@ -80,6 +83,18 @@ class ZationConfig {
         this.processMainConfig();
 
         this._internalData.tokenCheckKey = crypto.randomBytes(32).toString('hex');
+
+        this._loadJwtOptions();
+    }
+
+    _loadJwtOptions()
+    {
+        this._preLoadJwtOptions =
+            this.mainConfig.authAlgorithm ? {algorithm : this.mainConfig.authAlgorithm} : {};
+    }
+
+    getJwtOptions() {
+        return this._preLoadJwtOptions;
     }
 
     loadDefaults() {

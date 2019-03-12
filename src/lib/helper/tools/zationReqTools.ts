@@ -39,8 +39,10 @@ class ZationReqTools
 
         //version,system,token
         res.s = query[HttpGetRequest.SYSTEM];
-        res.v = query[HttpGetRequest.VERSION];
-        res.to = query[HttpGetRequest.TOKEN];
+        res.v = parseFloat(query[HttpGetRequest.VERSION]);
+        if(query[HttpGetRequest.TOKEN] !== undefined){
+            res.to = query[HttpGetRequest.TOKEN];
+        }
         //task
         if(query.hasOwnProperty(HttpGetRequest.CONTROLLER) || query.hasOwnProperty(HttpGetRequest.SYSTEM_CONTROLLER)) {
             res.t = {

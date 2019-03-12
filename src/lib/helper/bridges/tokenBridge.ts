@@ -69,7 +69,7 @@ class TokenBridge
                 return this.plainTokenTemp;
             }
             else {
-                return this.req.zationToken;
+                return this.req.zationToken !== undefined ? this.req.zationToken : null;
             }
         }
     }

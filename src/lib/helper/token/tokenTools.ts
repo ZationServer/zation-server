@@ -144,9 +144,7 @@ class TokenTools
     {
         return new Promise((resolve, reject) =>
         {
-            let algorithm = zc.mainConfig.authAlgorithm;
-
-            Jwt.verify(token,zc.getVerifyKey(),{algorithm : algorithm},(err,decoded) => {
+            Jwt.verify(token,zc.getVerifyKey(),zc.getJwtOptions(),(err,decoded) => {
                 if(err) {
                     if(err.name === 'TokenExpiredError') {
                         reject(new TaskError(MainErrors.tokenExpiredError,{expiredAt : err.expiredAt}));
@@ -155,7 +153,7 @@ class TokenTools
                         reject(new TaskError(MainErrors.jsonWebTokenError,err));
                     }
                     else {
-                        reject(new TaskError(MainErrors.unknownTokenVerifyError,err));
+                        reject(new TaskError(MainErrors.unknownTokenVerifyError,{err : err.toString()}));
                     }
                 }
                 else {
@@ -169,8 +167,7 @@ class TokenTools
     {
         return new Promise((resolve, reject) =>
         {
-            let options = {};
-            options['algorithm'] = zc.mainConfig.authAlgorithm;
+            const options = zc.getJwtOptions();
 
             if(data['exp'] === undefined) {
                 options['expiresIn'] = zc.mainConfig.authDefaultExpiry;
@@ -178,7 +175,7 @@ class TokenTools
 
             Jwt.sign(data,zc.getSignKey(),options,(err,signedToken) => {
                 if(err) {
-                    reject(new TaskError(MainErrors.unknownTokenSignError,err));
+                    reject(new TaskError(MainErrors.unknownTokenSignError,{err : err.toString()}));
                 }
                 else {
                     resolve(signedToken);
