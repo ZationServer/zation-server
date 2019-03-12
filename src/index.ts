@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationStarter         = require('./lib/main/zationMaster');
+import ZationMaster          = require('./lib/main/zationMaster');
 import {Bag}                   from './lib/api/Bag';
 import SmallBag              = require('./lib/api/SmallBag');
 import {Controller}            from './lib/api/Controller';
@@ -26,8 +26,8 @@ import {StarterConfig}         from "./lib/helper/configs/starterConfig";
 const  FsUtil : any           = require('socketcluster/fsutil');
 
 //starter
-const start = (options : StarterConfig) => {
-    new ZationStarter(options);
+const start = (options : StarterConfig,onlyCheck : any = false) => {
+    new ZationMaster(options,onlyCheck);
 };
 
 export {

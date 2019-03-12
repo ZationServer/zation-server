@@ -48,35 +48,52 @@ class ZationMaster {
     private serverSettingsJs : string;
 
 
-    constructor(options : StarterConfig) {
-        if (ZationMaster.instance === null) {
-            ZationMaster.instance = this;
+    constructor(options : StarterConfig,onlyCheck : boolean = false) {
+        if(!onlyCheck) {
+            if (ZationMaster.instance === null) {
+                ZationMaster.instance = this;
 
-            this.serverStartedTimeStamp = Date.now();
-            this.workerIds = new StringSet();
-            this.brokerIds = new StringSet();
+                this.serverStartedTimeStamp = Date.now();
+                this.workerIds = new StringSet();
+                this.brokerIds = new StringSet();
+                this.zc = new ZationConfig(options);
+
+                (async () => {
+                    try {
+                        //loads main config and defaults
+                        await this.zc.masterInit();
+
+                        //setLogger
+                        Logger.setZationConfig(this.zc);
+
+                        //Check LogToFile
+                        Logger.initFileLog();
+
+                        await this.start();
+                    }
+                    catch (e) {
+                        Logger.printStartFail(`Exception when trying to start server -> ${e.stack}`);
+                    }
+                })();
+            }
+            else {
+                Logger.printWarning('You can only start zation once.');
+            }
+        }
+        else {
             this.zc = new ZationConfig(options);
-
             (async () => {
                 try {
                     //loads main config and defaults
                     await this.zc.masterInit();
-
                     //setLogger
                     Logger.setZationConfig(this.zc);
-
-                    //Check LogToFile
-                    Logger.initFileLog();
-
-                    await this.start();
+                    await this.check();
                 }
                 catch (e) {
-                    Logger.printStartFail(`Exception when trying to start server -> ${e.stack}`);
+                    Logger.printStartFail(`Exception when trying to check config -> ${e.stack}`);
                 }
             })();
-        }
-        else {
-            Logger.printWarning('You can only start zation once.');
         }
     }
 
@@ -142,6 +159,42 @@ class ZationMaster {
             }
         }
         this.startSocketClusterWithLog();
+    }
+
+    private async check() {
+        Logger.startStopWatch();
+        let configErrorBag = new ConfigErrorBag();
+        const configChecker = new ConfigChecker(this.zc, configErrorBag);
+
+        configChecker.checkStarterConfig();
+        if (configErrorBag.hasConfigError()) {
+            Logger.printConfigErrorBag(configErrorBag);
+            process.exit();
+        }
+        Logger.printStartDebugInfo(`Checked starter config.`, true);
+
+        Logger.startStopWatch();
+        await this.zc.loadOtherConfigScripts();
+
+        if(this.zc.loadedConfigs.length > 0) {
+            const moreConfigs = this.zc.loadedConfigs.length>1;
+            Logger.printDebugInfo
+            (`The configuration${moreConfigs ? 's' : ''}: ${this.zc.loadedConfigs.toString()} ${moreConfigs ? 'are' : 'is'} found and will be loaded.`);
+        }
+        else {
+            Logger.printDebugInfo(`No config file was found.`)
+        }
+
+        this.zc.loadOtherConfigFromScript();
+        Logger.printStartDebugInfo(`Loaded the other config files.`, true);
+
+        Logger.startStopWatch();
+        configChecker.checkAllConfigs();
+        if (configErrorBag.hasConfigError()) {
+            Logger.printConfigErrorBag(configErrorBag);
+            process.exit();
+        }
+        Logger.log('\x1b[32m%s\x1b[0m', '   [CHECKED]','✅ No configuration errors found.');
     }
 
     public startSocketClusterWithLog() {
