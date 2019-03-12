@@ -152,6 +152,11 @@ class AuthEngine
                 obj.zationPanelAccess = true;
             }
 
+            //custom token var
+            if(!!tokenCustomVar){
+                obj[nameof<ZationToken>(s => s.zationCustomVariables)] = tokenCustomVar;
+            }
+
             //create AuthEngine Token!
             let suc = false;
             if(this.shBridge.getTokenBridge().hasToken()) {
@@ -165,10 +170,6 @@ class AuthEngine
                 this.currentDefault = false;
                 this.currentUserId = userId;
                 this.currentUserGroup = authUserGroup;
-
-                if(!!tokenCustomVar) {
-                    await this.tokenEngine.setCustomTokenVariable(tokenCustomVar);
-                }
             }
             else {
                 throw new AuthenticationError(`Update or create token is failed!`);

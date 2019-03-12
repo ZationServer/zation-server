@@ -34,7 +34,9 @@ class TokenEngine
         data[nameof<ZationToken>(s => s.exp)] = this.generateExpiry();
         data[nameof<ZationToken>(s => s.zationTokenId)]  = uniqid();
         data[nameof<ZationToken>(s => s.zationCheckKey)] = this.zc.internalData.tokenCheckKey;
-        data[nameof<ZationToken>(s => s.zationCustomVariables)] = {};
+        if(typeof data[nameof<ZationToken>(s => s.zationCustomVariables)] !== 'object'){
+            data[nameof<ZationToken>(s => s.zationCustomVariables)] = {};
+        }
         return TokenTools.createNewToken(data,this.shBridge.getTokenBridge(),this.worker);
     }
 
