@@ -88,14 +88,14 @@ export class ChAccessEngine
                         access = true;
                         break;
                     }
-                    else if(typeof value[i] === 'number' && value[i] === socketInfo.userId) {
+                    else if(typeof value[i] === 'number' && value[i] == socketInfo.userId) {
                         access = true;
                         break;
                     }
                 }
             }
             else if(typeof value === 'number') {
-                if(socketInfo.userId === value) {
+                if(socketInfo.userId == value) {
                     access = true;
                 }
             }
@@ -183,7 +183,7 @@ export class ChAccessEngine
             }
             else
             {
-                const err = new Error('No access to sub this customIdChannel!');
+                const err = new Error(`Socket with id: ${socket.id}: access denied to subscribe customIdChannel. Name: '${name}',Id: '${id}'.`);
                 // @ts-ignore'
                 err.code = 4594;
                 return err;
@@ -291,7 +291,7 @@ export class ChAccessEngine
             }
             else
             {
-                const err = new Error('No access to subscribe this customChannel!');
+                const err = new Error(`Socket with id: ${socket.id}: access denied to subscribe a customChannel: '${name}'.`);
                 // @ts-ignore'
                 err.code = 4584;
                 return err;

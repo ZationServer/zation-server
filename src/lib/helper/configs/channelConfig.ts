@@ -4,11 +4,11 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import SmallBag                      = require("../../api/SmallBag");
 import CChInfo                       = require("../infoObjects/cChInfo");
 import CIdChInfo                     = require("../infoObjects/cIdChInfo");
 import SocketInfo                    = require("../infoObjects/socketInfo");
 import PubDataInfo                   = require("../infoObjects/pubDataInfo");
+import SmallBag                      = require("../../api/SmallBag");
 
 export type CIdChannelSubAccessFunction =
     (smallBag : SmallBag, chInfo : CIdChInfo, socketInfo : SocketInfo) => Promise<boolean> | boolean;
