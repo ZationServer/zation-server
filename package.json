@@ -70,7 +70,7 @@
     "uuid": "3.3.2",
     "validator": "10.4.0",
     "ws": "6.1.4",
-    "zation-client": "0.5.5",
+    "zation-client": "0.5.7",
     "zation-service": "0.3.1"
   },
   "devDependencies": {
