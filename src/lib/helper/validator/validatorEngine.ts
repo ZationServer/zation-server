@@ -39,6 +39,7 @@ class ValidatorEngine
 
     static validateValueType(input,type,strictType,preparedErrorData : {inputPath : string,inputValue : any},errorBag : TaskErrorBag)
     {
+        let usedType = type;
         if(type !== undefined && type !== ValidationTypes.ALL) {
             if(Array.isArray(type))
             {
@@ -49,6 +50,7 @@ class ValidatorEngine
                     ValidatorEngine.validateType(input,type[i],strictType,errorBagTemp,preparedErrorData);
                     if(tempErrorCount === errorBagTemp.getTaskErrorCount()) {
                         foundAValidTyp = true;
+                        usedType = type[i];
                         break;
                     }
                 }
@@ -65,6 +67,7 @@ class ValidatorEngine
                 ValidatorEngine.validateType(input,type,strictType,errorBag,preparedErrorData);
             }
         }
+        return usedType;
     }
 
     private static validateType(input,type,strictType,errorBag,preparedErrorData)

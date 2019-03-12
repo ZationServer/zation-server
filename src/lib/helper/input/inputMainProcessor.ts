@@ -208,15 +208,17 @@ class InputMainProcessor
 
         const currentErrorCount = errorBag.getTaskErrorCount();
 
+        let selectedType = type;
         //type
         if(this.inputValidation) {
-            ValidationEngine.validateValueType(srcObj[srcKey],type,strictType,preparedErrorData,errorBag);
+            selectedType =
+                ValidationEngine.validateValueType(srcObj[srcKey],type,strictType,preparedErrorData,errorBag);
         }
 
         if(currentErrorCount === errorBag.getTaskErrorCount()){
             //no type error so convert maybe
             if(convertType) {
-                srcObj[srcKey] = ConvertEngine.convert(srcObj[srcKey],type,strictType);
+                srcObj[srcKey] = ConvertEngine.convert(srcObj[srcKey],selectedType,strictType);
             }
         }
 

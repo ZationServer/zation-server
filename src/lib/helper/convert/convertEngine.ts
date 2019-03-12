@@ -10,9 +10,8 @@ class ConvertEngine
 {
     static convert(input : any,type : string,strictType : boolean) : any
     {
-        const selectedType = Array.isArray(type) ? type[0] : type;
-        if(selectedType !== undefined && ConverterLibrary.hasOwnProperty(selectedType)) {
-            return ConverterLibrary[selectedType](input,strictType);
+        if(type !== undefined && ConverterLibrary.hasOwnProperty(type)) {
+            return ConverterLibrary[type](input,strictType);
         }
         return input;
     }
