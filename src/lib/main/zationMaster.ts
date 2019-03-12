@@ -409,6 +409,9 @@ class ZationMaster {
         if(this.zc.mainConfig.usePanel) {
             Logger.log(`            Panel: ${server}/panel`);
         }
+        if(this.zc.mainConfig.logDownloadable && this.zc.mainConfig.logToFile) {
+            Logger.log(`            Log: ${server}/log/${this.zc.mainConfig.logAccessKey}`);
+        }
         if(this.zc.mainConfig.clientJsPrepare) {
             Logger.log(`            ClientJs: ${server}/client.js`);
         }

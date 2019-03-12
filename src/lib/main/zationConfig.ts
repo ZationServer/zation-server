@@ -158,6 +158,8 @@ class ZationConfig {
             killServerOnServicesCreateError : false,
             logToFile: false,
             logPath : '',
+            logDownloadable : true,
+            logAccessKey : '',
             logRequests : false,
             logServerErrors : true,
             logCodeErrors : true,

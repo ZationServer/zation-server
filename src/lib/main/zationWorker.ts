@@ -377,6 +377,28 @@ class ZationWorker extends SCWorker
             res.send(this.serverSettingsJs);
         });
 
+        // noinspection JSUnresolvedFunction
+        this.app.get([`${serverPath}/log/:key`,`${serverPath}/log`],async (req,res) => {
+            const key = req.params.key !== undefined ? req.params.key : '';
+            if(this.zc.mainConfig.logToFile) {
+                if(this.zc.mainConfig.logDownloadable)
+                {
+                    if(key === this.zc.mainConfig.logAccessKey) {
+                        res.download(this.zc.mainConfig.logPath + 'ZATION_LOG_FILE.log');
+                    }
+                    else {
+                        res.status(401).send('Wrong access key');
+                    }
+                }
+                else {
+                    res.status(404).send('LogFile download is disabled');
+                }
+            }
+            else {
+                res.status(404).send('Log to file is disabled');
+            }
+        });
+
         if(this.zc.mainConfig.clientJsPrepare) {
             // noinspection JSUnresolvedFunction
             this.app.get(`${serverPath}/client.js`,(req,res) =>

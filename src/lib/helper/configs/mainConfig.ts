@@ -54,6 +54,8 @@ export interface MainConfig
     //log
     logToFile ?: boolean;
     logPath ?: string;
+    logDownloadable ?: boolean;
+    logAccessKey ?: string;
 
     logRequests ?: boolean;
     logServerErrors ?: boolean;
@@ -163,6 +165,8 @@ export interface InternMainConfig extends MainConfig {
     killServerOnServicesCreateError : boolean;
     logToFile : boolean;
     logPath : string;
+    logDownloadable : boolean;
+    logAccessKey : string;
     logRequests : boolean;
     logServerErrors : boolean;
     logCodeErrors : boolean;
