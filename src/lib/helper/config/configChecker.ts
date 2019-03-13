@@ -925,6 +925,7 @@ class ConfigChecker
         }
     }
 
+    // noinspection JSMethodCanBeStatic
     private checkOnlyValidationFunction(value: ValuePropertyConfig, target) {
         if(value.type !== undefined) {
             const type = Array.isArray(value.type) ? value.type : [value.type];
@@ -950,7 +951,7 @@ class ConfigChecker
                 }
             }
 
-            if(ObjectTools.hasOneOf(value, OnlyStringFunctions) && (!types.includes(TypeTypes.STRING) || !types.includes(TypeTypes.BASE64))) {
+            if(ObjectTools.hasOneOf(value, OnlyStringFunctions) && (!types.includes(TypeTypes.STRING) && !types.includes(TypeTypes.BASE64))) {
                 Logger.printConfigWarning(
                     ConfigNames.APP,
                     `${target.getTarget()} unused validation functions (no type string or base64) -> ${ObjectTools.getFoundKeys(value,OnlyStringFunctions).toString()}.`
