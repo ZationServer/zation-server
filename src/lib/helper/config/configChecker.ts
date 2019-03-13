@@ -36,6 +36,14 @@ import {MainService, Service} from "../configs/serviceConfig";
 import {ChannelConfig, ChannelDefault, CustomChannelConfig} from "../configs/channelConfig";
 // noinspection TypeScriptPreferShortImport
 import {Controller, ControllerClass} from "../../api/Controller";
+import {ValidationTypes} from "../../..";
+import {
+    OnlyBase64Functions,
+    OnlyDateFunctions,
+    OnlyNumberFunctions,
+    OnlyStringFunctions,
+    TypeTypes
+} from "../constants/validation";
 
 class ConfigChecker
 {
@@ -917,6 +925,58 @@ class ConfigChecker
         }
     }
 
+    private checkOnlyValidationFunction(value: ValuePropertyConfig, target) {
+        if(value.type !== undefined) {
+            const type = Array.isArray(value.type) ? value.type : [value.type];
+            const types : TypeTypes[] = [];
+            for(let i = 0; i < type.length; i++) {
+                if (type[i] === ValidationTypes.INT || type[i] === ValidationTypes.FLOAT || type[i] === ValidationTypes.NUMBER) {
+                    types.push(TypeTypes.NUMBER);
+                }
+                else if(type[i] === ValidationTypes.DATE) {
+                    types.push(TypeTypes.DATE);
+                }
+                else if(type[i] === ValidationTypes.BASE64){
+                    types.push(TypeTypes.BASE64);
+                }
+                else if(type[i] === ValidationTypes.NULL || type[i] === ValidationTypes.ARRAY || type[i] === ValidationTypes.OBJECT){
+                    types.push(TypeTypes.OTHER);
+                }
+                else if(type[i] === ValidationTypes.ALL) {
+                    return;
+                }
+                else {
+                    types.push(TypeTypes.STRING);
+                }
+            }
+
+            if(ObjectTools.hasOneOf(value, OnlyStringFunctions) && (!types.includes(TypeTypes.STRING) || !types.includes(TypeTypes.BASE64))) {
+                Logger.printConfigWarning(
+                    ConfigNames.APP,
+                    `${target.getTarget()} unused validation functions (no type string or base64) -> ${ObjectTools.getFoundKeys(value,OnlyStringFunctions).toString()}.`
+                );
+            }
+            if(ObjectTools.hasOneOf(value, OnlyNumberFunctions) && !types.includes(TypeTypes.NUMBER)) {
+                Logger.printConfigWarning(
+                    ConfigNames.APP,
+                    `${target.getTarget()} unused validation functions (no type number) -> ${ObjectTools.getFoundKeys(value,OnlyNumberFunctions).toString()}.`
+                );
+            }
+            if(ObjectTools.hasOneOf(value, OnlyDateFunctions) && !types.includes(TypeTypes.DATE)) {
+                Logger.printConfigWarning(
+                    ConfigNames.APP,
+                    `${target.getTarget()} unused validation functions (no type date) -> ${ObjectTools.getFoundKeys(value,OnlyDateFunctions).toString()}.`
+                );
+            }
+            if(ObjectTools.hasOneOf(value, OnlyBase64Functions) && !types.includes(TypeTypes.BASE64)) {
+                Logger.printConfigWarning(
+                    ConfigNames.APP,
+                    `${target.getTarget()} unused validation functions (no type base64) -> ${ObjectTools.getFoundKeys(value,OnlyBase64Functions).toString()}.`
+                );
+            }
+        }
+    }
+
     private checkValueProperty(config : object,target : Target,valueName ?: string)
     {
         //isNormalInputBody
@@ -933,10 +993,12 @@ class ConfigChecker
                     `${target.getTarget()} the inheritance dependency to value: '${ex}' can not be resolved, Value not found.`));
             }else if(typeof valueName === 'string') {
                 //check no self import
-                this.checkProcessValueInheritance(target,config,config,valueName);
+                config = this.checkProcessValueInheritance(target,config,config,valueName);
                 target.setExtraInfo('Compiled with inheritance');
             }
         }
+        //check for only number/string functions
+        this.checkOnlyValidationFunction(config,target);
     }
 
     private checkProcessValueInheritance(target : Target,mainConfig : object,exConfig : object,valueName : string,otherSrc : string[] = []) : object
