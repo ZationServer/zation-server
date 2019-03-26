@@ -22,7 +22,7 @@ class Logger
 
             let path;
             if(cluster.isMaster){
-                path = ZationConfig._getRootPath() + '/' + Logger.zc.mainConfig.logPath;
+                path = this.zc.getRootPath() + '/' + Logger.zc.mainConfig.logPath;
                 if(!path.endsWith('/')){path+='/'}
                 Logger.zc.mainConfig.logPath = path;
             }

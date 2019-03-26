@@ -32,6 +32,9 @@ class ZationMaster {
     private brokerIds: StringSet;
     private master: any;
 
+    private readonly startUpCB : () => void;
+    private startMode : number;
+
     //cluster
     private clusterStateServerHost: any;
     private stateServerActive: boolean;
@@ -48,8 +51,16 @@ class ZationMaster {
     private serverSettingsJs : string;
 
 
-    constructor(options : StarterConfig,onlyCheck : boolean = false) {
-        if(!onlyCheck) {
+    constructor(options : StarterConfig,startUpCB : () => void,startMode : number | string = 0) {
+
+        if(typeof startMode === 'string'){startMode = parseInt(startMode);}
+        startMode = startMode !== 0 && startMode !== 1 && startMode !== 2 ? 0 : startMode;
+
+        this.startUpCB = startUpCB;
+        this.startMode = startMode;
+
+        //!checkMode
+        if(this.startMode !== 2) {
             if (ZationMaster.instance === null) {
                 ZationMaster.instance = this;
 
@@ -61,7 +72,7 @@ class ZationMaster {
                 (async () => {
                     try {
                         //loads main config and defaults
-                        await this.zc.masterInit();
+                        await this.zc.masterInit(this.startMode);
 
                         //setLogger
                         Logger.setZationConfig(this.zc);
@@ -85,7 +96,7 @@ class ZationMaster {
             (async () => {
                 try {
                     //loads main config and defaults
-                    await this.zc.masterInit();
+                    await this.zc.masterInit(this.startMode);
                     //setLogger
                     Logger.setZationConfig(this.zc);
                     await this.check();
@@ -321,6 +332,7 @@ class ZationMaster {
            }
 
            this.printStartedInformation();
+           if(this.startUpCB){this.startUpCB();}
            await this.zc.emitEvent(this.zc.eventConfig.isStarted, this.zc.getZationInfo());
         });
 
@@ -393,7 +405,7 @@ class ZationMaster {
         const protocol = this.zc.mainConfig.secure ? 'https' : 'http';
         const server   = `${protocol}://${hostName}:${port}${path}`;
 
-        Logger.log('\x1b[32m%s\x1b[0m', '   [ACTIVE]','Zation started 🚀');
+        Logger.log('\x1b[32m%s\x1b[0m','   [ACTIVE]','Zation started 🚀' + (this.zc.inTestMode() ? ' in TestMode 🛠' : ''));
         Logger.log(`            Version: ${ZationMaster.version}`);
         Logger.log(`            Your app: ${this.zc.mainConfig.appName}`);
         Logger.log(`            Hostname: ${hostName}`);

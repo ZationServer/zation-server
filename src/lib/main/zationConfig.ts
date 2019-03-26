@@ -28,6 +28,8 @@ import {StarterConfig, StarterConfigMain} from "../helper/configs/starterConfig"
 import {InternalData}      from "../helper/constants/internalData";
 import {ConfigScriptSave}  from "../helper/constants/internal";
 import ZationInfo        = require("../helper/infoObjects/zationInfo");
+// noinspection TypeScriptPreferShortImport
+import {StartMode}         from "./../helper/constants/startMode";
 
 class ZationConfig {
     private _eventConfig: EventConfig = {};
@@ -45,23 +47,30 @@ class ZationConfig {
 
     private _preLoadJwtOptions = {};
 
+    private readonly rootPath : string;
+    private startMode : number;
+
     private readonly preparedZationInfo : ZationInfo = new ZationInfo(this);
 
     constructor(starterData: object = {}, workerTransport: boolean = false) {
         if (!workerTransport) {
             this._starterConfig = starterData;
             this._workerProcess = false;
+            this.rootPath = ZationConfig._getRootPath();
         } else {
             this._starterConfig = starterData['starterConfig'];
             this._mainConfig = starterData['mainConfig'];
             this._internalData = starterData['internalData'];
+            this.rootPath = starterData['rootPath'];
+            this.startMode = starterData['startMode'];
             this._workerProcess = true;
             this._loadJwtOptions();
         }
     }
 
-    async masterInit()
+    async masterInit(startMode : number)
     {
+        this.startMode = startMode;
         this.loadDefaults();
         this.loadUserDataLocations();
         await this.loadMainConfig();
@@ -95,6 +104,18 @@ class ZationConfig {
 
     getJwtOptions() {
         return this._preLoadJwtOptions;
+    }
+
+    inTestMode() : boolean {
+        return this.startMode == StartMode.TEST;
+    }
+
+    inNormalMode() : boolean {
+        return this.startMode == StartMode.NORMAL;
+    }
+
+    getStartMode() : number {
+        return this.startMode;
     }
 
     loadDefaults() {
@@ -187,6 +208,8 @@ class ZationConfig {
             mainConfig: this._mainConfig,
             starterConfig : starterConfigMain,
             internalData: this._internalData,
+            rootPath : this.rootPath,
+            startMode : this.startMode
         };
     }
 
@@ -334,11 +357,24 @@ class ZationConfig {
         }
     }
 
-    static _getRootPath() : any
+    private static _getRootPath() : any
     {
-        // noinspection JSUnresolvedVariable
         //@ts-ignore
-        return path.dirname(require.main.filename || process.mainModule.filename);
+        let tmpPath = path.dirname(require.main.filename || process.mainModule.filename);
+        if(!fs.existsSync(tmpPath+'/package.json')){
+            tmpPath = tmpPath.split('/node_modules')[0];
+            if(!fs.existsSync(tmpPath+'/package.json')) {
+                throw new Error('Root path can not be resolved');
+            }
+        }
+        if(fs.existsSync(tmpPath+'/dist')){
+            tmpPath = tmpPath+'/dist';
+        }
+        return tmpPath;
+    }
+
+    getRootPath() : string {
+        return this.rootPath;
     }
 
     static async loadZationConfig(name : string,value : any) : Promise<string | object>
@@ -417,7 +453,7 @@ class ZationConfig {
 
     private loadZationConfigLocation(key : string,defaultName : string) : void
     {
-        const path = ZationConfig._getRootPath() + '/' +
+        const path = this.rootPath + '/' +
             (this._starterConfig.configs ? this._starterConfig.configs : 'configs') + '/';
 
         if(!(typeof this._starterConfig[key] === 'string')) {

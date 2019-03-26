@@ -232,3 +232,11 @@ i
 9src/lib/public/assets/panel/static/js/2.93fce5b7.chunk.js,3/0/30a213dfa1c8c3ba296845c31a01f58a67f58a03
 O
 dist/lib/main/zationMaster.d.ts,2/e/2edb7fa138898caa44e5276c41b9bfd9888fe686
+=
+dist/index.js,3/9/394a755a87e58e88b1d2f3f56957a32cfefe9a9a
+?
+dist/index.d.ts,c/4/c4710d6913096aa14dd2677307171ae1d9c43b8b
+K
+test/src/api/result.test.js,a/6/a65325ef6350fdbb3398a998775c3af426b626f0
+Q
+!test/src/api/taskErrorBag.test.js,5/4/5422d23157293702e45a632049eb7beca4c40eef

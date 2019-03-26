@@ -23,15 +23,31 @@ import MethodIsNotCompatible = require("./lib/helper/error/methodIsNotCompatible
 import InputIsNotCompatible  = require("./lib/helper/error/inputIsNotCompatibleError");
 import {ControllerConfig}      from "./lib/helper/configs/appConfig";
 import {StarterConfig}         from "./lib/helper/configs/starterConfig";
+import {StartMode}             from "./lib/helper/constants/startMode";
 const  FsUtil : any           = require('socketcluster/fsutil');
 
 //starter
-const start = (options : StarterConfig,onlyCheck : any = false) => {
-    new ZationMaster(options,onlyCheck);
+
+/**
+ * @description
+ * This method is for starting the server.
+ * It returns a promise that will be resolved when the server is started.
+ * @param options the starter config
+ * @param startMode
+ * The mode for starting
+ * 0 => normal
+ * 1 => test
+ * 2 => onlyCheck
+ */
+const start = (options : StarterConfig,startMode : number | string | StartMode = 0) => {
+    return new Promise((resolve) => {
+        new ZationMaster(options,() => {resolve();},startMode);
+    });
 };
 
 export {
         start,
+        StartMode,
         Bag,
         SmallBag,
         Controller,

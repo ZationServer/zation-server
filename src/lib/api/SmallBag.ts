@@ -39,6 +39,8 @@ import ObjectPathSequence = require("../helper/tools/objectPathSequence");
 import AuthenticationError = require("../helper/error/authenticationError");
 import {SyncTokenActions} from "../helper/constants/syncTokenActions";
 import ObjectPathActionSequence = require("../helper/tools/objectPathActionSequence");
+// noinspection TypeScriptPreferShortImport
+import {StartMode} from "./../helper/constants/startMode";
 
 const uuidV4                = require('uuid/v4');
 const uniqid                = require('uniqid');
@@ -68,6 +70,47 @@ class SmallBag
     getZationConfig() : ZationConfig {
         // noinspection TypeScriptValidateJSTypes
         return this.zc;
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns the root path of the project.
+     * Typescript project will return path to dist folder.
+     */
+    getRootPath() : string {
+        // noinspection TypeScriptValidateJSTypes
+        return this.zc.getRootPath();
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns if the server runs in test mode.
+     */
+    inTestMode() : boolean {
+        // noinspection TypeScriptValidateJSTypes
+        return this.zc.inTestMode();
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns if the server runs in normal mode.
+     */
+    inNormalMode() : boolean {
+        // noinspection TypeScriptValidateJSTypes
+        return this.zc.inNormalMode();
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns the start mode of the server.
+     */
+    getStartMode() : StartMode {
+        // noinspection TypeScriptValidateJSTypes
+        return this.zc.getStartMode();
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
