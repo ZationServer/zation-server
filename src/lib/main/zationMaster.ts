@@ -24,7 +24,7 @@ import {StringSet}             from "../helper/tools/simpleSet";
 
 class ZationMaster {
     private static instance: ZationMaster | null = null;
-    private static readonly version: string = '0.9.2';
+    private static readonly version: string = '0.9.3';
 
     private readonly serverStartedTimeStamp: number;
     private readonly zc: ZationConfig;
@@ -33,7 +33,7 @@ class ZationMaster {
     private master: any;
 
     private readonly startUpCB : () => void;
-    private startMode : number;
+    private readonly startMode : number;
 
     //cluster
     private clusterStateServerHost: any;

@@ -2,21 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="I">
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/2.117ffde0.chunk.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/main.a7bda6db.chunk.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/main.a7bda6db.chunk.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/main/zationConfig.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationConfig.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/asset-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/asset-manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/precache-manifest.1428e38baf532568be2e3c7bde76580f.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/precache-manifest.ee3dea04d432065c353854d61101b0a6.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/service-worker.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/service-worker.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/2.93fce5b7.chunk.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/2.93fce5b7.chunk.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/2.117ffde0.chunk.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/main.f5fde69f.chunk.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/public/assets/panel/static/js/main.f5fde69f.chunk.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/public/panel/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/public/panel/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/main/zationMaster.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationMaster.ts" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -45,6 +33,15 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/gulpFile.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="705">
+              <caret line="47" column="37" selection-start-line="47" selection-start-column="37" selection-end-line="47" selection-end-column="37" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/index.ts">
           <provider selected="true" editor-type-id="text-editor">
@@ -58,11 +55,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="253">
-              <caret line="77" selection-start-line="77" selection-end-line="77" />
+            <state relative-caret-position="135">
+              <caret line="9" column="26" selection-start-line="9" selection-start-column="26" selection-end-line="9" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -70,26 +67,12 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/main/zationMaster.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2909">
-              <caret line="343" column="39" selection-start-line="343" selection-start-column="39" selection-end-line="343" selection-end-column="39" />
+            <state relative-caret-position="273">
+              <caret line="48" column="19" selection-start-line="48" selection-start-column="19" selection-end-line="48" selection-end-column="19" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="n#Logger#0" expanded="true" />
                 <element signature="n#StateServerEngine#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/lib/main/zationWorker.ts">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3062">
-              <caret line="423" column="31" selection-start-line="423" selection-start-column="22" selection-end-line="423" selection-end-column="31" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-                <element signature="e#81#128#0" expanded="true" />
-                <element signature="n#ChTools#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -291,12 +274,12 @@
         <option value="$PROJECT_DIR$/src/index.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/logger/logger.ts" />
         <option value="$PROJECT_DIR$/gulpFile.js" />
-        <option value="$PROJECT_DIR$/src/lib/main/zationMaster.ts" />
         <option value="$PROJECT_DIR$/src/lib/helper/channel/chExchangeEngine.ts" />
         <option value="$PROJECT_DIR$/src/lib/api/SmallBag.ts" />
         <option value="$PROJECT_DIR$/src/lib/api/Bag.ts" />
-        <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/src/lib/main/zationConfig.ts" />
+        <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/src/lib/main/zationMaster.ts" />
       </list>
     </option>
   </component>
@@ -698,7 +681,7 @@
       <workItem from="1553249181244" duration="617000" />
       <workItem from="1553253465031" duration="10000" />
       <workItem from="1553253650375" duration="2757000" />
-      <workItem from="1553585292966" duration="11462000" />
+      <workItem from="1553585292966" duration="11801000" />
     </task>
     <task id="LOCAL-00064" summary="improve validation engine&#10;add new regex name option&#10;add strictType and convertType option&#10;improve config checker">
       <created>1541205117372</created>
@@ -1079,7 +1062,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2074969000" />
+    <option name="totallyTimeSpent" value="2075308000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1092,9 +1075,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6637555" visible="true" weight="0.29113925" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6637555" visible="true" weight="0.29113925" />
       <window_info id="Structure" order="1" sideWeight="0.33624455" side_tool="true" visible="true" weight="0.29113925" />
       <window_info id="Favorites" order="2" sideWeight="0.10449927" side_tool="true" weight="0.2081138" />
       <window_info id="Gulp" order="3" side_tool="true" />
@@ -1109,7 +1091,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Statistic" order="8" weight="0.71734697" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50030136" side_tool="true" weight="0.3989796" />
-      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.78360456" visible="true" weight="0.29897958" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" sideWeight="0.78360456" visible="true" weight="0.29897958" />
       <window_info anchor="bottom" id="Version Control" order="11" sideWeight="0.49849308" weight="0.24081632" />
       <window_info anchor="bottom" id="Messages" order="12" visible="true" weight="0.14337349" />
       <window_info anchor="bottom" id="TypeScript" order="13" sideWeight="0.4996986" weight="0.19489796" />
@@ -1499,13 +1481,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gulpFile.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="705">
-          <caret line="47" column="37" selection-start-line="47" selection-start-column="37" selection-end-line="47" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/main/zationWorker.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3062">
@@ -1514,18 +1489,6 @@
             <element signature="n#!!doc" expanded="true" />
             <element signature="e#81#128#0" expanded="true" />
             <element signature="n#ChTools#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/main/zationMaster.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2909">
-          <caret line="343" column="39" selection-start-line="343" selection-start-column="39" selection-end-line="343" selection-end-column="39" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="n#Logger#0" expanded="true" />
-            <element signature="n#StateServerEngine#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1597,8 +1560,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="253">
-          <caret line="77" selection-start-line="77" selection-end-line="77" />
+        <state relative-caret-position="135">
+          <caret line="9" column="26" selection-start-line="9" selection-start-column="26" selection-end-line="9" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/main/zationMaster.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="273">
+          <caret line="48" column="19" selection-start-line="48" selection-start-column="19" selection-end-line="48" selection-end-column="19" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#Logger#0" expanded="true" />
+            <element signature="n#StateServerEngine#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gulpFile.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="705">
+          <caret line="47" column="37" selection-start-line="47" selection-start-column="37" selection-end-line="47" selection-end-column="37" />
         </state>
       </provider>
     </entry>
