@@ -1223,10 +1223,10 @@ export class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to an user channel or channels.
+     * Publish in an user channel or channels.
      * @example
-     * publishToUser('paul10','message',{message : 'hello',fromUserId : 'luca34'});
-     * publishToUser(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
+     * publishInUserCh('paul10','message',{message : 'hello',fromUserId : 'luca34'});
+     * publishInUserCh(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
      * @param userId or more userIds in array.
      * @param eventName
      * @param data
@@ -1234,7 +1234,7 @@ export class Bag extends SmallBag
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishToUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async publishInUserCh(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
         const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
         return await this.exchangeEngine.publishInUserCh
@@ -1244,10 +1244,10 @@ export class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to an user channel or channels.
+     * Publish in an user channel or channels.
      * @example
-     * pubUser('paul10','message',{message : 'hello',fromUserId : 'luca34'});
-     * pubUser(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
+     * pubUserCh('paul10','message',{message : 'hello',fromUserId : 'luca34'});
+     * pubUserCh(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
      * @param userId or more userIds in array.
      * @param eventName
      * @param data
@@ -1255,24 +1255,24 @@ export class Bag extends SmallBag
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async pubUser(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async pubUserCh(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.publishToUser(userId,eventName,data,srcSocketSid);
+        return await this.publishInUserCh(userId,eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to all channel.
+     * Publish in all channel.
      * @example
-     * publishToAll('message',{message : 'hello'});
+     * publishInAllCh('message',{message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishToAll(eventName : string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async publishInAllCh(eventName : string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
         const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
         return await this.exchangeEngine.publishInAllCh
@@ -1282,27 +1282,27 @@ export class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to all channel.
+     * Publish in all channel.
      * @example
-     * pubAll('message',{message : 'hello'});
+     * pubAllCh('message',{message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async pubAll(eventName : string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async pubAllCh(eventName : string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.publishToAll(eventName,data,srcSocketSid);
+        return await this.publishInAllCh(eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to auth user group or groups.
+     * Publish in auth user group channel/s.
      * @example
-     * publishToAuthUserGroup('admin','userRegistered',{userId : '1'});
-     * publishToAuthUserGroup(['admin','superAdmin'],'userRegistered',{userId : '1'});
+     * publishInAuthUserGroupCh('admin','userRegistered',{userId : '1'});
+     * publishInAuthUserGroupCh(['admin','superAdmin'],'userRegistered',{userId : '1'});
      * @param authUserGroup or an array of auth user groups.
      * @param eventName
      * @param data
@@ -1310,7 +1310,7 @@ export class Bag extends SmallBag
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishToAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async publishInAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
         const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
         return await this.exchangeEngine.publishInAuthUserGroupCh
@@ -1320,10 +1320,10 @@ export class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to auth user group or groups.
+     * Publish in auth user group channel/s.
      * @example
-     * pubAuthUserGroup('admin','userRegistered',{userId : '1'});
-     * pubAuthUserGroup(['admin','superAdmin'],'userRegistered',{userId : '1'});
+     * pubAuthUserGroupCh('admin','userRegistered',{userId : '1'});
+     * pubAuthUserGroupCh(['admin','superAdmin'],'userRegistered',{userId : '1'});
      * @param authUserGroup or an array of auth user groups.
      * @param eventName
      * @param data
@@ -1331,24 +1331,24 @@ export class Bag extends SmallBag
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async pubAuthUserGroup(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async pubAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.publishToAuthUserGroup(authUserGroup,eventName,data,srcSocketSid);
+        return await this.publishInAuthUserGroupCh(authUserGroup,eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to default user group.
+     * Publish in default user group channel.
      * @example
-     * publishToDefaultUserGroup('message',{message : 'hello'});
+     * publishInDefaultUserGroupCh('message',{message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishToDefaultUserGroup(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async publishInDefaultUserGroupCh(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
         const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
         return await this.exchangeEngine.publishInDefaultUserGroupCh
@@ -1358,62 +1358,62 @@ export class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish to default user group.
+     * Publish in default user group channel.
      * @example
-     * pubDefaultUserGroup('message',{message : 'hello'});
+     * pubDefaultUserGroupCh('message',{message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async pubDefaultUserGroup(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async pubDefaultUserGroupCh(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.publishToDefaultUserGroup(eventName,data,srcSocketSid);
+        return await this.publishInDefaultUserGroupCh(eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in all auth user groups.
+     * Publish in all auth user groups channels.
      * @example
-     * publishToAllAuthUserGroups('message',{fromUserId : '1',message : 'hello'});
+     * publishInAllAuthUserGroupsCh('message',{fromUserId : '1',message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishToAllAuthUserGroups(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async publishInAllAuthUserGroupsCh(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
         const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
-        return await this.exchangeEngine.publishToAllAuthUserGroupCh
+        return await this.exchangeEngine.publishInAllAuthUserGroupCh
         (eventName,data,this.zc,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in all auth user groups.
+     * Publish in all auth user groups channels.
      * @example
-     * pubAllAuthUserGroups('message',{fromUserId : '1',message : 'hello'});
+     * pubAllAuthUserGroupsCh('message',{fromUserId : '1',message : 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async pubAllAuthUserGroups(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async pubAllAuthUserGroupsCh(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.publishToAllAuthUserGroups(eventName,data,srcSocketSid);
+        return await this.publishInAllAuthUserGroupsCh(eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom id Channel.
+     * Publish in an custom id channel.
      * @example
-     * publishToCustomIdChannel('imageChannel','image2','like',{fromUserId : '1'});
+     * publishInCustomIdCh('imageChannel','image2','like',{fromUserId : '1'});
      * @param channel
      * @param id
      * @param eventName
@@ -1422,19 +1422,19 @@ export class Bag extends SmallBag
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishToCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async publishInCustomIdCh(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
         const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
-        return await this.exchangeEngine.publishToCustomIdChannel
+        return await this.exchangeEngine.publishInCustomIdChannel
         (channel,id,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom id Channel.
+     * Publish in an custom id channel.
      * @example
-     * pubCustomIdChannel('imageChannel','image2','like',{fromUserId : '1'});
+     * pubCustomIdCh('imageChannel','image2','like',{fromUserId : '1'});
      * @param channel
      * @param id
      * @param eventName
@@ -1443,18 +1443,18 @@ export class Bag extends SmallBag
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async pubCustomIdChannel(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async pubCustomIdCh(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.publishToCustomIdChannel(channel,id,eventName,data,srcSocketSid);
+        return await this.publishInCustomIdCh(channel,id,eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom channel.
+     * Publish in an custom channel/s.
      * @example
-     * publishToCustomChannel('messageChannel','message',{message : 'hello',fromUserId : '1'});
-     * publishToCustomChannel(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
+     * publishInCustomCh('messageChannel','message',{message : 'hello',fromUserId : '1'});
+     * publishInCustomCh(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
      * @param channel or an array of channels.
      * @param eventName
      * @param data
@@ -1462,20 +1462,20 @@ export class Bag extends SmallBag
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishToCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async publishInCustomCh(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
         const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
-        return this.exchangeEngine.publishToCustomChannel
+        return this.exchangeEngine.publishInCustomChannel
         (channel,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom channel or channels.
+     * Publish in an custom channel/s.
      * @example
-     * pubCustomChannel('messageChannel','message',{message : 'hello',fromUserId : '1'});
-     * pubCustomChannel(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
+     * pubCustomCh('messageChannel','message',{message : 'hello',fromUserId : '1'});
+     * pubCustomCh(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
      * @param channel or an array of channels.
      * @param eventName
      * @param data
@@ -1483,9 +1483,9 @@ export class Bag extends SmallBag
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async pubCustomChannel(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async pubCustomCh(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.publishToCustomChannel(channel,eventName,data,srcSocketSid);
+        return await this.publishInCustomCh(channel,eventName,data,srcSocketSid);
     }
 
     private _processSrcSocketSid(srcSocketSid : string | null | undefined) : undefined | string {

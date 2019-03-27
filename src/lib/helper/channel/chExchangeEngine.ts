@@ -212,14 +212,14 @@ class ChExchangeEngine {
         };
     }
 
-    async publishToAllAuthUserGroupCh(eventName : string, data : any,zc : ZationConfig,srcSocketSid ?: string,socketInfo ?: SocketInfo) : Promise<void>
+    async publishInAllAuthUserGroupCh(eventName : string, data : any, zc : ZationConfig, srcSocketSid ?: string, socketInfo ?: SocketInfo) : Promise<void>
     {
         // @ts-ignore
         const groups : object = zc.appConfig.userGroups.auth;
         await this.publishInAuthUserGroupCh(Object.keys(groups),eventName,data,srcSocketSid,socketInfo);
     }
 
-    async publishToCustomIdChannel(channel : string, id : any, eventName : string, data : any,srcSocketSid ?: string,socketInfo ?: SocketInfo) : Promise<void>
+    async publishInCustomIdChannel(channel : string, id : any, eventName : string, data : any, srcSocketSid ?: string, socketInfo ?: SocketInfo) : Promise<void>
     {
         const channelFullName = ChTools.buildCustomIdChannelName(channel,id);
         //trigger pub bag customCh event
@@ -233,7 +233,7 @@ class ChExchangeEngine {
         await this.pubAsync(channelFullName,eventName,data,srcSocketSid);
     }
 
-    async publishToCustomChannel(channel : string | string[], eventName : string, data : any,srcSocketSid ?: string,socketInfo ?: SocketInfo) : Promise<void>
+    async publishInCustomChannel(channel : string | string[], eventName : string, data : any, srcSocketSid ?: string, socketInfo ?: SocketInfo) : Promise<void>
     {
         const eventTrigger = (chName : string) =>
         {
