@@ -361,15 +361,22 @@ class ZationConfig {
     {
         //@ts-ignore
         let tmpPath = path.dirname(require.main.filename || process.mainModule.filename);
-        if(!fs.existsSync(tmpPath+'/package.json')){
+
+        if(tmpPath.indexOf('/node_modules/') === -1) {
+            //typescript/javascript project normal start
+            return tmpPath;
+        }
+        else {
+            //test start
             tmpPath = tmpPath.split('/node_modules')[0];
             if(!fs.existsSync(tmpPath+'/package.json')) {
                 throw new Error('Root path can not be resolved');
             }
+            if(fs.existsSync(tmpPath+'/dist')){
+                tmpPath = tmpPath+'/dist';
+            }
         }
-        if(fs.existsSync(tmpPath+'/dist')){
-            tmpPath = tmpPath+'/dist';
-        }
+        console.log(tmpPath);
         return tmpPath;
     }
 
