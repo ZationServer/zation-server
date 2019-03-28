@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39141600-c385-4883-98d9-b3fbd16c632b" name="Default" comment="I">
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/main/zationMaster.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/main/zationMaster.ts" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -48,8 +47,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="14" column="41" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="41" />
+            <state relative-caret-position="225">
+              <caret line="72" column="29" lean-forward="true" selection-start-line="72" selection-start-column="29" selection-end-line="72" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -76,13 +75,12 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/api/SmallBag.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="230">
+            <state relative-caret-position="15435">
               <caret line="1030" selection-start-line="1030" selection-end-line="1030" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="e#81#168#0" expanded="true" />
                 <element signature="n#ChExchangeEngine#0" expanded="true" />
-                <element signature="e#2288#2346#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -91,7 +89,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/api/Result.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="104">
+            <state relative-caret-position="300">
               <caret line="20" column="33" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
@@ -117,7 +115,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/lib/api/Bag.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="610">
+            <state relative-caret-position="19290">
               <caret line="1286" column="47" selection-start-line="1286" selection-start-column="47" selection-end-line="1286" selection-end-column="47" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
@@ -276,8 +274,8 @@
         <option value="$PROJECT_DIR$/src/lib/api/Bag.ts" />
         <option value="$PROJECT_DIR$/src/lib/main/zationConfig.ts" />
         <option value="$PROJECT_DIR$/src/lib/api/SmallBag.ts" />
-        <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/src/lib/main/zationMaster.ts" />
+        <option value="$PROJECT_DIR$/package.json" />
       </list>
     </option>
   </component>
@@ -287,7 +285,7 @@
     <other-services-enabled>true</other-services-enabled>
     <auto-save>true</auto-save>
   </component>
-  <component name="ProjectFrameBounds" fullScreen="true">
+  <component name="ProjectFrameBounds" extendedState="6" fullScreen="true">
     <option name="y" value="23" />
     <option name="width" value="680" />
     <option name="height" value="984" />
@@ -683,6 +681,7 @@
       <workItem from="1553730601874" duration="1360000" />
       <workItem from="1553743856254" duration="374000" />
       <workItem from="1553772317432" duration="1648000" />
+      <workItem from="1553785001019" duration="665000" />
     </task>
     <task id="LOCAL-00064" summary="improve validation engine&#10;add new regex name option&#10;add strictType and convertType option&#10;improve config checker">
       <created>1541205117372</created>
@@ -1063,7 +1062,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2078690000" />
+    <option name="totallyTimeSpent" value="2079355000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1076,9 +1075,10 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.65938866" visible="true" weight="0.29113925" />
-      <window_info id="Structure" order="1" sideWeight="0.34061137" side_tool="true" visible="true" weight="0.29113925" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.65793306" visible="true" weight="0.29113925" />
+      <window_info id="Structure" order="1" sideWeight="0.34206694" side_tool="true" visible="true" weight="0.29113925" />
       <window_info id="Favorites" order="2" sideWeight="0.10449927" side_tool="true" weight="0.2081138" />
       <window_info id="Gulp" order="3" side_tool="true" />
       <window_info id="npm" order="4" side_tool="true" />
@@ -1092,7 +1092,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Statistic" order="8" weight="0.71734697" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50030136" side_tool="true" weight="0.3989796" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" sideWeight="0.78360456" visible="true" weight="0.29897958" />
+      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.78360456" visible="true" weight="0.29897958" />
       <window_info anchor="bottom" id="Version Control" order="11" sideWeight="0.49849308" weight="0.24081632" />
       <window_info anchor="bottom" id="Messages" order="12" visible="true" weight="0.14337349" />
       <window_info anchor="bottom" id="TypeScript" order="13" sideWeight="0.4996986" weight="0.19489796" />
@@ -1486,68 +1486,12 @@
     <entry file="file://$PROJECT_DIR$/src/lib/public/assets/panel/asset-manifest.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/main/zationConfig.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5490">
-          <caret line="366" column="27" selection-start-line="366" selection-start-column="27" selection-end-line="366" selection-end-column="27" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="n#ObjectTools#0" expanded="true" />
-            <element signature="n#moment#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/helper/channel/chExchangeEngine.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3360">
-          <caret line="228" column="41" selection-start-line="228" selection-start-column="41" selection-end-line="228" selection-end-column="41" />
-          <folding>
-            <element signature="n#ChTools#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/api/Bag.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="610">
-          <caret line="1286" column="47" selection-start-line="1286" selection-start-column="47" selection-end-line="1286" selection-end-column="47" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="n#ChannelEngine#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/index.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
           <caret line="10" selection-start-line="10" selection-end-line="10" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/api/Result.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="20" column="33" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/lib/api/SmallBag.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="230">
-          <caret line="1030" selection-start-line="1030" selection-end-line="1030" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="e#81#168#0" expanded="true" />
-            <element signature="n#ChExchangeEngine#0" expanded="true" />
-            <element signature="e#2288#2346#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1567,10 +1511,65 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/api/SmallBag.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15435">
+          <caret line="1030" selection-start-line="1030" selection-end-line="1030" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#81#168#0" expanded="true" />
+            <element signature="n#ChExchangeEngine#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/api/Result.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" column="33" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/main/zationConfig.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5490">
+          <caret line="366" column="27" selection-start-line="366" selection-start-column="27" selection-end-line="366" selection-end-column="27" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#ObjectTools#0" expanded="true" />
+            <element signature="n#moment#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/api/Bag.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="19290">
+          <caret line="1286" column="47" selection-start-line="1286" selection-start-column="47" selection-end-line="1286" selection-end-column="47" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#ChannelEngine#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib/helper/channel/chExchangeEngine.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3360">
+          <caret line="228" column="41" selection-start-line="228" selection-start-column="41" selection-end-line="228" selection-end-column="41" />
+          <folding>
+            <element signature="n#ChTools#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="41" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="41" />
+        <state relative-caret-position="225">
+          <caret line="72" column="29" lean-forward="true" selection-start-line="72" selection-start-column="29" selection-end-line="72" selection-end-column="29" />
         </state>
       </provider>
     </entry>
