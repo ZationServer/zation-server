@@ -376,7 +376,6 @@ class ZationConfig {
                 tmpPath = tmpPath+'/dist';
             }
         }
-        console.log(tmpPath);
         return tmpPath;
     }
 
