@@ -4,47 +4,46 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Socket} from "../helper/sc/socket";
-import fetch, {Request, RequestInit, Response} from 'node-fetch';
+import {Socket}                                             from "../helper/sc/socket";
+import fetch, {Request, RequestInit, Response}              from 'node-fetch';
 import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../helper/constants/workerChTaskActions";
-import {WorkerChTargets} from "../helper/constants/workerChTargets";
-import {AsymmetricKeyPairs} from "../helper/infoObjects/asymmetricKeyPairs";
-import {WorkerMessageActions} from "../helper/constants/workerMessageActions";
-import {ErrorConfig, ErrorConstruct} from "../helper/configs/errorConfig";
-import {ZationChannel, ZationToken} from "../helper/constants/internal";
-import {InternMainConfig} from "../helper/configs/mainConfig";
-import {AppConfig} from "../helper/configs/appConfig";
-import {ChannelConfig} from "../helper/configs/channelConfig";
-import {EventConfig} from "../helper/configs/eventConfig";
-import {ServiceConfig} from "../helper/configs/serviceConfig";
-import {byteLength} from "byte-length";
+import {WorkerChTargets}                                    from "../helper/constants/workerChTargets";
+import {AsymmetricKeyPairs}                                 from "../helper/infoObjects/asymmetricKeyPairs";
+import {WorkerMessageActions}                               from "../helper/constants/workerMessageActions";
+import {ErrorConfig, ErrorConstruct}                        from "../helper/configs/errorConfig";
+import {ZationChannel, ZationToken}                         from "../helper/constants/internal";
+import {InternMainConfig}                                   from "../helper/configs/mainConfig";
+import {AppConfig}                                          from "../helper/configs/appConfig";
+import {ChannelConfig}                                      from "../helper/configs/channelConfig";
+import {EventConfig}                                        from "../helper/configs/eventConfig";
+import {ServiceConfig}                                      from "../helper/configs/serviceConfig";
+import {byteLength}                                         from "byte-length";
 
-const    crypto : any       = require('crypto');
-const    IP : any           = require('ip');
-const    crypto2 : any      = require("crypto2");
-import ChExchangeEngine = require("../helper/channel/chExchangeEngine");
-import ServiceEngine = require("../helper/services/serviceEngine");
-import ZationConfig = require("../main/zationConfig");
-import ZationWorker = require("../main/zationWorker");
-import ExchangeEngine = require('../helper/channel/chExchangeEngine');
-import TaskError = require("./TaskError");
-import ChTools = require("../helper/channel/chTools");
-import IdTools = require("../helper/tools/idTools");
-import ObjectPath = require("../helper/tools/objectPath");
-import TokenTools = require("../helper/token/tokenTools");
-import TaskErrorBag = require("./TaskErrorBag");
-import TaskErrorBuilder = require("../helper/builder/taskErrorBuilder");
-import Base64Tools = require("../helper/tools/base64Tools");
-import ObjectPathSequence = require("../helper/tools/objectPathSequence");
-import AuthenticationError = require("../helper/error/authenticationError");
-import {SyncTokenActions} from "../helper/constants/syncTokenActions";
-import ObjectPathActionSequence = require("../helper/tools/objectPathActionSequence");
+const    crypto : any                                       = require('crypto');
+const    IP : any                                           = require('ip');
+const    crypto2 : any                                      = require("crypto2");
+import ChExchangeEngine                                     = require("../helper/channel/chExchangeEngine");
+import ServiceEngine                                        = require("../helper/services/serviceEngine");
+import ZationConfig                                         = require("../main/zationConfig");
+import ZationWorker                                         = require("../main/zationWorker");
+import ExchangeEngine                                       = require('../helper/channel/chExchangeEngine');
+import TaskError                                            = require("./TaskError");
+import ChTools                                              = require("../helper/channel/chTools");
+import IdTools                                              = require("../helper/tools/idTools");
+import ObjectPath                                           = require("../helper/tools/objectPath");
+import TokenTools                                           = require("../helper/token/tokenTools");
+import TaskErrorBag                                         = require("./TaskErrorBag");
+import TaskErrorBuilder                                     = require("../helper/builder/taskErrorBuilder");
+import Base64Tools                                          = require("../helper/tools/base64Tools");
+import ObjectPathSequence                                   = require("../helper/tools/objectPathSequence");
+import AuthenticationError                                  = require("../helper/error/authenticationError");
+import {SyncTokenActions}                                   from "../helper/constants/syncTokenActions";
+import ObjectPathActionSequence                             = require("../helper/tools/objectPathActionSequence");
 // noinspection TypeScriptPreferShortImport
-import {StartMode} from "./../helper/constants/startMode";
-
-const uuidV4                = require('uuid/v4');
-const uniqid                = require('uniqid');
-
+import {StartMode}                                          from "./../helper/constants/startMode";
+import Result                                               = require('./Result');
+const uuidV4                                                = require('uuid/v4');
+const uniqid                                                = require('uniqid');
 
 class SmallBag
 {
@@ -1013,6 +1012,21 @@ class SmallBag
     isErrorConstruct(name : string) : boolean
     {
         return this.zc.isError(name);
+    }
+
+    //Part Result
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns a new result by using the constructor.
+     * That you can return to the client.
+     * With the result object you have the possibility to add a status code.
+     * Rather than just a result.
+     * @param result
+     * @param statusCode
+     */
+    newResult(result ?: any,statusCode ?: string | number) : Result {
+        return new Result(result,statusCode);
     }
 
     //Part Http
