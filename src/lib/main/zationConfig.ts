@@ -56,7 +56,7 @@ class ZationConfig {
         if (!workerTransport) {
             this._starterConfig = starterData;
             this._workerProcess = false;
-            this.rootPath = ZationConfig._getRootPath();
+            this.rootPath = ZationConfig._getRootPath(starterData);
         } else {
             this._starterConfig = starterData['starterConfig'];
             this._mainConfig = starterData['mainConfig'];
@@ -214,20 +214,20 @@ class ZationConfig {
     }
 
     isDebug(): boolean {
-        return !!this._mainConfig.debug;
+        return this._mainConfig.debug;
     }
 
     isStartDebug(): boolean {
-        return !!this._mainConfig.startDebug;
+        return this._mainConfig.startDebug;
     }
 
     isShowConfigWarning(): boolean {
-        return !!this._mainConfig.showConfigWarnings;
+        return this._mainConfig.showConfigWarnings;
     }
 
     // noinspection JSUnusedGlobalSymbols
     isUsePanel(): boolean {
-        return !!this._mainConfig.usePanel
+        return this._mainConfig.usePanel
     }
 
     addToMainConfig(toAdd: object, overwrite: boolean, onlyAddKeys: object | undefined): void {
@@ -357,8 +357,12 @@ class ZationConfig {
         }
     }
 
-    private static _getRootPath() : any
+    private static _getRootPath(starterConfig : StarterConfig) : any
     {
+        if(starterConfig.rootPath){
+            return starterConfig.rootPath;
+        }
+
         //@ts-ignore
         let tmpPath = path.dirname(require.main.filename || process.mainModule.filename);
 
@@ -494,8 +498,8 @@ class ZationConfig {
             ZationConfig.createValueWithOsAuto(this._mainConfig.brokers);
 
         //path slash check
-        const path = this._mainConfig.path;
-        if(path && typeof path === 'string' && path.charAt(0) !== '/') {
+        const path : any = this._mainConfig.path;
+        if(typeof path === 'string' && path.charAt(0) !== '/') {
             this._mainConfig.path = '/' + path;
         }
     }

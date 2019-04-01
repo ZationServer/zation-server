@@ -132,7 +132,7 @@ class ZationMaster {
             (`The configuration${moreConfigs ? 's' : ''}: ${this.zc.loadedConfigs.toString()} ${moreConfigs ? 'are' : 'is'} found and will be loaded.`);
         }
         else {
-            Logger.printDebugInfo(`No config file was found.`)
+            Logger.printDebugInfo(`No config file with root path: '${this.zc.getRootPath()}' was found.`)
         }
 
         this.zc.loadOtherConfigFromScript();

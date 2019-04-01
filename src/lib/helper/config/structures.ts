@@ -192,6 +192,7 @@ Main[nameof<MainConfig>(s => s.pubSubBatchDuration)]        = {types : ['number'
 
 const StarterConfig = {};
 ObjectTools.addObToOb(StarterConfig,Main);
+StarterConfig[nameof<StarterConfig>(s => s.rootPath)]      = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.configs)]       = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.appConfig)]     = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.serviceConfig)] = {types : ['string'],isOptional : true};
