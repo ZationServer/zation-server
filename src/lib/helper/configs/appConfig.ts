@@ -15,14 +15,111 @@ import {ValidationTypes} from "../constants/validationTypes";
 
 export interface AppConfig
 {
+    /**
+     * The name of the authController.
+     * This property makes it possible to send an authentication request to the server.
+     * aThen the server will automatically use the linked controller.
+     * @example
+     * authController : 'login',
+     */
     authController  ?: string;
+
+    /**
+     * In this property, you can define all your controllers.
+     * The value must be an object.
+     * The key of each property is the name of the controller.
+     * The value of each property is the imported controller class.
+     * @example
+     * controllers : {
+     *    register : RegisterController,
+     *    login : LogInController,
+     * }
+     */
     controllers  ?: Record<string,ControllerClass>;
+
+     /**
+     * In this property, you can define all your user groups.
+     * @example
+     * userGroups : {
+     *   auth : {
+     *       user : {
+     *            panelDisplayName : 'User'
+     *       },
+     *   },
+     * default : 'guest'
+     * },
+     */
     userGroups  ?: UserGroupsConfig;
+
+    /**
+     * With this property, you can define a default controller configuration that will be used in each controller.
+     * @example
+     * controllerDefaults : {
+     *    wsAccess : true,
+     *    httpAccess : true,
+     *    httpPostAllowed : true,
+     *    httpGetAllowed : true,
+     *    access : 'all',
+     * },
+     */
     controllerDefaults  ?: ControllerConfig;
+
+    /**
+     * In this property, you can define all your user values.
+     * @example
+     * values : {
+     *   userName: {
+            type: 'string',
+            maxLength: 15,
+            charClass: 'a-zA-Z._0-9'
+         },
+     * }
+     */
     values  ?: Record<string,ValuePropertyConfig>;
+
+    /**
+     * In this property, you can define all your objects.
+     * @example
+     * objects : {
+     *  chatMessage : {
+     *          properties : {
+     *              text : {},
+     *              fromId : {}
+     *          }
+     *     },
+     * }
+     */
     objects  ?: Record<string,ObjectPropertyConfig>;
+
+    /**
+     * In this property, you can define all your arrays.
+     * @example
+     * arrays : {
+     *   names : ['v.name',{maxLength : 20}]
+     * }
+     *
+     */
     arrays  ?: Record<string,ArrayPropertyConfig | ArrayShortSyntax>;
+
+    /**
+     * In this property, you can define background tasks.
+     * @example
+     * backgroundTasks : {
+     *      myTask : {
+     *          task : (sb) => {
+     *              console.log(`TaskRunning on worker -> ${sb.getWorkerId()}`)
+     *          },
+     *          every : 1000
+     *      }
+     * },
+     */
     backgroundTasks  ?: Record<string,BackgroundTask>,
+
+    /**
+     * In this property, you can import bag extensions.
+     * @example
+     * bagExtensions : [MyBagExtension1,MyBagExtension2],
+     */
     bagExtensions ?: BagExtension[];
 }
 
