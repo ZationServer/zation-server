@@ -109,8 +109,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/lib/helper/configs/appConfig.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="112" column="13" lean-forward="true" selection-start-line="112" selection-start-column="13" selection-end-line="112" selection-end-column="13" />
+            <state relative-caret-position="529">
+              <caret line="190" lean-forward="true" selection-start-line="190" selection-end-line="190" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -750,7 +750,7 @@
       <workItem from="1553743856254" duration="374000" />
       <workItem from="1553772317432" duration="1648000" />
       <workItem from="1553785001019" duration="1014000" />
-      <workItem from="1554129557214" duration="2415000" />
+      <workItem from="1554129557214" duration="3563000" />
     </task>
     <task id="LOCAL-00064" summary="improve validation engine&#10;add new regex name option&#10;add strictType and convertType option&#10;improve config checker">
       <created>1541205117372</created>
@@ -1131,7 +1131,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2082119000" />
+    <option name="totallyTimeSpent" value="2083267000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1637,8 +1637,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/lib/helper/configs/appConfig.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="112" column="13" lean-forward="true" selection-start-line="112" selection-start-column="13" selection-end-line="112" selection-end-column="13" />
+        <state relative-caret-position="529">
+          <caret line="190" lean-forward="true" selection-start-line="190" selection-end-line="190" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
