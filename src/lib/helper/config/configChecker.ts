@@ -25,9 +25,9 @@ import BagExtension, {
     ArrayPropertyConfig,
     ArrayShortSyntax,
     ControllerConfig,
-    ControllerInput,
+    InputConfig, MultiInput,
     ObjectPropertyConfig,
-    PropertyOptional,
+    PropertyOptional, SingleInput,
     ValuePropertyConfig
 } from "../configs/appConfig";
 import {PanelUserConfig} from "../configs/mainConfig";
@@ -495,6 +495,8 @@ class ConfigChecker
     {
         if(Array.isArray(this.zc.mainConfig.origins)) {
             this.zc.mainConfig.origins.forEach(((o,i) => {
+                // for javascript version
+                // noinspection SuspiciousTypeOfGuard
                 if(typeof o !== 'string'){
                     this.ceb.addConfigError(new ConfigError(ConfigNames.MAIN,
                         `Origin: '${i}' must be a string.`));
@@ -530,11 +532,15 @@ class ConfigChecker
         //checkStructure
         ConfigCheckerTools.assertStructure(Structures.PanelUserConfig, config, ConfigNames.MAIN, this.ceb, target);
 
+        // for javascript version
+        // noinspection SuspiciousTypeOfGuard
         if(typeof config.password === 'string' && config.password.length < 4) {
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} panel user password must be at least 4 characters long.`));
         }
 
+        // for javascript version
+        // noinspection SuspiciousTypeOfGuard
         if(typeof config.username === 'string' && config.username.length < 1) {
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} panel username must be at least 1 character long.`));
@@ -548,6 +554,8 @@ class ConfigChecker
                 ` So please change them in the main config!`);
         }
 
+        // for javascript version
+        // noinspection SuspiciousTypeOfGuard
         if(typeof config.username === 'string' && config.username !== 'admin' &&
         config.username === config.password) {
             Logger.printConfigWarning
@@ -575,7 +583,9 @@ class ConfigChecker
                 ConfigCheckerTools.assertStructure
                 (Structures.serviceModule, c, ConfigNames.SERVICE, this.ceb, new Target('Service Module index: ' + i));
 
-               if(typeof c.serviceName === 'string') {
+               // for javascript version
+               // noinspection SuspiciousTypeOfGuard
+                if(typeof c.serviceName === 'string') {
                    this.checkService(c.serviceName,c.service,'Service Module');
 
                    this.checkBagExtensions([c.bagExtensions],
@@ -706,38 +716,62 @@ class ConfigChecker
         ConfigCheckerTools.assertStructure(Structures.ControllerConfig, config, ConfigNames.APP, this.ceb, target);
         this.checkControllerAccessKey(config, target);
         this.checkInputAllAllow(config, target);
-        this.checkControllerInput(config,target);
+        this.checkInputConfig(config,target);
         this.checkControllerVersionAccess(config, target);
     }
 
     // noinspection JSMethodCanBeStatic
     private checkInputAllAllow(cc: ControllerConfig, target: Target) {
         if (typeof cc.inputAllAllow === 'boolean' &&
-            cc.inputAllAllow && typeof cc.input === 'object') {
+            cc.inputAllAllow &&
+            (typeof cc.input === 'object' || typeof cc.multiInput === 'object' || typeof  cc.singleInput !== 'undefined')) {
             Logger.printConfigWarning(
                 ConfigNames.APP,
-                `${target.getTarget()} the property input is ignored with inputAllAllow true.`
+                `${target.getTarget()} the properties input,multiInput,singleInput are ignored with inputAllAllow true.`
             );
         }
     }
 
-    private checkControllerInput(cc: ControllerConfig, target: Target) {
-        const input = cc.input;
-        const keys: any[] = [];
-        if (typeof input === 'object') {
-            for (let k in input) {
-                if (input.hasOwnProperty(k)) {
-                    keys.push(k);
-                    this.checkCustomName(k,'controller input property',target.getTarget() + ' ');
-                    this.checkProperty(input[k], target.addPath(k));
-                }
-            }
-            this.checkOptionalRecommendation(keys, input, target);
+    private checkInputConfig(inputConfig : InputConfig, target : Target) {
+        const inConfigs : string[] = [];
+        if(inputConfig.input){
+            inConfigs.push(nameof<InputConfig>(s => s.input));
+            this.checkMultiInput(inputConfig.input,target);
+        }
+        if(inputConfig.multiInput){
+            inConfigs.push(nameof<InputConfig>(s => s.multiInput));
+            this.checkMultiInput(inputConfig.multiInput,target);
+        }
+        if(inputConfig.singleInput){
+            inConfigs.push(nameof<InputConfig>(s => s.singleInput));
+            this.checkSingleInput(inputConfig.singleInput,target);
+        }
+        if(inConfigs.length > 1){
+            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                `${target.getTarget()} Only one of the input config properties: 'input','multiInput','singleInput' is allowed. You have set: ${inConfigs.toString()}.`));
         }
     }
 
+    private checkMultiInput(multiInput : MultiInput,target : Target) {
+        const keys: any[] = [];
+        if (typeof multiInput === 'object') {
+            for (let k in multiInput) {
+                if (multiInput.hasOwnProperty(k)) {
+                    keys.push(k);
+                    this.checkCustomName(k,'controller input property',target.getTarget() + ' ');
+                    this.checkProperty(multiInput[k], target.addPath(k));
+                }
+            }
+            this.checkOptionalRecommendation(keys, multiInput, target);
+        }
+    }
+
+    private checkSingleInput(singleInput : SingleInput,target : Target) {
+        this.checkProperty(singleInput,target);
+    }
+
     // noinspection JSMethodCanBeStatic
-    private checkOptionalRecommendation(keys: string[], input: ControllerInput, target: Target) {
+    private checkOptionalRecommendation(keys: string[], input: MultiInput, target: Target) {
         let wasLastOptional = false;
         for (let i = keys.length - 1; i >= 0; i--) {
             if (input[keys[i]][nameof<ValuePropertyConfig>(s => s.isOptional)] !== undefined &&

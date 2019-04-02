@@ -72,6 +72,8 @@ AppObject[nameof<ObjectPropertyConfig>(s => s.convert)]    = {types : ['function
 
 const ControllerConfig = {};   
 ControllerConfig[nameof<ControllerConfig>(s => s.input)]            = {types : ['object'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.multiInput)]       = {types : ['object'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.singleInput)]      = {types : ['object','array','string'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.beforeHandle)]     = {types : ['function','array'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.systemController)] = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.wsAccess)]         = {types : ['boolean'],isOptional : true};

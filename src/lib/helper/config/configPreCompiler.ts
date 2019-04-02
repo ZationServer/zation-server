@@ -15,7 +15,7 @@ import {
 import {
     AnyOfProperty,
     ArrayPropertyConfig,
-    ControllerConfig,
+    ControllerConfig, InputConfig, MultiInput,
     ObjectPropertyConfig,
     ValuePropertyConfig
 } from "../configs/appConfig";
@@ -34,7 +34,7 @@ class ConfigPeCompiler
     private arraysConfig : object;
 
     private propertyImportEngine : PropertyImportEngine;
-    
+
     constructor(zationConfig)
     {
         this.zc = zationConfig;
@@ -47,6 +47,7 @@ class ConfigPeCompiler
         this.preCompileArrays(this.arraysConfig);
         this.preCompileObjects(this.objectsConfig);
         this.preCompileTmpBuilds();
+        this.preCompileControllerDefaults();
         this.preCompileController();
         this.preCompileChannelConfig();
         this.preCompileServiceModules();
@@ -71,9 +72,7 @@ class ConfigPeCompiler
     private prepareControllerDefaults() : void
     {
         this.controllerDefaults = {};
-
         let cd = this.zc.appConfig.controllerDefaults;
-
         //setDefaults if not set!
         if(cd !== undefined) {
             this.controllerDefaults = cd;
@@ -468,6 +467,12 @@ class ConfigPeCompiler
         }
     }
 
+    private preCompileControllerDefaults() : void {
+        if(this.zc.appConfig.controllerDefaults) {
+            this.preCompileInputConfig(this.zc.appConfig.controllerDefaults);
+        }
+    }
+
     private preCompileController() : void
     {
         //set if controller property is not found
@@ -489,20 +494,37 @@ class ConfigPeCompiler
                         config[property] = this.controllerDefaults[property];
                     }
                 }
-
-                if(typeof config.input === 'object')
-                {
-                    const input = config.input;
-                    for(let inputName in input)
-                    if(input.hasOwnProperty(inputName))
-                    {
-                        //resolve values,object,array links and resolve inheritance
-                        this.preCompileProperty(inputName,input);
-                        this.preCompileInheritance(input[inputName]);
-                    }
-                }
+                this.preCompileInputConfig(config);
             }
         }
+    }
+
+    private preCompileInputConfig(inputConfig : InputConfig) : void {
+        if(typeof inputConfig.input === 'object') {
+            this.preCompileMultiInput(inputConfig.input);
+            //resolve multi input shortcut
+            inputConfig.multiInput = inputConfig.input;
+        }
+        else if(typeof inputConfig.multiInput === 'object') {
+            this.preCompileMultiInput(inputConfig.multiInput);
+        }
+        else if(inputConfig.singleInput){
+            this.preCompileSingleInput(inputConfig);
+        }
+    }
+
+    private preCompileMultiInput(multiInput : MultiInput) : void {
+        for(let inputName in multiInput)
+            if(multiInput.hasOwnProperty(inputName)) {
+                //resolve values,object,array links and resolve inheritance
+                this.preCompileProperty(inputName,multiInput);
+                this.preCompileInheritance(multiInput[inputName]);
+            }
+    }
+
+    private preCompileSingleInput(inputConfig : InputConfig) : void {
+        this.preCompileProperty(nameof<InputConfig>(s => s.singleInput),inputConfig);
+        this.preCompileInheritance(inputConfig[nameof<InputConfig>(s => s.singleInput)]);
     }
 
 }

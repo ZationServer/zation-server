@@ -238,13 +238,63 @@ export interface AuthUserGroupConfig
     panelDisplayName  ?: string;
 }
 
-export type ControllerInput = Record<string,Property | AnyOfProperty>;
+export interface InputConfig {
+    /**
+     * This property defines the input.
+     * It works parameter based, the key is the parameter name,
+     * and the value is the configuration of the parameter input.
+     * If you want to get only one anonymous input you can use the property singleInput.
+     * @example
+     * multiInput : {
+     *     name : {
+     *         type : 'string'
+     *     },
+     *     age : {
+     *         type : 'string',
+     *         minValue : 14
+     *     }
+     * }
+     */
+    multiInput ?: MultiInput;
+    /**
+     * This property defines a single input.
+     * (Not parameter based like multiInput or input)
+     * @example
+     * singleInput : {
+     *     type : 'string',
+     *     minLength : 5
+     * }
+     */
+    singleInput ?: SingleInput;
+    /**
+     * This property defines the input.
+     * Its a shortcut for the property multiInput.
+     * It works parameter based, the key is the parameter name,
+     * and the value is the configuration of the parameter input.
+     * If you want to get only one anonymous input you can use the property singleInput.
+     * multiInput : {
+     *     name : {
+     *         type : 'string'
+     *     },
+     *     age : {
+     *         type : 'string',
+     *         minValue : 14
+     *     }
+     * }
+     */
+    input ?: MultiInput;
+}
+
+export interface MultiInput {
+    [key: string]: SingleInput;
+}
+export type SingleInput = Property | AnyOfProperty;
+
 export type BeforeHandleFunction = (bag : Bag) => Promise<void> | void;
 export type ControllerAccessFunction = (smallBag : SmallBag,token : ZationToken | null) => Promise<boolean> | boolean;
 
-export interface ControllerConfig
+export interface ControllerConfig extends InputConfig
 {
-    input  ?: ControllerInput;
     beforeHandle  ?: BeforeHandleFunction[] | BeforeHandleFunction;
     systemController  ?: boolean;
     wsAccess  ?: boolean;
@@ -331,4 +381,5 @@ export interface ArrayShortSyntax extends Array<Property | AnyOfProperty | Array
     0 : Property | AnyOfProperty
     1 ?: ArraySettings
 }
+
 

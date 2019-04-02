@@ -86,7 +86,7 @@ class MainProcessor
                         try
                         {
                             input  = await InputProcessor.
-                            processInput(task,controllerConfig,worker.getPreparedSmallBag());
+                            processInput(task,controllerConfig,worker.getInputMainProcessor());
                         }
                         catch (e) {
                             //invoke controller wrong input function

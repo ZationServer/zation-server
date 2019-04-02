@@ -21,37 +21,30 @@ import {
 import Iterator = require("../tools/iterator");
 import {OptionalProcessor} from "./optionalProcessor";
 
-interface ProcessInfo {
+export interface ProcessInfo {
     errorBag : TaskErrorBag,
-    processTaskList : ProcessTask[]
+    processTaskList : ProcessTask[],
+    createProcessTaskList : boolean,
+    inputValidation : boolean
 }
 
-class InputMainProcessor
+export class InputMainProcessor
 {
-    private readonly inputValidation : boolean;
-    private readonly createProcessTaskList : boolean;
     private readonly preparedSmallBag : SmallBag;
-    private processTaskList :  ProcessTask[];
 
-    constructor(inputValidation : boolean = true,preparedSmallBag : SmallBag,createProcessTaskList : boolean = true)
-    {
-        this.inputValidation = inputValidation;
-        this.createProcessTaskList = createProcessTaskList;
-        this.processTaskList = [];
+    constructor(preparedSmallBag : SmallBag) {
         this.preparedSmallBag = preparedSmallBag;
     }
 
-    static async checkIsValid(input : any,config : object,inputPath : string,errorBag : TaskErrorBag,smallBag : SmallBag,useInputValidation : boolean = true) : Promise<void>
+    async checkIsValid(input : any,config : object,inputPath : string,errorBag : TaskErrorBag,useInputValidation : boolean = true) : Promise<void>
     {
-        let inputValueProcessor = new InputMainProcessor(useInputValidation,smallBag,false);
-        await inputValueProcessor.processProperty({i : input},'i',config,inputPath,{errorBag : errorBag, processTaskList : []});
-    }
-
-    async processInput(srcObj : object,srcKey : string | number, config : object, currentInputPath : string,errorBag : TaskErrorBag) : Promise<any>
-    {
-        const processInfo : ProcessInfo = {errorBag : errorBag,processTaskList : this.processTaskList};
-        await this.processProperty(srcObj,srcKey,config,currentInputPath,processInfo);
-        this.processTaskList = processInfo.processTaskList;
+        await this.processProperty({i : input},'i',config,inputPath,
+                {
+                    errorBag : errorBag,
+                    processTaskList : [],
+                    inputValidation : useInputValidation,
+                    createProcessTaskList : false
+                });
     }
 
     async processProperty(srcObj : object,srcKey : string | number, config : object, currentInputPath : string,processInfo : ProcessInfo) : Promise<any>
@@ -153,7 +146,7 @@ class InputMainProcessor
             const processPrototype = typeof config[nameof<ObjectPropertyConfig>(s => s.prototype)] === 'object';
 
             //process prototype,construct,convert
-            if(this.createProcessTaskList && errorBag.isEmpty() &&
+            if(processInfo.createProcessTaskList && errorBag.isEmpty() &&
                 (processConstruct || processConvert || processPrototype)
             )
             {
@@ -191,7 +184,7 @@ class InputMainProcessor
         }
     }
 
-    private async processValue(srcObj : object,srcKey : string | number,config : object,currentInputPath : string,{errorBag,processTaskList} : ProcessInfo) : Promise<void>
+    private async processValue(srcObj : object,srcKey : string | number,config : object,currentInputPath : string,{errorBag,processTaskList,inputValidation,createProcessTaskList} : ProcessInfo) : Promise<void>
     {
         const preparedErrorData = {
             inputValue : srcObj[srcKey],
@@ -210,7 +203,7 @@ class InputMainProcessor
 
         let selectedType = type;
         //type
-        if(this.inputValidation) {
+        if(inputValidation) {
             selectedType =
                 ValidationEngine.validateValueType(srcObj[srcKey],type,strictType,preparedErrorData,errorBag);
         }
@@ -222,13 +215,13 @@ class InputMainProcessor
             }
         }
 
-        if(this.inputValidation){
+        if(inputValidation){
             await ValidationEngine.validateValue(srcObj[srcKey],config,preparedErrorData,errorBag,this.preparedSmallBag,type);
         }
 
         //check for convertTask
         if(
-            this.createProcessTaskList &&
+            createProcessTaskList &&
             errorBag.isEmpty() &&
             typeof config[nameof<ValuePropertyConfig>(s => s.convert)] === 'function')
         {
@@ -246,7 +239,13 @@ class InputMainProcessor
         await Iterator.breakIterate(async (key, value) =>
         {
             tmpTaskErrorBags[key] = new TaskErrorBag();
-            const tmpProcessInfo = {errorBag : tmpTaskErrorBags[key], processTaskList : []};
+            const tmpProcessInfo : ProcessInfo =
+                {
+                    errorBag : tmpTaskErrorBags[key],
+                    processTaskList : [],
+                    inputValidation : processInfo.inputValidation,
+                    createProcessTaskList : processInfo.createProcessTaskList
+                };
             await this.processProperty(srcObj,srcKey,value,`${currentInputPath}.${key}`,tmpProcessInfo);
             if(tmpProcessInfo.errorBag.isEmpty()){
                 found = true;
@@ -279,10 +278,10 @@ class InputMainProcessor
         const errorBag = processInfo.errorBag;
 
         if(Array.isArray(input)) {
-            let isOk = !this.inputValidation;
+            let isOk = !processInfo.inputValidation;
 
             //validate Array
-            if(this.inputValidation) {
+            if(processInfo.inputValidation) {
                 isOk = ValidationEngine.validateArray(input,config,currentInputPath,errorBag)
             }
 
@@ -302,7 +301,7 @@ class InputMainProcessor
 
                 //check for convertTask
                 if(
-                    this.createProcessTaskList &&
+                    processInfo.createProcessTaskList &&
                     errorBag.isEmpty() &&
                     typeof config[nameof<ArrayPropertyConfig>(s => s.convert)] === 'function')
                 {
@@ -325,10 +324,5 @@ class InputMainProcessor
             );
         }
     }
-
-    getProcessTaskList() : ProcessTask[] {
-        return this.processTaskList;
-    }
 }
 
-export = InputMainProcessor;

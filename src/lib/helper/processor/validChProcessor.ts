@@ -9,7 +9,7 @@ import MainErrors            = require('../zationTaskErrors/mainTaskErrors');
 import TaskError             = require('../../api/TaskError');
 import TaskErrorBag          = require('../../api/TaskErrorBag');
 import ZationReqTools        = require('../tools/zationReqTools');
-import InputValueProcessor   = require('../input/inputMainProcessor');
+// noinspection TypeScriptPreferShortImport
 import {ControllerConfig}      from "../configs/appConfig";
 import {ZationRequest, ZationValidationCheck} from "../constants/internal";
 
@@ -52,6 +52,7 @@ class ValidChProcessor
             {
                 promises.push(new Promise<void>(async (resolve) =>
                 {
+                    // noinspection SuspiciousTypeOfGuard
                     if
                     (
                         typeof inputToCheck[i] === 'object' &&
@@ -65,6 +66,7 @@ class ValidChProcessor
                         const value   = inputToCheck[i].v;
                         let path    = inputToCheck[i].ip;
 
+                        // noinspection SuspiciousTypeOfGuard
                         if(typeof path === 'string') {
                             keyPath = path.split('.');
                         }
@@ -86,8 +88,8 @@ class ValidChProcessor
                             ControllerTools.getControllerConfigFromInputPath(keyPath,controllerInput);
 
                         if(specificConfig !== undefined) {
-                            await InputValueProcessor.checkIsValid
-                            (value,specificConfig,path,errorBag,worker.getPreparedSmallBag(),useInputValidation);
+                            await worker.getInputMainProcessor().checkIsValid
+                            (value,specificConfig,path,errorBag,useInputValidation);
                             resolve();
                         }
                         else {

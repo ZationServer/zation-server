@@ -48,6 +48,7 @@ import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
 import ViewEngine = require("../helper/views/viewEngine");
 import SystemInfo = require("../helper/tools/systemInfo");
 import {WorkerChTaskType} from "../helper/constants/workerChTaskType";
+import {InputMainProcessor} from "../helper/input/inputMainProcessor";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -72,6 +73,7 @@ class ZationWorker extends SCWorker
     private chAccessEngine : ChAccessEngine;
     private originsEngine : OriginsEngine;
     private chConfigManager : ChConfigManager;
+    private inputMainProcessor : InputMainProcessor;
     private zation : Zation;
 
     private authStartActive : boolean;
@@ -169,6 +171,10 @@ class ZationWorker extends SCWorker
         Logger.startStopWatch();
         this.preparedSmallBag = new SmallBag(this);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared an small bag.`,true);
+
+        Logger.startStopWatch();
+        this.inputMainProcessor = new InputMainProcessor(this.preparedSmallBag);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the input main processor.`,true);
 
         //prepareController
         Logger.startStopWatch();
@@ -1688,6 +1694,10 @@ class ZationWorker extends SCWorker
     setWorkerVariableStorage(obj : object) : void
     {
         this.variableStorage = obj;
+    }
+
+    getInputMainProcessor() : InputMainProcessor {
+        return this.inputMainProcessor;
     }
 }
 

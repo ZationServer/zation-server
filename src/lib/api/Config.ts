@@ -65,7 +65,6 @@ import
     ConstructObjectFunction,
     ControllerAccessFunction,
     ControllerConfig,
-    ControllerInput,
     ValuePropertyConfig,
     ObjectPropertyConfig,
     ObjectProperties,
@@ -75,7 +74,7 @@ import
     ArrayPropertyConfig,
     ConvertObjectFunction,
     ConvertValueFunction,
-    ConvertArrayFunction, BackgroundTask, GetDateFunction, ArrayShortSyntax
+    ConvertArrayFunction, BackgroundTask, GetDateFunction, ArrayShortSyntax, MultiInput, SingleInput
 } from "../helper/configs/appConfig";
 import
 {
@@ -218,7 +217,9 @@ class Config
     // noinspection JSUnusedGlobalSymbols
     static controllerConfig(c : ControllerConfig) :  ControllerConfig {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static controllerInput(c : ControllerInput) :  ControllerInput {return c;}
+    static multiInput(c : MultiInput) : MultiInput {return c;}
+    // noinspection JSUnusedGlobalSymbols
+    static singleInput(c : SingleInput) : SingleInput {return c;}
     // noinspection JSUnusedGlobalSymbols
     static beforeHandle(func : BeforeHandleFunction) : BeforeHandleFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
@@ -327,6 +328,7 @@ class Config
     //Part Event Config events
 
     //Part Zation Events
+    // noinspection JSUnusedGlobalSymbols
     static workerIsStarted(func : WorkerIsStartedFunction) : WorkerIsStartedFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static workerLeaderIsStarted(func : WorkerIsStartedFunction) : WorkerIsStartedFunction {return func;}
