@@ -22,12 +22,14 @@ class Zation
     private readonly worker : ZationWorker;
     private reqIdCounter : IdCounter;
     private readonly reqIdPreFix : string;
+    private readonly mainProcessor : MainProcessor;
     
     constructor(worker)
     {
         this.zc = worker.getZationConfig();
         this.worker = worker;
         this.reqIdCounter = new IdCounter();
+        this.mainProcessor = this.worker.getMainProcessor();
         this.reqIdPreFix = `${this.worker.options.instanceId}-${this.worker.getFullWorkerId()}-`;
     }
 
@@ -46,12 +48,12 @@ class Zation
             if(data.isWebSocket) {
                 //checks request and returns shBridge
                 shBridge = await SocketProcessor.runSocketProcess(data.socket,data.input,data.respond,this.zc,this.worker,data.reqId);
-                await returner.reactOnResult((await MainProcessor.process(shBridge,this.zc,this.worker)));
+                await returner.reactOnResult((await this.mainProcessor.process(shBridge)));
             }
             else {
                 //checks request and returns shBridge
                 shBridge = await HttpProcessor.runHttpProcess(data.req,data.res,this.zc,this.worker,data.reqId);
-                await returner.reactOnResult((await MainProcessor.process(shBridge,this.zc,this.worker)));
+                await returner.reactOnResult((await this.mainProcessor.process(shBridge)));
             }
         }
         catch(e)

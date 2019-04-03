@@ -25,7 +25,15 @@ import {SHBridge}              from "../bridges/shBridge";
 
 class MainProcessor
 {
-    static async process(shBridge : SHBridge,zc : ZationConfig,worker : ZationWorker)
+    private readonly zc : ZationConfig;
+    private readonly worker : ZationWorker;
+
+    constructor(zc : ZationConfig,worker : ZationWorker) {
+        this.zc = zc;
+        this.worker = worker;
+    }
+
+    async process(shBridge : SHBridge)
     {
         let reqData = shBridge.getZationData();
 
@@ -34,12 +42,12 @@ class MainProcessor
         {
             //Check for a auth req
             if(ZationReqTools.isZationAuthReq(reqData)) {
-                if(!(zc.appConfig.authController !== undefined)) {
+                if(!(this.zc.appConfig.authController !== undefined)) {
                     throw new TaskError(MainErrors.authControllerNotSet);
                 }
-                reqData = ZationReqTools.dissolveZationAuthReq(zc,reqData);
+                reqData = ZationReqTools.dissolveZationAuthReq(this.zc,reqData);
             }
-            else if(worker.getIsAuthStartActive()) {
+            else if(this.worker.getIsAuthStartActive()) {
                 throw new TaskError(MainErrors.authStartActive);
             }
 
@@ -51,10 +59,10 @@ class MainProcessor
             const controllerName = ZationReqTools.getControllerName(task,isSystemController);
 
             //Trows if not exists
-            worker.getControllerPrepare().checkControllerExist(controllerName,isSystemController);
+            this.worker.getControllerPrepare().checkControllerExist(controllerName,isSystemController);
 
             const controllerConfig =
-                worker.getControllerPrepare().getControllerConfig(controllerName,isSystemController);
+                this.worker.getControllerPrepare().getControllerConfig(controllerName,isSystemController);
 
             SystemVersionChecker.checkSystemAndVersion(shBridge,controllerConfig);
 
@@ -63,35 +71,35 @@ class MainProcessor
                 tokenEngine = shBridge.getSocket().tokenEngine;
             }
             else {
-                tokenEngine = new TokenEngine(shBridge,worker,zc);
+                tokenEngine = new TokenEngine(shBridge,this.worker,this.zc);
             }
 
             const authEngine =
-                new AuthEngine(shBridge,tokenEngine,worker);
+                new AuthEngine(shBridge,tokenEngine,this.worker);
 
             await authEngine.init();
 
-            const useProtocolCheck = zc.mainConfig.useProtocolCheck;
+            const useProtocolCheck = this.zc.mainConfig.useProtocolCheck;
             if(!useProtocolCheck || ProtocolAccessChecker.hasProtocolAccess(shBridge,controllerConfig)) {
 
-                const useHttpMethodCheck = zc.mainConfig.useHttpMethodCheck;
+                const useHttpMethodCheck = this.zc.mainConfig.useHttpMethodCheck;
                 if
                 (
                     (!shBridge.isWebSocket() && (!useHttpMethodCheck || ProtocolAccessChecker.hasHttpMethodAccess(shBridge,controllerConfig)))
                     || shBridge.isWebSocket()
                 )
                 {
-                    let useAuth = zc.mainConfig.useAuth;
+                    let useAuth = this.zc.mainConfig.useAuth;
                     if(!useAuth || authEngine.hasAccessToController(controllerConfig)) {
                         let controllerInstance =
-                            worker.getControllerPrepare().getControllerInstance(controllerName,isSystemController);
+                            this.worker.getControllerPrepare().getControllerInstance(controllerName,isSystemController);
 
                         let input : object;
 
                         //check input
                         try
                         {
-                            input = await worker.getInputReqProcessor().
+                            input = await this.worker.getInputReqProcessor().
                             processInput(task,controllerConfig);
                         }
                         catch (e) {
@@ -101,7 +109,7 @@ class MainProcessor
                                 const input = task.i;
                                 const bag = new Bag(
                                     shBridge,
-                                    worker,
+                                    this.worker,
                                     authEngine,
                                     tokenEngine,
                                     input,
@@ -116,13 +124,13 @@ class MainProcessor
 
                         const bag = new Bag(
                             shBridge,
-                            worker,
+                            this.worker,
                             authEngine,
                             tokenEngine,
                             input,
                             shBridge.isWebSocket() ? shBridge.getSocket().channelEngine : undefined
                         );
-                        return await MainProcessor.processController(controllerInstance,controllerConfig,bag);
+                        return await this.processController(controllerInstance,controllerConfig,bag);
                     }
                     else {
                         throw new TaskError(MainErrors.noAccessToController,
@@ -154,7 +162,8 @@ class MainProcessor
     }
 
     //LAYER 10
-    static async processController(controllerInstance : Controller,controllerConfig : object,bag : Bag)
+    // noinspection JSMethodCanBeStatic
+    private async processController(controllerInstance : Controller,controllerConfig : object,bag : Bag)
     {
         try
         {
