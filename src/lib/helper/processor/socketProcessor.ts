@@ -10,16 +10,24 @@ import ZationWorker          = require("../../main/zationWorker");
 import ZationConfig          = require("../../main/zationConfig");
 import Logger                = require("../logger/logger");
 import {Socket}                from "../sc/socket";
-import {SHBridgeSocket} from "../bridges/shBridgeSocket";
+import {SHBridgeSocket}        from "../bridges/shBridgeSocket";
 
 class SocketProcessor
 {
+    private readonly zc : ZationConfig;
+    private readonly worker : ZationWorker;
+
+    constructor(zc : ZationConfig,worker : ZationWorker) {
+        this.zc = zc;
+        this.worker = worker;
+    }
+
     //SOCKET Extra Layer
-    static async runSocketProcess(socket : Socket, input, respond, zc : ZationConfig, worker : ZationWorker,reqId : string)
+    async runSocketProcess(socket : Socket, input, respond,reqId : string)
     {
         Logger.printDebugInfo(`Socket Request id: ${reqId} -> `,input,true);
 
-        if(zc.mainConfig.logRequests){
+        if(this.zc.mainConfig.logRequests){
             Logger.logFileInfo(`Socket Request id: ${reqId} -> `,input,true);
         }
 
@@ -27,7 +35,7 @@ class SocketProcessor
         if(ZationReqTools.isValidationCheckReq(input))
         {
             //validation Check req
-            return await ValidChProcessor.process(input,zc,worker);
+            return await ValidChProcessor.process(input,this.zc,this.worker);
         }
         else {
             //normal Req

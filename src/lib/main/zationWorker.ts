@@ -53,6 +53,8 @@ import TokenEngine = require("../helper/token/tokenEngine");
 import ChannelEngine = require("../helper/channel/channelEngine");
 import {InputReqProcessor} from "../helper/input/inputReqProcessor";
 import MainProcessor = require("../helper/processor/mainProcessor");
+import SocketProcessor = require("../helper/processor/socketProcessor");
+import HttpProcessor = require("../helper/processor/httpProcessor");
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -79,6 +81,8 @@ class ZationWorker extends SCWorker
     private chConfigManager : ChConfigManager;
     private inputReqProcessor : InputReqProcessor;
     private mainProcessor : MainProcessor;
+    private socketProcessor : SocketProcessor;
+    private httpProcessor : HttpProcessor;
     private zation : Zation;
 
     private authStartActive : boolean;
@@ -184,6 +188,14 @@ class ZationWorker extends SCWorker
         Logger.startStopWatch();
         this.mainProcessor = new MainProcessor(this.zc,this);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the main request processor.`,true);
+
+        Logger.startStopWatch();
+        this.socketProcessor = new SocketProcessor(this.zc,this);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the socket request processor.`,true);
+
+        Logger.startStopWatch();
+        this.httpProcessor = new HttpProcessor(this.zc,this);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the http request processor.`,true);
 
         //prepareController
         Logger.startStopWatch();
@@ -1714,6 +1726,14 @@ class ZationWorker extends SCWorker
 
     getMainProcessor() : MainProcessor {
         return this.mainProcessor;
+    }
+
+    getSocketProcessor() : SocketProcessor {
+        return this.socketProcessor;
+    }
+
+    getHttpProcessor() : HttpProcessor {
+        return this.httpProcessor;
     }
 }
 

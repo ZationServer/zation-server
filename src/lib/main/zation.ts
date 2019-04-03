@@ -23,13 +23,18 @@ class Zation
     private reqIdCounter : IdCounter;
     private readonly reqIdPreFix : string;
     private readonly mainProcessor : MainProcessor;
-    
+    private readonly socketProcessor : SocketProcessor;
+    private readonly httpProcessor : HttpProcessor;
+
+
     constructor(worker)
     {
         this.zc = worker.getZationConfig();
         this.worker = worker;
         this.reqIdCounter = new IdCounter();
         this.mainProcessor = this.worker.getMainProcessor();
+        this.socketProcessor = this.worker.getSocketProcessor();
+        this.httpProcessor = this.worker.getHttpProcessor();
         this.reqIdPreFix = `${this.worker.options.instanceId}-${this.worker.getFullWorkerId()}-`;
     }
 
@@ -47,12 +52,12 @@ class Zation
         try {
             if(data.isWebSocket) {
                 //checks request and returns shBridge
-                shBridge = await SocketProcessor.runSocketProcess(data.socket,data.input,data.respond,this.zc,this.worker,data.reqId);
+                shBridge = await this.socketProcessor.runSocketProcess(data.socket,data.input,data.respond,data.reqId);
                 await returner.reactOnResult((await this.mainProcessor.process(shBridge)));
             }
             else {
                 //checks request and returns shBridge
-                shBridge = await HttpProcessor.runHttpProcess(data.req,data.res,this.zc,this.worker,data.reqId);
+                shBridge = await this.httpProcessor.runHttpProcess(data.req,data.res,data.reqId);
                 await returner.reactOnResult((await this.mainProcessor.process(shBridge)));
             }
         }

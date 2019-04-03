@@ -19,41 +19,49 @@ import {SHBridgeHttp}          from "../bridges/shBridgeHttp";
 
 class HttpProcessor
 {
+    private readonly zc : ZationConfig;
+    private readonly worker : ZationWorker;
+
+    constructor(zc : ZationConfig,worker : ZationWorker) {
+        this.zc = zc;
+        this.worker = worker;
+    }
+
     //HTTP Extra Layer
-    static async runHttpProcess(req,res,zc : ZationConfig,worker : ZationWorker,reqId : string)
+    async runHttpProcess(req,res,reqId : string)
     {
         // @ts-ignore
         if (req.method === 'POST' && !!req.body[zc.mainConfig.postKey]) {
-            Logger.printDebugInfo(`Http Post Request id: ${reqId} -> `,req.body[zc.mainConfig.postKey]);
+            Logger.printDebugInfo(`Http Post Request id: ${reqId} -> `,req.body[this.zc.mainConfig.postKey]);
 
-            if(zc.mainConfig.logRequests){
-                Logger.logFileInfo(`Http Post Request id: ${reqId} -> `,req.body[zc.mainConfig.postKey]);
+            if(this.zc.mainConfig.logRequests){
+                Logger.logFileInfo(`Http Post Request id: ${reqId} -> `,req.body[this.zc.mainConfig.postKey]);
             }
 
             HttpProcessor.setHeader(res);
             // @ts-ignore
             const zationData = await JsonConverter.parse(req.body[zc.mainConfig.postKey]);
-            return await HttpProcessor.mainProcess(req,res,zc,worker,zationData,reqId);
+            return await this.mainProcess(req,res,zationData,reqId);
         }
         else if(req.method === 'GET' && !(Object.keys(req.query).length === 0))
         {
             const query = req.query;
             Logger.printDebugInfo(`Http Get Request id: ${reqId} -> `,query,true);
 
-            if(zc.mainConfig.logRequests){
+            if(this.zc.mainConfig.logRequests){
                 Logger.logFileInfo(`Http Get Request id: ${reqId} -> `,query,true);
             }
 
             if(ZationReqTools.isValidGetReq(query)) {
                 HttpProcessor.setHeader(res);
                 const zationData = await ZationReqTools.convertGetRequest(query);
-                return await HttpProcessor.mainProcess(req,res,zc,worker,zationData,reqId);
+                return await this.mainProcess(req,res,zationData,reqId);
             }
             else if(ZationReqTools.isValidValidationGetReq(query))
             {
                 HttpProcessor.setHeader(res);
                 const zationData = await ZationReqTools.convertValidationGetRequest(query);
-                return await HttpProcessor.mainProcess(req,res,zc,worker,zationData,reqId);
+                return await this.mainProcess(req,res,zationData,reqId);
             }
             else {
                 throw new TaskError(MainErrors.wrongInputDataStructure,
@@ -66,22 +74,22 @@ class HttpProcessor
         }
         else {
             Logger.printDebugInfo(`Http Request id: ${reqId} -> No zation data found`);
-            HttpProcessor.printDefaultHtmlSite(res,worker);
+            HttpProcessor.printDefaultHtmlSite(res,this.worker);
         }
     }
 
-    private static async mainProcess(req,res,zc : ZationConfig,worker : ZationWorker,zationData : ZationRequest,reqId : string)
+    private async mainProcess(req,res,zationData : ZationRequest,reqId : string)
     {
         //check for validationCheckRequest
         if(ZationReqTools.isValidationCheckReq(zationData)) {
             //validation Check req
-            return await ValidChProcessor.process(zationData,zc,worker);
+            return await ValidChProcessor.process(zationData,this.zc,this.worker);
         }
         else
         {
             //normal Req
             if(!!zationData.to) {
-                req.zationToken = await TokenTools.verifyToken(zationData.to,zc);
+                req.zationToken = await TokenTools.verifyToken(zationData.to,this.zc);
                 const token = req.zationToken;
 
                 const next = (err) => {
@@ -89,8 +97,8 @@ class HttpProcessor
                         throw new TaskError(MainErrors.authenticateMiddlewareBlock,{err : err});
                     }
                 };
-                await zc.checkAuthenticationMiddlewareEvent
-                (zc.eventConfig.middlewareAuthenticate,next,worker.getPreparedSmallBag(),new ZationToken(token));
+                await this.zc.checkAuthenticationMiddlewareEvent
+                (this.zc.eventConfig.middlewareAuthenticate,next,this.worker.getPreparedSmallBag(),new ZationToken(token));
             }
 
             return new SHBridgeHttp(res,req,reqId,zationData);
