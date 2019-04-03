@@ -55,6 +55,7 @@ import {InputReqProcessor} from "../helper/input/inputReqProcessor";
 import MainProcessor = require("../helper/processor/mainProcessor");
 import SocketProcessor = require("../helper/processor/socketProcessor");
 import HttpProcessor = require("../helper/processor/httpProcessor");
+import {ValidCheckProcessor} from "../helper/processor/validCheckProcessor";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -81,6 +82,7 @@ class ZationWorker extends SCWorker
     private chConfigManager : ChConfigManager;
     private inputReqProcessor : InputReqProcessor;
     private mainProcessor : MainProcessor;
+    private validCheckProcessor : ValidCheckProcessor;
     private socketProcessor : SocketProcessor;
     private httpProcessor : HttpProcessor;
     private zation : Zation;
@@ -190,11 +192,15 @@ class ZationWorker extends SCWorker
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the main request processor.`,true);
 
         Logger.startStopWatch();
-        this.socketProcessor = new SocketProcessor(this.zc,this);
+        this.validCheckProcessor = new ValidCheckProcessor(this.zc,this);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the validation check request processor.`,true);
+
+        Logger.startStopWatch();
+        this.socketProcessor = new SocketProcessor(this.zc,this,this.validCheckProcessor);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the socket request processor.`,true);
 
         Logger.startStopWatch();
-        this.httpProcessor = new HttpProcessor(this.zc,this);
+        this.httpProcessor = new HttpProcessor(this.zc,this,this.validCheckProcessor);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the http request processor.`,true);
 
         //prepareController
@@ -790,7 +796,7 @@ class ZationWorker extends SCWorker
                 if
                 (
                     typeof query === 'object' &&
-                    (typeof query.version === 'string' || typeof query.version === 'number') &&
+                    (typeof query.version === 'string') &&
                     typeof query.system === 'string')
                 {
                     const socket : Socket = req.socket;

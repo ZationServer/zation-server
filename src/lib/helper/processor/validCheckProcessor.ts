@@ -12,10 +12,20 @@ import ZationReqTools        = require('../tools/zationReqTools');
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig}      from "../configs/appConfig";
 import {ZationRequest, ZationValidationCheck} from "../constants/internal";
+import ZationWorker          = require("../../main/zationWorker");
+import ZationConfig          = require("../../main/zationConfig");
 
-class ValidChProcessor
+export class ValidCheckProcessor
 {
-    static async process(reqData : ZationRequest,zc,worker)
+    private readonly zc : ZationConfig;
+    private readonly worker : ZationWorker;
+
+    constructor(zc : ZationConfig,worker : ZationWorker) {
+        this.zc = zc;
+        this.worker = worker;
+    }
+
+    async process(reqData : ZationRequest)
     {
         if(ZationReqTools.isValidValidationStructure(reqData))
         {
@@ -27,9 +37,9 @@ class ValidChProcessor
             const cName = ZationReqTools.getControllerName(validReq,isSystemController);
 
             //Trows if not exists
-            worker.getControllerPrepare().checkControllerExist(cName,isSystemController);
+            this.worker.getControllerPrepare().checkControllerExist(cName,isSystemController);
 
-            let controller = worker.getControllerPrepare().getControllerConfig(cName,isSystemController);
+            let controller = this.worker.getControllerPrepare().getControllerConfig(cName,isSystemController);
 
             //end here if all is allow
             if(typeof controller.inputAllAllow === 'boolean' && controller.inputAllAllow) {
@@ -41,7 +51,7 @@ class ValidChProcessor
 
             let useInputValidation = true;
             if(controller.hasOwnProperty(nameof<ControllerConfig>(s => s.inputValidation))) {
-                useInputValidation = controller.inputValidation;
+                useInputValidation = !!controller.inputValidation;
             }
 
             let inputToCheck = validReq.i;
@@ -85,10 +95,11 @@ class ValidChProcessor
                         }
 
                         let specificConfig =
+                            // @ts-ignore
                             ControllerTools.getControllerConfigFromInputPath(keyPath,controllerInput);
 
                         if(specificConfig !== undefined) {
-                            await worker.getInputReqProcessor().validationCheck
+                            await this.worker.getInputReqProcessor().validationCheck
                             (value,specificConfig,path,errorBag,useInputValidation);
                             resolve();
                         }
@@ -124,5 +135,3 @@ class ValidChProcessor
         }
     }
 }
-
-export = ValidChProcessor;

@@ -68,6 +68,7 @@ class MainProcessor
 
             let tokenEngine;
             if(shBridge.isWebSocket()){
+                //socket prepared token engine
                 tokenEngine = shBridge.getSocket().tokenEngine;
             }
             else {
@@ -113,6 +114,7 @@ class MainProcessor
                                     authEngine,
                                     tokenEngine,
                                     input,
+                                    //socket prepared channel engine
                                     shBridge.isWebSocket() ? shBridge.getSocket().channelEngine : undefined
                                 );
 
@@ -128,6 +130,7 @@ class MainProcessor
                             authEngine,
                             tokenEngine,
                             input,
+                            //socket prepared channel engine
                             shBridge.isWebSocket() ? shBridge.getSocket().channelEngine : undefined
                         );
                         return await this.processController(controllerInstance,controllerConfig,bag);

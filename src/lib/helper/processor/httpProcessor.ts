@@ -5,7 +5,6 @@ GitHub: LucaCode
  */
 
 import TokenTools            = require('../token/tokenTools');
-import ValidChProcessor      = require('./validChProcessor');
 import ZationReqTools        = require('../tools/zationReqTools');
 import TaskError             = require("../../api/TaskError");
 import MainErrors            = require('../zationTaskErrors/mainTaskErrors');
@@ -16,15 +15,18 @@ import JsonConverter         = require("../tools/jsonConverter");
 import Logger                = require("../logger/logger");
 import {ZationRequest}         from "../constants/internal";
 import {SHBridgeHttp}          from "../bridges/shBridgeHttp";
+import {ValidCheckProcessor}   from "./validCheckProcessor";
 
 class HttpProcessor
 {
     private readonly zc : ZationConfig;
     private readonly worker : ZationWorker;
+    private readonly validCheckProcessor : ValidCheckProcessor;
 
-    constructor(zc : ZationConfig,worker : ZationWorker) {
+    constructor(zc : ZationConfig,worker : ZationWorker,validCheckProcessor : ValidCheckProcessor) {
         this.zc = zc;
         this.worker = worker;
+        this.validCheckProcessor = validCheckProcessor;
     }
 
     //HTTP Extra Layer
@@ -83,7 +85,7 @@ class HttpProcessor
         //check for validationCheckRequest
         if(ZationReqTools.isValidationCheckReq(zationData)) {
             //validation Check req
-            return await ValidChProcessor.process(zationData,this.zc,this.worker);
+            return await this.validCheckProcessor.process(zationData);
         }
         else
         {

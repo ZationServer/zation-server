@@ -18,6 +18,7 @@ class Base64Tools
     {
         let result : null | string = null;
 
+        // noinspection SuspiciousTypeOfGuard
         if (typeof base64 !== 'string') {
             return result;
         }
