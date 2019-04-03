@@ -366,18 +366,18 @@ class ZationConfig {
         //@ts-ignore
         let tmpPath = path.dirname(require.main.filename || process.mainModule.filename);
 
-        if(tmpPath.indexOf('/node_modules/') === -1) {
+        if(tmpPath.indexOf(path.sep+'node_modules'+path.sep) === -1) {
             //typescript/javascript project normal start
             return tmpPath;
         }
         else {
             //test start
-            tmpPath = tmpPath.split('/node_modules')[0];
-            if(!fs.existsSync(tmpPath+'/package.json')) {
+            tmpPath = tmpPath.split(path.sep+'node_modules')[0];
+            if(!fs.existsSync(tmpPath+path.sep+'package.json')) {
                 throw new Error('Root path can not be resolved');
             }
-            if(fs.existsSync(tmpPath+'/dist')){
-                tmpPath = tmpPath+'/dist';
+            if(fs.existsSync(tmpPath+path.sep+'dist')){
+                tmpPath = tmpPath+path.sep+'dist';
             }
         }
         return tmpPath;
@@ -463,14 +463,14 @@ class ZationConfig {
 
     private loadZationConfigLocation(key : string,defaultName : string) : void
     {
-        const path = this.rootPath + '/' +
-            (this._starterConfig.configs ? this._starterConfig.configs : 'configs') + '/';
+        const cPath = this.rootPath + path.sep +
+            (this._starterConfig.configs ? this._starterConfig.configs : 'configs') + path.sep;
 
         if(!(typeof this._starterConfig[key] === 'string')) {
-            this._starterConfig[key] =  path + defaultName;
+            this._starterConfig[key] =  cPath + defaultName;
         }
         else {
-            this._starterConfig[key] =  path + this._starterConfig[key];
+            this._starterConfig[key] =  cPath + this._starterConfig[key];
         }
     }
 
@@ -498,9 +498,9 @@ class ZationConfig {
             ZationConfig.createValueWithOsAuto(this._mainConfig.brokers);
 
         //path slash check
-        const path : any = this._mainConfig.path;
-        if(typeof path === 'string' && path.charAt(0) !== '/') {
-            this._mainConfig.path = '/' + path;
+        const pathTmp : any = this._mainConfig.path;
+        if(typeof pathTmp === 'string' && (pathTmp.charAt(0) !== '/' && pathTmp.charAt(0) !== '\\')) {
+            this._mainConfig.path = path.sep + pathTmp;
         }
     }
 
