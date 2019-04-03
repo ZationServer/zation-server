@@ -184,7 +184,8 @@ export class InputMainProcessor
         }
     }
 
-    private async processValue(srcObj : object,srcKey : string | number,config : object,currentInputPath : string,{errorBag,processTaskList,inputValidation,createProcessTaskList} : ProcessInfo) : Promise<void>
+    private async processValue(srcObj : object,srcKey : string | number,config : object,currentInputPath : string,
+                               {errorBag,processTaskList,inputValidation,createProcessTaskList} : ProcessInfo) : Promise<void>
     {
         const preparedErrorData = {
             inputValue : srcObj[srcKey],

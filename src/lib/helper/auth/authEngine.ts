@@ -7,21 +7,21 @@ GitHub: LucaCode
 import Logger         = require('../logger/logger');
 import TaskError      = require('../../api/TaskError');
 import AEPreparedPart = require('./aePreparedPart');
-import SHBridge       = require("../bridges/shBridge");
 import TokenEngine    = require("../token/tokenEngine");
 import MainErrors     = require("../zationTaskErrors/mainTaskErrors");
-import ZationTokenInfo    = require("../infoObjects/zationTokenInfo");
-import {ChAccessEngine} from "../channel/chAccessEngine";
+import ZationTokenInfo     = require("../infoObjects/zationTokenInfo");
+import {ChAccessEngine}      from "../channel/chAccessEngine";
 import AuthenticationError = require("../error/authenticationError");
 import ZationWorker        = require("../../main/zationWorker");
 import {PrepareZationToken, ZationAccess, ZationToken} from "../constants/internal";
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../configs/appConfig";
+import {ControllerConfig}   from "../configs/appConfig";
+import {BaseSHBridge}       from "../bridges/baseSHBridge";
 
 class AuthEngine
 {
     private aePreparedPart : AEPreparedPart;
-    private shBridge : SHBridge;
+    private shBridge : BaseSHBridge;
     private tokenEngine : TokenEngine;
     private chAccessEngine : ChAccessEngine;
     private worker : ZationWorker;
@@ -30,7 +30,7 @@ class AuthEngine
     private currentUserGroup :string | undefined;
     private currentUserId : string | number | undefined;
 
-    constructor(shBridge : SHBridge,tokenEngine :TokenEngine,worker : ZationWorker)
+    constructor(shBridge : BaseSHBridge,tokenEngine :TokenEngine,worker : ZationWorker)
     {
         this.aePreparedPart = worker.getAEPreparedPart();
         this.shBridge       = shBridge;
@@ -51,18 +51,15 @@ class AuthEngine
     private async processGroupAndId(): Promise<void>
     {
         // noinspection JSUnresolvedFunction
-        const authToken : ZationToken | null = this.shBridge.getTokenBridge().getToken();
+        const authToken : ZationToken | null = this.shBridge.getToken();
         if(authToken !== null && authToken !== undefined)
         {
             this.currentUserId = !!authToken.zationUserId ? authToken.zationUserId : undefined;
             const authUserGroup = authToken.zationAuthUserGroup;
-
             if(authUserGroup !== undefined) {
-
                 if(authToken.zationOnlyPanelToken){
                     throw new TaskError(MainErrors.tokenWithAuthGroupAndOnlyPanel);
                 }
-
                 if (this.checkIsIn(authUserGroup)) {
                     this.currentUserGroup = authUserGroup;
                     this.currentDefault = false;
@@ -159,7 +156,7 @@ class AuthEngine
 
             //create AuthEngine Token!
             let suc = false;
-            if(this.shBridge.getTokenBridge().hasToken()) {
+            if(this.shBridge.hasToken()) {
                 suc = await this.tokenEngine.updateTokenVariable(obj);
             }
             else {
@@ -302,7 +299,7 @@ class AuthEngine
             access = AuthEngine.accessKeyWordChanger(key,imIn);
         }
         else if(typeof value === 'function') {
-            let token = this.shBridge.getTokenBridge().getToken();
+            let token = this.shBridge.getToken();
             let smallBag = this.aePreparedPart.getWorker().getPreparedSmallBag();
             access = AuthEngine.accessKeyWordChanger(key,value(smallBag,token !== null ? new ZationTokenInfo(token) : null));
         }

@@ -10,8 +10,9 @@ import TaskErrorBag    = require('../../api/TaskErrorBag');
 import Logger          = require('../logger/logger');
 import MainErrors      = require('../zationTaskErrors/mainTaskErrors');
 import ZationConfig    = require("../../main/zationConfig");
-import TokenBridge     = require("../bridges/tokenBridge");
-import {ZationResponse} from "../constants/internal";
+import {ZationResponse, ZationToken} from "../constants/internal";
+import {BaseSHBridge}   from "../bridges/baseSHBridge";
+import TokenTools = require("../token/tokenTools");
 
 class Returner
 {
@@ -29,7 +30,7 @@ class Returner
         this.res        = res;
         this.zc         = zc;
         this.reqId      = reqId;
-        this.sendErrorDesc = !!this.zc.mainConfig.sendErrorDescription;
+        this.sendErrorDesc = this.zc.mainConfig.sendErrorDescription;
     }
 
     async reactOnResult(data : any) : Promise<void>
@@ -42,7 +43,7 @@ class Returner
         }
     }
 
-    async reactOnError(err : any,tb : TokenBridge) : Promise<void>
+    async reactOnError(err : any,bsh : BaseSHBridge) : Promise<void>
     {
         let errors;
 
@@ -61,7 +62,7 @@ class Returner
             }
         }
 
-        this.sendBack(await this.createResult('',tb,errors));
+        this.sendBack(await this.createResult('',bsh,errors));
     }
 
 
@@ -100,7 +101,7 @@ class Returner
         }
     }
 
-    private async createResult(res : any,tb : TokenBridge,errors : any[] = []) : Promise<object>
+    private async createResult(res : any,bsh : BaseSHBridge | undefined,errors : any[] = []) : Promise<object>
     {
         const obj : ZationResponse = {
             r : res instanceof Result ? res._getJsonObj() : {},
@@ -109,11 +110,15 @@ class Returner
         };
 
         //token
-        if(tb !== undefined && !this.webSocket && tb.isNewToken()) {
-            obj.t = {
-                st : await tb.getSignedToken(),
-                pt : tb.getPlainToken()
-            } ;
+        if(bsh !== undefined && !this.webSocket && bsh.isNewToken()) {
+            const token : ZationToken | null = bsh.getToken();
+            //can be null! if http deauthenticated
+            if(token !== null){
+                obj.t = {
+                    st : (await TokenTools.signToken(token,this.zc)),
+                    pt : token
+                } ;
+            }
         }
 
         //info for http

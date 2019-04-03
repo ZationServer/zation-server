@@ -88,7 +88,7 @@ class ValidChProcessor
                             ControllerTools.getControllerConfigFromInputPath(keyPath,controllerInput);
 
                         if(specificConfig !== undefined) {
-                            await worker.getInputMainProcessor().checkIsValid
+                            await worker.getInputReqProcessor().validationCheck
                             (value,specificConfig,path,errorBag,useInputValidation);
                             resolve();
                         }

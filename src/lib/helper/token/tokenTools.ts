@@ -7,48 +7,48 @@ GitHub: LucaCode
 import TaskError        = require('../../api/TaskError');
 import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
 import {ChAccessEngine}   from '../channel/chAccessEngine';
-import TokenBridge      = require("../bridges/tokenBridge");
 import ZationWorker     = require("../../main/zationWorker");
 import ZationConfig     = require("../../main/zationConfig");
 import {Socket}           from "../sc/socket";
-import {ZationToken} from "../constants/internal";
+import {ZationToken}      from "../constants/internal";
 import AuthenticationError = require("../error/authenticationError");
+import {BaseSHBridge}     from "../bridges/baseSHBridge";
 const  Jwt : any        = require('jsonwebtoken');
 
 class TokenTools
 {
-    private static async changeToken(data : object,tokenBridge : TokenBridge,worker : ZationWorker,updateOnly : boolean = true) : Promise<boolean>
+    private static async changeToken(data : object,shBridge : BaseSHBridge,worker : ZationWorker,updateOnly : boolean = true) : Promise<boolean>
     {
         let suc = false;
         if(data !== undefined) {
             if (!updateOnly || (updateOnly && !data.hasOwnProperty(nameof<ZationToken>(s => s.zationTokenId)) &&
                 !data.hasOwnProperty(nameof<ZationToken>(s => s.zationCheckKey)))) {
-                const token = tokenBridge.getToken();
+                const token = shBridge.getToken();
                 if((typeof token === 'object') || (!updateOnly)) {
-                    await tokenBridge.setToken(TokenTools.combineTokenAndProcess(token,data));
+                    await shBridge.setToken(TokenTools.combineTokenAndProcess(token,data));
                     suc = true;
                 }
-                if(tokenBridge.isWebSocket()) {
-                    ChAccessEngine.checkSocketZationChAccess(tokenBridge.getSocket());
-                    await worker.getChAccessEngine().checkSocketCustomChAccess(tokenBridge.getSocket());
+                if(shBridge.isWebSocket()) {
+                    ChAccessEngine.checkSocketZationChAccess(shBridge.getSocket());
+                    await worker.getChAccessEngine().checkSocketCustomChAccess(shBridge.getSocket());
                 }
             }
         }
         return suc;
     }
 
-    private static async changeCustomVar(customVar : object,tokenBridge : TokenBridge,worker : ZationWorker) : Promise<boolean>
+    private static async changeCustomVar(customVar : object,shBridge : BaseSHBridge,worker : ZationWorker) : Promise<boolean>
     {
         let suc = false;
         if(typeof customVar === 'object') {
-            const token = tokenBridge.getToken();
+            const token = shBridge.getToken();
             if(typeof token === 'object' && token !== null) {
                 token.zationCustomVariables = customVar;
-                await tokenBridge.setToken(token);
+                await shBridge.setToken(token);
                 suc = true;
             }
-            if(tokenBridge.isWebSocket()) {
-                await worker.getChAccessEngine().checkSocketCustomChAccess(tokenBridge.getSocket());
+            if(shBridge.isWebSocket()) {
+                await worker.getChAccessEngine().checkSocketCustomChAccess(shBridge.getSocket());
             }
         }
         return suc;
@@ -97,22 +97,22 @@ class TokenTools
         }
     }
 
-    static async createNewToken(data : object,tokenBridge : TokenBridge,worker : ZationWorker) : Promise<boolean> {
-        return await TokenTools.changeToken(data,tokenBridge,worker,false);
+    static async createNewToken(data : object,shBridge : BaseSHBridge,worker : ZationWorker) : Promise<boolean> {
+        return await TokenTools.changeToken(data,shBridge,worker,false);
     }
 
-    static async updateToken(data : object,tokenBridge : TokenBridge,worker : ZationWorker) : Promise<boolean> {
-        return await TokenTools.changeToken(data,tokenBridge,worker,true);
+    static async updateToken(data : object,shBridge : BaseSHBridge,worker : ZationWorker) : Promise<boolean> {
+        return await TokenTools.changeToken(data,shBridge,worker,true);
     }
 
-    static async updateCustomTokenVar(customVar : object,tokenBridge : TokenBridge,worker : ZationWorker) : Promise<boolean> {
-        return await TokenTools.changeCustomVar(customVar,tokenBridge,worker);
+    static async updateCustomTokenVar(customVar : object,shBridge : BaseSHBridge,worker : ZationWorker) : Promise<boolean> {
+        return await TokenTools.changeCustomVar(customVar,shBridge,worker);
     }
 
     //ClientData
-    static getTokenVariable(key : any,tokenBridge : TokenBridge) : any
+    static getTokenVariable(key : any,shBridge : BaseSHBridge) : any
     {
-        const token = tokenBridge.getToken();
+        const token = shBridge.getToken();
         if(token !== null) {
             return token[key];
         }
@@ -163,7 +163,7 @@ class TokenTools
         });
     }
 
-    static async signToken(data : object,zc : ZationConfig)
+    static async signToken(data : object,zc : ZationConfig) : Promise<string>
     {
         return new Promise((resolve, reject) =>
         {

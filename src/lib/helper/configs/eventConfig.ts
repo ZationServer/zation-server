@@ -29,7 +29,7 @@ export type BeforeTaskErrorBagFunction = (smallBag : SmallBag, taskErrorBag : Ta
 export type ZationSocketDisconnectionFunction = (smallBag : SmallBag, socketInfo : SocketInfo,code : any, data : any) => Promise<void> | void;
 export type ZationWorkerMessageFunction = (smallBag : SmallBag, data : any) => Promise<void> | void;
 
-export type MiddlewareAuthenticationFunction = (smallBag : SmallBag,zationToken  : ZationToken) => Promise<boolean> | boolean | Promise<object> | object | Promise<any> | any;
+export type MiddlewareAuthenticationFunction = (smallBag : SmallBag,zationToken  : ZationToken) => Promise<boolean | object | any> | boolean | object | any;
 
 export type SocketErrorFunction = (smallBag : SmallBag, socket : Socket, error : object) => Promise<void> | void;
 export type SocketRawFunction = (smallBag : SmallBag, socket : Socket, data : any) => Promise<void> | void;

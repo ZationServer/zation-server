@@ -11,17 +11,17 @@ import TaskError             = require('../../api/TaskError');
 import TaskErrorBag          = require('../../api/TaskErrorBag');
 import ZationReqTools        = require('../tools/zationReqTools');
 import SystemVersionChecker  = require('../version/systemVersionChecker');
-import InputProcessor        = require('../input/inputReqProcessor');
 import AuthEngine            = require('../auth/authEngine');
+// noinspection TypeScriptPreferShortImport
 import {Bag}                   from '../../api/Bag';
 import TokenEngine           = require('../token/tokenEngine');
-import SHBridge              = require("../bridges/shBridge");
 import ZationConfig          = require("../../main/zationConfig");
 import ZationWorker          = require("../../main/zationWorker");
+// noinspection TypeScriptPreferShortImport
 import {Controller}            from'../../api/Controller';
-import TokenBridge           = require("../bridges/tokenBridge");
 import ProtocolAccessChecker = require("../protocolAccess/protocolAccessChecker");
-import {ZationTask} from "../constants/internal";
+import {ZationTask}            from "../constants/internal";
+import {SHBridge}              from "../bridges/shBridge";
 
 class MainProcessor
 {
@@ -58,7 +58,13 @@ class MainProcessor
 
             SystemVersionChecker.checkSystemAndVersion(shBridge,controllerConfig);
 
-            const tokenEngine = new TokenEngine(shBridge,worker,zc);
+            let tokenEngine;
+            if(shBridge.isWebSocket()){
+                tokenEngine = shBridge.getSocket().tokenEngine;
+            }
+            else {
+                tokenEngine = new TokenEngine(shBridge,worker,zc);
+            }
 
             const authEngine =
                 new AuthEngine(shBridge,tokenEngine,worker);
@@ -85,23 +91,38 @@ class MainProcessor
                         //check input
                         try
                         {
-                            input  = await InputProcessor.
-                            processInput(task,controllerConfig,worker.getInputMainProcessor());
+                            input = await worker.getInputReqProcessor().
+                            processInput(task,controllerConfig);
                         }
                         catch (e) {
                             //invoke controller wrong input function
                             if(e instanceof TaskError || e instanceof TaskErrorBag)
                             {
-                                let input = task.i;
-                                let bag = new Bag(shBridge,worker,authEngine,tokenEngine,input);
+                                const input = task.i;
+                                const bag = new Bag(
+                                    shBridge,
+                                    worker,
+                                    authEngine,
+                                    tokenEngine,
+                                    input,
+                                    shBridge.isWebSocket() ? shBridge.getSocket().channelEngine : undefined
+                                );
+
                                 await controllerInstance.wrongInput(bag,input);
                             }
                             //than throw the input for return it to client
                             throw e;
                         }
 
-                        let bag = new Bag(shBridge,worker,authEngine,tokenEngine,input);
-                        return await MainProcessor.processController(controllerInstance,controllerConfig,bag,shBridge.getTokenBridge());
+                        const bag = new Bag(
+                            shBridge,
+                            worker,
+                            authEngine,
+                            tokenEngine,
+                            input,
+                            shBridge.isWebSocket() ? shBridge.getSocket().channelEngine : undefined
+                        );
+                        return await MainProcessor.processController(controllerInstance,controllerConfig,bag);
                     }
                     else {
                         throw new TaskError(MainErrors.noAccessToController,
@@ -133,7 +154,7 @@ class MainProcessor
     }
 
     //LAYER 10
-    static async processController(controllerInstance : Controller,controllerConfig : object,bag : Bag,tb : TokenBridge)
+    static async processController(controllerInstance : Controller,controllerConfig : object,bag : Bag)
     {
         try
         {
@@ -141,15 +162,14 @@ class MainProcessor
 
             let result = await controllerInstance.handle(bag,bag.getInput());
 
-
             if (!(result instanceof Result)) {
                 result = new Result(result);
             }
 
-            return {result : result,tb : tb};
+            return {result : result};
         }
         catch(e) {
-            throw {e : e,tb : tb};
+            throw e;
         }
     }
 

@@ -6,8 +6,8 @@ GitHub: LucaCode
 
 import TaskError    = require('../../api/TaskError');
 import MainErrors   = require('../zationTaskErrors/mainTaskErrors');
-import SHBridge     = require("../bridges/shBridge");
 import {ControllerConfig} from "../configs/appConfig";
+import {SHBridge}         from "../bridges/shBridge";
 
 class SystemVersionChecker
 {

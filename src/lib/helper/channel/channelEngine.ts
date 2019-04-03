@@ -12,15 +12,15 @@ personal sc functionality.
 
 import ChExchangeEngine  = require('./chExchangeEngine');
 import ChTools           = require('./chTools');
-import SHBridge          = require("../bridges/shBridge");
 import ZationWorker      = require("../../main/zationWorker");
+import {BaseSHBridge}      from "../bridges/baseSHBridge";
 
 class ChannelEngine extends ChExchangeEngine
 {
     private readonly socket : any;
     private readonly isWebSocket : boolean;
     
-    constructor(worker : ZationWorker,shBridge : SHBridge)
+    constructor(worker : ZationWorker,shBridge : BaseSHBridge)
     {
         super(worker);
         this.socket = shBridge.getSocket();

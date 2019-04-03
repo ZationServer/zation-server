@@ -6,7 +6,6 @@ GitHub: LucaCode
 
 import ChannelEngine = require('./../helper/channel/channelEngine');
 import SmallBag = require('./SmallBag');
-import SHBridge = require("../helper/bridges/shBridge");
 import AuthEngine = require("../helper/auth/authEngine");
 import TokenEngine = require("../helper/token/tokenEngine");
 import ZationWorker = require("../main/zationWorker");
@@ -23,8 +22,8 @@ import * as core from "express-serve-static-core";
 import {IncomingHttpHeaders, IncomingMessage} from "http";
 import {Agent} from "useragent";
 import {UploadedFile} from "express-fileupload";
-import {SyncTokenActions} from "../helper/constants/syncTokenActions";
 import {ObjectPathCombineSequence} from "../helper/tools/objectPathCombineSequence";
+import {SHBridge} from "../helper/bridges/shBridge";
 
 export class Bag extends SmallBag
 {
@@ -595,7 +594,7 @@ export class Bag extends SmallBag
      * @throws AuthenticationError
      */
     async setTokenVariable(path : string | string[],value : any) : Promise<void> {
-        if(this.shBridge.getTokenBridge().hasToken()) {
+        if(this.shBridge.hasToken()) {
             const ctv = this.tokenEngine.getCustomTokenVariable();
             ObjectPath.set(ctv,path,value);
             await this.tokenEngine.setCustomTokenVariable(ctv);
@@ -621,7 +620,7 @@ export class Bag extends SmallBag
      * @throws AuthenticationError
      */
     async deleteTokenVariable(path ?: string | string[]) : Promise<void> {
-        if(this.shBridge.getTokenBridge().hasToken()) {
+        if(this.shBridge.hasToken()) {
             if(!!path) {
                 const ctv = this.tokenEngine.getCustomTokenVariable();
                 ObjectPath.del(ctv,path);
@@ -658,7 +657,7 @@ export class Bag extends SmallBag
      */
     seqEditTokenVariables() : ObjectPathSequence
     {
-        if(this.shBridge.getTokenBridge().hasToken()) {
+        if(this.shBridge.hasToken()) {
             return new ObjectPathSequence(this.tokenEngine.getCustomTokenVariable(),
                 async (obj)=> {
                     await  this.tokenEngine.setCustomTokenVariable(obj);
@@ -834,7 +833,7 @@ export class Bag extends SmallBag
      * @throws AuthenticationError
      */
     hasTokenVariable(path ?: string | string[]) : boolean {
-        if(this.shBridge.getTokenBridge().hasToken()) {
+        if(this.shBridge.hasToken()) {
             return ObjectPath.has(this.tokenEngine.getCustomTokenVariable(),path);
         }
         else {
@@ -857,7 +856,7 @@ export class Bag extends SmallBag
      * @throws AuthenticationError
      */
     getTokenVariable<R>(path ?: string | string[]) : R {
-        if(this.shBridge.getTokenBridge().hasToken()) {
+        if(this.shBridge.hasToken()) {
             return ObjectPath.get(this.tokenEngine.getCustomTokenVariable(),path);
         }
         else {
@@ -875,8 +874,9 @@ export class Bag extends SmallBag
      */
     getTokenId() : string
     {
-        if(this.shBridge.getTokenBridge().hasToken()){
-            return this.shBridge.getTokenBridge().getPlainToken().zationTokenId;
+        const token = this.shBridge.getToken();
+        if(token){
+            return token.zationTokenId;
         }
         else {
             throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
@@ -891,8 +891,9 @@ export class Bag extends SmallBag
      */
     getTokenExpire() : number
     {
-        if(this.shBridge.getTokenBridge().hasToken()){
-            return this.shBridge.getTokenBridge().getPlainToken().exp;
+        const token = this.shBridge.getToken();
+        if(token){
+            return token.exp;
         }
         else {
             throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
@@ -907,8 +908,9 @@ export class Bag extends SmallBag
      */
     getPanelAccess() : boolean
     {
-        if(this.shBridge.getTokenBridge().hasToken()){
-            return !!this.shBridge.getTokenBridge().getPlainToken().zationPanelAccess;
+        const token = this.shBridge.getToken();
+        if(token){
+            return !!token.zationPanelAccess;
         }
         else {
             throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);

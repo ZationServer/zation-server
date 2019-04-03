@@ -49,6 +49,10 @@ import ViewEngine = require("../helper/views/viewEngine");
 import SystemInfo = require("../helper/tools/systemInfo");
 import {WorkerChTaskType} from "../helper/constants/workerChTaskType";
 import {InputMainProcessor} from "../helper/input/inputMainProcessor";
+import {BaseShBridgeSocket} from "../helper/bridges/baseShBridgeSocket";
+import TokenEngine = require("../helper/token/tokenEngine");
+import ChannelEngine = require("../helper/channel/channelEngine");
+import {InputReqProcessor} from "../helper/input/inputReqProcessor";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -73,7 +77,7 @@ class ZationWorker extends SCWorker
     private chAccessEngine : ChAccessEngine;
     private originsEngine : OriginsEngine;
     private chConfigManager : ChConfigManager;
-    private inputMainProcessor : InputMainProcessor;
+    private inputReqProcessor : InputReqProcessor;
     private zation : Zation;
 
     private authStartActive : boolean;
@@ -173,8 +177,8 @@ class ZationWorker extends SCWorker
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared an small bag.`,true);
 
         Logger.startStopWatch();
-        this.inputMainProcessor = new InputMainProcessor(this.preparedSmallBag);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the input main processor.`,true);
+        this.inputReqProcessor = new InputReqProcessor(this);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the input request data processor.`,true);
 
         //prepareController
         Logger.startStopWatch();
@@ -295,6 +299,9 @@ class ZationWorker extends SCWorker
             socket.sid = IdTools.buildSid(this.options.instanceId,this.id,socket.id);
             socket.tid = Date.now() + socket.id;
             socket.socketInfo = new SocketInfo(socket);
+            socket.baseSHBridge = new BaseShBridgeSocket(socket);
+            socket.tokenEngine = new TokenEngine(socket.baseSHBridge,this,this.zc);
+            socket.channelEngine = new ChannelEngine(this,socket.baseSHBridge);
 
             this.initSocketEvents(socket);
             this.defaultUserGroupSet.add(socket);
@@ -1696,8 +1703,8 @@ class ZationWorker extends SCWorker
         this.variableStorage = obj;
     }
 
-    getInputMainProcessor() : InputMainProcessor {
-        return this.inputMainProcessor;
+    getInputReqProcessor() : InputReqProcessor {
+        return this.inputReqProcessor;
     }
 }
 

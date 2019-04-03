@@ -4,14 +4,13 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import MainProcessor         = require('./mainProcessor');
 import ValidChProcessor      = require('./validChProcessor');
-import SHBridge              = require('../bridges/shBridge');
 import ZationReqTools        = require('../tools/zationReqTools');
 import ZationWorker          = require("../../main/zationWorker");
 import ZationConfig          = require("../../main/zationConfig");
 import Logger                = require("../logger/logger");
 import {Socket}                from "../sc/socket";
+import {SHBridgeSocket} from "../bridges/shBridgeSocket";
 
 class SocketProcessor
 {
@@ -30,18 +29,9 @@ class SocketProcessor
             //validation Check req
             return await ValidChProcessor.process(input,zc,worker);
         }
-        else
-        {
+        else {
             //normal Req
-            let shBridge = new SHBridge(
-                {
-                    isWebSocket : true,
-                    socketData : input,
-                    socketRespond : respond,
-                    socket : socket,
-                    reqId : reqId
-                },zc);
-            return await MainProcessor.process(shBridge,zc,worker);
+            return new SHBridgeSocket(socket,reqId,input);
         }
     }
 

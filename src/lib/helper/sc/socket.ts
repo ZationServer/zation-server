@@ -7,6 +7,9 @@ GitHub: LucaCode
 import {ZationToken} from "../constants/internal";
 import SocketInfo = require("../infoObjects/socketInfo");
 import {IncomingMessage} from "http";
+import TokenEngine = require("../token/tokenEngine");
+import {BaseSHBridge} from "../bridges/baseSHBridge";
+import ChannelEngine = require("../channel/channelEngine");
 export type OnHandlerFunction = (data : any, response : ResponseFunction) => void
 export type ResponseFunction = (err ?: any | number, responseData ?: any) => void
 
@@ -47,5 +50,8 @@ export interface Socket
         version : number,
         system : string
     }
+    tokenEngine : TokenEngine;
+    baseSHBridge : BaseSHBridge;
+    channelEngine : ChannelEngine;
 }
 

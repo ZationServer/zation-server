@@ -4,12 +4,14 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import SHBridge       = require("../bridges/shBridge");
+// noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../configs/appConfig";
+import {BaseSHBridge}     from "../bridges/baseSHBridge";
+import {SHBridge}         from "../bridges/shBridge";
 
 class ProtocolAccessChecker
 {
-    static hasProtocolAccess(shBridge : SHBridge,controller : ControllerConfig) : boolean
+    static hasProtocolAccess(shBridge : BaseSHBridge,controller : ControllerConfig) : boolean
     {
         let hasAccess = true;
         if(shBridge.isWebSocket()) {
@@ -39,7 +41,7 @@ class ProtocolAccessChecker
         return hasAccess;
     }
 
-    static getProtocol(shBridge : SHBridge,) : string {
+    static getProtocol(shBridge : BaseSHBridge) : string {
         return shBridge.isWebSocket() ? 'ws' : 'http';
     }
 }

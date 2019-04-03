@@ -5,19 +5,19 @@ GitHub: LucaCode
  */
 
 import TokenTools     = require('./tokenTools');
-import SHBridge       = require("../bridges/shBridge");
 import ZationWorker   = require("../../main/zationWorker");
 import ZationConfig   = require("../../main/zationConfig");
 import {PrepareZationToken, ZationToken} from "../constants/internal";
+import {BaseSHBridge} from "../bridges/baseSHBridge";
 const uniqid          = require('uniqid');
 
 class TokenEngine
 {
-    private readonly shBridge : SHBridge;
+    private readonly shBridge : BaseSHBridge;
     private readonly worker : ZationWorker;
     private readonly zc : ZationConfig;
     
-    constructor(shBridge,worker,zc)
+    constructor(shBridge : BaseSHBridge,worker : ZationWorker,zc : ZationConfig)
     {
         this.shBridge = shBridge;
         this.worker = worker;
@@ -37,7 +37,7 @@ class TokenEngine
         if(typeof data[nameof<ZationToken>(s => s.zationCustomVariables)] !== 'object'){
             data[nameof<ZationToken>(s => s.zationCustomVariables)] = {};
         }
-        return TokenTools.createNewToken(data,this.shBridge.getTokenBridge(),this.worker);
+        return TokenTools.createNewToken(data,this.shBridge,this.worker);
     }
 
     private updateWorkerMap(data : PrepareZationToken) : void
@@ -45,7 +45,7 @@ class TokenEngine
         //update worker mapper
         if(this.shBridge.isWebSocket()) {
             //update worker mapper
-            const oldToken = this.shBridge.getTokenBridge().getToken();
+            const oldToken = this.shBridge.getToken();
             if(oldToken === null) {
                 //take new id and tokenId
                 if(!!data.zationUserId) {
@@ -95,23 +95,23 @@ class TokenEngine
 
     async updateTokenVariable(data : PrepareZationToken) : Promise<boolean> {
         this.updateWorkerMap(data);
-        return await TokenTools.updateToken(data,this.shBridge.getTokenBridge(),this.worker);
+        return await TokenTools.updateToken(data,this.shBridge,this.worker);
     }
 
     //getATokenVariable
     // noinspection JSUnusedGlobalSymbols
     getTokenVariable(key : any) : any {
-        return TokenTools.getTokenVariable(key,this.shBridge.getTokenBridge());
+        return TokenTools.getTokenVariable(key,this.shBridge);
     }
 
     getCustomTokenVariable() : object {
         const ctv = TokenTools.getTokenVariable
-        (nameof<ZationToken>(s => s.zationCustomVariables),this.shBridge.getTokenBridge());
+        (nameof<ZationToken>(s => s.zationCustomVariables),this.shBridge);
         return ctv !== undefined ? ctv : {};
     }
 
     async setCustomTokenVariable(data : object) : Promise<boolean> {
-        return await TokenTools.updateCustomTokenVar(data,this.shBridge.getTokenBridge(),this.worker);
+        return await TokenTools.updateCustomTokenVar(data,this.shBridge,this.worker);
     }
 }
 

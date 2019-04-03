@@ -4,8 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import MainProcessor         = require('./mainProcessor');
-import SHBridge              = require('../bridges/shBridge');
 import TokenTools            = require('../token/tokenTools');
 import ValidChProcessor      = require('./validChProcessor');
 import ZationReqTools        = require('../tools/zationReqTools');
@@ -17,6 +15,7 @@ import ZationToken           = require("../infoObjects/zationTokenInfo");
 import JsonConverter         = require("../tools/jsonConverter");
 import Logger                = require("../logger/logger");
 import {ZationRequest}         from "../constants/internal";
+import {SHBridgeHttp}          from "../bridges/shBridgeHttp";
 
 class HttpProcessor
 {
@@ -94,16 +93,7 @@ class HttpProcessor
                 (zc.eventConfig.middlewareAuthenticate,next,worker.getPreparedSmallBag(),new ZationToken(token));
             }
 
-            let shBridge = new SHBridge(
-                {
-                    isWebSocket : false,
-                    httpRes : res,
-                    httpReq : req,
-                    httpData : zationData,
-                    reqId : reqId
-                },zc);
-
-            return await MainProcessor.process(shBridge,zc,worker)
+            return new SHBridgeHttp(res,req,reqId,zationData);
         }
     }
 

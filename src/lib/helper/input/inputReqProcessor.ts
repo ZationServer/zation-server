@@ -13,14 +13,20 @@ import {ControllerConfig}    from "../configs/appConfig";
 import {ZationTask}          from "../constants/internal";
 import {OptionalProcessor}   from "./optionalProcessor";
 import {InputMainProcessor}  from "./inputMainProcessor";
+import ZationWorker        = require("../../main/zationWorker");
 
-class InputReqProcessor
+export class InputReqProcessor
 {
-    private static async processInputObject
+    private inputMainProcessor : InputMainProcessor;
+
+    constructor(worker : ZationWorker) {
+        this.inputMainProcessor = new InputMainProcessor(worker.getPreparedSmallBag());
+    }
+
+    private async processInputObject
     (
         input : object,
         controllerInput : object,
-        inputMainProcessor : InputMainProcessor,
         useInputValidation : boolean,
         processList : ProcessTask[]
     ) : Promise<object>
@@ -31,7 +37,7 @@ class InputReqProcessor
         {
             if(controllerInput.hasOwnProperty(inputName) && input[inputName] !== undefined) {
                 promises.push(new Promise<void>(async (resolve) => {
-                    await inputMainProcessor.processProperty(input,inputName,controllerInput[inputName],inputName,{
+                    await this.inputMainProcessor.processProperty(input,inputName,controllerInput[inputName],inputName,{
                         processTaskList : processList,
                         errorBag : taskErrorBag,
                         inputValidation : useInputValidation,
@@ -71,11 +77,10 @@ class InputReqProcessor
         return input;
     }
 
-    private static async processInputArray
+    private async processInputArray
     (
         input : any[],
         controllerInput : object,
-        inputMainProcessor : InputMainProcessor,
         useInputValidation : boolean,
         processList : ProcessTask[]
     ) : Promise<object>
@@ -91,7 +96,7 @@ class InputReqProcessor
                 promises.push(new Promise<void>(async (resolve) => {
                     const config = controllerInput[controllerInputKeys[i]];
                     result[controllerInputKeys[i]] = input[i];
-                    await inputMainProcessor.processProperty(result,controllerInputKeys[i],config,controllerInputKeys[i],{
+                    await this.inputMainProcessor.processProperty(result,controllerInputKeys[i],config,controllerInputKeys[i],{
                         processTaskList : processList,
                         errorBag : taskErrorBag,
                         inputValidation : useInputValidation,
@@ -129,11 +134,10 @@ class InputReqProcessor
         return result;
     }
 
-    private static async processSingleInput
+    private async processSingleInput
     (
         input : any,
         config : object,
-        inputMainProcessor : InputMainProcessor,
         useInputValidation : boolean,
         processList : ProcessTask[]
     ) : Promise<object>
@@ -141,7 +145,7 @@ class InputReqProcessor
         let taskErrorBag = new TaskErrorBag();
         //we have a single input config
         let inputTmp = {i : input};
-        await inputMainProcessor.processProperty
+        await this.inputMainProcessor.processProperty
         (inputTmp,'i',config,'',{
             errorBag : taskErrorBag,
             createProcessTaskList : true,
@@ -152,9 +156,13 @@ class InputReqProcessor
         return input;
     }
 
+    async validationCheck(input : any,config : object,inputPath : string,errorBag : TaskErrorBag,useInputValidation : boolean = true) : Promise<void> {
+        await this.inputMainProcessor.checkIsValid(input,config,inputPath,errorBag,useInputValidation);
+    }
+
     //fast Checks of the input
     //than create the checked Data
-    static async processInput(task : ZationTask, controller : ControllerConfig, inputMainProcessor : InputMainProcessor) : Promise<any>
+    async processInput(task : ZationTask, controller : ControllerConfig) : Promise<any>
     {
         if(typeof controller.inputAllAllow === 'boolean' && controller.inputAllAllow) {
             return task.i;
@@ -188,20 +196,20 @@ class InputReqProcessor
                 //throws if the validation or structure has an error
                 // noinspection TypeScriptValidateTypes
                 // @ts-ignore
-                result = await InputReqProcessor.processInputArray
-                (input,controllerInput,inputMainProcessor,useInputValidation,taskList);
+                result = await this.processInputArray
+                (input,controllerInput,useInputValidation,taskList);
             }
             else {
                 //throws if the validation or structure has an error or structure
-                result = await InputReqProcessor.processInputObject
-                (input,controllerInput,inputMainProcessor,useInputValidation,taskList);
+                result = await this.processInputObject
+                (input,controllerInput,useInputValidation,taskList);
             }
         }
         else {
-            result = await InputReqProcessor.processSingleInput
+            result = await this.processSingleInput
             //can not be an string (pre compile will resolve links)
             // @ts-ignore
-            (input,controller.singleInput,inputMainProcessor,useInputValidation,taskList);
+            (input,controller.singleInput,useInputValidation,taskList);
         }
 
         //check process tasks
@@ -211,4 +219,3 @@ class InputReqProcessor
     }
 }
 
-export = InputReqProcessor;

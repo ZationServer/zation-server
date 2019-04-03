@@ -14,6 +14,7 @@ import Returner        = require('../helper/response/returner');
 import IdCounter       = require('../helper/tools/idCounter');
 import ZationWorker    = require("./zationWorker");
 import CodeError       = require("../helper/error/codeError");
+import MainProcessor   = require("../helper/processor/mainProcessor");
 
 class Zation
 {
@@ -39,21 +40,22 @@ class Zation
 
         const returner = new Returner(data,this.zc);
 
+        let shBridge;
+
         try {
             if(data.isWebSocket) {
-                await returner.reactOnResult(await SocketProcessor.runSocketProcess(data.socket,data.input,data.respond,this.zc,this.worker,data.reqId));
+                //checks request and returns shBridge
+                shBridge = await SocketProcessor.runSocketProcess(data.socket,data.input,data.respond,this.zc,this.worker,data.reqId);
+                await returner.reactOnResult((await MainProcessor.process(shBridge,this.zc,this.worker)));
             }
             else {
-                await returner.reactOnResult(await HttpProcessor.runHttpProcess(data.req,data.res,this.zc,this.worker,data.reqId));
+                //checks request and returns shBridge
+                shBridge = await HttpProcessor.runHttpProcess(data.req,data.res,this.zc,this.worker,data.reqId);
+                await returner.reactOnResult((await MainProcessor.process(shBridge,this.zc,this.worker)));
             }
         }
-        catch(data)
+        catch(e)
         {
-            let e = data;
-            if(data['tb'] !== undefined) {
-                e = data['e'];
-            }
-
             const promises : Promise<void>[] = [];
 
             promises.push(this.zc.emitEvent
@@ -87,7 +89,7 @@ class Zation
             }
 
             await Promise.all(promises);
-            await returner.reactOnError(e,data['tb']);
+            await returner.reactOnError(e,shBridge);
         }
     }
 
