@@ -4,36 +4,41 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Socket}          from "../sc/socket";
 import {ZationHttpInfo, ZationRequest, ZationToken} from "../constants/internal";
 import * as core         from "express-serve-static-core";
 import {IncomingMessage} from "http";
 import {SHBridge}        from "./shBridge";
 import {BaseSHBridgeSH}  from "./baseSHBridgeSH";
+import {Socket}          from "../sc/socket";
 
 /**
  * BaseShBridge implementation for http.
  */
 export class SHBridgeHttp extends BaseSHBridgeSH implements SHBridge {
-
     protected readonly httpRes : core.Response;
     protected readonly httpReq : core.Request & {zationToken ?: ZationToken};
     protected readonly data : ZationRequest;
     protected readonly reqId : string;
+    protected readonly validationCheckReq : boolean;
 
     private newToken : boolean;
     private currentToken : ZationToken | null;
 
-    constructor(httpRes : core.Response,httpReq : core.Request,reqId : string,data : ZationRequest) {
+    constructor(httpRes : core.Response,httpReq : core.Request,reqId : string,data : ZationRequest,validationCheckReq : boolean) {
         super();
         this.httpRes = httpRes;
         this.httpReq = httpReq;
         this.reqId = reqId;
         this.data = data;
+        this.validationCheckReq = validationCheckReq;
 
         if(this.httpRes['zationInfo'] === undefined) {
             this.httpRes['zationInfo'] = [];
         }
+    }
+
+    isValidationCheckReq(): boolean {
+        return this.validationCheckReq;
     }
 
     getReqId(): string {

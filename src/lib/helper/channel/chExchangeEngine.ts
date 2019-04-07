@@ -18,13 +18,13 @@ import ZationWorker = require("../../main/zationWorker");
 import CIdChInfo = require("../infoObjects/cIdChInfo");
 import CChInfo = require("../infoObjects/cChInfo");
 import PubData = require("../infoObjects/pubDataInfo");
-import SocketInfo = require("../infoObjects/socketInfo");
 import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../constants/workerChTaskActions";
 import {WorkerChTargets} from "../constants/workerChTargets";
 import {ScServer} from "../sc/scServer";
 import {ZationChannel} from "../constants/internal";
 import {SyncTokenActions} from "../constants/syncTokenActions";
 import {WorkerChTaskType} from "../constants/workerChTaskType";
+import SocketInfo from "../infoObjects/socketInfo";
 
 class ChExchangeEngine {
     private readonly scServer: ScServer;

@@ -118,9 +118,9 @@ import {MainConfig} from "../helper/configs/mainConfig";
 import CChInfo = require("../helper/infoObjects/cChInfo");
 import CIdChInfo = require("../helper/infoObjects/cIdChInfo");
 import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
-import SocketInfo = require("../helper/infoObjects/socketInfo");
 import ZationInfo = require("../helper/infoObjects/zationInfo");
-import ZationTokenInfo = require("../helper/infoObjects/zationTokenInfo");
+import SocketInfo from "../helper/infoObjects/socketInfo";
+import ZationTokenInfo from "../helper/infoObjects/zationTokenInfo";
 
 class Config
 {

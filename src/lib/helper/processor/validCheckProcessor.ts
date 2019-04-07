@@ -15,7 +15,7 @@ import {ZationRequest, ZationValidationCheck} from "../constants/internal";
 import ZationWorker          = require("../../main/zationWorker");
 import ZationConfig          = require("../../main/zationConfig");
 
-export class ValidCheckProcessor
+export default class ValidCheckProcessor
 {
     private readonly zc : ZationConfig;
     private readonly worker : ZationWorker;
@@ -127,7 +127,6 @@ export class ValidCheckProcessor
             await Promise.all(promises);
             //ends when we have errors
             errorBag.throwIfHasError();
-
             return {};
         }
         else {

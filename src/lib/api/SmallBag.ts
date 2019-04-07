@@ -1935,9 +1935,9 @@ class SmallBag
      */
     async setTokenVariableWithSocket(socket : Socket,path : string | string[],value : any) : Promise<void> {
         if(socket.getAuthToken() !== null) {
-            const ctv = TokenTools.getCustomTokenVariablesWithSocket(socket);
+            const ctv = TokenTools.getSocketCustomTokenVariables(socket);
             ObjectPath.set(ctv,path,value);
-            await TokenTools.changeCustomVarWithSocket(ctv,socket,this.worker);
+            await TokenTools.changeSocketCustomVar(ctv,socket,this.worker);
         }
         else {
             throw new AuthenticationError(`Can't set token variable when socket is not authenticated!`);
@@ -1963,12 +1963,12 @@ class SmallBag
     async deleteTokenVariableWithSocket(socket : Socket,path ?: string | string[]) : Promise<void> {
         if(socket.getAuthToken() !== null) {
             if(!!path) {
-                const ctv = TokenTools.getCustomTokenVariablesWithSocket(socket);
+                const ctv = TokenTools.getSocketCustomTokenVariables(socket);
                 ObjectPath.del(ctv,path);
-                await TokenTools.changeCustomVarWithSocket(ctv,socket,this.worker);
+                await TokenTools.changeSocketCustomVar(ctv,socket,this.worker);
             }
             else {
-                await TokenTools.changeCustomVarWithSocket({},socket,this.worker);
+                await TokenTools.changeSocketCustomVar({},socket,this.worker);
             }
         }
         else {
@@ -1999,9 +1999,9 @@ class SmallBag
     seqEditTokenVariablesWithSocket(socket : Socket) : ObjectPathSequence
     {
         if(socket.getAuthToken() !== null) {
-            return new ObjectPathSequence(TokenTools.getCustomTokenVariablesWithSocket(socket),
+            return new ObjectPathSequence(TokenTools.getSocketCustomTokenVariables(socket),
                 async (obj)=> {
-                    await TokenTools.changeCustomVarWithSocket(obj,socket,this.worker);
+                    await TokenTools.changeSocketCustomVar(obj,socket,this.worker);
                 });
         }
         else {
@@ -2026,7 +2026,7 @@ class SmallBag
      */
     hasTokenVariableWithSocket(socket : Socket,path ?: string | string[]) : boolean {
         if(socket.getAuthToken() !== null) {
-            return ObjectPath.has(TokenTools.getCustomTokenVariablesWithSocket(socket),path);
+            return ObjectPath.has(TokenTools.getSocketCustomTokenVariables(socket),path);
         }
         else {
             throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
@@ -2050,7 +2050,7 @@ class SmallBag
      */
     getTokenVariableWithSocket<R>(socket : Socket,path ?: string | string[]) : R {
         if(socket.getAuthToken() !== null) {
-            return ObjectPath.get(TokenTools.getCustomTokenVariablesWithSocket(socket),path);
+            return ObjectPath.get(TokenTools.getSocketCustomTokenVariables(socket),path);
         }
         else {
             throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);

@@ -12,15 +12,15 @@ import {ProcessTask, ProcessTaskEngine} from "./processTaskEngine";
 import {ControllerConfig}    from "../configs/appConfig";
 import {ZationTask}          from "../constants/internal";
 import {OptionalProcessor}   from "./optionalProcessor";
-import {InputMainProcessor}  from "./inputMainProcessor";
+import {SingleInputDataProcessor}  from "./singleInputDataProcessor";
 import ZationWorker        = require("../../main/zationWorker");
 
-export class InputReqProcessor
+export class InputDataProcessor
 {
-    private inputMainProcessor : InputMainProcessor;
+    private inputMainProcessor : SingleInputDataProcessor;
 
     constructor(worker : ZationWorker) {
-        this.inputMainProcessor = new InputMainProcessor(worker.getPreparedSmallBag());
+        this.inputMainProcessor = new SingleInputDataProcessor(worker.getPreparedSmallBag());
     }
 
     private async processInputObject
@@ -31,20 +31,22 @@ export class InputReqProcessor
         processList : ProcessTask[]
     ) : Promise<object>
     {
-        let promises : Promise<void>[] = [];
-        let taskErrorBag = new TaskErrorBag();
+        const promises : Promise<void>[] = [];
+        const taskErrorBag = new TaskErrorBag();
+
+        const processInfo = {
+            processTaskList : processList,
+            errorBag : taskErrorBag,
+            inputValidation : useInputValidation,
+            createProcessTaskList : true
+        };
+
         for(let inputName in controllerInput)
         {
             if(controllerInput.hasOwnProperty(inputName) && input[inputName] !== undefined) {
-                promises.push(new Promise<void>(async (resolve) => {
-                    await this.inputMainProcessor.processProperty(input,inputName,controllerInput[inputName],inputName,{
-                        processTaskList : processList,
-                        errorBag : taskErrorBag,
-                        inputValidation : useInputValidation,
-                        createProcessTaskList : true
-                    });
-                    resolve();
-                }));
+                promises.push(
+                    this.inputMainProcessor.processProperty
+                    (input,inputName,controllerInput[inputName],inputName,processInfo));
             }
             else
             {
@@ -86,9 +88,17 @@ export class InputReqProcessor
     ) : Promise<object>
     {
         const controllerInputKeys = Object.keys(controllerInput);
-        let promises : Promise<void>[] = [];
-        let taskErrorBag = new TaskErrorBag();
-        let result = {};
+        const promises : Promise<void>[] = [];
+        const taskErrorBag = new TaskErrorBag();
+
+        const processInfo = {
+            processTaskList : processList,
+            errorBag : taskErrorBag,
+            inputValidation : useInputValidation,
+            createProcessTaskList : true
+        };
+
+        const result = {};
         for(let i = 0; i < controllerInputKeys.length; i++)
         {
             if(typeof input[i] !== 'undefined')
@@ -96,12 +106,9 @@ export class InputReqProcessor
                 promises.push(new Promise<void>(async (resolve) => {
                     const config = controllerInput[controllerInputKeys[i]];
                     result[controllerInputKeys[i]] = input[i];
-                    await this.inputMainProcessor.processProperty(result,controllerInputKeys[i],config,controllerInputKeys[i],{
-                        processTaskList : processList,
-                        errorBag : taskErrorBag,
-                        inputValidation : useInputValidation,
-                        createProcessTaskList : true
-                    });
+
+                    await this.inputMainProcessor.processProperty
+                    (result,controllerInputKeys[i],config,controllerInputKeys[i],processInfo);
                     resolve();
                 }))
             }
@@ -142,7 +149,7 @@ export class InputReqProcessor
         processList : ProcessTask[]
     ) : Promise<object>
     {
-        let taskErrorBag = new TaskErrorBag();
+        const taskErrorBag = new TaskErrorBag();
         //we have a single input config
         let inputTmp = {i : input};
         await this.inputMainProcessor.processProperty
@@ -164,7 +171,7 @@ export class InputReqProcessor
     //than create the checked Data
     async processInput(task : ZationTask, controller : ControllerConfig) : Promise<any>
     {
-        if(typeof controller.inputAllAllow === 'boolean' && controller.inputAllAllow) {
+        if(controller.inputAllAllow) {
             return task.i;
         }
 
@@ -178,10 +185,8 @@ export class InputReqProcessor
             throw new TaskError(MainErrors.wrongControllerInputType,{inputType : typeof input});
         }
 
-        let useInputValidation = true;
-        if(typeof controller.inputValidation === 'boolean') {
-            useInputValidation = controller.inputValidation;
-        }
+        const useInputValidation : boolean =
+            typeof controller.inputValidation === 'boolean' ? controller.inputValidation : true;
 
         const taskList : ProcessTask[] = [];
         let result = input;
@@ -189,7 +194,6 @@ export class InputReqProcessor
         if(controller.singleInput === undefined)
         {
             //we have multi input config
-
             const controllerInput = typeof controller.multiInput === 'object' ? controller.multiInput : {};
 
             if(Array.isArray(input)) {

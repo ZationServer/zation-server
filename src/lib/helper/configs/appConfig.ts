@@ -7,11 +7,11 @@ GitHub: LucaCode
 // noinspection TypeScriptPreferShortImport
 import {Bag}             from '../../api/Bag';
 import SmallBag        = require("../../api/SmallBag");
-import ZationToken     = require("../infoObjects/zationTokenInfo");
 import TaskErrorBag    = require("../../api/TaskErrorBag");
 import {ControllerClass} from "../../api/Controller";
 // noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../constants/validationTypes";
+import {ZationToken} from "../constants/internal";
 
 export interface AppConfig
 {

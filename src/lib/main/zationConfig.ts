@@ -17,7 +17,6 @@ import SmallBag          = require("../api/SmallBag");
 const  uuidV4            = require('uuid/v4');
 import moment            = require('moment-timezone');
 import nodeEval          = require('node-eval');
-import ZationToken       = require("../helper/infoObjects/zationTokenInfo");
 import {EventConfig}       from "../helper/configs/eventConfig";
 import {AppConfig}         from "../helper/configs/appConfig";
 import {ChannelConfig}     from "../helper/configs/channelConfig";
@@ -26,10 +25,11 @@ import {InternMainConfig, OptionAuto} from "../helper/configs/mainConfig";
 import {ServiceConfig}     from "../helper/configs/serviceConfig";
 import {StarterConfig, StarterConfigMain} from "../helper/configs/starterConfig";
 import {InternalData}      from "../helper/constants/internalData";
-import {ConfigScriptSave}  from "../helper/constants/internal";
+import {ConfigScriptSave, ZationToken} from "../helper/constants/internal";
 import ZationInfo        = require("../helper/infoObjects/zationInfo");
 // noinspection TypeScriptPreferShortImport
 import {StartMode}         from "./../helper/constants/startMode";
+import ZationTokenInfo from "../helper/infoObjects/zationTokenInfo";
 
 class ZationConfig {
     private _eventConfig: EventConfig = {};
@@ -442,8 +442,8 @@ class ZationConfig {
         return await this.checkMiddlewareEvent(event,next,smallBag,req);
     }
 
-    async checkAuthenticationMiddlewareEvent(event : Function | undefined,next : Function,smallBag : SmallBag,zationToken : ZationToken) : Promise<boolean> {
-        return await this.checkMiddlewareEvent(event,next,smallBag,zationToken);
+    async checkAuthenticationMiddlewareEvent(event : Function | undefined,next : Function,smallBag : SmallBag,zationTokenInfo : ZationTokenInfo) : Promise<boolean> {
+        return await this.checkMiddlewareEvent(event,next,smallBag,zationTokenInfo);
     }
 
     // noinspection JSMethodCanBeStatic

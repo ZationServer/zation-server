@@ -6,7 +6,6 @@ GitHub: LucaCode
 
 import ChannelEngine = require('./../helper/channel/channelEngine');
 import SmallBag = require('./SmallBag');
-import AuthEngine = require("../helper/auth/authEngine");
 import TokenEngine = require("../helper/token/tokenEngine");
 import ZationWorker = require("../main/zationWorker");
 import ObjectPath = require("../helper/tools/objectPath");
@@ -24,6 +23,7 @@ import {Agent} from "useragent";
 import {UploadedFile} from "express-fileupload";
 import {ObjectPathCombineSequence} from "../helper/tools/objectPathCombineSequence";
 import {SHBridge} from "../helper/bridges/shBridge";
+import AuthEngine from "../helper/auth/authEngine";
 
 export class Bag extends SmallBag
 {
@@ -34,7 +34,7 @@ export class Bag extends SmallBag
     private readonly tokenEngine : TokenEngine;
     private readonly input : any;
 
-    constructor(shBridge : SHBridge,worker : ZationWorker,authEngine : AuthEngine,tokenEngine : TokenEngine,input : object,channelEngine : ChannelEngine = new ChannelEngine(worker,shBridge))
+    constructor(shBridge : SHBridge, worker : ZationWorker, authEngine : AuthEngine, tokenEngine : TokenEngine, input : object, channelEngine : ChannelEngine = new ChannelEngine(worker,shBridge))
     {
         super(worker,channelEngine);
 

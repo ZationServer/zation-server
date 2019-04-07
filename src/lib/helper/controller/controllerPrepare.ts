@@ -15,13 +15,18 @@ import {Controller, ControllerClass} from '../../api/Controller';
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../configs/appConfig";
 
+interface ControllerPrepareData {
+    config : ControllerConfig,
+    instance : Controller
+}
+
 class ControllerPrepare
 {
     private readonly zc : ZationConfig;
     private readonly worker : ZationWorker;
 
-    private readonly systemController : Record<string,{config : ControllerConfig,instance : Controller}>;
-    private readonly appController : Record<string,{config : ControllerConfig,instance : Controller}>;
+    private readonly systemController : Record<string,ControllerPrepareData>;
+    private readonly appController : Record<string,ControllerPrepareData>;
     
     constructor(zc,worker)
     {
@@ -42,16 +47,13 @@ class ControllerPrepare
         return this.getController(name,isSystemController).config;
     }
 
-    private getController(name : string,isSystemController : boolean) : any
+    private getController(name : string,isSystemController : boolean) : ControllerPrepareData
     {
         if(!isSystemController) {
             return this.appController[name];
         }
-        else if(isSystemController) {
-            return this.systemController[name];
-        }
         else {
-            return {};
+            return this.systemController[name];
         }
     }
 
@@ -124,7 +126,7 @@ class ControllerPrepare
     {
         let notAccess = config.notAccess;
         let access    = config.access;
-        let keyWord = '';
+        let keyWord : string | undefined = undefined;
 
         //double keyword is checked in the starter checkConfig
         //search One

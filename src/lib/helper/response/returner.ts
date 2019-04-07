@@ -4,114 +4,121 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Result          = require('../../api/Result');
 import TaskError       = require('../../api/TaskError');
 import TaskErrorBag    = require('../../api/TaskErrorBag');
 import Logger          = require('../logger/logger');
 import MainErrors      = require('../zationTaskErrors/mainTaskErrors');
 import ZationConfig    = require("../../main/zationConfig");
-import {ZationResponse, ZationToken} from "../constants/internal";
-import {BaseSHBridge}   from "../bridges/baseSHBridge";
-import TokenTools = require("../token/tokenTools");
+import {ResponseResult, ZationResponse, ZationToken} from "../constants/internal";
+import TokenTools      = require("../token/tokenTools");
+import {SHBridge}       from "../bridges/shBridge";
 
-class Returner
+export class Returner
 {
-
-    private readonly webSocket : boolean;
-    private readonly respond  : any;
-    private readonly res      : any;
-    private readonly zc       : ZationConfig;
-    private readonly reqId    : string;
+    private readonly zc : ZationConfig;
     private readonly sendErrorDesc : boolean;
+    private readonly debugMode : boolean;
     
-    constructor({isWebSocket,respond,res,reqId},zc : ZationConfig) {
-        this.webSocket  = isWebSocket;
-        this.respond    = respond;
-        this.res        = res;
-        this.zc         = zc;
-        this.reqId      = reqId;
-        this.sendErrorDesc = this.zc.mainConfig.sendErrorDescription;
+    constructor(zc : ZationConfig) {
+        this.zc = zc;
+        this.sendErrorDesc = this.zc.mainConfig.sendErrorDescription || this.zc.isDebug();
+        this.debugMode = this.zc.isDebug();
     }
 
-    async reactOnResult(data : any) : Promise<void>
+    respSuccessWs(data : any,respond,reqId) : void
     {
         if(data !== undefined) {
-            this.sendBack(await this.createResult(data.result,data.tb));
+            const resp = this.createWsResp(data,undefined);
+            respond(null,resp);
+            this.printResp(resp,reqId,true);
         }
         else {
-            this.endRequest();
+            respond();
         }
     }
 
-    async reactOnError(err : any,bsh : BaseSHBridge) : Promise<void>
+    async respSuccessHttp(data : any,response,reqId,shBridge : SHBridge | undefined) : Promise<void>
+    {
+        const resp = await this.createHttpResp
+        (data,undefined,shBridge,response['zationInfo']);
+        response.write(JSON.stringify(resp));
+        response.end();
+        this.printResp(resp,reqId,false);
+    }
+
+    respErrorWs(err : any,respond,reqId) : void {
+        const resp = this.createWsResp(undefined,this.errorJsonObj(err));
+        respond(null,resp);
+        this.printResp(resp,reqId,true);
+    }
+
+    async respErrorHttp(err : any,response,reqId,shBridge : SHBridge | undefined) : Promise<void> {
+        const resp = await this.createHttpResp
+        (undefined,this.errorJsonObj(err),shBridge,response['zationInfo']);
+        response.write(JSON.stringify(resp));
+        response.end();
+        this.printResp(resp,reqId,false);
+    }
+
+    private errorJsonObj(err)
     {
         let errors;
-
-        if(err instanceof TaskError)
-        {
-            errors = [err._getJsonObj(this.sendErrorDesc || this.zc.isDebug())];
+        if(err instanceof TaskError) {
+            errors = [err._getJsonObj(this.sendErrorDesc)];
         }
         else {
             // noinspection SuspiciousInstanceOfGuard
             if(err instanceof TaskErrorBag) {
-                errors = err._getJsonObj(this.sendErrorDesc || this.zc.isDebug());
+                errors = err._getJsonObj(this.sendErrorDesc);
             }
             else {
-                let error = new TaskError(MainErrors.unknownError);
-                errors = [error._getJsonObj()];
+                errors = [(new TaskError(MainErrors.unknownError))._getJsonObj()];
             }
         }
-
-        this.sendBack(await this.createResult('',bsh,errors));
+        return errors;
     }
 
-
-    //End the request
-    private endRequest() : void
+    private printResp(resp,reqId,wsResp)
     {
-        if(this.webSocket)
+        if(wsResp)
         {
-            this.respond();
-        }
-    }
-
-    //Log and send back JsonConverter
-    private sendBack(resObj : any) : void
-    {
-        if(this.webSocket)
-        {
-            Logger.printDebugInfo(`Socket Result id: ${this.reqId} ->`,resObj,true);
-
+            if(this.debugMode){
+                Logger.printDebugInfo(`Socket Result id: ${reqId} ->`,resp,true);
+            }
             if(this.zc.mainConfig.logRequests){
-                Logger.logFileInfo(`Socket Result id: ${this.reqId} ->`,resObj,true);
+                Logger.logFileInfo(`Socket Result id: ${reqId} ->`,resp,true);
             }
-
-            this.respond(null,resObj);
         }
         else
         {
-            Logger.printDebugInfo(`Http Result id: ${this.reqId} ->`,resObj,true);
-
-            if(this.zc.mainConfig.logRequests){
-                Logger.logFileInfo(`Http Result id: ${this.reqId} ->`,resObj,true);
+            if(this.debugMode){
+                Logger.printDebugInfo(`Http Result id: ${reqId} ->`,resp,true);
             }
-
-            this.res.write(JSON.stringify(resObj));
-            this.res.end();
+            if(this.zc.mainConfig.logRequests){
+                Logger.logFileInfo(`Http Result id: ${reqId} ->`,resp,true);
+            }
         }
     }
 
-    private async createResult(res : any,bsh : BaseSHBridge | undefined,errors : any[] = []) : Promise<object>
-    {
+    // noinspection JSMethodCanBeStatic
+    private createWsResp(res : ResponseResult | undefined,errors : any[] | undefined) : ZationResponse {
+        return {
+            r : res ? res : {},
+            e : errors ? errors : [],
+            s : errors ? errors.length === 0 : true,
+        }
+    }
+
+    private async createHttpResp(res : ResponseResult | undefined,errors : any[] | undefined,shBridge : SHBridge | undefined,info) : Promise<ZationResponse> {
         const obj : ZationResponse = {
-            r : res instanceof Result ? res._getJsonObj() : {},
-            e : errors,
-            s : errors.length === 0,
+            r : res ? res : {},
+            e : errors ? errors : [],
+            s : errors ? errors.length === 0 : true,
         };
 
         //token
-        if(bsh !== undefined && !this.webSocket && bsh.isNewToken()) {
-            const token : ZationToken | null = bsh.getToken();
+        if(shBridge !== undefined && shBridge.isNewToken()) {
+            const token : ZationToken | null = shBridge.getToken();
             //can be null! if http deauthenticated
             if(token !== null){
                 obj.t = {
@@ -122,13 +129,11 @@ class Returner
         }
 
         //info for http
-        if(!this.webSocket && Array.isArray(this.res['zationInfo']) && this.res['zationInfo'].length > 0) {
-            obj.zhi = this.res['zationInfo'];
+        if(Array.isArray(info) && info.length > 0) {
+            obj.zhi = info;
         }
 
         return obj;
     }
-
 }
 
-export = Returner;

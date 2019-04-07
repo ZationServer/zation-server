@@ -10,32 +10,35 @@ import TaskError             = require("../../api/TaskError");
 import MainErrors            = require('../zationTaskErrors/mainTaskErrors');
 import ZationWorker          = require("../../main/zationWorker");
 import ZationConfig          = require("../../main/zationConfig");
-import ZationToken           = require("../infoObjects/zationTokenInfo");
 import JsonConverter         = require("../tools/jsonConverter");
 import Logger                = require("../logger/logger");
-import {ZationRequest}         from "../constants/internal";
-import {SHBridgeHttp}          from "../bridges/shBridgeHttp";
-import {ValidCheckProcessor}   from "./validCheckProcessor";
+import {ZationRequest, ZationToken} from "../constants/internal";
+import {SHBridgeHttp}               from "../bridges/shBridgeHttp";
+import ZationTokenInfo              from "../infoObjects/zationTokenInfo";
+import AEPreparedPart               from "../auth/aePreparedPart";
 
-class HttpProcessor
+export default class HttpProcessor
 {
     private readonly zc : ZationConfig;
+    private readonly debug : boolean;
     private readonly worker : ZationWorker;
-    private readonly validCheckProcessor : ValidCheckProcessor;
+    private readonly aePreparedPart : AEPreparedPart;
 
-    constructor(zc : ZationConfig,worker : ZationWorker,validCheckProcessor : ValidCheckProcessor) {
+    constructor(zc : ZationConfig,worker : ZationWorker) {
         this.zc = zc;
+        this.debug = zc.isDebug();
         this.worker = worker;
-        this.validCheckProcessor = validCheckProcessor;
+        this.aePreparedPart = worker.getAEPreparedPart();
     }
 
     //HTTP Extra Layer
-    async runHttpProcess(req,res,reqId : string)
+    async prepareReq(req,res,reqId : string)
     {
         // @ts-ignore
         if (req.method === 'POST' && !!req.body[zc.mainConfig.postKey]) {
-            Logger.printDebugInfo(`Http Post Request id: ${reqId} -> `,req.body[this.zc.mainConfig.postKey]);
-
+            if(this.debug){
+                Logger.printDebugInfo(`Http Post Request id: ${reqId} -> `,req.body[this.zc.mainConfig.postKey]);
+            }
             if(this.zc.mainConfig.logRequests){
                 Logger.logFileInfo(`Http Post Request id: ${reqId} -> `,req.body[this.zc.mainConfig.postKey]);
             }
@@ -48,8 +51,10 @@ class HttpProcessor
         else if(req.method === 'GET' && !(Object.keys(req.query).length === 0))
         {
             const query = req.query;
-            Logger.printDebugInfo(`Http Get Request id: ${reqId} -> `,query,true);
 
+            if(this.debug){
+                Logger.printDebugInfo(`Http Get Request id: ${reqId} -> `,query,true);
+            }
             if(this.zc.mainConfig.logRequests){
                 Logger.logFileInfo(`Http Get Request id: ${reqId} -> `,query,true);
             }
@@ -84,15 +89,18 @@ class HttpProcessor
     {
         //check for validationCheckRequest
         if(ZationReqTools.isValidationCheckReq(zationData)) {
-            //validation Check req
-            return await this.validCheckProcessor.process(zationData);
+            return new SHBridgeHttp(res,req,reqId,zationData,true);
         }
         else
         {
             //normal Req
             if(!!zationData.to) {
-                req.zationToken = await TokenTools.verifyToken(zationData.to,this.zc);
-                const token = req.zationToken;
+                // @ts-ignore
+                const token : ZationToken = await TokenTools.verifyToken(zationData.to,this.zc);
+                req.zationToken = token;
+
+                //throws task error if token is not valid.
+                TokenTools.checkToken(token,this.aePreparedPart);
 
                 const next = (err) => {
                     if(err) {
@@ -100,10 +108,9 @@ class HttpProcessor
                     }
                 };
                 await this.zc.checkAuthenticationMiddlewareEvent
-                (this.zc.eventConfig.middlewareAuthenticate,next,this.worker.getPreparedSmallBag(),new ZationToken(token));
+                (this.zc.eventConfig.middlewareAuthenticate,next,this.worker.getPreparedSmallBag(),new ZationTokenInfo(token));
             }
-
-            return new SHBridgeHttp(res,req,reqId,zationData);
+            return new SHBridgeHttp(res,req,reqId,zationData,false);
         }
     }
 
@@ -119,4 +126,3 @@ class HttpProcessor
 
 }
 
-export = HttpProcessor;

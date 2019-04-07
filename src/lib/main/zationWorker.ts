@@ -26,36 +26,34 @@ import cookieParser = require('cookie-parser');
 import bodyParser = require('body-parser');
 import fileUpload = require('express-fileupload');
 import url = require('url');
-import Zation = require('./zation');
 import ZationConfig = require('./zationConfig');
 import ConfigPreCompiler = require('../helper/config/configPreCompiler');
 import Logger = require('../helper/logger/logger');
 import ServiceEngine = require('../helper/services/serviceEngine');
 import SmallBag = require('../api/SmallBag');
-import AEPreparedPart = require('../helper/auth/aePreparedPart');
 import ControllerPrepare = require('../helper/controller/controllerPrepare');
 
 import BackgroundTasksSaver = require("../helper/background/backgroundTasksWorkerSaver");
 import Mapper = require("../helper/tools/mapper");
 import IdTools = require("../helper/tools/idTools");
 import CIdChInfo = require("../helper/infoObjects/cIdChInfo");
-import SocketInfo = require("../helper/infoObjects/socketInfo");
 import CChInfo = require("../helper/infoObjects/cChInfo");
 import process = require("process");
 import PanelEngine = require("../helper/panel/panelEngine");
-import ZationTokenInfo = require("../helper/infoObjects/zationTokenInfo");
 import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
 import ViewEngine = require("../helper/views/viewEngine");
 import SystemInfo = require("../helper/tools/systemInfo");
 import {WorkerChTaskType} from "../helper/constants/workerChTaskType";
+import {InputDataProcessor} from "../helper/input/inputDataProcessor";
+import {ZationReqHandler} from "./zationReqHandler";
+import AEPreparedPart from "../helper/auth/aePreparedPart";
+import ZationTokenInfo from "../helper/infoObjects/zationTokenInfo";
+import TokenTools = require("../helper/token/tokenTools");
 import {BaseShBridgeSocket} from "../helper/bridges/baseShBridgeSocket";
+import AuthEngine from "../helper/auth/authEngine";
 import TokenEngine = require("../helper/token/tokenEngine");
 import ChannelEngine = require("../helper/channel/channelEngine");
-import {InputReqProcessor} from "../helper/input/inputReqProcessor";
-import MainProcessor = require("../helper/processor/mainProcessor");
-import SocketProcessor = require("../helper/processor/socketProcessor");
-import HttpProcessor = require("../helper/processor/httpProcessor");
-import {ValidCheckProcessor} from "../helper/processor/validCheckProcessor";
+import SocketInfo from "../helper/infoObjects/socketInfo";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -80,12 +78,8 @@ class ZationWorker extends SCWorker
     private chAccessEngine : ChAccessEngine;
     private originsEngine : OriginsEngine;
     private chConfigManager : ChConfigManager;
-    private inputReqProcessor : InputReqProcessor;
-    private mainProcessor : MainProcessor;
-    private validCheckProcessor : ValidCheckProcessor;
-    private socketProcessor : SocketProcessor;
-    private httpProcessor : HttpProcessor;
-    private zation : Zation;
+    private inputDataProcessor : InputDataProcessor;
+    private zationReqHandler : ZationReqHandler;
 
     private authStartActive : boolean;
 
@@ -184,24 +178,8 @@ class ZationWorker extends SCWorker
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared an small bag.`,true);
 
         Logger.startStopWatch();
-        this.inputReqProcessor = new InputReqProcessor(this);
+        this.inputDataProcessor= new InputDataProcessor(this);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the input request data processor.`,true);
-
-        Logger.startStopWatch();
-        this.mainProcessor = new MainProcessor(this.zc,this);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the main request processor.`,true);
-
-        Logger.startStopWatch();
-        this.validCheckProcessor = new ValidCheckProcessor(this.zc,this);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the validation check request processor.`,true);
-
-        Logger.startStopWatch();
-        this.socketProcessor = new SocketProcessor(this.zc,this,this.validCheckProcessor);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the socket request processor.`,true);
-
-        Logger.startStopWatch();
-        this.httpProcessor = new HttpProcessor(this.zc,this,this.validCheckProcessor);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the http request processor.`,true);
 
         //prepareController
         Logger.startStopWatch();
@@ -244,8 +222,8 @@ class ZationWorker extends SCWorker
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has registered to the worker channel.`,true);
 
         Logger.startStopWatch();
-        this.zation = new Zation(this);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created zation.`,true);
+        this.zationReqHandler = new ZationReqHandler(this);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the zation request handler.`,true);
 
         Logger.startStopWatch();
         this.checkAuthStart();
@@ -316,39 +294,42 @@ class ZationWorker extends SCWorker
 
         //START SOCKET SERVER
         this.scServer.on('connection', async (socket : Socket,conState) => {
-
-            //init sc variables
-            socket.zationSocketVariables = {};
-            socket.sid = IdTools.buildSid(this.options.instanceId,this.id,socket.id);
-            socket.tid = Date.now() + socket.id;
-            socket.socketInfo = new SocketInfo(socket);
-            socket.baseSHBridge = new BaseShBridgeSocket(socket);
-            socket.tokenEngine = new TokenEngine(socket.baseSHBridge,this,this.zc);
-            socket.channelEngine = new ChannelEngine(this,socket.baseSHBridge);
-
+            this.upgradeSocket(socket);
             this.initSocketEvents(socket);
             this.defaultUserGroupSet.add(socket);
 
             Logger.printDebugInfo(`Socket with id: ${socket.id} is connected!`);
 
-            socket.on('ZATION.SERVER.REQUEST', (data, respond) => {
-
-                // noinspection JSUnusedLocalSymbols
-                const p = this.zation.run(
-                    {
-                        isWebSocket: true,
-                        input: data,
-                        socket: socket,
-                        respond: respond,
-                     });
+            socket.on('ZATION.SERVER.REQUEST', async (data, respond) => {
+                await this.zationReqHandler.processSocketReq(data,socket,respond);
             });
 
             await this.zc.emitEvent(this.zc.eventConfig.scServerConnection,this.getPreparedSmallBag(),socket,conState);
-            await this.zc.emitEvent(this.zc.eventConfig.socket,this.getPreparedSmallBag(),new SocketInfo(socket));
+            await this.zc.emitEvent(this.zc.eventConfig.socket,this.getPreparedSmallBag(),socket);
 
         });
 
         await this.zc.emitEvent(this.zc.eventConfig.wsServerIsStarted,this.zc.getZationInfo());
+    }
+
+    /**
+     * Add new zation functionality to the socket.
+     */
+    private upgradeSocket(socket : Socket) {
+        socket.sid = IdTools.buildSid(this.options.instanceId,this.id,socket.id);
+        socket.tid = Date.now() + socket.id;
+
+        /*
+        Prepare engines
+         */
+        const baseSHBridge = new BaseShBridgeSocket(socket);
+        socket.baseSHBridge = baseSHBridge;
+        socket.tokenEngine = new TokenEngine(baseSHBridge,this,this.zc);
+        socket.channelEngine = new ChannelEngine(this,baseSHBridge);
+        socket.authEngine = new AuthEngine(baseSHBridge,socket.tokenEngine,this);
+        socket.socketInfo = new SocketInfo(socket);
+
+        socket.zationSocketVariables = {};
     }
 
     private async startHttpServer()
@@ -446,15 +427,10 @@ class ZationWorker extends SCWorker
 
         //REQUEST
         // noinspection JSUnresolvedFunction
-        this.app.all(`${serverPath}`, (req, res) => {
+        this.app.all(`${serverPath}`, async (req, res) => {
             //Run Zation
             // noinspection JSUnusedLocalSymbols
-            let p = this.zation.run(
-                {
-                    isisWebSocket: false,
-                    res: res,
-                    req: req,
-                });
+            await this.zationReqHandler.processHttpReq(res,req);
         });
 
         await this.zc.emitEvent(this.zc.eventConfig.httpServerIsStarted,this.zc.getZationInfo());
@@ -850,15 +826,29 @@ class ZationWorker extends SCWorker
         {
             const token = req.authToken;
 
-            const userMidRes = await
-            this.zc.checkScMiddlewareEvent
-            (this.zc.eventConfig.scMiddlewareAuthenticate,next,this.getPreparedSmallBag(),req);
+            let userMidRes = true;
+            if(this.zc.eventConfig.scMiddlewareAuthenticate) {
+                userMidRes = await this.zc.checkScMiddlewareEvent
+                    (this.zc.eventConfig.scMiddlewareAuthenticate,next,this.getPreparedSmallBag(),req);
+            }
 
-            const zationAuthMid = await
-            this.zc.checkAuthenticationMiddlewareEvent
-            (this.zc.eventConfig.middlewareAuthenticate,next,this.getPreparedSmallBag(),new ZationTokenInfo(token));
+            let zationAuthMid = true;
+            if(this.zc.eventConfig.middlewareAuthenticate){
+                zationAuthMid = await this.zc.checkAuthenticationMiddlewareEvent
+                    (this.zc.eventConfig.middlewareAuthenticate,next,this.getPreparedSmallBag(),new ZationTokenInfo(token));
+            }
 
             if(userMidRes && zationAuthMid) {
+
+                //check if the token is valid
+                try {
+                    TokenTools.checkToken(token,this.aePreparedPart);
+                }
+                catch (e) {
+                    next(e);
+                }
+
+                //check the token check key
                 if(this.zc.mainConfig.useTokenCheckKey) {
                     if(token[nameof<ZationToken>(s => s.zationCheckKey)] === this.zc.internalData.tokenCheckKey) {
                         next();
@@ -1045,7 +1035,7 @@ class ZationWorker extends SCWorker
 
     }
 
-    private initSocketEvents(socket)
+    private initSocketEvents(socket : Socket)
     {
         socket.on('error', async (err) =>
         {
@@ -1077,7 +1067,7 @@ class ZationWorker extends SCWorker
                     this.mapTokenIdToSc.removeValueFromKey(token.zationTokenId,socket);
                 }
                 if(!!token.zationUserId) {
-                    this.mapUserIdToSc.removeValueFromKey(token.zationUserId,socket);
+                    this.mapUserIdToSc.removeValueFromKey(token.zationUserId.toString(),socket);
                 }
                 if(!!token.zationAuthUserGroup) {
                     this.mapAuthUserGroupToSc.removeValueFromKey(token.zationAuthUserGroup,socket);
@@ -1726,20 +1716,8 @@ class ZationWorker extends SCWorker
         this.variableStorage = obj;
     }
 
-    getInputReqProcessor() : InputReqProcessor {
-        return this.inputReqProcessor;
-    }
-
-    getMainProcessor() : MainProcessor {
-        return this.mainProcessor;
-    }
-
-    getSocketProcessor() : SocketProcessor {
-        return this.socketProcessor;
-    }
-
-    getHttpProcessor() : HttpProcessor {
-        return this.httpProcessor;
+    getInputDataProcessor() : InputDataProcessor {
+        return this.inputDataProcessor;
     }
 }
 

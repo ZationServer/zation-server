@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Socket}          from "../sc/socket";
 import {ZationToken}     from "../constants/internal";
 import {IncomingMessage} from "http";
+import {Socket}          from "../sc/socket";
 
 /**
  * Minimal socket, http bridge interface

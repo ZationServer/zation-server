@@ -6,8 +6,8 @@ GitHub: LucaCode
 
 import {BaseSHBridge}       from "./baseSHBridge";
 import {IncomingMessage}    from "http";
-import {Socket}             from "../sc/socket";
 import {ZationToken}        from "../constants/internal";
+import {Socket}             from "../sc/socket";
 const  IP : any           = require('ip');
 
 /**

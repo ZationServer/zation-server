@@ -10,14 +10,13 @@ import ZationInfoObj                 = require("../infoObjects/zationInfo");
 import ZationWorker                  = require("../../main/zationWorker");
 import TaskError                     = require("../../api/TaskError");
 import TaskErrorBag                  = require("../../api/TaskErrorBag");
-import ZationToken                   = require("../infoObjects/zationTokenInfo");
-import SocketInfo                    = require("../infoObjects/socketInfo");
 import {ScServer}                      from "../sc/scServer";
 import {Socket}                        from "../sc/socket";
+import {ZationToken}                   from "../constants/internal";
 
 export type ExpressFunction = (smallBag : SmallBag, express : ExpressCore.Express) => Promise<void> | void;
 export type ScServerFunction = (smallBag : SmallBag, scServer : ScServer) => Promise<void> | void;
-export type ZationSocketFunction = (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
+export type ZationSocketFunction = (smallBag : SmallBag,socket : Socket) => Promise<void> | void;
 export type WorkerIsStartedFunction = (smallBag : SmallBag, info : ZationInfoObj, worker : ZationWorker) => Promise<void> | void;
 export type HttpServerIsStartedFunction = (info : ZationInfoObj) => Promise<void> | void;
 export type WsServerIsStartedFunction = (info : ZationInfoObj) => Promise<void> | void;
@@ -26,7 +25,7 @@ export type BeforeErrorFunction = (smallBag : SmallBag, error : object) => Promi
 export type BeforeTaskErrorFunction = (smallBag : SmallBag, taskError : TaskError) => Promise<void> | void;
 export type BeforeCodeErrorFunction = (smallBag : SmallBag, taskError : TaskError) => Promise<void> | void;
 export type BeforeTaskErrorBagFunction = (smallBag : SmallBag, taskErrorBag : TaskErrorBag) => Promise<void> | void;
-export type ZationSocketDisconnectionFunction = (smallBag : SmallBag, socketInfo : SocketInfo,code : any, data : any) => Promise<void> | void;
+export type ZationSocketDisconnectionFunction = (smallBag : SmallBag,socket : Socket,code : any, data : any) => Promise<void> | void;
 export type ZationWorkerMessageFunction = (smallBag : SmallBag, data : any) => Promise<void> | void;
 
 export type MiddlewareAuthenticationFunction = (smallBag : SmallBag,zationToken  : ZationToken) => Promise<boolean | object | any> | boolean | object | any;

@@ -9,7 +9,7 @@ import ZationConfig = require("../../main/zationConfig");
 import {AuthUserGroupConfig, UserGroupsConfig} from "../configs/appConfig";
 import {DefaultUserGroupFallBack} from "../constants/internal";
 
-class AEPreparedPart
+export default class AEPreparedPart
 {
     private readonly zc : ZationConfig;
     private readonly useAuth : boolean;
@@ -25,7 +25,7 @@ class AEPreparedPart
         this.useAuth = this.zc.mainConfig.useAuth;
         this.worker = worker;
 
-        if(this.isUseAuth)
+        if(this.useAuth)
         {
             if(this.zc.appConfig.userGroups !== undefined)
             {
@@ -81,11 +81,9 @@ class AEPreparedPart
         return this.useAuth;
     }
 
-    isAuthGroup(authGroup : string) : boolean
-    {
+    isAuthGroup(authGroup : string) : boolean {
         return this.authGroups.hasOwnProperty(authGroup);
     }
 
 }
 
-export = AEPreparedPart;

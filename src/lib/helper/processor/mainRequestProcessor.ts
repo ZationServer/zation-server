@@ -11,7 +11,6 @@ import TaskError             = require('../../api/TaskError');
 import TaskErrorBag          = require('../../api/TaskErrorBag');
 import ZationReqTools        = require('../tools/zationReqTools');
 import SystemVersionChecker  = require('../version/systemVersionChecker');
-import AuthEngine            = require('../auth/authEngine');
 // noinspection TypeScriptPreferShortImport
 import {Bag}                   from '../../api/Bag';
 import TokenEngine           = require('../token/tokenEngine');
@@ -20,33 +19,59 @@ import ZationWorker          = require("../../main/zationWorker");
 // noinspection TypeScriptPreferShortImport
 import {Controller}            from'../../api/Controller';
 import ProtocolAccessChecker = require("../protocolAccess/protocolAccessChecker");
-import {ZationTask}            from "../constants/internal";
+import {ResponseResult, ZationTask} from "../constants/internal";
 import {SHBridge}              from "../bridges/shBridge";
+import {InputDataProcessor}    from "../input/inputDataProcessor";
+import ValidCheckProcessor     from "./validCheckProcessor";
+import ControllerPrepare     = require("../controller/controllerPrepare");
+import AuthEngine from "../auth/authEngine";
 
-class MainProcessor
+export default class MainRequestProcessor
 {
     private readonly zc : ZationConfig;
     private readonly worker : ZationWorker;
+    private readonly inputDataProcessor : InputDataProcessor;
+    private readonly validCheckProcessor : ValidCheckProcessor;
 
-    constructor(zc : ZationConfig,worker : ZationWorker) {
+    //tmp variables for faster access
+    private readonly authController : string | undefined;
+    private readonly useProtocolCheck : boolean;
+    private readonly useHttpMethodCheck : boolean;
+    private readonly useAuth : boolean;
+    private readonly controllerPrepare : ControllerPrepare;
+
+    constructor(zc : ZationConfig,worker : ZationWorker,validCheckProcessor : ValidCheckProcessor) {
         this.zc = zc;
         this.worker = worker;
+        this.validCheckProcessor = validCheckProcessor;
+        this.inputDataProcessor = worker.getInputDataProcessor();
+
+        this.authController = this.zc.appConfig.authController;
+        this.useProtocolCheck = this.zc.mainConfig.useProtocolCheck;
+        this.useHttpMethodCheck = this.zc.mainConfig.useHttpMethodCheck;
+        this.useAuth = this.zc.mainConfig.useAuth;
+        this.controllerPrepare = this.worker.getControllerPrepare();
     }
 
     async process(shBridge : SHBridge)
     {
+        //is validation check request?
+        if(shBridge.isValidationCheckReq()) {
+            return this.validCheckProcessor.process(shBridge.getZationData());
+        }
+
         let reqData = shBridge.getZationData();
 
         if(ZationReqTools.isValidReqStructure(reqData,shBridge.isWebSocket()))
-        //THROWS TASK ERROR
         {
             //Check for a auth req
             if(ZationReqTools.isZationAuthReq(reqData)) {
-                if(!(this.zc.appConfig.authController !== undefined)) {
+                if(!this.authController) {
                     throw new TaskError(MainErrors.authControllerNotSet);
                 }
                 reqData = ZationReqTools.dissolveZationAuthReq(this.zc,reqData);
             }
+            // check auth start active ?
             else if(this.worker.getIsAuthStartActive()) {
                 throw new TaskError(MainErrors.authStartActive);
             }
@@ -59,49 +84,46 @@ class MainProcessor
             const controllerName = ZationReqTools.getControllerName(task,isSystemController);
 
             //Trows if not exists
-            this.worker.getControllerPrepare().checkControllerExist(controllerName,isSystemController);
+            this.controllerPrepare.checkControllerExist(controllerName,isSystemController);
 
-            const controllerConfig =
-                this.worker.getControllerPrepare().getControllerConfig(controllerName,isSystemController);
+            const controllerConfig = this.controllerPrepare.getControllerConfig(controllerName,isSystemController);
 
+            //Trows if not exists
             SystemVersionChecker.checkSystemAndVersion(shBridge,controllerConfig);
 
             let tokenEngine;
+            let authEngine : AuthEngine;
             if(shBridge.isWebSocket()){
-                //socket prepared token engine
-                tokenEngine = shBridge.getSocket().tokenEngine;
+                const socket = shBridge.getSocket();
+                //use socket prepared token engine
+                tokenEngine = socket.tokenEngine;
+                authEngine = socket.authEngine;
             }
             else {
                 tokenEngine = new TokenEngine(shBridge,this.worker,this.zc);
+                authEngine = new AuthEngine(shBridge,tokenEngine,this.worker);
             }
 
-            const authEngine =
-                new AuthEngine(shBridge,tokenEngine,this.worker);
+            authEngine.refresh();
 
-            await authEngine.init();
+            //check protocol
+            if(!this.useProtocolCheck || ProtocolAccessChecker.hasProtocolAccess(shBridge,controllerConfig)) {
 
-            const useProtocolCheck = this.zc.mainConfig.useProtocolCheck;
-            if(!useProtocolCheck || ProtocolAccessChecker.hasProtocolAccess(shBridge,controllerConfig)) {
-
-                const useHttpMethodCheck = this.zc.mainConfig.useHttpMethodCheck;
-                if
-                (
-                    (!shBridge.isWebSocket() && (!useHttpMethodCheck || ProtocolAccessChecker.hasHttpMethodAccess(shBridge,controllerConfig)))
+                //check http method
+                if (
+                    (!shBridge.isWebSocket() && (!this.useHttpMethodCheck || ProtocolAccessChecker.hasHttpMethodAccess(shBridge,controllerConfig)))
                     || shBridge.isWebSocket()
                 )
                 {
-                    let useAuth = this.zc.mainConfig.useAuth;
-                    if(!useAuth || authEngine.hasAccessToController(controllerConfig)) {
-                        let controllerInstance =
-                            this.worker.getControllerPrepare().getControllerInstance(controllerName,isSystemController);
+                    //check access to controller
+                    if(!this.useAuth || authEngine.hasAccessToController(controllerConfig)) {
+
+                        const controllerInstance = this.controllerPrepare.getControllerInstance(controllerName,isSystemController);
 
                         let input : object;
-
                         //check input
-                        try
-                        {
-                            input = await this.worker.getInputReqProcessor().
-                            processInput(task,controllerConfig);
+                        try {
+                            input = await this.inputDataProcessor.processInput(task,controllerConfig);
                         }
                         catch (e) {
                             //invoke controller wrong input function
@@ -120,7 +142,7 @@ class MainProcessor
 
                                 await controllerInstance.wrongInput(bag,input);
                             }
-                            //than throw the input for return it to client
+                            //than throw the input for return it to the client
                             throw e;
                         }
 
@@ -164,21 +186,20 @@ class MainProcessor
         }
     }
 
-    //LAYER 10
     // noinspection JSMethodCanBeStatic
-    private async processController(controllerInstance : Controller,controllerConfig : object,bag : Bag)
+    private async processController(controllerInstance : Controller,controllerConfig : object,bag : Bag) : Promise<ResponseResult>
     {
-        try
-        {
+        //process the controller and before event
+        try {
             await ControllerTools.processBeforeHandleEvents(controllerConfig, bag);
 
-            let result = await controllerInstance.handle(bag,bag.getInput());
+            let result : Result | any = await controllerInstance.handle(bag,bag.getInput());
 
             if (!(result instanceof Result)) {
-                result = new Result(result);
+                return {r : result};
             }
 
-            return {result : result};
+            return result._getJsonObj();
         }
         catch(e) {
             throw e;
@@ -187,4 +208,3 @@ class MainProcessor
 
 }
 
-export = MainProcessor;

@@ -93,23 +93,37 @@ class TokenEngine
         }
     }
 
+    /**
+     * Update zation token variable.
+     * @param data
+     */
     async updateTokenVariable(data : PrepareZationToken) : Promise<boolean> {
         this.updateWorkerMap(data);
         return await TokenTools.updateToken(data,this.shBridge,this.worker);
     }
 
-    //getATokenVariable
+    /**
+     * Get a token variable.
+      * @param key
+     */
     // noinspection JSUnusedGlobalSymbols
     getTokenVariable(key : any) : any {
         return TokenTools.getTokenVariable(key,this.shBridge);
     }
 
+    /**
+     * Get a custom token variable.
+     */
     getCustomTokenVariable() : object {
         const ctv = TokenTools.getTokenVariable
         (nameof<ZationToken>(s => s.zationCustomVariables),this.shBridge);
         return ctv !== undefined ? ctv : {};
     }
 
+    /**
+     * Set a custom token variable
+     * @param data
+     */
     async setCustomTokenVariable(data : object) : Promise<boolean> {
         return await TokenTools.updateCustomTokenVar(data,this.shBridge,this.worker);
     }

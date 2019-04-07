@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Socket}        from "../sc/socket";
-import {ZationRequest} from "../constants/internal";
+import {ZationRequest}      from "../constants/internal";
 import {SHBridge}           from "./shBridge";
 import {BaseShBridgeSocket} from "./baseShBridgeSocket";
+import {Socket}             from "../sc/socket";
 
 /**
  * ShBridge implementation for socket.
@@ -16,11 +16,13 @@ export class SHBridgeSocket extends BaseShBridgeSocket implements SHBridge {
 
     protected readonly reqId : string;
     protected readonly data : ZationRequest;
+    protected readonly validationCheckReq : boolean;
 
-    constructor(socket : Socket,reqId : string,data : ZationRequest) {
+    constructor(socket : Socket,reqId : string,data : ZationRequest,validationCheckReq : boolean) {
         super(socket);
         this.reqId = reqId;
         this.data = data;
+        this.validationCheckReq = validationCheckReq;
     }
 
     getReqId(): string {
@@ -45,6 +47,10 @@ export class SHBridgeSocket extends BaseShBridgeSocket implements SHBridge {
     // @ts-ignore
     getResponse() {
         return undefined;
+    }
+
+    isValidationCheckReq(): boolean {
+        return this.validationCheckReq;
     }
 }
 

@@ -5,11 +5,13 @@ GitHub: LucaCode
  */
 
 import {ZationToken} from "../constants/internal";
-import SocketInfo = require("../infoObjects/socketInfo");
 import {IncomingMessage} from "http";
+import {BaseShBridgeSocket} from "../bridges/baseShBridgeSocket";
+import AuthEngine from "../auth/authEngine";
+import SocketInfo from "../infoObjects/socketInfo";
 import TokenEngine = require("../token/tokenEngine");
-import {BaseSHBridge} from "../bridges/baseSHBridge";
 import ChannelEngine = require("../channel/channelEngine");
+
 export type OnHandlerFunction = (data : any, response : ResponseFunction) => void
 export type ResponseFunction = (err ?: any | number, responseData ?: any) => void
 
@@ -43,15 +45,15 @@ export interface Socket
     subscriptions() : string[];
     isSubscribed(channelName : string) : boolean;
 
-    //Zation
-    socketInfo : SocketInfo,
-    zationSocketVariables : object,
+    zationSocketVariables : Record<string,any>;
     zationClient : {
         version : number,
         system : string
     }
+    baseSHBridge : BaseShBridgeSocket;
     tokenEngine : TokenEngine;
-    baseSHBridge : BaseSHBridge;
     channelEngine : ChannelEngine;
+    authEngine : AuthEngine;
+    socketInfo : SocketInfo;
 }
 

@@ -24,4 +24,6 @@ export interface SHBridge extends BaseSHBridge
      * Is undefined if isWebSocket() is true!
      */
     getRequest() : core.Request;
+
+    isValidationCheckReq() : boolean;
 }

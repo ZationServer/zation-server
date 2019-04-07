@@ -16,7 +16,7 @@ class ZationSPC_Auth extends Controller
         systemController : true,
         access : 'all',
         versionAccess : 'all',
-        input : {
+        multiInput : {
             username : {
                 type : 'string'
             },

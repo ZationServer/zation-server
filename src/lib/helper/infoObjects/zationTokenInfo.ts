@@ -7,54 +7,42 @@ GitHub: LucaCode
 import ObjectPath   = require("../tools/objectPath");
 import {ZationToken}  from "../constants/internal";
 
-class ZationTokenInfo
+export default class ZationTokenInfo
 {
-    private readonly _userId : number | string | undefined;
-    private readonly _authUserGroup : string | undefined;
-    private readonly _tokenId : string;
-    private readonly _expire : number;
-    private readonly _panelAccess : boolean;
-    private readonly _token : object;
-    private readonly _ctv : object;
+    private readonly _token : ZationToken;
 
-    constructor(token : ZationToken)
-    {
-        this._userId         = token.zationUserId;
-        this._authUserGroup  = token.zationAuthUserGroup;
-        this._tokenId        = token.zationTokenId;
-        this._expire         = token.exp;
-        this._panelAccess    = !!token.zationPanelAccess;
-        this._ctv = !!token.zationCustomVariables ? token.zationCustomVariables : {};
+    constructor(token : ZationToken) {
+        this._token = token;
     }
 
     // noinspection JSUnusedGlobalSymbols
     isAuthIn() : boolean {
-        return this._authUserGroup !== undefined;
+        return this._token.zationAuthUserGroup !== undefined;
     }
 
     // noinspection JSUnusedGlobalSymbols
     get userId(): number | string | undefined {
-        return this._userId;
+        return this._token.zationUserId;
     }
 
     // noinspection JSUnusedGlobalSymbols
     get authUserGroup(): string | undefined {
-        return this._authUserGroup;
+        return this._token.zationAuthUserGroup;
     }
 
     // noinspection JSUnusedGlobalSymbols
     get tokenId(): string {
-        return this._tokenId;
+        return this._token.zationTokenId;
     }
 
     // noinspection JSUnusedGlobalSymbols
     get expire(): number {
-        return this._expire;
+        return this._token.exp;
     }
 
     // noinspection JSUnusedGlobalSymbols
     get panelAccess(): boolean {
-        return this._panelAccess;
+        return !!this._token.zationPanelAccess;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -75,7 +63,7 @@ class ZationTokenInfo
      * @param path
      */
     hasTokenVariable(path ?: string | string[]) : boolean {
-        return ObjectPath.has(this._ctv,path);
+        return ObjectPath.has(this._token.zationCustomVariables || {},path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -91,8 +79,7 @@ class ZationTokenInfo
      * @param path
      */
     getTokenVariable<R>(path ?: string | string[]) : R {
-        return ObjectPath.get(this._ctv,path);
+        return ObjectPath.get(this._token.zationCustomVariables || {},path);
     }
 }
 
-export = ZationTokenInfo;

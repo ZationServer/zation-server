@@ -13,10 +13,18 @@ import {Socket}           from "../sc/socket";
 import {ZationToken}      from "../constants/internal";
 import AuthenticationError = require("../error/authenticationError");
 import {BaseSHBridge}     from "../bridges/baseSHBridge";
+import AEPreparedPart from "../auth/aePreparedPart";
 const  Jwt : any        = require('jsonwebtoken');
 
 class TokenTools
 {
+    /**
+     * Change token variables.
+     * @param data
+     * @param shBridge
+     * @param worker
+     * @param updateOnly
+     */
     private static async changeToken(data : object,shBridge : BaseSHBridge,worker : ZationWorker,updateOnly : boolean = true) : Promise<boolean>
     {
         let suc = false;
@@ -37,6 +45,12 @@ class TokenTools
         return suc;
     }
 
+    /**
+     * Change custom token variables.
+     * @param customVar
+     * @param shBridge
+     * @param worker
+     */
     private static async changeCustomVar(customVar : object,shBridge : BaseSHBridge,worker : ZationWorker) : Promise<boolean>
     {
         let suc = false;
@@ -54,7 +68,13 @@ class TokenTools
         return suc;
     }
 
-    static async changeCustomVarWithSocket(customVar : object,socket : Socket,worker : ZationWorker) : Promise<boolean>
+    /**
+     * Change custom token variables with a socket.
+     * @param customVar
+     * @param socket
+     * @param worker
+     */
+    static async changeSocketCustomVar(customVar : object, socket : Socket, worker : ZationWorker) : Promise<boolean>
     {
         let suc = false;
         if(typeof customVar === 'object') {
@@ -77,6 +97,12 @@ class TokenTools
         return suc;
     }
 
+
+    /**
+     * Combine old token with new token.
+     * @param token
+     * @param newData
+     */
     private static combineTokenAndProcess(token : object | null,newData : object) : object
     {
         if(token === null) {
@@ -97,19 +123,42 @@ class TokenTools
         }
     }
 
+    /**
+     * Create a new token.
+     * @param data
+     * @param shBridge
+     * @param worker
+     */
     static async createNewToken(data : object,shBridge : BaseSHBridge,worker : ZationWorker) : Promise<boolean> {
         return await TokenTools.changeToken(data,shBridge,worker,false);
     }
 
+
+    /**
+     * Update token variables.
+     * @param data
+     * @param shBridge
+     * @param worker
+     */
     static async updateToken(data : object,shBridge : BaseSHBridge,worker : ZationWorker) : Promise<boolean> {
         return await TokenTools.changeToken(data,shBridge,worker,true);
     }
 
+    /**
+     * Update the custom token variables.
+     * @param customVar
+     * @param shBridge
+     * @param worker
+     */
     static async updateCustomTokenVar(customVar : object,shBridge : BaseSHBridge,worker : ZationWorker) : Promise<boolean> {
         return await TokenTools.changeCustomVar(customVar,shBridge,worker);
     }
 
-    //ClientData
+    /**
+     * Get a token variable.
+     * @param key
+     * @param shBridge
+     */
     static getTokenVariable(key : any,shBridge : BaseSHBridge) : any
     {
         const token = shBridge.getToken();
@@ -121,12 +170,21 @@ class TokenTools
         }
     }
 
-    static getCustomTokenVariablesWithSocket(socket : Socket) : object {
+    /**
+     * Get a custom token variable with a socket.
+     * @param socket
+     */
+    static getSocketCustomTokenVariables(socket : Socket) : object {
         const ctv = TokenTools.getSocketTokenVariable(
         nameof<ZationToken>(s => s.zationCustomVariables),socket);
         return ctv !== undefined ? ctv : {};
     }
 
+    /**
+     * Get a token variable with a socket.
+     * @param key
+     * @param socket
+     */
     static getSocketTokenVariable(key : any,socket : Socket) : any
     {
         // noinspection JSUnresolvedFunction
@@ -138,8 +196,8 @@ class TokenTools
             return undefined;
         }
     }
-    //Part Http Token
 
+    //Part Http Token
     static async verifyToken(token,zc : ZationConfig)
     {
         return new Promise((resolve, reject) =>
@@ -182,6 +240,38 @@ class TokenTools
                 }
             });
         });
+    }
+
+    /**
+     * Check if a token is valid with server configuration.
+     * @param token
+     * @param ae
+     */
+    static checkToken(token : ZationToken | null, ae : AEPreparedPart) {
+        if(token !== null)
+        {
+            const authUserGroup = token.zationAuthUserGroup;
+            if(authUserGroup !== undefined) {
+                if(token.zationOnlyPanelToken){
+                    throw new TaskError(MainErrors.tokenWithAuthGroupAndOnlyPanel);
+                }
+                if (!ae.isAuthGroup(authUserGroup)) {
+                    //saved authGroup is in Server not define
+                    //noinspection JSUnresolvedFunction
+                    throw new TaskError(MainErrors.inTokenSavedAuthGroupIsNotFound,
+                        {
+                            savedAuthGroup: authUserGroup,
+                            authGroupsInZationConfig: ae.getAuthGroups()
+                        });
+                }
+            }
+            else {
+                if(!(typeof token.zationOnlyPanelToken === 'boolean' && token.zationOnlyPanelToken)) {
+                    //token without auth group and it is not a only panel token.
+                    throw new TaskError(MainErrors.tokenWithoutAuthGroup);
+                }
+            }
+        }
     }
 
 }

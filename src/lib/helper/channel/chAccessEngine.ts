@@ -17,11 +17,11 @@ import SmallBag             = require("../../api/SmallBag");
 import {Socket}               from "../sc/socket";
 import CIdChInfo             = require("../infoObjects/cIdChInfo");
 import CChInfo               = require("../infoObjects/cChInfo");
-import SocketInfo            = require("../infoObjects/socketInfo");
 import FuncTools             = require("../tools/funcTools");
 import PubData               = require("../infoObjects/pubDataInfo");
 import {ZationAccess, ZationChannel, ZationToken} from "../constants/internal";
 import {AccessKey, ChConfigManager}               from "./chConfigManager";
+import SocketInfo                                 from "../infoObjects/socketInfo";
 
 export class ChAccessEngine
 {

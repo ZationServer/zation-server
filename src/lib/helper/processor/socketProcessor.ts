@@ -8,43 +8,34 @@ import ZationReqTools        = require('../tools/zationReqTools');
 import ZationWorker          = require("../../main/zationWorker");
 import ZationConfig          = require("../../main/zationConfig");
 import Logger                = require("../logger/logger");
-import {Socket}                from "../sc/socket";
 import {SHBridgeSocket}        from "../bridges/shBridgeSocket";
-import {ValidCheckProcessor}   from "./validCheckProcessor";
+import {Socket}                from "../sc/socket";
 
-class SocketProcessor
+export default class SocketProcessor
 {
     private readonly zc : ZationConfig;
+    private readonly debug : boolean;
     private readonly worker : ZationWorker;
-    private readonly validCheckProcessor : ValidCheckProcessor;
 
-    constructor(zc : ZationConfig,worker : ZationWorker,validCheckProcessor : ValidCheckProcessor) {
+    constructor(zc : ZationConfig,worker : ZationWorker) {
         this.zc = zc;
+        this.debug = this.zc.isDebug();
         this.worker = worker;
-        this.validCheckProcessor = validCheckProcessor;
     }
 
     //SOCKET Extra Layer
-    async runSocketProcess(socket : Socket, input, respond,reqId : string)
+    async prepareReq(socket : Socket, input, respond,reqId : string)
     {
-        Logger.printDebugInfo(`Socket Request id: ${reqId} -> `,input,true);
-
+        if(this.debug){
+            Logger.printDebugInfo(`Socket Request id: ${reqId} -> `,input,true);
+        }
         if(this.zc.mainConfig.logRequests){
             Logger.logFileInfo(`Socket Request id: ${reqId} -> `,input,true);
         }
 
         //check for validationCheckRequest
-        if(ZationReqTools.isValidationCheckReq(input))
-        {
-            //validation Check req
-            return await this.validCheckProcessor.process(input);
-        }
-        else {
-            //normal Req
-            return new SHBridgeSocket(socket,reqId,input);
-        }
+        return new SHBridgeSocket(socket,reqId,input,ZationReqTools.isValidationCheckReq(input));
     }
 
 }
 
-export = SocketProcessor;

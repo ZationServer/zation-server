@@ -28,7 +28,7 @@ export interface ProcessInfo {
     inputValidation : boolean
 }
 
-export class InputMainProcessor
+export class SingleInputDataProcessor
 {
     private readonly preparedSmallBag : SmallBag;
 

@@ -6,10 +6,10 @@ GitHub: LucaCode
 
 import TokenTools   = require("../token/tokenTools");
 import ObjectPath   = require("../tools/objectPath");
-import {Socket}       from "../sc/socket";
-import {ZationToken} from "../constants/internal";
+import {ZationToken}  from "../constants/internal";
+import {Socket} from "../sc/socket";
 
-class SocketInfo
+export default class SocketInfo
 {
     private readonly _socket : Socket;
 
@@ -95,4 +95,3 @@ class SocketInfo
     }
 }
 
-export = SocketInfo;

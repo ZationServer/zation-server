@@ -14,7 +14,7 @@ class ZationSC_Ping extends Controller
         systemController : true,
         access : 'all',
         versionAccess : 'all',
-        input : {}
+        multiInput : {}
     };
 
     async handle(bag) {

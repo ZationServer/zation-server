@@ -26,8 +26,7 @@ class ControllerTools
         const beforeHandle = controllerConfig.beforeHandle;
         if(beforeHandle !== undefined)
         {
-            if(Array.isArray(beforeHandle))
-            {
+            if(Array.isArray(beforeHandle)) {
                 let promises : Promise<void>[] = [];
                 for(let i = 0; i < beforeHandle.length; i++)
                 {
@@ -35,8 +34,7 @@ class ControllerTools
                 }
                 await Promise.all(promises);
             }
-            else
-            {
+            else {
                 await ControllerTools.fireBeforeHandleEvent(beforeHandle,bag);
             }
         }

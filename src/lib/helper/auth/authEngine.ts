@@ -5,30 +5,28 @@ GitHub: LucaCode
  */
 
 import Logger         = require('../logger/logger');
-import TaskError      = require('../../api/TaskError');
-import AEPreparedPart = require('./aePreparedPart');
 import TokenEngine    = require("../token/tokenEngine");
-import MainErrors     = require("../zationTaskErrors/mainTaskErrors");
-import ZationTokenInfo     = require("../infoObjects/zationTokenInfo");
 import {ChAccessEngine}      from "../channel/chAccessEngine";
-import AuthenticationError = require("../error/authenticationError");
 import ZationWorker        = require("../../main/zationWorker");
 import {PrepareZationToken, ZationAccess, ZationToken} from "../constants/internal";
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig}   from "../configs/appConfig";
 import {BaseSHBridge}       from "../bridges/baseSHBridge";
+import AEPreparedPart       from "./aePreparedPart";
+import ZationTokenInfo from "../infoObjects/zationTokenInfo";
+import AuthenticationError = require("../error/authenticationError");
 
-class AuthEngine
+export default class AuthEngine
 {
-    private aePreparedPart : AEPreparedPart;
-    private shBridge : BaseSHBridge;
-    private tokenEngine : TokenEngine;
-    private chAccessEngine : ChAccessEngine;
-    private worker : ZationWorker;
+    protected readonly aePreparedPart : AEPreparedPart;
+    protected readonly shBridge : BaseSHBridge;
+    protected readonly tokenEngine : TokenEngine;
+    protected readonly chAccessEngine : ChAccessEngine;
+    protected readonly worker : ZationWorker;
 
-    private currentDefault : boolean;
-    private currentUserGroup :string | undefined;
-    private currentUserId : string | number | undefined;
+    protected currentDefault : boolean;
+    protected currentUserGroup :string | undefined;
+    protected currentUserId : string | number | undefined;
 
     constructor(shBridge : BaseSHBridge,tokenEngine :TokenEngine,worker : ZationWorker)
     {
@@ -43,101 +41,52 @@ class AuthEngine
         this.currentUserId       = undefined;
     }
 
-    async init() : Promise<void>
-    {
-        await this.processGroupAndId();
-    }
-
-    private async processGroupAndId(): Promise<void>
-    {
+    /**
+     * Load information from token.
+     */
+    refresh() : void {
         // noinspection JSUnresolvedFunction
         const authToken : ZationToken | null = this.shBridge.getToken();
-        if(authToken !== null && authToken !== undefined)
+        if(authToken !== null)
         {
-            this.currentUserId = !!authToken.zationUserId ? authToken.zationUserId : undefined;
-            const authUserGroup = authToken.zationAuthUserGroup;
-            if(authUserGroup !== undefined) {
-                if(authToken.zationOnlyPanelToken){
-                    throw new TaskError(MainErrors.tokenWithAuthGroupAndOnlyPanel);
-                }
-                if (this.checkIsIn(authUserGroup)) {
-                    this.currentUserGroup = authUserGroup;
-                    this.currentDefault = false;
-                }
-                else {
-                    //saved authGroup is in Server not define
-                    //noinspection JSUnresolvedFunction
-                    await this.deauthenticate();
-                    throw new TaskError(MainErrors.inTokenSavedAuthGroupIsNotFound,
-                        {
-                            savedAuthGroup: authUserGroup,
-                            authGroupsInZationConfig: this.aePreparedPart.getAuthGroups()
-                        });
-                }
-            }
-            else {
-                if(!(typeof authToken.zationOnlyPanelToken === 'boolean' && authToken.zationOnlyPanelToken)) {
-                    //token without auth group and it is not a only panel token.
-                    await this.deauthenticate();
-                    throw new TaskError(MainErrors.tokenWithoutAuthGroup);
-                }
-            }
+            this.currentUserId = authToken.zationUserId;
+            this.currentUserGroup = authToken.zationAuthUserGroup;
+            this.currentDefault = false;
         }
         else {
             this.currentUserGroup = this.getDefaultGroup();
         }
     }
 
-    isAuth() : boolean
-    {
+    isAuth() : boolean {
         return !(this.isDefault());
     }
 
-    isDefault() : boolean
-    {
+    isDefault() : boolean {
         return this.currentDefault;
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    isUseAuth() : boolean
-    {
-        return this.aePreparedPart.isUseAuth();
-    }
-
-    getDefaultGroup() : string
-    {
-       return this.aePreparedPart.getDefaultGroup();
-    }
-
-    checkIsIn(authGroup : string) : boolean
-    {
-        return this.aePreparedPart.isAuthGroup(authGroup);
-    }
-
-    getUserGroup() : string | undefined
-    {
+    getUserGroup() : string | undefined {
         return this.currentUserGroup;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getAuthUserGroup() : string | undefined
-    {
+    getAuthUserGroup() : string | undefined {
         return this.isDefault() ? undefined : this.currentUserGroup;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getUserId() : number | string | undefined
-    {
+    getUserId() : number | string | undefined {
         return this.currentUserId;
     }
 
-    //PART AUTHENTICATION&
     async authenticate(authUserGroup : string, userId ?: string | number,tokenCustomVar ?: object) : Promise<void>
     {
         if(this.checkIsIn(authUserGroup)) {
 
-            const obj : PrepareZationToken = {};
-            obj.zationAuthUserGroup = authUserGroup;
+            const obj : PrepareZationToken = {
+                zationAuthUserGroup : authUserGroup
+            };
 
             //Id to setBoth in time
             if(userId !== undefined) {
@@ -150,7 +99,7 @@ class AuthEngine
             }
 
             //custom token var
-            if(!!tokenCustomVar){
+            if(tokenCustomVar){
                 obj[nameof<ZationToken>(s => s.zationCustomVariables)] = tokenCustomVar;
             }
 
@@ -196,7 +145,6 @@ class AuthEngine
             obj.zationUserId = userId;
             //is only set if the client has a auth token (than he has also a user group)
             const suc = await this.tokenEngine.updateTokenVariable(obj);
-
             if(suc) {
                 this.currentUserId = userId;
             }
@@ -215,7 +163,6 @@ class AuthEngine
             const obj : PrepareZationToken = {};
             obj.zationUserId = null;
             const suc = await this.tokenEngine.updateTokenVariable(obj);
-
             if(suc) {
                 this.currentUserId = undefined;
             }
@@ -248,19 +195,29 @@ class AuthEngine
         }
     }
 
-    //PART AUTHENTICATION ACCESS CHECKER
+    // noinspection JSUnusedGlobalSymbols
+    isUseAuth() : boolean {
+        return this.aePreparedPart.isUseAuth();
+    }
+
+    getDefaultGroup() : string {
+        return this.aePreparedPart.getDefaultGroup();
+    }
+
+    checkIsIn(authGroup : string) : boolean {
+        return this.aePreparedPart.isAuthGroup(authGroup);
+    }
 
     hasAccessToController(controller : object) : boolean
     {
         let hasAccess = false;
-        let keyWord = controller['speedAccessKey'];
-
-        if(keyWord === '') {
-            Logger.printDebugWarning('No controller access config found! Access will denied!');
-            return false;
+        const keyWord = controller['speedAccessKey'];
+        if(typeof keyWord === 'string') {
+            hasAccess = this.hasAccessToThis(keyWord,controller[keyWord]);
         }
         else {
-            hasAccess = this.hasAccessToThis(keyWord,controller[keyWord]);
+            Logger.printDebugWarning('No controller access config found! Access will denied!');
+            return false;
         }
         return hasAccess;
     }
@@ -268,9 +225,7 @@ class AuthEngine
     private hasAccessToThis(key : string, value) : boolean
     {
         let access = false;
-
-        if(typeof value === 'string')
-        {
+        if(typeof value === 'string') {
             if(value === ZationAccess.ALL) {
                 access = AuthEngine.accessKeyWordChanger(key,true);
             }
@@ -281,26 +236,24 @@ class AuthEngine
                 access = AuthEngine.accessKeyWordChanger(key,this.isDefault());
             }
             else if(this.checkIsIn(value)) {
-                //GROUP!
                 access = AuthEngine.accessKeyWordChanger(key,this.getUserGroup() === value);
             }
         }
-        else if(Array.isArray(value))
-        {
+        else if(Array.isArray(value)) {
             //authGroups
-            let imIn = false;
+            let found = false;
             for(let i = 0; i < value.length;i++) {
                 if(((typeof value[i] === 'string' || value[i] instanceof String)&&value[i] === this.getUserGroup())
-                || (Number.isInteger(value[i]) && value[i] === this.getUserId())) {
-                    imIn = true;
+                    || (Number.isInteger(value[i]) && value[i] === this.getUserId())) {
+                    found = true;
                     break;
                 }
             }
-            access = AuthEngine.accessKeyWordChanger(key,imIn);
+            access = AuthEngine.accessKeyWordChanger(key,found);
         }
         else if(typeof value === 'function') {
-            let token = this.shBridge.getToken();
-            let smallBag = this.aePreparedPart.getWorker().getPreparedSmallBag();
+            const token = this.shBridge.getToken();
+            const smallBag = this.aePreparedPart.getWorker().getPreparedSmallBag();
             access = AuthEngine.accessKeyWordChanger(key,value(smallBag,token !== null ? new ZationTokenInfo(token) : null));
         }
         else if(Number.isInteger(value)) {
@@ -309,14 +262,9 @@ class AuthEngine
         return access;
     }
 
-    private static accessKeyWordChanger(key : string,access : boolean) : boolean
-    {
-        if(key === nameof<ControllerConfig>(s => s.notAccess)) {
-            return !access;
-        }
-        return access;
+    private static accessKeyWordChanger(key : string,access : boolean) : boolean {
+        return key === nameof<ControllerConfig>(s => s.notAccess) ? !access : access;
     }
 
 }
 
-export = AuthEngine;
