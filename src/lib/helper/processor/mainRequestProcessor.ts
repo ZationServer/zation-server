@@ -86,7 +86,8 @@ export default class MainRequestProcessor
             //Trows if not exists
             this.controllerPrepare.checkControllerExist(controllerName,isSystemController);
 
-            const controllerConfig = this.controllerPrepare.getControllerConfig(controllerName,isSystemController);
+            const prepareDataController = this.controllerPrepare.getController(controllerName,isSystemController);
+            const controllerConfig = prepareDataController.config;
 
             //Trows if not exists
             SystemVersionChecker.checkSystemAndVersion(shBridge,controllerConfig);
@@ -118,7 +119,7 @@ export default class MainRequestProcessor
                     //check access to controller
                     if(!this.useAuth || authEngine.hasAccessToController(controllerConfig)) {
 
-                        const controllerInstance = this.controllerPrepare.getControllerInstance(controllerName,isSystemController);
+                        const controllerInstance = prepareDataController.instance;
 
                         let input : object;
                         //check input

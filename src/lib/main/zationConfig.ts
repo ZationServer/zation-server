@@ -139,6 +139,7 @@ class ZationConfig {
             authPublicKey: null,
             authPrivateKey: null,
             authDefaultExpiry: 86400,
+            validationCheckLimit : 50,
             timeZone: moment.tz.guess() || 'Europe/Berlin',
             authStart: false,
             authStartDuration: 20000,

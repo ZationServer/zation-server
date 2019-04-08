@@ -48,9 +48,9 @@ class ControllerTools
     }
 
     //Part Validation Check Request
-    static getControllerConfigFromInputPath(path : string[],controllerInput : object) : object | undefined
+    static getInputConfigAtPath(path : string[],input : object) : object | undefined
     {
-        let tempConfig = controllerInput;
+        let tempConfig = input;
         let lastIrritate = path.length -1;
         for(let i = 0; i < path.length; i++)
         {

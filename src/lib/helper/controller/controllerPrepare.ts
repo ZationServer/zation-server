@@ -47,7 +47,7 @@ class ControllerPrepare
         return this.getController(name,isSystemController).config;
     }
 
-    private getController(name : string,isSystemController : boolean) : ControllerPrepareData
+    getController(name : string,isSystemController : boolean) : ControllerPrepareData
     {
         if(!isSystemController) {
             return this.appController[name];

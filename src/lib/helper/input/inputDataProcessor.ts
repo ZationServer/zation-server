@@ -9,7 +9,7 @@ import TaskErrorBag        = require('../../api/TaskErrorBag');
 import MainErrors          = require('../zationTaskErrors/mainTaskErrors');
 import {ProcessTask, ProcessTaskEngine} from "./processTaskEngine";
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig}    from "../configs/appConfig";
+import {ControllerConfig, MultiInput, SingleInput} from "../configs/appConfig";
 import {ZationTask}          from "../constants/internal";
 import {OptionalProcessor}   from "./optionalProcessor";
 import {SingleInputDataProcessor}  from "./singleInputDataProcessor";
@@ -26,19 +26,20 @@ export class InputDataProcessor
     private async processInputObject
     (
         input : object,
-        controllerInput : object,
+        controllerInput : MultiInput,
         useInputValidation : boolean,
-        processList : ProcessTask[]
+        processList : ProcessTask[],
+        taskErrorBag : TaskErrorBag,
+        createProcessList : boolean = true
     ) : Promise<object>
     {
         const promises : Promise<void>[] = [];
-        const taskErrorBag = new TaskErrorBag();
 
         const processInfo = {
             processTaskList : processList,
             errorBag : taskErrorBag,
             inputValidation : useInputValidation,
-            createProcessTaskList : true
+            createProcessTaskList : createProcessList
         };
 
         for(let inputName in controllerInput)
@@ -75,27 +76,27 @@ export class InputDataProcessor
             }
         }
         await Promise.all(promises);
-        taskErrorBag.throwIfHasError();
         return input;
     }
 
     private async processInputArray
     (
         input : any[],
-        controllerInput : object,
+        controllerInput : MultiInput,
         useInputValidation : boolean,
-        processList : ProcessTask[]
+        processList : ProcessTask[],
+        taskErrorBag : TaskErrorBag,
+        createProcessList : boolean = true
     ) : Promise<object>
     {
         const controllerInputKeys = Object.keys(controllerInput);
         const promises : Promise<void>[] = [];
-        const taskErrorBag = new TaskErrorBag();
 
         const processInfo = {
             processTaskList : processList,
             errorBag : taskErrorBag,
             inputValidation : useInputValidation,
-            createProcessTaskList : true
+            createProcessTaskList : createProcessList
         };
 
         const result = {};
@@ -137,34 +138,81 @@ export class InputDataProcessor
                 }));
         }
         await Promise.all(promises);
-        taskErrorBag.throwIfHasError();
         return result;
     }
 
     private async processSingleInput
     (
         input : any,
-        config : object,
+        config : SingleInput,
         useInputValidation : boolean,
-        processList : ProcessTask[]
+        processList : ProcessTask[],
+        taskErrorBag : TaskErrorBag,
+        createProcessList : boolean = true,
+        currentInputPath : string = ''
     ) : Promise<object>
     {
-        const taskErrorBag = new TaskErrorBag();
         //we have a single input config
         let inputTmp = {i : input};
         await this.inputMainProcessor.processProperty
-        (inputTmp,'i',config,'',{
+        (inputTmp,'i',config,currentInputPath,{
             errorBag : taskErrorBag,
-            createProcessTaskList : true,
+            createProcessTaskList : createProcessList,
             inputValidation : useInputValidation,
             processTaskList : processList
         });
-        taskErrorBag.throwIfHasError();
         return input;
     }
 
-    async validationCheck(input : any,config : object,inputPath : string,errorBag : TaskErrorBag,useInputValidation : boolean = true) : Promise<void> {
-        await this.inputMainProcessor.checkIsValid(input,config,inputPath,errorBag,useInputValidation);
+    async validationCheck
+    (
+        input : any,
+        inputConfig : MultiInput | SingleInput,
+        singleInput : boolean,
+        basePath : boolean,
+        inputPath : string,
+        errorBag : TaskErrorBag,
+        useInputValidation : boolean = true
+    ) : Promise<void>
+    {
+        if((!basePath && !singleInput) || singleInput) {
+            //single prop check
+            await this.processSingleInput(
+                input,
+                inputConfig,
+                useInputValidation,
+                [],
+                errorBag,
+                false,
+                inputPath
+            );
+        }
+        else {
+            if(Array.isArray(input)) {
+                await this.processInputArray(
+                    input,
+                    //can't be a singleInput config.
+                    // @ts-ignore
+                    inputConfig,
+                    useInputValidation,
+                    [],
+                    errorBag,
+                    false
+                    );
+            }
+            else {
+                await this.processInputObject(
+                    input,
+                    //can't be a singleInput config.
+                    // @ts-ignore
+                    inputConfig,
+                    useInputValidation,
+                    [],
+                    errorBag,
+                    false
+                );
+            }
+        }
     }
 
     //fast Checks of the input
@@ -191,6 +239,7 @@ export class InputDataProcessor
         const taskList : ProcessTask[] = [];
         let result = input;
 
+        const taskErrorBag : TaskErrorBag = new TaskErrorBag();
         if(controller.singleInput === undefined)
         {
             //we have multi input config
@@ -201,20 +250,23 @@ export class InputDataProcessor
                 // noinspection TypeScriptValidateTypes
                 // @ts-ignore
                 result = await this.processInputArray
-                (input,controllerInput,useInputValidation,taskList);
+                (input,controllerInput,useInputValidation,taskList,taskErrorBag);
             }
             else {
                 //throws if the validation or structure has an error or structure
                 result = await this.processInputObject
-                (input,controllerInput,useInputValidation,taskList);
+                (input,controllerInput,useInputValidation,taskList,taskErrorBag);
             }
         }
         else {
             result = await this.processSingleInput
             //can not be an string (pre compile will resolve links)
             // @ts-ignore
-            (input,controller.singleInput,useInputValidation,taskList);
+            (input,controller.singleInput,useInputValidation,taskList,taskErrorBag);
         }
+
+        //throw validation/structure errors if any there
+        taskErrorBag.throwIfHasError();
 
         //check process tasks
         await ProcessTaskEngine.processTasks(taskList);

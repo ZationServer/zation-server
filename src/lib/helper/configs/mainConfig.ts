@@ -46,6 +46,8 @@ export interface MainConfig
     authPrivateKey  ?: string | null;
     authPublicKey  ?: string | null;
 
+    validationCheckLimit ?: number;
+
     variables ?: object,
 
     //service
@@ -139,6 +141,7 @@ export interface InternMainConfig extends MainConfig {
     authDefaultExpiry  : number;
     authPrivateKey  : string | null;
     authPublicKey  : string | null;
+    validationCheckLimit : number;
     useTokenCheckKey : boolean;
     clusterShareTokenAuth  : boolean;
     scLogLevel  : number;

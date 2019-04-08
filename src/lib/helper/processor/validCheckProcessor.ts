@@ -10,19 +10,29 @@ import TaskError             = require('../../api/TaskError');
 import TaskErrorBag          = require('../../api/TaskErrorBag');
 import ZationReqTools        = require('../tools/zationReqTools');
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig}      from "../configs/appConfig";
 import {ZationRequest, ZationValidationCheck} from "../constants/internal";
 import ZationWorker          = require("../../main/zationWorker");
 import ZationConfig          = require("../../main/zationConfig");
+import ControllerPrepare     = require("../controller/controllerPrepare");
+import {InputDataProcessor}                   from "../input/inputDataProcessor";
 
 export default class ValidCheckProcessor
 {
     private readonly zc : ZationConfig;
     private readonly worker : ZationWorker;
 
+    private readonly controllerPrepare : ControllerPrepare;
+    private readonly inputDataProcessor : InputDataProcessor;
+
+    private readonly validationCheckLimit : number;
+
     constructor(zc : ZationConfig,worker : ZationWorker) {
         this.zc = zc;
         this.worker = worker;
+        this.controllerPrepare = this.worker.getControllerPrepare();
+        this.inputDataProcessor = this.worker.getInputDataProcessor();
+
+        this.validationCheckLimit = this.zc.mainConfig.validationCheckLimit;
     }
 
     async process(reqData : ZationRequest)
@@ -37,22 +47,37 @@ export default class ValidCheckProcessor
             const cName = ZationReqTools.getControllerName(validReq,isSystemController);
 
             //Trows if not exists
-            this.worker.getControllerPrepare().checkControllerExist(cName,isSystemController);
+            this.controllerPrepare.checkControllerExist(cName,isSystemController);
 
-            let controller = this.worker.getControllerPrepare().getControllerConfig(cName,isSystemController);
+            //check is over validation check limit
+            if(validReq.i.length > this.validationCheckLimit){
+                throw new TaskError(MainErrors.validationCheckLimitReached,{
+                   limit : this.validationCheckLimit,
+                   checksCount : validReq.i.length
+                });
+            }
+
+            const controller = this.controllerPrepare.getControllerConfig(cName,isSystemController);
 
             //end here if all is allow
             if(typeof controller.inputAllAllow === 'boolean' && controller.inputAllAllow) {
                 return {};
             }
 
-            let controllerInput = controller.hasOwnProperty(nameof<ControllerConfig>(s => s.input)) ?
-                controller.input : {};
-
-            let useInputValidation = true;
-            if(controller.hasOwnProperty(nameof<ControllerConfig>(s => s.inputValidation))) {
-                useInputValidation = !!controller.inputValidation;
+            let controllerInput;
+            let singleInput = false;
+            if(controller.singleInput === undefined){
+                //multiInput
+                controllerInput = typeof controller.multiInput === 'object' ? controller.multiInput : {};
             }
+            else{
+                //singleInput
+                singleInput = true;
+                controllerInput = controller.singleInput;
+            }
+
+            const useInputValidation : boolean =
+                typeof controller.inputValidation === 'boolean' ? controller.inputValidation : true;
 
             let inputToCheck = validReq.i;
 
@@ -72,46 +97,35 @@ export default class ValidCheckProcessor
                         )
                     )
                     {
-                        let keyPath : string[];
                         const value   = inputToCheck[i].v;
-                        let path    = inputToCheck[i].ip;
+                        const {path,keyPath} = ValidCheckProcessor.processPathInfo(inputToCheck[i].ip);
 
-                        // noinspection SuspiciousTypeOfGuard
-                        if(typeof path === 'string') {
-                            keyPath = path.split('.');
-                        }
-                        else{
-                            keyPath = path;
-                        }
+                        let specificConfig = controllerInput;
 
-                        if(keyPath.length === 0) {
-                            errorBag.addTaskError(new TaskError(MainErrors.inputPathNotHasAtLeastOneEntry,
-                                {
-                                    inputPath : keyPath,
-                                    checkIndex : i
-                                }));
-                            resolve();
-                            return;
+                        if(keyPath.length > 0){
+                            specificConfig = ControllerTools.getInputConfigAtPath(keyPath,controllerInput);
+                            if(specificConfig === undefined){
+                                errorBag.addTaskError(new TaskError(MainErrors.inputPathInControllerNotFound,
+                                    {
+                                        controllerName : cName,
+                                        inputPath : keyPath,
+                                        checkIndex : i
+                                    }));
+                                resolve();
+                                return;
+                            }
                         }
 
-                        let specificConfig =
-                            // @ts-ignore
-                            ControllerTools.getControllerConfigFromInputPath(keyPath,controllerInput);
-
-                        if(specificConfig !== undefined) {
-                            await this.worker.getInputReqProcessor().validationCheck
-                            (value,specificConfig,path,errorBag,useInputValidation);
-                            resolve();
-                        }
-                        else {
-                            errorBag.addTaskError(new TaskError(MainErrors.inputPathInControllerNotFound,
-                                {
-                                    controllerName : cName,
-                                    inputPath : keyPath,
-                                    checkIndex : i
-                                }));
-                            resolve();
-                        }
+                        await this.inputDataProcessor.validationCheck(
+                            value,
+                            specificConfig,
+                            singleInput,
+                            keyPath.length === 0,
+                            path,
+                            errorBag,
+                            useInputValidation
+                        );
+                        resolve();
                     }
                     else
                     {
@@ -132,5 +146,25 @@ export default class ValidCheckProcessor
         else {
             throw new TaskError(MainErrors.wrongInputDataStructure);
         }
+    }
+
+    private static processPathInfo(path : string | string[]) : {path : string,keyPath : string[]}
+    {
+        let keyPath : string[];
+        //convert path to an array
+        // noinspection SuspiciousTypeOfGuard
+        if(typeof path === 'string') {
+            if(path === '') {
+                keyPath = [];
+            }
+            else{
+                keyPath = path.split('.');
+            }
+        }
+        else{
+            keyPath = path;
+            path = keyPath.join('.');
+        }
+        return {keyPath,path};
     }
 }

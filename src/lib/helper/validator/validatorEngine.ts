@@ -17,7 +17,7 @@ import {ValidationTypes}   from "../constants/validationTypes";
 
 class ValidatorEngine
 {
-    static async validateValue(input,config : object,preparedErrorData : {inputPath : string,inputValue : any},errorBag : TaskErrorBag,preparedSmallBag : SmallBag,type) : Promise<any>
+    static async validateValue(input,config : any,preparedErrorData : {inputPath : string,inputValue : any},errorBag : TaskErrorBag,preparedSmallBag : SmallBag,type) : Promise<any>
     {
         let promises : Promise<void>[] = [];
         for(let cKey in config)

@@ -307,15 +307,15 @@ export = {
         fromZationSystem : true
     },
 
-    inputPathNotHasAtLeastOneEntry : {
-        name          : 'inputPathNotHasAtLeastOneEntry',
-        description   : 'Input path not has at least one entry!',
+    validationCheckLimitReached : {
+        name          : 'validationCheckLimitReached',
+        description   : 'Validation check limit is reached!',
         type          : ErrorType.INPUT_ERROR,
         private       : false,
         sendInfo      : true,
         //INFO
-        // inputPath
-        // checkIndex
+        // limit
+        // checksCount
         fromZationSystem : true
     },
 

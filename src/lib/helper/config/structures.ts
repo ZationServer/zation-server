@@ -132,6 +132,8 @@ Main[nameof<MainConfig>(s => s.authAlgorithm)]      = {types : ['string'],isOpti
 Main[nameof<MainConfig>(s => s.authPrivateKey)]     = {types : ['string','object'],isOptional : true};
 Main[nameof<MainConfig>(s => s.authPublicKey)]      = {types : ['string','object'],isOptional : true};
 
+Main[nameof<MainConfig>(s => s.validationCheckLimit)]      = {types : ['number'],isOptional : true};
+
 Main[nameof<MainConfig>(s => s.variables)]          = {types : ['object'],isOptional : true};
 
 //service

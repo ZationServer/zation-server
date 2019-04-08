@@ -15,7 +15,7 @@ import ConvertEngine    = require("../convert/convertEngine");
 import {
     AnyOfProperty,
     ArrayPropertyConfig,
-    ObjectPropertyConfig,
+    ObjectPropertyConfig, SingleInput,
     ValuePropertyConfig
 } from "../configs/appConfig";
 import Iterator = require("../tools/iterator");
@@ -47,7 +47,7 @@ export class SingleInputDataProcessor
                 });
     }
 
-    async processProperty(srcObj : object,srcKey : string | number, config : object, currentInputPath : string,processInfo : ProcessInfo) : Promise<any>
+    async processProperty(srcObj : object,srcKey : string | number, config : SingleInput, currentInputPath : string,processInfo : ProcessInfo) : Promise<any>
     {
         if(typeof config[nameof<ArrayPropertyConfig>(s => s.array)] === 'object') {
             //Array reference
@@ -67,7 +67,7 @@ export class SingleInputDataProcessor
         }
     }
 
-    private async processObject(srcObj : object,srcKey : string | number,config : object,currentInputPath : string,processInfo : ProcessInfo) : Promise<void>
+    private async processObject(srcObj : object,srcKey : string | number,config : SingleInput,currentInputPath : string,processInfo : ProcessInfo) : Promise<void>
     {
         const errorBag = processInfo.errorBag;
         const props = config[nameof<ObjectPropertyConfig>(s => s.properties)];
@@ -184,7 +184,7 @@ export class SingleInputDataProcessor
         }
     }
 
-    private async processValue(srcObj : object,srcKey : string | number,config : object,currentInputPath : string,
+    private async processValue(srcObj : object,srcKey : string | number,config : SingleInput,currentInputPath : string,
                                {errorBag,processTaskList,inputValidation,createProcessTaskList} : ProcessInfo) : Promise<void>
     {
         const preparedErrorData = {
@@ -232,7 +232,7 @@ export class SingleInputDataProcessor
         }
     }
 
-    private async processAnyOf(srcObj : object | object[],srcKey : string | number,config : object,currentInputPath : string,processInfo : ProcessInfo) : Promise<void>
+    private async processAnyOf(srcObj : object | object[],srcKey : string | number,config : SingleInput,currentInputPath : string,processInfo : ProcessInfo) : Promise<void>
     {
         let found = false;
         const tmpTaskErrorBags : Record<string|number,TaskErrorBag> = {};
@@ -273,7 +273,7 @@ export class SingleInputDataProcessor
         }
     }
 
-    private async processArray(srcObj : object,srcKey : string | number,config : object,currentInputPath : string,processInfo : ProcessInfo) : Promise<void>
+    private async processArray(srcObj : object,srcKey : string | number,config : SingleInput,currentInputPath : string,processInfo : ProcessInfo) : Promise<void>
     {
         const input = srcObj[srcKey];
         const errorBag = processInfo.errorBag;
