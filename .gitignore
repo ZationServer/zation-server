@@ -5,4 +5,4 @@ tmp/
 .nyc_output/
 coverage/
 build/config.gypi
-.idea/
+.idea/*
