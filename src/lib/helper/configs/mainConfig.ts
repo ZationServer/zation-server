@@ -6,7 +6,8 @@ GitHub: LucaCode
 
 import {ServerOptions}                 from "https";
 
-export const OptionAuto = 'auto';
+export const OPTION_AUTO = 'auto';
+export const OPTION_HALF_AUTO = 'half-auto';
 
 export interface MainConfig
 {
@@ -19,8 +20,8 @@ export interface MainConfig
     showConfigWarnings  ?: boolean;
     environment  ?: 'dev' | 'prod';
     timeZone  ?: string;
-    workers  ?: 'auto' | number;
-    brokers  ?: 'auto' | number;
+    workers  ?: 'auto' | 'half-auto' | number;
+    brokers  ?: 'auto' | 'half-auto' | number;
     appName  ?: string;
     secure  ?: boolean;
     httpsConfig  ?: ServerOptions;

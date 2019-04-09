@@ -17,7 +17,12 @@ import BagExtension, {
     ControllerConfig,
     ObjectPropertyConfig, PropertyOptional, ValuePropertyConfig
 } from "../configs/appConfig";
-import {MainConfig, OptionAuto, PanelUserConfig} from "../configs/mainConfig";
+import {
+    MainConfig,
+    OPTION_AUTO,
+    OPTION_HALF_AUTO,
+    PanelUserConfig
+} from "../configs/mainConfig";
 import {StarterConfig} from "../configs/starterConfig";
 import {ValidationTypes} from "../constants/validationTypes";
 import {FormatLetters} from "../constants/validation";
@@ -105,10 +110,10 @@ Main[nameof<MainConfig>(s => s.useScUws)]           = {types : ['boolean'],isOpt
 Main[nameof<MainConfig>(s => s.useTokenCheckKey)]   = {types : ['boolean'],isOptional : true};
 
 Main[nameof<MainConfig>(s => s.workers)]
-    = {types : ['number','string'],isOptional : true, stringOnlyEnum : [OptionAuto]};
+    = {types : ['number','string'],isOptional : true, stringOnlyEnum : [OPTION_AUTO,OPTION_HALF_AUTO]};
 
 Main[nameof<MainConfig>(s => s.brokers)]
-    = {types : ['number','string'],isOptional : true, stringOnlyEnum : [OptionAuto]};
+    = {types : ['number','string'],isOptional : true, stringOnlyEnum : [OPTION_AUTO,OPTION_HALF_AUTO]};
 
 Main[nameof<MainConfig>(s => s.appName)]              = {types : ['string'],isOptional : true};
 Main[nameof<MainConfig>(s => s.secure)]               = {types : ['boolean'],isOptional : true};

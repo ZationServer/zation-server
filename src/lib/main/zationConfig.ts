@@ -21,11 +21,11 @@ import {EventConfig}       from "../helper/configs/eventConfig";
 import {AppConfig}         from "../helper/configs/appConfig";
 import {ChannelConfig}     from "../helper/configs/channelConfig";
 import {ErrorConfig}       from "../helper/configs/errorConfig";
-import {InternMainConfig, OptionAuto} from "../helper/configs/mainConfig";
+import {InternMainConfig, OPTION_AUTO, OPTION_HALF_AUTO} from "../helper/configs/mainConfig";
 import {ServiceConfig}     from "../helper/configs/serviceConfig";
 import {StarterConfig, StarterConfigMain} from "../helper/configs/starterConfig";
 import {InternalData}      from "../helper/constants/internalData";
-import {ConfigScriptSave, ZationToken} from "../helper/constants/internal";
+import {ConfigScriptSave} from "../helper/constants/internal";
 import ZationInfo        = require("../helper/infoObjects/zationInfo");
 // noinspection TypeScriptPreferShortImport
 import {StartMode}         from "./../helper/constants/startMode";
@@ -143,7 +143,8 @@ class ZationConfig {
             timeZone: moment.tz.guess() || 'Europe/Berlin',
             authStart: false,
             authStartDuration: 20000,
-            workers: "auto",
+            workers: OPTION_AUTO,
+            brokers: OPTION_HALF_AUTO,
             zationConsoleLog: true,
             scConsoleLog: false,
             useScUws: true,
@@ -424,9 +425,11 @@ class ZationConfig {
     static createValueWithOsAuto(checkValue : any)
     {
         let result = 1;
-        if(checkValue !== undefined &&
-            checkValue === OptionAuto) {
+        if(checkValue === OPTION_AUTO || checkValue === OPTION_HALF_AUTO) {
             result = require('os').cpus().length;
+            if(checkValue === OPTION_HALF_AUTO){
+                result/=2;
+            }
         }
         else if(checkValue !== undefined) {
             result = checkValue;
