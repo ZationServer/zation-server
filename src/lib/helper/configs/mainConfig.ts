@@ -11,8 +11,20 @@ export const OPTION_HALF_AUTO = 'half-auto';
 
 export interface MainConfig
 {
+    /**
+     * The port of the server.
+     * @default is 3000
+     */
     port  ?: number;
+    /**
+     * The hostname of the server.
+     * @default is localhost
+     */
     hostname  ?: string;
+    /**
+     * The url path to the server.
+     * @default is /zation
+     */
     path  ?: string;
     origins  ?: string | null | string[];
     debug  ?: boolean;
