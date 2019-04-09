@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="level-object" type="javaScript">
-    <CLASSES>
-      <root url="file://$PROJECT_DIR$/node_modules/level-object" />
-      <root url="file://$PROJECT_DIR$/node_modules/level-object/index.js" />
-    </CLASSES>
-    <SOURCES />
-  </library>
-</component>
