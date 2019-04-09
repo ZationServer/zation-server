@@ -332,8 +332,10 @@ class ZationMaster {
            }
 
            this.printStartedInformation();
-           await this.zc.emitEvent(this.zc.eventConfig.isStarted, this.zc.getZationInfo());
+
            if(this.startUpCB){this.startUpCB();}
+
+           await this.zc.emitEvent(this.zc.eventConfig.isStarted, this.zc.getZationInfo());
         });
 
         // noinspection JSUnresolvedFunction
