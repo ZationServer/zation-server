@@ -1,3 +1,4 @@
+.idea/
 node_modules/
 dist/
 tmp/
@@ -5,4 +6,3 @@ tmp/
 .nyc_output/
 coverage/
 build/config.gypi
-.idea/
