@@ -255,11 +255,11 @@ class ZationWorker extends SCWorker
 
         //Fire event is started
         await this.zc.emitEvent
-        (this.zc.eventConfig.workerIsStarted,this.preparedSmallBag,this.zc.getZationInfo(),this);
+        (this.zc.eventConfig.workerStarted,this.preparedSmallBag,this.zc.getZationInfo(),this);
 
         if(this.isLeader){
             await this.zc.emitEvent
-            (this.zc.eventConfig.workerLeaderIsStarted,this.preparedSmallBag,this.zc.getZationInfo(),this);
+            (this.zc.eventConfig.workerLeaderStarted,this.preparedSmallBag,this.zc.getZationInfo(),this);
         }
 
     }
@@ -309,7 +309,7 @@ class ZationWorker extends SCWorker
 
         });
 
-        await this.zc.emitEvent(this.zc.eventConfig.wsServerIsStarted,this.zc.getZationInfo());
+        await this.zc.emitEvent(this.zc.eventConfig.wsServerStarted,this.zc.getZationInfo());
     }
 
     /**
@@ -433,7 +433,7 @@ class ZationWorker extends SCWorker
             await this.zationReqHandler.processHttpReq(res,req);
         });
 
-        await this.zc.emitEvent(this.zc.eventConfig.httpServerIsStarted,this.zc.getZationInfo());
+        await this.zc.emitEvent(this.zc.eventConfig.httpServerStarted,this.zc.getZationInfo());
     }
 
     getFullWorkerId() {

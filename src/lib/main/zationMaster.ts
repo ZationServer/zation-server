@@ -339,7 +339,7 @@ class ZationMaster {
 
            if(this.startUpCB){this.startUpCB();}
 
-           await this.zc.emitEvent(this.zc.eventConfig.isStarted, this.zc.getZationInfo());
+           await this.zc.emitEvent(this.zc.eventConfig.started, this.zc.getZationInfo());
         });
 
         // noinspection JSUnresolvedFunction

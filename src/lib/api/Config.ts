@@ -18,8 +18,8 @@ import
     BeforeTaskErrorFunction,
     EventConfig,
     ExpressFunction,
-    HttpServerIsStartedFunction,
-    IsStartedFunction,
+    HttpServerStartedFunction,
+    StartedFunction,
     ScServerAuthenticationFunction,
     ScServerBadSocketAuthTokenFunction,
     ScServerConnectionFunction,
@@ -33,8 +33,8 @@ import
     SocketErrorFunction,
     SocketMessageFunction,
     SocketAuthenticateFunction,
-    WorkerIsStartedFunction,
-    WsServerIsStartedFunction,
+    WorkerStartedFunction,
+    WsServerStartedFunction,
     SocketDeauthenticateFunction,
     ScMiddlewareFunction,
     MiddlewareAuthenticationFunction,
@@ -323,9 +323,9 @@ class Config
 
     //Part Zation Events
     // noinspection JSUnusedGlobalSymbols
-    static workerIsStarted(func : WorkerIsStartedFunction) : WorkerIsStartedFunction {return func;}
+    static workerStarted(func : WorkerStartedFunction) : WorkerStartedFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static workerLeaderIsStarted(func : WorkerIsStartedFunction) : WorkerIsStartedFunction {return func;}
+    static workerLeaderStarted(func : WorkerStartedFunction) : WorkerStartedFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static express(func : ExpressFunction) : ExpressFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
@@ -339,11 +339,11 @@ class Config
     // noinspection JSUnusedGlobalSymbols
     static beforeTaskErrorBag(func : BeforeTaskErrorBagFunction) : BeforeTaskErrorBagFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static httpServerStarted(func : HttpServerIsStartedFunction) : HttpServerIsStartedFunction {return func;}
+    static httpServerStarted(func : HttpServerStartedFunction) : HttpServerStartedFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static wsServerIsStarted(func : WsServerIsStartedFunction) : WsServerIsStartedFunction{return func;}
+    static wsServerStarted(func : WsServerStartedFunction) : WsServerStartedFunction{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static isStarted(func : IsStartedFunction) : IsStartedFunction{return func;}
+    static started(func : StartedFunction) : StartedFunction{return func;}
     // noinspection JSUnusedGlobalSymbols
     static socketDisconnection(func : ZationSocketDisconnectionFunction) : ZationSocketDisconnectionFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
