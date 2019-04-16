@@ -65,5 +65,13 @@ export interface StarterConfigMain
      * @default 'service.config'
      */
     serviceConfig  ?: string;
+
+    /**
+     * With this option, you can deactivate the check of the configurations on server start.
+     * It's not recommended to deactived it, but if the process takes a lot of time, you can do it.
+     * Notice that you check the configurations with the npm check command after every change.
+     * @default is true
+     */
+    checkConfigs  ?: boolean;
 }
 

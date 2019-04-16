@@ -27,7 +27,7 @@ class ControllerPrepare
 
     private readonly systemController : Record<string,ControllerPrepareData>;
     private readonly appController : Record<string,ControllerPrepareData>;
-    
+
     constructor(zc,worker)
     {
         this.zc = zc;
@@ -107,17 +107,30 @@ class ControllerPrepare
         const config : ControllerConfig = controllerClass.config;
 
         const isSystemC = ControllerTools.isSystemController(config);
-        const cInstance : Controller = new controllerClass(this.worker.getPreparedSmallBag());
+        const cInstance : Controller = new controllerClass(name,this.worker.getPreparedSmallBag());
 
         this.addControllerConfigAccessKey(config);
 
         await cInstance.initialize(this.worker.getPreparedSmallBag());
+
+        this.bindPrepareHandleFunctions(cInstance,config.prepareHandle);
 
         if(!isSystemC) {
             this.appController[name] = {config : config,instance : cInstance};
         }
         else {
             this.systemController[name] = {config : config,instance : cInstance};
+        }
+    }
+
+    bindPrepareHandleFunctions(cInstance : Controller,preparedHandleValue) {
+        if(Array.isArray(preparedHandleValue)) {
+            preparedHandleValue.forEach((f) => {
+                f.bind(cInstance);
+            });
+        }
+        else if(typeof preparedHandleValue === 'function'){
+            preparedHandleValue.bind(cInstance);
         }
     }
 

@@ -9,7 +9,7 @@ import TaskErrorBag        = require('../../api/TaskErrorBag');
 import MainErrors          = require('../zationTaskErrors/mainTaskErrors');
 import {ProcessTask, ProcessTaskEngine} from "./processTaskEngine";
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig, MultiInput, SingleInput} from "../configs/appConfig";
+import {ControllerConfig, Model, MultiInput} from "../configs/appConfig";
 import {ZationTask}          from "../constants/internal";
 import {OptionalProcessor}   from "./optionalProcessor";
 import {SingleInputDataProcessor}  from "./singleInputDataProcessor";
@@ -144,7 +144,7 @@ export class InputDataProcessor
     private async processSingleInput
     (
         input : any,
-        config : SingleInput,
+        config : Model,
         useInputValidation : boolean,
         processList : ProcessTask[],
         taskErrorBag : TaskErrorBag,
@@ -167,7 +167,7 @@ export class InputDataProcessor
     async validationCheck
     (
         input : any,
-        inputConfig : MultiInput | SingleInput,
+        inputConfig : MultiInput | Model,
         singleInput : boolean,
         basePath : boolean,
         inputPath : string,

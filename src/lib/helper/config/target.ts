@@ -11,7 +11,7 @@ class Target
     private readonly pathName : string;
     private extraInfo : string | undefined;
     private path : string | undefined;
-    
+
     constructor(mainTarget : string = '',pathName : string = 'InputPath',splitSign : string = '.',extraInfo ?: string,path ?: string)
     {
         this.splitSign = splitSign;
@@ -77,7 +77,7 @@ class Target
 
     getTarget() : string
     {
-        let extraInfo = this.extraInfo !== undefined ? `(${this.extraInfo}) ` : '';
+        const extraInfo = this.extraInfo !== undefined ? `(${this.extraInfo}) ` : '';
 
         if(this.path === undefined)
         {

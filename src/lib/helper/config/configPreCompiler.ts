@@ -13,14 +13,12 @@ import {
     CustomChannelConfig
 } from "../configs/channelConfig";
 import {
-    AnyOfProperty,
-    ArrayPropertyConfig,
-    ControllerConfig, InputConfig, MultiInput,
-    ObjectPropertyConfig,
-    ValuePropertyConfig
+    AnyOfModelConfig,
+    ArrayModelConfig,
+    ControllerConfig, InputConfig, Model, MultiInput, ObjectModelConfig, ValueModelConfig,
 } from "../configs/appConfig";
-import PropertyImportEngine = require("./propertyImportEngine");
 import Iterator = require("../tools/iterator");
+import ModelImportEngine from "./modelImportEngine";
 
 
 class ConfigPeCompiler
@@ -29,11 +27,9 @@ class ConfigPeCompiler
 
     private controllerDefaults : object;
 
-    private objectsConfig : object;
-    private valuesConfig : object;
-    private arraysConfig : object;
+    private modelsConfig : object;
 
-    private propertyImportEngine : PropertyImportEngine;
+    private modelImportEngine : ModelImportEngine;
 
     constructor(zationConfig)
     {
@@ -43,9 +39,7 @@ class ConfigPeCompiler
 
     preCompile() : void
     {
-        this.preCompileValues(this.valuesConfig);
-        this.preCompileArrays(this.arraysConfig);
-        this.preCompileObjects(this.objectsConfig);
+        this.preCompileModels(this.modelsConfig);
         this.preCompileTmpBuilds();
         this.preCompileControllerDefaults();
         this.preCompileController();
@@ -54,19 +48,15 @@ class ConfigPeCompiler
         this.preCompileErrorConfig();
 
         //view precompiled configs
-        //console.dir(this.zc.appConfig,{depth:null});
+        console.dir(this.zc.appConfig,{depth:null});
         //console.dir(this.zc.channelConfig,{depth:null});
     }
 
     private prepare() : void
     {
         this.prepareControllerDefaults();
-        this.prepareObjectsConfig();
-        this.prepareValuesConfig();
-        this.prepareArraysConfig();
-
-        this.propertyImportEngine =
-            new PropertyImportEngine(this.objectsConfig,this.valuesConfig,this.arraysConfig);
+        this.prepareModelsConfig();
+        this.modelImportEngine = new ModelImportEngine(this.modelsConfig);
     }
 
     private prepareControllerDefaults() : void
@@ -188,76 +178,47 @@ class ConfigPeCompiler
         }
     }
 
-    private prepareObjectsConfig() : void {
-        this.objectsConfig = typeof this.zc.appConfig.objects === 'object' ?
-            this.zc.appConfig.objects : {};
+    private prepareModelsConfig() : void {
+        this.modelsConfig = typeof this.zc.appConfig.models === 'object' ?
+            this.zc.appConfig.models : {};
     }
 
-    private prepareValuesConfig() : void {
-        this.valuesConfig = typeof this.zc.appConfig.values === 'object' ?
-            this.zc.appConfig.values : {};
-    }
+    private preCompileModels(models : Record<string,Model | any>) {
 
-    private prepareArraysConfig() : void {
-        this.arraysConfig = typeof this.zc.appConfig.arrays === 'object' ?
-            this.zc.appConfig.arrays : {};
-    }
+        //first pre compile the array short syntax on main level
+        //to get references for fix import issues array
+        for(let name in models) {
+            if(models.hasOwnProperty(name)) {
+                this.preCompileArrayShortSyntax(name,models)
+            }
+        }
 
-    private preCompileObjects(objects : object) : void
-    {
-        //than resolve the links and short syntax
-        for(let objName in objects) {
-            if(objects.hasOwnProperty(objName)) {
-                this.preCompileObjectProperty(objects[objName]);
+        //than resolve the links,short syntax,values...
+        for(let name in models) {
+            if(models.hasOwnProperty(name)) {
+                this.preCompileModel(name,models);
             }
         }
 
         //than resolve the objects inheritance
-        for(let objName in objects) {
-            if(objects.hasOwnProperty(objName)) {
-                this.preCompileInheritance(objects[objName]);
-            }
-        }
-    }
-
-    private preCompileValues(values : object) : void
-    {
-        for(let valueName in values) {
-            if(values.hasOwnProperty(valueName)) {
-                this.preCompileProperty(valueName,values)
-            }
-        }
-    }
-
-    private preCompileArrays(arrays : object) : void
-    {
-        //first pre compile the array short syntax on main level
-        //to get references for fix import issues array
-        for(let arrayName in arrays) {
-            if(arrays.hasOwnProperty(arrayName)) {
-                this.preCompileArrayShortSyntax(arrayName,arrays)
+        for(let name in models) {
+            if(models.hasOwnProperty(name)) {
+                this.preCompileInheritance(models[name]);
             }
         }
 
-        //than resolve the links and short array syntax
-        for(let arrayName in arrays) {
-            if(arrays.hasOwnProperty(arrayName)) {
-               this.preCompileProperty(arrayName,arrays)
-            }
-        }
     }
 
     private preCompileTmpBuilds() : void {
-        this.preCompileArrays(this.propertyImportEngine.tmpCreatedArrays);
-        this.preCompileObjects(this.propertyImportEngine.tmpCreatedObjects);
+        this.preCompileModels(this.modelImportEngine.tmpCreatedModels);
     }
 
-    private preCompileObjectProperty(obj : ObjectPropertyConfig) : void
+    private preCompileObjectProperties(obj : ObjectModelConfig) : void
     {
         const properties = obj.properties;
         for(let propName in properties) {
             if (properties.hasOwnProperty(propName)) {
-                this.preCompileProperty(propName,properties);
+                this.preCompileModel(propName,properties);
             }
         }
     }
@@ -274,21 +235,19 @@ class ConfigPeCompiler
             if(nowValue.length === 2 && typeof nowValue[1] === 'object') {
                 arrayExtras = nowValue[1];
             }
-
-            obj[key] = {};
-            ObjectTools.addObToOb(obj[key],arrayExtras);
-            obj[key][nameof<ArrayPropertyConfig>(s => s.array)] = inArray;
+            obj[key] = arrayExtras;
+            obj[key][nameof<ArrayModelConfig>(s => s.array)] = inArray;
         }
     }
 
-    private preCompileProperty(key : string, obj : object) : void
+    private preCompileModel(key : string, obj : object) : void
     {
         const nowValue = obj[key];
 
         if(typeof nowValue === 'string')
         {
             //resolve object import
-            obj[key] = this.propertyImportEngine.resolve(nowValue);
+            obj[key] = this.modelImportEngine.resolve(nowValue);
         }
         else if(Array.isArray(nowValue))
         {
@@ -296,7 +255,7 @@ class ConfigPeCompiler
             let needArrayPreCompile = false;
 
             if(typeof nowValue[0] === 'string') {
-                inArray = this.propertyImportEngine.resolve(nowValue[0]);
+                inArray = this.modelImportEngine.resolve(nowValue[0]);
             }
             else if(typeof nowValue[0] === 'object' || Array.isArray(nowValue[0])) {
                 inArray = nowValue[0];
@@ -308,31 +267,30 @@ class ConfigPeCompiler
                 arrayExtras = nowValue[1];
             }
 
-            obj[key] = {};
-            ObjectTools.addObToOb(obj[key],arrayExtras);
-            obj[key][nameof<ArrayPropertyConfig>(s => s.array)] = inArray;
+            obj[key] = arrayExtras;
+            obj[key][nameof<ArrayModelConfig>(s => s.array)] = inArray;
 
             if(needArrayPreCompile) {
-                this.preCompileProperty(nameof<ArrayPropertyConfig>(s => s.array),obj[key]);
+                this.preCompileModel(nameof<ArrayModelConfig>(s => s.array),obj[key]);
             }
         }
         else if(typeof nowValue === "object")
         {
-            if(nowValue.hasOwnProperty(nameof<ObjectPropertyConfig>(s => s.properties))) {
+            if(nowValue.hasOwnProperty(nameof<ObjectModelConfig>(s => s.properties))) {
                 //isObject
                 //check all properties of object!
-                this.preCompileObjectProperty(nowValue);
+                this.preCompileObjectProperties(nowValue);
             }
-            else if(nowValue.hasOwnProperty(nameof<ArrayPropertyConfig>(s => s.array))) {
+            else if(nowValue.hasOwnProperty(nameof<ArrayModelConfig>(s => s.array))) {
                 //we have array look in the array body!
-                this.preCompileProperty(nameof<ArrayPropertyConfig>(s => s.array),nowValue);
+                this.preCompileModel(nameof<ArrayModelConfig>(s => s.array),nowValue);
             }
-            else if(nowValue.hasOwnProperty(nameof<AnyOfProperty>(s => s.anyOf)))
+            else if(nowValue.hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf)))
             {
                 //anyOf
                 Iterator.iterateSync((key,value,src) => {
-                    this.preCompileProperty(key,src);
-                },nowValue[nameof<AnyOfProperty>(s => s.anyOf)]);
+                    this.preCompileModel(key,src);
+                },nowValue[nameof<AnyOfModelConfig>(s => s.anyOf)]);
             }
             else {
                 //value!
@@ -342,16 +300,16 @@ class ConfigPeCompiler
         }
     }
 
-    private preCompileValueExtend(mainValue : ValuePropertyConfig,exValueConfig : ValuePropertyConfig) {
+    private preCompileValueExtend(mainValue : ValueModelConfig,exValueConfig : ValueModelConfig) {
         if(typeof exValueConfig.extends === 'string'){
-            const nextExValueConfig = this.valuesConfig[exValueConfig.extends];
+            const nextExValueConfig = this.modelImportEngine.extendsResolve(exValueConfig.extends);
             ObjectTools.addObToOb(mainValue,nextExValueConfig);
             return this.preCompileValueExtend(mainValue,nextExValueConfig);
         }
     }
 
     // noinspection JSMethodCanBeStatic
-    private preCompileValidationFunctions(value : ValuePropertyConfig) : void
+    private preCompileValidationFunctions(value : ValueModelConfig) : void
     {
         //charClass function
         if(typeof value.charClass === "string") {
@@ -378,19 +336,19 @@ class ConfigPeCompiler
         if(typeof value === "object")
         {
             //check input
-            if(value.hasOwnProperty(nameof<ObjectPropertyConfig>(s => s.properties)))
+            if(value.hasOwnProperty(nameof<ObjectModelConfig>(s => s.properties)))
             {
                 //isObject
-                if(typeof value[nameof<ObjectPropertyConfig>(s => s.extends)] === 'string')
+                if(typeof value[nameof<ObjectModelConfig>(s => s.extends)] === 'string')
                 {
                     //extends there
                     //check super extends before this
-                    const superName = value[nameof<ObjectPropertyConfig>(s => s.extends)];
-                    this.preCompileInheritance(this.objectsConfig[superName]);
+                    const superName = value[nameof<ObjectModelConfig>(s => s.extends)];
+                    this.preCompileInheritance(this.modelsConfig[superName]);
                     //lastExtend
 
                     //check props
-                    const props = value[nameof<ObjectPropertyConfig>(s => s.properties)];
+                    const props = value[nameof<ObjectModelConfig>(s => s.properties)];
                     if(typeof props === 'object'){
                         for(let propName in props) {
                             if(props.hasOwnProperty(propName)) {
@@ -399,70 +357,71 @@ class ConfigPeCompiler
                         }
                     }
 
-                    const superObj = this.objectsConfig[superName];
+                    const superObj = this.modelImportEngine.extendsResolve(superName);
+
 
                     //extend Props
-                    const superProps = superObj[nameof<ObjectPropertyConfig>(s => s.properties)];
-                    ObjectTools.addObToOb(value[nameof<ObjectPropertyConfig>(s => s.properties)],superProps,false);
+                    const superProps = superObj[nameof<ObjectModelConfig>(s => s.properties)];
+                    ObjectTools.addObToOb(value[nameof<ObjectModelConfig>(s => s.properties)],superProps,false);
 
                     //check for prototype
-                    const superPrototype = superObj[nameof<ObjectPropertyConfig>(s => s.prototype)];
+                    const superPrototype = superObj[nameof<ObjectModelConfig>(s => s.prototype)];
                     if(superPrototype){
-                        if(!value[nameof<ObjectPropertyConfig>(s => s.prototype)]){
-                            value[nameof<ObjectPropertyConfig>(s => s.prototype)] = {};
+                        if(!value[nameof<ObjectModelConfig>(s => s.prototype)]){
+                            value[nameof<ObjectModelConfig>(s => s.prototype)] = {};
                         }
-                        Object.setPrototypeOf(value[nameof<ObjectPropertyConfig>(s => s.prototype)],superPrototype);
+                        Object.setPrototypeOf(value[nameof<ObjectModelConfig>(s => s.prototype)],superPrototype);
                     }
 
                     //extend construct
                     const superConstruct =
-                        typeof superObj[nameof<ObjectPropertyConfig>(s => s.construct)] === 'function' ?
-                        superObj[nameof<ObjectPropertyConfig>(s => s.construct)] :
+                        typeof superObj[nameof<ObjectModelConfig>(s => s.construct)] === 'function' ?
+                        superObj[nameof<ObjectModelConfig>(s => s.construct)] :
                         async () => {};
-                    const currentConstruct = value[nameof<ObjectPropertyConfig>(s => s.construct)];
+                    const currentConstruct = value[nameof<ObjectModelConfig>(s => s.construct)];
                     if(typeof currentConstruct === 'function') {
-                        value[nameof<ObjectPropertyConfig>(s => s.construct)] = async (obj, smallBag) => {
+                        value[nameof<ObjectModelConfig>(s => s.construct)] = async (obj, smallBag) => {
                             await superConstruct(obj,smallBag);
                             await currentConstruct(obj,smallBag);
                         };
                     }else {
-                        value[nameof<ObjectPropertyConfig>(s => s.construct)] = async (obj, smallBag) => {
+                        value[nameof<ObjectModelConfig>(s => s.construct)] = async (obj, smallBag) => {
                             await superConstruct(obj,smallBag);
                         };
                     }
 
                     //extend convert
                     const superConvert =
-                        typeof superObj[nameof<ObjectPropertyConfig>(s => s.convert)] === 'function' ?
-                            superObj[nameof<ObjectPropertyConfig>(s => s.convert)] :
+                        typeof superObj[nameof<ObjectModelConfig>(s => s.convert)] === 'function' ?
+                            superObj[nameof<ObjectModelConfig>(s => s.convert)] :
                             async (obj) => {return obj;};
-                    const currentConvert = value[nameof<ObjectPropertyConfig>(s => s.convert)];
+                    const currentConvert = value[nameof<ObjectModelConfig>(s => s.convert)];
                     if(typeof currentConvert === 'function') {
-                        value[nameof<ObjectPropertyConfig>(s => s.convert)] = async (obj, smallBag) => {
+                        value[nameof<ObjectModelConfig>(s => s.convert)] = async (obj, smallBag) => {
                             return await currentConvert(await superConvert(obj,smallBag),smallBag);
                         };
                     }else {
-                        value[nameof<ObjectPropertyConfig>(s => s.convert)] = async (obj, smallBag) => {
+                        value[nameof<ObjectModelConfig>(s => s.convert)] = async (obj, smallBag) => {
                             return await superConvert(obj,smallBag);
                         };
                     }
 
                     //remove extension
-                    delete value[nameof<ObjectPropertyConfig>(s => s.extends)];
+                    value[nameof<ObjectModelConfig>(s => s.extends)] = undefined;
                 }
             }
-            else if(value.hasOwnProperty(nameof<ArrayPropertyConfig>(s => s.array)))
+            else if(value.hasOwnProperty(nameof<ArrayModelConfig>(s => s.array)))
             {
                 //is array
-                let inArray = value[nameof<ArrayPropertyConfig>(s => s.array)];
+                let inArray = value[nameof<ArrayModelConfig>(s => s.array)];
                 this.preCompileInheritance(inArray);
             }
-            else if(value.hasOwnProperty(nameof<AnyOfProperty>(s => s.anyOf)))
+            else if(value.hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf)))
             {
                 //any of
                 Iterator.iterateSync((key,value) => {
                     this.preCompileInheritance(value);
-                },value[nameof<AnyOfProperty>(s => s.anyOf)]);
+                },value[nameof<AnyOfModelConfig>(s => s.anyOf)]);
             }
         }
     }
@@ -517,13 +476,13 @@ class ConfigPeCompiler
         for(let inputName in multiInput)
             if(multiInput.hasOwnProperty(inputName)) {
                 //resolve values,object,array links and resolve inheritance
-                this.preCompileProperty(inputName,multiInput);
+                this.preCompileModel(inputName,multiInput);
                 this.preCompileInheritance(multiInput[inputName]);
             }
     }
 
     private preCompileSingleInput(inputConfig : InputConfig) : void {
-        this.preCompileProperty(nameof<InputConfig>(s => s.singleInput),inputConfig);
+        this.preCompileModel(nameof<InputConfig>(s => s.singleInput),inputConfig);
         this.preCompileInheritance(inputConfig[nameof<InputConfig>(s => s.singleInput)]);
     }
 

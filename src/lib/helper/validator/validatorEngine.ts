@@ -11,9 +11,9 @@ import ValidatorErrors   = require('../zationTaskErrors/validatorTaskErrors');
 import Logger            = require('../logger/logger');
 import FuncTools         = require("../tools/funcTools");
 import SmallBag          = require("../../api/SmallBag");
-import {ArraySettings, ValuePropertyConfig} from "../configs/appConfig";
+import {ArraySettings, ValueModelConfig} from "../configs/appConfig";
 import {ConfigNames}       from "../constants/internal";
-import {ValidationTypes}   from "../constants/validationTypes";
+import {ValidationTypes}   from "../../..";
 
 class ValidatorEngine
 {
@@ -25,7 +25,7 @@ class ValidatorEngine
             if(config.hasOwnProperty(cKey))
             {
                 const cValue = config[cKey];
-                if(cKey === nameof<ValuePropertyConfig>(s => s.validate)) {
+                if(cKey === nameof<ValueModelConfig>(s => s.validate)) {
                     //own validate
                     promises.push(FuncTools.emitEvent(cValue,input,errorBag,preparedErrorData.inputPath,preparedSmallBag,type));
                 }

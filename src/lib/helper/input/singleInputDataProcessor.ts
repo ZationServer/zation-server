@@ -12,14 +12,9 @@ import ValidatorErrors  = require('../zationTaskErrors/validatorTaskErrors');
 import {ProcessTask}      from "./processTaskEngine";
 import SmallBag         = require("../../api/SmallBag");
 import ConvertEngine    = require("../convert/convertEngine");
-import {
-    AnyOfProperty,
-    ArrayPropertyConfig,
-    ObjectPropertyConfig, SingleInput,
-    ValuePropertyConfig
-} from "../configs/appConfig";
 import Iterator = require("../tools/iterator");
 import {OptionalProcessor} from "./optionalProcessor";
+import {AnyOfModelConfig, ArrayModelConfig, Model, ObjectModelConfig, ValueModelConfig} from "../configs/appConfig";
 
 export interface ProcessInfo {
     errorBag : TaskErrorBag,
@@ -36,28 +31,17 @@ export class SingleInputDataProcessor
         this.preparedSmallBag = preparedSmallBag;
     }
 
-    async checkIsValid(input : any,config : object,inputPath : string,errorBag : TaskErrorBag,useInputValidation : boolean = true) : Promise<void>
+    async processProperty(srcObj : object,srcKey : string | number, config : Model, currentInputPath : string,processInfo : ProcessInfo) : Promise<any>
     {
-        await this.processProperty({i : input},'i',config,inputPath,
-                {
-                    errorBag : errorBag,
-                    processTaskList : [],
-                    inputValidation : useInputValidation,
-                    createProcessTaskList : false
-                });
-    }
-
-    async processProperty(srcObj : object,srcKey : string | number, config : SingleInput, currentInputPath : string,processInfo : ProcessInfo) : Promise<any>
-    {
-        if(typeof config[nameof<ArrayPropertyConfig>(s => s.array)] === 'object') {
+        if(typeof config[nameof<ArrayModelConfig>(s => s.array)] === 'object') {
             //Array reference
             await this.processArray(srcObj,srcKey,config,currentInputPath,processInfo);
         }
-        else if(typeof config[nameof<ObjectPropertyConfig>(s => s.properties)] === 'object') {
+        else if(typeof config[nameof<ObjectModelConfig>(s => s.properties)] === 'object') {
             //Object reference
             await this.processObject(srcObj,srcKey,config,currentInputPath,processInfo);
         }
-        else if(typeof config[nameof<AnyOfProperty>(s => s.anyOf)] === 'object') {
+        else if(typeof config[nameof<AnyOfModelConfig>(s => s.anyOf)] === 'object') {
             //AnyOf
             await this.processAnyOf(srcObj,srcKey,config,currentInputPath,processInfo);
         }
@@ -67,15 +51,15 @@ export class SingleInputDataProcessor
         }
     }
 
-    private async processObject(srcObj : object,srcKey : string | number,config : SingleInput,currentInputPath : string,processInfo : ProcessInfo) : Promise<void>
+    private async processObject(srcObj : object,srcKey : string | number,config : Model,currentInputPath : string,processInfo : ProcessInfo) : Promise<void>
     {
         const errorBag = processInfo.errorBag;
-        const props = config[nameof<ObjectPropertyConfig>(s => s.properties)];
+        const props = config[nameof<ObjectModelConfig>(s => s.properties)];
         const input = srcObj[srcKey];
         if(typeof input === 'object')
         {
             //check if the input has unknown property
-            if(!config[nameof<ObjectPropertyConfig>(s => s.moreInputAllowed)])
+            if(!config[nameof<ObjectModelConfig>(s => s.moreInputAllowed)])
             {
                 for(let k in input)
                 {
@@ -141,9 +125,9 @@ export class SingleInputDataProcessor
 
             await Promise.all(promises);
 
-            const processConstruct = typeof config[nameof<ObjectPropertyConfig>(s => s.construct)] === 'function';
-            const processConvert = typeof config[nameof<ObjectPropertyConfig>(s => s.convert)] === 'function';
-            const processPrototype = typeof config[nameof<ObjectPropertyConfig>(s => s.prototype)] === 'object';
+            const processConstruct = typeof config[nameof<ObjectModelConfig>(s => s.construct)] === 'function';
+            const processConvert = typeof config[nameof<ObjectModelConfig>(s => s.convert)] === 'function';
+            const processPrototype = typeof config[nameof<ObjectModelConfig>(s => s.prototype)] === 'object';
 
             //process prototype,construct,convert
             if(processInfo.createProcessTaskList && errorBag.isEmpty() &&
@@ -154,17 +138,17 @@ export class SingleInputDataProcessor
                 {
                     //1.prototype
                     if(processPrototype) {
-                        Object.setPrototypeOf(input,config[nameof<ObjectPropertyConfig>(s => s.prototype)]);
+                        Object.setPrototypeOf(input,config[nameof<ObjectModelConfig>(s => s.prototype)]);
                     }
 
                     //2.construct
                     if(processConstruct) {
-                        await config[nameof<ObjectPropertyConfig>(s => s.construct)](input,this.preparedSmallBag);
+                        await config[nameof<ObjectModelConfig>(s => s.construct)](input,this.preparedSmallBag);
                     }
 
                     //3.convert
                     if(processConvert) {
-                        srcObj[srcKey] = await config[nameof<ObjectPropertyConfig>(s => s.convert)](input,this.preparedSmallBag);
+                        srcObj[srcKey] = await config[nameof<ObjectModelConfig>(s => s.convert)](input,this.preparedSmallBag);
                     }
                 });
             }
@@ -184,7 +168,7 @@ export class SingleInputDataProcessor
         }
     }
 
-    private async processValue(srcObj : object,srcKey : string | number,config : SingleInput,currentInputPath : string,
+    private async processValue(srcObj : object,srcKey : string | number,config : Model,currentInputPath : string,
                                {errorBag,processTaskList,inputValidation,createProcessTaskList} : ProcessInfo) : Promise<void>
     {
         const preparedErrorData = {
@@ -192,13 +176,13 @@ export class SingleInputDataProcessor
             inputPath : currentInputPath
         };
 
-        const type = config[nameof<ValuePropertyConfig>(s => s.type)];
+        const type = config[nameof<ValueModelConfig>(s => s.type)];
 
-        const strictType = typeof config[nameof<ValuePropertyConfig>(s => s.strictType)] === 'boolean'?
-            config[nameof<ValuePropertyConfig>(s => s.strictType)] : true;
+        const strictType = typeof config[nameof<ValueModelConfig>(s => s.strictType)] === 'boolean'?
+            config[nameof<ValueModelConfig>(s => s.strictType)] : true;
 
-        const convertType = typeof config[nameof<ValuePropertyConfig>(s => s.convertType)] === 'boolean'?
-            config[nameof<ValuePropertyConfig>(s => s.convertType)] : true;
+        const convertType = typeof config[nameof<ValueModelConfig>(s => s.convertType)] === 'boolean'?
+            config[nameof<ValueModelConfig>(s => s.convertType)] : true;
 
         const currentErrorCount = errorBag.getTaskErrorCount();
 
@@ -224,19 +208,19 @@ export class SingleInputDataProcessor
         if(
             createProcessTaskList &&
             errorBag.isEmpty() &&
-            typeof config[nameof<ValuePropertyConfig>(s => s.convert)] === 'function')
+            typeof config[nameof<ValueModelConfig>(s => s.convert)] === 'function')
         {
             processTaskList.push(async  () => {
-                srcObj[srcKey] = await config[nameof<ValuePropertyConfig>(s => s.convert)](srcObj[srcKey],this.preparedSmallBag);
+                srcObj[srcKey] = await config[nameof<ValueModelConfig>(s => s.convert)](srcObj[srcKey],this.preparedSmallBag);
             });
         }
     }
 
-    private async processAnyOf(srcObj : object | object[],srcKey : string | number,config : SingleInput,currentInputPath : string,processInfo : ProcessInfo) : Promise<void>
+    private async processAnyOf(srcObj : object | object[],srcKey : string | number,config : Model,currentInputPath : string,processInfo : ProcessInfo) : Promise<void>
     {
         let found = false;
         const tmpTaskErrorBags : Record<string|number,TaskErrorBag> = {};
-        const anyOf = config[nameof<AnyOfProperty>(s => s.anyOf)];
+        const anyOf = config[nameof<AnyOfModelConfig>(s => s.anyOf)];
         await Iterator.breakIterate(async (key, value) =>
         {
             tmpTaskErrorBags[key] = new TaskErrorBag();
@@ -273,7 +257,7 @@ export class SingleInputDataProcessor
         }
     }
 
-    private async processArray(srcObj : object,srcKey : string | number,config : SingleInput,currentInputPath : string,processInfo : ProcessInfo) : Promise<void>
+    private async processArray(srcObj : object,srcKey : string | number,config : Model,currentInputPath : string,processInfo : ProcessInfo) : Promise<void>
     {
         const input = srcObj[srcKey];
         const errorBag = processInfo.errorBag;
@@ -287,7 +271,7 @@ export class SingleInputDataProcessor
             }
 
             if(isOk) {
-                let arrayInputConfig = config[nameof<ArrayPropertyConfig>(s => s.array)];
+                let arrayInputConfig = config[nameof<ArrayModelConfig>(s => s.array)];
                 let promises : Promise<any>[] = [];
                 //input reference so we can return it normal
                 for(let i = 0; i < input.length; i++)
@@ -304,10 +288,10 @@ export class SingleInputDataProcessor
                 if(
                     processInfo.createProcessTaskList &&
                     errorBag.isEmpty() &&
-                    typeof config[nameof<ArrayPropertyConfig>(s => s.convert)] === 'function')
+                    typeof config[nameof<ArrayModelConfig>(s => s.convert)] === 'function')
                 {
                     processInfo.processTaskList.push(async  () => {
-                        srcObj[srcKey] = await config[nameof<ArrayPropertyConfig>(s => s.convert)](input,this.preparedSmallBag);
+                        srcObj[srcKey] = await config[nameof<ArrayModelConfig>(s => s.convert)](input,this.preparedSmallBag);
                     });
                 }
             }

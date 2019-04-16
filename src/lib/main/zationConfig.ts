@@ -39,7 +39,15 @@ class ZationConfig {
     private _mainConfig: InternMainConfig;
     private _serviceConfig: ServiceConfig = {};
     private _configScriptSaver : ConfigScriptSave;
-    private readonly _starterConfig: StarterConfig = {};
+    private readonly _starterConfig: StarterConfig = {
+        checkConfigs : true,
+        mainConfig : 'main.config',
+        appConfig : 'app.config',
+        channelConfig : 'channel.config',
+        errorConfig : 'error.config',
+        eventConfig : 'event.config',
+        serviceConfig : 'service.config'
+    };
     private readonly _internalData: InternalData = {};
 
     private readonly _loadedConfigs: string[] = [];
@@ -54,7 +62,7 @@ class ZationConfig {
 
     constructor(starterData: object = {}, workerTransport: boolean = false) {
         if (!workerTransport) {
-            this._starterConfig = starterData;
+            ObjectTools.addObToOb(this._starterConfig,starterData,true);
             this._workerProcess = false;
             this.rootPath = ZationConfig._getRootPath(starterData);
         } else {
@@ -71,7 +79,7 @@ class ZationConfig {
     async masterInit(startMode : number)
     {
         this.startMode = startMode;
-        this.loadDefaults();
+        this.loadMainDefaults();
         this.loadUserDataLocations();
         await this.loadMainConfig();
 
@@ -118,7 +126,7 @@ class ZationConfig {
         return this.startMode;
     }
 
-    loadDefaults() {
+    loadMainDefaults() {
         //Create Defaults
         this._mainConfig = {
             debug: false,
@@ -455,27 +463,20 @@ class ZationConfig {
         await FuncTools.emitEvent(event,...params);
     }
 
-    private loadUserDataLocations() : void
-    {
-        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.mainConfig),'main.config');
-        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.appConfig),'app.config');
-        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.channelConfig),'channel.config');
-        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.errorConfig),'error.config');
-        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.eventConfig),'event.config');
-        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.serviceConfig),'service.config');
+    private loadUserDataLocations() : void {
+        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.mainConfig));
+        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.appConfig));
+        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.channelConfig));
+        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.errorConfig));
+        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.eventConfig));
+        this.loadZationConfigLocation(nameof<StarterConfig>(s => s.serviceConfig));
     }
 
-    private loadZationConfigLocation(key : string,defaultName : string) : void
+    private loadZationConfigLocation(key : string) : void
     {
         const cPath = this.rootPath + path.sep +
             (this._starterConfig.configs ? this._starterConfig.configs : 'configs') + path.sep;
-
-        if(!(typeof this._starterConfig[key] === 'string')) {
-            this._starterConfig[key] =  cPath + defaultName;
-        }
-        else {
-            this._starterConfig[key] =  cPath + this._starterConfig[key];
-        }
+        this._starterConfig[key] =  cPath + this._starterConfig[key];
     }
 
     private async loadMainConfig() : Promise<void>

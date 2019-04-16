@@ -61,20 +61,21 @@ import
 import
 {
     AppConfig,
-    BeforeHandleFunction,
     ConstructObjectFunction,
     ControllerAccessFunction,
     ControllerConfig,
-    ValuePropertyConfig,
-    ObjectPropertyConfig,
     ObjectProperties,
     TaskFunction,
     ValidatorFunction,
-    Property,
-    ArrayPropertyConfig,
     ConvertObjectFunction,
     ConvertValueFunction,
-    ConvertArrayFunction, BackgroundTask, GetDateFunction, ArrayShortSyntax, MultiInput, SingleInput
+    ConvertArrayFunction,
+    BackgroundTask,
+    GetDateFunction,
+    MultiInput,
+    ObjectModelConfig,
+    ValueModelConfig,
+    ArrayModelConfig, ArrayModelShortSyntax, Model, PrepareHandleFunction
 } from "../helper/configs/appConfig";
 import
 {
@@ -176,11 +177,9 @@ class Config
 
     //Object
     // noinspection JSUnusedGlobalSymbols
-    static objects(c : Record<string,ObjectPropertyConfig>) :  Record<string,ObjectPropertyConfig> {return c;}
+    static objectModel(c : ObjectModelConfig) :  ObjectModelConfig {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static objectProperty(c : ObjectPropertyConfig) :  ObjectPropertyConfig {return c;}
-    // noinspection JSUnusedGlobalSymbols
-    static object(c : ObjectPropertyConfig) :  ObjectPropertyConfig {return c;}
+    static object(c : ObjectModelConfig) : ObjectModelConfig {return c;}
     // noinspection JSUnusedGlobalSymbols
     static construct(func : ConstructObjectFunction) : ConstructObjectFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
@@ -190,11 +189,9 @@ class Config
 
     //Value
     // noinspection JSUnusedGlobalSymbols
-    static values(c : Record<string,ValuePropertyConfig>) :  Record<string,ValuePropertyConfig> {return c;}
+    static valueModel(c : ValueModelConfig) : ValueModelConfig {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static valueProperty(c : ValuePropertyConfig) :  ValuePropertyConfig {return c;}
-    // noinspection JSUnusedGlobalSymbols
-    static value(c : ValuePropertyConfig) :  ValuePropertyConfig {return c;}
+    static value(c : ValueModelConfig) : ValueModelConfig {return c;}
     // noinspection JSUnusedGlobalSymbols
     static convertValue(c : ConvertValueFunction) :  ConvertValueFunction {return c;}
     // noinspection JSUnusedGlobalSymbols
@@ -204,12 +201,9 @@ class Config
 
     //Array
     // noinspection JSUnusedGlobalSymbols
-    static arrays(c : Record<string,ArrayPropertyConfig | ArrayShortSyntax>) :
-        Record<string,ArrayPropertyConfig | ArrayShortSyntax> {return c;}
+    static arrayModel(c : ArrayModelConfig | ArrayModelShortSyntax) :  ArrayModelConfig | ArrayModelShortSyntax {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static arrayProperty(c : ArrayPropertyConfig) :  ArrayPropertyConfig {return c;}
-    // noinspection JSUnusedGlobalSymbols
-    static array(c : ArrayPropertyConfig) :  ArrayPropertyConfig {return c;}
+    static array(c : ArrayModelConfig | ArrayModelShortSyntax) :  ArrayModelConfig | ArrayModelShortSyntax {return c;}
     // noinspection JSUnusedGlobalSymbols
     static convertArray(c : ConvertArrayFunction) :  ConvertArrayFunction {return c;}
 
@@ -219,9 +213,9 @@ class Config
     // noinspection JSUnusedGlobalSymbols
     static multiInput(c : MultiInput) : MultiInput {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static singleInput(c : SingleInput) : SingleInput {return c;}
+    static singleInput(c : Model) : Model {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static beforeHandle(func : BeforeHandleFunction) : BeforeHandleFunction {return func;}
+    static prepareHandle(func : PrepareHandleFunction) : PrepareHandleFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static controllerAccess(func : ControllerAccessFunction) : ControllerAccessFunction {return func;}
 
@@ -233,7 +227,7 @@ class Config
 
     //Part Properties
     // noinspection JSUnusedGlobalSymbols
-    static property(c : Property) :  Property {return c;}
+    static model(c : Model) : Model {return c;}
 
 
     //Part Channel Config functions

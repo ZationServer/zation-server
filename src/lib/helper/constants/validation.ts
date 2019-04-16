@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ValuePropertyConfig} from "../configs/appConfig";
+import {ValueModelConfig} from "../configs/appConfig";
 
 export enum FormatLetters {
     UPPER_CASE              = 'uppercase',
@@ -21,32 +21,32 @@ export enum TypeTypes {
 }
 
 export const OnlyNumberFunctions = [
-    nameof<ValuePropertyConfig>(s => s.maxValue),
-    nameof<ValuePropertyConfig>(s => s.minValue)
+    nameof<ValueModelConfig>(s => s.maxValue),
+    nameof<ValueModelConfig>(s => s.minValue)
 ];
 
 export const OnlyStringFunctions = [
-    nameof<ValuePropertyConfig>(s => s.endsWith),
-    nameof<ValuePropertyConfig>(s => s.startsWith),
-    nameof<ValuePropertyConfig>(s => s.regex),
-    nameof<ValuePropertyConfig>(s => s.contains),
-    nameof<ValuePropertyConfig>(s => s.length),
-    nameof<ValuePropertyConfig>(s => s.minLength),
-    nameof<ValuePropertyConfig>(s => s.maxLength),
-    nameof<ValuePropertyConfig>(s => s.letters),
-    nameof<ValuePropertyConfig>(s => s.charClass),
+    nameof<ValueModelConfig>(s => s.endsWith),
+    nameof<ValueModelConfig>(s => s.startsWith),
+    nameof<ValueModelConfig>(s => s.regex),
+    nameof<ValueModelConfig>(s => s.contains),
+    nameof<ValueModelConfig>(s => s.length),
+    nameof<ValueModelConfig>(s => s.minLength),
+    nameof<ValueModelConfig>(s => s.maxLength),
+    nameof<ValueModelConfig>(s => s.letters),
+    nameof<ValueModelConfig>(s => s.charClass),
 
     //base64 is also a string
-    nameof<ValuePropertyConfig>(s => s.minByteSize),
-    nameof<ValuePropertyConfig>(s => s.maxByteSize)
+    nameof<ValueModelConfig>(s => s.minByteSize),
+    nameof<ValueModelConfig>(s => s.maxByteSize)
 ];
 
 export const OnlyDateFunctions = [
-    nameof<ValuePropertyConfig>(s => s.before),
-    nameof<ValuePropertyConfig>(s => s.after)
+    nameof<ValueModelConfig>(s => s.before),
+    nameof<ValueModelConfig>(s => s.after)
 ];
 
 export const OnlyBase64Functions = [
-    nameof<ValuePropertyConfig>(s => s.mimeType),
-    nameof<ValuePropertyConfig>(s => s.mimeSubType)
+    nameof<ValueModelConfig>(s => s.mimeType),
+    nameof<ValueModelConfig>(s => s.mimeSubType)
 ];

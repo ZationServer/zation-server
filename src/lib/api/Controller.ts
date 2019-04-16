@@ -12,9 +12,21 @@ import {ControllerConfig} from "../helper/configs/appConfig";
 
 export class Controller {
     private _storage: object = {};
+
+    /**
+     * @description
+     * The prepared small bag from the worker.
+     */
     protected smallBag: SmallBag;
 
-    constructor(smallBag: SmallBag) {
+    /**
+     * @description
+     * The name of the controller from the app config.
+     */
+    protected name: string;
+
+    constructor(name : string,smallBag: SmallBag) {
+        this.name = name;
         this.smallBag = smallBag;
     }
 
@@ -35,6 +47,7 @@ export class Controller {
     /**
      * @description
      * Gets invokes when the controller gets an request and input is correct.
+     * This method will only be invoked when the beforeHandle method has not thrown an error.
      * @param bag
      * @param input
      * @return
@@ -43,6 +56,18 @@ export class Controller {
      * You can also throw TaskErrors, which are sent to the client with a not success response.
      */
     async handle(bag: Bag, input: any): Promise<any> {
+    }
+
+    /**
+     * @description
+     * This method will be every time invoked when the handle is finished.
+     * Also if the handle method has thrown an error.
+     * You can use this method to clean up resources or close connections.
+     * (Use the bag storage to save the resources the bag is unique for every request).
+     * @param bag
+     * @param input
+     */
+    async finallyHandle(bag: Bag, input: any): Promise<void> {
     }
 
     /**
@@ -116,7 +141,7 @@ export class Controller {
 export interface ControllerClass {
     config: ControllerConfig;
 
-    new(smallBag: SmallBag): Controller;
+    new(name : string,smallBag: SmallBag): Controller;
 
     prototype: any;
 }

@@ -7,10 +7,8 @@ GitHub: LucaCode
 // noinspection TypeScriptPreferShortImport
 import {Bag}              from '../../api/Bag';
 import {
-    ControllerConfig,
-    ObjectPropertyConfig
+    ControllerConfig, ObjectModelConfig
 } from "../configs/appConfig";
-
 
 class ControllerTools
 {
@@ -21,26 +19,25 @@ class ControllerTools
     }
 
     //Part Before Handle
-    static async processBeforeHandleEvents(controllerConfig : ControllerConfig,bag : Bag) : Promise<void>
+    static async processPrepareHandleEvents(controllerConfig : ControllerConfig,bag : Bag) : Promise<void>
     {
-        const beforeHandle = controllerConfig.beforeHandle;
-        if(beforeHandle !== undefined)
+        const prepareHandle = controllerConfig.prepareHandle;
+        if(prepareHandle !== undefined)
         {
-            if(Array.isArray(beforeHandle)) {
+            if(Array.isArray(prepareHandle)) {
                 let promises : Promise<void>[] = [];
-                for(let i = 0; i < beforeHandle.length; i++)
-                {
-                    promises.push(ControllerTools.fireBeforeHandleEvent(beforeHandle[i],bag));
+                for(let i = 0; i < prepareHandle.length; i++) {
+                    promises.push(ControllerTools.firePrepareHandleEvent(prepareHandle[i],bag));
                 }
                 await Promise.all(promises);
             }
             else {
-                await ControllerTools.fireBeforeHandleEvent(beforeHandle,bag);
+                await ControllerTools.firePrepareHandleEvent(prepareHandle,bag);
             }
         }
     }
 
-    private static async fireBeforeHandleEvent(func : Function,bag : Bag) : Promise<void>
+    private static async firePrepareHandleEvent(func : Function,bag : Bag) : Promise<void>
     {
         if(typeof func === "function") {
             await func(bag);
@@ -57,10 +54,10 @@ class ControllerTools
             const k = path[i];
             if(tempConfig.hasOwnProperty(k) && typeof tempConfig[k] === 'object')
             {
-                if(tempConfig[k].hasOwnProperty(nameof<ObjectPropertyConfig>(s => s.properties))
+                if(tempConfig[k].hasOwnProperty(nameof<ObjectModelConfig>(s => s.properties))
                 && i < lastIrritate) {
                     //if not end of inputPath return the properties of the object
-                    tempConfig = tempConfig[k][nameof<ObjectPropertyConfig>(s => s.properties)];
+                    tempConfig = tempConfig[k][nameof<ObjectModelConfig>(s => s.properties)];
                 }
                 else {
                     tempConfig = tempConfig[k];

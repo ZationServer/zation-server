@@ -17,10 +17,10 @@ import EasyValidator   = require('./easyValidator');
 import TaskError       = require('../../api/TaskError');
 // noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../constants/validationTypes";
-import {ValuePropertyConfig} from "../configs/appConfig";
 import {FormatLetters}   from "../constants/validation";
 import ByteTools       = require("../tools/byteTools");
 import Base64Tools     = require("../tools/base64Tools");
+import {ValueModelConfig} from "../configs/appConfig";
 
 const functionLibrary = {};
 const typeLibrary = {};
@@ -279,7 +279,7 @@ typeLibrary[ValidationTypes.LAT_LONG] = (input,taskErrorBag,prepareErrorData) =>
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.regex)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.regex)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === 'string') {
         if(typeof settings === 'object' && !(settings instanceof RegExp)) {
@@ -310,7 +310,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.regex)] = (input, settings, t
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.enum)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.enum)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.validEnum(settings,input)) {
         taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotMatchWithEnum,
@@ -322,14 +322,14 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.enum)] = (input, settings, ta
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.privateEnum)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.privateEnum)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.validEnum(settings,input)) {
         taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotMatchWithPrivateEnum,prepareErrorData);
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.minLength)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.minLength)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === 'string' && input.length < settings) {
         taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithMinLength,
@@ -341,7 +341,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.minLength)] = (input, setting
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.maxLength)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.maxLength)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === 'string' && input.length > settings) {
         taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithMaxLength,
@@ -354,7 +354,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.maxLength)] = (input, setting
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.length)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.length)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === 'string' && input.length !== settings) {
         taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithLength,
@@ -367,7 +367,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.length)] = (input, settings, 
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.contains)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.contains)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === 'string') {
         const missingContains = EasyValidator.missingContains(input,settings);
@@ -383,7 +383,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.contains)] = (input, settings
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.equals)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.equals)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.equals(input,settings)) {
         taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotEquals,
@@ -396,7 +396,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.equals)] = (input, settings, 
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.minValue)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.minValue)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === 'number' && input < settings) {
         taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithMinValue,
@@ -409,7 +409,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.minValue)] = (input, settings
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.maxValue)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.maxValue)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === 'number' && input > settings) {
         taskErrorBag.addNewTaskError(ValidatorErrors.inputNotMatchWithMaxValue,
@@ -421,7 +421,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.maxValue)] = (input, settings
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.startsWith)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.startsWith)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === 'string' && !input.startsWith(settings)) {
         taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotStartsWith,
@@ -434,7 +434,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.startsWith)] = (input, settin
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.endsWith)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.endsWith)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === 'string' && !input.endsWith(settings)) {
         taskErrorBag.addNewTaskError(ValidatorErrors.inputIsNotEndsWith,
@@ -447,7 +447,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.endsWith)] = (input, settings
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.letters)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.letters)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === 'string') {
         if((settings === FormatLetters.UPPER_CASE) && (!EasyValidator.isUpperCase(input))) {
@@ -459,7 +459,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.letters)] = (input, settings,
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.charClass)] = (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.charClass)] = (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === 'string') {
         if(!input.match(settings)) {
@@ -473,7 +473,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.charClass)] = (input, setting
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.before)] = async (input, settings, taskErrorBag, prepareErrorData, preparedSmallBag) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.before)] = async (input, settings, taskErrorBag, prepareErrorData, preparedSmallBag) =>
 {
     if((typeof input === "string" && EasyValidator.isDate(input)) || input instanceof Date)
     {
@@ -490,7 +490,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.before)] = async (input, sett
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.after)] = async (input, settings, taskErrorBag, prepareErrorData, preparedSmallBag) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.after)] = async (input, settings, taskErrorBag, prepareErrorData, preparedSmallBag) =>
 {
     if((typeof input === "string" && EasyValidator.isDate(input)) || input instanceof Date)
     {
@@ -507,7 +507,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.after)] = async (input, setti
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.minByteSize)] = async (input, settings, taskErrorBag, prepareErrorData, preparedSmallBag,type) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.minByteSize)] = async (input, settings, taskErrorBag, prepareErrorData, preparedSmallBag,type) =>
 {
     if(typeof input === "string" && ByteTools.getByteSize(input,type) < settings)
     {
@@ -520,7 +520,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.minByteSize)] = async (input,
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.maxByteSize)] = async (input, settings, taskErrorBag, prepareErrorData, preparedSmallBag,type) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.maxByteSize)] = async (input, settings, taskErrorBag, prepareErrorData, preparedSmallBag,type) =>
 {
     if(typeof input === "string" && ByteTools.getByteSize(input,type) > settings)
     {
@@ -533,7 +533,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.maxByteSize)] = async (input,
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.mimeType)] = async (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.mimeType)] = async (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === "string")
     {
@@ -564,7 +564,7 @@ functionLibrary[nameof<ValuePropertyConfig>(s => s.mimeType)] = async (input, se
     }
 };
 
-functionLibrary[nameof<ValuePropertyConfig>(s => s.mimeSubType)] = async (input, settings, taskErrorBag, prepareErrorData) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.mimeSubType)] = async (input, settings, taskErrorBag, prepareErrorData) =>
 {
     if(typeof input === "string")
     {

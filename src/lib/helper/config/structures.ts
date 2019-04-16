@@ -10,12 +10,12 @@ import ObjectTools = require('../tools/objectTools');
 import {EventConfig} from "../configs/eventConfig";
 import {ErrorConstruct} from "../configs/errorConfig";
 import BagExtension, {
-    AnyOfProperty,
-    AppConfig, ArrayPropertyConfig, ArraySettings,
+    AnyOfModelConfig,
+    AppConfig, ArrayModelConfig, ArraySettings,
     AuthUserGroupConfig,
     BackgroundTask,
     ControllerConfig,
-    ObjectPropertyConfig, PropertyOptional, ValuePropertyConfig
+    ModelOptional, ObjectModelConfig, ValueModelConfig
 } from "../configs/appConfig";
 import {
     MainConfig,
@@ -24,6 +24,7 @@ import {
     PanelUserConfig
 } from "../configs/mainConfig";
 import {StarterConfig} from "../configs/starterConfig";
+// noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../constants/validationTypes";
 import {FormatLetters} from "../constants/validation";
 import {ServiceConfig} from "../configs/serviceConfig";
@@ -45,9 +46,7 @@ App[nameof<AppConfig>(s => s.authController)]     = {types : ['string'],isOption
 App[nameof<AppConfig>(s => s.controllers)]        = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.userGroups)]         = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.controllerDefaults)] = {types : ['object'],isOptional : true};
-App[nameof<AppConfig>(s => s.objects)]            = {types : ['object'],isOptional : true};
-App[nameof<AppConfig>(s => s.values)]             = {types : ['object'],isOptional : true};
-App[nameof<AppConfig>(s => s.arrays)]             = {types : ['object'],isOptional : true};
+App[nameof<AppConfig>(s => s.models)]             = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.backgroundTasks)]    = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.bagExtensions)]      = {types : ['array'],isOptional : true};
 
@@ -66,20 +65,20 @@ ServiceModule[nameof<ServiceModuleDefault>(s => s.serviceName)]    = {types : ['
 ServiceModule[nameof<ServiceModuleDefault>(s => s.bagExtensions)]  = {types : ['object'],isOptional : false};
 ServiceModule[nameof<ServiceModuleDefault>(s => s.service)]        = {types : ['object'],isOptional : false};
 
-const AppObject = {};
-AppObject[nameof<ObjectPropertyConfig>(s => s.properties)] = {types : ['object'],isOptional : false};
-AppObject[nameof<ObjectPropertyConfig>(s => s.construct)]  = {types : ['function'],isOptional : true};
-AppObject[nameof<ObjectPropertyConfig>(s => s.extends)]    = {types : ['string'],isOptional : true};
-AppObject[nameof<ObjectPropertyConfig>(s => s.isOptional)] = {types : ['boolean'],isOptional: true};
-AppObject[nameof<ValuePropertyConfig>(s => s.default)]     = {types : ['string','array','number','boolean','object','function'],isOptional : true};
-AppObject[nameof<ObjectPropertyConfig>(s => s.prototype)]  = {types : ['object'],isOptional : true};
-AppObject[nameof<ObjectPropertyConfig>(s => s.convert)]    = {types : ['function'],isOptional : true};
+const ObjectModel = {};
+ObjectModel[nameof<ObjectModelConfig>(s => s.properties)] = {types : ['object'],isOptional : false};
+ObjectModel[nameof<ObjectModelConfig>(s => s.construct)]  = {types : ['function'],isOptional : true};
+ObjectModel[nameof<ObjectModelConfig>(s => s.extends)]    = {types : ['string'],isOptional : true};
+ObjectModel[nameof<ObjectModelConfig>(s => s.isOptional)] = {types : ['boolean'],isOptional: true};
+ObjectModel[nameof<ObjectModelConfig>(s => s.default)]     = {types : ['string','array','number','boolean','object','function'],isOptional : true};
+ObjectModel[nameof<ObjectModelConfig>(s => s.prototype)]  = {types : ['object'],isOptional : true};
+ObjectModel[nameof<ObjectModelConfig>(s => s.convert)]    = {types : ['function'],isOptional : true};
 
-const ControllerConfig = {};   
+const ControllerConfig = {};
 ControllerConfig[nameof<ControllerConfig>(s => s.input)]            = {types : ['object'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.multiInput)]       = {types : ['object'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.singleInput)]      = {types : ['object','array','string'],isOptional : true};
-ControllerConfig[nameof<ControllerConfig>(s => s.beforeHandle)]     = {types : ['function','array'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.prepareHandle)]    = {types : ['function','array'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.systemController)] = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.wsAccess)]         = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.httpAccess)]       = {types : ['boolean'],isOptional : true};
@@ -92,9 +91,9 @@ ControllerConfig[nameof<ControllerConfig>(s => s.notAccess)]        = {types : [
 ControllerConfig[nameof<ControllerConfig>(s => s.versionAccess)]    = {types : ['string','object'],isOptional : true};
 
 const AnyOf = {};
-AnyOf[nameof<AnyOfProperty>(s => s.anyOf)]           = {types : ['array','object'],isOptional : false};
-AnyOf[nameof<PropertyOptional>(s => s.isOptional)]   = {types : ['boolean'],isOptional : true};
-AnyOf[nameof<PropertyOptional>(s => s.default)]      = {types : ['string','array','number','boolean','object','function'],isOptional : true};
+AnyOf[nameof<AnyOfModelConfig>(s => s.anyOf)]     = {types : ['array','object'],isOptional : false};
+AnyOf[nameof<ModelOptional>(s => s.isOptional)]   = {types : ['boolean'],isOptional : true};
+AnyOf[nameof<ModelOptional>(s => s.default)]      = {types : ['string','array','number','boolean','object','function'],isOptional : true};
 
 const Main = {};
 Main[nameof<MainConfig>(s => s.port)]               = {types : ['number'],isOptional : true};
@@ -209,39 +208,40 @@ StarterConfig[nameof<StarterConfig>(s => s.errorConfig)]   = {types : ['string']
 StarterConfig[nameof<StarterConfig>(s => s.eventConfig)]   = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.channelConfig)] = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.mainConfig)]    = {types : ['string'],isOptional : true};
+StarterConfig[nameof<StarterConfig>(s => s.checkConfigs)]  = {types : ['boolean'],isOptional : true};
 
 const allValidationTypes = ObjectTools.getObjValues(ValidationTypes);
 const allFormatLetters = ObjectTools.getObjValues(FormatLetters);
 
-const InputBody = {};
-InputBody[nameof<ValuePropertyConfig>(s => s.isOptional)]   = {types : ['boolean'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.default)]      = {types : ['string','array','number','boolean','object','function'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.convert)]      = {types : ['function'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.extends)]      = {types : ['string'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.type)]         = {types : ['string','array'],isOptional : true,enum:allValidationTypes};
-InputBody[nameof<ValuePropertyConfig>(s => s.strictType)]   = {types : ['boolean'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.convertType)]  = {types : ['boolean'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.enum)]         = {types : ['array'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.privateEnum)]  = {types : ['array'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.minLength)]    = {types : ['number'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.maxLength)]    = {types : ['number'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.length)]       = {types : ['number'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.contains)]     = {types : ['string','array'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.equals)]       = {types : ['string','number','array','object','boolean','function'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.minValue)]     = {types : ['number'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.maxValue)]     = {types : ['number'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.regex)]        = {types : ['string','object'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.endsWith)]     = {types : ['string'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.startsWith)]   = {types : ['string'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.letters)]      = {types : ['string'],isOptional : true,enum:allFormatLetters};
-InputBody[nameof<ValuePropertyConfig>(s => s.charClass)]    = {types : ['string'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.maxByteSize)]  = {types : ['number'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.minByteSize)]  = {types : ['number'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.mimeType)]     = {types : ['string','array','null'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.mimeSubType)]  = {types : ['string','array','null'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.before)]       = {types : ['object','function'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.after)]        = {types : ['object','function'],isOptional : true};
-InputBody[nameof<ValuePropertyConfig>(s => s.validate)]     = {types : ['function','array'],isOptional : true};
+const ValueModel = {};
+ValueModel[nameof<ValueModelConfig>(s => s.isOptional)]   = {types : ['boolean'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.default)]      = {types : ['string','array','number','boolean','object','function'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.convert)]      = {types : ['function'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.extends)]      = {types : ['string'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.type)]         = {types : ['string','array'],isOptional : true,enum:allValidationTypes};
+ValueModel[nameof<ValueModelConfig>(s => s.strictType)]   = {types : ['boolean'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.convertType)]  = {types : ['boolean'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.enum)]         = {types : ['array'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.privateEnum)]  = {types : ['array'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.minLength)]    = {types : ['number'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.maxLength)]    = {types : ['number'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.length)]       = {types : ['number'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.contains)]     = {types : ['string','array'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.equals)]       = {types : ['string','number','array','object','boolean','function'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.minValue)]     = {types : ['number'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.maxValue)]     = {types : ['number'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.regex)]        = {types : ['string','object'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.endsWith)]     = {types : ['string'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.startsWith)]   = {types : ['string'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.letters)]      = {types : ['string'],isOptional : true,enum:allFormatLetters};
+ValueModel[nameof<ValueModelConfig>(s => s.charClass)]    = {types : ['string'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.maxByteSize)]  = {types : ['number'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.minByteSize)]  = {types : ['number'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.mimeType)]     = {types : ['string','array','null'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.mimeSubType)]  = {types : ['string','array','null'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.before)]       = {types : ['object','function'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.after)]        = {types : ['object','function'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.validate)]     = {types : ['function','array'],isOptional : true};
 
 const ChannelConfig = {};
 ChannelConfig[nameof<ChannelConfig>(s => s.customChannels)]       = {types : ['object'],isOptional : true};
@@ -283,17 +283,17 @@ ArrayShortCutSpecify[nameof<ArraySettings>(s => s.minLength)]         = {types :
 ArrayShortCutSpecify[nameof<ArraySettings>(s => s.maxLength)]         = {types : ['number'],isOptional : true};
 ArrayShortCutSpecify[nameof<ArraySettings>(s => s.length)]            = {types : ['number'],isOptional : true};
 ArrayShortCutSpecify[nameof<ArraySettings>(s => s.isOptional)]        = {types : ['boolean'],isOptional: true};
-ArrayShortCutSpecify[nameof<ValuePropertyConfig>(s => s.default)]     = {types : ['string','array','number','boolean','object','function'],isOptional : true};
+ArrayShortCutSpecify[nameof<ValueModelConfig>(s => s.default)]        = {types : ['string','array','number','boolean','object','function'],isOptional : true};
 ArrayShortCutSpecify[nameof<ArraySettings>(s => s.convert)]           = {types : ['function'],isOptional: true};
 
-const AppArray = {};
-AppArray[nameof<ArrayPropertyConfig>(s => s.array)]             = {types : ['object','string','array'],isOptional : true};
-AppArray[nameof<ArrayPropertyConfig>(s => s.minLength)]         = {types : ['number'],isOptional : true};
-AppArray[nameof<ArrayPropertyConfig>(s => s.maxLength)]         = {types : ['number'],isOptional : true};
-AppArray[nameof<ArrayPropertyConfig>(s => s.length)]            = {types : ['number'],isOptional : true};
-AppArray[nameof<ArrayPropertyConfig>(s => s.isOptional)]        = {types : ['boolean'],isOptional: true};
-AppArray[nameof<ValuePropertyConfig>(s => s.default)]           = {types : ['string','array','number','boolean','object','function'],isOptional : true};
-AppArray[nameof<ArrayPropertyConfig>(s => s.convert)]           = {types : ['function'],isOptional: true};
+const ArrayModel = {};
+ArrayModel[nameof<ArrayModelConfig>(s => s.array)]             = {types : ['object','string','array'],isOptional : true};
+ArrayModel[nameof<ArrayModelConfig>(s => s.minLength)]         = {types : ['number'],isOptional : true};
+ArrayModel[nameof<ArrayModelConfig>(s => s.maxLength)]         = {types : ['number'],isOptional : true};
+ArrayModel[nameof<ArrayModelConfig>(s => s.length)]            = {types : ['number'],isOptional : true};
+ArrayModel[nameof<ArrayModelConfig>(s => s.isOptional)]        = {types : ['boolean'],isOptional: true};
+ArrayModel[nameof<ValueModelConfig>(s => s.default)]           = {types : ['string','array','number','boolean','object','function'],isOptional : true};
+ArrayModel[nameof<ArrayModelConfig>(s => s.convert)]           = {types : ['function'],isOptional: true};
 
 const AuthUserGroup = {};
 AuthUserGroup[nameof<AuthUserGroupConfig>(s => s.panelAccess)]      = {types : ['boolean'],isOptional: true};
@@ -356,16 +356,16 @@ EventConfig[nameof<EventConfig>(s => s.scMiddlewareEmit)]         = {types : ['f
 const Structures = {
     App : App,
     BackgroundTask : BackgroundTask,
-    AppObject : AppObject,
+    ObjectModel : ObjectModel,
     ControllerConfig : ControllerConfig,
     Main : Main,
     StarterConfig : StarterConfig,
-    InputBody : InputBody,
+    ValueModel : ValueModel,
     ChannelConfig : ChannelConfig,
     ServiceConfig : ServiceConfig,
     ChannelFullItem : ChannelFullItem,
     ChannelNormalItem : ChannelNormalItem,
-    AppArray : AppArray,
+    ArrayModel : ArrayModel,
     ArrayShortCutSpecify : ArrayShortCutSpecify,
     EventConfig : EventConfig,
     Error : Error,

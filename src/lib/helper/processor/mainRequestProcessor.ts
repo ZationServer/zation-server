@@ -140,7 +140,6 @@ export default class MainRequestProcessor
                                     //socket prepared channel engine
                                     shBridge.isWebSocket() ? shBridge.getSocket().channelEngine : undefined
                                 );
-
                                 await controllerInstance.wrongInput(bag,input);
                             }
                             //than throw the input for return it to the client
@@ -190,9 +189,9 @@ export default class MainRequestProcessor
     // noinspection JSMethodCanBeStatic
     private async processController(controllerInstance : Controller,controllerConfig : object,bag : Bag) : Promise<ResponseResult>
     {
-        //process the controller and before event
+        //process the controller handle, before handle events and finally handle.
         try {
-            await ControllerTools.processBeforeHandleEvents(controllerConfig, bag);
+            await ControllerTools.processPrepareHandleEvents(controllerConfig,bag);
 
             let result : Result | any = await controllerInstance.handle(bag,bag.getInput());
 
@@ -200,9 +199,13 @@ export default class MainRequestProcessor
                 return {r : result};
             }
 
+            await controllerInstance.finallyHandle(bag,bag.getInput());
+
             return result._getJsonObj();
         }
         catch(e) {
+            try {await controllerInstance.finallyHandle(bag,bag.getInput());}
+            catch (e) {}
             throw e;
         }
     }

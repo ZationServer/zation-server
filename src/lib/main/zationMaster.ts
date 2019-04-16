@@ -116,12 +116,14 @@ class ZationMaster {
         let configErrorBag = new ConfigErrorBag();
         const configChecker = new ConfigChecker(this.zc, configErrorBag);
 
-        configChecker.checkStarterConfig();
-        if (configErrorBag.hasConfigError()) {
-            Logger.printConfigErrorBag(configErrorBag);
-            process.exit();
+        if(this.zc.starterConfig.checkConfigs) {
+            configChecker.checkStarterConfig();
+            if (configErrorBag.hasConfigError()) {
+                Logger.printConfigErrorBag(configErrorBag);
+                process.exit();
+            }
+            Logger.printStartDebugInfo(`The Master has checked the starter config.`, true);
         }
-        Logger.printStartDebugInfo(`The Master has checked the starter config.`, true);
 
         Logger.startStopWatch();
         await this.zc.loadOtherConfigScripts();
@@ -138,13 +140,15 @@ class ZationMaster {
         this.zc.loadOtherConfigFromScript();
         Logger.printStartDebugInfo(`The Master has loaded the other config files.`, true);
 
-        Logger.startStopWatch();
-        configChecker.checkAllConfigs();
-        if (configErrorBag.hasConfigError()) {
-            Logger.printConfigErrorBag(configErrorBag);
-            process.exit();
+        if(this.zc.starterConfig.checkConfigs) {
+            Logger.startStopWatch();
+            configChecker.checkAllConfigs();
+            if (configErrorBag.hasConfigError()) {
+                Logger.printConfigErrorBag(configErrorBag);
+                process.exit();
+            }
+            Logger.printStartDebugInfo(`The Master has checked the config files.`, true);
         }
-        Logger.printStartDebugInfo(`The Master has checked the config files.`, true);
 
         await this.checkPort();
 

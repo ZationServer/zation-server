@@ -65,41 +65,27 @@ export interface AppConfig
     controllerDefaults  ?: ControllerConfig;
 
     /**
-     * In this property, you can define all your user values.
+     * In this property, you can define all your models.
      * @example
-     * values : {
+     * models : {
+     *   //example of model for an value.
      *   userName: {
-            type: 'string',
-            maxLength: 15,
-            charClass: 'a-zA-Z._0-9'
-         },
-     * }
-     */
-    values  ?: Record<string,ValuePropertyConfig>;
-
-    /**
-     * In this property, you can define all your objects.
-     * @example
-     * objects : {
-     *  chatMessage : {
+     *      type: 'string',
+     *      maxLength: 15,
+     *      charClass: 'a-zA-Z._0-9'
+     *   },
+     *   //example of model for an object.
+     *   chatMessage : {
      *          properties : {
      *              text : {},
      *              fromId : {}
      *          }
      *     },
-     * }
-     */
-    objects  ?: Record<string,ObjectPropertyConfig>;
-
-    /**
-     * In this property, you can define all your arrays.
-     * @example
-     * arrays : {
+     *   //example of model for an array.
      *   names : ['v.name',{maxLength : 20}]
      * }
-     *
      */
-    arrays  ?: Record<string,ArrayPropertyConfig | ArrayShortSyntax>;
+    models ?: Record<string,Model>;
 
     /**
      * In this property, you can define background tasks.
@@ -123,9 +109,10 @@ export interface AppConfig
     bagExtensions ?: BagExtension[];
 }
 
-export type Property = ValuePropertyConfig | ObjectPropertyConfig | ArrayPropertyConfig | ArrayShortSyntax | string;
+export type Model =
+    ValueModelConfig | ObjectModelConfig | ArrayModelConfig | ArrayModelShortSyntax | string | AnyOfModelConfig;
 
-export interface AnyOfProperty extends PropertyOptional
+export interface AnyOfModelConfig extends ModelOptional
 {
     /**
      * With the anyOf modifier, you can define different properties.
@@ -141,7 +128,7 @@ export interface AnyOfProperty extends PropertyOptional
      * }
      * ```
      */
-    anyOf : Record<string,Property> | Property[]
+    anyOf : Record<string,Model> | Model[]
 }
 
 export type TaskFunction = (smallBag : SmallBag) => Promise<void> | void;
@@ -242,7 +229,7 @@ export interface InputConfig {
     /**
      * This property defines the input.
      * It works parameter based, the key is the parameter name,
-     * and the value is the configuration of the parameter input.
+     * and the value defines an anonymous model or link to a declared model.
      * If you want to get only one anonymous input you can use the property singleInput.
      * @example
      * multiInput : {
@@ -259,19 +246,21 @@ export interface InputConfig {
     /**
      * This property defines a single input.
      * (Not parameter based like multiInput or input)
+     * You can directly define an anonymous model or link to a declared model.
      * @example
      * singleInput : {
      *     type : 'string',
      *     minLength : 5
      * }
      */
-    singleInput ?: SingleInput;
+    singleInput ?: Model;
     /**
      * This property defines the input.
      * Its a shortcut for the property multiInput.
      * It works parameter based, the key is the parameter name,
-     * and the value is the configuration of the parameter input.
+     * and the value defines an anonymous model or link to a declared model.
      * If you want to get only one anonymous input you can use the property singleInput.
+     * @example
      * multiInput : {
      *     name : {
      *         type : 'string'
@@ -286,16 +275,27 @@ export interface InputConfig {
 }
 
 export interface MultiInput {
-    [key: string]: SingleInput;
+    [key: string]: Model;
 }
-export type SingleInput = Property | AnyOfProperty;
 
-export type BeforeHandleFunction = (bag : Bag) => Promise<void> | void;
+export type PrepareHandleFunction = (bag : Bag) => Promise<void> | void;
+
 export type ControllerAccessFunction = (smallBag : SmallBag,token : ZationToken | null) => Promise<boolean> | boolean;
 
 export interface ControllerConfig extends InputConfig
 {
-    beforeHandle  ?: BeforeHandleFunction[] | BeforeHandleFunction;
+    /**
+     * This property can be used to add functions in the prepare handle event of this controller.
+     * This event gets invoked before the handle method of the controller.
+     * It can be used to prepare stuff on the bag.
+     * (The bag is unique for every request.)
+     * It is also possible to throw an error to the client.
+     * @example
+     * prepareHandle : [(bag) => {...}]
+     * @throws
+     * You can also throw TaskErrors, which are sent to the client with a not success response.
+     */
+    prepareHandle ?: PrepareHandleFunction[] | PrepareHandleFunction;
     systemController  ?: boolean;
     wsAccess  ?: boolean;
     httpAccess  ?: boolean;
@@ -308,11 +308,17 @@ export interface ControllerConfig extends InputConfig
     versionAccess  ?: string | Record<string,number | number[]>
 }
 
+export interface StreamConfig extends InputConfig {
+
+
+}
+
+
 export type ValidatorFunction = (value : any,taskErrorBag : TaskErrorBag,inputPath : string,smallBag : SmallBag,type ?: string) => Promise<void> | void;
 export type ConvertValueFunction = (value : any, smallBag : SmallBag) => Promise<any> | any;
 export type GetDateFunction = (smallBag : SmallBag) => Promise<Date> | Date;
 
-export interface ValuePropertyConfig extends PropertyOptional
+export interface ValueModelConfig extends ModelOptional
 {
     type  ?: ValidationTypes | string | (ValidationTypes | string)[];
     strictType  ?: boolean;
@@ -342,16 +348,16 @@ export interface ValuePropertyConfig extends PropertyOptional
     extends ?: string;
 }
 
-export interface PropertyOptional {
+export interface ModelOptional {
     isOptional  ?: boolean;
     default ?: any
 }
 
-export type ObjectProperties = Record<string,Property | AnyOfProperty>;
+export type ObjectProperties = Record<string,Model>;
 export type ConvertObjectFunction = (obj: any, smallBag : SmallBag) => Promise<any> | any;
 export type ConstructObjectFunction = (self : any, smallBag : SmallBag) => Promise<void> | void;
 
-export interface ObjectPropertyConfig extends PropertyOptional
+export interface ObjectModelConfig extends ModelOptional
 {
     properties : ObjectProperties;
     extends  ?: string;
@@ -361,14 +367,14 @@ export interface ObjectPropertyConfig extends PropertyOptional
     moreInputAllowed ?: boolean;
 }
 
-export interface ArrayPropertyConfig extends ArraySettings
+export interface ArrayModelConfig extends ArraySettings
 {
-    array : Property | AnyOfProperty
+    array : Model
 }
 
 export type ConvertArrayFunction = (array: any[], smallBag : SmallBag) => Promise<any> | any;
 
-export interface ArraySettings extends PropertyOptional
+export interface ArraySettings extends ModelOptional
 {
     minLength  ?: number;
     maxLength  ?: number;
@@ -376,9 +382,9 @@ export interface ArraySettings extends PropertyOptional
     convert  ?: ConvertArrayFunction
 }
 
-export interface ArrayShortSyntax extends Array<Property | AnyOfProperty | ArraySettings | undefined>
+export interface ArrayModelShortSyntax extends Array<Model | ArraySettings | undefined>
 {
-    0 : Property | AnyOfProperty
+    0 : Model
     1 ?: ArraySettings
 }
 
