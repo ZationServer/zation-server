@@ -48,7 +48,7 @@ class ConfigPeCompiler
         this.preCompileErrorConfig();
 
         //view precompiled configs
-        console.dir(this.zc.appConfig,{depth:null});
+        //console.dir(this.zc.appConfig,{depth:null});
         //console.dir(this.zc.channelConfig,{depth:null});
     }
 

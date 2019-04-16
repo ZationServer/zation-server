@@ -73,43 +73,43 @@ export interface EventConfig
     beforeTaskErrorBag  ?: BeforeTaskErrorBagFunction | BeforeTaskErrorBagFunction[];
     socketDisconnection  ?: ZationSocketDisconnectionFunction | ZationSocketDisconnectionFunction[];
     workerMessage  ?: ZationWorkerMessageFunction | ZationWorkerMessageFunction[];
-
     middlewareAuthenticate  ?: MiddlewareAuthenticationFunction;
 
-    socketError  ?: SocketErrorFunction | SocketErrorFunction[];
-    socketRaw  ?: SocketRawFunction | SocketRawFunction[];
-    socketConnect  ?: SocketConnectFunction | SocketConnectFunction[];
-    socketDisconnect  ?: SocketCodeDataFunction | SocketCodeDataFunction[];
-    socketConnectAbort  ?: SocketCodeDataFunction | SocketCodeDataFunction[];
-    socketClose  ?: SocketCodeDataFunction | SocketCodeDataFunction[];
-    socketSubscribe  ?: SocketSubscribeFunction | SocketSubscribeFunction[];
-    socketUnsubscribe  ?: SocketUnsubscribeFunction | SocketUnsubscribeFunction[];
-    socketBadAuthToken  ?: SocketBadAuthTokenFunction | SocketBadAuthTokenFunction[];
-    socketAuthenticate  ?: SocketAuthenticateFunction | SocketAuthenticateFunction[];
-    socketDeauthenticate  ?: SocketDeauthenticateFunction | SocketDeauthenticateFunction[];
-    socketAuthStateChange  ?: SocketAuthStateChangeFunction | SocketAuthStateChangeFunction[];
-    socketMessage  ?: SocketMessageFunction | SocketMessageFunction[];
+    //socket cluster events
+    sc_socketError  ?: SocketErrorFunction | SocketErrorFunction[];
+    sc_socketRaw  ?: SocketRawFunction | SocketRawFunction[];
+    sc_socketConnect  ?: SocketConnectFunction | SocketConnectFunction[];
+    sc_socketDisconnect  ?: SocketCodeDataFunction | SocketCodeDataFunction[];
+    sc_socketConnectAbort  ?: SocketCodeDataFunction | SocketCodeDataFunction[];
+    sc_socketClose  ?: SocketCodeDataFunction | SocketCodeDataFunction[];
+    sc_socketSubscribe  ?: SocketSubscribeFunction | SocketSubscribeFunction[];
+    sc_socketUnsubscribe  ?: SocketUnsubscribeFunction | SocketUnsubscribeFunction[];
+    sc_socketBadAuthToken  ?: SocketBadAuthTokenFunction | SocketBadAuthTokenFunction[];
+    sc_socketAuthenticate  ?: SocketAuthenticateFunction | SocketAuthenticateFunction[];
+    sc_socketDeauthenticate  ?: SocketDeauthenticateFunction | SocketDeauthenticateFunction[];
+    sc_socketAuthStateChange  ?: SocketAuthStateChangeFunction | SocketAuthStateChangeFunction[];
+    sc_socketMessage  ?: SocketMessageFunction | SocketMessageFunction[];
 
-    scServerError  ?: ScServerErrorFunction | ScServerErrorFunction[];
-    scServerNotice  ?: ScServerNoticeFunction | ScServerNoticeFunction[];
-    scServerHandshake  ?: ScServerSocketFunction | ScServerSocketFunction[];
-    scServerConnectionAbort  ?: ScServerSocketCodeDataFunction | ScServerSocketCodeDataFunction[];
-    scServerDisconnection  ?: ScServerSocketCodeDataFunction | ScServerSocketCodeDataFunction[];
-    scServerClosure  ?: ScServerSocketCodeDataFunction | ScServerSocketCodeDataFunction[];
-    scServerConnection  ?: ScServerConnectionFunction | ScServerConnectionFunction[];
-    scServerSubscription  ?: ScServerSubscriptionFunction | ScServerSubscriptionFunction[];
-    scServerUnsubscription  ?: ScServerUnsubscriptionFunction | ScServerUnsubscriptionFunction[];
-    scServerAuthentication  ?: ScServerAuthenticationFunction | ScServerAuthenticationFunction[];
-    scServerDeauthentication  ?: ScServerDeauthenticationFunction | ScServerDeauthenticationFunction[];
-    scServerAuthenticationStateChange  ?: ScServerAuthenticationStateChangeFunction | ScServerAuthenticationStateChangeFunction[];
-    scServerBadSocketAuthToken  ?: ScServerBadSocketAuthTokenFunction | ScServerBadSocketAuthTokenFunction[];
-    scServerReady  ?: ScServerReadyFunction | ScServerReadyFunction[];
+    sc_serverError  ?: ScServerErrorFunction | ScServerErrorFunction[];
+    sc_serverNotice  ?: ScServerNoticeFunction | ScServerNoticeFunction[];
+    sc_serverHandshake  ?: ScServerSocketFunction | ScServerSocketFunction[];
+    sc_serverConnectionAbort  ?: ScServerSocketCodeDataFunction | ScServerSocketCodeDataFunction[];
+    sc_serverDisconnection  ?: ScServerSocketCodeDataFunction | ScServerSocketCodeDataFunction[];
+    sc_serverClosure  ?: ScServerSocketCodeDataFunction | ScServerSocketCodeDataFunction[];
+    sc_serverConnection  ?: ScServerConnectionFunction | ScServerConnectionFunction[];
+    sc_serverSubscription  ?: ScServerSubscriptionFunction | ScServerSubscriptionFunction[];
+    sc_serverUnsubscription  ?: ScServerUnsubscriptionFunction | ScServerUnsubscriptionFunction[];
+    sc_serverAuthentication  ?: ScServerAuthenticationFunction | ScServerAuthenticationFunction[];
+    sc_serverDeauthentication  ?: ScServerDeauthenticationFunction | ScServerDeauthenticationFunction[];
+    sc_serverAuthenticationStateChange  ?: ScServerAuthenticationStateChangeFunction | ScServerAuthenticationStateChangeFunction[];
+    sc_serverBadSocketAuthToken  ?: ScServerBadSocketAuthTokenFunction | ScServerBadSocketAuthTokenFunction[];
+    sc_serverReady  ?: ScServerReadyFunction | ScServerReadyFunction[];
 
-    scMiddlewareAuthenticate  ?: ScMiddlewareFunction;
-    scMiddlewareHandshakeWs  ?: ScMiddlewareFunction;
-    scMiddlewareHandshakeSc  ?: ScMiddlewareFunction;
-    scMiddlewareSubscribe  ?: ScMiddlewareFunction;
-    scMiddlewarePublishIn  ?: ScMiddlewareFunction;
-    scMiddlewarePublishOut  ?: ScMiddlewareFunction;
-    scMiddlewareEmit  ?: ScMiddlewareFunction;
+    sc_middlewareAuthenticate  ?: ScMiddlewareFunction;
+    sc_middlewareHandshakeWs  ?: ScMiddlewareFunction;
+    sc_middlewareHandshakeSc  ?: ScMiddlewareFunction;
+    sc_middlewareSubscribe  ?: ScMiddlewareFunction;
+    sc_middlewarePublishIn  ?: ScMiddlewareFunction;
+    sc_middlewarePublishOut  ?: ScMiddlewareFunction;
+    sc_middlewareEmit  ?: ScMiddlewareFunction;
 }

@@ -304,7 +304,7 @@ class ZationWorker extends SCWorker
                 await this.zationReqHandler.processSocketReq(data,socket,respond);
             });
 
-            await this.zc.emitEvent(this.zc.eventConfig.scServerConnection,this.getPreparedSmallBag(),socket,conState);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_serverConnection,this.getPreparedSmallBag(),socket,conState);
             await this.zc.emitEvent(this.zc.eventConfig.socket,this.getPreparedSmallBag(),socket);
 
         });
@@ -442,11 +442,17 @@ class ZationWorker extends SCWorker
 
     private initSocketMiddleware()
     {
+        const eventConfig = this.zc.eventConfig;
+
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_SUBSCRIBE, async (req, next) => {
 
-            const userMidRes = await
-                this.zc.checkScMiddlewareEvent
-                (this.zc.eventConfig.scMiddlewareSubscribe,next,this.getPreparedSmallBag(),req);
+            let userMidRes = true;
+
+            if(eventConfig.sc_middlewareSubscribe) {
+                userMidRes = await
+                    this.zc.checkScMiddlewareEvent
+                    (eventConfig.sc_middlewareSubscribe,next,this.getPreparedSmallBag(),req);
+            }
 
             if(userMidRes)
             {
@@ -576,10 +582,12 @@ class ZationWorker extends SCWorker
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_PUBLISH_IN, async (req, next) =>
         {
             const channel = req.channel;
+            let userMidRes = true;
 
-            const userMidRes = await
-            this.zc.checkScMiddlewareEvent
-            (this.zc.eventConfig.scMiddlewarePublishIn,next,this.getPreparedSmallBag(),req);
+            if(eventConfig.sc_middlewarePublishIn) {
+                userMidRes = await this.zc.checkScMiddlewareEvent
+                    (eventConfig.sc_middlewarePublishIn,next,this.getPreparedSmallBag(),req);
+            }
 
             if(userMidRes)
             {
@@ -696,9 +704,13 @@ class ZationWorker extends SCWorker
         //ZATION checks for sockets get own published data
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_PUBLISH_OUT, async (req, next) =>
         {
-            const userMidRes = await
-                this.zc.checkScMiddlewareEvent
-                (this.zc.eventConfig.scMiddlewarePublishOut,next,this.getPreparedSmallBag(),req);
+            let userMidRes = true;
+
+            if(eventConfig.sc_middlewarePublishOut){
+                userMidRes = await
+                    this.zc.checkScMiddlewareEvent
+                    (eventConfig.sc_middlewarePublishOut,next,this.getPreparedSmallBag(),req);
+            }
 
             if(userMidRes)
             {
@@ -763,7 +775,7 @@ class ZationWorker extends SCWorker
         {
             const userMidRes = await
             this.zc.checkScMiddlewareEvent
-            (this.zc.eventConfig.scMiddlewareHandshakeSc,next,this.getPreparedSmallBag(),req);
+            (this.zc.eventConfig.sc_middlewareHandshakeSc,next,this.getPreparedSmallBag(),req);
 
             if(userMidRes) {
                 //check for version and system info
@@ -801,7 +813,7 @@ class ZationWorker extends SCWorker
             // @ts-ignore
             if(this.originsEngine.check(parts.hostname,parts.protocol,parts.port)) {
                 if(await this.zc.checkScMiddlewareEvent
-                    (this.zc.eventConfig.scMiddlewareHandshakeWs,next,this.getPreparedSmallBag(),req)) {
+                    (this.zc.eventConfig.sc_middlewareHandshakeWs,next,this.getPreparedSmallBag(),req)) {
                     next();
                 }
             }
@@ -815,7 +827,7 @@ class ZationWorker extends SCWorker
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_EMIT, async (req, next) =>
         {
             if(await this.zc.checkScMiddlewareEvent
-                (this.zc.eventConfig.scMiddlewareEmit,next,this.getPreparedSmallBag(),req)) {
+                (this.zc.eventConfig.sc_middlewareEmit,next,this.getPreparedSmallBag(),req)) {
                 next();
             }
         });
@@ -827,15 +839,15 @@ class ZationWorker extends SCWorker
             const token = req.authToken;
 
             let userMidRes = true;
-            if(this.zc.eventConfig.scMiddlewareAuthenticate) {
+            if(eventConfig.sc_middlewareAuthenticate) {
                 userMidRes = await this.zc.checkScMiddlewareEvent
-                    (this.zc.eventConfig.scMiddlewareAuthenticate,next,this.getPreparedSmallBag(),req);
+                    (eventConfig.sc_middlewareAuthenticate,next,this.getPreparedSmallBag(),req);
             }
 
             let zationAuthMid = true;
-            if(this.zc.eventConfig.middlewareAuthenticate){
+            if(eventConfig.middlewareAuthenticate){
                 zationAuthMid = await this.zc.checkAuthenticationMiddlewareEvent
-                    (this.zc.eventConfig.middlewareAuthenticate,next,this.getPreparedSmallBag(),new ZationTokenInfo(token));
+                    (eventConfig.middlewareAuthenticate,next,this.getPreparedSmallBag(),new ZationTokenInfo(token));
             }
 
             if(userMidRes && zationAuthMid) {
@@ -868,12 +880,12 @@ class ZationWorker extends SCWorker
     {
         this.scServer.on('error', async (err) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.scServerError,this.getPreparedSmallBag(),err);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_serverError,this.getPreparedSmallBag(),err);
         });
 
         this.scServer.on('notice', async (note) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.scServerNotice,this.getPreparedSmallBag(),note);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_serverNotice,this.getPreparedSmallBag(),note);
         });
 
         this.scServer.on('handshake', async (socket) =>
@@ -882,15 +894,15 @@ class ZationWorker extends SCWorker
             socket.on('connect', async (scConState) =>
             {
                 // noinspection JSUnresolvedFunction
-                await this.zc.emitEvent(this.zc.eventConfig.socketConnect,this.getPreparedSmallBag(),socket,scConState);
+                await this.zc.emitEvent(this.zc.eventConfig.sc_socketConnect,this.getPreparedSmallBag(),socket,scConState);
             });
 
-            await this.zc.emitEvent(this.zc.eventConfig.scServerHandshake,this.getPreparedSmallBag(),socket);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_serverHandshake,this.getPreparedSmallBag(),socket);
         });
 
         this.scServer.on('connectionAbort', async (socket,code,data) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.scServerConnectionAbort,this.getPreparedSmallBag(),socket,code,data);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_serverConnectionAbort,this.getPreparedSmallBag(),socket,code,data);
         });
 
         this.scServer.on('disconnection', async (socket,code,data) =>
@@ -899,12 +911,12 @@ class ZationWorker extends SCWorker
                 await this.zc.emitEvent(this.zc.eventConfig.socketDisconnection,this.getPreparedSmallBag(),new SocketInfo(socket),code,data);
             }
 
-            await this.zc.emitEvent(this.zc.eventConfig.scServerDisconnection,this.getPreparedSmallBag(),socket,code,data);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_serverDisconnection,this.getPreparedSmallBag(),socket,code,data);
         });
 
         this.scServer.on('closure', async (socket,code,data) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.scServerClosure,this.getPreparedSmallBag(),socket,code,data);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_serverClosure,this.getPreparedSmallBag(),socket,code,data);
         });
 
         this.scServer.on('subscription', async (socket,chName,chOptions) =>
@@ -953,7 +965,7 @@ class ZationWorker extends SCWorker
                     pro.push(FuncTools.emitEvent(func,this.preparedSmallBag,new SocketInfo(socket)));
                 }
             }
-            pro.push(this.zc.emitEvent(this.zc.eventConfig.scServerSubscription,this.getPreparedSmallBag(),socket,chName,chOptions));
+            pro.push(this.zc.emitEvent(this.zc.eventConfig.sc_serverSubscription,this.getPreparedSmallBag(),socket,chName,chOptions));
             await Promise.all(pro);
         });
 
@@ -1003,34 +1015,34 @@ class ZationWorker extends SCWorker
                     pro.push(FuncTools.emitEvent(func,this.preparedSmallBag,new SocketInfo(socket)));
                 }
             }
-            pro.push(this.zc.emitEvent(this.zc.eventConfig.scServerUnsubscription,this.getPreparedSmallBag(),socket,chName));
+            pro.push(this.zc.emitEvent(this.zc.eventConfig.sc_serverUnsubscription,this.getPreparedSmallBag(),socket,chName));
             await Promise.all(pro);
         });
 
         this.scServer.on('authentication', async (socket,authToken) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.scServerAuthentication,this.getPreparedSmallBag(),socket,authToken);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_serverAuthentication,this.getPreparedSmallBag(),socket,authToken);
         });
 
         this.scServer.on('deauthentication', async (socket,oldAuthToken) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.scServerDeauthentication,this.getPreparedSmallBag(),socket,oldAuthToken);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_serverDeauthentication,this.getPreparedSmallBag(),socket,oldAuthToken);
         });
 
         this.scServer.on('authenticationStateChange', async (socket,stateChangeData : any) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.scServerAuthenticationStateChange,this.getPreparedSmallBag(),socket,stateChangeData);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_serverAuthenticationStateChange,this.getPreparedSmallBag(),socket,stateChangeData);
         });
 
         this.scServer.on('badSocketAuthToken', async (socket,badAuthStatus) =>
         {
             socket.emit('zationBadAuthToken',{});
-            await this.zc.emitEvent(this.zc.eventConfig.scServerBadSocketAuthToken,this.getPreparedSmallBag(),socket,badAuthStatus);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_serverBadSocketAuthToken,this.getPreparedSmallBag(),socket,badAuthStatus);
         });
 
         this.scServer.on('ready', async () =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.scServerReady,this.getPreparedSmallBag());
+            await this.zc.emitEvent(this.zc.eventConfig.sc_serverReady,this.getPreparedSmallBag());
         });
 
     }
@@ -1039,22 +1051,22 @@ class ZationWorker extends SCWorker
     {
         socket.on('error', async (err) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.socketError,this.getPreparedSmallBag(),socket,err);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_socketError,this.getPreparedSmallBag(),socket,err);
         });
 
         socket.on('raw', async (data) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.socketRaw,this.getPreparedSmallBag(),socket,data);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_socketRaw,this.getPreparedSmallBag(),socket,data);
         });
 
         socket.on('disconnect', async (code,data) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.socketDisconnect,this.getPreparedSmallBag(),socket,code,data);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_socketDisconnect,this.getPreparedSmallBag(),socket,code,data);
         });
 
         socket.on('connectAbort', async (code,data) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.socketConnectAbort,this.getPreparedSmallBag(),socket,code,data);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_socketConnectAbort,this.getPreparedSmallBag(),socket,code,data);
         });
 
         socket.on('close', async (code,data) =>
@@ -1079,22 +1091,22 @@ class ZationWorker extends SCWorker
 
             this.defaultUserGroupSet.remove(socket);
 
-            await this.zc.emitEvent(this.zc.eventConfig.socketClose,this.getPreparedSmallBag(),socket,code,data);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_socketClose,this.getPreparedSmallBag(),socket,code,data);
         });
 
         socket.on('subscribe', async (channel,channelOptions) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.socketSubscribe,this.getPreparedSmallBag(),socket,channel,channelOptions);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_socketSubscribe,this.getPreparedSmallBag(),socket,channel,channelOptions);
         });
 
         socket.on('unsubscribe', async (channel) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.socketUnsubscribe,this.getPreparedSmallBag(),socket,channel);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_socketUnsubscribe,this.getPreparedSmallBag(),socket,channel);
         });
 
         socket.on('badAuthToken', async (badAuthStatus) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.socketBadAuthToken,this.getPreparedSmallBag(),socket,badAuthStatus);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_socketBadAuthToken,this.getPreparedSmallBag(),socket,badAuthStatus);
         });
 
         socket.on('authenticate', async (token : ZationToken) =>
@@ -1115,7 +1127,7 @@ class ZationWorker extends SCWorker
                     this.defaultUserGroupSet.remove(socket);
                 }
             }
-            await this.zc.emitEvent(this.zc.eventConfig.socketAuthenticate,this.getPreparedSmallBag(),socket,token);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_socketAuthenticate,this.getPreparedSmallBag(),socket,token);
         });
 
         socket.on('deauthenticate', async (token : ZationToken) =>
@@ -1137,17 +1149,17 @@ class ZationWorker extends SCWorker
             //no token = default
             this.defaultUserGroupSet.add(socket);
 
-            await this.zc.emitEvent(this.zc.eventConfig.socketDeauthenticate,this.getPreparedSmallBag(),socket,token);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_socketDeauthenticate,this.getPreparedSmallBag(),socket,token);
         });
 
         socket.on('authStateChange', async (stateChangeData : any) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.socketAuthStateChange,this.getPreparedSmallBag(),socket,stateChangeData);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_socketAuthStateChange,this.getPreparedSmallBag(),socket,stateChangeData);
         });
 
         socket.on('message', async (msg) =>
         {
-            await this.zc.emitEvent(this.zc.eventConfig.socketMessage,this.getPreparedSmallBag(),socket,msg);
+            await this.zc.emitEvent(this.zc.eventConfig.sc_socketMessage,this.getPreparedSmallBag(),socket,msg);
         });
 
     }

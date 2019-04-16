@@ -17,7 +17,7 @@ import SmallBag          = require("../api/SmallBag");
 const  uuidV4            = require('uuid/v4');
 import moment            = require('moment-timezone');
 import nodeEval          = require('node-eval');
-import {EventConfig}       from "../helper/configs/eventConfig";
+import {EventConfig} from "../helper/configs/eventConfig";
 import {AppConfig}         from "../helper/configs/appConfig";
 import {ChannelConfig}     from "../helper/configs/channelConfig";
 import {ErrorConfig}       from "../helper/configs/errorConfig";
