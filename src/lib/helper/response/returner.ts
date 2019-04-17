@@ -12,13 +12,14 @@ import ZationConfig    = require("../../main/zationConfig");
 import {ResponseResult, ZationResponse, ZationToken} from "../constants/internal";
 import TokenTools      = require("../token/tokenTools");
 import {SHBridge}       from "../bridges/shBridge";
+import stringify        from "fast-stringify";
 
 export class Returner
 {
     private readonly zc : ZationConfig;
     private readonly sendErrorDesc : boolean;
     private readonly debugMode : boolean;
-    
+
     constructor(zc : ZationConfig) {
         this.zc = zc;
         this.sendErrorDesc = this.zc.mainConfig.sendErrorDescription || this.zc.isDebug();
@@ -41,7 +42,7 @@ export class Returner
     {
         const resp = await this.createHttpResp
         (data,undefined,shBridge,response['zationInfo']);
-        response.write(JSON.stringify(resp));
+        response.write(stringify(resp));
         response.end();
         this.printResp(resp,reqId,false);
     }
