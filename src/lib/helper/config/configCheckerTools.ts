@@ -62,18 +62,33 @@ class ConfigCheckerTools
 
                 if(obj[k] !== undefined)
                 {
+                    //check array only types
+                    if(structure[k]['arrayType'] !== undefined)
+                    {
+                        const allowedType = structure[k]['arrayType'];
+
+                        if(Array.isArray(obj[k])) {
+                            let array = obj[k];
+                            for(let i = 0; i < array.length; i++) {
+                                if(allowedType && ConfigCheckerTools.getTypeOf(array[i]) !== allowedType) {
+                                    configErrorBag.addConfigError(new ConfigError(configName,
+                                        `${target.getTarget()} value: '${array[i]}' in property array: '${k}' is not allowed. Allowed type is: ${allowedType}.`));
+                                }
+                            }
+                        }
+                    }
+
                     //check enum
                     if(structure[k]['enum'] !== undefined)
                     {
-                        let allowedEnum = structure[k]['enum'];
+                        const allowedEnum = structure[k]['enum'];
 
                         if(Array.isArray(obj[k]))
                         {
                             let array = obj[k];
                             for(let i = 0; i < array.length; i++)
                             {
-                                if(!allowedEnum.includes(array[i]))
-                                {
+                                if(!allowedEnum.includes(array[i])) {
                                     configErrorBag.addConfigError(new ConfigError(configName,
                                         `${target.getTarget()} value: '${array[i]}' in property array: '${k}' is not allowed. Allowed values are: ${allowedEnum.toString()}.`));
                                 }

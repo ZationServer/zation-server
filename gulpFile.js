@@ -21,7 +21,7 @@ const nameOf = (match) => {
 gulp.task('ts', function () {
     return gulp
         .src('src/**/*.ts')
-        .pipe(gulpReplace(/nameof<[a-zA-Z<>{}]*>[(][ =>.a-zA-Z]*[)]/g,nameOf))
+        .pipe(gulpReplace(/nameof<[a-zA-Z<>{}]*>[(][ =>.a-zA-Z_]*[)]/g,nameOf))
         //.pipe(tsNameOf.stream())
         .pipe(typescript(tscConfig.compilerOptions))
         .pipe(gulp.dest('dist'));
