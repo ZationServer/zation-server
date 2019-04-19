@@ -4,14 +4,14 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ErrorConstruct}     from "../configs/errorConfig";
+import {BackErrorConstruct}     from "../configs/errorConfig";
 // noinspection TypeScriptPreferShortImport
 import {ErrorType}          from "../constants/errorType";
-import TaskError          = require("../../api/TaskError");
+import {BackError}          from "../../api/BackError";
 
-class TaskErrorBuilder
+export default class BackErrorBuilder
 {
-    private errorSettings : ErrorConstruct = {};
+    private errorSettings : BackErrorConstruct = {};
     private errorInfo : object = {};
 
     constructor() {
@@ -21,11 +21,11 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the name of the task error.
+     * Set the name of the BackError.
      * The name is a specific identifier.
      * @param name
      */
-    name(name : string) : TaskErrorBuilder {
+    name(name : string) : BackErrorBuilder {
         this.errorSettings.name = name;
         return this;
     }
@@ -33,13 +33,13 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the group of the task error.
+     * Set the group of the BackError.
      * Multiple errors can belong to a group.
      * As an example, the validation errors for a type would belong to the group typeErrors.
      * But for each error, the name is unique, for example, inputIsNotTypeString or inputIsNotTypeEmail.
      * @param group
      */
-    group(group : string | undefined) : TaskErrorBuilder {
+    group(group : string | undefined) : BackErrorBuilder {
         this.errorSettings.group = group;
         return this;
     }
@@ -47,12 +47,12 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the type of the task error.
+     * Set the type of the BackError.
      * The error type is a very abstract topic name.
      * Like validation error, database error, input error.
      * @param type
      */
-    typ(type : string) : TaskErrorBuilder {
+    typ(type : string) : BackErrorBuilder {
         this.errorSettings.type = type;
         return this;
     }
@@ -60,9 +60,9 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the task error type to system error.
+     * Set the BackError type to system error.
      */
-    typeSystemError() : TaskErrorBuilder {
+    typeSystemError() : BackErrorBuilder {
         this.errorSettings.type = ErrorType.SYSTEM_ERROR;
         return this;
     }
@@ -70,9 +70,9 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the task error type to input error.
+     * Set the BackError type to input error.
      */
-    typeInputError() : TaskErrorBuilder {
+    typeInputError() : BackErrorBuilder {
         this.errorSettings.type = ErrorType.INPUT_ERROR;
         return this;
     }
@@ -80,9 +80,9 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the task error type to validation error.
+     * Set the BackError type to validation error.
      */
-    typeValidationError() : TaskErrorBuilder {
+    typeValidationError() : BackErrorBuilder {
         this.errorSettings.type = ErrorType.VALIDATION_ERROR;
         return this;
     }
@@ -90,9 +90,9 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the task error type to auth error.
+     * Set the BackError type to auth error.
      */
-    typeAuthError() : TaskErrorBuilder {
+    typeAuthError() : BackErrorBuilder {
         this.errorSettings.type = ErrorType.AUTH_ERROR;
         return this;
     }
@@ -100,9 +100,9 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the task error type to protocol error.
+     * Set the BackError type to protocol error.
      */
-    typeProtocolError() : TaskErrorBuilder {
+    typeProtocolError() : BackErrorBuilder {
         this.errorSettings.type = ErrorType.PROTOCOL_ERROR;
         return this;
     }
@@ -110,9 +110,9 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the task error type to token error.
+     * Set the BackError type to token error.
      */
-    typeTokenError() : TaskErrorBuilder {
+    typeTokenError() : BackErrorBuilder {
         this.errorSettings.type = ErrorType.TOKEN_ERROR;
         return this;
     }
@@ -120,9 +120,9 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the task error type to database error.
+     * Set the BackError type to database error.
      */
-    typeDatabaseError() : TaskErrorBuilder {
+    typeDatabaseError() : BackErrorBuilder {
         this.errorSettings.type = ErrorType.DATABASE_ERROR;
         return this;
     }
@@ -130,9 +130,9 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the task error type to compatibility error.
+     * Set the BackError type to compatibility error.
      */
-    typeCompatibilityError() : TaskErrorBuilder {
+    typeCompatibilityError() : BackErrorBuilder {
         this.errorSettings.type = ErrorType.COMPATIBILITY_ERROR;
         return this;
     }
@@ -140,9 +140,9 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the task error type to time error.
+     * Set the BackError type to time error.
      */
-    typeTimeError() : TaskErrorBuilder {
+    typeTimeError() : BackErrorBuilder {
         this.errorSettings.type = ErrorType.TIME_ERROR;
         return this;
     }
@@ -150,9 +150,9 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the task error type to normal error.
+     * Set the BackError type to normal error.
      */
-    typeNormalError() : TaskErrorBuilder {
+    typeNormalError() : BackErrorBuilder {
         this.errorSettings.type = ErrorType.NORMAL_ERROR;
         return this;
     }
@@ -160,9 +160,9 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the task error description.
+     * Set the BackError description.
      */
-    description(description : string) : TaskErrorBuilder {
+    description(description : string) : BackErrorBuilder {
         this.errorSettings.description = description;
         return this;
     }
@@ -170,9 +170,9 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set if the task error sends the info.
+     * Set if the BackError sends the info.
      */
-    sendInfo(sendInfo : boolean) : TaskErrorBuilder {
+    sendInfo(sendInfo : boolean) : BackErrorBuilder {
         this.errorSettings.sendInfo = sendInfo;
         return this;
     }
@@ -180,9 +180,9 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set if the task error is private.
+     * Set if the BackError is private.
      */
-    private(isPrivate : boolean) : TaskErrorBuilder {
+    private(isPrivate : boolean) : BackErrorBuilder {
         this.errorSettings.private = isPrivate;
         return this;
     }
@@ -190,9 +190,9 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set if the task error is from zation system.
+     * Set if the BackError is from zation system.
      */
-    fromZationSystem(fromZationSystem : boolean) : TaskErrorBuilder {
+    fromZationSystem(fromZationSystem : boolean) : BackErrorBuilder {
         this.errorSettings.fromZationSystem = fromZationSystem;
         return this;
     }
@@ -200,14 +200,14 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the task error info.
-     * The error info is a dynamic object which contains more detailed information.
+     * Set the BackError info.
+     * The BackError info is a dynamic object which contains more detailed information.
      * For example, with an inputNotMatchWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
      * Notice that you override the info property.
      */
-    setInfo(info : object) : TaskErrorBuilder {
+    setInfo(info : object) : BackErrorBuilder {
         this.errorInfo = info;
         return this;
     }
@@ -216,12 +216,12 @@ class TaskErrorBuilder
     /**
      * @description
      * Add a new info key value pair to info object.
-     * The error info is a dynamic object which contains more detailed information.
+     * The BackError info is a dynamic object which contains more detailed information.
      * For example, with an inputNotMatchWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    addInfo(key : string, value : any, override : boolean = true) : TaskErrorBuilder
+    addInfo(key : string, value : any, override : boolean = true) : BackErrorBuilder
     {
         if(override || !this.errorInfo.hasOwnProperty(key)) {
             this.errorInfo[key] = value;
@@ -232,22 +232,21 @@ class TaskErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the created task error.
+     * Returns the created BackError.
      */
-    create() : TaskError {
-        return new TaskError(this.errorSettings,this.errorInfo);
+    create() : BackError {
+        return new BackError(this.errorSettings,this.errorInfo);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns an task error builder.
-     * For easy build an task error.
+     * Returns an BackError builder.
+     * For easy build an BackError.
      */
-    static build() : TaskErrorBuilder
+    static build() : BackErrorBuilder
     {
-        return new TaskErrorBuilder();
+        return new BackErrorBuilder();
     }
 }
 
-export = TaskErrorBuilder;

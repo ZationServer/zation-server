@@ -20,7 +20,7 @@ export enum ZationHttpInfo {
     DEAUTHENTICATE = 'deauthenticate'
 }
 
-export enum TaskErrorInfo {
+export enum BackErrorInfo {
     MAIN = 'main'
 }
 
@@ -84,13 +84,13 @@ d = description
 zs = from zation system
 i = info
  */
-export interface ResponseTaskError {
+export interface ErrorResponse {
     n : string,
     g ?: string,
     t : string
     d ?: string,
     zs : boolean,
-    i ?: object | TaskErrorInfo
+    i ?: object | BackErrorInfo
 }
 
 //legend
@@ -102,7 +102,7 @@ t = token (st = signedToken,pt = plainToken)
 zhi = zation http info
  */
 export interface ZationResponse {
-    e : ResponseTaskError[],
+    e : ErrorResponse[],
     s : boolean,
     r : ResponseResult
     t ?: {

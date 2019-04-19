@@ -1,6 +1,12 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
+const TimeTools       = require("../../../../dist/lib/helper/tools/timeTools");
 const moment          = require("moment");
 const assert          = require("chai").assert;
-const TimeTools       = require('../../../../dist/lib/helper/tools/timeTools');
 
 describe('HELPER.TOOLS.TIME-TOOLS',() => {
 
@@ -22,6 +28,7 @@ describe('HELPER.TOOLS.TIME-TOOLS',() => {
         ].forEach(([option,ms],index) =>
         {
             it('processTaskTriggerTime test-'+index,() => {
+                // @ts-ignore
                 assert.equal(TimeTools.processTaskTriggerTime(option,time,false),ms);
             });
         });

@@ -6,16 +6,14 @@ GitHub: LucaCode
 import SmallBag              = require("./SmallBag");
 import {Bag}                   from './Bag';
 import ExpressCore           = require("express-serve-static-core");
-import TaskError             = require("./TaskError");
-import TaskErrorBag          = require("./TaskErrorBag");
 import Result                = require("./Result");
 import {Controller, ControllerClass} from "./Controller";
 
 import
 {
     BeforeErrorFunction,
-    BeforeTaskErrorBagFunction,
-    BeforeTaskErrorFunction,
+    BeforeBackErrorBagFunction,
+    BeforeBackErrorFunction,
     EventConfig,
     ExpressFunction,
     HttpServerStartedFunction,
@@ -80,7 +78,7 @@ import
 import
 {
     ErrorConfig,
-    ErrorConstruct
+    BackErrorConstruct
 } from "../helper/configs/errorConfig";
 import {
     AuthUserGroupChannel,
@@ -122,6 +120,8 @@ import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
 import ZationInfo = require("../helper/infoObjects/zationInfo");
 import SocketInfo from "../helper/infoObjects/socketInfo";
 import ZationTokenInfo from "../helper/infoObjects/zationTokenInfo";
+import {BackError}  from "./BackError";
+import BackErrorBag from "./BackErrorBag";
 
 class Config
 {
@@ -227,8 +227,10 @@ class Config
 
     //Part Properties
     // noinspection JSUnusedGlobalSymbols
-    static model(c : Model) : Model {return c;}
+    static model(m : Model) : Model {return m;}
 
+    // noinspection JSUnusedGlobalSymbols
+    static models(m : Record<string,Model>) : Record<string,Model> {return m;}
 
     //Part Channel Config functions
     // noinspection JSUnusedGlobalSymbols
@@ -317,7 +319,7 @@ class Config
 
     //Part Error Config
     // noinspection JSUnusedGlobalSymbols
-    static taskError(c : ErrorConstruct) : ErrorConstruct {return c;}
+    static backErrorConstruct(c : BackErrorConstruct) : BackErrorConstruct {return c;}
 
     //Part Event Config events
 
@@ -335,9 +337,9 @@ class Config
     // noinspection JSUnusedGlobalSymbols
     static beforeError(func : BeforeErrorFunction) : BeforeErrorFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static beforeTaskError(func : BeforeTaskErrorFunction) : BeforeTaskErrorFunction {return func;}
+    static beforeBackError(func : BeforeBackErrorFunction) : BeforeBackErrorFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static beforeTaskErrorBag(func : BeforeTaskErrorBagFunction) : BeforeTaskErrorBagFunction {return func;}
+    static beforeBackErrorBag(func : BeforeBackErrorBagFunction) : BeforeBackErrorBagFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static httpServerStarted(func : HttpServerStartedFunction) : HttpServerStartedFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
@@ -435,9 +437,9 @@ class Config
     // noinspection JSUnusedGlobalSymbols
     static typeResult(result : Result) : Result {return result;}
     // noinspection JSUnusedGlobalSymbols
-    static typeTaskError(taskError : TaskError) : TaskError {return taskError;}
+    static typeBackError(resError : BackError) : BackError {return resError;}
     // noinspection JSUnusedGlobalSymbols
-    static typeTaskErrorBag(taskErrorBag : TaskErrorBag) : TaskErrorBag {return taskErrorBag;}
+    static typeBackErrorBag(resErrorBag : BackErrorBag) : BackErrorBag {return resErrorBag;}
     // noinspection JSUnusedGlobalSymbols
     static typeController(controller : Controller) : Controller {return controller;}
     // noinspection JSUnusedGlobalSymbols

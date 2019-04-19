@@ -9,12 +9,11 @@ This Marks error in code
 Example try to set custom auth token, but sc is not authenticated
  */
 
-import {ErrorConstruct}     from "../configs/errorConfig";
-import TaskError          = require("../../api/TaskError");
+import {BackErrorConstruct} from "../configs/errorConfig";
+import {BackError}          from "../../api/BackError";
 
-class CodeError extends TaskError
-{
-    constructor(errorConstruct : ErrorConstruct = {}, info ?: object | string) {
+class CodeError extends BackError {
+    constructor(errorConstruct : BackErrorConstruct = {}, info ?: object | string) {
         super(errorConstruct,info);
     }
 }

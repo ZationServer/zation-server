@@ -4,8 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import TaskError           = require('../../api/TaskError');
-import TaskErrorBag        = require('../../api/TaskErrorBag');
 import MainErrors          = require('../zationTaskErrors/mainTaskErrors');
 import {ProcessTask, ProcessTaskEngine} from "./processTaskEngine";
 // noinspection TypeScriptPreferShortImport
@@ -14,6 +12,8 @@ import {ZationTask}          from "../constants/internal";
 import {OptionalProcessor}   from "./optionalProcessor";
 import {SingleInputDataProcessor}  from "./singleInputDataProcessor";
 import ZationWorker        = require("../../main/zationWorker");
+import BackErrorBag          from "../../api/BackErrorBag";
+import {BackError}           from "../../api/BackError";
 
 export class InputDataProcessor
 {
@@ -29,7 +29,7 @@ export class InputDataProcessor
         controllerInput : MultiInput,
         useInputValidation : boolean,
         processList : ProcessTask[],
-        taskErrorBag : TaskErrorBag,
+        taskErrorBag : BackErrorBag,
         createProcessList : boolean = true
     ) : Promise<object>
     {
@@ -54,7 +54,7 @@ export class InputDataProcessor
                 const {defaultValue,isOptional} = await OptionalProcessor.process(controllerInput[inputName]);
                 if(!isOptional){
                     //ups something is missing
-                    taskErrorBag.addTaskError(new TaskError(MainErrors.inputPropertyIsMissing,
+                    taskErrorBag.addBackError(new BackError(MainErrors.inputPropertyIsMissing,
                         {
                             propertyName : inputName,
                             input : input
@@ -69,7 +69,7 @@ export class InputDataProcessor
         //check for unknown input properties
         for(let inputName in input) {
             if(input.hasOwnProperty(inputName) && !controllerInput.hasOwnProperty(inputName)){
-                taskErrorBag.addTaskError(new TaskError(MainErrors.unknownInputProperty,
+                taskErrorBag.addBackError(new BackError(MainErrors.unknownInputProperty,
                     {
                         propertyName : inputName
                     }));
@@ -85,7 +85,7 @@ export class InputDataProcessor
         controllerInput : MultiInput,
         useInputValidation : boolean,
         processList : ProcessTask[],
-        taskErrorBag : TaskErrorBag,
+        taskErrorBag : BackErrorBag,
         createProcessList : boolean = true
     ) : Promise<object>
     {
@@ -117,7 +117,7 @@ export class InputDataProcessor
                 const {defaultValue,isOptional} = await OptionalProcessor.process(controllerInput[controllerInputKeys[i]]);
                 if(!isOptional){
                     //ups something is missing
-                    taskErrorBag.addTaskError(new TaskError(MainErrors.inputPropertyIsMissing,
+                    taskErrorBag.addBackError(new BackError(MainErrors.inputPropertyIsMissing,
                         {
                             propertyName : controllerInputKeys[i],
                             input : input
@@ -131,7 +131,7 @@ export class InputDataProcessor
         }
         //check to much input
         for(let i = controllerInputKeys.length; i < input.length; i++) {
-            taskErrorBag.addTaskError(new TaskError(MainErrors.inputNotAssignable,
+            taskErrorBag.addBackError(new BackError(MainErrors.inputNotAssignable,
                 {
                     index : i,
                     value : input[i]
@@ -147,7 +147,7 @@ export class InputDataProcessor
         config : Model,
         useInputValidation : boolean,
         processList : ProcessTask[],
-        taskErrorBag : TaskErrorBag,
+        taskErrorBag : BackErrorBag,
         createProcessList : boolean = true,
         currentInputPath : string = ''
     ) : Promise<object>
@@ -171,7 +171,7 @@ export class InputDataProcessor
         singleInput : boolean,
         basePath : boolean,
         inputPath : string,
-        errorBag : TaskErrorBag,
+        errorBag : BackErrorBag,
         useInputValidation : boolean = true
     ) : Promise<void>
     {
@@ -230,7 +230,7 @@ export class InputDataProcessor
         }
         else if(typeof input !== "object") {
             //throw input type needs to be an object or array
-            throw new TaskError(MainErrors.wrongControllerInputType,{inputType : typeof input});
+            throw new BackError(MainErrors.wrongControllerInputType,{inputType : typeof input});
         }
 
         const useInputValidation : boolean =
@@ -239,7 +239,7 @@ export class InputDataProcessor
         const taskList : ProcessTask[] = [];
         let result = input;
 
-        const taskErrorBag : TaskErrorBag = new TaskErrorBag();
+        const taskErrorBag : BackErrorBag = new BackErrorBag();
         if(controller.singleInput === undefined)
         {
             //we have multi input config

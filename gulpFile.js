@@ -5,7 +5,11 @@ const tscConfig         = require('./tsconfig.json');
 const OptimizeJs        = require('gulp-optimize-js');
 const terser            = require('gulp-terser');
 const clean             = require('gulp-clean');
-//const tsNameOf          = require('ts-nameof');
+const tsNameof          = require('ts-nameof');
+
+const tsConfig = tscConfig.compilerOptions;
+tsConfig.getCustomTransformers = () => ({ before: [tsNameof]});
+
 
 gulp.task('cof', function() {
     return gulp
@@ -13,17 +17,10 @@ gulp.task('cof', function() {
         .pipe(gulp.dest('dist'));
 });
 
-
-const nameOf = (match) => {
-    return `'${match.substring(match.indexOf('.')+1,match.indexOf(')')).trim()}'`;
-};
-
 gulp.task('ts', function () {
     return gulp
         .src('src/**/*.ts')
-        .pipe(gulpReplace(/nameof<[a-zA-Z<>{}]*>[(][ =>.a-zA-Z_]*[)]/g,nameOf))
-        //.pipe(tsNameOf.stream())
-        .pipe(typescript(tscConfig.compilerOptions))
+        .pipe(typescript(tsConfig))
         .pipe(gulp.dest('dist'));
 });
 

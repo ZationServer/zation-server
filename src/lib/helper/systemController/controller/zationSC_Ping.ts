@@ -8,7 +8,7 @@ GitHub: LucaCode
 import {Controller} from "../../../api/Controller";
 import {ControllerConfig} from "../../../..";
 
-class ZationSC_Ping extends Controller
+export default class ZationSC_Ping extends Controller
 {
     static config : ControllerConfig = {
         systemController : true,
@@ -22,4 +22,3 @@ class ZationSC_Ping extends Controller
     }
 }
 
-export = ZationSC_Ping;

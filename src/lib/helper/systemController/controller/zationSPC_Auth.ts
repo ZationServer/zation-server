@@ -5,12 +5,12 @@ GitHub: LucaCode
  */
 // noinspection TypeScriptPreferShortImport
 import {Controller}     from "../../../api/Controller";
-import TaskError      = require("../../../api/TaskError");
 import MainTaskErrors = require("./../../zationTaskErrors/mainTaskErrors");
 import {ZationToken}      from "../../constants/internal";
 import {ControllerConfig} from "../../../..";
+import {BackError}        from "../../../api/BackError";
 
-class ZationSPC_Auth extends Controller
+export default class ZationSPC_Auth extends Controller
 {
     static config : ControllerConfig = {
         systemController : true,
@@ -34,7 +34,7 @@ class ZationSPC_Auth extends Controller
             await new Promise((resolve) => {setTimeout(()=>{resolve();},2000)});
 
             if(!bag.getWorker().getPanelEngine().isPanelLoginDataValid(username,password)) {
-                throw new TaskError(MainTaskErrors.wrongPanelAuthData);
+                throw new BackError(MainTaskErrors.wrongPanelAuthData);
             }
             const token = {};
             token[nameof<ZationToken>(s => s.zationPanelAccess)] = true;
@@ -46,9 +46,8 @@ class ZationSPC_Auth extends Controller
             await bag.setTokenVariable('ZATION-PANEL-USER-NAME',username);
         }
         else {
-            throw new TaskError(MainTaskErrors.panelIsNotActivated);
+            throw new BackError(MainTaskErrors.panelIsNotActivated);
         }
     }
 }
 
-export = ZationSPC_Auth;

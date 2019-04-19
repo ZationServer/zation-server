@@ -7,11 +7,11 @@ GitHub: LucaCode
 // noinspection TypeScriptPreferShortImport
 import {Bag}             from '../../api/Bag';
 import SmallBag        = require("../../api/SmallBag");
-import TaskErrorBag    = require("../../api/TaskErrorBag");
 import {ControllerClass} from "../../api/Controller";
 // noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../constants/validationTypes";
 import {ZationToken} from "../constants/internal";
+import BackErrorBag from "../../api/BackErrorBag";
 
 export interface AppConfig
 {
@@ -314,7 +314,7 @@ export interface StreamConfig extends InputConfig {
 }
 
 
-export type ValidatorFunction = (value : any,taskErrorBag : TaskErrorBag,inputPath : string,smallBag : SmallBag,type ?: string) => Promise<void> | void;
+export type ValidatorFunction = (value : any,backErrorBag : BackErrorBag,inputPath : string,smallBag : SmallBag,type ?: string) => Promise<void> | void;
 export type ConvertValueFunction = (value : any, smallBag : SmallBag) => Promise<any> | any;
 export type GetDateFunction = (smallBag : SmallBag) => Promise<Date> | Date;
 

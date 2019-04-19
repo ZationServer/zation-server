@@ -1,5 +1,11 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
+const ZationReqTools  = require("../../../../dist/lib/helper/tools/zationReqTools");
 const assert          = require("chai").assert;
-const ZationReqTools  = require('../../../../dist/lib/helper/tools/zationReqTools');
 
 describe('HELPER.TOOLS.ZATION_REQ_TOOLS',() => {
 

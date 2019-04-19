@@ -7,8 +7,6 @@ GitHub: LucaCode
 import ControllerTools       = require('../controller/controllerTools');
 import Result                = require('../../api/Result');
 import MainErrors            = require('../zationTaskErrors/mainTaskErrors');
-import TaskError             = require('../../api/TaskError');
-import TaskErrorBag          = require('../../api/TaskErrorBag');
 import ZationReqTools        = require('../tools/zationReqTools');
 import SystemVersionChecker  = require('../version/systemVersionChecker');
 // noinspection TypeScriptPreferShortImport
@@ -24,7 +22,9 @@ import {SHBridge}              from "../bridges/shBridge";
 import {InputDataProcessor}    from "../input/inputDataProcessor";
 import ValidCheckProcessor     from "./validCheckProcessor";
 import ControllerPrepare     = require("../controller/controllerPrepare");
-import AuthEngine from "../auth/authEngine";
+import AuthEngine              from "../auth/authEngine";
+import {BackError}             from "../../api/BackError";
+import BackErrorBag            from "../../api/BackErrorBag";
 
 export default class MainRequestProcessor
 {
@@ -67,13 +67,13 @@ export default class MainRequestProcessor
             //Check for a auth req
             if(ZationReqTools.isZationAuthReq(reqData)) {
                 if(!this.authController) {
-                    throw new TaskError(MainErrors.authControllerNotSet);
+                    throw new BackError(MainErrors.authControllerNotSet);
                 }
                 reqData = ZationReqTools.dissolveZationAuthReq(this.zc,reqData);
             }
             // check auth start active ?
             else if(this.worker.getIsAuthStartActive()) {
-                throw new TaskError(MainErrors.authStartActive);
+                throw new BackError(MainErrors.authStartActive);
             }
 
             //is checked by isValidReqStructure!
@@ -128,8 +128,18 @@ export default class MainRequestProcessor
                         }
                         catch (e) {
                             //invoke controller wrong input function
-                            if(e instanceof TaskError || e instanceof TaskErrorBag)
-                            {
+                            if(e instanceof BackError || e instanceof BackErrorBag) {
+
+                                //create backErrorBag
+                                const errorBag = new BackErrorBag();
+                                if(e instanceof BackError){
+                                    errorBag.addBackError(e);
+                                }
+                                else{
+                                    errorBag.addFromBackErrorBag(e);
+                                }
+                                e = errorBag;
+
                                 const input = task.i;
                                 const bag = new Bag(
                                     shBridge,
@@ -140,7 +150,21 @@ export default class MainRequestProcessor
                                     //socket prepared channel engine
                                     shBridge.isWebSocket() ? shBridge.getSocket().channelEngine : undefined
                                 );
-                                await controllerInstance.wrongInput(bag,input);
+                                try {
+                                    await controllerInstance.wrongInput(bag,input);
+                                }
+                                catch (innerErr) {
+                                    if(innerErr instanceof BackError) {
+                                        e.addBackError(innerErr);
+                                    }
+                                    else if(innerErr instanceof BackErrorBag) {
+                                        e.addFromBackErrorBag(innerErr);
+                                    }
+                                    else {
+                                        //unknown error
+                                        throw innerErr;
+                                    }
+                                }
                             }
                             //than throw the input for return it to the client
                             throw e;
@@ -158,7 +182,7 @@ export default class MainRequestProcessor
                         return await this.processController(controllerInstance,controllerConfig,bag);
                     }
                     else {
-                        throw new TaskError(MainErrors.noAccessToController,
+                        throw new BackError(MainErrors.noAccessToController,
                             {
                                 authUserGroup: authEngine.getAuthUserGroup(),
                                 authIn: authEngine.isAuth()
@@ -166,7 +190,7 @@ export default class MainRequestProcessor
                     }
                 }
                 else {
-                    throw new TaskError(MainErrors.noAccessWithHttpMethod,
+                    throw new BackError(MainErrors.noAccessWithHttpMethod,
                         {
                             controller: controllerName,
                             method: shBridge.getRequest().method
@@ -174,7 +198,7 @@ export default class MainRequestProcessor
                 }
             }
             else {
-                throw new TaskError(MainErrors.noAccessWithProtocol,
+                throw new BackError(MainErrors.noAccessWithProtocol,
                     {
                         controllerName: controllerName,
                         protocol: ProtocolAccessChecker.getProtocol(shBridge)
@@ -182,7 +206,7 @@ export default class MainRequestProcessor
             }
         }
         else {
-            throw new TaskError(MainErrors.wrongInputDataStructure, {type : shBridge.isWebSocket() ? 'ws' : 'http',input : reqData});
+            throw new BackError(MainErrors.wrongInputDataStructure, {type : shBridge.isWebSocket() ? 'ws' : 'http',input : reqData});
         }
     }
 

@@ -1,5 +1,11 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
+const IdCounter       = require("../../../../dist/lib/helper/tools/idCounter");
 const assert          = require("chai").assert;
-const IdCounter       = require('../../../../dist/lib/helper/tools/idCounter');
 
 describe('HELPER.TOOLS.IdCounter',() => {
 

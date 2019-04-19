@@ -6,7 +6,6 @@ GitHub: LucaCode
 
 import TokenTools            = require('../token/tokenTools');
 import ZationReqTools        = require('../tools/zationReqTools');
-import TaskError             = require("../../api/TaskError");
 import MainErrors            = require('../zationTaskErrors/mainTaskErrors');
 import ZationWorker          = require("../../main/zationWorker");
 import ZationConfig          = require("../../main/zationConfig");
@@ -16,6 +15,7 @@ import {ZationRequest, ZationToken} from "../constants/internal";
 import {SHBridgeHttp}               from "../bridges/shBridgeHttp";
 import ZationTokenInfo              from "../infoObjects/zationTokenInfo";
 import AEPreparedPart               from "../auth/aePreparedPart";
+import {BackError}                  from "../../api/BackError";
 
 export default class HttpProcessor
 {
@@ -71,7 +71,7 @@ export default class HttpProcessor
                 return await this.mainProcess(req,res,zationData,reqId);
             }
             else {
-                throw new TaskError(MainErrors.wrongInputDataStructure,
+                throw new BackError(MainErrors.wrongInputDataStructure,
                     {
                         type : 'http',
                         reqMethod :req.method,
@@ -104,7 +104,7 @@ export default class HttpProcessor
 
                 const next = (err) => {
                     if(err) {
-                        throw new TaskError(MainErrors.authenticateMiddlewareBlock,{err : err});
+                        throw new BackError(MainErrors.authenticateMiddlewareBlock,{err : err});
                     }
                 };
                 await this.zc.checkAuthenticationMiddlewareEvent

@@ -11,7 +11,7 @@ import crypto            = require('crypto');
 import ZationInfoObj     = require("../helper/infoObjects/zationInfo");
 import Structures        = require('./../helper/config/structures');
 import FuncTools         = require("../helper/tools/funcTools");
-import {ErrorConstruct}    from "../helper/configs/errorConfig";
+import {BackErrorConstruct}    from "../helper/configs/errorConfig";
 import ErrorNotFound     = require("../helper/error/errorNotFoundError");
 import SmallBag          = require("../api/SmallBag");
 const  uuidV4            = require('uuid/v4');
@@ -248,7 +248,7 @@ class ZationConfig {
         }
     }
 
-    getError(name: string): ErrorConstruct {
+    getError(name: string): BackErrorConstruct {
         if (this._errorConfig.hasOwnProperty(name)) {
             return this._errorConfig[name];
         } else {

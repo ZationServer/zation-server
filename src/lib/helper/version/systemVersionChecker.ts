@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import TaskError    = require('../../api/TaskError');
 import MainErrors   = require('../zationTaskErrors/mainTaskErrors');
 import {ControllerConfig} from "../configs/appConfig";
 import {BaseSHBridge}     from "../bridges/baseSHBridge";
+import {BackError}        from "../../api/BackError";
 
 class SystemVersionChecker
 {
@@ -22,11 +22,11 @@ class SystemVersionChecker
                 const version = shBridge.getVersion();
                 const sVersion = versionAccess[system];
                 if((Array.isArray(sVersion) && !sVersion.includes(version)) || (typeof sVersion === 'number' && sVersion > version)) {
-                    throw new TaskError(MainErrors.versionNotCompatible,{version : version});
+                    throw new BackError(MainErrors.versionNotCompatible,{version : version});
                 }
             }
             else {
-                throw new TaskError(MainErrors.systemNotCompatible,{system : system});
+                throw new BackError(MainErrors.systemNotCompatible,{system : system});
             }
         }
     }

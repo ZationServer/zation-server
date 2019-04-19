@@ -4,7 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import TaskError        = require('../../api/TaskError');
 import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
 import {ChAccessEngine}   from '../channel/chAccessEngine';
 import ZationWorker     = require("../../main/zationWorker");
@@ -13,7 +12,8 @@ import {Socket}           from "../sc/socket";
 import {ZationToken}      from "../constants/internal";
 import AuthenticationError = require("../error/authenticationError");
 import {BaseSHBridge}     from "../bridges/baseSHBridge";
-import AEPreparedPart from "../auth/aePreparedPart";
+import AEPreparedPart     from "../auth/aePreparedPart";
+import {BackError}        from "../../api/BackError";
 const  Jwt : any        = require('jsonwebtoken');
 
 class TokenTools
@@ -205,13 +205,13 @@ class TokenTools
             Jwt.verify(token,zc.getVerifyKey(),zc.getJwtOptions(),(err,decoded) => {
                 if(err) {
                     if(err.name === 'TokenExpiredError') {
-                        reject(new TaskError(MainErrors.tokenExpiredError,{expiredAt : err.expiredAt}));
+                        reject(new BackError(MainErrors.tokenExpiredError,{expiredAt : err.expiredAt}));
                     }
                     else if(err.name === 'JsonWebTokenError') {
-                        reject(new TaskError(MainErrors.jsonWebTokenError,err));
+                        reject(new BackError(MainErrors.jsonWebTokenError,err));
                     }
                     else {
-                        reject(new TaskError(MainErrors.unknownTokenVerifyError,{err : err.toString()}));
+                        reject(new BackError(MainErrors.unknownTokenVerifyError,{err : err.toString()}));
                     }
                 }
                 else {
@@ -233,7 +233,7 @@ class TokenTools
 
             Jwt.sign(data,zc.getSignKey(),options,(err,signedToken) => {
                 if(err) {
-                    reject(new TaskError(MainErrors.unknownTokenSignError,{err : err.toString()}));
+                    reject(new BackError(MainErrors.unknownTokenSignError,{err : err.toString()}));
                 }
                 else {
                     resolve(signedToken);
@@ -253,12 +253,12 @@ class TokenTools
             const authUserGroup = token.zationAuthUserGroup;
             if(authUserGroup !== undefined) {
                 if(token.zationOnlyPanelToken){
-                    throw new TaskError(MainErrors.tokenWithAuthGroupAndOnlyPanel);
+                    throw new BackError(MainErrors.tokenWithAuthGroupAndOnlyPanel);
                 }
                 if (!ae.isAuthGroup(authUserGroup)) {
                     //saved authGroup is in Server not define
                     //noinspection JSUnresolvedFunction
-                    throw new TaskError(MainErrors.inTokenSavedAuthGroupIsNotFound,
+                    throw new BackError(MainErrors.inTokenSavedAuthGroupIsNotFound,
                         {
                             savedAuthGroup: authUserGroup,
                             authGroupsInZationConfig: ae.getAuthGroups()
@@ -268,7 +268,7 @@ class TokenTools
             else {
                 if(!(typeof token.zationOnlyPanelToken === 'boolean' && token.zationOnlyPanelToken)) {
                     //token without auth group and it is not a only panel token.
-                    throw new TaskError(MainErrors.tokenWithoutAuthGroup);
+                    throw new BackError(MainErrors.tokenWithoutAuthGroup);
                 }
             }
         }

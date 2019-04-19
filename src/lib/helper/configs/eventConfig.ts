@@ -8,11 +8,11 @@ import ExpressCore                   = require("express-serve-static-core");
 import SmallBag                      = require("../../api/SmallBag");
 import ZationInfoObj                 = require("../infoObjects/zationInfo");
 import ZationWorker                  = require("../../main/zationWorker");
-import TaskError                     = require("../../api/TaskError");
-import TaskErrorBag                  = require("../../api/TaskErrorBag");
 import {ScServer}                      from "../sc/scServer";
 import {Socket}                        from "../sc/socket";
 import {ZationToken}                   from "../constants/internal";
+import {BackError}                     from "../../api/BackError";
+import BackErrorBag                    from "../../api/BackErrorBag";
 
 export type ExpressFunction = (smallBag : SmallBag, express : ExpressCore.Express) => Promise<void> | void;
 export type ScServerFunction = (smallBag : SmallBag, scServer : ScServer) => Promise<void> | void;
@@ -22,9 +22,9 @@ export type HttpServerStartedFunction = (info : ZationInfoObj) => Promise<void> 
 export type WsServerStartedFunction = (info : ZationInfoObj) => Promise<void> | void;
 export type StartedFunction = (info : ZationInfoObj) => Promise<void> | void;
 export type BeforeErrorFunction = (smallBag : SmallBag, error : object) => Promise<void> | void;
-export type BeforeTaskErrorFunction = (smallBag : SmallBag, taskError : TaskError) => Promise<void> | void;
-export type BeforeCodeErrorFunction = (smallBag : SmallBag, taskError : TaskError) => Promise<void> | void;
-export type BeforeTaskErrorBagFunction = (smallBag : SmallBag, taskErrorBag : TaskErrorBag) => Promise<void> | void;
+export type BeforeBackErrorFunction = (smallBag : SmallBag, backError : BackError) => Promise<void> | void;
+export type BeforeCodeErrorFunction = (smallBag : SmallBag, backError : BackError) => Promise<void> | void;
+export type BeforeBackErrorBagFunction = (smallBag : SmallBag, backErrorBag : BackErrorBag) => Promise<void> | void;
 export type ZationSocketDisconnectionFunction = (smallBag : SmallBag,socket : Socket,code : any, data : any) => Promise<void> | void;
 export type ZationWorkerMessageFunction = (smallBag : SmallBag, data : any) => Promise<void> | void;
 
@@ -68,9 +68,9 @@ export interface EventConfig
     wsServerStarted  ?: WsServerStartedFunction | WsServerStartedFunction[];
     started  ?: StartedFunction | StartedFunction[];
     beforeError  ?: BeforeErrorFunction | BeforeErrorFunction[];
-    beforeTaskError  ?: BeforeTaskErrorFunction | BeforeTaskErrorFunction[];
+    beforeBackError  ?: BeforeBackErrorFunction | BeforeBackErrorFunction[];
     beforeCodeError  ?: BeforeCodeErrorFunction | BeforeCodeErrorFunction[];
-    beforeTaskErrorBag  ?: BeforeTaskErrorBagFunction | BeforeTaskErrorBagFunction[];
+    beforeBackErrorBag  ?: BeforeBackErrorBagFunction | BeforeBackErrorBagFunction[];
     socketDisconnection  ?: ZationSocketDisconnectionFunction | ZationSocketDisconnectionFunction[];
     workerMessage  ?: ZationWorkerMessageFunction | ZationWorkerMessageFunction[];
     middlewareAuthenticate  ?: MiddlewareAuthenticationFunction;

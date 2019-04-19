@@ -1,13 +1,19 @@
-const assert           = require("chai").assert;
-const TaskErrorBuilder = require('../../../../dist/lib/helper/builder/taskErrorBuilder');
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
 
-describe('HELPER.TaskErrorBuilder',() => {
+const BackErrorBuilder = require("../../../../dist/lib/helper/builder/backErrorBuilder").default;
+const assert           = require("chai").assert;
+
+describe('HELPER.BackErrorBuilder',() => {
 
     describe('Build', function () {
 
         it('BuildTest-1',() => {
 
-            const te = TaskErrorBuilder.build()
+            const te = BackErrorBuilder.build()
                 .name('error1')
                 .typ('MyType')
                 .addInfo('length',2)
@@ -20,7 +26,7 @@ describe('HELPER.TaskErrorBuilder',() => {
 
         it('BuildTest-2',() => {
 
-            const te = TaskErrorBuilder.build()
+            const te = BackErrorBuilder.build()
                 .name('error1')
                 .group('g1')
                 .typeDatabaseError()
@@ -36,7 +42,7 @@ describe('HELPER.TaskErrorBuilder',() => {
 
         it('BuildTest-3',() => {
 
-            const te = TaskErrorBuilder.build()
+            const te = BackErrorBuilder.build()
                 .name('error1')
                 .sendInfo(true)
                 .fromZationSystem(true)
@@ -54,7 +60,7 @@ describe('HELPER.TaskErrorBuilder',() => {
 
         it('BuildTest-3',() => {
 
-            const te = TaskErrorBuilder.build()
+            const te = BackErrorBuilder.build()
                 .name('error1')
                 .addInfo('length',1)
                 .addInfo('length',2,true)

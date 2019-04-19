@@ -5,8 +5,6 @@ GitHub: LucaCode
  */
 
 import ZationConfig    = require("./zationConfig");
-import TaskError       = require('../api/TaskError');
-import TaskErrorBag    = require('../api/TaskErrorBag');
 import Logger          = require('../helper/logger/logger');
 import IdCounter       = require('../helper/tools/idCounter');
 import ZationWorker    = require("./zationWorker");
@@ -16,7 +14,9 @@ import MainRequestProcessor         from "../helper/processor/mainRequestProcess
 import SocketProcessor       from "../helper/processor/socketProcessor";
 import HttpProcessor         from "../helper/processor/httpProcessor";
 import ValidCheckProcessor   from "../helper/processor/validCheckProcessor";
-import {Socket} from "../helper/sc/socket";
+import {Socket}              from "../helper/sc/socket";
+import {BackError}           from "../api/BackError";
+import BackErrorBag          from "../api/BackErrorBag";
 
 export class ZationReqHandler
 {
@@ -87,7 +87,7 @@ export class ZationReqHandler
         const promises : Promise<void>[] = [];
         promises.push(this.zc.emitEvent
         (this.zc.eventConfig.beforeError, this.worker.getPreparedSmallBag(),err));
-        if(err instanceof  TaskError)
+        if(err instanceof  BackError)
         {
             if(err instanceof CodeError) {
                 Logger.printDebugWarning(`Code error -> ${err.toString()}/n stack-> ${err.stack}`);
@@ -98,12 +98,12 @@ export class ZationReqHandler
                 }
             }
             promises.push(this.zc.emitEvent
-            (this.zc.eventConfig.beforeTaskError,this.worker.getPreparedSmallBag(),err));
+            (this.zc.eventConfig.beforeBackError,this.worker.getPreparedSmallBag(),err));
         }
         else { // noinspection SuspiciousInstanceOfGuard
-            if(err instanceof TaskErrorBag) {
+            if(err instanceof BackErrorBag) {
                 promises.push(this.zc.emitEvent
-                (this.zc.eventConfig.beforeTaskErrorBag,this.worker.getPreparedSmallBag(),err));
+                (this.zc.eventConfig.beforeBackErrorBag,this.worker.getPreparedSmallBag(),err));
             }
             else {
                 Logger.printDebugWarning('EXCEPTION ON SERVER ->',err);

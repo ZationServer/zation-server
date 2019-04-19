@@ -3,9 +3,6 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-
-import TaskError       = require('../../api/TaskError');
-import TaskErrorBag    = require('../../api/TaskErrorBag');
 import Logger          = require('../logger/logger');
 import MainErrors      = require('../zationTaskErrors/mainTaskErrors');
 import ZationConfig    = require("../../main/zationConfig");
@@ -13,6 +10,8 @@ import {ResponseResult, ZationResponse, ZationToken} from "../constants/internal
 import TokenTools      = require("../token/tokenTools");
 import {SHBridge}       from "../bridges/shBridge";
 import stringify        from "fast-stringify";
+import {BackError}       from "../../api/BackError";
+import BackErrorBag      from "../../api/BackErrorBag";
 
 export class Returner
 {
@@ -64,16 +63,16 @@ export class Returner
     private errorJsonObj(err)
     {
         let errors;
-        if(err instanceof TaskError) {
+        if(err instanceof BackError) {
             errors = [err._getJsonObj(this.sendErrorDesc)];
         }
         else {
             // noinspection SuspiciousInstanceOfGuard
-            if(err instanceof TaskErrorBag) {
+            if(err instanceof BackErrorBag) {
                 errors = err._getJsonObj(this.sendErrorDesc);
             }
             else {
-                errors = [(new TaskError(MainErrors.unknownError))._getJsonObj()];
+                errors = [(new BackError(MainErrors.unknownError))._getJsonObj()];
             }
         }
         return errors;

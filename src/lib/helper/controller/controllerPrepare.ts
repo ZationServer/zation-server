@@ -5,7 +5,6 @@ GitHub: LucaCode
  */
 
 import ZationConfig     = require("../../main/zationConfig");
-import TaskError        = require('../../api/TaskError');
 import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
 import systemController = require('../systemController/systemControler.config');
 import ControllerTools  = require('./controllerTools');
@@ -14,6 +13,7 @@ import ZationWorker     = require("../../main/zationWorker");
 import {Controller, ControllerClass} from '../../api/Controller';
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../configs/appConfig";
+import {BackError}        from "../../api/BackError";
 
 interface ControllerPrepareData {
     config : ControllerConfig,
@@ -37,6 +37,7 @@ class ControllerPrepare
         this.appController = {};
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getControllerInstance(name : string,isSystemController : boolean) : Controller
     {
         return this.getController(name,isSystemController).instance;
@@ -72,10 +73,10 @@ class ControllerPrepare
         if(!this.isControllerExist(name,isSystemController))
         {
             if(isSystemController) {
-                throw new TaskError(MainErrors.systemControllerNotFound, {controllerName: name});
+                throw new BackError(MainErrors.systemControllerNotFound, {controllerName: name});
             }
             else {
-                throw new TaskError(MainErrors.controllerNotFound, {controllerName: name});
+                throw new BackError(MainErrors.controllerNotFound, {controllerName: name});
             }
         }
     }

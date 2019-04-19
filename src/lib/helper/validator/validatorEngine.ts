@@ -4,9 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ValidatorLibrary  = require('./validatorLibrary');
-import TaskError         = require('../../api/TaskError');
-import TaskErrorBag      = require('../../api/TaskErrorBag');
 import ValidatorErrors   = require('../zationTaskErrors/validatorTaskErrors');
 import Logger            = require('../logger/logger');
 import FuncTools         = require("../tools/funcTools");
@@ -14,10 +11,16 @@ import SmallBag          = require("../../api/SmallBag");
 import {ArraySettings, ValueModelConfig} from "../configs/appConfig";
 import {ConfigNames}       from "../constants/internal";
 import {ValidationTypes}   from "../../..";
+import BackErrorBag        from "../../api/BackErrorBag";
+import {BackError}         from "../../api/BackError";
+import {ValidatorLibrary}  from "./validatorLibrary";
+
+const ValidatorFunctions   = ValidatorLibrary.Functions;
+const ValidatorTypes       = ValidatorLibrary.Types;
 
 class ValidatorEngine
 {
-    static async validateValue(input,config : any,preparedErrorData : {inputPath : string,inputValue : any},errorBag : TaskErrorBag,preparedSmallBag : SmallBag,type) : Promise<any>
+    static async validateValue(input, config : any, preparedErrorData : {inputPath : string,inputValue : any}, errorBag : BackErrorBag, preparedSmallBag : SmallBag, type) : Promise<any>
     {
         let promises : Promise<void>[] = [];
         for(let cKey in config)
@@ -29,33 +32,33 @@ class ValidatorEngine
                     //own validate
                     promises.push(FuncTools.emitEvent(cValue,input,errorBag,preparedErrorData.inputPath,preparedSmallBag,type));
                 }
-                else if(ValidatorLibrary.function.hasOwnProperty(cKey)) {
-                    promises.push(ValidatorLibrary.function[cKey](input,cValue,errorBag,preparedErrorData,preparedSmallBag,type));
+                else if(ValidatorFunctions.hasOwnProperty(cKey)) {
+                    promises.push(ValidatorFunctions[cKey](input,cValue,errorBag,preparedErrorData,preparedSmallBag,type));
                 }
             }
         }
         await Promise.all(promises);
     }
 
-    static validateValueType(input,type,strictType,preparedErrorData : {inputPath : string,inputValue : any},errorBag : TaskErrorBag)
+    static validateValueType(input,type,strictType,preparedErrorData : {inputPath : string,inputValue : any},errorBag : BackErrorBag)
     {
         let usedType = type;
         if(type !== undefined && type !== ValidationTypes.ALL) {
             if(Array.isArray(type))
             {
                 let foundAValidTyp = false;
-                let errorBagTemp = new TaskErrorBag();
+                let errorBagTemp = new BackErrorBag();
                 for(let i = 0; i < type.length; i++) {
-                    let tempErrorCount = errorBagTemp.getTaskErrorCount();
+                    let tempErrorCount = errorBagTemp.getBackErrorCount();
                     ValidatorEngine.validateType(input,type[i],strictType,errorBagTemp,preparedErrorData);
-                    if(tempErrorCount === errorBagTemp.getTaskErrorCount()) {
+                    if(tempErrorCount === errorBagTemp.getBackErrorCount()) {
                         foundAValidTyp = true;
                         usedType = type[i];
                         break;
                     }
                 }
                 if(!foundAValidTyp) {
-                    errorBag.addTaskError(new TaskError(ValidatorErrors.noValidTypeWasFound,
+                    errorBag.addBackError(new BackError(ValidatorErrors.noValidTypeWasFound,
                         {
                             inputPath : preparedErrorData.inputPath,
                             inputValue : preparedErrorData.inputValue,
@@ -72,8 +75,8 @@ class ValidatorEngine
 
     private static validateType(input,type,strictType,errorBag,preparedErrorData)
     {
-        if(ValidatorLibrary.type.hasOwnProperty(type)) {
-            ValidatorLibrary.type[type](input,errorBag,preparedErrorData,strictType);
+        if(ValidatorTypes.hasOwnProperty(type)) {
+            ValidatorTypes[type](input,errorBag,preparedErrorData,strictType);
         }
         else if(type === '') {
            Logger.printConfigWarning
@@ -94,7 +97,7 @@ class ValidatorEngine
             if(array.length !== length)
             {
                 isOk = false;
-                errorBag.addTaskError(new TaskError(ValidatorErrors.inputArrayNotMatchWithLength,
+                errorBag.addBackError(new BackError(ValidatorErrors.inputArrayNotMatchWithLength,
                     {
                         inputValue : array,
                         inputPath : currentPath,
@@ -108,7 +111,7 @@ class ValidatorEngine
             if(array.length < minLength)
             {
                 isOk = false;
-                errorBag.addTaskError(new TaskError(ValidatorErrors.inputArrayNotMatchWithMinLength,
+                errorBag.addBackError(new BackError(ValidatorErrors.inputArrayNotMatchWithMinLength,
                     {
                         inputValue : array,
                         inputPath : currentPath,
@@ -122,7 +125,7 @@ class ValidatorEngine
             if(array.length > maxLength)
             {
                 isOk = false;
-                errorBag.addTaskError(new TaskError(ValidatorErrors.inputArrayNotMatchWithMaxLength,
+                errorBag.addBackError(new BackError(ValidatorErrors.inputArrayNotMatchWithMaxLength,
                     {
                         inputValue : array,
                         inputPath : currentPath,

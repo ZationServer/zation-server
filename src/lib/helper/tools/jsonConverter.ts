@@ -4,8 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import TaskError        = require("../../api/TaskError");
 import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
+import {BackError}        from "../../api/BackError";
 
 class JsonConverter
 {
@@ -15,7 +15,7 @@ class JsonConverter
             return JSON.parse(value);
         }
         catch (e) {
-            throw new TaskError(MainErrors.JSONParseSyntaxError,{input : value});
+            throw new BackError(MainErrors.JSONParseSyntaxError,{input : value});
         }
     }
 }

@@ -1,5 +1,11 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
+const ObjectTools     = require("../../../../dist/lib/helper/tools/objectTools");
 const assert          = require("chai").assert;
-const ObjectTools       = require('../../../../dist/lib/helper/tools/objectTools');
 
 describe('HELPER.TOOLS.ObjectTools',() => {
 

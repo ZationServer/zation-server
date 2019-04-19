@@ -4,8 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationSPC_Auth = require("./controller/zationSPC_Auth");
-import ZationSC_Ping  = require("./controller/zationSC_Ping");
+import ZationSC_Ping  from "./controller/zationSC_Ping";
+import ZationSPC_Auth from "./controller/zationSPC_Auth";
 
 export = {
         'zation/system/ping' : ZationSC_Ping,

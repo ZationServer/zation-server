@@ -4,9 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import TaskErrorBag     = require("../../api/TaskErrorBag");
 import ValidationEngine = require('../validator/validatorEngine');
-import TaskError        = require('../../api/TaskError');
 import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
 import ValidatorErrors  = require('../zationTaskErrors/validatorTaskErrors');
 import {ProcessTask}      from "./processTaskEngine";
@@ -15,9 +13,11 @@ import ConvertEngine    = require("../convert/convertEngine");
 import Iterator = require("../tools/iterator");
 import {OptionalProcessor} from "./optionalProcessor";
 import {AnyOfModelConfig, ArrayModelConfig, Model, ObjectModelConfig, ValueModelConfig} from "../configs/appConfig";
+import BackErrorBag        from "../../api/BackErrorBag";
+import {BackError}         from "../../api/BackError";
 
 export interface ProcessInfo {
-    errorBag : TaskErrorBag,
+    errorBag : BackErrorBag,
     processTaskList : ProcessTask[],
     createProcessTaskList : boolean,
     inputValidation : boolean
@@ -66,7 +66,7 @@ export class SingleInputDataProcessor
                     if(input.hasOwnProperty(k) && !props.hasOwnProperty(k))
                     {
                         //ups unknown key
-                        processInfo.errorBag.addTaskError(new TaskError
+                        processInfo.errorBag.addBackError(new BackError
                             (
                                 MainErrors.unknownObjectProperty, {
                                     inputPath : `${currentInputPath}.${k}`,
@@ -104,7 +104,7 @@ export class SingleInputDataProcessor
                         const {defaultValue,isOptional} = await OptionalProcessor.process(props[propName]);
                         if(!isOptional){
                             //oh its missing!
-                            errorBag.addTaskError(new TaskError
+                            errorBag.addBackError(new BackError
                                 (
                                     MainErrors.objectPropertyIsMissing,
                                     {
@@ -156,7 +156,7 @@ export class SingleInputDataProcessor
         else
         {
             //ups wrong input we can't processing it
-            errorBag.addTaskError(new TaskError
+            errorBag.addBackError(new BackError
                 (
                     MainErrors.objectWasExpected,
                     {
@@ -184,7 +184,7 @@ export class SingleInputDataProcessor
         const convertType = typeof config[nameof<ValueModelConfig>(s => s.convertType)] === 'boolean'?
             config[nameof<ValueModelConfig>(s => s.convertType)] : true;
 
-        const currentErrorCount = errorBag.getTaskErrorCount();
+        const currentErrorCount = errorBag.getBackErrorCount();
 
         let selectedType = type;
         //type
@@ -193,7 +193,7 @@ export class SingleInputDataProcessor
                 ValidationEngine.validateValueType(srcObj[srcKey],type,strictType,preparedErrorData,errorBag);
         }
 
-        if(currentErrorCount === errorBag.getTaskErrorCount()){
+        if(currentErrorCount === errorBag.getBackErrorCount()){
             //no type error so convert maybe
             if(convertType) {
                 srcObj[srcKey] = ConvertEngine.convert(srcObj[srcKey],selectedType,strictType);
@@ -219,11 +219,11 @@ export class SingleInputDataProcessor
     private async processAnyOf(srcObj : object | object[],srcKey : string | number,config : Model,currentInputPath : string,processInfo : ProcessInfo) : Promise<void>
     {
         let found = false;
-        const tmpTaskErrorBags : Record<string|number,TaskErrorBag> = {};
+        const tmpTaskErrorBags : Record<string|number,BackErrorBag> = {};
         const anyOf = config[nameof<AnyOfModelConfig>(s => s.anyOf)];
         await Iterator.breakIterate(async (key, value) =>
         {
-            tmpTaskErrorBags[key] = new TaskErrorBag();
+            tmpTaskErrorBags[key] = new BackErrorBag();
             const tmpProcessInfo : ProcessInfo =
                 {
                     errorBag : tmpTaskErrorBags[key],
@@ -243,10 +243,10 @@ export class SingleInputDataProcessor
         if(!found) {
             for(let key in tmpTaskErrorBags) {
                 if(tmpTaskErrorBags.hasOwnProperty(key)) {
-                    processInfo.errorBag.addTaskError(...tmpTaskErrorBags[key].getTaskErrors());
+                    processInfo.errorBag.addBackError(...tmpTaskErrorBags[key].getBackErrors());
                 }
             }
-            processInfo.errorBag.addTaskError(new TaskError
+            processInfo.errorBag.addBackError(new BackError
             (
                 ValidatorErrors.noAnyOfMatch,
                 {
@@ -298,7 +298,7 @@ export class SingleInputDataProcessor
         }
         else {
             //ups wrong input we can't processing it
-            errorBag.addTaskError(new TaskError
+            errorBag.addBackError(new BackError
                 (
                     MainErrors.arrayWasExpected,
                     {

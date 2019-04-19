@@ -1,7 +1,13 @@
-const sinon           = require("sinon");
-const ZationConfig    = require('./../../dist/lib/main/zationConfig');
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
 
-let zcStub = sinon.createStubInstance(ZationConfig);
+const ZationConfig    = require("../../dist/lib/main/zationConfig");
+const sinon           = require("sinon");
+
+const zcStub = sinon.createStubInstance(ZationConfig);
 
 sinon.stub(zcStub,"appConfig").value({});
 sinon.stub(zcStub,"channelConfig").value({});

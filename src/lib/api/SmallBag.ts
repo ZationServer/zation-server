@@ -10,7 +10,7 @@ import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../helper/cons
 import {WorkerChTargets}                                    from "../helper/constants/workerChTargets";
 import {AsymmetricKeyPairs}                                 from "../helper/infoObjects/asymmetricKeyPairs";
 import {WorkerMessageActions}                               from "../helper/constants/workerMessageActions";
-import {ErrorConfig, ErrorConstruct}                        from "../helper/configs/errorConfig";
+import {ErrorConfig, BackErrorConstruct}                        from "../helper/configs/errorConfig";
 import {ZationChannel, ZationToken}                         from "../helper/constants/internal";
 import {InternMainConfig}                                   from "../helper/configs/mainConfig";
 import {AppConfig}                                          from "../helper/configs/appConfig";
@@ -27,13 +27,10 @@ import ServiceEngine                                        = require("../helper
 import ZationConfig                                         = require("../main/zationConfig");
 import ZationWorker                                         = require("../main/zationWorker");
 import ExchangeEngine                                       = require('../helper/channel/chExchangeEngine');
-import TaskError                                            = require("./TaskError");
 import ChTools                                              = require("../helper/channel/chTools");
 import IdTools                                              = require("../helper/tools/idTools");
 import ObjectPath                                           = require("../helper/tools/objectPath");
 import TokenTools                                           = require("../helper/token/tokenTools");
-import TaskErrorBag                                         = require("./TaskErrorBag");
-import TaskErrorBuilder                                     = require("../helper/builder/taskErrorBuilder");
 import Base64Tools                                          = require("../helper/tools/base64Tools");
 import ObjectPathSequence                                   = require("../helper/tools/objectPathSequence");
 import AuthenticationError                                  = require("../helper/error/authenticationError");
@@ -42,6 +39,9 @@ import ObjectPathActionSequence                             = require("../helper
 // noinspection TypeScriptPreferShortImport
 import {StartMode}                                          from "./../helper/constants/startMode";
 import Result                                               = require('./Result');
+import BackErrorBuilder from "../helper/builder/backErrorBuilder";
+import {BackError}     from "./BackError";
+import  BackErrorBag   from "./BackErrorBag";
 const uuidV4                                                = require('uuid/v4');
 const uniqid                                                = require('uniqid');
 
@@ -51,7 +51,7 @@ class SmallBag
     protected readonly serviceEngine : ServiceEngine;
     protected readonly zc : ZationConfig;
     protected readonly worker : ZationWorker;
-    
+
     constructor(worker : ZationWorker,exchangeEngine : ExchangeEngine = new ExchangeEngine(worker))
     {
         this.exchangeEngine = exchangeEngine;
@@ -909,104 +909,100 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Returns a taskError builder.
-     * For easy create an task error.
+     * Returns a BackError builder.
+     * For easy create an BackError.
      */
-    buildTaskError() : TaskErrorBuilder {
-        return new TaskErrorBuilder();
+    buildResError() : BackErrorBuilder {
+        return new BackErrorBuilder();
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Returns a new taskError by using the constructor.
-     * @param errorConstruct
-     * Create a new error construct
-     * or get one from the errorConfig by using the method getErrorConstruct on the bag/smallBag.
+     * Returns a new BackError by using the constructor.
+     * @param backErrorConstruct
+     * Create a new back error construct
+     * or get one from the errorConfig by using the method getBackErrorConstruct on the bag/smallBag.
      * @param info
-     * The error info is a dynamic object which contains more detailed information.
+     * The BackError info is a dynamic object which contains more detailed information.
      * For example, with an inputNotMatchWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    newTaskError(errorConstruct : ErrorConstruct = {}, info ?: object | string) : TaskError
+    newBackError(backErrorConstruct : BackErrorConstruct = {}, info ?: object | string) : BackError
     {
-        return new TaskError(errorConstruct,info);
+        return new BackError(backErrorConstruct,info);
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Returns a new taskErrorBag by using the constructor.
-     * With the bag you can collect task errors
+     * Returns a new BackErrorBag by using the constructor.
+     * With the bag you can collect BackErrors
      * and throw them later all together.
      * Then all errors are sent to the client.
      * @example
-     * buildTaskErrorBag(myError,myError2).throw();
-     * @param taskError
+     * newBackErrorBag(myError,myError2).throw();
+     * @param backError
      */
-    newTaskErrorBag(...taskError : TaskError[]) : TaskErrorBag
-    {
-        return new TaskErrorBag(...taskError);
+    newBackErrorBag(...backError : BackError[]) : BackErrorBag {
+        return new BackErrorBag(...backError);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns taskError construct from the error config file.
+     * Returns BackError construct from the error config file.
      * @throws ErrorNotFoundError
      * @param errorName
      */
-    getErrorConstruct(errorName : string) : Object
-    {
+    getBackErrorConstruct(errorName : string) : Object {
         return this.zc.getError(name);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns taskError with info that is build from the error construct from error config file.
+     * Returns BackError with info that is build from the back error construct from error config file.
      * @throws ErrorNotFoundError
      * @param errorName
      * @param info
      */
-    getTaskError(errorName : string,info : object = {}) : TaskError
+    getBackError(errorName : string, info : object = {}) : BackError
     {
         const errorOp = this.zc.getError(name);
-        return new TaskError(errorOp,info);
+        return new BackError(errorOp,info);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Throws an taskError with info that is build from the error construct from error config file.
+     * Throws an BackError with info that is build from the back error construct from error config file.
      * @throws ErrorNotFoundError
      * @param errorName
      * @param info
      */
-    throwTaskError(errorName : string,info : object = {}) : void
+    throwBackError(errorName : string, info : object = {}) : void
     {
         const errorOp = this.zc.getError(name);
-        throw new TaskError(errorOp,info);
+        throw new BackError(errorOp,info);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Throws an new taskError with info that is build with the taskError constructor.
-     * @throws ErrorNotFoundError
+     * Throws an new BackError with info that is build with the BackError constructor.
      * @param errorConstruct
      * @param info
      */
-    throwNewTaskError(errorConstruct : ErrorConstruct = {}, info ?: object | string) : void
-    {
-        throw this.newTaskError(errorConstruct,info);
+    throwNewBackError(errorConstruct : BackErrorConstruct = {}, info ?: object | string) : void {
+        throw this.newBackError(errorConstruct,info);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Checks if the error construct with this name is exist and can be used.
+     * Checks if the back error construct with this name is exist and can be used.
      * @param name
      */
     isErrorConstruct(name : string) : boolean

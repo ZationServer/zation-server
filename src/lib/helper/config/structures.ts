@@ -4,11 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-/// <reference path="../../../../node_modules/ts-nameof/ts-nameof.d.ts" />
-
 import ObjectTools = require('../tools/objectTools');
 import {EventConfig} from "../configs/eventConfig";
-import {ErrorConstruct} from "../configs/errorConfig";
+import {BackErrorConstruct} from "../configs/errorConfig";
 import BagExtension, {
     AnyOfModelConfig,
     AppConfig, ArrayModelConfig, ArraySettings,
@@ -32,14 +30,14 @@ import {ChannelConfig, ChannelSettings, CustomChannelConfig, ZationChannelConfig
 import {ServiceModule} from "zation-service";
 
 const Error = {};
-Error[nameof<ErrorConstruct>(s => s.name)]             = {types : ['string'],isOptional : true};
-Error[nameof<ErrorConstruct>(s => s.group)]            = {types : ['string'],isOptional : true};
-Error[nameof<ErrorConstruct>(s => s.fromZationSystem)] = {types : ['boolean'],isOptional : true};
-Error[nameof<ErrorConstruct>(s => s.sendInfo)]         = {types : ['boolean'],isOptional : true};
-Error[nameof<ErrorConstruct>(s => s.private)]          = {types : ['boolean'],isOptional : true};
-Error[nameof<ErrorConstruct>(s => s.description)]      = {types : ['string'],isOptional : true};
-Error[nameof<ErrorConstruct>(s => s.type)]             = {types : ['string'],isOptional : true};
-Error[nameof<ErrorConstruct>(s => s.sendInfo)]         = {types : ['object'],isOptional : true};
+Error[nameof<BackErrorConstruct>(s => s.name)]             = {types : ['string'],isOptional : true};
+Error[nameof<BackErrorConstruct>(s => s.group)]            = {types : ['string'],isOptional : true};
+Error[nameof<BackErrorConstruct>(s => s.fromZationSystem)] = {types : ['boolean'],isOptional : true};
+Error[nameof<BackErrorConstruct>(s => s.sendInfo)]         = {types : ['boolean'],isOptional : true};
+Error[nameof<BackErrorConstruct>(s => s.private)]          = {types : ['boolean'],isOptional : true};
+Error[nameof<BackErrorConstruct>(s => s.description)]      = {types : ['string'],isOptional : true};
+Error[nameof<BackErrorConstruct>(s => s.type)]             = {types : ['string'],isOptional : true};
+Error[nameof<BackErrorConstruct>(s => s.sendInfo)]         = {types : ['object'],isOptional : true};
 
 const App = {};
 App[nameof<AppConfig>(s => s.authController)]     = {types : ['string'],isOptional : true};
@@ -309,9 +307,9 @@ EventConfig[nameof<EventConfig>(s => s.httpServerStarted)]      = {types : ['fun
 EventConfig[nameof<EventConfig>(s => s.wsServerStarted)]        = {types : ['function','array'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.started)]                = {types : ['function','array'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.beforeError)]            = {types : ['function','array'],isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.beforeTaskError)]        = {types : ['function','array'],isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.beforeBackError)]        = {types : ['function','array'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.beforeCodeError)]        = {types : ['function','array'],isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.beforeTaskErrorBag)]     = {types : ['function','array'],isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.beforeBackErrorBag)]     = {types : ['function','array'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.socketDisconnection)]    = {types : ['function','array'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.workerMessage)]          = {types : ['function','array'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.middlewareAuthenticate)] = {types : ['function'],isOptional : true};

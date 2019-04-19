@@ -4,13 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ErrorConstruct}     from "../helper/configs/errorConfig";
-import TaskErrorBuilder   = require("../helper/builder/taskErrorBuilder");
+import {BackErrorConstruct}     from "../helper/configs/errorConfig";
 // noinspection TypeScriptPreferShortImport
 import {ErrorType}          from "../helper/constants/errorType";
-import {ResponseTaskError, TaskErrorInfo} from "../helper/constants/internal";
+import {ErrorResponse, BackErrorInfo} from "../helper/constants/internal";
 
-class TaskError extends Error
+export class BackError extends Error
 {
     private group : string | undefined;
     private description : string;
@@ -23,37 +22,37 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Creates a TaskError.
+     * Creates a BackError (An error that goes back to the client).
      * The error can be thrown and will be returned to the client.
-     * You also can collect more task errors in a task error bag.
+     * You also can collect more BackErrors in a BackErrorBag.
      * And throw them together.
      * @example
-     * new TaskError({name : 'inputNotMatchWithMinLength'},{minLength : 5, inputLength : 3}).throw();
-     * @param errorConstruct
-     * Create a new error construct
-     * or get one from the errorConfig by using the method getErrorConstruct on the bag/smallBag.
+     * new BackError({name : 'inputNotMatchWithMinLength'},{minLength : 5, inputLength : 3}).throw();
+     * @param backErrorConstruct
+     * Create a new back error construct
+     * or get one from the errorConfig by using the method getBackErrorConstruct on the bag/smallBag.
      * @param info
      * The error info is a dynamic object which contains more detailed information.
      * For example, with an inputNotMatchWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    constructor(errorConstruct : ErrorConstruct = {}, info ?: object | string)
+    constructor(backErrorConstruct : BackErrorConstruct = {}, info ?: object | string)
     {
         super();
         //defaultValues
-        this.name        = errorConstruct.name || 'TaskError';
-        this.group       = errorConstruct.group;
-        this.description = errorConstruct.description || 'No Description define in Error';
-        this.type        = errorConstruct.type || ErrorType.NORMAL_ERROR;
-        this.sendInfo    = errorConstruct.sendInfo || true;
+        this.name        = backErrorConstruct.name || 'BackError';
+        this.group       = backErrorConstruct.group;
+        this.description = backErrorConstruct.description || 'No Description define in Error';
+        this.type        = backErrorConstruct.type || ErrorType.NORMAL_ERROR;
+        this.sendInfo    = backErrorConstruct.sendInfo || true;
         this.info        = {};
-        this.privateE    = errorConstruct.private || false;
-        this.fromZationSystem = errorConstruct.fromZationSystem || false;
+        this.privateE    = backErrorConstruct.private || false;
+        this.fromZationSystem = backErrorConstruct.fromZationSystem || false;
 
         if(info) {
             if (typeof info === 'string') {
-                this.info[TaskErrorInfo.MAIN] = info;
+                this.info[BackErrorInfo.MAIN] = info;
             }
             else {
                 this.info = info;
@@ -68,7 +67,7 @@ class TaskError extends Error
      */
     toString() : string
     {
-        return `TaskError  Name: ${this.name} Group: ${this.group}  Description: ${this.description}  Type: ${this.type}  Info: ${JSON.stringify(this.info)}  isPrivate:${this.privateE}  isFromZationSystem:${this.fromZationSystem}`;
+        return `BackError  Name: ${this.name} Group: ${this.group}  Description: ${this.description}  Type: ${this.type}  Info: ${JSON.stringify(this.info)}  isPrivate:${this.privateE}  isFromZationSystem:${this.fromZationSystem}`;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -77,17 +76,17 @@ class TaskError extends Error
      * This method is used internal!
      * @param withDesc
      */
-    _getJsonObj(withDesc : boolean = false) : ResponseTaskError
+    _getJsonObj(withDesc : boolean = false) : ErrorResponse
     {
         if(this.privateE){
             return {
-                n : 'TaskError',
+                n : 'BackError',
                 t : this.type,
                 zs : this.fromZationSystem
             }
         }
         else{
-            const err : ResponseTaskError = {
+            const err : ErrorResponse = {
                 n : this.name,
                 g : this.group,
                 t : this.type,
@@ -106,7 +105,7 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the name of the error.
+     * Returns the name of the BackError.
      * The name is a specific identifier.
      */
     getName() : string
@@ -117,7 +116,7 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the name of the error.
+     * Set the name of the BackError.
      * The name is a specific identifier.
      * @param name
      */
@@ -129,7 +128,7 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the group of the error.
+     * Returns the group of the BackError.
      * Multiple errors can belong to a group.
      * As an example, the validation errors for a type would belong to the group typeErrors.
      * But for each error, the name is unique, for example, inputIsNotTypeString or inputIsNotTypeEmail.
@@ -142,7 +141,7 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the group of the error.
+     * Set the group of the BackError.
      * Multiple errors can belong to a group.
      * As an example, the validation errors for a type would belong to the group typeErrors.
      * But for each error, the name is unique, for example, inputIsNotTypeString or inputIsNotTypeEmail.
@@ -156,7 +155,7 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the task error description.
+     * Returns the BackError description.
      */
     getDescription() : string
     {
@@ -166,7 +165,7 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the task error description.
+     * Set the BackError description.
      * @param description
      */
     setDescription(description : string) : void
@@ -177,11 +176,11 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the type of the task error.
+     * Returns the type of the BackError.
      * The error type is a very abstract topic name.
      * Like validation error, database error, input error.
      * There some default types,
-     * you can see them in the taskErrorBuilder.
+     * you can see them in the BackErrorBuilder.
      */
     getType() : string
     {
@@ -191,11 +190,11 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the type of the task error.
+     * Set the type of the BackError.
      * The error type is a very abstract topic name.
      * Like validation error, database error, input error.
      * There some default types,
-     * you can see them in the taskErrorBuilder.
+     * you can see them in the BackErrorBuilder.
      * @param type
      */
     setType(type : string) : void
@@ -206,8 +205,8 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns if the error is private.
-     * A private error only sends its type and
+     * Returns if the BackError is private.
+     * A private BackError only sends its type and
      * whether it is from the zation system.
      */
     isPrivate() : boolean
@@ -218,8 +217,8 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set if the error is private.
-     * A private error only sends its type and
+     * Set if the BackError is private.
+     * A private BackError only sends its type and
      * whether it is from the zation system.
      * @param privateError
      */
@@ -231,8 +230,8 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns if the error is send the info.
-     * The error info is a dynamic object which contains more detailed information.
+     * Returns if the BackError should send the info.
+     * The BackError info is a dynamic object which contains more detailed information.
      * For example, with an inputNotMatchWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
@@ -245,7 +244,7 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set if the error is send the info.
+     * Set if the BackError should send the info.
      * The error info is a dynamic object which contains more detailed information.
      * For example, with an inputNotMatchWithMinLength error,
      * the info object could include what the length of the input is and
@@ -260,13 +259,13 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the error info.
-     * The error info is a dynamic object which contains more detailed information.
+     * Returns the BackError info.
+     * The BackError info is a dynamic object which contains more detailed information.
      * For example, with an inputNotMatchWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    getInfo() : object
+    getInfo() : Record<string,any>
     {
         return this.info;
     }
@@ -274,14 +273,14 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the error info.
-     * The error info is a dynamic object which contains more detailed information.
+     * Set the BackError info.
+     * The BackError info is a dynamic object which contains more detailed information.
      * For example, with an inputNotMatchWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
      * @param info
      */
-    setInfo(info : object) : void
+    setInfo(info : Record<string,any>) : void
     {
         this.info = info;
     }
@@ -289,8 +288,8 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns if the error is from zation system.
-     * This indicates if this task error is from the main zation system.
+     * Returns if the BackError is from zation system.
+     * This indicates if this BackError is from the main zation system.
      * This is used in the system internal.
      */
     isFromZationSystem() : boolean
@@ -301,8 +300,8 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set if the error is from zation system.
-     * This indicates if this task error is from the main zation system.
+     * Set if the BackError is from zation system.
+     * This indicates if this BackError is from the main zation system.
      * This is used in the system internal.
      * @param fromZationSystem
      */
@@ -314,13 +313,11 @@ class TaskError extends Error
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Throws this task error.
-     * Alternative than to throw him directly in the handler method.
+     * Throws this BackError.
+     * Alternative for throwing the BackError directly in a controller method.
      */
-    throw() : void
-    {
+    throw() : void {
        throw this;
     }
 }
 
-export = TaskError;

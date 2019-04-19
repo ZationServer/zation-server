@@ -1,5 +1,11 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+©Copyright by Luca Scaringella
+ */
+
+const Result          = require("../../../dist/lib/api/Result");
 const assert          = require("chai").assert;
-const Result          = require('../../../dist/lib/api/Result');
 
 describe('API.Result',() => {
 

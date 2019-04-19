@@ -1,0 +1,1698 @@
+{
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/main/zationMaster.js": {
+    "../helper/background/backgroundTasksSender": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/background/backgroundTasksSender.js",
+    "socketcluster": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/index.js",
+    "../helper/logger/logger": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/logger/logger.js",
+    "./zationConfig": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/main/zationConfig.js",
+    "../helper/config/configChecker": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/configChecker.js",
+    "../helper/config/configErrorBag": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/configErrorBag.js",
+    "../helper/tools/timeTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/timeTools.js",
+    "../helper/client/clientPrepare": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/client/clientPrepare.js",
+    "../helper/background/backgroundTasksLoader": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/background/backgroundTasksLoader.js",
+    "is-windows": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/is-windows/index.js",
+    "../helper/cluster/stateServerEngine": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/cluster/stateServerEngine.js",
+    "../helper/constants/workerMessageActions": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/workerMessageActions.js",
+    "../helper/tools/simpleSet": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/simpleSet.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/background/backgroundTasksSender.js": {
+    "../tools/timeTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/timeTools.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/timeTools.js": {
+    "moment-timezone": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/moment-timezone/index.js",
+    "../logger/logger": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/logger/logger.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/logger/logger.js": {
+    "cluster": "cluster",
+    "simple-node-logger": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/index.js": {
+    "./lib/SimpleLogger": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/SimpleLogger.js",
+    "./lib/AbstractAppender": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/AbstractAppender.js",
+    "./lib/Logger": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/Logger.js",
+    "./lib/ConsoleAppender": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/ConsoleAppender.js",
+    "./lib/FileAppender": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/FileAppender.js",
+    "./lib/RollingFileAppender": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/RollingFileAppender.js",
+    "./test/mocks/MockAppender": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/test/mocks/MockAppender.js",
+    "./test/mocks/MockLogger": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/test/mocks/MockLogger.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/SimpleLogger.js": {
+    "lodash": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/lodash/lodash.js",
+    "./Logger": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/Logger.js",
+    "./ConsoleAppender": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/ConsoleAppender.js",
+    "./FileAppender": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/FileAppender.js",
+    "./RollingFileAppender": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/RollingFileAppender.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/lodash/lodash.js": {
+    "util": "util"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/ConsoleAppender.js": {
+    "./Logger": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/Logger.js",
+    "./AbstractAppender": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/AbstractAppender.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/AbstractAppender.js": {
+    "util": "util",
+    "moment": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/moment/moment.js",
+    "lodash": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/lodash/lodash.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/FileAppender.js": {
+    "./Logger": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/Logger.js",
+    "./AbstractAppender": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/AbstractAppender.js",
+    "lodash": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/lodash/lodash.js",
+    "path": "path"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/RollingFileAppender.js": {
+    "./Logger": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/Logger.js",
+    "./AbstractAppender": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/AbstractAppender.js",
+    "lodash": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/lodash/lodash.js",
+    "moment": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/moment/moment.js",
+    "path": "path"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/test/mocks/MockLogger.js": {
+    "lodash": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/lodash/lodash.js",
+    "../../lib/Logger": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/lib/Logger.js",
+    "./MockAppender": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/simple-node-logger/test/mocks/MockAppender.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/index.js": {
+    "path": "path",
+    "crypto": "crypto",
+    "events": "events",
+    "uuid": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/uuid/index.js",
+    "child_process": "child_process",
+    "os": "os",
+    "fs-extra": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/index.js",
+    "uid-number": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/uid-number/uid-number.js",
+    "./package.json": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/package.json",
+    "minimist": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/minimist/index.js",
+    "cluster": "cluster",
+    "sc-errors": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/sc-errors/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/uuid/index.js": {
+    "./v1": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/uuid/v1.js",
+    "./v4": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/uuid/v4.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/uuid/v1.js": {
+    "./lib/rng": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/uuid/lib/rng.js",
+    "./lib/bytesToUuid": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/uuid/lib/bytesToUuid.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/uuid/lib/rng.js": {
+    "crypto": "crypto"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/uuid/v4.js": {
+    "./lib/rng": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/uuid/lib/rng.js",
+    "./lib/bytesToUuid": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/uuid/lib/bytesToUuid.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/index.js": {
+    "./fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/fs/index.js",
+    "./copy-sync": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/copy-sync/index.js",
+    "./copy": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/copy/index.js",
+    "./empty": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/empty/index.js",
+    "./ensure": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/ensure/index.js",
+    "./json": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/json/index.js",
+    "./mkdirs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/index.js",
+    "./move-sync": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/move-sync/index.js",
+    "./move": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/move/index.js",
+    "./output": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/output/index.js",
+    "./path-exists": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/path-exists/index.js",
+    "./remove": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/remove/index.js",
+    "fs": "fs"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/fs/index.js": {
+    "universalify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/universalify/index.js",
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js": {
+    "fs": "fs",
+    "./polyfills.js": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/polyfills.js",
+    "./legacy-streams.js": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/legacy-streams.js",
+    "util": "util",
+    "./fs.js": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/fs.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/polyfills.js": {
+    "./fs.js": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/fs.js",
+    "constants": "constants"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/fs.js": {
+    "fs": "fs"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/legacy-streams.js": {
+    "stream": "stream"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/copy-sync/index.js": {
+    "./copy-sync": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/copy-sync/copy-sync.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/copy-sync/copy-sync.js": {
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js",
+    "path": "path",
+    "../mkdirs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/index.js",
+    "../util/utimes.js": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/util/utimes.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/index.js": {
+    "universalify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/universalify/index.js",
+    "./mkdirs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/mkdirs.js",
+    "./mkdirs-sync": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/mkdirs-sync.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/mkdirs.js": {
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js",
+    "path": "path",
+    "./win32": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/win32.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/win32.js": {
+    "path": "path"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/mkdirs-sync.js": {
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js",
+    "path": "path",
+    "./win32": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/win32.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/util/utimes.js": {
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js",
+    "os": "os",
+    "path": "path"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/copy/index.js": {
+    "universalify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/universalify/index.js",
+    "./copy": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/copy/copy.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/copy/copy.js": {
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js",
+    "path": "path",
+    "../mkdirs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/index.js",
+    "../path-exists": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/path-exists/index.js",
+    "../util/utimes": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/util/utimes.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/path-exists/index.js": {
+    "universalify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/universalify/index.js",
+    "../fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/fs/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/empty/index.js": {
+    "universalify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/universalify/index.js",
+    "fs": "fs",
+    "path": "path",
+    "../mkdirs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/index.js",
+    "../remove": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/remove/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/remove/index.js": {
+    "universalify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/universalify/index.js",
+    "./rimraf": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/remove/rimraf.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/remove/rimraf.js": {
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js",
+    "path": "path",
+    "assert": "assert"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/ensure/index.js": {
+    "./file": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/ensure/file.js",
+    "./link": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/ensure/link.js",
+    "./symlink": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/ensure/symlink.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/ensure/file.js": {
+    "universalify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/universalify/index.js",
+    "path": "path",
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js",
+    "../mkdirs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/index.js",
+    "../path-exists": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/path-exists/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/ensure/link.js": {
+    "universalify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/universalify/index.js",
+    "path": "path",
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js",
+    "../mkdirs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/index.js",
+    "../path-exists": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/path-exists/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/ensure/symlink.js": {
+    "universalify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/universalify/index.js",
+    "path": "path",
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js",
+    "../mkdirs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/index.js",
+    "./symlink-paths": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/ensure/symlink-paths.js",
+    "./symlink-type": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/ensure/symlink-type.js",
+    "../path-exists": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/path-exists/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/ensure/symlink-paths.js": {
+    "path": "path",
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js",
+    "../path-exists": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/path-exists/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/ensure/symlink-type.js": {
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/json/index.js": {
+    "universalify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/universalify/index.js",
+    "./jsonfile": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/json/jsonfile.js",
+    "./output-json": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/json/output-json.js",
+    "./output-json-sync": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/json/output-json-sync.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/json/jsonfile.js": {
+    "universalify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/universalify/index.js",
+    "jsonfile": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonfile/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonfile/index.js": {
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/json/output-json.js": {
+    "path": "path",
+    "../mkdirs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/index.js",
+    "../path-exists": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/path-exists/index.js",
+    "./jsonfile": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/json/jsonfile.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/json/output-json-sync.js": {
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js",
+    "path": "path",
+    "../mkdirs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/index.js",
+    "./jsonfile": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/json/jsonfile.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/move-sync/index.js": {
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js",
+    "path": "path",
+    "../copy-sync": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/copy-sync/index.js",
+    "../remove": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/remove/index.js",
+    "../mkdirs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/index.js",
+    "../util/buffer": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/util/buffer.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/move/index.js": {
+    "universalify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/universalify/index.js",
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js",
+    "path": "path",
+    "../copy": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/copy/index.js",
+    "../remove": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/remove/index.js",
+    "../mkdirs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/index.js",
+    "../path-exists": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/path-exists/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/output/index.js": {
+    "universalify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/universalify/index.js",
+    "graceful-fs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/graceful-fs/graceful-fs.js",
+    "path": "path",
+    "../mkdirs": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/mkdirs/index.js",
+    "../path-exists": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/node_modules/fs-extra/lib/path-exists/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/uid-number/uid-number.js": {
+    "child_process": "child_process",
+    "path": "path"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/sc-errors/index.js": {
+    "./decycle": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/sc-errors/decycle.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/configChecker.js": {
+    "../logger/logger": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/logger/logger.js",
+    "./configError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/configError.js",
+    "./configCheckerTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/configCheckerTools.js",
+    "../tools/objectPath": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectPath.js",
+    "../tools/objectTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectTools.js",
+    "./structures": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/structures.js",
+    "./target": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/target.js",
+    "./../../api/SmallBag": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/SmallBag.js",
+    "../tools/iterator": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/iterator.js",
+    "./../../api/Bag": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/Bag.js",
+    "../constants/internal": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/internal.js",
+    "../../api/Controller": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/Controller.js",
+    "../../..": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/index.js",
+    "../constants/validation": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/validation.js",
+    "./modelImportEngine": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/modelImportEngine.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/configCheckerTools.js": {
+    "./configError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/configError.js",
+    "./target": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/target.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectPath.js": {
+    "object-path": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/object-path/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/SmallBag.js": {
+    "node-fetch": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-fetch/lib/index.js",
+    "../helper/constants/workerChTaskActions": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/workerChTaskActions.js",
+    "../helper/constants/workerChTargets": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/workerChTargets.js",
+    "../helper/constants/workerMessageActions": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/workerMessageActions.js",
+    "../helper/constants/internal": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/internal.js",
+    "byte-length": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/byte-length/dist/index.js",
+    "crypto": "crypto",
+    "ip": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/ip/lib/ip.js",
+    "crypto2": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/crypto2/dist/crypto2.js",
+    "../helper/channel/chExchangeEngine": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/channel/chExchangeEngine.js",
+    "../helper/channel/chTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/channel/chTools.js",
+    "../helper/tools/idTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/idTools.js",
+    "../helper/tools/objectPath": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectPath.js",
+    "../helper/token/tokenTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/token/tokenTools.js",
+    "../helper/tools/base64Tools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/base64Tools.js",
+    "../helper/tools/objectPathSequence": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectPathSequence.js",
+    "../helper/error/authenticationError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/authenticationError.js",
+    "../helper/constants/syncTokenActions": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/syncTokenActions.js",
+    "../helper/tools/objectPathActionSequence": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectPathActionSequence.js",
+    "./Result": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/Result.js",
+    "../helper/builder/backErrorBuilder": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/builder/backErrorBuilder.js",
+    "./BackError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/BackError.js",
+    "./BackErrorBag": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/BackErrorBag.js",
+    "uuid/v4": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/uuid/v4.js",
+    "uniqid": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/uniqid/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-fetch/lib/index.js": {
+    "stream": "stream",
+    "http": "http",
+    "url": "url",
+    "https": "https",
+    "zlib": "zlib"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/ip/lib/ip.js": {
+    "buffer": "buffer",
+    "os": "os"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/crypto2/dist/crypto2.js": {
+    "babel-runtime/core-js/promise": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/babel-runtime/core-js/promise.js",
+    "babel-runtime/regenerator": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/babel-runtime/regenerator/index.js",
+    "babel-runtime/helpers/asyncToGenerator": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/babel-runtime/helpers/asyncToGenerator.js",
+    "crypto": "crypto",
+    "fs": "fs",
+    "stream": "stream",
+    "node-rsa": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/NodeRSA.js",
+    "util.promisify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/util.promisify/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/babel-runtime/core-js/promise.js": {
+    "core-js/library/fn/promise": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/fn/promise.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/fn/promise.js": {
+    "../modules/es6.object.to-string": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/es6.object.to-string.js",
+    "../modules/es6.string.iterator": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/es6.string.iterator.js",
+    "../modules/web.dom.iterable": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/web.dom.iterable.js",
+    "../modules/es6.promise": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/es6.promise.js",
+    "../modules/es7.promise.finally": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/es7.promise.finally.js",
+    "../modules/es7.promise.try": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/es7.promise.try.js",
+    "../modules/_core": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_core.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/es6.string.iterator.js": {
+    "./_string-at": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_string-at.js",
+    "./_iter-define": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iter-define.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_string-at.js": {
+    "./_to-integer": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_to-integer.js",
+    "./_defined": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_defined.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iter-define.js": {
+    "./_library": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_library.js",
+    "./_export": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_export.js",
+    "./_redefine": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_redefine.js",
+    "./_hide": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_hide.js",
+    "./_iterators": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iterators.js",
+    "./_iter-create": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iter-create.js",
+    "./_set-to-string-tag": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_set-to-string-tag.js",
+    "./_object-gpo": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_object-gpo.js",
+    "./_wks": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_wks.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_export.js": {
+    "./_global": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_global.js",
+    "./_core": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_core.js",
+    "./_ctx": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_ctx.js",
+    "./_hide": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_hide.js",
+    "./_has": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_has.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_ctx.js": {
+    "./_a-function": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_a-function.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_hide.js": {
+    "./_object-dp": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_object-dp.js",
+    "./_property-desc": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_property-desc.js",
+    "./_descriptors": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_descriptors.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_object-dp.js": {
+    "./_an-object": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_an-object.js",
+    "./_ie8-dom-define": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_ie8-dom-define.js",
+    "./_to-primitive": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_to-primitive.js",
+    "./_descriptors": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_descriptors.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_an-object.js": {
+    "./_is-object": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_is-object.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_ie8-dom-define.js": {
+    "./_descriptors": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_descriptors.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_descriptors.js": {
+    "./_fails": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_fails.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_to-primitive.js": {
+    "./_is-object": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_is-object.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_redefine.js": {
+    "./_hide": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_hide.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iter-create.js": {
+    "./_object-create": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_object-create.js",
+    "./_property-desc": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_property-desc.js",
+    "./_set-to-string-tag": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_set-to-string-tag.js",
+    "./_hide": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_hide.js",
+    "./_wks": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_wks.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_object-create.js": {
+    "./_an-object": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_an-object.js",
+    "./_object-dps": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_object-dps.js",
+    "./_enum-bug-keys": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_enum-bug-keys.js",
+    "./_shared-key": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_shared-key.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_object-dps.js": {
+    "./_object-dp": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_object-dp.js",
+    "./_an-object": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_an-object.js",
+    "./_object-keys": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_object-keys.js",
+    "./_descriptors": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_descriptors.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_object-keys.js": {
+    "./_object-keys-internal": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_object-keys-internal.js",
+    "./_enum-bug-keys": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_enum-bug-keys.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_object-keys-internal.js": {
+    "./_has": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_has.js",
+    "./_to-iobject": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_to-iobject.js",
+    "./_array-includes": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_array-includes.js",
+    "./_shared-key": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_shared-key.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_to-iobject.js": {
+    "./_iobject": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iobject.js",
+    "./_defined": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_defined.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iobject.js": {
+    "./_cof": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_cof.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_array-includes.js": {
+    "./_to-iobject": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_to-iobject.js",
+    "./_to-length": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_to-length.js",
+    "./_to-absolute-index": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_to-absolute-index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_to-length.js": {
+    "./_to-integer": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_to-integer.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_to-absolute-index.js": {
+    "./_to-integer": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_to-integer.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_shared-key.js": {
+    "./_shared": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_shared.js",
+    "./_uid": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_uid.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_shared.js": {
+    "./_core": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_core.js",
+    "./_global": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_global.js",
+    "./_library": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_library.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_set-to-string-tag.js": {
+    "./_object-dp": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_object-dp.js",
+    "./_has": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_has.js",
+    "./_wks": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_wks.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_wks.js": {
+    "./_shared": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_shared.js",
+    "./_uid": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_uid.js",
+    "./_global": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_global.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_object-gpo.js": {
+    "./_has": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_has.js",
+    "./_to-object": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_to-object.js",
+    "./_shared-key": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_shared-key.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_to-object.js": {
+    "./_defined": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_defined.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/web.dom.iterable.js": {
+    "./es6.array.iterator": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/es6.array.iterator.js",
+    "./_global": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_global.js",
+    "./_hide": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_hide.js",
+    "./_iterators": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iterators.js",
+    "./_wks": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_wks.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/es6.array.iterator.js": {
+    "./_add-to-unscopables": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_add-to-unscopables.js",
+    "./_iter-step": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iter-step.js",
+    "./_iterators": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iterators.js",
+    "./_to-iobject": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_to-iobject.js",
+    "./_iter-define": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iter-define.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/es6.promise.js": {
+    "./_library": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_library.js",
+    "./_global": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_global.js",
+    "./_ctx": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_ctx.js",
+    "./_classof": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_classof.js",
+    "./_export": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_export.js",
+    "./_is-object": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_is-object.js",
+    "./_a-function": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_a-function.js",
+    "./_an-instance": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_an-instance.js",
+    "./_for-of": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_for-of.js",
+    "./_species-constructor": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_species-constructor.js",
+    "./_task": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_task.js",
+    "./_microtask": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_microtask.js",
+    "./_new-promise-capability": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_new-promise-capability.js",
+    "./_perform": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_perform.js",
+    "./_user-agent": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_user-agent.js",
+    "./_promise-resolve": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_promise-resolve.js",
+    "./_wks": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_wks.js",
+    "./_set-to-string-tag": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_set-to-string-tag.js",
+    "./_set-species": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_set-species.js",
+    "./_core": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_core.js",
+    "./_iter-detect": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iter-detect.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_classof.js": {
+    "./_cof": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_cof.js",
+    "./_wks": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_wks.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_for-of.js": {
+    "./_ctx": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_ctx.js",
+    "./_iter-call": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iter-call.js",
+    "./_is-array-iter": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_is-array-iter.js",
+    "./_an-object": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_an-object.js",
+    "./_to-length": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_to-length.js",
+    "./core.get-iterator-method": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/core.get-iterator-method.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iter-call.js": {
+    "./_an-object": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_an-object.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_is-array-iter.js": {
+    "./_iterators": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iterators.js",
+    "./_wks": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_wks.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/core.get-iterator-method.js": {
+    "./_classof": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_classof.js",
+    "./_wks": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_wks.js",
+    "./_iterators": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iterators.js",
+    "./_core": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_core.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_species-constructor.js": {
+    "./_an-object": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_an-object.js",
+    "./_a-function": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_a-function.js",
+    "./_wks": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_wks.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_task.js": {
+    "./_ctx": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_ctx.js",
+    "./_invoke": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_invoke.js",
+    "./_html": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_html.js",
+    "./_dom-create": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_dom-create.js",
+    "./_global": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_global.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_html.js": {
+    "./_global": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_global.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_dom-create.js": {
+    "./_is-object": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_is-object.js",
+    "./_global": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_global.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_microtask.js": {
+    "./_global": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_global.js",
+    "./_task": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_task.js",
+    "./_cof": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_cof.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_new-promise-capability.js": {
+    "./_a-function": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_a-function.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_user-agent.js": {
+    "./_global": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_global.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_promise-resolve.js": {
+    "./_an-object": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_an-object.js",
+    "./_is-object": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_is-object.js",
+    "./_new-promise-capability": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_new-promise-capability.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_set-species.js": {
+    "./_global": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_global.js",
+    "./_core": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_core.js",
+    "./_object-dp": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_object-dp.js",
+    "./_descriptors": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_descriptors.js",
+    "./_wks": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_wks.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_iter-detect.js": {
+    "./_wks": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_wks.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/es7.promise.finally.js": {
+    "./_export": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_export.js",
+    "./_core": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_core.js",
+    "./_global": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_global.js",
+    "./_species-constructor": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_species-constructor.js",
+    "./_promise-resolve": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_promise-resolve.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/es7.promise.try.js": {
+    "./_export": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_export.js",
+    "./_new-promise-capability": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_new-promise-capability.js",
+    "./_perform": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/core-js/library/modules/_perform.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/babel-runtime/regenerator/index.js": {
+    "regenerator-runtime": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/regenerator-runtime/runtime-module.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/regenerator-runtime/runtime-module.js": {
+    "./runtime": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/regenerator-runtime/runtime.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/babel-runtime/helpers/asyncToGenerator.js": {
+    "../core-js/promise": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/babel-runtime/core-js/promise.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/NodeRSA.js": {
+    "constants": "constants",
+    "./libs/rsa.js": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/libs/rsa.js",
+    "crypto": "crypto",
+    "asn1": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/asn1/lib/index.js",
+    "./utils": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/utils.js",
+    "./schemes/schemes.js": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/schemes/schemes.js",
+    "./formats/formats.js": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/formats/formats.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/libs/rsa.js": {
+    "../utils": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/utils.js",
+    "crypto": "crypto",
+    "./jsbn.js": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/libs/jsbn.js",
+    "../utils.js": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/utils.js",
+    "../schemes/schemes.js": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/schemes/schemes.js",
+    "../encryptEngines/encryptEngines.js": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/encryptEngines/encryptEngines.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/utils.js": {
+    "crypto": "crypto"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/libs/jsbn.js": {
+    "crypto": "crypto",
+    "../utils": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/utils.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/schemes/schemes.js": {
+    "./pkcs1": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/schemes/pkcs1.js",
+    "./oaep": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/schemes/oaep.js",
+    "./pss": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/schemes/pss.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/schemes/pkcs1.js": {
+    "../libs/jsbn": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/libs/jsbn.js",
+    "crypto": "crypto",
+    "constants": "constants"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/schemes/oaep.js": {
+    "../libs/jsbn": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/libs/jsbn.js",
+    "crypto": "crypto"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/schemes/pss.js": {
+    "../libs/jsbn": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/libs/jsbn.js",
+    "crypto": "crypto"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/encryptEngines/encryptEngines.js": {
+    "crypto": "crypto"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/asn1/lib/index.js": {
+    "./ber/index": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/asn1/lib/ber/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/asn1/lib/ber/index.js": {
+    "./errors": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/asn1/lib/ber/errors.js",
+    "./types": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/asn1/lib/ber/types.js",
+    "./reader": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/asn1/lib/ber/reader.js",
+    "./writer": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/asn1/lib/ber/writer.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/asn1/lib/ber/reader.js": {
+    "assert": "assert",
+    "./types": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/asn1/lib/ber/types.js",
+    "./errors": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/asn1/lib/ber/errors.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/asn1/lib/ber/writer.js": {
+    "assert": "assert",
+    "./types": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/asn1/lib/ber/types.js",
+    "./errors": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/asn1/lib/ber/errors.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/formats/formats.js": {
+    "../utils": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/utils.js",
+    "./pkcs1": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/formats/pkcs1.js",
+    "./pkcs8": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/formats/pkcs8.js",
+    "./components": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/formats/components.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/formats/pkcs1.js": {
+    "asn1": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/asn1/lib/index.js",
+    "../utils": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/utils.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/formats/pkcs8.js": {
+    "asn1": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/asn1/lib/index.js",
+    "../utils": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/utils.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/formats/components.js": {
+    "../utils": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-rsa/src/utils.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/util.promisify/index.js": {
+    "define-properties": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/define-properties/index.js",
+    "util": "util",
+    "./implementation": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/util.promisify/implementation.js",
+    "./polyfill": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/util.promisify/polyfill.js",
+    "./shim": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/util.promisify/shim.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/define-properties/index.js": {
+    "object-keys": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/object-keys/index.js",
+    "foreach": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/foreach/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/object-keys/index.js": {
+    "./isArguments": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/object-keys/isArguments.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/util.promisify/implementation.js": {
+    "object.getownpropertydescriptors": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/object.getownpropertydescriptors/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/object.getownpropertydescriptors/index.js": {
+    "define-properties": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/define-properties/index.js",
+    "./implementation": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/object.getownpropertydescriptors/implementation.js",
+    "./polyfill": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/object.getownpropertydescriptors/polyfill.js",
+    "./shim": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/object.getownpropertydescriptors/shim.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/object.getownpropertydescriptors/implementation.js": {
+    "es-abstract/es7": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/es7.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/es7.js": {
+    "./es2016": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/es2016.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/es2016.js": {
+    "./es2015": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/es2015.js",
+    "./helpers/assign": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/helpers/assign.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/es2015.js": {
+    "has": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/has/src/index.js",
+    "es-to-primitive/es6": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-to-primitive/es6.js",
+    "./GetIntrinsic": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/GetIntrinsic.js",
+    "./helpers/isNaN": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/helpers/isNaN.js",
+    "./helpers/isFinite": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/helpers/isFinite.js",
+    "./helpers/assign": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/helpers/assign.js",
+    "./helpers/sign": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/helpers/sign.js",
+    "./helpers/mod": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/helpers/mod.js",
+    "./helpers/isPrimitive": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/helpers/isPrimitive.js",
+    "function-bind": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/function-bind/index.js",
+    "./es5": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/es5.js",
+    "is-regex": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/is-regex/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/has/src/index.js": {
+    "function-bind": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/function-bind/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/function-bind/index.js": {
+    "./implementation": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/function-bind/implementation.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-to-primitive/es6.js": {
+    "./helpers/isPrimitive": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-to-primitive/helpers/isPrimitive.js",
+    "is-callable": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/is-callable/index.js",
+    "is-date-object": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/is-date-object/index.js",
+    "is-symbol": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/is-symbol/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/is-symbol/index.js": {
+    "has-symbols": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/has-symbols/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/has-symbols/index.js": {
+    "./shams": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/has-symbols/shams.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/helpers/assign.js": {
+    "function-bind": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/function-bind/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/es5.js": {
+    "./GetIntrinsic": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/GetIntrinsic.js",
+    "./helpers/isNaN": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/helpers/isNaN.js",
+    "./helpers/isFinite": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/helpers/isFinite.js",
+    "./helpers/sign": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/helpers/sign.js",
+    "./helpers/mod": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-abstract/helpers/mod.js",
+    "is-callable": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/is-callable/index.js",
+    "es-to-primitive/es5": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-to-primitive/es5.js",
+    "has": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/has/src/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-to-primitive/es5.js": {
+    "./helpers/isPrimitive": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/es-to-primitive/helpers/isPrimitive.js",
+    "is-callable": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/is-callable/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/is-regex/index.js": {
+    "has": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/has/src/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/object.getownpropertydescriptors/polyfill.js": {
+    "./implementation": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/object.getownpropertydescriptors/implementation.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/object.getownpropertydescriptors/shim.js": {
+    "./polyfill": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/object.getownpropertydescriptors/polyfill.js",
+    "define-properties": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/define-properties/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/util.promisify/polyfill.js": {
+    "util": "util",
+    "./implementation": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/util.promisify/implementation.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/util.promisify/shim.js": {
+    "util": "util",
+    "./polyfill": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/util.promisify/polyfill.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/channel/chExchangeEngine.js": {
+    "./chTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/channel/chTools.js",
+    "../logger/logger": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/logger/logger.js",
+    "../tools/funcTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/funcTools.js",
+    "../infoObjects/cIdChInfo": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/infoObjects/cIdChInfo.js",
+    "../infoObjects/cChInfo": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/infoObjects/cChInfo.js",
+    "../infoObjects/pubDataInfo": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/infoObjects/pubDataInfo.js",
+    "../constants/workerChTaskActions": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/workerChTaskActions.js",
+    "../constants/internal": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/internal.js",
+    "../constants/workerChTaskType": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/workerChTaskType.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/channel/chTools.js": {
+    "../logger/logger": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/logger/logger.js",
+    "../constants/internal": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/internal.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/infoObjects/cIdChInfo.js": {
+    "./cChInfo": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/infoObjects/cChInfo.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/token/tokenTools.js": {
+    "../zationTaskErrors/mainTaskErrors": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/zationTaskErrors/mainTaskErrors.js",
+    "../channel/chAccessEngine": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/channel/chAccessEngine.js",
+    "../error/authenticationError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/authenticationError.js",
+    "../../api/BackError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/BackError.js",
+    "jsonwebtoken": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/channel/chAccessEngine.js": {
+    "../logger/logger": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/logger/logger.js",
+    "./chTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/channel/chTools.js",
+    "../infoObjects/cIdChInfo": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/infoObjects/cIdChInfo.js",
+    "../infoObjects/cChInfo": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/infoObjects/cChInfo.js",
+    "../tools/funcTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/funcTools.js",
+    "../infoObjects/pubDataInfo": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/infoObjects/pubDataInfo.js",
+    "../constants/internal": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/internal.js",
+    "./chConfigManager": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/channel/chConfigManager.js",
+    "../infoObjects/socketInfo": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/infoObjects/socketInfo.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/infoObjects/socketInfo.js": {
+    "../token/tokenTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/token/tokenTools.js",
+    "../tools/objectPath": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectPath.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/authenticationError.js": {
+    "./../zationTaskErrors/mainTaskErrors": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/zationTaskErrors/mainTaskErrors.js",
+    "./codeError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/codeError.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/index.js": {
+    "./decode": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/decode.js",
+    "./verify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/verify.js",
+    "./sign": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/sign.js",
+    "./lib/JsonWebTokenError": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/lib/JsonWebTokenError.js",
+    "./lib/NotBeforeError": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/lib/NotBeforeError.js",
+    "./lib/TokenExpiredError": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/lib/TokenExpiredError.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/decode.js": {
+    "jws": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jws/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jws/index.js": {
+    "./lib/sign-stream": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jws/lib/sign-stream.js",
+    "./lib/verify-stream": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jws/lib/verify-stream.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jws/lib/sign-stream.js": {
+    "safe-buffer": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/safe-buffer/index.js",
+    "./data-stream": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jws/lib/data-stream.js",
+    "jwa": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jwa/index.js",
+    "stream": "stream",
+    "./tostring": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jws/lib/tostring.js",
+    "util": "util"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/safe-buffer/index.js": {
+    "buffer": "buffer"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jws/lib/data-stream.js": {
+    "safe-buffer": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/safe-buffer/index.js",
+    "stream": "stream",
+    "util": "util"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jwa/index.js": {
+    "buffer-equal-constant-time": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/buffer-equal-constant-time/index.js",
+    "safe-buffer": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/safe-buffer/index.js",
+    "crypto": "crypto",
+    "ecdsa-sig-formatter": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/ecdsa-sig-formatter/src/ecdsa-sig-formatter.js",
+    "util": "util"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/buffer-equal-constant-time/index.js": {
+    "buffer": "buffer"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/ecdsa-sig-formatter/src/ecdsa-sig-formatter.js": {
+    "safe-buffer": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/safe-buffer/index.js",
+    "./param-bytes-for-alg": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/ecdsa-sig-formatter/src/param-bytes-for-alg.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jws/lib/tostring.js": {
+    "buffer": "buffer"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jws/lib/verify-stream.js": {
+    "safe-buffer": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/safe-buffer/index.js",
+    "./data-stream": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jws/lib/data-stream.js",
+    "jwa": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jwa/index.js",
+    "stream": "stream",
+    "./tostring": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jws/lib/tostring.js",
+    "util": "util"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/verify.js": {
+    "./lib/JsonWebTokenError": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/lib/JsonWebTokenError.js",
+    "./lib/NotBeforeError": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/lib/NotBeforeError.js",
+    "./lib/TokenExpiredError": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/lib/TokenExpiredError.js",
+    "./decode": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/decode.js",
+    "./lib/timespan": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/lib/timespan.js",
+    "./lib/psSupported": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/lib/psSupported.js",
+    "jws": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jws/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/lib/NotBeforeError.js": {
+    "./JsonWebTokenError": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/lib/JsonWebTokenError.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/lib/TokenExpiredError.js": {
+    "./JsonWebTokenError": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/lib/JsonWebTokenError.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/lib/timespan.js": {
+    "ms": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/node_modules/ms/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/lib/psSupported.js": {
+    "semver": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/node_modules/semver/semver.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/sign.js": {
+    "./lib/timespan": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/lib/timespan.js",
+    "./lib/psSupported": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jsonwebtoken/lib/psSupported.js",
+    "jws": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/jws/index.js",
+    "lodash.includes": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/lodash.includes/index.js",
+    "lodash.isboolean": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/lodash.isboolean/index.js",
+    "lodash.isinteger": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/lodash.isinteger/index.js",
+    "lodash.isnumber": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/lodash.isnumber/index.js",
+    "lodash.isplainobject": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/lodash.isplainobject/index.js",
+    "lodash.isstring": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/lodash.isstring/index.js",
+    "lodash.once": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/lodash.once/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectPathSequence.js": {
+    "./objectPath": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectPath.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectPathActionSequence.js": {
+    "../constants/syncTokenActions": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/syncTokenActions.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/builder/backErrorBuilder.js": {
+    "../constants/errorType": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/errorType.js",
+    "../../api/BackError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/BackError.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/uniqid/index.js": {
+    "os": "os"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/Bag.js": {
+    "./../helper/channel/channelEngine": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/channel/channelEngine.js",
+    "./SmallBag": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/SmallBag.js",
+    "../helper/tools/objectPath": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectPath.js",
+    "useragent": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/useragent/index.js",
+    "../helper/error/methodIsNotCompatibleError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/methodIsNotCompatibleError.js",
+    "../helper/error/inputIsNotCompatibleError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/inputIsNotCompatibleError.js",
+    "../helper/tools/objectPathSequence": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectPathSequence.js",
+    "../helper/error/authenticationError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/authenticationError.js",
+    "../helper/protocolAccess/protocolAccessChecker": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/protocolAccess/protocolAccessChecker.js",
+    "../helper/tools/objectPathCombineSequence": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectPathCombineSequence.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/channel/channelEngine.js": {
+    "./chExchangeEngine": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/channel/chExchangeEngine.js",
+    "./chTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/channel/chTools.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/useragent/index.js": {
+    "./lib/regexps": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/useragent/lib/regexps.js",
+    "lru-cache": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/lru-cache/index.js",
+    "./package.json": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/useragent/package.json"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/lru-cache/index.js": {
+    "pseudomap": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/pseudomap/map.js",
+    "util": "util",
+    "yallist": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/yallist/yallist.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/methodIsNotCompatibleError.js": {
+    "./../zationTaskErrors/mainTaskErrors": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/zationTaskErrors/mainTaskErrors.js",
+    "./codeError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/codeError.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/inputIsNotCompatibleError.js": {
+    "./../zationTaskErrors/mainTaskErrors": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/zationTaskErrors/mainTaskErrors.js",
+    "./codeError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/codeError.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/Controller.js": {
+    "../helper/tools/objectPath": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectPath.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/modelImportEngine.js": {
+    "copy-object": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/copy-object/lib/copy-object.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/client/clientPrepare.js": {
+    "fs": "fs"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/cluster/stateServerEngine.js": {
+    "socketcluster-client": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/index.js",
+    "../tools/encoder": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/encoder.js",
+    "../logger/logger": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/logger/logger.js",
+    "uuid/v4": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/uuid/v4.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/index.js": {
+    "./lib/scclientsocket": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/lib/scclientsocket.js",
+    "./lib/factory": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/lib/factory.js",
+    "component-emitter": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/component-emitter/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/lib/scclientsocket.js": {
+    "component-emitter": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/component-emitter/index.js",
+    "sc-channel": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/sc-channel/index.js",
+    "./response": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/lib/response.js",
+    "./auth": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/lib/auth.js",
+    "sc-formatter": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/sc-formatter/index.js",
+    "./sctransport": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/lib/sctransport.js",
+    "querystring": "querystring",
+    "linked-list": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/linked-list/index.js",
+    "buffer/": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/buffer/index.js",
+    "clone": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/clone/clone.js",
+    "sc-errors": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/sc-errors/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/sc-channel/index.js": {
+    "component-emitter": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/component-emitter/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/lib/response.js": {
+    "sc-errors": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/sc-errors/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/lib/sctransport.js": {
+    "component-emitter": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/component-emitter/index.js",
+    "./response": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/lib/response.js",
+    "querystring": "querystring",
+    "ws": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/index.js",
+    "sc-errors": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/sc-errors/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/index.js": {
+    "./lib/websocket": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/websocket.js",
+    "./lib/websocket-server": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/websocket-server.js",
+    "./lib/receiver": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/receiver.js",
+    "./lib/sender": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/sender.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/websocket.js": {
+    "events": "events",
+    "crypto": "crypto",
+    "https": "https",
+    "http": "http",
+    "net": "net",
+    "tls": "tls",
+    "url": "url",
+    "./permessage-deflate": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/permessage-deflate.js",
+    "./event-target": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/event-target.js",
+    "./extension": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/extension.js",
+    "./constants": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/constants.js",
+    "./receiver": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/receiver.js",
+    "./sender": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/sender.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/permessage-deflate.js": {
+    "async-limiter": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/async-limiter/index.js",
+    "zlib": "zlib",
+    "./buffer-util": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/buffer-util.js",
+    "./constants": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/constants.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/buffer-util.js": {},
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/receiver.js": {
+    "stream": "stream",
+    "./permessage-deflate": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/permessage-deflate.js",
+    "./buffer-util": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/buffer-util.js",
+    "./validation": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/validation.js",
+    "./constants": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/constants.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/validation.js": {},
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/sender.js": {
+    "crypto": "crypto",
+    "./permessage-deflate": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/permessage-deflate.js",
+    "./buffer-util": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/buffer-util.js",
+    "./validation": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/validation.js",
+    "./constants": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/constants.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/websocket-server.js": {
+    "events": "events",
+    "crypto": "crypto",
+    "http": "http",
+    "url": "url",
+    "./permessage-deflate": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/permessage-deflate.js",
+    "./extension": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/extension.js",
+    "./constants": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/constants.js",
+    "./websocket": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/ws/lib/websocket.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/linked-list/index.js": {
+    "./_source/linked-list.js": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/linked-list/_source/linked-list.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/buffer/index.js": {
+    "base64-js": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/base64-js/index.js",
+    "ieee754": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/ieee754/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/lib/factory.js": {
+    "./scclientsocket": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/lib/scclientsocket.js",
+    "sc-errors": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/sc-errors/index.js",
+    "uuid": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/uuid/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/uuid/index.js": {
+    "./v1": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/uuid/v1.js",
+    "./v4": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/uuid/v4.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/uuid/v1.js": {
+    "./lib/rng": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/uuid/lib/rng.js",
+    "./lib/bytesToUuid": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/uuid/lib/bytesToUuid.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/uuid/lib/rng.js": {
+    "crypto": "crypto"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/uuid/v4.js": {
+    "./lib/rng": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/uuid/lib/rng.js",
+    "./lib/bytesToUuid": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster-client/node_modules/uuid/lib/bytesToUuid.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/encoder.js": {
+    "object-encrypter": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/object-encrypter/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/object-encrypter/index.js": {
+    "crypto": "crypto"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/index.js": {
+    "./lib/api/Bag": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/Bag.js",
+    "./lib/api/SmallBag": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/SmallBag.js",
+    "./lib/api/Controller": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/Controller.js",
+    "./lib/api/Result": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/Result.js",
+    "./lib/api/BackError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/BackError.js",
+    "./lib/helper/builder/backErrorBuilder": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/builder/backErrorBuilder.js",
+    "./lib/api/BackErrorBag": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/BackErrorBag.js",
+    "./lib/helper/constants/errorType": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/errorType.js",
+    "./lib/helper/services/serviceNotFoundError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/services/serviceNotFoundError.js",
+    "./lib/api/Config": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/Config.js",
+    "./lib/helper/constants/validationTypes": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/validationTypes.js",
+    "./lib/helper/error/authenticationError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/authenticationError.js",
+    "./lib/helper/error/errorNotFoundError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/errorNotFoundError.js",
+    "./lib/helper/error/codeError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/codeError.js",
+    "./lib/helper/error/methodIsNotCompatibleError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/methodIsNotCompatibleError.js",
+    "./lib/helper/error/inputIsNotCompatibleError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/inputIsNotCompatibleError.js",
+    "./lib/helper/constants/startMode": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/startMode.js",
+    "socketcluster/fsutil": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/fsutil.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/services/serviceNotFoundError.js": {
+    "./../zationTaskErrors/mainTaskErrors": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/zationTaskErrors/mainTaskErrors.js",
+    "../error/codeError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/codeError.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/Config.js": {
+    "../helper/tools/objectTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectTools.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/socketcluster/fsutil.js": {
+    "fs": "fs",
+    "sc-errors": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/sc-errors/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/test/src/helper/validator/functions.test.js": {
+    "../../../../dist/lib/helper/constants/validation": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/validation.js",
+    "../../../../dist/lib/helper/config/configPreCompiler": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/configPreCompiler.js",
+    "../../../../dist/lib/helper/validator/validatorLibrary": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/validator/validatorLibrary.js",
+    "chai": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/configPreCompiler.js": {
+    "../tools/objectTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectTools.js",
+    "../tools/iterator": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/iterator.js",
+    "./modelImportEngine": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/modelImportEngine.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/validator/validatorLibrary.js": {
+    "../zationTaskErrors/validatorTaskErrors": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/zationTaskErrors/validatorTaskErrors.js",
+    "./easyValidator": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/validator/easyValidator.js",
+    "../constants/validationTypes": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/validationTypes.js",
+    "../constants/validation": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/validation.js",
+    "../tools/byteTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/byteTools.js",
+    "../tools/base64Tools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/base64Tools.js",
+    "../../api/BackError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/BackError.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/zationTaskErrors/validatorTaskErrors.js": {
+    "../constants/errorGroup": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/errorGroup.js",
+    "../constants/errorType": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/errorType.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/validator/easyValidator.js": {
+    "validator": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/index.js": {
+    "./lib/toDate": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/toDate.js",
+    "./lib/toFloat": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/toFloat.js",
+    "./lib/toInt": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/toInt.js",
+    "./lib/toBoolean": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/toBoolean.js",
+    "./lib/equals": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/equals.js",
+    "./lib/contains": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/contains.js",
+    "./lib/matches": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/matches.js",
+    "./lib/isEmail": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isEmail.js",
+    "./lib/isURL": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isURL.js",
+    "./lib/isMACAddress": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isMACAddress.js",
+    "./lib/isIP": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isIP.js",
+    "./lib/isIPRange": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isIPRange.js",
+    "./lib/isFQDN": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isFQDN.js",
+    "./lib/isBoolean": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isBoolean.js",
+    "./lib/isAlpha": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isAlpha.js",
+    "./lib/isAlphanumeric": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isAlphanumeric.js",
+    "./lib/isNumeric": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isNumeric.js",
+    "./lib/isPort": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isPort.js",
+    "./lib/isLowercase": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isLowercase.js",
+    "./lib/isUppercase": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isUppercase.js",
+    "./lib/isAscii": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isAscii.js",
+    "./lib/isFullWidth": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isFullWidth.js",
+    "./lib/isHalfWidth": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isHalfWidth.js",
+    "./lib/isVariableWidth": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isVariableWidth.js",
+    "./lib/isMultibyte": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isMultibyte.js",
+    "./lib/isSurrogatePair": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isSurrogatePair.js",
+    "./lib/isInt": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isInt.js",
+    "./lib/isFloat": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isFloat.js",
+    "./lib/isDecimal": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isDecimal.js",
+    "./lib/isHexadecimal": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isHexadecimal.js",
+    "./lib/isDivisibleBy": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isDivisibleBy.js",
+    "./lib/isHexColor": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isHexColor.js",
+    "./lib/isISRC": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isISRC.js",
+    "./lib/isMD5": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isMD5.js",
+    "./lib/isHash": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isHash.js",
+    "./lib/isJWT": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isJWT.js",
+    "./lib/isJSON": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isJSON.js",
+    "./lib/isEmpty": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isEmpty.js",
+    "./lib/isLength": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isLength.js",
+    "./lib/isByteLength": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isByteLength.js",
+    "./lib/isUUID": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isUUID.js",
+    "./lib/isMongoId": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isMongoId.js",
+    "./lib/isAfter": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isAfter.js",
+    "./lib/isBefore": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isBefore.js",
+    "./lib/isIn": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isIn.js",
+    "./lib/isCreditCard": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isCreditCard.js",
+    "./lib/isIdentityCard": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isIdentityCard.js",
+    "./lib/isISIN": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isISIN.js",
+    "./lib/isISBN": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isISBN.js",
+    "./lib/isISSN": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isISSN.js",
+    "./lib/isMobilePhone": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isMobilePhone.js",
+    "./lib/isCurrency": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isCurrency.js",
+    "./lib/isISO8601": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isISO8601.js",
+    "./lib/isRFC3339": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isRFC3339.js",
+    "./lib/isISO31661Alpha2": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isISO31661Alpha2.js",
+    "./lib/isISO31661Alpha3": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isISO31661Alpha3.js",
+    "./lib/isBase64": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isBase64.js",
+    "./lib/isDataURI": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isDataURI.js",
+    "./lib/isMagnetURI": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isMagnetURI.js",
+    "./lib/isMimeType": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isMimeType.js",
+    "./lib/isLatLong": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isLatLong.js",
+    "./lib/isPostalCode": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isPostalCode.js",
+    "./lib/ltrim": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/ltrim.js",
+    "./lib/rtrim": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/rtrim.js",
+    "./lib/trim": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/trim.js",
+    "./lib/escape": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/escape.js",
+    "./lib/unescape": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/unescape.js",
+    "./lib/stripLow": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/stripLow.js",
+    "./lib/whitelist": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/whitelist.js",
+    "./lib/blacklist": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/blacklist.js",
+    "./lib/isWhitelisted": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isWhitelisted.js",
+    "./lib/normalizeEmail": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/normalizeEmail.js",
+    "./lib/util/toString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/toString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/toDate.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/toFloat.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/toInt.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/toBoolean.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/equals.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/contains.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./util/toString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/toString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/matches.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isEmail.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./util/merge": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/merge.js",
+    "./isByteLength": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isByteLength.js",
+    "./isFQDN": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isFQDN.js",
+    "./isIP": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isIP.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isByteLength.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isFQDN.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./util/merge": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/merge.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isIP.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isURL.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./isFQDN": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isFQDN.js",
+    "./isIP": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isIP.js",
+    "./util/merge": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/merge.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isMACAddress.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isIPRange.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./isIP": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isIP.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isBoolean.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isAlpha.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./alpha": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/alpha.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isAlphanumeric.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./alpha": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/alpha.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isNumeric.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isPort.js": {
+    "./isInt": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isInt.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isInt.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isLowercase.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isUppercase.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isAscii.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isFullWidth.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isHalfWidth.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isVariableWidth.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./isFullWidth": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isFullWidth.js",
+    "./isHalfWidth": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isHalfWidth.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isMultibyte.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isSurrogatePair.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isFloat.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./alpha": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/alpha.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isDecimal.js": {
+    "./util/merge": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/merge.js",
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./util/includes": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/includes.js",
+    "./alpha": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/alpha.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isHexadecimal.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isDivisibleBy.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./toFloat": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/toFloat.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isHexColor.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isISRC.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isMD5.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isHash.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isJWT.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isJSON.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isEmpty.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./util/merge": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/merge.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isLength.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isUUID.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isMongoId.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./isHexadecimal": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isHexadecimal.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isAfter.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./toDate": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/toDate.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isBefore.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./toDate": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/toDate.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isIn.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./util/toString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/toString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isCreditCard.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isIdentityCard.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isISIN.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isISBN.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isISSN.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isMobilePhone.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isCurrency.js": {
+    "./util/merge": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/merge.js",
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isISO8601.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isRFC3339.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isISO31661Alpha2.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./util/includes": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/includes.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isISO31661Alpha3.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./util/includes": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/includes.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isBase64.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isDataURI.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isMagnetURI.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isMimeType.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isLatLong.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isPostalCode.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/ltrim.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/rtrim.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/trim.js": {
+    "./rtrim": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/rtrim.js",
+    "./ltrim": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/ltrim.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/escape.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/unescape.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/stripLow.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js",
+    "./blacklist": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/blacklist.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/blacklist.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/whitelist.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/isWhitelisted.js": {
+    "./util/assertString": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/assertString.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/normalizeEmail.js": {
+    "./util/merge": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/validator/lib/util/merge.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/byteTools.js": {
+    "../constants/validationTypes": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/validationTypes.js",
+    "./base64Tools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/base64Tools.js",
+    "byte-length": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/byte-length/dist/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/index.js": {
+    "./lib/chai": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai.js": {
+    "assertion-error": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/assertion-error/index.js",
+    "./chai/utils": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/index.js",
+    "./chai/config": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/config.js",
+    "./chai/assertion": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/assertion.js",
+    "./chai/core/assertions": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/core/assertions.js",
+    "./chai/interface/expect": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/interface/expect.js",
+    "./chai/interface/should": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/interface/should.js",
+    "./chai/interface/assert": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/interface/assert.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/index.js": {
+    "pathval": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/pathval/index.js",
+    "./test": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/test.js",
+    "type-detect": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/type-detect/type-detect.js",
+    "./expectTypes": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/expectTypes.js",
+    "./getMessage": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/getMessage.js",
+    "./getActual": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/getActual.js",
+    "./inspect": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/inspect.js",
+    "./objDisplay": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/objDisplay.js",
+    "./flag": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/flag.js",
+    "./transferFlags": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/transferFlags.js",
+    "deep-eql": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/deep-eql/index.js",
+    "get-func-name": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/get-func-name/index.js",
+    "./addProperty": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/addProperty.js",
+    "./addMethod": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/addMethod.js",
+    "./overwriteProperty": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/overwriteProperty.js",
+    "./overwriteMethod": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/overwriteMethod.js",
+    "./addChainableMethod": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/addChainableMethod.js",
+    "./overwriteChainableMethod": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/overwriteChainableMethod.js",
+    "./compareByInspect": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/compareByInspect.js",
+    "./getOwnEnumerablePropertySymbols": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/getOwnEnumerablePropertySymbols.js",
+    "./getOwnEnumerableProperties": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/getOwnEnumerableProperties.js",
+    "check-error": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/check-error/index.js",
+    "./proxify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/proxify.js",
+    "./addLengthGuard": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/addLengthGuard.js",
+    "./isProxyEnabled": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/isProxyEnabled.js",
+    "./isNaN": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/isNaN.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/test.js": {
+    "./flag": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/flag.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/expectTypes.js": {
+    "assertion-error": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/assertion-error/index.js",
+    "./flag": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/flag.js",
+    "type-detect": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/type-detect/type-detect.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/getMessage.js": {
+    "./flag": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/flag.js",
+    "./getActual": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/getActual.js",
+    "./objDisplay": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/objDisplay.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/objDisplay.js": {
+    "./inspect": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/inspect.js",
+    "../config": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/config.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/inspect.js": {
+    "get-func-name": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/get-func-name/index.js",
+    "./getProperties": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/getProperties.js",
+    "./getEnumerableProperties": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/getEnumerableProperties.js",
+    "../config": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/config.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/deep-eql/index.js": {
+    "type-detect": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/type-detect/type-detect.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/addProperty.js": {
+    "../../chai": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai.js",
+    "./flag": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/flag.js",
+    "./isProxyEnabled": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/isProxyEnabled.js",
+    "./transferFlags": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/transferFlags.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/isProxyEnabled.js": {
+    "../config": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/config.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/addMethod.js": {
+    "./addLengthGuard": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/addLengthGuard.js",
+    "../../chai": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai.js",
+    "./flag": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/flag.js",
+    "./proxify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/proxify.js",
+    "./transferFlags": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/transferFlags.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/proxify.js": {
+    "../config": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/config.js",
+    "./flag": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/flag.js",
+    "./getProperties": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/getProperties.js",
+    "./isProxyEnabled": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/isProxyEnabled.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/overwriteProperty.js": {
+    "../../chai": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai.js",
+    "./flag": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/flag.js",
+    "./isProxyEnabled": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/isProxyEnabled.js",
+    "./transferFlags": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/transferFlags.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/overwriteMethod.js": {
+    "./addLengthGuard": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/addLengthGuard.js",
+    "../../chai": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai.js",
+    "./flag": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/flag.js",
+    "./proxify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/proxify.js",
+    "./transferFlags": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/transferFlags.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/addChainableMethod.js": {
+    "./addLengthGuard": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/addLengthGuard.js",
+    "../../chai": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai.js",
+    "./flag": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/flag.js",
+    "./proxify": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/proxify.js",
+    "./transferFlags": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/transferFlags.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/overwriteChainableMethod.js": {
+    "../../chai": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai.js",
+    "./transferFlags": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/transferFlags.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/compareByInspect.js": {
+    "./inspect": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/inspect.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/getOwnEnumerableProperties.js": {
+    "./getOwnEnumerablePropertySymbols": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/utils/getOwnEnumerablePropertySymbols.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/assertion.js": {
+    "./config": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/lib/chai/config.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/moment-timezone/index.js": {
+    "./moment-timezone": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/moment-timezone/moment-timezone.js",
+    "./data/packed/latest.json": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/moment-timezone/data/packed/latest.json"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/moment-timezone/moment-timezone.js": {
+    "moment": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/moment/moment.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/main/zationConfig.js": {
+    "../helper/tools/objectTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectTools.js",
+    "path": "path",
+    "fs": "fs",
+    "crypto": "crypto",
+    "./../helper/config/structures": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/structures.js",
+    "../helper/tools/funcTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/funcTools.js",
+    "../helper/error/errorNotFoundError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/errorNotFoundError.js",
+    "uuid/v4": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/uuid/v4.js",
+    "moment-timezone": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/moment-timezone/index.js",
+    "node-eval": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-eval/index.js",
+    "../helper/configs/mainConfig": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/configs/mainConfig.js",
+    "../helper/infoObjects/zationInfo": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/infoObjects/zationInfo.js",
+    "./../helper/constants/startMode": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/startMode.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/config/structures.js": {
+    "../tools/objectTools": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/tools/objectTools.js",
+    "../configs/mainConfig": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/configs/mainConfig.js",
+    "../constants/validationTypes": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/validationTypes.js",
+    "../constants/validation": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/validation.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/errorNotFoundError.js": {
+    "./../zationTaskErrors/mainTaskErrors": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/zationTaskErrors/mainTaskErrors.js",
+    "./codeError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/codeError.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/zationTaskErrors/mainTaskErrors.js": {
+    "../constants/errorType": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/constants/errorType.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/error/codeError.js": {
+    "../../api/BackError": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/BackError.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/uuid/v4.js": {
+    "./lib/rng": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/uuid/lib/rng.js",
+    "./lib/bytesToUuid": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/uuid/lib/bytesToUuid.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/uuid/lib/rng.js": {
+    "crypto": "crypto"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/node-eval/index.js": {
+    "vm": "vm",
+    "path": "path",
+    "module": "module",
+    "path-is-absolute": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/path-is-absolute/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/test/src/helper/validator/types.test.js": {
+    "../../../testData/base64": "/Users/lucascaringella/Documents/gitHub/zation-server/test/testData/base64.js",
+    "chai": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/chai/index.js",
+    "../../../../dist/lib/api/BackErrorBag": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/api/BackErrorBag.js",
+    "../../../../dist/lib/helper/validator/validatorLibrary": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/lib/helper/validator/validatorLibrary.js",
+    "../../../../dist": "/Users/lucascaringella/Documents/gitHub/zation-server/dist/index.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/mocha/lib/interfaces/bdd.js": {
+    "./common": "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/mocha/lib/interfaces/common.js"
+  },
+  "/Users/lucascaringella/Documents/gitHub/zation-server/node_modules/mocha/lib/mocha.js": {
+    "/Users/lucascaringella/Documents/gitHub/zation-server/test/src/helper/validator/types.test.js": "/Users/lucascaringella/Documents/gitHub/zation-server/test/src/helper/validator/types.test.js"
+  }
+}

@@ -6,15 +6,15 @@ GitHub: LucaCode
 
 import ControllerTools       = require('../controller/controllerTools');
 import MainErrors            = require('../zationTaskErrors/mainTaskErrors');
-import TaskError             = require('../../api/TaskError');
-import TaskErrorBag          = require('../../api/TaskErrorBag');
 import ZationReqTools        = require('../tools/zationReqTools');
 // noinspection TypeScriptPreferShortImport
 import {ZationRequest, ZationValidationCheck} from "../constants/internal";
 import ZationWorker          = require("../../main/zationWorker");
 import ZationConfig          = require("../../main/zationConfig");
 import ControllerPrepare     = require("../controller/controllerPrepare");
-import {InputDataProcessor}                   from "../input/inputDataProcessor";
+import {InputDataProcessor}     from "../input/inputDataProcessor";
+import {BackError}              from "../../api/BackError";
+import BackErrorBag             from "../../api/BackErrorBag";
 
 export default class ValidCheckProcessor
 {
@@ -51,7 +51,7 @@ export default class ValidCheckProcessor
 
             //check is over validation check limit
             if(validReq.i.length > this.validationCheckLimit){
-                throw new TaskError(MainErrors.validationCheckLimitReached,{
+                throw new BackError(MainErrors.validationCheckLimitReached,{
                    limit : this.validationCheckLimit,
                    checksCount : validReq.i.length
                 });
@@ -82,7 +82,7 @@ export default class ValidCheckProcessor
             let inputToCheck = validReq.i;
 
             let promises : Promise<void>[] = [];
-            let errorBag = new TaskErrorBag();
+            let errorBag = new BackErrorBag();
             for(let i = 0; i < inputToCheck.length; i++)
             {
                 promises.push(new Promise<void>(async (resolve) =>
@@ -105,7 +105,7 @@ export default class ValidCheckProcessor
                         if(keyPath.length > 0){
                             specificConfig = ControllerTools.getInputConfigAtPath(keyPath,controllerInput);
                             if(specificConfig === undefined){
-                                errorBag.addTaskError(new TaskError(MainErrors.inputPathInControllerNotFound,
+                                errorBag.addBackError(new BackError(MainErrors.inputPathInControllerNotFound,
                                     {
                                         controllerName : cName,
                                         inputPath : keyPath,
@@ -129,7 +129,7 @@ export default class ValidCheckProcessor
                     }
                     else
                     {
-                        errorBag.addTaskError(new TaskError(MainErrors.wrongValidationCheckStructure,
+                        errorBag.addBackError(new BackError(MainErrors.wrongValidationCheckStructure,
                             {
                                 checkIndex : i
                             }));
@@ -144,7 +144,7 @@ export default class ValidCheckProcessor
             return {};
         }
         else {
-            throw new TaskError(MainErrors.wrongInputDataStructure);
+            throw new BackError(MainErrors.wrongInputDataStructure);
         }
     }
 

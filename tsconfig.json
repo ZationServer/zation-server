@@ -12,7 +12,8 @@
     "declaration": true,
     "outDir": "assets",
     "strict": true,
-    "alwaysStrict" : true
+    "alwaysStrict" : true,
+    "plugins": [{ "transform": "ts-nameof", "type": "raw" }]
   },
   "include": [
     "src/**/*"
