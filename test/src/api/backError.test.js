@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const {BackError}     = require("../../../dist/lib/api/BackError");
+const {BackError}     = require("../../../dist/lib/api/BackError").default;
 const assert          = require("chai").assert;
 const expect          = require("chai").expect;
 

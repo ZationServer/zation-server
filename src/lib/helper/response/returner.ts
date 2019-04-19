@@ -10,7 +10,7 @@ import {ResponseResult, ZationResponse, ZationToken} from "../constants/internal
 import TokenTools      = require("../token/tokenTools");
 import {SHBridge}       from "../bridges/shBridge";
 import stringify        from "fast-stringify";
-import {BackError}       from "../../api/BackError";
+import BackError        from "../../api/BackError";
 import BackErrorBag      from "../../api/BackErrorBag";
 
 export class Returner

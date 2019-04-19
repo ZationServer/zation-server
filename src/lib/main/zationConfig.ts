@@ -11,7 +11,7 @@ import crypto            = require('crypto');
 import ZationInfoObj     = require("../helper/infoObjects/zationInfo");
 import Structures        = require('./../helper/config/structures');
 import FuncTools         = require("../helper/tools/funcTools");
-import {BackErrorConstruct}    from "../helper/configs/errorConfig";
+import BackErrorConstruct  from "../helper/constants/backErrorConstruct";
 import ErrorNotFound     = require("../helper/error/errorNotFoundError");
 import SmallBag          = require("../api/SmallBag");
 const  uuidV4            = require('uuid/v4');
@@ -20,7 +20,6 @@ import nodeEval          = require('node-eval');
 import {EventConfig} from "../helper/configs/eventConfig";
 import {AppConfig}         from "../helper/configs/appConfig";
 import {ChannelConfig}     from "../helper/configs/channelConfig";
-import {ErrorConfig}       from "../helper/configs/errorConfig";
 import {InternMainConfig, OPTION_AUTO, OPTION_HALF_AUTO} from "../helper/configs/mainConfig";
 import {ServiceConfig}     from "../helper/configs/serviceConfig";
 import {StarterConfig, StarterConfigMain} from "../helper/configs/starterConfig";
@@ -35,7 +34,6 @@ class ZationConfig {
     private _eventConfig: EventConfig = {};
     private _appConfig: AppConfig = {};
     private _channelConfig: ChannelConfig = {};
-    private _errorConfig: ErrorConfig = {};
     private _mainConfig: InternMainConfig;
     private _serviceConfig: ServiceConfig = {};
     private _configScriptSaver : ConfigScriptSave;
@@ -248,18 +246,6 @@ class ZationConfig {
         }
     }
 
-    getError(name: string): BackErrorConstruct {
-        if (this._errorConfig.hasOwnProperty(name)) {
-            return this._errorConfig[name];
-        } else {
-            throw new ErrorNotFound(name);
-        }
-    }
-
-    isError(name: string): boolean {
-        return this._errorConfig.hasOwnProperty(name);
-    }
-
     getVerifyKey(): any {
         return this._mainConfig.authPublicKey || this._mainConfig.authKey;
     }
@@ -281,7 +267,6 @@ class ZationConfig {
         this._eventConfig = ZationConfig.loadScript(this._configScriptSaver.eventConfig,this.starterConfig.eventConfig);
         this._channelConfig = ZationConfig.loadScript(this._configScriptSaver.channelConfig,this.starterConfig.channelConfig);
         this._appConfig = ZationConfig.loadScript(this._configScriptSaver.appConfig,this.starterConfig.appConfig);
-        this._errorConfig = ZationConfig.loadScript(this._configScriptSaver.errorConfig,this.starterConfig.errorConfig);
         this._serviceConfig = ZationConfig.loadScript(this._configScriptSaver.serviceConfig,this.starterConfig.serviceConfig);
     }
 
@@ -519,10 +504,6 @@ class ZationConfig {
 
     get channelConfig(): ChannelConfig {
         return this._channelConfig;
-    }
-
-    get errorConfig(): ErrorConfig {
-        return this._errorConfig;
     }
 
     get mainConfig(): InternMainConfig {

@@ -13,7 +13,7 @@ import {ZationToken}      from "../constants/internal";
 import AuthenticationError = require("../error/authenticationError");
 import {BaseSHBridge}     from "../bridges/baseSHBridge";
 import AEPreparedPart     from "../auth/aePreparedPart";
-import {BackError}        from "../../api/BackError";
+import BackError          from "../../api/BackError";
 const  Jwt : any        = require('jsonwebtoken');
 
 class TokenTools

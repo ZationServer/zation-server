@@ -15,7 +15,7 @@ import SocketProcessor       from "../helper/processor/socketProcessor";
 import HttpProcessor         from "../helper/processor/httpProcessor";
 import ValidCheckProcessor   from "../helper/processor/validCheckProcessor";
 import {Socket}              from "../helper/sc/socket";
-import {BackError}           from "../api/BackError";
+import BackError             from "../api/BackError";
 import BackErrorBag          from "../api/BackErrorBag";
 
 export class ZationReqHandler

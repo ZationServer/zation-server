@@ -20,7 +20,7 @@ import {FormatLetters}   from "../constants/validation";
 import ByteTools       = require("../tools/byteTools");
 import Base64Tools     = require("../tools/base64Tools");
 import {ValueModelConfig} from "../configs/appConfig";
-import {BackError}        from "../../api/BackError";
+import BackError          from "../../api/BackError";
 
 const functionLibrary = {};
 const typeLibrary = {};

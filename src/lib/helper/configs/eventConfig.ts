@@ -11,7 +11,7 @@ import ZationWorker                  = require("../../main/zationWorker");
 import {ScServer}                      from "../sc/scServer";
 import {Socket}                        from "../sc/socket";
 import {ZationToken}                   from "../constants/internal";
-import {BackError}                     from "../../api/BackError";
+import BackError                       from "../../api/BackError";
 import BackErrorBag                    from "../../api/BackErrorBag";
 
 export type ExpressFunction = (smallBag : SmallBag, express : ExpressCore.Express) => Promise<void> | void;

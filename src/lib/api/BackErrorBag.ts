@@ -4,8 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {BackErrorConstruct} from "../helper/configs/errorConfig";
-import {BackError}          from "./BackError";
+import BackErrorConstruct   from "../helper/constants/backErrorConstruct";
+import BackError            from "./BackError";
 
 export default class BackErrorBag
 {

@@ -13,7 +13,7 @@ import {OptionalProcessor}   from "./optionalProcessor";
 import {SingleInputDataProcessor}  from "./singleInputDataProcessor";
 import ZationWorker        = require("../../main/zationWorker");
 import BackErrorBag          from "../../api/BackErrorBag";
-import {BackError}           from "../../api/BackError";
+import BackError             from "../../api/BackError";
 
 export class InputDataProcessor
 {

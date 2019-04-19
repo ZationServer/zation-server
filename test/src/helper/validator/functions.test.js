@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const  BackErrorBag      = require("../../../../dist/lib/api/BackErrorBag").default;
+const BackErrorBag      = require("../../../../dist/lib/api/BackErrorBag").default;
 const Base64TestData     = require("../../../testData/base64");
 const ZationConfigStub   = require("../../../stubs/zationConfig");
 const {ValidationTypes}  = require("../../../../dist");

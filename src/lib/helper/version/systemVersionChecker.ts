@@ -7,7 +7,7 @@ GitHub: LucaCode
 import MainErrors   = require('../zationTaskErrors/mainTaskErrors');
 import {ControllerConfig} from "../configs/appConfig";
 import {BaseSHBridge}     from "../bridges/baseSHBridge";
-import {BackError}        from "../../api/BackError";
+import BackError          from "../../api/BackError";
 
 class SystemVersionChecker
 {

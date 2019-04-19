@@ -13,7 +13,7 @@ import ZationWorker          = require("../../main/zationWorker");
 import ZationConfig          = require("../../main/zationConfig");
 import ControllerPrepare     = require("../controller/controllerPrepare");
 import {InputDataProcessor}     from "../input/inputDataProcessor";
-import {BackError}              from "../../api/BackError";
+import BackError                from "../../api/BackError";
 import BackErrorBag             from "../../api/BackErrorBag";
 
 export default class ValidCheckProcessor

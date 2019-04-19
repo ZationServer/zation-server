@@ -6,7 +6,6 @@ GitHub: LucaCode
 
 import ObjectTools = require('../tools/objectTools');
 import {EventConfig} from "../configs/eventConfig";
-import {BackErrorConstruct} from "../configs/errorConfig";
 import BagExtension, {
     AnyOfModelConfig,
     AppConfig, ArrayModelConfig, ArraySettings,
@@ -28,16 +27,6 @@ import {FormatLetters} from "../constants/validation";
 import {ServiceConfig} from "../configs/serviceConfig";
 import {ChannelConfig, ChannelSettings, CustomChannelConfig, ZationChannelConfig} from "../configs/channelConfig";
 import {ServiceModule} from "zation-service";
-
-const Error = {};
-Error[nameof<BackErrorConstruct>(s => s.name)]             = {types : ['string'],isOptional : true};
-Error[nameof<BackErrorConstruct>(s => s.group)]            = {types : ['string'],isOptional : true};
-Error[nameof<BackErrorConstruct>(s => s.fromZationSystem)] = {types : ['boolean'],isOptional : true};
-Error[nameof<BackErrorConstruct>(s => s.sendInfo)]         = {types : ['boolean'],isOptional : true};
-Error[nameof<BackErrorConstruct>(s => s.private)]          = {types : ['boolean'],isOptional : true};
-Error[nameof<BackErrorConstruct>(s => s.description)]      = {types : ['string'],isOptional : true};
-Error[nameof<BackErrorConstruct>(s => s.type)]             = {types : ['string'],isOptional : true};
-Error[nameof<BackErrorConstruct>(s => s.sendInfo)]         = {types : ['object'],isOptional : true};
 
 const App = {};
 App[nameof<AppConfig>(s => s.authController)]     = {types : ['string'],isOptional : true};
@@ -366,7 +355,6 @@ const Structures = {
     ArrayModel : ArrayModel,
     ArrayShortCutSpecify : ArrayShortCutSpecify,
     EventConfig : EventConfig,
-    Error : Error,
     PanelUserConfig : PanelUserConfig,
     AuthUserGroup : AuthUserGroup,
     AnyOf : AnyOf,

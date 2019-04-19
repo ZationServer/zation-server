@@ -4,12 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {BackErrorConstruct}     from "../helper/configs/errorConfig";
+import BackErrorConstruct   from "../helper/constants/backErrorConstruct";
 // noinspection TypeScriptPreferShortImport
 import {ErrorType}          from "../helper/constants/errorType";
 import {ErrorResponse, BackErrorInfo} from "../helper/constants/internal";
 
-export class BackError extends Error
+export default class BackError extends Error
 {
     private group : string | undefined;
     private description : string;

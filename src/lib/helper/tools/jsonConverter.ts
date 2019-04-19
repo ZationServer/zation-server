@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
-import {BackError}        from "../../api/BackError";
+import BackError          from "../../api/BackError";
 
 class JsonConverter
 {

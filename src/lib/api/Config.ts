@@ -75,11 +75,7 @@ import
     ValueModelConfig,
     ArrayModelConfig, ArrayModelShortSyntax, Model, PrepareHandleFunction
 } from "../helper/configs/appConfig";
-import
-{
-    ErrorConfig,
-    BackErrorConstruct
-} from "../helper/configs/errorConfig";
+import BackErrorConstruct from "../helper/constants/backErrorConstruct";
 import {
     AuthUserGroupChannel,
     AuthUserGroupChOnBagPubFunction,
@@ -120,7 +116,7 @@ import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
 import ZationInfo = require("../helper/infoObjects/zationInfo");
 import SocketInfo from "../helper/infoObjects/socketInfo";
 import ZationTokenInfo from "../helper/infoObjects/zationTokenInfo";
-import {BackError}  from "./BackError";
+import BackError  from "./BackError";
 import BackErrorBag from "./BackErrorBag";
 
 class Config
@@ -170,8 +166,6 @@ class Config
     static mainConfig(config : MainConfig) : MainConfig {return config;}
     // noinspection JSUnusedGlobalSymbols
     static channelConfig(config : ChannelConfig) : ChannelConfig {return config;}
-    // noinspection JSUnusedGlobalSymbols
-    static errorConfig(config : ErrorConfig) : ErrorConfig {return config;}
     // noinspection JSUnusedGlobalSymbols
     static starterConfig(config : StarterConfig) : StarterConfig {return config;}
 

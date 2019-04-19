@@ -196,7 +196,6 @@ class ConfigChecker
         this.checkChannelConfig();
         this.checkServiceConfig();
         this.checkEventConfig();
-        this.checkErrorConfig();
     }
 
     private checkAppConfig() {
@@ -243,23 +242,6 @@ class ConfigChecker
     private checkEventConfig() {
         ConfigCheckerTools.assertStructure
         (Structures.EventConfig, this.zc.eventConfig, ConfigNames.EVENT, this.ceb);
-    }
-
-    private checkErrorConfig() {
-        if (typeof this.zc.errorConfig === 'object') {
-            const errors = this.zc.errorConfig;
-            for (let k in errors) {
-                if (errors.hasOwnProperty(k)) {
-                    this.checkCustomName(k,'error');
-                    this.checkError(errors[k], new Target(`error '${k}'`));
-                }
-            }
-        }
-    }
-
-    private checkError(error: object, target: Target) {
-        ConfigCheckerTools.assertStructure
-        (Structures.Error, error, ConfigNames.ERROR, this.ceb, target);
     }
 
     private checkChannelConfig() {

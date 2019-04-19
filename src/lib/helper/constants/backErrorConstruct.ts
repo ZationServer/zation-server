@@ -4,9 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-export type ErrorConfig = Record<string,BackErrorConstruct>;
-
-export interface BackErrorConstruct
+export default interface BackErrorConstruct
 {
     name ?: string;
     group ?: string;

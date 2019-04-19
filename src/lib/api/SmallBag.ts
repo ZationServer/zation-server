@@ -10,7 +10,7 @@ import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../helper/cons
 import {WorkerChTargets}                                    from "../helper/constants/workerChTargets";
 import {AsymmetricKeyPairs}                                 from "../helper/infoObjects/asymmetricKeyPairs";
 import {WorkerMessageActions}                               from "../helper/constants/workerMessageActions";
-import {ErrorConfig, BackErrorConstruct}                        from "../helper/configs/errorConfig";
+import BackErrorConstruct                                   from "../helper/constants/backErrorConstruct";
 import {ZationChannel, ZationToken}                         from "../helper/constants/internal";
 import {InternMainConfig}                                   from "../helper/configs/mainConfig";
 import {AppConfig}                                          from "../helper/configs/appConfig";
@@ -40,8 +40,8 @@ import ObjectPathActionSequence                             = require("../helper
 import {StartMode}                                          from "./../helper/constants/startMode";
 import Result                                               = require('./Result');
 import BackErrorBuilder from "../helper/builder/backErrorBuilder";
-import {BackError}     from "./BackError";
-import  BackErrorBag   from "./BackErrorBag";
+import BackError      from "./BackError";
+import BackErrorBag   from "./BackErrorBag";
 const uuidV4                                                = require('uuid/v4');
 const uniqid                                                = require('uniqid');
 
@@ -130,16 +130,6 @@ class SmallBag
     getChannelConfig() : ChannelConfig {
         // noinspection TypeScriptValidateJSTypes
         return this.zc.channelConfig;
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Returns the error config.
-     */
-    getErrorConfig() : ErrorConfig {
-        // noinspection TypeScriptValidateJSTypes
-        return this.zc.errorConfig;
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
@@ -912,7 +902,7 @@ class SmallBag
      * Returns a BackError builder.
      * For easy create an BackError.
      */
-    buildResError() : BackErrorBuilder {
+    buildBackError() : BackErrorBuilder {
         return new BackErrorBuilder();
     }
 
@@ -929,8 +919,7 @@ class SmallBag
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    newBackError(backErrorConstruct : BackErrorConstruct = {}, info ?: object | string) : BackError
-    {
+    newBackError(backErrorConstruct : BackErrorConstruct = {}, info ?: object | string) : BackError {
         return new BackError(backErrorConstruct,info);
     }
 
@@ -952,62 +941,12 @@ class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns BackError construct from the error config file.
-     * @throws ErrorNotFoundError
-     * @param errorName
-     */
-    getBackErrorConstruct(errorName : string) : Object {
-        return this.zc.getError(name);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns BackError with info that is build from the back error construct from error config file.
-     * @throws ErrorNotFoundError
-     * @param errorName
-     * @param info
-     */
-    getBackError(errorName : string, info : object = {}) : BackError
-    {
-        const errorOp = this.zc.getError(name);
-        return new BackError(errorOp,info);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Throws an BackError with info that is build from the back error construct from error config file.
-     * @throws ErrorNotFoundError
-     * @param errorName
-     * @param info
-     */
-    throwBackError(errorName : string, info : object = {}) : void
-    {
-        const errorOp = this.zc.getError(name);
-        throw new BackError(errorOp,info);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
      * Throws an new BackError with info that is build with the BackError constructor.
      * @param errorConstruct
      * @param info
      */
     throwNewBackError(errorConstruct : BackErrorConstruct = {}, info ?: object | string) : void {
         throw this.newBackError(errorConstruct,info);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Checks if the back error construct with this name is exist and can be used.
-     * @param name
-     */
-    isErrorConstruct(name : string) : boolean
-    {
-        return this.zc.isError(name);
     }
 
     //Part Result

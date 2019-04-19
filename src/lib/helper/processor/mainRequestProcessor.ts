@@ -23,7 +23,7 @@ import {InputDataProcessor}    from "../input/inputDataProcessor";
 import ValidCheckProcessor     from "./validCheckProcessor";
 import ControllerPrepare     = require("../controller/controllerPrepare");
 import AuthEngine              from "../auth/authEngine";
-import {BackError}             from "../../api/BackError";
+import BackError               from "../../api/BackError";
 import BackErrorBag            from "../../api/BackErrorBag";
 
 export default class MainRequestProcessor

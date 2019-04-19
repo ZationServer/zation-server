@@ -15,7 +15,7 @@ import {ZationRequest, ZationToken} from "../constants/internal";
 import {SHBridgeHttp}               from "../bridges/shBridgeHttp";
 import ZationTokenInfo              from "../infoObjects/zationTokenInfo";
 import AEPreparedPart               from "../auth/aePreparedPart";
-import {BackError}                  from "../../api/BackError";
+import BackError                    from "../../api/BackError";
 
 export default class HttpProcessor
 {

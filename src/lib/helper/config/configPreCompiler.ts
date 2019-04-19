@@ -45,7 +45,6 @@ class ConfigPeCompiler
         this.preCompileController();
         this.preCompileChannelConfig();
         this.preCompileServiceModules();
-        this.preCompileErrorConfig();
 
         //view precompiled configs
         //console.dir(this.zc.appConfig,{depth:null});
@@ -89,20 +88,6 @@ class ConfigPeCompiler
                     channelConfig[k] = {};
                 }
 
-            }
-        }
-    }
-
-    private preCompileErrorConfig() : void
-    {
-        if(typeof this.zc.errorConfig === 'object')
-        {
-            const errors = this.zc.errorConfig;
-            for(let k in errors)
-            {
-                if(errors.hasOwnProperty(k) && errors[k].name === undefined) {
-                    errors[k].name= k;
-                }
             }
         }
     }

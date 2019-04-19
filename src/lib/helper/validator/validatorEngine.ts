@@ -12,7 +12,7 @@ import {ArraySettings, ValueModelConfig} from "../configs/appConfig";
 import {ConfigNames}       from "../constants/internal";
 import {ValidationTypes}   from "../../..";
 import BackErrorBag        from "../../api/BackErrorBag";
-import {BackError}         from "../../api/BackError";
+import BackError           from "../../api/BackError";
 import {ValidatorLibrary}  from "./validatorLibrary";
 
 const ValidatorFunctions   = ValidatorLibrary.Functions;

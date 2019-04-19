@@ -8,7 +8,7 @@ import {Controller}     from "../../../api/Controller";
 import MainTaskErrors = require("./../../zationTaskErrors/mainTaskErrors");
 import {ZationToken}      from "../../constants/internal";
 import {ControllerConfig} from "../../../..";
-import {BackError}        from "../../../api/BackError";
+import BackError          from "../../../api/BackError";
 
 export default class ZationSPC_Auth extends Controller
 {

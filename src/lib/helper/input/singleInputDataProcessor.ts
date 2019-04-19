@@ -14,7 +14,7 @@ import Iterator = require("../tools/iterator");
 import {OptionalProcessor} from "./optionalProcessor";
 import {AnyOfModelConfig, ArrayModelConfig, Model, ObjectModelConfig, ValueModelConfig} from "../configs/appConfig";
 import BackErrorBag        from "../../api/BackErrorBag";
-import {BackError}         from "../../api/BackError";
+import BackError           from "../../api/BackError";
 
 export interface ProcessInfo {
     errorBag : BackErrorBag,

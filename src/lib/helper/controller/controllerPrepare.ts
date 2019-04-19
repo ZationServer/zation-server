@@ -13,7 +13,7 @@ import ZationWorker     = require("../../main/zationWorker");
 import {Controller, ControllerClass} from '../../api/Controller';
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../configs/appConfig";
-import {BackError}        from "../../api/BackError";
+import BackError          from "../../api/BackError";
 
 interface ControllerPrepareData {
     config : ControllerConfig,
