@@ -37,18 +37,14 @@ class Logger
         }
     }
 
-    static logFileInfo(txt : string,obj ?: object,jsonStringify : boolean = false) : void
+    static getSimpleLogger() : any {
+        return Logger.sl;
+    }
+
+    static logFileInfo(...args : any[]) : void
     {
         if(Logger.sl){
-            if(jsonStringify) {
-                Logger.sl.info(txt + JSON.stringify(obj));
-            }
-            else {
-                Logger.sl.info(txt);
-                if(obj !== undefined) {
-                    Logger.sl.info(obj);
-                }
-            }
+            Logger.sl.info(...args);
         }
     }
 
@@ -59,80 +55,54 @@ class Logger
         }
     }
 
-    static setZationConfig(zc : ZationConfig) : void
-    {
+    static setZationConfig(zc : ZationConfig) : void {
         Logger.zc = zc;
     }
 
-    static startStopWatch()
-    {
-        if(Logger.zc.isStartDebug())
-        {
+    static startStopWatch() {
+        if(Logger.zc.isStartDebug()) {
             Logger.stopWatchStartTime = Date.now();
         }
     }
 
     static printStartDebugInfo(txt : string,time : boolean = false,isBusy : boolean = false) : void
     {
-        if (Logger.zc.isStartDebug())
-        {
-            if(time)
-            {
+        if (Logger.zc.isStartDebug()) {
+            if(time) {
                 txt = `${txt} In ${Date.now() - Logger.stopWatchStartTime}ms`;
             }
 
-            if(isBusy)
-            {
+            if(isBusy) {
                 Logger.log('\x1b[33m%s\x1b[0m', '   [BUSY]',txt);
             }
-            else
-            {
+            else {
                 Logger.log('\x1b[34m%s\x1b[0m','   [INFO]',txt);
             }
         }
     }
 
     // noinspection JSUnusedGlobalSymbols
-    static printDebugWarning(txt : string,obj ?: object) : void
-    {
-        if (Logger.zc.isDebug())
-        {
-            Logger.log('\x1b[31m%s\x1b[0m','   [WARNING]',txt);
-
-            if(obj !== undefined)
-            {
-                Logger.log(obj);
-            }
-        }
+    static printStartFail(...args : any[]) : void {
+        Logger.log('\x1b[31m%s\x1b[0m','   [FAIL]',...args);
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    static printStartFail(txt : string,obj ?: object) : void
-    {
-        Logger.log('\x1b[31m%s\x1b[0m','   [FAIL]',txt);
-        if(obj !== undefined)
-        {
-            Logger.log(obj);
-        }
-    }
-
-    static printConfigWarning(configName : string,message : string) : void
-    {
-        if (Logger.zc.isShowConfigWarning())
-        {
+    static printConfigWarning(configName : string,message : string) : void {
+        if (Logger.zc.isShowConfigWarning()) {
             Logger.log('\x1b[31m%s\x1b[0m','   [WARNING IN CONFIG]',`Config: ${configName} -> ${message}`);
         }
     }
 
-    static printWarning(message : string) : void
-    {
-        Logger.log('\x1b[31m%s\x1b[0m','   [WARNING]',message);
+    static printWarning(...args : any[]) : void {
+        Logger.log('\x1b[31m%s\x1b[0m','   [WARNING]',...args);
+    }
+
+    static printInfo(...args : any[]) : void {
+        Logger.log('\x1b[34m%s\x1b[0m','   [INFO]',...args);
     }
 
     static printError(error : any, beforeMessage : string, endMessage ?: string) : void
     {
-        if (Logger.zc.isDebug())
-        {
+        if (Logger.zc.isDebug()) {
             Logger.log
             (
                 '\x1b[31m%s\x1b[0m',
@@ -144,32 +114,32 @@ class Logger
         }
     }
 
-    static printBusy(message : string) : void
-    {
-        Logger.log('\x1b[33m%s\x1b[0m','   [BUSY]',message);
+    static printBusy(...args : any[]) : void {
+        Logger.log('\x1b[33m%s\x1b[0m','   [BUSY]',...args);
     }
 
-    static log(message?: any, ...optionalParams: any[])
-    {
-        if((Logger.zc && Logger.zc.mainConfig.zationConsoleLog) || true)
-        {
-            console.log(message,...optionalParams);
+    static log(...args: any[]) {
+        if((Logger.zc && Logger.zc.mainConfig.zationConsoleLog) || true) {
+            console.log(...args);
         }
     }
 
-    static printDebugInfo(txt : string,obj ?: object,jsonStringify : boolean = false) : void
+    static printDebugInfo(...args : any[]) : void {
+        if (Logger.zc.isDebug()) {
+           Logger.printInfo(...args);
+        }
+    }
+
+    static printDebugWarning(...args : any) : void
     {
-        if (Logger.zc.isDebug())
-        {
-            if(jsonStringify) {
-                Logger.log('\x1b[34m%s\x1b[0m','   [INFO]',txt + JSON.stringify(obj));
-            }
-            else {
-                Logger.log('\x1b[34m%s\x1b[0m','   [INFO]',txt);
-                if(obj !== undefined) {
-                    Logger.log(obj);
-                }
-            }
+        if (Logger.zc.isDebug()) {
+            Logger.printWarning(...args);
+        }
+    }
+
+    static printDebugBusy(...args : any[]) : void {
+        if (Logger.zc.isDebug()) {
+            Logger.printBusy(...args);
         }
     }
 

@@ -42,6 +42,7 @@ import Result                                               = require('./Result'
 import BackErrorBuilder from "../helper/builder/backErrorBuilder";
 import BackError      from "./BackError";
 import BackErrorBag   from "./BackErrorBag";
+import Logger = require("../helper/logger/logger");
 const uuidV4                                                = require('uuid/v4');
 const uniqid                                                = require('uniqid');
 
@@ -962,6 +963,127 @@ class SmallBag
      */
     newResult(result ?: any,statusCode ?: string | number) : Result {
         return new Result(result,statusCode);
+    }
+
+    //Part Logger
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Log info into the log file,
+     * notice that it only works when the log to file is activated in the main config.
+     * @param args
+     */
+    logInfoToFile(...args : any[]) : void {
+        const sl = Logger.getSimpleLogger();
+        if(sl){
+            sl.info(...args);
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Log error into the log file,
+     * notice that it only works when the log to file is activated in the main config.
+     * @param args
+     */
+    logErrorToFile(...args : any[]) : void {
+        const sl = Logger.getSimpleLogger();
+        if(sl){
+            sl.error(...args);
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Log fatal into the log file,
+     * notice that it only works when the log to file is activated in the main config.
+     * @param args
+     */
+    logFatalToFile(...args : any[]) : void {
+        const sl = Logger.getSimpleLogger();
+        if(sl){
+            // noinspection TypeScriptValidateJSTypes
+            sl.fatal(...args);
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Log warn into the log file,
+     * notice that it only works when the log to file is activated in the main config.
+     * @param args
+     */
+    logWarnToFile(...args : any[]) : void {
+        const sl = Logger.getSimpleLogger();
+        if(sl){
+            sl.warn(...args);
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Log warn into the console,
+     * notice that it only appears when the debug mode is active.
+     * @param args
+     */
+    logDebugWarn(...args : any[]) : void {
+        Logger.printDebugWarning(...args);
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Log info into the console,
+     * notice that it only appears when the debug mode is active.
+     * @param args
+     */
+    logDebugInfo(...args : any[]) : void {
+        Logger.printDebugInfo(...args);
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Log info into the console,
+     * notice that it only appears when the debug mode is active.
+     * @param args
+     */
+    logDebugBusy(...args : any[]) : void {
+        Logger.printDebugBusy(...args);
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Log warn into the console.
+     * @param args
+     */
+    logWarn(...args : any[]) : void {
+        Logger.printWarning(...args);
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Log info into the console.
+     * @param args
+     */
+    logInfo(...args : any[]) : void {
+        Logger.printInfo(...args);
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Log busy into the console.
+     * @param args
+     */
+    logBusy(...args : any[]) : void {
+        Logger.printBusy(...args);
     }
 
     //Part Http

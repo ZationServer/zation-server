@@ -9,9 +9,6 @@ import {Bag}                   from './lib/api/Bag';
 import SmallBag              = require('./lib/api/SmallBag');
 import {Controller}            from './lib/api/Controller';
 import Result                = require('./lib/api/Result');
-import TaskError             = require('./lib/api/BackError');
-import TaskErrorBuilder      = require("./lib/helper/builder/backErrorBuilder");
-import TaskErrorBag          = require('./lib/api/BackErrorBag');
 import {ErrorType}             from "./lib/helper/constants/errorType";
 import ServiceNotFoundError  = require('./lib/helper/services/serviceNotFoundError');
 import Config                = require('./lib/api/Config');
@@ -24,6 +21,9 @@ import InputIsNotCompatible  = require("./lib/helper/error/inputIsNotCompatibleE
 import {ControllerConfig}      from "./lib/helper/configs/appConfig";
 import {StarterConfig}         from "./lib/helper/configs/starterConfig";
 import {StartMode}             from "./lib/helper/constants/startMode";
+import BackError               from "./lib/api/BackError";
+import BackErrorBag            from "./lib/api/BackErrorBag";
+import BackErrorBuilder        from "./lib/helper/builder/backErrorBuilder";
 const  FsUtil : any           = require('socketcluster/fsutil');
 
 //starter
@@ -53,9 +53,9 @@ export {
         Controller,
         ControllerConfig,
         Result,
-        TaskError,
-        TaskErrorBuilder,
-        TaskErrorBag,
+        BackError,
+        BackErrorBuilder,
+        BackErrorBag,
         ErrorType,
         Config,
         ServiceNotFoundError,

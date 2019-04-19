@@ -41,6 +41,11 @@ export interface MainConfig
     useProtocolCheck  ?: boolean;
     useHttpMethodCheck  ?: boolean;
     sendErrorDescription  ?: boolean;
+    /**
+     * This property activates or deactivates the zation log to the console.
+     * It will also affect the logging with the small bag.
+     * @default is true
+     */
     zationConsoleLog  ?: boolean;
     scConsoleLog  ?: boolean;
     useScUws  ?: boolean;
