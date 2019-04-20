@@ -76,6 +76,7 @@ ControllerConfig[nameof<ControllerConfig>(s => s.inputAllAllow)]    = {types : [
 ControllerConfig[nameof<ControllerConfig>(s => s.access)]           = {types : ['string','function','number','array'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.notAccess)]        = {types : ['string','function','number','array'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.versionAccess)]    = {types : ['string','object'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.systemAccess)]     = {types : ['array'],arrayType : 'string',isOptional : true};
 
 const AnyOf = {};
 AnyOf[nameof<AnyOfModelConfig>(s => s.anyOf)]     = {types : ['array','object'],isOptional : false};

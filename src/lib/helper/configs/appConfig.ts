@@ -305,7 +305,8 @@ export interface ControllerConfig extends InputConfig
     inputAllAllow  ?: boolean;
     access  ?: string | number | (string | number)[] | ControllerAccessFunction;
     notAccess  ?: string | number | (string | number)[] | ControllerAccessFunction;
-    versionAccess  ?: string | Record<string,number | number[]>
+    versionAccess  ?: 'all' | Record<string,number | number[]>;
+    systemAccess ?: 'all' | string[];
 }
 
 export interface StreamConfig extends InputConfig {

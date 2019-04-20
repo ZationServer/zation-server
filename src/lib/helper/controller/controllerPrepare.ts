@@ -14,13 +14,17 @@ import {Controller, ControllerClass} from '../../api/Controller';
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../configs/appConfig";
 import BackError          from "../../api/BackError";
+import {BaseSHBridge} from "../bridges/baseSHBridge";
+import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../version/systemVersionChecker";
 
 interface ControllerPrepareData {
-    config : ControllerConfig,
-    instance : Controller
+    controllerConfig : ControllerConfig,
+    controllerInstance : Controller,
+    versionAccessCheck : VersionSystemAccessCheckFunction,
+    systemAccessCheck : VersionSystemAccessCheckFunction
 }
 
-class ControllerPrepare
+export default class ControllerPrepare
 {
     private readonly zc : ZationConfig;
     private readonly worker : ZationWorker;
@@ -40,15 +44,15 @@ class ControllerPrepare
     // noinspection JSUnusedGlobalSymbols
     getControllerInstance(name : string,isSystemController : boolean) : Controller
     {
-        return this.getController(name,isSystemController).instance;
+        return this.getControllerPrepareData(name,isSystemController).controllerInstance;
     }
 
     getControllerConfig(name : string,isSystemController : boolean) : ControllerConfig
     {
-        return this.getController(name,isSystemController).config;
+        return this.getControllerPrepareData(name,isSystemController).controllerConfig;
     }
 
-    getController(name : string,isSystemController : boolean) : ControllerPrepareData
+    getControllerPrepareData(name : string, isSystemController : boolean) : ControllerPrepareData
     {
         if(!isSystemController) {
             return this.appController[name];
@@ -116,11 +120,19 @@ class ControllerPrepare
 
         this.bindPrepareHandleFunctions(cInstance,config.prepareHandle);
 
+
+        const controllerPrepareData : ControllerPrepareData = {
+            controllerConfig : config,
+            controllerInstance: cInstance,
+            versionAccessCheck : SystemVersionChecker.createVersionChecker(config),
+            systemAccessCheck : SystemVersionChecker.createSystemChecker(config)
+        };
+
         if(!isSystemC) {
-            this.appController[name] = {config : config,instance : cInstance};
+            this.appController[name] = controllerPrepareData;
         }
         else {
-            this.systemController[name] = {config : config,instance : cInstance};
+            this.systemController[name] = controllerPrepareData;
         }
     }
 
@@ -154,4 +166,3 @@ class ControllerPrepare
     }
 }
 
-export = ControllerPrepare;

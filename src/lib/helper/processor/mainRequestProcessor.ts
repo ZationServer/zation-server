@@ -8,7 +8,6 @@ import ControllerTools       = require('../controller/controllerTools');
 import Result                = require('../../api/Result');
 import MainErrors            = require('../zationTaskErrors/mainTaskErrors');
 import ZationReqTools        = require('../tools/zationReqTools');
-import SystemVersionChecker  = require('../version/systemVersionChecker');
 // noinspection TypeScriptPreferShortImport
 import {Bag}                   from '../../api/Bag';
 import TokenEngine           = require('../token/tokenEngine');
@@ -16,15 +15,15 @@ import ZationConfig          = require("../../main/zationConfig");
 import ZationWorker          = require("../../main/zationWorker");
 // noinspection TypeScriptPreferShortImport
 import {Controller}            from'../../api/Controller';
-import ProtocolAccessChecker = require("../protocolAccess/protocolAccessChecker");
 import {ResponseResult, ZationTask} from "../constants/internal";
 import {SHBridge}              from "../bridges/shBridge";
 import {InputDataProcessor}    from "../input/inputDataProcessor";
 import ValidCheckProcessor     from "./validCheckProcessor";
-import ControllerPrepare     = require("../controller/controllerPrepare");
 import AuthEngine              from "../auth/authEngine";
 import BackError               from "../../api/BackError";
 import BackErrorBag            from "../../api/BackErrorBag";
+import ControllerPrepare       from "../controller/controllerPrepare";
+import ProtocolAccessChecker from "../protocolAccess/protocolAccessChecker";
 
 export default class MainRequestProcessor
 {
@@ -86,11 +85,18 @@ export default class MainRequestProcessor
             //Trows if not exists
             this.controllerPrepare.checkControllerExist(controllerName,isSystemController);
 
-            const prepareDataController = this.controllerPrepare.getController(controllerName,isSystemController);
-            const controllerConfig = prepareDataController.config;
+            const {
+                controllerConfig,
+                controllerInstance,
+                systemAccessCheck,
+                versionAccessCheck
+            } = this.controllerPrepare.getControllerPrepareData(controllerName,isSystemController);
 
-            //Trows if not exists
-            SystemVersionChecker.checkSystemAndVersion(shBridge,controllerConfig);
+            //Throws if access denied
+            systemAccessCheck(shBridge);
+
+            //Throws if access denied
+            versionAccessCheck(shBridge);
 
             let tokenEngine;
             let authEngine : AuthEngine;
@@ -118,8 +124,6 @@ export default class MainRequestProcessor
                 {
                     //check access to controller
                     if(!this.useAuth || authEngine.hasAccessToController(controllerConfig)) {
-
-                        const controllerInstance = prepareDataController.instance;
 
                         let input : object;
                         //check input
