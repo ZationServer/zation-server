@@ -9,18 +9,18 @@ import {ControllerConfig} from "../configs/appConfig";
 import {BaseSHBridge}     from "../bridges/baseSHBridge";
 import {SHBridge}         from "../bridges/shBridge";
 
-class ProtocolAccessChecker
+export default class ProtocolAccessChecker
 {
     static hasProtocolAccess(shBridge : BaseSHBridge,controller : ControllerConfig) : boolean
     {
         let hasAccess = true;
         if(shBridge.isWebSocket()) {
-            if(!!controller.wsAccess) {
+            if(typeof controller.wsAccess === 'boolean') {
                 hasAccess = controller.wsAccess;
             }
         }
         else {
-            if(!!controller.httpAccess){
+            if(typeof controller.httpAccess === 'boolean'){
                 hasAccess = controller.httpAccess;
             }
         }
@@ -31,11 +31,10 @@ class ProtocolAccessChecker
     {
         let hasAccess = true;
         const method = shBridge.getRequest().method;
-
-        if(method === 'GET' && !!controller.httpGetAllowed) {
+        if(method === 'GET' && typeof controller.httpGetAllowed === 'boolean') {
             hasAccess = controller.httpGetAllowed;
         }
-        else if(method === 'POST' && !!controller.httpPostAllowed) {
+        else if(method === 'POST' && typeof controller.httpPostAllowed === 'boolean') {
             hasAccess = controller.httpPostAllowed;
         }
         return hasAccess;
@@ -46,4 +45,3 @@ class ProtocolAccessChecker
     }
 }
 
-export = ProtocolAccessChecker;
