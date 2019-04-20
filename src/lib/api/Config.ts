@@ -3,12 +3,8 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-import SmallBag              = require("./SmallBag");
-import {Bag}                   from './Bag';
+import Bag                   from './Bag';
 import ExpressCore           = require("express-serve-static-core");
-import Result                = require("./Result");
-import {Controller, ControllerClass} from "./Controller";
-
 import
 {
     BeforeErrorFunction,
@@ -107,19 +103,22 @@ import {
     UserChOnSubFunction,
     UserChOnUnsubFunction
 } from "../helper/configs/channelConfig";
-import ObjectTools = require("../helper/tools/objectTools");
-import {StarterConfig} from "../helper/configs/starterConfig";
-import {MainConfig} from "../helper/configs/mainConfig";
-import CChInfo = require("../helper/infoObjects/cChInfo");
-import CIdChInfo = require("../helper/infoObjects/cIdChInfo");
-import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
-import ZationInfo = require("../helper/infoObjects/zationInfo");
-import SocketInfo from "../helper/infoObjects/socketInfo";
-import ZationTokenInfo from "../helper/infoObjects/zationTokenInfo";
-import BackError  from "./BackError";
-import BackErrorBag from "./BackErrorBag";
+import {StarterConfig}  from "../helper/configs/starterConfig";
+import {MainConfig}     from "../helper/configs/mainConfig";
+import SocketInfo       from "../helper/infoObjects/socketInfo";
+import ZationTokenInfo  from "../helper/infoObjects/zationTokenInfo";
+import BackError        from "./BackError";
+import BackErrorBag     from "./BackErrorBag";
+import ObjectTools      from "../helper/tools/objectTools";
+import Controller, {ControllerClass} from "./Controller";
+import CChInfo          from "../helper/infoObjects/cChInfo";
+import Result           from "./Result";
+import SmallBag         from "./SmallBag";
+import CIdChInfo        from "../helper/infoObjects/cIdChInfo";
+import PubDataInfo      from "../helper/infoObjects/pubDataInfo";
+import ZationInfo       from "../helper/infoObjects/zationInfo";
 
-class Config
+export default class Config
 {
 
     // noinspection JSUnusedGlobalSymbols
@@ -453,5 +452,3 @@ class Config
     // noinspection JSUnusedGlobalSymbols
     static zationTokenInfo(zationTokenInfo : ZationTokenInfo) : ZationTokenInfo {return zationTokenInfo;}
 }
-
-export = Config;

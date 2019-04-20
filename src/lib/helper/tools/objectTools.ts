@@ -4,8 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-
-class ObjectTools
+export default class ObjectTools
 {
     static mergeObjects(objects : object[]) : object
     {
@@ -98,5 +97,3 @@ class ObjectTools
         return found;
     }
 }
-
-export = ObjectTools;

@@ -4,14 +4,15 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Converter       = require("./converter");
+// noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../constants/validationTypes";
+import Converter         from "./converter";
 
 /*
 Converter Library from Zation
 */
 
-const converterLibrary = {};
+const converterLibrary :  Record<string,(input : any,strictType ?: boolean) => any> = {};
 
 converterLibrary[ValidationTypes.INT] = (input,strictType) =>
 {
@@ -55,5 +56,4 @@ converterLibrary[ValidationTypes.BOOLEAN] = (input,strictType) =>
     return input;
 };
 
-export = converterLibrary;
-
+export const ConverterLibrary : Record<string,(input : any,strictType ?: boolean) => any> = converterLibrary;

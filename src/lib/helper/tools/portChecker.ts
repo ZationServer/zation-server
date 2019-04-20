@@ -6,8 +6,7 @@ GitHub: LucaCode
 
 import PortScanner = require('portscanner');
 
-
-class PortChecker
+export default class PortChecker
 {
     public static async isPortAvailable(port : number | undefined) : Promise<boolean>
     {
@@ -19,5 +18,3 @@ class PortChecker
         });
     }
 }
-
-export = PortChecker;

@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-class IdCounter
+export default class IdCounter
 {
     private counter1 : number;
     private counter2 : number;
@@ -55,5 +55,3 @@ class IdCounter
        this.counter2 = 0;
     }
 }
-
-export = IdCounter;

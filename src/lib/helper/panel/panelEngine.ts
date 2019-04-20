@@ -4,15 +4,15 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Timer            = NodeJS.Timer;
-import ZationWorker     = require("../../main/zationWorker");
-import ChExchangeEngine = require("../channel/chExchangeEngine");
-import {PanelUserConfig}  from "../configs/mainConfig";
-import {ZationChannel}    from "../constants/internal";
-import ZationConfig     = require("../../main/zationConfig");
+import Timer               = NodeJS.Timer;
+import ZationWorker        = require("../../main/zationWorker");
+import {PanelUserConfig}     from "../configs/mainConfig";
+import {ZationChannel}       from "../constants/internal";
 import {AuthUserGroupConfig} from "../configs/appConfig";
+import ZationConfig          from "../../main/zationConfig";
+import ChExchangeEngine      from "../channel/chExchangeEngine";
 
-class PanelEngine
+export default class PanelEngine
 {
 
     private panelInUse : boolean = false;
@@ -51,8 +51,7 @@ class PanelEngine
         let map = {};
         for(let k in authUserGroups) {
             if(authUserGroups.hasOwnProperty(k) &&
-                typeof authUserGroups[k].panelDisplayName === 'string')
-            {
+                authUserGroups[k].panelDisplayName !== undefined) {
                 map[k] = authUserGroups[k].panelDisplayName;
             }
         }
@@ -163,5 +162,3 @@ class PanelEngine
     }
 
 }
-
-export = PanelEngine;

@@ -3,17 +3,17 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-import Logger          = require('../logger/logger');
-import MainErrors      = require('../zationTaskErrors/mainTaskErrors');
-import ZationConfig    = require("../../main/zationConfig");
 import {ResponseResult, ZationResponse, ZationToken} from "../constants/internal";
-import TokenTools      = require("../token/tokenTools");
-import {SHBridge}       from "../bridges/shBridge";
-import stringify        from "fast-stringify";
-import BackError        from "../../api/BackError";
+import SHBridge          from "../bridges/shBridge";
+import stringify         from "fast-stringify";
+import BackError         from "../../api/BackError";
 import BackErrorBag      from "../../api/BackErrorBag";
+import ZationConfig      from "../../main/zationConfig";
+import TokenTools        from "../token/tokenTools";
+import Logger            from "../logger/logger";
+import {MainBackErrors}  from "../zationBackErrors/mainBackErrors";
 
-export class Returner
+export default class Returner
 {
     private readonly zc : ZationConfig;
     private readonly sendErrorDesc : boolean;
@@ -72,7 +72,7 @@ export class Returner
                 errors = err._getJsonObj(this.sendErrorDesc);
             }
             else {
-                errors = [(new BackError(MainErrors.unknownError))._getJsonObj()];
+                errors = [(new BackError(MainBackErrors.unknownError))._getJsonObj()];
             }
         }
         return errors;

@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const ZationConfig    = require("../../dist/lib/main/zationConfig");
+const ZationConfig    = require("../../dist/lib/main/zationConfig").default;
 const sinon           = require("sinon");
 
 const zcStub = sinon.createStubInstance(ZationConfig);

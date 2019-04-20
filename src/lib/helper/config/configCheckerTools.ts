@@ -4,11 +4,11 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ConfigError    = require('./configError');
-import Target         = require('./target');
-import ConfigErrorBag = require("./configErrorBag");
+import ConfigErrorBag from "./configErrorBag";
+import Target         from "./target";
+import ConfigError    from "./configError";
 
-class ConfigCheckerTools
+export default class ConfigCheckerTools
 {
     static assertProperty(key : string,obj : object,types : string[] | string,isOptional : boolean,configName : string,configErrorBag : ConfigErrorBag,target : Target = new Target()) : boolean
     {
@@ -175,5 +175,3 @@ class ConfigCheckerTools
     }
 
 }
-
-export = ConfigCheckerTools;

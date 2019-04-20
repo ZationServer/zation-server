@@ -4,12 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationConfig   = require("../../main/zationConfig");
-import ConfigErrorBag = require("../config/configErrorBag");
 import * as cluster     from "cluster";
+import ZationConfig     from "../../main/zationConfig";
+import ConfigErrorBag   from "../config/configErrorBag";
 const SimpleNodeLogger  = require('simple-node-logger');
 
-class Logger
+export default class Logger
 {
     private static zc : ZationConfig;
     private static sl;
@@ -165,5 +165,3 @@ class Logger
     }
 
 }
-
-export = Logger;

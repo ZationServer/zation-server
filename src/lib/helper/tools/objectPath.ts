@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import objPath = require("object-path");
 
-class ObjectPath
+export default class ObjectPath
 {
    static get(obj : object,path ?: string | string[]) : any {
        return objPath.get(obj,path);
@@ -26,5 +26,3 @@ class ObjectPath
 
 
 }
-
-export = ObjectPath;

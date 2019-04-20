@@ -4,18 +4,18 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import TokenTools            = require('../token/tokenTools');
-import ZationReqTools        = require('../tools/zationReqTools');
-import MainErrors            = require('../zationTaskErrors/mainTaskErrors');
 import ZationWorker          = require("../../main/zationWorker");
-import ZationConfig          = require("../../main/zationConfig");
-import JsonConverter         = require("../tools/jsonConverter");
-import Logger                = require("../logger/logger");
 import {ZationRequest, ZationToken} from "../constants/internal";
-import {SHBridgeHttp}               from "../bridges/shBridgeHttp";
+import SHBridgeHttp                 from "../bridges/shBridgeHttp";
 import ZationTokenInfo              from "../infoObjects/zationTokenInfo";
 import AEPreparedPart               from "../auth/aePreparedPart";
 import BackError                    from "../../api/BackError";
+import ZationConfig                 from "../../main/zationConfig";
+import Logger                       from "../logger/logger";
+import ZationReqTools               from "../tools/zationReqTools";
+import {MainBackErrors}             from "../zationBackErrors/mainBackErrors";
+import TokenTools                   from "../token/tokenTools";
+import JsonConverter                from "../tools/jsonConverter";
 
 export default class HttpProcessor
 {
@@ -71,7 +71,7 @@ export default class HttpProcessor
                 return await this.mainProcess(req,res,zationData,reqId);
             }
             else {
-                throw new BackError(MainErrors.wrongInputDataStructure,
+                throw new BackError(MainBackErrors.wrongInputDataStructure,
                     {
                         type : 'http',
                         reqMethod :req.method,
@@ -104,7 +104,7 @@ export default class HttpProcessor
 
                 const next = (err) => {
                     if(err) {
-                        throw new BackError(MainErrors.authenticateMiddlewareBlock,{err : err});
+                        throw new BackError(MainBackErrors.authenticateMiddlewareBlock,{err : err});
                     }
                 };
                 await this.zc.checkAuthenticationMiddlewareEvent

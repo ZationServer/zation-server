@@ -4,11 +4,11 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-class ConfigError extends Error
+export default class ConfigError extends Error
 {
     message : string;
     private readonly configName : string;
-    
+
     constructor(configName,message)
     {
         super();
@@ -33,5 +33,3 @@ class ConfigError extends Error
         return super.message;
     }
 }
-
-export = ConfigError;

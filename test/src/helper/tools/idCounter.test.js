@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const IdCounter       = require("../../../../dist/lib/helper/tools/idCounter");
+const IdCounter       = require("../../../../dist/lib/helper/tools/idCounter").default;
 const assert          = require("chai").assert;
 
 describe('HELPER.TOOLS.IdCounter',() => {

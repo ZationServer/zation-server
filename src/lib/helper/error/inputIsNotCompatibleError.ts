@@ -4,14 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import MainTaskErrors  = require('./../zationTaskErrors/mainTaskErrors');
-import CodeError       = require("./codeError");
+import CodeError        from "./codeError";
+import {MainBackErrors} from "../zationBackErrors/mainBackErrors";
 
-class InputIsNotCompatibleError extends CodeError
+export default class InputIsNotCompatibleError extends CodeError
 {
     constructor() {
-        super(MainTaskErrors.inputIsNotCompatible);
+        super(MainBackErrors.inputIsNotCompatible);
     }
 }
-
-export = InputIsNotCompatibleError;

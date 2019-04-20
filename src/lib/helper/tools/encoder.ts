@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 const  encrypter         = require("object-encrypter");
 
-class Encoder
+export default class Encoder
 {
     private engine : any;
 
@@ -25,4 +25,3 @@ class Encoder
     }
 }
 
-export = Encoder;

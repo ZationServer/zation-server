@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ConverterLibrary  = require('./convertLibrary');
+import {ConverterLibrary} from "./convertLibrary";
 
-class ConvertEngine
+export default class ConvertEngine
 {
     static convert(input : any,type : string,strictType : boolean) : any
     {
@@ -16,5 +16,3 @@ class ConvertEngine
         return input;
     }
 }
-
-export = ConvertEngine;

@@ -4,12 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationConfig     = require("../../main/zationConfig");
 import {BackgroundTask}   from "../configs/appConfig";
+import ZationConfig       from "../../main/zationConfig";
 
 type SaveTask = (name : string, task : any) => void;
 
-class BackgroundTasksWorkerSaver
+export default class BackgroundTasksWorkerSaver
 {
     private readonly saveTask : SaveTask;
 
@@ -38,5 +38,3 @@ class BackgroundTasksWorkerSaver
     }
 
 }
-
-export = BackgroundTasksWorkerSaver;

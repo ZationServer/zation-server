@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ConfigError = require("./configError");
+import ConfigError from "./configError";
 
-class ConfigErrorBag
+export default class ConfigErrorBag
 {
     private readonly configErrors : ConfigError[];
 
@@ -44,5 +44,3 @@ class ConfigErrorBag
         return this.configErrors.length !== 0;
     }
 }
-
-export = ConfigErrorBag;

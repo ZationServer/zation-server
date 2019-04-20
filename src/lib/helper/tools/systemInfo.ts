@@ -5,11 +5,10 @@ GitHub: LucaCode
  */
 
 import OsUtils from "./osUtils";
-
 const pidUsage     = require('pidusage');
-import {cpus,platform}        from 'os';
+import {cpus,platform}  from 'os';
 
-class SystemInfo {
+export default class SystemInfo {
 
     static async getGeneralInfo() : Promise<object> {
         const cpusInfo = cpus();
@@ -72,5 +71,3 @@ class SystemInfo {
     }
 
 }
-
-export = SystemInfo;

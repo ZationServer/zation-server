@@ -10,23 +10,23 @@ This class is to publish into channels with the scServer.exchange object.
 It is used by the SmallBag and the ChannelEngine.
  */
 
-import ChTools = require('./chTools');
-import ZationConfig = require("../../main/zationConfig");
-import Logger = require("../logger/logger");
-import FuncTools = require("../tools/funcTools");
 import ZationWorker = require("../../main/zationWorker");
-import CIdChInfo = require("../infoObjects/cIdChInfo");
-import CChInfo = require("../infoObjects/cChInfo");
-import PubData = require("../infoObjects/pubDataInfo");
 import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../constants/workerChTaskActions";
-import {WorkerChTargets} from "../constants/workerChTargets";
-import {ScServer} from "../sc/scServer";
-import {ZationChannel} from "../constants/internal";
+import {WorkerChTargets}  from "../constants/workerChTargets";
+import ScServer           from "../sc/scServer";
+import {ZationChannel}    from "../constants/internal";
 import {SyncTokenActions} from "../constants/syncTokenActions";
 import {WorkerChTaskType} from "../constants/workerChTaskType";
-import SocketInfo from "../infoObjects/socketInfo";
+import SocketInfo         from "../infoObjects/socketInfo";
+import Logger             from "../logger/logger";
+import ChTools            from "./chTools";
+import PubDataInfo        from "../infoObjects/pubDataInfo";
+import FuncTools          from "../tools/funcTools";
+import ZationConfig       from "../../main/zationConfig";
+import CChInfo            from "../infoObjects/cChInfo";
+import CIdChInfo          from "../infoObjects/cIdChInfo";
 
-class ChExchangeEngine {
+export default class ChExchangeEngine {
     private readonly scServer: ScServer;
     private readonly worker: ZationWorker;
 
@@ -132,7 +132,7 @@ class ChExchangeEngine {
             if(!!func) {
                 (async () => {
                     await FuncTools.emitEvent
-                    (func, this.worker.getPreparedSmallBag(), id, new PubData(eventName,data,srcSocketSid),socketInfo);
+                    (func, this.worker.getPreparedSmallBag(), id, new PubDataInfo(eventName,data,srcSocketSid),socketInfo);
                 })();
             }
         };
@@ -158,7 +158,7 @@ class ChExchangeEngine {
         if(!!func) {
             (async () => {
                 await FuncTools.emitEvent
-                (func, this.worker.getPreparedSmallBag(), new PubData(eventName,data,srcSocketSid),socketInfo);
+                (func, this.worker.getPreparedSmallBag(), new PubDataInfo(eventName,data,srcSocketSid),socketInfo);
             })();
         }
         await this.pubAsync(ZationChannel.DEFAULT_USER_GROUP,eventName,data,srcSocketSid);
@@ -170,7 +170,7 @@ class ChExchangeEngine {
         if(!!func) {
             (async () => {
                 await FuncTools.emitEvent
-                (func, this.worker.getPreparedSmallBag(), new PubData(eventName,data,srcSocketSid),socketInfo);
+                (func, this.worker.getPreparedSmallBag(), new PubDataInfo(eventName,data,srcSocketSid),socketInfo);
             })();
         }
         await this.pubAsync(ZationChannel.ALL,eventName,data,srcSocketSid);
@@ -184,7 +184,7 @@ class ChExchangeEngine {
             if(!!func) {
                 (async () => {
                     await FuncTools.emitEvent
-                    (func, this.worker.getPreparedSmallBag(), group, new PubData(eventName,data,srcSocketSid),socketInfo);
+                    (func, this.worker.getPreparedSmallBag(), group, new PubDataInfo(eventName,data,srcSocketSid),socketInfo);
                 })();
             }
         };
@@ -212,7 +212,8 @@ class ChExchangeEngine {
         };
     }
 
-    async publishInAllAuthUserGroupCh(eventName : string, data : any, zc : ZationConfig, srcSocketSid ?: string, socketInfo ?: SocketInfo) : Promise<void>
+    async publishInAllAuthUserGroupCh(eventName : string, data : any, zc : ZationConfig
+                                      , srcSocketSid ?: string, socketInfo ?: SocketInfo) : Promise<void>
     {
         // @ts-ignore
         const groups : object = zc.appConfig.userGroups.auth;
@@ -227,7 +228,7 @@ class ChExchangeEngine {
         if(!!func) {
             (async () => {
                 await FuncTools.emitEvent
-                (func, this.worker.getPreparedSmallBag(), new CIdChInfo(channel, id), new PubData(eventName,data,srcSocketSid),socketInfo);
+                (func, this.worker.getPreparedSmallBag(), new CIdChInfo(channel, id), new PubDataInfo(eventName,data,srcSocketSid),socketInfo);
             })();
         }
         await this.pubAsync(channelFullName,eventName,data,srcSocketSid);
@@ -242,7 +243,7 @@ class ChExchangeEngine {
             if(!!func) {
                 (async () => {
                     await FuncTools.emitEvent
-                    (func, this.worker.getPreparedSmallBag(), new CChInfo(chName), new PubData(eventName,data,srcSocketSid),socketInfo);
+                    (func, this.worker.getPreparedSmallBag(), new CChInfo(chName), new PubDataInfo(eventName,data,srcSocketSid),socketInfo);
                 })();
             }
         };
@@ -273,5 +274,3 @@ class ChExchangeEngine {
     }
 
 }
-
-export = ChExchangeEngine;

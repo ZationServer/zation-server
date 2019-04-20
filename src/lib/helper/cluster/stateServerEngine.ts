@@ -4,14 +4,15 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationConfig          = require("../../main/zationConfig");
+import ZationConfig from "../../main/zationConfig";
+import ZationMaster from "../../main/zationMaster";
+import Encoder      from "../tools/encoder";
+import Logger       from "../logger/logger";
+
 const  ScClient : any        = require('socketcluster-client');
-import ZationMaster          = require("../../main/zationMaster");
-import Encoder               = require("../tools/encoder");
-import Logger                = require("../logger/logger");
 const  uuidV4                = require('uuid/v4');
 
-class StateServerEngine
+export default class StateServerEngine
 {
     private zc : ZationConfig;
     private zm : ZationMaster;
@@ -36,7 +37,7 @@ class StateServerEngine
         this.zc = zc;
         this.zm = zm;
 
-        this.useSharedTokenAuth = !!this.zc.mainConfig.clusterShareTokenAuth;
+        this.useSharedTokenAuth = this.zc.mainConfig.clusterShareTokenAuth;
         this.useSecretKey = !!this.zc.mainConfig.clusterSecretKey;
 
         this.buildConnectSettings();
@@ -357,5 +358,3 @@ class StateServerEngine
         }));
     }
 }
-
-export = StateServerEngine;

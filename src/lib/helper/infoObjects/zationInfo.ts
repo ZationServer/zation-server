@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationConfig = require("../../main/zationConfig");
+import ZationConfig from "../../main/zationConfig";
 
-class ZationInfo
+export default class ZationInfo
 {
     private readonly _zationConfig : ZationConfig;
 
@@ -40,5 +40,3 @@ class ZationInfo
         return this._zationConfig;
     }
 }
-
-export = ZationInfo;

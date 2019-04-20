@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Socket} from "../sc/socket";
+import Socket from "../sc/socket";
 
-export class SocketSet
+export default class SocketSet
 {
     private length : number = 0;
     private sockets : Record<string,Socket> = {};

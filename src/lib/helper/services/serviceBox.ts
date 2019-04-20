@@ -4,16 +4,16 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ServiceNotFoundError = require("./serviceNotFoundError");
+import ServiceNotFoundError from "./serviceNotFoundError";
 
-class ServiceBox
+export default class ServiceBox
 {
     private readonly services : object;
     private readonly serviceName : string;
     private readonly config : object;
     private readonly howToCreate : Function;
     private readonly howToGet : Function;
-    
+
     constructor(serviceName : string,config : object,howToCreate: Function,howToGet : Function = (s) =>{return s;})
     {
         this.services = {};
@@ -63,5 +63,3 @@ class ServiceBox
         return this.services.hasOwnProperty(key);
     }
 }
-
-export = ServiceBox;

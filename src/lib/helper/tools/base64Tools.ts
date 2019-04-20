@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-class Base64Tools
+export default class Base64Tools
 {
     static getByteSize(base64 : string) : number
     {
@@ -67,4 +67,3 @@ class Base64Tools
     }
 }
 
-export = Base64Tools;

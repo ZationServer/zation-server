@@ -4,18 +4,18 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ZationToken} from "../constants/internal";
-import {IncomingMessage} from "http";
-import {BaseShBridgeSocket} from "../bridges/baseShBridgeSocket";
-import AuthEngine from "../auth/authEngine";
-import SocketInfo from "../infoObjects/socketInfo";
-import TokenEngine = require("../token/tokenEngine");
-import ChannelEngine = require("../channel/channelEngine");
+import {ZationToken}        from "../constants/internal";
+import {IncomingMessage}    from "http";
+import BaseShBridgeSocket   from "../bridges/baseShBridgeSocket";
+import AuthEngine           from "../auth/authEngine";
+import SocketInfo           from "../infoObjects/socketInfo";
+import TokenEngine          from "../token/tokenEngine";
+import ChannelEngine        from "../channel/channelEngine";
 
 export type OnHandlerFunction = (data : any, response : ResponseFunction) => void
 export type ResponseFunction = (err ?: any | number, responseData ?: any) => void
 
-export interface Socket
+export default interface Socket
 {
     id : string;
     sid : string;

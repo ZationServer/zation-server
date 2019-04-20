@@ -4,14 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ObjectTools       = require('../helper/tools/objectTools');
 import path              = require('path');
 import fs                = require('fs');
 import crypto            = require('crypto');
-import ZationInfoObj     = require("../helper/infoObjects/zationInfo");
-import Structures        = require('./../helper/config/structures');
-import FuncTools         = require("../helper/tools/funcTools");
-import SmallBag          = require("../api/SmallBag");
 const  uuidV4            = require('uuid/v4');
 import moment            = require('moment-timezone');
 import nodeEval          = require('node-eval');
@@ -21,14 +16,18 @@ import {ChannelConfig}     from "../helper/configs/channelConfig";
 import {InternMainConfig, OPTION_AUTO, OPTION_HALF_AUTO} from "../helper/configs/mainConfig";
 import {ServiceConfig}     from "../helper/configs/serviceConfig";
 import {StarterConfig, StarterConfigMain} from "../helper/configs/starterConfig";
-import {InternalData}      from "../helper/constants/internalData";
+import InternalData       from "../helper/constants/internalData";
 import {ConfigScriptSave} from "../helper/constants/internal";
-import ZationInfo        = require("../helper/infoObjects/zationInfo");
 // noinspection TypeScriptPreferShortImport
 import {StartMode}         from "./../helper/constants/startMode";
-import ZationTokenInfo from "../helper/infoObjects/zationTokenInfo";
+import ZationTokenInfo     from "../helper/infoObjects/zationTokenInfo";
+import ObjectTools         from "../helper/tools/objectTools";
+import ZationInfo          from "../helper/infoObjects/zationInfo";
+import SmallBag            from "../api/SmallBag";
+import FuncTools           from "../helper/tools/funcTools";
+import {Structures}        from "../helper/config/structures";
 
-class ZationConfig {
+export default class ZationConfig {
     private _eventConfig: EventConfig = {};
     private _appConfig: AppConfig = {};
     private _channelConfig: ChannelConfig = {};
@@ -252,7 +251,7 @@ class ZationConfig {
         return this._mainConfig.authPrivateKey || this._mainConfig.authKey;
     }
 
-    getZationInfo(): ZationInfoObj {
+    getZationInfo(): ZationInfo {
         return this.preparedZationInfo;
     }
 
@@ -524,5 +523,3 @@ class ZationConfig {
         return this._loadedConfigs;
     }
 }
-
-export = ZationConfig;

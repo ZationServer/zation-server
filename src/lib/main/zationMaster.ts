@@ -4,25 +4,24 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import PortChecker = require("../helper/tools/portChecker");
-
 require('cache-require-paths');
-import BackgroundTaskSender  = require("../helper/background/backgroundTasksSender");
 const  SocketCluster : any   = require('socketcluster');
-import Logger                = require('../helper/logger/logger');
-import ZationConfig          = require('./zationConfig');
-import ConfigChecker         = require('../helper/config/configChecker');
-import ConfigErrorBag        = require('../helper/config/configErrorBag');
-import TimeTools             = require('../helper/tools/timeTools');
-import ClientPrepare         = require('../helper/client/clientPrepare');
-import BackgroundTasksSetter = require("../helper/background/backgroundTasksLoader");
 const  isWindows             = require('is-windows');
-import StateServerEngine     = require("../helper/cluster/stateServerEngine");
 import {WorkerMessageActions}  from "../helper/constants/workerMessageActions";
 import {StarterConfig}         from "../helper/configs/starterConfig";
-import {StringSet}             from "../helper/tools/simpleSet";
+import StringSet               from "../helper/tools/simpleSet";
+import StateServerEngine       from "../helper/cluster/stateServerEngine";
+import Logger                  from "../helper/logger/logger";
+import ConfigErrorBag          from "../helper/config/configErrorBag";
+import ConfigChecker           from "../helper/config/configChecker";
+import ClientPrepare           from "../helper/client/clientPrepare";
+import PortChecker             from "../helper/tools/portChecker";
+import TimeTools               from "../helper/tools/timeTools";
+import BackgroundTasksSender   from "../helper/background/backgroundTasksSender";
+import BackgroundTasksLoader   from "../helper/background/backgroundTasksLoader";
+import ZationConfig            from "./zationConfig";
 
-class ZationMaster {
+export default class ZationMaster {
     private static instance: ZationMaster | null = null;
     private static readonly version: string = '0.9.7';
 
@@ -497,9 +496,9 @@ class ZationMaster {
     private startBackgroundTasks()
     {
         //userBackgroundTasks
-        const bkTsSender = new BackgroundTaskSender(this,this.zc);
+        const bkTsSender = new BackgroundTasksSender(this,this.zc);
 
-        const bkTS = new BackgroundTasksSetter(
+        const bkTS = new BackgroundTasksLoader(
             (name,time) => {
             bkTsSender.setEveryBackgroundTask(name,time);
         },
@@ -538,5 +537,3 @@ class ZationMaster {
         }
     }
 }
-
-export = ZationMaster;

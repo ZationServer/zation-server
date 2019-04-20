@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const ObjectTools     = require("../../../../dist/lib/helper/tools/objectTools");
+const ObjectTools     = require("../../../../dist/lib/helper/tools/objectTools").default;
 const assert          = require("chai").assert;
 
 describe('HELPER.TOOLS.ObjectTools',() => {

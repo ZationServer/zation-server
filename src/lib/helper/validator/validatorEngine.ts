@@ -4,21 +4,22 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ValidatorErrors   = require('../zationTaskErrors/validatorTaskErrors');
-import Logger            = require('../logger/logger');
-import FuncTools         = require("../tools/funcTools");
-import SmallBag          = require("../../api/SmallBag");
 import {ArraySettings, ValueModelConfig} from "../configs/appConfig";
 import {ConfigNames}       from "../constants/internal";
-import {ValidationTypes}   from "../../..";
+// noinspection TypeScriptPreferShortImport
+import {ValidationTypes}   from "./../constants/validationTypes";
 import BackErrorBag        from "../../api/BackErrorBag";
 import BackError           from "../../api/BackError";
 import {ValidatorLibrary}  from "./validatorLibrary";
+import FuncTools             from "../tools/funcTools";
+import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";
+import Logger                from "../logger/logger";
+import SmallBag              from "../../api/SmallBag";
 
 const ValidatorFunctions   = ValidatorLibrary.Functions;
 const ValidatorTypes       = ValidatorLibrary.Types;
 
-class ValidatorEngine
+export default class ValidatorEngine
 {
     static async validateValue(input, config : any, preparedErrorData : {inputPath : string,inputValue : any}, errorBag : BackErrorBag, preparedSmallBag : SmallBag, type) : Promise<any>
     {
@@ -58,7 +59,7 @@ class ValidatorEngine
                     }
                 }
                 if(!foundAValidTyp) {
-                    errorBag.addBackError(new BackError(ValidatorErrors.noValidTypeWasFound,
+                    errorBag.addBackError(new BackError(ValidatorBackErrors.noValidTypeWasFound,
                         {
                             inputPath : preparedErrorData.inputPath,
                             inputValue : preparedErrorData.inputValue,
@@ -97,7 +98,7 @@ class ValidatorEngine
             if(array.length !== length)
             {
                 isOk = false;
-                errorBag.addBackError(new BackError(ValidatorErrors.inputArrayNotMatchWithLength,
+                errorBag.addBackError(new BackError(ValidatorBackErrors.inputArrayNotMatchWithLength,
                     {
                         inputValue : array,
                         inputPath : currentPath,
@@ -111,7 +112,7 @@ class ValidatorEngine
             if(array.length < minLength)
             {
                 isOk = false;
-                errorBag.addBackError(new BackError(ValidatorErrors.inputArrayNotMatchWithMinLength,
+                errorBag.addBackError(new BackError(ValidatorBackErrors.inputArrayNotMatchWithMinLength,
                     {
                         inputValue : array,
                         inputPath : currentPath,
@@ -125,7 +126,7 @@ class ValidatorEngine
             if(array.length > maxLength)
             {
                 isOk = false;
-                errorBag.addBackError(new BackError(ValidatorErrors.inputArrayNotMatchWithMaxLength,
+                errorBag.addBackError(new BackError(ValidatorBackErrors.inputArrayNotMatchWithMaxLength,
                     {
                         inputValue : array,
                         inputPath : currentPath,
@@ -136,7 +137,3 @@ class ValidatorEngine
         return isOk;
     }
 }
-
-
-
-export = ValidatorEngine;

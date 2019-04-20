@@ -4,19 +4,17 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationConfig     = require("../../main/zationConfig");
-import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
-import systemController = require('../systemController/systemControler.config');
-import ControllerTools  = require('./controllerTools');
 import ZationWorker     = require("../../main/zationWorker");
-// noinspection TypeScriptPreferShortImport
-import {Controller, ControllerClass} from '../../api/Controller';
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../configs/appConfig";
 import BackError          from "../../api/BackError";
-import {BaseSHBridge} from "../bridges/baseSHBridge";
 import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../version/systemVersionChecker";
 import AuthAccessChecker, {AuthAccessCheckFunction} from "../auth/authAccessChecker";
+import Controller, {ControllerClass} from "../../api/Controller";
+import ZationConfig                  from "../../main/zationConfig";
+import {MainBackErrors}              from "../zationBackErrors/mainBackErrors";
+import ControllerTools               from "./controllerTools";
+import {SystemController}            from "../systemController/systemControler.config";
 
 interface ControllerPrepareData {
     controllerConfig : ControllerConfig,
@@ -79,18 +77,17 @@ export default class ControllerPrepare
         if(!this.isControllerExist(name,isSystemController))
         {
             if(isSystemController) {
-                throw new BackError(MainErrors.systemControllerNotFound, {controllerName: name});
+                throw new BackError(MainBackErrors.systemControllerNotFound, {controllerName: name});
             }
             else {
-                throw new BackError(MainErrors.controllerNotFound, {controllerName: name});
+                throw new BackError(MainBackErrors.controllerNotFound, {controllerName: name});
             }
         }
     }
 
     async prepare() : Promise<void>
     {
-        // @ts-ignore
-        const uController : Record<string,InternControllerConfig> = this.zc.appConfig.controllers;
+        const uController : Record<string,ControllerClass> = this.zc.appConfig.controllers || {};
 
         let promises : Promise<void>[] = [];
 
@@ -100,9 +97,9 @@ export default class ControllerPrepare
             }
         }
 
-        for(let cName in systemController) {
-            if(systemController.hasOwnProperty(cName)) {
-                promises.push(this.addController(cName,systemController[cName]));
+        for(let cName in SystemController) {
+            if(SystemController.hasOwnProperty(cName)) {
+                promises.push(this.addController(cName,SystemController[cName]));
             }
         }
 

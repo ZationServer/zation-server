@@ -4,56 +4,56 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ScServer} from "../helper/sc/scServer";
-import {ChAccessEngine} from '../helper/channel/chAccessEngine';
+import ScServer             from "../helper/sc/scServer";
+import ChAccessEngine       from '../helper/channel/chAccessEngine';
 import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../helper/constants/workerChTaskActions";
-import {Socket} from "../helper/sc/socket";
-import {WorkerChTargets} from "../helper/constants/workerChTargets";
+import Socket               from "../helper/sc/socket";
+import {WorkerChTargets}    from "../helper/constants/workerChTargets";
 import {ZationChannel, ZationToken} from "../helper/constants/internal";
 import {WorkerMessageActions} from "../helper/constants/workerMessageActions";
-import {ChConfigManager} from "../helper/channel/chConfigManager";
-import BagExtensionEngine from "../helper/bagExtension/bagExtensionEngine";
-import {NodeInfo} from "../helper/tools/nodeInfo";
-import {SocketSet} from "../helper/tools/socketSet";
-import OriginsEngine from "../helper/origins/originsEngine";
-import {SyncTokenActions} from "../helper/constants/syncTokenActions";
+import {ChConfigManager}      from "../helper/channel/chConfigManager";
+import BagExtensionEngine     from "../helper/bagExtension/bagExtensionEngine";
+import NodeInfo               from "../helper/tools/nodeInfo";
+import SocketSet              from "../helper/tools/socketSet";
+import OriginsEngine          from "../helper/origins/originsEngine";
+import {SyncTokenActions}     from "../helper/constants/syncTokenActions";
 
 require('cache-require-paths');
-import ChTools = require("../helper/channel/chTools");
-import FuncTools = require("../helper/tools/funcTools");
 import express = require('express');
 import cookieParser = require('cookie-parser');
 import bodyParser = require('body-parser');
 import fileUpload = require('express-fileupload');
 import url = require('url');
-import ZationConfig = require('./zationConfig');
-import ConfigPreCompiler = require('../helper/config/configPreCompiler');
-import Logger = require('../helper/logger/logger');
-import ServiceEngine = require('../helper/services/serviceEngine');
-import SmallBag = require('../api/SmallBag');
 
-import BackgroundTasksSaver = require("../helper/background/backgroundTasksWorkerSaver");
-import Mapper = require("../helper/tools/mapper");
-import IdTools = require("../helper/tools/idTools");
-import CIdChInfo = require("../helper/infoObjects/cIdChInfo");
-import CChInfo = require("../helper/infoObjects/cChInfo");
 import process = require("process");
-import PanelEngine = require("../helper/panel/panelEngine");
-import PubDataInfo = require("../helper/infoObjects/pubDataInfo");
-import ViewEngine = require("../helper/views/viewEngine");
-import SystemInfo = require("../helper/tools/systemInfo");
 import {WorkerChTaskType} from "../helper/constants/workerChTaskType";
-import {InputDataProcessor} from "../helper/input/inputDataProcessor";
-import {ZationReqHandler} from "./zationReqHandler";
-import AEPreparedPart from "../helper/auth/aePreparedPart";
-import ZationTokenInfo from "../helper/infoObjects/zationTokenInfo";
-import TokenTools = require("../helper/token/tokenTools");
-import {BaseShBridgeSocket} from "../helper/bridges/baseShBridgeSocket";
-import AuthEngine from "../helper/auth/authEngine";
-import TokenEngine = require("../helper/token/tokenEngine");
-import ChannelEngine = require("../helper/channel/channelEngine");
-import SocketInfo from "../helper/infoObjects/socketInfo";
-import ControllerPrepare from "../helper/controller/controllerPrepare";
+import InputDataProcessor from "../helper/input/inputDataProcessor";
+import ZationReqHandler   from "./zationReqHandler";
+import AEPreparedPart     from "../helper/auth/aePreparedPart";
+import ZationTokenInfo    from "../helper/infoObjects/zationTokenInfo";
+import BaseShBridgeSocket from "../helper/bridges/baseShBridgeSocket";
+import AuthEngine         from "../helper/auth/authEngine";
+import SocketInfo         from "../helper/infoObjects/socketInfo";
+import ControllerPrepare  from "../helper/controller/controllerPrepare";
+import ZationConfig       from "./zationConfig";
+import ServiceEngine      from "../helper/services/serviceEngine";
+import SmallBag           from "../api/SmallBag";
+import Mapper             from "../helper/tools/mapper";
+import ViewEngine         from "../helper/views/viewEngine";
+import Logger             from "../helper/logger/logger";
+import ConfigPreCompiler  from "../helper/config/configPreCompiler";
+import PanelEngine        from "../helper/panel/panelEngine";
+import IdTools            from "../helper/tools/idTools";
+import TokenEngine        from "../helper/token/tokenEngine";
+import ChannelEngine      from "../helper/channel/channelEngine";
+import PubDataInfo        from "../helper/infoObjects/pubDataInfo";
+import FuncTools          from "../helper/tools/funcTools";
+import ChTools            from "../helper/channel/chTools";
+import CIdChInfo          from "../helper/infoObjects/cIdChInfo";
+import TokenTools         from "../helper/token/tokenTools";
+import CChInfo            from "../helper/infoObjects/cChInfo";
+import SystemInfo         from "../helper/tools/systemInfo";
+import BackgroundTasksWorkerSaver from "../helper/background/backgroundTasksWorkerSaver";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -1465,7 +1465,7 @@ class ZationWorker extends SCWorker
 
     private loadUserBackgroundTasks()
     {
-        const bkTS = new BackgroundTasksSaver(
+        const bkTS = new BackgroundTasksWorkerSaver(
             (name,task) => {
                 this.userBackgroundTasks[name] = task;
             });

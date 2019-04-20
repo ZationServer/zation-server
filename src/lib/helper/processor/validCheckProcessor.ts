@@ -4,17 +4,16 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ControllerTools       = require('../controller/controllerTools');
-import MainErrors            = require('../zationTaskErrors/mainTaskErrors');
-import ZationReqTools        = require('../tools/zationReqTools');
-// noinspection TypeScriptPreferShortImport
 import {ZationRequest, ZationValidationCheck} from "../constants/internal";
 import ZationWorker          = require("../../main/zationWorker");
-import ZationConfig          = require("../../main/zationConfig");
-import {InputDataProcessor}     from "../input/inputDataProcessor";
+import InputDataProcessor       from "../input/inputDataProcessor";
 import BackError                from "../../api/BackError";
 import BackErrorBag             from "../../api/BackErrorBag";
 import ControllerPrepare        from "../controller/controllerPrepare";
+import ZationConfig             from "../../main/zationConfig";
+import ZationReqTools           from "../tools/zationReqTools";
+import {MainBackErrors}         from "../zationBackErrors/mainBackErrors";
+import ControllerTools          from "../controller/controllerTools";
 
 export default class ValidCheckProcessor
 {
@@ -51,7 +50,7 @@ export default class ValidCheckProcessor
 
             //check is over validation check limit
             if(validReq.i.length > this.validationCheckLimit){
-                throw new BackError(MainErrors.validationCheckLimitReached,{
+                throw new BackError(MainBackErrors.validationCheckLimitReached,{
                    limit : this.validationCheckLimit,
                    checksCount : validReq.i.length
                 });
@@ -105,7 +104,7 @@ export default class ValidCheckProcessor
                         if(keyPath.length > 0){
                             specificConfig = ControllerTools.getInputConfigAtPath(keyPath,controllerInput);
                             if(specificConfig === undefined){
-                                errorBag.addBackError(new BackError(MainErrors.inputPathInControllerNotFound,
+                                errorBag.addBackError(new BackError(MainBackErrors.inputPathInControllerNotFound,
                                     {
                                         controllerName : cName,
                                         inputPath : keyPath,
@@ -129,7 +128,7 @@ export default class ValidCheckProcessor
                     }
                     else
                     {
-                        errorBag.addBackError(new BackError(MainErrors.wrongValidationCheckStructure,
+                        errorBag.addBackError(new BackError(MainBackErrors.wrongValidationCheckStructure,
                             {
                                 checkIndex : i
                             }));
@@ -144,7 +143,7 @@ export default class ValidCheckProcessor
             return {};
         }
         else {
-            throw new BackError(MainErrors.wrongInputDataStructure);
+            throw new BackError(MainBackErrors.wrongInputDataStructure);
         }
     }
 

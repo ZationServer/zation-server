@@ -11,7 +11,7 @@ type CommitFunction = (actions : { action: SyncTokenActions, params: any[] }[]) 
 /*
 Saves all commands for execute later.
  */
-class ObjectPathActionSequence
+export default class ObjectPathActionSequence
 {
     private actions : { action: SyncTokenActions, params: any[] }[] = [];
     private readonly commitFunction : CommitFunction;
@@ -36,5 +36,3 @@ class ObjectPathActionSequence
         await this.commitFunction(this.actions);
     }
 }
-
-export = ObjectPathActionSequence;

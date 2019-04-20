@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import copyObject = require('copy-object');
+import copyObject    = require('copy-object');
 import {ModelOptional} from "../configs/appConfig";
 
 export default class ModelImportEngine
@@ -18,7 +18,7 @@ export default class ModelImportEngine
     }
 
     static correctSyntax(importDefinition : string) : boolean {
-        return !!importDefinition.match(/^([or].)?[a-zA-Z0-9-/\-_]*$/);
+        return !!importDefinition.match(/^([or].)?[a-zA-Z0-9-/_]*$/);
     }
 
     /**

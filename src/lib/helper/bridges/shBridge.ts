@@ -6,13 +6,13 @@ GitHub: LucaCode
 
 import {ZationRequest}     from "../constants/internal";
 import * as core           from "express-serve-static-core";
-import {BaseSHBridge}      from "./baseSHBridge";
+import BaseSHBridge        from "./baseSHBridge";
 
 /**
  * Socket, http bridge interface
  * That contains request information.
  */
-export interface SHBridge extends BaseSHBridge
+export default interface SHBridge extends BaseSHBridge
 {
     getZationData() : ZationRequest;
     getReqId() : string;

@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-export interface AsymmetricKeyPairs
+export default interface AsymmetricKeyPairs
 {
     publicKey : string;
     privateKey : string;

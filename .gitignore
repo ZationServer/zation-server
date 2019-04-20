@@ -6,3 +6,4 @@ tmp/
 .nyc_output/
 coverage/
 build/config.gypi
+.cache-require-paths.json

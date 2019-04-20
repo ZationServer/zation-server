@@ -4,12 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationConfig     = require("../../main/zationConfig");
 import {BackgroundTask}   from "../configs/appConfig";
+import ZationConfig       from "../../main/zationConfig";
 
 type SetTask = (name : string,time : any,task : any) => void;
 
-class BackgroundTasksLoader
+export default class BackgroundTasksLoader
 {
    private readonly setEvery : SetTask;
    private readonly setAt : SetTask;
@@ -58,5 +58,3 @@ class BackgroundTasksLoader
    }
 
 }
-
-export = BackgroundTasksLoader;

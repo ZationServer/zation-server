@@ -5,9 +5,9 @@ GitHub: LucaCode
  */
 
 import {AnyOfModelConfig, Model, ModelOptional} from "../configs/appConfig";
-import Iterator = require("../tools/iterator");
+import Iterator from "../tools/iterator";
 
-export class OptionalProcessor
+export default class OptionalProcessor
 {
     static async process(config : AnyOfModelConfig | Model) : Promise<{isOptional : boolean,defaultValue : any}>
     {

@@ -4,17 +4,17 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ValidationEngine = require('../validator/validatorEngine');
-import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
-import ValidatorErrors  = require('../zationTaskErrors/validatorTaskErrors');
-import {ProcessTask}      from "./processTaskEngine";
-import SmallBag         = require("../../api/SmallBag");
-import ConvertEngine    = require("../convert/convertEngine");
-import Iterator = require("../tools/iterator");
-import {OptionalProcessor} from "./optionalProcessor";
+import {ProcessTask}       from "./processTaskEngine";
+import OptionalProcessor   from "./optionalProcessor";
 import {AnyOfModelConfig, ArrayModelConfig, Model, ObjectModelConfig, ValueModelConfig} from "../configs/appConfig";
 import BackErrorBag        from "../../api/BackErrorBag";
 import BackError           from "../../api/BackError";
+import SmallBag            from "../../api/SmallBag";
+import {MainBackErrors}    from "../zationBackErrors/mainBackErrors";
+import ConvertEngine       from "../convert/convertEngine";
+import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";
+import Iterator            from "../tools/iterator";
+import ValidatorEngine     from "../validator/validatorEngine";
 
 export interface ProcessInfo {
     errorBag : BackErrorBag,
@@ -23,7 +23,7 @@ export interface ProcessInfo {
     inputValidation : boolean
 }
 
-export class SingleInputDataProcessor
+export default class SingleInputDataProcessor
 {
     private readonly preparedSmallBag : SmallBag;
 
@@ -68,7 +68,7 @@ export class SingleInputDataProcessor
                         //ups unknown key
                         processInfo.errorBag.addBackError(new BackError
                             (
-                                MainErrors.unknownObjectProperty, {
+                                MainBackErrors.unknownObjectProperty, {
                                     inputPath : `${currentInputPath}.${k}`,
                                     propertyName : k
                                 }
@@ -106,7 +106,7 @@ export class SingleInputDataProcessor
                             //oh its missing!
                             errorBag.addBackError(new BackError
                                 (
-                                    MainErrors.objectPropertyIsMissing,
+                                    MainBackErrors.objectPropertyIsMissing,
                                     {
                                         object : input,
                                         propertyName : propName,
@@ -158,7 +158,7 @@ export class SingleInputDataProcessor
             //ups wrong input we can't processing it
             errorBag.addBackError(new BackError
                 (
-                    MainErrors.objectWasExpected,
+                    MainBackErrors.objectWasExpected,
                     {
                         inputPath : currentInputPath,
                         inputValue : input
@@ -190,7 +190,7 @@ export class SingleInputDataProcessor
         //type
         if(inputValidation) {
             selectedType =
-                ValidationEngine.validateValueType(srcObj[srcKey],type,strictType,preparedErrorData,errorBag);
+                ValidatorEngine.validateValueType(srcObj[srcKey],type,strictType,preparedErrorData,errorBag);
         }
 
         if(currentErrorCount === errorBag.getBackErrorCount()){
@@ -201,7 +201,7 @@ export class SingleInputDataProcessor
         }
 
         if(inputValidation){
-            await ValidationEngine.validateValue(srcObj[srcKey],config,preparedErrorData,errorBag,this.preparedSmallBag,type);
+            await ValidatorEngine.validateValue(srcObj[srcKey],config,preparedErrorData,errorBag,this.preparedSmallBag,type);
         }
 
         //check for convertTask
@@ -248,7 +248,7 @@ export class SingleInputDataProcessor
             }
             processInfo.errorBag.addBackError(new BackError
             (
-                ValidatorErrors.noAnyOfMatch,
+                ValidatorBackErrors.noAnyOfMatch,
                 {
                     inputPath : currentInputPath,
                     inputValue : srcObj[srcKey]
@@ -267,7 +267,7 @@ export class SingleInputDataProcessor
 
             //validate Array
             if(processInfo.inputValidation) {
-                isOk = ValidationEngine.validateArray(input,config,currentInputPath,errorBag)
+                isOk = ValidatorEngine.validateArray(input,config,currentInputPath,errorBag)
             }
 
             if(isOk) {
@@ -300,7 +300,7 @@ export class SingleInputDataProcessor
             //ups wrong input we can't processing it
             errorBag.addBackError(new BackError
                 (
-                    MainErrors.arrayWasExpected,
+                    MainBackErrors.arrayWasExpected,
                     {
                         inputPath : currentInputPath,
                         inputValue : input

@@ -4,26 +4,26 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationMaster          = require('./lib/main/zationMaster');
-import {Bag}                   from './lib/api/Bag';
-import SmallBag              = require('./lib/api/SmallBag');
-import {Controller}            from './lib/api/Controller';
-import Result                = require('./lib/api/Result');
-import {ErrorType}             from "./lib/helper/constants/errorType";
-import ServiceNotFoundError  = require('./lib/helper/services/serviceNotFoundError');
-import Config                = require('./lib/api/Config');
-import {ValidationTypes}       from './lib/helper/constants/validationTypes';
-import AuthenticationError   = require("./lib/helper/error/authenticationError");
-import CodeError             = require("./lib/helper/error/codeError");
-import MethodIsNotCompatible = require("./lib/helper/error/methodIsNotCompatibleError");
-import InputIsNotCompatible  = require("./lib/helper/error/inputIsNotCompatibleError");
-import {ControllerConfig}      from "./lib/helper/configs/appConfig";
-import {StarterConfig}         from "./lib/helper/configs/starterConfig";
-import {StartMode}             from "./lib/helper/constants/startMode";
-import BackError               from "./lib/api/BackError";
-import BackErrorBag            from "./lib/api/BackErrorBag";
-import BackErrorBuilder        from "./lib/helper/builder/backErrorBuilder";
-const  FsUtil : any           = require('socketcluster/fsutil');
+import BackError                    from "./lib/api/BackError";
+import BackErrorBag                 from "./lib/api/BackErrorBag";
+import SmallBag                     from './lib/api/SmallBag';
+import Bag                          from './lib/api/Bag';
+import Result                       from './lib/api/Result';
+import Controller                   from './lib/api/Controller';
+import Config                       from './lib/api/Config';
+import BackErrorBuilder             from "./lib/helper/builder/backErrorBuilder";
+import ServiceNotFoundError         from './lib/helper/services/serviceNotFoundError';
+import AuthenticationError          from './lib/helper/error/authenticationError';
+import MethodIsNotCompatibleError   from './lib/helper/error/methodIsNotCompatibleError';
+import InputIsNotCompatibleError    from './lib/helper/error/inputIsNotCompatibleError';
+import CodeError                    from './lib/helper/error/codeError';
+import {ErrorType}                  from "./lib/helper/constants/errorType";
+import {ValidationTypes}            from './lib/helper/constants/validationTypes';
+import {ControllerConfig}           from "./lib/helper/configs/appConfig";
+import {StarterConfig}              from "./lib/helper/configs/starterConfig";
+import {StartMode}                  from "./lib/helper/constants/startMode";
+import ZationMaster                 from "./lib/main/zationMaster";
+const  FsUtil : any               = require('socketcluster/fsutil');
 
 //starter
 
@@ -61,7 +61,7 @@ export {
         ValidationTypes,
         AuthenticationError,
         CodeError,
-        MethodIsNotCompatible,
-        InputIsNotCompatible,
+        MethodIsNotCompatibleError,
+        InputIsNotCompatibleError,
         FsUtil,
     };

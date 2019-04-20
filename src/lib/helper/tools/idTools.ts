@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-class IdTools
+export default class IdTools
 {
     static sidSeparator = '-|-';
 
@@ -29,5 +29,3 @@ class IdTools
         return this.splitSid(socketSid)[1];
     }
 }
-
-export = IdTools;

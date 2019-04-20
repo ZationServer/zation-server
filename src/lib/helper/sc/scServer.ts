@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-export interface ScServer
+export default interface ScServer
 {
     exchange : any;
     clients : object;

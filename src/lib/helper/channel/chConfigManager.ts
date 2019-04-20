@@ -8,8 +8,8 @@ GitHub: LucaCode
 For performance speed in publish in channels, sub channels..
  */
 
-import ZationConfig      = require("../../main/zationConfig");
 import {ChannelConfig, ChannelDefault, CustomChannelConfig, ZationChannelConfig} from "../configs/channelConfig";
+import ZationConfig from "../../main/zationConfig";
 
 export enum AccessKey {
     NOT_SET = 0,

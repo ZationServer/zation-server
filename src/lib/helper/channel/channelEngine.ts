@@ -10,16 +10,16 @@ This class is for the Bag, it extends the ExchangeEngine and ads
 personal sc functionality.
  */
 
-import ChExchangeEngine  = require('./chExchangeEngine');
-import ChTools           = require('./chTools');
 import ZationWorker      = require("../../main/zationWorker");
-import {BaseSHBridge}      from "../bridges/baseSHBridge";
+import BaseSHBridge      from "../bridges/baseSHBridge";
+import ChExchangeEngine  from "./chExchangeEngine";
+import ChTools           from "./chTools";
 
-class ChannelEngine extends ChExchangeEngine
+export default class ChannelEngine extends ChExchangeEngine
 {
     private readonly socket : any;
     private readonly isWebSocket : boolean;
-    
+
     constructor(worker : ZationWorker,shBridge : BaseSHBridge)
     {
         super(worker);
@@ -78,5 +78,3 @@ class ChannelEngine extends ChExchangeEngine
     }
 
 }
-
-export = ChannelEngine;

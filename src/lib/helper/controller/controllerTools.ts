@@ -5,12 +5,12 @@ GitHub: LucaCode
  */
 
 // noinspection TypeScriptPreferShortImport
-import {Bag}              from '../../api/Bag';
+import Bag              from '../../api/Bag';
 import {
     ControllerConfig, ObjectModelConfig
 } from "../configs/appConfig";
 
-class ControllerTools
+export default class ControllerTools
 {
 
     //Part is SystemController
@@ -70,5 +70,3 @@ class ControllerTools
         return tempConfig;
     }
 }
-
-export = ControllerTools;

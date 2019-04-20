@@ -11,19 +11,19 @@ It is used to check the access in the middleware or to check when the
 token is changed.
  */
 
-import Logger               = require('../logger/logger');
-import ChTools              = require('./chTools');
-import SmallBag             = require("../../api/SmallBag");
-import {Socket}               from "../sc/socket";
-import CIdChInfo             = require("../infoObjects/cIdChInfo");
-import CChInfo               = require("../infoObjects/cChInfo");
-import FuncTools             = require("../tools/funcTools");
-import PubData               = require("../infoObjects/pubDataInfo");
+import Socket               from "../sc/socket";
 import {ZationAccess, ZationChannel, ZationToken} from "../constants/internal";
 import {AccessKey, ChConfigManager}               from "./chConfigManager";
 import SocketInfo                                 from "../infoObjects/socketInfo";
+import SmallBag             from "../../api/SmallBag";
+import CIdChInfo            from "../infoObjects/cIdChInfo";
+import CChInfo              from "../infoObjects/cChInfo";
+import ChTools              from "./chTools";
+import Logger               from "../logger/logger";
+import FuncTools            from "../tools/funcTools";
+import PubDataInfo          from "../infoObjects/pubDataInfo";
 
-export class ChAccessEngine
+export default class ChAccessEngine
 {
     private chConfigManager : ChConfigManager;
     private readonly smallBag : SmallBag;
@@ -71,7 +71,7 @@ export class ChAccessEngine
             {
                 let res;
                 if(isPub) {
-                    res = await value(this.smallBag,chInfo,socketInfo,PubData.getFromBuild(pubData));
+                    res = await value(this.smallBag,chInfo,socketInfo,PubDataInfo.getFromBuild(pubData));
                 }
                 else {
                     res = await value(this.smallBag,chInfo,socketInfo);
@@ -236,7 +236,7 @@ export class ChAccessEngine
                 const func = this.chConfigManager.getOnClientPubCustomIdCh(name);
                 if(!!func) {
                     (async () => {
-                        await FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket),PubData.getFromBuild(pubData));
+                        await FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket),PubDataInfo.getFromBuild(pubData));
                     })();
                 }
 
@@ -335,7 +335,7 @@ export class ChAccessEngine
                 const func = this.chConfigManager.getOnClientPubCustomCh(name);
                 if(!!func) {
                     (async () => {
-                        await FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket),PubData.getFromBuild(pubData));
+                        await FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket),PubDataInfo.getFromBuild(pubData));
                     })();
                 }
 

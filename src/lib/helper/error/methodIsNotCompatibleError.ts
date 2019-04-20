@@ -4,17 +4,17 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import MainTaskErrors  = require('./../zationTaskErrors/mainTaskErrors');
-import CodeError       = require("./codeError");
+import CodeError        from "./codeError";
+import {MainBackErrors} from "../zationBackErrors/mainBackErrors";
 
-class MethodIsNotCompatibleError extends CodeError
+export default class MethodIsNotCompatibleError extends CodeError
 {
     private readonly reqType : string;
     private readonly requiredReqType : string;
 
     constructor(reqType : string,requiredReqType : string)
     {
-        super(MainTaskErrors.methodIsNotCompatible,{reqType,requiredReqType});
+        super(MainBackErrors.methodIsNotCompatible,{reqType,requiredReqType});
         this.reqType = reqType;
         this.requiredReqType = requiredReqType;
     }
@@ -29,5 +29,3 @@ class MethodIsNotCompatibleError extends CodeError
         return this.requiredReqType;
     }
 }
-
-export = MethodIsNotCompatibleError;

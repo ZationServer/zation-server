@@ -4,11 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ErrorGroup} from "../constants/errorGroup";
-import {ErrorType}  from "../constants/errorType";
+import {ErrorGroup}       from "../constants/errorGroup";
+// noinspection TypeScriptPreferShortImport
+import {ErrorType}        from "./../constants/errorType";
+import BackErrorConstruct from "../constants/backErrorConstruct";
 
-export = {
-
+export const ValidatorBackErrors : Record<string,BackErrorConstruct> = {
     inputIsNotTypeObject : {
         name          : 'inputIsNotTypeObject',
         group         : ErrorGroup.TYPE_ERROR,

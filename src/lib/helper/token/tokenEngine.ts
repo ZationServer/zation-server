@@ -4,19 +4,19 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import TokenTools     = require('./tokenTools');
 import ZationWorker   = require("../../main/zationWorker");
-import ZationConfig   = require("../../main/zationConfig");
 import {PrepareZationToken, ZationToken} from "../constants/internal";
-import {BaseSHBridge} from "../bridges/baseSHBridge";
+import BaseSHBridge     from "../bridges/baseSHBridge";
+import ZationConfig     from "../../main/zationConfig";
+import TokenTools       from "./tokenTools";
 const uniqid          = require('uniqid');
 
-class TokenEngine
+export default class TokenEngine
 {
     private readonly shBridge : BaseSHBridge;
     private readonly worker : ZationWorker;
     private readonly zc : ZationConfig;
-    
+
     constructor(shBridge : BaseSHBridge,worker : ZationWorker,zc : ZationConfig)
     {
         this.shBridge = shBridge;
@@ -128,5 +128,3 @@ class TokenEngine
         return await TokenTools.updateCustomTokenVar(data,this.shBridge,this.worker);
     }
 }
-
-export = TokenEngine;

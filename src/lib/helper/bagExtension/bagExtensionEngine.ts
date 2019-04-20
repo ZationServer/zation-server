@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationConfig = require("../../main/zationConfig");
-import SmallBag     = require("../../api/SmallBag");
-import Bag          = require("../../api/Bag");
+import ZationConfig from "../../main/zationConfig";
+import SmallBag     from "../../api/SmallBag";
+import Bag          from "../../api/Bag";
 
 export default class BagExtensionEngine
 {

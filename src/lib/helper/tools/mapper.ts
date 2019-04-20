@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Socket} from "../sc/socket";
-import {SocketSet} from "./socketSet";
+import Socket    from "../sc/socket";
+import SocketSet from "./socketSet";
 
-class Mapper<T extends Socket>
+export default class Mapper<T extends Socket>
 {
     private readonly data : Record<string,undefined |SocketSet> = {};
 
@@ -100,5 +100,3 @@ class Mapper<T extends Socket>
         return this.data;
     }
 }
-
-export = Mapper;

@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-export class StringSet
+export default class StringSet
 {
     private strings : string[] = [];
 

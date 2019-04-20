@@ -4,11 +4,11 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationWorker = require("../../main/zationWorker");
+import ZationWorker         = require("../../main/zationWorker");
 import {WorkerMessageActions} from "../constants/workerMessageActions";
 import {BrokerMessageActions} from "../constants/brokerMessageActions";
 
-export class NodeInfo {
+export default class NodeInfo {
 
     static async getBrokerInfo(worker : ZationWorker) : Promise<{brokers : object,cBrokers : object}> {
         let brokerInfo = {};

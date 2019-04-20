@@ -4,11 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 // noinspection TypeScriptPreferShortImport
-import {Controller}     from "../../../api/Controller";
-import MainTaskErrors = require("./../../zationTaskErrors/mainTaskErrors");
 import {ZationToken}      from "../../constants/internal";
-import {ControllerConfig} from "../../../..";
+// noinspection TypeScriptPreferShortImport
+import {ControllerConfig} from "../../configs/appConfig";
 import BackError          from "../../../api/BackError";
+import Controller         from "../../../api/Controller";
+import {MainBackErrors}   from "../../zationBackErrors/mainBackErrors";
 
 export default class ZationSPC_Auth extends Controller
 {
@@ -34,7 +35,7 @@ export default class ZationSPC_Auth extends Controller
             await new Promise((resolve) => {setTimeout(()=>{resolve();},2000)});
 
             if(!bag.getWorker().getPanelEngine().isPanelLoginDataValid(username,password)) {
-                throw new BackError(MainTaskErrors.wrongPanelAuthData);
+                throw new BackError(MainBackErrors.wrongPanelAuthData);
             }
             const token = {};
             token[nameof<ZationToken>(s => s.zationPanelAccess)] = true;
@@ -46,7 +47,7 @@ export default class ZationSPC_Auth extends Controller
             await bag.setTokenVariable('ZATION-PANEL-USER-NAME',username);
         }
         else {
-            throw new BackError(MainTaskErrors.panelIsNotActivated);
+            throw new BackError(MainBackErrors.panelIsNotActivated);
         }
     }
 }

@@ -5,22 +5,22 @@ GitHub: LucaCode
  */
 
 import ExpressCore                   = require("express-serve-static-core");
-import SmallBag                      = require("../../api/SmallBag");
-import ZationInfoObj                 = require("../infoObjects/zationInfo");
 import ZationWorker                  = require("../../main/zationWorker");
-import {ScServer}                      from "../sc/scServer";
-import {Socket}                        from "../sc/socket";
+import ScServer                        from "../sc/scServer";
+import Socket                          from "../sc/socket";
 import {ZationToken}                   from "../constants/internal";
 import BackError                       from "../../api/BackError";
 import BackErrorBag                    from "../../api/BackErrorBag";
+import SmallBag                        from "../../api/SmallBag";
+import ZationInfo                      from "../infoObjects/zationInfo";
 
 export type ExpressFunction = (smallBag : SmallBag, express : ExpressCore.Express) => Promise<void> | void;
 export type ScServerFunction = (smallBag : SmallBag, scServer : ScServer) => Promise<void> | void;
 export type ZationSocketFunction = (smallBag : SmallBag,socket : Socket) => Promise<void> | void;
-export type WorkerStartedFunction = (smallBag : SmallBag, info : ZationInfoObj, worker : ZationWorker) => Promise<void> | void;
-export type HttpServerStartedFunction = (info : ZationInfoObj) => Promise<void> | void;
-export type WsServerStartedFunction = (info : ZationInfoObj) => Promise<void> | void;
-export type StartedFunction = (info : ZationInfoObj) => Promise<void> | void;
+export type WorkerStartedFunction = (smallBag : SmallBag, info : ZationInfo, worker : ZationWorker) => Promise<void> | void;
+export type HttpServerStartedFunction = (info : ZationInfo) => Promise<void> | void;
+export type WsServerStartedFunction = (info : ZationInfo) => Promise<void> | void;
+export type StartedFunction = (info : ZationInfo) => Promise<void> | void;
 export type BeforeErrorFunction = (smallBag : SmallBag, error : object) => Promise<void> | void;
 export type BeforeBackErrorFunction = (smallBag : SmallBag, backError : BackError) => Promise<void> | void;
 export type BeforeCodeErrorFunction = (smallBag : SmallBag, backError : BackError) => Promise<void> | void;

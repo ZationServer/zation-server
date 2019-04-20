@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationConfig         = require("./zationConfig");
-import Logger               = require("../helper/logger/logger");
-import SystemInfo = require("../helper/tools/systemInfo");
 import {BrokerMessageActions} from "../helper/constants/brokerMessageActions";
+import SystemInfo             from "../helper/tools/systemInfo";
+import ZationConfig           from "./zationConfig";
+import Logger                 from "../helper/logger/logger";
 const SCBroker              = require('socketcluster/scbroker');
 const scClusterBrokerClient = require('scc-broker-client');
 

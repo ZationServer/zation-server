@@ -4,19 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationConfig = require("../../main/zationConfig");
-import Logger = require('../logger/logger');
-import ConfigError = require('./configError');
-import ConfigCheckerTools = require('./configCheckerTools');
-import ObjectPath = require('../tools/objectPath');
-import ObjectTools = require('../tools/objectTools');
-import Structures = require('./structures');
-import Target = require('./target');
-import SmallBag = require('./../../api/SmallBag');
-import ConfigErrorBag = require("./configErrorBag");
-import Iterator = require("../tools/iterator");
-// noinspection TypeScriptPreferShortImport
-import {Bag} from './../../api/Bag';
+import Bag from './../../api/Bag';
 import {ConfigNames, DefaultUserGroupFallBack, ZationAccess} from "../constants/internal";
 import BagExtension, {
     AppConfig,
@@ -24,13 +12,11 @@ import BagExtension, {
     InputConfig, MultiInput,
     ModelOptional, ObjectModelConfig, AnyOfModelConfig, ArrayModelConfig, ValueModelConfig, Model,
 } from "../configs/appConfig";
-import {PanelUserConfig} from "../configs/mainConfig";
+import {PanelUserConfig}      from "../configs/mainConfig";
 import {MainService, Service} from "../configs/serviceConfig";
-// noinspection TypeScriptPreferShortImport
 import {ChannelConfig, ChannelDefault, CustomChannelConfig} from "../configs/channelConfig";
 // noinspection TypeScriptPreferShortImport
-import {Controller, ControllerClass} from "../../api/Controller";
-import {ValidationTypes} from "../../..";
+import {ValidationTypes} from "../constants/validationTypes";
 import {
     OnlyBase64Functions,
     OnlyDateFunctions,
@@ -38,9 +24,21 @@ import {
     OnlyStringFunctions,
     TypeTypes
 } from "../constants/validation";
-import ModelImportEngine from "./modelImportEngine";
+import ModelImportEngine    from "./modelImportEngine";
+import ZationConfig         from "../../main/zationConfig";
+import ConfigErrorBag       from "./configErrorBag";
+import ConfigCheckerTools   from "./configCheckerTools";
+import {Structures}         from "./structures";
+import ConfigError          from "./configError";
+import Target               from "./target";
+import Logger               from "../logger/logger";
+import SmallBag             from "../../api/SmallBag";
+import ObjectPath           from "../tools/objectPath";
+import Controller, {ControllerClass} from "../../api/Controller";
+import Iterator             from "../tools/iterator";
+import ObjectTools          from "../tools/objectTools";
 
-class ConfigChecker
+export default class ConfigChecker
 {
     private readonly zc: ZationConfig;
     private readonly ceb: ConfigErrorBag;
@@ -1185,5 +1183,3 @@ class ConfigChecker
     }
 
 }
-
-export = ConfigChecker;

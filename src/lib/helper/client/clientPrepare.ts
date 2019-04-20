@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import fs           = require('fs');
-import ZationConfig = require("../../main/zationConfig");
+import fs         = require('fs');
+import ZationConfig from "../../main/zationConfig";
 
-class ClientPrepare
+export default class ClientPrepare
 {
     static buildClientJs(serverSettingsFile : string) : string
     {
@@ -38,5 +38,3 @@ class ClientPrepare
     }
 
 }
-
-export = ClientPrepare;

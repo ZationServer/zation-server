@@ -4,17 +4,17 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Socket}          from "../sc/socket";
-import {ZationToken}     from "../constants/internal";
-import {IncomingMessage} from "http";
-import {BaseSHBridge}    from "./baseSHBridge";
-import AuthenticationError = require("../error/authenticationError");
-import {BaseSHBridgeSH}  from "./baseSHBridgeSH";
+import Socket              from "../sc/socket";
+import {ZationToken}       from "../constants/internal";
+import {IncomingMessage}   from "http";
+import BaseSHBridge        from "./baseSHBridge";
+import BaseSHBridgeSH      from "./baseSHBridgeSH";
+import AuthenticationError from "../error/authenticationError";
 
 /**
  * BaseShBridge implementation for socket.
  */
-export class BaseShBridgeSocket extends BaseSHBridgeSH implements BaseSHBridge
+export default class BaseShBridgeSocket extends BaseSHBridgeSH implements BaseSHBridge
 {
     protected readonly socket : Socket;
 

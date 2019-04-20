@@ -4,12 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationReqTools        = require('../tools/zationReqTools');
 import ZationWorker          = require("../../main/zationWorker");
-import ZationConfig          = require("../../main/zationConfig");
-import Logger                = require("../logger/logger");
-import {SHBridgeSocket}        from "../bridges/shBridgeSocket";
-import {Socket}                from "../sc/socket";
+import SHBridgeSocket        from "../bridges/shBridgeSocket";
+import Socket                from "../sc/socket";
+import ZationConfig          from "../../main/zationConfig";
+import Logger                from "../logger/logger";
+import ZationReqTools        from "../tools/zationReqTools";
 
 export default class SocketProcessor
 {

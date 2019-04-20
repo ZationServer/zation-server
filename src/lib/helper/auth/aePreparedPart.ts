@@ -5,9 +5,9 @@ GitHub: LucaCode
  */
 
 import ZationWorker = require("../../main/zationWorker");
-import ZationConfig = require("../../main/zationConfig");
 import {AuthUserGroupConfig, UserGroupsConfig} from "../configs/appConfig";
 import {DefaultUserGroupFallBack} from "../constants/internal";
+import ZationConfig               from "../../main/zationConfig";
 
 export default class AEPreparedPart
 {

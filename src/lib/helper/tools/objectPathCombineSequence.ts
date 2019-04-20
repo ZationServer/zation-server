@@ -4,12 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+import ObjectPathActionSequence from "./objectPathActionSequence";
+import ObjectPathSequence       from "./objectPathSequence";
 
-// noinspection TypeScriptPreferShortImport
-import ObjectPathActionSequence = require("./objectPathActionSequence");
-import ObjectPathSequence =       require("./objectPathSequence");
-
-export class ObjectPathCombineSequence
+export default class ObjectPathCombineSequence
 {
     private objActions : ObjectPathActionSequence;
     private objNormal : ObjectPathSequence;

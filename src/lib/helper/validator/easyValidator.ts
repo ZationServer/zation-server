@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 const Validator : any        = require('validator');
 
-class EasyValidator
+export default class EasyValidator
 {
     static isString(data)
     {
@@ -362,5 +362,3 @@ class EasyValidator
         }
     }
 }
-
-export = EasyValidator;

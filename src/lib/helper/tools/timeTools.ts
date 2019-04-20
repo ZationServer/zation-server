@@ -3,17 +3,17 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-import momentTz = require('moment-timezone');
-import Logger = require('../logger/logger');
+import momentTz             = require('moment-timezone');
 import {Moment as MomentType} from "moment-timezone";
+import Logger                 from "../logger/logger";
 
-class TimeTools {
+export default class TimeTools {
     static getMoment(timeZone: string) {
         // noinspection JSUnresolvedFunction
         return momentTz().tz(timeZone);
     }
 
-    static processTaskTriggerTime({hour, minute, second, millisecond}, startMoment: MomentType, printInfo: boolean = true) {
+    static processTaskTriggerTime({hour, minute, second, millisecond}, startMoment: MomentType) : {tillMs : number,tillFormat : string} {
         let now: MomentType = startMoment;
         let fireMoment: MomentType = now.clone();
 
@@ -61,12 +61,10 @@ class TimeTools {
         }
 
         const process = (fireMoment) => {
-            if (printInfo) {
-                Logger.printDebugInfo(`Background Task is planed to -> ${fireMoment.format('dddd, MMMM Do YYYY, k:mm:ss:SSSS ')}`);
-            }
-
-
-            return momentTz.duration(fireMoment.diff(now)).asMilliseconds();
+            return {
+                tillMs : momentTz.duration(fireMoment.diff(now)).asMilliseconds(),
+                tillFormat : fireMoment.format('dddd, MMMM Do YYYY, k:mm:ss:SSSS ')
+            };
         };
 
 
@@ -111,5 +109,3 @@ class TimeTools {
     }
 
 }
-
-export = TimeTools;

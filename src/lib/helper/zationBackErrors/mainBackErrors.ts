@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ErrorType} from "../constants/errorType";
+// noinspection TypeScriptPreferShortImport
+import {ErrorType}        from "./../constants/errorType";
 
-export = {
-
+export const MainBackErrors = {
     controllerNotFound : {
         name          : 'controllerNotFound',
         description   : 'Controller is missing.',

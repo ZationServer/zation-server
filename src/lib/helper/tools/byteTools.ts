@@ -6,14 +6,12 @@ GitHub: LucaCode
 
 // noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../constants/validationTypes";
-import Base64Tools     = require("./base64Tools");
 import {byteLength}      from "byte-length";
+import Base64Tools       from "./base64Tools";
 
-class ByteTools
+export default class ByteTools
 {
     static getByteSize(value : string,type : string) : number {
          return type === ValidationTypes.BASE64 ? Base64Tools.getByteSize(value) : byteLength(value);
     }
 }
-
-export = ByteTools;

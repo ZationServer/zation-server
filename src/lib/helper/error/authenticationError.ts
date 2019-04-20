@@ -4,16 +4,16 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import MainTaskErrors  = require('./../zationTaskErrors/mainTaskErrors');
-import CodeError       = require("./codeError");
+import CodeError        from "./codeError";
+import {MainBackErrors} from "../zationBackErrors/mainBackErrors";
 
-class AuthenticationError extends CodeError
+export default class AuthenticationError extends CodeError
 {
     private readonly reason : string;
 
     constructor(reason : string)
     {
-        super(MainTaskErrors.authenticationError,{reason});
+        super(MainBackErrors.authenticationError,{reason});
         this.reason = reason;
     }
 
@@ -22,5 +22,3 @@ class AuthenticationError extends CodeError
         return this.reason;
     }
 }
-
-export = AuthenticationError;

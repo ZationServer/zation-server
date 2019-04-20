@@ -4,16 +4,16 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {BaseSHBridge}       from "./baseSHBridge";
+import BaseSHBridge         from "./baseSHBridge";
 import {IncomingMessage}    from "http";
 import {ZationToken}        from "../constants/internal";
-import {Socket}             from "../sc/socket";
+import Socket               from "../sc/socket";
 const  IP : any           = require('ip');
 
 /**
  * This class adds method they are same on both sides. (http/socket)
  */
-export abstract class BaseSHBridgeSH implements BaseSHBridge {
+export default abstract class BaseSHBridgeSH implements BaseSHBridge {
 
     abstract deauthenticate(): void;
     abstract getHandshakeRequest(): IncomingMessage;

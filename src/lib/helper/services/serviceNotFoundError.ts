@@ -4,17 +4,17 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import MainTaskErrors  = require('./../zationTaskErrors/mainTaskErrors');
-import CodeError       = require("../error/codeError");
+import CodeError        from "../error/codeError";
+import {MainBackErrors} from "../zationBackErrors/mainBackErrors";
 
-class ServiceNotFoundError extends CodeError
+export default class ServiceNotFoundError extends CodeError
 {
     private readonly serviceName : string;
     private readonly serviceKey : string;
 
     constructor(serviceName : string,serviceKey : string)
     {
-        super(MainTaskErrors.serviceNotFound,{serviceKey,serviceName});
+        super(MainBackErrors.serviceNotFound,{serviceKey,serviceName});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -27,5 +27,3 @@ class ServiceNotFoundError extends CodeError
         return this.serviceKey;
     }
 }
-
-export = ServiceNotFoundError;

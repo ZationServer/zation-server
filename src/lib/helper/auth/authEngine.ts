@@ -4,17 +4,13 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Logger         = require('../logger/logger');
-import TokenEngine    = require("../token/tokenEngine");
-import {ChAccessEngine}      from "../channel/chAccessEngine";
 import ZationWorker        = require("../../main/zationWorker");
-import {PrepareZationToken, ZationAccess, ZationToken} from "../constants/internal";
-// noinspection TypeScriptPreferShortImport
-import {ControllerConfig}   from "../configs/appConfig";
-import {BaseSHBridge}       from "../bridges/baseSHBridge";
+import {PrepareZationToken, ZationToken} from "../constants/internal";
+import BaseSHBridge         from "../bridges/baseSHBridge";
 import AEPreparedPart       from "./aePreparedPart";
-import ZationTokenInfo from "../infoObjects/zationTokenInfo";
-import AuthenticationError = require("../error/authenticationError");
+import ChAccessEngine       from "../channel/chAccessEngine";
+import TokenEngine          from "../token/tokenEngine";
+import AuthenticationError  from "../error/authenticationError";
 
 export default class AuthEngine
 {

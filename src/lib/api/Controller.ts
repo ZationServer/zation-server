@@ -4,13 +4,13 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import SmallBag = require("./SmallBag");
-import {Bag} from './Bag';
-import ObjectPath = require("../helper/tools/objectPath");
+import Bag                from './Bag';
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../helper/configs/appConfig";
+import SmallBag           from "./SmallBag";
+import ObjectPath         from "../helper/tools/objectPath";
 
-export class Controller {
+export default class Controller {
     private _storage: object = {};
 
     /**

@@ -7,14 +7,14 @@ GitHub: LucaCode
 import {ZationHttpInfo, ZationRequest, ZationToken} from "../constants/internal";
 import * as core         from "express-serve-static-core";
 import {IncomingMessage} from "http";
-import {SHBridge}        from "./shBridge";
-import {BaseSHBridgeSH}  from "./baseSHBridgeSH";
-import {Socket}          from "../sc/socket";
+import SHBridge          from "./shBridge";
+import BaseSHBridgeSH    from "./baseSHBridgeSH";
+import Socket            from "../sc/socket";
 
 /**
  * BaseShBridge implementation for http.
  */
-export class SHBridgeHttp extends BaseSHBridgeSH implements SHBridge {
+export default class SHBridgeHttp extends BaseSHBridgeSH implements SHBridge {
     protected readonly httpRes : core.Response;
     protected readonly httpReq : core.Request & {zationToken ?: ZationToken};
     protected readonly data : ZationRequest;

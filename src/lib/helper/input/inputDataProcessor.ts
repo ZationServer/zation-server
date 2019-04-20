@@ -4,18 +4,17 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import MainErrors          = require('../zationTaskErrors/mainTaskErrors');
-import {ProcessTask, ProcessTaskEngine} from "./processTaskEngine";
-// noinspection TypeScriptPreferShortImport
 import {ControllerConfig, Model, MultiInput} from "../configs/appConfig";
-import {ZationTask}          from "../constants/internal";
-import {OptionalProcessor}   from "./optionalProcessor";
-import {SingleInputDataProcessor}  from "./singleInputDataProcessor";
-import ZationWorker        = require("../../main/zationWorker");
-import BackErrorBag          from "../../api/BackErrorBag";
-import BackError             from "../../api/BackError";
+import {ZationTask}              from "../constants/internal";
+import OptionalProcessor         from "./optionalProcessor";
+import SingleInputDataProcessor  from "./singleInputDataProcessor";
+import ZationWorker            = require("../../main/zationWorker");
+import BackErrorBag              from "../../api/BackErrorBag";
+import BackError                 from "../../api/BackError";
+import ProcessTaskEngine, {ProcessTask} from "./processTaskEngine";
+import {MainBackErrors}          from "../zationBackErrors/mainBackErrors";
 
-export class InputDataProcessor
+export default class InputDataProcessor
 {
     private inputMainProcessor : SingleInputDataProcessor;
 
@@ -54,7 +53,7 @@ export class InputDataProcessor
                 const {defaultValue,isOptional} = await OptionalProcessor.process(controllerInput[inputName]);
                 if(!isOptional){
                     //ups something is missing
-                    taskErrorBag.addBackError(new BackError(MainErrors.inputPropertyIsMissing,
+                    taskErrorBag.addBackError(new BackError(MainBackErrors.inputPropertyIsMissing,
                         {
                             propertyName : inputName,
                             input : input
@@ -69,7 +68,7 @@ export class InputDataProcessor
         //check for unknown input properties
         for(let inputName in input) {
             if(input.hasOwnProperty(inputName) && !controllerInput.hasOwnProperty(inputName)){
-                taskErrorBag.addBackError(new BackError(MainErrors.unknownInputProperty,
+                taskErrorBag.addBackError(new BackError(MainBackErrors.unknownInputProperty,
                     {
                         propertyName : inputName
                     }));
@@ -117,7 +116,7 @@ export class InputDataProcessor
                 const {defaultValue,isOptional} = await OptionalProcessor.process(controllerInput[controllerInputKeys[i]]);
                 if(!isOptional){
                     //ups something is missing
-                    taskErrorBag.addBackError(new BackError(MainErrors.inputPropertyIsMissing,
+                    taskErrorBag.addBackError(new BackError(MainBackErrors.inputPropertyIsMissing,
                         {
                             propertyName : controllerInputKeys[i],
                             input : input
@@ -131,7 +130,7 @@ export class InputDataProcessor
         }
         //check to much input
         for(let i = controllerInputKeys.length; i < input.length; i++) {
-            taskErrorBag.addBackError(new BackError(MainErrors.inputNotAssignable,
+            taskErrorBag.addBackError(new BackError(MainBackErrors.inputNotAssignable,
                 {
                     index : i,
                     value : input[i]
@@ -230,7 +229,7 @@ export class InputDataProcessor
         }
         else if(typeof input !== "object") {
             //throw input type needs to be an object or array
-            throw new BackError(MainErrors.wrongControllerInputType,{inputType : typeof input});
+            throw new BackError(MainBackErrors.wrongControllerInputType,{inputType : typeof input});
         }
 
         const useInputValidation : boolean =

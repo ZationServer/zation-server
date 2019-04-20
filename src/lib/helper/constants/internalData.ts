@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-export interface InternalData {
+export default interface InternalData {
     tokenCheckKey ?: string
 }
 

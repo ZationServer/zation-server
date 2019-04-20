@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-class Converter
+export default class Converter
 {
     static stringToBool(data)
     {
@@ -22,5 +22,3 @@ class Converter
         return data === 1;
     }
 }
-
-export = Converter;

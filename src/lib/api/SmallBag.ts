@@ -4,11 +4,11 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Socket}                                             from "../helper/sc/socket";
+import Socket                                               from "../helper/sc/socket";
 import fetch, {Request, RequestInit, Response}              from 'node-fetch';
 import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../helper/constants/workerChTaskActions";
 import {WorkerChTargets}                                    from "../helper/constants/workerChTargets";
-import {AsymmetricKeyPairs}                                 from "../helper/infoObjects/asymmetricKeyPairs";
+import AsymmetricKeyPairs                                   from "../helper/infoObjects/asymmetricKeyPairs";
 import {WorkerMessageActions}                               from "../helper/constants/workerMessageActions";
 import BackErrorConstruct                                   from "../helper/constants/backErrorConstruct";
 import {ZationChannel, ZationToken}                         from "../helper/constants/internal";
@@ -19,41 +19,40 @@ import {EventConfig}                                        from "../helper/conf
 import {ServiceConfig}                                      from "../helper/configs/serviceConfig";
 import {byteLength}                                         from "byte-length";
 
-const    crypto : any                                       = require('crypto');
-const    IP : any                                           = require('ip');
-const    crypto2 : any                                      = require("crypto2");
-import ChExchangeEngine                                     = require("../helper/channel/chExchangeEngine");
-import ServiceEngine                                        = require("../helper/services/serviceEngine");
-import ZationConfig                                         = require("../main/zationConfig");
-import ZationWorker                                         = require("../main/zationWorker");
-import ExchangeEngine                                       = require('../helper/channel/chExchangeEngine');
-import ChTools                                              = require("../helper/channel/chTools");
-import IdTools                                              = require("../helper/tools/idTools");
-import ObjectPath                                           = require("../helper/tools/objectPath");
-import TokenTools                                           = require("../helper/token/tokenTools");
-import Base64Tools                                          = require("../helper/tools/base64Tools");
-import ObjectPathSequence                                   = require("../helper/tools/objectPathSequence");
-import AuthenticationError                                  = require("../helper/error/authenticationError");
-import {SyncTokenActions}                                   from "../helper/constants/syncTokenActions";
-import ObjectPathActionSequence                             = require("../helper/tools/objectPathActionSequence");
-// noinspection TypeScriptPreferShortImport
-import {StartMode}                                          from "./../helper/constants/startMode";
-import Result                                               = require('./Result');
-import BackErrorBuilder from "../helper/builder/backErrorBuilder";
-import BackError      from "./BackError";
-import BackErrorBag   from "./BackErrorBag";
-import Logger = require("../helper/logger/logger");
+const crypto : any                                          = require('crypto');
+const IP : any                                              = require('ip');
+const crypto2 : any                                         = require("crypto2");
 const uuidV4                                                = require('uuid/v4');
 const uniqid                                                = require('uniqid');
+import ZationWorker                                         = require("../main/zationWorker");
+import {SyncTokenActions}                                   from "../helper/constants/syncTokenActions";
+import {StartMode}                                          from "../..";
+import BackErrorBuilder                                     from "../helper/builder/backErrorBuilder";
+import BackError                                            from "./BackError";
+import BackErrorBag                                         from "./BackErrorBag";
+import ChExchangeEngine                                     from "../helper/channel/chExchangeEngine";
+import ServiceEngine                                        from "../helper/services/serviceEngine";
+import ZationConfig                                         from "../main/zationConfig";
+import ObjectPath                                           from "../helper/tools/objectPath";
+import Result                                               from "./Result";
+import Logger                                               from "../helper/logger/logger";
+import ChTools                                              from "../helper/channel/chTools";
+import IdTools                                              from "../helper/tools/idTools";
+import TokenTools                                           from "../helper/token/tokenTools";
+import AuthenticationError                                  from "../helper/error/authenticationError";
+import ObjectPathSequence                                   from "../helper/tools/objectPathSequence";
+import ObjectPathActionSequence                             from "../helper/tools/objectPathActionSequence";
+import Base64Tools                                          from "../helper/tools/base64Tools";
 
-class SmallBag
+
+export default class SmallBag
 {
     protected readonly exchangeEngine : ChExchangeEngine;
     protected readonly serviceEngine : ServiceEngine;
     protected readonly zc : ZationConfig;
     protected readonly worker : ZationWorker;
 
-    constructor(worker : ZationWorker,exchangeEngine : ExchangeEngine = new ExchangeEngine(worker))
+    constructor(worker : ZationWorker,exchangeEngine : ChExchangeEngine = new ChExchangeEngine(worker))
     {
         this.exchangeEngine = exchangeEngine;
         this.serviceEngine = worker.getServiceEngine();
@@ -2590,5 +2589,3 @@ class SmallBag
         (WorkerChSpecialTaskActions.MESSAGE, {data : data});
     }
 }
-
-export = SmallBag;

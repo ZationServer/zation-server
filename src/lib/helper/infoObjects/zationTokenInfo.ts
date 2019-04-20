@@ -4,8 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ObjectPath   = require("../tools/objectPath");
 import {ZationToken}  from "../constants/internal";
+import ObjectPath     from "../tools/objectPath";
 
 export default class ZationTokenInfo
 {

@@ -7,7 +7,7 @@ GitHub: LucaCode
 const path : any           = require('path');
 import fs                  = require('fs');
 
-class ViewEngine
+export default class ViewEngine
 {
     private defaultZationView : string;
 
@@ -25,5 +25,3 @@ class ViewEngine
         return this.defaultZationView;
     }
 }
-
-export = ViewEngine;

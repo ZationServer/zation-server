@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-class FuncTools
+export default class FuncTools
 {
     static async emitEvent(func : Function | Function[] | undefined,...params : any[]) : Promise<void>
     {
@@ -46,4 +46,3 @@ class FuncTools
     }
 }
 
-export = FuncTools;

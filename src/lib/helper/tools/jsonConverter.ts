@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
 import BackError          from "../../api/BackError";
+import {MainBackErrors}   from "../zationBackErrors/mainBackErrors";
 
-class JsonConverter
+export default class JsonConverter
 {
     public static async parse(value : string) : Promise<object>
     {
@@ -15,9 +15,7 @@ class JsonConverter
             return JSON.parse(value);
         }
         catch (e) {
-            throw new BackError(MainErrors.JSONParseSyntaxError,{input : value});
+            throw new BackError(MainBackErrors.JSONParseSyntaxError,{input : value});
         }
     }
 }
-
-export = JsonConverter;

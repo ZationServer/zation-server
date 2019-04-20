@@ -6,13 +6,13 @@ GitHub: LucaCode
 
 import {ZationToken}     from "../constants/internal";
 import {IncomingMessage} from "http";
-import {Socket}          from "../sc/socket";
+import Socket            from "../sc/socket";
 
 /**
  * Minimal socket, http bridge interface
  * That not contains request information.
  */
-export interface BaseSHBridge
+export default interface BaseSHBridge
 {
     getHandshakeRequest() : IncomingMessage;
     getVersion() : number;

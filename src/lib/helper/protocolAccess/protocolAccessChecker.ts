@@ -6,8 +6,8 @@ GitHub: LucaCode
 
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../configs/appConfig";
-import {BaseSHBridge}     from "../bridges/baseSHBridge";
-import {SHBridge}         from "../bridges/shBridge";
+import BaseSHBridge       from "../bridges/baseSHBridge";
+import SHBridge           from "../bridges/shBridge";
 
 export default class ProtocolAccessChecker
 {

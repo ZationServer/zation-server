@@ -4,11 +4,11 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Logger        = require('../logger/logger');
 import {ZationChannel} from "../constants/internal";
-import {Socket} from "../sc/socket";
+import Socket          from "../sc/socket";
+import Logger          from "../logger/logger";
 
-class ChTools
+export default class ChTools
 {
     static buildCustomIdChannelName(name ?: string,id : string = '') : string
     {
@@ -88,5 +88,3 @@ class ChTools
     }
 
 }
-
-export = ChTools;

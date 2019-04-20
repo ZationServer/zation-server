@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-class CChInfo
+export default class CChInfo
 {
     private readonly _channelName : string;
 
@@ -18,5 +18,3 @@ class CChInfo
         return this._channelName;
     }
 }
-
-export = CChInfo;

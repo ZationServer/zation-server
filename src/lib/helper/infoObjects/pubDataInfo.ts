@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-class PubDataInfo
+export default class PubDataInfo
 {
     private readonly _event : string;
     private readonly _data : any;
@@ -37,5 +37,3 @@ class PubDataInfo
         return this._srcSocketSid;
     }
 }
-
-export = PubDataInfo;

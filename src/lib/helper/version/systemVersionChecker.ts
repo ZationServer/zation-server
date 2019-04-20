@@ -4,10 +4,11 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import MainErrors   = require('../zationTaskErrors/mainTaskErrors');
-import {ControllerConfig} from "../configs/appConfig";
-import {BaseSHBridge}     from "../bridges/baseSHBridge";
+import BaseSHBridge       from "../bridges/baseSHBridge";
 import BackError          from "../../api/BackError";
+import {MainBackErrors}   from "../zationBackErrors/mainBackErrors";
+// noinspection TypeScriptPreferShortImport
+import {ControllerConfig} from "../../helper/configs/appConfig";
 
 export type VersionSystemAccessCheckFunction = (shBridge : BaseSHBridge) => void;
 
@@ -26,7 +27,7 @@ export default class SystemVersionChecker
                     const version = shBridge.getVersion();
                     const sVersion = versionAccess[system];
                     if((Array.isArray(sVersion) && !sVersion.includes(version)) || (typeof sVersion === 'number' && sVersion > version)) {
-                        throw new BackError(MainErrors.versionNotCompatible,{version : version});
+                        throw new BackError(MainBackErrors.versionNotCompatible,{version : version});
                     }
                 }
             }
@@ -45,7 +46,7 @@ export default class SystemVersionChecker
         if(Array.isArray(systemAccess)) {
             return (shBridge) =>  {
                 if(!systemAccess.includes(shBridge.getSystem())) {
-                    throw new BackError(MainErrors.systemNotCompatible,{system : shBridge.getSystem()});
+                    throw new BackError(MainBackErrors.systemNotCompatible,{system : shBridge.getSystem()});
                 }
             }
         }

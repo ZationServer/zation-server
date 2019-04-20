@@ -4,11 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationMaster = require("../../main/zationMaster");
-import TimeTools     = require("../tools/timeTools");
-import ZationConfig  = require("../../main/zationConfig");
+import ZationMaster from "../../main/zationMaster";
+import ZationConfig from "../../main/zationConfig";
+import TimeTools    from "../tools/timeTools";
+import Logger       from "../logger/logger";
 
-class BackgroundTasksSender
+export default class BackgroundTasksSender
 {
     private readonly master : ZationMaster;
     private readonly zc : ZationConfig;
@@ -30,18 +31,17 @@ class BackgroundTasksSender
         else if(typeof time === 'object')
         {
             const set = () => {
-                let tillTime = TimeTools.
+                let {tillMs,tillFormat} = TimeTools.
                 processTaskTriggerTime(time,TimeTools.getMoment(this.zc.mainConfig.timeZone));
 
-                if(tillTime && tillTime > 0)
-                {
+                if(tillMs && tillMs > 0) {
+                    Logger.printDebugInfo(`Every Background Task: ${name} is planed to -> ${tillFormat}`);
                     setTimeout(() => {
                         this.runUserBackgroundTask(name);
                         set();
-                    },tillTime);
+                    },tillMs);
                 }
-                else
-                {
+                else {
                     throw Error(`Planed every background task with name ${name} goes wrong.`);
                 }
             };
@@ -63,21 +63,18 @@ class BackgroundTasksSender
         }
         else if(typeof time === 'object')
         {
-            const tillTime = TimeTools.
+            const {tillFormat,tillMs} = TimeTools.
             processTaskTriggerTime(time,TimeTools.getMoment(this.zc.mainConfig.timeZone));
 
-            if(tillTime && tillTime > 0)
-            {
+            if(tillMs && tillMs > 0) {
+                Logger.printDebugInfo(`At Background Task: ${name} is planed to -> ${tillFormat}`);
                 setTimeout(() => {
                     this.runUserBackgroundTask(name);
-                },tillTime);
+                },tillMs);
             }
-            else
-            {
+            else {
                 throw Error(`Planed at background task with name ${name} goes wrong.`);
             }
         }
     }
 }
-
-export = BackgroundTasksSender;

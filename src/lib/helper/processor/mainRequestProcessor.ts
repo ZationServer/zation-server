@@ -4,26 +4,24 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ControllerTools       = require('../controller/controllerTools');
-import Result                = require('../../api/Result');
-import MainErrors            = require('../zationTaskErrors/mainTaskErrors');
-import ZationReqTools        = require('../tools/zationReqTools');
-// noinspection TypeScriptPreferShortImport
-import {Bag}                   from '../../api/Bag';
-import TokenEngine           = require('../token/tokenEngine');
-import ZationConfig          = require("../../main/zationConfig");
+import Bag                     from '../../api/Bag';
 import ZationWorker          = require("../../main/zationWorker");
-// noinspection TypeScriptPreferShortImport
-import {Controller}            from'../../api/Controller';
+import Controller              from'../../api/Controller';
 import {ResponseResult, ZationTask} from "../constants/internal";
-import {SHBridge}              from "../bridges/shBridge";
-import {InputDataProcessor}    from "../input/inputDataProcessor";
+import SHBridge                from "../bridges/shBridge";
+import InputDataProcessor      from "../input/inputDataProcessor";
 import ValidCheckProcessor     from "./validCheckProcessor";
 import AuthEngine              from "../auth/authEngine";
 import BackError               from "../../api/BackError";
 import BackErrorBag            from "../../api/BackErrorBag";
 import ControllerPrepare       from "../controller/controllerPrepare";
-import ProtocolAccessChecker from "../protocolAccess/protocolAccessChecker";
+import ProtocolAccessChecker   from "../protocolAccess/protocolAccessChecker";
+import ZationConfig            from "../../main/zationConfig";
+import {MainBackErrors}        from "../zationBackErrors/mainBackErrors";
+import ZationReqTools          from "../tools/zationReqTools";
+import TokenEngine             from "../token/tokenEngine";
+import Result                  from "../../api/Result";
+import ControllerTools         from "../controller/controllerTools";
 
 export default class MainRequestProcessor
 {
@@ -66,13 +64,13 @@ export default class MainRequestProcessor
             //Check for a auth req
             if(ZationReqTools.isZationAuthReq(reqData)) {
                 if(!this.authController) {
-                    throw new BackError(MainErrors.authControllerNotSet);
+                    throw new BackError(MainBackErrors.authControllerNotSet);
                 }
                 reqData = ZationReqTools.dissolveZationAuthReq(this.zc,reqData);
             }
             // check auth start active ?
             else if(this.worker.getIsAuthStartActive()) {
-                throw new BackError(MainErrors.authStartActive);
+                throw new BackError(MainBackErrors.authStartActive);
             }
 
             //is checked by isValidReqStructure!
@@ -187,7 +185,7 @@ export default class MainRequestProcessor
                         return await this.processController(controllerInstance,controllerConfig,bag);
                     }
                     else {
-                        throw new BackError(MainErrors.noAccessToController,
+                        throw new BackError(MainBackErrors.noAccessToController,
                             {
                                 authUserGroup: authEngine.getAuthUserGroup(),
                                 authIn: authEngine.isAuth()
@@ -195,7 +193,7 @@ export default class MainRequestProcessor
                     }
                 }
                 else {
-                    throw new BackError(MainErrors.noAccessWithHttpMethod,
+                    throw new BackError(MainBackErrors.noAccessWithHttpMethod,
                         {
                             controller: controllerName,
                             method: shBridge.getRequest().method
@@ -203,7 +201,7 @@ export default class MainRequestProcessor
                 }
             }
             else {
-                throw new BackError(MainErrors.noAccessWithProtocol,
+                throw new BackError(MainBackErrors.noAccessWithProtocol,
                     {
                         controllerName: controllerName,
                         protocol: ProtocolAccessChecker.getProtocol(shBridge)
@@ -211,7 +209,7 @@ export default class MainRequestProcessor
             }
         }
         else {
-            throw new BackError(MainErrors.wrongInputDataStructure, {type : shBridge.isWebSocket() ? 'ws' : 'http',input : reqData});
+            throw new BackError(MainBackErrors.wrongInputDataStructure, {type : shBridge.isWebSocket() ? 'ws' : 'http',input : reqData});
         }
     }
 

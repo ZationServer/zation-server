@@ -4,8 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationConfig      = require("../../main/zationConfig");
-import ObjectTools       = require('../tools/objectTools');
 import {
     ChannelConfig,
     ChannelDefault,
@@ -17,11 +15,12 @@ import {
     ArrayModelConfig,
     ControllerConfig, InputConfig, Model, MultiInput, ObjectModelConfig, ValueModelConfig,
 } from "../configs/appConfig";
-import Iterator = require("../tools/iterator");
 import ModelImportEngine from "./modelImportEngine";
+import ZationConfig      from "../../main/zationConfig";
+import ObjectTools       from "../tools/objectTools";
+import Iterator          from "../tools/iterator";
 
-
-class ConfigPeCompiler
+export default class ConfigPreCompiler
 {
     private readonly zc : ZationConfig;
 
@@ -472,5 +471,3 @@ class ConfigPeCompiler
     }
 
 }
-
-export = ConfigPeCompiler;

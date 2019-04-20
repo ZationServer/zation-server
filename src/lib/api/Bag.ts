@@ -4,28 +4,28 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ChannelEngine = require('./../helper/channel/channelEngine');
-import SmallBag = require('./SmallBag');
-import TokenEngine = require("../helper/token/tokenEngine");
 import ZationWorker = require("../main/zationWorker");
-import ObjectPath = require("../helper/tools/objectPath");
-import useragent = require('useragent');
-import MethodIsNotCompatibleError = require("../helper/error/methodIsNotCompatibleError");
-import InputIsNotCompatibleError = require("../helper/error/inputIsNotCompatibleError");
-import ObjectPathSequence = require("../helper/tools/objectPathSequence");
-import AuthenticationError = require("../helper/error/authenticationError");
-import {Socket} from "../helper/sc/socket";
-import {ScServer} from "../helper/sc/scServer";
-import * as core from "express-serve-static-core";
+import useragent    = require('useragent');
+import Socket         from "../helper/sc/socket";
+import ScServer       from "../helper/sc/scServer";
+import * as core      from "express-serve-static-core";
 import {IncomingHttpHeaders, IncomingMessage} from "http";
-import {Agent} from "useragent";
+import {Agent}        from "useragent";
 import {UploadedFile} from "express-fileupload";
-import {ObjectPathCombineSequence} from "../helper/tools/objectPathCombineSequence";
-import {SHBridge} from "../helper/bridges/shBridge";
-import AuthEngine from "../helper/auth/authEngine";
+import ObjectPathCombineSequence from "../helper/tools/objectPathCombineSequence";
+import SHBridge       from "../helper/bridges/shBridge";
+import AuthEngine     from "../helper/auth/authEngine";
 import ProtocolAccessChecker from "../helper/protocolAccess/protocolAccessChecker";
+import ObjectPath            from "../helper/tools/objectPath";
+import ObjectPathSequence    from "../helper/tools/objectPathSequence";
+import SmallBag              from "./SmallBag";
+import ChannelEngine         from "../helper/channel/channelEngine";
+import TokenEngine           from "../helper/token/tokenEngine";
+import InputIsNotCompatibleError  from "../helper/error/inputIsNotCompatibleError";
+import MethodIsNotCompatibleError from "../helper/error/methodIsNotCompatibleError";
+import AuthenticationError        from "../helper/error/authenticationError";
 
-export class Bag extends SmallBag
+export default class Bag extends SmallBag
 {
     private bagVariables : object;
     private readonly shBridge : SHBridge;

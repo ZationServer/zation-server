@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-class Target
+export default class Target
 {
     private readonly splitSign : string;
     private readonly mainTarget : string;
@@ -94,5 +94,3 @@ class Target
         }
     }
 }
-
-export = Target;

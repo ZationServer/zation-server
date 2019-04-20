@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-class Iterator
+export default class Iterator
 {
     static async breakIterate(func : (key : string,value : any,src : object | any []) => Promise<boolean | void>,...objects : (object | any[])[])
     {
@@ -48,5 +48,3 @@ class Iterator
         }
     }
 }
-
-export = Iterator;

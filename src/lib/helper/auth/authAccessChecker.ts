@@ -7,9 +7,9 @@ GitHub: LucaCode
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../configs/appConfig";
 import AuthEngine         from "./authEngine";
-import Logger           = require("../logger/logger");
 import {ZationAccess}     from "../constants/internal";
 import ZationTokenInfo    from "../infoObjects/zationTokenInfo";
+import Logger             from "../logger/logger";
 
 export type AuthAccessCheckFunction = (authEngine : AuthEngine) => Promise<boolean>;
 

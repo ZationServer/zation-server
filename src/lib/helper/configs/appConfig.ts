@@ -4,14 +4,13 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-// noinspection TypeScriptPreferShortImport
-import {Bag}             from '../../api/Bag';
-import SmallBag        = require("../../api/SmallBag");
+import Bag               from '../../api/Bag';
 import {ControllerClass} from "../../api/Controller";
 // noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../constants/validationTypes";
-import {ZationToken} from "../constants/internal";
-import BackErrorBag from "../../api/BackErrorBag";
+import {ZationToken}     from "../constants/internal";
+import BackErrorBag      from "../../api/BackErrorBag";
+import SmallBag          from "../../api/SmallBag";
 
 export interface AppConfig
 {
@@ -388,5 +387,3 @@ export interface ArrayModelShortSyntax extends Array<Model | ArraySettings | und
     0 : Model
     1 ?: ArraySettings
 }
-
-

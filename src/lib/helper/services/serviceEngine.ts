@@ -4,15 +4,15 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ServiceBox           = require('./serviceBox');
-import ServiceNotFoundError = require("./serviceNotFoundError");
 
-import ZationConfig         = require("../../main/zationConfig");
 import {Service}              from "../configs/serviceConfig";
 import ZationWorker         = require("../../main/zationWorker");
-import Logger               = require("../logger/logger");
+import ServiceBox             from "./serviceBox";
+import ZationConfig           from "../../main/zationConfig";
+import ServiceNotFoundError   from "./serviceNotFoundError";
+import Logger                 from "../logger/logger";
 
-class ServiceEngine
+export default class ServiceEngine
 {
     private readonly sc : object;
 
@@ -91,5 +91,3 @@ class ServiceEngine
     }
 
 }
-
-export = ServiceEngine;

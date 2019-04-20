@@ -4,7 +4,6 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ObjectTools = require('../tools/objectTools');
 import {EventConfig} from "../configs/eventConfig";
 import BagExtension, {
     AnyOfModelConfig,
@@ -20,13 +19,14 @@ import {
     OPTION_HALF_AUTO,
     PanelUserConfig
 } from "../configs/mainConfig";
-import {StarterConfig} from "../configs/starterConfig";
+import {StarterConfig}   from "../configs/starterConfig";
 // noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../constants/validationTypes";
-import {FormatLetters} from "../constants/validation";
-import {ServiceConfig} from "../configs/serviceConfig";
+import {FormatLetters}   from "../constants/validation";
+import {ServiceConfig}   from "../configs/serviceConfig";
 import {ChannelConfig, ChannelSettings, CustomChannelConfig, ZationChannelConfig} from "../configs/channelConfig";
-import {ServiceModule} from "zation-service";
+import {ServiceModule}   from "zation-service";
+import ObjectTools       from "../tools/objectTools";
 
 const App = {};
 App[nameof<AppConfig>(s => s.authController)]     = {types : ['string'],isOptional : true};
@@ -341,7 +341,7 @@ EventConfig[nameof<EventConfig>(s => s.sc_middlewarePublishIn)]    = {types : ['
 EventConfig[nameof<EventConfig>(s => s.sc_middlewarePublishOut)]   = {types : ['function'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.sc_middlewareEmit)]         = {types : ['function'],isOptional : true};
 
-const Structures = {
+export const Structures = {
     App : App,
     BackgroundTask : BackgroundTask,
     ObjectModel : ObjectModel,
@@ -362,4 +362,3 @@ const Structures = {
     BagExtension : BagExtension,
     serviceModule : ServiceModule
 };
-export = Structures;

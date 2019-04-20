@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import TokenTools   = require("../token/tokenTools");
-import ObjectPath   = require("../tools/objectPath");
 import {ZationToken}  from "../constants/internal";
-import {Socket} from "../sc/socket";
+import Socket         from "../sc/socket";
+import TokenTools     from "../token/tokenTools";
+import ObjectPath     from "../tools/objectPath";
 
 export default class SocketInfo
 {

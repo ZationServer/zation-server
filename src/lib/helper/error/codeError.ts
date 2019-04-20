@@ -10,12 +10,10 @@ Example try to set custom auth token, but sc is not authenticated
  */
 
 import BackErrorConstruct from "../constants/backErrorConstruct";
-import BackError          from "../../api/BackError";
+import BackError          from "./../../api/BackError";
 
-class CodeError extends BackError {
+export default class CodeError extends BackError {
     constructor(errorConstruct : BackErrorConstruct = {}, info ?: object | string) {
         super(errorConstruct,info);
     }
 }
-
-export = CodeError;

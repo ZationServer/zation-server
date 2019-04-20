@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const TimeTools       = require("../../../../dist/lib/helper/tools/timeTools");
+const TimeTools       = require("../../../../dist/lib/helper/tools/timeTools").default;
 const moment          = require("moment");
 const assert          = require("chai").assert;
 
@@ -29,7 +29,7 @@ describe('HELPER.TOOLS.TIME-TOOLS',() => {
         {
             it('processTaskTriggerTime test-'+index,() => {
                 // @ts-ignore
-                assert.equal(TimeTools.processTaskTriggerTime(option,time,false),ms);
+                assert.equal(TimeTools.processTaskTriggerTime(option,time).tillMs,ms);
             });
         });
 

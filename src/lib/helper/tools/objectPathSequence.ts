@@ -4,11 +4,11 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ObjectPath = require("./objectPath");
+import ObjectPath from "./objectPath";
 
 type CommitFunction = (object : object) => Promise<void>;
 
-class ObjectPathSequence
+export default class ObjectPathSequence
 {
     private object : object;
     private readonly commitFunction : CommitFunction;
@@ -39,5 +39,3 @@ class ObjectPathSequence
         await this.commitFunction(this.object);
     }
 }
-
-export = ObjectPathSequence;

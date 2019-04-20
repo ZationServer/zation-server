@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import CChInfo = require("./cChInfo");
+import CChInfo from "./cChInfo";
 
-class CIdChInfo extends  CChInfo
+export default class CIdChInfo extends  CChInfo
 {
     private readonly _channelId : string | undefined;
 
@@ -22,5 +22,3 @@ class CIdChInfo extends  CChInfo
     }
 
 }
-
-export =  CIdChInfo;

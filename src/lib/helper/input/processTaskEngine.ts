@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 export type ProcessTask = () => Promise<void>;
 
-export class ProcessTaskEngine
+export default class ProcessTaskEngine
 {
     static async processTasks(processTaskList : ProcessTask[])
     {

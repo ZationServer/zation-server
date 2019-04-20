@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const Result          = require("../../../dist/lib/api/Result");
+const Result          = require("../../../dist/lib/api/Result").default;
 const assert          = require("chai").assert;
 
 describe('API.Result',() => {

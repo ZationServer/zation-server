@@ -4,21 +4,21 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationConfig    = require("./zationConfig");
-import Logger          = require('../helper/logger/logger');
-import IdCounter       = require('../helper/tools/idCounter');
-import ZationWorker    = require("./zationWorker");
-import CodeError       = require("../helper/error/codeError");
-import {Returner}            from "../helper/response/returner";
-import MainRequestProcessor         from "../helper/processor/mainRequestProcessor";
+import ZationWorker        = require("./zationWorker");
+import Returner              from "../helper/response/returner";
+import MainRequestProcessor  from "../helper/processor/mainRequestProcessor";
 import SocketProcessor       from "../helper/processor/socketProcessor";
 import HttpProcessor         from "../helper/processor/httpProcessor";
 import ValidCheckProcessor   from "../helper/processor/validCheckProcessor";
-import {Socket}              from "../helper/sc/socket";
+import Socket                from "../helper/sc/socket";
 import BackError             from "../api/BackError";
 import BackErrorBag          from "../api/BackErrorBag";
+import ZationConfig          from "./zationConfig";
+import IdCounter             from "../helper/tools/idCounter";
+import Logger                from "../helper/logger/logger";
+import CodeError             from "../helper/error/codeError";
 
-export class ZationReqHandler
+export default class ZationReqHandler
 {
     private readonly zc : ZationConfig;
     private readonly worker : ZationWorker;

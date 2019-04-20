@@ -4,19 +4,19 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import MainErrors       = require('../zationTaskErrors/mainTaskErrors');
-import {ChAccessEngine}   from '../channel/chAccessEngine';
-import ZationWorker     = require("../../main/zationWorker");
-import ZationConfig     = require("../../main/zationConfig");
-import {Socket}           from "../sc/socket";
-import {ZationToken}      from "../constants/internal";
-import AuthenticationError = require("../error/authenticationError");
-import {BaseSHBridge}     from "../bridges/baseSHBridge";
-import AEPreparedPart     from "../auth/aePreparedPart";
-import BackError          from "../../api/BackError";
-const  Jwt : any        = require('jsonwebtoken');
+import ChAccessEngine      from '../channel/chAccessEngine';
+import ZationWorker      = require("../../main/zationWorker");
+import Socket              from "../sc/socket";
+import {ZationToken}       from "../constants/internal";
+import BaseSHBridge        from "../bridges/baseSHBridge";
+import AEPreparedPart      from "../auth/aePreparedPart";
+import BackError           from "../../api/BackError";
+import AuthenticationError from "../error/authenticationError";
+import {MainBackErrors}    from "../zationBackErrors/mainBackErrors";
+import ZationConfig        from "../../main/zationConfig";
+const  Jwt : any         = require('jsonwebtoken');
 
-class TokenTools
+export default class TokenTools
 {
     /**
      * Change token variables.
@@ -205,13 +205,13 @@ class TokenTools
             Jwt.verify(token,zc.getVerifyKey(),zc.getJwtOptions(),(err,decoded) => {
                 if(err) {
                     if(err.name === 'TokenExpiredError') {
-                        reject(new BackError(MainErrors.tokenExpiredError,{expiredAt : err.expiredAt}));
+                        reject(new BackError(MainBackErrors.tokenExpiredError,{expiredAt : err.expiredAt}));
                     }
                     else if(err.name === 'JsonWebTokenError') {
-                        reject(new BackError(MainErrors.jsonWebTokenError,err));
+                        reject(new BackError(MainBackErrors.jsonWebTokenError,err));
                     }
                     else {
-                        reject(new BackError(MainErrors.unknownTokenVerifyError,{err : err.toString()}));
+                        reject(new BackError(MainBackErrors.unknownTokenVerifyError,{err : err.toString()}));
                     }
                 }
                 else {
@@ -233,7 +233,7 @@ class TokenTools
 
             Jwt.sign(data,zc.getSignKey(),options,(err,signedToken) => {
                 if(err) {
-                    reject(new BackError(MainErrors.unknownTokenSignError,{err : err.toString()}));
+                    reject(new BackError(MainBackErrors.unknownTokenSignError,{err : err.toString()}));
                 }
                 else {
                     resolve(signedToken);
@@ -253,12 +253,12 @@ class TokenTools
             const authUserGroup = token.zationAuthUserGroup;
             if(authUserGroup !== undefined) {
                 if(token.zationOnlyPanelToken){
-                    throw new BackError(MainErrors.tokenWithAuthGroupAndOnlyPanel);
+                    throw new BackError(MainBackErrors.tokenWithAuthGroupAndOnlyPanel);
                 }
                 if (!ae.isAuthGroup(authUserGroup)) {
                     //saved authGroup is in Server not define
                     //noinspection JSUnresolvedFunction
-                    throw new BackError(MainErrors.inTokenSavedAuthGroupIsNotFound,
+                    throw new BackError(MainBackErrors.inTokenSavedAuthGroupIsNotFound,
                         {
                             savedAuthGroup: authUserGroup,
                             authGroupsInZationConfig: ae.getAuthGroups()
@@ -268,12 +268,10 @@ class TokenTools
             else {
                 if(!(typeof token.zationOnlyPanelToken === 'boolean' && token.zationOnlyPanelToken)) {
                     //token without auth group and it is not a only panel token.
-                    throw new BackError(MainErrors.tokenWithoutAuthGroup);
+                    throw new BackError(MainBackErrors.tokenWithoutAuthGroup);
                 }
             }
         }
     }
 
 }
-
-export = TokenTools;

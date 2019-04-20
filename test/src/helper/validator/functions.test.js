@@ -9,7 +9,7 @@ const Base64TestData     = require("../../../testData/base64");
 const ZationConfigStub   = require("../../../stubs/zationConfig");
 const {ValidationTypes}  = require("../../../../dist");
 const {FormatLetters}    = require("../../../../dist/lib/helper/constants/validation");
-const ConfigPreCompiler  = require("../../../../dist/lib/helper/config/configPreCompiler");
+const ConfigPreCompiler  = require("../../../../dist/lib/helper/config/configPreCompiler").default;
 const {ValidatorLibrary} = require("../../../../dist/lib/helper/validator/validatorLibrary");
 const assert             = require("chai").assert;
 

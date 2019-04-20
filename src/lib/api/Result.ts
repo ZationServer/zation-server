@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {ResponseResult} from "../helper/constants/internal";
 
-class Result
+export default class Result
 {
 
     private result : any = undefined;
@@ -144,8 +144,4 @@ class Result
     {
         return `Result: ${this.result} StatusCode: ${this.statusCode}`;
     }
-
-
 }
-
-export = Result;
