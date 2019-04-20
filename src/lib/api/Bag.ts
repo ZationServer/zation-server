@@ -14,7 +14,6 @@ import MethodIsNotCompatibleError = require("../helper/error/methodIsNotCompatib
 import InputIsNotCompatibleError = require("../helper/error/inputIsNotCompatibleError");
 import ObjectPathSequence = require("../helper/tools/objectPathSequence");
 import AuthenticationError = require("../helper/error/authenticationError");
-import ProtocolAccessChecker = require("../helper/protocolAccess/protocolAccessChecker");
 import {Socket} from "../helper/sc/socket";
 import {ScServer} from "../helper/sc/scServer";
 import * as core from "express-serve-static-core";
@@ -24,6 +23,7 @@ import {UploadedFile} from "express-fileupload";
 import {ObjectPathCombineSequence} from "../helper/tools/objectPathCombineSequence";
 import {SHBridge} from "../helper/bridges/shBridge";
 import AuthEngine from "../helper/auth/authEngine";
+import ProtocolAccessChecker from "../helper/protocolAccess/protocolAccessChecker";
 
 export class Bag extends SmallBag
 {

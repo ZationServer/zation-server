@@ -31,7 +31,6 @@ import ConfigPreCompiler = require('../helper/config/configPreCompiler');
 import Logger = require('../helper/logger/logger');
 import ServiceEngine = require('../helper/services/serviceEngine');
 import SmallBag = require('../api/SmallBag');
-import ControllerPrepare = require('../helper/controller/controllerPrepare');
 
 import BackgroundTasksSaver = require("../helper/background/backgroundTasksWorkerSaver");
 import Mapper = require("../helper/tools/mapper");
@@ -54,6 +53,7 @@ import AuthEngine from "../helper/auth/authEngine";
 import TokenEngine = require("../helper/token/tokenEngine");
 import ChannelEngine = require("../helper/channel/channelEngine");
 import SocketInfo from "../helper/infoObjects/socketInfo";
+import ControllerPrepare from "../helper/controller/controllerPrepare";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 

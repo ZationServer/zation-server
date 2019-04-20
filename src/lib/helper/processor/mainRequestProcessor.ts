@@ -89,7 +89,8 @@ export default class MainRequestProcessor
                 controllerConfig,
                 controllerInstance,
                 systemAccessCheck,
-                versionAccessCheck
+                versionAccessCheck,
+                authAccessCheck
             } = this.controllerPrepare.getControllerPrepareData(controllerName,isSystemController);
 
             //Throws if access denied
@@ -123,7 +124,7 @@ export default class MainRequestProcessor
                 )
                 {
                     //check access to controller
-                    if(!this.useAuth || authEngine.hasAccessToController(controllerConfig)) {
+                    if(!this.useAuth || authAccessCheck(authEngine)) {
 
                         let input : object;
                         //check input

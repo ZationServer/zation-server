@@ -16,12 +16,14 @@ import {ControllerConfig} from "../configs/appConfig";
 import BackError          from "../../api/BackError";
 import {BaseSHBridge} from "../bridges/baseSHBridge";
 import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../version/systemVersionChecker";
+import AuthAccessChecker, {AuthAccessCheckFunction} from "../auth/authAccessChecker";
 
 interface ControllerPrepareData {
     controllerConfig : ControllerConfig,
     controllerInstance : Controller,
     versionAccessCheck : VersionSystemAccessCheckFunction,
-    systemAccessCheck : VersionSystemAccessCheckFunction
+    systemAccessCheck : VersionSystemAccessCheckFunction,
+    authAccessCheck : AuthAccessCheckFunction
 }
 
 export default class ControllerPrepare
@@ -114,18 +116,16 @@ export default class ControllerPrepare
         const isSystemC = ControllerTools.isSystemController(config);
         const cInstance : Controller = new controllerClass(name,this.worker.getPreparedSmallBag());
 
-        this.addControllerConfigAccessKey(config);
-
         await cInstance.initialize(this.worker.getPreparedSmallBag());
 
         this.bindPrepareHandleFunctions(cInstance,config.prepareHandle);
-
 
         const controllerPrepareData : ControllerPrepareData = {
             controllerConfig : config,
             controllerInstance: cInstance,
             versionAccessCheck : SystemVersionChecker.createVersionChecker(config),
-            systemAccessCheck : SystemVersionChecker.createSystemChecker(config)
+            systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
+            authAccessCheck : AuthAccessChecker.createControllerAccessChecker(config)
         };
 
         if(!isSystemC) {
@@ -145,24 +145,6 @@ export default class ControllerPrepare
         else if(typeof preparedHandleValue === 'function'){
             preparedHandleValue.bind(cInstance);
         }
-    }
-
-    // noinspection JSMethodCanBeStatic
-    addControllerConfigAccessKey(config : ControllerConfig) : void
-    {
-        let notAccess = config.notAccess;
-        let access    = config.access;
-        let keyWord : string | undefined = undefined;
-
-        //double keyword is checked in the starter checkConfig
-        //search One
-        if(notAccess !== undefined && access === undefined) {
-            keyWord = nameof<ControllerConfig>(s => s.notAccess);
-        }
-        else if(notAccess === undefined && access !== undefined) {
-            keyWord = nameof<ControllerConfig>(s => s.access);
-        }
-        config['speedAccessKey'] = keyWord;
     }
 }
 

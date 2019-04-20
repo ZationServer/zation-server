@@ -11,10 +11,10 @@ import ZationReqTools        = require('../tools/zationReqTools');
 import {ZationRequest, ZationValidationCheck} from "../constants/internal";
 import ZationWorker          = require("../../main/zationWorker");
 import ZationConfig          = require("../../main/zationConfig");
-import ControllerPrepare     = require("../controller/controllerPrepare");
 import {InputDataProcessor}     from "../input/inputDataProcessor";
 import BackError                from "../../api/BackError";
 import BackErrorBag             from "../../api/BackErrorBag";
+import ControllerPrepare        from "../controller/controllerPrepare";
 
 export default class ValidCheckProcessor
 {

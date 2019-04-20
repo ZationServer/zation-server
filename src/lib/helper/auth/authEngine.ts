@@ -208,63 +208,12 @@ export default class AuthEngine
         return this.aePreparedPart.isAuthGroup(authGroup);
     }
 
-    hasAccessToController(controller : object) : boolean
-    {
-        let hasAccess = false;
-        const keyWord = controller['speedAccessKey'];
-        if(typeof keyWord === 'string') {
-            hasAccess = this.hasAccessToThis(keyWord,controller[keyWord]);
-        }
-        else {
-            Logger.printDebugWarning('No controller access config found! Access will denied!');
-            return false;
-        }
-        return hasAccess;
+    getSHBridge() : BaseSHBridge {
+        return this.shBridge;
     }
 
-    private hasAccessToThis(key : string, value) : boolean
-    {
-        let access = false;
-        if(typeof value === 'string') {
-            if(value === ZationAccess.ALL) {
-                access = AuthEngine.accessKeyWordChanger(key,true);
-            }
-            else if(value === ZationAccess.ALL_AUTH) {
-                access = AuthEngine.accessKeyWordChanger(key,this.isAuth());
-            }
-            else if(value === ZationAccess.ALL_NOT_AUTH) {
-                access = AuthEngine.accessKeyWordChanger(key,this.isDefault());
-            }
-            else if(this.checkIsIn(value)) {
-                access = AuthEngine.accessKeyWordChanger(key,this.getUserGroup() === value);
-            }
-        }
-        else if(Array.isArray(value)) {
-            //authGroups
-            let found = false;
-            for(let i = 0; i < value.length;i++) {
-                if(((typeof value[i] === 'string' || value[i] instanceof String)&&value[i] === this.getUserGroup())
-                    || (Number.isInteger(value[i]) && value[i] === this.getUserId())) {
-                    found = true;
-                    break;
-                }
-            }
-            access = AuthEngine.accessKeyWordChanger(key,found);
-        }
-        else if(typeof value === 'function') {
-            const token = this.shBridge.getToken();
-            const smallBag = this.aePreparedPart.getWorker().getPreparedSmallBag();
-            access = AuthEngine.accessKeyWordChanger(key,value(smallBag,token !== null ? new ZationTokenInfo(token) : null));
-        }
-        else if(Number.isInteger(value)) {
-            access = AuthEngine.accessKeyWordChanger(key, this.getUserId() === value);
-        }
-        return access;
+    getWorker() : ZationWorker {
+        return this.worker;
     }
-
-    private static accessKeyWordChanger(key : string,access : boolean) : boolean {
-        return key === nameof<ControllerConfig>(s => s.notAccess) ? !access : access;
-    }
-
 }
 
