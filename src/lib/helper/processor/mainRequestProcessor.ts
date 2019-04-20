@@ -122,7 +122,7 @@ export default class MainRequestProcessor
                 )
                 {
                     //check access to controller
-                    if(!this.useAuth || authAccessCheck(authEngine)) {
+                    if(!this.useAuth || (await authAccessCheck(authEngine))) {
 
                         let input : object;
                         //check input
