@@ -53,7 +53,9 @@ export class Controller {
      * @return
      * The Return value of the function is send to the client with an success response.
      * @throws
-     * You can also throw TaskErrors, which are sent to the client with a not success response.
+     * You can throw BackError or BackErrorBag, which are sent to the client with a not success response.
+     * Notice that only the BackError or BackErrorBag sends back to the client.
+     * All other errors or objects will be converted to an unknown BackError.
      */
     async handle(bag: Bag, input: any): Promise<any> {
     }
@@ -75,6 +77,11 @@ export class Controller {
      * Gets invokes when the controller gets an request with wrong input.
      * @param bag
      * @param input
+     * @throws
+     * You can throw BackError or BackErrorBag
+     * than the errors will be merged with the previous errors and send back to the client.
+     * Notice that only the BackError or BackErrorBag sends back to the client.
+     * All other errors or objects will be converted to an unknown BackError.
      */
     async wrongInput(bag: Bag, input: any): Promise<void> {
     }
