@@ -11,8 +11,6 @@ import crypto            = require('crypto');
 import ZationInfoObj     = require("../helper/infoObjects/zationInfo");
 import Structures        = require('./../helper/config/structures');
 import FuncTools         = require("../helper/tools/funcTools");
-import BackErrorConstruct  from "../helper/constants/backErrorConstruct";
-import ErrorNotFound     = require("../helper/error/errorNotFoundError");
 import SmallBag          = require("../api/SmallBag");
 const  uuidV4            = require('uuid/v4');
 import moment            = require('moment-timezone');

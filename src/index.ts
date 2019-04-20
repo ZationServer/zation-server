@@ -14,7 +14,6 @@ import ServiceNotFoundError  = require('./lib/helper/services/serviceNotFoundErr
 import Config                = require('./lib/api/Config');
 import {ValidationTypes}       from './lib/helper/constants/validationTypes';
 import AuthenticationError   = require("./lib/helper/error/authenticationError");
-import ErrorNotFoundError    = require("./lib/helper/error/errorNotFoundError");
 import CodeError             = require("./lib/helper/error/codeError");
 import MethodIsNotCompatible = require("./lib/helper/error/methodIsNotCompatibleError");
 import InputIsNotCompatible  = require("./lib/helper/error/inputIsNotCompatibleError");
@@ -61,7 +60,6 @@ export {
         ServiceNotFoundError,
         ValidationTypes,
         AuthenticationError,
-        ErrorNotFoundError,
         CodeError,
         MethodIsNotCompatible,
         InputIsNotCompatible,
