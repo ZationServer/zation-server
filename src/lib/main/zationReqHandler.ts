@@ -106,9 +106,9 @@ export class ZationReqHandler
                 (this.zc.eventConfig.beforeBackErrorBag,this.worker.getPreparedSmallBag(),err));
             }
             else {
-                Logger.printDebugWarning('EXCEPTION ON SERVER ->',err);
+                Logger.printDebugWarning('UNKNOWN ERROR ON SERVER ->',err);
                 if(this.zc.mainConfig.logServerErrors){
-                    Logger.logFileError(`Exception on server -> ${err.stack}`);
+                    Logger.logFileError(`Unknown error on server -> ${err.stack}`);
                 }
             }
         }
