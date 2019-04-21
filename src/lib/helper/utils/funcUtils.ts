@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-export default class FuncTools
+export default class FuncUtils
 {
     static async emitEvent(func : Function | Function[] | undefined,...params : any[]) : Promise<void>
     {
@@ -14,7 +14,7 @@ export default class FuncTools
         else if(Array.isArray(func)) {
             let promises : Promise<void>[] = [];
             for(let i = 0; i < func.length; i++) {
-                promises.push(FuncTools.emitEvent(func[i],...params));
+                promises.push(FuncUtils.emitEvent(func[i],...params));
             }
             await Promise.all(promises);
         }

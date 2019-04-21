@@ -21,10 +21,10 @@ import {ConfigScriptSave} from "../helper/constants/internal";
 // noinspection TypeScriptPreferShortImport
 import {StartMode}         from "./../helper/constants/startMode";
 import ZationTokenInfo     from "../helper/infoObjects/zationTokenInfo";
-import ObjectTools         from "../helper/tools/objectTools";
+import ObjectUtils         from "../helper/utils/objectUtils";
 import ZationInfo          from "../helper/infoObjects/zationInfo";
 import SmallBag            from "../api/SmallBag";
-import FuncTools           from "../helper/tools/funcTools";
+import FuncUtils           from "../helper/utils/funcUtils";
 import {Structures}        from "../helper/config/structures";
 
 export default class ZationConfig {
@@ -57,7 +57,7 @@ export default class ZationConfig {
 
     constructor(starterData: object = {}, workerTransport: boolean = false) {
         if (!workerTransport) {
-            ObjectTools.addObToOb(this._starterConfig,starterData,true);
+            ObjectUtils.addObToOb(this._starterConfig,starterData,true);
             this._workerProcess = false;
             this.rootPath = ZationConfig._getRootPath(starterData);
         } else {
@@ -237,9 +237,9 @@ export default class ZationConfig {
 
     addToMainConfig(toAdd: object, overwrite: boolean, onlyAddKeys: object | undefined): void {
         if (onlyAddKeys === undefined) {
-            ObjectTools.addObToOb(this._mainConfig, toAdd, overwrite);
+            ObjectUtils.addObToOb(this._mainConfig, toAdd, overwrite);
         } else {
-            ObjectTools.onlyAddObToOb(this._mainConfig, toAdd, overwrite, onlyAddKeys);
+            ObjectUtils.onlyAddObToOb(this._mainConfig, toAdd, overwrite, onlyAddKeys);
         }
     }
 
@@ -429,7 +429,7 @@ export default class ZationConfig {
 
     // noinspection JSMethodCanBeStatic
     async checkMiddlewareEvent(event : Function | undefined,next : Function,...params : any[]) : Promise<boolean> {
-        return await FuncTools.checkMiddlewareFunc(event,next,...params);
+        return await FuncUtils.checkMiddlewareFunc(event,next,...params);
     }
 
     async checkScMiddlewareEvent(event : Function | undefined,next : Function,smallBag : SmallBag,req : object) : Promise<boolean> {
@@ -442,7 +442,7 @@ export default class ZationConfig {
 
     // noinspection JSMethodCanBeStatic
     async emitEvent(event : Function | Function[] | undefined,...params : any[]) : Promise<void> {
-        await FuncTools.emitEvent(event,...params);
+        await FuncUtils.emitEvent(event,...params);
     }
 
     private loadUserDataLocations() : void {
@@ -468,7 +468,7 @@ export default class ZationConfig {
                 'main.config',
                 this._starterConfig.mainConfig
             ),this._starterConfig.mainConfig);
-            ObjectTools.addObToOb(this._mainConfig,mainConfig,true);
+            ObjectUtils.addObToOb(this._mainConfig,mainConfig,true);
             this._loadedConfigs.push(nameof<StarterConfig>(s => s.mainConfig));
         }
         catch (e) {}

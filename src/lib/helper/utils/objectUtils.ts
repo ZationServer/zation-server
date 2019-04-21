@@ -4,14 +4,14 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-export default class ObjectTools
+export default class ObjectUtils
 {
     static mergeObjects(objects : object[]) : object
     {
         if(objects.length > 1) {
             let mainObj = objects[0];
             for(let i = 1; i < objects.length; i++) {
-                mainObj = ObjectTools.mergeObjToObj(mainObj,objects[i]);
+                mainObj = ObjectUtils.mergeObjToObj(mainObj,objects[i]);
             }
             return mainObj;
         }
@@ -33,7 +33,7 @@ export default class ObjectTools
                         mainObj[k] = toMergeObj[k];
                     }
                     else if(typeof mainObj[k] === 'object'){
-                        mainObj[k] = ObjectTools.mergeObjToObj(mainObj[k],toMergeObj[k],override);
+                        mainObj[k] = ObjectUtils.mergeObjToObj(mainObj[k],toMergeObj[k],override);
                     }
                 }
             }

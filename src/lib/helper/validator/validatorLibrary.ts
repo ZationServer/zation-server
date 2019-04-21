@@ -19,8 +19,8 @@ import {ValueModelConfig} from "../configs/appConfig";
 import BackError          from "../../api/BackError";
 import EasyValidator      from "./easyValidator";
 import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";
-import Base64Tools           from "../tools/base64Tools";
-import ByteTools             from "../tools/byteTools";
+import Base64Utils           from "../utils/base64Utils";
+import ByteUtils             from "../utils/byteUtils";
 
 const functionLibrary = {};
 const typeLibrary = {};
@@ -509,7 +509,7 @@ functionLibrary[nameof<ValueModelConfig>(s => s.after)] = async (input, settings
 
 functionLibrary[nameof<ValueModelConfig>(s => s.minByteSize)] = async (input, settings, taskErrorBag, prepareErrorData, preparedSmallBag,type) =>
 {
-    if(typeof input === "string" && ByteTools.getByteSize(input,type) < settings)
+    if(typeof input === "string" && ByteUtils.getByteSize(input,type) < settings)
     {
         taskErrorBag.addNewBackError(ValidatorBackErrors.inputNotMatchWithMinByteSize,
             {
@@ -522,7 +522,7 @@ functionLibrary[nameof<ValueModelConfig>(s => s.minByteSize)] = async (input, se
 
 functionLibrary[nameof<ValueModelConfig>(s => s.maxByteSize)] = async (input, settings, taskErrorBag, prepareErrorData, preparedSmallBag,type) =>
 {
-    if(typeof input === "string" && ByteTools.getByteSize(input,type) > settings)
+    if(typeof input === "string" && ByteUtils.getByteSize(input,type) > settings)
     {
         taskErrorBag.addNewBackError(ValidatorBackErrors.inputNotMatchWithMaxByteSize,
             {
@@ -541,7 +541,7 @@ functionLibrary[nameof<ValueModelConfig>(s => s.mimeType)] = async (input, setti
             settings = [settings];
         }
 
-        const mime = Base64Tools.getMimeType(input);
+        const mime = Base64Utils.getMimeType(input);
         const fails : string[] = [];
 
         for(let i = 0; i < settings.length; i++)
@@ -572,7 +572,7 @@ functionLibrary[nameof<ValueModelConfig>(s => s.mimeSubType)] = async (input, se
             settings = [settings];
         }
 
-        const sub = Base64Tools.getMimeSubType(input);
+        const sub = Base64Utils.getMimeSubType(input);
         const fails : string[] = [];
 
         for(let i = 0; i < settings.length; i++)

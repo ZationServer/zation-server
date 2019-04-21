@@ -7,7 +7,7 @@ GitHub: LucaCode
 import {ZationToken}  from "../constants/internal";
 import Socket         from "../sc/socket";
 import TokenTools     from "../token/tokenTools";
-import ObjectPath     from "../tools/objectPath";
+import ObjectPath     from "../utils/objectPath";
 
 export default class SocketInfo
 {

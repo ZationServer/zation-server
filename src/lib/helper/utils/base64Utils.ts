@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-export default class Base64Tools
+export default class Base64Utils
 {
     static getByteSize(base64 : string) : number
     {
@@ -35,7 +35,7 @@ export default class Base64Tools
     public static getContentInfo(base64 : string) : null | {mimeSubType : string, mimeType : string}
     {
         let res : null | {mimeSubType : string, mimeType : string} = null;
-        const contentType = Base64Tools.getContentType(base64);
+        const contentType = Base64Utils.getContentType(base64);
         if(contentType) {
             let tmpSplit = contentType.split('/');
             res = {
@@ -49,7 +49,7 @@ export default class Base64Tools
     public static getMimeType(base64 : string) : null | string
     {
         let res : null | string = null;
-        const contentType = Base64Tools.getContentType(base64);
+        const contentType = Base64Utils.getContentType(base64);
         if(contentType) {
             res = contentType.split('/')[0];
         }
@@ -59,7 +59,7 @@ export default class Base64Tools
     public static getMimeSubType(base64 : string) : null | string
     {
         let res : null | string = null;
-        const contentType = Base64Tools.getContentType(base64);
+        const contentType = Base64Utils.getContentType(base64);
         if(contentType) {
             res = contentType.split('/')[1];
         }

@@ -11,7 +11,7 @@ import {ValidationTypes}   from "./../constants/validationTypes";
 import BackErrorBag        from "../../api/BackErrorBag";
 import BackError           from "../../api/BackError";
 import {ValidatorLibrary}  from "./validatorLibrary";
-import FuncTools             from "../tools/funcTools";
+import FuncUtils             from "../utils/funcUtils";
 import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";
 import Logger                from "../logger/logger";
 import SmallBag              from "../../api/SmallBag";
@@ -31,7 +31,7 @@ export default class ValidatorEngine
                 const cValue = config[cKey];
                 if(cKey === nameof<ValueModelConfig>(s => s.validate)) {
                     //own validate
-                    promises.push(FuncTools.emitEvent(cValue,input,errorBag,preparedErrorData.inputPath,preparedSmallBag,type));
+                    promises.push(FuncUtils.emitEvent(cValue,input,errorBag,preparedErrorData.inputPath,preparedSmallBag,type));
                 }
                 else if(ValidatorFunctions.hasOwnProperty(cKey)) {
                     promises.push(ValidatorFunctions[cKey](input,cValue,errorBag,preparedErrorData,preparedSmallBag,type));

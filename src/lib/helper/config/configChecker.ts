@@ -33,10 +33,10 @@ import ConfigError          from "./configError";
 import Target               from "./target";
 import Logger               from "../logger/logger";
 import SmallBag             from "../../api/SmallBag";
-import ObjectPath           from "../tools/objectPath";
+import ObjectPath           from "../utils/objectPath";
 import Controller, {ControllerClass} from "../../api/Controller";
-import Iterator             from "../tools/iterator";
-import ObjectTools          from "../tools/objectTools";
+import Iterator             from "../utils/iterator";
+import ObjectUtils          from "../utils/objectUtils";
 
 export default class ConfigChecker
 {
@@ -1000,28 +1000,28 @@ export default class ConfigChecker
                 }
             }
 
-            if(ObjectTools.hasOneOf(value, OnlyStringFunctions) && (!types.includes(TypeTypes.STRING) && !types.includes(TypeTypes.BASE64))) {
+            if(ObjectUtils.hasOneOf(value, OnlyStringFunctions) && (!types.includes(TypeTypes.STRING) && !types.includes(TypeTypes.BASE64))) {
                 Logger.printConfigWarning(
                     ConfigNames.APP,
-                    `${target.getTarget()} unused validation functions (no type string or base64) -> ${ObjectTools.getFoundKeys(value,OnlyStringFunctions).toString()}.`
+                    `${target.getTarget()} unused validation functions (no type string or base64) -> ${ObjectUtils.getFoundKeys(value,OnlyStringFunctions).toString()}.`
                 );
             }
-            if(ObjectTools.hasOneOf(value, OnlyNumberFunctions) && !types.includes(TypeTypes.NUMBER)) {
+            if(ObjectUtils.hasOneOf(value, OnlyNumberFunctions) && !types.includes(TypeTypes.NUMBER)) {
                 Logger.printConfigWarning(
                     ConfigNames.APP,
-                    `${target.getTarget()} unused validation functions (no type number) -> ${ObjectTools.getFoundKeys(value,OnlyNumberFunctions).toString()}.`
+                    `${target.getTarget()} unused validation functions (no type number) -> ${ObjectUtils.getFoundKeys(value,OnlyNumberFunctions).toString()}.`
                 );
             }
-            if(ObjectTools.hasOneOf(value, OnlyDateFunctions) && !types.includes(TypeTypes.DATE)) {
+            if(ObjectUtils.hasOneOf(value, OnlyDateFunctions) && !types.includes(TypeTypes.DATE)) {
                 Logger.printConfigWarning(
                     ConfigNames.APP,
-                    `${target.getTarget()} unused validation functions (no type date) -> ${ObjectTools.getFoundKeys(value,OnlyDateFunctions).toString()}.`
+                    `${target.getTarget()} unused validation functions (no type date) -> ${ObjectUtils.getFoundKeys(value,OnlyDateFunctions).toString()}.`
                 );
             }
-            if(ObjectTools.hasOneOf(value, OnlyBase64Functions) && !types.includes(TypeTypes.BASE64)) {
+            if(ObjectUtils.hasOneOf(value, OnlyBase64Functions) && !types.includes(TypeTypes.BASE64)) {
                 Logger.printConfigWarning(
                     ConfigNames.APP,
-                    `${target.getTarget()} unused validation functions (no type base64) -> ${ObjectTools.getFoundKeys(value,OnlyBase64Functions).toString()}.`
+                    `${target.getTarget()} unused validation functions (no type base64) -> ${ObjectUtils.getFoundKeys(value,OnlyBase64Functions).toString()}.`
                 );
             }
         }
@@ -1072,7 +1072,7 @@ export default class ConfigChecker
                     }
                     else if(!otherSrc.includes(ex)) {
                         otherSrc.push(ex);
-                        ObjectTools.addObToOb(mainConfig,value);
+                        ObjectUtils.addObToOb(mainConfig,value);
 
                         //add also the extension from an extension
                         return this.checkProcessValueInheritance

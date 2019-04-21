@@ -33,16 +33,16 @@ import BackErrorBag                                         from "./BackErrorBag
 import ChExchangeEngine                                     from "../helper/channel/chExchangeEngine";
 import ServiceEngine                                        from "../helper/services/serviceEngine";
 import ZationConfig                                         from "../main/zationConfig";
-import ObjectPath                                           from "../helper/tools/objectPath";
+import ObjectPath                                           from "../helper/utils/objectPath";
 import Result                                               from "./Result";
 import Logger                                               from "../helper/logger/logger";
 import ChTools                                              from "../helper/channel/chTools";
-import IdTools                                              from "../helper/tools/idTools";
+import IdUtils                                              from "../helper/utils/idUtils";
 import TokenTools                                           from "../helper/token/tokenTools";
 import AuthenticationError                                  from "../helper/error/authenticationError";
-import ObjectPathSequence                                   from "../helper/tools/objectPathSequence";
-import ObjectPathActionSequence                             from "../helper/tools/objectPathActionSequence";
-import Base64Tools                                          from "../helper/tools/base64Tools";
+import ObjectPathSequence                                   from "../helper/utils/objectPathSequence";
+import ObjectPathActionSequence                             from "../helper/utils/objectPathActionSequence";
+import Base64Utils                                          from "../helper/utils/base64Utils";
 
 
 export default class SmallBag
@@ -1872,7 +1872,7 @@ export default class SmallBag
      */
     socketSidToSocketId(socketSid : string) : string
     {
-        return IdTools.socketSidToSocketId(socketSid);
+        return IdUtils.socketSidToSocketId(socketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -1885,7 +1885,7 @@ export default class SmallBag
      */
     socketSidToSeverId(socketSid : string) : string
     {
-        return IdTools.socketSidToServerInstanceId(socketSid);
+        return IdUtils.socketSidToServerInstanceId(socketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -1898,7 +1898,7 @@ export default class SmallBag
      */
     socketSidToWorkerId(socketSid : string) : string
     {
-        return IdTools.socketSidToWorkerId(socketSid);
+        return IdUtils.socketSidToWorkerId(socketSid);
     }
 
     //Part ServerSocketVariable
@@ -2328,7 +2328,7 @@ export default class SmallBag
      * The encoded base64 string.
      */
     base64ByteSize(encodedBase64 : string) : number {
-        return Base64Tools.getByteSize(encodedBase64);
+        return Base64Utils.getByteSize(encodedBase64);
     }
 
     // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
@@ -2344,7 +2344,7 @@ export default class SmallBag
      * Otherwise, it is an object with the properties: mimeSubType (png,jpg...), mimeType (image,video...).
      */
     base64ContentInfo(encodedBase64 : string) : null | {mimeSubType : string, mimeType : string} {
-        return Base64Tools.getContentInfo(encodedBase64);
+        return Base64Utils.getContentInfo(encodedBase64);
     }
 
     // ByteTools

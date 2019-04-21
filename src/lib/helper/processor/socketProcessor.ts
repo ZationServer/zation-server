@@ -9,7 +9,7 @@ import SHBridgeSocket        from "../bridges/shBridgeSocket";
 import Socket                from "../sc/socket";
 import ZationConfig          from "../../main/zationConfig";
 import Logger                from "../logger/logger";
-import ZationReqTools        from "../tools/zationReqTools";
+import ZationReqUtils        from "../utils/zationReqUtils";
 
 export default class SocketProcessor
 {
@@ -34,7 +34,7 @@ export default class SocketProcessor
         }
 
         //check for validationCheckRequest
-        return new SHBridgeSocket(socket,reqId,input,ZationReqTools.isValidationCheckReq(input));
+        return new SHBridgeSocket(socket,reqId,input,ZationReqUtils.isValidationCheckReq(input));
     }
 
 }

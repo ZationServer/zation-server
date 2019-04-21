@@ -21,7 +21,7 @@ import SocketInfo         from "../infoObjects/socketInfo";
 import Logger             from "../logger/logger";
 import ChTools            from "./chTools";
 import PubDataInfo        from "../infoObjects/pubDataInfo";
-import FuncTools          from "../tools/funcTools";
+import FuncUtils          from "../utils/funcUtils";
 import ZationConfig       from "../../main/zationConfig";
 import CChInfo            from "../infoObjects/cChInfo";
 import CIdChInfo          from "../infoObjects/cIdChInfo";
@@ -131,7 +131,7 @@ export default class ChExchangeEngine {
             const func = this.worker.getChConfigManager().getOnBagPubUserCh();
             if(!!func) {
                 (async () => {
-                    await FuncTools.emitEvent
+                    await FuncUtils.emitEvent
                     (func, this.worker.getPreparedSmallBag(), id, new PubDataInfo(eventName,data,srcSocketSid),socketInfo);
                 })();
             }
@@ -157,7 +157,7 @@ export default class ChExchangeEngine {
         const func = this.worker.getChConfigManager().getOnBagPubDefaultUserUserCh();
         if(!!func) {
             (async () => {
-                await FuncTools.emitEvent
+                await FuncUtils.emitEvent
                 (func, this.worker.getPreparedSmallBag(), new PubDataInfo(eventName,data,srcSocketSid),socketInfo);
             })();
         }
@@ -169,7 +169,7 @@ export default class ChExchangeEngine {
         const func = this.worker.getChConfigManager().getOnBagPubAllCh();
         if(!!func) {
             (async () => {
-                await FuncTools.emitEvent
+                await FuncUtils.emitEvent
                 (func, this.worker.getPreparedSmallBag(), new PubDataInfo(eventName,data,srcSocketSid),socketInfo);
             })();
         }
@@ -183,7 +183,7 @@ export default class ChExchangeEngine {
             const func = this.worker.getChConfigManager().getOnBagPubAuthUserUserCh();
             if(!!func) {
                 (async () => {
-                    await FuncTools.emitEvent
+                    await FuncUtils.emitEvent
                     (func, this.worker.getPreparedSmallBag(), group, new PubDataInfo(eventName,data,srcSocketSid),socketInfo);
                 })();
             }
@@ -227,7 +227,7 @@ export default class ChExchangeEngine {
         const func = this.worker.getChConfigManager().getOnBagPubCustomIdCh(channel);
         if(!!func) {
             (async () => {
-                await FuncTools.emitEvent
+                await FuncUtils.emitEvent
                 (func, this.worker.getPreparedSmallBag(), new CIdChInfo(channel, id), new PubDataInfo(eventName,data,srcSocketSid),socketInfo);
             })();
         }
@@ -242,7 +242,7 @@ export default class ChExchangeEngine {
             const func = this.worker.getChConfigManager().getOnBagPubCustomCh(chName);
             if(!!func) {
                 (async () => {
-                    await FuncTools.emitEvent
+                    await FuncUtils.emitEvent
                     (func, this.worker.getPreparedSmallBag(), new CChInfo(chName), new PubDataInfo(eventName,data,srcSocketSid),socketInfo);
                 })();
             }

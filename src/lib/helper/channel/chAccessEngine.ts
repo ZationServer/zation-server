@@ -20,7 +20,7 @@ import CIdChInfo            from "../infoObjects/cIdChInfo";
 import CChInfo              from "../infoObjects/cChInfo";
 import ChTools              from "./chTools";
 import Logger               from "../logger/logger";
-import FuncTools            from "../tools/funcTools";
+import FuncUtils            from "../utils/funcUtils";
 import PubDataInfo          from "../infoObjects/pubDataInfo";
 
 export default class ChAccessEngine
@@ -236,7 +236,7 @@ export default class ChAccessEngine
                 const func = this.chConfigManager.getOnClientPubCustomIdCh(name);
                 if(!!func) {
                     (async () => {
-                        await FuncTools.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket),PubDataInfo.getFromBuild(pubData));
+                        await FuncUtils.emitEvent(func,this.smallBag,new CIdChInfo(name,id),new SocketInfo(socket),PubDataInfo.getFromBuild(pubData));
                     })();
                 }
 
@@ -335,7 +335,7 @@ export default class ChAccessEngine
                 const func = this.chConfigManager.getOnClientPubCustomCh(name);
                 if(!!func) {
                     (async () => {
-                        await FuncTools.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket),PubDataInfo.getFromBuild(pubData));
+                        await FuncUtils.emitEvent(func,this.smallBag,new CChInfo(name),new SocketInfo(socket),PubDataInfo.getFromBuild(pubData));
                     })();
                 }
 

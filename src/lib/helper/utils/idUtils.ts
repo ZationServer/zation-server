@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-export default class IdTools
+export default class IdUtils
 {
     static sidSeparator = '-|-';
 
@@ -13,12 +13,12 @@ export default class IdTools
     }
 
     static splitSid(socketSid : string) : string[] {
-        return socketSid.split(IdTools.sidSeparator);
+        return socketSid.split(IdUtils.sidSeparator);
     }
 
     static buildSid(instanceId : string, workerId : string,socketId : string) : string
     {
-        return instanceId+IdTools.sidSeparator+workerId+IdTools.sidSeparator+socketId;
+        return instanceId+IdUtils.sidSeparator+workerId+IdUtils.sidSeparator+socketId;
     }
 
     static socketSidToServerInstanceId(socketSid : string) {

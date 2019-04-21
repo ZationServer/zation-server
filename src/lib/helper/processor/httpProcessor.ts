@@ -12,10 +12,10 @@ import AEPreparedPart               from "../auth/aePreparedPart";
 import BackError                    from "../../api/BackError";
 import ZationConfig                 from "../../main/zationConfig";
 import Logger                       from "../logger/logger";
-import ZationReqTools               from "../tools/zationReqTools";
+import ZationReqUtils               from "../utils/zationReqUtils";
 import {MainBackErrors}             from "../zationBackErrors/mainBackErrors";
 import TokenTools                   from "../token/tokenTools";
-import JsonConverter                from "../tools/jsonConverter";
+import JsonConverter                from "../utils/jsonConverter";
 
 export default class HttpProcessor
 {
@@ -59,15 +59,15 @@ export default class HttpProcessor
                 Logger.logFileInfo(`Http Get Request id: ${reqId} -> `,query,true);
             }
 
-            if(ZationReqTools.isValidGetReq(query)) {
+            if(ZationReqUtils.isValidGetReq(query)) {
                 HttpProcessor.setHeader(res);
-                const zationData = await ZationReqTools.convertGetRequest(query);
+                const zationData = await ZationReqUtils.convertGetRequest(query);
                 return await this.mainProcess(req,res,zationData,reqId);
             }
-            else if(ZationReqTools.isValidValidationGetReq(query))
+            else if(ZationReqUtils.isValidValidationGetReq(query))
             {
                 HttpProcessor.setHeader(res);
-                const zationData = await ZationReqTools.convertValidationGetRequest(query);
+                const zationData = await ZationReqUtils.convertValidationGetRequest(query);
                 return await this.mainProcess(req,res,zationData,reqId);
             }
             else {
@@ -88,7 +88,7 @@ export default class HttpProcessor
     private async mainProcess(req,res,zationData : ZationRequest,reqId : string)
     {
         //check for validationCheckRequest
-        if(ZationReqTools.isValidationCheckReq(zationData)) {
+        if(ZationReqUtils.isValidationCheckReq(zationData)) {
             return new SHBridgeHttp(res,req,reqId,zationData,true);
         }
         else

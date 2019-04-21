@@ -8,7 +8,7 @@ import {HttpGetRequest, ZationRequest, ZationTask, ZationValidationCheck} from "
 import JsonConverter from "./jsonConverter";
 import ZationConfig  from "../../main/zationConfig";
 
-export default class ZationReqTools
+export default class ZationReqUtils
 {
     static isValidReqStructure(zationReq : ZationRequest,isWsReq : boolean) : boolean
     {

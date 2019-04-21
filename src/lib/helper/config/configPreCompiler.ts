@@ -17,8 +17,8 @@ import {
 } from "../configs/appConfig";
 import ModelImportEngine from "./modelImportEngine";
 import ZationConfig      from "../../main/zationConfig";
-import ObjectTools       from "../tools/objectTools";
-import Iterator          from "../tools/iterator";
+import ObjectUtils       from "../utils/objectUtils";
+import Iterator          from "../utils/iterator";
 
 export default class ConfigPreCompiler
 {
@@ -287,7 +287,7 @@ export default class ConfigPreCompiler
     private preCompileValueExtend(mainValue : ValueModelConfig,exValueConfig : ValueModelConfig) {
         if(typeof exValueConfig.extends === 'string'){
             const nextExValueConfig = this.modelImportEngine.extendsResolve(exValueConfig.extends);
-            ObjectTools.addObToOb(mainValue,nextExValueConfig);
+            ObjectUtils.addObToOb(mainValue,nextExValueConfig);
             return this.preCompileValueExtend(mainValue,nextExValueConfig);
         }
     }
@@ -346,7 +346,7 @@ export default class ConfigPreCompiler
 
                     //extend Props
                     const superProps = superObj[nameof<ObjectModelConfig>(s => s.properties)];
-                    ObjectTools.addObToOb(value[nameof<ObjectModelConfig>(s => s.properties)],superProps,false);
+                    ObjectUtils.addObToOb(value[nameof<ObjectModelConfig>(s => s.properties)],superProps,false);
 
                     //check for prototype
                     const superPrototype = superObj[nameof<ObjectModelConfig>(s => s.prototype)];

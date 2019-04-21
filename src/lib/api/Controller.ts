@@ -8,7 +8,7 @@ import Bag                from './Bag';
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../helper/configs/appConfig";
 import SmallBag           from "./SmallBag";
-import ObjectPath         from "../helper/tools/objectPath";
+import ObjectPath         from "../helper/utils/objectPath";
 
 export default class Controller {
     private _storage: object = {};

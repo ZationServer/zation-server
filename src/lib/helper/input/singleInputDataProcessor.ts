@@ -13,7 +13,7 @@ import SmallBag            from "../../api/SmallBag";
 import {MainBackErrors}    from "../zationBackErrors/mainBackErrors";
 import ConvertEngine       from "../convert/convertEngine";
 import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";
-import Iterator            from "../tools/iterator";
+import Iterator            from "../utils/iterator";
 import ValidatorEngine     from "../validator/validatorEngine";
 
 export interface ProcessInfo {

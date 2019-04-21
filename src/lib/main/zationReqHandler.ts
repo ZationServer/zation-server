@@ -14,7 +14,7 @@ import Socket                from "../helper/sc/socket";
 import BackError             from "../api/BackError";
 import BackErrorBag          from "../api/BackErrorBag";
 import ZationConfig          from "./zationConfig";
-import IdCounter             from "../helper/tools/idCounter";
+import IdCounter             from "../helper/utils/idCounter";
 import Logger                from "../helper/logger/logger";
 import CodeError             from "../helper/error/codeError";
 

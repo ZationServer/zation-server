@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import ZationConfig from "../../main/zationConfig";
 import ZationMaster from "../../main/zationMaster";
-import Encoder      from "../tools/encoder";
+import Encoder      from "../utils/encoder";
 import Logger       from "../logger/logger";
 
 const  ScClient : any        = require('socketcluster-client');

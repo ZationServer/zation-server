@@ -26,7 +26,7 @@ import {FormatLetters}   from "../constants/validation";
 import {ServiceConfig}   from "../configs/serviceConfig";
 import {ChannelConfig, ChannelSettings, CustomChannelConfig, ZationChannelConfig} from "../configs/channelConfig";
 import {ServiceModule}   from "zation-service";
-import ObjectTools       from "../tools/objectTools";
+import ObjectUtils       from "../utils/objectUtils";
 
 const App = {};
 App[nameof<AppConfig>(s => s.authController)]     = {types : ['string'],isOptional : true};
@@ -187,7 +187,7 @@ Main[nameof<MainConfig>(s => s.workerStatusInterval)]       = {types : ['number'
 Main[nameof<MainConfig>(s => s.pubSubBatchDuration)]        = {types : ['number','null'],isOptional : true};
 
 const StarterConfig = {};
-ObjectTools.addObToOb(StarterConfig,Main);
+ObjectUtils.addObToOb(StarterConfig,Main);
 StarterConfig[nameof<StarterConfig>(s => s.rootPath)]      = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.configs)]       = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.appConfig)]     = {types : ['string'],isOptional : true};
@@ -198,8 +198,8 @@ StarterConfig[nameof<StarterConfig>(s => s.channelConfig)] = {types : ['string']
 StarterConfig[nameof<StarterConfig>(s => s.mainConfig)]    = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.checkConfigs)]  = {types : ['boolean'],isOptional : true};
 
-const allValidationTypes = ObjectTools.getObjValues(ValidationTypes);
-const allFormatLetters = ObjectTools.getObjValues(FormatLetters);
+const allValidationTypes = ObjectUtils.getObjValues(ValidationTypes);
+const allFormatLetters = ObjectUtils.getObjValues(FormatLetters);
 
 const ValueModel = {};
 ValueModel[nameof<ValueModelConfig>(s => s.isOptional)]   = {types : ['boolean'],isOptional : true};

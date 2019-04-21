@@ -11,7 +11,7 @@ import BackError                from "../../api/BackError";
 import BackErrorBag             from "../../api/BackErrorBag";
 import ControllerPrepare        from "../controller/controllerPrepare";
 import ZationConfig             from "../../main/zationConfig";
-import ZationReqTools           from "../tools/zationReqTools";
+import ZationReqUtils           from "../utils/zationReqUtils";
 import {MainBackErrors}         from "../zationBackErrors/mainBackErrors";
 import InputUtils               from "../input/inputUtils";
 
@@ -36,14 +36,14 @@ export default class ValidCheckProcessor
 
     async process(reqData : ZationRequest)
     {
-        if(ZationReqTools.isValidValidationStructure(reqData))
+        if(ZationReqUtils.isValidValidationStructure(reqData))
         {
             //is checked in isValidValidationStructure
             // @ts-ignore
             const validReq : ZationValidationCheck = reqData.v;
 
-            const isSystemController = ZationReqTools.isSystemControllerReq(validReq);
-            const cName = ZationReqTools.getControllerName(validReq,isSystemController);
+            const isSystemController = ZationReqUtils.isSystemControllerReq(validReq);
+            const cName = ZationReqUtils.getControllerName(validReq,isSystemController);
 
             //Trows if not exists
             this.controllerPrepare.checkControllerExist(cName,isSystemController);

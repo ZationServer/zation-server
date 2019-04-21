@@ -109,7 +109,7 @@ import SocketInfo       from "../helper/infoObjects/socketInfo";
 import ZationTokenInfo  from "../helper/infoObjects/zationTokenInfo";
 import BackError        from "./BackError";
 import BackErrorBag     from "./BackErrorBag";
-import ObjectTools      from "../helper/tools/objectTools";
+import ObjectUtils      from "../helper/utils/objectUtils";
 import Controller, {ControllerClass} from "./Controller";
 import CChInfo          from "../helper/infoObjects/cChInfo";
 import Result           from "./Result";
@@ -131,7 +131,7 @@ export default class Config
      * @param configs
      */
     static merge(...configs : object[]) : object {
-        return ObjectTools.mergeObjects(configs);
+        return ObjectUtils.mergeObjects(configs);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -150,7 +150,7 @@ export default class Config
      * Default value is false.
      */
     static buildController(controller : ControllerClass,config : ControllerConfig,overrideControllerConfig : boolean = false) : ControllerClass {
-        ObjectTools.addObToOb(controller.config,config,overrideControllerConfig);
+        ObjectUtils.addObToOb(controller.config,config,overrideControllerConfig);
         return controller;
     }
 

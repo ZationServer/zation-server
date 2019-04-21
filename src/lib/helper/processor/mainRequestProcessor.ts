@@ -18,7 +18,7 @@ import ControllerPrepare       from "../controller/controllerPrepare";
 import ProtocolAccessChecker   from "../protocolAccess/protocolAccessChecker";
 import ZationConfig            from "../../main/zationConfig";
 import {MainBackErrors}        from "../zationBackErrors/mainBackErrors";
-import ZationReqTools          from "../tools/zationReqTools";
+import ZationReqUtils          from "../utils/zationReqUtils";
 import TokenEngine             from "../token/tokenEngine";
 import Result                  from "../../api/Result";
 import {PrepareHandleInvokeFunction} from "../controller/controllerUtils";
@@ -59,14 +59,14 @@ export default class MainRequestProcessor
 
         let reqData = shBridge.getZationData();
 
-        if(ZationReqTools.isValidReqStructure(reqData,shBridge.isWebSocket()))
+        if(ZationReqUtils.isValidReqStructure(reqData,shBridge.isWebSocket()))
         {
             //Check for a auth req
-            if(ZationReqTools.isZationAuthReq(reqData)) {
+            if(ZationReqUtils.isZationAuthReq(reqData)) {
                 if(!this.authController) {
                     throw new BackError(MainBackErrors.authControllerNotSet);
                 }
-                reqData = ZationReqTools.dissolveZationAuthReq(this.zc,reqData);
+                reqData = ZationReqUtils.dissolveZationAuthReq(this.zc,reqData);
             }
             // check auth start active ?
             else if(this.worker.getIsAuthStartActive()) {
@@ -77,8 +77,8 @@ export default class MainRequestProcessor
             // @ts-ignore
             const task : ZationTask = reqData.t;
 
-            const isSystemController = ZationReqTools.isSystemControllerReq(task);
-            const controllerName = ZationReqTools.getControllerName(task,isSystemController);
+            const isSystemController = ZationReqUtils.isSystemControllerReq(task);
+            const controllerName = ZationReqUtils.getControllerName(task,isSystemController);
 
             //Trows if not exists
             this.controllerPrepare.checkControllerExist(controllerName,isSystemController);

@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import {ZationToken}  from "../constants/internal";
-import ObjectPath     from "../tools/objectPath";
+import ObjectPath     from "../utils/objectPath";
 
 export default class ZationTokenInfo
 {
