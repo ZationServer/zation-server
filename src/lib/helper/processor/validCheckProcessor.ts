@@ -13,7 +13,7 @@ import ControllerPrepare        from "../controller/controllerPrepare";
 import ZationConfig             from "../../main/zationConfig";
 import ZationReqTools           from "../tools/zationReqTools";
 import {MainBackErrors}         from "../zationBackErrors/mainBackErrors";
-import ControllerTools          from "../controller/controllerTools";
+import InputUtils               from "../input/inputUtils";
 
 export default class ValidCheckProcessor
 {
@@ -102,7 +102,7 @@ export default class ValidCheckProcessor
                         let specificConfig = controllerInput;
 
                         if(keyPath.length > 0){
-                            specificConfig = ControllerTools.getInputConfigAtPath(keyPath,controllerInput);
+                            specificConfig = InputUtils.getModelAtPath(keyPath,controllerInput);
                             if(specificConfig === undefined){
                                 errorBag.addBackError(new BackError(MainBackErrors.inputPathInControllerNotFound,
                                     {

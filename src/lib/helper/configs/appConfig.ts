@@ -286,6 +286,7 @@ export interface ControllerConfig extends InputConfig
     /**
      * This property can be used to add functions in the prepare handle event of this controller.
      * This event gets invoked before the handle method of the controller.
+     * Every prepare handle method will also be bound to the controller instance.
      * It can be used to prepare stuff on the bag.
      * (The bag is unique for every request.)
      * It is also possible to throw an error to the client.
@@ -295,6 +296,10 @@ export interface ControllerConfig extends InputConfig
      * You can also throw TaskErrors, which are sent to the client with a not success response.
      */
     prepareHandle ?: PrepareHandleFunction[] | PrepareHandleFunction;
+    /**
+     * This property indicates if the controller is a system controller.
+     * It is used internally in the zation system.
+     */
     systemController  ?: boolean;
     wsAccess  ?: boolean;
     httpAccess  ?: boolean;

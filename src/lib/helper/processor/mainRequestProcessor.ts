@@ -21,7 +21,7 @@ import {MainBackErrors}        from "../zationBackErrors/mainBackErrors";
 import ZationReqTools          from "../tools/zationReqTools";
 import TokenEngine             from "../token/tokenEngine";
 import Result                  from "../../api/Result";
-import ControllerTools         from "../controller/controllerTools";
+import {PrepareHandleInvokeFunction} from "../controller/controllerUtils";
 
 export default class MainRequestProcessor
 {
@@ -88,7 +88,8 @@ export default class MainRequestProcessor
                 controllerInstance,
                 systemAccessCheck,
                 versionAccessCheck,
-                authAccessCheck
+                authAccessCheck,
+                prepareHandleInvoke
             } = this.controllerPrepare.getControllerPrepareData(controllerName,isSystemController);
 
             //Throws if access denied
@@ -182,7 +183,7 @@ export default class MainRequestProcessor
                             //socket prepared channel engine
                             shBridge.isWebSocket() ? shBridge.getSocket().channelEngine : undefined
                         );
-                        return await this.processController(controllerInstance,controllerConfig,bag);
+                        return await this.processController(controllerInstance,bag,prepareHandleInvoke);
                     }
                     else {
                         throw new BackError(MainBackErrors.noAccessToController,
@@ -214,11 +215,11 @@ export default class MainRequestProcessor
     }
 
     // noinspection JSMethodCanBeStatic
-    private async processController(controllerInstance : Controller,controllerConfig : object,bag : Bag) : Promise<ResponseResult>
+    private async processController(controllerInstance : Controller,bag : Bag,prepareHandleInvoke : PrepareHandleInvokeFunction) : Promise<ResponseResult>
     {
         //process the controller handle, before handle events and finally handle.
         try {
-            await ControllerTools.processPrepareHandleEvents(controllerConfig,bag);
+            await prepareHandleInvoke(controllerInstance,bag);
 
             let result : Result | any = await controllerInstance.handle(bag,bag.getInput());
 

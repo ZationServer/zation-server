@@ -13,7 +13,7 @@ import AuthAccessChecker, {AuthAccessCheckFunction} from "../auth/authAccessChec
 import Controller, {ControllerClass} from "../../api/Controller";
 import ZationConfig                  from "../../main/zationConfig";
 import {MainBackErrors}              from "../zationBackErrors/mainBackErrors";
-import ControllerTools               from "./controllerTools";
+import ControllerUtils, {PrepareHandleInvokeFunction} from "./controllerUtils";
 import {SystemController}            from "../systemController/systemControler.config";
 
 interface ControllerPrepareData {
@@ -21,7 +21,8 @@ interface ControllerPrepareData {
     controllerInstance : Controller,
     versionAccessCheck : VersionSystemAccessCheckFunction,
     systemAccessCheck : VersionSystemAccessCheckFunction,
-    authAccessCheck : AuthAccessCheckFunction
+    authAccessCheck : AuthAccessCheckFunction,
+    prepareHandleInvoke : PrepareHandleInvokeFunction
 }
 
 export default class ControllerPrepare
@@ -110,19 +111,18 @@ export default class ControllerPrepare
     {
         const config : ControllerConfig = controllerClass.config;
 
-        const isSystemC = ControllerTools.isSystemController(config);
+        const isSystemC = ControllerUtils.isSystemController(config);
         const cInstance : Controller = new controllerClass(name,this.worker.getPreparedSmallBag());
 
         await cInstance.initialize(this.worker.getPreparedSmallBag());
-
-        this.bindPrepareHandleFunctions(cInstance,config.prepareHandle);
 
         const controllerPrepareData : ControllerPrepareData = {
             controllerConfig : config,
             controllerInstance: cInstance,
             versionAccessCheck : SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
-            authAccessCheck : AuthAccessChecker.createControllerAccessChecker(config)
+            authAccessCheck : AuthAccessChecker.createControllerAccessChecker(config),
+            prepareHandleInvoke : ControllerUtils.createPrepareHandleInvoker(config)
         };
 
         if(!isSystemC) {
@@ -130,17 +130,6 @@ export default class ControllerPrepare
         }
         else {
             this.systemController[name] = controllerPrepareData;
-        }
-    }
-
-    bindPrepareHandleFunctions(cInstance : Controller,preparedHandleValue) {
-        if(Array.isArray(preparedHandleValue)) {
-            preparedHandleValue.forEach((f) => {
-                f.bind(cInstance);
-            });
-        }
-        else if(typeof preparedHandleValue === 'function'){
-            preparedHandleValue.bind(cInstance);
         }
     }
 }
