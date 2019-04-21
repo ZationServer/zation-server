@@ -186,10 +186,11 @@ export default class MainRequestProcessor
                         return await this.processController(controllerInstance,bag,prepareHandleInvoke);
                     }
                     else {
-                        throw new BackError(MainBackErrors.noAccessToController,
+                        throw new BackError(MainBackErrors.noAccessWithAuth,
                             {
                                 authUserGroup: authEngine.getAuthUserGroup(),
-                                authIn: authEngine.isAuth()
+                                authIn: authEngine.isAuth(),
+                                userId : authEngine.getUserId()
                             });
                     }
                 }
@@ -221,7 +222,7 @@ export default class MainRequestProcessor
         try {
             await prepareHandleInvoke(controllerInstance,bag);
 
-            let result : Result | any = await controllerInstance.handle(bag,bag.getInput());
+            const result : Result | any = await controllerInstance.handle(bag,bag.getInput());
 
             if (!(result instanceof Result)) {
                 return {r : result};

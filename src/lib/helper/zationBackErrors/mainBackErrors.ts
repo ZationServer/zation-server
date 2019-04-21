@@ -36,20 +36,20 @@ export const MainBackErrors = {
         fromZationSystem : true
     },
 
-    systemNotCompatible  : {
-        name          : 'systemNotCompatible',
-        description   : 'System is not compatible for this controller.',
-        type          : ErrorType.COMPATIBILITY_ERROR,
+    noAccessWithSystem  : {
+        name          : 'noAccessWithSystem',
+        description   : 'No access with the current system to the controller.',
+        type          : ErrorType.NO_ACCESS_ERROR,
         sendInfo      : false,
         //INFO
         // system
         fromZationSystem : true
     },
 
-    versionNotCompatible    : {
-        name          : 'versionNotCompatible',
-        description   : 'Version is not compatible for this controller.',
-        type          : ErrorType.COMPATIBILITY_ERROR,
+    noAccessWithVersion    : {
+        name          : 'noAccessWithVersion',
+        description   : 'No access with the current version to the controller.',
+        type          : ErrorType.NO_ACCESS_ERROR,
         sendInfo      : true,
         //INFO
         // version
@@ -244,14 +244,15 @@ export const MainBackErrors = {
         fromZationSystem : true
     },
 
-    noAccessToController  : {
-        name          : 'noAccessToController',
-        description   : 'You have no access to this controller!',
-        type          : ErrorType.AUTH_ERROR,
+    noAccessWithAuth  : {
+        name          : 'noAccessWithAuth',
+        description   : 'You have no access with the auth state, to this controller.',
+        type          : ErrorType.NO_ACCESS_ERROR,
         sendInfo      : true,
         //INFO
         // authIn (show if you auth in system)
         // authUserGroup (your auth type)
+        // userId (your user id)
         fromZationSystem : true
     },
 

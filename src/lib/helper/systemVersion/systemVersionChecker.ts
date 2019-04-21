@@ -27,7 +27,7 @@ export default class SystemVersionChecker
                     const version = shBridge.getVersion();
                     const sVersion = versionAccess[system];
                     if((Array.isArray(sVersion) && !sVersion.includes(version)) || (typeof sVersion === 'number' && sVersion > version)) {
-                        throw new BackError(MainBackErrors.versionNotCompatible,{version : version});
+                        throw new BackError(MainBackErrors.noAccessWithVersion,{version : version});
                     }
                 }
             }
@@ -46,7 +46,7 @@ export default class SystemVersionChecker
         if(Array.isArray(systemAccess)) {
             return (shBridge) =>  {
                 if(!systemAccess.includes(shBridge.getSystem())) {
-                    throw new BackError(MainBackErrors.systemNotCompatible,{system : shBridge.getSystem()});
+                    throw new BackError(MainBackErrors.noAccessWithSystem,{system : shBridge.getSystem()});
                 }
             }
         }

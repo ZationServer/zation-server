@@ -8,7 +8,7 @@ import ZationWorker     = require("../../main/zationWorker");
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../configs/appConfig";
 import BackError          from "../../api/BackError";
-import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../version/systemVersionChecker";
+import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
 import AuthAccessChecker, {AuthAccessCheckFunction} from "../auth/authAccessChecker";
 import Controller, {ControllerClass} from "../../api/Controller";
 import ZationConfig                  from "../../main/zationConfig";

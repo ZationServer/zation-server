@@ -133,7 +133,7 @@ export default class BackErrorBuilder
      * Set the BackError type to compatibility error.
      */
     typeCompatibilityError() : BackErrorBuilder {
-        this.errorSettings.type = ErrorType.COMPATIBILITY_ERROR;
+        this.errorSettings.type = ErrorType.NO_ACCESS_ERROR;
         return this;
     }
 

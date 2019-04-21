@@ -13,7 +13,7 @@ export enum ErrorType {
     PROTOCOL_ERROR           = 'PROTOCOL_ERROR',
     TOKEN_ERROR              = 'TOKEN_ERROR',
     DATABASE_ERROR           = 'DATABASE_ERROR',
-    COMPATIBILITY_ERROR      = 'COMPATIBILITY_ERROR',
+    NO_ACCESS_ERROR          = 'NO_ACCESS_ERROR',
     TIME_ERROR               = 'TIME_ERROR',
     CODE_ERROR               = 'CODE_ERROR',
     NORMAL_ERROR             = 'NORMAL_ERROR'
