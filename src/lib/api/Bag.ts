@@ -20,10 +20,13 @@ import ObjectPath            from "../helper/utils/objectPath";
 import ObjectPathSequence    from "../helper/utils/objectPathSequence";
 import SmallBag              from "./SmallBag";
 import ChannelEngine         from "../helper/channel/channelEngine";
-import TokenEngine           from "../helper/token/tokenEngine";
 import InputIsNotCompatibleError  from "../helper/error/inputIsNotCompatibleError";
 import MethodIsNotCompatibleError from "../helper/error/methodIsNotCompatibleError";
 import AuthenticationError        from "../helper/error/authenticationError";
+import TokenUtils            from "../helper/token/tokenUtils";
+import {ZationToken}         from "../helper/constants/internal";
+import JwtSignOptions        from "../helper/constants/jwt";
+import ObjectUtils           from "../helper/utils/objectUtils";
 
 export default class Bag extends SmallBag
 {
@@ -31,10 +34,9 @@ export default class Bag extends SmallBag
     private readonly shBridge : SHBridge;
     private readonly authEngine : AuthEngine;
     private readonly channelEngine : ChannelEngine;
-    private readonly tokenEngine : TokenEngine;
     private readonly input : any;
 
-    constructor(shBridge : SHBridge, worker : ZationWorker, authEngine : AuthEngine, tokenEngine : TokenEngine, input : object, channelEngine : ChannelEngine = new ChannelEngine(worker,shBridge))
+    constructor(shBridge : SHBridge, worker : ZationWorker, authEngine : AuthEngine, input : object, channelEngine : ChannelEngine = new ChannelEngine(worker,shBridge))
     {
         super(worker,channelEngine);
 
@@ -42,7 +44,6 @@ export default class Bag extends SmallBag
         this.shBridge = shBridge;
         this.authEngine = authEngine;
         this.channelEngine = channelEngine;
-        this.tokenEngine = tokenEngine;
         this.input = input;
     }
 
@@ -191,7 +192,7 @@ export default class Bag extends SmallBag
             ObjectPath.set(this.shBridge.getSocket().zationSocketVariables,path,value);
         }
         else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Set a socket variable.');
         }
     }
 
@@ -212,7 +213,7 @@ export default class Bag extends SmallBag
             return ObjectPath.has(this.shBridge.getSocket().zationSocketVariables,path);
         }
         else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Check has a socket variable.');
         }
     }
 
@@ -233,7 +234,7 @@ export default class Bag extends SmallBag
             return ObjectPath.get(this.shBridge.getSocket().zationSocketVariables,path);
         }
         else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get a socket variable.');
         }
     }
 
@@ -259,7 +260,7 @@ export default class Bag extends SmallBag
             }
         }
         else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Delete a socket variable.');
         }
     }
 
@@ -315,9 +316,12 @@ export default class Bag extends SmallBag
      * @param tokenVariables
      * If this parameter is used all previous variables will be deleted.
      * Notice that the token variables are separated from the main zation token variables.
+     * @param jwtOptions This optional options argument is an Object which can be used to modify the token's behavior.
+     * Valid properties include any option accepted by the jsonwebtoken library's sign method.
+     * For example, you can change the default expire of the token or add a time before the token gets valid.
      * @throws AuthenticationError
      */
-    async authenticate(authUserGroup : string,userId ?: string | number,tokenVariables ?: object) : Promise<void> {
+    async authenticate(authUserGroup : string,userId ?: string | number,tokenVariables : object = {},jwtOptions : JwtSignOptions = {}) : Promise<void> {
         await this.authEngine.authenticate(authUserGroup,userId,tokenVariables);
     }
 
@@ -424,7 +428,7 @@ export default class Bag extends SmallBag
     getCookieVariable<R>(key : string) : R
     {
         if(this.shBridge.isWebSocket()) {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'http');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'http','Get a cookie variable.');
         }
         else {
             return this.shBridge.getRequest().cookies[key];
@@ -444,7 +448,7 @@ export default class Bag extends SmallBag
     setCookieVariable(key : string,value : any,settings  : object= { maxAge: 900000}) : void
     {
         if(this.shBridge.isWebSocket()) {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'http');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'http','Set a cookie variable.');
         }
         else {
             this.shBridge.getResponse().cookie(key,value,settings);
@@ -462,7 +466,7 @@ export default class Bag extends SmallBag
     clearCookie(key : string) : void
     {
         if(this.shBridge.isWebSocket()) {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'http');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'http','Clear a cookie.');
         }
         else {
             this.shBridge.getResponse().clearCookie(key);
@@ -475,11 +479,12 @@ export default class Bag extends SmallBag
     /**
      * @description
      * Return the http response.
+     * Requires http request!
      * @throws MethodIsNotCompatibleError
      */
     getHttpResponse() : core.Response {
         if(this.shBridge.isWebSocket()) {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'http');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'http','Get http response.');
         }
         else {
             return this.shBridge.getResponse();
@@ -490,11 +495,12 @@ export default class Bag extends SmallBag
     /**
      * @description
      * Return the http request.
+     * Requires http request!
      * @throws MethodIsNotCompatibleError
      */
     getHttpRequest() : core.Request {
         if(this.shBridge.isWebSocket()) {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'http');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'http','Get http request.');
         }
         else {
             return this.shBridge.getRequest();
@@ -505,11 +511,12 @@ export default class Bag extends SmallBag
     /**
      * @description
      * Return the http method.
+     * Requires http request!
      * @throws MethodIsNotCompatibleError
      */
     getHttpMethod() : string {
         if(this.shBridge.isWebSocket()) {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'http');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'http','Get http method.');
         }
         else {
             return this.shBridge.getRequest().method;
@@ -523,11 +530,12 @@ export default class Bag extends SmallBag
      * By using the npm package express-fileupload.
      * You can attach files on the client side
      * by using the method attachHttpContent.
+     * Requires http request!
      * @throws MethodIsNotCompatibleError
      */
     getHttpFiles() : Record<string,UploadedFile> {
         if(this.shBridge.isWebSocket()) {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'http');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'http','Get http files.');
         }
         else {
             //using express-fileupload
@@ -541,12 +549,13 @@ export default class Bag extends SmallBag
      * @description
      * Returns the http request body.
      * You can use it to access attached http content.
+     * Requires http request!
      * @throws MethodIsNotCompatibleError
      */
     getHttpBody() : Record<string,any>
     {
         if(this.shBridge.isWebSocket()) {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'http');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'http','Get http body.');
         }
         else {
             return this.shBridge.getRequest().body;
@@ -575,6 +584,46 @@ export default class Bag extends SmallBag
        return this.shBridge.getHandshakeRequest().headers;
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Get a socket handshake variable with object path.
+     * Requires ws request!
+     * @example
+     * getSocketHandshakeVariable('deviceCode');
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @throws MethodIsNotCompatibleError
+     */
+    getSocketHandshakeVariable<R>(path ?: string | string[]) : R {
+        if(this.shBridge.isWebSocket()) {
+            return ObjectPath.get(this.shBridge.getSocket().handshakeVariables,path);
+        }
+        else {
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','To get socket handshake variable.');
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Has a socket handshake variable with object path.
+     * Requires ws request!
+     * @example
+     * hasSocketHandshakeVariable('deviceCode');
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @throws MethodIsNotCompatibleError
+     */
+    hasSocketHandshakeVariable(path ?: string | string[]) : boolean {
+        if(this.shBridge.isWebSocket()) {
+            return ObjectPath.has(this.shBridge.getSocket().handshakeVariables,path);
+        }
+        else {
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','To has socket handshake variable.');
+        }
+    }
+
     //Part Token Variable
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -591,17 +640,12 @@ export default class Bag extends SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     async setTokenVariable(path : string | string[],value : any) : Promise<void> {
-        if(this.shBridge.hasToken()) {
-            const ctv = this.tokenEngine.getCustomTokenVariable();
-            ObjectPath.set(ctv,path,value);
-            await this.tokenEngine.setCustomTokenVariable(ctv);
-        }
-        else {
-            throw new AuthenticationError(`Can't set token variable when socket is not authenticated!`);
-        }
+        const ctv = ObjectUtils.deepClone(TokenUtils.getCustomTokenVariables(this.shBridge.getToken()));
+        ObjectPath.set(ctv,path,value);
+        await TokenUtils.setCustomVar(ctv,this.shBridge);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -617,21 +661,16 @@ export default class Bag extends SmallBag
      * await deleteTokenVariable('person.email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     async deleteTokenVariable(path ?: string | string[]) : Promise<void> {
-        if(this.shBridge.hasToken()) {
-            if(!!path) {
-                const ctv = this.tokenEngine.getCustomTokenVariable();
-                ObjectPath.del(ctv,path);
-                await this.tokenEngine.setCustomTokenVariable(ctv);
-            }
-            else {
-                await this.tokenEngine.setCustomTokenVariable({});
-            }
+        if(!!path) {
+            const ctv = ObjectUtils.deepClone(TokenUtils.getCustomTokenVariables(this.shBridge.getToken()));
+            ObjectPath.del(ctv,path);
+            await TokenUtils.setCustomVar(ctv,this.shBridge);
         }
         else {
-            throw new AuthenticationError(`Can't set token variable when socket is not authenticated!`);
+            await TokenUtils.setCustomVar({},this.shBridge);
         }
     }
 
@@ -653,19 +692,15 @@ export default class Bag extends SmallBag
      *       .set('person.name','Luca')
      *       .set('person.email','example@gmail.com')
      *       .commit();
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     seqEditTokenVariables() : ObjectPathSequence
     {
-        if(this.shBridge.hasToken()) {
-            return new ObjectPathSequence(this.tokenEngine.getCustomTokenVariable(),
-                async (obj)=> {
-                    await  this.tokenEngine.setCustomTokenVariable(obj);
-                });
-        }
-        else {
-            throw new AuthenticationError(`Can't set token variable when socket is not authenticated!`);
-        }
+        return new ObjectPathSequence(ObjectUtils.deepClone(
+            TokenUtils.getCustomTokenVariables(this.shBridge.getToken())),
+            async (obj)=> {
+                await TokenUtils.setCustomVar(obj,this.shBridge);
+            });
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -684,7 +719,7 @@ export default class Bag extends SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     async setTokenVariableIdSync(path : string | string[],value : any) : Promise<void> {
         await this.setTokenVariable(path,value);
@@ -706,7 +741,7 @@ export default class Bag extends SmallBag
      * await deleteTokenVariableIdSync('person.email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     async deleteTokenVariableIdSync(path ?: string | string[]) : Promise<void> {
         await this.deleteTokenVariable(path);
@@ -733,7 +768,7 @@ export default class Bag extends SmallBag
      *       .set('person.name','Luca')
      *       .set('person.email','example@gmail.com')
      *       .commit();
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     seqEditTokenVariablesIdSync() : ObjectPathCombineSequence {
         return new ObjectPathCombineSequence(
@@ -759,7 +794,7 @@ export default class Bag extends SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     async setTokenVariableGroupSync(path : string | string[],value : any) : Promise<void> {
         await this.setTokenVariable(path,value);
@@ -781,7 +816,7 @@ export default class Bag extends SmallBag
      * await deleteTokenVariableGroupSync('person.email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     async deleteTokenVariableGroupSync(path ?: string | string[]) : Promise<void> {
         await this.deleteTokenVariable(path);
@@ -808,7 +843,7 @@ export default class Bag extends SmallBag
      *       .set('person.name','Luca')
      *       .set('person.email','example@gmail.com')
      *       .commit();
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     seqEditTokenVariablesGroupSync() : ObjectPathCombineSequence {
         return new ObjectPathCombineSequence(
@@ -830,15 +865,10 @@ export default class Bag extends SmallBag
      * hasTokenVariable('person.email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     hasTokenVariable(path ?: string | string[]) : boolean {
-        if(this.shBridge.hasToken()) {
-            return ObjectPath.has(this.tokenEngine.getCustomTokenVariable(),path);
-        }
-        else {
-            throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
-        }
+        return ObjectPath.has(TokenUtils.getCustomTokenVariables(this.shBridge.getToken()),path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -853,15 +883,10 @@ export default class Bag extends SmallBag
      * getTokenVariable('person.email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     getTokenVariable<R>(path ?: string | string[]) : R {
-        if(this.shBridge.hasToken()) {
-            return ObjectPath.get(this.tokenEngine.getCustomTokenVariable(),path);
-        }
-        else {
-            throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
-        }
+        return ObjectPath.get(TokenUtils.getCustomTokenVariables(this.shBridge.getToken()),path);
     }
 
     //Part Token
@@ -870,51 +895,30 @@ export default class Bag extends SmallBag
     /**
      * @description
      * Returns token id of the token form the socket.
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
-    getTokenId() : string
-    {
-        const token = this.shBridge.getToken();
-        if(token){
-            return token.zationTokenId;
-        }
-        else {
-            throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
-        }
+    getTokenId() : string {
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationTokenId),this.shBridge.getToken());
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
      * Returns the expire of the token from the socket.
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
-    getTokenExpire() : number
-    {
-        const token = this.shBridge.getToken();
-        if(token){
-            return token.exp;
-        }
-        else {
-            throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
-        }
+    getTokenExpire() : number {
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.exp),this.shBridge.getToken());
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
      * Returns the panel access of the token from the socket.
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
-    getPanelAccess() : boolean
-    {
-        const token = this.shBridge.getToken();
-        if(token){
-            return !!token.zationPanelAccess;
-        }
-        else {
-            throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
-        }
+    getPanelAccess() : boolean {
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationPanelAccess),this.shBridge.getToken());
     }
 
     //Part Socket
@@ -931,7 +935,7 @@ export default class Bag extends SmallBag
             return this.shBridge.getSocket().id;
         }
         else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get the socket id.');
         }
     }
 
@@ -949,7 +953,7 @@ export default class Bag extends SmallBag
             return this.shBridge.getSocket().sid;
         }
         else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get the socket sid.');
         }
     }
 
@@ -957,6 +961,7 @@ export default class Bag extends SmallBag
     /**
      * @description
      * Returns the socket.
+     * Requires ws request!
      * @throws MethodIsNotCompatibleError
      */
     getSocket() : Socket {
@@ -964,7 +969,7 @@ export default class Bag extends SmallBag
             return this.shBridge.getSocket();
         }
         else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get the socket.');
         }
     }
 
@@ -1046,14 +1051,28 @@ export default class Bag extends SmallBag
      * Emit to socket, the return value is an promises with the result.
      * If this method is used in an http request, an error is thrown.
      * If an error occurs while emitting to socket, this error is also thrown.
-     * @desc Require web socket request!
-     * @throws Error,MethodIsNotCompatibleError
+     * Requires ws request!
+     * @throws MethodIsNotCompatibleError
      * @param eventName
      * @param data
      */
     async emitToSocket(eventName : string,data : any) : Promise<object>
     {
-        return await this.channelEngine.emitToSocket(eventName,data);
+        return new Promise<object>((resolve, reject) => {
+            if(this.shBridge.isWebSocket()) {
+                this.shBridge.getSocket().emit(eventName,data,(err,data) => {
+                    if(err) {
+                        reject(err);
+                    }
+                    else {
+                        resolve(data);
+                    }
+                });
+            }
+            else {
+                reject(new MethodIsNotCompatibleError(this.getProtocol(),'ws','Emit to socket.'));
+            }
+        });
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1069,7 +1088,7 @@ export default class Bag extends SmallBag
             return this.channelEngine.getSubChannels();
         }
         else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get subscribed channels.');
         }
     }
 
@@ -1077,6 +1096,7 @@ export default class Bag extends SmallBag
     /**
      * @description
      * Kick the current socket from an custom id channel.
+     * Requires ws request!
      * @example
      * kickFromCustomIdCh('images','10');
      * kickFromCustomIdCh('messageStreams');
@@ -1090,7 +1110,7 @@ export default class Bag extends SmallBag
             this.channelEngine.kickCustomIdChannel(name,id);
         }
         else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Kick from a channel.');
         }
     }
 
@@ -1098,6 +1118,7 @@ export default class Bag extends SmallBag
     /**
      * @description
      * Kick the current socket from an custom channel.
+     * Requires ws request!
      * @example
      * kickFromCustomCh('stream');
      * @param name
@@ -1109,7 +1130,7 @@ export default class Bag extends SmallBag
             this.channelEngine.kickCustomChannel(name);
         }
         else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Kick from a channel.');
         }
     }
 

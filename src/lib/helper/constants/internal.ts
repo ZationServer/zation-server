@@ -136,7 +136,7 @@ export interface ZationToken extends PrepareZationToken{
 
 export interface PrepareZationToken {
     zationAuthUserGroup ?: string,
-    zationUserId ?: string | number | null,
+    zationUserId ?: string | number | undefined,
     zationTokenId ?: string,
     zationPanelAccess ?: boolean,
     zationOnlyPanelToken ?: boolean,

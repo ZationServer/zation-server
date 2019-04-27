@@ -108,6 +108,9 @@ export interface AppConfig
     bagExtensions ?: BagExtension[];
 }
 
+export interface PreCompiledAppConfig extends AppConfig{
+}
+
 export type Model =
     ValueModelConfig | ObjectModelConfig | ArrayModelConfig | ArrayModelShortSyntax | string | AnyOfModelConfig;
 

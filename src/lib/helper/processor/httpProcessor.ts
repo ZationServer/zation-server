@@ -10,21 +10,22 @@ import SHBridgeHttp                 from "../bridges/shBridgeHttp";
 import ZationTokenInfo              from "../infoObjects/zationTokenInfo";
 import AEPreparedPart               from "../auth/aePreparedPart";
 import BackError                    from "../../api/BackError";
-import ZationConfig                 from "../../main/zationConfig";
 import Logger                       from "../logger/logger";
 import ZationReqUtils               from "../utils/zationReqUtils";
 import {MainBackErrors}             from "../zationBackErrors/mainBackErrors";
-import TokenTools                   from "../token/tokenTools";
+import TokenUtils                   from "../token/tokenUtils";
 import JsonConverter                from "../utils/jsonConverter";
+import ZationConfigFull             from "../configManager/zationConfigFull";
+import FuncUtils                    from "../utils/funcUtils";
 
 export default class HttpProcessor
 {
-    private readonly zc : ZationConfig;
+    private readonly zc : ZationConfigFull;
     private readonly debug : boolean;
     private readonly worker : ZationWorker;
     private readonly aePreparedPart : AEPreparedPart;
 
-    constructor(zc : ZationConfig,worker : ZationWorker) {
+    constructor(zc : ZationConfigFull, worker : ZationWorker) {
         this.zc = zc;
         this.debug = zc.isDebug();
         this.worker = worker;
@@ -89,28 +90,30 @@ export default class HttpProcessor
     {
         //check for validationCheckRequest
         if(ZationReqUtils.isValidationCheckReq(zationData)) {
-            return new SHBridgeHttp(res,req,reqId,zationData,true);
+            return new SHBridgeHttp(res,req,reqId,zationData,true,this.worker);
         }
         else
         {
             //normal Req
             if(!!zationData.to) {
                 // @ts-ignore
-                const token : ZationToken = await TokenTools.verifyToken(zationData.to,this.zc);
+                const token : ZationToken = await TokenUtils.verifyToken(zationData.to,this.zc);
                 req.zationToken = token;
 
                 //throws task error if token is not valid.
-                TokenTools.checkToken(token,this.aePreparedPart);
+                TokenUtils.checkToken(token,this.aePreparedPart);
 
-                const next = (err) => {
-                    if(err) {
-                        throw new BackError(MainBackErrors.authenticateMiddlewareBlock,{err : err});
-                    }
-                };
-                await this.zc.checkAuthenticationMiddlewareEvent
-                (this.zc.eventConfig.middlewareAuthenticate,next,this.worker.getPreparedSmallBag(),new ZationTokenInfo(token));
+                //will throw if auth is blocked
+                await FuncUtils.checkMiddlewareFunc
+                (this.zc.eventConfig.middlewareAuthenticate,HttpProcessor.middlewareAuthNext,this.worker.getPreparedSmallBag(),new ZationTokenInfo(token));
             }
-            return new SHBridgeHttp(res,req,reqId,zationData,false);
+            return new SHBridgeHttp(res,req,reqId,zationData,false,this.worker);
+        }
+    }
+
+    private static middlewareAuthNext(err) {
+        if(err) {
+            throw new BackError(MainBackErrors.authenticateMiddlewareBlock,{err : err});
         }
     }
 

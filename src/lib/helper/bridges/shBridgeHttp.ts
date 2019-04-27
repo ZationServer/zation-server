@@ -10,21 +10,34 @@ import {IncomingMessage} from "http";
 import SHBridge          from "./shBridge";
 import BaseSHBridgeSH    from "./baseSHBridgeSH";
 import Socket            from "../sc/socket";
+import JwtOptions        from "../constants/jwt";
+import AuthEngine        from "../auth/authEngine";
+import ZationWorker    = require("../../main/zationWorker");
 
 /**
  * BaseShBridge implementation for http.
  */
 export default class SHBridgeHttp extends BaseSHBridgeSH implements SHBridge {
+
     protected readonly httpRes : core.Response;
     protected readonly httpReq : core.Request & {zationToken ?: ZationToken};
     protected readonly data : ZationRequest;
     protected readonly reqId : string;
     protected readonly validationCheckReq : boolean;
 
+    protected readonly authEngine : AuthEngine;
+
     private newToken : boolean;
     private currentToken : ZationToken | null;
+    protected currentJwtSignOptions : JwtOptions = {};
 
-    constructor(httpRes : core.Response,httpReq : core.Request,reqId : string,data : ZationRequest,validationCheckReq : boolean) {
+    constructor(httpRes : core.Response,
+                httpReq : core.Request,
+                reqId : string,data : ZationRequest,
+                validationCheckReq : boolean,
+                worker : ZationWorker)
+    {
+
         super();
         this.httpRes = httpRes;
         this.httpReq = httpReq;
@@ -35,6 +48,13 @@ export default class SHBridgeHttp extends BaseSHBridgeSH implements SHBridge {
         if(this.httpRes['zationInfo'] === undefined) {
             this.httpRes['zationInfo'] = [];
         }
+
+        this.authEngine = new AuthEngine(this,worker);
+
+    }
+
+    getAuthEngine(): AuthEngine {
+        return this.authEngine;
     }
 
     isValidationCheckReq(): boolean {
@@ -61,6 +81,8 @@ export default class SHBridgeHttp extends BaseSHBridgeSH implements SHBridge {
         this.newToken = true;
         this.currentToken = null;
         this.httpRes['zationInfo'].push(ZationHttpInfo.DEAUTHENTICATE);
+
+        this.authEngine.refresh(null);
     }
 
     getHandshakeRequest(): IncomingMessage {
@@ -104,9 +126,12 @@ export default class SHBridgeHttp extends BaseSHBridgeSH implements SHBridge {
         return false;
     }
 
-    async setToken(data : ZationToken): Promise<void> {
+    async setToken(data : ZationToken,jwtOptions : JwtOptions = {}): Promise<void> {
         this.newToken = true;
         this.currentToken = data;
+        this.currentJwtSignOptions = jwtOptions;
+
+        this.authEngine.refresh(data);
     }
 
     /**
@@ -116,6 +141,10 @@ export default class SHBridgeHttp extends BaseSHBridgeSH implements SHBridge {
         // noinspection TypeScriptValidateTypes
         // @ts-ignore
         return undefined;
+    }
+
+    getJwtSignOptions() : JwtOptions {
+        return this.currentJwtSignOptions;
     }
 }
 

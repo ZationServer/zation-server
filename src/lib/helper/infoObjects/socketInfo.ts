@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {ZationToken}  from "../constants/internal";
 import Socket         from "../sc/socket";
-import TokenTools     from "../token/tokenTools";
+import TokenUtils     from "../token/tokenUtils";
 import ObjectPath     from "../utils/objectPath";
 
 export default class SocketInfo
@@ -18,48 +18,75 @@ export default class SocketInfo
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns the auth user group of the socket or undefined if the socket has no token.
+     */
     get authUserGroup(): string | undefined {
-        return TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationAuthUserGroup),this._socket);
+        return TokenUtils.getSocketTokenVariable(nameof<ZationToken>(s => s.zationAuthUserGroup),this._socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns the user id of the socket or undefined if the socket has no token.
+     */
     get userId(): string | number | undefined {
-        return TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationUserId),this._socket);
+        return TokenUtils.getSocketTokenVariable(nameof<ZationToken>(s => s.zationUserId),this._socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns the raw socket.
+     */
     get socket(): object {
         return this._socket;
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns the socket sid.
+     */
     get socketSid(): string {
         return this._socket.sid;
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns the socket id.
+     */
     get socketId(): string {
         return this._socket.id;
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns the token id of the socket or undefined if the socket has no token.
+     */
     get tokenId(): string | undefined {
-        return TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationTokenId),this._socket);
+        return TokenUtils.getSocketTokenVariable(nameof<ZationToken>(s => s.zationTokenId),this._socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns if the socket is authenticated with a token.
+     */
     get isAuthIn(): boolean {
-        return this.authUserGroup !== undefined;
+        return this._socket.getAuthToken() !== null;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    get tokenExpire(): number | undefined{
-        return TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.exp),this._socket);
+    /**
+     * Returns the expire of the token or undefined if the socket has no token.
+     */
+    get tokenExpire(): number | undefined {
+        return TokenUtils.getSocketTokenVariable(nameof<ZationToken>(s => s.exp),this._socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    get panelAccess(): number | undefined{
-        return TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationPanelAccess),this._socket);
+    /**
+     * Returns the panel access of the socket or undefined if the socket has no token.
+     */
+    get panelAccess(): boolean | undefined {
+        return TokenUtils.getSocketTokenVariable(nameof<ZationToken>(s => s.zationPanelAccess),this._socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -74,7 +101,7 @@ export default class SocketInfo
      * @param path
      */
     hasTokenVariable(path ?: string | string[]) : boolean {
-        let ctv = TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationCustomVariables),this._socket);
+        let ctv = TokenUtils.getSocketTokenVariable(nameof<ZationToken>(s => s.zationCustomVariables),this._socket);
         return ObjectPath.has(!!ctv ? ctv : {},path);
     }
 
@@ -90,7 +117,7 @@ export default class SocketInfo
      * @param path
      */
     getTokenVariable<R>(path ?: string | string[]) : R {
-        let ctv = TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationCustomVariables),this._socket);
+        let ctv = TokenUtils.getSocketTokenVariable(nameof<ZationToken>(s => s.zationCustomVariables),this._socket);
         return ObjectPath.get(!!ctv ? ctv : {},path);
     }
 }

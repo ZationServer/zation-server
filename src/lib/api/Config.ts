@@ -45,12 +45,12 @@ import
     SocketBadAuthTokenFunction,
     SocketAuthStateChangeFunction,
     ScServerSocketCodeDataFunction
-} from "../helper/configs/eventConfig";
+} from "../helper/configDefinitions/eventConfig";
 
 import
 {
     MainService, ServiceConfig
-} from "../helper/configs/serviceConfig";
+} from "../helper/configDefinitions/serviceConfig";
 
 import
 {
@@ -70,7 +70,7 @@ import
     ObjectModelConfig,
     ValueModelConfig,
     ArrayModelConfig, ArrayModelShortSyntax, Model, PrepareHandleFunction
-} from "../helper/configs/appConfig";
+} from "../helper/configDefinitions/appConfig";
 import BackErrorConstruct from "../helper/constants/backErrorConstruct";
 import {
     AuthUserGroupChannel,
@@ -102,9 +102,9 @@ import {
     UserChOnClientPubFunction,
     UserChOnSubFunction,
     UserChOnUnsubFunction
-} from "../helper/configs/channelConfig";
-import {StarterConfig}  from "../helper/configs/starterConfig";
-import {MainConfig}     from "../helper/configs/mainConfig";
+} from "../helper/configDefinitions/channelConfig";
+import {StarterConfig}  from "../helper/configDefinitions/starterConfig";
+import {MainConfig}     from "../helper/configDefinitions/mainConfig";
 import SocketInfo       from "../helper/infoObjects/socketInfo";
 import ZationTokenInfo  from "../helper/infoObjects/zationTokenInfo";
 import BackError        from "./BackError";

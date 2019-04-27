@@ -113,3 +113,60 @@ export interface EventConfig
     sc_middlewarePublishOut  ?: ScMiddlewareFunction;
     sc_middlewareEmit  ?: ScMiddlewareFunction;
 }
+
+export interface PreCompiledEventConfig extends EventConfig
+{
+    express  ?: ExpressFunction;
+    scServer  ?: ScServerFunction;
+    socket  ?: ZationSocketFunction;
+    workerStarted  ?: WorkerStartedFunction;
+    workerLeaderStarted ?: WorkerStartedFunction;
+    httpServerStarted  ?: HttpServerStartedFunction;
+    wsServerStarted  ?: WsServerStartedFunction;
+    started  ?: StartedFunction;
+    beforeError  ?: BeforeErrorFunction;
+    beforeBackError  ?: BeforeBackErrorFunction;
+    beforeCodeError  ?: BeforeCodeErrorFunction;
+    beforeBackErrorBag  ?: BeforeBackErrorBagFunction;
+    socketDisconnection  ?: ZationSocketDisconnectionFunction;
+    workerMessage  ?: ZationWorkerMessageFunction;
+    middlewareAuthenticate  ?: MiddlewareAuthenticationFunction;
+
+    //socket cluster events
+    sc_socketError  ?: SocketErrorFunction;
+    sc_socketRaw  ?: SocketRawFunction;
+    sc_socketConnect  ?: SocketConnectFunction;
+    sc_socketDisconnect  ?: SocketCodeDataFunction;
+    sc_socketConnectAbort  ?: SocketCodeDataFunction;
+    sc_socketClose  ?: SocketCodeDataFunction;
+    sc_socketSubscribe  ?: SocketSubscribeFunction;
+    sc_socketUnsubscribe  ?: SocketUnsubscribeFunction;
+    sc_socketBadAuthToken  ?: SocketBadAuthTokenFunction;
+    sc_socketAuthenticate  ?: SocketAuthenticateFunction;
+    sc_socketDeauthenticate  ?: SocketDeauthenticateFunction;
+    sc_socketAuthStateChange  ?: SocketAuthStateChangeFunction;
+    sc_socketMessage  ?: SocketMessageFunction;
+
+    sc_serverError  ?: ScServerErrorFunction;
+    sc_serverNotice  ?: ScServerNoticeFunction;
+    sc_serverHandshake  ?: ScServerSocketFunction;
+    sc_serverConnectionAbort  ?: ScServerSocketCodeDataFunction;
+    sc_serverDisconnection  ?: ScServerSocketCodeDataFunction;
+    sc_serverClosure  ?: ScServerSocketCodeDataFunction;
+    sc_serverConnection  ?: ScServerConnectionFunction;
+    sc_serverSubscription  ?: ScServerSubscriptionFunction;
+    sc_serverUnsubscription  ?: ScServerUnsubscriptionFunction;
+    sc_serverAuthentication  ?: ScServerAuthenticationFunction;
+    sc_serverDeauthentication  ?: ScServerDeauthenticationFunction;
+    sc_serverAuthenticationStateChange  ?: ScServerAuthenticationStateChangeFunction;
+    sc_serverBadSocketAuthToken  ?: ScServerBadSocketAuthTokenFunction;
+    sc_serverReady  ?: ScServerReadyFunction;
+
+    sc_middlewareAuthenticate  ?: ScMiddlewareFunction;
+    sc_middlewareHandshakeWs  ?: ScMiddlewareFunction;
+    sc_middlewareHandshakeSc  ?: ScMiddlewareFunction;
+    sc_middlewareSubscribe  ?: ScMiddlewareFunction;
+    sc_middlewarePublishIn  ?: ScMiddlewareFunction;
+    sc_middlewarePublishOut  ?: ScMiddlewareFunction;
+    sc_middlewareEmit  ?: ScMiddlewareFunction;
+}

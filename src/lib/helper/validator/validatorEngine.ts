@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ArraySettings, ValueModelConfig} from "../configs/appConfig";
+import {ArraySettings, ValueModelConfig} from "../configDefinitions/appConfig";
 import {ConfigNames}       from "../constants/internal";
 // noinspection TypeScriptPreferShortImport
 import {ValidationTypes}   from "./../constants/validationTypes";

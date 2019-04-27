@@ -4,8 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {BackgroundTask}   from "../configs/appConfig";
-import ZationConfig       from "../../main/zationConfig";
+import {BackgroundTask}   from "../configDefinitions/appConfig";
+import ZationConfigFull from "../configManager/zationConfigFull";
 
 type SaveTask = (name : string, task : any) => void;
 
@@ -17,7 +17,7 @@ export default class BackgroundTasksWorkerSaver
         this.saveTask = saveTask;
     }
 
-    saveUserBackgroundTasks (zc : ZationConfig)
+    saveUserBackgroundTasks (zc : ZationConfigFull)
     {
         const bkt = zc.appConfig.backgroundTasks;
         if(typeof bkt === 'object') {

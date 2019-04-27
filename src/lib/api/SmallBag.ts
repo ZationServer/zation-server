@@ -12,11 +12,11 @@ import AsymmetricKeyPairs                                   from "../helper/info
 import {WorkerMessageActions}                               from "../helper/constants/workerMessageActions";
 import BackErrorConstruct                                   from "../helper/constants/backErrorConstruct";
 import {ZationChannel, ZationToken}                         from "../helper/constants/internal";
-import {InternMainConfig}                                   from "../helper/configs/mainConfig";
-import {AppConfig}                                          from "../helper/configs/appConfig";
-import {ChannelConfig}                                      from "../helper/configs/channelConfig";
-import {EventConfig}                                        from "../helper/configs/eventConfig";
-import {ServiceConfig}                                      from "../helper/configs/serviceConfig";
+import {InternalMainConfig}                                   from "../helper/configDefinitions/mainConfig";
+import {AppConfig}                                          from "../helper/configDefinitions/appConfig";
+import {ChannelConfig}                                      from "../helper/configDefinitions/channelConfig";
+import {EventConfig}                                        from "../helper/configDefinitions/eventConfig";
+import {ServiceConfig}                                      from "../helper/configDefinitions/serviceConfig";
 import {byteLength}                                         from "byte-length";
 
 const crypto : any                                          = require('crypto');
@@ -32,24 +32,26 @@ import BackError                                            from "./BackError";
 import BackErrorBag                                         from "./BackErrorBag";
 import ChExchangeEngine                                     from "../helper/channel/chExchangeEngine";
 import ServiceEngine                                        from "../helper/services/serviceEngine";
-import ZationConfig                                         from "../main/zationConfig";
+import ZationConfig                                         from "../helper/configManager/zationConfig";
 import ObjectPath                                           from "../helper/utils/objectPath";
 import Result                                               from "./Result";
 import Logger                                               from "../helper/logger/logger";
-import ChTools                                              from "../helper/channel/chTools";
-import IdUtils                                              from "../helper/utils/idUtils";
-import TokenTools                                           from "../helper/token/tokenTools";
+import ChUtils                                              from "../helper/channel/chUtils";
+import SidBuilder                                              from "../helper/utils/sidBuilder";
+import TokenUtils                                           from "../helper/token/tokenUtils";
 import AuthenticationError                                  from "../helper/error/authenticationError";
 import ObjectPathSequence                                   from "../helper/utils/objectPathSequence";
 import ObjectPathActionSequence                             from "../helper/utils/objectPathActionSequence";
 import Base64Utils                                          from "../helper/utils/base64Utils";
+import ZationConfigFull                                   from "../helper/configManager/zationConfigFull";
+import ObjectUtils from "../helper/utils/objectUtils";
 
 
 export default class SmallBag
 {
     protected readonly exchangeEngine : ChExchangeEngine;
     protected readonly serviceEngine : ServiceEngine;
-    protected readonly zc : ZationConfig;
+    protected readonly zc : ZationConfigFull;
     protected readonly worker : ZationWorker;
 
     constructor(worker : ZationWorker,exchangeEngine : ChExchangeEngine = new ChExchangeEngine(worker))
@@ -79,7 +81,7 @@ export default class SmallBag
      */
     getRootPath() : string {
         // noinspection TypeScriptValidateJSTypes
-        return this.zc.getRootPath();
+        return this.zc.rootPath;
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
@@ -147,7 +149,7 @@ export default class SmallBag
      * @description
      * Returns the main config.
      */
-    getMainConfig() : InternMainConfig {
+    getMainConfig() : InternalMainConfig {
         // noinspection TypeScriptValidateJSTypes
         return this.zc.mainConfig;
     }
@@ -172,6 +174,36 @@ export default class SmallBag
     getMainConfigVariable<V>(path ?: string | string[]) : V
     {
         return ObjectPath.get(this.zc.mainConfig.variables,path);
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns the name of the default user group.
+     */
+    getDefaultUserGroupName() : string {
+        // noinspection TypeScriptValidateJSTypes
+        return this.worker.getAEPreparedPart().getDefaultGroup();
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Checks if it is an auth user group name.
+     */
+    isAuthUserGroupName(name : string) : boolean {
+        // noinspection TypeScriptValidateJSTypes
+        return this.worker.getAEPreparedPart().isAuthGroup(name);
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns an array with all auth user group names.
+     */
+    getAuthUserGroupNames() : string[] {
+        // noinspection TypeScriptValidateJSTypes
+        return Object.keys(this.worker.getAEPreparedPart().getAuthGroups());
     }
 
     //PART Server
@@ -911,8 +943,6 @@ export default class SmallBag
      * @description
      * Returns a new BackError by using the constructor.
      * @param backErrorConstruct
-     * Create a new back error construct
-     * or get one from the errorConfig by using the method getBackErrorConstruct on the bag/smallBag.
      * @param info
      * The BackError info is a dynamic object which contains more detailed information.
      * For example, with an inputNotMatchWithMinLength error,
@@ -1116,7 +1146,7 @@ export default class SmallBag
      */
     async kickUserCustomIdCh(userId : number | string | (number | string)[], channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        const ch = ChTools.buildCustomIdChannelName(channel,id);
+        const ch = ChUtils.buildCustomIdChannelName(channel,id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.KICK_OUT,userId,exceptSocketSids,{ch});
     }
@@ -1135,7 +1165,7 @@ export default class SmallBag
      */
     async kickUserCustomCh(userId : number | string | (number | string)[], channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        const ch = ChTools.buildCustomChannelName(channel);
+        const ch = ChUtils.buildCustomChannelName(channel);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.KICK_OUT,userId,exceptSocketSids,{ch});
     }
@@ -1171,7 +1201,7 @@ export default class SmallBag
      */
     async kickUserAuthUserGroupCh(userId : number | string | (number | string)[],authUserGroup ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        const ch = ChTools.buildAuthUserGroupChName(authUserGroup);
+        const ch = ChUtils.buildAuthUserGroupChName(authUserGroup);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.USER_IDS,WorkerChMapTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : ch});
     }
@@ -1208,7 +1238,7 @@ export default class SmallBag
      */
     async kickTokensCustomIdCh(tokenId : string | string[], channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        const ch = ChTools.buildCustomIdChannelName(channel,id);
+        const ch = ChUtils.buildCustomIdChannelName(channel,id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch});
     }
@@ -1226,7 +1256,7 @@ export default class SmallBag
      */
     async kickTokensCustomCh(tokenId : string | string[], channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        const ch = ChTools.buildCustomChannelName(channel);
+        const ch = ChUtils.buildCustomChannelName(channel);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch});
     }
@@ -1260,7 +1290,7 @@ export default class SmallBag
      */
     async kickTokensAuthUserGroupCh(tokenId : string | string[],authUserGroup ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        const ch = ChTools.buildAuthUserGroupChName(authUserGroup);
+        const ch = ChUtils.buildAuthUserGroupChName(authUserGroup);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : ch});
     }
@@ -1293,7 +1323,7 @@ export default class SmallBag
      */
     async kickAllSocketsCustomIdCh(channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        const ch = ChTools.buildCustomIdChannelName(channel, id);
+        const ch = ChUtils.buildCustomIdChannelName(channel, id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ch});
     }
@@ -1309,7 +1339,7 @@ export default class SmallBag
      */
     async kickAllSocketsCustomCh(channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        const ch = ChTools.buildCustomChannelName(channel);
+        const ch = ChUtils.buildCustomChannelName(channel);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ch});
     }
@@ -1339,7 +1369,7 @@ export default class SmallBag
      */
     async kickAllSocketsAuthUserGroupCh(authUserGroup ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        const ch = ChTools.buildAuthUserGroupChName(authUserGroup);
+        const ch = ChUtils.buildAuthUserGroupChName(authUserGroup);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ch});
     }
@@ -1371,7 +1401,7 @@ export default class SmallBag
      */
     async kickSocketsCustomIdCh(socketSid : string | string[], channel ?: string, id ?: string) : Promise<void>
     {
-        const ch = ChTools.buildCustomIdChannelName(channel,id);
+        const ch = ChUtils.buildCustomIdChannelName(channel,id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.KICK_OUT,socketSid,[],{ch});
     }
@@ -1388,7 +1418,7 @@ export default class SmallBag
      */
     async kickSocketsCustomCh(socketSid : string | string[], channel ?: string) : Promise<void>
     {
-        const ch = ChTools.buildCustomChannelName(channel);
+        const ch = ChUtils.buildCustomChannelName(channel);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.KICK_OUT,socketSid,[],{ch});
     }
@@ -1420,7 +1450,7 @@ export default class SmallBag
      */
     async kickSocketsAuthUserGroupCh(socketSid : string | string[],authUserGroup ?: string) : Promise<void>
     {
-        const ch = ChTools.buildAuthUserGroupChName(authUserGroup);
+        const ch = ChUtils.buildAuthUserGroupChName(authUserGroup);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.SOCKETS_SIDS,WorkerChMapTaskActions.KICK_OUT,socketSid,[],{ch : ch});
     }
@@ -1456,7 +1486,7 @@ export default class SmallBag
      */
     async kickAuthUserGroupsCustomIdCh(authUserGroup : string | null | (string)[],channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        const ch = ChTools.buildCustomIdChannelName(channel,id);
+        const ch = ChUtils.buildCustomIdChannelName(channel,id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.AUTH_USER_GROUPS,WorkerChMapTaskActions.KICK_OUT,
             authUserGroup || [],exceptSocketSids,{ch,all : authUserGroup === null});
@@ -1476,7 +1506,7 @@ export default class SmallBag
      */
     async kickAuthUserGroupsCustomCh(authUserGroup : string | null | (string)[],channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        const ch = ChTools.buildCustomChannelName(channel);
+        const ch = ChUtils.buildCustomChannelName(channel);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.AUTH_USER_GROUPS,WorkerChMapTaskActions.KICK_OUT,
             authUserGroup || [],exceptSocketSids,{ch,all : authUserGroup === null});
@@ -1514,7 +1544,7 @@ export default class SmallBag
      */
     async kickDefaultUserGroupCustomIdCh(channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        const ch = ChTools.buildCustomIdChannelName(channel,id);
+        const ch = ChUtils.buildCustomIdChannelName(channel,id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch});
     }
@@ -1532,7 +1562,7 @@ export default class SmallBag
      */
     async kickDefaultUserGroupCustomCh(channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
     {
-        const ch = ChTools.buildCustomChannelName(channel);
+        const ch = ChUtils.buildCustomChannelName(channel);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch});
     }
@@ -1841,25 +1871,32 @@ export default class SmallBag
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Returns user id from socket (if authenticated and has one).
+     * Returns the user id from socket.
      * @example
      * getUserIdFromSocket(sc);
      * @param socket
+     * @throws AuthenticationError if socket is not authenticated.
      */
     getUserIdFromSocket(socket : Socket) : string | number | undefined {
-        return TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationUserId),socket);
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationUserId),socket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Returns user group from socket (if authenticated).
+     * Returns the auth user group from the socket
+     * or undefined if the socket is not authenticated.
      * @example
      * getUserIdFromSocket(sc);
      * @param socket
      */
     getAuthUserGroupFromSocket(socket : Socket) : string | undefined {
-        return TokenTools.getSocketTokenVariable(nameof<ZationToken>(s => s.zationAuthUserGroup),socket);
+        try {
+            return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationAuthUserGroup),socket.authToken);
+        }
+        catch (e) {
+            return undefined;
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -1872,7 +1909,7 @@ export default class SmallBag
      */
     socketSidToSocketId(socketSid : string) : string
     {
-        return IdUtils.socketSidToSocketId(socketSid);
+        return SidBuilder.socketSidToSocketId(socketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -1885,7 +1922,7 @@ export default class SmallBag
      */
     socketSidToSeverId(socketSid : string) : string
     {
-        return IdUtils.socketSidToServerInstanceId(socketSid);
+        return SidBuilder.socketSidToServerInstanceId(socketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -1898,7 +1935,7 @@ export default class SmallBag
      */
     socketSidToWorkerId(socketSid : string) : string
     {
-        return IdUtils.socketSidToWorkerId(socketSid);
+        return SidBuilder.socketSidToWorkerId(socketSid);
     }
 
     //Part ServerSocketVariable
@@ -1971,7 +2008,7 @@ export default class SmallBag
 
     //token variables
 
-    // noinspection JSUnusedGlobalSymbols
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
      * Set a token variable with object path on a socket.
@@ -1987,20 +2024,15 @@ export default class SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     async setTokenVariableWithSocket(socket : Socket,path : string | string[],value : any) : Promise<void> {
-        if(socket.getAuthToken() !== null) {
-            const ctv = TokenTools.getSocketCustomTokenVariables(socket);
-            ObjectPath.set(ctv,path,value);
-            await TokenTools.changeSocketCustomVar(ctv,socket,this.worker);
-        }
-        else {
-            throw new AuthenticationError(`Can't set token variable when socket is not authenticated!`);
-        }
+        const ctv = ObjectUtils.deepClone(TokenUtils.getCustomTokenVariables(socket.authToken));
+        ObjectPath.set(ctv,path,value);
+        await TokenUtils.setSocketCustomVar(ctv,socket);
     }
 
-    // noinspection JSUnusedGlobalSymbols
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
      * Delete a token variable with object path on a socket.
@@ -2014,21 +2046,16 @@ export default class SmallBag
      * @param socket
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     async deleteTokenVariableWithSocket(socket : Socket,path ?: string | string[]) : Promise<void> {
-        if(socket.getAuthToken() !== null) {
-            if(!!path) {
-                const ctv = TokenTools.getSocketCustomTokenVariables(socket);
-                ObjectPath.del(ctv,path);
-                await TokenTools.changeSocketCustomVar(ctv,socket,this.worker);
-            }
-            else {
-                await TokenTools.changeSocketCustomVar({},socket,this.worker);
-            }
+        if(!!path) {
+            const ctv = ObjectUtils.deepClone(TokenUtils.getCustomTokenVariables(socket.authToken));
+            ObjectPath.del(ctv,path);
+            await TokenUtils.setSocketCustomVar(ctv,socket);
         }
         else {
-            throw new AuthenticationError(`Can't set token variable when socket is not authenticated!`);
+            await TokenUtils.setSocketCustomVar({},socket);
         }
     }
 
@@ -2050,19 +2077,15 @@ export default class SmallBag
      *       .set('person.name','Luca')
      *       .set('person.email','example@gmail.com')
      *       .commit();
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     seqEditTokenVariablesWithSocket(socket : Socket) : ObjectPathSequence
     {
-        if(socket.getAuthToken() !== null) {
-            return new ObjectPathSequence(TokenTools.getSocketCustomTokenVariables(socket),
-                async (obj)=> {
-                    await TokenTools.changeSocketCustomVar(obj,socket,this.worker);
-                });
-        }
-        else {
-            throw new AuthenticationError(`Can't set token variable when socket is not authenticated!`);
-        }
+        return new ObjectPathSequence(ObjectUtils.deepClone(
+            TokenUtils.getCustomTokenVariables(socket.authToken)),
+            async (obj)=> {
+                await TokenUtils.setSocketCustomVar(obj,socket);
+            });
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -2078,15 +2101,10 @@ export default class SmallBag
      * @param socket
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     hasTokenVariableWithSocket(socket : Socket,path ?: string | string[]) : boolean {
-        if(socket.getAuthToken() !== null) {
-            return ObjectPath.has(TokenTools.getSocketCustomTokenVariables(socket),path);
-        }
-        else {
-            throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
-        }
+        return ObjectPath.has(TokenUtils.getCustomTokenVariables(socket.authToken),path);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -2102,15 +2120,10 @@ export default class SmallBag
      * @param socket
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws AuthenticationError
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     getTokenVariableWithSocket<R>(socket : Socket,path ?: string | string[]) : R {
-        if(socket.getAuthToken() !== null) {
-            return ObjectPath.get(TokenTools.getSocketCustomTokenVariables(socket),path);
-        }
-        else {
-            throw new AuthenticationError(`Can't access token variable when socket is not authenticated!`);
-        }
+        return ObjectPath.get(TokenUtils.getCustomTokenVariables(socket.authToken),path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -2419,28 +2432,6 @@ export default class SmallBag
      */
     getWorkerWsRequestPerMinute() : number {
         return this.worker.getStatus().wsRPM;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns all sockets from this worker that subscribes the custom channel.
-     * @example
-     * getWorkerSocketSubsCustomCh('CH-NAME');
-     */
-    getWorkerSocketSubsCustomCh(channel : string) : Socket[] {
-        return this.worker.getCustomChToScMapper().getValues(channel);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns all sockets from this worker that subscribes the custom id channel.
-     * @example
-     * getWorkerSocketSubsCustomIdCh('CH-NAME','ID');
-     */
-    getWorkerSocketSubsCustomIdCh(channel : string, id : string) : Socket[] {
-        return this.worker.getCustomIdChToScMapper().getValues(`${channel}.${id}`);
     }
 
     // noinspection JSUnusedGlobalSymbols

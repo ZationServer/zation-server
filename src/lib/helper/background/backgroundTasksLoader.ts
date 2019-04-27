@@ -4,8 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {BackgroundTask}   from "../configs/appConfig";
-import ZationConfig       from "../../main/zationConfig";
+import {BackgroundTask}   from "../configDefinitions/appConfig";
 
 type SetTask = (name : string,time : any,task : any) => void;
 
@@ -14,20 +13,18 @@ export default class BackgroundTasksLoader
    private readonly setEvery : SetTask;
    private readonly setAt : SetTask;
 
-   constructor(setEvery : SetTask, setAt : SetTask)
-   {
+   constructor(setEvery : SetTask, setAt : SetTask) {
        this.setAt = setAt;
        this.setEvery = setEvery;
    }
 
 
-   setUserBackgroundTasks (zc : ZationConfig)
+   setUserBackgroundTasks (backgroundTasks : Record<string,BackgroundTask> | undefined)
    {
-       const bkt = zc.appConfig.backgroundTasks;
-       if(typeof bkt === 'object') {
-           for(let name in bkt) {
-               if(bkt.hasOwnProperty(name)) {
-                   this.setTask(name,bkt[name]);
+       if(typeof backgroundTasks === 'object') {
+           for(let name in backgroundTasks) {
+               if(backgroundTasks.hasOwnProperty(name)) {
+                   this.setTask(name,backgroundTasks[name]);
                }
            }
        }

@@ -25,7 +25,7 @@ export default interface Socket
     exchange : any;
     state : string;
     authState : string;
-    authToken : object | null;
+    authToken : ZationToken | null;
     CONNECTING : string;
     OPEN : string;
     CLOSED : string;
@@ -39,6 +39,17 @@ export default interface Socket
     off(event ?: string, handler ?: Function) : void;
     send(data : any, options ?: object) : void;
     getAuthToken() : ZationToken | null;
+
+    /**
+     * Set the auth token of the socket.
+     * This is method is used internally;
+     * if you do not use it carefully,
+     * it can create a not valid zation token and break the worker memory stored information.
+     * So please use the Bag or SmallBag to change token variables.
+     * @param data
+     * @param options
+     * @param callback
+     */
     setAuthToken(data : object, options ?: object,callback ?: Function) : void;
     deauthenticate() : void;
     kickOut(channel ?: string, message ?: string, callback ?: Function) : void;
@@ -50,6 +61,7 @@ export default interface Socket
         version : number,
         system : string
     }
+    handshakeVariables : Record<string,any>;
     baseSHBridge : BaseShBridgeSocket;
     tokenEngine : TokenEngine;
     channelEngine : ChannelEngine;

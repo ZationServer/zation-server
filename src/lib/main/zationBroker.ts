@@ -6,8 +6,9 @@ GitHub: LucaCode
 
 import {BrokerMessageActions} from "../helper/constants/brokerMessageActions";
 import SystemInfo             from "../helper/utils/systemInfo";
-import ZationConfig           from "./zationConfig";
+import ZationConfig           from "../helper/configManager/zationConfig";
 import Logger                 from "../helper/logger/logger";
+import ZationConfigFull from "../helper/configManager/zationConfigFull";
 const SCBroker              = require('socketcluster/scbroker');
 const scClusterBrokerClient = require('scc-broker-client');
 
@@ -24,8 +25,7 @@ class ZationBroker extends SCBroker
     // noinspection JSUnusedGlobalSymbols
     async run()
     {
-        let zcOptions = this.options.zationConfigWorkerTransport;
-        this.zc = new ZationConfig(zcOptions,true);
+        this.zc = new ZationConfigFull(this.options.zationConfigWorkerTransport);
 
         if (this.options.clusterStateServerHost) {
             this.clusterClient =

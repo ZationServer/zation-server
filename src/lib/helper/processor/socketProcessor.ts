@@ -7,7 +7,7 @@ GitHub: LucaCode
 import ZationWorker          = require("../../main/zationWorker");
 import SHBridgeSocket        from "../bridges/shBridgeSocket";
 import Socket                from "../sc/socket";
-import ZationConfig          from "../../main/zationConfig";
+import ZationConfig          from "../configManager/zationConfig";
 import Logger                from "../logger/logger";
 import ZationReqUtils        from "../utils/zationReqUtils";
 

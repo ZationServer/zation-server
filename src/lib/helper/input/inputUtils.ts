@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ObjectModelConfig} from "../configs/appConfig";
+import {ObjectModelConfig} from "../configDefinitions/appConfig";
 
 export default class InputUtils
 {

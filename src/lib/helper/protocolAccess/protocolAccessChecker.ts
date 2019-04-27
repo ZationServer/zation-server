@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../configs/appConfig";
+import {ControllerConfig} from "../configDefinitions/appConfig";
 import BaseSHBridge       from "../bridges/baseSHBridge";
 import SHBridge           from "../bridges/shBridge";
 

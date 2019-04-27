@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import Bag                from './Bag';
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../helper/configs/appConfig";
+import {ControllerConfig} from "../helper/configDefinitions/appConfig";
 import SmallBag           from "./SmallBag";
 import ObjectPath         from "../helper/utils/objectPath";
 

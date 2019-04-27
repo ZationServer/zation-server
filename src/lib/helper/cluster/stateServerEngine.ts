@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationConfig from "../../main/zationConfig";
+import ZationConfig from "../configManager/zationConfig";
 import ZationMaster from "../../main/zationMaster";
 import Encoder      from "../utils/encoder";
 import Logger       from "../logger/logger";

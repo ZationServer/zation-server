@@ -8,7 +8,7 @@ import {ZationChannel} from "../constants/internal";
 import Socket          from "../sc/socket";
 import Logger          from "../logger/logger";
 
-export default class ChTools
+export default class ChUtils
 {
     static buildCustomIdChannelName(name ?: string,id : string = '') : string
     {
@@ -36,35 +36,27 @@ export default class ChTools
         return ZationChannel.USER_CHANNEL_PREFIX+id;
     }
 
-    static kickOut(socket,channel : string) : void
+    static kickOut(socket : Socket,channel : string) : void
     {
         // noinspection JSUnresolvedFunction,JSValidateTypes,TypeScriptValidateJSTypes
         socket.kickOut(channel);
         Logger.printDebugInfo(`Socket with id: ${socket.id} is kicked from channel ${channel}`);
     }
 
-    static getCustomIdChannelInfo(ch : string) : any
+    static getCustomIdChannelInfo(ch : string) : {name : string,id : string}
     {
-        let nameAndId = ch.replace(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX,'')
+        const nameAndId = ch.replace(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX,'')
             .split(ZationChannel.CUSTOM_CHANNEL_ID);
 
-        if(nameAndId.length === 2)
-        {
-            return {
-                name : nameAndId[0],
-                id : nameAndId[1]
-            };
-        }
-        else
-        {
-            return {
-                name : nameAndId[0]
-            };
-        }
+        return {
+            name : nameAndId[0],
+            id : nameAndId[1]
+        };
     }
 
     static getCustomIdChannelName(ch : string) : string {
-        return ChTools.getCustomIdChannelInfo(ch).name;
+        return ch.replace(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX,'')
+            .split(ZationChannel.CUSTOM_CHANNEL_ID)[0];
     }
 
     static getUserIdFromCh(ch : string) : string {
@@ -75,13 +67,11 @@ export default class ChTools
         return ch.split('.')[2];
     }
 
-    static getCustomChannelName(ch : string) : string
-    {
+    static getCustomChannelName(ch : string) : string {
         return ch.replace(ZationChannel.CUSTOM_CHANNEL_PREFIX,'');
     }
 
-    static pubDataAddSocketSrcSid(req : any,socket : Socket)
-    {
+    static pubDataAddSocketSrcSid(req : any,socket : Socket) {
         if(typeof req.data === "object") {
             req.data['ssi'] = socket.sid;
         }

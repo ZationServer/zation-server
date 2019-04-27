@@ -13,14 +13,15 @@ import ValidCheckProcessor   from "../helper/processor/validCheckProcessor";
 import Socket                from "../helper/sc/socket";
 import BackError             from "../api/BackError";
 import BackErrorBag          from "../api/BackErrorBag";
-import ZationConfig          from "./zationConfig";
 import IdCounter             from "../helper/utils/idCounter";
 import Logger                from "../helper/logger/logger";
 import CodeError             from "../helper/error/codeError";
+import FuncUtils             from "../helper/utils/funcUtils";
+import ZationConfigFull    from "../helper/configManager/zationConfigFull";
 
 export default class ZationReqHandler
 {
-    private readonly zc : ZationConfig;
+    private readonly zc : ZationConfigFull;
     private readonly worker : ZationWorker;
     private reqIdCounter : IdCounter;
 
@@ -85,24 +86,24 @@ export default class ZationReqHandler
     private async handleReqError(err)
     {
         const promises : Promise<void>[] = [];
-        promises.push(this.zc.emitEvent
+        promises.push(FuncUtils.emitEvent
         (this.zc.eventConfig.beforeError, this.worker.getPreparedSmallBag(),err));
         if(err instanceof  BackError)
         {
             if(err instanceof CodeError) {
                 Logger.printDebugWarning(`Code error -> ${err.toString()}/n stack-> ${err.stack}`);
-                promises.push(this.zc.emitEvent
+                promises.push(FuncUtils.emitEvent
                 (this.zc.eventConfig.beforeCodeError,this.worker.getPreparedSmallBag(),err));
                 if(this.zc.mainConfig.logCodeErrors){
                     Logger.logFileError(`Code error -> ${err.toString()}/n stack-> ${err.stack}`);
                 }
             }
-            promises.push(this.zc.emitEvent
+            promises.push(FuncUtils.emitEvent
             (this.zc.eventConfig.beforeBackError,this.worker.getPreparedSmallBag(),err));
         }
         else { // noinspection SuspiciousInstanceOfGuard
             if(err instanceof BackErrorBag) {
-                promises.push(this.zc.emitEvent
+                promises.push(FuncUtils.emitEvent
                 (this.zc.eventConfig.beforeBackErrorBag,this.worker.getPreparedSmallBag(),err));
             }
             else {

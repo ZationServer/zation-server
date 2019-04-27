@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import copyObject    = require('copy-object');
-import {ModelOptional} from "../configs/appConfig";
+import {ModelOptional} from "../configDefinitions/appConfig";
 
 export default class ModelImportEngine
 {

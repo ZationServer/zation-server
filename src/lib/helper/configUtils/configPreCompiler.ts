@@ -9,34 +9,33 @@ import {
     ChannelDefault,
     ChannelSettings,
     CustomChannelConfig
-} from "../configs/channelConfig";
+} from "../configDefinitions/channelConfig";
 import {
     AnyOfModelConfig,
     ArrayModelConfig,
     ControllerConfig, InputConfig, Model, MultiInput, ObjectModelConfig, ValueModelConfig,
-} from "../configs/appConfig";
+} from "../configDefinitions/appConfig";
 import ModelImportEngine from "./modelImportEngine";
-import ZationConfig      from "../../main/zationConfig";
 import ObjectUtils       from "../utils/objectUtils";
 import Iterator          from "../utils/iterator";
+import FuncUtils         from "../utils/funcUtils";
+import {OtherLoadedConfigSet, OtherPreCompiledConfigSet} from "../configManager/configSets";
 
 export default class ConfigPreCompiler
 {
-    private readonly zc : ZationConfig;
+    private readonly configs : OtherLoadedConfigSet;
 
     private controllerDefaults : object;
-
     private modelsConfig : object;
-
     private modelImportEngine : ModelImportEngine;
 
-    constructor(zationConfig)
+    constructor(configs : OtherLoadedConfigSet)
     {
-        this.zc = zationConfig;
+        this.configs = configs;
         this.prepare();
     }
 
-    preCompile() : void
+    preCompile() : OtherPreCompiledConfigSet
     {
         this.preCompileModels(this.modelsConfig);
         this.preCompileTmpBuilds();
@@ -44,10 +43,14 @@ export default class ConfigPreCompiler
         this.preCompileController();
         this.preCompileChannelConfig();
         this.preCompileServiceModules();
+        this.preCompileEventConfig();
 
         //view precompiled configs
-        //console.dir(this.zc.appConfig,{depth:null});
-        //console.dir(this.zc.channelConfig,{depth:null});
+        //console.dir(this.configs.appConfig,{depth:null});
+        //console.dir(this.configs.channelConfig,{depth:null});
+
+        // @ts-ignore
+        return this.configs;
     }
 
     private prepare() : void
@@ -60,7 +63,7 @@ export default class ConfigPreCompiler
     private prepareControllerDefaults() : void
     {
         this.controllerDefaults = {};
-        let cd = this.zc.appConfig.controllerDefaults;
+        let cd = this.configs.appConfig.controllerDefaults;
         //setDefaults if not set!
         if(cd !== undefined) {
             this.controllerDefaults = cd;
@@ -69,7 +72,7 @@ export default class ConfigPreCompiler
 
     private preCompileChannelConfig() : void
     {
-        const channelConfig = this.zc.channelConfig;
+        const channelConfig = this.configs.channelConfig;
 
         for(let k in channelConfig)
         {
@@ -91,23 +94,33 @@ export default class ConfigPreCompiler
         }
     }
 
+    private preCompileEventConfig() {
+        //preCompile event functions with array to one function
+        const eventConfig = this.configs.eventConfig;
+        for(let k in eventConfig) {
+            if (eventConfig.hasOwnProperty(k) && Array.isArray(eventConfig[k])) {
+                eventConfig[k] = FuncUtils.createFuncArrayAsyncInvoker(eventConfig[k]);
+            }
+        }
+    }
+
     private preCompileServiceModules()
     {
-        const sm = this.zc.serviceConfig.serviceModules ? this.zc.serviceConfig.serviceModules : [];
+        const sm = this.configs.serviceConfig.serviceModules ? this.configs.serviceConfig.serviceModules : [];
 
-        if(typeof this.zc.serviceConfig.services !== 'object'){
-            this.zc.serviceConfig.services = {};
+        if(typeof this.configs.serviceConfig.services !== 'object'){
+            this.configs.serviceConfig.services = {};
         }
 
-        if(!Array.isArray(this.zc.appConfig.bagExtensions)) {
-            this.zc.appConfig.bagExtensions = [];
+        if(!Array.isArray(this.configs.appConfig.bagExtensions)) {
+            this.configs.appConfig.bagExtensions = [];
         }
 
         sm.forEach((sm) => {
             // @ts-ignore
-            this.zc.serviceConfig.services[sm.serviceName] = sm.service;
+            this.configs.serviceConfig.services[sm.serviceName] = sm.service;
             // @ts-ignore
-            this.zc.appConfig.bagExtensions.push(sm.bagExtensions);
+            this.configs.appConfig.bagExtensions.push(sm.bagExtensions);
         });
     }
 
@@ -163,8 +176,8 @@ export default class ConfigPreCompiler
     }
 
     private prepareModelsConfig() : void {
-        this.modelsConfig = typeof this.zc.appConfig.models === 'object' ?
-            this.zc.appConfig.models : {};
+        this.modelsConfig = typeof this.configs.appConfig.models === 'object' ?
+            this.configs.appConfig.models : {};
     }
 
     private preCompileModels(models : Record<string,Model | any>) {
@@ -411,20 +424,20 @@ export default class ConfigPreCompiler
     }
 
     private preCompileControllerDefaults() : void {
-        if(this.zc.appConfig.controllerDefaults) {
-            this.preCompileInputConfig(this.zc.appConfig.controllerDefaults);
+        if(this.configs.appConfig.controllerDefaults) {
+            this.preCompileInputConfig(this.configs.appConfig.controllerDefaults);
         }
     }
 
     private preCompileController() : void
     {
         //set if controller property is not found
-        if(!this.zc.appConfig.controllers) {
-            this.zc.appConfig.controllers = {};
+        if(!this.configs.appConfig.controllers) {
+            this.configs.appConfig.controllers = {};
         }
 
         //iterate over controller
-        const controller = this.zc.appConfig.controllers;
+        const controller = this.configs.appConfig.controllers;
         for(let k in controller)
         {
             if(controller.hasOwnProperty(k))

@@ -7,7 +7,7 @@ GitHub: LucaCode
 // noinspection TypeScriptPreferShortImport
 import Bag              from '../../api/Bag';
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../configs/appConfig";
+import {ControllerConfig} from "../configDefinitions/appConfig";
 import Controller from "../../api/Controller";
 
 export type PrepareHandleInvokeFunction = (controllerInstance : Controller,bag : Bag) => Promise<void >;

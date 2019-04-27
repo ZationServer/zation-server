@@ -9,7 +9,9 @@ import {ZationToken}       from "../constants/internal";
 import {IncomingMessage}   from "http";
 import BaseSHBridge        from "./baseSHBridge";
 import BaseSHBridgeSH      from "./baseSHBridgeSH";
-import AuthenticationError from "../error/authenticationError";
+import TokenUtils          from "../token/tokenUtils";
+import JwtOptions          from "../constants/jwt";
+import AuthEngine          from "../auth/authEngine";
 
 /**
  * BaseShBridge implementation for socket.
@@ -23,6 +25,10 @@ export default class BaseShBridgeSocket extends BaseSHBridgeSH implements BaseSH
     constructor(socket : Socket) {
         super();
         this.socket = socket;
+    }
+
+    getAuthEngine() : AuthEngine {
+        return this.socket.authEngine;
     }
 
     getHandshakeRequest() : IncomingMessage {
@@ -54,28 +60,16 @@ export default class BaseShBridgeSocket extends BaseSHBridgeSH implements BaseSH
     }
 
     getToken(): ZationToken | null {
-        return this.socket.getAuthToken();
+        return this.socket.authToken;
     }
 
     isNewToken(): boolean {
         return this.newToken;
     }
 
-    async setToken(data : object) : Promise<void>
-    {
-        return new Promise<void>((resolve, reject) => {
-            this.socket.setAuthToken(data,{},(err) => {
-                if(err){
-                    reject(new AuthenticationError('Failed to set the auth token. Error => ' +
-                        err.toString()))
-                }
-                else {
-                    this.newToken = true;
-                    resolve();
-                }
-            });
-        });
+    async setToken(data : object,jwtOptions : JwtOptions = {}) : Promise<void> {
+        await TokenUtils.setSocketTokenAsync(this.socket,data,jwtOptions);
+        this.newToken = true;
     }
-
 }
 

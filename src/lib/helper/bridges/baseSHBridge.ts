@@ -7,6 +7,8 @@ GitHub: LucaCode
 import {ZationToken}     from "../constants/internal";
 import {IncomingMessage} from "http";
 import Socket            from "../sc/socket";
+import JwtOptions        from "../constants/jwt";
+import AuthEngine        from "../auth/authEngine";
 
 /**
  * Minimal socket, http bridge interface
@@ -26,10 +28,12 @@ export default interface BaseSHBridge
     deauthenticate() : void;
     hasToken() : boolean;
     getToken() : ZationToken | null;
-    setToken(data : object) : Promise<void>;
+    setToken(data : object,jwtOptions ?: JwtOptions) : Promise<void>;
     isNewToken() : boolean;
 
     deauthenticate() : void;
     getRemoteAddress() : string;
     getPublicRemoteAddress() : string;
+
+    getAuthEngine() : AuthEngine;
 }

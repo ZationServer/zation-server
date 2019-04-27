@@ -4,29 +4,36 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+import ConfigLoader from "../helper/configManager/ConfigLoader";
+
 require('cache-require-paths');
 const  SocketCluster : any   = require('socketcluster');
 const  isWindows             = require('is-windows');
 import {WorkerMessageActions}  from "../helper/constants/workerMessageActions";
-import {StarterConfig}         from "../helper/configs/starterConfig";
+import {StarterConfig}         from "../helper/configDefinitions/starterConfig";
 import StringSet               from "../helper/utils/simpleSet";
 import StateServerEngine       from "../helper/cluster/stateServerEngine";
 import Logger                  from "../helper/logger/logger";
-import ConfigErrorBag          from "../helper/config/configErrorBag";
-import ConfigChecker           from "../helper/config/configChecker";
+import ConfigErrorBag          from "../helper/configUtils/configErrorBag";
+import ConfigChecker           from "../helper/configUtils/configChecker";
 import ClientPrepare           from "../helper/client/clientPrepare";
 import PortChecker             from "../helper/utils/portChecker";
 import TimeUtils               from "../helper/utils/timeUtils";
 import BackgroundTasksSender   from "../helper/background/backgroundTasksSender";
 import BackgroundTasksLoader   from "../helper/background/backgroundTasksLoader";
-import ZationConfig            from "./zationConfig";
+import ZationConfigMaster      from "../helper/configManager/zationConfigMaster";
+// noinspection TypeScriptPreferShortImport
+import {StartMode}             from "./../helper/constants/startMode";
+import FuncUtils from "../helper/utils/funcUtils";
 
 export default class ZationMaster {
     private static instance: ZationMaster | null = null;
     private static readonly version: string = '0.9.7';
 
     private readonly serverStartedTimeStamp: number;
-    private readonly zc: ZationConfig;
+    private zc: ZationConfigMaster;
+    private readonly zcLoader : ConfigLoader;
+
     private workerIds: StringSet;
     private brokerIds: StringSet;
     private master: any;
@@ -58,52 +65,48 @@ export default class ZationMaster {
         this.startUpCB = startUpCB;
         this.startMode = startMode;
 
-        //!checkMode
-        if(this.startMode !== 2) {
-            if (ZationMaster.instance === null) {
-                ZationMaster.instance = this;
+        if (ZationMaster.instance === null) {
+            ZationMaster.instance = this;
 
-                this.serverStartedTimeStamp = Date.now();
-                this.workerIds = new StringSet();
-                this.brokerIds = new StringSet();
-                this.zc = new ZationConfig(options);
+            this.serverStartedTimeStamp = Date.now();
+            this.workerIds = new StringSet();
+            this.brokerIds = new StringSet();
 
-                (async () => {
-                    try {
-                        //loads main config and defaults
-                        await this.zc.masterInit(this.startMode);
+            this.zcLoader = new ConfigLoader(options);
 
-                        //setLogger
-                        Logger.setZationConfig(this.zc);
+            (async () => {
+                try {
+                    await this.zcLoader.loadMainConfig();
 
+                    this.zc = new ZationConfigMaster(
+                        this.zcLoader.starterConfig,
+                        this.zcLoader.mainConfig,
+                        this.zcLoader.configLocations,
+                        this.zcLoader.getRootPath(),
+                        startMode
+                    );
+
+                    //setLogger
+                    Logger.setZationConfig(this.zc);
+
+
+                    if(startMode !== StartMode.ONLY_CHECK) {
                         //Check LogToFile
                         Logger.initFileLog();
 
                         await this.start();
                     }
-                    catch (e) {
-                        Logger.printStartFail(`Exception when trying to start server -> ${e.stack}`);
+                    else {
+                        await this.check();
                     }
-                })();
-            }
-            else {
-                Logger.printWarning('You can only start zation once.');
-            }
-        }
-        else {
-            this.zc = new ZationConfig(options);
-            (async () => {
-                try {
-                    //loads main config and defaults
-                    await this.zc.masterInit(this.startMode);
-                    //setLogger
-                    Logger.setZationConfig(this.zc);
-                    await this.check();
                 }
                 catch (e) {
-                    Logger.printStartFail(`Exception when trying to check config -> ${e.stack}`);
+                    Logger.printStartFail(`Exception when trying to start server -> ${e.stack}`);
                 }
             })();
+        }
+        else {
+            Logger.printWarning('You can only start zation once.');
         }
     }
 
@@ -112,8 +115,9 @@ export default class ZationMaster {
         Logger.printDebugInfo('Zation is launching in debug Mode.');
 
         Logger.startStopWatch();
-        let configErrorBag = new ConfigErrorBag();
-        const configChecker = new ConfigChecker(this.zc, configErrorBag);
+
+        const configErrorBag = new ConfigErrorBag();
+        const configChecker = new ConfigChecker(this.zcLoader, configErrorBag);
 
         if(this.zc.starterConfig.checkConfigs) {
             configChecker.checkStarterConfig();
@@ -125,18 +129,16 @@ export default class ZationMaster {
         }
 
         Logger.startStopWatch();
-        await this.zc.loadOtherConfigScripts();
+        await this.zcLoader.loadOtherConfigs();
 
-        if(this.zc.loadedConfigs.length > 0) {
-            const moreConfigs = this.zc.loadedConfigs.length>1;
+        if(this.zcLoader.loadedConfigs.length > 0) {
+            const moreConfigs = this.zcLoader.loadedConfigs.length>1;
             Logger.printDebugInfo
-            (`The configuration${moreConfigs ? 's' : ''}: ${this.zc.loadedConfigs.toString()} ${moreConfigs ? 'are' : 'is'} found and will be loaded.`);
+            (`The configuration${moreConfigs ? 's' : ''}: ${this.zcLoader.loadedConfigs.toString()} ${moreConfigs ? 'are' : 'is'} loaded.`);
         }
         else {
-            Logger.printDebugInfo(`No config file with root path: '${this.zc.getRootPath()}' was found.`)
+            Logger.printDebugInfo(`No config file with root path: '${this.zc.rootPath}' was found.`)
         }
-
-        this.zc.loadOtherConfigFromScript();
         Logger.printStartDebugInfo(`The Master has loaded the other config files.`, true);
 
         if(this.zc.starterConfig.checkConfigs) {
@@ -177,8 +179,8 @@ export default class ZationMaster {
 
     private async check() {
         Logger.startStopWatch();
-        let configErrorBag = new ConfigErrorBag();
-        const configChecker = new ConfigChecker(this.zc, configErrorBag);
+        const configErrorBag = new ConfigErrorBag();
+        const configChecker = new ConfigChecker(this.zcLoader, configErrorBag);
 
         configChecker.checkStarterConfig();
         if (configErrorBag.hasConfigError()) {
@@ -188,18 +190,16 @@ export default class ZationMaster {
         Logger.printStartDebugInfo(`Checked starter config.`, true);
 
         Logger.startStopWatch();
-        await this.zc.loadOtherConfigScripts();
+        await this.zcLoader.loadOtherConfigs();
 
-        if(this.zc.loadedConfigs.length > 0) {
-            const moreConfigs = this.zc.loadedConfigs.length>1;
+        if(this.zcLoader.loadedConfigs.length > 0) {
+            const moreConfigs = this.zcLoader.loadedConfigs.length>1;
             Logger.printDebugInfo
-            (`The configuration${moreConfigs ? 's' : ''}: ${this.zc.loadedConfigs.toString()} ${moreConfigs ? 'are' : 'is'} found and will be loaded.`);
+            (`The configuration${moreConfigs ? 's' : ''}: ${this.zcLoader.loadedConfigs.toString()} ${moreConfigs ? 'are' : 'is'} loaded.`);
         }
         else {
-            Logger.printDebugInfo(`No config file was found.`)
+            Logger.printDebugInfo(`No config file with root path: '${this.zc.rootPath}' was found.`)
         }
-
-        this.zc.loadOtherConfigFromScript();
         Logger.printStartDebugInfo(`Loaded the other config files.`, true);
 
         Logger.startStopWatch();
@@ -267,7 +267,7 @@ export default class ZationMaster {
             authPublicKey: this.zc.mainConfig.authPublicKey,
             authPrivateKey: this.zc.mainConfig.authPrivateKey,
             authDefaultExpiry: this.zc.mainConfig.authDefaultExpiry,
-            zationConfigWorkerTransport : this.zc.getWorkerTransport(),
+            zationConfigWorkerTransport : this.zc.getZcTransport(),
             zationServerVersion : ZationMaster.version,
             zationServerStartedTimeStamp : this.serverStartedTimeStamp,
             logLevel : scLogLevel,
@@ -338,7 +338,7 @@ export default class ZationMaster {
 
            if(this.startUpCB){this.startUpCB();}
 
-           await this.zc.emitEvent(this.zc.eventConfig.started, this.zc.getZationInfo());
+           await this.emitStartedEvent();
         });
 
         // noinspection JSUnresolvedFunction
@@ -400,6 +400,16 @@ export default class ZationMaster {
                 this.brokerIds.remove(id);
             }
         });
+    }
+
+    private async emitStartedEvent() {
+        if(this.zcLoader.eventConfig.started) {
+            let started = this.zcLoader.eventConfig.started;
+            if(Array.isArray(started)) {
+                started = FuncUtils.createFuncArrayAsyncInvoker(started);
+            }
+            await started(this.zc.getZationInfo());
+        }
     }
 
     private printStartedInformation()
@@ -506,11 +516,10 @@ export default class ZationMaster {
             bkTsSender.setAtBackgroundTask(name,time);
         });
 
-        bkTS.setUserBackgroundTasks(this.zc);
+        bkTS.setUserBackgroundTasks(this.zcLoader.appConfig.backgroundTasks);
     }
 
-    public sendBackgroundTask(obj)
-    {
+    public sendBackgroundTask(obj) {
         if(this.backgroundTaskActive) {
             this.sendToRandomWorker(obj);
         }

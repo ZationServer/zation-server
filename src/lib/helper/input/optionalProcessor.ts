@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {AnyOfModelConfig, Model, ModelOptional} from "../configs/appConfig";
+import {AnyOfModelConfig, Model, ModelOptional} from "../configDefinitions/appConfig";
 import Iterator from "../utils/iterator";
 
 export default class OptionalProcessor

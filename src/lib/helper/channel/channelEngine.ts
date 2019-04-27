@@ -13,11 +13,12 @@ personal sc functionality.
 import ZationWorker      = require("../../main/zationWorker");
 import BaseSHBridge      from "../bridges/baseSHBridge";
 import ChExchangeEngine  from "./chExchangeEngine";
-import ChTools           from "./chTools";
+import ChUtils           from "./chUtils";
+import Socket            from "../sc/socket";
 
 export default class ChannelEngine extends ChExchangeEngine
 {
-    private readonly socket : any;
+    private readonly socket : Socket;
     private readonly isWebSocket : boolean;
 
     constructor(worker : ZationWorker,shBridge : BaseSHBridge)
@@ -25,25 +26,6 @@ export default class ChannelEngine extends ChExchangeEngine
         super(worker);
         this.socket = shBridge.getSocket();
         this.isWebSocket = shBridge.isWebSocket();
-    }
-
-    async emitToSocket(eventName : string,data : any) : Promise<object>
-    {
-        return new Promise<object>((resolve, reject) => {
-            if(this.isWebSocket) {
-                this.socket.emit(eventName,data,(err,data) => {
-                    if(err) {
-                        reject(err);
-                    }
-                    else {
-                        resolve(data);
-                    }
-                });
-            }
-            else {
-                reject(new Error(`Can't emit an socket event by an http request!`));
-            }
-        });
     }
 
     getSubChannels() : string[]
@@ -62,7 +44,7 @@ export default class ChannelEngine extends ChExchangeEngine
             let subs : any = this.getSubChannels();
             for(let i = 0; i < subs.length; i++) {
                 if(subs[i].indexOf(search)!== -1) {
-                    ChTools.kickOut(this.socket,search);
+                    ChUtils.kickOut(this.socket,search);
                 }
             }
         }
@@ -70,11 +52,11 @@ export default class ChannelEngine extends ChExchangeEngine
 
 
     kickCustomIdChannel(name : string,id : string) : void {
-        this.kickWithIndex(ChTools.buildCustomIdChannelName(name,id));
+        this.kickWithIndex(ChUtils.buildCustomIdChannelName(name,id));
     }
 
     kickCustomChannel(name : string) : void {
-        this.kickWithIndex(ChTools.buildCustomChannelName(name));
+        this.kickWithIndex(ChUtils.buildCustomChannelName(name));
     }
 
 }

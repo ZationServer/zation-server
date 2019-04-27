@@ -8,10 +8,11 @@ import SHBridge          from "../bridges/shBridge";
 import stringify         from "fast-stringify";
 import BackError         from "../../api/BackError";
 import BackErrorBag      from "../../api/BackErrorBag";
-import ZationConfig      from "../../main/zationConfig";
-import TokenTools        from "../token/tokenTools";
+import ZationConfig      from "../configManager/zationConfig";
+import TokenUtils        from "../token/tokenUtils";
 import Logger            from "../logger/logger";
 import {MainBackErrors}  from "../zationBackErrors/mainBackErrors";
+import SHBridgeHttp      from "../bridges/shBridgeHttp";
 
 export default class Returner
 {
@@ -122,7 +123,8 @@ export default class Returner
             //can be null! if http deauthenticated
             if(token !== null){
                 obj.t = {
-                    st : (await TokenTools.signToken(token,this.zc)),
+                    st : (await TokenUtils.signToken
+                    (token,this.zc,shBridge instanceof SHBridgeHttp ? shBridge.getJwtSignOptions() : {})),
                     pt : token
                 } ;
             }

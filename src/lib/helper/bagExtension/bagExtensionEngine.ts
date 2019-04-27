@@ -4,15 +4,15 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationConfig from "../../main/zationConfig";
-import SmallBag     from "../../api/SmallBag";
-import Bag          from "../../api/Bag";
+import SmallBag           from "../../api/SmallBag";
+import Bag                from "../../api/Bag";
+import ZationConfigFull from "../configManager/zationConfigFull";
 
 export default class BagExtensionEngine
 {
-    private zc : ZationConfig;
+    private zc : ZationConfigFull;
 
-    constructor(zc : ZationConfig) {
+    constructor(zc : ZationConfigFull) {
         this.zc = zc;
     }
 

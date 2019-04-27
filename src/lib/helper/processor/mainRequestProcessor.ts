@@ -16,16 +16,15 @@ import BackError               from "../../api/BackError";
 import BackErrorBag            from "../../api/BackErrorBag";
 import ControllerPrepare       from "../controller/controllerPrepare";
 import ProtocolAccessChecker   from "../protocolAccess/protocolAccessChecker";
-import ZationConfig            from "../../main/zationConfig";
 import {MainBackErrors}        from "../zationBackErrors/mainBackErrors";
 import ZationReqUtils          from "../utils/zationReqUtils";
-import TokenEngine             from "../token/tokenEngine";
 import Result                  from "../../api/Result";
 import {PrepareHandleInvokeFunction} from "../controller/controllerUtils";
+import ZationConfigFull        from "../configManager/zationConfigFull";
 
 export default class MainRequestProcessor
 {
-    private readonly zc : ZationConfig;
+    private readonly zc : ZationConfigFull;
     private readonly worker : ZationWorker;
     private readonly inputDataProcessor : InputDataProcessor;
     private readonly validCheckProcessor : ValidCheckProcessor;
@@ -37,7 +36,7 @@ export default class MainRequestProcessor
     private readonly useAuth : boolean;
     private readonly controllerPrepare : ControllerPrepare;
 
-    constructor(zc : ZationConfig,worker : ZationWorker,validCheckProcessor : ValidCheckProcessor) {
+    constructor(zc : ZationConfigFull,worker : ZationWorker,validCheckProcessor : ValidCheckProcessor) {
         this.zc = zc;
         this.worker = worker;
         this.validCheckProcessor = validCheckProcessor;
@@ -98,20 +97,7 @@ export default class MainRequestProcessor
             //Throws if access denied
             versionAccessCheck(shBridge);
 
-            let tokenEngine;
-            let authEngine : AuthEngine;
-            if(shBridge.isWebSocket()){
-                const socket = shBridge.getSocket();
-                //use socket prepared token engine
-                tokenEngine = socket.tokenEngine;
-                authEngine = socket.authEngine;
-            }
-            else {
-                tokenEngine = new TokenEngine(shBridge,this.worker,this.zc);
-                authEngine = new AuthEngine(shBridge,tokenEngine,this.worker);
-            }
-
-            authEngine.refresh();
+            const authEngine : AuthEngine = shBridge.getAuthEngine();
 
             //check protocol
             if(!this.useProtocolCheck || ProtocolAccessChecker.hasProtocolAccess(shBridge,controllerConfig)) {
@@ -149,7 +135,6 @@ export default class MainRequestProcessor
                                     shBridge,
                                     this.worker,
                                     authEngine,
-                                    tokenEngine,
                                     input,
                                     //socket prepared channel engine
                                     shBridge.isWebSocket() ? shBridge.getSocket().channelEngine : undefined
@@ -178,7 +163,6 @@ export default class MainRequestProcessor
                             shBridge,
                             this.worker,
                             authEngine,
-                            tokenEngine,
                             input,
                             //socket prepared channel engine
                             shBridge.isWebSocket() ? shBridge.getSocket().channelEngine : undefined

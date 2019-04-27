@@ -96,4 +96,21 @@ export default class ObjectUtils
         }
         return found;
     }
+
+    static deepClone(obj) {
+        // if not array or object or is null return self
+        if (typeof obj !== 'object'||obj === null) return obj;
+        let newO, i;
+        // handle case: array
+        if (obj instanceof Array) {
+            let l;
+            newO = [];
+            for (i = 0, l = obj.length; i < l; i++) newO[i] = ObjectUtils.deepClone(obj[i]);
+            return newO;
+        }
+        // handle case: object
+        newO = {};
+        for (i in obj) if (obj.hasOwnProperty(i)) newO[i] = ObjectUtils.deepClone(obj[i]);
+        return newO;
+    }
 }

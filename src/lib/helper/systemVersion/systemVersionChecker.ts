@@ -8,7 +8,7 @@ import BaseSHBridge       from "../bridges/baseSHBridge";
 import BackError          from "../../api/BackError";
 import {MainBackErrors}   from "../zationBackErrors/mainBackErrors";
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../../helper/configs/appConfig";
+import {ControllerConfig} from "../configDefinitions/appConfig";
 
 export type VersionSystemAccessCheckFunction = (shBridge : BaseSHBridge) => void;
 

@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../configs/appConfig";
+import {ControllerConfig} from "../configDefinitions/appConfig";
 import AuthEngine         from "./authEngine";
 import {ZationAccess}     from "../constants/internal";
 import ZationTokenInfo    from "../infoObjects/zationTokenInfo";

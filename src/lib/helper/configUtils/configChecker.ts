@@ -11,10 +11,10 @@ import BagExtension, {
     ControllerConfig,
     InputConfig, MultiInput,
     ModelOptional, ObjectModelConfig, AnyOfModelConfig, ArrayModelConfig, ValueModelConfig, Model,
-} from "../configs/appConfig";
-import {PanelUserConfig}      from "../configs/mainConfig";
-import {MainService, Service} from "../configs/serviceConfig";
-import {ChannelConfig, ChannelDefault, CustomChannelConfig} from "../configs/channelConfig";
+} from "../configDefinitions/appConfig";
+import {PanelUserConfig}      from "../configDefinitions/mainConfig";
+import {MainService, Service} from "../configDefinitions/serviceConfig";
+import {ChannelConfig, ChannelDefault, CustomChannelConfig} from "../configDefinitions/channelConfig";
 // noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../constants/validationTypes";
 import {
@@ -25,10 +25,9 @@ import {
     TypeTypes
 } from "../constants/validation";
 import ModelImportEngine    from "./modelImportEngine";
-import ZationConfig         from "../../main/zationConfig";
 import ConfigErrorBag       from "./configErrorBag";
 import ConfigCheckerTools   from "./configCheckerTools";
-import {Structures}         from "./structures";
+import {Structures}         from "../configDefinitions/structures";
 import ConfigError          from "./configError";
 import Target               from "./target";
 import Logger               from "../logger/logger";
@@ -37,10 +36,11 @@ import ObjectPath           from "../utils/objectPath";
 import Controller, {ControllerClass} from "../../api/Controller";
 import Iterator             from "../utils/iterator";
 import ObjectUtils          from "../utils/objectUtils";
+import ConfigLoader   from "../configManager/ConfigLoader";
 
 export default class ConfigChecker
 {
-    private readonly zc: ZationConfig;
+    private readonly zcLoader: ConfigLoader;
     private readonly ceb: ConfigErrorBag;
 
     private modelsConfig: Record<string, Model>;
@@ -51,14 +51,14 @@ export default class ConfigChecker
 
     private modelImportEngine : ModelImportEngine;
 
-    constructor(zationConfig, configErrorBag) {
-        this.zc = zationConfig;
+    constructor(zationConfigLoader, configErrorBag) {
+        this.zcLoader = zationConfigLoader;
         this.ceb = configErrorBag;
     }
 
     public checkStarterConfig() {
         ConfigCheckerTools.assertStructure
-        (Structures.StarterConfig, this.zc.starterConfig,
+        (Structures.StarterConfig, this.zcLoader.starterConfig,
             ConfigNames.STARTER, this.ceb);
     }
 
@@ -69,15 +69,15 @@ export default class ConfigChecker
 
     private prepare() {
         this.prepareAllValidUserGroupsAndCheck();
-        this.modelsConfig = typeof this.zc.appConfig.models === 'object' ? this.zc.appConfig.models : {};
+        this.modelsConfig = typeof this.zcLoader.appConfig.models === 'object' ? this.zcLoader.appConfig.models : {};
         this.modelImportEngine = new ModelImportEngine(this.modelsConfig);
         this.cNames = {};
     }
 
     private checkAppBagExtensions()
     {
-        if(Array.isArray(this.zc.appConfig.bagExtensions)){
-            this.checkBagExtensions(this.zc.appConfig.bagExtensions,
+        if(Array.isArray(this.zcLoader.appConfig.bagExtensions)){
+            this.checkBagExtensions(this.zcLoader.appConfig.bagExtensions,
                 new Target('BagExtensions -> '),true,ConfigNames.APP);
         }
     }
@@ -154,10 +154,10 @@ export default class ConfigChecker
         let groups: any = [];
         let extraKeys: any = [ZationAccess.ALL, ZationAccess.ALL_NOT_AUTH, ZationAccess.ALL_AUTH];
 
-        if (typeof this.zc.appConfig.userGroups === 'object') {
-            if (typeof this.zc.appConfig.userGroups.auth === 'object') {
+        if (typeof this.zcLoader.appConfig.userGroups === 'object') {
+            if (typeof this.zcLoader.appConfig.userGroups.auth === 'object') {
 
-                const authUserGroups = this.zc.appConfig.userGroups.auth;
+                const authUserGroups = this.zcLoader.appConfig.userGroups.auth;
                 groups = Object.keys(authUserGroups);
 
                 //check auth user groups
@@ -170,8 +170,8 @@ export default class ConfigChecker
                     }
                 }
             }
-            if (typeof this.zc.appConfig.userGroups.default === 'string') {
-                const defaultGroup = this.zc.appConfig.userGroups.default;
+            if (typeof this.zcLoader.appConfig.userGroups.default === 'string') {
+                const defaultGroup = this.zcLoader.appConfig.userGroups.default;
                 this.checkUserGroupName(defaultGroup, extraKeys, false);
                 groups.push(defaultGroup);
             } else {
@@ -207,7 +207,7 @@ export default class ConfigChecker
     }
 
     private checkBackgroundTasks() {
-        const bkt = this.zc.appConfig.backgroundTasks;
+        const bkt = this.zcLoader.appConfig.backgroundTasks;
         if (typeof bkt === 'object') {
             for (let name in bkt) {
                 if (bkt.hasOwnProperty(name)) {
@@ -220,9 +220,9 @@ export default class ConfigChecker
     }
 
     private checkAuthController() {
-        const authControllerName = this.zc.appConfig.authController;
+        const authControllerName = this.zcLoader.appConfig.authController;
         if (typeof authControllerName === "string") {
-            const controller = this.zc.appConfig.controllers || {};
+            const controller = this.zcLoader.appConfig.controllers || {};
             if (!controller.hasOwnProperty(authControllerName)) {
                 this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                     `AuthController: '${authControllerName}' is not found.`));
@@ -239,15 +239,15 @@ export default class ConfigChecker
 
     private checkEventConfig() {
         ConfigCheckerTools.assertStructure
-        (Structures.EventConfig, this.zc.eventConfig, ConfigNames.EVENT, this.ceb);
+        (Structures.EventConfig, this.zcLoader.eventConfig, ConfigNames.EVENT, this.ceb);
     }
 
     private checkChannelConfig() {
         //main structure
         ConfigCheckerTools.assertStructure
-        (Structures.ChannelConfig, this.zc.channelConfig, ConfigNames.CHANNEL, this.ceb);
+        (Structures.ChannelConfig, this.zcLoader.channelConfig, ConfigNames.CHANNEL, this.ceb);
 
-        let mainChannels = this.zc.channelConfig;
+        let mainChannels = this.zcLoader.channelConfig;
         for (let key in mainChannels) {
             if (mainChannels.hasOwnProperty(key) && typeof mainChannels[key] === 'object') {
                 if (key === nameof<ChannelConfig>(s => s.customChannels) || key === nameof<ChannelConfig>(s => s.customIdChannels)) {
@@ -329,10 +329,10 @@ export default class ConfigChecker
 
 
     private checkAccessControllerDefaultIsSet() {
-        let access = ObjectPath.get(this.zc.appConfig,
+        let access = ObjectPath.get(this.zcLoader.appConfig,
             [nameof<AppConfig>(s => s.controllerDefaults), nameof<ControllerConfig>(s => s.access)]);
 
-        let notAccess = ObjectPath.get(this.zc.appConfig,
+        let notAccess = ObjectPath.get(this.zcLoader.appConfig,
             [nameof<AppConfig>(s => s.controllerDefaults), nameof<ControllerConfig>(s => s.notAccess)]);
 
         if (access === undefined && notAccess === undefined) {
@@ -449,20 +449,20 @@ export default class ConfigChecker
     }
 
     private checkAppConfigMain() {
-        ConfigCheckerTools.assertStructure(Structures.App, this.zc.appConfig, ConfigNames.APP, this.ceb);
+        ConfigCheckerTools.assertStructure(Structures.App, this.zcLoader.appConfig, ConfigNames.APP, this.ceb);
     }
 
     private checkMainConfig() {
         //checkStructure
-        ConfigCheckerTools.assertStructure(Structures.Main, this.zc.mainConfig, ConfigNames.MAIN, this.ceb);
+        ConfigCheckerTools.assertStructure(Structures.Main, this.zcLoader.mainConfig, ConfigNames.MAIN, this.ceb);
         this.checkPanelUserMainConfig();
         this.checkOrigins();
     }
 
     private checkOrigins()
     {
-        if(Array.isArray(this.zc.mainConfig.origins)) {
-            this.zc.mainConfig.origins.forEach(((o,i) => {
+        if(Array.isArray(this.zcLoader.mainConfig.origins)) {
+            this.zcLoader.mainConfig.origins.forEach(((o,i) => {
                 // for javascript version
                 // noinspection SuspiciousTypeOfGuard
                 if(typeof o !== 'string'){
@@ -474,7 +474,7 @@ export default class ConfigChecker
     }
 
     private checkPanelUserMainConfig() {
-        const panelUserConfig = this.zc.mainConfig.panelUser;
+        const panelUserConfig = this.zcLoader.mainConfig.panelUser;
         let hasOneUser = false;
         if (Array.isArray(panelUserConfig)) {
             for (let i = 0; i < panelUserConfig.length; i++) {
@@ -486,7 +486,7 @@ export default class ConfigChecker
             this.checkPanelUserConfig(panelUserConfig, new Target(`Panel UserConfig`));
         }
 
-        if (this.zc.mainConfig.usePanel && !hasOneUser) {
+        if (this.zcLoader.mainConfig.usePanel && !hasOneUser) {
             Logger.printConfigWarning
             (
                 ConfigNames.MAIN,
@@ -516,7 +516,7 @@ export default class ConfigChecker
 
         if (config.password === 'admin' &&
             config.username === 'admin' &&
-            this.zc.mainConfig.usePanel) {
+            this.zcLoader.mainConfig.usePanel) {
             Logger.printConfigWarning
             (ConfigNames.MAIN, `Its recommend to not use the default panel access credentials!` +
                 ` So please change them in the main config!`);
@@ -534,7 +534,7 @@ export default class ConfigChecker
     private checkServiceConfig() {
         //checkStructure
         ConfigCheckerTools.assertStructure
-        (Structures.ServiceConfig, this.zc.serviceConfig, ConfigNames.SERVICE, this.ceb);
+        (Structures.ServiceConfig, this.zcLoader.serviceConfig, ConfigNames.SERVICE, this.ceb);
         //check Services
         this.checkServices();
         //check load Services
@@ -543,7 +543,7 @@ export default class ConfigChecker
 
     private checkServiceModules()
     {
-        const ls = this.zc.serviceConfig.serviceModules;
+        const ls = this.zcLoader.serviceConfig.serviceModules;
         //check custom services
         if (Array.isArray(ls)) {
             ls.forEach((c,i) => {
@@ -627,7 +627,7 @@ export default class ConfigChecker
     }
 
     private checkServices() {
-        const cs = this.zc.serviceConfig.services;
+        const cs = this.zcLoader.serviceConfig.services;
         //check custom services
         if (typeof cs === 'object') {
             for (let serviceName in cs) {
@@ -640,8 +640,8 @@ export default class ConfigChecker
 
     private checkControllersConfigs() {
         //check Controller
-        if (typeof this.zc.appConfig.controllers === 'object') {
-            const controller = this.zc.appConfig.controllers;
+        if (typeof this.zcLoader.appConfig.controllers === 'object') {
+            const controller = this.zcLoader.appConfig.controllers;
             for (let cName in controller) {
                 if (controller.hasOwnProperty(cName)) {
                     this.checkController(controller[cName], new Target(`Controller: '${cName}'`));
@@ -650,8 +650,8 @@ export default class ConfigChecker
         }
 
         //check controllerDefault
-        if (typeof this.zc.appConfig.controllerDefaults === 'object') {
-            const controller = this.zc.appConfig.controllerDefaults;
+        if (typeof this.zcLoader.appConfig.controllerDefaults === 'object') {
+            const controller = this.zcLoader.appConfig.controllerDefaults;
             this.checkControllerConfig(controller, new Target(nameof<AppConfig>(s => s.controllerDefaults)));
         }
 

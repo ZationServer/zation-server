@@ -5,13 +5,13 @@ GitHub: LucaCode
  */
 
 import ZationWorker = require("../../main/zationWorker");
-import {AuthUserGroupConfig, UserGroupsConfig} from "../configs/appConfig";
-import {DefaultUserGroupFallBack} from "../constants/internal";
-import ZationConfig               from "../../main/zationConfig";
+import {AuthUserGroupConfig, UserGroupsConfig} from "../configDefinitions/appConfig";
+import {DefaultUserGroupFallBack}              from "../constants/internal";
+import ZationConfigFull                      from "../configManager/zationConfigFull";
 
 export default class AEPreparedPart
 {
-    private readonly zc : ZationConfig;
+    private readonly zc : ZationConfigFull;
     private readonly useAuth : boolean;
     private readonly worker : ZationWorker;
     private readonly groupsConfig : UserGroupsConfig = {};
@@ -19,7 +19,7 @@ export default class AEPreparedPart
     private readonly defaultGroup : string;
 
     //prepares and check the config
-    constructor(zc : ZationConfig,worker : ZationWorker)
+    constructor(zc : ZationConfigFull, worker : ZationWorker)
     {
         this.zc = zc;
         this.useAuth = this.zc.mainConfig.useAuth;
@@ -66,18 +66,11 @@ export default class AEPreparedPart
         }
     }
 
-    getDefaultGroup() : string
-    {
+    getDefaultGroup() : string {
         return this.defaultGroup;
     }
 
-    getWorker() : ZationWorker
-    {
-        return this. worker;
-    }
-
-    isUseAuth() : boolean
-    {
+    isUseAuth() : boolean {
         return this.useAuth;
     }
 

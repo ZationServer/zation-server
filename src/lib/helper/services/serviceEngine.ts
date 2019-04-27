@@ -5,10 +5,10 @@ GitHub: LucaCode
  */
 
 
-import {Service}              from "../configs/serviceConfig";
+import {Service}              from "../configDefinitions/serviceConfig";
 import ZationWorker         = require("../../main/zationWorker");
 import ServiceBox             from "./serviceBox";
-import ZationConfig           from "../../main/zationConfig";
+import ZationConfig           from "../configManager/zationConfig";
 import ServiceNotFoundError   from "./serviceNotFoundError";
 import Logger                 from "../logger/logger";
 

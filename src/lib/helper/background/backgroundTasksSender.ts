@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import ZationMaster from "../../main/zationMaster";
-import ZationConfig from "../../main/zationConfig";
+import ZationConfig from "../configManager/zationConfig";
 import TimeUtils    from "../utils/timeUtils";
 import Logger       from "../logger/logger";
 

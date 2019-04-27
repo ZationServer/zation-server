@@ -5,6 +5,6 @@ GitHub: LucaCode
  */
 
 export default interface InternalData {
-    tokenCheckKey ?: string
+    tokenCheckKey : string
 }
 

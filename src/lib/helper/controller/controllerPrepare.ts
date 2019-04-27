@@ -6,12 +6,12 @@ GitHub: LucaCode
 
 import ZationWorker     = require("../../main/zationWorker");
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../configs/appConfig";
+import {ControllerConfig} from "../configDefinitions/appConfig";
 import BackError          from "../../api/BackError";
 import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
 import AuthAccessChecker, {AuthAccessCheckFunction} from "../auth/authAccessChecker";
 import Controller, {ControllerClass} from "../../api/Controller";
-import ZationConfig                  from "../../main/zationConfig";
+import ZationConfig                  from "../configManager/zationConfig";
 import {MainBackErrors}              from "../zationBackErrors/mainBackErrors";
 import ControllerUtils, {PrepareHandleInvokeFunction} from "./controllerUtils";
 import {SystemController}            from "../systemController/systemControler.config";

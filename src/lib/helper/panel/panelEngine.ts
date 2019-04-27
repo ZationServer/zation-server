@@ -6,10 +6,10 @@ GitHub: LucaCode
 
 import Timer               = NodeJS.Timer;
 import ZationWorker        = require("../../main/zationWorker");
-import {PanelUserConfig}     from "../configs/mainConfig";
+import {PanelUserConfig}     from "../configDefinitions/mainConfig";
 import {ZationChannel}       from "../constants/internal";
-import {AuthUserGroupConfig} from "../configs/appConfig";
-import ZationConfig          from "../../main/zationConfig";
+import {AuthUserGroupConfig} from "../configDefinitions/appConfig";
+import ZationConfig          from "../configManager/zationConfig";
 import ChExchangeEngine      from "../channel/chExchangeEngine";
 
 export default class PanelEngine

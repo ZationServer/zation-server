@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {ProcessTask}       from "./processTaskEngine";
 import OptionalProcessor   from "./optionalProcessor";
-import {AnyOfModelConfig, ArrayModelConfig, Model, ObjectModelConfig, ValueModelConfig} from "../configs/appConfig";
+import {AnyOfModelConfig, ArrayModelConfig, Model, ObjectModelConfig, ValueModelConfig} from "../configDefinitions/appConfig";
 import BackErrorBag        from "../../api/BackErrorBag";
 import BackError           from "../../api/BackError";
 import SmallBag            from "../../api/SmallBag";

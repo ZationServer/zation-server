@@ -19,10 +19,10 @@ import {SyncTokenActions} from "../constants/syncTokenActions";
 import {WorkerChTaskType} from "../constants/workerChTaskType";
 import SocketInfo         from "../infoObjects/socketInfo";
 import Logger             from "../logger/logger";
-import ChTools            from "./chTools";
+import ChUtils            from "./chUtils";
 import PubDataInfo        from "../infoObjects/pubDataInfo";
 import FuncUtils          from "../utils/funcUtils";
-import ZationConfig       from "../../main/zationConfig";
+import ZationConfig       from "../configManager/zationConfig";
 import CChInfo            from "../infoObjects/cChInfo";
 import CIdChInfo          from "../infoObjects/cIdChInfo";
 
@@ -141,13 +141,13 @@ export default class ChExchangeEngine {
             let promises : Promise<void>[] = [];
             for(let i = 0; i < id.length; i++) {
                 eventTrigger(id[i]);
-                promises.push(this.pubAsync(ChTools.buildUserChName(id[i]),eventName,data,srcSocketSid));
+                promises.push(this.pubAsync(ChUtils.buildUserChName(id[i]),eventName,data,srcSocketSid));
             }
             await Promise.all(promises);
         }
         else {
             eventTrigger(id);
-            await this.pubAsync(ChTools.buildUserChName(id),eventName,data,srcSocketSid);
+            await this.pubAsync(ChUtils.buildUserChName(id),eventName,data,srcSocketSid);
         }
     }
 
@@ -193,13 +193,13 @@ export default class ChExchangeEngine {
             let promises : Promise<void>[] = [];
             for(let i = 0; i < authUserGroup.length; i++) {
                 eventTrigger(authUserGroup[i]);
-                promises.push(this.pubAsync(ChTools.buildAuthUserGroupChName(authUserGroup[i]),eventName,data,srcSocketSid));
+                promises.push(this.pubAsync(ChUtils.buildAuthUserGroupChName(authUserGroup[i]),eventName,data,srcSocketSid));
             }
             await Promise.all(promises);
         }
         else {
             eventTrigger(authUserGroup);
-            await this.pubAsync(ChTools.buildAuthUserGroupChName(authUserGroup),eventName,data,srcSocketSid);
+            await this.pubAsync(ChUtils.buildAuthUserGroupChName(authUserGroup),eventName,data,srcSocketSid);
         }
     }
 
@@ -208,7 +208,7 @@ export default class ChExchangeEngine {
         return {
             e : eventName,
             d : data,
-            ssi : srcSocketSid
+            sSid : srcSocketSid
         };
     }
 
@@ -222,7 +222,7 @@ export default class ChExchangeEngine {
 
     async publishInCustomIdChannel(channel : string, id : any, eventName : string, data : any, srcSocketSid ?: string, socketInfo ?: SocketInfo) : Promise<void>
     {
-        const channelFullName = ChTools.buildCustomIdChannelName(channel,id);
+        const channelFullName = ChUtils.buildCustomIdChannelName(channel,id);
         //trigger pub bag customCh event
         const func = this.worker.getChConfigManager().getOnBagPubCustomIdCh(channel);
         if(!!func) {
@@ -252,7 +252,7 @@ export default class ChExchangeEngine {
             let promises : Promise<void>[] = [];
             for(let i = 0; i < channel.length; i++)
             {
-                let channelFullName = ChTools.buildCustomChannelName(channel[i]);
+                let channelFullName = ChUtils.buildCustomChannelName(channel[i]);
                 eventTrigger(channel[i]);
                 promises.push(this.pubAsync(channelFullName,eventName,data,srcSocketSid));
             }
@@ -260,7 +260,7 @@ export default class ChExchangeEngine {
         }
         else
         {
-            let channelFullName = ChTools.buildCustomChannelName(channel);
+            let channelFullName = ChUtils.buildCustomChannelName(channel);
             eventTrigger(channel);
             await this.pubAsync(channelFullName,eventName,data,srcSocketSid);
         }

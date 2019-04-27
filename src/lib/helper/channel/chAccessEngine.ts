@@ -13,25 +13,64 @@ token is changed.
 
 import Socket               from "../sc/socket";
 import {ZationAccess, ZationChannel, ZationToken} from "../constants/internal";
-import {AccessKey, ChConfigManager}               from "./chConfigManager";
-import SocketInfo                                 from "../infoObjects/socketInfo";
+import {ChannelPrepare}     from "./channelPrepare";
+import SocketInfo           from "../infoObjects/socketInfo";
 import SmallBag             from "../../api/SmallBag";
 import CIdChInfo            from "../infoObjects/cIdChInfo";
 import CChInfo              from "../infoObjects/cChInfo";
-import ChTools              from "./chTools";
+import ChUtils              from "./chUtils";
 import Logger               from "../logger/logger";
 import FuncUtils            from "../utils/funcUtils";
 import PubDataInfo          from "../infoObjects/pubDataInfo";
+import AEPreparedPart       from "../auth/aePreparedPart";
+
+export type ChAccessChecker = (socket : Socket,socketInfo : SocketInfo,extraArg : any) => Promise<boolean>
 
 export default class ChAccessEngine
 {
-    private chConfigManager : ChConfigManager;
+    private chConfigManager : ChannelPrepare;
     private readonly smallBag : SmallBag;
 
-    constructor(chConfigManager : ChConfigManager,smallBag : SmallBag) {
+    constructor(chConfigManager : ChannelPrepare, smallBag : SmallBag) {
         this.chConfigManager = chConfigManager;
         this.smallBag = smallBag;
     }
+
+    /**
+     * Returns a Closures for checking the access to a channel.
+     * @param accessValue
+     * @param invertResult
+     */
+    static createChAccessChecker(accessValue : any,aePreparedPart : AEPreparedPart,invertResult : boolean | undefined) : ChAccessChecker {
+        if(accessValue !== undefined) {
+            const accessProcess : (boolean) => boolean = invertResult ? (b) => !b : (b) => b;
+
+            if(typeof accessValue === 'boolean') {
+                return async () => {return accessProcess((accessValue))};
+            }
+            else if(typeof accessValue === 'string') {
+                switch (accessValue) {
+                    case ZationAccess.ALL :
+                        return async () => {return accessProcess(true)};
+                    case ZationAccess.ALL_AUTH :
+                        return async (s,si) => {return accessProcess(si.isAuthIn)};
+                    case ZationAccess.ALL_NOT_AUTH :
+                        return async (s,si) => {return accessProcess(!si.isAuthIn)};
+                    default :
+                        return async (s,si) => {return accessProcess(si. === accessValue)};
+                }
+            }
+            else {
+                return async () => {return false;}
+            }
+        }
+        else {
+            return async () => {return false;}
+        }
+    }
+
+
+
 
     //Part Access
     private async hasAccessTo(value : any,socket : Socket,chName : string,{isPub, pubData},chId ?: string) : Promise<boolean>
@@ -140,7 +179,7 @@ export default class ChAccessEngine
     async checkAccessSubCustomIdCh(socket,trySubName : string) : Promise<any>
     {
         //return error
-        const {name,id} = ChTools.getCustomIdChannelInfo(trySubName);
+        const {name,id} = ChUtils.getCustomIdChannelInfo(trySubName);
 
         if(name === undefined || name === '')
         {
@@ -194,7 +233,7 @@ export default class ChAccessEngine
     async checkAccessClientPubCustomIdCh(socket, tryPubName : string, pubData : any) : Promise<any>
     {
         //return error
-        const {name,id} = ChTools.getCustomIdChannelInfo(tryPubName);
+        const {name,id} = ChUtils.getCustomIdChannelInfo(tryPubName);
 
         if(name === undefined || name === '')
         {
@@ -256,7 +295,7 @@ export default class ChAccessEngine
     async checkAccessSubCustomCh(socket,trySubName : string) : Promise<any>
     {
         //return error
-        const name = ChTools.getCustomChannelName(trySubName);
+        const name = ChUtils.getCustomChannelName(trySubName);
 
         if(name === undefined || name === '')
         {
@@ -301,7 +340,7 @@ export default class ChAccessEngine
     async checkAccessClientPubCustomCh(socket, tryPubName : string, pubData : any) : Promise<any>
     {
         //return error
-        const name = ChTools.getCustomChannelName(tryPubName);
+        const name = ChUtils.getCustomChannelName(tryPubName);
 
         if(name === undefined || name === '')
         {
@@ -367,7 +406,7 @@ export default class ChAccessEngine
                 if(subs[i].indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1)
                 {
                     //custom id channel
-                    const {name,id} = ChTools.getCustomIdChannelInfo(subs[i]);
+                    const {name,id} = ChUtils.getCustomIdChannelInfo(subs[i]);
                     if(! (await this.hasAccessToSub
                     (
                         socket,
@@ -376,14 +415,14 @@ export default class ChAccessEngine
                         name,
                         id
                     ))) {
-                        ChTools.kickOut(socket,subs[i]);
+                        ChUtils.kickOut(socket,subs[i]);
                     }
                 }
                 else if(subs[i].indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1)
                 {
                     //custom channel
 
-                    const name = ChTools.getCustomChannelName(subs[i]);
+                    const name = ChUtils.getCustomChannelName(subs[i]);
                     if(! (await this.hasAccessToSub
                     (
                         socket,
@@ -391,7 +430,7 @@ export default class ChAccessEngine
                         this.chConfigManager.getSubAccessValueCustomCh(name),
                         name
                     ))) {
-                        ChTools.kickOut(socket,subs[i]);
+                        ChUtils.kickOut(socket,subs[i]);
                     }
                 }
             }
@@ -407,7 +446,7 @@ export default class ChAccessEngine
             const subs = socket.subscriptions();
 
             let authUserGroup : undefined | string = undefined;
-            let userId : undefined | number | string = undefined;
+            let userId : undefined | string | number = undefined;
             let panelAccess : undefined | boolean = undefined;
 
             if(token !== null) {
@@ -419,30 +458,28 @@ export default class ChAccessEngine
             for(let i = 0; i < subs.length; i++)
             {
                 //Default group channel
-                if(subs[i] === ZationChannel.DEFAULT_USER_GROUP
-                    && authUserGroup !== ''
-                    && authUserGroup !== undefined) {
-                    ChTools.kickOut(socket,ZationChannel.DEFAULT_USER_GROUP);
+                if(subs[i] === ZationChannel.DEFAULT_USER_GROUP && authUserGroup !== undefined) {
+                    ChUtils.kickOut(socket,ZationChannel.DEFAULT_USER_GROUP);
                 }
                 //Auth GROUP
                 else if(subs[i].indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1)
                 {
                     const authGroupSub = subs[i].replace(ZationChannel.AUTH_USER_GROUP_PREFIX,'');
                     if(authUserGroup !== authGroupSub) {
-                        ChTools.kickOut(socket,subs[i]);
+                        ChUtils.kickOut(socket,subs[i]);
                     }
                 }
                 //User Channel
                 else if(subs[i].indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1)
                 {
-                    const userIdSub = subs[i].replace(ZationChannel.USER_CHANNEL_PREFIX,'');
-                    if(userId != userIdSub) {
-                        ChTools.kickOut(socket,subs[i]);
+                    //only onw '=' user id can also be a number.
+                    if(userId != subs[i].replace(ZationChannel.USER_CHANNEL_PREFIX,'')) {
+                        ChUtils.kickOut(socket,subs[i]);
                     }
                 }
                 //Panel Channel
                 else if(subs[i] === ZationChannel.PANEL_OUT && !panelAccess) {
-                    ChTools.kickOut(socket,subs[i]);
+                    ChUtils.kickOut(socket,subs[i]);
                 }
 
             }

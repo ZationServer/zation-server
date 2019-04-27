@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import fs         = require('fs');
-import ZationConfig from "../../main/zationConfig";
+import ZationConfig from "../configManager/zationConfig";
 
 export default class ClientPrepare
 {

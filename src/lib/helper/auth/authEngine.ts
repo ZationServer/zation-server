@@ -8,49 +8,45 @@ import ZationWorker        = require("../../main/zationWorker");
 import {PrepareZationToken, ZationToken} from "../constants/internal";
 import BaseSHBridge         from "../bridges/baseSHBridge";
 import AEPreparedPart       from "./aePreparedPart";
-import ChAccessEngine       from "../channel/chAccessEngine";
-import TokenEngine          from "../token/tokenEngine";
 import AuthenticationError  from "../error/authenticationError";
+import TokenUtils           from "../token/tokenUtils";
+import JwtSignOptions       from "../constants/jwt";
 
 export default class AuthEngine
 {
     protected readonly aePreparedPart : AEPreparedPart;
     protected readonly shBridge : BaseSHBridge;
-    protected readonly tokenEngine : TokenEngine;
-    protected readonly chAccessEngine : ChAccessEngine;
     protected readonly worker : ZationWorker;
+    protected readonly tokenCheckKey : string;
 
     protected currentDefault : boolean;
-    protected currentUserGroup :string | undefined;
+    protected currentUserGroup : string | undefined;
     protected currentUserId : string | number | undefined;
 
-    constructor(shBridge : BaseSHBridge,tokenEngine :TokenEngine,worker : ZationWorker)
+    constructor(shBridge : BaseSHBridge,worker : ZationWorker)
     {
         this.aePreparedPart = worker.getAEPreparedPart();
         this.shBridge       = shBridge;
-        this.tokenEngine    = tokenEngine;
-        this.chAccessEngine = worker.getChAccessEngine();
         this.worker         = worker;
+        this.tokenCheckKey  = worker.getZationConfig().internalData.tokenCheckKey;
 
-        this.currentDefault      = true;
-        this.currentUserGroup    = undefined;
-        this.currentUserId       = undefined;
+        this.currentDefault   = true;
+        this.currentUserGroup = this.aePreparedPart.getDefaultGroup();
+        this.currentUserId    = undefined;
     }
 
     /**
-     * Load information from token.
+     * Load the information from token in the memory of the auth engine.
      */
-    refresh() : void {
-        // noinspection JSUnresolvedFunction
-        const authToken : ZationToken | null = this.shBridge.getToken();
-        if(authToken !== null)
-        {
-            this.currentUserId = authToken.zationUserId;
-            this.currentUserGroup = authToken.zationAuthUserGroup;
+    refresh(token : null | ZationToken) : void {
+        if(token !== null) {
+            this.currentUserId = token.zationUserId;
+            this.currentUserGroup = token.zationAuthUserGroup;
             this.currentDefault = false;
         }
         else {
-            this.currentUserGroup = this.getDefaultGroup();
+            this.currentDefault = true;
+            this.currentUserGroup = this.aePreparedPart.getDefaultGroup();
         }
     }
 
@@ -66,136 +62,80 @@ export default class AuthEngine
         return this.currentUserGroup;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     getAuthUserGroup() : string | undefined {
         return this.isDefault() ? undefined : this.currentUserGroup;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     getUserId() : number | string | undefined {
         return this.currentUserId;
     }
 
-    async authenticate(authUserGroup : string, userId ?: string | number,tokenCustomVar ?: object) : Promise<void>
+    async authenticate(authUserGroup : string, userId ?: string | number,tokenCustomVar : object = {},jwtOptions : JwtSignOptions = {}) : Promise<void>
     {
         if(this.checkIsIn(authUserGroup)) {
 
-            const obj : PrepareZationToken = {
-                zationAuthUserGroup : authUserGroup
-            };
+            const token : PrepareZationToken =
+                this.shBridge.hasToken() ?
+                {} : TokenUtils.generateToken(this.tokenCheckKey);
 
-            //Id to setBoth in time
+            token.zationAuthUserGroup = authUserGroup;
+            token.zationCustomVariables = tokenCustomVar;
+
             if(userId !== undefined) {
-                obj.zationUserId = userId;
+                token.zationUserId = userId;
             }
-
             //check auto panelAccess
             if(this.aePreparedPart.authUserGroupPanelAccess(authUserGroup)) {
-                obj.zationPanelAccess = true;
+                token.zationPanelAccess = true;
             }
 
-            //custom token var
-            if(tokenCustomVar){
-                obj[nameof<ZationToken>(s => s.zationCustomVariables)] = tokenCustomVar;
-            }
-
-            //create AuthEngine Token!
-            let suc = false;
-            if(this.shBridge.hasToken()) {
-                suc = await this.tokenEngine.updateTokenVariable(obj);
-            }
-            else {
-                suc = await this.tokenEngine.createToken(obj);
-            }
-
-            if(suc) {
-                this.currentDefault = false;
-                this.currentUserId = userId;
-                this.currentUserGroup = authUserGroup;
-            }
-            else {
-                throw new AuthenticationError(`Update or create token is failed!`);
-            }
+            await this.shBridge.setToken(TokenUtils.combineTokens(this.shBridge.getToken(),token),jwtOptions);
         }
         else {
-            throw new AuthenticationError(`Auth group '${authUserGroup}' is not found in the app.config!`);
+            throw new AuthenticationError(`Auth group '${authUserGroup}' is not found in the app.config.`);
         }
     }
 
     async setPanelAccess(access : boolean) : Promise<void>
     {
-        if(this.isAuth()) {
-            const obj : PrepareZationToken = {};
-            obj.zationPanelAccess = access;
-            await this.tokenEngine.updateTokenVariable(obj);
+        let token = this.shBridge.getToken();
+        if(token !== null) {
+            token = {...token};
+            token.zationPanelAccess = access;
+            await this.shBridge.setToken(token);
         }
         else {
             throw new AuthenticationError(`Panel access can not be updated if the socket is unauthenticated!`);
         }
     }
 
-    async setUserId(userId : number | string) : Promise<void>
-    {
-        if(this.isAuth()) {
-            const obj : PrepareZationToken = {};
-            obj.zationUserId = userId;
-            //is only set if the client has a auth token (than he has also a user group)
-            const suc = await this.tokenEngine.updateTokenVariable(obj);
-            if(suc) {
-                this.currentUserId = userId;
-            }
-            else {
-                throw new AuthenticationError(`Update token is failed!`);
-            }
+    async setUserId(userId : number | string | undefined) : Promise<void> {
+        let token = this.shBridge.getToken();
+        if(token !== null) {
+            token = {...token};
+            token.zationUserId = userId;
+            await this.shBridge.setToken(token);
         }
         else {
-            throw new AuthenticationError(`User ID can not be updated if the socket is unauthenticated!`);
+            throw new AuthenticationError(`User id can not be updated if the socket is unauthenticated!`);
         }
     }
 
-    async removeUserId() : Promise<void>
-    {
+    async removeUserId() : Promise<void> {
+       await this.setUserId(undefined);
+    }
+
+    async deauthenticate() : Promise <void> {
         if(this.isAuth()) {
-            const obj : PrepareZationToken = {};
-            obj.zationUserId = null;
-            const suc = await this.tokenEngine.updateTokenVariable(obj);
-            if(suc) {
-                this.currentUserId = undefined;
-            }
-            else {
-                throw new AuthenticationError(`Update token is failed!`);
-            }
-        }
-        else {
-            throw new AuthenticationError(`User ID can not be updated if the socket is unauthenticated!`);
+            this.shBridge.deauthenticate();
         }
     }
 
-    async deauthenticate() : Promise <void>
-    {
-        if(!this.isAuth()) {
-            return;
-        }
-
-        this.currentDefault = true;
-        this.currentUserGroup = this.getDefaultGroup();
-        this.currentUserId = undefined;
-
-        //deauthenticate sc/send info by http back
-        this.shBridge.deauthenticate();
-
-        //check channels from sc
-        if(this.shBridge.isWebSocket()) {
-            await this.chAccessEngine.checkSocketCustomChAccess(this.shBridge.getSocket());
-            ChAccessEngine.checkSocketZationChAccess(this.shBridge.getSocket());
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
     isUseAuth() : boolean {
         return this.aePreparedPart.isUseAuth();
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getDefaultGroup() : string {
         return this.aePreparedPart.getDefaultGroup();
     }

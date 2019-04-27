@@ -10,7 +10,7 @@ import InputDataProcessor       from "../input/inputDataProcessor";
 import BackError                from "../../api/BackError";
 import BackErrorBag             from "../../api/BackErrorBag";
 import ControllerPrepare        from "../controller/controllerPrepare";
-import ZationConfig             from "../../main/zationConfig";
+import ZationConfig             from "../configManager/zationConfig";
 import ZationReqUtils           from "../utils/zationReqUtils";
 import {MainBackErrors}         from "../zationBackErrors/mainBackErrors";
 import InputUtils               from "../input/inputUtils";

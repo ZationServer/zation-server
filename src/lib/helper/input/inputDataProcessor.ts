@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ControllerConfig, Model, MultiInput} from "../configs/appConfig";
+import {ControllerConfig, Model, MultiInput} from "../configDefinitions/appConfig";
 import {ZationTask}              from "../constants/internal";
 import OptionalProcessor         from "./optionalProcessor";
 import SingleInputDataProcessor  from "./singleInputDataProcessor";
