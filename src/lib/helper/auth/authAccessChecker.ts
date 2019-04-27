@@ -73,7 +73,7 @@ export default class AuthAccessChecker
                 for(let i = 0; i < accessValue.length;i++) {
                     if((typeof accessValue[i] === 'string' && accessValue[i] === authEngine.getUserGroup())
                         ||
-                        (typeof accessValue[i] === 'number' && accessValue[i] === authEngine.getUserId())) {
+                        (typeof accessValue[i] === 'number' && accessValue[i] == authEngine.getUserId())) {
                         found = true;
                         break;
                     }
@@ -93,7 +93,7 @@ export default class AuthAccessChecker
         }
         else if(typeof accessValue === 'number') {
             return async (authEngine) => {
-                return accessProcess(authEngine.getUserId() === accessValue);
+                return accessProcess(authEngine.getUserId() == accessValue);
             };
         }
         else {
