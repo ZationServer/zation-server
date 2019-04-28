@@ -10,16 +10,35 @@ import BaseShBridgeSocket from "../bridges/baseShBridgeSocket";
 import AuthEngine         from "../auth/authEngine";
 import SocketInfo         from "../infoObjects/socketInfo";
 import ZationWorker     = require("../../main/zationWorker");
+import Mapper             from "../utils/mapper";
+import SocketSet          from "../utils/socketSet";
+import {ZationToken}      from "../constants/internal";
+import ChAccessHelper     from "../channel/chAccessHelper";
+import {ChannelPrepare}   from "../channel/channelPrepare";
 
 export default class SocketUpgradeEngine
 {
 
     private readonly worker : ZationWorker;
     private readonly sidBuilder : SidBuilder;
+    private readonly channelPrepare : ChannelPrepare;
 
-    constructor(worker : ZationWorker) {
+    private mapUserIdToSc : Mapper<UpSocket>;
+    private mapTokenIdToSc : Mapper<UpSocket>;
+    private mapAuthUserGroupToSc : Mapper<UpSocket>;
+    private defaultUserGroupSet : SocketSet;
+    private panelUserSet : SocketSet;
+
+    constructor(worker : ZationWorker,channelPrepare : ChannelPrepare) {
         this.worker = worker;
         this.sidBuilder = new SidBuilder(worker.options.instanceId,worker.id);
+        this.channelPrepare = channelPrepare;
+
+        this.mapUserIdToSc = worker.getUserIdToScMapper();
+        this.mapTokenIdToSc = worker.getTokenIdToScMapper();
+        this.mapAuthUserGroupToSc = worker.getAuthUserGroupToScMapper();
+        this.defaultUserGroupSet = worker.getDefaultUserGroupSet();
+        this.panelUserSet = worker.getPanelUserSet();
     }
 
     /**
@@ -51,22 +70,80 @@ export default class SocketUpgradeEngine
                 return currentToken;
             },
 
-            set: (newToken) => {
-
+            set: (newToken : ZationToken) => {
                 authEngine.refresh(newToken);
 
+                (async () => {
+                    const p = ChAccessHelper.checkSocketCustomChAccess(socket,this.channelPrepare);
+                    ChAccessHelper.checkSocketZationChAccess(socket);
+                    await p;
+                })();
 
+                //update worker map and recheck
+                if(newToken !== null) {
+                    if(currentToken === null) {
+                        //new authenticated remove from default and map to the other maps
+                        //that requires a token.
+                        this.defaultUserGroupSet.remove(socket);
 
-                /*
-                if(shBridge.isWebSocket()) {
-                    await chAccessEngine.checkSocketCustomChAccess(shBridge.getSocket());
+                        if(newToken.zationAuthUserGroup !== undefined){
+                            this.mapAuthUserGroupToSc.map(newToken.zationAuthUserGroup,socket);
+                        }
+
+                        this.mapTokenIdToSc.map(newToken.zationTokenId,socket);
+
+                        if(newToken.zationUserId !== undefined){
+                            this.mapUserIdToSc.map(newToken.zationUserId.toString(),socket);
+                        }
+
+                        if(typeof newToken.zationOnlyPanelToken === 'boolean' && newToken.zationOnlyPanelToken){
+                            this.panelUserSet.add(socket);
+                        }
+                    }
+                    else {
+                        //updated authentication
+                        //check for changes and update map
+                        if(newToken.zationAuthUserGroup !== currentToken.zationAuthUserGroup) {
+                            this.mapAuthUserGroupToSc.unMap(currentToken.zationAuthUserGroup,socket);
+                            if(newToken.zationAuthUserGroup !== undefined){
+                                this.mapAuthUserGroupToSc.map(newToken.zationAuthUserGroup,socket);
+                            }
+                        }
+                        //token id can not be changed.
+
+                        //Only one '=' (userId can be a number or string)
+                        if(newToken.zationUserId != currentToken.zationUserId){
+                            if(currentToken.zationUserId !== undefined){
+                                this.mapUserIdToSc.unMap(currentToken.zationUserId.toString(),socket);
+                            }
+                            if(newToken.zationUserId !== undefined){
+                                this.mapUserIdToSc.map(newToken.zationUserId.toString(),socket);
+                            }
+                        }
+                        if(newToken.zationOnlyPanelToken !== currentToken.zationOnlyPanelToken) {
+                            if(typeof newToken.zationOnlyPanelToken === 'boolean' && newToken.zationOnlyPanelToken){
+                                this.panelUserSet.add(socket);
+                            }
+                            else {
+                                this.panelUserSet.remove(socket);
+                            }
+                        }
+                    }
                 }
-
-                 */
-
-                //update worker map
-                //check custom ch access
-                // check zation ch access
+                else {
+                    //add to default group
+                    this.defaultUserGroupSet.add(socket);
+                    if(currentToken !== null) {
+                        //Deauthenticated remove from other mappings that requires a token
+                        //if the old token was a token.
+                        this.mapAuthUserGroupToSc.unMap(currentToken.zationAuthUserGroup,socket);
+                        this.mapTokenIdToSc.unMap(currentToken.zationTokenId,socket);
+                        if(currentToken.zationUserId !== undefined){
+                            this.mapUserIdToSc.unMap(currentToken.zationUserId.toString(),socket);
+                        }
+                        this.panelUserSet.remove(socket);
+                    }
+                }
 
                 currentToken = newToken;
             },

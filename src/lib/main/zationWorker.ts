@@ -93,12 +93,11 @@ class ZationWorker extends SCWorker
 
     private app : any;
 
-    private mapUserIdToSc : Mapper<UpSocket> = new Mapper<UpSocket>();
-    private mapTokenIdToSc : Mapper<UpSocket> = new Mapper<UpSocket>();
-
-    private mapAuthUserGroupToSc : Mapper<UpSocket> = new Mapper<UpSocket>();
-    private defaultUserGroupSet  = new SocketSet();
-    private panelUserSet = new SocketSet();
+    private readonly mapUserIdToSc : Mapper<UpSocket> = new Mapper<UpSocket>();
+    private readonly mapTokenIdToSc : Mapper<UpSocket> = new Mapper<UpSocket>();
+    private readonly mapAuthUserGroupToSc : Mapper<UpSocket> = new Mapper<UpSocket>();
+    private readonly defaultUserGroupSet  = new SocketSet();
+    private readonly panelUserSet = new SocketSet();
 
     private variableStorage : object = {};
 
@@ -205,7 +204,7 @@ class ZationWorker extends SCWorker
 
         //Socket update engine
         Logger.startStopWatch();
-        this.socketUpdateEngine = new SocketUpgradeEngine(this);
+        this.socketUpdateEngine = new SocketUpgradeEngine(this,this.channelPrepare);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the socket update engine.`,true);
 
         //PrepareChannels after smallBag!
@@ -882,6 +881,20 @@ class ZationWorker extends SCWorker
 
         this.scServer.on('disconnection', async (socket : UpSocket, code, data) =>
         {
+            /**
+             * Remove socket from all maps.
+             */
+            const token = socket.authToken;
+            if(token !== null){
+                this.mapAuthUserGroupToSc.unMap(token.zationAuthUserGroup,socket);
+                this.mapTokenIdToSc.unMap(token.zationTokenId,socket);
+                if(token.zationUserId !== undefined){
+                    this.mapUserIdToSc.unMap(token.zationUserId.toString(),socket);
+                }
+                this.panelUserSet.remove(socket);
+            }
+            this.defaultUserGroupSet.remove(socket);
+
             await Promise.all([
                 this.zc.eventConfig.socketDisconnection(this.getPreparedSmallBag(),socket.socketInfo,code,data),
                 this.zc.eventConfig.sc_serverDisconnection(this.getPreparedSmallBag(),socket,code,data)]
@@ -1640,7 +1653,7 @@ class ZationWorker extends SCWorker
         return this.serviceEngine;
     }
 
-    getUserToScMapper() : Mapper<UpSocket> {
+    getUserIdToScMapper() : Mapper<UpSocket> {
         return this.mapUserIdToSc;
     }
 

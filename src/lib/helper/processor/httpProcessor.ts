@@ -16,7 +16,7 @@ import {MainBackErrors}             from "../zationBackErrors/mainBackErrors";
 import TokenUtils                   from "../token/tokenUtils";
 import JsonConverter                from "../utils/jsonConverter";
 import ZationConfigFull             from "../configManager/zationConfigFull";
-import FuncUtils                    from "../utils/funcUtils";
+import MiddlewareUtils              from "../utils/middlewareUtils";
 
 export default class HttpProcessor
 {
@@ -104,7 +104,7 @@ export default class HttpProcessor
                 TokenUtils.checkToken(token,this.aePreparedPart);
 
                 //will throw if auth is blocked
-                await FuncUtils.checkMiddlewareFunc
+                await MiddlewareUtils.checkMiddleware
                 (this.zc.eventConfig.middlewareAuthenticate,HttpProcessor.middlewareAuthNext,this.worker.getPreparedSmallBag(),new ZationTokenInfo(token));
             }
             return new SHBridgeHttp(res,req,reqId,zationData,false,this.worker);

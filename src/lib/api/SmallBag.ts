@@ -2479,7 +2479,7 @@ export default class SmallBag
      */
     getSocketsWithUserId(userId : string) : UpSocket[]
     {
-        return this.worker.getUserToScMapper().getValues(userId);
+        return this.worker.getUserIdToScMapper().getValues(userId);
     }
 
     // noinspection JSUnusedGlobalSymbols

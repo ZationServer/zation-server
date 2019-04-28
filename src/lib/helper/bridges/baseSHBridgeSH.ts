@@ -7,7 +7,8 @@ GitHub: LucaCode
 import BaseSHBridge         from "./baseSHBridge";
 import {IncomingMessage}    from "http";
 import {ZationToken}        from "../constants/internal";
-import UpSocket               from "../sc/socket";
+import UpSocket             from "../sc/socket";
+import AuthEngine           from "../auth/authEngine";
 const  IP : any           = require('ip');
 
 /**
@@ -43,5 +44,6 @@ export default abstract class BaseSHBridgeSH implements BaseSHBridge {
         return this.getToken() !== null;
     }
 
+    abstract getAuthEngine(): AuthEngine;
 }
 

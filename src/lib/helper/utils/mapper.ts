@@ -63,9 +63,9 @@ export default class Mapper<T extends UpSocket>
        this.data[k] = undefined;
     }
 
-    removeValueFromKey(k : string, v : T)
+    unMap(k : string | undefined, v : T)
     {
-        if(this.data[k] instanceof SocketSet) {
+        if(k !== undefined && this.data[k] instanceof SocketSet) {
             // @ts-ignore
             this.data[k].remove(v);
         }
