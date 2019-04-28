@@ -27,6 +27,8 @@ class ZationBroker extends SCBroker
     {
         this.zc = new ZationConfigFull(this.options.zationConfigWorkerTransport);
 
+        process.title = `Zation Server: ${this.zc.mainConfig.instanceId} -> Broker - ${this.id}`;
+
         if (this.options.clusterStateServerHost) {
             this.clusterClient =
                 scClusterBrokerClient.attach(this, {

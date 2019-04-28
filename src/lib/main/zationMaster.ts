@@ -86,6 +86,8 @@ export default class ZationMaster {
                         startMode
                     );
 
+                    process.title = `Zation Server: ${this.zc.mainConfig.instanceId} -> Master`;
+
                     //setLogger
                     Logger.setZationConfig(this.zc);
 
