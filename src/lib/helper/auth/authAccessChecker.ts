@@ -12,16 +12,16 @@ import Logger             from "../logger/logger";
 import SmallBag           from "../../api/SmallBag";
 import AccessUtils        from "../access/accessUtils";
 
-export type AuthAccessCheckFunction = (authEngine : AuthEngine) => Promise<boolean>;
+export type TokenStateAccessCheckFunction = (authEngine : AuthEngine) => Promise<boolean>;
 
 export default class AuthAccessChecker
 {
     /**
-     * Returns a Closures for checking the access to a controller.
+     * Returns a Closures for checking the token state access to a controller.
      * @param controllerConfig
      * @param smallBag
      */
-    static createControllerAccessChecker(controllerConfig : ControllerConfig,smallBag : SmallBag) : AuthAccessCheckFunction {
+    static createTokenStateAccessChecker(controllerConfig : ControllerConfig, smallBag : SmallBag) : TokenStateAccessCheckFunction {
 
         const notAccess = controllerConfig.notAccess;
         const access    = controllerConfig.access;
@@ -47,7 +47,7 @@ export default class AuthAccessChecker
             };
         }
 
-        return AccessUtils.createAccessChecker<AuthAccessCheckFunction,ControllerAccessFunction>
+        return AccessUtils.createAccessChecker<TokenStateAccessCheckFunction,ControllerAccessFunction>
         (accessValue,accessProcess,(func) => {
             return async (authEngine) => {
                 const token = authEngine.getSHBridge().getToken();

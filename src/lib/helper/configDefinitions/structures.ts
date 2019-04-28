@@ -105,7 +105,7 @@ Main[nameof<MainConfig>(s => s.brokers)]
 Main[nameof<MainConfig>(s => s.appName)]              = {types : ['string'],isOptional : true};
 Main[nameof<MainConfig>(s => s.secure)]               = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.httpsConfig)]          = {types : ['object'],isOptional : true};
-Main[nameof<MainConfig>(s => s.useAuth)]              = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.useTokenStateCheck)]   = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.useProtocolCheck)]     = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.useHttpMethodCheck)]   = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.sendErrorDescription)] = {types : ['boolean'],isOptional : true};

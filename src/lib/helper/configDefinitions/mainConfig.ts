@@ -26,18 +26,101 @@ export interface MainConfig
      * @default is /zation
      */
     path  ?: string;
+    /**
+     * With this property, you can specify what origins are allowed to communicate to the server.
+     * You can specify the port and hostname.
+     * Also, a star can be used as a wild card for any port or any hostname.
+     * @example
+     * //allow all origins
+     * origins : null, or
+     * origins : '*:*',
+     *
+     * //allow all with hostname example.de
+     * origins : 'example.de:*', or
+     * origins : 'example.de'
+     *
+     * //allow all with port 80
+     * origins : '*:80'
+     *
+     * //allow only hostname example.de on port 80
+     * origins : 'example.de:80'
+     *
+     * //allow all with hostname example.de or example2.de
+     * origins : ['example.de:*','example2.de']
+     *
+     * @default is null. (all allowed)
+     */
     origins  ?: string | null | string[];
+    /**
+     * Boolean that indicates if the debug mode is active.
+     * In debug mode the server will console log information about the current status and actions of connected clients.
+     * @default is false.
+     */
     debug  ?: boolean;
+    /**
+     * Boolean that indicates if the start debug mode is active.
+     * In start debug mode the server will console log all steps
+     * for starting the server and how much time each step takes to process.
+     * @default is false.
+     */
     startDebug  ?: boolean;
+    /**
+     * Boolean that indicates if the server should console log
+     * config warnings after checking the configurations.
+     * @default is true.
+     */
     showConfigWarnings  ?: boolean;
+    /**
+     * Should be either 'dev' or 'prod' -
+     * This affects the shutdown procedure
+     * when the master receives a 'SIGUSR2' signal. In 'dev' a SIGUSR2 will trigger an immediate shutdown of workers.
+     * In 'prod' workers will be terminated progressively in accordance with processTermTimeout.
+     * @default is 'prod'.
+     */
     environment  ?: 'dev' | 'prod';
+    /**
+     * The timezone of the server,
+     * it affects the calculation of the background task time.
+     * @default Zation will guess the timezone if it fails the default is 'Europe/Berlin'.
+     */
     timeZone  ?: string;
+    /**
+     * This property indicates how many workers should be run.
+     * It can be a number, the options 'auto' or 'half-auto'.
+     * Auto means the count of CPU cores the system offers.
+     * Half auto is the count of CPU cores divided by two.
+     * @default is 'auto'.
+     */
     workers  ?: 'auto' | 'half-auto' | number;
+    /**
+     * This property indicates how many brokers should be run.
+     * It can be a number, the options 'auto' or 'half-auto'.
+     * Auto means the count of CPU cores the system offers.
+     * Half auto is the count of CPU cores divided by two.
+     * @default is 'half-auto'.
+     */
     brokers  ?: 'auto' | 'half-auto' | number;
+    /**
+     * The name of the app.
+     * @default is 'AppWithoutName'.
+     */
     appName  ?: string;
+    /**
+     * Indicates if the server should run with SSL if you activated
+     * this property don't forget to provide a httpsConfig.
+     * @default is false.
+     */
     secure  ?: boolean;
+    /**
+     * The https config, this configuration is used when the secure option is activated.
+     * Its the same as the object provided to Node.js's https server.
+     */
     httpsConfig  ?: ServerOptions;
-    useAuth  ?: boolean;
+    /**
+     * Indicates if the server should use the token state check.
+     * @default is true.
+     */
+    useTokenStateCheck  ?: boolean;
     useProtocolCheck  ?: boolean;
     useHttpMethodCheck  ?: boolean;
     sendErrorDescription  ?: boolean;
@@ -143,7 +226,7 @@ export interface InternalMainConfig extends MainConfig {
     workers  : 'auto' | number;
     appName  : string;
     secure  : boolean;
-    useAuth  : boolean;
+    useTokenStateCheck  : boolean;
     useProtocolCheck  : boolean;
     useHttpMethodCheck  : boolean;
     sendErrorDescription  : boolean;

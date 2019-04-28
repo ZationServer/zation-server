@@ -415,10 +415,10 @@ export default class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns true if the server is using authentication.
+     * Returns true if the server is using the token state check.
      */
-    isUseAuth() : boolean {
-        return this.authEngine.isUseAuth();
+    isUseTokenStateCheck() : boolean {
+        return this.authEngine.isUseTokenStateCheck();
     }
 
     //Part Cookie

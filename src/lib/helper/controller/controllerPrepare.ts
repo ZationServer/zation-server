@@ -9,7 +9,7 @@ import ZationWorker     = require("../../main/zationWorker");
 import {ControllerConfig} from "../configDefinitions/appConfig";
 import BackError          from "../../api/BackError";
 import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
-import AuthAccessChecker, {AuthAccessCheckFunction} from "../auth/authAccessChecker";
+import AuthAccessChecker, {TokenStateAccessCheckFunction} from "../auth/authAccessChecker";
 import Controller, {ControllerClass} from "../../api/Controller";
 import {MainBackErrors}              from "../zationBackErrors/mainBackErrors";
 import ControllerUtils, {PrepareHandleInvokeFunction} from "./controllerUtils";
@@ -22,7 +22,7 @@ interface ControllerPrepareData {
     controllerInstance : Controller,
     versionAccessCheck : VersionSystemAccessCheckFunction,
     systemAccessCheck : VersionSystemAccessCheckFunction,
-    authAccessCheck : AuthAccessCheckFunction,
+    tokenStateCheck : TokenStateAccessCheckFunction,
     prepareHandleInvoke : PrepareHandleInvokeFunction
 }
 
@@ -124,7 +124,7 @@ export default class ControllerPrepare
             controllerInstance: cInstance,
             versionAccessCheck : SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
-            authAccessCheck : AuthAccessChecker.createControllerAccessChecker(config,this.smallBag),
+            tokenStateCheck : AuthAccessChecker.createTokenStateAccessChecker(config,this.smallBag),
             prepareHandleInvoke : ControllerUtils.createPrepareHandleInvoker(config)
         };
 

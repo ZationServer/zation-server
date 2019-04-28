@@ -34,7 +34,7 @@ export default class MainRequestProcessor
     private readonly authController : string | undefined;
     private readonly useProtocolCheck : boolean;
     private readonly useHttpMethodCheck : boolean;
-    private readonly useAuth : boolean;
+    private readonly useTokenStateCheck : boolean;
     private readonly controllerPrepare : ControllerPrepare;
 
     constructor(zc : ZationConfigFull,worker : ZationWorker,validCheckProcessor : ValidCheckProcessor) {
@@ -46,7 +46,7 @@ export default class MainRequestProcessor
         this.authController = this.zc.appConfig.authController;
         this.useProtocolCheck = this.zc.mainConfig.useProtocolCheck;
         this.useHttpMethodCheck = this.zc.mainConfig.useHttpMethodCheck;
-        this.useAuth = this.zc.mainConfig.useAuth;
+        this.useTokenStateCheck = this.zc.mainConfig.useTokenStateCheck;
         this.controllerPrepare = this.worker.getControllerPrepare();
     }
 
@@ -88,7 +88,7 @@ export default class MainRequestProcessor
                 controllerInstance,
                 systemAccessCheck,
                 versionAccessCheck,
-                authAccessCheck,
+                tokenStateCheck,
                 prepareHandleInvoke
             } = this.controllerPrepare.getControllerPrepareData(controllerName,isSystemController);
 
@@ -110,7 +110,7 @@ export default class MainRequestProcessor
                 )
                 {
                     //check access to controller
-                    if(!this.useAuth || (await authAccessCheck(authEngine))) {
+                    if(!this.useTokenStateCheck || (await tokenStateCheck(authEngine))) {
 
                         let input : object;
                         //check input

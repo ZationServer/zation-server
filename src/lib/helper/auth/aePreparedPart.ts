@@ -11,7 +11,7 @@ import ZationConfigFull                        from "../configManager/zationConf
 export default class AEPreparedPart
 {
     private readonly zc : ZationConfigFull;
-    private readonly useAuth : boolean;
+    private readonly useTokenStateCheck : boolean;
     private readonly groupsConfig : UserGroupsConfig = {};
     private readonly authGroups : Record<string,AuthUserGroupConfig>;
     private readonly defaultGroup : string;
@@ -20,21 +20,17 @@ export default class AEPreparedPart
     constructor(zc : ZationConfigFull)
     {
         this.zc = zc;
-        this.useAuth = this.zc.mainConfig.useAuth;
+        this.useTokenStateCheck = this.zc.mainConfig.useTokenStateCheck;
 
-        if(this.useAuth)
-        {
-            if(this.zc.appConfig.userGroups !== undefined)
-            {
-                this.groupsConfig = this.zc.appConfig.userGroups;
+        if(this.zc.appConfig.userGroups !== undefined) {
+            this.groupsConfig = this.zc.appConfig.userGroups;
 
-                this.authGroups = this.groupsConfig.auth || {};
-                this.defaultGroup = this.groupsConfig.default || DefaultUserGroupFallBack;
-            }
-            else {
-                this.defaultGroup = 'default';
-                this.authGroups = {};
-            }
+            this.authGroups = this.groupsConfig.auth || {};
+            this.defaultGroup = this.groupsConfig.default || DefaultUserGroupFallBack;
+        }
+        else {
+            this.defaultGroup = 'default';
+            this.authGroups = {};
         }
     }
 
@@ -68,10 +64,10 @@ export default class AEPreparedPart
     }
 
     /**
-     * Returns if user auth.
+     * Returns if the server uses the token state check.
      */
-    isUseAuth() : boolean {
-        return this.useAuth;
+    isUseTokenStateCheck() : boolean {
+        return this.useTokenStateCheck;
     }
 
     /**

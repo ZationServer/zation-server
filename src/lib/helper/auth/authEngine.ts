@@ -139,8 +139,8 @@ export default class AuthEngine
         }
     }
 
-    isUseAuth() : boolean {
-        return this.aePreparedPart.isUseAuth();
+    isUseTokenStateCheck() : boolean {
+        return this.aePreparedPart.isUseTokenStateCheck();
     }
 
     // noinspection JSUnusedGlobalSymbols

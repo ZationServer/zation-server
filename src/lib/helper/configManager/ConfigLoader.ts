@@ -20,7 +20,7 @@ import {AppConfig}        from "../configDefinitions/appConfig";
 import {ChannelConfig}    from "../configDefinitions/channelConfig";
 import {ServiceConfig}    from "../configDefinitions/serviceConfig";
 import {Structures}       from "../configDefinitions/structures";
-import {FullLoadedConfigSet, OtherLoadedConfigSet} from "./configSets";
+import {OtherLoadedConfigSet} from "./configSets";
 
 export default class ConfigLoader {
 
@@ -44,7 +44,7 @@ export default class ConfigLoader {
         environment: 'prod',
         postKey: 'zation',
         path: '/zation',
-        useAuth: true,
+        useTokenStateCheck: true,
         appName: 'AppWithoutName',
         secure: false,
         useProtocolCheck: true,
@@ -145,26 +145,6 @@ export default class ConfigLoader {
             }
         }
         return tmpPath;
-    }
-
-    getFullLoadedConfigs() : FullLoadedConfigSet {
-        return {
-            starterConfig : this._starterConfig,
-            mainConfig : this._mainConfig,
-            appConfig : this._appConfig,
-            channelConfig : this._channelConfig,
-            eventConfig : this._eventConfig,
-            serviceConfig : this._serviceConfig
-        };
-    }
-
-    getOtherLoadedConfigs() : OtherLoadedConfigSet {
-        return {
-            appConfig : this._appConfig,
-            channelConfig : this._channelConfig,
-            eventConfig : this._eventConfig,
-            serviceConfig : this._serviceConfig
-        }
     }
 
     private loadUserDataLocations() : ConfigLocations {
