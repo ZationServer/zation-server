@@ -16,8 +16,10 @@ export default class BagExtensionEngine
         this.zc = zc;
     }
 
-    extendBag()
-    {
+    /**
+     * Add bag extensions.
+     */
+    extendBag() {
         if(this.zc.appConfig.bagExtensions)
         {
             const extensions = this.zc.appConfig.bagExtensions;
@@ -29,6 +31,9 @@ export default class BagExtensionEngine
     }
 
     // noinspection JSMethodCanBeStatic
+    /**
+     * Add props to an object.
+     */
     private add(bag : any, methods)
     {
         for(let k in methods) {

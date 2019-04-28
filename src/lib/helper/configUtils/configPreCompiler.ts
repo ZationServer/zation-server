@@ -20,6 +20,45 @@ import ObjectUtils       from "../utils/objectUtils";
 import Iterator          from "../utils/iterator";
 import FuncUtils         from "../utils/funcUtils";
 import {OtherLoadedConfigSet, OtherPreCompiledConfigSet} from "../configManager/configSets";
+import {
+    BeforeBackErrorBagFunction,
+    BeforeBackErrorFunction,
+    BeforeCodeErrorFunction,
+    BeforeErrorFunction,
+    ExpressFunction,
+    HttpServerStartedFunction,
+    MiddlewareAuthenticationFunction,
+    PreCompiledEventConfig,
+    ScServerAuthenticationFunction,
+    ScServerAuthenticationStateChangeFunction,
+    ScServerBadSocketAuthTokenFunction,
+    ScServerConnectionFunction,
+    ScServerDeauthenticationFunction,
+    ScServerErrorFunction,
+    ScServerFunction,
+    ScServerNoticeFunction, ScServerReadyFunction,
+    ScServerSocketCodeDataFunction,
+    ScServerSocketFunction,
+    ScServerSubscriptionFunction,
+    ScServerUnsubscriptionFunction,
+    SocketAuthenticateFunction,
+    SocketAuthStateChangeFunction,
+    SocketBadAuthTokenFunction,
+    SocketCodeDataFunction,
+    SocketConnectFunction,
+    SocketDeauthenticateFunction,
+    SocketErrorFunction,
+    SocketMessageFunction,
+    SocketRawFunction,
+    SocketSubscribeFunction,
+    SocketUnsubscribeFunction,
+    StartedFunction,
+    WorkerStartedFunction,
+    WsServerStartedFunction,
+    ZationSocketDisconnectionFunction,
+    ZationSocketFunction,
+    ZationWorkerMessageFunction
+} from "../configDefinitions/eventConfig";
 
 export default class ConfigPreCompiler
 {
@@ -95,13 +134,65 @@ export default class ConfigPreCompiler
     }
 
     private preCompileEventConfig() {
-        //preCompile event functions with array to one function
+
+        const defaultFunc = () => {};
+        const resEventConfig : PreCompiledEventConfig = {
+            express  : defaultFunc,
+            scServer  : defaultFunc,
+            socket  : defaultFunc,
+            workerStarted  : defaultFunc,
+            workerLeaderStarted : defaultFunc,
+            httpServerStarted  : defaultFunc,
+            wsServerStarted  : defaultFunc,
+            started  : defaultFunc,
+            beforeError  : defaultFunc,
+            beforeBackError  : defaultFunc,
+            beforeCodeError  : defaultFunc,
+            beforeBackErrorBag  : defaultFunc,
+            socketDisconnection  : defaultFunc,
+            workerMessage  : defaultFunc,
+            sc_socketError  : defaultFunc,
+            sc_socketRaw  : defaultFunc,
+            sc_socketConnect  : defaultFunc,
+            sc_socketDisconnect  : defaultFunc,
+            sc_socketConnectAbort  : defaultFunc,
+            sc_socketClose  : defaultFunc,
+            sc_socketSubscribe  : defaultFunc,
+            sc_socketUnsubscribe  : defaultFunc,
+            sc_socketBadAuthToken  : defaultFunc,
+            sc_socketAuthenticate  : defaultFunc,
+            sc_socketDeauthenticate  : defaultFunc,
+            sc_socketAuthStateChange  : defaultFunc,
+            sc_socketMessage  : defaultFunc,
+            sc_serverError  : defaultFunc,
+            sc_serverNotice  : defaultFunc,
+            sc_serverHandshake  : defaultFunc,
+            sc_serverConnectionAbort  : defaultFunc,
+            sc_serverDisconnection  : defaultFunc,
+            sc_serverClosure  : defaultFunc,
+            sc_serverConnection  : defaultFunc,
+            sc_serverSubscription  : defaultFunc,
+            sc_serverUnsubscription  : defaultFunc,
+            sc_serverAuthentication  : defaultFunc,
+            sc_serverDeauthentication  : defaultFunc,
+            sc_serverAuthenticationStateChange  : defaultFunc,
+            sc_serverBadSocketAuthToken  : defaultFunc,
+            sc_serverReady  : defaultFunc,
+        };
+
+        //preCompile events
         const eventConfig = this.configs.eventConfig;
         for(let k in eventConfig) {
-            if (eventConfig.hasOwnProperty(k) && Array.isArray(eventConfig[k])) {
-                eventConfig[k] = FuncUtils.createFuncArrayAsyncInvoker(eventConfig[k]);
+            if (eventConfig.hasOwnProperty(k)) {
+                if(Array.isArray(eventConfig[k])) {
+                    resEventConfig[k] = FuncUtils.createFuncArrayAsyncInvoker(eventConfig[k]);
+                }
+                else if(typeof eventConfig[k] === 'function'){
+                    resEventConfig[k] = eventConfig[k];
+                }
             }
         }
+        this.configs.eventConfig = resEventConfig;
     }
 
     private preCompileServiceModules()

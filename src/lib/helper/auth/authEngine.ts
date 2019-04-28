@@ -109,6 +109,14 @@ export default class AuthEngine
         }
     }
 
+    hasPanelAccess() : boolean {
+        const token = this.shBridge.getToken();
+        if(token !== null && typeof token.zationPanelAccess === 'boolean'){
+            return token.zationPanelAccess;
+        }
+        return false;
+    }
+
     async setUserId(userId : number | string | undefined) : Promise<void> {
         let token = this.shBridge.getToken();
         if(token !== null) {

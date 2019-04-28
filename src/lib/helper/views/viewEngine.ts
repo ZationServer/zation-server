@@ -11,14 +11,17 @@ export default class ViewEngine
 {
     private defaultZationView : string;
 
-    loadViews() : void {
-        this.defaultZationView = this.load('zationDefault');
+    async loadViews() : Promise<void> {
+        this.defaultZationView = await this.load('zationDefault');
     }
 
     // noinspection JSMethodCanBeStatic
-    private load(name : string) : string {
-        return fs.readFileSync
-        (path.resolve(__dirname + '/html/' + name + '.html'), 'utf8');
+    private async load(name : string) : Promise<string> {
+        return new Promise((resolve, reject) => {
+            fs.readFile(path.resolve(__dirname + '/html/' + name + '.html'),'utf8', (err, data) => {
+                err ? reject(err) : resolve(data);
+            });
+        });
     }
 
     public getZationDefaultView() : string {

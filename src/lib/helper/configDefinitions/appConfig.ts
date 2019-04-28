@@ -11,6 +11,7 @@ import {ValidationTypes} from "../constants/validationTypes";
 import {ZationToken}     from "../constants/internal";
 import BackErrorBag      from "../../api/BackErrorBag";
 import SmallBag          from "../../api/SmallBag";
+import ZationTokenInfo from "../infoObjects/zationTokenInfo";
 
 export interface AppConfig
 {
@@ -282,7 +283,7 @@ export interface MultiInput {
 
 export type PrepareHandleFunction = (bag : Bag) => Promise<void> | void;
 
-export type ControllerAccessFunction = (smallBag : SmallBag,token : ZationToken | null) => Promise<boolean> | boolean;
+export type ControllerAccessFunction = (smallBag : SmallBag,token : ZationTokenInfo | null) => Promise<boolean> | boolean;
 
 export interface ControllerConfig extends InputConfig
 {

@@ -5,32 +5,34 @@ GitHub: LucaCode
  */
 
 import {ZationToken}  from "../constants/internal";
-import Socket         from "../sc/socket";
+import UpSocket         from "../sc/socket";
 import TokenUtils     from "../token/tokenUtils";
 import ObjectPath     from "../utils/objectPath";
 
 export default class SocketInfo
 {
-    private readonly _socket : Socket;
+    private readonly _socket : UpSocket;
 
-    constructor(socket : Socket) {
+    constructor(socket : UpSocket) {
         this._socket = socket;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Returns the auth user group of the socket or undefined if the socket has no token.
+     * Returns the auth user group of the socket.
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     get authUserGroup(): string | undefined {
-        return TokenUtils.getSocketTokenVariable(nameof<ZationToken>(s => s.zationAuthUserGroup),this._socket);
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationAuthUserGroup),this._socket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Returns the user id of the socket or undefined if the socket has no token.
+     * Returns the user id of the socket.
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     get userId(): string | number | undefined {
-        return TokenUtils.getSocketTokenVariable(nameof<ZationToken>(s => s.zationUserId),this._socket);
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationUserId),this._socket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -59,10 +61,11 @@ export default class SocketInfo
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Returns the token id of the socket or undefined if the socket has no token.
+     * Returns the token id of the socket.
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     get tokenId(): string | undefined {
-        return TokenUtils.getSocketTokenVariable(nameof<ZationToken>(s => s.zationTokenId),this._socket);
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationTokenId),this._socket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -70,23 +73,25 @@ export default class SocketInfo
      * Returns if the socket is authenticated with a token.
      */
     get isAuthIn(): boolean {
-        return this._socket.getAuthToken() !== null;
+        return this._socket.authToken !== null;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Returns the expire of the token or undefined if the socket has no token.
+     * Returns the expire of the token.
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     get tokenExpire(): number | undefined {
-        return TokenUtils.getSocketTokenVariable(nameof<ZationToken>(s => s.exp),this._socket);
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.exp),this._socket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Returns the panel access of the socket or undefined if the socket has no token.
+     * Returns the panel access of the socket.
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     get panelAccess(): boolean | undefined {
-        return TokenUtils.getSocketTokenVariable(nameof<ZationToken>(s => s.zationPanelAccess),this._socket);
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationPanelAccess),this._socket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -99,10 +104,11 @@ export default class SocketInfo
      * @example
      * hasTokenVariable('person.email');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     hasTokenVariable(path ?: string | string[]) : boolean {
-        let ctv = TokenUtils.getSocketTokenVariable(nameof<ZationToken>(s => s.zationCustomVariables),this._socket);
-        return ObjectPath.has(!!ctv ? ctv : {},path);
+        return ObjectPath.has(TokenUtils.getCustomTokenVariables(this._socket.authToken),path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -115,10 +121,11 @@ export default class SocketInfo
      * @example
      * getTokenVariable('person.email');
      * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @throws AuthenticationError if the socket is not authenticated.
      */
     getTokenVariable<R>(path ?: string | string[]) : R {
-        let ctv = TokenUtils.getSocketTokenVariable(nameof<ZationToken>(s => s.zationCustomVariables),this._socket);
-        return ObjectPath.get(!!ctv ? ctv : {},path);
+        return ObjectPath.get(TokenUtils.getCustomTokenVariables(this._socket.authToken),path);
     }
 }
 

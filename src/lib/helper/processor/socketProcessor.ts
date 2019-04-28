@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import ZationWorker          = require("../../main/zationWorker");
 import SHBridgeSocket        from "../bridges/shBridgeSocket";
-import Socket                from "../sc/socket";
+import UpSocket                from "../sc/socket";
 import ZationConfig          from "../configManager/zationConfig";
 import Logger                from "../logger/logger";
 import ZationReqUtils        from "../utils/zationReqUtils";
@@ -24,7 +24,7 @@ export default class SocketProcessor
     }
 
     //SOCKET Extra Layer
-    async prepareReq(socket : Socket, input, respond,reqId : string)
+    async prepareReq(socket : UpSocket, input, respond, reqId : string)
     {
         if(this.debug){
             Logger.printDebugInfo(`Socket Request id: ${reqId} -> `,input,true);

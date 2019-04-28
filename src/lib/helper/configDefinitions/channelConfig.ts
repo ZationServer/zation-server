@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import SocketInfo           from "../infoObjects/socketInfo";
 import SmallBag             from "../../api/SmallBag";
-import PubDataInfo          from "../infoObjects/pubDataInfo";
+import PubData          from "../infoObjects/pubData";
 import CIdChInfo            from "../infoObjects/cIdChInfo";
 import CChInfo              from "../infoObjects/cChInfo";
 
@@ -16,13 +16,13 @@ export type CIdChannelSubAccessFunction =
     (smallBag : SmallBag, chInfo : CIdChInfo, socketInfo : SocketInfo) => Promise<boolean> | boolean;
 
 export type CIdChannelClientPubAccessFunction =
-    (smallBag : SmallBag, chInfo : CIdChInfo, pubData : PubDataInfo, socketInfo : SocketInfo) => Promise<boolean> | boolean;
+    (smallBag : SmallBag, chInfo : CIdChInfo, pubData : PubData, socketInfo : SocketInfo) => Promise<boolean> | boolean;
 
 export type CIdChannelOnClientPubFunction =
-    (smallBag : SmallBag, chInfo : CIdChInfo, pubData : PubDataInfo, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, chInfo : CIdChInfo, pubData : PubData, socketInfo : SocketInfo) => Promise<void> | void;
 
 export type CIdChannelOnBagPubFunction =
-    (smallBag : SmallBag, chInfo : CIdChInfo, pubData : PubDataInfo, socketInfo : SocketInfo | undefined) => Promise<void> | void;
+    (smallBag : SmallBag, chInfo : CIdChInfo, pubData : PubData, socketInfo : SocketInfo | undefined) => Promise<void> | void;
 
 export type CIdChannelOnSubFunction =
     (smallBag : SmallBag, chInfo : CIdChInfo, socketInfo : SocketInfo) => Promise<void> | void;
@@ -35,13 +35,13 @@ export type CChannelSubAccessFunction =
     (smallBag : SmallBag, chInfo : CChInfo, socketInfo : SocketInfo) => Promise<boolean> | boolean;
 
 export type CChannelClientPubAccessFunction =
-    (smallBag : SmallBag, chInfo : CChInfo, pubData : PubDataInfo, socketInfo : SocketInfo) => Promise<boolean> | boolean;
+    (smallBag : SmallBag, chInfo : CChInfo, pubData : PubData, socketInfo : SocketInfo) => Promise<boolean> | boolean;
 
 export type CChannelOnClientPubFunction =
-    (smallBag : SmallBag, chInfo : CChInfo, pubData : PubDataInfo, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, chInfo : CChInfo, pubData : PubData, socketInfo : SocketInfo) => Promise<void> | void;
 
 export type CChannelOnBagPubFunction =
-    (smallBag : SmallBag, chInfo : CChInfo, pubData : PubDataInfo, socketInfo : SocketInfo | undefined) => Promise<void> | void;
+    (smallBag : SmallBag, chInfo : CChInfo, pubData : PubData, socketInfo : SocketInfo | undefined) => Promise<void> | void;
 
 export type CChannelOnSubFunction =
     (smallBag : SmallBag, chInfo : CChInfo, socketInfo : SocketInfo) => Promise<void> | void;
@@ -51,10 +51,10 @@ export type CChannelOnUnsubFunction =
 
 
 export type UserChOnClientPubFunction =
-    (smallBag : SmallBag, userId : string, pubData : PubDataInfo, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, userId : string, pubData : PubData, socketInfo : SocketInfo) => Promise<void> | void;
 
 export type UserChOnBagPubFunction =
-    (smallBag : SmallBag, userId : string, pubData : PubDataInfo, socketInfo : SocketInfo | undefined) => Promise<void> | void;
+    (smallBag : SmallBag, userId : string, pubData : PubData, socketInfo : SocketInfo | undefined) => Promise<void> | void;
 
 export type UserChOnSubFunction =
     (smallBag : SmallBag, userId : string, socketInfo : SocketInfo) => Promise<void> | void;
@@ -64,10 +64,10 @@ export type UserChOnUnsubFunction =
 
 
 export type AuthUserGroupChOnClientPubFunction =
-    (smallBag : SmallBag, authUserGroup  : string, pubData : PubDataInfo, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, authUserGroup  : string, pubData : PubData, socketInfo : SocketInfo) => Promise<void> | void;
 
 export type AuthUserGroupChOnBagPubFunction =
-    (smallBag : SmallBag, authUserGroup  : string, pubData : PubDataInfo, socketInfo : SocketInfo | undefined) => Promise<void> | void;
+    (smallBag : SmallBag, authUserGroup  : string, pubData : PubData, socketInfo : SocketInfo | undefined) => Promise<void> | void;
 
 export type AuthUserGroupChOnSubFunction =
     (smallBag : SmallBag, authUserGroup : string, socketInfo : SocketInfo) => Promise<void> | void;
@@ -77,10 +77,10 @@ export type AuthUserGroupChOnUnsubFunction =
 
 
 export type NormalChOnClientPubFunction =
-    (smallBag : SmallBag, pubData : PubDataInfo, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo) => Promise<void> | void;
 
 export type NormalChOnBagPubFunction =
-    (smallBag : SmallBag, pubData : PubDataInfo, socketInfo : SocketInfo | undefined) => Promise<void> | void;
+    (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo | undefined) => Promise<void> | void;
 
 export type NormalChOnSubFunction =
     (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;

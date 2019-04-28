@@ -4,26 +4,23 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationWorker = require("../../main/zationWorker");
 import {AuthUserGroupConfig, UserGroupsConfig} from "../configDefinitions/appConfig";
 import {DefaultUserGroupFallBack}              from "../constants/internal";
-import ZationConfigFull                      from "../configManager/zationConfigFull";
+import ZationConfigFull                        from "../configManager/zationConfigFull";
 
 export default class AEPreparedPart
 {
     private readonly zc : ZationConfigFull;
     private readonly useAuth : boolean;
-    private readonly worker : ZationWorker;
     private readonly groupsConfig : UserGroupsConfig = {};
     private readonly authGroups : Record<string,AuthUserGroupConfig>;
     private readonly defaultGroup : string;
 
     //prepares and check the config
-    constructor(zc : ZationConfigFull, worker : ZationWorker)
+    constructor(zc : ZationConfigFull)
     {
         this.zc = zc;
         this.useAuth = this.zc.mainConfig.useAuth;
-        this.worker = worker;
 
         if(this.useAuth)
         {
@@ -31,49 +28,56 @@ export default class AEPreparedPart
             {
                 this.groupsConfig = this.zc.appConfig.userGroups;
 
-                const authGroups = this.groupsConfig.auth;
-                this.authGroups = authGroups !== undefined ? authGroups : {};
-
-                const defaultGroup = this.groupsConfig.default;
-                if(defaultGroup === undefined) {
-                    this.defaultGroup = DefaultUserGroupFallBack;
-                }
-                else {
-                    this.defaultGroup = defaultGroup;
-                }
+                this.authGroups = this.groupsConfig.auth || {};
+                this.defaultGroup = this.groupsConfig.default || DefaultUserGroupFallBack;
             }
-            else
-            {
+            else {
                 this.defaultGroup = 'default';
                 this.authGroups = {};
             }
         }
     }
 
-    getAuthGroups() : Record<string,AuthUserGroupConfig>
-    {
+    /**
+     * Returns all auth user groups.
+     */
+    getAuthGroups() : Record<string,AuthUserGroupConfig> {
         return this.authGroups;
     }
 
-    authUserGroupPanelAccess(authUserGroup : string) : boolean
-    {
+    /**
+     * Returns if the auth user group has panel access.
+     * @param authUserGroup
+     */
+    authUserGroupPanelAccess(authUserGroup : string) : boolean {
         const tempGroup = this.getAuthGroups()[authUserGroup];
-        if(!!tempGroup){
-            return !!tempGroup.panelAccess ? tempGroup.panelAccess : false;
+        if(tempGroup){
+            return typeof tempGroup.panelAccess === 'boolean' ?
+                tempGroup.panelAccess : false;
         }
         else{
             return false;
         }
     }
 
+    /**
+     * Returns the name of the default user group.
+     */
     getDefaultGroup() : string {
         return this.defaultGroup;
     }
 
+    /**
+     * Returns if user auth.
+     */
     isUseAuth() : boolean {
         return this.useAuth;
     }
 
+    /**
+     * Returns if the name is an auth user group.
+     * @param authGroup
+     */
     isAuthGroup(authGroup : string) : boolean {
         return this.authGroups.hasOwnProperty(authGroup);
     }

@@ -7,7 +7,7 @@ GitHub: LucaCode
 import {ZationRequest}      from "../constants/internal";
 import SHBridge             from "./shBridge";
 import BaseShBridgeSocket   from "./baseShBridgeSocket";
-import Socket               from "../sc/socket";
+import UpSocket               from "../sc/socket";
 
 /**
  * ShBridge implementation for socket.
@@ -18,7 +18,7 @@ export default class SHBridgeSocket extends BaseShBridgeSocket implements SHBrid
     protected readonly data : ZationRequest;
     protected readonly validationCheckReq : boolean;
 
-    constructor(socket : Socket,reqId : string,data : ZationRequest,validationCheckReq : boolean) {
+    constructor(socket : UpSocket, reqId : string, data : ZationRequest, validationCheckReq : boolean) {
         super(socket);
         this.reqId = reqId;
         this.data = data;

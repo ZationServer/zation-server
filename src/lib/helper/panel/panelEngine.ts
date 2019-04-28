@@ -10,7 +10,7 @@ import {PanelUserConfig}     from "../configDefinitions/mainConfig";
 import {ZationChannel}       from "../constants/internal";
 import {AuthUserGroupConfig} from "../configDefinitions/appConfig";
 import ZationConfig          from "../configManager/zationConfig";
-import ChExchangeEngine      from "../channel/chExchangeEngine";
+import ChUtils               from "../channel/chUtils";
 
 export default class PanelEngine
 {
@@ -128,7 +128,7 @@ export default class PanelEngine
     {
         if(this.isPanelInUse()) {
             // noinspection TypeScriptValidateJSTypes
-            this.zw.scServer.exchange.publish(ZationChannel.PANEL_OUT,ChExchangeEngine.buildData(eventName,
+            this.zw.scServer.exchange.publish(ZationChannel.PANEL_OUT,ChUtils.buildData(eventName,
                 {
                 id : this.idData,
                 info : data

@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {ZationToken}     from "../constants/internal";
 import {IncomingMessage} from "http";
-import Socket            from "../sc/socket";
+import UpSocket            from "../sc/socket";
 import JwtOptions        from "../constants/jwt";
 import AuthEngine        from "../auth/authEngine";
 
@@ -24,7 +24,7 @@ export default interface BaseSHBridge
     /**
      * Is undefined if isWebSocket() is false!
      */
-    getSocket() : Socket;
+    getSocket() : UpSocket;
     deauthenticate() : void;
     hasToken() : boolean;
     getToken() : ZationToken | null;

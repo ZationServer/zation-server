@@ -115,7 +115,7 @@ import CChInfo          from "../helper/infoObjects/cChInfo";
 import Result           from "./Result";
 import SmallBag         from "./SmallBag";
 import CIdChInfo        from "../helper/infoObjects/cIdChInfo";
-import PubDataInfo      from "../helper/infoObjects/pubDataInfo";
+import PubData      from "../helper/infoObjects/pubData";
 import ZationInfo       from "../helper/infoObjects/zationInfo";
 
 export default class Config
@@ -444,7 +444,7 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static customIdChInfo(cIdChInfo : CIdChInfo) : CIdChInfo {return cIdChInfo;}
     // noinspection JSUnusedGlobalSymbols
-    static pubDataInfo(pubDataInfo : PubDataInfo) : PubDataInfo {return pubDataInfo;}
+    static pubDataInfo(pubDataInfo : PubData) : PubData {return pubDataInfo;}
     // noinspection JSUnusedGlobalSymbols
     static socketInfo(socketInfo : SocketInfo) : SocketInfo {return socketInfo;}
     // noinspection JSUnusedGlobalSymbols

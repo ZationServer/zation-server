@@ -9,7 +9,7 @@ import * as core         from "express-serve-static-core";
 import {IncomingMessage} from "http";
 import SHBridge          from "./shBridge";
 import BaseSHBridgeSH    from "./baseSHBridgeSH";
-import Socket            from "../sc/socket";
+import UpSocket            from "../sc/socket";
 import JwtOptions        from "../constants/jwt";
 import AuthEngine        from "../auth/authEngine";
 import ZationWorker    = require("../../main/zationWorker");
@@ -51,6 +51,8 @@ export default class SHBridgeHttp extends BaseSHBridgeSH implements SHBridge {
 
         this.authEngine = new AuthEngine(this,worker);
 
+        //refresh auth engine at start
+        this.authEngine.refresh(this.getToken());
     }
 
     getAuthEngine(): AuthEngine {
@@ -137,7 +139,7 @@ export default class SHBridgeHttp extends BaseSHBridgeSH implements SHBridge {
     /**
      * Is undefined if isWebSocket() is false!
      */
-    getSocket(): Socket {
+    getSocket(): UpSocket {
         // noinspection TypeScriptValidateTypes
         // @ts-ignore
         return undefined;

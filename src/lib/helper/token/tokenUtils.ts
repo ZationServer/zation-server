@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Socket              from "../sc/socket";
+import UpSocket              from "../sc/socket";
 import {PrepareZationToken, ZationToken} from "../constants/internal";
 import BaseSHBridge        from "../bridges/baseSHBridge";
 import AEPreparedPart      from "../auth/aePreparedPart";
@@ -43,7 +43,7 @@ export default class TokenUtils
      * @param customVar
      * @param socket
      */
-    static async setSocketCustomVar(customVar : object, socket : Socket) : Promise<void>
+    static async setSocketCustomVar(customVar : object, socket : UpSocket) : Promise<void>
     {
         let token = socket.authToken;
         if(token !== null) {
@@ -62,7 +62,7 @@ export default class TokenUtils
      * @param data
      * @param jwtOptions
      */
-    static async setSocketTokenAsync(socket : Socket, data : object,jwtOptions : JwtOptions = {}) {
+    static async setSocketTokenAsync(socket : UpSocket, data : object, jwtOptions : JwtOptions = {}) {
         return new Promise<void>((resolve, reject) => {
             socket.setAuthToken(data,jwtOptions,(err) => {
                 if(err){
@@ -107,7 +107,7 @@ export default class TokenUtils
      * Get a custom token variables.
      * @param token
      */
-    static getCustomTokenVariables(token : Record<string,any> | null) : object {
+    static getCustomTokenVariables(token : ZationToken | null) : object {
         return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationCustomVariables),token)
             || {};
     }
@@ -117,7 +117,7 @@ export default class TokenUtils
      * @param key
      * @param token
      */
-    static getTokenVariable(key : string,token : Record<string,any> | null) : any {
+    static getTokenVariable(key : string,token : ZationToken | null) : any {
         if(token !== null) {
             return token[key]
         }

@@ -5,11 +5,12 @@ GitHub: LucaCode
  */
 
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../configDefinitions/appConfig";
+import {ControllerAccessFunction, ControllerConfig} from "../configDefinitions/appConfig";
 import AuthEngine         from "./authEngine";
-import {ZationAccess}     from "../constants/internal";
 import ZationTokenInfo    from "../infoObjects/zationTokenInfo";
 import Logger             from "../logger/logger";
+import SmallBag           from "../../api/SmallBag";
+import AccessUtils        from "../access/accessUtils";
 
 export type AuthAccessCheckFunction = (authEngine : AuthEngine) => Promise<boolean>;
 
@@ -18,8 +19,9 @@ export default class AuthAccessChecker
     /**
      * Returns a Closures for checking the access to a controller.
      * @param controllerConfig
+     * @param smallBag
      */
-    static createControllerAccessChecker(controllerConfig : ControllerConfig) : AuthAccessCheckFunction {
+    static createControllerAccessChecker(controllerConfig : ControllerConfig,smallBag : SmallBag) : AuthAccessCheckFunction {
 
         const notAccess = controllerConfig.notAccess;
         const access    = controllerConfig.access;
@@ -45,62 +47,13 @@ export default class AuthAccessChecker
             };
         }
 
-        if(typeof accessValue === 'string') {
-            if(accessValue === ZationAccess.ALL) {
-                return async () => {
-                    return accessProcess(true);
-                };
-            }
-            else if(accessValue === ZationAccess.ALL_AUTH) {
-                return async (authEngine) => {
-                    return accessProcess(authEngine.isAuth());
-                };
-            }
-            else if(accessValue === ZationAccess.ALL_NOT_AUTH) {
-                return async (authEngine) => {
-                    return accessProcess(authEngine.isDefault());
-                };
-            }
-            else {
-                return async (authEngine) => {
-                    return accessProcess(authEngine.getUserGroup() === accessValue);
-                };
-            }
-        }
-        else if(Array.isArray(accessValue)) {
-            return async (authEngine) => {
-                let found = false;
-                for(let i = 0; i < accessValue.length;i++) {
-                    if((typeof accessValue[i] === 'string' && accessValue[i] === authEngine.getUserGroup())
-                        ||
-                        (typeof accessValue[i] === 'number' && accessValue[i] == authEngine.getUserId())) {
-                        found = true;
-                        break;
-                    }
-                }
-                return accessProcess(found);
-            };
-        }
-        else if(typeof accessValue === 'function') {
+        return AccessUtils.createAccessChecker<AuthAccessCheckFunction,ControllerAccessFunction>
+        (accessValue,accessProcess,(func) => {
             return async (authEngine) => {
                 const token = authEngine.getSHBridge().getToken();
-                const smallBag = authEngine.getWorker().getPreparedSmallBag();
-
-                return accessProcess(
-                    (await accessValue(smallBag,token !== null ? new ZationTokenInfo(token) : null))
-                );
+                return accessProcess((await func(smallBag,token !== null ? new ZationTokenInfo(token) : null)));
             };
-        }
-        else if(typeof accessValue === 'number') {
-            return async (authEngine) => {
-                return accessProcess(authEngine.getUserId() == accessValue);
-            };
-        }
-        else {
-            return async () => {
-                return false;
-            }
-        }
+        });
     }
 }
 

@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Socket    from "../sc/socket";
+import UpSocket    from "../sc/socket";
 import SocketSet from "./socketSet";
 
-export default class Mapper<T extends Socket>
+export default class Mapper<T extends UpSocket>
 {
     private readonly data : Record<string,undefined |SocketSet> = {};
 
@@ -28,7 +28,7 @@ export default class Mapper<T extends Socket>
         }
     }
 
-    getValues(k : string) : Socket[]
+    getValues(k : string) : UpSocket[]
     {
         if(this.data[k] instanceof SocketSet) {
             // @ts-ignore
@@ -39,7 +39,7 @@ export default class Mapper<T extends Socket>
         }
     }
 
-    forEach(k : string,func : (socket : Socket) => void)
+    forEach(k : string,func : (socket : UpSocket) => void)
     {
         if(this.data[k] instanceof SocketSet) {
             // @ts-ignore
@@ -47,7 +47,7 @@ export default class Mapper<T extends Socket>
         }
     }
 
-    forAllEach(func : (socket : Socket) => void)
+    forAllEach(func : (socket : UpSocket) => void)
     {
         for(let k in this.data){
             if(this.data.hasOwnProperty(k) &&
@@ -85,7 +85,7 @@ export default class Mapper<T extends Socket>
     removeAllValues(v : T)
     {
         for(let k in this.data) {
-            if(this.data[k] instanceof SocketSet) {
+            if(this.data.hasOwnProperty(k) && this.data[k] instanceof SocketSet) {
                 // @ts-ignore
                 this.data[k].remove(v)
             }

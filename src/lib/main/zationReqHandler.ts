@@ -10,7 +10,7 @@ import MainRequestProcessor  from "../helper/processor/mainRequestProcessor";
 import SocketProcessor       from "../helper/processor/socketProcessor";
 import HttpProcessor         from "../helper/processor/httpProcessor";
 import ValidCheckProcessor   from "../helper/processor/validCheckProcessor";
-import Socket                from "../helper/sc/socket";
+import UpSocket                from "../helper/sc/socket";
 import BackError             from "../api/BackError";
 import BackErrorBag          from "../api/BackErrorBag";
 import IdCounter             from "../helper/utils/idCounter";
@@ -49,7 +49,7 @@ export default class ZationReqHandler
         this.reqIdPreFix = `${this.worker.options.instanceId}-${this.worker.getFullWorkerId()}-`;
     }
 
-    async processSocketReq(input : any,socket : Socket,respond)
+    async processSocketReq(input : any, socket : UpSocket, respond)
     {
         const reqId = this.createReqId();
         let shBridge;

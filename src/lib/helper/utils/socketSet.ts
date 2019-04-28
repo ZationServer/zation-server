@@ -4,14 +4,14 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Socket from "../sc/socket";
+import UpSocket from "../sc/socket";
 
 export default class SocketSet
 {
     private length : number = 0;
-    private sockets : Record<string,Socket> = {};
+    private sockets : Record<string,UpSocket> = {};
 
-    add(socket : Socket) : void
+    add(socket : UpSocket) : void
     {
         if(!this.sockets.hasOwnProperty(socket.tid)) {
             this.sockets[socket.tid] = socket;
@@ -19,11 +19,11 @@ export default class SocketSet
         }
     }
 
-    contains(socket : Socket) : boolean {
+    contains(socket : UpSocket) : boolean {
         return this.sockets.hasOwnProperty(socket.tid);
     }
 
-    remove(socket : Socket) : void {
+    remove(socket : UpSocket) : void {
         if(this.sockets.hasOwnProperty(socket.tid)){
             delete this.sockets[socket.tid];
             this.length--;
@@ -34,8 +34,8 @@ export default class SocketSet
         return this.length;
     }
 
-    toArray() : Socket[] {
-        const res : Socket[] = [];
+    toArray() : UpSocket[] {
+        const res : UpSocket[] = [];
         for(let id in this.sockets){
             if(this.sockets.hasOwnProperty(id)){
                 res.push(this.sockets[id]);
@@ -44,7 +44,7 @@ export default class SocketSet
         return res;
     }
 
-    forEach(func : (socket : Socket) => void)
+    forEach(func : (socket : UpSocket) => void)
     {
         for(let id in this.sockets){
             if(this.sockets.hasOwnProperty(id)){

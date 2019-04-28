@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Socket              from "../sc/socket";
+import UpSocket              from "../sc/socket";
 import {ZationToken}       from "../constants/internal";
 import {IncomingMessage}   from "http";
 import BaseSHBridge        from "./baseSHBridge";
@@ -18,11 +18,11 @@ import AuthEngine          from "../auth/authEngine";
  */
 export default class BaseShBridgeSocket extends BaseSHBridgeSH implements BaseSHBridge
 {
-    protected readonly socket : Socket;
+    protected readonly socket : UpSocket;
 
     private newToken : boolean;
 
-    constructor(socket : Socket) {
+    constructor(socket : UpSocket) {
         super();
         this.socket = socket;
     }
@@ -47,7 +47,7 @@ export default class BaseShBridgeSocket extends BaseSHBridgeSH implements BaseSH
         this.socket.deauthenticate();
     }
 
-    getSocket() : Socket {
+    getSocket() : UpSocket {
         return this.socket;
     }
 

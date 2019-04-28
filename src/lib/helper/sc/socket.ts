@@ -9,17 +9,15 @@ import {IncomingMessage}    from "http";
 import BaseShBridgeSocket   from "../bridges/baseShBridgeSocket";
 import AuthEngine           from "../auth/authEngine";
 import SocketInfo           from "../infoObjects/socketInfo";
-import TokenEngine          from "../token/tokenEngine";
-import ChannelEngine        from "../channel/channelEngine";
 
 export type OnHandlerFunction = (data : any, response : ResponseFunction) => void
 export type ResponseFunction = (err ?: any | number, responseData ?: any) => void
 
-export default interface Socket
-{
+/**
+ * Normal socket from socket cluster.
+ */
+export interface ScSocket {
     id : string;
-    sid : string;
-    tid : string;
     request : IncomingMessage;
     remoteAddress : string;
     exchange : any;
@@ -55,16 +53,28 @@ export default interface Socket
     kickOut(channel ?: string, message ?: string, callback ?: Function) : void;
     subscriptions() : string[];
     isSubscribed(channelName : string) : boolean;
+}
 
-    zationSocketVariables : Record<string,any>;
+/**
+ * Socket after sc handshake.
+ */
+export interface HandshakeSocket extends ScSocket {
+    handshakeVariables : Record<string,any>;
     zationClient : {
         version : number,
         system : string
     }
-    handshakeVariables : Record<string,any>;
+}
+
+/**
+ * Socket after socket upgrade.
+ */
+export default interface UpSocket extends HandshakeSocket {
+    sid : string;
+    tid : string;
+
+    zationSocketVariables : Record<string,any>;
     baseSHBridge : BaseShBridgeSocket;
-    tokenEngine : TokenEngine;
-    channelEngine : ChannelEngine;
     authEngine : AuthEngine;
     socketInfo : SocketInfo;
 }

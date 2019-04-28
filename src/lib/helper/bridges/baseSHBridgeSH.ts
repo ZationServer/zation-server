@@ -7,7 +7,7 @@ GitHub: LucaCode
 import BaseSHBridge         from "./baseSHBridge";
 import {IncomingMessage}    from "http";
 import {ZationToken}        from "../constants/internal";
-import Socket               from "../sc/socket";
+import UpSocket               from "../sc/socket";
 const  IP : any           = require('ip');
 
 /**
@@ -18,7 +18,7 @@ export default abstract class BaseSHBridgeSH implements BaseSHBridge {
     abstract deauthenticate(): void;
     abstract getHandshakeRequest(): IncomingMessage;
     abstract getRemoteAddress();
-    abstract getSocket(): Socket;
+    abstract getSocket(): UpSocket;
     abstract getSystem(): string;
     abstract getToken(): ZationToken | null;
     abstract getVersion(): number;

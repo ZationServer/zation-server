@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import ZationWorker = require("../main/zationWorker");
 import useragent    = require('useragent');
-import Socket         from "../helper/sc/socket";
+import UpSocket         from "../helper/sc/socket";
 import ScServer       from "../helper/sc/scServer";
 import * as core      from "express-serve-static-core";
 import {IncomingHttpHeaders, IncomingMessage} from "http";
@@ -19,7 +19,6 @@ import ProtocolAccessChecker from "../helper/protocolAccess/protocolAccessChecke
 import ObjectPath            from "../helper/utils/objectPath";
 import ObjectPathSequence    from "../helper/utils/objectPathSequence";
 import SmallBag              from "./SmallBag";
-import ChannelEngine         from "../helper/channel/channelEngine";
 import InputIsNotCompatibleError  from "../helper/error/inputIsNotCompatibleError";
 import MethodIsNotCompatibleError from "../helper/error/methodIsNotCompatibleError";
 import AuthenticationError        from "../helper/error/authenticationError";
@@ -27,23 +26,21 @@ import TokenUtils            from "../helper/token/tokenUtils";
 import {ZationToken}         from "../helper/constants/internal";
 import JwtSignOptions        from "../helper/constants/jwt";
 import ObjectUtils           from "../helper/utils/objectUtils";
+import ChUtils               from "../helper/channel/chUtils";
 
 export default class Bag extends SmallBag
 {
     private bagVariables : object;
     private readonly shBridge : SHBridge;
     private readonly authEngine : AuthEngine;
-    private readonly channelEngine : ChannelEngine;
     private readonly input : any;
 
-    constructor(shBridge : SHBridge, worker : ZationWorker, authEngine : AuthEngine, input : object, channelEngine : ChannelEngine = new ChannelEngine(worker,shBridge))
+    constructor(shBridge : SHBridge, worker : ZationWorker, authEngine : AuthEngine, input : object)
     {
-        super(worker,channelEngine);
-
+        super(worker,worker.getChannelBagEngine());
         this.bagVariables = {};
         this.shBridge = shBridge;
         this.authEngine = authEngine;
-        this.channelEngine = channelEngine;
         this.input = input;
     }
 
@@ -377,6 +374,15 @@ export default class Bag extends SmallBag
      */
     hasUserId() : boolean {
         return this.authEngine.getUserId() !== undefined;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns if token has panel access.
+     */
+    hasPanelAccess() : boolean {
+        return this.authEngine.hasPanelAccess();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -964,7 +970,7 @@ export default class Bag extends SmallBag
      * Requires ws request!
      * @throws MethodIsNotCompatibleError
      */
-    getSocket() : Socket {
+    getSocket() : UpSocket {
         if(this.shBridge.isWebSocket) {
             return this.shBridge.getSocket();
         }
@@ -1085,7 +1091,7 @@ export default class Bag extends SmallBag
     getSubChannels() : string[]
     {
         if(this.shBridge.isWebSocket) {
-            return this.channelEngine.getSubChannels();
+            return this.shBridge.getSocket().subscriptions();
         }
         else {
             throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get subscribed channels.');
@@ -1100,14 +1106,14 @@ export default class Bag extends SmallBag
      * @example
      * kickFromCustomIdCh('images','10');
      * kickFromCustomIdCh('messageStreams');
-     * @param name
-     * @param id if it is not provided the socket will be kicked from all ids.
+     * @param channel is optional, if it is not given the users will be kicked out from all custom id channels.
+     * @param id is optional, if it is not given the users will be kicked out from all ids of this channel.
      * @throws MethodIsNotCompatibleError
      */
-    kickFromCustomIdCh(name : string,id : string = '') : void
+    kickFromCustomIdCh(channel ?: string,id : string = '') : void
     {
         if(this.shBridge.isWebSocket) {
-            this.channelEngine.kickCustomIdChannel(name,id);
+            ChUtils.kickCustomIdChannel(this.shBridge.getSocket(),channel,id);
         }
         else {
             throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Kick from a channel.');
@@ -1121,13 +1127,13 @@ export default class Bag extends SmallBag
      * Requires ws request!
      * @example
      * kickFromCustomCh('stream');
-     * @param name
+     * @param channel is optional, if it is not given the users will be kicked out from all custom channels.
      * @throws MethodIsNotCompatibleError
      */
-    kickFromCustomCh(name : string) : void
+    kickFromCustomCh(channel ?: string) : void
     {
         if(this.shBridge.isWebSocket) {
-            this.channelEngine.kickCustomChannel(name);
+            ChUtils.kickCustomChannel(this.shBridge.getSocket(),channel);
         }
         else {
             throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Kick from a channel.');
@@ -1411,7 +1417,7 @@ export default class Bag extends SmallBag
     {
         const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
         return await this.exchangeEngine.publishInAllAuthUserGroupCh
-        (eventName,data,this.zc,this._processSrcSocketSid(srcSocketSid),socketInfo);
+        (eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
     // noinspection JSUnusedGlobalSymbols

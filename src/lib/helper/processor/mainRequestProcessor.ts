@@ -21,6 +21,7 @@ import ZationReqUtils          from "../utils/zationReqUtils";
 import Result                  from "../../api/Result";
 import {PrepareHandleInvokeFunction} from "../controller/controllerUtils";
 import ZationConfigFull        from "../configManager/zationConfigFull";
+import chExchangeEngine        from "../channel/channelBagEngine";
 
 export default class MainRequestProcessor
 {
@@ -135,9 +136,7 @@ export default class MainRequestProcessor
                                     shBridge,
                                     this.worker,
                                     authEngine,
-                                    input,
-                                    //socket prepared channel engine
-                                    shBridge.isWebSocket() ? shBridge.getSocket().channelEngine : undefined
+                                    input
                                 );
                                 try {
                                     await controllerInstance.wrongInput(bag,input);
@@ -163,9 +162,7 @@ export default class MainRequestProcessor
                             shBridge,
                             this.worker,
                             authEngine,
-                            input,
-                            //socket prepared channel engine
-                            shBridge.isWebSocket() ? shBridge.getSocket().channelEngine : undefined
+                            input
                         );
                         return await this.processController(controllerInstance,bag,prepareHandleInvoke);
                     }

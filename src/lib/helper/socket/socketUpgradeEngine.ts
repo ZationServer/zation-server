@@ -4,13 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Socket             from "../sc/socket";
+import UpSocket             from "../sc/socket";
 import SidBuilder         from "../utils/sidBuilder";
 import BaseShBridgeSocket from "../bridges/baseShBridgeSocket";
-import ChannelEngine      from "../channel/channelEngine";
 import AuthEngine         from "../auth/authEngine";
 import SocketInfo         from "../infoObjects/socketInfo";
-import ZationWorker = require("../../main/zationWorker");
+import ZationWorker     = require("../../main/zationWorker");
 
 export default class SocketUpgradeEngine
 {
@@ -27,7 +26,7 @@ export default class SocketUpgradeEngine
      * Upgrades the sc socket with zation functionality.
      * @param socket
      */
-    upgradeSocket(socket : Socket) {
+    upgradeSocket(socket : UpSocket) {
         //id build
         socket.sid = this.sidBuilder.buildSid(socket.id);
         socket.tid = Date.now() + socket.id;
@@ -35,8 +34,6 @@ export default class SocketUpgradeEngine
         //engine build
         const baseSHBridge = new BaseShBridgeSocket(socket);
         socket.baseSHBridge = baseSHBridge;
-
-        socket.channelEngine = new ChannelEngine(this.worker,baseSHBridge);
 
         const authEngine = new AuthEngine(baseSHBridge,this.worker);
         socket.authEngine = authEngine;

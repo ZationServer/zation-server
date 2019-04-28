@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Socket                                               from "../helper/sc/socket";
+import UpSocket                                               from "../helper/sc/socket";
 import fetch, {Request, RequestInit, Response}              from 'node-fetch';
 import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../helper/constants/workerChTaskActions";
 import {WorkerChTargets}                                    from "../helper/constants/workerChTargets";
@@ -30,7 +30,7 @@ import {StartMode}                                          from "../..";
 import BackErrorBuilder                                     from "../helper/builder/backErrorBuilder";
 import BackError                                            from "./BackError";
 import BackErrorBag                                         from "./BackErrorBag";
-import ChExchangeEngine                                     from "../helper/channel/chExchangeEngine";
+import ChannelBagEngine                                     from "../helper/channel/channelBagEngine";
 import ServiceEngine                                        from "../helper/services/serviceEngine";
 import ZationConfig                                         from "../helper/configManager/zationConfig";
 import ObjectPath                                           from "../helper/utils/objectPath";
@@ -43,19 +43,18 @@ import AuthenticationError                                  from "../helper/erro
 import ObjectPathSequence                                   from "../helper/utils/objectPathSequence";
 import ObjectPathActionSequence                             from "../helper/utils/objectPathActionSequence";
 import Base64Utils                                          from "../helper/utils/base64Utils";
-import ZationConfigFull                                   from "../helper/configManager/zationConfigFull";
-import ObjectUtils from "../helper/utils/objectUtils";
+import ZationConfigFull                                     from "../helper/configManager/zationConfigFull";
+import ObjectUtils                                          from "../helper/utils/objectUtils";
 
 
 export default class SmallBag
 {
-    protected readonly exchangeEngine : ChExchangeEngine;
+    protected readonly exchangeEngine : ChannelBagEngine;
     protected readonly serviceEngine : ServiceEngine;
     protected readonly zc : ZationConfigFull;
     protected readonly worker : ZationWorker;
 
-    constructor(worker : ZationWorker,exchangeEngine : ChExchangeEngine = new ChExchangeEngine(worker))
-    {
+    constructor(worker : ZationWorker,exchangeEngine : ChannelBagEngine) {
         this.exchangeEngine = exchangeEngine;
         this.serviceEngine = worker.getServiceEngine();
         this.zc = worker.getZationConfig();
@@ -804,7 +803,7 @@ export default class SmallBag
      */
     async publishInAllAuthUserGroupsCh(eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
     {
-        return await this.exchangeEngine.publishInAllAuthUserGroupCh(eventName,data,this.zc,srcSocketSid);
+        return await this.exchangeEngine.publishInAllAuthUserGroupCh(eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1877,7 +1876,7 @@ export default class SmallBag
      * @param socket
      * @throws AuthenticationError if socket is not authenticated.
      */
-    getUserIdFromSocket(socket : Socket) : string | number | undefined {
+    getUserIdFromSocket(socket : UpSocket) : string | number | undefined {
         return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationUserId),socket.authToken);
     }
 
@@ -1890,7 +1889,7 @@ export default class SmallBag
      * getUserIdFromSocket(sc);
      * @param socket
      */
-    getAuthUserGroupFromSocket(socket : Socket) : string | undefined {
+    getAuthUserGroupFromSocket(socket : UpSocket) : string | undefined {
         try {
             return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationAuthUserGroup),socket.authToken);
         }
@@ -1951,7 +1950,7 @@ export default class SmallBag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
      */
-    setSocketVariableWithSocket(socket : Socket,path : string | string[],value : any) : void
+    setSocketVariableWithSocket(socket : UpSocket, path : string | string[], value : any) : void
     {
         ObjectPath.set(socket.zationSocketVariables,path,value);
     }
@@ -1966,7 +1965,7 @@ export default class SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    hasSocketVariableWithSocket(socket : Socket,path ?: string | string[]) : boolean
+    hasSocketVariableWithSocket(socket : UpSocket, path ?: string | string[]) : boolean
     {
         return ObjectPath.has(socket.zationSocketVariables,path);
     }
@@ -1981,7 +1980,7 @@ export default class SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getSocketVariableWithSocket<R>(socket : Socket,path ?: string | string[]) : R
+    getSocketVariableWithSocket<R>(socket : UpSocket, path ?: string | string[]) : R
     {
         return ObjectPath.get(socket.zationSocketVariables,path);
     }
@@ -1996,7 +1995,7 @@ export default class SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    deleteSocketVariableWithSocket(socket : Socket,path ?: string | string[]) : void
+    deleteSocketVariableWithSocket(socket : UpSocket, path ?: string | string[]) : void
     {
         if(!!path) {
             ObjectPath.del(socket.zationSocketVariables,path);
@@ -2026,7 +2025,7 @@ export default class SmallBag
      * @param value
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    async setTokenVariableWithSocket(socket : Socket,path : string | string[],value : any) : Promise<void> {
+    async setTokenVariableWithSocket(socket : UpSocket, path : string | string[], value : any) : Promise<void> {
         const ctv = ObjectUtils.deepClone(TokenUtils.getCustomTokenVariables(socket.authToken));
         ObjectPath.set(ctv,path,value);
         await TokenUtils.setSocketCustomVar(ctv,socket);
@@ -2048,7 +2047,7 @@ export default class SmallBag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    async deleteTokenVariableWithSocket(socket : Socket,path ?: string | string[]) : Promise<void> {
+    async deleteTokenVariableWithSocket(socket : UpSocket, path ?: string | string[]) : Promise<void> {
         if(!!path) {
             const ctv = ObjectUtils.deepClone(TokenUtils.getCustomTokenVariables(socket.authToken));
             ObjectPath.del(ctv,path);
@@ -2079,7 +2078,7 @@ export default class SmallBag
      *       .commit();
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    seqEditTokenVariablesWithSocket(socket : Socket) : ObjectPathSequence
+    seqEditTokenVariablesWithSocket(socket : UpSocket) : ObjectPathSequence
     {
         return new ObjectPathSequence(ObjectUtils.deepClone(
             TokenUtils.getCustomTokenVariables(socket.authToken)),
@@ -2103,7 +2102,7 @@ export default class SmallBag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    hasTokenVariableWithSocket(socket : Socket,path ?: string | string[]) : boolean {
+    hasTokenVariableWithSocket(socket : UpSocket, path ?: string | string[]) : boolean {
         return ObjectPath.has(TokenUtils.getCustomTokenVariables(socket.authToken),path);
     }
 
@@ -2122,7 +2121,7 @@ export default class SmallBag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    getTokenVariableWithSocket<R>(socket : Socket,path ?: string | string[]) : R {
+    getTokenVariableWithSocket<R>(socket : UpSocket, path ?: string | string[]) : R {
         return ObjectPath.get(TokenUtils.getCustomTokenVariables(socket.authToken),path);
     }
 
@@ -2387,7 +2386,7 @@ export default class SmallBag
      * getWorkerSocket('SOCKET-ID');
      * @param socketId
      */
-    getWorkerSocket(socketId : string) : Socket | undefined
+    getWorkerSocket(socketId : string) : UpSocket | undefined
     {
         return this.worker.scServer.clients[socketId];
     }
@@ -2447,7 +2446,7 @@ export default class SmallBag
     {
         const res : string[] = [];
         socketIds.forEach((id) => {
-            let socket : Socket | undefined = this.getWorkerSocket(id);
+            let socket : UpSocket | undefined = this.getWorkerSocket(id);
             if(!!socket) {
                 res.push(socket.sid);
             }
@@ -2464,7 +2463,7 @@ export default class SmallBag
      * getSocketIdsWithTokenId('TOKEN-ID');
      * @param tokenId
      */
-    getSocketsWithTokenId(tokenId : string) : Socket[]
+    getSocketsWithTokenId(tokenId : string) : UpSocket[]
     {
         return this.worker.getTokenIdToScMapper().getValues(tokenId);
     }
@@ -2478,7 +2477,7 @@ export default class SmallBag
      * getSocketIdsWithUserId('tom1554');
      * @param userId
      */
-    getSocketsWithUserId(userId : string) : Socket[]
+    getSocketsWithUserId(userId : string) : UpSocket[]
     {
         return this.worker.getUserToScMapper().getValues(userId);
     }
@@ -2547,7 +2546,7 @@ export default class SmallBag
      * @description
      * Returns array of default user group sockets (only this worker).
      */
-    getWorkerDefaultUserGroupSockets() : Socket[] {
+    getWorkerDefaultUserGroupSockets() : UpSocket[] {
         return this.worker.getDefaultUserGroupSet().toArray();
     }
 
@@ -2556,7 +2555,7 @@ export default class SmallBag
      * @description
      * Returns array of only panel sockets (only this worker).
      */
-    getWorkerOnlyPanelSockets() : Socket[] {
+    getWorkerOnlyPanelSockets() : UpSocket[] {
         return this.worker.getPanelUserSet().toArray();
     }
 
@@ -2565,7 +2564,7 @@ export default class SmallBag
      * @description
      * Returns array of auth user group sockets (only this worker).
      */
-    getWorkerAuthUserGroupSockets(authUserGroup : string) : Socket[] {
+    getWorkerAuthUserGroupSockets(authUserGroup : string) : UpSocket[] {
         return this.worker.getAuthUserGroupToScMapper().getValues(authUserGroup);
     }
 

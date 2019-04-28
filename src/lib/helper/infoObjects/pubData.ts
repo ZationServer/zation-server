@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-export default interface PubDataInfo {
+export default interface PubData {
     /**
      * The event name.
      */

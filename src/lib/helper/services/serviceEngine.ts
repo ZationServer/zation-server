@@ -27,9 +27,7 @@ export default class ServiceEngine
         this.zc = zc;
 
         // @ts-ignore
-        this.sc = zc.serviceConfig.services;
-
-        if(this.sc === undefined) {this.sc = {};}
+        this.sc = zc.serviceConfig.services || {};
 
         this.services = {};
     }

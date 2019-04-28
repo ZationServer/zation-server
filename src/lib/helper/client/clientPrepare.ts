@@ -4,8 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import fs         = require('fs');
-import ZationConfig from "../configManager/zationConfig";
+import fs                   = require('fs');
+import ZationConfig           from "../configManager/zationConfig";
+import {WorkerMessageActions} from "../constants/workerMessageActions";
+import ZationWorker         = require("../../main/zationWorker");
 
 export default class ClientPrepare
 {
@@ -36,5 +38,4 @@ export default class ClientPrepare
         res += '}; \n';
         return res;
     }
-
 }

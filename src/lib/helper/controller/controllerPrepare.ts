@@ -11,10 +11,11 @@ import BackError          from "../../api/BackError";
 import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
 import AuthAccessChecker, {AuthAccessCheckFunction} from "../auth/authAccessChecker";
 import Controller, {ControllerClass} from "../../api/Controller";
-import ZationConfig                  from "../configManager/zationConfig";
 import {MainBackErrors}              from "../zationBackErrors/mainBackErrors";
 import ControllerUtils, {PrepareHandleInvokeFunction} from "./controllerUtils";
 import {SystemController}            from "../systemController/systemControler.config";
+import SmallBag                      from "../../api/SmallBag";
+import ZationConfigFull              from "../configManager/zationConfigFull";
 
 interface ControllerPrepareData {
     controllerConfig : ControllerConfig,
@@ -27,16 +28,18 @@ interface ControllerPrepareData {
 
 export default class ControllerPrepare
 {
-    private readonly zc : ZationConfig;
+    private readonly zc : ZationConfigFull;
     private readonly worker : ZationWorker;
+    private readonly smallBag : SmallBag;
 
     private readonly systemController : Record<string,ControllerPrepareData>;
     private readonly appController : Record<string,ControllerPrepareData>;
 
-    constructor(zc,worker)
+    constructor(zc : ZationConfigFull,worker : ZationWorker,smallBag : SmallBag)
     {
         this.zc = zc;
         this.worker = worker;
+        this.smallBag = smallBag;
 
         this.systemController = {};
         this.appController = {};
@@ -121,7 +124,7 @@ export default class ControllerPrepare
             controllerInstance: cInstance,
             versionAccessCheck : SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
-            authAccessCheck : AuthAccessChecker.createControllerAccessChecker(config),
+            authAccessCheck : AuthAccessChecker.createControllerAccessChecker(config,this.smallBag),
             prepareHandleInvoke : ControllerUtils.createPrepareHandleInvoker(config)
         };
 
