@@ -1176,7 +1176,7 @@ export default class ConfigChecker
 
     private checkCustomName(name : string,type : string,preString : string = '') : void
     {
-        if (!name.match(/^[a-zA-Z0-9-/_]*$/)) {
+        if (!name.match(/^[a-zA-Z0-9-/_]+$/)) {
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                 `${preString}'${name}' is not a valid ${type} name! Only letters, numbers and the minus symbol are allowed.`));
         }
