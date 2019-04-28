@@ -47,7 +47,7 @@ import SystemInfo         from "../helper/utils/systemInfo";
 import BackgroundTasksWorkerSaver from "../helper/background/backgroundTasksWorkerSaver";
 import MiddlewareUtils    from "../helper/utils/middlewareUtils";
 import ZationConfigFull   from "../helper/configManager/zationConfigFull";
-import ConfigLoader       from "../helper/configManager/ConfigLoader";
+import ConfigLoader       from "../helper/configManager/configLoader";
 import SocketUpgradeEngine from "../helper/socket/socketUpgradeEngine";
 import ChannelBagEngine    from "../helper/channel/channelBagEngine";
 import {
@@ -389,7 +389,7 @@ class ZationWorker extends SCWorker
         //Log file download
         this.app.get([`${serverPath}/log/:key`,`${serverPath}/log`],ExpressUtils.createLogFileDownloader(this.zc));
 
-        if(this.zc.mainConfig.clientJsPrepare) {
+        if(this.zc.mainConfig.provideClientJs) {
             this.app.get(`${serverPath}/client.js`,(req,res) => {
                 res.type('.js');
                 res.send(this.fullClientJs);

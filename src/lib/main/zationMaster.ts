@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ConfigLoader from "../helper/configManager/ConfigLoader";
+import ConfigLoader from "../helper/configManager/configLoader";
 
 require('cache-require-paths');
 const  SocketCluster : any   = require('socketcluster');
@@ -159,7 +159,7 @@ export default class ZationMaster {
         this.serverSettingsJs = ClientPrepare.createServerSettingsFile(this.zc);
         Logger.printStartDebugInfo(`The Master has prepared the server settings js file.`, true);
 
-        if(this.zc.mainConfig.clientJsPrepare) {
+        if(this.zc.mainConfig.provideClientJs) {
             Logger.startStopWatch();
             this.fullClientJs = ClientPrepare.buildClientJs(this.serverSettingsJs);
             Logger.printStartDebugInfo(`The Master has prepared the client js file.`, true);
@@ -232,11 +232,11 @@ export default class ZationMaster {
 
     private startSocketCluster()
     {
-        try {
-            require("sc-uws");
-        }
-        catch (e) {
-            if(this.zc.mainConfig.useScUws) {
+        if(this.zc.mainConfig.useScUws) {
+            try {
+                require("sc-uws");
+            }
+            catch (e) {
                 Logger.printStartFail
                 (`Failed to load sc-uws! Error -> ${e.toString()}.`);
                 if(isWindows()) {
@@ -441,7 +441,7 @@ export default class ZationMaster {
         if(this.zc.mainConfig.logDownloadable && this.zc.mainConfig.logToFile) {
             Logger.log(`            Log: ${server}/log/${this.zc.mainConfig.logAccessKey}`);
         }
-        if(this.zc.mainConfig.clientJsPrepare) {
+        if(this.zc.mainConfig.provideClientJs) {
             Logger.log(`            ClientJs: ${server}/client.js`);
         }
         Logger.log('            GitHub: https://github.com/ZationServer');

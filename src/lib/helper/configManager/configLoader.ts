@@ -91,7 +91,7 @@ export default class ConfigLoader {
         clusterShareTokenAuth: true,
         instanceId: uuidV4(),
         useTokenCheckKey: true,
-        clientJsPrepare: true,
+        provideClientJs: true,
         usePanel: false,
         killServerOnServicesCreateError : false,
         logToFile: false,

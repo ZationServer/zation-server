@@ -36,7 +36,7 @@ import ObjectPath           from "../utils/objectPath";
 import Controller, {ControllerClass} from "../../api/Controller";
 import Iterator             from "../utils/iterator";
 import ObjectUtils          from "../utils/objectUtils";
-import ConfigLoader   from "../configManager/ConfigLoader";
+import ConfigLoader   from "../configManager/configLoader";
 
 export default class ConfigChecker
 {
