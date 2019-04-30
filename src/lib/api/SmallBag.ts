@@ -45,6 +45,7 @@ import ObjectPathActionSequence                             from "../helper/util
 import Base64Utils                                          from "../helper/utils/base64Utils";
 import ZationConfigFull                                     from "../helper/configManager/zationConfigFull";
 import ObjectUtils                                          from "../helper/utils/objectUtils";
+import JwtSignOptions                                       from "../helper/constants/jwt";
 
 
 export default class SmallBag
@@ -650,6 +651,41 @@ export default class SmallBag
      */
     generateUniqueId() : string {
         return uniqid();
+    }
+
+    //Part sign and verify token
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Sign a token. This method is only for advanced use cases.
+     * It will not create a token that is based on a zation token structure,
+     * also it will not attach this token to any client or request.
+     * It will use the default server settings,
+     * but you can override some options by providing jwt sign options as a second argument.
+     * The return value is the signed token as a string.
+     * @example
+     * await signToken({someVariable : 'Hello'},{expiresIn : 200});
+     * @param data
+     * @param jwtOptions
+     */
+    async signToken(data : object,jwtOptions : JwtSignOptions = {}) : Promise<string> {
+        return await TokenUtils.signToken(data,this.zc,jwtOptions);
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Verify a token. This method can be used to verify signed tokens based on the secret key of the server.
+     * A use case for this method could be to verify tokens in an express middleware.
+     * The return value is the plain decrypted token.
+     * @example
+     * await verifyToken('djf09ejd103je32ije0');
+     * @param signedToken
+     * @throws BackError with names: tokenExpiredError, jsonWebTokenError or unknownTokenVerifyError.
+     */
+    async verifyToken(signedToken : string) : Promise<Record<string,any>> {
+        return await TokenUtils.verifyToken(signedToken,this.zc);
     }
 
     //Part Socket Channel
