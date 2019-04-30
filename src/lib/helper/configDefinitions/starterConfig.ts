@@ -13,7 +13,7 @@ export interface StarterConfigMain
     /**
      * The root path to the running directory.
      * This path is used for loading the configs.
-     * @default Zation is try to find the root path automatically.
+     * @default Try to find the root path automatically.
      */
     rootPath ?: string;
 
@@ -70,7 +70,7 @@ export interface StarterConfigMain
      * With this option, you can deactivate the check of the configurations on server start.
      * It's not recommended to deactived it, but if the process takes a lot of time, you can do it.
      * Notice that you check the configurations with the npm check command after every change.
-     * @default is true
+     * @default true
      */
     checkConfigs  ?: boolean;
 }
