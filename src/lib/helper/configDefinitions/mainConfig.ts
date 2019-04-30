@@ -208,16 +208,16 @@ export interface MainConfig
      */
     authAlgorithm  ?: string;
     /**
-     * The private secret key for sign the jwt tokens.
-     * For using a key pair, you also need to define the public key
-     * and change the algorithm to RSA or ECDSA.
+     * The private secret key to signing the jwt tokens.
+     * For using asymmetric encryption, you also need to define the
+     * public key and change the algorithm to a proper one, e.g. RSA or ECDSA.
      * @default is null.
      */
     authPrivateKey  ?: string | null;
     /**
-     * The public secret key for verify the jwt tokens.
-     * For using a key pair, you also need to define the private key
-     * and change the algorithm to RSA or ECDSA.
+     * The public secret key to verify the jwt tokens.
+     * For using asymmetric encryption, you also need to define the
+     * private key and change the algorithm to a proper one, e.g. RSA or ECDSA.
      * @default is null.
      */
     authPublicKey  ?: string | null;
