@@ -6,6 +6,13 @@ GitHub: LucaCode
 
 export default class MiddlewareUtils
 {
+    /**
+     * Check a middleware function.
+     * It returns true if the access is allowed and false if the access is denied.
+     * @param func
+     * @param next
+     * @param params
+     */
     static async checkMiddleware(func : Function | undefined, next : Function, ...params : any[]) : Promise<boolean> {
         if(typeof func === 'function') {
             const res  = await func(...params);

@@ -302,7 +302,9 @@ EventConfig[nameof<EventConfig>(s => s.beforeCodeError)]        = {types : ['fun
 EventConfig[nameof<EventConfig>(s => s.beforeBackErrorBag)]     = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.socketDisconnection)]    = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.workerMessage)]          = {types : ['function','array'],arrayType : 'function',isOptional : true};
+
 EventConfig[nameof<EventConfig>(s => s.middlewareAuthenticate)] = {types : ['function'],isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.middlewareSocket)] = {types : ['function'],isOptional : true};
 
 EventConfig[nameof<EventConfig>(s => s.sc_serverError)]           = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.sc_serverNotice)]          = {types : ['function','array'],arrayType : 'function',isOptional : true};

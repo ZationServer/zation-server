@@ -762,7 +762,11 @@ class ZationWorker extends SCWorker
                     MiddlewareUtils.checkMiddleware
                     (eventConfig.sc_middlewareHandshakeSc,next,this.getPreparedSmallBag(),req);
 
-                if(userMidRes) {
+                const zationMidRes = await
+                    MiddlewareUtils.checkMiddleware
+                    (eventConfig.middlewareSocket,next,this.getPreparedSmallBag(),socket);
+
+                if(userMidRes && zationMidRes) {
                     next();
                 }
             }

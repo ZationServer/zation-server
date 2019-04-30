@@ -7,7 +7,7 @@ GitHub: LucaCode
 import ExpressCore                   = require("express-serve-static-core");
 import ZationWorker                  = require("../../main/zationWorker");
 import ScServer                        from "../sc/scServer";
-import UpSocket                          from "../sc/socket";
+import UpSocket, {HandshakeSocket} from "../sc/socket";
 import {ZationToken}                   from "../constants/internal";
 import BackError                       from "../../api/BackError";
 import BackErrorBag                    from "../../api/BackErrorBag";
@@ -37,7 +37,9 @@ export type BeforeBackErrorBagFunction = (smallBag : SmallBag, backErrorBag : Ba
 export type ZationSocketDisconnectionFunction = (smallBag : SmallBag, socketInfo : SocketInfo, code : any, data : any) => Promise<void> | void;
 export type ZationWorkerMessageFunction = (smallBag : SmallBag, data : any) => Promise<void> | void;
 
+
 export type MiddlewareAuthenticationFunction = (smallBag : SmallBag,zationToken  : ZationToken) => Promise<boolean | object | any> | boolean | object | any;
+export type MiddlewareSocketFunction = (smallBag : SmallBag,socket : HandshakeSocket) => Promise<boolean | object | any> | boolean | object | any;
 
 export type SocketErrorFunction = (smallBag : SmallBag, socket : UpSocket, error : object) => Promise<void> | void;
 export type SocketRawFunction = (smallBag : SmallBag, socket : UpSocket, data : any) => Promise<void> | void;
@@ -82,7 +84,9 @@ export interface EventConfig
     beforeBackErrorBag  ?: BeforeBackErrorBagFunction | BeforeBackErrorBagFunction[];
     socketDisconnection  ?: ZationSocketDisconnectionFunction | ZationSocketDisconnectionFunction[];
     workerMessage  ?: ZationWorkerMessageFunction | ZationWorkerMessageFunction[];
+
     middlewareAuthenticate  ?: MiddlewareAuthenticationFunction;
+    middlewareSocket ?: MiddlewareSocketFunction;
 
     //socket cluster events
     sc_socketError  ?: SocketErrorFunction | SocketErrorFunction[];
@@ -139,7 +143,9 @@ export interface PreCompiledEventConfig extends EventConfig
     beforeBackErrorBag  : BeforeBackErrorBagFunction;
     socketDisconnection  : ZationSocketDisconnectionFunction;
     workerMessage  : ZationWorkerMessageFunction;
+
     middlewareAuthenticate  ?: MiddlewareAuthenticationFunction;
+    middlewareSocket ?: MiddlewareSocketFunction;
 
     //socket cluster events
     sc_socketError  : SocketErrorFunction;
