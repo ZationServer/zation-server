@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import UpSocket                                               from "../helper/sc/socket";
+import UpSocket                                             from "../helper/sc/socket";
 import fetch, {Request, RequestInit, Response}              from 'node-fetch';
 import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../helper/constants/workerChTaskActions";
 import {WorkerChTargets}                                    from "../helper/constants/workerChTargets";
@@ -12,7 +12,7 @@ import AsymmetricKeyPairs                                   from "../helper/info
 import {WorkerMessageActions}                               from "../helper/constants/workerMessageActions";
 import BackErrorConstruct                                   from "../helper/constants/backErrorConstruct";
 import {ZationChannel, ZationToken}                         from "../helper/constants/internal";
-import {InternalMainConfig}                                   from "../helper/configDefinitions/mainConfig";
+import {InternalMainConfig}                                 from "../helper/configDefinitions/mainConfig";
 import {AppConfig}                                          from "../helper/configDefinitions/appConfig";
 import {ChannelConfig}                                      from "../helper/configDefinitions/channelConfig";
 import {EventConfig}                                        from "../helper/configDefinitions/eventConfig";
@@ -37,7 +37,7 @@ import ObjectPath                                           from "../helper/util
 import Result                                               from "./Result";
 import Logger                                               from "../helper/logger/logger";
 import ChUtils                                              from "../helper/channel/chUtils";
-import SidBuilder                                              from "../helper/utils/sidBuilder";
+import SidBuilder                                           from "../helper/utils/sidBuilder";
 import TokenUtils                                           from "../helper/token/tokenUtils";
 import AuthenticationError                                  from "../helper/error/authenticationError";
 import ObjectPathSequence                                   from "../helper/utils/objectPathSequence";

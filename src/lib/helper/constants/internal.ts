@@ -156,18 +156,18 @@ export interface ConfigScriptSave {
 
 export enum ZationChannel {
     //Zation Main Channels
-    USER_CHANNEL_PREFIX         = 'ZATION.USER.',
-    AUTH_USER_GROUP_PREFIX      = 'ZATION.AUTH_USER_GROUP.',
-    DEFAULT_USER_GROUP          = 'ZATION.DEFAULT_USER_GROUP',
-    ALL                         = 'ZATION.ALL',
-    PANEL_IN                    = 'ZATION.PANEL_IN',
-    PANEL_OUT                   = 'ZATION.PANEL_OUT',
+    USER_CHANNEL_PREFIX = 'Z_U.',
+    AUTH_USER_GROUP_PREFIX = 'Z_AUG.',
+    DEFAULT_USER_GROUP = 'Z_DUG',
+    ALL = 'Z_ALL',
+    PANEL_IN = 'Z_PI',
+    PANEL_OUT = 'Z_PO',
     //Custom Channels
-    CUSTOM_ID_CHANNEL_PREFIX    = 'ZATION.CUSTOM_ID_CHANNEL.',
-    CUSTOM_CHANNEL_ID           = '.CH_ID.',
-    CUSTOM_CHANNEL_PREFIX       = 'ZATION.CUSTOM_CHANNEL.',
+    CUSTOM_ID_CHANNEL_PREFIX = 'Z_CID_C.',
+    CUSTOM_CHANNEL_ID = '.',
+    CUSTOM_CHANNEL_PREFIX = 'Z_C_C.',
     //intern channels
-    ALL_WORKER                  = 'ZATION.ALL_WORKER'
+    ALL_WORKER                  = 'Z_AW'
 }
 
 export const DefaultUserGroupFallBack = 'default';

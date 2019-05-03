@@ -34,17 +34,17 @@ export default class ChUtils
     static getCustomIdChannelInfo(ch : string) : {name : string,id : string} {
         const nameAndId = ch.split('.');
         return {
-            name : nameAndId[2],
-            id : nameAndId[4]
+            name : nameAndId[1],
+            id : nameAndId[2]
         };
     }
 
     /**
-     * Get custom channel id from a built string.
+     * Get custom channel id channel name from a built string.
      * @param ch
      */
     static getCustomIdChannelName(ch : string) : string {
-        return ch.split('.')[2];
+        return ch.split('.')[1];
     }
 
     /**
@@ -60,7 +60,7 @@ export default class ChUtils
      * @param ch
      */
     static getCustomChannelName(ch : string) : string {
-        return ch.split('.')[2];
+        return ch.split('.')[1];
     }
 
     /**
@@ -76,7 +76,7 @@ export default class ChUtils
      * @param ch
      */
     static getUserAuthGroupFromCh(ch : string) : string {
-        return ch.split('.')[2];
+        return ch.split('.')[1];
     }
 
     /**
@@ -92,7 +92,7 @@ export default class ChUtils
      * @param ch
      */
     static getUserIdFromCh(ch : string) : string {
-        return ch.split('.')[2];
+        return ch.split('.')[1];
     }
 
     /**
