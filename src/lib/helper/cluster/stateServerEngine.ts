@@ -12,12 +12,14 @@ import Logger       from "../logger/logger";
 const  ScClient : any        = require('socketcluster-client');
 const  uuidV4                = require('uuid/v4');
 
+export const ZATION_CLUSTER_VERSION = 1;
+
 export default class StateServerEngine
 {
     private zc : ZationConfig;
     private zm : ZationMaster;
     private stateSocket : any;
-    private readonly useSecretKey : boolean;
+    private readonly useClusterSecretKey : boolean;
     private encoder : Encoder;
 
     private inBootProcess : boolean = true;
@@ -38,12 +40,12 @@ export default class StateServerEngine
         this.zm = zm;
 
         this.useSharedTokenAuth = this.zc.mainConfig.clusterShareTokenAuth;
-        this.useSecretKey = !!this.zc.mainConfig.clusterSecretKey;
+        this.useClusterSecretKey = !!this.zc.mainConfig.clusterSecretKey;
 
         this.buildConnectSettings();
         this.buildServerSettings();
 
-        if(this.useSecretKey) {
+        if(this.useClusterSecretKey) {
             // @ts-ignore
             this.encoder = new Encoder(this.zc.mainConfig.clusterSecretKey);
         }
@@ -51,70 +53,75 @@ export default class StateServerEngine
         this.buildServerSharedData();
     }
 
+    /**
+     * Build the server settings.
+     */
     private buildServerSettings()
     {
         this.serverSettings = {
             useShareTokenAuth : this.useSharedTokenAuth,
-            useSecretKey : this.useSecretKey
+            useClusterSecretKey : this.useClusterSecretKey
         };
     }
 
+    /**
+     * Build the server shared data between masters.
+     */
     private buildServerSharedData()
     {
-        const sharedVar = {
+        const sharedData = {
                 tokenCheckKey : this.zc.internalData.tokenCheckKey
             };
 
         if(this.useSharedTokenAuth) {
-            sharedVar['authPubKey'] = this.zc.mainConfig.authPublicKey;
-            sharedVar['authPriKey'] = this.zc.mainConfig.authPrivateKey;
-            sharedVar['authKey'] = this.zc.mainConfig.authKey;
-            sharedVar['authAlgorithm'] = this.zc.mainConfig.authAlgorithm;
+            sharedData['verifyKey'] = this.zc.getVerifyKey();
+            sharedData['signKey'] = this.zc.getSignKey();
+            sharedData['authAlgorithm'] = this.zc.mainConfig.authAlgorithm;
         }
 
-        if(this.useSecretKey) {
-            this.serverSharedData = this.encoder.encrypt(sharedVar);
+        if(this.useClusterSecretKey) {
+            this.serverSharedData = this.encoder.encrypt(sharedData);
         }
         else {
-            this.serverSharedData = sharedVar;
+            this.serverSharedData = sharedData;
         }
     }
 
-    private loadSharedVar(sharedVar : string | object)
+    /**
+     * Load the shared data from another master.
+     * This method will also try to decrypt them by using a cluster key.
+     * @param sharedData
+     */
+    private loadSharedData(sharedData : string | object)
     {
-        let sharedVarDec;
-
-        if(this.useSecretKey && typeof sharedVar === 'string') {
+        if(this.useClusterSecretKey && typeof sharedData === 'string') {
             try {
-                sharedVarDec = this.encoder.decrypt(sharedVar);
+                sharedData = this.encoder.decrypt(sharedData);
             }
             catch (e) {
                 this.zm.killServer(`Decrypting the shared variables failed.` +
-                    `Check if every zation server has the same cluster secret key`)
+                    `Check if every zation server has the same cluster secret key`);
             }
         }
-        else {
-            sharedVarDec = sharedVar;
-        }
 
-        if(typeof sharedVarDec === 'object')
-        {
-            this.zc.internalData.tokenCheckKey = sharedVarDec.tokenCheckKey;
+        if(typeof sharedData === 'object') {
+            this.zc.internalData.tokenCheckKey = sharedData['tokenCheckKey'];
 
-            if(this.useSharedTokenAuth)
-            {
-                this.zc.mainConfig.authPublicKey = sharedVarDec['authPubKey'];
-                this.zc.mainConfig.authPrivateKey = sharedVarDec['authPriKey'];
-                this.zc.mainConfig.authKey = sharedVarDec['authKey'];
-                this.zc.mainConfig.authAlgorithm = sharedVarDec['authAlgorithm'];
+            if(this.useSharedTokenAuth) {
+                this.zc.internalData.verifyKey = sharedData['verifyKey'];
+                this.zc.internalData.signKey = sharedData['signKey'];
+                this.zc.mainConfig.authAlgorithm = sharedData['authAlgorithm'];
             }
         }
         else {
             this.zm.killServer(`Load the shared variables failed.` +
-                `Check if every zation server has the same cluster secret key setting`)
+                `Check if every zation server has the same cluster secret key setting`);
         }
     }
 
+    /**
+     * Build the connection settings for the state server connection.
+     */
     private buildConnectSettings() {
         //connect to state server
         const DEFAULT_PORT = 7777;
@@ -150,20 +157,43 @@ export default class StateServerEngine
                 authKey,
                 instancePort: this.zc.mainConfig.port,
                 instanceType: 'zation-master',
+                zationClusterVersion : ZATION_CLUSTER_VERSION
             }
         };
     }
 
-    public registerStateServer()
+    /**
+     * Deactivate the leadership from this master.
+     */
+    private deactivateLeadership() {
+        this.zm.deactivateClusterLeader();
+        this.isClusterLeader = false;
+    }
+
+    /**
+     * Activate the leadership from this master.
+     */
+    private activateLeadership() {
+        this.zm.activateClusterLeader();
+        this.isClusterLeader = true;
+    }
+
+    /**
+     * Start to connect and register to the state server.
+     * Promise will be resolved after the connection is established, and the master has registered at the state server.
+     */
+    public registerStateServer() : Promise<void>
     {
         this.stateSocket = ScClient.connect(this.connectSettings);
         Logger.printStartDebugInfo('Master wait for connection to zation-cluster-state server...');
         return new Promise((resolve) =>
         {
-            this.stateSocket.on('error',async (e) =>
-            {
+            this.stateSocket.on('error',async (e) => {
                 if(e.name === 'BadClusterAuthError') {
                     this.zm.killServer(`The provided 'clusterAuthKey' is wrong. Can't connect to zation-cluster-state server.`);
+                }
+                else if(e.name === 'BadZationClusterVersion') {
+                    this.zm.killServer(`This zation cluster version of this zation server version is not compatible with the state server version.`);
                 }
             });
 
@@ -186,13 +216,12 @@ export default class StateServerEngine
                 }
                 else {
                     Logger.printDebugWarning
-                    (`Reconnection to zation-cluster-state server is failed. Connection is tried again.`);
+                    (`Reconnection to the zation-cluster-state server is failed. The master will try again to reconnect.`);
                 }
             });
 
             this.stateSocket.on('removeLeader',async (data,respond)=> {
-                this.zm.deactivateClusterLeader();
-                this.isClusterLeader = false;
+                this.deactivateLeadership();
                 respond(null);
             });
 
@@ -201,45 +230,35 @@ export default class StateServerEngine
                 if(this.firstConnection) {
                     this.firstConnection = false;
                     Logger.printStartDebugInfo('Master is connected to zation-cluster-state server');
-                    await this.registerMaster();
-                    resolve();
+                    try {
+                        await this.registerMaster();
+                        resolve();
+                    }
+                    catch (e) {
+                        this.zm.killServer(`Register by state server is failed. Err: ${e.toString()}.`);
+                    }
                 }
                 else {
-                    //reconnection to state server
-                    let tryCount = 0;
-                    const tryFunc = async () =>
-                    {
-                        if(tryCount < 4) {
-                            tryCount++;
-                            Logger.printDebugInfo('Try to reconnect to state server!');
-                            const res = await this.reconnectStateServer();
-                            if(!res) {
-                                await tryFunc();
-                            }
-                        }
-                        else {
-                            Logger.printDebugWarning(`Reconnection to state server failed ${tryCount} times!`);
-                        }
-                    };
-                    await tryFunc();
+                    await this.tryReconnect();
                 }
             });
         });
     }
 
+    /**
+     * Register this master at the state server.
+     */
     private registerMaster()
     {
         return new Promise((resolve) =>
         {
             this.stateSocket.emit
-            ('zMasterRegister',
-                {
+            ('zMasterRegister', {
                     settings : this.serverSettings,
                     sharedData : this.serverSharedData,
                     instanceId : this.zc.mainConfig.instanceId
                 },
-                async (err,data) =>
-                {
+                async (err,data) => {
                     if(!err) {
                         await this.reactOnRegisterRespond(data);
                         resolve();
@@ -251,75 +270,116 @@ export default class StateServerEngine
         });
     }
 
+    /**
+     * Reaction on the register responds from the state server.
+     * @param data
+     */
     private async reactOnRegisterRespond(data : any)
     {
         const info = data.info;
         const reconnectUUID = data.reconnectUUID;
 
-        if(info === 'first') {
-            this.reconnectUUID = reconnectUUID;
-        }
-        else if(info === 'ok') {
-            this.reconnectUUID = reconnectUUID;
-            this.loadSharedVar(data.sharedVar);
-        }
-        else if(info === 'reconnectMode') {
-            const ms = data['tryIn'];
-            Logger.printStartDebugInfo
-            (`Zation-cluster-state server is in ${data['mode']} reconnectMode! Master is try again to connect in ${ms} ms`);
+        switch (info) {
+            case 'first':
+                this.reconnectUUID = reconnectUUID;
+                break;
+            case 'ok' :
+                this.reconnectUUID = reconnectUUID;
+                this.loadSharedData(data.sharedData);
+                break;
+            case 'reconnectMode' :
+                const ms = data['tryIn'];
+                Logger.printStartDebugInfo
+                (`Zation-cluster-state server is in ${data['mode']} reconnectMode! Master is try again to connect in ${ms} ms.`);
 
-            await new Promise((resolve) => {
-                setTimeout(async () => {
-                    await this.registerMaster();
-                    resolve();
-                },Number(ms));
-            });
-        }
-        else if(info === 'notSameSettings') {
-            this.zm.killServer(`Other connected servers with the zation-cluster-state server have different settings.`+
-            `Try to shut down all servers and start the server with the new settings to accept the other settings.`);
-        }
-        else if(info === 'instanceIdAlreadyReg') {
-            const oldInstanceId = this.zc.mainConfig.instanceId;
-
-            Logger.printStartDebugInfo
-            (`InstanceId: ${oldInstanceId} is already registered.` +
-             `Master tries to generate a new instanceID and to register to the state server again.`);
-
-            this.zc.mainConfig.instanceId = uuidV4();
-            await this.registerMaster();
-        }
-        else {
-            this.zm.killServer(`The respond info from the zation-cluster-state server could not be found`);
+                await new Promise((resolve) => {
+                    setTimeout(async () => {
+                        await this.registerMaster();
+                        resolve();
+                    },Number(ms));
+                });
+                break;
+            case 'notSameSettings' :
+                this.zm.killServer(`Other connected servers with the zation-cluster-state server have different settings.`+
+                    `Try to shut down all servers and start the server with the new settings to accept the other settings.`);
+                break;
+            case 'instanceIdAlreadyReg':
+                Logger.printStartDebugInfo
+                (`InstanceId: ${this.zc.mainConfig.instanceId} is already registered.` +
+                    `Master tries to generate a new instanceID and to register to the state server again.`);
+                this.zm.changeInstanceId(uuidV4());
+                await this.registerMaster();
+                break;
+            default :
+                this.zm.killServer(`The respond info from the zation-cluster-state server could not be found.`);
+                break;
         }
     }
 
-    public async scStarted()
+    /**
+     * Method for joining the cluster.
+     */
+    private async joinCluster()
     {
-        //register on newLeader event
+        await new Promise((resolve)=> {
+            this.stateSocket.emit('zMasterJoin',{},(err) => {
+                err ?
+                    this.zm.killServer(`Error by trying to join the cluster. Error -> ${err.toString()}`) :
+                    resolve();
+            });
+        });
+    }
+
+    /**
+     * A method that registers the listener for the leadership event.
+     */
+    private registerNewLeaderEvent() {
         this.stateSocket.on('newLeader',async (data,respond) => {
-            this.zm.activateClusterLeader();
-            this.isClusterLeader = true;
+            this.activateLeadership();
             respond(null);
         });
-
-        //join cluster
-        await new Promise((resolve)=>
-        {
-            this.stateSocket.emit('zMasterJoin',{},(err) => {
-                if(err) {
-                    this.zm.killServer(`Error by trying to join the cluster. Error -> ${err.toString()}`);
-                }
-                else {
-                    resolve();
-                }
-            });
-        });
-
-        this.inBootProcess = false;
     }
 
-    private reconnectStateServer() : Promise<boolean>
+    /**
+     * Will join the cluster, register for the new leader event and end the boot process.
+     */
+    public async start() {
+        this.inBootProcess = false;
+        this.registerNewLeaderEvent();
+        await this.joinCluster();
+    }
+
+    /**
+     * Will tries more times to reconnect.
+     */
+    private async tryReconnect()
+    {
+        const tryRec = async () =>
+        {
+            await new Promise(async (resolve) => {
+                if(this.stateSocket.getState() === this.stateSocket.OPEN) {
+                    Logger.printDebugInfo('Try to reconnect to the state server.');
+
+                    if(!(await this.reconnect())) {
+                        Logger.printDebugWarning(`Reconnection to state server failed.`);
+                        setTimeout(async () => {
+                            await tryRec();
+                            resolve();
+                        },350);
+                    }
+                    else {
+                        resolve();
+                    }
+                }
+            })
+        };
+        await tryRec();
+    }
+
+    /**
+     * Reconnect to the state server.
+     */
+    private reconnect() : Promise<boolean>
     {
         return new Promise(((resolve) =>
         {
@@ -332,22 +392,29 @@ export default class StateServerEngine
                     wasLeader : this.isClusterLeader
                 }
                 ,
-                (err,data) =>
+                async (err,data) =>
                 {
                     if(!err)
                     {
                         const info = data.info;
-                        if(info === 'wrongReconnectUUID') {
-                            this.zm.killServer(`Failed to reconnect to state server -> wrong reconnect uuid!`);
-                        }
-                        else if(info === 'failedToRemoveLeader') {
-                            this.zm.killServer(`Failed to remove leadership!`);
-                        }
-                        else {
-                            if(info === 'ok') {
+                        switch (info) {
+                            case 'wrongReconnectUUID':
+                                this.zm.killServer(`Failed to reconnect to state server -> wrong reconnect uuid!`);
+                                break;
+                            case 'failedToRemoveLeader':
+                                this.deactivateLeadership();
+                                resolve((await this.reconnect()));
+                                break;
+                            case 'ok':
                                 Logger.printDebugInfo('Reconnected to state server!');
-                            }
-                            resolve(true);
+                                resolve(true);
+                                break;
+                            case 'alreadyJoined':
+                                resolve(true);
+                                break;
+                            default:
+                                resolve(false);
+                                break;
                         }
                     }
                     else {

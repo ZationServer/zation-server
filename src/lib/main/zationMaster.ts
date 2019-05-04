@@ -264,7 +264,7 @@ export default class ZationMaster {
             host : this.zc.mainConfig.hostname,
             protocol : this.zc.mainConfig.secure ? 'https' : 'http',
             protocolOptions: this.zc.mainConfig.httpsConfig,
-            authKey: this.zc.mainConfig.authKey,
+            authKey: this.zc.mainConfig.authSecretKey,
             authAlgorithm: this.zc.mainConfig.authAlgorithm,
             authPublicKey: this.zc.mainConfig.authPublicKey,
             authPrivateKey: this.zc.mainConfig.authPrivateKey,
@@ -325,15 +325,12 @@ export default class ZationMaster {
         {
            if(!this.stateServerActive) {
                //not in cluster mode
-               Logger.startStopWatch();
-               this.startBackgroundTasks();
-               Logger.printStartDebugInfo('Master init the background tasks.',true);
-               this.backgroundTaskInit = true;
+               this.initBackgroundTasks();
                this.backgroundTaskActive = true;
                this.clusterLeader = true;
            }
            else {
-               await this.stateServerEngine.scStarted();
+               await this.stateServerEngine.start();
            }
 
            this.printStartedInformation();
@@ -404,6 +401,13 @@ export default class ZationMaster {
         });
     }
 
+    private initBackgroundTasks() {
+        Logger.startStopWatch();
+        this.startBackgroundTasks();
+        this.backgroundTaskInit = true;
+        Logger.printStartDebugInfo('Master init the background tasks.',true);
+    }
+
     private async emitStartedEvent() {
         if(this.zcLoader.eventConfig.started) {
             let started = this.zcLoader.eventConfig.started;
@@ -455,10 +459,9 @@ export default class ZationMaster {
         }
     }
 
-    private getRandomWorkerId()
-    {
+    private getRandomWorkerId() {
         // noinspection JSUnresolvedFunction
-        let array = this.workerIds.toArray();
+        const array = this.workerIds.toArray();
         return array[Math.floor(Math.random()*array.length)];
     }
 
@@ -468,29 +471,45 @@ export default class ZationMaster {
         this.stateServerActive =  !!this.clusterStateServerHost;
     }
 
+    /**
+     * This method will change the current instance id.
+     * Notice that it only works in boot mode (Worker/Broker are not started).
+     * @param instanceId
+     */
+    public changeInstanceId(instanceId : string) {
+        Logger.printInfo(`The master changes the instance id: '${this.zc.mainConfig.instanceId}' to '${instanceId}'.`);
+        this.zc.mainConfig.instanceId = instanceId;
+    }
+
+    /**
+     * Activate this master to the cluster leader.
+     */
     public activateClusterLeader() : void
     {
         Logger.printDebugInfo(`This Instance '${this.master.options.instanceId}' becomes the cluster leader.`);
-
         if(!this.backgroundTaskInit) {
-            Logger.startStopWatch();
-            this.startBackgroundTasks();
-            Logger.printStartDebugInfo('Master init the background tasks.',true);
-            this.backgroundTaskInit = true;
+            this.initBackgroundTasks();
         }
         this.backgroundTaskActive = true;
         this.clusterLeader = true;
     }
 
+    /**
+     * Deactivate this master cluster leadership.
+     */
     public deactivateClusterLeader() : void
     {
-        Logger.printDebugInfo(`This Instance '${this.master.options.instanceId}' gets the lead taken off!`);
+        Logger.printDebugInfo(`This Instance '${this.master.options.instanceId}' gets leadership taken off.`);
         this.backgroundTaskActive = false;
         this.clusterLeader = false;
     }
 
     //PART Crash
     // noinspection JSMethodCanBeStatic
+    /**
+     * Kill the complete server for a specific reason.
+     * @param error
+     */
     public killServer(error : Error | string)
     {
         if(this.master) {
@@ -504,7 +523,9 @@ export default class ZationMaster {
     }
 
     //PART BackgroundTasks
-
+    /**
+     * Start the background task planning.
+     */
     private startBackgroundTasks()
     {
         //userBackgroundTasks
@@ -521,12 +542,20 @@ export default class ZationMaster {
         bkTS.setUserBackgroundTasks(this.zcLoader.appConfig.backgroundTasks);
     }
 
+    /**
+     * Send a background task to a random worker.
+     * @param obj
+     */
     public sendBackgroundTask(obj) {
         if(this.backgroundTaskActive) {
             this.sendToRandomWorker(obj);
         }
     }
 
+    /**
+     * Send something to a random worker.
+     * @param obj
+     */
     public sendToRandomWorker(obj)
     {
         let workerId = this.getRandomWorkerId();
