@@ -937,7 +937,7 @@ export default class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns this service, if it exist otherwise it will throw an ServiceNotFoundError error.
+     * Returns this service, if it exists otherwise, it will throw a ServiceNotFoundError error.
      * @throws ServiceNotFoundError
      * @param  serviceName
      * @param  configName
@@ -950,7 +950,7 @@ export default class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Checks if the service with this config name is exist and can be used.
+     * Checks if the service with this configuration exists and can be used.
      * @param serviceName
      * @param configName
      */
