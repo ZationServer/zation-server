@@ -96,7 +96,14 @@ export default class ConfigPreCompiler
     {
         this.prepareControllerDefaults();
         this.prepareModelsConfig();
+        this.prepareBagExtensions();
         this.modelImportEngine = new ModelImportEngine(this.modelsConfig);
+    }
+
+    private prepareBagExtensions() {
+        if(!Array.isArray(this.configs.appConfig.bagExtensions)) {
+            this.configs.appConfig.bagExtensions = [];
+        }
     }
 
     private prepareControllerDefaults() : void
@@ -201,10 +208,6 @@ export default class ConfigPreCompiler
 
         if(typeof this.configs.serviceConfig.services !== 'object'){
             this.configs.serviceConfig.services = {};
-        }
-
-        if(!Array.isArray(this.configs.appConfig.bagExtensions)) {
-            this.configs.appConfig.bagExtensions = [];
         }
 
         sm.forEach((sm) => {

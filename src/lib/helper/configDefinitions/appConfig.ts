@@ -180,8 +180,8 @@ export interface BackgroundTask
 }
 
 export default interface BagExtension {
-    smallBag : Record<string,any>,
-    bag : Record<string,any>
+    smallBag ?: Record<string,any>,
+    bag ?: Record<string,any>
 }
 
 export interface TimeObj

@@ -36,9 +36,11 @@ export default class BagExtensionEngine
      */
     private add(bag : any, methods)
     {
-        for(let k in methods) {
-            if(methods.hasOwnProperty(k)) {
-                bag.prototype[k] = methods[k];
+        if(methods){
+            for(let k in methods) {
+                if(methods.hasOwnProperty(k)) {
+                    bag.prototype[k] = methods[k];
+                }
             }
         }
     }
