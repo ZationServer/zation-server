@@ -50,7 +50,7 @@ export default class ConfigLoader {
         useProtocolCheck: true,
         useHttpMethodCheck: true,
         sendErrorDescription: false,
-        authKey: crypto.randomBytes(32).toString('hex'),
+        authSecretKey: crypto.randomBytes(32).toString('hex'),
         authPublicKey: null,
         authPrivateKey: null,
         authDefaultExpiry: 86400,

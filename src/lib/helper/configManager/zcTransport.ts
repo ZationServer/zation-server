@@ -19,5 +19,5 @@ export default interface ZcTransport {
     rootPath : string,
     startMode : StartMode,
     configLocations : ConfigLocations,
-    preLoadJwtOptions : JwtSignOptions
+    preLoadJwtSignOptions : JwtSignOptions
 }

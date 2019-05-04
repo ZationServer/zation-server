@@ -46,6 +46,7 @@ import Base64Utils                                          from "../helper/util
 import ZationConfigFull                                     from "../helper/configManager/zationConfigFull";
 import ObjectUtils                                          from "../helper/utils/objectUtils";
 import JwtSignOptions                                       from "../helper/constants/jwt";
+import JwtVerifyOptions                                     from "../helper/constants/jwt";
 
 
 export default class SmallBag
@@ -682,10 +683,11 @@ export default class SmallBag
      * @example
      * await verifyToken('djf09ejd103je32ije0');
      * @param signedToken
+     * @param jwtOptions
      * @throws BackError with names: tokenExpiredError, jsonWebTokenError or unknownTokenVerifyError.
      */
-    async verifyToken(signedToken : string) : Promise<Record<string,any>> {
-        return await TokenUtils.verifyToken(signedToken,this.zc);
+    async verifyToken(signedToken : string,jwtOptions : JwtVerifyOptions = {})  : Promise<Record<string,any>> {
+        return await TokenUtils.verifyToken(signedToken,this.zc,jwtOptions);
     }
 
     //Part Socket Channel

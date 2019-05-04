@@ -18,7 +18,7 @@ export default abstract class ZationConfig {
 
     protected _starterConfig : StarterConfig;
     protected _mainConfig : InternalMainConfig;
-    protected _preLoadJwtOptions : JwtSignOptions = {};
+    protected _preLoadJwtSignOptions : JwtSignOptions = {};
 
     protected _configLocations : ConfigLocations;
 
@@ -49,7 +49,7 @@ export default abstract class ZationConfig {
             rootPath : this._rootPath,
             internalData : this._internalData,
             configLocations : this._configLocations,
-            preLoadJwtOptions : this._preLoadJwtOptions
+            preLoadJwtSignOptions : this._preLoadJwtSignOptions
         };
     }
 
@@ -71,11 +71,11 @@ export default abstract class ZationConfig {
     }
 
     getVerifyKey(): any {
-        return this._mainConfig.authPublicKey || this._mainConfig.authKey;
+        return this._internalData.verifyKey;
     }
 
     getSignKey(): any {
-        return this._mainConfig.authPrivateKey || this._mainConfig.authKey;
+        return this._internalData.signKey;
     }
 
     getZationInfo(): ZationInfo {
@@ -102,8 +102,8 @@ export default abstract class ZationConfig {
         return this._configLocations;
     }
 
-    getJwtOptions() : JwtSignOptions {
+    getJwtSignOptions() : JwtSignOptions {
         //return cloned options
-        return {...this._preLoadJwtOptions};
+        return {...this._preLoadJwtSignOptions};
     }
 }

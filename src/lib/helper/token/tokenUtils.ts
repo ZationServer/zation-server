@@ -12,9 +12,10 @@ import BackError           from "../../api/BackError";
 import AuthenticationError from "../error/authenticationError";
 import {MainBackErrors}    from "../zationBackErrors/mainBackErrors";
 import ZationConfigFull    from "../configManager/zationConfigFull";
-import JwtOptions          from "../constants/jwt";
+import JwtSignOptions          from "../constants/jwt";
 import ObjectUtils         from "../utils/objectUtils";
 import ZationConfig        from "../configManager/zationConfig";
+import JwtVerifyOptions from "../constants/jwt";
 const  Jwt : any         = require('jsonwebtoken');
 const uniqid             = require('uniqid');
 
@@ -62,7 +63,7 @@ export default class TokenUtils
      * @param data
      * @param jwtOptions
      */
-    static async setSocketTokenAsync(socket : UpSocket, data : object, jwtOptions : JwtOptions = {}) {
+    static async setSocketTokenAsync(socket : UpSocket, data : object, jwtOptions : JwtSignOptions = {}) {
         return new Promise<void>((resolve, reject) => {
             socket.setAuthToken(data,jwtOptions,(err) => {
                 if(err){
@@ -130,12 +131,13 @@ export default class TokenUtils
      * Verify a signedToken.
      * @param signedToken
      * @param zc
+     * @param jwtOptions
      */
-    static async verifyToken(signedToken,zc : ZationConfigFull)
+    static async verifyToken(signedToken,zc : ZationConfigFull,jwtOptions : JwtVerifyOptions = {})
     {
         return new Promise((resolve, reject) =>
         {
-            Jwt.verify(signedToken,zc.getVerifyKey(),zc.getJwtOptions(),(err,decoded) => {
+            Jwt.verify(signedToken,zc.getVerifyKey(),jwtOptions,(err, decoded) => {
                 if(err) {
                     if(err.name === 'TokenExpiredError') {
                         reject(new BackError(MainBackErrors.tokenExpiredError,{expiredAt : err.expiredAt}));
@@ -160,11 +162,11 @@ export default class TokenUtils
      * @param zc
      * @param jwtOptions
      */
-    static async signToken(data : object,zc : ZationConfig,jwtOptions : JwtOptions) : Promise<string>
+    static async signToken(data : object,zc : ZationConfig,jwtOptions : JwtSignOptions) : Promise<string>
     {
         return new Promise((resolve, reject) =>
         {
-            const options = zc.getJwtOptions();
+            const options = zc.getJwtSignOptions();
             ObjectUtils.addObToOb(options,jwtOptions);
 
             Jwt.sign(data,zc.getSignKey(),options,(err,signedToken) => {

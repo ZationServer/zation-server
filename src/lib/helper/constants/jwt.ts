@@ -5,8 +5,12 @@ GitHub: LucaCode
  */
 
 export default interface JwtSignOptions extends Record<string,any> {
-    expiresIn ?: number,
-    notBefore ?: number
-    algorithm ?: string
+    expiresIn ?: number;
+    notBefore ?: number;
+    algorithm ?: string;
 }
 
+export default interface JwtVerifyOptions extends Record<string,any> {
+    algorithms ?: string[];
+    maxAge ?: string | number;
+}

@@ -118,11 +118,11 @@ Main[nameof<MainConfig>(s => s.origins)]              = {types : ['string','null
 Main[nameof<MainConfig>(s => s.authStart)]          = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.authStartDuration)]  = {types : ['number'],isOptional : true};
 Main[nameof<MainConfig>(s => s.postKey)]            = {types : ['string'],isOptional : true};
-Main[nameof<MainConfig>(s => s.authKey)]            = {types : ['string','object'],isOptional : true};
+Main[nameof<MainConfig>(s => s.authSecretKey)]      = {types : ['string','null'],isOptional : true};
 Main[nameof<MainConfig>(s => s.authDefaultExpiry)]  = {types : ['number'],isOptional : true};
 Main[nameof<MainConfig>(s => s.authAlgorithm)]      = {types : ['string'],isOptional : true};
-Main[nameof<MainConfig>(s => s.authPrivateKey)]     = {types : ['string','object'],isOptional : true};
-Main[nameof<MainConfig>(s => s.authPublicKey)]      = {types : ['string','object'],isOptional : true};
+Main[nameof<MainConfig>(s => s.authPrivateKey)]     = {types : ['string','null'],isOptional : true};
+Main[nameof<MainConfig>(s => s.authPublicKey)]      = {types : ['string','null'],isOptional : true};
 
 Main[nameof<MainConfig>(s => s.validationCheckLimit)]      = {types : ['number'],isOptional : true};
 

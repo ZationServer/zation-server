@@ -32,7 +32,7 @@ export default class ZationConfigFull extends ZationConfig {
         this._startMode = zcTransport.startMode;
         this._configLocations = zcTransport. configLocations;
         this._internalData = zcTransport.internalData;
-        this._preLoadJwtOptions = zcTransport.preLoadJwtOptions;
+        this._preLoadJwtSignOptions = zcTransport.preLoadJwtSignOptions;
     }
 
     setOtherConfigs(preCompiledOtherConfigSet : OtherPreCompiledConfigSet) {

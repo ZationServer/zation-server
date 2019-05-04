@@ -191,12 +191,12 @@ export interface MainConfig
      */
     postKey  ?: string;
     /**
-     * The key which zation will use to encrypt/decrypt authTokens.
+     * The secret key which zation will use to encrypt/decrypt authTokens.
      * The key can be automatically shared between more server instances.
      * If you want to use RSA or ECDSA, you should provide a authPrivateKey and authPublicKey instead of authKey.
      * @default 256 bits cryptographically random hex string.
      */
-    authKey  ?: string;
+    authSecretKey  ?: string;
     /**
      * The default expiry of tokens in seconds.
      * @default 86400
@@ -371,7 +371,7 @@ export interface InternalMainConfig extends MainConfig {
     authStart  : boolean;
     authStartDuration  : number;
     postKey  : string;
-    authKey  : string;
+    authSecretKey  : string;
     authDefaultExpiry  : number;
     authPrivateKey  : string | null;
     authPublicKey  : string | null;
