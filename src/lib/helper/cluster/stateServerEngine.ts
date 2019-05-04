@@ -401,7 +401,7 @@ export default class StateServerEngine
                             case 'wrongReconnectUUID':
                                 this.zm.killServer(`Failed to reconnect to state server -> wrong reconnect uuid!`);
                                 break;
-                            case 'failedToRemoveLeader':
+                            case 'removeLeadership':
                                 this.deactivateLeadership();
                                 resolve((await this.reconnect()));
                                 break;
