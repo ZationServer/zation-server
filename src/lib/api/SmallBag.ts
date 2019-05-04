@@ -950,7 +950,7 @@ export default class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Checks if the service with this configuration exists and can be used.
+     * Checks if the service with this configuration exists.
      * @param serviceName
      * @param configName
      */
