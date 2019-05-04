@@ -940,7 +940,7 @@ export default class SmallBag
      * Returns the service, if it exists otherwise, it will throw a ServiceNotFoundError error.
      * @throws ServiceNotFoundError
      * @param  serviceName
-     * @param  configName
+     * @param  configName Default: 'default'
      */
     async getService<S>(serviceName : string,configName : string = 'default') : Promise<S>
     {
@@ -950,9 +950,9 @@ export default class SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Checks if the service with this configuration exists.
+     * This function returns a boolean that indicates if the service with the given service and configuration name exists.
      * @param serviceName
-     * @param configName
+     * @param configName Default: 'default'
      */
     isService(serviceName : string,configName : string = 'default') : boolean
     {
