@@ -550,10 +550,21 @@ export default class ConfigPreCompiler
     }
 
     private preCompileInputConfig(inputConfig : InputConfig) : void {
+        //array is also a object
         if(typeof inputConfig.input === 'object') {
-            this.preCompileMultiInput(inputConfig.input);
-            //resolve multi input shortcut
-            inputConfig.multiInput = inputConfig.input;
+            const input = inputConfig.input;
+            if(Array.isArray(input)) {
+                //resolve single input shortcut
+                inputConfig.singleInput = input[0];
+                this.preCompileSingleInput(inputConfig);
+            }
+            else {
+                //resolve multi input shortcut
+                // @ts-ignore
+                inputConfig.multiInput = input;
+                // @ts-ignore
+                this.preCompileMultiInput(input);
+            }
         }
         else if(typeof inputConfig.multiInput === 'object') {
             this.preCompileMultiInput(inputConfig.multiInput);

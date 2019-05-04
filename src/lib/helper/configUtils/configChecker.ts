@@ -720,10 +720,26 @@ export default class ConfigChecker
     }
 
     private checkInputConfig(inputConfig : InputConfig, target : Target) {
+        /**
+         * Check main structure with structure of controller or stream.
+         */
         const inConfigs : string[] = [];
         if(inputConfig.input){
             inConfigs.push(nameof<InputConfig>(s => s.input));
-            this.checkMultiInput(inputConfig.input,target);
+            const input = inputConfig.input;
+            if(Array.isArray(input)){
+                if(input.length === 1){
+                    this.checkSingleInput(input[0],target);
+                }
+                else {
+                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                        `${target.getTarget()} to define a single input with the input property the array must have exactly one item.`));
+                }
+            }
+            else {
+                // @ts-ignore
+                this.checkMultiInput(input,target);
+            }
         }
         if(inputConfig.multiInput){
             inConfigs.push(nameof<InputConfig>(s => s.multiInput));

@@ -62,7 +62,7 @@ ObjectModel[nameof<ObjectModelConfig>(s => s.prototype)]  = {types : ['object'],
 ObjectModel[nameof<ObjectModelConfig>(s => s.convert)]    = {types : ['function'],isOptional : true};
 
 const ControllerConfig = {};
-ControllerConfig[nameof<ControllerConfig>(s => s.input)]            = {types : ['object'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.input)]            = {types : ['object','array'],arrayType : 'object',isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.multiInput)]       = {types : ['object'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.singleInput)]      = {types : ['object','array','string'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.prepareHandle)]    = {types : ['function','array'],arrayType : 'function',isOptional : true};

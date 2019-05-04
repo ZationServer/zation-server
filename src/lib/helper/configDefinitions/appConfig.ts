@@ -233,7 +233,7 @@ export interface InputConfig {
      * This property defines the input.
      * It works parameter based, the key is the parameter name,
      * and the value defines an anonymous model or link to a declared model.
-     * If you want to get only one anonymous input you can use the property singleInput.
+     * If you want to get only one anonymous input you can use the single input definition.
      * @example
      * multiInput : {
      *     name : {
@@ -248,7 +248,7 @@ export interface InputConfig {
     multiInput ?: MultiInput;
     /**
      * This property defines a single input.
-     * (Not parameter based like multiInput or input)
+     * (Not parameter based like multiInput)
      * You can directly define an anonymous model or link to a declared model.
      * @example
      * singleInput : {
@@ -259,12 +259,18 @@ export interface InputConfig {
     singleInput ?: Model;
     /**
      * This property defines the input.
-     * Its a shortcut for the property multiInput.
-     * It works parameter based, the key is the parameter name,
-     * and the value defines an anonymous model or link to a declared model.
-     * If you want to get only one anonymous input you can use the property singleInput.
+     * It can define a multi input or a single input.
+     * - Multi Input
+     * To define a multi input use an object as a value.
+     * MultiInput works parameter based; the key is the parameter name, and
+     * the value defines an anonymous model or link to a declared model.
+     * - Single Input
+     * To define a single input where you can directly
+     * specify the model (not parameter based)
+     * you have to use an array as a value and the
+     * first array element is an anonymous model or link to a declared model.
      * @example
-     * multiInput : {
+     * input : {
      *     name : {
      *         type : 'string'
      *     },
@@ -273,8 +279,16 @@ export interface InputConfig {
      *         minValue : 14
      *     }
      * }
+     * input : [{
+     *     type : 'string',
+     *     minValue : 14
+     * }]
      */
-    input ?: MultiInput;
+    input ?: MultiInput | SingleInputShortCut;
+}
+
+interface SingleInputShortCut {
+    ['0']: Model;
 }
 
 export interface MultiInput {
