@@ -46,7 +46,7 @@ export default class ConfigChecker
     private modelsConfig: Record<string, Model>;
     private cNames: object;
     private validAccessValues: any[];
-    private methodBagExNames : string[] = [];
+    private bagExPropNames : string[] = [];
     private serviceNames : string[] = [];
 
     private modelImportEngine : ModelImportEngine;
@@ -76,66 +76,82 @@ export default class ConfigChecker
 
     private checkAppBagExtensions()
     {
-        if(Array.isArray(this.zcLoader.appConfig.bagExtensions)){
-            this.checkBagExtensions(this.zcLoader.appConfig.bagExtensions,
-                new Target('BagExtensions -> '),true,ConfigNames.APP);
-        }
-    }
-
-    private checkBagExtensions(extensions : BagExtension[],target : Target,addIndex : boolean,configName : ConfigNames)
-    {
-        for(let i = 0; i < extensions.length; i++) {
-            let curTarget;
-            if(addIndex) {
-                curTarget = target.addPath('index ' + i.toString());
-            }
-            else {
-                curTarget = target;
-            }
-            ConfigCheckerTools.assertStructure
-            (Structures.BagExtension, extensions[i], configName, this.ceb, curTarget);
-
-            if(typeof extensions[i] === 'object' &&
-                typeof extensions[i].smallBag === 'object' &&
-                typeof extensions[i].bag === 'object'
-            ){
-                const bagMethods = extensions[i].bag;
-                const smallBagMethods = extensions[i].smallBag;
-
-                for(let k in bagMethods){
-                    if(bagMethods.hasOwnProperty(k)){
-                        this.checkBagExtensionMethod(k,bagMethods,false,configName,target);
-                    }
-                }
-
-                for(let k in smallBagMethods){
-                    if(smallBagMethods.hasOwnProperty(k)){
-                        this.checkBagExtensionMethod(k,smallBagMethods,true,configName,target);
-                    }
-                }
+        const appBagExtensions = this.zcLoader.appConfig.bagExtensions;
+        if(Array.isArray(appBagExtensions)){
+            for(let i = 0; i < appBagExtensions.length; i++) {
+                this.checkBagExtension(
+                    appBagExtensions[i],
+                    new Target('BagExtensions -> ').addPath('index ' + i.toString()),
+                    ConfigNames.APP
+                );
             }
         }
     }
 
-    private checkBagExtensionMethod(methodName : string,methods,isSmallBag : boolean,configName : ConfigNames,target : Target)
+    private checkBagExtension(extension : BagExtension,target : Target,configName : ConfigNames)
     {
-        if(this.methodBagExNames.includes(methodName)){
-            this.ceb.addConfigError(new ConfigError(configName,
-                `${target.getTarget()} conflict with method name: ${methodName}.`));
+        ConfigCheckerTools.assertStructure
+        (Structures.BagExtension, extension, configName, this.ceb, target);
+
+        const moduleBagExProps : string[] = [];
+
+        if(typeof extension === 'object'){
+            const bagExProps = extension.bag;
+            if(typeof bagExProps === 'object') {
+                for(let k in bagExProps){
+                    if(bagExProps.hasOwnProperty(k)){
+                        this.checkBagExtensionProp(k,bagExProps,false,configName,target);
+
+                        if(!moduleBagExProps.includes(k)){moduleBagExProps.push(k);}
+                    }
+                }
+            }
+            const smallBagExProps = extension.smallBag;
+            if(typeof smallBagExProps === 'object') {
+                for(let k in smallBagExProps){
+                    if(smallBagExProps.hasOwnProperty(k)){
+                        this.checkBagExtensionProp(k,smallBagExProps,true,configName,target);
+
+                        if(!moduleBagExProps.includes(k)){moduleBagExProps.push(k);}
+                    }
+                }
+            }
+            for(let i = 0; i < moduleBagExProps.length; i++) {
+                if(this.bagExPropNames.includes(moduleBagExProps[i])){
+                    this.ceb.addConfigError(new ConfigError(configName,
+                        `${target.getTarget()} conflict with other bag extension, property name: ${moduleBagExProps[i]}.`));
+                }
+                this.bagExPropNames.push(moduleBagExProps[i]);
+            }
         }
-        if(Bag.prototype.hasOwnProperty(methodName)){
-            this.ceb.addConfigError(new ConfigError(configName,
-                `${target.getTarget()} conflict with Bag method name: ${methodName}.`));
+    }
+
+    private checkBagExtensionProp
+    (
+        propName : string,
+        exProps,
+        isSmallBag : boolean,
+        configName : ConfigNames,
+        target : Target
+    )
+    {
+        if(isSmallBag) {
+            if(SmallBag.prototype.hasOwnProperty(propName)){
+                this.ceb.addConfigError(new ConfigError(configName,
+                    `${target.getTarget()} conflict with SmallBag property name: ${propName}.`));
+            }
         }
-        if(isSmallBag && SmallBag.prototype.hasOwnProperty(methodName)){
-            this.ceb.addConfigError(new ConfigError(configName,
-                `${target.getTarget()} conflict with SmallBag method name: ${methodName}.`));
+        else {
+            if(Bag.prototype.hasOwnProperty(propName)){
+                this.ceb.addConfigError(new ConfigError(configName,
+                    `${target.getTarget()} conflict with Bag property name: ${propName}.`));
+            }
+
         }
-        if(typeof methods[methodName] !== "function"){
+        if(exProps[propName] === undefined){
             this.ceb.addConfigError(new ConfigError(configName,
-                `${target.getTarget()} extension method '${methodName}' is not a function.`));
+                `${target.getTarget()} extension property '${propName}' is undefined.`));
         }
-        this.methodBagExNames.push(methodName);
     }
 
     private checkUserGroupName(name: string, notAllowed: string[], isAuth: boolean) {
@@ -556,8 +572,11 @@ export default class ConfigChecker
                 if(typeof c.serviceName === 'string') {
                    this.checkService(c.serviceName,c.service,'Service Module');
 
-                   this.checkBagExtensions([c.bagExtensions],
-                       new Target(`Service Module: '${c.serviceName}' bag extension ->`),false,ConfigNames.SERVICE);
+                   this.checkBagExtension(
+                       c.bagExtensions,
+                       new Target(`Service Module: '${c.serviceName}' bag extension ->`),
+                       ConfigNames.SERVICE
+                   );
                }
             });
         }

@@ -32,14 +32,13 @@ export default class BagExtensionEngine
 
     // noinspection JSMethodCanBeStatic
     /**
-     * Add props to an object.
+     * Add props to an bag.
      */
-    private add(bag : any, methods)
-    {
-        if(methods){
-            for(let k in methods) {
-                if(methods.hasOwnProperty(k)) {
-                    bag.prototype[k] = methods[k];
+    private add(bag : any, props) {
+        if(props){
+            for(let k in props) {
+                if(props.hasOwnProperty(k)) {
+                    bag.prototype[k] = props[k];
                 }
             }
         }
