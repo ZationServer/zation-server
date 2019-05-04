@@ -939,28 +939,28 @@ export default class SmallBag
      * @description
      * Returns this service, if it exist otherwise it will throw an ServiceNotFoundError error.
      * @throws ServiceNotFoundError
-     * @param  name
+     * @param  serviceName
      * the name of the service.
-     * @param  serviceKey
-     * the key to the service.
+     * @param  configName
+     * the config name.
      */
-    async getService<S>(name : string,serviceKey : string = 'default') : Promise<S>
+    async getService<S>(serviceName : string,configName : string = 'default') : Promise<S>
     {
-        return await this.serviceEngine.getService<S>(name,serviceKey);
+        return await this.serviceEngine.getService<S>(serviceName,configName);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Checks if the service with this key is exist and can be used.
-     * @param name
+     * Checks if the service with this config name is exist and can be used.
+     * @param serviceName
      * the name of the service.
-     * @param  serviceKey
-     * the key to the service.
+     * @param configName
+     * the config name.
      */
-    isService(name : string,serviceKey : string = 'default') : boolean
+    isService(serviceName : string,configName : string = 'default') : boolean
     {
-        return this.serviceEngine.isService(name,serviceKey);
+        return this.serviceEngine.isService(serviceName,configName);
     }
 
     //Part Errors

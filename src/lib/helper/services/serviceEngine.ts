@@ -68,23 +68,23 @@ export default class ServiceEngine
     }
 
     // noinspection JSUnusedGlobalSymbols
-    isService(serviceName : string,key : string = 'default') : boolean
+    isService(serviceName : string,configName : string = 'default') : boolean
     {
         if(this.services[serviceName] instanceof ServiceBox) {
-            return this.services[serviceName].isServiceExists(key);
+            return this.services[serviceName].isServiceExists(configName);
         }
         else {
             return false;
         }
     }
 
-    async getService<S>(serviceName : string,key : string = 'default') : Promise<S>
+    async getService<S>(serviceName : string,configName : string = 'default') : Promise<S>
     {
         if(this.services[serviceName] instanceof ServiceBox) {
-            return this.services[serviceName].getService(key);
+            return this.services[serviceName].getService(configName);
         }
         else {
-            throw new ServiceNotFoundError(serviceName,key);
+            throw new ServiceNotFoundError(serviceName,configName);
         }
     }
 

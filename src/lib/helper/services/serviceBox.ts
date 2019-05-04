@@ -23,8 +23,7 @@ export default class ServiceBox
         this.howToGet = howToGet;
     }
 
-    async init(errorBox : string[]) : Promise<void>
-    {
+    async init(errorBox : string[]) : Promise<void> {
         await this.initService(this.config,this.howToCreate,errorBox);
     }
 
@@ -39,27 +38,24 @@ export default class ServiceBox
                         this.services[k] = await howToCreate(config[k],k);
                     }
                     catch (e) {
-                        errorBox.push(`Service: Name:'${this.serviceName}', Key:'${k}', Error:'${e.toString()}'`);
+                        errorBox.push(`Service: Name:'${this.serviceName}', ConfigName:'${k}', Error:'${e.toString()}'`);
                     }
                 }
             }
         }
     }
 
-    async getService(key : string = 'default') : Promise<any>
+    async getService(configName : string = 'default') : Promise<any>
     {
-        if(this.services.hasOwnProperty(key))
-        {
-            return await this.howToGet(this.services[key]);
+        if(this.services.hasOwnProperty(configName)) {
+            return await this.howToGet(this.services[configName]);
         }
-        else
-        {
-            throw new ServiceNotFoundError(this.serviceName,key);
+        else {
+            throw new ServiceNotFoundError(this.serviceName,configName);
         }
     }
 
-    isServiceExists(key : string = 'default') : boolean
-    {
-        return this.services.hasOwnProperty(key);
+    isServiceExists(configName : string = 'default') : boolean {
+        return this.services.hasOwnProperty(configName);
     }
 }
