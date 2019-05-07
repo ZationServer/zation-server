@@ -164,12 +164,12 @@ export default class Config
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * This method registers a new model in the app config.
+     * This method defines a new model in the app config.
      * Watch out that you don't use a name that is already defined in the models of the app config.
      * If you use this method in another file as the app config,
      * make sure that you import this file in app config.
      * @example
-     * Config.regModel('user',{
+     * Config.defineModel('user',{
      *     properties : {
      *         name : {type : 'string'},
      *         age : {type : 'number'}
@@ -178,31 +178,70 @@ export default class Config
      * @param name
      * @param model
      */
-    static regModel(name : string, model : Model) {
+    static defineModel(name : string, model : Model) {
         if(!Config.tmpModels.hasOwnProperty(name)){
             Config.tmpModels[name] = model;
         }
         else {
-            throw new Error(`The model name: ${name} is already registered`);
+            throw new Error(`The model name: ${name} is already defined.`);
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * This method defines new models in the app config.
+     * Watch out that you don't use a name that is already defined in the models of the app config.
+     * If you use this method in another file as the app config,
+     * make sure that you import this file in app config.
+     * @example
+     * Config.defineModels({
+     *    user : {
+     *        properties : {
+     *          name : 'user_name',
+     *          age : {type : 'number'}
+     *        }
+     *    },
+     *    user_name : {
+     *        type : 'string',
+     *        maxLength : 10
+     *    }
+     * });
+     * @param models
+     */
+    static defineModels(models : Record<string,Model>) {
+        for(let name in models){
+            if(models.hasOwnProperty(name)){
+                Config.defineModel(name,models[name]);
+            }
         }
     }
 
     //Part main configs
     // noinspection JSUnusedGlobalSymbols
-    static appConfig(config : AppConfig) : AppConfig {
-        //create models object if not created
-        if(config.models === undefined){
-            config.models = {};
-        }
-        //add registered models
-        for(let name in Config.tmpModels){
-            if(Config.tmpModels.hasOwnProperty(name)){
-                if(config.hasOwnProperty(name)){
-                    throw new Error
-                    (`Conflict with model name: ${name}, the model name is defined in the app config and with the method regModel.`);
-                }
-                else {
-                    config.models[name] = Config.tmpModels[name];
+    /**
+     * Function to create the app configuration for the server.
+     * @param config
+     * @param isPrimaryAppConfig
+     * Indicates if this is your primary app config.
+     * If you have more app configs and you want to merge
+     * them than only one of them should be the primary app config.
+     */
+    static appConfig(config : AppConfig,isPrimaryAppConfig : boolean = true) : AppConfig {
+        if(isPrimaryAppConfig){
+            //create models object if not created
+            if(config.models === undefined){
+                config.models = {};
+            }
+            //add registered models
+            for(let name in Config.tmpModels){
+                if(Config.tmpModels.hasOwnProperty(name)){
+                    if(config.hasOwnProperty(name)){
+                        throw new Error
+                        (`Conflict with model name: ${name}, the model name is defined in the app config and with the method defineModel or defineModels.`);
+                    }
+                    else {
+                        config.models[name] = Config.tmpModels[name];
+                    }
                 }
             }
         }
