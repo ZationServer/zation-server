@@ -34,7 +34,7 @@ export default class Controller {
      * @description
      * This property is used for getting the configuration of this controller.
      */
-    public static config: ControllerConfig = {};
+    public static readonly config: ControllerConfig = {};
 
     /**
      * @description
