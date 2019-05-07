@@ -127,6 +127,8 @@ import {
 export default class Config
 {
 
+    private static tmpModels : Record<string,Model> = {};
+
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
@@ -160,9 +162,53 @@ export default class Config
         return controller;
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * This method registers a new model in the app config.
+     * Watch out that you don't use a name that is already defined in the models of the app config.
+     * If you use this method in another file as the app config,
+     * make sure that you import this file in app config.
+     * @example
+     * Config.regModel('user',{
+     *     properties : {
+     *         name : {type : 'string'},
+     *         age : {type : 'number'}
+     *     }
+     * });
+     * @param name
+     * @param model
+     */
+    static regModel(name : string, model : Model) {
+        if(!Config.tmpModels.hasOwnProperty(name)){
+            Config.tmpModels[name] = model;
+        }
+        else {
+            throw new Error(`The model name: ${name} is already registered`);
+        }
+    }
+
     //Part main configs
     // noinspection JSUnusedGlobalSymbols
-    static appConfig(config : AppConfig) : AppConfig {return config;}
+    static appConfig(config : AppConfig) : AppConfig {
+        //create models object if not created
+        if(config.models === undefined){
+            config.models = {};
+        }
+        //add registered models
+        for(let name in Config.tmpModels){
+            if(Config.tmpModels.hasOwnProperty(name)){
+                if(config.hasOwnProperty(name)){
+                    throw new Error
+                    (`Conflict with model name: ${name}, the model name is defined in the app config and with the method regModel.`);
+                }
+                else {
+                    config.models[name] = Config.tmpModels[name];
+                }
+            }
+        }
+        return config;
+    }
+
     // noinspection JSUnusedGlobalSymbols
     static eventConfig(config : EventConfig) : EventConfig {return config;}
     // noinspection JSUnusedGlobalSymbols
