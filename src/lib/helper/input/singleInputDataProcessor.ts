@@ -31,7 +31,15 @@ export default class SingleInputDataProcessor
         this.preparedSmallBag = preparedSmallBag;
     }
 
-    async processProperty(srcObj : object,srcKey : string | number, config : Model, currentInputPath : string,processInfo : ProcessInfo) : Promise<any>
+    /**
+     * Start processing the input with a model recursive.
+     * @param srcObj
+     * @param srcKey
+     * @param config
+     * @param currentInputPath
+     * @param processInfo
+     */
+    async processModel(srcObj : object, srcKey : string | number, config : Model, currentInputPath : string, processInfo : ProcessInfo) : Promise<any>
     {
         if(typeof config[nameof<ArrayModelConfig>(s => s.array)] === 'object') {
             //Array reference
@@ -51,6 +59,14 @@ export default class SingleInputDataProcessor
         }
     }
 
+    /**
+     * Start processing the input with an object model recursive.
+     * @param srcObj
+     * @param srcKey
+     * @param config
+     * @param currentInputPath
+     * @param processInfo
+     */
     private async processObject(srcObj : object,srcKey : string | number,config : Model,currentInputPath : string,processInfo : ProcessInfo) : Promise<void>
     {
         const errorBag = processInfo.errorBag;
@@ -92,7 +108,7 @@ export default class SingleInputDataProcessor
                         //allOk lets check the prop
                         promises.push(new Promise(async (resolve) =>
                         {
-                            await this.processProperty
+                            await this.processModel
                             (input,propName,props[propName],currentInputPathNew,processInfo);
                             resolve();
                         }))
@@ -168,6 +184,17 @@ export default class SingleInputDataProcessor
         }
     }
 
+    /**
+     * Start processing the input with a value model recursive.
+     * @param srcObj
+     * @param srcKey
+     * @param config
+     * @param currentInputPath
+     * @param errorBag
+     * @param processTaskList
+     * @param inputValidation
+     * @param createProcessTaskList
+     */
     private async processValue(srcObj : object,srcKey : string | number,config : Model,currentInputPath : string,
                                {errorBag,processTaskList,inputValidation,createProcessTaskList} : ProcessInfo) : Promise<void>
     {
@@ -216,6 +243,14 @@ export default class SingleInputDataProcessor
         }
     }
 
+    /**
+     * Start processing the input with an any of model modifiers recursive.
+     * @param srcObj
+     * @param srcKey
+     * @param config
+     * @param currentInputPath
+     * @param processInfo
+     */
     private async processAnyOf(srcObj : object | object[],srcKey : string | number,config : Model,currentInputPath : string,processInfo : ProcessInfo) : Promise<void>
     {
         let found = false;
@@ -231,7 +266,7 @@ export default class SingleInputDataProcessor
                     inputValidation : processInfo.inputValidation,
                     createProcessTaskList : processInfo.createProcessTaskList
                 };
-            await this.processProperty(srcObj,srcKey,value,`${currentInputPath}.${key}`,tmpProcessInfo);
+            await this.processModel(srcObj,srcKey,value,`${currentInputPath}.${key}`,tmpProcessInfo);
             if(tmpProcessInfo.errorBag.isEmpty()){
                 found = true;
                 processInfo.processTaskList = processInfo.processTaskList.concat(tmpProcessInfo.processTaskList);
@@ -257,6 +292,14 @@ export default class SingleInputDataProcessor
         }
     }
 
+    /**
+     * Start processing the input with an array model recursive.
+     * @param srcObj
+     * @param srcKey
+     * @param config
+     * @param currentInputPath
+     * @param processInfo
+     */
     private async processArray(srcObj : object,srcKey : string | number,config : Model,currentInputPath : string,processInfo : ProcessInfo) : Promise<void>
     {
         const input = srcObj[srcKey];
@@ -278,7 +321,7 @@ export default class SingleInputDataProcessor
                 {
                     promises.push(new Promise(async (resolve) => {
                         let currentInputPathNew = `${currentInputPath}.${i}`;
-                        await this.processProperty(input,i,arrayInputConfig,currentInputPathNew,processInfo);
+                        await this.processModel(input,i,arrayInputConfig,currentInputPathNew,processInfo);
                         resolve();
                     }));
                 }
