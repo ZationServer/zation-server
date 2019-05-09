@@ -17,7 +17,7 @@ export default class ZationSPC_Auth extends Controller
         systemController : true,
         access : 'all',
         versionAccess : 'all',
-        multiInput : {
+        input : {
             username : {
                 type : 'string'
             },

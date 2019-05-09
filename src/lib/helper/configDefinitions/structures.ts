@@ -62,16 +62,13 @@ ObjectModel[nameof<ObjectModelConfig>(s => s.prototype)]  = {types : ['object'],
 ObjectModel[nameof<ObjectModelConfig>(s => s.convert)]    = {types : ['function'],isOptional : true};
 
 const ControllerConfig = {};
-ControllerConfig[nameof<ControllerConfig>(s => s.input)]            = {types : ['object','array'],arrayType : 'object',isOptional : true};
-ControllerConfig[nameof<ControllerConfig>(s => s.multiInput)]       = {types : ['object'],isOptional : true};
-ControllerConfig[nameof<ControllerConfig>(s => s.singleInput)]      = {types : ['object','array','string'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.input)]            = {types : ['object','array'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.prepareHandle)]    = {types : ['function','array'],arrayType : 'function',isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.systemController)] = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.wsAccess)]         = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.httpAccess)]       = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.httpGetAllowed)]   = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.httpPostAllowed)]  = {types : ['boolean'],isOptional : true};
-ControllerConfig[nameof<ControllerConfig>(s => s.inputValidation)]  = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.inputAllAllow)]    = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.access)]           = {types : ['string','function','number','array'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.notAccess)]        = {types : ['string','function','number','array'],isOptional : true};

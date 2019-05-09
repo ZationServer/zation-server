@@ -5,13 +5,12 @@ GitHub: LucaCode
  */
 
 import ZationConfig                from "./zationConfig";
-import ZcTransport             from "./zcTransport";
+import ZcTransport                 from "./zcTransport";
 import {PreCompiledEventConfig}    from "../configDefinitions/eventConfig";
 import {PreCompiledAppConfig}      from "../configDefinitions/appConfig";
 import {PreCompiledChannelConfig}  from "../configDefinitions/channelConfig";
 import {PreCompiledServiceConfig}  from "../configDefinitions/serviceConfig";
 import {OtherPreCompiledConfigSet} from "./configSets";
-import JwtSignOptions from "../constants/jwt";
 
 /**
  * Zation config for active process (worker,broker).

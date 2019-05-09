@@ -27,14 +27,12 @@ import SmallBag           from "../../api/SmallBag";
 export default class ChannelBagEngine
 {
     private readonly scServer: ScServer;
-    private readonly worker: ZationWorker;
     private readonly chPrepare : ChannelPrepare;
     private readonly aePreparedPart : AEPreparedPart;
 
     private _smallBag : SmallBag;
 
     constructor(worker: ZationWorker,aePreparedPart : AEPreparedPart,chPrepare : ChannelPrepare) {
-        this.worker = worker;
         this.scServer = worker.scServer;
         this.aePreparedPart = aePreparedPart;
         this.chPrepare = chPrepare;

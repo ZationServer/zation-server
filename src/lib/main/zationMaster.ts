@@ -83,7 +83,7 @@ export default class ZationMaster {
                         this.zcLoader.mainConfig,
                         this.zcLoader.configLocations,
                         this.zcLoader.getRootPath(),
-                        startMode
+                        this.startMode
                     );
 
                     process.title = `Zation Server: ${this.zc.mainConfig.instanceId} -> Master`;

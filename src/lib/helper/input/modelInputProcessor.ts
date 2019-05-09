@@ -19,11 +19,10 @@ import ValidatorEngine     from "../validator/validatorEngine";
 export interface ProcessInfo {
     errorBag : BackErrorBag,
     processTaskList : ProcessTask[],
-    createProcessTaskList : boolean,
-    inputValidation : boolean
+    createProcessTaskList : boolean
 }
 
-export default class ModelInputDataProcessor
+export default class ModelInputProcessor
 {
     private readonly preparedSmallBag : SmallBag;
 
@@ -196,7 +195,7 @@ export default class ModelInputDataProcessor
      * @param createProcessTaskList
      */
     private async processValue(srcObj : object,srcKey : string | number,config : Model,currentInputPath : string,
-                               {errorBag,processTaskList,inputValidation,createProcessTaskList} : ProcessInfo) : Promise<void>
+                               {errorBag,processTaskList,createProcessTaskList} : ProcessInfo) : Promise<void>
     {
         const preparedErrorData = {
             inputValue : srcObj[srcKey],
@@ -213,12 +212,7 @@ export default class ModelInputDataProcessor
 
         const currentErrorCount = errorBag.getBackErrorCount();
 
-        let selectedType = type;
-        //type
-        if(inputValidation) {
-            selectedType =
-                ValidatorEngine.validateValueType(srcObj[srcKey],type,strictType,preparedErrorData,errorBag);
-        }
+        const selectedType = ValidatorEngine.validateValueType(srcObj[srcKey],type,strictType,preparedErrorData,errorBag);
 
         if(currentErrorCount === errorBag.getBackErrorCount()){
             //no type error so convert maybe
@@ -227,9 +221,7 @@ export default class ModelInputDataProcessor
             }
         }
 
-        if(inputValidation){
-            await ValidatorEngine.validateValue(srcObj[srcKey],config,preparedErrorData,errorBag,this.preparedSmallBag,type);
-        }
+        await ValidatorEngine.validateValue(srcObj[srcKey],config,preparedErrorData,errorBag,this.preparedSmallBag,type);
 
         //check for convertTask
         if(
@@ -263,7 +255,6 @@ export default class ModelInputDataProcessor
                 {
                     errorBag : tmpTaskErrorBags[key],
                     processTaskList : [],
-                    inputValidation : processInfo.inputValidation,
                     createProcessTaskList : processInfo.createProcessTaskList
                 };
             await this.processModel(srcObj,srcKey,value,`${currentInputPath}.${key}`,tmpProcessInfo);
@@ -306,14 +297,8 @@ export default class ModelInputDataProcessor
         const errorBag = processInfo.errorBag;
 
         if(Array.isArray(input)) {
-            let isOk = !processInfo.inputValidation;
 
-            //validate Array
-            if(processInfo.inputValidation) {
-                isOk = ValidatorEngine.validateArray(input,config,currentInputPath,errorBag)
-            }
-
-            if(isOk) {
+            if(ValidatorEngine.validateArray(input,config,currentInputPath,errorBag)) {
                 let arrayInputConfig = config[nameof<ArrayModelConfig>(s => s.array)];
                 let promises : Promise<any>[] = [];
                 //input reference so we can return it normal

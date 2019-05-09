@@ -15,7 +15,7 @@ export default class ZationSC_Ping extends Controller
         systemController : true,
         access : 'all',
         versionAccess : 'all',
-        multiInput : {}
+        input : {}
     };
 
     async handle(bag) {

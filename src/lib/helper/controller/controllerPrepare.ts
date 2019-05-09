@@ -16,8 +16,8 @@ import ControllerUtils, {PrepareHandleInvokeFunction} from "./controllerUtils";
 import {SystemController}            from "../systemController/systemControler.config";
 import SmallBag                      from "../../api/SmallBag";
 import ZationConfigFull              from "../configManager/zationConfigFull";
-import InputConsumerCreator, {InputConsumer} from "../input/inputConsumerCreator";
-import InputDataProcessor                    from "../input/inputDataProcessor";
+import InputClosureCreator, {InputConsumer} from "../input/inputClosureCreator";
+import InputProcessor                    from "../input/inputProcessor";
 
 interface ControllerPrepareData {
     controllerConfig : ControllerConfig,
@@ -34,12 +34,12 @@ export default class ControllerPrepare
     private readonly zc : ZationConfigFull;
     private readonly worker : ZationWorker;
     private readonly smallBag : SmallBag;
-    private readonly inputDataProcessor : InputDataProcessor;
+    private readonly inputDataProcessor : InputProcessor;
 
     private readonly systemController : Record<string,ControllerPrepareData>;
     private readonly appController : Record<string,ControllerPrepareData>;
 
-    constructor(zc : ZationConfigFull,worker : ZationWorker,smallBag : SmallBag,inputDataProcessor : InputDataProcessor)
+    constructor(zc : ZationConfigFull,worker : ZationWorker,smallBag : SmallBag,inputDataProcessor : InputProcessor)
     {
         this.zc = zc;
         this.worker = worker;
@@ -131,7 +131,7 @@ export default class ControllerPrepare
             systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
             tokenStateCheck : AuthAccessChecker.createTokenStateAccessChecker(config,this.smallBag),
             prepareHandleInvoke : ControllerUtils.createPrepareHandleInvoker(config),
-            inputConsumer : InputConsumerCreator.createControllerInputConsumer(config,this.inputDataProcessor)
+            inputConsumer : InputClosureCreator.createControllerInputConsumer(config,this.inputDataProcessor)
         };
 
         if(!isSystemC) {

@@ -27,7 +27,7 @@ import url          = require('url');
 
 import process          = require("process");
 import {WorkerChTaskType} from "../helper/constants/workerChTaskType";
-import InputDataProcessor from "../helper/input/inputDataProcessor";
+import InputProcessor from "../helper/input/inputProcessor";
 import ZationReqHandler   from "./zationReqHandler";
 import AEPreparedPart     from "../helper/auth/aePreparedPart";
 import ZationTokenInfo    from "../helper/infoObjects/zationTokenInfo";
@@ -85,7 +85,7 @@ class ZationWorker extends SCWorker
     private channelBagEngine : ChannelBagEngine;
     private originChecker : OriginChecker;
     private channelPrepare : ChannelPrepare;
-    private inputDataProcessor : InputDataProcessor;
+    private inputDataProcessor : InputProcessor;
     private zationReqHandler : ZationReqHandler;
     private socketUpdateEngine : SocketUpgradeEngine;
 
@@ -186,7 +186,7 @@ class ZationWorker extends SCWorker
 
         //ChannelPrepare (!Before ChannelBagEngine)
         Logger.startStopWatch();
-        this.channelPrepare = new ChannelPrepare(this.zc,this.aePreparedPart);
+        this.channelPrepare = new ChannelPrepare(this.zc);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the channel prepare engine.`,true);
 
         Logger.startStopWatch();
@@ -201,7 +201,7 @@ class ZationWorker extends SCWorker
 
         //InputDataProcessor after smallBag!
         Logger.startStopWatch();
-        this.inputDataProcessor= new InputDataProcessor(this);
+        this.inputDataProcessor= new InputProcessor(this);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the input request data processor.`,true);
 
         //Socket update engine
@@ -1695,7 +1695,7 @@ class ZationWorker extends SCWorker
         this.variableStorage = obj;
     }
 
-    getInputDataProcessor() : InputDataProcessor {
+    getInputDataProcessor() : InputProcessor {
         return this.inputDataProcessor;
     }
 }

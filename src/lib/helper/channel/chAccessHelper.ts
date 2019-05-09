@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import UpSocket               from "../sc/socket";
+import UpSocket             from "../sc/socket";
 import {ZationChannel}      from "../constants/internal";
 import {ChannelPrepare}     from "./channelPrepare";
 import SocketInfo           from "../infoObjects/socketInfo";
@@ -30,14 +30,6 @@ export type ChPubAccessChecker =
  */
 export default class ChAccessHelper
 {
-    private readonly channelPrepare : ChannelPrepare;
-    private readonly smallBag : SmallBag;
-
-    constructor(chConfigManager : ChannelPrepare, smallBag : SmallBag) {
-        this.channelPrepare = chConfigManager;
-        this.smallBag = smallBag;
-    }
-
     /**
      * Returns a Closures for checking the client publish access to a channel.
      * @param accessValue

@@ -6,8 +6,6 @@ GitHub: LucaCode
 
 import fs                   = require('fs');
 import ZationConfig           from "../configManager/zationConfig";
-import {WorkerMessageActions} from "../constants/workerMessageActions";
-import ZationWorker         = require("../../main/zationWorker");
 
 export default class ClientPrepare
 {

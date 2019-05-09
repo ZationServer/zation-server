@@ -313,7 +313,6 @@ export interface ControllerConfig extends InputConfig
     httpAccess  ?: boolean;
     httpGetAllowed  ?: boolean;
     httpPostAllowed  ?: boolean;
-    inputValidation  ?: boolean;
     inputAllAllow  ?: boolean;
     access  ?: string | number | (string | number)[] | ControllerAccessFunction;
     notAccess  ?: string | number | (string | number)[] | ControllerAccessFunction;

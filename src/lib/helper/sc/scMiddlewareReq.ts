@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import PubData       from "../infoObjects/pubData";
-import UpSocket, {HandshakeSocket, ScSocket} from "./socket";
+import UpSocket, {HandshakeSocket} from "./socket";
 import {ZationToken}     from "../constants/internal";
 import {IncomingMessage} from 'http';
 

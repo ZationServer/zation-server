@@ -41,6 +41,14 @@ export default class ValidatorEngine
         await Promise.all(promises);
     }
 
+    /**
+     * Validate the model value type.
+     * @param input
+     * @param type
+     * @param strictType
+     * @param preparedErrorData
+     * @param errorBag
+     */
     static validateValueType(input,type,strictType,preparedErrorData : {inputPath : string,inputValue : any},errorBag : BackErrorBag)
     {
         let usedType = type;
@@ -50,7 +58,7 @@ export default class ValidatorEngine
                 let foundAValidTyp = false;
                 let errorBagTemp = new BackErrorBag();
                 for(let i = 0; i < type.length; i++) {
-                    let tempErrorCount = errorBagTemp.getBackErrorCount();
+                    const tempErrorCount = errorBagTemp.getBackErrorCount();
                     ValidatorEngine.validateType(input,type[i],strictType,errorBagTemp,preparedErrorData);
                     if(tempErrorCount === errorBagTemp.getBackErrorCount()) {
                         foundAValidTyp = true;
@@ -74,6 +82,14 @@ export default class ValidatorEngine
         return usedType;
     }
 
+    /**
+     * Validate value type.
+     * @param input
+     * @param type
+     * @param strictType
+     * @param errorBag
+     * @param preparedErrorData
+     */
     private static validateType(input,type,strictType,errorBag,preparedErrorData)
     {
         if(ValidatorTypes.hasOwnProperty(type)) {
@@ -89,6 +105,13 @@ export default class ValidatorEngine
         }
     }
 
+    /**
+     * Validate array model.
+     * @param array
+     * @param arrayConfig
+     * @param currentPath
+     * @param errorBag
+     */
     static validateArray(array,arrayConfig : ArraySettings,currentPath,errorBag)
     {
         let isOk = true;

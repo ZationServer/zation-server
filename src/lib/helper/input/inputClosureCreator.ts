@@ -7,35 +7,32 @@ GitHub: LucaCode
 import {ControllerConfig, InputConfig, Model, ParamInput} from "../configDefinitions/appConfig";
 import BackErrorBag                     from "../../api/BackErrorBag";
 import ProcessTaskEngine, {ProcessTask} from "./processTaskEngine";
-import InputDataProcessor               from "./inputDataProcessor";
+import InputProcessor               from "./inputProcessor";
 import BackError                        from "../../api/BackError";
 import {MainBackErrors}                 from "../zationBackErrors/mainBackErrors";
 
 export type InputConsumer = (input : any) => Promise<any>;
+export type InputChecker = (input : any) => Promise<any>;
 
 /**
  * A class that provides methods for creating closures to consume the input.
  */
-export default class InputConsumerCreator
+export default class InputClosureCreator
 {
     /**
      * Creates a closure to consume the input from a request to a controller.
      * @param controllerConfig
      * @param inputDataProcessor
      */
-    static createControllerInputConsumer(controllerConfig : ControllerConfig,inputDataProcessor : InputDataProcessor)
+    static createControllerInputConsumer(controllerConfig : ControllerConfig,inputDataProcessor : InputProcessor)
     {
         if(controllerConfig.inputAllAllow) {
             return (input) => input;
         }
-
-        const useInputValidation : boolean =
-            typeof controllerConfig.inputValidation === 'boolean' ? controllerConfig.inputValidation : true;
-
-        return InputConsumerCreator.createInputConsumer(controllerConfig,inputDataProcessor,useInputValidation);
+        return InputClosureCreator.createInputConsumer(controllerConfig,inputDataProcessor);
     }
 
-    static createInputConsumer(inputConfig : InputConfig,inputDataProcessor : InputDataProcessor,useInputValidation : boolean) : InputConsumer {
+    static createInputConsumer(inputConfig : InputConfig, inputDataProcessor : InputProcessor) : InputConsumer {
         const inputDefinition = inputConfig.input;
         if(Array.isArray(inputDefinition))
         {
@@ -46,7 +43,7 @@ export default class InputConsumerCreator
                 const taskErrorBag : BackErrorBag = new BackErrorBag();
 
                 const result = await inputDataProcessor.processSingleModelInput
-                (input,singleInputModel,useInputValidation,taskList,taskErrorBag);
+                (input,singleInputModel,taskList,taskErrorBag);
 
                 //throw validation/structure errors if any there
                 taskErrorBag.throwIfHasError();
@@ -81,13 +78,13 @@ export default class InputConsumerCreator
                 if(Array.isArray(input)) {
                     //throws if the validation or structure has an error
                     // noinspection TypeScriptValidateTypes
-                    result = await inputDataProcessor.processInputArray
-                    (input,inputParamsDefinition,inputParamsDefinitionKeys,useInputValidation,taskList,taskErrorBag);
+                    result = await inputDataProcessor.processParamInputArray
+                    (input,inputParamsDefinition,inputParamsDefinitionKeys,taskList,taskErrorBag);
                 }
                 else {
                     //throws if the validation or structure has an error or structure
-                    result = await inputDataProcessor.processInputObject
-                    (input,inputParamsDefinition,useInputValidation,taskList,taskErrorBag);
+                    result = await inputDataProcessor.processParamInputObject
+                    (input,inputParamsDefinition,taskList,taskErrorBag);
                 }
 
                 //throw validation/structure errors if any there

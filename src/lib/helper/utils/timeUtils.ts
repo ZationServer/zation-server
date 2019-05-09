@@ -5,7 +5,6 @@ GitHub: LucaCode
  */
 import momentTz             = require('moment-timezone');
 import {Moment as MomentType} from "moment-timezone";
-import Logger                 from "../logger/logger";
 
 export default class TimeUtils {
     static getMoment(timeZone: string) {

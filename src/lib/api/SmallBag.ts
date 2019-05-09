@@ -39,7 +39,6 @@ import Logger                                               from "../helper/logg
 import ChUtils                                              from "../helper/channel/chUtils";
 import SidBuilder                                           from "../helper/utils/sidBuilder";
 import TokenUtils                                           from "../helper/token/tokenUtils";
-import AuthenticationError                                  from "../helper/error/authenticationError";
 import ObjectPathSequence                                   from "../helper/utils/objectPathSequence";
 import ObjectPathActionSequence                             from "../helper/utils/objectPathActionSequence";
 import Base64Utils                                          from "../helper/utils/base64Utils";

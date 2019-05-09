@@ -11,7 +11,6 @@ For performance speed in publish in channels, sub channels..
 import {ChannelConfig, ChannelDefault, CustomChannelConfig, ZationChannelConfig} from "../configDefinitions/channelConfig";
 import ZationConfigFull              from "../configManager/zationConfigFull";
 import FuncUtils, {EventInvokerSync} from "../utils/funcUtils";
-import AEPreparedPart                from "../auth/aePreparedPart";
 import SmallBag                      from "../../api/SmallBag";
 import ChAccessHelper, {ChPubAccessChecker, ChSubAccessChecker} from "./chAccessHelper";
 
@@ -35,7 +34,6 @@ interface ChStorage extends Events {
 
 export class ChannelPrepare {
     private zc: ZationConfigFull;
-    private readonly aePreparedPart : AEPreparedPart;
     private readonly chConfig: ChannelConfig;
 
     private infoUserCh: ChStorage;
@@ -52,9 +50,8 @@ export class ChannelPrepare {
     private infoCustomCh: Record<string,CustomChStorage> = {};
     private infoCustomIdCh: Record<string,CustomChStorage> = {};
 
-    constructor(zc: ZationConfigFull,aePreparedPart : AEPreparedPart) {
+    constructor(zc: ZationConfigFull) {
         this.zc = zc;
-        this.aePreparedPart = aePreparedPart;
         this.chConfig = this.zc.channelConfig;
     }
 

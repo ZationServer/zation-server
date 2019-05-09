@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {ZationRequest, ZationValidationCheck} from "../constants/internal";
 import ZationWorker          = require("../../main/zationWorker");
-import InputDataProcessor       from "../input/inputDataProcessor";
+import InputProcessor       from "../input/inputProcessor";
 import BackError                from "../../api/BackError";
 import BackErrorBag             from "../../api/BackErrorBag";
 import ControllerPrepare        from "../controller/controllerPrepare";
@@ -21,7 +21,7 @@ export default class ValidCheckProcessor
     private readonly worker : ZationWorker;
 
     private readonly controllerPrepare : ControllerPrepare;
-    private readonly inputDataProcessor : InputDataProcessor;
+    private readonly inputDataProcessor : InputProcessor;
 
     private readonly validationCheckLimit : number;
 
@@ -75,9 +75,6 @@ export default class ValidCheckProcessor
                 controllerInput = controller.singleInput;
             }
 
-            const useInputValidation : boolean =
-                typeof controller.inputValidation === 'boolean' ? controller.inputValidation : true;
-
             let inputToCheck = validReq.i;
 
             let promises : Promise<void>[] = [];
@@ -115,14 +112,13 @@ export default class ValidCheckProcessor
                             }
                         }
 
-                        await this.inputDataProcessor.validationCheck(
+                        await this.inputDataProcessor.processInputCheck(
                             value,
                             specificConfig,
                             singleInput,
                             keyPath.length === 0,
                             path,
                             errorBag,
-                            useInputValidation
                         );
                         resolve();
                     }

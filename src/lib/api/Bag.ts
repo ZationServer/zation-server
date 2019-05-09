@@ -21,7 +21,6 @@ import ObjectPathSequence    from "../helper/utils/objectPathSequence";
 import SmallBag              from "./SmallBag";
 import InputIsNotCompatibleError  from "../helper/error/inputIsNotCompatibleError";
 import MethodIsNotCompatibleError from "../helper/error/methodIsNotCompatibleError";
-import AuthenticationError        from "../helper/error/authenticationError";
 import TokenUtils            from "../helper/token/tokenUtils";
 import {ZationToken}         from "../helper/constants/internal";
 import JwtSignOptions        from "../helper/constants/jwt";

@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {Model, ParamInput}       from "../configDefinitions/appConfig";
 import OptionalProcessor         from "./optionalProcessor";
-import ModelInputDataProcessor   from "./modelInputDataProcessor";
+import ModelInputProcessor       from "./modelInputProcessor";
 import ZationWorker            = require("../../main/zationWorker");
 import BackErrorBag              from "../../api/BackErrorBag";
 import BackError                 from "../../api/BackError";
@@ -16,27 +16,25 @@ import {MainBackErrors}          from "../zationBackErrors/mainBackErrors";
 /**
  * Class for processing input data. Can be a param based input or single model input.
  */
-export default class InputDataProcessor
+export default class InputProcessor
 {
-    private inputMainProcessor : ModelInputDataProcessor;
+    private inputMainProcessor : ModelInputProcessor;
 
     constructor(worker : ZationWorker) {
-        this.inputMainProcessor = new ModelInputDataProcessor(worker.getPreparedSmallBag());
+        this.inputMainProcessor = new ModelInputProcessor(worker.getPreparedSmallBag());
     }
 
     /**
      * Process parameter based input with an input object.
      * @param input
      * @param paramInput
-     * @param useInputValidation
      * @param processList
      * @param taskErrorBag
      * @param createProcessList
      */
-    async processInputObject(input : Record<string,any>, paramInput : ParamInput, useInputValidation : boolean,
-        processList : ProcessTask[],
-        taskErrorBag : BackErrorBag,
-        createProcessList : boolean = true
+    async processParamInputObject(input : Record<string,any>, paramInput : ParamInput, processList : ProcessTask[],
+                                  taskErrorBag : BackErrorBag,
+                                  createProcessList : boolean = true
     ) : Promise<object>
     {
         const promises : Promise<void>[] = [];
@@ -44,7 +42,6 @@ export default class InputDataProcessor
         const processInfo = {
             processTaskList : processList,
             errorBag : taskErrorBag,
-            inputValidation : useInputValidation,
             createProcessTaskList : createProcessList
         };
 
@@ -91,15 +88,13 @@ export default class InputDataProcessor
      * @param input
      * @param paramInput
      * @param paramInputKeys
-     * @param useInputValidation
      * @param processList
      * @param taskErrorBag
      * @param createProcessList
      */
-    async processInputArray(input : any[], paramInput : ParamInput, paramInputKeys : string[], useInputValidation : boolean,
-        processList : ProcessTask[],
-        taskErrorBag : BackErrorBag,
-        createProcessList : boolean = true
+    async processParamInputArray(input : any[], paramInput : ParamInput, paramInputKeys : string[], processList : ProcessTask[],
+                                 taskErrorBag : BackErrorBag,
+                                 createProcessList : boolean = true
     ) : Promise<object>
     {
         const promises : Promise<void>[] = [];
@@ -107,7 +102,6 @@ export default class InputDataProcessor
         const processInfo = {
             processTaskList : processList,
             errorBag : taskErrorBag,
-            inputValidation : useInputValidation,
             createProcessTaskList : createProcessList
         };
 
@@ -155,13 +149,12 @@ export default class InputDataProcessor
      *
      * @param input
      * @param config
-     * @param useInputValidation
      * @param processList
      * @param taskErrorBag
      * @param createProcessList
      * @param currentInputPath
      */
-    async processSingleModelInput(input : any, config : Model, useInputValidation : boolean, processList : ProcessTask[],
+    async processSingleModelInput(input : any, config : Model, processList : ProcessTask[],
         taskErrorBag : BackErrorBag,
         createProcessList : boolean = true,
         currentInputPath : string = ''
@@ -173,13 +166,12 @@ export default class InputDataProcessor
         (inputWrapper,'i',config,currentInputPath,{
             errorBag : taskErrorBag,
             createProcessTaskList : createProcessList,
-            inputValidation : useInputValidation,
             processTaskList : processList
         });
         return inputWrapper.i;
     }
 
-    async validationCheck
+    async processInputCheck
     (
         input : any,
         inputConfig : ParamInput | Model,
@@ -187,7 +179,6 @@ export default class InputDataProcessor
         basePath : boolean,
         inputPath : string,
         errorBag : BackErrorBag,
-        useInputValidation : boolean = true
     ) : Promise<void>
     {
         if((!basePath && !singleInput) || singleInput) {
@@ -195,7 +186,6 @@ export default class InputDataProcessor
             await this.processSingleModelInput(
                 input,
                 inputConfig,
-                useInputValidation,
                 [],
                 errorBag,
                 false,
@@ -204,24 +194,22 @@ export default class InputDataProcessor
         }
         else {
             if(Array.isArray(input)) {
-                await this.processInputArray(
+                await this.processParamInputArray(
                     input,
                     //can't be a singleInput config.
                     // @ts-ignore
                     inputConfig,
-                    useInputValidation,
                     [],
                     errorBag,
                     false
                     );
             }
             else {
-                await this.processInputObject(
+                await this.processParamInputObject(
                     input,
                     //can't be a singleInput config.
                     // @ts-ignore
                     inputConfig,
-                    useInputValidation,
                     [],
                     errorBag,
                     false
