@@ -216,7 +216,7 @@ class ZationWorker extends SCWorker
 
         //PrepareController after smallBag!
         Logger.startStopWatch();
-        this.controllerPrepare = new ControllerPrepare(this.zc,this,this.preparedSmallBag);
+        this.controllerPrepare = new ControllerPrepare(this.zc,this,this.preparedSmallBag,this.inputDataProcessor);
         await this.controllerPrepare.prepare();
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the controllers.`,true);
 

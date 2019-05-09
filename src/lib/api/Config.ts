@@ -66,10 +66,9 @@ import
     ConvertArrayFunction,
     BackgroundTask,
     GetDateFunction,
-    MultiInput,
     ObjectModelConfig,
     ValueModelConfig,
-    ArrayModelConfig, ArrayModelShortSyntax, Model, PrepareHandleFunction
+    ArrayModelConfig, ArrayModelShortSyntax, Model, PrepareHandleFunction, Input, SingleModelInput
 } from "../helper/configDefinitions/appConfig";
 import BackErrorConstruct from "../helper/constants/backErrorConstruct";
 import {
@@ -128,6 +127,8 @@ export default class Config
 {
 
     private static tmpModels : Record<string,Model> = {};
+
+    //Part main helper methods
 
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -216,6 +217,10 @@ export default class Config
         }
     }
 
+    static single(model : Model) : SingleModelInput {
+        return [model];
+    }
+
     //Part main configs
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -295,9 +300,7 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static controllerConfig(c : ControllerConfig) :  ControllerConfig {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static multiInput(c : MultiInput) : MultiInput {return c;}
-    // noinspection JSUnusedGlobalSymbols
-    static singleInput(c : Model) : Model {return c;}
+    static input(c : Input) : Input {return c;}
     // noinspection JSUnusedGlobalSymbols
     static prepareHandle(func : PrepareHandleFunction) : PrepareHandleFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
@@ -543,3 +546,5 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static zationTokenInfo(zationTokenInfo : ZationTokenInfo) : ZationTokenInfo {return zationTokenInfo;}
 }
+
+export const single = Config.single;

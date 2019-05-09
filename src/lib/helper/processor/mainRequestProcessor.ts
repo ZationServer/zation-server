@@ -9,7 +9,6 @@ import ZationWorker          = require("../../main/zationWorker");
 import Controller              from'../../api/Controller';
 import {ResponseResult, ZationTask} from "../constants/internal";
 import SHBridge                from "../bridges/shBridge";
-import InputDataProcessor      from "../input/inputDataProcessor";
 import ValidCheckProcessor     from "./validCheckProcessor";
 import AuthEngine              from "../auth/authEngine";
 import BackError               from "../../api/BackError";
@@ -21,13 +20,11 @@ import ZationReqUtils          from "../utils/zationReqUtils";
 import Result                  from "../../api/Result";
 import {PrepareHandleInvokeFunction} from "../controller/controllerUtils";
 import ZationConfigFull        from "../configManager/zationConfigFull";
-import chExchangeEngine        from "../channel/channelBagEngine";
 
 export default class MainRequestProcessor
 {
     private readonly zc : ZationConfigFull;
     private readonly worker : ZationWorker;
-    private readonly inputDataProcessor : InputDataProcessor;
     private readonly validCheckProcessor : ValidCheckProcessor;
 
     //tmp variables for faster access
@@ -41,7 +38,6 @@ export default class MainRequestProcessor
         this.zc = zc;
         this.worker = worker;
         this.validCheckProcessor = validCheckProcessor;
-        this.inputDataProcessor = worker.getInputDataProcessor();
 
         this.authController = this.zc.appConfig.authController;
         this.useProtocolCheck = this.zc.mainConfig.useProtocolCheck;
@@ -89,7 +85,8 @@ export default class MainRequestProcessor
                 systemAccessCheck,
                 versionAccessCheck,
                 tokenStateCheck,
-                prepareHandleInvoke
+                prepareHandleInvoke,
+                inputConsumer
             } = this.controllerPrepare.getControllerPrepareData(controllerName,isSystemController);
 
             //Throws if access denied
@@ -115,7 +112,7 @@ export default class MainRequestProcessor
                         let input : object;
                         //check input
                         try {
-                            input = await this.inputDataProcessor.processInput(task,controllerConfig);
+                            input = await inputConsumer(task.i);
                         }
                         catch (e) {
                             //invoke controller wrong input function

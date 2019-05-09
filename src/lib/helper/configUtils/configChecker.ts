@@ -9,7 +9,7 @@ import {ConfigNames, DefaultUserGroupFallBack, ZationAccess} from "../constants/
 import BagExtension, {
     AppConfig,
     ControllerConfig,
-    InputConfig, MultiInput,
+    InputConfig, ParamInput,
     ModelOptional, ObjectModelConfig, AnyOfModelConfig, ArrayModelConfig, ValueModelConfig, Model,
 } from "../configDefinitions/appConfig";
 import {PanelUserConfig}      from "../configDefinitions/mainConfig";
@@ -44,7 +44,6 @@ export default class ConfigChecker
     private readonly ceb: ConfigErrorBag;
 
     private modelsConfig: Record<string, Model>;
-    private cNames: object;
     private validAccessValues: any[];
     private bagExPropNames : string[] = [];
     private serviceNames : string[] = [];
@@ -71,7 +70,6 @@ export default class ConfigChecker
         this.prepareAllValidUserGroupsAndCheck();
         this.modelsConfig = typeof this.zcLoader.appConfig.models === 'object' ? this.zcLoader.appConfig.models : {};
         this.modelImportEngine = new ModelImportEngine(this.modelsConfig);
-        this.cNames = {};
     }
 
     private checkAppBagExtensions()
@@ -412,6 +410,7 @@ export default class ConfigChecker
             obj[nameof<AnyOfModelConfig>(s => s.anyOf)] === undefined;
     }
 
+    // @ts-ignore
     // noinspection JSUnusedLocalSymbols
     private static isArrayModel(arr : any) : boolean {
         return Array.isArray(arr) || (
@@ -711,10 +710,10 @@ export default class ConfigChecker
     private checkInputAllAllow(cc: ControllerConfig, target: Target) {
         if (typeof cc.inputAllAllow === 'boolean' &&
             cc.inputAllAllow &&
-            (typeof cc.input === 'object' || typeof cc.multiInput === 'object' || typeof  cc.singleInput !== 'undefined')) {
+            (typeof cc.input === 'object')) {
             Logger.printConfigWarning(
                 ConfigNames.APP,
-                `${target.getTarget()} the properties input,multiInput,singleInput are ignored with inputAllAllow true.`
+                `${target.getTarget()} the property input is ignored with inputAllAllow true.`
             );
         }
     }
@@ -723,9 +722,7 @@ export default class ConfigChecker
         /**
          * Check main structure with structure of controller or stream.
          */
-        const inConfigs : string[] = [];
-        if(inputConfig.input){
-            inConfigs.push(nameof<InputConfig>(s => s.input));
+        if(typeof inputConfig.input === 'object'){
             const input = inputConfig.input;
             if(Array.isArray(input)){
                 if(input.length === 1){
@@ -733,39 +730,27 @@ export default class ConfigChecker
                 }
                 else {
                     this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                        `${target.getTarget()} to define a single input with the input property the array must have exactly one item.`));
+                        `${target.getTarget()} to define a single input model with the input property the array must have exactly one item.`));
                 }
             }
             else {
                 // @ts-ignore
-                this.checkMultiInput(input,target);
+                this.checkParamInput(input,target);
             }
-        }
-        if(inputConfig.multiInput){
-            inConfigs.push(nameof<InputConfig>(s => s.multiInput));
-            this.checkMultiInput(inputConfig.multiInput,target);
-        }
-        if(inputConfig.singleInput){
-            inConfigs.push(nameof<InputConfig>(s => s.singleInput));
-            this.checkSingleInput(inputConfig.singleInput,target);
-        }
-        if(inConfigs.length > 1){
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                `${target.getTarget()} Only one of the input config properties: 'input','multiInput','singleInput' is allowed. You have set: ${inConfigs.toString()}.`));
         }
     }
 
-    private checkMultiInput(multiInput : MultiInput,target : Target) {
+    private checkParamInput(paramInput : ParamInput, target : Target) {
         const keys: any[] = [];
-        if (typeof multiInput === 'object') {
-            for (let k in multiInput) {
-                if (multiInput.hasOwnProperty(k)) {
+        if (typeof paramInput === 'object') {
+            for (let k in paramInput) {
+                if (paramInput.hasOwnProperty(k)) {
                     keys.push(k);
                     this.checkCustomName(k,'controller input property',target.getTarget() + ' ');
-                    this.checkModel(multiInput[k], target.addPath(k));
+                    this.checkModel(paramInput[k], target.addPath(k));
                 }
             }
-            this.checkOptionalRecommendation(keys, multiInput, target);
+            this.checkOptionalRecommendation(keys, paramInput, target);
         }
     }
 
@@ -774,7 +759,7 @@ export default class ConfigChecker
     }
 
     // noinspection JSMethodCanBeStatic
-    private checkOptionalRecommendation(keys: string[], input: MultiInput, target: Target) {
+    private checkOptionalRecommendation(keys: string[], input: ParamInput, target: Target) {
         let wasLastOptional = false;
         for (let i = keys.length - 1; i >= 0; i--) {
             if (input[keys[i]][nameof<ValueModelConfig>(s => s.isOptional)] !== undefined &&

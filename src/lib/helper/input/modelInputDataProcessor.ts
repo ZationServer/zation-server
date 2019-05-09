@@ -23,7 +23,7 @@ export interface ProcessInfo {
     inputValidation : boolean
 }
 
-export default class SingleInputDataProcessor
+export default class ModelInputDataProcessor
 {
     private readonly preparedSmallBag : SmallBag;
 

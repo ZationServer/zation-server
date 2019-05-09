@@ -18,7 +18,7 @@ import JsonConverter                from "../utils/jsonConverter";
 import ZationConfigFull             from "../configManager/zationConfigFull";
 import MiddlewareUtils              from "../utils/middlewareUtils";
 
-export default class HttpProcessor
+export default class HttpRequestProcessor
 {
     private readonly zc : ZationConfigFull;
     private readonly debug : boolean;
@@ -44,7 +44,7 @@ export default class HttpProcessor
                 Logger.logFileInfo(`Http Post Request id: ${reqId} -> `,req.body[this.zc.mainConfig.postKey]);
             }
 
-            HttpProcessor.setHeader(res);
+            HttpRequestProcessor.setHeader(res);
             // @ts-ignore
             const zationData = await JsonConverter.parse(req.body[zc.mainConfig.postKey]);
             return await this.mainProcess(req,res,zationData,reqId);
@@ -61,13 +61,13 @@ export default class HttpProcessor
             }
 
             if(ZationReqUtils.isValidGetReq(query)) {
-                HttpProcessor.setHeader(res);
+                HttpRequestProcessor.setHeader(res);
                 const zationData = await ZationReqUtils.convertGetRequest(query);
                 return await this.mainProcess(req,res,zationData,reqId);
             }
             else if(ZationReqUtils.isValidValidationGetReq(query))
             {
-                HttpProcessor.setHeader(res);
+                HttpRequestProcessor.setHeader(res);
                 const zationData = await ZationReqUtils.convertValidationGetRequest(query);
                 return await this.mainProcess(req,res,zationData,reqId);
             }
@@ -82,7 +82,7 @@ export default class HttpProcessor
         }
         else {
             Logger.printDebugInfo(`Http Request id: ${reqId} -> No zation data found`);
-            HttpProcessor.printDefaultHtmlSite(res,this.worker);
+            HttpRequestProcessor.printDefaultHtmlSite(res,this.worker);
         }
     }
 
@@ -105,7 +105,7 @@ export default class HttpProcessor
 
                 //will throw if auth is blocked
                 await MiddlewareUtils.checkMiddleware
-                (this.zc.eventConfig.middlewareAuthenticate,HttpProcessor.middlewareAuthNext,this.worker.getPreparedSmallBag(),new ZationTokenInfo(token));
+                (this.zc.eventConfig.middlewareAuthenticate,HttpRequestProcessor.middlewareAuthNext,this.worker.getPreparedSmallBag(),new ZationTokenInfo(token));
             }
             return new SHBridgeHttp(res,req,reqId,zationData,false,this.worker);
         }

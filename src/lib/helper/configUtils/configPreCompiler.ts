@@ -13,7 +13,7 @@ import {
 import {
     AnyOfModelConfig,
     ArrayModelConfig,
-    ControllerConfig, InputConfig, Model, MultiInput, ObjectModelConfig, ValueModelConfig,
+    ControllerConfig, InputConfig, Model, ParamInput, ObjectModelConfig, ValueModelConfig, SingleModelInput,
 } from "../configDefinitions/appConfig";
 import ModelImportEngine from "./modelImportEngine";
 import ObjectUtils       from "../utils/objectUtils";
@@ -21,43 +21,7 @@ import Iterator          from "../utils/iterator";
 import FuncUtils         from "../utils/funcUtils";
 import {OtherLoadedConfigSet, OtherPreCompiledConfigSet} from "../configManager/configSets";
 import {
-    BeforeBackErrorBagFunction,
-    BeforeBackErrorFunction,
-    BeforeCodeErrorFunction,
-    BeforeErrorFunction,
-    ExpressFunction,
-    HttpServerStartedFunction,
-    MiddlewareAuthenticationFunction,
     PreCompiledEventConfig,
-    ScServerAuthenticationFunction,
-    ScServerAuthenticationStateChangeFunction,
-    ScServerBadSocketAuthTokenFunction,
-    ScServerConnectionFunction,
-    ScServerDeauthenticationFunction,
-    ScServerErrorFunction,
-    ScServerFunction,
-    ScServerNoticeFunction, ScServerReadyFunction,
-    ScServerSocketCodeDataFunction,
-    ScServerSocketFunction,
-    ScServerSubscriptionFunction,
-    ScServerUnsubscriptionFunction,
-    SocketAuthenticateFunction,
-    SocketAuthStateChangeFunction,
-    SocketBadAuthTokenFunction,
-    SocketCodeDataFunction,
-    SocketConnectFunction,
-    SocketDeauthenticateFunction,
-    SocketErrorFunction,
-    SocketMessageFunction,
-    SocketRawFunction,
-    SocketSubscribeFunction,
-    SocketUnsubscribeFunction,
-    StartedFunction,
-    WorkerStartedFunction,
-    WsServerStartedFunction,
-    ZationSocketDisconnectionFunction,
-    ZationSocketFunction,
-    ZationWorkerMessageFunction
 } from "../configDefinitions/eventConfig";
 
 export default class ConfigPreCompiler
@@ -555,26 +519,17 @@ export default class ConfigPreCompiler
             const input = inputConfig.input;
             if(Array.isArray(input)) {
                 //resolve single input shortcut
-                inputConfig.singleInput = input[0];
-                this.preCompileSingleInput(inputConfig);
+                // @ts-ignore
+                this.preCompileSingleInput(input);
             }
             else {
-                //resolve multi input shortcut
                 // @ts-ignore
-                inputConfig.multiInput = input;
-                // @ts-ignore
-                this.preCompileMultiInput(input);
+                this.preCompileParamInput(input);
             }
-        }
-        else if(typeof inputConfig.multiInput === 'object') {
-            this.preCompileMultiInput(inputConfig.multiInput);
-        }
-        else if(inputConfig.singleInput){
-            this.preCompileSingleInput(inputConfig);
         }
     }
 
-    private preCompileMultiInput(multiInput : MultiInput) : void {
+    private preCompileParamInput(multiInput : ParamInput) : void {
         for(let inputName in multiInput)
             if(multiInput.hasOwnProperty(inputName)) {
                 //resolve values,object,array links and resolve inheritance
@@ -583,9 +538,9 @@ export default class ConfigPreCompiler
             }
     }
 
-    private preCompileSingleInput(inputConfig : InputConfig) : void {
-        this.preCompileModel(nameof<InputConfig>(s => s.singleInput),inputConfig);
-        this.preCompileInheritance(inputConfig[nameof<InputConfig>(s => s.singleInput)]);
+    private preCompileSingleInput(singleModelInput : SingleModelInput) : void {
+        this.preCompileModel('0',singleModelInput);
+        this.preCompileInheritance(singleModelInput[0]);
     }
 
 }

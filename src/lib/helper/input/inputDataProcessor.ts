@@ -4,29 +4,36 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ControllerConfig, Model, MultiInput} from "../configDefinitions/appConfig";
-import {ZationTask}              from "../constants/internal";
+import {Model, ParamInput}       from "../configDefinitions/appConfig";
 import OptionalProcessor         from "./optionalProcessor";
-import SingleInputDataProcessor  from "./singleInputDataProcessor";
+import ModelInputDataProcessor   from "./modelInputDataProcessor";
 import ZationWorker            = require("../../main/zationWorker");
 import BackErrorBag              from "../../api/BackErrorBag";
 import BackError                 from "../../api/BackError";
-import ProcessTaskEngine, {ProcessTask} from "./processTaskEngine";
+import {ProcessTask}             from "./processTaskEngine";
 import {MainBackErrors}          from "../zationBackErrors/mainBackErrors";
 
+/**
+ * Class for processing input data. Can be a param based input or single model input.
+ */
 export default class InputDataProcessor
 {
-    private inputMainProcessor : SingleInputDataProcessor;
+    private inputMainProcessor : ModelInputDataProcessor;
 
     constructor(worker : ZationWorker) {
-        this.inputMainProcessor = new SingleInputDataProcessor(worker.getPreparedSmallBag());
+        this.inputMainProcessor = new ModelInputDataProcessor(worker.getPreparedSmallBag());
     }
 
-    private async processInputObject
-    (
-        input : object,
-        controllerInput : MultiInput,
-        useInputValidation : boolean,
+    /**
+     * Process parameter based input with an input object.
+     * @param input
+     * @param paramInput
+     * @param useInputValidation
+     * @param processList
+     * @param taskErrorBag
+     * @param createProcessList
+     */
+    async processInputObject(input : Record<string,any>, paramInput : ParamInput, useInputValidation : boolean,
         processList : ProcessTask[],
         taskErrorBag : BackErrorBag,
         createProcessList : boolean = true
@@ -41,33 +48,34 @@ export default class InputDataProcessor
             createProcessTaskList : createProcessList
         };
 
-        for(let inputName in controllerInput)
+        for(let paramName in paramInput)
         {
-            if(controllerInput.hasOwnProperty(inputName) && input[inputName] !== undefined) {
-                promises.push(
-                    this.inputMainProcessor.processProperty
-                    (input,inputName,controllerInput[inputName],inputName,processInfo));
-            }
-            else
-            {
-                const {defaultValue,isOptional} = await OptionalProcessor.process(controllerInput[inputName]);
-                if(!isOptional){
-                    //ups something is missing
-                    taskErrorBag.addBackError(new BackError(MainBackErrors.inputPropertyIsMissing,
-                        {
-                            propertyName : inputName,
-                            input : input
-                        }));
+            if(paramInput.hasOwnProperty(paramName)) {
+                if(input[paramName] !== undefined){
+                    promises.push(
+                        this.inputMainProcessor.processModel
+                        (input,paramName,paramInput[paramName],paramName,processInfo));
                 }
                 else {
-                    //set default value
-                    input[inputName] = defaultValue;
+                    const {defaultValue,isOptional} = await OptionalProcessor.process(paramInput[paramName]);
+                    if(!isOptional){
+                        //ups something is missing
+                        taskErrorBag.addBackError(new BackError(MainBackErrors.inputPropertyIsMissing,
+                            {
+                                propertyName : paramName,
+                                input : input
+                            }));
+                    }
+                    else {
+                        //set default value
+                        input[paramName] = defaultValue;
+                    }
                 }
             }
         }
         //check for unknown input properties
         for(let inputName in input) {
-            if(input.hasOwnProperty(inputName) && !controllerInput.hasOwnProperty(inputName)){
+            if(input.hasOwnProperty(inputName) && !paramInput.hasOwnProperty(inputName)){
                 taskErrorBag.addBackError(new BackError(MainBackErrors.unknownInputProperty,
                     {
                         propertyName : inputName
@@ -78,17 +86,22 @@ export default class InputDataProcessor
         return input;
     }
 
-    private async processInputArray
-    (
-        input : any[],
-        controllerInput : MultiInput,
-        useInputValidation : boolean,
+    /**
+     * Process parameter based input with an input array.
+     * @param input
+     * @param paramInput
+     * @param paramInputKeys
+     * @param useInputValidation
+     * @param processList
+     * @param taskErrorBag
+     * @param createProcessList
+     */
+    async processInputArray(input : any[], paramInput : ParamInput, paramInputKeys : string[], useInputValidation : boolean,
         processList : ProcessTask[],
         taskErrorBag : BackErrorBag,
         createProcessList : boolean = true
     ) : Promise<object>
     {
-        const controllerInputKeys = Object.keys(controllerInput);
         const promises : Promise<void>[] = [];
 
         const processInfo = {
@@ -99,37 +112,35 @@ export default class InputDataProcessor
         };
 
         const result = {};
-        for(let i = 0; i < controllerInputKeys.length; i++)
+        for(let i = 0; i < paramInputKeys.length; i++)
         {
-            if(typeof input[i] !== 'undefined')
-            {
+            if(typeof input[i] !== 'undefined') {
                 promises.push(new Promise<void>(async (resolve) => {
-                    const config = controllerInput[controllerInputKeys[i]];
-                    result[controllerInputKeys[i]] = input[i];
+                    result[paramInputKeys[i]] = input[i];
 
-                    await this.inputMainProcessor.processProperty
-                    (result,controllerInputKeys[i],config,controllerInputKeys[i],processInfo);
+                    await this.inputMainProcessor.processModel
+                    (result,paramInputKeys[i],paramInput[paramInputKeys[i]],paramInputKeys[i],processInfo);
                     resolve();
                 }))
             }
             else {
-                const {defaultValue,isOptional} = await OptionalProcessor.process(controllerInput[controllerInputKeys[i]]);
+                const {defaultValue,isOptional} = await OptionalProcessor.process(paramInput[paramInputKeys[i]]);
                 if(!isOptional){
                     //ups something is missing
                     taskErrorBag.addBackError(new BackError(MainBackErrors.inputPropertyIsMissing,
                         {
-                            propertyName : controllerInputKeys[i],
+                            propertyName : paramInputKeys[i],
                             input : input
                         }));
                 }
                 else {
                     //set default value
-                    result[controllerInputKeys[i]] = defaultValue;
+                    result[paramInputKeys[i]] = defaultValue;
                 }
             }
         }
         //check to much input
-        for(let i = controllerInputKeys.length; i < input.length; i++) {
+        for(let i = paramInputKeys.length; i < input.length; i++) {
             taskErrorBag.addBackError(new BackError(MainBackErrors.inputNotAssignable,
                 {
                     index : i,
@@ -140,33 +151,38 @@ export default class InputDataProcessor
         return result;
     }
 
-    private async processSingleInput
-    (
-        input : any,
-        config : Model,
-        useInputValidation : boolean,
-        processList : ProcessTask[],
+    /**
+     *
+     * @param input
+     * @param config
+     * @param useInputValidation
+     * @param processList
+     * @param taskErrorBag
+     * @param createProcessList
+     * @param currentInputPath
+     */
+    async processSingleModelInput(input : any, config : Model, useInputValidation : boolean, processList : ProcessTask[],
         taskErrorBag : BackErrorBag,
         createProcessList : boolean = true,
         currentInputPath : string = ''
     ) : Promise<object>
     {
         //we have a single input config
-        let inputTmp = {i : input};
-        await this.inputMainProcessor.processProperty
-        (inputTmp,'i',config,currentInputPath,{
+        const inputWrapper = {i : input};
+        await this.inputMainProcessor.processModel
+        (inputWrapper,'i',config,currentInputPath,{
             errorBag : taskErrorBag,
             createProcessTaskList : createProcessList,
             inputValidation : useInputValidation,
             processTaskList : processList
         });
-        return input;
+        return inputWrapper.i;
     }
 
     async validationCheck
     (
         input : any,
-        inputConfig : MultiInput | Model,
+        inputConfig : ParamInput | Model,
         singleInput : boolean,
         basePath : boolean,
         inputPath : string,
@@ -176,7 +192,7 @@ export default class InputDataProcessor
     {
         if((!basePath && !singleInput) || singleInput) {
             //single prop check
-            await this.processSingleInput(
+            await this.processSingleModelInput(
                 input,
                 inputConfig,
                 useInputValidation,
@@ -213,64 +229,4 @@ export default class InputDataProcessor
             }
         }
     }
-
-    //fast Checks of the input
-    //than create the checked Data
-    async processInput(task : ZationTask, controller : ControllerConfig) : Promise<any>
-    {
-        if(controller.inputAllAllow) {
-            return task.i;
-        }
-
-        let input = task.i;
-
-        if(input === undefined){
-            input = {};
-        }
-        else if(typeof input !== "object") {
-            //throw input type needs to be an object or array
-            throw new BackError(MainBackErrors.wrongControllerInputType,{inputType : typeof input});
-        }
-
-        const useInputValidation : boolean =
-            typeof controller.inputValidation === 'boolean' ? controller.inputValidation : true;
-
-        const taskList : ProcessTask[] = [];
-        let result = input;
-
-        const taskErrorBag : BackErrorBag = new BackErrorBag();
-        if(controller.singleInput === undefined)
-        {
-            //we have multi input config
-            const controllerInput = typeof controller.multiInput === 'object' ? controller.multiInput : {};
-
-            if(Array.isArray(input)) {
-                //throws if the validation or structure has an error
-                // noinspection TypeScriptValidateTypes
-                // @ts-ignore
-                result = await this.processInputArray
-                (input,controllerInput,useInputValidation,taskList,taskErrorBag);
-            }
-            else {
-                //throws if the validation or structure has an error or structure
-                result = await this.processInputObject
-                (input,controllerInput,useInputValidation,taskList,taskErrorBag);
-            }
-        }
-        else {
-            result = await this.processSingleInput
-            //can not be an string (pre compile will resolve links)
-            // @ts-ignore
-            (input,controller.singleInput,useInputValidation,taskList,taskErrorBag);
-        }
-
-        //throw validation/structure errors if any there
-        taskErrorBag.throwIfHasError();
-
-        //check process tasks
-        await ProcessTaskEngine.processTasks(taskList);
-
-        return result;
-    }
 }
-

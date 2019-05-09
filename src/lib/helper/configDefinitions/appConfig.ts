@@ -8,10 +8,9 @@ import Bag               from '../../api/Bag';
 import {ControllerClass} from "../../api/Controller";
 // noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../constants/validationTypes";
-import {ZationToken}     from "../constants/internal";
 import BackErrorBag      from "../../api/BackErrorBag";
 import SmallBag          from "../../api/SmallBag";
-import ZationTokenInfo from "../infoObjects/zationTokenInfo";
+import ZationTokenInfo   from "../infoObjects/zationTokenInfo";
 
 export interface AppConfig
 {
@@ -231,67 +230,58 @@ export interface AuthUserGroupConfig
 export interface InputConfig {
     /**
      * This property defines the input.
-     * It works parameter based, the key is the parameter name,
+     * It will be used to validate and format the data that flows into the component.
+     * It can specify an input that is based on parameters
+     * so that you can map models to a parameter name.
+     * Or it can specify a single model as an input.
+     * - Parameter-based input.
+     * To define a parameter based input use an object as a value.
+     * The keys of the object are the parameter names,
      * and the value defines an anonymous model or link to a declared model.
-     * If you want to get only one anonymous input you can use the single input definition.
+     * - Single model input
+     * To set a single model input, you have to use an array as a value with exactly one item.
+     * This item is an anonymous model or link to a declared model.
+     * Notice that you also can use the single method on the Config class
+     * for making it more clear that this is a single model input.
      * @example
-     * multiInput : {
-     *     name : {
-     *         type : 'string'
-     *     },
-     *     age : {
-     *         type : 'string',
-     *         minValue : 14
-     *     }
-     * }
-     */
-    multiInput ?: MultiInput;
-    /**
-     * This property defines a single input.
-     * (Not parameter based like multiInput)
-     * You can directly define an anonymous model or link to a declared model.
-     * @example
-     * singleInput : {
-     *     type : 'string',
-     *     minLength : 5
-     * }
-     */
-    singleInput ?: Model;
-    /**
-     * This property defines the input.
-     * It can define a multi input or a single input.
-     * - Multi Input
-     * To define a multi input use an object as a value.
-     * MultiInput works parameter based; the key is the parameter name, and
-     * the value defines an anonymous model or link to a declared model.
-     * - Single Input
-     * To define a single input where you can directly
-     * specify the model (not parameter based)
-     * you have to use an array as a value and the
-     * first array element is an anonymous model or link to a declared model.
-     * @example
+     * //Parameter-based input
      * input : {
      *     name : {
      *         type : 'string'
      *     },
      *     age : {
-     *         type : 'string',
+     *         type : 'int',
      *         minValue : 14
      *     }
      * }
+     * //Client can send  ->
+     * {name : 'Luca', age : 20}
+     * //or
+     * ['Luca',20]
+     *
+     * //-Single model input-
      * input : [{
      *     type : 'string',
-     *     minValue : 14
+     *     minLength : 4
      * }]
+     * //or
+     * input : Config.single({
+     *     type : 'string',
+     *     minLength : 4
+     * })
+     * //Client can send ->
+     * "ThisIsAnyString"
      */
-    input ?: MultiInput | SingleInputShortCut;
+    input ?: Input;
 }
 
-interface SingleInputShortCut {
-    ['0']: Model;
+export type Input = ParamInput | SingleModelInput;
+
+export interface SingleModelInput {
+    [0]: Model;
 }
 
-export interface MultiInput {
+export interface ParamInput {
     [key: string]: Model;
 }
 

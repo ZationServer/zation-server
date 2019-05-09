@@ -10,7 +10,7 @@ import SmallBag                     from './lib/api/SmallBag';
 import Bag                          from './lib/api/Bag';
 import Result                       from './lib/api/Result';
 import Controller                   from './lib/api/Controller';
-import Config                       from './lib/api/Config';
+import Config, {single}             from './lib/api/Config';
 import BackErrorBuilder             from "./lib/helper/builder/backErrorBuilder";
 import ServiceNotFoundError         from './lib/helper/services/serviceNotFoundError';
 import AuthenticationError          from './lib/helper/error/authenticationError';
@@ -64,4 +64,5 @@ export {
         MethodIsNotCompatibleError,
         InputIsNotCompatibleError,
         FsUtil,
+        single
     };

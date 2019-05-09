@@ -7,8 +7,8 @@ GitHub: LucaCode
 import ZationWorker        = require("./zationWorker");
 import Returner              from "../helper/response/returner";
 import MainRequestProcessor  from "../helper/processor/mainRequestProcessor";
-import SocketProcessor       from "../helper/processor/socketProcessor";
-import HttpProcessor         from "../helper/processor/httpProcessor";
+import SocketRequestProcessor       from "../helper/processor/socketRequestProcessor";
+import HttpRequestProcessor         from "../helper/processor/httpRequestProcessor";
 import ValidCheckProcessor   from "../helper/processor/validCheckProcessor";
 import UpSocket                from "../helper/sc/socket";
 import BackError             from "../api/BackError";
@@ -28,8 +28,8 @@ export default class ZationReqHandler
     private readonly reqIdPreFix : string;
 
     private readonly mainRequestProcessor : MainRequestProcessor;
-    private readonly socketProcessor : SocketProcessor;
-    private readonly httpProcessor : HttpProcessor;
+    private readonly socketProcessor : SocketRequestProcessor;
+    private readonly httpProcessor : HttpRequestProcessor;
     private readonly returner : Returner;
 
 
@@ -41,8 +41,8 @@ export default class ZationReqHandler
 
         const validCheckProcessor = new ValidCheckProcessor(this.zc,worker);
         this.mainRequestProcessor = new MainRequestProcessor(this.zc,worker,validCheckProcessor);
-        this.socketProcessor = new SocketProcessor(this.zc,worker);
-        this.httpProcessor = new HttpProcessor(this.zc,worker);
+        this.socketProcessor = new SocketRequestProcessor(this.zc);
+        this.httpProcessor = new HttpRequestProcessor(this.zc,worker);
 
         this.returner = new Returner(this.zc);
 

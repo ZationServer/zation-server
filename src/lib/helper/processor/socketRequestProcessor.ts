@@ -4,23 +4,20 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationWorker          = require("../../main/zationWorker");
 import SHBridgeSocket        from "../bridges/shBridgeSocket";
-import UpSocket                from "../sc/socket";
+import UpSocket              from "../sc/socket";
 import ZationConfig          from "../configManager/zationConfig";
 import Logger                from "../logger/logger";
 import ZationReqUtils        from "../utils/zationReqUtils";
 
-export default class SocketProcessor
+export default class SocketRequestProcessor
 {
     private readonly zc : ZationConfig;
     private readonly debug : boolean;
-    private readonly worker : ZationWorker;
 
-    constructor(zc : ZationConfig,worker : ZationWorker) {
+    constructor(zc : ZationConfig) {
         this.zc = zc;
         this.debug = this.zc.isDebug();
-        this.worker = worker;
     }
 
     //SOCKET Extra Layer
