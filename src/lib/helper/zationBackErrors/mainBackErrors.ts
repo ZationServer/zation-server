@@ -265,9 +265,9 @@ export const MainBackErrors = {
         fromZationSystem : true
     },
 
-    wrongControllerInputType : {
-        name          : 'wrongControllerInputType',
-        description   : 'Wrong controller input type. Type needs to be an array or object.',
+    wrongInputInParamBasedInput : {
+        name          : 'wrongInputInParamBasedInput',
+        description   : 'Wrong input in param based input. The type has to be an array or object.',
         type          : ErrorType.INPUT_ERROR,
         //INFO
         // inputType
