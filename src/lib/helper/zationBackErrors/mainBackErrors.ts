@@ -110,35 +110,35 @@ export const MainBackErrors = {
         fromZationSystem : true
     },
 
-    inputPropertyIsMissing    : {
-        name          : 'inputPropertyIsMissing',
-        description   : 'Input property is missing.',
+    inputParamIsMissing    : {
+        name          : 'inputParamIsMissing',
+        description   : 'Input param is missing.',
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : true,
         //INFO
-        // propertyName (the name of the missing property)
-        // input (the input object where the property is missing)
+        // paramName (the name of the missing param)
+        // input (the input object where the param is missing)
         fromZationSystem : true
     },
 
-    unknownInputProperty : {
-        name          : 'unknownInputProperty',
-        description   : 'Unknown input property was in input.',
+    unknownInputParam : {
+        name          : 'unknownInputParam',
+        description   : 'Unknown input param was in the input.',
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : true,
         //INFO
-        // propertyName (the unknown input property name)
+        // paramName (the unknown input param name)
         fromZationSystem : true
     },
 
-    inputNotAssignable    : {
-        name          : 'inputNotAssignable',
-        description   : 'Input not assignable.',
+    inputParamNotAssignable    : {
+        name          : 'inputParamNotAssignable',
+        description   : 'Input param is not assignable.',
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : true,
         //INFO
-        // index (index of input that is not assignable)
-        // value (input value that is not assignable)
+        // index (index of the input param that is not assignable)
+        // value (input value of the input param that is not assignable)
         fromZationSystem : true
     },
 

@@ -57,9 +57,9 @@ export default class InputProcessor
                     const {defaultValue,isOptional} = await OptionalProcessor.process(paramInput[paramName]);
                     if(!isOptional){
                         //ups something is missing
-                        taskErrorBag.addBackError(new BackError(MainBackErrors.inputPropertyIsMissing,
+                        taskErrorBag.addBackError(new BackError(MainBackErrors.inputParamIsMissing,
                             {
-                                propertyName : paramName,
+                                paramName : paramName,
                                 input : input
                             }));
                     }
@@ -73,9 +73,9 @@ export default class InputProcessor
         //check for unknown input properties
         for(let inputName in input) {
             if(input.hasOwnProperty(inputName) && !paramInput.hasOwnProperty(inputName)){
-                taskErrorBag.addBackError(new BackError(MainBackErrors.unknownInputProperty,
+                taskErrorBag.addBackError(new BackError(MainBackErrors.unknownInputParam,
                     {
-                        propertyName : inputName
+                        paramName : inputName
                     }));
             }
         }
@@ -121,9 +121,9 @@ export default class InputProcessor
                 const {defaultValue,isOptional} = await OptionalProcessor.process(paramInput[paramInputKeys[i]]);
                 if(!isOptional){
                     //ups something is missing
-                    taskErrorBag.addBackError(new BackError(MainBackErrors.inputPropertyIsMissing,
+                    taskErrorBag.addBackError(new BackError(MainBackErrors.inputParamIsMissing,
                         {
-                            propertyName : paramInputKeys[i],
+                            paramName : paramInputKeys[i],
                             input : input
                         }));
                 }
@@ -135,7 +135,7 @@ export default class InputProcessor
         }
         //check to much input
         for(let i = paramInputKeys.length; i < input.length; i++) {
-            taskErrorBag.addBackError(new BackError(MainBackErrors.inputNotAssignable,
+            taskErrorBag.addBackError(new BackError(MainBackErrors.inputParamNotAssignable,
                 {
                     index : i,
                     value : input[i]
