@@ -37,4 +37,29 @@ export default class InputUtils
         }
         return tempConfig;
     }
+
+    /**
+     * Processes information about the controller path and
+     * returns the keyPath (string array) and path (string).
+     * @param path
+     */
+    static processPathInfo(path : string | string[]) : {path : string,keyPath : string[]}
+    {
+        let keyPath : string[];
+        //convert path to an array
+        // noinspection SuspiciousTypeOfGuard
+        if(typeof path === 'string') {
+            if(path === '') {
+                keyPath = [];
+            }
+            else{
+                keyPath = path.split('.');
+            }
+        }
+        else{
+            keyPath = path;
+            path = keyPath.join('.');
+        }
+        return {keyPath,path};
+    }
 }

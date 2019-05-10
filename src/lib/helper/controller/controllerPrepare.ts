@@ -16,7 +16,7 @@ import ControllerUtils, {PrepareHandleInvokeFunction} from "./controllerUtils";
 import {SystemController}            from "../systemController/systemControler.config";
 import SmallBag                      from "../../api/SmallBag";
 import ZationConfigFull              from "../configManager/zationConfigFull";
-import InputClosureCreator, {InputConsumer} from "../input/inputClosureCreator";
+import InputClosureCreator, {InputConsumeFunction, InputValidationCheckFunction} from "../input/inputClosureCreator";
 import InputProcessor                    from "../input/inputProcessor";
 
 interface ControllerPrepareData {
@@ -26,7 +26,8 @@ interface ControllerPrepareData {
     systemAccessCheck : VersionSystemAccessCheckFunction,
     tokenStateCheck : TokenStateAccessCheckFunction,
     prepareHandleInvoke : PrepareHandleInvokeFunction,
-    inputConsumer : InputConsumer
+    inputConsume : InputConsumeFunction,
+    inputValidationCheck : InputValidationCheckFunction
 }
 
 export default class ControllerPrepare
@@ -54,11 +55,6 @@ export default class ControllerPrepare
     getControllerInstance(name : string,isSystemController : boolean) : Controller
     {
         return this.getControllerPrepareData(name,isSystemController).controllerInstance;
-    }
-
-    getControllerConfig(name : string,isSystemController : boolean) : ControllerConfig
-    {
-        return this.getControllerPrepareData(name,isSystemController).controllerConfig;
     }
 
     getControllerPrepareData(name : string, isSystemController : boolean) : ControllerPrepareData
@@ -131,7 +127,8 @@ export default class ControllerPrepare
             systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
             tokenStateCheck : AuthAccessChecker.createTokenStateAccessChecker(config,this.smallBag),
             prepareHandleInvoke : ControllerUtils.createPrepareHandleInvoker(config),
-            inputConsumer : InputClosureCreator.createControllerInputConsumer(config,this.inputDataProcessor)
+            inputConsume : InputClosureCreator.createControllerInputConsumer(config,this.inputDataProcessor),
+            inputValidationCheck : InputClosureCreator.createControllerValidationChecker(config,this.inputDataProcessor)
         };
 
         if(!isSystemC) {

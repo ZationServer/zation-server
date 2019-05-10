@@ -7,12 +7,13 @@ GitHub: LucaCode
 import {ControllerConfig, InputConfig, Model, ParamInput} from "../configDefinitions/appConfig";
 import BackErrorBag                     from "../../api/BackErrorBag";
 import ProcessTaskEngine, {ProcessTask} from "./processTaskEngine";
-import InputProcessor               from "./inputProcessor";
+import InputProcessor                   from "./inputProcessor";
 import BackError                        from "../../api/BackError";
 import {MainBackErrors}                 from "../zationBackErrors/mainBackErrors";
+import InputUtils                       from "./inputUtils";
 
-export type InputConsumer = (input : any) => Promise<any>;
-export type InputChecker = (input : any) => Promise<any>;
+export type InputConsumeFunction = (input : any) => Promise<any>;
+export type InputValidationCheckFunction = (checkData : {ip : string | string[], v : any}[]) => Promise<void>;
 
 /**
  * A class that provides methods for creating closures to consume the input.
@@ -20,11 +21,11 @@ export type InputChecker = (input : any) => Promise<any>;
 export default class InputClosureCreator
 {
     /**
-     * Creates a closure to consume the input from a request to a controller.
+     * Creates a closure to consume the input (validate and format) from a request to a controller.
      * @param controllerConfig
      * @param inputDataProcessor
      */
-    static createControllerInputConsumer(controllerConfig : ControllerConfig,inputDataProcessor : InputProcessor)
+    static createControllerInputConsumer(controllerConfig : ControllerConfig,inputDataProcessor : InputProcessor) : InputConsumeFunction
     {
         if(controllerConfig.inputAllAllow) {
             return (input) => input;
@@ -32,7 +33,93 @@ export default class InputClosureCreator
         return InputClosureCreator.createInputConsumer(controllerConfig,inputDataProcessor);
     }
 
-    static createInputConsumer(inputConfig : InputConfig, inputDataProcessor : InputProcessor) : InputConsumer {
+    /**
+     * Creates a closure to only validate the input from a validation request to a controller.
+     * @param controllerConfig
+     * @param inputDataProcessor
+     */
+    static createControllerValidationChecker(controllerConfig : ControllerConfig,inputDataProcessor : InputProcessor) : InputValidationCheckFunction
+    {
+        if(typeof controllerConfig.inputAllAllow === 'boolean' && controllerConfig.inputAllAllow) {
+            return async () => {}
+        }
+        return InputClosureCreator.createInputValidationChecker(controllerConfig,inputDataProcessor);
+    }
+
+    /**
+     * Creates a closure to only validate the input from a validation request.
+     * @param inputConfig
+     * @param inputDataProcessor
+     */
+    private static createInputValidationChecker(inputConfig : InputConfig, inputDataProcessor : InputProcessor) : InputValidationCheckFunction
+    {
+        let inputDefinition;
+        let singleInputModel = false;
+        if(Array.isArray(inputConfig.input)){
+            singleInputModel = true;
+            inputDefinition = inputConfig.input[0];
+        }
+        else {
+            inputDefinition = typeof inputConfig.input === 'object' ? inputConfig.input : {};
+        }
+
+        return async (checkData) => {
+
+            const promises : Promise<void>[] = [];
+            const errorBag = new BackErrorBag();
+            for(let i = 0; i < checkData.length; i++)
+            {
+                promises.push((async () => {
+                    const iCheckData = checkData[i];
+                    // noinspection SuspiciousTypeOfGuard
+                    if (typeof iCheckData === 'object' && (Array.isArray(iCheckData.ip) || typeof iCheckData.ip === 'string')) {
+
+                        const {path,keyPath} = InputUtils.processPathInfo(iCheckData.ip);
+
+                        let specificConfig = inputDefinition;
+                        if(keyPath.length > 0){
+                            specificConfig = InputUtils.getModelAtPath(keyPath,inputDefinition);
+                            if(specificConfig === undefined){
+                                errorBag.addBackError(new BackError(MainBackErrors.inputPathNotResolvable,
+                                    {
+                                        inputPath : keyPath,
+                                        checkIndex : i
+                                    }));
+                                return;
+                            }
+                        }
+
+                        await inputDataProcessor.processInputCheck(
+                            iCheckData.v,
+                            specificConfig,
+                            singleInputModel,
+                            keyPath.length === 0,
+                            path,
+                            errorBag,
+                        );
+                    }
+                    else
+                    {
+                        errorBag.addBackError(new BackError(MainBackErrors.wrongValidationCheckStructure,
+                            {
+                                checkIndex : i
+                            }));
+                    }
+                })());
+            }
+
+            await Promise.all(promises);
+            //ends when we have errors
+            errorBag.throwIfHasError();
+        }
+    }
+
+    /**
+     * Creates a closure to consume the input (validate and format) from a request.
+     * @param inputConfig
+     * @param inputDataProcessor
+     */
+    private static createInputConsumer(inputConfig : InputConfig, inputDataProcessor : InputProcessor) : InputConsumeFunction {
         const inputDefinition = inputConfig.input;
         if(Array.isArray(inputDefinition))
         {

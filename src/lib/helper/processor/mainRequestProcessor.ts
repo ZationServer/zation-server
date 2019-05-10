@@ -86,7 +86,7 @@ export default class MainRequestProcessor
                 versionAccessCheck,
                 tokenStateCheck,
                 prepareHandleInvoke,
-                inputConsumer
+                inputConsume
             } = this.controllerPrepare.getControllerPrepareData(controllerName,isSystemController);
 
             //Throws if access denied
@@ -112,7 +112,7 @@ export default class MainRequestProcessor
                         let input : object;
                         //check input
                         try {
-                            input = await inputConsumer(task.i);
+                            input = await inputConsume(task.i);
                         }
                         catch (e) {
                             //invoke controller wrong input function
