@@ -1683,4 +1683,3 @@ export default class Bag extends SmallBag
         return !!srcSocketSid ? srcSocketSid : (srcSocketSid === null || !this.isWs() ? undefined : this.getSocketSid());
     }
 }
-

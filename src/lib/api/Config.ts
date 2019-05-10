@@ -33,9 +33,9 @@ import
     ScMiddlewareFunction,
     MiddlewareAuthenticationFunction,
     ScServerFunction,
-    ZationSocketFunction,
-    ZationSocketDisconnectionFunction,
-    ZationWorkerMessageFunction,
+    SocketConnectionFunction,
+    SocketDisconnectionFunction,
+    WorkerMessageFunction,
     ScServerAuthenticationStateChangeFunction,
     SocketRawFunction,
     SocketConnectFunction,
@@ -420,7 +420,7 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static scServer(func : ScServerFunction) : ScServerFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketConnection(func : ZationSocketFunction) : ZationSocketFunction {return func;}
+    static socketConnection(func : SocketConnectionFunction) : SocketConnectionFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static beforeError(func : BeforeErrorFunction) : BeforeErrorFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
@@ -434,9 +434,9 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static started(func : StartedFunction) : StartedFunction{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketDisconnection(func : ZationSocketDisconnectionFunction) : ZationSocketDisconnectionFunction {return func;}
+    static socketDisconnection(func : SocketDisconnectionFunction) : SocketDisconnectionFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static workerMessage(func : ZationWorkerMessageFunction) : ZationWorkerMessageFunction {return func;}
+    static workerMessage(func : WorkerMessageFunction) : WorkerMessageFunction {return func;}
 
     //Zation Middleware
     // noinspection JSUnusedGlobalSymbols

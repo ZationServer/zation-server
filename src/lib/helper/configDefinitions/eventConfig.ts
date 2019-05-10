@@ -25,7 +25,6 @@ import SocketInfo from "../infoObjects/socketInfo";
 
 export type ExpressFunction = (smallBag : SmallBag, express : ExpressCore.Express) => Promise<void> | void;
 export type ScServerFunction = (smallBag : SmallBag, scServer : ScServer) => Promise<void> | void;
-export type ZationSocketFunction = (smallBag : SmallBag,socketInfo : SocketInfo) => Promise<void> | void;
 export type WorkerStartedFunction = (smallBag : SmallBag, info : ZationInfo, worker : ZationWorker) => Promise<void> | void;
 export type HttpServerStartedFunction = (info : ZationInfo) => Promise<void> | void;
 export type WsServerStartedFunction = (info : ZationInfo) => Promise<void> | void;
@@ -34,9 +33,11 @@ export type BeforeErrorFunction = (smallBag : SmallBag, error : object) => Promi
 export type BeforeBackErrorFunction = (smallBag : SmallBag, backError : BackError) => Promise<void> | void;
 export type BeforeCodeErrorFunction = (smallBag : SmallBag, backError : BackError) => Promise<void> | void;
 export type BeforeBackErrorBagFunction = (smallBag : SmallBag, backErrorBag : BackErrorBag) => Promise<void> | void;
-export type ZationSocketDisconnectionFunction = (smallBag : SmallBag, socketInfo : SocketInfo, code : any, data : any) => Promise<void> | void;
-export type ZationWorkerMessageFunction = (smallBag : SmallBag, data : any) => Promise<void> | void;
+export type WorkerMessageFunction = (smallBag : SmallBag, data : any) => Promise<void> | void;
 
+export type SocketConnectionFunction = (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
+export type SocketDisconnectionFunction = (smallBag : SmallBag, socketInfo : SocketInfo, code : any, data : any) => Promise<void> | void;
+export type SocketAuthenticatedFunction = (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
 
 export type MiddlewareAuthenticationFunction = (smallBag : SmallBag,zationToken  : ZationToken) => Promise<boolean | object | any> | boolean | object | any;
 export type MiddlewareSocketFunction = (smallBag : SmallBag,socket : HandshakeSocket) => Promise<boolean | object | any> | boolean | object | any;
@@ -72,7 +73,6 @@ export interface EventConfig
 {
     express  ?: ExpressFunction | ExpressFunction[];
     scServer  ?: ScServerFunction | ScServerFunction[];
-    socket  ?: ZationSocketFunction | ZationSocketFunction[];
     workerStarted  ?: WorkerStartedFunction | WorkerStartedFunction[];
     workerLeaderStarted ?: WorkerStartedFunction | WorkerStartedFunction[];
     httpServerStarted  ?: HttpServerStartedFunction | HttpServerStartedFunction[];
@@ -82,8 +82,11 @@ export interface EventConfig
     beforeBackError  ?: BeforeBackErrorFunction | BeforeBackErrorFunction[];
     beforeCodeError  ?: BeforeCodeErrorFunction | BeforeCodeErrorFunction[];
     beforeBackErrorBag  ?: BeforeBackErrorBagFunction | BeforeBackErrorBagFunction[];
-    socketDisconnection  ?: ZationSocketDisconnectionFunction | ZationSocketDisconnectionFunction[];
-    workerMessage  ?: ZationWorkerMessageFunction | ZationWorkerMessageFunction[];
+    workerMessage  ?: WorkerMessageFunction | WorkerMessageFunction[];
+
+    socketConnection  ?: SocketConnectionFunction | SocketConnectionFunction[];
+    socketDisconnection  ?: SocketDisconnectionFunction | SocketDisconnectionFunction[];
+    socketAuthenticated  ?: SocketAuthenticatedFunction | SocketAuthenticatedFunction[];
 
     middlewareAuthenticate  ?: MiddlewareAuthenticationFunction;
     middlewareSocket ?: MiddlewareSocketFunction;
@@ -131,7 +134,6 @@ export interface PreCompiledEventConfig extends EventConfig
 {
     express  : ExpressFunction;
     scServer  : ScServerFunction;
-    socket  : ZationSocketFunction;
     workerStarted  : WorkerStartedFunction;
     workerLeaderStarted : WorkerStartedFunction;
     httpServerStarted  : HttpServerStartedFunction;
@@ -141,8 +143,11 @@ export interface PreCompiledEventConfig extends EventConfig
     beforeBackError  : BeforeBackErrorFunction;
     beforeCodeError  : BeforeCodeErrorFunction;
     beforeBackErrorBag  : BeforeBackErrorBagFunction;
-    socketDisconnection  : ZationSocketDisconnectionFunction;
-    workerMessage  : ZationWorkerMessageFunction;
+    workerMessage  : WorkerMessageFunction;
+
+    socketConnection  : SocketConnectionFunction;
+    socketDisconnection  : SocketDisconnectionFunction;
+    socketAuthenticated  : SocketAuthenticatedFunction;
 
     middlewareAuthenticate  ?: MiddlewareAuthenticationFunction;
     middlewareSocket ?: MiddlewareSocketFunction;
