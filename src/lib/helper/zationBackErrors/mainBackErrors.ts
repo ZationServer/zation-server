@@ -295,14 +295,13 @@ export const MainBackErrors = {
         fromZationSystem : true
     },
 
-    inputPathInControllerNotFound : {
-        name          : 'inputPathInControllerNotFound',
-        description   : 'Input path in controller not found!',
+    inputPathNotResolvable : {
+        name          : 'inputPathNotResolvable',
+        description   : 'Input path is not resolvable.',
         type          : ErrorType.INPUT_ERROR,
         private       : false,
         sendInfo      : true,
         //INFO
-        // controllerName (name of controller)
         // inputPath
         // checkIndex
         fromZationSystem : true
