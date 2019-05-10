@@ -320,12 +320,6 @@ export interface ControllerConfig extends InputConfig
     systemAccess ?: 'all' | string[];
 }
 
-export interface StreamConfig extends InputConfig {
-
-
-}
-
-
 export type ValidatorFunction = (value : any,backErrorBag : BackErrorBag,inputPath : string,smallBag : SmallBag,type ?: string) => Promise<void> | void;
 export type ConvertValueFunction = (value : any, smallBag : SmallBag) => Promise<any> | any;
 export type GetDateFunction = (smallBag : SmallBag) => Promise<Date> | Date;
