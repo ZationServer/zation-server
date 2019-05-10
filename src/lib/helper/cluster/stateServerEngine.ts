@@ -377,6 +377,13 @@ export default class StateServerEngine
     }
 
     /**
+     * Returns if the engine is connected to the state server.
+     */
+    public isConnected() : boolean {
+        return this.stateSocket ? this.stateSocket === this.stateSocket.OPEN : false;
+    }
+
+    /**
      * Reconnect to the state server.
      */
     private reconnect() : Promise<boolean>

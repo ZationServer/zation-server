@@ -364,7 +364,12 @@ export default class ZationMaster {
             const action = data.action;
             switch (action) {
                 case WorkerMessageActions.INFO:
-                    respond(null,{isLeader : this.clusterLeader, pid : process.pid, clusterMode : this.stateServerActive});
+                    respond(null,{
+                        isLeader : this.clusterLeader,
+                        pid : process.pid,
+                        clusterMode : this.stateServerActive,
+                        stateServerConnected : this.stateServerActive ? this.stateServerEngine.isConnected() : false
+                    });
                     break;
                 case WorkerMessageActions.IS_LEADER:
                     respond(null,{isLeader : this.clusterLeader});
