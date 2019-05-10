@@ -146,7 +146,7 @@ export default class InputProcessor
     }
 
     /**
-     *
+     * Process single model input.
      * @param input
      * @param config
      * @param processList
@@ -171,6 +171,16 @@ export default class InputProcessor
         return inputWrapper.i;
     }
 
+    /**
+     * Process validation input check.
+     * (For single model or param based input)
+     * @param input
+     * @param inputConfig
+     * @param singleInput
+     * @param basePath
+     * @param inputPath
+     * @param errorBag
+     */
     async processInputCheck
     (
         input : any,
