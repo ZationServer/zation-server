@@ -4,29 +4,29 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationWorker = require("../main/zationWorker");
-import useragent    = require('useragent');
-import UpSocket         from "../helper/sc/socket";
-import ScServer         from "../helper/sc/scServer";
-import * as core        from "express-serve-static-core";
+import ZationWorker             = require("../main/zationWorker");
+import useragent                = require('useragent');
+import UpSocket                   from "../helper/sc/socket";
+import ScServer                   from "../helper/sc/scServer";
+import * as core                  from "express-serve-static-core";
 import {IncomingHttpHeaders, IncomingMessage} from "http";
-import {Agent}                   from "useragent";
-import {UploadedFile}            from "express-fileupload";
-import ObjectPathCombineSequence from "../helper/utils/objectPathCombineSequence";
-import SHBridge              from "../helper/bridges/shBridge";
-import AuthEngine            from "../helper/auth/authEngine";
-import ProtocolAccessChecker from "../helper/protocolAccess/protocolAccessChecker";
-import ObjectPath            from "../helper/utils/objectPath";
-import ObjectPathSequence    from "../helper/utils/objectPathSequence";
-import SmallBag              from "./SmallBag";
+import {Agent}                    from "useragent";
+import {UploadedFile}             from "express-fileupload";
+import ObjectPathCombineSequence  from "../helper/utils/objectPathCombineSequence";
+import SHBridge                   from "../helper/bridges/shBridge";
+import AuthEngine                 from "../helper/auth/authEngine";
+import ProtocolAccessChecker      from "../helper/protocolAccess/protocolAccessChecker";
+import ObjectPath                 from "../helper/utils/objectPath";
+import ObjectPathSequence         from "../helper/utils/objectPathSequence";
+import SmallBag                   from "./SmallBag";
 import InputIsNotCompatibleError  from "../helper/error/inputIsNotCompatibleError";
 import MethodIsNotCompatibleError from "../helper/error/methodIsNotCompatibleError";
-import TokenUtils            from "../helper/token/tokenUtils";
-import {ZationToken}         from "../helper/constants/internal";
-import JwtSignOptions        from "../helper/constants/jwt";
-import ObjectUtils           from "../helper/utils/objectUtils";
-import ChUtils               from "../helper/channel/chUtils";
-import SocketInfo from "../helper/infoObjects/socketInfo";
+import TokenUtils                 from "../helper/token/tokenUtils";
+import {ZationToken}              from "../helper/constants/internal";
+import JwtSignOptions             from "../helper/constants/jwt";
+import ObjectUtils                from "../helper/utils/objectUtils";
+import ChUtils                    from "../helper/channel/chUtils";
+import SocketInfo                 from "../helper/infoObjects/socketInfo";
 
 export default class Bag extends SmallBag
 {
