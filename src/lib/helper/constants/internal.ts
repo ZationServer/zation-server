@@ -88,14 +88,13 @@ export interface ErrorResponse {
 //legend
 /*
 e = errors
-s = successful
+successful = errors.length === 0
 r = result
 t = token (st = signedToken,pt = plainToken)
 zhi = zation http info
  */
 export interface ZationResponse {
     e : ErrorResponse[],
-    s : boolean,
     r : ResponseResult
     t ?: {
         st : string,

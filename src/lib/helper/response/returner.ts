@@ -105,16 +105,14 @@ export default class Returner
     private createWsResp(res : ResponseResult | undefined,errors : any[] | undefined) : ZationResponse {
         return {
             r : res ? res : {},
-            e : errors ? errors : [],
-            s : errors ? errors.length === 0 : true,
+            e : errors ? errors : []
         }
     }
 
     private async createHttpResp(res : ResponseResult | undefined,errors : any[] | undefined,shBridge : SHBridge | undefined,info) : Promise<ZationResponse> {
         const obj : ZationResponse = {
             r : res ? res : {},
-            e : errors ? errors : [],
-            s : errors ? errors.length === 0 : true,
+            e : errors ? errors : []
         };
 
         //token
