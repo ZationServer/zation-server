@@ -47,15 +47,13 @@ import ObjectUtils                                          from "../helper/util
 import JwtSignOptions                                       from "../helper/constants/jwt";
 import JwtVerifyOptions                                     from "../helper/constants/jwt";
 
+export default class SmallBag {
+    protected readonly exchangeEngine: ChannelBagEngine;
+    protected readonly serviceEngine: ServiceEngine;
+    protected readonly zc: ZationConfigFull;
+    protected readonly worker: ZationWorker;
 
-export default class SmallBag
-{
-    protected readonly exchangeEngine : ChannelBagEngine;
-    protected readonly serviceEngine : ServiceEngine;
-    protected readonly zc : ZationConfigFull;
-    protected readonly worker : ZationWorker;
-
-    constructor(worker : ZationWorker,exchangeEngine : ChannelBagEngine) {
+    constructor(worker: ZationWorker, exchangeEngine: ChannelBagEngine) {
         this.exchangeEngine = exchangeEngine;
         this.serviceEngine = worker.getServiceEngine();
         this.zc = worker.getZationConfig();
@@ -68,7 +66,7 @@ export default class SmallBag
      * @description
      * Returns the zation config.
      */
-    getZationConfig() : ZationConfig {
+    getZationConfig(): ZationConfig {
         // noinspection TypeScriptValidateJSTypes
         return this.zc;
     }
@@ -79,7 +77,7 @@ export default class SmallBag
      * Returns the root path of the project.
      * Typescript project will return path to dist folder.
      */
-    getRootPath() : string {
+    getRootPath(): string {
         // noinspection TypeScriptValidateJSTypes
         return this.zc.rootPath;
     }
@@ -89,7 +87,7 @@ export default class SmallBag
      * @description
      * Returns if the server runs in test mode.
      */
-    inTestMode() : boolean {
+    inTestMode(): boolean {
         // noinspection TypeScriptValidateJSTypes
         return this.zc.inTestMode();
     }
@@ -99,7 +97,7 @@ export default class SmallBag
      * @description
      * Returns if the server runs in normal mode.
      */
-    inNormalMode() : boolean {
+    inNormalMode(): boolean {
         // noinspection TypeScriptValidateJSTypes
         return this.zc.inNormalMode();
     }
@@ -109,7 +107,7 @@ export default class SmallBag
      * @description
      * Returns the start mode of the server.
      */
-    getStartMode() : StartMode {
+    getStartMode(): StartMode {
         // noinspection TypeScriptValidateJSTypes
         return this.zc.getStartMode();
     }
@@ -119,7 +117,7 @@ export default class SmallBag
      * @description
      * Returns the app config.
      */
-    getAppConfig() : AppConfig {
+    getAppConfig(): AppConfig {
         // noinspection TypeScriptValidateJSTypes
         return this.zc.appConfig;
     }
@@ -129,7 +127,7 @@ export default class SmallBag
      * @description
      * Returns the channel config.
      */
-    getChannelConfig() : ChannelConfig {
+    getChannelConfig(): ChannelConfig {
         // noinspection TypeScriptValidateJSTypes
         return this.zc.channelConfig;
     }
@@ -139,7 +137,7 @@ export default class SmallBag
      * @description
      * Returns the event config.
      */
-    getEventConfig() : EventConfig {
+    getEventConfig(): EventConfig {
         // noinspection TypeScriptValidateJSTypes
         return this.zc.eventConfig;
     }
@@ -149,7 +147,7 @@ export default class SmallBag
      * @description
      * Returns the main config.
      */
-    getMainConfig() : InternalMainConfig {
+    getMainConfig(): InternalMainConfig {
         // noinspection TypeScriptValidateJSTypes
         return this.zc.mainConfig;
     }
@@ -159,7 +157,7 @@ export default class SmallBag
      * @description
      * Returns the service config.
      */
-    getServiceConfig() : ServiceConfig {
+    getServiceConfig(): ServiceConfig {
         // noinspection TypeScriptValidateJSTypes
         return this.zc.serviceConfig;
     }
@@ -171,9 +169,8 @@ export default class SmallBag
      * Which you can define in the variables property in the main config.
      * @param path
      */
-    getMainConfigVariable<V>(path ?: string | string[]) : V
-    {
-        return ObjectPath.get(this.zc.mainConfig.variables,path);
+    getMainConfigVariable<V>(path ?: string | string[]): V {
+        return ObjectPath.get(this.zc.mainConfig.variables, path);
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
@@ -181,7 +178,7 @@ export default class SmallBag
      * @description
      * Returns the name of the default user group.
      */
-    getDefaultUserGroupName() : string {
+    getDefaultUserGroupName(): string {
         // noinspection TypeScriptValidateJSTypes
         return this.worker.getAEPreparedPart().getDefaultGroup();
     }
@@ -191,7 +188,7 @@ export default class SmallBag
      * @description
      * Checks if it is an auth user group name.
      */
-    isAuthUserGroupName(name : string) : boolean {
+    isAuthUserGroupName(name: string): boolean {
         // noinspection TypeScriptValidateJSTypes
         return this.worker.getAEPreparedPart().isAuthGroup(name);
     }
@@ -201,7 +198,7 @@ export default class SmallBag
      * @description
      * Returns an array with all auth user group names.
      */
-    getAuthUserGroupNames() : string[] {
+    getAuthUserGroupNames(): string[] {
         // noinspection TypeScriptValidateJSTypes
         return Object.keys(this.worker.getAEPreparedPart().getAuthGroups());
     }
@@ -212,7 +209,7 @@ export default class SmallBag
      * @description
      * Returns the server ip address.
      */
-    getServerIpAddress() : string {
+    getServerIpAddress(): string {
         // noinspection TypeScriptValidateJSTypes
         return IP.address();
     }
@@ -222,8 +219,7 @@ export default class SmallBag
      * @description
      * Returns the server port.
      */
-    getServerPort() : number
-    {
+    getServerPort(): number {
         return this.zc.mainConfig.port;
     }
 
@@ -232,8 +228,7 @@ export default class SmallBag
      * @description
      * Returns the server instance id.
      */
-    getServerInstanceId() : string
-    {
+    getServerInstanceId(): string {
         return this.worker.options.instanceId;
     }
 
@@ -242,8 +237,7 @@ export default class SmallBag
      * @description
      * Returns the app name.
      */
-    getAppName() : string
-    {
+    getAppName(): string {
         return this.zc.mainConfig.appName;
     }
 
@@ -252,8 +246,7 @@ export default class SmallBag
      * @description
      * Returns if the server is running in debug mode.
      */
-    isDebugMode() : boolean
-    {
+    isDebugMode(): boolean {
         return this.zc.isDebug();
     }
 
@@ -262,18 +255,16 @@ export default class SmallBag
      * @description
      * Returns if the server is running in debug mode.
      */
-    isDebug() : boolean
-    {
+    isDebug(): boolean {
         return this.zc.isDebug();
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns if the server hostname.
+     * Returns the server hostname.
      */
-    getServerHostname() : string
-    {
+    getServerHostname(): string {
         return this.zc.mainConfig.hostname;
     }
 
@@ -282,8 +273,7 @@ export default class SmallBag
      * @description
      * Returns if the server is running in secure.
      */
-    getServerSecure() : boolean
-    {
+    getServerSecure(): boolean {
         return this.zc.mainConfig.secure;
     }
 
@@ -292,8 +282,7 @@ export default class SmallBag
      * @description
      * Returns the server path.
      */
-    getServerPath() : string
-    {
+    getServerPath(): string {
         return this.zc.mainConfig.path;
     }
 
@@ -302,38 +291,34 @@ export default class SmallBag
      * @description
      * Returns if the server is running in start debug mode.
      */
-    isStartDebugMode() : boolean
-    {
+    isStartDebugMode(): boolean {
         return this.zc.isStartDebug();
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the zation version.
+     * Returns the zation server version.
      */
-    getZationVersion() : string
-    {
+    getZationVersion(): string {
         return this.worker.getServerVersion();
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the started time stamp from this server.
+     * Returns the started time stamp of this server.
      */
-    getServerStartedTimeStamp() : number
-    {
+    getServerStartedTimeStamp(): number {
         return this.worker.getServerStartedTime();
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the started time stamp from this worker.
+     * Returns the started time stamp of this worker.
      */
-    getWorkerStartedTimeStamp() : number
-    {
+    getWorkerStartedTimeStamp(): number {
         return this.worker.getWorkerStartedTime();
     }
 
@@ -342,8 +327,7 @@ export default class SmallBag
      * @description
      * Returns the worker id.
      */
-    getWorkerId() : number
-    {
+    getWorkerId(): number {
         return this.worker.getWorkerId();
     }
 
@@ -351,10 +335,10 @@ export default class SmallBag
     /**
      * @description
      * Returns the full worker id. (includes the node process id)
-     * So this id is unique for every restart from this worker.
+     * Means that this id is unique for every worker process,
+     * also for every worker restart.
      */
-    getWorkerFullId() : string
-    {
+    getWorkerFullId(): string {
         return this.worker.getFullWorkerId();
     }
 
@@ -364,8 +348,7 @@ export default class SmallBag
      * Returns the zation worker instance.
      * This only for advance use cases.
      */
-    getWorker() : ZationWorker
-    {
+    getWorker(): ZationWorker {
         return this.worker;
     }
 
@@ -374,8 +357,7 @@ export default class SmallBag
      * @description
      * Returns if this worker is the leader.
      */
-    isLeaderWorker() : boolean
-    {
+    isLeaderWorker(): boolean {
         return this.worker.isLeader;
     }
 
@@ -385,11 +367,10 @@ export default class SmallBag
      * Returns if this server instance is the leader of the cluster.
      * Notice that this server can lose his leader ship again!
      * If cluster mode is not active (means only one server is running without state server)
-     * it will returns always true.
+     * it will return always true.
      */
-    async isLeaderServer() : Promise<boolean>
-    {
-        return (await this.worker.sendToZationMaster({action : WorkerMessageActions.IS_LEADER})).isLeader;
+    async isLeaderServer(): Promise<boolean> {
+        return (await this.worker.sendToZationMaster({action: WorkerMessageActions.IS_LEADER})).isLeader;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -399,8 +380,7 @@ export default class SmallBag
      * @param error
      * Error or message for server crash information.
      */
-    async killServer(error : Error | string) : Promise<void>
-    {
+    async killServer(error: Error | string): Promise<void> {
         await this.worker.killServer(error);
     }
 
@@ -411,8 +391,7 @@ export default class SmallBag
      * @example
      * https://myhost:3000
      */
-    getServerUrl() : string
-    {
+    getServerUrl(): string {
         return `${this.zc.mainConfig.secure ? 'https' : 'http'}://${this.zc.mainConfig.hostname}:${this.zc.mainConfig.port}`;
     }
 
@@ -423,12 +402,51 @@ export default class SmallBag
      * @example
      * https://myhost:3000/path
      */
-    getZationServerUrl() : string
-    {
-        return`${this.zc.mainConfig.secure ? 'https' : 'http'}://${this.zc.mainConfig.hostname}:${this.zc.mainConfig.port}${this.zc.mainConfig.path}`;
+    getZationServerUrl(): string {
+        return `${this.zc.mainConfig.secure ? 'https' : 'http'}://${this.zc.mainConfig.hostname}:${this.zc.mainConfig.port}${this.zc.mainConfig.path}`;
     }
 
     //Part Crypto
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns an random string.
+     * @param length
+     */
+    generateRandomString(length: number = 16): string {
+        return crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns an random number with fixed digits count.
+     * @param digits
+     */
+    generateFixedRandomNumber(digits: number = 8): number {
+        return Math.floor(Math.pow(10, digits - 1) + Math.random() * 9 * Math.pow(10, digits - 1));
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns an random number in a range.
+     * @param min
+     * @param max
+     */
+    generateRangeRandomNumber(min: number = 0, max: number = 10): number {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns an random boolean.
+     * @param chanceForTrue
+     */
+    generateRandomBoolean(chanceForTrue: number = 0.5): boolean {
+        return Math.random() <= chanceForTrue;
+    }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
@@ -437,9 +455,8 @@ export default class SmallBag
      * @param string
      * @param salt
      */
-    hashSha512(string : string,salt ?: string) : string
-    {
-        return this.hashIn('sha512',string,salt);
+    hashSha512(string: string, salt ?: string): string {
+        return this.hashIn('sha512', string, salt);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -450,59 +467,12 @@ export default class SmallBag
      * @param string
      * @param salt
      */
-    hashIn(hash : string,string : string,salt ?: string) : string
-    {
-        if(salt !== undefined) {
-            return crypto.createHmac(hash,salt).update(string).digest('hex');
-        }
-        else {
+    hashIn(hash: string, string: string, salt ?: string): string {
+        if (salt !== undefined) {
+            return crypto.createHmac(hash, salt).update(string).digest('hex');
+        } else {
             return crypto.createHash(hash).update(string).digest('hex');
         }
-    }
-
-    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-    /**
-     * @description
-     * Returns an random string.
-     * @param length
-     */
-    generateRandomString(length : number = 16) : string
-    {
-        return crypto.randomBytes(Math.ceil(length/2)).toString('hex').slice(0,length);
-    }
-
-    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-    /**
-     * @description
-     * Returns an random number with fixed digits count.
-     * @param digits
-     */
-    generateFixedRandomNumber(digits : number = 8) : number
-    {
-        return Math.floor(Math.pow(10, digits-1) + Math.random() * 9 * Math.pow(10, digits-1));
-    }
-
-    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-    /**
-     * @description
-     * Returns an random number in a range.
-     * @param min
-     * @param max
-     */
-    generateRangeRandomNumber(min : number = 0, max : number = 10) : number
-    {
-        return Math.floor(Math.random()*(max-min+1)+min);
-    }
-
-    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-    /**
-     * @description
-     * Returns an random boolean.
-     * @param chanceForTrue
-     */
-    generateRandomBoolean(chanceForTrue : number = 0.5) : boolean
-    {
-        return Math.random() <= chanceForTrue;
     }
 
     //Asymmetric Encryption
@@ -514,8 +484,7 @@ export default class SmallBag
      * const { privateKey, publicKey } = await getAsyncKeyPair();
      *
      */
-    async getAsymmetricKeyPair() : Promise<AsymmetricKeyPairs>
-    {
+    async getAsymmetricKeyPair(): Promise<AsymmetricKeyPairs> {
         return await crypto2.createKeyPair();
     }
 
@@ -528,9 +497,8 @@ export default class SmallBag
      * @param message
      * @param publicKey
      */
-    async asymmetricEncrypt(message : string, publicKey : string) : Promise<string>
-    {
-        return await crypto2.encrypt.rsa(message,publicKey);
+    async asymmetricEncrypt(message: string, publicKey: string): Promise<string> {
+        return await crypto2.encrypt.rsa(message, publicKey);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -542,9 +510,8 @@ export default class SmallBag
      * @param encryptedMessage
      * @param privateKey
      */
-    async asymmetricDecrypt(encryptedMessage : string, privateKey : string) : Promise<string>
-    {
-        return await crypto2.decrypt.rsa(encryptedMessage,privateKey);
+    async asymmetricDecrypt(encryptedMessage: string, privateKey: string): Promise<string> {
+        return await crypto2.decrypt.rsa(encryptedMessage, privateKey);
     }
 
     //Symmetric Encryption
@@ -556,8 +523,7 @@ export default class SmallBag
      * const password = await generatePassword();
      * @param secret
      */
-    async generatePassword(secret : String = this.generateRandomString()) : Promise<string>
-    {
+    async generatePassword(secret: String = this.generateRandomString()): Promise<string> {
         return await crypto2.createPassword(secret);
     }
 
@@ -568,8 +534,7 @@ export default class SmallBag
      * @example
      * const password = await generateIv();
      */
-    async generateIv() : Promise<string>
-    {
+    async generateIv(): Promise<string> {
         return await crypto2.createIv();
     }
 
@@ -583,9 +548,8 @@ export default class SmallBag
      * @param password
      * @param iv
      */
-    async symmetricEncrypt(message : string,password : string,iv : string) : Promise<string>
-    {
-        return await crypto2.encrypt.aes256cbc(message,password,iv);
+    async symmetricEncrypt(message: string, password: string, iv: string): Promise<string> {
+        return await crypto2.encrypt.aes256cbc(message, password, iv);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -598,8 +562,7 @@ export default class SmallBag
      * @param password
      * @param iv
      */
-    async symmetricDecrypt(encryptedMessage : string,password : string,iv : string) : Promise<string>
-    {
+    async symmetricDecrypt(encryptedMessage: string, password: string, iv: string): Promise<string> {
         return await crypto2.decrypt.aes256cbc(encryptedMessage, password, iv);
     }
 
@@ -612,8 +575,7 @@ export default class SmallBag
      * @param message
      * @param privateKey
      */
-    async asymmetricSign(message : string,privateKey : string) : Promise<string>
-    {
+    async asymmetricSign(message: string, privateKey: string): Promise<string> {
         // noinspection TypeScriptValidateJSTypes
         return await crypto2.sign(message, privateKey);
     }
@@ -628,18 +590,17 @@ export default class SmallBag
      * @param publicKey
      * @param signature
      */
-    async asymmetricVerify(message : string,publicKey : string,signature : string) : Promise<boolean>
-    {
+    async asymmetricVerify(message: string, publicKey: string, signature: string): Promise<boolean> {
         // noinspection TypeScriptValidateJSTypes
-        return await crypto2.verify(message,publicKey,signature);
+        return await crypto2.verify(message, publicKey, signature);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
-      * @description
-      * Returns an generated uuid v4.
-      */
-    generateUUIDv4() : string {
+     * @description
+     * Returns an generated uuid v4.
+     */
+    generateUUIDv4(): string {
         return uuidV4();
     }
 
@@ -649,7 +610,7 @@ export default class SmallBag
      * Returns an generated unique id.
      * By using npm package 'uniqid'.
      */
-    generateUniqueId() : string {
+    generateUniqueId(): string {
         return uniqid();
     }
 
@@ -669,8 +630,8 @@ export default class SmallBag
      * @param data
      * @param jwtOptions
      */
-    async signToken(data : object,jwtOptions : JwtSignOptions = {}) : Promise<string> {
-        return await TokenUtils.signToken(data,this.zc,jwtOptions);
+    async signToken(data: object, jwtOptions: JwtSignOptions = {}): Promise<string> {
+        return await TokenUtils.signToken(data, this.zc, jwtOptions);
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
@@ -685,8 +646,8 @@ export default class SmallBag
      * @param jwtOptions
      * @throws BackError with names: tokenExpiredError, jsonWebTokenError or unknownTokenVerifyError.
      */
-    async verifyToken(signedToken : string,jwtOptions : JwtVerifyOptions = {})  : Promise<Record<string,any>> {
-        return await TokenUtils.verifyToken(signedToken,this.zc,jwtOptions);
+    async verifyToken(signedToken: string, jwtOptions: JwtVerifyOptions = {}): Promise<Record<string, any>> {
+        return await TokenUtils.verifyToken(signedToken, this.zc, jwtOptions);
     }
 
     //Part Socket Channel
@@ -704,9 +665,8 @@ export default class SmallBag
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishInUserCh(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string) : Promise<void>
-    {
-        return await this.exchangeEngine.publishInUserCh(userId,eventName,data,srcSocketSid);
+    async publishInUserCh(userId: string | number | (number | string)[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return await this.exchangeEngine.publishInUserCh(userId, eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -722,9 +682,8 @@ export default class SmallBag
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubUserCh(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string) : Promise<void>
-    {
-        return await this.publishInUserCh(userId,eventName,data,srcSocketSid)
+    async pubUserCh(userId: string | number | (number | string)[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return await this.publishInUserCh(userId, eventName, data, srcSocketSid)
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -738,9 +697,8 @@ export default class SmallBag
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishInAllCh(eventName : string,data : object = {},srcSocketSid ?: string) : Promise<void>
-    {
-        return await this.exchangeEngine.publishInAllCh(eventName,data,srcSocketSid);
+    async publishInAllCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return await this.exchangeEngine.publishInAllCh(eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -754,9 +712,8 @@ export default class SmallBag
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubAllCh(eventName : string,data : object = {},srcSocketSid ?: string) : Promise<void>
-    {
-        return await this.publishInAllCh(eventName,data,srcSocketSid);
+    async pubAllCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return await this.publishInAllCh(eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -772,9 +729,8 @@ export default class SmallBag
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishInAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
-    {
-        return await this.exchangeEngine.publishInAuthUserGroupCh(authUserGroup,eventName,data,srcSocketSid);
+    async publishInAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return await this.exchangeEngine.publishInAuthUserGroupCh(authUserGroup, eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -790,9 +746,8 @@ export default class SmallBag
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
-    {
-        return await this.publishInAuthUserGroupCh(authUserGroup,eventName,data,srcSocketSid);
+    async pubAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return await this.publishInAuthUserGroupCh(authUserGroup, eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -806,9 +761,8 @@ export default class SmallBag
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishInDefaultUserGroupCh(eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
-    {
-        return await this.exchangeEngine.publishInDefaultUserGroupCh(eventName,data,srcSocketSid);
+    async publishInDefaultUserGroupCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return await this.exchangeEngine.publishInDefaultUserGroupCh(eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -822,9 +776,8 @@ export default class SmallBag
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubDefaultUserGroupCh(eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
-    {
-        return await this.publishInDefaultUserGroupCh(eventName,data,srcSocketSid);
+    async pubDefaultUserGroupCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return await this.publishInDefaultUserGroupCh(eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -838,9 +791,8 @@ export default class SmallBag
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishInAllAuthUserGroupsCh(eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
-    {
-        return await this.exchangeEngine.publishInAllAuthUserGroupCh(eventName,data,srcSocketSid);
+    async publishInAllAuthUserGroupsCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return await this.exchangeEngine.publishInAllAuthUserGroupCh(eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -854,9 +806,8 @@ export default class SmallBag
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubAllAuthUserGroupsCh(eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
-    {
-        return await this.publishInAllAuthUserGroupsCh(eventName,data,srcSocketSid);
+    async pubAllAuthUserGroupsCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return await this.publishInAllAuthUserGroupsCh(eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -872,9 +823,8 @@ export default class SmallBag
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishInCustomIdCh(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
-    {
-        return await this.exchangeEngine.publishInCustomIdChannel(channel,id,eventName,data,srcSocketSid);
+    async publishInCustomIdCh(channel: string, id: string, eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return await this.exchangeEngine.publishInCustomIdChannel(channel, id, eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -890,9 +840,8 @@ export default class SmallBag
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubCustomIdCh(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
-    {
-        return await this.publishInCustomIdCh(channel,id,eventName,data,srcSocketSid);
+    async pubCustomIdCh(channel: string, id: string, eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return await this.publishInCustomIdCh(channel, id, eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -908,9 +857,8 @@ export default class SmallBag
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishInCustomCh(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
-    {
-        return this.exchangeEngine.publishInCustomChannel(channel,eventName,data,srcSocketSid);
+    async publishInCustomCh(channel: string | string[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return this.exchangeEngine.publishInCustomChannel(channel, eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -926,9 +874,8 @@ export default class SmallBag
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubCustomCh(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string) : Promise<void>
-    {
-        return await this.publishInCustomCh(channel,eventName,data,srcSocketSid);
+    async pubCustomCh(channel: string | string[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return await this.publishInCustomCh(channel, eventName, data, srcSocketSid);
     }
 
     //Part Custom Services
@@ -941,9 +888,8 @@ export default class SmallBag
      * @param  serviceName
      * @param  configName Default: 'default'
      */
-    async getService<S>(serviceName : string,configName : string = 'default') : Promise<S>
-    {
-        return await this.serviceEngine.getService<S>(serviceName,configName);
+    async getService<S>(serviceName: string, configName: string = 'default'): Promise<S> {
+        return await this.serviceEngine.getService<S>(serviceName, configName);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -953,9 +899,8 @@ export default class SmallBag
      * @param serviceName
      * @param configName Default: 'default'
      */
-    isService(serviceName : string,configName : string = 'default') : boolean
-    {
-        return this.serviceEngine.isService(serviceName,configName);
+    isService(serviceName: string, configName: string = 'default'): boolean {
+        return this.serviceEngine.isService(serviceName, configName);
     }
 
     //Part Errors
@@ -966,7 +911,7 @@ export default class SmallBag
      * Returns a BackError builder.
      * For easy create an BackError.
      */
-    buildBackError() : BackErrorBuilder {
+    buildBackError(): BackErrorBuilder {
         return new BackErrorBuilder();
     }
 
@@ -981,8 +926,8 @@ export default class SmallBag
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    newBackError(backErrorConstruct : BackErrorConstruct = {}, info ?: object | string) : BackError {
-        return new BackError(backErrorConstruct,info);
+    newBackError(backErrorConstruct: BackErrorConstruct = {}, info ?: object | string): BackError {
+        return new BackError(backErrorConstruct, info);
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
@@ -996,7 +941,7 @@ export default class SmallBag
      * newBackErrorBag(myError,myError2).throw();
      * @param backError
      */
-    newBackErrorBag(...backError : BackError[]) : BackErrorBag {
+    newBackErrorBag(...backError: BackError[]): BackErrorBag {
         return new BackErrorBag(...backError);
     }
 
@@ -1007,8 +952,8 @@ export default class SmallBag
      * @param errorConstruct
      * @param info
      */
-    throwNewBackError(errorConstruct : BackErrorConstruct = {}, info ?: object | string) : void {
-        throw this.newBackError(errorConstruct,info);
+    throwNewBackError(errorConstruct: BackErrorConstruct = {}, info ?: object | string): void {
+        throw this.newBackError(errorConstruct, info);
     }
 
     //Part Result
@@ -1022,8 +967,8 @@ export default class SmallBag
      * @param result
      * @param statusCode
      */
-    newResult(result ?: any,statusCode ?: string | number) : Result {
-        return new Result(result,statusCode);
+    newResult(result ?: any, statusCode ?: string | number): Result {
+        return new Result(result, statusCode);
     }
 
     //Part Logger
@@ -1034,9 +979,9 @@ export default class SmallBag
      * notice that it only works when the log to file is activated in the main config.
      * @param args
      */
-    logInfoToFile(...args : any[]) : void {
+    logInfoToFile(...args: any[]): void {
         const sl = Logger.getSimpleLogger();
-        if(sl){
+        if (sl) {
             sl.info(...args);
         }
     }
@@ -1048,9 +993,9 @@ export default class SmallBag
      * notice that it only works when the log to file is activated in the main config.
      * @param args
      */
-    logErrorToFile(...args : any[]) : void {
+    logErrorToFile(...args: any[]): void {
         const sl = Logger.getSimpleLogger();
-        if(sl){
+        if (sl) {
             sl.error(...args);
         }
     }
@@ -1062,9 +1007,9 @@ export default class SmallBag
      * notice that it only works when the log to file is activated in the main config.
      * @param args
      */
-    logFatalToFile(...args : any[]) : void {
+    logFatalToFile(...args: any[]): void {
         const sl = Logger.getSimpleLogger();
-        if(sl){
+        if (sl) {
             // noinspection TypeScriptValidateJSTypes
             sl.fatal(...args);
         }
@@ -1077,9 +1022,9 @@ export default class SmallBag
      * notice that it only works when the log to file is activated in the main config.
      * @param args
      */
-    logWarnToFile(...args : any[]) : void {
+    logWarnToFile(...args: any[]): void {
         const sl = Logger.getSimpleLogger();
-        if(sl){
+        if (sl) {
             sl.warn(...args);
         }
     }
@@ -1091,7 +1036,7 @@ export default class SmallBag
      * notice that it only appears when the debug mode is active.
      * @param args
      */
-    logDebugWarn(...args : any[]) : void {
+    logDebugWarn(...args: any[]): void {
         Logger.printDebugWarning(...args);
     }
 
@@ -1102,7 +1047,7 @@ export default class SmallBag
      * notice that it only appears when the debug mode is active.
      * @param args
      */
-    logDebugInfo(...args : any[]) : void {
+    logDebugInfo(...args: any[]): void {
         Logger.printDebugInfo(...args);
     }
 
@@ -1113,7 +1058,7 @@ export default class SmallBag
      * notice that it only appears when the debug mode is active.
      * @param args
      */
-    logDebugBusy(...args : any[]) : void {
+    logDebugBusy(...args: any[]): void {
         Logger.printDebugBusy(...args);
     }
 
@@ -1123,7 +1068,7 @@ export default class SmallBag
      * Log warn into the console.
      * @param args
      */
-    logWarn(...args : any[]) : void {
+    logWarn(...args: any[]): void {
         Logger.printWarning(...args);
     }
 
@@ -1133,7 +1078,7 @@ export default class SmallBag
      * Log info into the console.
      * @param args
      */
-    logInfo(...args : any[]) : void {
+    logInfo(...args: any[]): void {
         Logger.printInfo(...args);
     }
 
@@ -1143,7 +1088,7 @@ export default class SmallBag
      * Log busy into the console.
      * @param args
      */
-    logBusy(...args : any[]) : void {
+    logBusy(...args: any[]): void {
         Logger.printBusy(...args);
     }
 
@@ -1156,9 +1101,8 @@ export default class SmallBag
      * @param url
      * @param init
      */
-    async fetch(url: string | Request, init?: RequestInit): Promise<Response>
-    {
-        return await fetch(url,init);
+    async fetch(url: string | Request, init?: RequestInit): Promise<Response> {
+        return await fetch(url, init);
     }
 
     //Part Channel KickOut
@@ -1176,11 +1120,10 @@ export default class SmallBag
      * @param id is optional, if it is not given the users will be kicked out from all ids of this channel.
      * @param exceptSocketSids
      */
-    async kickUserCustomIdCh(userId : number | string | (number | string)[], channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
-    {
-        const ch = ChUtils.buildCustomIdChannelName(channel,id);
+    async kickUserCustomIdCh(userId: number | string | (number | string)[], channel ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+        const ch = ChUtils.buildCustomIdChannelName(channel, id);
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.KICK_OUT,userId,exceptSocketSids,{ch});
+        (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.KICK_OUT, userId, exceptSocketSids, {ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1195,11 +1138,10 @@ export default class SmallBag
      * @param channel is optional, if it is not given the users will be kicked out from all custom channels.
      * @param exceptSocketSids
      */
-    async kickUserCustomCh(userId : number | string | (number | string)[], channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickUserCustomCh(userId: number | string | (number | string)[], channel ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildCustomChannelName(channel);
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.KICK_OUT,userId,exceptSocketSids,{ch});
+        (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.KICK_OUT, userId, exceptSocketSids, {ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1213,10 +1155,9 @@ export default class SmallBag
      * @param userId or more user ids in an array.
      * @param exceptSocketSids
      */
-    async kickUserAllCh(userId : number | string | (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickUserAllCh(userId: number | string | (number | string)[], exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.USER_IDS,WorkerChMapTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : ZationChannel.ALL});
+        (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.KICK_OUT, userId, exceptSocketSids, {ch: ZationChannel.ALL});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1231,11 +1172,10 @@ export default class SmallBag
      * @param authUserGroup is optional, if it is not given the users will be kicked out from all auth user group channels.
      * @param exceptSocketSids
      */
-    async kickUserAuthUserGroupCh(userId : number | string | (number | string)[],authUserGroup ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickUserAuthUserGroupCh(userId: number | string | (number | string)[], authUserGroup ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildAuthUserGroupChName(authUserGroup);
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.USER_IDS,WorkerChMapTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : ch});
+        (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.KICK_OUT, userId, exceptSocketSids, {ch: ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1249,10 +1189,9 @@ export default class SmallBag
      * @param userId or more user ids in an array.
      * @param exceptSocketSids
      */
-    async kickUserDefaultUserGroupCh(userId : number | string | (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickUserDefaultUserGroupCh(userId: number | string | (number | string)[], exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.USER_IDS,WorkerChMapTaskActions.KICK_OUT,userId,exceptSocketSids,{ch : ZationChannel.DEFAULT_USER_GROUP});
+        (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.KICK_OUT, userId, exceptSocketSids, {ch: ZationChannel.DEFAULT_USER_GROUP});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1268,11 +1207,10 @@ export default class SmallBag
      * @param id is optional, if it is not given the sockets with tokenId will be kicked out from all ids of this channel.
      * @param exceptSocketSids
      */
-    async kickTokensCustomIdCh(tokenId : string | string[], channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
-    {
-        const ch = ChUtils.buildCustomIdChannelName(channel,id);
+    async kickTokensCustomIdCh(tokenId: string | string[], channel ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+        const ch = ChUtils.buildCustomIdChannelName(channel, id);
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch});
+        (WorkerChTargets.TOKEN_IDS, WorkerChMapTaskActions.KICK_OUT, tokenId, exceptSocketSids, {ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1286,11 +1224,10 @@ export default class SmallBag
      * @param channel is optional, if it is not given the sockets with tokenId will be kicked out from all custom channels.
      * @param exceptSocketSids
      */
-    async kickTokensCustomCh(tokenId : string | string[], channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickTokensCustomCh(tokenId: string | string[], channel ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildCustomChannelName(channel);
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch});
+        (WorkerChTargets.TOKEN_IDS, WorkerChMapTaskActions.KICK_OUT, tokenId, exceptSocketSids, {ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1303,10 +1240,9 @@ export default class SmallBag
      * @param tokenId or more tokenIds in an array.
      * @param exceptSocketSids
      */
-    async kickTokensAllCh(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickTokensAllCh(tokenId: string | string[], exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : ZationChannel.ALL});
+        (WorkerChTargets.TOKEN_IDS, WorkerChMapTaskActions.KICK_OUT, tokenId, exceptSocketSids, {ch: ZationChannel.ALL});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1320,11 +1256,10 @@ export default class SmallBag
      * @param authUserGroup is optional, if it is not given the socket with token id will be kicked out from all auth user group channels.
      * @param exceptSocketSids
      */
-    async kickTokensAuthUserGroupCh(tokenId : string | string[],authUserGroup ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickTokensAuthUserGroupCh(tokenId: string | string[], authUserGroup ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildAuthUserGroupChName(authUserGroup);
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : ch});
+        (WorkerChTargets.TOKEN_IDS, WorkerChMapTaskActions.KICK_OUT, tokenId, exceptSocketSids, {ch: ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1337,10 +1272,9 @@ export default class SmallBag
      * @param tokenId or more tokenIds in an array.
      * @param exceptSocketSids
      */
-    async kickTokensDefaultUserGroupCh(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickTokensDefaultUserGroupCh(tokenId: string | string[], exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.KICK_OUT,tokenId,exceptSocketSids,{ch : ZationChannel.DEFAULT_USER_GROUP});
+        (WorkerChTargets.TOKEN_IDS, WorkerChMapTaskActions.KICK_OUT, tokenId, exceptSocketSids, {ch: ZationChannel.DEFAULT_USER_GROUP});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1353,11 +1287,10 @@ export default class SmallBag
      * @param id is optional, if it is not given the sockets will be kicked out from all ids of this channel.
      * @param exceptSocketSids
      */
-    async kickAllSocketsCustomIdCh(channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickAllSocketsCustomIdCh(channel ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildCustomIdChannelName(channel, id);
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ch});
+        (WorkerChTargets.ALL_SOCKETS, WorkerChMapTaskActions.KICK_OUT, [], exceptSocketSids, {ch: ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1369,11 +1302,10 @@ export default class SmallBag
      * @param channel is optional, if it is not given the sockets will be kicked out from all custom channels.
      * @param exceptSocketSids
      */
-    async kickAllSocketsCustomCh(channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickAllSocketsCustomCh(channel ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildCustomChannelName(channel);
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ch});
+        (WorkerChTargets.ALL_SOCKETS, WorkerChMapTaskActions.KICK_OUT, [], exceptSocketSids, {ch: ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1384,10 +1316,9 @@ export default class SmallBag
      * kickOutAllSocketsAllCh();
      * @param exceptSocketSids
      */
-    async kickAllSocketsAllCh(exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickAllSocketsAllCh(exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ZationChannel.ALL});
+        (WorkerChTargets.ALL_SOCKETS, WorkerChMapTaskActions.KICK_OUT, [], exceptSocketSids, {ch: ZationChannel.ALL});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1399,11 +1330,10 @@ export default class SmallBag
      * @param authUserGroup is optional, if it is not given all sockets will be kicked out from all auth user group channels.
      * @param exceptSocketSids
      */
-    async kickAllSocketsAuthUserGroupCh(authUserGroup ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickAllSocketsAuthUserGroupCh(authUserGroup ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildAuthUserGroupChName(authUserGroup);
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ch});
+        (WorkerChTargets.ALL_SOCKETS, WorkerChMapTaskActions.KICK_OUT, [], exceptSocketSids, {ch: ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1414,10 +1344,9 @@ export default class SmallBag
      * kickOutAllSocketsDefaultUserGroupCh();
      * @param exceptSocketSids
      */
-    async kickAllSocketsDefaultUserGroupCh(exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickAllSocketsDefaultUserGroupCh(exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ZationChannel.DEFAULT_USER_GROUP});
+        (WorkerChTargets.ALL_SOCKETS, WorkerChMapTaskActions.KICK_OUT, [], exceptSocketSids, {ch: ZationChannel.DEFAULT_USER_GROUP});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1431,11 +1360,10 @@ export default class SmallBag
      * @param channel is optional, if it is not given the sockets will be kicked out from all custom id channels.
      * @param id is optional, if it is not given the sockets will be kicked out from all ids of this channel.
      */
-    async kickSocketsCustomIdCh(socketSid : string | string[], channel ?: string, id ?: string) : Promise<void>
-    {
-        const ch = ChUtils.buildCustomIdChannelName(channel,id);
+    async kickSocketsCustomIdCh(socketSid: string | string[], channel ?: string, id ?: string): Promise<void> {
+        const ch = ChUtils.buildCustomIdChannelName(channel, id);
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.KICK_OUT,socketSid,[],{ch});
+        (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.KICK_OUT, socketSid, [], {ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1448,11 +1376,10 @@ export default class SmallBag
      * @param socketSid or more socketSids in an array.
      * @param channel is optional, if it is not given the sockets will be kicked out from all custom channels.
      */
-    async kickSocketsCustomCh(socketSid : string | string[], channel ?: string) : Promise<void>
-    {
+    async kickSocketsCustomCh(socketSid: string | string[], channel ?: string): Promise<void> {
         const ch = ChUtils.buildCustomChannelName(channel);
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.KICK_OUT,socketSid,[],{ch});
+        (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.KICK_OUT, socketSid, [], {ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1464,10 +1391,9 @@ export default class SmallBag
      * kickSocketsAllCh(['SOCKET-SID-1','SOCKET-SID-2']);
      * @param socketSid or more socketSids in an array.
      */
-    async kickSocketsAllCh(socketSid : string | string[]) : Promise<void>
-    {
+    async kickSocketsAllCh(socketSid: string | string[]): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS,WorkerChMapTaskActions.KICK_OUT,socketSid,[],{ch : ZationChannel.ALL});
+        (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.KICK_OUT, socketSid, [], {ch: ZationChannel.ALL});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1480,11 +1406,10 @@ export default class SmallBag
      * @param socketSid or more socketSids in an array.
      * @param authUserGroup is optional, if it is not given the sockets will be kicked out from all auth user group channels.
      */
-    async kickSocketsAuthUserGroupCh(socketSid : string | string[],authUserGroup ?: string) : Promise<void>
-    {
+    async kickSocketsAuthUserGroupCh(socketSid: string | string[], authUserGroup ?: string): Promise<void> {
         const ch = ChUtils.buildAuthUserGroupChName(authUserGroup);
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS,WorkerChMapTaskActions.KICK_OUT,socketSid,[],{ch : ch});
+        (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.KICK_OUT, socketSid, [], {ch: ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1496,10 +1421,9 @@ export default class SmallBag
      * kickSocketsDefaultUserGroupCh(['SOCKET-SID-1','SOCKET-SID-2']);
      * @param socketSid or more socketSids in an array.
      */
-    async kickSocketsDefaultUserGroupCh(socketSid : string | string[]) : Promise<void>
-    {
+    async kickSocketsDefaultUserGroupCh(socketSid: string | string[]): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS,WorkerChMapTaskActions.KICK_OUT,socketSid,[],{ch : ZationChannel.DEFAULT_USER_GROUP});
+        (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.KICK_OUT, socketSid, [], {ch: ZationChannel.DEFAULT_USER_GROUP});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1516,12 +1440,11 @@ export default class SmallBag
      * @param id is optional, if it is not given the sockets will be kicked out from all ids of this channel.
      * @param exceptSocketSids
      */
-    async kickAuthUserGroupsCustomIdCh(authUserGroup : string | null | (string)[],channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
-    {
-        const ch = ChUtils.buildCustomIdChannelName(channel,id);
+    async kickAuthUserGroupsCustomIdCh(authUserGroup: string | null | (string)[], channel ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+        const ch = ChUtils.buildCustomIdChannelName(channel, id);
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChMapTaskActions.KICK_OUT,
-            authUserGroup || [],exceptSocketSids,{ch,all : authUserGroup === null});
+        (WorkerChTargets.AUTH_USER_GROUPS, WorkerChMapTaskActions.KICK_OUT,
+            authUserGroup || [], exceptSocketSids, {ch, all: authUserGroup === null});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1536,12 +1459,11 @@ export default class SmallBag
      * @param channel is optional, if it is not given the sockets will be kicked out from all custom channels.
      * @param exceptSocketSids
      */
-    async kickAuthUserGroupsCustomCh(authUserGroup : string | null | (string)[],channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickAuthUserGroupsCustomCh(authUserGroup: string | null | (string)[], channel ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildCustomChannelName(channel);
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChMapTaskActions.KICK_OUT,
-            authUserGroup || [],exceptSocketSids,{ch,all : authUserGroup === null});
+        (WorkerChTargets.AUTH_USER_GROUPS, WorkerChMapTaskActions.KICK_OUT,
+            authUserGroup || [], exceptSocketSids, {ch, all: authUserGroup === null});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1555,11 +1477,10 @@ export default class SmallBag
      * or null witch stands for all auth user groups
      * @param exceptSocketSids
      */
-    async kickAuthUserGroupsAllCh(authUserGroup : string | null | (string)[],exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickAuthUserGroupsAllCh(authUserGroup: string | null | (string)[], exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChMapTaskActions.KICK_OUT,
-            authUserGroup || [],exceptSocketSids,{ch : ZationChannel.ALL,all : authUserGroup === null});
+        (WorkerChTargets.AUTH_USER_GROUPS, WorkerChMapTaskActions.KICK_OUT,
+            authUserGroup || [], exceptSocketSids, {ch: ZationChannel.ALL, all: authUserGroup === null});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1574,11 +1495,10 @@ export default class SmallBag
      * @param id is optional, if it is not given the sockets will be kicked out from all ids of this channel.
      * @param exceptSocketSids
      */
-    async kickDefaultUserGroupCustomIdCh(channel ?: string, id ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
-    {
-        const ch = ChUtils.buildCustomIdChannelName(channel,id);
+    async kickDefaultUserGroupCustomIdCh(channel ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+        const ch = ChUtils.buildCustomIdChannelName(channel, id);
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch});
+        (WorkerChTargets.DEFAULT_USER_GROUP, WorkerChMapTaskActions.KICK_OUT, [], exceptSocketSids, {ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1592,11 +1512,10 @@ export default class SmallBag
      * @param channel is optional, if it is not given the sockets will be kicked out from all custom id channels.
      * @param exceptSocketSids
      */
-    async kickDefaultUserGroupCustomCh(channel ?: string,exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickDefaultUserGroupCustomCh(channel ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildCustomChannelName(channel);
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch});
+        (WorkerChTargets.DEFAULT_USER_GROUP, WorkerChMapTaskActions.KICK_OUT, [], exceptSocketSids, {ch});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1608,10 +1527,9 @@ export default class SmallBag
      * kickDefaultUserGroupAllCh('EXCEPT-SOCKET-SID');
      * @param exceptSocketSids
      */
-    async kickDefaultUserGroupAllCh(exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async kickDefaultUserGroupAllCh(exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChMapTaskActions.KICK_OUT,[],exceptSocketSids,{ch : ZationChannel.ALL});
+        (WorkerChTargets.DEFAULT_USER_GROUP, WorkerChMapTaskActions.KICK_OUT, [], exceptSocketSids, {ch: ZationChannel.ALL});
     }
 
     //Part Extra Emit
@@ -1627,10 +1545,9 @@ export default class SmallBag
      * @param data
      * @param exceptSocketSids
      */
-    async emitUser(userId : number | string | (number | string)[],event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async emitUser(userId: number | string | (number | string)[], event: string, data: any = {}, exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.USER_IDS,WorkerChMapTaskActions.EMIT,userId,exceptSocketSids,{event,data});
+        (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.EMIT, userId, exceptSocketSids, {event, data});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1645,10 +1562,9 @@ export default class SmallBag
      * @param data
      * @param exceptSocketSids
      */
-    async emitTokens(tokenId : string | string[],event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async emitTokens(tokenId: string | string[], event: string, data: any = {}, exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.EMIT,tokenId,exceptSocketSids,{event,data});
+        (WorkerChTargets.TOKEN_IDS, WorkerChMapTaskActions.EMIT, tokenId, exceptSocketSids, {event, data});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1662,10 +1578,9 @@ export default class SmallBag
      * @param data
      * @param exceptSocketSids
      */
-    async emitAllSockets(event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async emitAllSockets(event: string, data: any = {}, exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.EMIT,[],exceptSocketSids,{event,data});
+        (WorkerChTargets.ALL_SOCKETS, WorkerChMapTaskActions.EMIT, [], exceptSocketSids, {event, data});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1679,10 +1594,9 @@ export default class SmallBag
      * @param event
      * @param data
      */
-    async emitSockets(socketSid : string | string[],event : string,data : any = {}) : Promise<void>
-    {
+    async emitSockets(socketSid: string | string[], event: string, data: any = {}): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS,WorkerChMapTaskActions.EMIT,socketSid,[],{event,data});
+        (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.EMIT, socketSid, [], {event, data});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1698,10 +1612,13 @@ export default class SmallBag
      * @param data
      * @param exceptSocketSids
      */
-    async emitAuthUserGroups(authUserGroup : string | null | (string)[],event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async emitAuthUserGroups(authUserGroup: string | null | (string)[], event: string, data: any = {}, exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChMapTaskActions.EMIT,authUserGroup || [],exceptSocketSids,{event,data,all : authUserGroup === null});
+        (WorkerChTargets.AUTH_USER_GROUPS, WorkerChMapTaskActions.EMIT, authUserGroup || [], exceptSocketSids, {
+            event,
+            data,
+            all: authUserGroup === null
+        });
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1715,10 +1632,9 @@ export default class SmallBag
      * @param data
      * @param exceptSocketSids
      */
-    async emitDefaultUserGroup(event : string,data : any = {},exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async emitDefaultUserGroup(event: string, data: any = {}, exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChMapTaskActions.EMIT,[],exceptSocketSids,{event,data});
+        (WorkerChTargets.DEFAULT_USER_GROUP, WorkerChMapTaskActions.EMIT, [], exceptSocketSids, {event, data});
     }
 
     //Part Security
@@ -1734,10 +1650,9 @@ export default class SmallBag
      * @param userId or more userIds in an array.
      * @param exceptSocketSids
      */
-    async disconnectUser(userId : number | string | (number | string)[],exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async disconnectUser(userId: number | string | (number | string)[], exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.USER_IDS,WorkerChMapTaskActions.DISCONNECT,userId,exceptSocketSids);
+        (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.DISCONNECT, userId, exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1751,10 +1666,9 @@ export default class SmallBag
      * @param tokenId or more tokenIds in an array.
      * @param exceptSocketSids
      */
-    async disconnectTokens(tokenId : string | string[],exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async disconnectTokens(tokenId: string | string[], exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.DISCONNECT,tokenId,exceptSocketSids);
+        (WorkerChTargets.TOKEN_IDS, WorkerChMapTaskActions.DISCONNECT, tokenId, exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1765,10 +1679,9 @@ export default class SmallBag
      * disconnectAllSockets('EXCEPT-SOCKET-SID');
      * @param exceptSocketSids
      */
-    async disconnectAllSockets(exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async disconnectAllSockets(exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.DISCONNECT,[],exceptSocketSids);
+        (WorkerChTargets.ALL_SOCKETS, WorkerChMapTaskActions.DISCONNECT, [], exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1780,10 +1693,9 @@ export default class SmallBag
      * disconnectSockets('SOCKET-SID');
      * @param socketSid or more socketSids in an array.
      */
-    async disconnectSockets(socketSid : string | string[]) : Promise<void>
-    {
+    async disconnectSockets(socketSid: string | string[]): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS,WorkerChMapTaskActions.DISCONNECT,socketSid,[]);
+        (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.DISCONNECT, socketSid, []);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1797,10 +1709,9 @@ export default class SmallBag
      * or null witch stands for all auth user groups
      * @param exceptSocketSids
      */
-    async disconnectAuthUserGroups(authUserGroup : string | null | (string)[],exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async disconnectAuthUserGroups(authUserGroup: string | null | (string)[], exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChMapTaskActions.DISCONNECT,authUserGroup || [],exceptSocketSids,{all : authUserGroup === null});
+        (WorkerChTargets.AUTH_USER_GROUPS, WorkerChMapTaskActions.DISCONNECT, authUserGroup || [], exceptSocketSids, {all: authUserGroup === null});
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1812,10 +1723,9 @@ export default class SmallBag
      * disconnectDefaultUserGroup('EXCEPT-SOCKET-SID');
      * @param exceptSocketSids
      */
-    async disconnectDefaultUserGroup(exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async disconnectDefaultUserGroup(exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.DEFAULT_USER_GROUP,WorkerChMapTaskActions.DISCONNECT,[],exceptSocketSids);
+        (WorkerChTargets.DEFAULT_USER_GROUP, WorkerChMapTaskActions.DISCONNECT, [], exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1829,10 +1739,9 @@ export default class SmallBag
      * @param userId or more userIds in an array.
      * @param exceptSocketSids
      */
-    async deauthenticateUser(userId : number | string | (number | string)[] | number | string,exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async deauthenticateUser(userId: number | string | (number | string)[] | number | string, exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.USER_IDS,WorkerChMapTaskActions.DEAUTHENTICATE,userId,exceptSocketSids);
+        (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.DEAUTHENTICATE, userId, exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1846,10 +1755,9 @@ export default class SmallBag
      * @param tokenId or more tokenIds in an array.
      * @param exceptSocketSids
      */
-    async deauthenticateTokens(tokenId : string | string[] | string,exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async deauthenticateTokens(tokenId: string | string[] | string, exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.TOKEN_IDS,WorkerChMapTaskActions.DEAUTHENTICATE,tokenId,exceptSocketSids);
+        (WorkerChTargets.TOKEN_IDS, WorkerChMapTaskActions.DEAUTHENTICATE, tokenId, exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1860,10 +1768,9 @@ export default class SmallBag
      * deauthenticateAllSockets('EXCEPT-SOCKET-SID');
      * @param exceptSocketSids
      */
-    async deauthenticateAllSockets(exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async deauthenticateAllSockets(exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS,WorkerChMapTaskActions.DEAUTHENTICATE,[],exceptSocketSids);
+        (WorkerChTargets.ALL_SOCKETS, WorkerChMapTaskActions.DEAUTHENTICATE, [], exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1875,10 +1782,9 @@ export default class SmallBag
      * deauthenticateSockets('SOCKET-SID');
      * @param socketSid or more socketSids in an array.
      */
-    async deauthenticateSockets(socketSid : string | string[] | string) : Promise<void>
-    {
+    async deauthenticateSockets(socketSid: string | string[] | string): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS,WorkerChMapTaskActions.DEAUTHENTICATE,socketSid,[]);
+        (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.DEAUTHENTICATE, socketSid, []);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1892,10 +1798,9 @@ export default class SmallBag
      * or null witch stands for all auth user groups
      * @param exceptSocketSids
      */
-    async deauthenticateAuthUserGroups(authUserGroup : string | null | (string)[],exceptSocketSids : string[] | string = []) : Promise<void>
-    {
+    async deauthenticateAuthUserGroups(authUserGroup: string | null | (string)[], exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.AUTH_USER_GROUPS,WorkerChMapTaskActions.DEAUTHENTICATE,authUserGroup || [],exceptSocketSids,{all : authUserGroup === null});
+        (WorkerChTargets.AUTH_USER_GROUPS, WorkerChMapTaskActions.DEAUTHENTICATE, authUserGroup || [], exceptSocketSids, {all: authUserGroup === null});
     }
 
     //Part Socket Tools
@@ -1909,8 +1814,8 @@ export default class SmallBag
      * @param socket
      * @throws AuthenticationError if socket is not authenticated.
      */
-    getUserIdFromSocket(socket : UpSocket) : string | number | undefined {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationUserId),socket.authToken);
+    getUserIdFromSocket(socket: UpSocket): string | number | undefined {
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationUserId), socket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
@@ -1922,11 +1827,10 @@ export default class SmallBag
      * getUserIdFromSocket(sc);
      * @param socket
      */
-    getAuthUserGroupFromSocket(socket : UpSocket) : string | undefined {
+    getAuthUserGroupFromSocket(socket: UpSocket): string | undefined {
         try {
-            return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationAuthUserGroup),socket.authToken);
-        }
-        catch (e) {
+            return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationAuthUserGroup), socket.authToken);
+        } catch (e) {
             return undefined;
         }
     }
@@ -1939,8 +1843,7 @@ export default class SmallBag
      * socketSidToSocketId('SOCKET-SID');
      * @param socketSid
      */
-    socketSidToSocketId(socketSid : string) : string
-    {
+    socketSidToSocketId(socketSid: string): string {
         return SidBuilder.socketSidToSocketId(socketSid);
     }
 
@@ -1952,8 +1855,7 @@ export default class SmallBag
      * socketSidToSeverId(SOCKET-SID');
      * @param socketSid
      */
-    socketSidToSeverId(socketSid : string) : string
-    {
+    socketSidToSeverId(socketSid: string): string {
         return SidBuilder.socketSidToServerInstanceId(socketSid);
     }
 
@@ -1965,8 +1867,7 @@ export default class SmallBag
      * socketSidToWorkerId('SOCKET-SID');
      * @param socketSid
      */
-    socketSidToWorkerId(socketSid : string) : string
-    {
+    socketSidToWorkerId(socketSid: string): string {
         return SidBuilder.socketSidToWorkerId(socketSid);
     }
 
@@ -1983,9 +1884,8 @@ export default class SmallBag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
      */
-    setSocketVariableWithSocket(socket : UpSocket, path : string | string[], value : any) : void
-    {
-        ObjectPath.set(socket.zationSocketVariables,path,value);
+    setSocketVariableWithSocket(socket: UpSocket, path: string | string[], value: any): void {
+        ObjectPath.set(socket.zationSocketVariables, path, value);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -1998,9 +1898,8 @@ export default class SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    hasSocketVariableWithSocket(socket : UpSocket, path ?: string | string[]) : boolean
-    {
-        return ObjectPath.has(socket.zationSocketVariables,path);
+    hasSocketVariableWithSocket(socket: UpSocket, path ?: string | string[]): boolean {
+        return ObjectPath.has(socket.zationSocketVariables, path);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -2013,9 +1912,8 @@ export default class SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getSocketVariableWithSocket<R>(socket : UpSocket, path ?: string | string[]) : R
-    {
-        return ObjectPath.get(socket.zationSocketVariables,path);
+    getSocketVariableWithSocket<R>(socket: UpSocket, path ?: string | string[]): R {
+        return ObjectPath.get(socket.zationSocketVariables, path);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -2028,12 +1926,10 @@ export default class SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    deleteSocketVariableWithSocket(socket : UpSocket, path ?: string | string[]) : void
-    {
-        if(!!path) {
-            ObjectPath.del(socket.zationSocketVariables,path);
-        }
-        else {
+    deleteSocketVariableWithSocket(socket: UpSocket, path ?: string | string[]): void {
+        if (!!path) {
+            ObjectPath.del(socket.zationSocketVariables, path);
+        } else {
             socket.zationSocketVariables = {};
         }
     }
@@ -2058,10 +1954,10 @@ export default class SmallBag
      * @param value
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    async setTokenVariableWithSocket(socket : UpSocket, path : string | string[], value : any) : Promise<void> {
+    async setTokenVariableWithSocket(socket: UpSocket, path: string | string[], value: any): Promise<void> {
         const ctv = ObjectUtils.deepClone(TokenUtils.getCustomTokenVariables(socket.authToken));
-        ObjectPath.set(ctv,path,value);
-        await TokenUtils.setSocketCustomVar(ctv,socket);
+        ObjectPath.set(ctv, path, value);
+        await TokenUtils.setSocketCustomVar(ctv, socket);
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
@@ -2080,14 +1976,13 @@ export default class SmallBag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    async deleteTokenVariableWithSocket(socket : UpSocket, path ?: string | string[]) : Promise<void> {
-        if(!!path) {
+    async deleteTokenVariableWithSocket(socket: UpSocket, path ?: string | string[]): Promise<void> {
+        if (!!path) {
             const ctv = ObjectUtils.deepClone(TokenUtils.getCustomTokenVariables(socket.authToken));
-            ObjectPath.del(ctv,path);
-            await TokenUtils.setSocketCustomVar(ctv,socket);
-        }
-        else {
-            await TokenUtils.setSocketCustomVar({},socket);
+            ObjectPath.del(ctv, path);
+            await TokenUtils.setSocketCustomVar(ctv, socket);
+        } else {
+            await TokenUtils.setSocketCustomVar({}, socket);
         }
     }
 
@@ -2111,12 +2006,11 @@ export default class SmallBag
      *       .commit();
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    seqEditTokenVariablesWithSocket(socket : UpSocket) : ObjectPathSequence
-    {
+    seqEditTokenVariablesWithSocket(socket: UpSocket): ObjectPathSequence {
         return new ObjectPathSequence(ObjectUtils.deepClone(
             TokenUtils.getCustomTokenVariables(socket.authToken)),
-            async (obj)=> {
-                await TokenUtils.setSocketCustomVar(obj,socket);
+            async (obj) => {
+                await TokenUtils.setSocketCustomVar(obj, socket);
             });
     }
 
@@ -2135,8 +2029,8 @@ export default class SmallBag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    hasTokenVariableWithSocket(socket : UpSocket, path ?: string | string[]) : boolean {
-        return ObjectPath.has(TokenUtils.getCustomTokenVariables(socket.authToken),path);
+    hasTokenVariableWithSocket(socket: UpSocket, path ?: string | string[]): boolean {
+        return ObjectPath.has(TokenUtils.getCustomTokenVariables(socket.authToken), path);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -2154,8 +2048,8 @@ export default class SmallBag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    getTokenVariableWithSocket<R>(socket : UpSocket, path ?: string | string[]) : R {
-        return ObjectPath.get(TokenUtils.getCustomTokenVariables(socket.authToken),path);
+    getTokenVariableWithSocket<R>(socket: UpSocket, path ?: string | string[]): R {
+        return ObjectPath.get(TokenUtils.getCustomTokenVariables(socket.authToken), path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -2175,9 +2069,9 @@ export default class SmallBag
      * @param value
      * @param exceptSocketSids
      */
-    async setTokenVariableOnUserId(userId : string | number,path : string | string[],value : any,exceptSocketSids : string[] | string = []) : Promise<void> {
+    async setTokenVariableOnUserId(userId: string | number, path: string | string[], value: any, exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishUpdateUserTokenWorkerTask
-        ([{action : SyncTokenActions.SET, params : [path,value]}],userId,exceptSocketSids);
+        ([{action: SyncTokenActions.SET, params: [path, value]}], userId, exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -2195,9 +2089,9 @@ export default class SmallBag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param exceptSocketSids
      */
-    async deleteTokenVariableOnUserId(userId : string | number,path ?: string | string[],exceptSocketSids : string[] | string = []) : Promise<void> {
+    async deleteTokenVariableOnUserId(userId: string | number, path ?: string | string[], exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishUpdateUserTokenWorkerTask
-        ([{action : SyncTokenActions.DELETE, params : [path]}],userId,exceptSocketSids);
+        ([{action: SyncTokenActions.DELETE, params: [path]}], userId, exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -2220,12 +2114,11 @@ export default class SmallBag
      * @param userId
      * @param exceptSocketSids
      */
-    seqEditTokenVariablesOnUserId(userId : string | number,exceptSocketSids : string[] | string = []) : ObjectPathActionSequence
-    {
-        return new ObjectPathActionSequence(async (actions)=> {
-            if(actions.length>0) {
+    seqEditTokenVariablesOnUserId(userId: string | number, exceptSocketSids: string[] | string = []): ObjectPathActionSequence {
+        return new ObjectPathActionSequence(async (actions) => {
+            if (actions.length > 0) {
                 await this.exchangeEngine.publishUpdateUserTokenWorkerTask
-                (actions,userId,exceptSocketSids);
+                (actions, userId, exceptSocketSids);
             }
         });
     }
@@ -2247,9 +2140,9 @@ export default class SmallBag
      * @param value
      * @param exceptSocketSids
      */
-    async setTokenVariableOnGroup(authUserGroup : string,path : string | string[],value : any,exceptSocketSids : string[] | string = []) : Promise<void> {
+    async setTokenVariableOnGroup(authUserGroup: string, path: string | string[], value: any, exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishUpdateGroupTokenWorkerTask
-        ([{action : SyncTokenActions.SET, params : [path,value]}],authUserGroup,exceptSocketSids);
+        ([{action: SyncTokenActions.SET, params: [path, value]}], authUserGroup, exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -2267,9 +2160,9 @@ export default class SmallBag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param exceptSocketSids
      */
-    async deleteTokenVariableOnGroup(authUserGroup : string,path ?: string | string[],exceptSocketSids : string[] | string = []) : Promise<void> {
+    async deleteTokenVariableOnGroup(authUserGroup: string, path ?: string | string[], exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishUpdateGroupTokenWorkerTask
-        ([{action : SyncTokenActions.DELETE, params : [path]}],authUserGroup,exceptSocketSids);
+        ([{action: SyncTokenActions.DELETE, params: [path]}], authUserGroup, exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -2292,12 +2185,11 @@ export default class SmallBag
      * @param authUserGroup
      * @param exceptSocketSids
      */
-    seqEditTokenVariablesOnGroup(authUserGroup : string,exceptSocketSids : string[] | string = []) : ObjectPathActionSequence
-    {
-        return new ObjectPathActionSequence(async (actions)=> {
-            if(actions.length>0) {
+    seqEditTokenVariablesOnGroup(authUserGroup: string, exceptSocketSids: string[] | string = []): ObjectPathActionSequence {
+        return new ObjectPathActionSequence(async (actions) => {
+            if (actions.length > 0) {
                 await this.exchangeEngine.publishUpdateGroupTokenWorkerTask
-                (actions,authUserGroup,exceptSocketSids);
+                (actions, authUserGroup, exceptSocketSids);
             }
         });
     }
@@ -2313,8 +2205,8 @@ export default class SmallBag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
      */
-    setWorkerVariable(path : string | string[],value : any) : void {
-        ObjectPath.set(this.worker.getWorkerVariableStorage(),path,value);
+    setWorkerVariable(path: string | string[], value: any): void {
+        ObjectPath.set(this.worker.getWorkerVariableStorage(), path, value);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -2326,8 +2218,8 @@ export default class SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    hasWorkerVariable(path ?: string | string[]) : boolean {
-        return ObjectPath.has(this.worker.getWorkerVariableStorage(),path);
+    hasWorkerVariable(path ?: string | string[]): boolean {
+        return ObjectPath.has(this.worker.getWorkerVariableStorage(), path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -2339,8 +2231,8 @@ export default class SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getWorkerVariable<R>(path ?: string | string[]) : R {
-        return ObjectPath.get(this.worker.getWorkerVariableStorage(),path);
+    getWorkerVariable<R>(path ?: string | string[]): R {
+        return ObjectPath.get(this.worker.getWorkerVariableStorage(), path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -2352,11 +2244,10 @@ export default class SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    deleteWorkerVariable(path ?: string | string[]) : void {
-        if(!!path) {
-            ObjectPath.del(this.worker.getWorkerVariableStorage(),path);
-        }
-        else {
+    deleteWorkerVariable(path ?: string | string[]): void {
+        if (!!path) {
+            ObjectPath.del(this.worker.getWorkerVariableStorage(), path);
+        } else {
             this.worker.setWorkerVariableStorage({});
         }
     }
@@ -2372,7 +2263,7 @@ export default class SmallBag
      * @param encodedBase64
      * The encoded base64 string.
      */
-    base64ByteSize(encodedBase64 : string) : number {
+    base64ByteSize(encodedBase64: string): number {
         return Base64Utils.getByteSize(encodedBase64);
     }
 
@@ -2388,7 +2279,7 @@ export default class SmallBag
      * Can be null if the base64 string has no content type.
      * Otherwise, it is an object with the properties: mimeSubType (png,jpg...), mimeType (image,video...).
      */
-    base64ContentInfo(encodedBase64 : string) : null | {mimeSubType : string, mimeType : string} {
+    base64ContentInfo(encodedBase64: string): null | { mimeSubType: string, mimeType: string } {
         return Base64Utils.getContentInfo(encodedBase64);
     }
 
@@ -2404,7 +2295,7 @@ export default class SmallBag
      * @param string
      * The utf-8 string.
      */
-    stringByteSize(string : string) : number {
+    stringByteSize(string: string): number {
         return byteLength(string);
     }
 
@@ -2419,8 +2310,7 @@ export default class SmallBag
      * getWorkerSocket('SOCKET-ID');
      * @param socketId
      */
-    getWorkerSocket(socketId : string) : UpSocket | undefined
-    {
+    getWorkerSocket(socketId: string): UpSocket | undefined {
         return this.worker.scServer.clients[socketId];
     }
 
@@ -2432,8 +2322,7 @@ export default class SmallBag
      * @example
      * getWorkerClients();
      */
-    getWorkerClients() : object
-    {
+    getWorkerClients(): object {
         return this.worker.scServer.clients;
     }
 
@@ -2444,7 +2333,7 @@ export default class SmallBag
      * @example
      * getWorkerConnectedClientsCount();
      */
-    getWorkerConnectedClientsCount() : number {
+    getWorkerConnectedClientsCount(): number {
         return this.worker.getStatus().clientCount;
     }
 
@@ -2453,7 +2342,7 @@ export default class SmallBag
      * @description
      * Returns http requests per minute.
      */
-    getWorkerHttpRequestPerMinute() : number {
+    getWorkerHttpRequestPerMinute(): number {
         return this.worker.getStatus().httpRPM;
     }
 
@@ -2462,7 +2351,7 @@ export default class SmallBag
      * @description
      * Returns web sockets requests per minute.
      */
-    getWorkerWsRequestPerMinute() : number {
+    getWorkerWsRequestPerMinute(): number {
         return this.worker.getStatus().wsRPM;
     }
 
@@ -2475,12 +2364,11 @@ export default class SmallBag
      * convertSocketIdToSid('SOCKET-ID-1','SOCKET-ID-2');
      * @param socketIds
      */
-    convertSocketIdToSid(...socketIds : string[]) : string[]
-    {
-        const res : string[] = [];
+    convertSocketIdToSid(...socketIds: string[]): string[] {
+        const res: string[] = [];
         socketIds.forEach((id) => {
-            let socket : UpSocket | undefined = this.getWorkerSocket(id);
-            if(!!socket) {
+            let socket: UpSocket | undefined = this.getWorkerSocket(id);
+            if (!!socket) {
                 res.push(socket.sid);
             }
         });

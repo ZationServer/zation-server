@@ -751,8 +751,10 @@ class ZationWorker extends SCWorker
                     }
                     catch (e) {}
                 }
+                // @ts-ignore
                 socket.handshakeVariables = variables;
 
+                // @ts-ignore
                 socket.zationClient = {
                     version : parseFloat(query.version),
                     system : query.system,
@@ -1693,10 +1695,6 @@ class ZationWorker extends SCWorker
 
     setWorkerVariableStorage(obj : object) : void {
         this.variableStorage = obj;
-    }
-
-    getInputDataProcessor() : InputProcessor {
-        return this.inputDataProcessor;
     }
 }
 

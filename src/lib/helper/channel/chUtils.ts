@@ -121,6 +121,107 @@ export default class ChUtils
     }
 
     /**
+     * Returns all channel subscriptions with a search string.
+     * @param socket
+     * @param search
+     */
+    static subscriptionSearch(socket : UpSocket, search : string) : string[] {
+        return socket.subscriptions().filter((s) => {
+            return s.indexOf(search) !== -1;
+        });
+    }
+
+    /**
+     * Returns if the search string is included in the subscriptions.
+     * @param socket
+     * @param search
+     */
+    static subscriptionFindSearch(socket : UpSocket, search : string) : boolean {
+        const subs : string[] = socket.subscriptions();
+        for(let i = 0; i < subs.length; i++) {
+            if(subs[i].indexOf(search) !== -1) {return true;}
+        }
+        return false;
+    }
+
+    /**
+     * Returns all custom id channel subscriptions of a socket.
+     * @param socket
+     * @param name (optional filter for a specific name)
+     */
+    static getCustomIdChannelSubscriptions(socket : UpSocket,name ?: string) : string[] {
+        return ChUtils.subscriptionSearch(socket,ChUtils.buildCustomIdChannelName(name));
+    }
+
+    /**
+     * Returns all custom channel subscriptions of a socket.
+     * @param socket
+     * @param name (optional filter for a specific name)
+     */
+    static getCustomChannelSubscriptions(socket : UpSocket,name ?: string) : string[] {
+        return ChUtils.subscriptionSearch(socket,ChUtils.buildCustomChannelName(name));
+    }
+
+    /**
+     * Returns if the socket has subscribed the user channel.
+     * @param socket
+     */
+    static hasSubUserCh(socket : UpSocket) : boolean {
+        return ChUtils.subscriptionFindSearch(socket,ZationChannel.USER_CHANNEL_PREFIX);
+    }
+
+    /**
+     * Returns if the socket has subscribed the auth user group channel.
+     * @param socket
+     */
+    static hasSubAuthUserGroupCh(socket : UpSocket) : boolean {
+        return ChUtils.subscriptionFindSearch(socket,ZationChannel.AUTH_USER_GROUP_PREFIX);
+    }
+
+    /**
+     * Returns if the socket has subscribed the default user group channel.
+     * @param socket
+     */
+    static hasSubDefaultUserGroupCh(socket : UpSocket) : boolean {
+        return socket.subscriptions().includes(ZationChannel.DEFAULT_USER_GROUP);
+    }
+
+    /**
+     * Returns if the socket has subscribed the all channel.
+     * @param socket
+     */
+    static hasSubAllCh(socket : UpSocket) : boolean {
+        return socket.subscriptions().includes(ZationChannel.ALL);
+    }
+
+    /**
+     * Returns if the socket has subscribed the custom channel.
+     * @param socket
+     * @param name
+     */
+    static hasSubCustomCh(socket : UpSocket,name ?: string) : boolean {
+        return ChUtils.subscriptionFindSearch(socket,ChUtils.buildCustomChannelName(name));
+    }
+
+    /**
+     * Returns if the socket has subscribed the custom id channel.
+     * @param socket
+     * @param name
+     * @param id
+     */
+    static hasSubCustomIdCh(socket : UpSocket,name ?: string, id ?: string) : boolean {
+        return ChUtils.subscriptionFindSearch(socket,ChUtils.buildCustomIdChannelName(name,id));
+    }
+
+    /**
+     * Returns if the socket has subscribed the panel out channel.
+     * @param socket
+     */
+    static hasSubPanelOutCh(socket : UpSocket) : boolean {
+        return socket.subscriptions().includes(ZationChannel.PANEL_OUT);
+    }
+
+    /**
      * Kick socket from custom id channel/s.
      * @param socket
      * @param name

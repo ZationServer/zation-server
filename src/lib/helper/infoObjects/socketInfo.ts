@@ -8,6 +8,7 @@ import {ZationToken}  from "../constants/internal";
 import UpSocket         from "../sc/socket";
 import TokenUtils     from "../token/tokenUtils";
 import ObjectPath     from "../utils/objectPath";
+import ChUtils from "../channel/chUtils";
 
 export default class SocketInfo
 {
@@ -127,5 +128,96 @@ export default class SocketInfo
     getTokenVariable<R>(path ?: string | string[]) : R {
         return ObjectPath.get(TokenUtils.getCustomTokenVariables(this._socket.authToken),path);
     }
-}
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns all socket subscriptions as a string array.
+     */
+    getSubscriptions() : string[] {
+        return this._socket.subscriptions();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns all custom id channel subscriptions of the socket.
+     * @param name (optional filter for a specific name)
+     */
+    getCustomIdChSubscriptions(name ?: string) : string[] {
+        return ChUtils.getCustomIdChannelSubscriptions(this._socket,name);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns all custom channel subscriptions of the socket.
+     * @param name (optional filter for a specific name)
+     */
+    getCustomChSubscriptions(name ?: string) : string[] {
+        return ChUtils.getCustomChannelSubscriptions(this._socket,name);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns if the socket has subscribed the user channel.
+     */
+    hasSubUserCh() : boolean {
+        return ChUtils.hasSubUserCh(this._socket);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns if the socket has subscribed the auth user group channel.
+     */
+    hasSubAuthUserGroupCh() : boolean {
+        return ChUtils.hasSubAuthUserGroupCh(this._socket);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns if the socket has subscribed the default user group channel.
+     */
+    hasSubDefaultUserGroupCh() : boolean {
+        return ChUtils.hasSubDefaultUserGroupCh(this._socket);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns if the socket has subscribed the all channel.
+     */
+    hasSubAllCh() : boolean {
+        return ChUtils.hasSubAllCh(this._socket);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns if the socket has subscribed the custom channel.
+     * @param name
+     * if it is not provided,
+     * it returns if the socket has subscribed any custom channel.
+     */
+    hasSubCustomCh(name ?: string) : boolean {
+        return ChUtils.hasSubCustomCh(this._socket,name);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns if the socket has subscribed the custom id channel.
+     * @param name
+     * if it is not provided,
+     * it returns if the socket has subscribed any custom id channel.
+     * @param id
+     * if it is not provided,
+     * it returns if the socket has subscribed any custom id channel with the provided name.
+     */
+    hasSubCustomIdCh(name ?: string, id ?: string) : boolean {
+        return ChUtils.hasSubCustomIdCh(this._socket,name,id);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns if the socket has subscribed the panel out channel.
+     */
+    hasPanelOutCh() : boolean {
+        return ChUtils.hasSubPanelOutCh(this._socket);
+    }
+}

@@ -47,19 +47,25 @@ export default class SocketUpgradeEngine
      */
     upgradeSocket(socket : UpSocket) {
         //id build
+        // @ts-ignore
         socket.sid = this.sidBuilder.buildSid(socket.id);
+        // @ts-ignore
         socket.tid = Date.now() + socket.id;
 
         //engine build
         const baseSHBridge = new BaseShBridgeSocket(socket);
+        // @ts-ignore
         socket.baseSHBridge = baseSHBridge;
 
         const authEngine = new AuthEngine(baseSHBridge,this.worker);
+        // @ts-ignore
         socket.authEngine = authEngine;
 
+        // @ts-ignore
         socket.socketInfo = new SocketInfo(socket);
 
         //socket variables
+        // @ts-ignore
         socket.zationSocketVariables = {};
 
         //token observer

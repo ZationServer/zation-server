@@ -7,14 +7,14 @@ GitHub: LucaCode
 import ZationWorker = require("../main/zationWorker");
 import useragent    = require('useragent');
 import UpSocket         from "../helper/sc/socket";
-import ScServer       from "../helper/sc/scServer";
-import * as core      from "express-serve-static-core";
+import ScServer         from "../helper/sc/scServer";
+import * as core        from "express-serve-static-core";
 import {IncomingHttpHeaders, IncomingMessage} from "http";
-import {Agent}        from "useragent";
-import {UploadedFile} from "express-fileupload";
+import {Agent}                   from "useragent";
+import {UploadedFile}            from "express-fileupload";
 import ObjectPathCombineSequence from "../helper/utils/objectPathCombineSequence";
-import SHBridge       from "../helper/bridges/shBridge";
-import AuthEngine     from "../helper/auth/authEngine";
+import SHBridge              from "../helper/bridges/shBridge";
+import AuthEngine            from "../helper/auth/authEngine";
 import ProtocolAccessChecker from "../helper/protocolAccess/protocolAccessChecker";
 import ObjectPath            from "../helper/utils/objectPath";
 import ObjectPathSequence    from "../helper/utils/objectPathSequence";
@@ -26,6 +26,7 @@ import {ZationToken}         from "../helper/constants/internal";
 import JwtSignOptions        from "../helper/constants/jwt";
 import ObjectUtils           from "../helper/utils/objectUtils";
 import ChUtils               from "../helper/channel/chUtils";
+import SocketInfo from "../helper/infoObjects/socketInfo";
 
 export default class Bag extends SmallBag
 {
@@ -981,6 +982,22 @@ export default class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * Returns the socket info.
+     * Requires ws request!
+     * @throws MethodIsNotCompatibleError
+     */
+    getSocketInfo() : SocketInfo {
+        if(this.shBridge.isWebSocket) {
+            return this.shBridge.getSocket().socketInfo;
+        }
+        else {
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get the socket info.');
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * Returns the sc server from worker.
      */
     getScServer() : ScServer {
@@ -1087,13 +1104,159 @@ export default class Bag extends SmallBag
      * Requires ws request!
      * @throws MethodIsNotCompatibleError
      */
-    getSubChannels() : string[]
+    getSubscriptions() : string[]
     {
         if(this.shBridge.isWebSocket) {
             return this.shBridge.getSocket().subscriptions();
         }
         else {
             throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get subscribed channels.');
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns all custom id channel subscriptions of the socket.
+     * @param name (optional filter for a specific name)
+     * Requires ws request!
+     * @throws MethodIsNotCompatibleError
+     */
+    getCustomIdChSubscriptions(name ?: string) : string[] {
+        if(this.shBridge.isWebSocket) {
+            return ChUtils.getCustomIdChannelSubscriptions(this.shBridge.getSocket(),name);
+        }
+        else {
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get subscribed custom id channels.');
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns all custom channel subscriptions of the socket.
+     * @param name (optional filter for a specific name)
+     * Requires ws request!
+     * @throws MethodIsNotCompatibleError
+     */
+    getCustomChSubscriptions(name ?: string) : string[] {
+        if(this.shBridge.isWebSocket) {
+            return ChUtils.getCustomChannelSubscriptions(this.shBridge.getSocket(),name);
+        }
+        else {
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get subscribed custom channels.');
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns if the socket has subscribed the user channel.
+     * Requires ws request!
+     * @throws MethodIsNotCompatibleError
+     */
+    hasSubUserCh() : boolean {
+        if(this.shBridge.isWebSocket) {
+            return ChUtils.hasSubUserCh(this.shBridge.getSocket());
+        }
+        else {
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Access channel subscriptions');
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns if the socket has subscribed the auth user group channel.
+     * Requires ws request!
+     * @throws MethodIsNotCompatibleError
+     */
+    hasSubAuthUserGroupCh() : boolean {
+        if(this.shBridge.isWebSocket) {
+            return ChUtils.hasSubAuthUserGroupCh(this.shBridge.getSocket());
+        }
+        else {
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Access channel subscriptions');
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns if the socket has subscribed the default user group channel.
+     * Requires ws request!
+     * @throws MethodIsNotCompatibleError
+     */
+    hasSubDefaultUserGroupCh() : boolean {
+        if(this.shBridge.isWebSocket) {
+            return ChUtils.hasSubDefaultUserGroupCh(this.shBridge.getSocket());
+        }
+        else {
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Access channel subscriptions');
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns if the socket has subscribed the all channel.
+     * Requires ws request!
+     * @throws MethodIsNotCompatibleError
+     */
+    hasSubAllCh() : boolean {
+        if(this.shBridge.isWebSocket) {
+            return ChUtils.hasSubAllCh(this.shBridge.getSocket());
+        }
+        else {
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Access channel subscriptions');
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns if the socket has subscribed the custom channel.
+     * Requires ws request!
+     * @throws MethodIsNotCompatibleError
+     * @param name
+     * if it is not provided,
+     * it returns if the socket has subscribed any custom channel.
+     */
+    hasSubCustomCh(name ?: string) : boolean {
+        if(this.shBridge.isWebSocket) {
+            return ChUtils.hasSubCustomCh(this.shBridge.getSocket(),name);
+        }
+        else {
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Access channel subscriptions');
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns if the socket has subscribed the custom id channel.
+     * Requires ws request!
+     * @throws MethodIsNotCompatibleError
+     * @param name
+     * if it is not provided,
+     * it returns if the socket has subscribed any custom id channel.
+     * @param id
+     * if it is not provided,
+     * it returns if the socket has subscribed any custom id channel with the provided name.
+     */
+    hasSubCustomIdCh(name ?: string, id ?: string) : boolean {
+        if(this.shBridge.isWebSocket) {
+            return ChUtils.hasSubCustomIdCh(this.shBridge.getSocket(),name,id);
+        }
+        else {
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Access channel subscriptions');
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns if the socket has subscribed the panel out channel.
+     * Requires ws request!
+     * @throws MethodIsNotCompatibleError
+     */
+    hasPanelOutCh() : boolean {
+        if(this.shBridge.isWebSocket) {
+            return ChUtils.hasSubPanelOutCh(this.shBridge.getSocket());
+        }
+        else {
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Access channel subscriptions');
         }
     }
 

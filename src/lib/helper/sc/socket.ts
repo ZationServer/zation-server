@@ -17,18 +17,18 @@ export type ResponseFunction = (err ?: any | number, responseData ?: any) => voi
  * Normal socket from socket cluster.
  */
 export interface ScSocket {
-    id : string;
-    request : IncomingMessage;
-    remoteAddress : string;
-    exchange : any;
-    state : string;
-    authState : string;
+    readonly id : string;
+    readonly request : IncomingMessage;
+    readonly remoteAddress : string;
+    readonly exchange : any;
+    readonly state : string;
+    readonly authState : string;
     authToken : ZationToken | null;
-    CONNECTING : string;
-    OPEN : string;
-    CLOSED : string;
-    AUTHENTICATED : string;
-    UNAUTHENTICATED : string;
+    readonly CONNECTING : string;
+    readonly OPEN : string;
+    readonly CLOSED : string;
+    readonly AUTHENTICATED : string;
+    readonly UNAUTHENTICATED : string;
 
     getState() : string;
     disconnect(code ?: any, data ?: any) : void;
@@ -59,10 +59,10 @@ export interface ScSocket {
  * Socket after sc handshake.
  */
 export interface HandshakeSocket extends ScSocket {
-    handshakeVariables : Record<string,any>;
-    zationClient : {
-        version : number,
-        system : string
+    readonly handshakeVariables : Record<string,any>;
+    readonly zationClient : {
+        readonly version : number,
+        readonly system : string
     }
 }
 
@@ -70,12 +70,12 @@ export interface HandshakeSocket extends ScSocket {
  * Socket after socket upgrade.
  */
 export default interface UpSocket extends HandshakeSocket {
-    sid : string;
-    tid : string;
+    readonly sid : string;
+    readonly tid : string;
 
     zationSocketVariables : Record<string,any>;
-    baseSHBridge : BaseShBridgeSocket;
-    authEngine : AuthEngine;
-    socketInfo : SocketInfo;
+    readonly baseSHBridge : BaseShBridgeSocket;
+    readonly authEngine : AuthEngine;
+    readonly socketInfo : SocketInfo;
 }
 
