@@ -23,7 +23,7 @@ export default class PanelEngine
 
     private readonly panelUserMap : Record<string,string>;
 
-    private readonly panelAccessData : object[] = [];
+    private readonly panelAccessData : {p : string,u : string}[] = [];
 
     private alreadyFirstPong : boolean = false;
 
@@ -71,12 +71,11 @@ export default class PanelEngine
         }
     }
 
-    private addUser(config : PanelUserConfig) : void
-    {
-        const data = {};
-        data['p'] = this.zw.getPreparedSmallBag().hashSha512(config.password);
-        data['u'] = config.username;
-        this.panelAccessData.push(data);
+    private addUser(config : PanelUserConfig) : void {
+        this.panelAccessData.push({
+            p : this.zw.getPreparedSmallBag().hashSha512(config.password),
+            u : config.username
+        });
     }
 
     private registerPanelInEvent()
@@ -119,8 +118,12 @@ export default class PanelEngine
         catch (e) {console.log(e);}
     }
 
-    update(type : string,data : object) {
-        this.pubInPanel('update-'+type,data);
+    updateLeaderInfo(data : object) {
+        this.pubInPanel('up-l',data);
+    }
+
+    update(data : object) {
+        this.pubInPanel('up',data);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -148,8 +151,8 @@ export default class PanelEngine
         let foundUser = false;
         for(let i = 0; i < this.panelAccessData.length; i++)
         {
-            if(this.panelAccessData[i]['u'] === userName &&
-               this.panelAccessData[i]['p'] === passwordHash) {
+            if(this.panelAccessData[i].u === userName &&
+               this.panelAccessData[i].p === passwordHash) {
                 foundUser = true;
                 break;
             }

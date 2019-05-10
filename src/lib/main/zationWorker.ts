@@ -1582,7 +1582,7 @@ class ZationWorker extends SCWorker
     {
         setInterval(async () => {
             if(this.panelEngine.isPanelInUse()) {
-                this.panelEngine.update('mainUpdate',{
+                this.panelEngine.update({
                     systemInfo   : (await SystemInfo.getUpdatedInfo()),
                     clientCount  : this.scServer.clientsCount,
                     user: {
@@ -1603,7 +1603,7 @@ class ZationWorker extends SCWorker
             setInterval(async () => {
                 if(this.panelEngine.isPanelInUse()){
                     const brokerInfo = (await NodeInfo.getBrokerInfo(this));
-                    this.panelEngine.update('node',{
+                    this.panelEngine.updateLeaderInfo({
                         brokers : brokerInfo.brokers,
                         cBrokers : brokerInfo.cBrokers,
                         master : (await NodeInfo.getMasterInfo(this))
