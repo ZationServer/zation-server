@@ -529,13 +529,39 @@ export interface MainConfig
      */
     downgradeToUser  ?: boolean | string;
     /**
-     * 
+     * The root directory in which to store your socket files in Linux.
+     * @default null
      */
     socketRoot  ?: string | null;
+    /**
+     * Defaults to "rr", but can be set to "none".
+     * Read more: https://nodejs.org/dist/latest-v5.x/docs/api/cluster.html#cluster_cluster_schedulingpolicy.
+     * @default "rr"
+     */
     schedulingPolicy  ?: string | null;
+    /**
+     * Whether or not clients are allowed to publish messages to channels.
+     * @default true
+     */
     allowClientPublish  ?: boolean;
+    /**
+     * This option is passed to the Node.js HTTP server if it is provided.
+     * @default null
+     */
     tcpSynBacklog  ?: any | null;
+    /**
+     * Zation keeps track of request per minutes internally.
+     * That allows you to change how often this gets updated.
+     * @default 10000
+     */
     workerStatusInterval  ?: number;
+    /**
+     * This option allows you to batch multiple messages together
+     * when passing them across message brokers. That may improve the efficiency
+     * of your pub/sub-operations.
+     * The value unit is in milliseconds, 5 is generally a safe value to set this to.
+     * @default null
+     */
     pubSubBatchDuration  ?: number | null;
 }
 
