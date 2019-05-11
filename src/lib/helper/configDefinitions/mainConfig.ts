@@ -12,6 +12,14 @@ export const OPTION_HALF_AUTO = 'half-auto';
 export interface MainConfig
 {
     /**
+     * An ID that is associated with this specific instance of a zation server,
+     * the id should be unique for every instance in a cluster.
+     * You can access the instanceId with the SmallBag.
+     * If you don't provide an instanceId,zation will generate a random one (UUID v4).
+     * @default random UUID v4
+     */
+    instanceId  ?: string;
+    /**
      * The port of the server.
      * @default 3000
      */
@@ -399,13 +407,43 @@ export interface MainConfig
     clusterStateServerReconnectRandomness  ?: number | null;
 
     //Sc
+    /**
+     * A log level of 3 will log everything, 2 will show notices and errors,
+     * 1 will only log errors, 0 will log nothing.
+     * @default 2
+     */
     scLogLevel  ?: number;
+    /**
+     * Origins which are allowed to connect to the real-time scServer.
+     * Notice that you also can use the origins option that is provided by the zation framework.
+     * This option is more powerful and is used by HTTP and WebSocket.
+     * @default null
+     */
     scOrigins ?: string | null;
+    /**
+     * The maximum number of individual channels which a single socket can subscribe to.
+     * @default 1000
+     */
     socketChannelLimit  ?: number;
+    /**
+     * Crash workers when an error happens.
+     * This is the most sensible default.
+     * @default true
+     */
     crashWorkerOnError  ?: boolean;
+    /**
+     * Reboot workers when they crash.
+     * That is a necessity in production but can be turned off for debugging.
+     * @default true
+     */
     rebootWorkerOnCrash  ?: boolean;
+    /**
+     * Setting this to true will cause the master process
+     * to shut down when it receives a SIGUSR2 signal (instead of just the workers).
+     * If you're using nodemon, set this to true.
+     * @default false
+     */
     killMasterOnSignal  ?: boolean;
-    instanceId  ?: string | null;
     killWorkerMemoryThreshold  ?: number | null;
     connectTimeout  ?: number;
     handshakeTimeout  ?: number;
@@ -430,6 +468,7 @@ export interface MainConfig
 
 //These settings are always set
 export interface InternalMainConfig extends MainConfig {
+    instanceId  : string;
     port  : number;
     hostname  : string;
     path  : string;
@@ -467,7 +506,6 @@ export interface InternalMainConfig extends MainConfig {
     crashWorkerOnError  : boolean;
     rebootWorkerOnCrash  : boolean;
     killMasterOnSignal  : boolean;
-    instanceId  : string | null;
     connectTimeout  : number;
     handshakeTimeout : number;
     ackTimeout  : number;

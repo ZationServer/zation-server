@@ -81,6 +81,7 @@ AnyOf[nameof<ModelOptional>(s => s.isOptional)]   = {types : ['boolean'],isOptio
 AnyOf[nameof<ModelOptional>(s => s.default)]      = {types : ['string','array','number','boolean','object','function'],isOptional : true};
 
 const Main = {};
+Main[nameof<MainConfig>(s => s.instanceId)]         = {types : ['string'],isOptional : true};
 Main[nameof<MainConfig>(s => s.port)]               = {types : ['number'],isOptional : true};
 Main[nameof<MainConfig>(s => s.hostname)]           = {types : ['string'],isOptional : true};
 Main[nameof<MainConfig>(s => s.debug)]              = {types : ['boolean'],isOptional : true};
@@ -161,7 +162,6 @@ Main[nameof<MainConfig>(s => s.socketChannelLimit)]         = {types : ['number'
 Main[nameof<MainConfig>(s => s.crashWorkerOnError)]         = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.rebootWorkerOnCrash)]        = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.killMasterOnSignal)]         = {types : ['boolean'],isOptional : true};
-Main[nameof<MainConfig>(s => s.instanceId)]                 = {types : ['string','null'],isOptional : true};
 Main[nameof<MainConfig>(s => s.killWorkerMemoryThreshold)]  = {types : ['number','null'],isOptional : true};
 Main[nameof<MainConfig>(s => s.connectTimeout)]             = {types : ['number'],isOptional : true};
 Main[nameof<MainConfig>(s => s.handshakeTimeout)]           = {types : ['number'],isOptional : true};
