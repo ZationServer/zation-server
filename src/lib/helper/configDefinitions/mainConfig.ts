@@ -481,14 +481,56 @@ export interface MainConfig
      * @default 1000
      */
     socketUpgradeTimeout  ?: number;
+    /**
+     * The interval in milliseconds on which to
+     * send a ping to the client to check that it is still alive.
+     * @default 8000
+     */
     pingInterval  ?: number;
+    /**
+     * How many milliseconds to wait without receiving a ping before closing the socket.
+     * @default 20000
+     */
     pingTimeout  ?: number;
+    /**
+     * The maximum amount of milliseconds to wait before force-killing a
+     * process after it was passed a 'SIGTERM' or 'SIGUSR2' signal.
+     * @default 10000
+     */
     processTermTimeout  ?: number;
+    /**
+     * Whether or not errors from child processes (workers and brokers)
+     * should be passed to the current master process.
+     * @default true
+     */
     propagateErrors  ?: boolean;
+    /**
+     * Whether or not warnings from child processes (workers and brokers)
+     * should be passed to the current master process.
+     * @default true
+     */
     propagateWarnings  ?: boolean;
+    /**
+     * Whether or not a 'warning' event should be emitted (and logged to console)
+     * whenever a middleware function blocks an action.
+     * @default false
+     */
     middlewareEmitWarnings  ?: boolean;
+    /**
+     * By default, SC will reboot all workers when it receives a 'SIGUSR2' signal.
+     * @default true
+     */
     rebootOnSignal  ?: boolean;
-    downgradeToUser  ?: boolean;
+    /**
+     * If you run your master process as superuser,
+     * this option lets you downgrade worker and broker processes to run under the specified user
+     * (with fewer permissions than master). You can provide a Linux UID or username.
+     * @default false
+     */
+    downgradeToUser  ?: boolean | string;
+    /**
+     * 
+     */
     socketRoot  ?: string | null;
     schedulingPolicy  ?: string | null;
     allowClientPublish  ?: boolean;

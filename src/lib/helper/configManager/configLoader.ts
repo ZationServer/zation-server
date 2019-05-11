@@ -83,7 +83,7 @@ export default class ConfigLoader {
         processTermTimeout: 10000,
         propagateErrors: true,
         propagateWarnings: true,
-        middlewareEmitWarnings: true,
+        middlewareEmitWarnings: false,
         rebootOnSignal: true,
         downgradeToUser: false,
         allowClientPublish: true,

@@ -175,7 +175,7 @@ Main[nameof<MainConfig>(s => s.propagateErrors)]            = {types : ['boolean
 Main[nameof<MainConfig>(s => s.propagateWarnings)]          = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.middlewareEmitWarnings)]     = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.rebootOnSignal)]             = {types : ['boolean'],isOptional : true};
-Main[nameof<MainConfig>(s => s.downgradeToUser)]            = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.downgradeToUser)]            = {types : ['boolean','string'],isOptional : true};
 Main[nameof<MainConfig>(s => s.socketRoot)]                 = {types : ['string','null'],isOptional : true};
 Main[nameof<MainConfig>(s => s.schedulingPolicy)]           = {types : ['string','null'],isOptional : true};
 Main[nameof<MainConfig>(s => s.allowClientPublish)]         = {types : ['boolean'],isOptional : true};
