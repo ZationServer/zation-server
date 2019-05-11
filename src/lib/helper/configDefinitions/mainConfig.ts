@@ -299,12 +299,41 @@ export interface MainConfig
     logStarted ?: boolean;
 
     //Cluster
+    /**
+     * The cluster auth key defines a key that
+     * will be used to connect to a cluster component.
+     * If you provide a key, every cluster component needs
+     * to have the same key to communicate with each other.
+     * @default null
+     * @notice Every server component in a cluster must have the same setting.
+     */
     clusterAuthKey  ?: string | null;
+    /**
+     * The cluster secret key is a key that will be used by all
+     * zation server components. The primary usage is for symmetric encryption of
+     * variables that will be transported from one master to another master.
+     * Notice that every zation server needs to have the same key.
+     * If you don't provide a key, the variables will be not encrypted and decrypted.
+     * @default null
+     * @notice Every server component in a cluster must have the same setting.
+     */
     clusterSecretKey  ?: string | null;
+    /**
+     * The state sever host, e.g. IP-address of the state server.
+     * If you provide a state server host,
+     * the server will automatically start in cluster mode (Machine scaling active).
+     * @default null
+     */
     stateServerHost  ?: string | null;
+    /**
+     * The port of the state server.
+     * @default null (means 80)
+     */
     stateServerPort  ?: number | null;
+    /**
+     *
+     */
     useTokenCheckKey ?: boolean;
-
     clusterShareTokenAuth  ?: boolean;
     clusterMappingEngine  ?: string | null;
     clusterClientPoolSize  ?: number | null;
