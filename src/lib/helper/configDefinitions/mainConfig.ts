@@ -444,11 +444,42 @@ export interface MainConfig
      * @default false
      */
     killMasterOnSignal  ?: boolean;
+    /**
+     * Kill/respawn a worker process if its memory consumption exceeds this threshold (in bytes).
+     * If this is null (default), this behavior will be switched off.
+     * @default null
+     */
     killWorkerMemoryThreshold  ?: number | null;
+    /**
+     * In milliseconds, how long a client has to connect to the server before timing out.
+     * @default 10000
+     */
     connectTimeout  ?: number;
+    /**
+     * In milliseconds.
+     * If the socket handshake hasn't been completed before this timeout is reached,
+     * the new connection attempt will be terminated.
+     * @default 10000
+     */
     handshakeTimeout  ?: number;
+    /**
+     * In milliseconds, the timeout for calling res(err, data) when your emit()
+     * call expects an ACK response from the other side (when a callback is provided to emit).
+     * @default 10000
+     */
     ackTimeout  ?: number;
+    /**
+     * In milliseconds, the timeout for calling res(err, data) when your sendToWorker,
+     * sendToBroker or sendToMaster (IPC) call expects an ACK response from the other process
+     * (when a callback is provided).
+     * @default 10000
+     */
     ipcAckTimeout  ?: number;
+    /**
+     * In milliseconds. If a socket cannot upgrade transport within this period,
+     * it will stop trying.
+     * @default 1000
+     */
     socketUpgradeTimeout  ?: number;
     pingInterval  ?: number;
     pingTimeout  ?: number;
