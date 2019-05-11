@@ -30,7 +30,7 @@ export default class StateServerEngine
 
     private connectSettings : object;
     private serverSettings : object;
-    private serverSharedData : object | string;
+    private serverSharedData : SharedData | string;
 
     private readonly useSharedTokenAuth : boolean;
 
@@ -40,7 +40,7 @@ export default class StateServerEngine
         this.zm = zm;
 
         this.useSharedTokenAuth = this.zc.mainConfig.clusterShareTokenAuth;
-        this.useClusterSecretKey = !!this.zc.mainConfig.clusterSecretKey;
+        this.useClusterSecretKey = typeof this.zc.mainConfig.clusterSecretKey === 'string';
 
         this.buildConnectSettings();
         this.buildServerSettings();
@@ -69,14 +69,14 @@ export default class StateServerEngine
      */
     private buildServerSharedData()
     {
-        const sharedData = {
+        const sharedData : SharedData = {
                 tokenCheckKey : this.zc.internalData.tokenCheckKey
             };
 
         if(this.useSharedTokenAuth) {
-            sharedData['verifyKey'] = this.zc.getVerifyKey();
-            sharedData['signKey'] = this.zc.getSignKey();
-            sharedData['authAlgorithm'] = this.zc.mainConfig.authAlgorithm;
+            sharedData.verifyKey = this.zc.getVerifyKey();
+            sharedData.signKey = this.zc.getSignKey();
+            sharedData.authAlgorithm = this.zc.mainConfig.authAlgorithm;
         }
 
         if(this.useClusterSecretKey) {
@@ -92,10 +92,11 @@ export default class StateServerEngine
      * This method will also try to decrypt them by using a cluster key.
      * @param sharedData
      */
-    private loadSharedData(sharedData : string | object)
+    private loadSharedData(sharedData : string | SharedData)
     {
         if(this.useClusterSecretKey && typeof sharedData === 'string') {
             try {
+                // @ts-ignore
                 sharedData = this.encoder.decrypt(sharedData);
             }
             catch (e) {
@@ -105,12 +106,12 @@ export default class StateServerEngine
         }
 
         if(typeof sharedData === 'object') {
-            this.zc.internalData.tokenCheckKey = sharedData['tokenCheckKey'];
+            this.zc.internalData.tokenCheckKey = sharedData.tokenCheckKey;
 
             if(this.useSharedTokenAuth) {
-                this.zc.internalData.verifyKey = sharedData['verifyKey'];
-                this.zc.internalData.signKey = sharedData['signKey'];
-                this.zc.mainConfig.authAlgorithm = sharedData['authAlgorithm'];
+                this.zc.internalData.verifyKey = sharedData.verifyKey;
+                this.zc.internalData.signKey = sharedData.signKey;
+                this.zc.mainConfig.authAlgorithm = sharedData.authAlgorithm;
             }
         }
         else {
@@ -431,4 +432,11 @@ export default class StateServerEngine
                 });
         }));
     }
+}
+
+interface SharedData {
+    tokenCheckKey : string,
+    verifyKey ?: any,
+    signKey ?: any,
+    authAlgorithm ?: string
 }

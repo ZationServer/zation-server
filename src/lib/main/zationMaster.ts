@@ -473,7 +473,7 @@ export default class ZationMaster {
     //PART Scaling
     private checkClusterMode() {
         this.clusterStateServerHost = this.zc.mainConfig.stateServerHost || null;
-        this.stateServerActive =  !!this.clusterStateServerHost;
+        this.stateServerActive = typeof this.clusterStateServerHost === 'string';
     }
 
     /**
