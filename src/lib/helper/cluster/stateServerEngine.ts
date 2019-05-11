@@ -126,7 +126,7 @@ export default class StateServerEngine
     private buildConnectSettings() {
         //connect to state server
         const DEFAULT_PORT = 7777;
-        const DEFAULT_RETRY_DELAY = 2000;
+        const DEFAULT_RETRY_DELAY = 800;
         const DEFAULT_STATE_SERVER_CONNECT_TIMEOUT = 3000;
         const DEFAULT_STATE_SERVER_ACK_TIMEOUT = 10000;
         const DEFAULT_RECONNECT_RANDOMNESS = 1000;
