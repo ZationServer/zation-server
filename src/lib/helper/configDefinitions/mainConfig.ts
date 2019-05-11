@@ -331,16 +331,71 @@ export interface MainConfig
      */
     stateServerPort  ?: number | null;
     /**
-     *
+     * This property indicates if the server should use the token check key.
+     * This key is stored in every token that will be created.
+     * Every server in a cluster has the same key.
+     * Whenever the client authentication process takes place the
+     * token check key will be checked if it is equal with the server one.
+     * If all servers are crashed and will restart the token
+     * check key will be newly generated.
+     * That means that all previously made tokens are no longer valid.
+     * Notice that a token is also not valid on another cluster or
+     * single started server even if the auth public key and
+     * algorithm or auth secret key is the same.
+     * @default true
      */
     useTokenCheckKey ?: boolean;
+    /**
+     * This property indicates that the server should share the auth options
+     * for verifying and sign tokens with all other zation servers in the cluster.
+     * That is useful if you are using generated auth keys that will change on each server start.
+     * Then the options of the first server that joins the cluster will be used for every server
+     * that will join the cluster afterward. That means that the token will be valid on every server
+     * in that cluster even if the other servers had a different key before joining the cluster.
+     * @default true
+     */
     clusterShareTokenAuth  ?: boolean;
+    /**
+     * The option for setting the cluster mapping engine.
+     * Only for advanced use cases.
+     * @default null
+     */
     clusterMappingEngine  ?: string | null;
+    /**
+     * The option for setting the cluster client pool size.
+     * Only for advanced use cases.
+     * @default null
+     */
     clusterClientPoolSize  ?: number | null;
+    /**
+     * The option for setting the cluster instance ip.
+     * Only for advanced use cases.
+     * @default null
+     */
     clusterInstanceIp  ?: string | null;
+    /**
+     * The option for setting the cluster instance ip family.
+     * Only for advanced use cases.
+     * @default null
+     */
     clusterInstanceIpFamily  ?: string | null;
+    /**
+     * The option for setting the cluster state server connect timeout.
+     * Only for advanced use cases.
+     * @default null
+     */
     clusterStateServerConnectTimeout  ?: number | null;
+    /**
+     * The option for setting the cluster state server ack timeout.
+     * Only for advanced use cases.
+     * @default null
+     */
     clusterStateServerAckTimeout  ?: number | null;
+    /**
+     * The option for setting the cluster state server reconnect randomness.
+     * Only for advanced use cases.
+     * @default null
+     */
     clusterStateServerReconnectRandomness  ?: number | null;
 
     //Sc
