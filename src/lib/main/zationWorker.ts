@@ -42,7 +42,7 @@ import PanelEngine        from "../helper/panel/panelEngine";
 import SidBuilder         from "../helper/utils/sidBuilder";
 import FuncUtils          from "../helper/utils/funcUtils";
 import ChUtils            from "../helper/channel/chUtils";
-import TokenUtils         from "../helper/token/tokenUtils";
+import TokenUtils, {TokenClusterKeyCheckFunction} from "../helper/token/tokenUtils";
 import SystemInfo         from "../helper/utils/systemInfo";
 import BackgroundTasksWorkerSaver from "../helper/background/backgroundTasksWorkerSaver";
 import MiddlewareUtils    from "../helper/utils/middlewareUtils";
@@ -83,11 +83,12 @@ class ZationWorker extends SCWorker
     private panelEngine : PanelEngine;
     private chMiddlewareHelper : ChMiddlewareHelper;
     private channelBagEngine : ChannelBagEngine;
-    private originChecker : OriginChecker;
+    private originCheck : OriginChecker;
     private channelPrepare : ChannelPrepare;
     private inputDataProcessor : InputProcessor;
     private zationReqHandler : ZationReqHandler;
     private socketUpdateEngine : SocketUpgradeEngine;
+    private tokenClusterKeyCheck : TokenClusterKeyCheckFunction;
 
     private authStartActive : boolean;
 
@@ -163,10 +164,15 @@ class ZationWorker extends SCWorker
         this.zc.setOtherConfigs(preCompiler.preCompile());
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has pre compiled configurations.`, true);
 
-        //Origins engine
+        //Origins checker
         Logger.startStopWatch();
-        this.originChecker = OriginsUtils.createOriginChecker(this.zc.mainConfig.origins);
+        this.originCheck = OriginsUtils.createOriginChecker(this.zc.mainConfig.origins);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the origin checker.`,true);
+
+        //Token cluster key checker
+        Logger.startStopWatch();
+        this.tokenClusterKeyCheck = TokenUtils.createTokenClusterKeyChecker(this.zc);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the token cluster key checker.`,true);
 
         //Services (!Before SmallBag)
         Logger.startStopWatch();
@@ -347,7 +353,7 @@ class ZationWorker extends SCWorker
 
         //Middleware check origin.
         this.app.use((req, res, next) => {
-            if(this.originChecker(req.hostname,req.protocol,serverPort)){
+            if(this.originCheck(req.hostname,req.protocol,serverPort)){
                 res.setHeader('Access-Control-Allow-Origin', `${req.protocol}://${req.hostname}`);
                 res.header('Access-Control-Allow-Methods', 'GET, POST');
                 res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,contenttype');
@@ -790,7 +796,7 @@ class ZationWorker extends SCWorker
                 origin = '*';
             }
             const parts = url.parse(origin);
-            if(this.originChecker(parts.hostname,parts.protocol,parts.port)) {
+            if(this.originCheck(parts.hostname,parts.protocol,parts.port)) {
                 if(await MiddlewareUtils.checkMiddleware
                     (eventConfig.sc_middlewareHandshakeWs,next,this.getPreparedSmallBag(),req)) {
                     next();
@@ -825,34 +831,26 @@ class ZationWorker extends SCWorker
             //check if the token is valid
             try {
                 TokenUtils.checkToken(token,this.aePreparedPart);
+                this.tokenClusterKeyCheck(token);
             }
             catch (e) {
                 next(e);
             }
 
-            //check the token check key
-            if(this.zc.mainConfig.useTokenCheckKey &&
-                token[nameof<ZationToken>(s => s.zationCheckKey)] !== this.zc.internalData.tokenCheckKey)
-            {
-                next(new Error('Wrong or missing token check key!'));
+            let userMidRes = true;
+            if(eventConfig.sc_middlewareAuthenticate) {
+                userMidRes = await MiddlewareUtils.checkMiddleware
+                (eventConfig.sc_middlewareAuthenticate,next,this.getPreparedSmallBag(),req);
             }
-            else {
 
-                let userMidRes = true;
-                if(eventConfig.sc_middlewareAuthenticate) {
-                    userMidRes = await MiddlewareUtils.checkMiddleware
-                    (eventConfig.sc_middlewareAuthenticate,next,this.getPreparedSmallBag(),req);
-                }
+            let zationAuthMid = true;
+            if(eventConfig.middlewareAuthenticate){
+                zationAuthMid = await MiddlewareUtils.checkMiddleware
+                (eventConfig.middlewareAuthenticate,next,this.getPreparedSmallBag(),new ZationTokenInfo(token));
+            }
 
-                let zationAuthMid = true;
-                if(eventConfig.middlewareAuthenticate){
-                    zationAuthMid = await MiddlewareUtils.checkMiddleware
-                    (eventConfig.middlewareAuthenticate,next,this.getPreparedSmallBag(),new ZationTokenInfo(token));
-                }
-
-                if(userMidRes && zationAuthMid) {
-                    next();
-                }
+            if(userMidRes && zationAuthMid) {
+                next();
             }
         });
     }
@@ -1698,6 +1696,10 @@ class ZationWorker extends SCWorker
 
     setWorkerVariableStorage(obj : object) : void {
         this.variableStorage = obj;
+    }
+
+    getTokenClusterKeyCheck() : TokenClusterKeyCheckFunction {
+        return this.tokenClusterKeyCheck;
     }
 }
 

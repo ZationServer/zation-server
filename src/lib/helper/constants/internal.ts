@@ -133,7 +133,7 @@ export interface PrepareZationToken {
     zationPanelAccess ?: boolean,
     zationOnlyPanelToken ?: boolean,
     exp ?: number,
-    zationCheckKey ?: string,
+    zationTokenClusterKey ?: string,
     zationCustomVariables ?: object
 }
 

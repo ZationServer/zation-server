@@ -90,7 +90,7 @@ export default class ConfigLoader {
         workerStatusInterval: 10000,
         clusterShareTokenAuth: true,
         instanceId: uuidV4(),
-        useTokenCheckKey: true,
+        useTokenClusterKeyCheck: true,
         provideClientJs: true,
         usePanel: false,
         killServerOnServicesCreateError : false,

@@ -70,7 +70,7 @@ export default class StateServerEngine
     private buildServerSharedData()
     {
         const sharedData : SharedData = {
-                tokenCheckKey : this.zc.internalData.tokenCheckKey
+                tokenClusterKey : this.zc.internalData.tokenClusterKey
             };
 
         if(this.useSharedTokenAuth) {
@@ -106,7 +106,7 @@ export default class StateServerEngine
         }
 
         if(typeof sharedData === 'object') {
-            this.zc.internalData.tokenCheckKey = sharedData.tokenCheckKey;
+            this.zc.internalData.tokenClusterKey = sharedData.tokenClusterKey;
 
             if(this.useSharedTokenAuth) {
                 this.zc.internalData.verifyKey = sharedData.verifyKey;
@@ -435,7 +435,7 @@ export default class StateServerEngine
 }
 
 interface SharedData {
-    tokenCheckKey : string,
+    tokenClusterKey : string,
     verifyKey ?: any,
     signKey ?: any,
     authAlgorithm ?: string

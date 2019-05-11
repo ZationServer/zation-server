@@ -42,7 +42,7 @@ export default class ZationReqHandler
         const validCheckProcessor = new ValidCheckProcessor(this.zc,worker);
         this.mainRequestProcessor = new MainRequestProcessor(this.zc,worker,validCheckProcessor);
         this.socketProcessor = new SocketRequestProcessor(this.zc);
-        this.httpProcessor = new HttpRequestProcessor(this.zc,worker);
+        this.httpProcessor = new HttpRequestProcessor(this.zc,worker,worker.getTokenClusterKeyCheck());
 
         this.returner = new Returner(this.zc);
 

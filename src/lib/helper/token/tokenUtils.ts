@@ -100,7 +100,7 @@ export default class TokenUtils
     static generateToken(tokenCheckKey : string) : PrepareZationToken {
         return {
             zationTokenId : uniqid(),
-            zationCheckKey : tokenCheckKey
+            zationTokenClusterKey : tokenCheckKey
         };
     }
 
@@ -212,4 +212,22 @@ export default class TokenUtils
         }
     }
 
+    /**
+     * Creates a closure for checking the token check key.
+     */
+    static createTokenClusterKeyChecker(zc : ZationConfig) : TokenClusterKeyCheckFunction {
+        if(zc.mainConfig.useTokenClusterKeyCheck){
+            return (token) => {
+                if(token.zationTokenClusterKey !== zc.internalData.tokenClusterKey) {
+                    throw new Error('Wrong or missing token cluster key in the token.')
+                }
+            }
+        }
+        else {
+            return () => {};
+        }
+    }
+
 }
+
+export type TokenClusterKeyCheckFunction = (token : ZationToken) => void;

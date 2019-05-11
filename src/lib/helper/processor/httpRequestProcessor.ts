@@ -13,7 +13,7 @@ import BackError                    from "../../api/BackError";
 import Logger                       from "../logger/logger";
 import ZationReqUtils               from "../utils/zationReqUtils";
 import {MainBackErrors}             from "../zationBackErrors/mainBackErrors";
-import TokenUtils                   from "../token/tokenUtils";
+import TokenUtils, {TokenClusterKeyCheckFunction} from "../token/tokenUtils";
 import JsonConverter                from "../utils/jsonConverter";
 import ZationConfigFull             from "../configManager/zationConfigFull";
 import MiddlewareUtils              from "../utils/middlewareUtils";
@@ -23,12 +23,14 @@ export default class HttpRequestProcessor
     private readonly zc : ZationConfigFull;
     private readonly debug : boolean;
     private readonly worker : ZationWorker;
+    private readonly tokenClusterKeyCheck : TokenClusterKeyCheckFunction;
     private readonly aePreparedPart : AEPreparedPart;
 
-    constructor(zc : ZationConfigFull, worker : ZationWorker) {
+    constructor(zc : ZationConfigFull, worker : ZationWorker,tokenClusterKeyCheck : TokenClusterKeyCheckFunction) {
         this.zc = zc;
         this.debug = zc.isDebug();
         this.worker = worker;
+        this.tokenClusterKeyCheck = tokenClusterKeyCheck;
         this.aePreparedPart = worker.getAEPreparedPart();
     }
 
@@ -100,8 +102,15 @@ export default class HttpRequestProcessor
                 const token : ZationToken = await TokenUtils.verifyToken(zationData.to,this.zc);
                 req.zationToken = token;
 
-                //throws task error if token is not valid.
+                //throws back error if token is not valid.
                 TokenUtils.checkToken(token,this.aePreparedPart);
+
+                try{
+                    this.tokenClusterKeyCheck(token);
+                }
+                catch (err) {
+                    HttpRequestProcessor.middlewareAuthNext(err);
+                }
 
                 //will throw if auth is blocked
                 await MiddlewareUtils.checkMiddleware

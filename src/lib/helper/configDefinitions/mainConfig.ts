@@ -339,20 +339,18 @@ export interface MainConfig
      */
     stateServerPort  ?: number | null;
     /**
-     * This property indicates if the server should use the token check key.
+     * This property indicates if the server should check the token cluster key.
      * This key is stored in every token that will be created.
      * Every server in a cluster has the same key.
-     * Whenever the client authentication process takes place the
-     * token check key will be checked if it is equal with the server one.
-     * If all servers are crashed and will restart the token
-     * check key will be newly generated.
+     * Whenever the client authentication process takes place the token cluster
+     * key will be checked if it is equal with the server one.
+     * If all servers are crashed and will restart the token cluster key will be newly generated.
      * That means that all previously made tokens are no longer valid.
-     * Notice that a token is also not valid on another cluster or
-     * single started server even if the auth public key and
-     * algorithm or auth secret key is the same.
+     * Notice that a token is also not valid on another cluster or single started server even
+     * if the auth public key and algorithm or auth secret key is the same.
      * @default true
      */
-    useTokenCheckKey ?: boolean;
+    useTokenClusterKeyCheck ?: boolean;
     /**
      * This property indicates that the server should share the auth options
      * for verifying and sign tokens with all other zation servers in the cluster.
@@ -598,7 +596,7 @@ export interface InternalMainConfig extends MainConfig {
     authPrivateKey  : string | null;
     authPublicKey  : string | null;
     validationCheckLimit : number;
-    useTokenCheckKey : boolean;
+    useTokenClusterKeyCheck : boolean;
     clusterShareTokenAuth  : boolean;
     scLogLevel  : number;
     socketChannelLimit  : number;

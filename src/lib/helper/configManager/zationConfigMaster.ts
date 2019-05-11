@@ -33,7 +33,7 @@ export default class ZationConfigMaster extends ZationConfig {
             typeof this.mainConfig.authPrivateKey === 'string';
 
         return {
-            tokenCheckKey : crypto.randomBytes(32).toString('hex'),
+            tokenClusterKey : crypto.randomBytes(32).toString('hex'),
             // @ts-ignore
             verifyKey : privateAndPublicSet ? this.mainConfig.authPublicKey : this.mainConfig.authSecretKey,
             // @ts-ignore

@@ -17,7 +17,7 @@ export default class AuthEngine
     protected readonly aePreparedPart : AEPreparedPart;
     protected readonly shBridge : BaseSHBridge;
     protected readonly worker : ZationWorker;
-    protected readonly tokenCheckKey : string;
+    protected readonly tokenClusterKey : string;
 
     protected currentDefault : boolean;
     protected currentUserGroup : string | undefined;
@@ -28,7 +28,7 @@ export default class AuthEngine
         this.aePreparedPart = worker.getAEPreparedPart();
         this.shBridge       = shBridge;
         this.worker         = worker;
-        this.tokenCheckKey  = worker.getZationConfig().internalData.tokenCheckKey;
+        this.tokenClusterKey  = worker.getZationConfig().internalData.tokenClusterKey;
 
         this.currentDefault   = true;
         this.currentUserGroup = this.aePreparedPart.getDefaultGroup();
@@ -76,7 +76,7 @@ export default class AuthEngine
 
             const token : PrepareZationToken =
                 this.shBridge.hasToken() ?
-                {} : TokenUtils.generateToken(this.tokenCheckKey);
+                {} : TokenUtils.generateToken(this.tokenClusterKey);
 
             token.zationAuthUserGroup = authUserGroup;
             token.zationCustomVariables = tokenCustomVar;
