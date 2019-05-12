@@ -50,4 +50,3 @@ export default class ZationSPC_Auth extends Controller
         }
     }
 }
-
