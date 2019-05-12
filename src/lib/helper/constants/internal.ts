@@ -12,6 +12,7 @@ export enum HttpGetRequest
     VALI_REQ                     = 'vr',
     CONTROLLER                   = 'c',
     SYSTEM_CONTROLLER            = 'sc',
+    API_LEVEL                    = 'al',
     INPUT                        = 'i',
     TOKEN                        = 't'
 }
@@ -39,6 +40,7 @@ export interface ZationRequest {
     t ?: ZationTask
     a ?: {
         i : any,
+        al ?: number
     },
     v ?: ZationValidationCheck | number
 }
@@ -52,7 +54,8 @@ sc = systemController
 export interface ZationTask {
     i : any,
     c ?: string,
-    sc ?: string
+    sc ?: string,
+    al ?: number
 }
 
 //legend
@@ -64,7 +67,8 @@ sc = systemController
 export interface ZationValidationCheck {
     i : {ip : string | string[], v : any}[]
     c ?: string,
-    sc ?: string
+    sc ?: string,
+    al ?: number
 }
 
 //legend

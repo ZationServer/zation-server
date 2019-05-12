@@ -27,7 +27,7 @@ export default class ZationReqUtils
     }
 
     static isSystemControllerReq(task : ZationTask) : boolean {
-        return typeof task.sc === 'string' && !task.c;
+        return typeof task.sc === 'string' && typeof task.c !== 'string';
     }
 
     public static async convertGetRequest(query : object) : Promise<object>
@@ -46,7 +46,8 @@ export default class ZationReqUtils
         //task
         if(query.hasOwnProperty(HttpGetRequest.CONTROLLER) || query.hasOwnProperty(HttpGetRequest.SYSTEM_CONTROLLER)) {
             res.t = {
-                i : input
+                i : input,
+                ...(typeof query[HttpGetRequest.API_LEVEL] === 'number' ? {al : query[HttpGetRequest.API_LEVEL]} : {})
             };
             if(query.hasOwnProperty(HttpGetRequest.CONTROLLER)) {
                 res.t.c = query[HttpGetRequest.CONTROLLER];
@@ -70,7 +71,8 @@ export default class ZationReqUtils
         const input : any = await JsonConverter.parse(query[HttpGetRequest.INPUT]);
 
         const main : ZationValidationCheck = {
-            i : input
+            i : input,
+            ...(typeof query[HttpGetRequest.API_LEVEL] === 'number' ? {al : query[HttpGetRequest.API_LEVEL]} : {})
         };
         if(query.hasOwnProperty(HttpGetRequest.CONTROLLER)) {
             main.c = query[HttpGetRequest.CONTROLLER];
@@ -110,12 +112,8 @@ export default class ZationReqUtils
 
     static getControllerName(task : object, isSystemController : boolean) : string
     {
-        if(!isSystemController) {
-            return task[nameof<ZationTask>(s => s.c)];
-        }
-        else {
-            return task[nameof<ZationTask>(s => s.sc)];
-        }
+        return !isSystemController ? task[nameof<ZationTask>(s => s.c)] :
+            task[nameof<ZationTask>(s => s.sc)];
     }
 
     static isValidationCheckReq(zationReq : ZationRequest) : boolean {

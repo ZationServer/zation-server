@@ -38,7 +38,7 @@ export default class HttpRequestProcessor
     async prepareReq(req,res,reqId : string)
     {
         // @ts-ignore
-        if (req.method === 'POST' && !!req.body[zc.mainConfig.postKey]) {
+        if (req.method === 'POST' && req.body[zc.mainConfig.postKey]) {
             if(this.debug){
                 Logger.printDebugInfo(`Http Post Request id: ${reqId} -> `,req.body[this.zc.mainConfig.postKey]);
             }

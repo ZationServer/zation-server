@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import UpSocket             from "../sc/socket";
 import SidBuilder         from "../utils/sidBuilder";
-import BaseShBridgeSocket from "../bridges/baseShBridgeSocket";
+import BaseSHBridgeSocket from "../bridges/baseSHBridgeSocket";
 import AuthEngine         from "../auth/authEngine";
 import SocketInfo         from "../infoObjects/socketInfo";
 import ZationWorker     = require("../../main/zationWorker");
@@ -53,7 +53,7 @@ export default class SocketUpgradeEngine
         socket.tid = Date.now() + socket.id;
 
         //engine build
-        const baseSHBridge = new BaseShBridgeSocket(socket);
+        const baseSHBridge = new BaseSHBridgeSocket(socket);
         // @ts-ignore
         socket.baseSHBridge = baseSHBridge;
 

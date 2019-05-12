@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {ZationToken}        from "../constants/internal";
 import {IncomingMessage}    from "http";
-import BaseShBridgeSocket   from "../bridges/baseShBridgeSocket";
+import BaseSHBridgeSocket   from "../bridges/baseSHBridgeSocket";
 import AuthEngine           from "../auth/authEngine";
 import SocketInfo           from "../infoObjects/socketInfo";
 
@@ -74,7 +74,7 @@ export default interface UpSocket extends HandshakeSocket {
     readonly tid : string;
 
     zationSocketVariables : Record<string,any>;
-    readonly baseSHBridge : BaseShBridgeSocket;
+    readonly baseSHBridge : BaseSHBridgeSocket;
     readonly authEngine : AuthEngine;
     readonly socketInfo : SocketInfo;
 }

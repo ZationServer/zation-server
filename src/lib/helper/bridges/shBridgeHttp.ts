@@ -9,7 +9,7 @@ import * as core         from "express-serve-static-core";
 import {IncomingMessage} from "http";
 import SHBridge          from "./shBridge";
 import BaseSHBridgeSH    from "./baseSHBridgeSH";
-import UpSocket            from "../sc/socket";
+import UpSocket          from "../sc/socket";
 import JwtOptions        from "../constants/jwt";
 import AuthEngine        from "../auth/authEngine";
 import ZationWorker    = require("../../main/zationWorker");

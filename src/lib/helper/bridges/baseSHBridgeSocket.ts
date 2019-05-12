@@ -16,7 +16,7 @@ import AuthEngine          from "../auth/authEngine";
 /**
  * BaseShBridge implementation for socket.
  */
-export default class BaseShBridgeSocket extends BaseSHBridgeSH implements BaseSHBridge
+export default class BaseSHBridgeSocket extends BaseSHBridgeSH implements BaseSHBridge
 {
     protected readonly socket : UpSocket;
 
