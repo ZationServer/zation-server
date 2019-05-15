@@ -62,8 +62,9 @@ export interface HandshakeSocket extends ScSocket {
     readonly handshakeVariables : Record<string,any>;
     readonly zationClient : {
         readonly version : number,
-        readonly system : string
-    }
+        readonly system : string,
+    },
+    readonly apiLevel : number | undefined
 }
 
 /**

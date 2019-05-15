@@ -63,6 +63,7 @@ export default class ConfigLoader {
         zationConsoleLog: true,
         scConsoleLog: false,
         useScUws: true,
+        defaultClientApiLevel : 1,
         clusterAuthKey: null,
         stateServerHost: null,
         stateServerPort: null,

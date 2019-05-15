@@ -26,4 +26,10 @@ export default interface SHBridge extends BaseSHBridge
     getRequest() : core.Request;
 
     isValidationCheckReq() : boolean;
+
+    getApiLevel() : number;
+
+    getConnectionApiLevel() : number | undefined;
+
+    getRequestApiLevel() : number | undefined;
 }

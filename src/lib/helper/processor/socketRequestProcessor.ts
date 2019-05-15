@@ -13,10 +13,12 @@ import ZationReqUtils        from "../utils/zationReqUtils";
 export default class SocketRequestProcessor
 {
     private readonly zc : ZationConfig;
+    private readonly defaultApiLevel : number;
     private readonly debug : boolean;
 
     constructor(zc : ZationConfig) {
         this.zc = zc;
+        this.defaultApiLevel = zc.mainConfig.defaultClientApiLevel;
         this.debug = this.zc.isDebug();
     }
 
@@ -31,7 +33,7 @@ export default class SocketRequestProcessor
         }
 
         //check for validationCheckRequest
-        return new SHBridgeSocket(socket,reqId,input,ZationReqUtils.isValidationCheckReq(input));
+        return new SHBridgeSocket(socket,reqId,input,ZationReqUtils.isValidationCheckReq(input),this.defaultApiLevel);
     }
 
 }

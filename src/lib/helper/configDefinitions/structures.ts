@@ -93,6 +93,7 @@ Main[nameof<MainConfig>(s => s.timeZone)]           = {types : ['string'],isOpti
 Main[nameof<MainConfig>(s => s.zationConsoleLog)]   = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.scConsoleLog)]       = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.useScUws)]           = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.defaultClientApiLevel)]   = {types : ['number'],isOptional : true};
 Main[nameof<MainConfig>(s => s.useTokenClusterKeyCheck)] = {types : ['boolean'],isOptional : true};
 
 Main[nameof<MainConfig>(s => s.workers)]

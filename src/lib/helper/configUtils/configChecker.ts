@@ -472,6 +472,21 @@ export default class ConfigChecker
         ConfigCheckerTools.assertStructure(Structures.Main, this.zcLoader.mainConfig, ConfigNames.MAIN, this.ceb);
         this.checkPanelUserMainConfig();
         this.checkOrigins();
+        this.checkDefaultClientApiLevel();
+    }
+
+    private checkDefaultClientApiLevel()
+    {
+        if(this.zcLoader.mainConfig.defaultClientApiLevel) {
+            if(!Number.isInteger(this.zcLoader.mainConfig.defaultClientApiLevel)){
+                this.ceb.addConfigError(new ConfigError(ConfigNames.MAIN,
+                    `The defaultClientApiLevel must be an integer.`));
+            }
+            if(this.zcLoader.mainConfig.defaultClientApiLevel < 1){
+                this.ceb.addConfigError(new ConfigError(ConfigNames.MAIN,
+                    `The defaultClientApiLevel cannot be lesser than one..`));
+            }
+        }
     }
 
     private checkOrigins()

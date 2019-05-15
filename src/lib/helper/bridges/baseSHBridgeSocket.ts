@@ -8,7 +8,7 @@ import UpSocket              from "../sc/socket";
 import {ZationToken}       from "../constants/internal";
 import {IncomingMessage}   from "http";
 import BaseSHBridge        from "./baseSHBridge";
-import BaseSHBridgeSH      from "./baseSHBridgeSH";
+import BaseSHBridgeDefault      from "./baseSHBridgeDefault";
 import TokenUtils          from "../token/tokenUtils";
 import JwtOptions          from "../constants/jwt";
 import AuthEngine          from "../auth/authEngine";
@@ -16,7 +16,7 @@ import AuthEngine          from "../auth/authEngine";
 /**
  * BaseShBridge implementation for socket.
  */
-export default class BaseSHBridgeSocket extends BaseSHBridgeSH implements BaseSHBridge
+export default class BaseSHBridgeSocket extends BaseSHBridgeDefault implements BaseSHBridge
 {
     protected readonly socket : UpSocket;
 

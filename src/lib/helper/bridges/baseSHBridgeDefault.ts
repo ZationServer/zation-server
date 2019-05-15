@@ -14,7 +14,7 @@ const  IP : any           = require('ip');
 /**
  * This class adds method they are same on both sides. (http/socket)
  */
-export default abstract class BaseSHBridgeSH implements BaseSHBridge {
+export default abstract class BaseSHBridgeDefault implements BaseSHBridge {
 
     abstract deauthenticate(): void;
     abstract getHandshakeRequest(): IncomingMessage;

@@ -162,6 +162,12 @@ export interface MainConfig
      */
     useScUws  ?: boolean;
     /**
+     * The default API level a client will get when there is no API level provided in the request or connection.
+     * Notice that the value cant be lesser than 1 and needs to be an integer.
+     * @default 1
+     */
+    defaultClientApiLevel  ?: number;
+    /**
      * Specifies if the zation panel is activated.
      * @default false
      */
@@ -586,6 +592,7 @@ export interface InternalMainConfig extends MainConfig {
     zationConsoleLog  : boolean;
     scConsoleLog  : boolean;
     useScUws  : boolean;
+    defaultClientApiLevel : number;
     usePanel  : boolean;
     provideClientJs  : boolean;
     authStart  : boolean;

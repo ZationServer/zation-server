@@ -8,22 +8,25 @@ import {ZationHttpInfo, ZationRequest, ZationToken} from "../constants/internal"
 import * as core         from "express-serve-static-core";
 import {IncomingMessage} from "http";
 import SHBridge          from "./shBridge";
-import BaseSHBridgeSH    from "./baseSHBridgeSH";
 import UpSocket          from "../sc/socket";
 import JwtOptions        from "../constants/jwt";
 import AuthEngine        from "../auth/authEngine";
 import ZationWorker    = require("../../main/zationWorker");
+import BaseSHBridgeDefault from "./baseSHBridgeDefault";
 
 /**
  * BaseShBridge implementation for http.
  */
-export default class SHBridgeHttp extends BaseSHBridgeSH implements SHBridge {
+export default class SHBridgeHttp extends BaseSHBridgeDefault implements SHBridge {
 
     protected readonly httpRes : core.Response;
     protected readonly httpReq : core.Request & {zationToken ?: ZationToken};
     protected readonly data : ZationRequest;
     protected readonly reqId : string;
     protected readonly validationCheckReq : boolean;
+
+    protected readonly requestApiLevel : number | undefined;
+    protected readonly defaultApiLevel : number;
 
     protected readonly authEngine : AuthEngine;
 
@@ -35,6 +38,7 @@ export default class SHBridgeHttp extends BaseSHBridgeSH implements SHBridge {
                 httpReq : core.Request,
                 reqId : string,data : ZationRequest,
                 validationCheckReq : boolean,
+                defaultApiLevel : number,
                 worker : ZationWorker)
     {
 
@@ -48,6 +52,10 @@ export default class SHBridgeHttp extends BaseSHBridgeSH implements SHBridge {
         if(this.httpRes['zationInfo'] === undefined) {
             this.httpRes['zationInfo'] = [];
         }
+
+        this.defaultApiLevel = defaultApiLevel;
+        this.requestApiLevel = typeof data.al === 'number' ?
+            Math.floor(data.al) : undefined;
 
         this.authEngine = new AuthEngine(this,worker);
 
@@ -147,6 +155,18 @@ export default class SHBridgeHttp extends BaseSHBridgeSH implements SHBridge {
 
     getJwtSignOptions() : JwtOptions {
         return this.currentJwtSignOptions;
+    }
+
+    getApiLevel(): number {
+        return this.requestApiLevel || this.defaultApiLevel;
+    }
+
+    getConnectionApiLevel(): number | undefined {
+        return undefined;
+    }
+
+    getRequestApiLevel(): number | undefined {
+        return this.requestApiLevel;
     }
 }
 

@@ -25,9 +25,11 @@ export default class HttpRequestProcessor
     private readonly worker : ZationWorker;
     private readonly tokenClusterKeyCheck : TokenClusterKeyCheckFunction;
     private readonly aePreparedPart : AEPreparedPart;
+    private readonly defaultApiLevel : number;
 
     constructor(zc : ZationConfigFull, worker : ZationWorker,tokenClusterKeyCheck : TokenClusterKeyCheckFunction) {
         this.zc = zc;
+        this.defaultApiLevel = zc.mainConfig.defaultClientApiLevel;
         this.debug = zc.isDebug();
         this.worker = worker;
         this.tokenClusterKeyCheck = tokenClusterKeyCheck;
@@ -92,7 +94,7 @@ export default class HttpRequestProcessor
     {
         //check for validationCheckRequest
         if(ZationReqUtils.isValidationCheckReq(zationData)) {
-            return new SHBridgeHttp(res,req,reqId,zationData,true,this.worker);
+            return new SHBridgeHttp(res,req,reqId,zationData,true,this.defaultApiLevel,this.worker);
         }
         else
         {
@@ -116,7 +118,7 @@ export default class HttpRequestProcessor
                 await MiddlewareUtils.checkMiddleware
                 (this.zc.eventConfig.middlewareAuthenticate,HttpRequestProcessor.middlewareAuthNext,this.worker.getPreparedSmallBag(),new ZationTokenInfo(token));
             }
-            return new SHBridgeHttp(res,req,reqId,zationData,false,this.worker);
+            return new SHBridgeHttp(res,req,reqId,zationData,false,this.defaultApiLevel,this.worker);
         }
     }
 

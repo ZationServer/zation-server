@@ -763,6 +763,11 @@ class ZationWorker extends SCWorker
                     system : query.system,
                 };
 
+                if(typeof query.apiLevel === 'string') {
+                    // @ts-ignore
+                    socket.apiLevel = parseInt(query.apiLevel);
+                }
+
                 const userMidRes = await
                     MiddlewareUtils.checkMiddleware
                     (eventConfig.sc_middlewareHandshakeSc,next,this.getPreparedSmallBag(),req);
