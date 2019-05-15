@@ -32,7 +32,9 @@ export default class ZationReqUtils
 
     public static async convertGetRequest(query : object) : Promise<object>
     {
-        const res : ZationRequest = {};
+        const res : ZationRequest =
+            typeof query[HttpGetRequest.API_LEVEL] === 'number' ? {al : query[HttpGetRequest.API_LEVEL]} : {};
+
         //input convert
         const input = typeof query[HttpGetRequest.INPUT] === 'string' ?
             await JsonConverter.parse(query[HttpGetRequest.INPUT]) : undefined;
@@ -47,7 +49,6 @@ export default class ZationReqUtils
         if(query.hasOwnProperty(HttpGetRequest.CONTROLLER) || query.hasOwnProperty(HttpGetRequest.SYSTEM_CONTROLLER)) {
             res.t = {
                 i : input,
-                ...(typeof query[HttpGetRequest.API_LEVEL] === 'number' ? {al : query[HttpGetRequest.API_LEVEL]} : {})
             };
             if(query.hasOwnProperty(HttpGetRequest.CONTROLLER)) {
                 res.t.c = query[HttpGetRequest.CONTROLLER];
@@ -66,13 +67,14 @@ export default class ZationReqUtils
 
     public static async convertValidationGetRequest(query : object) : Promise<object>
     {
-        const res : ZationRequest = {};
+        const res : ZationRequest =
+            typeof query[HttpGetRequest.API_LEVEL] === 'number' ? {al : query[HttpGetRequest.API_LEVEL]} : {};
+
         //input convert
         const input : any = await JsonConverter.parse(query[HttpGetRequest.INPUT]);
 
         const main : ZationValidationCheck = {
-            i : input,
-            ...(typeof query[HttpGetRequest.API_LEVEL] === 'number' ? {al : query[HttpGetRequest.API_LEVEL]} : {})
+            i : input
         };
         if(query.hasOwnProperty(HttpGetRequest.CONTROLLER)) {
             main.c = query[HttpGetRequest.CONTROLLER];
