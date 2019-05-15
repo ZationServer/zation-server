@@ -2492,8 +2492,8 @@ export default class SmallBag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Send message to all workers on compete system.
-     * You can react on the message with the workerMessage event in the event config.
+     * Send a message to all workers on the complete system.
+     * You can react to the message with the worker message event in the event config.
      */
     async sendWorkerMessage(data : any) : Promise<void> {
         await this.exchangeEngine.publishSpecialTaskToWorker
