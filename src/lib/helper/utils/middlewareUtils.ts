@@ -16,18 +16,23 @@ export default class MiddlewareUtils
     static async checkMiddleware(func : Function | undefined, next : Function, ...params : any[]) : Promise<boolean> {
         if(typeof func === 'function') {
             const res  = await func(...params);
-            if(typeof res === "boolean" && res) {
-                return true;
+            if(typeof res === "boolean") {
+                if(res){
+                    return true;
+                }
+                else {
+                    const err : any = new Error('Access is in middleware from zation event blocked!');
+                    err.code = 4650;
+                    next(err,true);
+                    return false;
+                }
             }
             else if(typeof res === 'object') {
                 next(res,true);
                 return false;
             }
             else {
-                const err : any = new Error('Access is in middleware from zation event blocked!');
-                err.code = 4650;
-                next(err,true);
-                return false;
+                return true;
             }
         }
         else {
