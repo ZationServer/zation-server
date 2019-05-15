@@ -41,7 +41,7 @@ export type SocketDisconnectionFunction = (smallBag : SmallBag, socketInfo : Soc
 export type SocketAuthenticatedFunction = (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
 export type SocketDeauthenticatedFunction = (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
 
-export type MiddlewareAuthenticationFunction = (smallBag : SmallBag,zationToken  : ZationToken) => Promise<boolean | object | any> | boolean | object | any;
+export type MiddlewareAuthenticationFunction = (smallBag : SmallBag,zationToken : ZationToken) => Promise<boolean | object | any> | boolean | object | any;
 export type MiddlewareSocketFunction = (smallBag : SmallBag,socket : HandshakeSocket) => Promise<boolean | object | any> | boolean | object | any;
 
 export type SocketErrorFunction = (smallBag : SmallBag, socket : UpSocket, error : object) => Promise<void> | void;
@@ -157,7 +157,19 @@ export interface EventConfig
      */
     socketDeauthenticated  ?: SocketDeauthenticatedFunction | SocketDeauthenticatedFunction[];
 
+    /**
+     * Middleware event where you can block wrong jwt tokens.
+     * To block them, you only need to return an object (that can be an error) or false.
+     * If you want to allow them, you have to return nothing or a true.
+     * @example (smallBag,zationToken) => {}
+     */
     middlewareAuthenticate  ?: MiddlewareAuthenticationFunction;
+    /**
+     * Middleware event where you can block sockets.
+     * To block them, you only need to return an object (that can be an error) or false.
+     * If you want to allow them, you have to return nothing or a true.
+     * @example (smallBag,socket) => {}
+     */
     middlewareSocket ?: MiddlewareSocketFunction;
 
     //socket cluster events
