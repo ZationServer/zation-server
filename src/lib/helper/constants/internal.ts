@@ -37,10 +37,10 @@ TOKEN                        = 'to',
 export interface ZationRequest {
     s ?: string,
     to ?: string,
+    al ?: number,
     t ?: ZationTask
     a ?: {
         i : any,
-        al ?: number
     },
     v ?: ZationValidationCheck | number
 }
@@ -54,8 +54,7 @@ sc = systemController
 export interface ZationTask {
     i : any,
     c ?: string,
-    sc ?: string,
-    al ?: number
+    sc ?: string
 }
 
 //legend
@@ -67,8 +66,7 @@ sc = systemController
 export interface ZationValidationCheck {
     i : {ip : string | string[], v : any}[]
     c ?: string,
-    sc ?: string,
-    al ?: number
+    sc ?: string
 }
 
 //legend
