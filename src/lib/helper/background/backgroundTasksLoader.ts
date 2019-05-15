@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {BackgroundTask}   from "../configDefinitions/appConfig";
 
-type SetTask = (name : string,time : any,task : any) => void;
+type SetTask = (name : string,time : any,clusterSafe : boolean,task : any) => void;
 
 export default class BackgroundTasksLoader
 {
@@ -42,15 +42,16 @@ export default class BackgroundTasksLoader
        }
    }
 
-   private static timeSetter(func : SetTask,key : string,task,name,bkt)
+   private static timeSetter(func : SetTask,key : string,task,name : string,bkt : BackgroundTask)
    {
+       const clusterSafe = typeof bkt.clusterSafe === 'boolean' ? bkt.clusterSafe : true;
        if(Array.isArray(bkt[key])) {
            for(let i = 0; i < bkt[key].length; i ++) {
-               func(name,bkt[key][i],task);
+               func(name,bkt[key][i],clusterSafe,task);
            }
        }
        else {
-           func(name,bkt[key],task);
+           func(name,bkt[key],clusterSafe,task);
        }
    }
 

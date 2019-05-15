@@ -20,12 +20,12 @@ export default class BackgroundTasksSender
         this.master = master;
     }
 
-    public setEveryBackgroundTask(name,time)
+    public setEveryBackgroundTask(name : string,time : any,clusterSafe : boolean)
     {
         if(Number.isInteger(time))
         {
             setInterval(() => {
-                this.runUserBackgroundTask(name);
+                this.runUserBackgroundTask(name,clusterSafe);
             },time);
         }
         else if(typeof time === 'object')
@@ -37,28 +37,30 @@ export default class BackgroundTasksSender
                 if(tillMs && tillMs > 0) {
                     Logger.printDebugInfo(`Every Background Task: ${name} is planed to -> ${tillFormat}`);
                     setTimeout(() => {
-                        this.runUserBackgroundTask(name);
+                        this.runUserBackgroundTask(name,clusterSafe);
                         set();
                     },tillMs);
                 }
                 else {
-                    throw Error(`Planed every background task with name ${name} goes wrong.`);
+                    throw Error(`Planning of every background task with name ${name} goes wrong.`);
                 }
             };
             set();
         }
     }
 
-    private runUserBackgroundTask(name) {
-        this.master.sendBackgroundTask({userBackgroundTask : name});
+    private runUserBackgroundTask(name : string,clusterSafe : boolean) {
+        if(!clusterSafe || (clusterSafe && this.master.isClusterLeader())){
+            this.master.sendToRandomWorker({userBackgroundTask : name});
+        }
     }
 
-    public setAtBackgroundTask(name,time)
+    public setAtBackgroundTask(name : string,time : any,clusterSafe : boolean)
     {
         if(Number.isInteger(time))
         {
             setTimeout(() => {
-                this.runUserBackgroundTask(name);
+                this.runUserBackgroundTask(name,clusterSafe);
             },time);
         }
         else if(typeof time === 'object')
@@ -69,11 +71,11 @@ export default class BackgroundTasksSender
             if(tillMs && tillMs > 0) {
                 Logger.printDebugInfo(`At Background Task: ${name} is planed to -> ${tillFormat}`);
                 setTimeout(() => {
-                    this.runUserBackgroundTask(name);
+                    this.runUserBackgroundTask(name,clusterSafe);
                 },tillMs);
             }
             else {
-                throw Error(`Planed at background task with name ${name} goes wrong.`);
+                throw Error(`Planning of at background task with name ${name} goes wrong.`);
             }
         }
     }

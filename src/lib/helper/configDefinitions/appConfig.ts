@@ -176,6 +176,14 @@ export interface BackgroundTask
      * },
      */
     task  ?: TaskFunction | TaskFunction[];
+    /**
+     * Indicates if this task should be cluster save.
+     * That means if you have multiple servers in a cluster,
+     * only one of them will executing the task. Otherwise,
+     * every server will perform that task.
+     * @default true
+     */
+    clusterSafe ?: boolean;
 }
 
 export default interface BagExtension {

@@ -48,10 +48,6 @@ export default class ZationMaster {
 
     private clusterLeader: boolean = false;
 
-    //backgroundTasks
-    private backgroundTaskActive: boolean = true;
-    private backgroundTaskInit: boolean = false;
-
     //prepareClient
     private fullClientJs : string;
     private serverSettingsJs : string;
@@ -164,6 +160,10 @@ export default class ZationMaster {
             this.fullClientJs = ClientPrepare.buildClientJs(this.serverSettingsJs);
             Logger.printStartDebugInfo(`The Master has prepared the client js file.`, true);
         }
+
+        Logger.startStopWatch();
+        this.startBackgroundTasks();
+        Logger.printStartDebugInfo('Master init the background tasks.',true);
 
         this.checkClusterMode();
         if (this.stateServerActive) {
@@ -325,8 +325,6 @@ export default class ZationMaster {
         {
            if(!this.stateServerActive) {
                //not in cluster mode
-               this.initBackgroundTasks();
-               this.backgroundTaskActive = true;
                this.clusterLeader = true;
            }
            else {
@@ -406,13 +404,6 @@ export default class ZationMaster {
         });
     }
 
-    private initBackgroundTasks() {
-        Logger.startStopWatch();
-        this.startBackgroundTasks();
-        this.backgroundTaskInit = true;
-        Logger.printStartDebugInfo('Master init the background tasks.',true);
-    }
-
     private async emitStartedEvent() {
         if(this.zcLoader.eventConfig.started) {
             let started = this.zcLoader.eventConfig.started;
@@ -489,23 +480,16 @@ export default class ZationMaster {
     /**
      * Activate this master to the cluster leader.
      */
-    public activateClusterLeader() : void
-    {
+    public activateClusterLeader() : void {
         Logger.printDebugInfo(`This Instance '${this.master.options.instanceId}' becomes the cluster leader.`);
-        if(!this.backgroundTaskInit) {
-            this.initBackgroundTasks();
-        }
-        this.backgroundTaskActive = true;
         this.clusterLeader = true;
     }
 
     /**
      * Deactivate this master cluster leadership.
      */
-    public deactivateClusterLeader() : void
-    {
+    public deactivateClusterLeader() : void {
         Logger.printDebugInfo(`This Instance '${this.master.options.instanceId}' gets leadership taken off.`);
-        this.backgroundTaskActive = false;
         this.clusterLeader = false;
     }
 
@@ -537,24 +521,14 @@ export default class ZationMaster {
         const bkTsSender = new BackgroundTasksSender(this,this.zc);
 
         const bkTS = new BackgroundTasksLoader(
-            (name,time) => {
-            bkTsSender.setEveryBackgroundTask(name,time);
+            (name,time,clusterSafe) => {
+            bkTsSender.setEveryBackgroundTask(name,time,clusterSafe);
         },
-            (name,time) => {
-            bkTsSender.setAtBackgroundTask(name,time);
+            (name,time,clusterSafe) => {
+            bkTsSender.setAtBackgroundTask(name,time,clusterSafe);
         });
 
         bkTS.setUserBackgroundTasks(this.zcLoader.appConfig.backgroundTasks);
-    }
-
-    /**
-     * Send a background task to a random worker.
-     * @param obj
-     */
-    public sendBackgroundTask(obj) {
-        if(this.backgroundTaskActive) {
-            this.sendToRandomWorker(obj);
-        }
     }
 
     /**
@@ -563,22 +537,16 @@ export default class ZationMaster {
      */
     public sendToRandomWorker(obj)
     {
-        let workerId = this.getRandomWorkerId();
-
-        if(workerId !== undefined)
-        {
-            if(obj.userBackgroundTask !== undefined)
-            {
-                Logger.printDebugInfo
-                (`The Worker with id: ${workerId}, starts to invoke background task : '${obj.userBackgroundTask}'`);
-            }
-            else if(obj.systemBackgroundTasks !== undefined && obj.systemBackgroundTasks)
-            {
-                Logger.printDebugInfo
-                (`The Worker with id: ${workerId}, starts to invoke system background tasks`);
-            }
-
+        const workerId = this.getRandomWorkerId();
+        if(workerId !== undefined) {
             this.master.sendToWorker(workerId,obj)
         }
+    }
+
+    /**
+     * Returns if this master is the cluster leader.
+     */
+    public isClusterLeader() : boolean {
+        return this.clusterLeader;
     }
 }

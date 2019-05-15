@@ -6,8 +6,9 @@ GitHub: LucaCode
 
 import {BackgroundTask}   from "../configDefinitions/appConfig";
 import ZationConfigFull from "../configManager/zationConfigFull";
+import FuncUtils from "../utils/funcUtils";
 
-type SaveTask = (name : string, task : any) => void;
+type SaveTask = (name : string, task : ((...any : any[])=> void)) => void;
 
 export default class BackgroundTasksWorkerSaver
 {
@@ -33,7 +34,12 @@ export default class BackgroundTasksWorkerSaver
     {
         const task = bkTask.task;
         if(task !== undefined) {
-            this.saveTask(name,task);
+            if(Array.isArray(task)){
+                this.saveTask(name,FuncUtils.createFuncArrayAsyncInvoker(task));
+            }
+            else {
+                this.saveTask(name,task);
+            }
         }
     }
 

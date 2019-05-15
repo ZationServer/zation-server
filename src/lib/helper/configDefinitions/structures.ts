@@ -41,6 +41,7 @@ const BackgroundTask = {};
 BackgroundTask[nameof<BackgroundTask>(s => s.every)] = {types : ['number','array','object'],isOptional : true};
 BackgroundTask[nameof<BackgroundTask>(s => s.at)]    = {types : ['number','array','object'],isOptional : true};
 BackgroundTask[nameof<BackgroundTask>(s => s.task)]  = {types : ['function','array'],arrayType : 'function',isOptional : true};
+BackgroundTask[nameof<BackgroundTask>(s => s.clusterSafe)] = {types : ['boolean'],isOptional : true};
 
 const BagExtension = {};
 BagExtension[nameof<BagExtension>(s => s.bag)]          = {types : ['object'],isOptional : false};

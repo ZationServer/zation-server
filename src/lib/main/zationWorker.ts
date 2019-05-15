@@ -40,7 +40,6 @@ import Logger             from "../helper/logger/logger";
 import ConfigPreCompiler  from "../helper/configUtils/configPreCompiler";
 import PanelEngine        from "../helper/panel/panelEngine";
 import SidBuilder         from "../helper/utils/sidBuilder";
-import FuncUtils          from "../helper/utils/funcUtils";
 import ChUtils            from "../helper/channel/chUtils";
 import TokenUtils, {TokenClusterKeyCheckFunction} from "../helper/token/tokenUtils";
 import SystemInfo         from "../helper/utils/systemInfo";
@@ -60,12 +59,13 @@ import {
 } from "../helper/sc/scMiddlewareReq";
 import ExpressUtils from "../helper/utils/expressUtils";
 import {SocketAction} from "../helper/constants/socketAction";
+import {TaskFunction} from "../helper/configDefinitions/appConfig";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
 class ZationWorker extends SCWorker
 {
-    private userBackgroundTasks : object;
+    private userBackgroundTasks : Record<string,TaskFunction> = {};
 
     private workerFullId : string;
 
@@ -119,9 +119,6 @@ class ZationWorker extends SCWorker
     // noinspection JSUnusedGlobalSymbols
     async run()
     {
-        //BackgroundStuff
-        this.userBackgroundTasks = {};
-
         this.workerStartedTimeStamp = Date.now();
         this.serverStartedTimeStamp = this.options.zationServerStartedTimeStamp;
         this.serverVersion = this.options.zationServerVersion;
@@ -1455,19 +1452,13 @@ class ZationWorker extends SCWorker
             if(data['userBackgroundTask']) {
                 const id = data['userBackgroundTask'];
                 if(this.userBackgroundTasks.hasOwnProperty(id)) {
-                    await this.invokeUserBackgroundTask(this.userBackgroundTasks[id]);
+                    Logger.printDebugInfo
+                    (`The Worker with id: ${this.id}, starts to invoke background task : '${id}'`);
+                    await this.userBackgroundTasks[id](this.preparedSmallBag);
                 }
             }
             respond(null);
         });
-    }
-
-    /**
-     * Invoke a user background task.
-     * @param task
-     */
-    private async invokeUserBackgroundTask(task) {
-        await FuncUtils.emitEvent(task,this.preparedSmallBag);
     }
 
     /**
