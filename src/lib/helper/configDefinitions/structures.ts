@@ -337,14 +337,6 @@ EventConfig[nameof<EventConfig>(s => s.sc_socketDeauthenticate)]     = {types : 
 EventConfig[nameof<EventConfig>(s => s.sc_socketAuthStateChange)]    = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.sc_socketMessage)]            = {types : ['function','array'],arrayType : 'function',isOptional : true};
 
-EventConfig[nameof<EventConfig>(s => s.sc_middlewareAuthenticate)] = {types : ['function'],isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_middlewareHandshakeWs)]  = {types : ['function'],isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_middlewareHandshakeSc)]  = {types : ['function'],isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_middlewareSubscribe)]    = {types : ['function'],isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_middlewarePublishIn)]    = {types : ['function'],isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_middlewarePublishOut)]   = {types : ['function'],isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_middlewareEmit)]         = {types : ['function'],isOptional : true};
-
 export const Structures = {
     App : App,
     BackgroundTask : BackgroundTask,

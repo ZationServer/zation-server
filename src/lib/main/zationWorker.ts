@@ -51,7 +51,7 @@ import SocketUpgradeEngine from "../helper/socket/socketUpgradeEngine";
 import ChannelBagEngine    from "../helper/channel/channelBagEngine";
 import {
     AuthMiddlewareReq,
-    EmitMiddlewareReq, HandshakeScMiddlewareReq,
+    HandshakeScMiddlewareReq,
     HandshakeWsMiddlewareReq,
     PubInMiddlewareReq,
     PubOutMiddlewareReq,
@@ -425,128 +425,118 @@ class ZationWorker extends SCWorker
         const allChInfo = this.channelPrepare.getAllChInfo();
 
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_SUBSCRIBE, async (req : SubMiddlewareReq, next) => {
+            const authToken = req.socket.getAuthToken();
+            const channel = req.channel;
 
-            let userMidRes = true;
-            if(eventConfig.sc_middlewareSubscribe) {
-                userMidRes = await
-                    MiddlewareUtils.checkMiddleware
-                    (eventConfig.sc_middlewareSubscribe,next,this.getPreparedSmallBag(),req);
+            if (channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
+                next(await this.chMiddlewareHelper.checkAccessSubCustomIdCh(req.socket,channel));
             }
+            else if (channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
+                next(await this.chMiddlewareHelper.middlewareSubCustomCh(req.socket,channel));
+            }
+            else {
+                if (authToken !== null) {
+                    const id = authToken[nameof<ZationToken>(s => s.zationUserId)];
+                    const authUserGroup = authToken[nameof<ZationToken>(s => s.zationAuthUserGroup)];
 
-            if(userMidRes) {
-                const authToken = req.socket.getAuthToken();
-                const channel = req.channel;
-
-                if (channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
-                    next(await this.chMiddlewareHelper.checkAccessSubCustomIdCh(req.socket,channel));
-                }
-                else if (channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
-                    next(await this.chMiddlewareHelper.middlewareSubCustomCh(req.socket,channel));
-                }
-                else {
-                    if (authToken !== null) {
-                        const id = authToken[nameof<ZationToken>(s => s.zationUserId)];
-                        const authUserGroup = authToken[nameof<ZationToken>(s => s.zationAuthUserGroup)];
-
-                        if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
-                            if(id !== undefined) {
-                                if (ZationChannel.USER_CHANNEL_PREFIX + id === channel) {
-                                    Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes user channel '${id}'`);
-                                    next();
-                                }
-                                else {
-                                    const err : any = new Error(`User: ${id} can\'t subscribe an other user Channel: '${channel}'!`);
-                                    err.code = 4543;
-                                    next(err); //Block!
-                                }
-                            }
-                            else {
-                                const err : any = new Error(`User: with undefined id can\'t subscribe user Channel: '${channel}'!`);
-                                err.code = 4542;
-                                next(err); //Block!
-                            }
-                        }
-                        else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
-                            if(authUserGroup !== undefined) {
-                                if (ZationChannel.AUTH_USER_GROUP_PREFIX + authUserGroup === channel) {
-                                    Logger.printDebugInfo
-                                    (`Socket with id: ${req.socket.id} subscribes auth user group channel '${authUserGroup}'`);
-                                    next();
-                                }
-                                else {
-                                    const err : any = new Error('User can\'t subscribe an other auth user group channel.');
-                                    err.code = 4533;
-                                    next(err); //Block!
-                                }
-                            }
-                            else {
-                                const err : any = new Error(`User: with undefined auth user group can\'t subscribe auth user group channel!`);
-                                err.code = 4532;
-                                next(err); //Block!
-                            }
-                        }
-                        else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
-                            const err : any = new Error('Authenticated user can\' subscribe default user group channel!');
-                            err.code = 4521;
-                            next(err); //Block!
-                        }
-                        else if (channel === ZationChannel.PANEL_OUT) {
-                            if (typeof authToken[nameof<ZationToken>(s => s.zationPanelAccess)] === 'boolean' &&
-                                authToken[nameof<ZationToken>(s => s.zationPanelAccess)]) {
-                                Logger.printDebugInfo
-                                (`Socket with id: ${req.socket.id} subscribes panel out channel`);
+                    if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
+                        if(id !== undefined) {
+                            if (ZationChannel.USER_CHANNEL_PREFIX + id === channel) {
+                                Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes user channel '${id}'`);
                                 next();
                             }
                             else {
-                                const err : any = new Error('User with no panel access can\'t subscribe panel out channel!');
-                                err.code = 4502;
+                                const err : any = new Error(`User: ${id} can\'t subscribe an other user Channel: '${channel}'!`);
+                                err.code = 4543;
                                 next(err); //Block!
                             }
                         }
-                        else if(channel === ZationChannel.PANEL_IN) {
-                            const err : any = new Error('User can\'t subscribe panel in channel!');
-                            err.code = 4901;
-                            next(err); //Block!
-                        }
-                        else if(channel === ZationChannel.ALL_WORKER) {
-                            const err : any = new Error('User can\'t subscribe all worker channel!');
-                            err.code = 4503;
-                            next(err); //Block!
-                        }
                         else {
-                            Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes '${channel}'`);
-                            next();
+                            const err : any = new Error(`User: with undefined id can\'t subscribe user Channel: '${channel}'!`);
+                            err.code = 4542;
+                            next(err); //Block!
                         }
                     }
-                    else {
-                        if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
-                            const err : any = new Error('Anonymous user can\'t subscribe a user Channel!');
-                            err.code = 4541;
-                            next(err); //Block!
-                        }
-                        else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
-                            const err : any = new Error('Anonymous user can\'t subscribe a auth user group channel!');
-                            err.code = 4531;
-                            next(err); //Block!
-                        }
-                        else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
-                            Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes default user group channel`);
-                            next();
-                        }
-                        else if(channel === ZationChannel.PANEL_IN || channel  === ZationChannel.PANEL_OUT) {
-                            const err : any = new Error('Anonymous user can\'t subscribe panel in or out channel!');
-                            err.code = 4501;
-                            next(err); //Block!
-                        }
-                        else if(channel === ZationChannel.ALL_WORKER) {
-                            const err : any = new Error('User can\'t subscribe all worker Channel!');
-                            err.code = 4504;
-                            next(err); //Block!
+                    else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
+                        if(authUserGroup !== undefined) {
+                            if (ZationChannel.AUTH_USER_GROUP_PREFIX + authUserGroup === channel) {
+                                Logger.printDebugInfo
+                                (`Socket with id: ${req.socket.id} subscribes auth user group channel '${authUserGroup}'`);
+                                next();
+                            }
+                            else {
+                                const err : any = new Error('User can\'t subscribe an other auth user group channel.');
+                                err.code = 4533;
+                                next(err); //Block!
+                            }
                         }
                         else {
-                            Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes '${channel}'`);
+                            const err : any = new Error(`User: with undefined auth user group can\'t subscribe auth user group channel!`);
+                            err.code = 4532;
+                            next(err); //Block!
+                        }
+                    }
+                    else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
+                        const err : any = new Error('Authenticated user can\' subscribe default user group channel!');
+                        err.code = 4521;
+                        next(err); //Block!
+                    }
+                    else if (channel === ZationChannel.PANEL_OUT) {
+                        if (typeof authToken[nameof<ZationToken>(s => s.zationPanelAccess)] === 'boolean' &&
+                            authToken[nameof<ZationToken>(s => s.zationPanelAccess)]) {
+                            Logger.printDebugInfo
+                            (`Socket with id: ${req.socket.id} subscribes panel out channel`);
                             next();
                         }
+                        else {
+                            const err : any = new Error('User with no panel access can\'t subscribe panel out channel!');
+                            err.code = 4502;
+                            next(err); //Block!
+                        }
+                    }
+                    else if(channel === ZationChannel.PANEL_IN) {
+                        const err : any = new Error('User can\'t subscribe panel in channel!');
+                        err.code = 4901;
+                        next(err); //Block!
+                    }
+                    else if(channel === ZationChannel.ALL_WORKER) {
+                        const err : any = new Error('User can\'t subscribe all worker channel!');
+                        err.code = 4503;
+                        next(err); //Block!
+                    }
+                    else {
+                        Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes '${channel}'`);
+                        next();
+                    }
+                }
+                else {
+                    if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
+                        const err : any = new Error('Anonymous user can\'t subscribe a user Channel!');
+                        err.code = 4541;
+                        next(err); //Block!
+                    }
+                    else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
+                        const err : any = new Error('Anonymous user can\'t subscribe a auth user group channel!');
+                        err.code = 4531;
+                        next(err); //Block!
+                    }
+                    else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
+                        Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes default user group channel`);
+                        next();
+                    }
+                    else if(channel === ZationChannel.PANEL_IN || channel  === ZationChannel.PANEL_OUT) {
+                        const err : any = new Error('Anonymous user can\'t subscribe panel in or out channel!');
+                        err.code = 4501;
+                        next(err); //Block!
+                    }
+                    else if(channel === ZationChannel.ALL_WORKER) {
+                        const err : any = new Error('User can\'t subscribe all worker Channel!');
+                        err.code = 4504;
+                        next(err); //Block!
+                    }
+                    else {
+                        Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes '${channel}'`);
+                        next();
                     }
                 }
             }
@@ -559,110 +549,102 @@ class ZationWorker extends SCWorker
         {
             const channel = req.channel;
 
-            let userMidRes = true;
-            if(eventConfig.sc_middlewarePublishIn) {
-                userMidRes = await MiddlewareUtils.checkMiddleware
-                    (eventConfig.sc_middlewarePublishIn,next,this.getPreparedSmallBag(),req);
-            }
+            ChUtils.pubDataAddSocketSrcSid(req,req.socket);
 
-            if(userMidRes) {
-                ChUtils.pubDataAddSocketSrcSid(req,req.socket);
-
-                if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
-                    if(userChInfo.allowClientPub) {
-                        userChInfo.onClientPub(
-                            this.preparedSmallBag,
-                            ChUtils.getUserIdFromCh(channel),
-                            req.data,
-                            req.socket.socketInfo
-                        );
-                        next();
-                    }
-                    else{
-                        const err : any = new Error('Client publication not allowed in a user channel!');
-                        err.code = 4546;
-                        next(err); //Block!
-                    }
-                }
-                else if (channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
-                    next(await this.chMiddlewareHelper.checkAccessClientPubCustomIdCh(req.socket,channel,req.data));
-                }
-                else if (channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
-                    next(await this.chMiddlewareHelper.middlewareClientPubCustomCh(req.socket,channel,req.data));
-                }
-                else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
-                    if(authUserGroupChInfo.allowClientPub) {
-                        authUserGroupChInfo.onClientPub(
-                            this.preparedSmallBag,
-                            ChUtils.getUserAuthGroupFromCh(channel),
-                            req.data,
-                            req.socket.socketInfo
-                        );
-                        next();
-                    }
-                    else{
-                        const err : any = new Error('Client publication not allowed in a auth user group channel!');
-                        err.code = 4536;
-                        next(err); //Block!
-                    }
-                }
-                else if (channel === ZationChannel.ALL) {
-                    if(allChInfo.allowClientPub) {
-                        allChInfo.onClientPub(
-                            this.preparedSmallBag,
-                            req.data,
-                            req.socket.socketInfo
-                        );
-                        next();
-                    }
-                    else {
-                        const err : any = new Error('Client publication not allowed in all channel!');
-                        err.code = 4556;
-                        next(err); //Block!
-                    }
-                }
-                else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
-                    if(defaultUserGroupChInfo.allowClientPub) {
-                        defaultUserGroupChInfo.onClientPub(
-                            this.preparedSmallBag,
-                            req.data,
-                            req.socket.socketInfo
-                        );
-                        next();
-                    }
-                    else{
-                        const err : any = new Error('Client publication not allowed in default user group channel!');
-                        err.code = 4526;
-                        next(err); //Block!
-                    }
-                }
-                else if(channel === ZationChannel.PANEL_OUT) {
-                    const err : any = new Error('Client publication not allowed in panel out channel!');
-                    err.code = 4506;
-                    next(err); //Block!
-                }
-                else if(channel === ZationChannel.PANEL_IN) {
-                    const authToken = req.socket.getAuthToken();
-                    if(authToken !== null && typeof authToken[nameof<ZationToken>(s => s.zationPanelAccess)] === 'boolean' &&
-                        authToken[nameof<ZationToken>(s => s.zationPanelAccess)])
-                    {
-                        next();
-                    }
-                    else {
-                        const err : any = new Error('User with no panel access can\'t publish in panel in channel!');
-                        err.code = 4902;
-                        next(err); //Block!
-                    }
-                }
-                //Important! (Otherwise every socket can publish in worker channel and can modify the whole network.)
-                else if(req.channel === ZationChannel.ALL_WORKER) {
-                    const err : any = new Error('User can\'t publish in all worker channel!');
-                    err.code = 4507;
-                    next(err); //Block!
-                }
-                else {
+            if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
+                if(userChInfo.allowClientPub) {
+                    userChInfo.onClientPub(
+                        this.preparedSmallBag,
+                        ChUtils.getUserIdFromCh(channel),
+                        req.data,
+                        req.socket.socketInfo
+                    );
                     next();
                 }
+                else{
+                    const err : any = new Error('Client publication not allowed in a user channel!');
+                    err.code = 4546;
+                    next(err); //Block!
+                }
+            }
+            else if (channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
+                next(await this.chMiddlewareHelper.checkAccessClientPubCustomIdCh(req.socket,channel,req.data));
+            }
+            else if (channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
+                next(await this.chMiddlewareHelper.middlewareClientPubCustomCh(req.socket,channel,req.data));
+            }
+            else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
+                if(authUserGroupChInfo.allowClientPub) {
+                    authUserGroupChInfo.onClientPub(
+                        this.preparedSmallBag,
+                        ChUtils.getUserAuthGroupFromCh(channel),
+                        req.data,
+                        req.socket.socketInfo
+                    );
+                    next();
+                }
+                else{
+                    const err : any = new Error('Client publication not allowed in a auth user group channel!');
+                    err.code = 4536;
+                    next(err); //Block!
+                }
+            }
+            else if (channel === ZationChannel.ALL) {
+                if(allChInfo.allowClientPub) {
+                    allChInfo.onClientPub(
+                        this.preparedSmallBag,
+                        req.data,
+                        req.socket.socketInfo
+                    );
+                    next();
+                }
+                else {
+                    const err : any = new Error('Client publication not allowed in all channel!');
+                    err.code = 4556;
+                    next(err); //Block!
+                }
+            }
+            else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
+                if(defaultUserGroupChInfo.allowClientPub) {
+                    defaultUserGroupChInfo.onClientPub(
+                        this.preparedSmallBag,
+                        req.data,
+                        req.socket.socketInfo
+                    );
+                    next();
+                }
+                else{
+                    const err : any = new Error('Client publication not allowed in default user group channel!');
+                    err.code = 4526;
+                    next(err); //Block!
+                }
+            }
+            else if(channel === ZationChannel.PANEL_OUT) {
+                const err : any = new Error('Client publication not allowed in panel out channel!');
+                err.code = 4506;
+                next(err); //Block!
+            }
+            else if(channel === ZationChannel.PANEL_IN) {
+                const authToken = req.socket.getAuthToken();
+                if(authToken !== null && typeof authToken[nameof<ZationToken>(s => s.zationPanelAccess)] === 'boolean' &&
+                    authToken[nameof<ZationToken>(s => s.zationPanelAccess)])
+                {
+                    next();
+                }
+                else {
+                    const err : any = new Error('User with no panel access can\'t publish in panel in channel!');
+                    err.code = 4902;
+                    next(err); //Block!
+                }
+            }
+            //Important! (Otherwise every socket can publish in worker channel and can modify the whole network.)
+            else if(req.channel === ZationChannel.ALL_WORKER) {
+                const err : any = new Error('User can\'t publish in all worker channel!');
+                err.code = 4507;
+                next(err); //Block!
+            }
+            else {
+                next();
             }
         });
 
@@ -671,63 +653,53 @@ class ZationWorker extends SCWorker
          */
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_PUBLISH_OUT, async (req : PubOutMiddlewareReq, next) =>
         {
-            let userMidRes = true;
-            if(eventConfig.sc_middlewarePublishOut){
-                userMidRes = await
-                    MiddlewareUtils.checkMiddleware
-                    (eventConfig.sc_middlewarePublishOut,next,this.getPreparedSmallBag(),req);
-            }
-
-            if(userMidRes)
+            if(req.data.sSid === req.socket.sid)
             {
-                if(req.data.sSid === req.socket.sid)
-                {
-                    if
+                if
+                (
                     (
-                        (
-                            req.channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1 &&
-                            !userChInfo.socketGetOwnPub
-                        )
-                        ||
-                        (
-                            req.channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1 &&
-                            !this.channelPrepare.getSafeCustomIdChInfo(ChUtils.getCustomIdChannelName(req.channel))
-                                .socketGetOwnPub
-                        )
-                        ||
-                        (
-                            req.channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1 &&
-                            !this.channelPrepare.getSafeCustomChInfo(ChUtils.getCustomChannelName(req.channel))
-                                .socketGetOwnPub
-                        )
-                        ||
-                        (
-                            req.channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1 &&
-                            !authUserGroupChInfo.socketGetOwnPub
-                        )
-                        ||
-                        (
-                            req.channel === ZationChannel.ALL &&
-                            !allChInfo.socketGetOwnPub
-                        )
-                        ||
-                        (
-                            req.channel === ZationChannel.DEFAULT_USER_GROUP &&
-                            !defaultUserGroupChInfo.socketGetOwnPub
-                        )
-                    ) {
-                        //block for get own published message
-                        next(true);
-                    }
-                    else {
-                        // get own published message
-                        next();
-                    }
+                        req.channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1 &&
+                        !userChInfo.socketGetOwnPub
+                    )
+                    ||
+                    (
+                        req.channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1 &&
+                        !this.channelPrepare.getSafeCustomIdChInfo(ChUtils.getCustomIdChannelName(req.channel))
+                            .socketGetOwnPub
+                    )
+                    ||
+                    (
+                        req.channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1 &&
+                        !this.channelPrepare.getSafeCustomChInfo(ChUtils.getCustomChannelName(req.channel))
+                            .socketGetOwnPub
+                    )
+                    ||
+                    (
+                        req.channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1 &&
+                        !authUserGroupChInfo.socketGetOwnPub
+                    )
+                    ||
+                    (
+                        req.channel === ZationChannel.ALL &&
+                        !allChInfo.socketGetOwnPub
+                    )
+                    ||
+                    (
+                        req.channel === ZationChannel.DEFAULT_USER_GROUP &&
+                        !defaultUserGroupChInfo.socketGetOwnPub
+                    )
+                ) {
+                    //block for get own published message
+                    next(true);
                 }
                 else {
-                    //not same src or not src sid information
+                    // get own published message
                     next();
                 }
+            }
+            else {
+                //not same src or not src sid information
+                next();
             }
         });
 
@@ -768,17 +740,11 @@ class ZationWorker extends SCWorker
                     socket.apiLevel = parseInt(query.apiLevel);
                 }
 
-                const userMidRes = await
-                    MiddlewareUtils.checkMiddleware
-                    (eventConfig.sc_middlewareHandshakeSc,next,this.getPreparedSmallBag(),req);
-
                 const zationMidRes = await
                     MiddlewareUtils.checkMiddleware
                     (eventConfig.middlewareSocket,next,this.getPreparedSmallBag(),socket);
 
-                if(userMidRes && zationMidRes) {
-                    next();
-                }
+                if(zationMidRes) {next();}
             }
             else{
                 const err = new Error('Cannot connect without providing a valid version and system key in URL query argument.');
@@ -799,28 +765,12 @@ class ZationWorker extends SCWorker
             }
             const parts = url.parse(origin);
             if(this.originCheck(parts.hostname,parts.protocol,parts.port)) {
-                if(await MiddlewareUtils.checkMiddleware
-                    (eventConfig.sc_middlewareHandshakeWs,next,this.getPreparedSmallBag(),req)) {
-                    next();
-                }
+                next();
             }
             else {
                 //origin fail
                 next(new Error('Failed to authorize socket handshake - Invalid origin: ' + req.origin));
             }
-        });
-
-        /**
-         * Middleware before client emit.
-         */
-        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_EMIT, async (req : EmitMiddlewareReq, next) =>
-        {
-            let userMidRes = true;
-            if(eventConfig.sc_middlewareEmit){
-                userMidRes = await MiddlewareUtils.checkMiddleware
-                    (eventConfig.sc_middlewareEmit,next,this.getPreparedSmallBag(),req);
-            }
-            if(userMidRes) {next();}
         });
 
         /**
@@ -839,21 +789,10 @@ class ZationWorker extends SCWorker
                 next(e);
             }
 
-            let userMidRes = true;
-            if(eventConfig.sc_middlewareAuthenticate) {
-                userMidRes = await MiddlewareUtils.checkMiddleware
-                (eventConfig.sc_middlewareAuthenticate,next,this.getPreparedSmallBag(),req);
-            }
+            const zationAuthMid = await MiddlewareUtils.checkMiddleware
+            (eventConfig.middlewareAuthenticate,next,this.getPreparedSmallBag(),new ZationTokenInfo(token));
 
-            let zationAuthMid = true;
-            if(eventConfig.middlewareAuthenticate){
-                zationAuthMid = await MiddlewareUtils.checkMiddleware
-                (eventConfig.middlewareAuthenticate,next,this.getPreparedSmallBag(),new ZationTokenInfo(token));
-            }
-
-            if(userMidRes && zationAuthMid) {
-                next();
-            }
+            if(zationAuthMid) {next();}
         });
     }
 
