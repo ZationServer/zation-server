@@ -303,6 +303,7 @@ EventConfig[nameof<EventConfig>(s => s.workerMessage)]          = {types : ['fun
 EventConfig[nameof<EventConfig>(s => s.socketConnection)]       = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.socketDisconnection)]    = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.socketAuthenticated)]    = {types : ['function','array'],arrayType : 'function',isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.socketDeauthenticated)]  = {types : ['function','array'],arrayType : 'function',isOptional : true};
 
 EventConfig[nameof<EventConfig>(s => s.middlewareAuthenticate)] = {types : ['function'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.middlewareSocket)]       = {types : ['function'],isOptional : true};

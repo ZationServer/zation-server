@@ -123,6 +123,7 @@ export default class ConfigPreCompiler
             socketConnection  : defaultFunc,
             socketDisconnection  : defaultFunc,
             socketAuthenticated  : defaultFunc,
+            socketDeauthenticated  : defaultFunc,
             sc_socketError  : defaultFunc,
             sc_socketRaw  : defaultFunc,
             sc_socketConnect  : defaultFunc,

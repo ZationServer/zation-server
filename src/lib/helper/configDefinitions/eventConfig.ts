@@ -22,6 +22,7 @@ import {
     SubMiddlewareReq
 } from "../sc/scMiddlewareReq";
 import SocketInfo from "../infoObjects/socketInfo";
+import CodeError  from "../error/codeError";
 
 export type ExpressFunction = (smallBag : SmallBag, express : ExpressCore.Express) => Promise<void> | void;
 export type ScServerFunction = (smallBag : SmallBag, scServer : ScServer) => Promise<void> | void;
@@ -31,13 +32,14 @@ export type WsServerStartedFunction = (info : ZationInfo) => Promise<void> | voi
 export type StartedFunction = (info : ZationInfo) => Promise<void> | void;
 export type BeforeErrorFunction = (smallBag : SmallBag, error : object) => Promise<void> | void;
 export type BeforeBackErrorFunction = (smallBag : SmallBag, backError : BackError) => Promise<void> | void;
-export type BeforeCodeErrorFunction = (smallBag : SmallBag, backError : BackError) => Promise<void> | void;
+export type BeforeCodeErrorFunction = (smallBag : SmallBag, codeError : CodeError) => Promise<void> | void;
 export type BeforeBackErrorBagFunction = (smallBag : SmallBag, backErrorBag : BackErrorBag) => Promise<void> | void;
 export type WorkerMessageFunction = (smallBag : SmallBag, data : any) => Promise<void> | void;
 
 export type SocketConnectionFunction = (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
 export type SocketDisconnectionFunction = (smallBag : SmallBag, socketInfo : SocketInfo, code : any, data : any) => Promise<void> | void;
 export type SocketAuthenticatedFunction = (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
+export type SocketDeauthenticatedFunction = (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
 
 export type MiddlewareAuthenticationFunction = (smallBag : SmallBag,zationToken  : ZationToken) => Promise<boolean | object | any> | boolean | object | any;
 export type MiddlewareSocketFunction = (smallBag : SmallBag,socket : HandshakeSocket) => Promise<boolean | object | any> | boolean | object | any;
@@ -71,22 +73,89 @@ export type ScMiddlewareFunction<R> = (smallBag : SmallBag, req : R) => Promise<
 
 export interface EventConfig
 {
+    /**
+     * An event which that you can initialize an additional HTTP rest API using express and the small bag.
+     * @example (smallBag,express) => {}
+     */
     express  ?: ExpressFunction | ExpressFunction[];
+    /**
+     * Sc server event that will be invoked on server start to initialize something with the sc server.
+     * @example (smallBag,scServer) => {}
+     */
     scServer  ?: ScServerFunction | ScServerFunction[];
+    /**
+     * An event that gets invoked when a worker is started.
+     * @example (smallBag,zationInfo,worker) => {}
+     */
     workerStarted  ?: WorkerStartedFunction | WorkerStartedFunction[];
+    /**
+     * An event that gets invoked when the leader worker is started.
+     * @example (smallBag,zationInfo,worker) => {}
+     */
     workerLeaderStarted ?: WorkerStartedFunction | WorkerStartedFunction[];
+    /**
+     * An event that gets invoked when the HTTP server is started.
+     * @example (zationInfo) => {}
+     */
     httpServerStarted  ?: HttpServerStartedFunction | HttpServerStartedFunction[];
+    /**
+     * An event that gets invoked when the web socket server is started.
+     * @example (zationInfo) => {}
+     */
     wsServerStarted  ?: WsServerStartedFunction | WsServerStartedFunction[];
+    /**
+     * An event that gets invoked when the zation server is started.
+     * @example (zationInfo) => {}
+     */
     started  ?: StartedFunction | StartedFunction[];
+    /**
+     * An event that gets invoked when a error is thrown on the server
+     * while processing a request or background task.
+     * @example (smallBag,error) => {}
+     */
     beforeError  ?: BeforeErrorFunction | BeforeErrorFunction[];
+    /**
+     * An event that gets invoked when a BackError is thrown on the server while processing a request.
+     * @example (smallBag,backError) => {}
+     */
     beforeBackError  ?: BeforeBackErrorFunction | BeforeBackErrorFunction[];
+    /**
+     * An event that gets invoked when a CodeError is thrown on the server while processing a request.
+     * @example (smallBag,codeError) => {}
+     */
     beforeCodeError  ?: BeforeCodeErrorFunction | BeforeCodeErrorFunction[];
+    /**
+     * An event that gets invoked when a BackErrorBag is thrown on the server while processing a request.
+     * @example (smallBag,backErrorBag) => {}
+     */
     beforeBackErrorBag  ?: BeforeBackErrorBagFunction | BeforeBackErrorBagFunction[];
+    /**
+     * An event that gets invoked when the worker receives a worker message
+     * that was sent from the SmallBag.
+     * @example (smallBag,data) => {}
+     */
     workerMessage  ?: WorkerMessageFunction | WorkerMessageFunction[];
 
+    /**
+     * An event that gets invoked when a new socket is connected to the server.
+     * @example (smallBag,socketInfo) => {}
+     */
     socketConnection  ?: SocketConnectionFunction | SocketConnectionFunction[];
+    /**
+     * An event that gets invoked when a socket is disconnected.
+     * @example (smallBag,socketInfo,code,data) => {}
+     */
     socketDisconnection  ?: SocketDisconnectionFunction | SocketDisconnectionFunction[];
+    /**
+     * An event that gets invoked when a socket gets authenticated or the auth token is changed.
+     * @example (smallBag,socketInfo) => {}
+     */
     socketAuthenticated  ?: SocketAuthenticatedFunction | SocketAuthenticatedFunction[];
+    /**
+     * An event that gets invoked when a socket gets deauthenticated.
+     * @example (smallBag,socketInfo) => {}
+     */
+    socketDeauthenticated  ?: SocketDeauthenticatedFunction | SocketDeauthenticatedFunction[];
 
     middlewareAuthenticate  ?: MiddlewareAuthenticationFunction;
     middlewareSocket ?: MiddlewareSocketFunction;
@@ -148,6 +217,7 @@ export interface PreCompiledEventConfig extends EventConfig
     socketConnection  : SocketConnectionFunction;
     socketDisconnection  : SocketDisconnectionFunction;
     socketAuthenticated  : SocketAuthenticatedFunction;
+    socketDeauthenticated  : SocketDeauthenticatedFunction;
 
     middlewareAuthenticate  ?: MiddlewareAuthenticationFunction;
     middlewareSocket ?: MiddlewareSocketFunction;
