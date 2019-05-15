@@ -10,14 +10,13 @@ import MainRequestProcessor  from "../helper/processor/mainRequestProcessor";
 import SocketRequestProcessor       from "../helper/processor/socketRequestProcessor";
 import HttpRequestProcessor         from "../helper/processor/httpRequestProcessor";
 import ValidCheckProcessor   from "../helper/processor/validCheckProcessor";
-import UpSocket                from "../helper/sc/socket";
+import UpSocket              from "../helper/sc/socket";
 import BackError             from "../api/BackError";
 import BackErrorBag          from "../api/BackErrorBag";
 import IdCounter             from "../helper/utils/idCounter";
 import Logger                from "../helper/logger/logger";
 import CodeError             from "../helper/error/codeError";
-import FuncUtils             from "../helper/utils/funcUtils";
-import ZationConfigFull    from "../helper/configManager/zationConfigFull";
+import ZationConfigFull      from "../helper/configManager/zationConfigFull";
 
 export default class ZationReqHandler
 {
@@ -85,26 +84,22 @@ export default class ZationReqHandler
 
     private async handleReqError(err)
     {
-        const promises : Promise<void>[] = [];
-        promises.push(FuncUtils.emitEvent
-        (this.zc.eventConfig.beforeError, this.worker.getPreparedSmallBag(),err));
-        if(err instanceof  BackError)
+        const promises : (Promise<void> | void)[] = [];
+        promises.push(this.zc.eventConfig.beforeError(this.worker.getPreparedSmallBag(),err));
+        if(err instanceof BackError)
         {
             if(err instanceof CodeError) {
                 Logger.printDebugWarning(`Code error -> ${err.toString()}/n stack-> ${err.stack}`);
-                promises.push(FuncUtils.emitEvent
-                (this.zc.eventConfig.beforeCodeError,this.worker.getPreparedSmallBag(),err));
+                promises.push(this.zc.eventConfig.beforeCodeError(this.worker.getPreparedSmallBag(),err));
                 if(this.zc.mainConfig.logCodeErrors){
                     Logger.logFileError(`Code error -> ${err.toString()}/n stack-> ${err.stack}`);
                 }
             }
-            promises.push(FuncUtils.emitEvent
-            (this.zc.eventConfig.beforeBackError,this.worker.getPreparedSmallBag(),err));
+            promises.push(this.zc.eventConfig.beforeBackError(this.worker.getPreparedSmallBag(),err));
         }
         else { // noinspection SuspiciousInstanceOfGuard
             if(err instanceof BackErrorBag) {
-                promises.push(FuncUtils.emitEvent
-                (this.zc.eventConfig.beforeBackErrorBag,this.worker.getPreparedSmallBag(),err));
+                promises.push(this.zc.eventConfig.beforeBackErrorBag(this.worker.getPreparedSmallBag(),err));
             }
             else {
                 Logger.printDebugWarning('UNKNOWN ERROR ON SERVER ->',err);
@@ -116,4 +111,3 @@ export default class ZationReqHandler
         await Promise.all(promises);
     }
 }
-
