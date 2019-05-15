@@ -1455,15 +1455,28 @@ class ZationWorker extends SCWorker
     {
         this.on('masterMessage',async (data,respond) => {
             if(data['userBackgroundTask']) {
-                const id = data['userBackgroundTask'];
-                if(this.userBackgroundTasks.hasOwnProperty(id)) {
-                    Logger.printDebugInfo
-                    (`The Worker with id: ${this.id}, starts to invoke background task : '${id}'`);
-                    await this.userBackgroundTasks[id](this.preparedSmallBag);
-                }
+                await this.processBackgroundTask(data['userBackgroundTask']);
             }
             respond(null);
         });
+    }
+
+    /**
+     * Process a background task.
+     */
+    private async processBackgroundTask(id) {
+        if(this.userBackgroundTasks.hasOwnProperty(id)) {
+            try {
+                Logger.printDebugInfo
+                (`The Worker with id: ${this.id}, starts to invoke background task : '${id}'`);
+                await this.userBackgroundTasks[id](this.preparedSmallBag);
+            }
+            catch (e) {
+                Logger.printDebugInfo
+                (`The Worker with id: ${this.id}, error while invoking the background task : '${id}'`);
+                await this.zc.eventConfig.beforeError(this.preparedSmallBag,e);
+            }
+        }
     }
 
     /**
