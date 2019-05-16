@@ -115,11 +115,13 @@ import SmallBag         from "./SmallBag";
 import CIdChInfo        from "../helper/infoObjects/cIdChInfo";
 import PubData          from "../helper/infoObjects/pubData";
 import ZationInfo       from "../helper/infoObjects/zationInfo";
+import {ApiLevelSwitch} from "../helper/apiLevel/apiLevelUtils";
 
 export default class Config
 {
 
     private static tmpModels : Record<string,Model> = {};
+    private static tmpController : Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>> = {};
 
     //Part main helper methods
 
@@ -210,6 +212,55 @@ export default class Config
         }
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * This method registers a new controller in the app config.
+     * Watch out that you don't use a name that is already defined in the controllers of the app config.
+     * If you use this method in another file as the app config,
+     * make sure that you import this file in app config.
+     * Also, notice that if you want to register more controllers with the same name and different API levels,
+     * make sure that all register methods with that name provided an API level.
+     * @example
+     * //without API level
+     * Config.registerController('myController',MyController);
+     * //with API level
+     * Config.registerController('myController2',MyController2Version1,1);
+     * Config.registerController('myController2',MyController2Version2,2);
+     * @param name
+     * @param controllerClass
+     * @param apiLevel
+     */
+    static registerController(name : string, controllerClass : ControllerClass, apiLevel ?: number) {
+        if(typeof apiLevel === 'number'){
+            if(typeof Config.tmpController[name] === 'function'){
+                throw new Error(`The controller name: ${name} is already defined.`+
+                    ` To define more controllers with the same name every register should provide an API level.`);
+            }
+            else {
+                if(!Config.tmpController.hasOwnProperty(name)){
+                    Config.tmpController[name] = {};
+                }
+
+                if(Config.tmpController[name].hasOwnProperty(apiLevel)){
+                    throw new Error(`The controller name: ${name} with the API level ${apiLevel} is already defined.`);
+                }
+                else {
+                    Config.tmpController[name][apiLevel] = controllerClass;
+                }
+            }
+        }
+        else {
+            if(Config.tmpController.hasOwnProperty(name)){
+                throw new Error(`The controller name: ${name} is already defined.`+
+                    ` To define more controllers with the same name every register should provide an API level.`);
+            }
+            else {
+                Config.tmpController[name] = controllerClass;
+            }
+        }
+
+    }
+
     static single(model : Model) : SingleModelInput {
         return [model];
     }
@@ -230,10 +281,14 @@ export default class Config
             if(config.models === undefined){
                 config.models = {};
             }
+            //create controller object if not created
+            if(config.controllers === undefined){
+                config.controllers = {};
+            }
             //add registered models
             for(let name in Config.tmpModels){
                 if(Config.tmpModels.hasOwnProperty(name)){
-                    if(config.hasOwnProperty(name)){
+                    if(config.models.hasOwnProperty(name)){
                         throw new Error
                         (`Conflict with model name: ${name}, the model name is defined in the app config and with the method defineModel or defineModels.`);
                     }
@@ -242,6 +297,19 @@ export default class Config
                     }
                 }
             }
+            //add registered controllers
+            for(let name in Config.tmpController){
+                if(Config.tmpController.hasOwnProperty(name)){
+                    if(config.controllers.hasOwnProperty(name)){
+                        throw new Error
+                        (`Conflict with controller name: ${name}, the controller name is defined in the app config and with the config utils.`);
+                    }
+                    else {
+                        config.controllers[name] = Config.tmpController[name];
+                    }
+                }
+            }
+
         }
         return config;
     }
