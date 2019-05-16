@@ -23,6 +23,7 @@ import {OtherLoadedConfigSet, OtherPreCompiledConfigSet} from "../configManager/
 import {
     PreCompiledEventConfig,
 } from "../configDefinitions/eventConfig";
+import ControllerUtils from "../controller/controllerUtils";
 
 export default class ConfigPreCompiler
 {
@@ -498,19 +499,18 @@ export default class ConfigPreCompiler
 
         //iterate over controller
         const controller = this.configs.appConfig.controllers;
-        for(let k in controller)
-        {
-            if(controller.hasOwnProperty(k))
-            {
-                const config : ControllerConfig = controller[k].config;
-
-                //set the defaults if property missing
-                for(let property in this.controllerDefaults) {
-                    if(this.controllerDefaults.hasOwnProperty(property) && config[property] === undefined) {
-                        config[property] = this.controllerDefaults[property];
+        for(let k in controller) {
+            if(controller.hasOwnProperty(k)) {
+                ControllerUtils.iterateControllerDefinition(controller[k],(controllerClass) => {
+                    const config : ControllerConfig = controllerClass.config;
+                    //set the defaults if property missing
+                    for(let property in this.controllerDefaults) {
+                        if(this.controllerDefaults.hasOwnProperty(property) && config[property] === undefined) {
+                            config[property] = this.controllerDefaults[property];
+                        }
                     }
-                }
-                this.preCompileInputConfig(config);
+                    this.preCompileInputConfig(config);
+                });
             }
         }
     }

@@ -12,7 +12,6 @@ import {ControllerConfig} from "../../configDefinitions/appConfig";
 export default class ZationSC_Ping extends Controller
 {
     static config : ControllerConfig = {
-        systemController : true,
         access : 'all',
         versionAccess : 'all',
         input : {}

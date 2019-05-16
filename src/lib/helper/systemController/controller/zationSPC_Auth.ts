@@ -15,7 +15,6 @@ import TokenUtils         from "../../token/tokenUtils";
 export default class ZationSPC_Auth extends Controller
 {
     static config : ControllerConfig = {
-        systemController : true,
         access : 'all',
         versionAccess : 'all',
         input : {

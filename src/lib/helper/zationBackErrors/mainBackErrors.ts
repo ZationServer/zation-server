@@ -12,7 +12,7 @@ export const MainBackErrors = {
         name          : 'controllerNotFound',
         description   : 'Controller is missing.',
         type          : ErrorType.INPUT_ERROR,
-        sendInfo      : false,
+        sendInfo      : true,
         //INFO
         // controllerName (From missing Controller)
         fromZationSystem : true
@@ -22,9 +22,20 @@ export const MainBackErrors = {
         name          : 'systemControllerNotFound',
         description   : 'System controller is missing.',
         type          : ErrorType.INPUT_ERROR,
-        sendInfo      : false,
+        sendInfo      : true,
         //INFO
         // controllerName (From missing Controller)
+        fromZationSystem : true
+    },
+
+    apiLevelNotCompatible : {
+        name          : 'apiLevelNotCompatible',
+        description   : 'The API level of the client is not compatible with the request.',
+        type          : ErrorType.INPUT_ERROR,
+        sendInfo      : true,
+        //INFO
+        // controllerName
+        // apiLevel
         fromZationSystem : true
     },
 

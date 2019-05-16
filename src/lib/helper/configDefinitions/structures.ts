@@ -65,7 +65,6 @@ ObjectModel[nameof<ObjectModelConfig>(s => s.convert)]    = {types : ['function'
 const ControllerConfig = {};
 ControllerConfig[nameof<ControllerConfig>(s => s.input)]            = {types : ['object','array'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.prepareHandle)]    = {types : ['function','array'],arrayType : 'function',isOptional : true};
-ControllerConfig[nameof<ControllerConfig>(s => s.systemController)] = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.wsAccess)]         = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.httpAccess)]       = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.httpGetAllowed)]   = {types : ['boolean'],isOptional : true};

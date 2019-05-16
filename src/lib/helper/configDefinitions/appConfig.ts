@@ -11,6 +11,7 @@ import {ValidationTypes} from "../constants/validationTypes";
 import BackErrorBag      from "../../api/BackErrorBag";
 import SmallBag          from "../../api/SmallBag";
 import ZationTokenInfo   from "../infoObjects/zationTokenInfo";
+import {ApiLevelSwitch} from "../apiLevel/apiLevelUtils";
 
 export interface AppConfig
 {
@@ -34,7 +35,7 @@ export interface AppConfig
      *    login : LogInController,
      * }
      */
-    controllers  ?: Record<string,ControllerClass>;
+    controllers  ?: Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>>;
 
      /**
      * In this property, you can define all your user groups.
@@ -312,11 +313,6 @@ export interface ControllerConfig extends InputConfig
      * You can also throw TaskErrors, which are sent to the client with a not success response.
      */
     prepareHandle ?: PrepareHandleFunction[] | PrepareHandleFunction;
-    /**
-     * This property indicates if the controller is a system controller.
-     * It is used internally in the zation system.
-     */
-    systemController  ?: boolean;
     wsAccess  ?: boolean;
     httpAccess  ?: boolean;
     httpGetAllowed  ?: boolean;

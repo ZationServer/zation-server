@@ -37,6 +37,7 @@ import Controller, {ControllerClass} from "../../api/Controller";
 import Iterator             from "../utils/iterator";
 import ObjectUtils          from "../utils/objectUtils";
 import ConfigLoader   from "../configManager/configLoader";
+import ControllerUtils from "../controller/controllerUtils";
 
 export default class ConfigChecker
 {
@@ -242,11 +243,12 @@ export default class ConfigChecker
                     `AuthController: '${authControllerName}' is not found.`));
             } else {
                 //checkAuthControllerAccess value
-                let authController = controller[authControllerName].config;
-                if (authController.access !== ZationAccess.ALL) {
-                    Logger.printConfigWarning
-                    (ConfigNames.APP, `It is recommended to set the access of the authController directly to 'all'.`);
-                }
+                ControllerUtils.iterateControllerDefinition(controller[authControllerName],(controllerClass,k) => {
+                    if (controllerClass.config.access !== ZationAccess.ALL) {
+                        Logger.printConfigWarning
+                        (ConfigNames.APP, `It is recommended to set the access of the authController ${k ? `(API Level: ${k}) ` : ''}directly to 'all'.`);
+                    }
+                });
             }
         }
     }
@@ -677,7 +679,9 @@ export default class ConfigChecker
             const controller = this.zcLoader.appConfig.controllers;
             for (let cName in controller) {
                 if (controller.hasOwnProperty(cName)) {
-                    this.checkController(controller[cName], new Target(`Controller: '${cName}'`));
+                    ControllerUtils.iterateControllerDefinition(controller[cName],(controllerClass,k) => {
+                        this.checkController(controllerClass, new Target(`Controller: '${cName}' ${k ? `(API Level: ${k}) ` : ''}`));
+                    });
                 }
             }
         }

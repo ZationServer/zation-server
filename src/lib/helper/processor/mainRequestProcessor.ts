@@ -50,7 +50,7 @@ export default class MainRequestProcessor
     {
         //is validation check request?
         if(shBridge.isValidationCheckReq()) {
-            return this.validCheckProcessor.process(shBridge.getZationData());
+            return this.validCheckProcessor.process(shBridge.getZationData(),shBridge);
         }
 
         let reqData = shBridge.getZationData();
@@ -79,6 +79,7 @@ export default class MainRequestProcessor
             //Trows if not exists
             this.controllerPrepare.checkControllerExist(controllerName,isSystemController);
 
+            //Throws if apiLevel not found
             const {
                 controllerConfig,
                 controllerInstance,
@@ -87,7 +88,7 @@ export default class MainRequestProcessor
                 tokenStateCheck,
                 prepareHandleInvoke,
                 inputConsume
-            } = this.controllerPrepare.getControllerPrepareData(controllerName,isSystemController);
+            } = this.controllerPrepare.getControllerPrepareData(controllerName,shBridge.getApiLevel(),isSystemController);
 
             //Throws if access denied
             systemAccessCheck(shBridge);

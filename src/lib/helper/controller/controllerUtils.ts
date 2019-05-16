@@ -5,24 +5,16 @@ GitHub: LucaCode
  */
 
 // noinspection TypeScriptPreferShortImport
-import Bag              from '../../api/Bag';
+import Bag                           from '../../api/Bag';
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../configDefinitions/appConfig";
-import Controller from "../../api/Controller";
+import {ControllerConfig}            from "../configDefinitions/appConfig";
+import Controller, {ControllerClass} from "../../api/Controller";
+import {ApiLevelSwitch}              from "../apiLevel/apiLevelUtils";
 
 export type PrepareHandleInvokeFunction = (controllerInstance : Controller,bag : Bag) => Promise<void >;
 
 export default class ControllerUtils
 {
-
-    /**
-     * Returns if the controller is a system controller.
-     * @param cConfig
-     */
-    static isSystemController(cConfig : ControllerConfig) : boolean {
-        return !!cConfig.systemController;
-    }
-
     /**
      * Returns a Closures for invoking the controller before handle event.
      * @param controllerConfig
@@ -48,6 +40,27 @@ export default class ControllerUtils
         }
         else {
             return async () => {};
+        }
+    }
+
+    /**
+     * A method that will help to iterate over all controllers
+     * of a controller definition from the app config.
+     * @param definition
+     * @param iterator
+     */
+    static iterateControllerDefinition(definition : ControllerClass | ApiLevelSwitch<ControllerClass>,
+                                       iterator : (controllerClass : ControllerClass,key : string | undefined) => void)
+    {
+        if(typeof definition === 'function'){
+            iterator(definition,undefined);
+        }
+        else {
+            for(let k in definition){
+                if(definition.hasOwnProperty(k)){
+                    iterator(definition[k],k);
+                }
+            }
         }
     }
 }

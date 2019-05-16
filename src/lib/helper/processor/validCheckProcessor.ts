@@ -11,6 +11,7 @@ import ControllerPrepare        from "../controller/controllerPrepare";
 import ZationConfig             from "../configManager/zationConfig";
 import ZationReqUtils           from "../utils/zationReqUtils";
 import {MainBackErrors}         from "../zationBackErrors/mainBackErrors";
+import SHBridge                 from "../bridges/shBridge";
 
 export default class ValidCheckProcessor
 {
@@ -29,7 +30,7 @@ export default class ValidCheckProcessor
         this.validationCheckLimit = this.zc.mainConfig.validationCheckLimit;
     }
 
-    async process(reqData : ZationRequest)
+    async process(reqData : ZationRequest,shBridge : SHBridge)
     {
         if(ZationReqUtils.isValidValidationStructure(reqData))
         {
@@ -40,7 +41,7 @@ export default class ValidCheckProcessor
             const isSystemController = ZationReqUtils.isSystemControllerReq(validReq);
             const cName = ZationReqUtils.getControllerName(validReq,isSystemController);
 
-            //Trows if not exists
+            //Throws if not exists
             this.controllerPrepare.checkControllerExist(cName,isSystemController);
 
             //check is over validation check limit
@@ -51,8 +52,9 @@ export default class ValidCheckProcessor
                 });
             }
 
+            //Throws if apiLevel not found
             const {inputValidationCheck} =
-                this.controllerPrepare.getControllerPrepareData(cName,isSystemController);
+                this.controllerPrepare.getControllerPrepareData(cName,shBridge.getApiLevel(),isSystemController);
 
             await inputValidationCheck(validReq.i);
             return {};
