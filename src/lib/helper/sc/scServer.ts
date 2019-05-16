@@ -18,6 +18,7 @@ export default interface ScServer
 
     setCodecEngine : (engine : object) => void;
     close : () => void;
+
     addMiddleware : (type : string, middlewareFn : Function) => void;
     removeMiddleware : (type : string, middlewareFn : Function) => void;
     on : (event : string, fn : Function) => void;
@@ -30,4 +31,3 @@ export default interface ScServer
     MIDDLEWARE_PUBLISH_OUT : string;
     MIDDLEWARE_EMIT : string;
 }
-

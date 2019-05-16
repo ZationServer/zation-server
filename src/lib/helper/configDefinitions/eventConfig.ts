@@ -61,8 +61,6 @@ export type ScServerAuthenticationStateChangeFunction = (smallBag : SmallBag, so
 export type ScServerBadSocketAuthTokenFunction = (smallBag : SmallBag, socket : UpSocket, badAuthStatus : {authError : object,signedAuthToken : string}) => Promise<void> | void;
 export type ScServerReadyFunction = (smallBag : SmallBag) => Promise<void> | void;
 
-export type ScMiddlewareFunction<R> = (smallBag : SmallBag, req : R) => Promise<boolean> | boolean | Promise<object> | object | Promise<any> | any;
-
 export interface EventConfig
 {
     /**

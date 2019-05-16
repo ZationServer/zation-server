@@ -30,7 +30,6 @@ import
     WorkerStartedFunction,
     WsServerStartedFunction,
     SocketDeauthenticateFunction,
-    ScMiddlewareFunction,
     MiddlewareAuthenticationFunction,
     ScServerFunction,
     SocketConnectionFunction,
@@ -114,14 +113,8 @@ import CChInfo          from "../helper/infoObjects/cChInfo";
 import Result           from "./Result";
 import SmallBag         from "./SmallBag";
 import CIdChInfo        from "../helper/infoObjects/cIdChInfo";
-import PubData      from "../helper/infoObjects/pubData";
+import PubData          from "../helper/infoObjects/pubData";
 import ZationInfo       from "../helper/infoObjects/zationInfo";
-import {
-    AuthMiddlewareReq, EmitMiddlewareReq,
-    HandshakeScMiddlewareReq,
-    HandshakeWsMiddlewareReq, PubInMiddlewareReq, PubOutMiddlewareReq,
-    SubMiddlewareReq
-} from "../helper/sc/scMiddlewareReq";
 
 export default class Config
 {
@@ -499,22 +492,6 @@ export default class Config
     static scServerBadSocketAuthToken(func : ScServerBadSocketAuthTokenFunction) : ScServerBadSocketAuthTokenFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static scServerReady(func : ScServerReadyFunction) : ScServerReadyFunction {return func;}
-
-    //Part Middleware Events (SC)
-    // noinspection JSUnusedGlobalSymbols
-    static scMiddlewareAuthenticate(func : ScMiddlewareFunction<AuthMiddlewareReq>) : ScMiddlewareFunction<AuthMiddlewareReq> {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scMiddlewareHandshakeWs(func : ScMiddlewareFunction<HandshakeWsMiddlewareReq>) : ScMiddlewareFunction<HandshakeWsMiddlewareReq> {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scMiddlewareHandshakeSc(func : ScMiddlewareFunction<HandshakeScMiddlewareReq>) : ScMiddlewareFunction<HandshakeScMiddlewareReq> {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scMiddlewareSubscribe(func : ScMiddlewareFunction<SubMiddlewareReq>) : ScMiddlewareFunction<SubMiddlewareReq> {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scMiddlewarePublishIn(func : ScMiddlewareFunction<PubInMiddlewareReq>) : ScMiddlewareFunction<PubInMiddlewareReq> {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scMiddlewarePublishOut(func : ScMiddlewareFunction<PubOutMiddlewareReq>) : ScMiddlewareFunction<PubOutMiddlewareReq> {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scMiddlewareEmit(func : ScMiddlewareFunction<EmitMiddlewareReq>) : ScMiddlewareFunction<EmitMiddlewareReq> {return func;}
 
     //Part Types
     // noinspection JSUnusedGlobalSymbols
