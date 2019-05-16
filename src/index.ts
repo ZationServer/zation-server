@@ -23,6 +23,9 @@ import {ControllerConfig}           from "./lib/helper/configDefinitions/appConf
 import {StarterConfig}              from "./lib/helper/configDefinitions/starterConfig";
 import {StartMode}                  from "./lib/helper/constants/startMode";
 import ZationMaster                 from "./lib/main/zationMaster";
+import Router                       from "./lib/api/Router";
+import {Register}                   from "./lib/api/decorator/Register";
+import {AttachToRouter}             from "./lib/api/decorator/AttachToRouter";
 const  FsUtil : any               = require('socketcluster/fsutil');
 
 //starter
@@ -49,6 +52,9 @@ export {
         StartMode,
         Bag,
         SmallBag,
+        Router,
+        Register,
+        AttachToRouter,
         Controller,
         ControllerConfig,
         Result,
