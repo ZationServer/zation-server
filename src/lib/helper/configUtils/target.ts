@@ -21,62 +21,47 @@ export default class Target
         this.path = path;
     }
 
-    private clone() : Target
-    {
+    private clone() : Target {
         return new Target(this.mainTarget,this.pathName,this.splitSign,this.extraInfo,this.path);
     }
 
-    getMainTarget() : string
-    {
+    getMainTarget() : string {
         return this.mainTarget;
     }
 
-    getLastPath() : string | undefined
-    {
-        if(this.path !== undefined)
-        {
-            let ar = this.path.split(this.splitSign);
+    getLastPath() : string | undefined {
+        if(this.path !== undefined) {
+            const ar = this.path.split(this.splitSign);
             return ar[ar.length-1];
         }
-        else
-        {
+        else {
             return undefined;
         }
     }
 
     addPath(path : string) : Target
     {
-        let clone = this.clone();
+        const clone = this.clone();
         clone._addPath(path);
         return clone;
     }
 
     setExtraInfo(info : string) : Target
     {
-        let clone = this.clone();
+        const clone = this.clone();
         clone._setExtraInfo(info);
         return clone;
     }
 
-    private _addPath(path : string)
-    {
-        if(this.path === undefined)
-        {
-            this.path = path;
-        }
-        else
-        {
-            this.path = `${this.path}${this.splitSign}${path}`;
-        }
+    private _addPath(path : string) {
+        this.path = this.path === undefined ? path : `${this.path}${this.splitSign}${path}`;
     }
 
-    private _setExtraInfo(info : string)
-    {
+    private _setExtraInfo(info : string) {
         this.extraInfo = info;
     }
 
-    getTarget() : string
-    {
+    getTarget() : string {
         const extraInfo = this.extraInfo !== undefined ? `(${this.extraInfo}) ` : '';
 
         if(this.path === undefined)
