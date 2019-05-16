@@ -46,6 +46,7 @@ import ZationConfigFull                                     from "../helper/conf
 import ObjectUtils                                          from "../helper/utils/objectUtils";
 import JwtSignOptions                                       from "../helper/constants/jwt";
 import JwtVerifyOptions                                     from "../helper/constants/jwt";
+import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction} from "../helper/apiLevel/apiLevelUtils";
 
 export default class SmallBag {
     protected readonly exchangeEngine: ChannelBagEngine;
@@ -2250,6 +2251,30 @@ export default class SmallBag {
         } else {
             this.worker.setWorkerVariableStorage({});
         }
+    }
+
+    //Part ApiLevel
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * Build a closure for selecting the API level.
+     * The closure will return the correct mapped value with the best compatible API level.
+     * If there is no compatible API level, the closure returns undefined.
+     * Notice if you always have a 1 in the mapped values as an API level the closure will always return a value.
+     * @param apiLevelSwitch
+     * @example
+     * const switch = createApiLevelSwitcher<string>({
+     *     1 : 'apiLevel1',
+     *     5 : 'apiLevel5',
+     *     8 : 'apiLevel8',
+     *     2 : 'apiLevel2'
+     * });
+     * console.log(switch(7)); // apiLevel5
+     * console.log(switch(20)); // apiLevel8
+     * console.log(switch(1)); // apiLevel1
+     */
+    createApiLevelSwitcher<T>(apiLevelSwitch : ApiLevelSwitch<T>) : ApiLevelSwitchFunction<T> {
+        return ApiLevelUtils.createApiLevelSwitcher<T>(apiLevelSwitch);
     }
 
     //Part Base64Tools

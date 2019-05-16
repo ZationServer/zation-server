@@ -27,6 +27,7 @@ import JwtSignOptions             from "../helper/constants/jwt";
 import ObjectUtils                from "../helper/utils/objectUtils";
 import ChUtils                    from "../helper/channel/chUtils";
 import SocketInfo                 from "../helper/infoObjects/socketInfo";
+import ApiLevelUtils              from "../helper/apiLevel/apiLevelUtils";
 
 export default class Bag extends SmallBag
 {
@@ -1407,6 +1408,44 @@ export default class Bag extends SmallBag
      */
     getClientVersion() : number {
         return this.shBridge.getVersion();
+    }
+
+    //Part API Level
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns the API level of the client.
+     * This API level can be the request, connection, or default API level.
+     */
+    getApiLevel() : number {
+        return this.shBridge.getApiLevel();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns the API level of the request,
+     * can be undefined if the client did not provide it.
+     */
+    getRequestApiLevel() : number | undefined {
+        return this.shBridge.getRequestApiLevel();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns the API level of the connection,
+     * can be undefined if the client did not provide it or it is an HTTP request.
+     */
+    getConnectionApiLevel() : number | undefined {
+        return this.shBridge.getConnectionApiLevel();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Checks if the API level of the client is compatible with the API level.
+     * @param reqApiLevel
+     */
+    isCompatibleApiLevel(reqApiLevel : number) : boolean {
+        return ApiLevelUtils.apiLevelIsCompatible(this.getApiLevel(),reqApiLevel);
     }
 
     //Part new publish overwrite (with src)
