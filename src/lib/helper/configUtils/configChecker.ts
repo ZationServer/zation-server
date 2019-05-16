@@ -243,10 +243,10 @@ export default class ConfigChecker
                     `AuthController: '${authControllerName}' is not found.`));
             } else {
                 //checkAuthControllerAccess value
-                ControllerUtils.iterateControllerDefinition(controller[authControllerName],(controllerClass,k) => {
+                ControllerUtils.iterateControllerDefinition(controller[authControllerName],(controllerClass,apiLevel) => {
                     if (controllerClass.config.access !== ZationAccess.ALL) {
                         Logger.printConfigWarning
-                        (ConfigNames.APP, `It is recommended to set the access of the authController ${k ? `(API Level: ${k}) ` : ''}directly to 'all'.`);
+                        (ConfigNames.APP, `It is recommended to set the access of the authController ${apiLevel ? `(API Level: ${apiLevel}) ` : ''}directly to 'all'.`);
                     }
                 });
             }
@@ -679,8 +679,12 @@ export default class ConfigChecker
             const controller = this.zcLoader.appConfig.controllers;
             for (let cName in controller) {
                 if (controller.hasOwnProperty(cName)) {
-                    ControllerUtils.iterateControllerDefinition(controller[cName],(controllerClass,k) => {
-                        this.checkController(controllerClass, new Target(`Controller: '${cName}' ${k ? `(API Level: ${k}) ` : ''}`));
+                    ControllerUtils.iterateControllerDefinition(controller[cName],(controllerClass,apiLevel) =>{
+                        if(apiLevel !== undefined && isNaN(parseInt(apiLevel))) {
+                            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                                `Controller: '${cName}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
+                        }
+                        this.checkController(controllerClass, new Target(`Controller: '${cName}' ${apiLevel ? `(API Level: ${apiLevel}) ` : ''}`));
                     });
                 }
             }
