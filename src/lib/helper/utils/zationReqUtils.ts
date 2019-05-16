@@ -112,7 +112,7 @@ export default class ZationReqUtils
         );
     }
 
-    static getControllerName(task : object, isSystemController : boolean) : string
+    static getControllerId(task : object, isSystemController : boolean) : string
     {
         return !isSystemController ? task[nameof<ZationTask>(s => s.c)] :
             task[nameof<ZationTask>(s => s.sc)];

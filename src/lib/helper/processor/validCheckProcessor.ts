@@ -39,10 +39,10 @@ export default class ValidCheckProcessor
             const validReq : ZationValidationCheck = reqData.v;
 
             const isSystemController = ZationReqUtils.isSystemControllerReq(validReq);
-            const cName = ZationReqUtils.getControllerName(validReq,isSystemController);
+            const cId = ZationReqUtils.getControllerId(validReq,isSystemController);
 
             //Throws if not exists
-            this.controllerPrepare.checkControllerExist(cName,isSystemController);
+            this.controllerPrepare.checkControllerExist(cId,isSystemController);
 
             //check is over validation check limit
             if(validReq.i.length > this.validationCheckLimit){
@@ -54,7 +54,7 @@ export default class ValidCheckProcessor
 
             //Throws if apiLevel not found
             const {inputValidationCheck} =
-                this.controllerPrepare.getControllerPrepareData(cName,shBridge.getApiLevel(),isSystemController);
+                this.controllerPrepare.getControllerPrepareData(cId,shBridge.getApiLevel(),isSystemController);
 
             await inputValidationCheck(validReq.i);
             return {};

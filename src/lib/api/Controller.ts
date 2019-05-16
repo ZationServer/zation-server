@@ -21,12 +21,12 @@ export default class Controller {
 
     /**
      * @description
-     * The name of the controller from the app config.
+     * The id of the controller from the app config.
      */
-    protected name: string;
+    protected id: string;
 
-    constructor(name : string,smallBag: SmallBag) {
-        this.name = name;
+    constructor(id : string,smallBag: SmallBag) {
+        this.id = id;
         this.smallBag = smallBag;
     }
 
@@ -148,7 +148,7 @@ export default class Controller {
 export interface ControllerClass {
     config: ControllerConfig;
 
-    new(name : string,smallBag: SmallBag): Controller;
+    new(id : string,smallBag: SmallBag): Controller;
 
     prototype: any;
 }

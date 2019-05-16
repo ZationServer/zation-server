@@ -16,9 +16,9 @@ import {ApiLevelSwitch} from "../apiLevel/apiLevelUtils";
 export interface AppConfig
 {
     /**
-     * The name of the authController.
+     * The id of the authController.
      * This property makes it possible to send an authentication request to the server.
-     * aThen the server will automatically use the linked controller.
+     * Then the server will automatically use the linked controller.
      * @example
      * authController : 'login',
      */
@@ -27,7 +27,7 @@ export interface AppConfig
     /**
      * In this property, you can define all your controllers.
      * The value must be an object.
-     * The key of each property is the name of the controller.
+     * The key of each property is the id of the controller.
      * The value of each property is the imported controller class.
      * @example
      * controllers : {

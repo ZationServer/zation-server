@@ -74,10 +74,10 @@ export default class MainRequestProcessor
             const task : ZationTask = reqData.t;
 
             const isSystemController = ZationReqUtils.isSystemControllerReq(task);
-            const controllerName = ZationReqUtils.getControllerName(task,isSystemController);
+            const controllerId = ZationReqUtils.getControllerId(task,isSystemController);
 
             //Trows if not exists
-            this.controllerPrepare.checkControllerExist(controllerName,isSystemController);
+            this.controllerPrepare.checkControllerExist(controllerId,isSystemController);
 
             //Throws if apiLevel not found
             const {
@@ -88,7 +88,7 @@ export default class MainRequestProcessor
                 tokenStateCheck,
                 prepareHandleInvoke,
                 inputConsume
-            } = this.controllerPrepare.getControllerPrepareData(controllerName,shBridge.getApiLevel(),isSystemController);
+            } = this.controllerPrepare.getControllerPrepareData(controllerId,shBridge.getApiLevel(),isSystemController);
 
             //Throws if access denied
             systemAccessCheck(shBridge);
@@ -176,7 +176,7 @@ export default class MainRequestProcessor
                 else {
                     throw new BackError(MainBackErrors.noAccessWithHttpMethod,
                         {
-                            controller: controllerName,
+                            controllerId: controllerId,
                             method: shBridge.getRequest().method
                         });
                 }
@@ -184,7 +184,7 @@ export default class MainRequestProcessor
             else {
                 throw new BackError(MainBackErrors.noAccessWithProtocol,
                     {
-                        controllerName: controllerName,
+                        controllerId: controllerId,
                         protocol: ProtocolAccessChecker.getProtocol(shBridge)
                     });
             }

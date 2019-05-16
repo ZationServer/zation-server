@@ -36,8 +36,8 @@ import ObjectPath           from "../utils/objectPath";
 import Controller, {ControllerClass} from "../../api/Controller";
 import Iterator             from "../utils/iterator";
 import ObjectUtils          from "../utils/objectUtils";
-import ConfigLoader   from "../configManager/configLoader";
-import ControllerUtils from "../controller/controllerUtils";
+import ConfigLoader         from "../configManager/configLoader";
+import ControllerUtils      from "../controller/controllerUtils";
 
 export default class ConfigChecker
 {
@@ -235,15 +235,15 @@ export default class ConfigChecker
     }
 
     private checkAuthController() {
-        const authControllerName = this.zcLoader.appConfig.authController;
-        if (typeof authControllerName === "string") {
+        const authControllerId = this.zcLoader.appConfig.authController;
+        if (typeof authControllerId === "string") {
             const controller = this.zcLoader.appConfig.controllers || {};
-            if (!controller.hasOwnProperty(authControllerName)) {
+            if (!controller.hasOwnProperty(authControllerId)) {
                 this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `AuthController: '${authControllerName}' is not found.`));
+                    `AuthController: '${authControllerId}' is not found.`));
             } else {
                 //checkAuthControllerAccess value
-                ControllerUtils.iterateControllerDefinition(controller[authControllerName],(controllerClass,apiLevel) => {
+                ControllerUtils.iterateControllerDefinition(controller[authControllerId],(controllerClass,apiLevel) => {
                     if (controllerClass.config.access !== ZationAccess.ALL) {
                         Logger.printConfigWarning
                         (ConfigNames.APP, `It is recommended to set the access of the authController ${apiLevel ? `(API Level: ${apiLevel}) ` : ''}directly to 'all'.`);
@@ -677,14 +677,14 @@ export default class ConfigChecker
         //check Controller
         if (typeof this.zcLoader.appConfig.controllers === 'object') {
             const controller = this.zcLoader.appConfig.controllers;
-            for (let cName in controller) {
-                if (controller.hasOwnProperty(cName)) {
-                    ControllerUtils.iterateControllerDefinition(controller[cName],(controllerClass,apiLevel) =>{
+            for (let cId in controller) {
+                if (controller.hasOwnProperty(cId)) {
+                    ControllerUtils.iterateControllerDefinition(controller[cId],(controllerClass,apiLevel) =>{
                         if(apiLevel !== undefined && isNaN(parseInt(apiLevel))) {
                             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                                `Controller: '${cName}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
+                                `Controller: '${cId}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
                         }
-                        this.checkController(controllerClass, new Target(`Controller: '${cName}' ${apiLevel ? `(API Level: ${apiLevel}) ` : ''}`));
+                        this.checkController(controllerClass, new Target(`Controller: '${cId}' ${apiLevel ? `(API Level: ${apiLevel}) ` : ''}`));
                     });
                 }
             }

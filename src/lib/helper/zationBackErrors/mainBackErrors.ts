@@ -10,21 +10,21 @@ import {ErrorType}        from "./../constants/errorType";
 export const MainBackErrors = {
     controllerNotFound : {
         name          : 'controllerNotFound',
-        description   : 'Controller is missing.',
+        description   : 'The controller is not found.',
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : true,
         //INFO
-        // controllerName (From missing Controller)
+        // controllerId
         fromZationSystem : true
     },
 
     systemControllerNotFound : {
         name          : 'systemControllerNotFound',
-        description   : 'System controller is missing.',
+        description   : 'The system controller is not found.',
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : true,
         //INFO
-        // controllerName (From missing Controller)
+        // controllerId
         fromZationSystem : true
     },
 
@@ -34,7 +34,7 @@ export const MainBackErrors = {
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : true,
         //INFO
-        // controllerName
+        // controllerId
         // apiLevel
         fromZationSystem : true
     },
@@ -337,7 +337,7 @@ export const MainBackErrors = {
         sendInfo      : true,
         //INFO
         // protocol   (The protocol you request with)
-        // controllerName (The controller you request)
+        // controllerId (The controller you request)
         fromZationSystem : true
     },
 
@@ -348,7 +348,7 @@ export const MainBackErrors = {
         sendInfo      : true,
         //INFO
         // method   (The method you request with)
-        // controller (The controller you request)
+        // controllerId (The controller you request)
         fromZationSystem : true
     },
 

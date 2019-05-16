@@ -55,51 +55,51 @@ export default class ControllerPrepare
     /**
      * It will return the controller prepared data.
      * If no controller with the API level is found, it will thrown an API level not compatible back error.
-     * @param name
+     * @param id
      * @param apiLevel
      * @param isSystemController
      */
-    getControllerPrepareData(name : string,apiLevel : number,isSystemController : boolean) : ControllerPrepareData
+    getControllerPrepareData(id : string,apiLevel : number,isSystemController : boolean) : ControllerPrepareData
     {
         if(!isSystemController) {
-            const controller = this.appController[name](apiLevel);
+            const controller = this.appController[id](apiLevel);
             if(controller !== undefined){
                 return controller;
             }
             else {
                 throw new BackError(MainBackErrors.apiLevelNotCompatible,
-                    {controllerName: name, apiLevel : apiLevel});
+                    {controllerId: id, apiLevel : apiLevel});
             }
         }
         else {
-            return this.systemController[name];
+            return this.systemController[id];
         }
     }
 
     /**
      * Returns a boolean that indicates if the controller exists.
-     * @param name
+     * @param id
      * @param isSystemController
      */
-    isControllerExist(name : string,isSystemController : boolean) : boolean {
-        return !isSystemController ? this.appController.hasOwnProperty(name) :
-            this.systemController.hasOwnProperty(name);
+    isControllerExist(id : string,isSystemController : boolean) : boolean {
+        return !isSystemController ? this.appController.hasOwnProperty(id) :
+            this.systemController.hasOwnProperty(id);
     }
 
     /**
      * Checks if the controller exists.
      * It will throw a back error if the controller is not found.
-     * @param name
+     * @param id
      * @param isSystemController
      */
-    checkControllerExist(name : string,isSystemController : boolean) : void
+    checkControllerExist(id : string,isSystemController : boolean) : void
     {
-        if(!this.isControllerExist(name,isSystemController)) {
+        if(!this.isControllerExist(id,isSystemController)) {
             if(isSystemController) {
-                throw new BackError(MainBackErrors.systemControllerNotFound, {controllerName: name});
+                throw new BackError(MainBackErrors.systemControllerNotFound, {controllerId: id});
             }
             else {
-                throw new BackError(MainBackErrors.controllerNotFound, {controllerName: name});
+                throw new BackError(MainBackErrors.controllerNotFound, {controllerId: id});
             }
         }
     }
@@ -112,15 +112,15 @@ export default class ControllerPrepare
 
         const promises : Promise<void>[] = [];
 
-        for(let cName in uController) {
-            if(uController.hasOwnProperty(cName)) {
-                promises.push(this.addController(cName,false,uController[cName]));
+        for(let cId in uController) {
+            if(uController.hasOwnProperty(cId)) {
+                promises.push(this.addController(cId,false,uController[cId]));
             }
         }
 
-        for(let cName in SystemController) {
-            if(SystemController.hasOwnProperty(cName)) {
-                promises.push(this.addController(cName,true,SystemController[cName]));
+        for(let cId in SystemController) {
+            if(SystemController.hasOwnProperty(cId)) {
+                promises.push(this.addController(cId,true,SystemController[cId]));
             }
         }
 
@@ -129,19 +129,19 @@ export default class ControllerPrepare
 
     /**
      * Add a controller to the prepare process.
-     * @param name
+     * @param id
      * @param systemController
      * @param definition
      */
-    private async addController(name : string,systemController : boolean,definition : ControllerClass | ApiLevelSwitch<ControllerClass>) : Promise<void>
+    private async addController(id : string,systemController : boolean,definition : ControllerClass | ApiLevelSwitch<ControllerClass>) : Promise<void>
     {
         if(typeof definition === 'function') {
-            const preparedControllerData = await this.processController(definition);
+            const preparedControllerData = await this.processController(definition,id);
             if(systemController){
-                this.systemController[name] = preparedControllerData;
+                this.systemController[id] = preparedControllerData;
             }
             else {
-                this.appController[name] = () => {
+                this.appController[id] = () => {
                     return preparedControllerData
                 };
             }
@@ -152,23 +152,24 @@ export default class ControllerPrepare
             for(let k in definition){
                 if(definition.hasOwnProperty(k)) {
                     promises.push((async () => {
-                        preparedDataMapper[k] = await this.processController(definition[k]);
+                        preparedDataMapper[k] = await this.processController(definition[k],id);
                     })());
                 }
             }
             await Promise.all(promises);
-            this.appController[name] = ApiLevelUtils.createApiLevelSwitcher<ControllerPrepareData>(preparedDataMapper);
+            this.appController[id] = ApiLevelUtils.createApiLevelSwitcher<ControllerPrepareData>(preparedDataMapper);
         }
     }
 
     /**
      * Process a controller and create the prepared data.
      * @param controller
+     * @param id
      */
-    private async processController(controller : ControllerClass) : Promise<ControllerPrepareData>
+    private async processController(controller : ControllerClass,id : string) : Promise<ControllerPrepareData>
     {
         const config : ControllerConfig = controller.config;
-        const cInstance : Controller = new controller(name,this.worker.getPreparedSmallBag());
+        const cInstance : Controller = new controller(id,this.worker.getPreparedSmallBag());
         await cInstance.initialize(this.worker.getPreparedSmallBag());
 
         return  {
