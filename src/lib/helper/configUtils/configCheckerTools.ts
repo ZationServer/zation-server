@@ -10,9 +10,20 @@ import ConfigError    from "./configError";
 
 export default class ConfigCheckerTools
 {
+
+    /**
+     * Asserts a property.
+     * @param key
+     * @param obj
+     * @param types
+     * @param isOptional
+     * @param configName
+     * @param configErrorBag
+     * @param target
+     */
     static assertProperty(key : string,obj : object,types : string[] | string,isOptional : boolean,configName : string,configErrorBag : ConfigErrorBag,target : Target = new Target()) : boolean
     {
-        let targetText = `${target.getTarget()} property '${key}'`;
+        const targetText = `${target.getTarget()} property '${key}'`;
         if(obj[key] === undefined) {
             if(!isOptional) {
                 configErrorBag.addConfigError(new ConfigError(configName,`${targetText} need to be set.`));
@@ -20,7 +31,7 @@ export default class ConfigCheckerTools
             }
         }
         else {
-            if(!ConfigCheckerTools.isCorrectType(obj[key],types)) {
+            if(!ConfigCheckerTools.isCorrectTypes(obj[key],types)) {
                 const type = ConfigCheckerTools.getTypeOf(obj[key]);
                 configErrorBag.addConfigError(new ConfigError(configName,
                     `${targetText} has a not allowed type '${type}'! This types are allowed: ${types.toString()}.`));
@@ -30,26 +41,23 @@ export default class ConfigCheckerTools
         return true;
     }
 
-    static getTypeOf(value)
-    {
-        if(Array.isArray(value)) {
-            return 'array';
-        }
-        else {
-            return typeof value;
-        }
-    }
-
+    /**
+     * Asserts a structure of an object.
+     * @param structure
+     * @param obj
+     * @param configName
+     * @param configErrorBag
+     * @param target
+     */
     static assertStructure(structure : object,obj : object | undefined,configName : string,configErrorBag : ConfigErrorBag,target : Target = new Target())
     {
-        if(typeof obj !== 'object')
-        {
+        if(typeof obj !== 'object') {
             configErrorBag.addConfigError(new ConfigError(configName,
                 `${target.getTarget()} needs to be from type object!`));
             return;
         }
 
-        let allowedKeys : any = [];
+        const allowedKeys : any = [];
         for(let k in structure)
         {
             if(structure.hasOwnProperty(k))
@@ -70,7 +78,7 @@ export default class ConfigCheckerTools
                         if(Array.isArray(obj[k])) {
                             let array = obj[k];
                             for(let i = 0; i < array.length; i++) {
-                                if(allowedType && ConfigCheckerTools.getTypeOf(array[i]) !== allowedType) {
+                                if(allowedType && ConfigCheckerTools.isCorrectType(array[i],allowedType)) {
                                     configErrorBag.addConfigError(new ConfigError(configName,
                                         `${target.getTarget()} value: '${array[i]}' in property array: '${k}' is not allowed. Allowed type is: ${allowedType}.`));
                                 }
@@ -125,7 +133,15 @@ export default class ConfigCheckerTools
         }
     }
 
-
+    /**
+     * Asserts if an array contains a value.
+     * @param values
+     * @param searchValue
+     * @param configName
+     * @param configErrorBag
+     * @param message
+     * @param target
+     */
     static assertEqualsOne(values : any[],searchValue,configName : string,configErrorBag : ConfigErrorBag,message : string,target : Target = new Target()) : boolean
     {
         let found = false;
@@ -143,34 +159,60 @@ export default class ConfigCheckerTools
         return true;
     }
 
-    private static isCorrectType(value : any,types : any[] | any) : boolean | undefined
+    /**
+     * Returns the type of the value in deep.
+     * @param value
+     */
+    static getTypeOf(value)
     {
-        const typeOk = (value,type) => {
-            if(type === 'array') {
-                return Array.isArray(value);
-            }
-            if(type === 'null') {
-                return value === null;
-            }
-            if(type === 'object') {
-                return typeof value === 'object' && !Array.isArray(value);
-            }
-            else {
-                return typeof value === type;
-            }
-        };
+        if(Array.isArray(value)) {
+            return 'array';
+        }
+        else if(value === null){
+            return 'null';
+        }
+        else {
+            return typeof value;
+        }
+    }
 
+    /**
+     * Checks if the value is of the type.
+     * @param value
+     * @param type ['array','null','object','boolean','number','string']
+     */
+    private static isCorrectType(value : any,type : string) : boolean {
+        if(type === 'array') {
+            return Array.isArray(value);
+        }
+        if(type === 'null') {
+            return value === null;
+        }
+        if(type === 'object') {
+            return typeof value === 'object' && !Array.isArray(value);
+        }
+        else {
+            return typeof value === type;
+        }
+    }
+
+    /**
+     * Checks if the value is any of these types.
+     * @param value
+     * @param types ['array','null','object','boolean','number','string']
+     */
+    private static isCorrectTypes(value : any,types : any[] | any) : boolean
+    {
         if(Array.isArray(types)) {
-            for(let i = 0; i < types.length; i++)
-            {
-                if(typeOk(value,types[i]))
-                {
+            for(let i = 0; i < types.length; i++) {
+                if(ConfigCheckerTools.isCorrectType(value,types[i])) {
                     return true;
                 }
             }
+            return false;
         }
         else {
-            return typeOk(value,types);
+            return ConfigCheckerTools.isCorrectType(value,types);
         }
     }
 
