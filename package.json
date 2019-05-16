@@ -71,8 +71,8 @@
     "validator": "10.11.0",
     "fast-stringify": "1.1.0",
     "ws": "6.2.1",
-    "zation-client": "0.7.6",
-    "zation-service": "0.3.3"
+    "zation-client": "0.7.8",
+    "zation-service": "0.3.4"
   },
   "devDependencies": {
     "@types/chai": "4.1.7",
