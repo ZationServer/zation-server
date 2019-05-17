@@ -23,7 +23,7 @@ export default class Controller {
      * @description
      * The id of the controller from the app config.
      */
-    protected id: string;
+    protected readonly id: string;
 
     constructor(id : string,smallBag: SmallBag) {
         this.id = id;
