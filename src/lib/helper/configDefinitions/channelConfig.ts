@@ -90,11 +90,78 @@ export type NormalChOnUnsubFunction =
 
 export interface ChannelConfig
 {
+    /**
+     * Define your custom channels in objects and register event listeners.
+     * Use a custom channel if you only need one specific kind of this channel.
+     * For example, I have one stream where a particular group of clients can publish in or subscribe.
+     * The key of the object is the name of the channel.
+     * There is one particular key that is the default key.
+     * With this key, you can define default settings for every custom channel.
+     * @example
+     * customChannels : {
+     *     default : {
+     *         clientPublishAccess : false,
+     *         subscribeAccess : true,
+     *     },
+     *     stream : {
+     *         subscribeAccess : 'allAuth',
+     *     }
+     * }
+     */
     customChannels  ?: Record<string,CustomIdCh> | CChannelDefault;
+    /**
+     * Define your custom id channels in objects and register event listeners.
+     * Use a custom id channel if you need more than one channel of these type.
+     * For example, I have a private user chat where more chats can be created with a specific id.
+     * Now I can have more channels from type user chat with different identifiers.
+     * The key of the object is the name of the channel.
+     * There is one particular key that is the default key.
+     * With this key, you can define default settings for every custom id channel.
+     * @example
+     * customIdChannels : {
+     *     default : {
+     *         clientPublishAccess : false,
+     *         subscribeAccess : true,
+     *     },
+     *     userChat : {
+     *         subscribeAccess : 'allAuth',
+     *     }
+     * }
+     */
     customIdChannels  ?: Record<string,CustomCh> | CIdChannelDefault;
+    /**
+     * Add options or register event listeners to the user channels of zation.
+     * Every user id has its own channel.
+     * @example
+     * userCh : {
+     *     onSubscription : () => {}
+     * }
+     */
     userCh   ?: UserChannel;
+    /**
+     * Add options or register event listeners to the auth user group channels of zation.
+     * Every auth user group has its own channel.
+     * @example
+     * authUserGroupCh : {
+     *     onSubscription : () => {}
+     * }
+     */
     authUserGroupCh  ?: AuthUserGroupChannel;
+    /**
+     * Add options or register event listeners to the default user group channel of zation.
+     * @example
+     * defaultUserGroupCh : {
+     *     onSubscription : () => {}
+     * }
+     */
     defaultUserGroupCh  ?: NormalChannel;
+    /**
+     * Add options or register event listeners to the all channel of zation.
+     * @example
+     * allCh : {
+     *     onSubscription : () => {}
+     * }
+     */
     allCh  ?: NormalChannel;
 }
 
@@ -114,10 +181,17 @@ export interface ChannelDefault {
 }
 
 export interface ChannelSettings {
+    /**
+     * Indicates if the client that publish should get his own publish.
+     * @default true
+     */
     socketGetOwnPublish  ?: boolean;
 }
 
 export interface UserChannel extends ZationChannelConfig{
+    /**
+     *
+     */
     onClientPublish  ?: UserChOnClientPubFunction | UserChOnClientPubFunction[];
     onBagPublish  ?: UserChOnBagPubFunction | UserChOnBagPubFunction[];
     onSubscription  ?: UserChOnSubFunction | UserChOnSubFunction[];
