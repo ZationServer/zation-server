@@ -38,12 +38,12 @@ export default class Router {
      * Attach a controller to this route.
      * It will automatically register the controller in the app config with the specific route.
      * You only have to import the file in the app config.
-     * You can attach multiple controllers with the same id but different API levels.
-     * @param id
+     * You can attach multiple controllers with the same name but different API levels.
+     * @param name
      * @param controllerClass
      * @param apiLevel
      */
-    attach(id : string,controllerClass : ControllerClass,apiLevel ?: number) {
-        Config.registerController(this.route+id,controllerClass,apiLevel);
+    attach(name : string,controllerClass : ControllerClass,apiLevel ?: number) {
+        Config.registerController(this.route+name,controllerClass,apiLevel);
     }
 }
