@@ -6,7 +6,6 @@ GitHub: LucaCode
 
 import ConfigLoader from "../helper/configManager/configLoader";
 
-require('cache-require-paths');
 const  SocketCluster : any   = require('socketcluster');
 const  isWindows             = require('is-windows');
 import {WorkerMessageActions}  from "../helper/constants/workerMessageActions";

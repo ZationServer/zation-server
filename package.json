@@ -34,7 +34,6 @@
     "@types/useragent": "2.1.1",
     "body-parser": "1.18.3",
     "byte-length": "1.0.2",
-    "cache-require-paths": "0.3.0",
     "child_process": "1.0.2",
     "co": "4.6.0",
     "cookie-parser": "1.4.4",
