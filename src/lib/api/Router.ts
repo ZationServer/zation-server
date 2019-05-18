@@ -16,6 +16,7 @@ export default class Router {
 
     /**
      * Create a controller router for a specific route.
+     * Notice that the route split sign is a slash ('/') it will automatically be added to your route.
      * You also can optionally pass in a pre router.
      * @param route
      * @param router
@@ -23,6 +24,9 @@ export default class Router {
     constructor(route : string, router ?: Router){
         if(router){
             this.route += router.getRoute();
+        }
+        if(route[route.length-1] !== '/'){
+            route+='/';
         }
         this.route += route;
     }
