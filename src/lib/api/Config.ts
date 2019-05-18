@@ -302,7 +302,7 @@ export default class Config
                 if(Config.tmpController.hasOwnProperty(name)){
                     if(config.controllers.hasOwnProperty(name)){
                         throw new Error
-                        (`Conflict with controller name: ${name}, the controller name is defined in the app config and with the config utils.`);
+                        (`Conflict with controller id: ${name}, the controller id is defined in the app config and with the config utils.`);
                     }
                     else {
                         config.controllers[name] = Config.tmpController[name];
