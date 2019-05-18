@@ -108,7 +108,7 @@ export interface ChannelConfig
      *     }
      * }
      */
-    customChannels  ?: Record<string,CustomIdCh> | CChannelDefault;
+    customChannels  ?: Record<string,CustomCh> | CChannelDefault;
     /**
      * Define your custom id channels in objects and register event listeners.
      * Use a custom id channel if you need more than one channel of these type.
@@ -128,7 +128,7 @@ export interface ChannelConfig
      *     }
      * }
      */
-    customIdChannels  ?: Record<string,CustomCh> | CIdChannelDefault;
+    customIdChannels  ?: Record<string,CustomIdCh> | CIdChannelDefault;
     /**
      * Add options or register event listeners to the user channels of zation.
      * Every user id has its own channel.
@@ -169,14 +169,23 @@ export interface PreCompiledChannelConfig extends ChannelConfig{
 }
 
 export interface CChannelDefault extends ChannelDefault{
+    /**
+     * Set the default options for all custom channels.
+     */
     default  ?: CustomCh;
 }
 
 export interface CIdChannelDefault extends ChannelDefault {
+    /**
+     * Set the default options for all custom id channels.
+     */
     default  ?: CustomIdCh;
 }
 
 export interface ChannelDefault {
+    /**
+     * Set the default options.
+     */
     default ?: any;
 }
 
@@ -188,65 +197,448 @@ export interface ChannelSettings {
     socketGetOwnPublish  ?: boolean;
 }
 
+export interface ZationChannelConfig extends ChannelSettings{
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is publishing in this channel.
+     */
+    onClientPublish  ?: AnyFunction| AnyFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the bag is publishing in this channel.
+     */
+    onBagPublish  ?: AnyFunction | AnyFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is subscribing that channel.
+     */
+    onSubscription  ?: AnyFunction | AnyFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is unsubscribing that channel.
+     */
+    onUnsubscription  ?: AnyFunction | AnyFunction[];
+    /**
+     * @description
+     * With this option, you can allow that clients can publish in this channel.
+     * Otherwise only the server can publish in that channel, by using a bag.
+     * @default false
+     */
+    allowClientPublish ?: boolean;
+}
+
 export interface UserChannel extends ZationChannelConfig{
     /**
-     *
+     * @description
+     * Set event listener that gets triggered when the client is publishing in a user channel.
+     * @example (smallBag, userId, pubData, socketInfo) => {}
      */
     onClientPublish  ?: UserChOnClientPubFunction | UserChOnClientPubFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the bag is publishing in a user channel.
+     * @example (smallBag, userId, pubData, socketInfo) => {}
+     */
     onBagPublish  ?: UserChOnBagPubFunction | UserChOnBagPubFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is subscribing a user channel.
+     * @example (smallBag, userId, socketInfo) => {}
+     */
     onSubscription  ?: UserChOnSubFunction | UserChOnSubFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is unsubscribing a user channel.
+     * @example (smallBag, userId, socketInfo) => {}
+     */
     onUnsubscription  ?: UserChOnUnsubFunction | UserChOnUnsubFunction[];
 }
 
 export interface AuthUserGroupChannel extends ZationChannelConfig{
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is publishing in a auth user group channel.
+     * @example (smallBag, authUserGroup, pubData, socketInfo) => {}
+     */
     onClientPublish  ?: AuthUserGroupChOnClientPubFunction | AuthUserGroupChOnClientPubFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the bag is publishing in a auth user group channel.
+     * @example (smallBag, authUserGroup, pubData, socketInfo) => {}
+     */
     onBagPublish  ?: AuthUserGroupChOnBagPubFunction | AuthUserGroupChOnBagPubFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is subscribing a auth user group channel.
+     * @example (smallBag, authUserGroup, socketInfo) => {}
+     */
     onSubscription  ?: AuthUserGroupChOnSubFunction | AuthUserGroupChOnSubFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is unsubscribing a auth user group channel.
+     * @example (smallBag, authUserGroup, socketInfo) => {}
+     */
     onUnsubscription  ?: AuthUserGroupChOnUnsubFunction | AuthUserGroupChOnUnsubFunction[];
 }
 
 export interface NormalChannel extends ZationChannelConfig{
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is publishing in this channel.
+     * @example (smallBag, pubData, socketInfo) => {}
+     */
     onClientPublish  ?: NormalChOnClientPubFunction | NormalChOnClientPubFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the bag is publishing in this channel.
+     * @example (smallBag, pubData, socketInfo) => {}
+     */
     onBagPublish  ?: NormalChOnBagPubFunction | NormalChOnBagPubFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is subscribing that channel.
+     * @example (smallBag, socketInfo) => {}
+     */
     onSubscription  ?: NormalChOnSubFunction | NormalChOnSubFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is unsubscribing that channel.
+     * @example (smallBag, socketInfo) => {}
+     */
     onUnsubscription  ?: NormalChOnUnsubFunction | NormalChOnUnsubFunction[];
 }
 
-export interface ZationChannelConfig extends ChannelSettings{
-    onClientPublish  ?: AnyFunction| AnyFunction[];
-    onBagPublish  ?: AnyFunction | AnyFunction[];
-    onSubscription  ?: AnyFunction | AnyFunction[];
-    onUnsubscription  ?: AnyFunction | AnyFunction[];
-    allowClientPublish ?: boolean;
+export interface CustomChannelConfig extends ZationChannelConfig{
+    /**
+     * @description
+     * Set the access rule which clients are not allowed to publish in this channel.
+     * Notice that only one of the options 'clientPublishNotAccess' or 'clientPublishAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default (use clientPublishAccess)
+     * @example
+     * //boolean
+     * true            // No client is allowed
+     * false           // All clients are allowed
+     * //string
+     * 'all'           // No client is allowed
+     * 'allAuth'       // All authenticated clients are not allowed
+     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
+     * 'admin'         // All admins are not allowed
+     * //number
+     * 10              // All clients with user id 10 are not allowed
+     * //array
+     * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
+     * //function
+     * (smallBag) => {} // If returns true the client is not allowed, false will allow.
+     */
+    clientPublishNotAccess  ?: Function | boolean | string | number | (string|number)[];
+    /**
+     * @description
+     * Set the access rule which clients are allowed to publish in this channel.
+     * Notice that only one of the options 'clientPublishNotAccess' or 'clientPublishAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default false
+     * @example
+     * //boolean
+     * true            // All clients are allowed
+     * false           // No client is allowed
+     * //string
+     * 'all'           // All clients are allowed
+     * 'allAuth'       // Only all authenticated clients are allowed
+     * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed)
+     * 'admin'         // Only all admins are allowed
+     * //number
+     * 10              // Only all clients with user id 10 are allowed
+     * //array
+     * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
+     * //function
+     * (smallBag) => {} // If returns true the client is allowed, false will not allow.
+     */
+    clientPublishAccess  ?: Function | boolean | string | number | (string|number)[];
+    /**
+     * @description
+     * Set the access rule which clients are not allowed to subscribe this channel.
+     * Notice that only one of the options 'subscribeNotAccess' or 'subscribeAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default (use subscribeAccess)
+     * @example
+     * //boolean
+     * true            // No client is allowed
+     * false           // All clients are allowed
+     * //string
+     * 'all'           // No client is allowed
+     * 'allAuth'       // All authenticated clients are not allowed
+     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
+     * 'admin'         // All admins are not allowed
+     * //number
+     * 10              // All clients with user id 10 are not allowed
+     * //array
+     * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
+     * //function
+     * (smallBag) => {} // If returns true the client is not allowed, false will allow.
+     */
+    subscribeNotAccess  ?: Function | boolean | string | number | (string|number)[];
+    /**
+     * @description
+     * Set the access rule which clients are allowed to subscribe this channel.
+     * Notice that only one of the options 'subscribeNotAccess' or 'subscribeAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default false
+     * @example
+     * //boolean
+     * true            // All clients are allowed
+     * false           // No client is allowed
+     * //string
+     * 'all'           // All clients are allowed
+     * 'allAuth'       // Only all authenticated clients are allowed
+     * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed)
+     * 'admin'         // Only all admins are allowed
+     * //number
+     * 10              // Only all clients with user id 10 are allowed
+     * //array
+     * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
+     * //function
+     * (smallBag) => {} // If returns true the client is allowed, false will not allow.
+     */
+    subscribeAccess  ?: Function | boolean | string | number | (string|number)[];
 }
 
 export interface CustomIdCh extends CustomChannelConfig {
+    /**
+     * @description
+     * Set the access rule which clients are not allowed to publish in the custom id channel.
+     * Notice that only one of the options 'clientPublishNotAccess' or 'clientPublishAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default (use clientPublishAccess)
+     * @example
+     * //boolean
+     * true            // No client is allowed
+     * false           // All clients are allowed
+     * //string
+     * 'all'           // No client is allowed
+     * 'allAuth'       // All authenticated clients are not allowed
+     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
+     * 'admin'         // All admins are not allowed
+     * //number
+     * 10              // All clients with user id 10 are not allowed
+     * //array
+     * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
+     * //function
+     * (smallBag, chInfo, pubData, socketInfo) => {} // If returns true the client is not allowed, false will allow.
+     */
     clientPublishNotAccess  ?: CIdChannelClientPubAccessFunction | boolean | string | number | (string|number)[];
+    /**
+     * @description
+     * Set the access rule which clients are allowed to publish in the custom id channel.
+     * Notice that only one of the options 'clientPublishNotAccess' or 'clientPublishAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default false
+     * @example
+     * //boolean
+     * true            // All clients are allowed
+     * false           // No client is allowed
+     * //string
+     * 'all'           // All clients are allowed
+     * 'allAuth'       // Only all authenticated clients are allowed
+     * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed)
+     * 'admin'         // Only all admins are allowed
+     * //number
+     * 10              // Only all clients with user id 10 are allowed
+     * //array
+     * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
+     * //function
+     * (smallBag, chInfo, pubData, socketInfo) => {} // If returns true the client is allowed, false will not allow.
+     */
     clientPublishAccess  ?: CIdChannelClientPubAccessFunction | boolean | string | number | (string|number)[];
+    /**
+     * @description
+     * Set the access rule which clients are not allowed to subscribe the custom id channel.
+     * Notice that only one of the options 'subscribeNotAccess' or 'subscribeAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default (use subscribeAccess)
+     * @example
+     * //boolean
+     * true            // No client is allowed
+     * false           // All clients are allowed
+     * //string
+     * 'all'           // No client is allowed
+     * 'allAuth'       // All authenticated clients are not allowed
+     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
+     * 'admin'         // All admins are not allowed
+     * //number
+     * 10              // All clients with user id 10 are not allowed
+     * //array
+     * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
+     * //function
+     * (smallBag, chInfo, socketInfo) => {} // If returns true the client is not allowed, false will allow.
+     */
     subscribeNotAccess  ?: CIdChannelSubAccessFunction | boolean | string | number | (string|number)[];
+    /**
+     * @description
+     * Set the access rule which clients are allowed to subscribe the custom id channel.
+     * Notice that only one of the options 'subscribeNotAccess' or 'subscribeAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default false
+     * @example
+     * //boolean
+     * true            // All clients are allowed
+     * false           // No client is allowed
+     * //string
+     * 'all'           // All clients are allowed
+     * 'allAuth'       // Only all authenticated clients are allowed
+     * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed)
+     * 'admin'         // Only all admins are allowed
+     * //number
+     * 10              // Only all clients with user id 10 are allowed
+     * //array
+     * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
+     * //function
+     * (smallBag, chInfo, socketInfo) => {} // If returns true the client is allowed, false will not allow.
+     */
     subscribeAccess  ?: CIdChannelSubAccessFunction | boolean | string | number | (string|number)[];
 
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is publishing in this custom id channel.
+     * @example (smallBag, chInfo, pubData, socketInfo) => {}
+     */
     onClientPublish  ?: CIdChannelOnClientPubFunction | CIdChannelOnClientPubFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the bag is publishing in this custom id channel.
+     * @example (smallBag, chInfo, pubData, socketInfo) => {}
+     */
     onBagPublish  ?: CIdChannelOnBagPubFunction | CIdChannelOnBagPubFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is subscribing that custom id channel.
+     * @example (smallBag, chInfo, socketInfo) => {}
+     */
     onSubscription  ?: CIdChannelOnSubFunction | CIdChannelOnSubFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is unsubscribing that custom id channel.
+     * @example (smallBag, socketInfo) => {}
+     */
     onUnsubscription  ?: CIdChannelOnUnsubFunction | CIdChannelOnUnsubFunction[];
 }
 
 export interface CustomCh extends CustomChannelConfig{
+    /**
+     * @description
+     * Set the access rule which clients are not allowed to publish in the custom channel.
+     * Notice that only one of the options 'clientPublishNotAccess' or 'clientPublishAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default (use clientPublishAccess)
+     * @example
+     * //boolean
+     * true            // No client is allowed
+     * false           // All clients are allowed
+     * //string
+     * 'all'           // No client is allowed
+     * 'allAuth'       // All authenticated clients are not allowed
+     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
+     * 'admin'         // All admins are not allowed
+     * //number
+     * 10              // All clients with user id 10 are not allowed
+     * //array
+     * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
+     * //function
+     * (smallBag, chInfo, pubData, socketInfo) => {} // If returns true the client is not allowed, false will allow.
+     */
     clientPublishNotAccess  ?: CChannelClientPubAccessFunction | boolean | string | number | (string|number)[];
+    /**
+     * @description
+     * Set the access rule which clients are allowed to publish in the custom channel.
+     * Notice that only one of the options 'clientPublishNotAccess' or 'clientPublishAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default false
+     * @example
+     * //boolean
+     * true            // All clients are allowed
+     * false           // No client is allowed
+     * //string
+     * 'all'           // All clients are allowed
+     * 'allAuth'       // Only all authenticated clients are allowed
+     * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed)
+     * 'admin'         // Only all admins are allowed
+     * //number
+     * 10              // Only all clients with user id 10 are allowed
+     * //array
+     * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
+     * //function
+     * (smallBag, chInfo, pubData, socketInfo) => {} // If returns true the client is allowed, false will not allow.
+     */
     clientPublishAccess  ?: CChannelClientPubAccessFunction | boolean | string | number | (string|number)[];
+    /**
+     * @description
+     * Set the access rule which clients are not allowed to subscribe the custom channel.
+     * Notice that only one of the options 'subscribeNotAccess' or 'subscribeAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default (use subscribeAccess)
+     * @example
+     * //boolean
+     * true            // No client is allowed
+     * false           // All clients are allowed
+     * //string
+     * 'all'           // No client is allowed
+     * 'allAuth'       // All authenticated clients are not allowed
+     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
+     * 'admin'         // All admins are not allowed
+     * //number
+     * 10              // All clients with user id 10 are not allowed
+     * //array
+     * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
+     * //function
+     * (smallBag, chInfo, socketInfo) => {} // If returns true the client is not allowed, false will allow.
+     */
     subscribeNotAccess  ?: CChannelSubAccessFunction | boolean | string | number | (string|number)[];
+    /**
+     * @description
+     * Set the access rule which clients are allowed to subscribe the custom channel.
+     * Notice that only one of the options 'subscribeNotAccess' or 'subscribeAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default false
+     * @example
+     * //boolean
+     * true            // All clients are allowed
+     * false           // No client is allowed
+     * //string
+     * 'all'           // All clients are allowed
+     * 'allAuth'       // Only all authenticated clients are allowed
+     * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed)
+     * 'admin'         // Only all admins are allowed
+     * //number
+     * 10              // Only all clients with user id 10 are allowed
+     * //array
+     * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
+     * //function
+     * (smallBag, chInfo, socketInfo) => {} // If returns true the client is allowed, false will not allow.
+     */
     subscribeAccess  ?: CChannelSubAccessFunction | boolean | string | number | (string|number)[];
 
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is publishing in this custom channel.
+     * @example (smallBag, chInfo, pubData, socketInfo) => {}
+     */
     onClientPublish  ?: CChannelOnClientPubFunction | CChannelOnClientPubFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the bag is publishing in this custom channel.
+     * @example (smallBag, chInfo, pubData, socketInfo) => {}
+     */
     onBagPublish  ?: CChannelOnBagPubFunction | CChannelOnBagPubFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is subscribing that custom channel.
+     * @example (smallBag, chInfo, socketInfo) => {}
+     */
     onSubscription  ?: CChannelOnSubFunction | CChannelOnSubFunction[];
+    /**
+     * @description
+     * Set event listener that gets triggered when the client is unsubscribing that custom channel.
+     * @example (smallBag, socketInfo) => {}
+     */
     onUnsubscription  ?: CChannelOnUnsubFunction | CChannelOnUnsubFunction[];
-}
-
-export interface CustomChannelConfig extends ZationChannelConfig{
-    clientPublishNotAccess  ?: Function | boolean | string | number | (string|number)[];
-    clientPublishAccess  ?: Function | boolean | string | number | (string|number)[];
-    subscribeNotAccess  ?: Function | boolean | string | number | (string|number)[];
-    subscribeAccess  ?: Function | boolean | string | number | (string|number)[];
 }
