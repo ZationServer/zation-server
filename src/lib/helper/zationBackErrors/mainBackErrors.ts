@@ -14,7 +14,7 @@ export const MainBackErrors = {
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : true,
         //INFO
-        // controllerId
+        // controller
         fromZationSystem : true
     },
 
@@ -24,7 +24,7 @@ export const MainBackErrors = {
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : true,
         //INFO
-        // controllerId
+        // controller
         fromZationSystem : true
     },
 
@@ -34,7 +34,7 @@ export const MainBackErrors = {
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : true,
         //INFO
-        // controllerId
+        // controller
         // apiLevel
         fromZationSystem : true
     },
@@ -337,7 +337,7 @@ export const MainBackErrors = {
         sendInfo      : true,
         //INFO
         // protocol   (The protocol you request with)
-        // controllerId (The controller you request)
+        // controller (The controller you request)
         fromZationSystem : true
     },
 
@@ -348,7 +348,7 @@ export const MainBackErrors = {
         sendInfo      : true,
         //INFO
         // method   (The method you request with)
-        // controllerId (The controller you request)
+        // controller (The controller you request)
         fromZationSystem : true
     },
 

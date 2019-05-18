@@ -176,7 +176,7 @@ export default class MainRequestProcessor
                 else {
                     throw new BackError(MainBackErrors.noAccessWithHttpMethod,
                         {
-                            controllerId: controllerId,
+                            controller: controllerId,
                             method: shBridge.getRequest().method
                         });
                 }
@@ -184,7 +184,7 @@ export default class MainRequestProcessor
             else {
                 throw new BackError(MainBackErrors.noAccessWithProtocol,
                     {
-                        controllerId: controllerId,
+                        controller: controllerId,
                         protocol: ProtocolAccessChecker.getProtocol(shBridge)
                     });
             }

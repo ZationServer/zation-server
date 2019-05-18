@@ -68,7 +68,7 @@ export default class ControllerPrepare
             }
             else {
                 throw new BackError(MainBackErrors.apiLevelNotCompatible,
-                    {controllerId: id, apiLevel : apiLevel});
+                    {controller: id, apiLevel : apiLevel});
             }
         }
         else {
@@ -96,10 +96,10 @@ export default class ControllerPrepare
     {
         if(!this.isControllerExist(id,isSystemController)) {
             if(isSystemController) {
-                throw new BackError(MainBackErrors.systemControllerNotFound, {controllerId: id});
+                throw new BackError(MainBackErrors.systemControllerNotFound, {controller: id});
             }
             else {
-                throw new BackError(MainBackErrors.controllerNotFound, {controllerId: id});
+                throw new BackError(MainBackErrors.controllerNotFound, {controller: id});
             }
         }
     }
