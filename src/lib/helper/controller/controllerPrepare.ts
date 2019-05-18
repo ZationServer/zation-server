@@ -152,7 +152,7 @@ export default class ControllerPrepare
             for(let k in definition){
                 if(definition.hasOwnProperty(k)) {
                     promises.push((async () => {
-                        preparedDataMapper[k] = await this.processController(definition[k],id);
+                        preparedDataMapper[k] = await this.processController(definition[k],id,parseInt(k));
                     })());
                 }
             }
@@ -165,11 +165,12 @@ export default class ControllerPrepare
      * Process a controller and create the prepared data.
      * @param controller
      * @param id
+     * @param apiLevel
      */
-    private async processController(controller : ControllerClass,id : string) : Promise<ControllerPrepareData>
+    private async processController(controller : ControllerClass,id : string,apiLevel ?: number) : Promise<ControllerPrepareData>
     {
         const config : ControllerConfig = controller.config;
-        const cInstance : Controller = new controller(id,this.worker.getPreparedSmallBag());
+        const cInstance : Controller = new controller(id,this.worker.getPreparedSmallBag(),apiLevel);
         await cInstance.initialize(this.worker.getPreparedSmallBag());
 
         return  {

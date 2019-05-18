@@ -25,8 +25,16 @@ export default class Controller {
      */
     protected readonly id: string;
 
-    constructor(id : string,smallBag: SmallBag) {
+    /**
+     * @description
+     * The API level of the controller from the app config.
+     * It can be undefined if no API level is defined.
+     */
+    protected readonly apiLevel: number | undefined;
+
+    constructor(id : string,smallBag: SmallBag,apiLevel : number | undefined) {
         this.id = id;
+        this.apiLevel = apiLevel;
         this.smallBag = smallBag;
     }
 
@@ -148,7 +156,7 @@ export default class Controller {
 export interface ControllerClass {
     config: ControllerConfig;
 
-    new(id : string,smallBag: SmallBag): Controller;
+    new(id : string,smallBag: SmallBag,apiLevel : number | undefined): Controller;
 
     prototype: any;
 }
