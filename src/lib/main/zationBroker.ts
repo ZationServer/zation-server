@@ -8,7 +8,7 @@ import {BrokerMessageActions} from "../helper/constants/brokerMessageActions";
 import SystemInfo             from "../helper/utils/systemInfo";
 import ZationConfig           from "../helper/configManager/zationConfig";
 import Logger                 from "../helper/logger/logger";
-import ZationConfigFull from "../helper/configManager/zationConfigFull";
+import ZationConfigFull       from "../helper/configManager/zationConfigFull";
 const SCBroker              = require('socketcluster/scbroker');
 const scClusterBrokerClient = require('scc-broker-client');
 

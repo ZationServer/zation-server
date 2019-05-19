@@ -18,7 +18,6 @@ import SocketSet              from "../helper/utils/socketSet";
 import OriginsUtils, {OriginChecker} from "../helper/origins/originsUtils";
 import {SyncTokenActions}     from "../helper/constants/syncTokenActions";
 
-require('cache-require-paths');
 import express      = require('express');
 import cookieParser = require('cookie-parser');
 import bodyParser   = require('body-parser');
