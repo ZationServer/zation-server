@@ -12,9 +12,7 @@ import {InternalMainConfig, OPTION_AUTO, OPTION_HALF_AUTO} from "../configDefini
 import ConfigLocations     from "./configLocations";
 import crypto            = require('crypto');
 const  uuidV4            = require('uuid/v4');
-import nodeEval          = require('node-eval');
 import moment            = require('moment-timezone');
-import {ConfigScriptSave} from "../constants/internal";
 import {EventConfig}      from "../configDefinitions/eventConfig";
 import {AppConfig}        from "../configDefinitions/appConfig";
 import {ChannelConfig}    from "../configDefinitions/channelConfig";
@@ -165,62 +163,18 @@ export default class ConfigLoader {
     }
 
     static async loadOtherConfigs(configLocations : ConfigLocations) : Promise<OtherLoadedConfigSet> {
-        const configScriptSave : ConfigScriptSave = {};
-        const promises: Promise<void>[] = [];
-
-        promises.push((async () => {
-            try {
-                configScriptSave.eventConfig = await ConfigLoader.loadZationConfig(
-                    'event.config',
-                    configLocations.eventConfig,
-                );
-            }
-            catch (e) {}
-        })());
-        promises.push((async () => {
-            try {
-                configScriptSave.channelConfig = await ConfigLoader.loadZationConfig(
-                    'channel.config',
-                    configLocations.channelConfig,
-                );
-            }
-            catch (e) {}
-        })());
-        promises.push((async () => {
-            try {
-                configScriptSave.appConfig = await ConfigLoader.loadZationConfig(
-                    'app.config',
-                    configLocations.appConfig,
-                );
-            }
-            catch (e) {}
-        })());
-        promises.push((async () => {
-            try {
-                configScriptSave.serviceConfig = await ConfigLoader.loadZationConfig(
-                    'service.config',
-                    configLocations.serviceConfig,
-                );
-            }
-            catch (e) {}
-        })());
-        await Promise.all(promises);
-
         return {
-            eventConfig : ConfigLoader.loadScript(configScriptSave.eventConfig,configLocations.eventConfig),
-            channelConfig : ConfigLoader.loadScript(configScriptSave.channelConfig,configLocations.channelConfig),
-            appConfig : ConfigLoader.loadScript(configScriptSave.appConfig,configLocations.appConfig),
-            serviceConfig : ConfigLoader.loadScript(configScriptSave.serviceConfig,configLocations.serviceConfig)
+            eventConfig : require(configLocations.eventConfig),
+            channelConfig : require(configLocations.channelConfig),
+            appConfig : require(configLocations.appConfig),
+            serviceConfig : require(configLocations.serviceConfig)
         };
     }
 
     async loadMainConfig() : Promise<void>
     {
         try {
-            const mainConfig = ConfigLoader.loadScript(await ConfigLoader.loadZationConfig(
-                'main.config',
-                this._configLocations.mainConfig
-            ),this._configLocations.mainConfig);
+            const mainConfig = require(this._configLocations.mainConfig);
             ObjectUtils.addObToOb(this._mainConfig,mainConfig,true);
             this._loadedConfigs.push(nameof<StarterConfig>(s => s.mainConfig));
 
@@ -250,111 +204,14 @@ export default class ConfigLoader {
     }
 
     async loadOtherConfigs() {
-        const scriptSaver = await this.loadOtherConfigScripts();
-        this._eventConfig = ConfigLoader.loadScript(scriptSaver.eventConfig,this._configLocations.eventConfig);
-        this._channelConfig = ConfigLoader.loadScript(scriptSaver.channelConfig,this._configLocations.channelConfig);
-        this._appConfig = ConfigLoader.loadScript(scriptSaver.appConfig,this._configLocations.appConfig);
-        this._serviceConfig = ConfigLoader.loadScript(scriptSaver.serviceConfig,this._configLocations.serviceConfig);
-    }
-
-    private async loadOtherConfigScripts(): Promise<ConfigScriptSave> {
-        let configScriptSave : ConfigScriptSave = {};
-        let promises: Promise<void>[] = [];
-        //Add Other Configs
-        promises.push((async () => {
-            try {
-                configScriptSave.eventConfig = await ConfigLoader.loadZationConfig(
-                    'event.config',
-                    this._configLocations.eventConfig,
-                );
-                this._loadedConfigs.push(nameof<StarterConfig>(s => s.eventConfig));
-            }
-            catch (e) {}
-        })());
-        promises.push((async () => {
-            try {
-                configScriptSave.channelConfig = await ConfigLoader.loadZationConfig(
-                    'channel.config',
-                    this._configLocations.channelConfig,
-                );
-                this._loadedConfigs.push(nameof<StarterConfig>(s => s.channelConfig));
-            }
-            catch (e) {}
-        })());
-        promises.push((async () => {
-            try {
-                configScriptSave.appConfig = await ConfigLoader.loadZationConfig(
-                    'app.config',
-                    this._configLocations.appConfig,
-                );
-                this._loadedConfigs.push(nameof<StarterConfig>(s => s.appConfig));
-
-            }
-            catch (e) {}
-        })());
-        promises.push((async () => {
-            try {
-                configScriptSave.serviceConfig = await ConfigLoader.loadZationConfig(
-                    'service.config',
-                    this._configLocations.serviceConfig,
-                );
-                this._loadedConfigs.push(nameof<StarterConfig>(s => s.serviceConfig));
-
-            }
-            catch (e) {}
-        })());
-        await Promise.all(promises);
-        return configScriptSave;
-    }
-
-    static loadScript(script : object | string | undefined,relativePath : string | undefined) : any
-    {
-        if(typeof script === 'string') {
-            return nodeEval(script,relativePath);
-        }
-        else if(typeof script === 'object'){
-            return script;
-        }
-        else{
-            return {};
-        }
+        this._eventConfig = require(this._configLocations.eventConfig);
+        this._channelConfig = require(this._configLocations.channelConfig);
+        this._appConfig = require(this._configLocations.appConfig);
+        this._serviceConfig = require(this._configLocations.serviceConfig);
     }
 
     getRootPath() : string {
         return this.rootPath;
-    }
-
-    static async loadZationConfig(name : string,value : any) : Promise<string | object>
-    {
-        return await new Promise<string | object>(((resolve, reject) => {
-            if(typeof value === 'string') {
-                if(value.lastIndexOf('.js') === -1) {
-                    value += '.js';
-                }
-                fs.stat(value,async (err) =>
-                {
-                    if(err) {
-                        reject(new Error(`Config ${name} not found in path ${value}`));
-                    }
-                    else {
-                        fs.readFile(value,(err,data)=> {
-                            if(err){
-                                reject(err);
-                            }
-                            else{
-                                resolve(data.toString());
-                            }
-                        })
-                    }
-                });
-            }
-            else if(typeof value === 'object') {
-                return value;
-            }
-            else {
-                reject(new Error(`Error to load Config ${name}`));
-            }
-        }));
     }
 
     private processMainConfig() : void
