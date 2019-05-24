@@ -322,7 +322,7 @@ class ZationWorker extends SCWorker
 
             Logger.printDebugInfo(`Socket with id: ${socket.id} is connected!`);
 
-            socket.on('ZATION.SERVER.REQUEST', async (data, respond) => {
+            socket.on('>', async (data, respond) => {
                 await this.zationReqHandler.processSocketReq(data,socket,respond);
             });
 
