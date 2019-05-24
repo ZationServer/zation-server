@@ -189,6 +189,10 @@ export default class StateServerEngine
         Logger.printStartDebugInfo('Master wait for connection to zation-cluster-state server...');
         return new Promise((resolve) =>
         {
+            this.stateSocket.on('error',async (e) => {
+                Logger.printDebugWarning(`Error on state server connection socket: ${e}`);
+            });
+
             this.stateSocket.on('disconnect',async ()=>
             {
                 if(this.inBootProcess) {
