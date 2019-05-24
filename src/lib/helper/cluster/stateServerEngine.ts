@@ -189,15 +189,6 @@ export default class StateServerEngine
         Logger.printStartDebugInfo('Master wait for connection to zation-cluster-state server...');
         return new Promise((resolve) =>
         {
-            this.stateSocket.on('error',async (e) => {
-                if(e.name === 'BadClusterAuthError') {
-                    this.zm.killServer(`The provided 'clusterAuthKey' is wrong. Can't connect to zation-cluster-state server.`);
-                }
-                else if(e.name === 'BadZationClusterVersion') {
-                    this.zm.killServer(`This zation cluster version of this zation server version is not compatible with the state server version.`);
-                }
-            });
-
             this.stateSocket.on('disconnect',async ()=>
             {
                 if(this.inBootProcess) {
@@ -210,14 +201,26 @@ export default class StateServerEngine
                 }
             });
 
-            this.stateSocket.on('connectAbort',async ()=>
+            this.stateSocket.on('connectAbort',async (code,data)=>
             {
                 if(this.inBootProcess) {
-                    this.zm.killServer(`Connection to state server is failed in start process!`);
+                    switch (code) {
+                        case 4010:
+                            //BadZationClusterVersion
+                            this.zm.killServer(`This zation cluster version of this zation server version is not compatible with the state server version.`);
+                            break;
+                        case 4011:
+                            //BadClusterAuthError
+                            this.zm.killServer(`The provided 'clusterAuthKey' is wrong. Can't connect to zation-cluster-state server.`);
+                            break;
+                        default :
+                            this.zm.killServer(`Connection to the state server is failed in the start process.!`);
+                            break;
+                    }
                 }
                 else {
                     Logger.printDebugWarning
-                    (`Reconnection to the zation-cluster-state server is failed. The master will try again to reconnect.`);
+                    (`Reconnection to the zation-cluster-state server is failed. Reason: ${data}. The master will try again to reconnect.`);
                 }
             });
 
