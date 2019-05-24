@@ -384,7 +384,7 @@ export default class StateServerEngine
      * Returns if the engine is connected to the state server.
      */
     public isConnected() : boolean {
-        return this.stateSocket ? this.stateSocket === this.stateSocket.OPEN : false;
+        return this.stateSocket ? this.stateSocket.state === this.stateSocket.OPEN : false;
     }
 
     /**
