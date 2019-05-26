@@ -622,13 +622,3 @@ export interface CustomCh extends CustomChannelConfig{
      */
     onUnsubscription  ?: CChannelOnUnsubFunction | CChannelOnUnsubFunction[];
 }
-
-const a : ChannelConfig = {
-    customIdChannels : {
-        aba : {
-           onBagPublish : () => {}
-        }
-
-    }
-
-};
