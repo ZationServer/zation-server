@@ -58,8 +58,8 @@ export default class ChMiddlewareHelper
 
             if((await preChInfo.subscribeAccessChecker(
                 socket.authEngine,
-                chInfo,
-                socket.socketInfo
+                socket.socketInfo,
+                chInfo
             ))) {
                 Logger.printDebugInfo
                 (`Socket with id: ${socket.id} subscribes custom id channel. Name: '${name}',Id: '${id}'.`);
@@ -108,9 +108,9 @@ export default class ChMiddlewareHelper
 
             if((await preChInfo.clientPublishAccessChecker(
                 socket.authEngine,
-                chInfo,
                 pubData,
-                socket.socketInfo
+                socket.socketInfo,
+                chInfo
             ))) {
                 Logger.printDebugInfo
                 (`Socket with id: ${socket.id} publish in custom id channel. Name: '${name}',Id: '${id}'.`);
@@ -160,8 +160,8 @@ export default class ChMiddlewareHelper
 
             if((await preChInfo.subscribeAccessChecker(
                 socket.authEngine,
-                chInfo,
-                socket.socketInfo
+                socket.socketInfo,
+                chInfo
             ))) {
                 Logger.printDebugInfo
                 (`Socket with id: ${socket.id} subscribes a custom channel: '${name}'.`);
@@ -205,9 +205,9 @@ export default class ChMiddlewareHelper
 
             if((await preChInfo.clientPublishAccessChecker(
                 socket.authEngine,
-                chInfo,
                 pubData,
-                socket.socketInfo
+                socket.socketInfo,
+                chInfo
             ))) {
                 Logger.printDebugInfo
                 (`Socket with id: ${socket.id} publish in a custom channel: '${name}'.`);

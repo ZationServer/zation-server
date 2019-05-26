@@ -9,6 +9,7 @@ import SmallBag             from "../../api/SmallBag";
 import PubData          from "../infoObjects/pubData";
 import CIdChInfo            from "../infoObjects/cIdChInfo";
 import CChInfo              from "../infoObjects/cChInfo";
+import {ChannelConfig} from "../../../../dist/lib/helper/configDefinitions/channelConfig";
 
 type AnyFunction = (...args : any[]) => Promise<any> | any
 
@@ -108,7 +109,7 @@ export interface ChannelConfig
      *     }
      * }
      */
-    customChannels  ?: Record<string,CustomCh> | CChannelDefault;
+    customChannels  ?: Record<string,CustomCh> | ChannelDefault<CustomCh>;
     /**
      * Define your custom id channels in objects and register event listeners.
      * Use a custom id channel if you need more than one channel of these type.
@@ -128,7 +129,7 @@ export interface ChannelConfig
      *     }
      * }
      */
-    customIdChannels  ?: Record<string,CustomIdCh> | CIdChannelDefault;
+    customIdChannels  ?: Record<string,CustomIdCh> | ChannelDefault<CustomIdCh>;
     /**
      * Add options or register event listeners to the user channels of zation.
      * Every user id has its own channel.
@@ -168,25 +169,11 @@ export interface ChannelConfig
 export interface PreCompiledChannelConfig extends ChannelConfig{
 }
 
-export interface CChannelDefault extends ChannelDefault{
-    /**
-     * Set the default options for all custom channels.
-     */
-    default  ?: CustomCh;
-}
-
-export interface CIdChannelDefault extends ChannelDefault {
-    /**
-     * Set the default options for all custom id channels.
-     */
-    default  ?: CustomIdCh;
-}
-
-export interface ChannelDefault {
+export interface ChannelDefault<T = any> {
     /**
      * Set the default options.
      */
-    default ?: any;
+    default ?: T;
 }
 
 export interface ChannelSettings {
@@ -220,11 +207,50 @@ export interface ZationChannelConfig extends ChannelSettings{
     onUnsubscription  ?: AnyFunction | AnyFunction[];
     /**
      * @description
-     * With this option, you can allow that clients can publish in this channel.
-     * Otherwise only the server can publish in that channel, by using a bag.
-     * @default false
+     * Set the access rule which clients are not allowed to publish in this channel.
+     * Notice that only one of the options 'clientPublishNotAccess' or 'clientPublishAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default (use clientPublishAccess)
+     * @example
+     * //boolean
+     * true            // No client is allowed
+     * false           // All clients are allowed
+     * //string
+     * 'all'           // No client is allowed
+     * 'allAuth'       // All authenticated clients are not allowed
+     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
+     * 'admin'         // All admins are not allowed
+     * //number
+     * 10              // All clients with user id 10 are not allowed
+     * //array
+     * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
+     * //function
+     * (smallBag) => {} // If returns true the client is not allowed, false will allow.
      */
-    allowClientPublish ?: boolean;
+    clientPublishNotAccess  ?: Function | boolean | string | number | (string|number)[];
+    /**
+     * @description
+     * Set the access rule which clients are allowed to publish in this channel.
+     * Notice that only one of the options 'clientPublishNotAccess' or 'clientPublishAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default false
+     * @example
+     * //boolean
+     * true            // All clients are allowed
+     * false           // No client is allowed
+     * //string
+     * 'all'           // All clients are allowed
+     * 'allAuth'       // Only all authenticated clients are allowed
+     * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed)
+     * 'admin'         // Only all admins are allowed
+     * //number
+     * 10              // Only all clients with user id 10 are allowed
+     * //array
+     * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
+     * //function
+     * (smallBag) => {} // If returns true the client is allowed, false will not allow.
+     */
+    clientPublishAccess  ?: Function | boolean | string | number | (string|number)[];
 }
 
 export interface UserChannel extends ZationChannelConfig{
@@ -309,52 +335,6 @@ export interface NormalChannel extends ZationChannelConfig{
 }
 
 export interface CustomChannelConfig extends ZationChannelConfig{
-    /**
-     * @description
-     * Set the access rule which clients are not allowed to publish in this channel.
-     * Notice that only one of the options 'clientPublishNotAccess' or 'clientPublishAccess' is allowed.
-     * Look in the examples to see what possibilities you have.
-     * @default (use clientPublishAccess)
-     * @example
-     * //boolean
-     * true            // No client is allowed
-     * false           // All clients are allowed
-     * //string
-     * 'all'           // No client is allowed
-     * 'allAuth'       // All authenticated clients are not allowed
-     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
-     * 'admin'         // All admins are not allowed
-     * //number
-     * 10              // All clients with user id 10 are not allowed
-     * //array
-     * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
-     * //function
-     * (smallBag) => {} // If returns true the client is not allowed, false will allow.
-     */
-    clientPublishNotAccess  ?: Function | boolean | string | number | (string|number)[];
-    /**
-     * @description
-     * Set the access rule which clients are allowed to publish in this channel.
-     * Notice that only one of the options 'clientPublishNotAccess' or 'clientPublishAccess' is allowed.
-     * Look in the examples to see what possibilities you have.
-     * @default false
-     * @example
-     * //boolean
-     * true            // All clients are allowed
-     * false           // No client is allowed
-     * //string
-     * 'all'           // All clients are allowed
-     * 'allAuth'       // Only all authenticated clients are allowed
-     * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed)
-     * 'admin'         // Only all admins are allowed
-     * //number
-     * 10              // Only all clients with user id 10 are allowed
-     * //array
-     * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
-     * //function
-     * (smallBag) => {} // If returns true the client is allowed, false will not allow.
-     */
-    clientPublishAccess  ?: Function | boolean | string | number | (string|number)[];
     /**
      * @description
      * Set the access rule which clients are not allowed to subscribe this channel.
@@ -642,3 +622,13 @@ export interface CustomCh extends CustomChannelConfig{
      */
     onUnsubscription  ?: CChannelOnUnsubFunction | CChannelOnUnsubFunction[];
 }
+
+const a : ChannelConfig = {
+    customIdChannels : {
+        aba : {
+           onBagPublish : () => {}
+        }
+
+    }
+
+};

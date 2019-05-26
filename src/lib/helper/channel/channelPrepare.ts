@@ -8,7 +8,13 @@ GitHub: LucaCode
 For performance speed in publish in channels, sub channels..
  */
 
-import {ChannelConfig, ChannelDefault, CustomChannelConfig, ZationChannelConfig} from "../configDefinitions/channelConfig";
+import {
+    ChannelConfig,
+    ChannelDefault,
+    CustomChannelConfig,
+    CustomIdCh,
+    ZationChannelConfig
+} from "../configDefinitions/channelConfig";
 import ZationConfigFull              from "../configManager/zationConfigFull";
 import FuncUtils, {EventInvokerSync} from "../utils/funcUtils";
 import SmallBag                      from "../../api/SmallBag";
@@ -21,15 +27,13 @@ interface Events {
     onUnsub : EventInvokerSync
 }
 
-interface CustomChStorage extends Events {
-    socketGetOwnPub : boolean,
-    clientPublishAccessChecker : ChPubAccessChecker,
+interface CustomChStorage extends Events, ChStorage {
     subscribeAccessChecker : ChSubAccessChecker,
 }
 
 interface ChStorage extends Events {
+    clientPublishAccessChecker : ChPubAccessChecker,
     socketGetOwnPub : boolean,
-    allowClientPub : boolean
 }
 
 export class ChannelPrepare {
@@ -61,7 +65,7 @@ export class ChannelPrepare {
     static getChStorageDefaults() : ChStorage {
         return {
             socketGetOwnPub : true,
-            allowClientPub :  false,
+            clientPublishAccessChecker : async () => {return false},
             onBagPub : () => {},
             onUnsub : () => {},
             onSub : () => {},
@@ -75,7 +79,6 @@ export class ChannelPrepare {
     static getCustomChStorageDefaults() : CustomChStorage  {
         return {
             ...ChannelPrepare.getChStorageDefaults(),
-            clientPublishAccessChecker : async () => {return false},
             subscribeAccessChecker : async () => {return  false}
         };
     }
@@ -83,9 +86,10 @@ export class ChannelPrepare {
     /**
      * Prepare a channel with the configuration.
      * @param name
+     * @param smallBag
      */
-    private prepareChannel(name : string) : ChStorage {
-        return this.chConfig.hasOwnProperty(name) ? this.processChannel(this.chConfig[name]) :
+    private prepareChannel(name : string,smallBag : SmallBag) : ChStorage {
+        return this.chConfig.hasOwnProperty(name) ? this.processChannel(this.chConfig[name],smallBag) :
             this.defaultChStorage;
     }
 
@@ -93,10 +97,10 @@ export class ChannelPrepare {
      * Prepare all channels.
      */
     prepare(smallBag : SmallBag) {
-        this.infoUserCh = this.prepareChannel(nameof<ChannelConfig>(s => s.userCh));
-        this.infoAuthUserGroupCh = this.prepareChannel(nameof<ChannelConfig>(s => s.authUserGroupCh));
-        this.infoDefaultUserGroupCh = this.prepareChannel(nameof<ChannelConfig>(s => s.defaultUserGroupCh));
-        this.infoAllCh = this.prepareChannel(nameof<ChannelConfig>(s => s.allCh));
+        this.infoUserCh = this.prepareChannel(nameof<ChannelConfig>(s => s.userCh),smallBag);
+        this.infoAuthUserGroupCh = this.prepareChannel(nameof<ChannelConfig>(s => s.authUserGroupCh),smallBag);
+        this.infoDefaultUserGroupCh = this.prepareChannel(nameof<ChannelConfig>(s => s.defaultUserGroupCh),smallBag);
+        this.infoAllCh = this.prepareChannel(nameof<ChannelConfig>(s => s.allCh),smallBag);
 
         this.infoCustomCh = this.processCustomChannel(nameof<ChannelConfig>(s => s.customChannels),smallBag);
         this.infoCustomIdCh = this.processCustomChannel(nameof<ChannelConfig>(s => s.customIdChannels),smallBag);
@@ -135,14 +139,10 @@ export class ChannelPrepare {
         if (this.chConfig.hasOwnProperty(key)) {
             const channels = this.chConfig[key];
             for (let ch in channels) {
-                if (channels.hasOwnProperty(ch) && ch !== nameof<ChannelDefault>(s => s.default)) {
+                if (channels.hasOwnProperty(ch) && ch !== nameof<ChannelDefault<CustomIdCh>>(s => s.default)) {
                     const chConfig : CustomChannelConfig = channels[ch];
-                    const cChStorage : ChStorage = this.processChannel(chConfig);
+                    const cChStorage : ChStorage = this.processChannel(chConfig,smallBag);
 
-                    const pubAccessInfo = ChannelPrepare.processAccessInvert(chConfig,
-                        nameof<CustomChannelConfig>(s => s.clientPublishAccess),
-                        nameof<CustomChannelConfig>(s => s.clientPublishNotAccess)
-                    );
 
                     const subAccessInfo = ChannelPrepare.processAccessInvert(chConfig,
                         nameof<CustomChannelConfig>(s => s.subscribeAccess),
@@ -151,8 +151,6 @@ export class ChannelPrepare {
 
                     res[ch] = {
                         ...cChStorage,
-                        clientPublishAccessChecker : ChAccessHelper.createPubChAccessChecker
-                        (pubAccessInfo.value,pubAccessInfo.inverted,smallBag),
                         subscribeAccessChecker : ChAccessHelper.createSubChAccessChecker
                         (subAccessInfo.value,subAccessInfo.inverted,smallBag)
                     };
@@ -166,11 +164,17 @@ export class ChannelPrepare {
     /**
      * Prepare process for a channel.
      * @param channel
+     * @param smallBag
      */
-    private processChannel(channel : ZationChannelConfig): ChStorage {
+    private processChannel(channel : ZationChannelConfig,smallBag : SmallBag): ChStorage {
+        const pubAccessInfo = ChannelPrepare.processAccessInvert(channel,
+            nameof<ZationChannelConfig>(s => s.clientPublishAccess),
+            nameof<CustomChannelConfig>(s => s.clientPublishNotAccess)
+        );
         return {
+            clientPublishAccessChecker : ChAccessHelper.createPubChAccessChecker
+            (pubAccessInfo.value,pubAccessInfo.inverted,smallBag),
             socketGetOwnPub : ChannelPrepare.processSocketGetOwnPub(channel.socketGetOwnPublish),
-            allowClientPub : !!channel.allowClientPublish,
             onClientPub : channel.onBagPublish ? FuncUtils.createEventSyncInvoker(channel.onBagPublish) : () => {},
             onBagPub : channel.onBagPublish ? FuncUtils.createEventSyncInvoker(channel.onBagPublish) : () => {},
             onSub : channel.onSubscription ? FuncUtils.createEventSyncInvoker(channel.onSubscription) : () => {},

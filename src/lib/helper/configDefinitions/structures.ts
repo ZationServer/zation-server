@@ -262,7 +262,8 @@ ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onClientPublish)]    = {typ
 ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onBagPublish)]       = {types : ['function','array'],isOptional : true};
 ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onSubscription)]     = {types : ['function','array'],isOptional : true};
 ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onUnsubscription)]   = {types : ['function','array'],isOptional : true};
-ChannelNormalItem[nameof<ZationChannelConfig>(s => s.allowClientPublish)] = {types : ['boolean'],isOptional : true};
+ChannelNormalItem[nameof<CustomChannelConfig>(s => s.clientPublishAccess)]      = {types : ['function','boolean','number','array','string'],isOptional : true};
+ChannelNormalItem[nameof<CustomChannelConfig>(s => s.clientPublishNotAccess)]   = {types : ['function','boolean','number','array','string'],isOptional : true};
 
 const ArrayShortCutSpecify = {};
 ArrayShortCutSpecify[nameof<ArraySettings>(s => s.minLength)]         = {types : ['number'],isOptional : true};

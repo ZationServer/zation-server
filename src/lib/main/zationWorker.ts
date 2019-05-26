@@ -547,21 +547,23 @@ class ZationWorker extends SCWorker
         this.scServer.addMiddleware(this.scServer.MIDDLEWARE_PUBLISH_IN, async (req : PubInMiddlewareReq, next) =>
         {
             const channel = req.channel;
+            const socket = req.socket;
 
-            ChUtils.pubDataAddSocketSrcSid(req,req.socket);
+            ChUtils.pubDataAddSocketSrcSid(req,socket);
 
             if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
-                if(userChInfo.allowClientPub) {
+                const userId = ChUtils.getUserIdFromCh(channel);
+                if(await (userChInfo.clientPublishAccessChecker(socket.authEngine,req.data,socket.socketInfo,userId))) {
                     userChInfo.onClientPub(
                         this.preparedSmallBag,
-                        ChUtils.getUserIdFromCh(channel),
+                        userId,
                         req.data,
-                        req.socket.socketInfo
+                        socket.socketInfo
                     );
                     next();
                 }
                 else{
-                    const err : any = new Error('Client publication not allowed in a user channel!');
+                    const err : any = new Error('Client publication not allowed in this user channel!');
                     err.code = 4546;
                     next(err); //Block!
                 }
@@ -573,23 +575,24 @@ class ZationWorker extends SCWorker
                 next(await this.chMiddlewareHelper.middlewareClientPubCustomCh(req.socket,channel,req.data));
             }
             else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
-                if(authUserGroupChInfo.allowClientPub) {
+                const authUserGroup = ChUtils.getUserAuthGroupFromCh(channel);
+                if(authUserGroupChInfo.clientPublishAccessChecker(socket.authEngine,req.data,socket.socketInfo,authUserGroup)) {
                     authUserGroupChInfo.onClientPub(
                         this.preparedSmallBag,
-                        ChUtils.getUserAuthGroupFromCh(channel),
+                        authUserGroup,
                         req.data,
-                        req.socket.socketInfo
+                        socket.socketInfo
                     );
                     next();
                 }
                 else{
-                    const err : any = new Error('Client publication not allowed in a auth user group channel!');
+                    const err : any = new Error('Client publication not allowed in this auth user group channel!');
                     err.code = 4536;
                     next(err); //Block!
                 }
             }
             else if (channel === ZationChannel.ALL) {
-                if(allChInfo.allowClientPub) {
+                if(allChInfo.clientPublishAccessChecker(socket.authEngine,req.data,socket.socketInfo,undefined)) {
                     allChInfo.onClientPub(
                         this.preparedSmallBag,
                         req.data,
@@ -604,7 +607,7 @@ class ZationWorker extends SCWorker
                 }
             }
             else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
-                if(defaultUserGroupChInfo.allowClientPub) {
+                if(defaultUserGroupChInfo.clientPublishAccessChecker(socket.authEngine,req.data,socket.socketInfo,undefined)) {
                     defaultUserGroupChInfo.onClientPub(
                         this.preparedSmallBag,
                         req.data,

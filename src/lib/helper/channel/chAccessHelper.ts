@@ -20,10 +20,10 @@ import {
 } from "../configDefinitions/channelConfig";
 
 export type ChSubAccessChecker =
-    (authEngine : AuthEngine,chInfo : CChInfo, socketInfo : SocketInfo) => Promise<boolean>
+    (authEngine : AuthEngine, socketInfo : SocketInfo, chInfo : CChInfo) => Promise<boolean>
 
 export type ChPubAccessChecker =
-    (authEngine : AuthEngine,chInfo : CChInfo, pubData : PubData, socketInfo : SocketInfo) => Promise<boolean>
+    (authEngine : AuthEngine, pubData : PubData, socketInfo : SocketInfo, chInfo : CChInfo | string | undefined) => Promise<boolean>
 
 /**
  * Helper class for channel access.
@@ -47,8 +47,8 @@ export default class ChAccessHelper
             const accessProcess : AccessProcess = invertResult ? (b) => !b : (b) => b;
             return AccessUtils.createAccessChecker<ChPubAccessChecker,CChannelClientPubAccessFunction>
             (accessValue,accessProcess,(f) => {
-                return async (_a,chInfo,pubData,socketInfo) => {
-                    return accessProcess((await f(smallBag,chInfo,pubData,socketInfo)));
+                return async (_a,pubData,socketInfo,chInfo) => {
+                    return accessProcess((await f(smallBag,pubData,socketInfo,chInfo)));
                 };
             });
         }
@@ -74,8 +74,8 @@ export default class ChAccessHelper
             const accessProcess : AccessProcess = invertResult ? (b) => !b : (b) => b;
             return AccessUtils.createAccessChecker<ChSubAccessChecker,CChannelSubAccessFunction>
             (accessValue,accessProcess,(f) => {
-                return async (_a,chInfo,socketInfo) => {
-                    return accessProcess((await f(smallBag,chInfo,socketInfo)));
+                return async (_a,socketInfo,chInfo) => {
+                    return accessProcess((await f(smallBag,socketInfo,chInfo)));
                 };
             });
         }
@@ -104,8 +104,8 @@ export default class ChAccessHelper
 
                 if(!(await preChInfo.subscribeAccessChecker(
                     authEngine,
-                    chInfo,
-                    socket.socketInfo
+                    socket.socketInfo,
+                    chInfo
                 ))) {
                     ChUtils.kickOut(socket,subs[i]);
                 }
@@ -116,8 +116,8 @@ export default class ChAccessHelper
 
                 if(!(await preChInfo.subscribeAccessChecker(
                     authEngine,
-                    {name},
-                    socket.socketInfo
+                    socket.socketInfo,
+                    {name}
                 ))) {
                     ChUtils.kickOut(socket,subs[i]);
                 }
