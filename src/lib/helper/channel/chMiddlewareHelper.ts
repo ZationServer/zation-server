@@ -117,9 +117,9 @@ export default class ChMiddlewareHelper
 
                 preChInfo.onClientPub(
                     this.smallBag,
-                    chInfo,
                     pubData,
-                    socket.socketInfo
+                    socket.socketInfo,
+                    chInfo
                 );
 
                 return undefined;
@@ -214,9 +214,9 @@ export default class ChMiddlewareHelper
 
                 preChInfo.onClientPub(
                     this.smallBag,
-                    chInfo,
                     pubData,
-                    socket.socketInfo
+                    socket.socketInfo,
+                    chInfo
                 );
 
                 return undefined;

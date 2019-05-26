@@ -190,8 +190,8 @@ export default class ConfigPreCompiler
         if(channels[nameof<ChannelDefault>(s => s.default)])
         {
             const defaultCh : CustomChannelConfig =
-                channels[nameof<ChannelDefault>(s => s.default)]
-            ;
+                channels[nameof<ChannelDefault>(s => s.default)];
+
             for(let chName in channels)
             {
                 if(channels.hasOwnProperty(chName) && chName !== channels[nameof<ChannelDefault>(s => s.default)])

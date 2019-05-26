@@ -168,7 +168,7 @@ export default class ChannelBagEngine
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
 
         const eventTrigger = (selectedId : number | string) => {
-            onBagPub(this._smallBag,selectedId,pubData,socketInfo);
+            onBagPub(this._smallBag,pubData,socketInfo,selectedId.toString());
         };
 
         if(Array.isArray(id)) {
@@ -231,7 +231,7 @@ export default class ChannelBagEngine
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
 
         const eventTrigger = (selectedAuthUserGroup : string) => {
-            onBagPub(this._smallBag,selectedAuthUserGroup,pubData,socketInfo);
+            onBagPub(this._smallBag,pubData,socketInfo,selectedAuthUserGroup);
         };
 
         if(Array.isArray(authUserGroup)) {
@@ -279,7 +279,7 @@ export default class ChannelBagEngine
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
 
         await this.pubAsync(ChUtils.buildCustomIdChannelName(channel,id),pubData);
-        onBagPub(this._smallBag,{name : channel,id},pubData,socketInfo);
+        onBagPub(this._smallBag,pubData,socketInfo,{name : channel,id});
     }
 
     /**
@@ -297,9 +297,9 @@ export default class ChannelBagEngine
         const eventTrigger = (name : string) => {
             this.chPrepare.getSafeCustomChInfo(name).onBagPub(
                 this._smallBag,
-                {name},
                 pubData,
-                socketInfo
+                socketInfo,
+                {name}
             );
         };
 

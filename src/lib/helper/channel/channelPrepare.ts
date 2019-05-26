@@ -143,7 +143,6 @@ export class ChannelPrepare {
                     const chConfig : CustomChannelConfig = channels[ch];
                     const cChStorage : ChStorage = this.processChannel(chConfig,smallBag);
 
-
                     const subAccessInfo = ChannelPrepare.processAccessInvert(chConfig,
                         nameof<CustomChannelConfig>(s => s.subscribeAccess),
                         nameof<CustomChannelConfig>(s => s.subscribeNotAccess)

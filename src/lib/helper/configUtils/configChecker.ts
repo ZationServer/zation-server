@@ -14,7 +14,12 @@ import BagExtension, {
 } from "../configDefinitions/appConfig";
 import {PanelUserConfig}      from "../configDefinitions/mainConfig";
 import {MainService, Service} from "../configDefinitions/serviceConfig";
-import {ChannelConfig, ChannelDefault, CustomChannelConfig} from "../configDefinitions/channelConfig";
+import {
+    ChannelConfig,
+    ChannelDefault,
+    CustomChannelConfig,
+    ZationChannelConfig
+} from "../configDefinitions/channelConfig";
 // noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../constants/validationTypes";
 import {
@@ -274,9 +279,7 @@ export default class ConfigChecker
                         for (let chName in chPart) {
                             if (chPart.hasOwnProperty(chName)) {
                                 this.checkCustomName(chName,'channel name',firstTarget.getTarget() + ' ');
-                                if(typeof chPart[chName] === 'object') {
-                                    this.checkFullChannelItem(chPart[chName], firstTarget, chName);
-                                }
+                                this.checkFullChannelItem(chPart[chName], firstTarget, chName);
                             }
                         }
                     }
@@ -284,10 +287,48 @@ export default class ConfigChecker
                 (
                     key === nameof<ChannelConfig>(s => s.allCh) || key === nameof<ChannelConfig>(s => s.defaultUserGroupCh) ||
                     key === nameof<ChannelConfig>(s => s.authUserGroupCh) || key === nameof<ChannelConfig>(s => s.userCh)) {
-                    ConfigCheckerTools.assertStructure
-                    (Structures.ChannelNormalItem, mainChannels[key], ConfigNames.CHANNEL, this.ceb, new Target(key));
+                    this.checkNormalChannelItem(mainChannels[key],new Target(key));
                 }
             }
+        }
+    }
+
+    private checkClientPubAccess(channel : ZationChannelConfig,target : Target) {
+        if (channel.clientPublishAccess !== undefined && channel.clientPublishNotAccess !== undefined) {
+            this.ceb.addConfigError(new ConfigError(ConfigNames.CHANNEL,
+                `${target.getTarget()} only 'publishAccess' or 'publishNotAccess' keyword is allow.`));
+        }
+
+        //check protocolAccess dependency to userGroups
+        this.checkAccessKeyDependency
+        (channel.clientPublishAccess, nameof<ZationChannelConfig>(s => s.clientPublishAccess), target);
+        this.checkAccessKeyDependency
+        (channel.clientPublishNotAccess, nameof<ZationChannelConfig>(s => s.clientPublishNotAccess), target);
+
+        this.warningForPublish(channel.clientPublishAccess, target);
+        this.warningForPublish(channel.clientPublishNotAccess, target, true);
+    }
+
+    private checkSubAccess(channel : CustomChannelConfig,target : Target) {
+        if (channel.subscribeAccess !== undefined && channel.subscribeNotAccess !== undefined) {
+            this.ceb.addConfigError(new ConfigError(ConfigNames.CHANNEL,
+                `${target.getTarget()} only 'subscribeAccess' or 'subscribeNotAccess' keyword is allow.`));
+        }
+
+        //check protocolAccess dependency to userGroups
+        this.checkAccessKeyDependency
+        (channel.subscribeAccess, nameof<CustomChannelConfig>(s => s.subscribeAccess), target);
+        this.checkAccessKeyDependency
+        (channel.subscribeNotAccess, nameof<CustomChannelConfig>(s => s.subscribeNotAccess), target);
+    }
+
+
+    private checkNormalChannelItem(channel : ZationChannelConfig,target : Target) {
+        ConfigCheckerTools.assertStructure
+        (Structures.ChannelNormalItem,channel, ConfigNames.CHANNEL, this.ceb, target);
+
+        if(typeof channel === 'object'){
+            this.checkClientPubAccess(channel,target);
         }
     }
 
@@ -298,27 +339,8 @@ export default class ConfigChecker
         (Structures.ChannelFullItem, channel, ConfigNames.CHANNEL, this.ceb, mainTarget);
 
         if (typeof channel === 'object') {
-            if (channel.clientPublishAccess !== undefined && channel.clientPublishNotAccess !== undefined) {
-                this.ceb.addConfigError(new ConfigError(ConfigNames.CHANNEL,
-                    `${mainTarget.getTarget()} only 'publishAccess' or 'publishNotAccess' keyword is allow.`));
-            }
-            if (channel.subscribeAccess !== undefined && channel.subscribeNotAccess !== undefined) {
-                this.ceb.addConfigError(new ConfigError(ConfigNames.CHANNEL,
-                    `${mainTarget.getTarget()} only 'subscribeAccess' or 'subscribeNotAccess' keyword is allow.`));
-            }
-
-            //check protocolAccess dependency to userGroups
-            this.checkAccessKeyDependency
-            (channel.clientPublishAccess, nameof<CustomChannelConfig>(s => s.clientPublishAccess), mainTarget);
-            this.checkAccessKeyDependency
-            (channel.clientPublishNotAccess, nameof<CustomChannelConfig>(s => s.clientPublishNotAccess), mainTarget);
-            this.checkAccessKeyDependency
-            (channel.subscribeAccess, nameof<CustomChannelConfig>(s => s.subscribeAccess), mainTarget);
-            this.checkAccessKeyDependency
-            (channel.subscribeNotAccess, nameof<CustomChannelConfig>(s => s.subscribeNotAccess), mainTarget);
-
-            this.warningForPublish(channel.clientPublishAccess, mainTarget);
-            this.warningForPublish(channel.clientPublishNotAccess, mainTarget, true);
+            this.checkClientPubAccess(channel,mainTarget);
+            this.checkSubAccess(channel,mainTarget);
         }
 
         if
@@ -338,8 +360,8 @@ export default class ConfigChecker
         if (value !== undefined && (typeof value !== "boolean" || (convert ? !value : value))) {
             Logger.printConfigWarning
             (ConfigNames.CHANNEL,
-                `${target.getTarget()} please notice that 'publishAccess' is used when a client publish from outside!` +
-                `So it is better to use an controller (with validation) and publish from server side!`);
+                `${target.getTarget()} please notice that 'clientPubAccess' is used when a client publishes from outside in a channel! ` +
+                `That is only useful for advanced use cases otherwise its recommended to use a controller (with validation) and publish from the server side.`);
         }
     }
 

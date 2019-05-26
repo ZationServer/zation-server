@@ -13,16 +13,16 @@ import CChInfo              from "../infoObjects/cChInfo";
 type AnyFunction = (...args : any[]) => Promise<any> | any
 
 export type CIdChannelOnClientPubFunction =
-    (smallBag : SmallBag, chInfo : CIdChInfo, pubData : PubData, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo, chInfo : CIdChInfo) => Promise<void> | void;
 
 export type CIdChannelOnBagPubFunction =
-    (smallBag : SmallBag, chInfo : CIdChInfo, pubData : PubData, socketInfo : SocketInfo | undefined) => Promise<void> | void;
+    (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo | undefined, chInfo : CIdChInfo) => Promise<void> | void;
 
 export type CIdChannelOnSubFunction =
-    (smallBag : SmallBag, chInfo : CIdChInfo, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, socketInfo : SocketInfo, chInfo : CIdChInfo) => Promise<void> | void;
 
 export type CIdChannelOnUnsubFunction =
-    (smallBag : SmallBag, chInfo : CIdChInfo, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, socketInfo : SocketInfo, chInfo : CIdChInfo) => Promise<void> | void;
 
 export type CIdChannelClientPubAccessFunction =
     (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo, chInfo : CIdChInfo) => Promise<boolean> | boolean;
@@ -32,16 +32,16 @@ export type CIdChannelSubAccessFunction =
 
 
 export type CChannelOnClientPubFunction =
-    (smallBag : SmallBag, chInfo : CChInfo, pubData : PubData, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo, chInfo : CChInfo) => Promise<void> | void;
 
 export type CChannelOnBagPubFunction =
-    (smallBag : SmallBag, chInfo : CChInfo, pubData : PubData, socketInfo : SocketInfo | undefined) => Promise<void> | void;
+    (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo | undefined, chInfo : CChInfo) => Promise<void> | void;
 
 export type CChannelOnSubFunction =
-    (smallBag : SmallBag, chInfo : CChInfo, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, socketInfo : SocketInfo, chInfo : CChInfo) => Promise<void> | void;
 
 export type CChannelOnUnsubFunction =
-    (smallBag : SmallBag, chInfo : CChInfo, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, socketInfo : SocketInfo, chInfo : CChInfo) => Promise<void> | void;
 
 export type CChannelClientPubAccessFunction =
     (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo, chInfo : CChInfo) => Promise<boolean> | boolean;
@@ -51,32 +51,32 @@ export type CChannelSubAccessFunction =
 
 
 export type UserChOnClientPubFunction =
-    (smallBag : SmallBag, userId : string, pubData : PubData, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo, userId : string) => Promise<void> | void;
 
 export type UserChOnBagPubFunction =
-    (smallBag : SmallBag, userId : string, pubData : PubData, socketInfo : SocketInfo | undefined) => Promise<void> | void;
+    (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo | undefined, userId : string) => Promise<void> | void;
 
 export type UserChOnSubFunction =
-    (smallBag : SmallBag, userId : string, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, socketInfo : SocketInfo, userId : string) => Promise<void> | void;
 
 export type UserChOnUnsubFunction =
-    (smallBag : SmallBag, userId : string, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, socketInfo : SocketInfo, userId : string) => Promise<void> | void;
 
 export type UserChClientPubAccessFunction =
     (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo, userId : string) => Promise<boolean> | boolean;
 
 
 export type AuthUserGroupChOnClientPubFunction =
-    (smallBag : SmallBag, authUserGroup  : string, pubData : PubData, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo, authUserGroup  : string,) => Promise<void> | void;
 
 export type AuthUserGroupChOnBagPubFunction =
-    (smallBag : SmallBag, authUserGroup  : string, pubData : PubData, socketInfo : SocketInfo | undefined) => Promise<void> | void;
+    (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo | undefined, authUserGroup  : string) => Promise<void> | void;
 
 export type AuthUserGroupChOnSubFunction =
-    (smallBag : SmallBag, authUserGroup : string, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, socketInfo : SocketInfo, authUserGroup : string) => Promise<void> | void;
 
 export type AuthUserGroupChOnUnsubFunction =
-    (smallBag : SmallBag, authUserGroup  : string, socketInfo : SocketInfo) => Promise<void> | void;
+    (smallBag : SmallBag, socketInfo : SocketInfo, authUserGroup  : string) => Promise<void> | void;
 
 export type AuthUserGroupChClientPubAccessFunction =
     (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo, authUserGroup : string) => Promise<boolean> | boolean;
