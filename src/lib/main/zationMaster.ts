@@ -56,6 +56,7 @@ export default class ZationMaster {
 
         if(typeof startMode === 'string'){startMode = parseInt(startMode);}
         startMode = startMode !== 0 && startMode !== 1 && startMode !== 2 ? 0 : startMode;
+        global['startMode'] = startMode;
 
         this.startUpCB = startUpCB;
         this.startMode = startMode;

@@ -116,6 +116,8 @@ import CIdChInfo        from "../helper/infoObjects/cIdChInfo";
 import PubData          from "../helper/infoObjects/pubData";
 import ZationInfo       from "../helper/infoObjects/zationInfo";
 import {ApiLevelSwitch} from "../helper/apiLevel/apiLevelUtils";
+// noinspection TypeScriptPreferShortImport
+import {StartMode}      from "../helper/constants/startMode";
 
 export default class Config
 {
@@ -124,6 +126,33 @@ export default class Config
     private static tmpController : Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>> = {};
 
     //Part main helper methods
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns if the server runs in test mode.
+     */
+    static inTestMode() : boolean {
+        return global['startMode'] === StartMode.TEST;
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns if the server runs in normal mode.
+     */
+    static inNormalMode(): boolean {
+        return global['startMode'] === StartMode.NORMAL;
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns the start mode of the server.
+     */
+    static getStartMode(): StartMode {
+        return global['startMode'];
+    }
 
     // noinspection JSUnusedGlobalSymbols
     /**

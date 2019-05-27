@@ -26,10 +26,12 @@ class ZationBroker extends SCBroker
     async run()
     {
         this.zc = new ZationConfigFull(this.options.zationConfigWorkerTransport);
+        global['startMode'] = this.zc.getStartMode();
 
         process.title = `Zation Server: ${this.zc.mainConfig.instanceId} -> Broker - ${this.id}`;
 
         if (this.options.clusterStateServerHost) {
+            // noinspection TypeScriptValidateJSTypes
             this.clusterClient =
                 scClusterBrokerClient.attach(this, {
                 stateServerHost: this.options.clusterStateServerHost,
