@@ -119,7 +119,7 @@ export interface AnyOfModelConfig extends ModelOptional
 {
     /**
      * With the anyOf modifier, you can define different properties.
-     * The input needs only to match with one of them to be valid.
+     * The input needs only to match with one of the models to be valid.
      * @example
      * ```
      * // any of with array
@@ -188,15 +188,34 @@ export interface BackgroundTask
 }
 
 export default interface BagExtension {
+    /**
+     * All extensions for the SmallBag.
+     * Notice that the Bag extends the SmallBag
+     */
     smallBag ?: Record<string,any>,
+    /**
+     * All extensions for the Bag.
+     */
     bag ?: Record<string,any>
 }
 
 export interface TimeObj
 {
+    /**
+     * The specific hour when the background task should be executed.
+     */
     hour ?: number;
+    /**
+     * The specific minute when the background task should be executed.
+     */
     minute ?: number;
+    /**
+     * The specific second when the background task should be executed.
+     */
     second ?: number;
+    /**
+     * The specific millisecond when the background task should be executed.
+     */
     millisecond ?: number;
 }
 
