@@ -69,7 +69,7 @@
     "validator": "10.11.0",
     "fast-stringify": "1.1.1",
     "ws": "6.2.1",
-    "zation-client": "0.8.0",
+    "zation-client": "0.8.1",
     "zation-service": "0.3.4"
   },
   "devDependencies": {
