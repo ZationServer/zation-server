@@ -790,6 +790,10 @@ export default class ConfigChecker
         if (typeof paramInput === 'object') {
             for (let k in paramInput) {
                 if (paramInput.hasOwnProperty(k)) {
+                    if(!isNaN(parseInt(k))){
+                        this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                            `${target.getTarget()} numeric key ${k} is not allowed in a param based input config because it changes the key order in a for in loop.`));
+                    }
                     keys.push(k);
                     this.checkCustomName(k,'controller input property',target.getTarget() + ' ');
                     this.checkModel(paramInput[k], target.addPath(k));
