@@ -49,7 +49,7 @@ export default class ValidatorEngine
      * @param preparedErrorData
      * @param errorBag
      */
-    static validateValueType(input,type,strictType,preparedErrorData : {inputPath : string,inputValue : any},errorBag : BackErrorBag)
+    static validateValueType(input,type,strictType,preparedErrorData : {inputPath : string,inputValue : any},errorBag : BackErrorBag) : string
     {
         let usedType = type;
         if(type !== undefined && type !== ValidationTypes.ALL) {
