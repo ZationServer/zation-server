@@ -4,14 +4,15 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Bag               from '../../api/Bag';
+import Bag from '../../api/Bag';
 import {ControllerClass} from "../../api/Controller";
 // noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../constants/validationTypes";
-import BackErrorBag      from "../../api/BackErrorBag";
-import SmallBag          from "../../api/SmallBag";
-import ZationTokenInfo   from "../infoObjects/zationTokenInfo";
+import BackErrorBag from "../../api/BackErrorBag";
+import SmallBag from "../../api/SmallBag";
+import ZationTokenInfo from "../infoObjects/zationTokenInfo";
 import {ApiLevelSwitch} from "../apiLevel/apiLevelUtils";
+import {FormatLetters} from "../constants/validation";
 
 export interface AppConfig
 {
@@ -266,6 +267,9 @@ export interface InputConfig {
      * To define a parameter based input use an object as a value.
      * The keys of the object are the parameter names,
      * and the value defines an anonymous model or link to a declared model.
+     * Notice that it is strongly recommended to only use string keys (with letters) in the object literal,
+     * to keep the same order in a for in loop.
+     * That is important for zation when you send your data as an array.
      * - Single model input
      * To set a single model input, you have to use an array as a value with exactly one item.
      * This item is an anonymous model or link to a declared model.
@@ -441,21 +445,160 @@ export type GetDateFunction = (smallBag : SmallBag) => Promise<Date> | Date;
 
 export interface ValueModelConfig extends ModelOptional
 {
+    /**
+     * Set the allowed type of the value model.
+     * Notice that you also can set an array of types, then the first valid type will be taken.
+     * Look in the examples to see what possibilities you have.
+     * @default all
+     * @example
+     * 'all'
+     * 'object'
+     * 'array'
+     * 'string'
+     * 'char'
+     * 'null'
+     * 'int'
+     * 'float'
+     * 'number'
+     * 'date'
+     * 'email'
+     * 'boolean'
+     * 'sha512'
+     * 'sha256'
+     * 'sha384'
+     * 'sha1'
+     * 'md5'
+     * 'hexColor'
+     * 'hexadecimal'
+     * 'ip5'
+     * 'ip6'
+     * 'isbn10'
+     * 'isbn13'
+     * 'json'
+     * 'url'
+     * 'mimeType'
+     * 'macAddress'
+     * 'mobileNumber'
+     * 'uuid3'
+     * 'uuid4'
+     * 'uuid5'
+     * 'base64'
+     * 'ascii'
+     * 'userId'
+     * 'mongoId'
+     * 'latLong'
+     */
     type  ?: ValidationTypes | string | (ValidationTypes | string)[];
+    /**
+     * Specify if the value model should use strict type mode.
+     * In this mode, types are checked strictly. For example, in strict mode,
+     * there are only real numbers allowed (2,34,13,54),
+     * but in not strict mode also strings that contain numbers are allowed ('34', '200').
+     * The non-strict mode will also automatically convert (if convertType is set to true) the string numbers to real numbers.
+     * The same can happen for booleans zation will interpret booleans in non-strict mode
+     * e.g., a 1 or '1' is interpreted as a true boolean.
+     * @default true
+     */
     strictType  ?: boolean;
+    /**
+     * With this property, you can define that the input should exactly match
+     * with at least one of the array items.
+     * @example
+     * enum : ['Red','Blue','Black']
+     */
     enum  ?: any [];
+    /**
+     * With this property, you can define that the input should exactly match
+     * with at least one of the array items.
+     * The difference between the property enum is that in error case,
+     * all options of the enum are not sent to the client.
+     * @example
+     * enum : ['CODE-1','CODE-2']
+     */
     privateEnum  ?: any [];
+    /**
+     * MinLength specifies the minimum length of a string.
+     * @example
+     * minLength : 20
+     */
     minLength  ?: number;
+    /**
+     * MaxLength specifies the maximum length of a string.
+     * @example
+     * maxLength : 40
+     */
     maxLength  ?: number;
+    /**
+     * Length specifies the exact length of a string.
+     * @example
+     * length : 10
+     */
     length  ?: number;
+    /**
+     * With contains, you can describe that a string should contain a string.
+     * You also can define more strings that should be included with an array.
+     * @example
+     * contains : 'name'
+     * contains : ['code','Code']
+     */
     contains  ?: string | string[];
-    equals  ?: string | number | object;
+    /**
+     * With equals, you can describe that the input should be exactly equal.
+     * @example
+     * equals : 'something'
+     */
+    equals  ?: any;
+    /**
+     * With minValue, you can define the minimum value of a number.
+     * @example
+     * minValue : 2
+     */
     minValue  ?: number;
+    /**
+     * With maxValue, you can define the maximum value of a number.
+     * @example
+     * maxValue : 2
+     */
     maxValue  ?: number;
+    /**
+     * This property can be used to define regular expressions.
+     * You can define one regular expression or multiple by structure them in keys.
+     * Later on the client side, you can find out which regular expression was failed with the key.
+     * @example
+     * regex : '([A-Za-z]{1,5})'
+     * regex : /\w+/
+     * regex : {
+     *     'length' : 'REGEX-1',
+     *     'pattern' : 'REGEX-2'
+     * }
+     */
     regex  ?: string | RegExp | Record<string,RegExp | string>;
+    /**
+     * With endWith, you can describe with what string the input string should end.
+     * @example
+     * endWith : 'a'
+     */
     endsWith  ?: string;
+    /**
+     * With startWith, you can describe with what string the input string should start.
+     * @example
+     * startWith : 'Hello'
+     */
     startsWith  ?: string;
-    letters  ?: string;
+    /**
+     * With letters, it is possible to define if the string letters
+     * should be all in uppercase or lowercase.
+     * @example
+     * letters : 'lowercase'
+     * letters : 'uppercase'
+     */
+    letters  ?: FormatLetters.LOWER_CASE | FormatLetters.UPPER_CASE | string;
+    /**
+     * CharClass defines a regular expression char class to check the input string.
+     * @example
+     * charClass : 'a-zA-Z._0-9'
+     * charClass : 'a-z'
+     */
     charClass ?: string;
     maxByteSize ?: number;
     minByteSize ?: number;
@@ -465,6 +608,12 @@ export interface ValueModelConfig extends ModelOptional
     after ?: Date | GetDateFunction;
     validate  ?: ValidatorFunction | ValidatorFunction[];
     convert  ?: ConvertValueFunction;
+    /**
+     * Set if zation should convert the type correctly.
+     * That for example, can be used to convert non-strict type value to the correct type
+     * or convert a Date type to real date instance.
+     * @default true
+     */
     convertType  ?: boolean;
     extends ?: string;
 }
