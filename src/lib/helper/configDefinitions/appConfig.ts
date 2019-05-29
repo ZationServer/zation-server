@@ -600,13 +600,47 @@ export interface ValueModelConfig extends ModelOptional
      * charClass : 'a-z'
      */
     charClass ?: string;
+    /**
+     * MaxByteSize defines the maximum byte size of a string or base64 input.
+     * @example
+     * maxByteSize : 50
+     */
     maxByteSize ?: number;
+    /**
+     * MinByteSize defines the minimum byte size of a string or base64 input.
+     * @example
+     * minByteSize : 20
+     */
     minByteSize ?: number;
     mimeType ?: string | null | (string | null)[];
     mimeSubType ?: string | null | (string | null)[];
     before ?: Date | GetDateFunction;
     after ?: Date | GetDateFunction;
+    /**
+     * Validate the value model with your validation checks.
+     * It can be one Validation check function or more functions in an array.
+     * This is useful to do advance checks; for example,
+     * you want to check if the email is already registered in the database.
+     * @example
+     * validate : [async (value,backErrorBag,inputPath,smallBag,type) => {
+     *   if(....){
+     *       //error
+     *       bagErrorBag.addBackError(smallBag.newBackError({
+     *          reason : ...
+     *      }));
+     *   }
+     * }]
+     */
     validate  ?: ValidatorFunction | ValidatorFunction[];
+    /**
+     * Convert the input value in a specific value; for example,
+     * you want to add something to the end of a string.
+     * The converting process will only be invoked if the value model has no validation errors.
+     * @example
+     * convert : async (value,smallBag) => {
+     *     return value+'end';
+     * }
+     */
     convert  ?: ConvertValueFunction;
     /**
      * Set if zation should convert the type correctly.
@@ -615,6 +649,12 @@ export interface ValueModelConfig extends ModelOptional
      * @default true
      */
     convertType  ?: boolean;
+    /**
+     * This property will allow you to extend from another value model.
+     * This value model will get all not self-defined properties of the extended model.
+     * @example
+     * extends : 'personName'
+     */
     extends ?: string;
 }
 
