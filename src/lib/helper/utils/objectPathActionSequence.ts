@@ -8,8 +8,8 @@ import {SyncTokenActions} from "../constants/syncTokenActions";
 
 type CommitFunction = (actions : { action: SyncTokenActions, params: any[] }[]) => Promise<void>;
 
-/*
-Saves all commands for execute later.
+/**
+ * Saves all commands for execute later.
  */
 export default class ObjectPathActionSequence
 {

@@ -8,6 +8,9 @@ import ObjectPath from "./objectPath";
 
 type CommitFunction = (object : object) => Promise<void>;
 
+/**
+ * Edit an object directly with object paths.
+ */
 export default class ObjectPathSequence
 {
     private object : object;
