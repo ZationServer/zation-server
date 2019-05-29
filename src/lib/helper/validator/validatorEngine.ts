@@ -23,7 +23,7 @@ export default class ValidatorEngine
 {
     static async validateValue(input, config : any, preparedErrorData : {inputPath : string,inputValue : any}, errorBag : BackErrorBag, preparedSmallBag : SmallBag, type) : Promise<any>
     {
-        let promises : Promise<void>[] = [];
+        const promises : Promise<void>[] = [];
         for(let cKey in config)
         {
             if(config.hasOwnProperty(cKey))
