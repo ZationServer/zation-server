@@ -685,7 +685,8 @@ export interface ValueModelConfig extends ModelOptional
     convertType  ?: boolean;
     /**
      * This property will allow you to extend from another value model.
-     * This value model will get all not self-defined properties of the extended model.
+     * Then this value model will get all properties that
+     * it doesn't define by himself from the extended model.
      * @example
      * extends : 'personName'
      */
@@ -708,7 +709,7 @@ export interface ModelOptional {
 
 export type ObjectProperties = Record<string,Model>;
 export type ConvertObjectFunction = (obj: Record<string,any>, smallBag : SmallBag) => Promise<any> | any;
-export type ConstructObjectFunction = (self : any, smallBag : SmallBag) => Promise<void> | void;
+export type ConstructObjectFunction = (self : Record<string,any>, smallBag : SmallBag) => Promise<void> | void;
 
 export interface ObjectModelConfig extends ModelOptional
 {
@@ -723,11 +724,38 @@ export interface ObjectModelConfig extends ModelOptional
      * }
      */
     properties : ObjectProperties;
+    /**
+     * Inheritance from another object model.
+     * Then this object model will get all properties that it doesn't define by himself
+     * from the extended model.
+     * It also affects the prototype because the current object model prototype
+     * will get the super prototype as a prototype.
+     * Also, the super constructor will be called before the constructor of this object model.
+     * The convert function will also be called with the result of the super convert function.
+     * @example
+     * extends : 'person'
+     */
     extends  ?: string;
     /**
-     *
+     * Set the prototype of the input object to a specific prototype.
+     * @example
+     * prototype : {
+     *     getName : function() {
+     *         return this.name;
+     *     }
+     * }
      */
     prototype  ?: object;
+    /**
+     * Set the construct function of the object model,
+     * that function can be as a constructor on the input object.
+     * It will be called with the input object and the small bag
+     * that allows you to add properties to the object.
+     * @example
+     * construct : (self,smallBag) => {
+     *    self.fullName = `${self.firstName} ${self.lastName}`;
+     * }
+     */
     construct  ?: ConstructObjectFunction;
     /**
      * Convert the input object in a specific value;
@@ -740,7 +768,7 @@ export interface ObjectModelConfig extends ModelOptional
      */
     convert  ?: ConvertObjectFunction;
     /**
-     * Set if the input can have more properties as there defined in the model
+     * Set if the input can have more properties as there defined in the model.
      * @default false
      */
     morePropsAllowed ?: boolean;
