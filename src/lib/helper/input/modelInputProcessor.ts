@@ -95,7 +95,7 @@ export default class ModelInputProcessor
             }
 
             //check all expected props
-            let promises : Promise<any>[] = [];
+            const promises : Promise<any>[] = [];
             for(let propName in props)
             {
                 if(props.hasOwnProperty(propName))
@@ -299,8 +299,8 @@ export default class ModelInputProcessor
         if(Array.isArray(input)) {
 
             if(ValidatorEngine.validateArray(input,config,currentInputPath,errorBag)) {
-                let arrayInputConfig = config[nameof<ArrayModelConfig>(s => s.array)];
-                let promises : Promise<any>[] = [];
+                const arrayInputConfig = config[nameof<ArrayModelConfig>(s => s.array)];
+                const promises : Promise<any>[] = [];
                 //input reference so we can return it normal
                 for(let i = 0; i < input.length; i++)
                 {
