@@ -5,7 +5,8 @@ GitHub: LucaCode
  */
 
 import {AnyOfModelConfig, Model, ModelOptional} from "../configDefinitions/appConfig";
-import Iterator from "../utils/iterator";
+import Iterator                                 from "../utils/iterator";
+import CloneUtils                               from "../utils/cloneUtils";
 
 export default class OptionalProcessor
 {
@@ -32,7 +33,7 @@ export default class OptionalProcessor
 
         return {
             isOptional : isOptional,
-            defaultValue : defaultValue
+            defaultValue : CloneUtils.deepClone(defaultValue)
         }
     }
 }
