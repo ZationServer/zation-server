@@ -4,8 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ScServer             from "../helper/sc/scServer";
-import ChMiddlewareHelper   from '../helper/channel/chMiddlewareHelper';
+import ScServer               from "../helper/sc/scServer";
+import ChMiddlewareHelper     from '../helper/channel/chMiddlewareHelper';
 import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../helper/constants/workerChTaskActions";
 import UpSocket               from "../helper/sc/socket";
 import {WorkerChTargets}      from "../helper/constants/workerChTargets";
@@ -26,7 +26,7 @@ import url          = require('url');
 
 import process          = require("process");
 import {WorkerChTaskType} from "../helper/constants/workerChTaskType";
-import InputProcessor from "../helper/input/inputProcessor";
+import InputProcessor     from "../helper/input/inputProcessor";
 import ZationReqHandler   from "./zationReqHandler";
 import AEPreparedPart     from "../helper/auth/aePreparedPart";
 import ZationTokenInfo    from "../helper/infoObjects/zationTokenInfo";
