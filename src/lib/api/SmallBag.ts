@@ -43,10 +43,11 @@ import ObjectPathSequence                                   from "../helper/util
 import ObjectPathActionSequence                             from "../helper/utils/objectPathActionSequence";
 import Base64Utils                                          from "../helper/utils/base64Utils";
 import ZationConfigFull                                     from "../helper/configManager/zationConfigFull";
-import ObjectUtils                                          from "../helper/utils/objectUtils";
+import CloneUtils                                           from "../helper/utils/cloneUtils";
 import JwtSignOptions                                       from "../helper/constants/jwt";
 import JwtVerifyOptions                                     from "../helper/constants/jwt";
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction} from "../helper/apiLevel/apiLevelUtils";
+
 
 export default class SmallBag {
     protected readonly exchangeEngine: ChannelBagEngine;
@@ -1956,7 +1957,7 @@ export default class SmallBag {
      * @throws AuthenticationError if the socket is not authenticated.
      */
     async setTokenVariableWithSocket(socket: UpSocket, path: string | string[], value: any): Promise<void> {
-        const ctv = ObjectUtils.deepClone(TokenUtils.getCustomTokenVariables(socket.authToken));
+        const ctv = CloneUtils.deepClone(TokenUtils.getCustomTokenVariables(socket.authToken));
         ObjectPath.set(ctv, path, value);
         await TokenUtils.setSocketCustomVar(ctv, socket);
     }
@@ -1979,7 +1980,7 @@ export default class SmallBag {
      */
     async deleteTokenVariableWithSocket(socket: UpSocket, path ?: string | string[]): Promise<void> {
         if (!!path) {
-            const ctv = ObjectUtils.deepClone(TokenUtils.getCustomTokenVariables(socket.authToken));
+            const ctv = CloneUtils.deepClone(TokenUtils.getCustomTokenVariables(socket.authToken));
             ObjectPath.del(ctv, path);
             await TokenUtils.setSocketCustomVar(ctv, socket);
         } else {
@@ -2008,7 +2009,7 @@ export default class SmallBag {
      * @throws AuthenticationError if the socket is not authenticated.
      */
     seqEditTokenVariablesWithSocket(socket: UpSocket): ObjectPathSequence {
-        return new ObjectPathSequence(ObjectUtils.deepClone(
+        return new ObjectPathSequence(CloneUtils.deepClone(
             TokenUtils.getCustomTokenVariables(socket.authToken)),
             async (obj) => {
                 await TokenUtils.setSocketCustomVar(obj, socket);

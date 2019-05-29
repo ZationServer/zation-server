@@ -6,6 +6,10 @@ GitHub: LucaCode
 
 export default class ObjectUtils
 {
+    /**
+     * Merge all objects.
+     * @param objects
+     */
     static mergeObjects(objects : object[]) : object
     {
         if(objects.length > 1) {
@@ -23,7 +27,12 @@ export default class ObjectUtils
         }
     }
 
-    //Merge objects on all layers (needs more performance)
+    /**
+     * Merge objects on all layers (needs more performance)
+     * @param mainObj
+     * @param toMergeObj
+     * @param override
+     */
     static mergeObjToObj(mainObj : object, toMergeObj : object, override : boolean = false)
     {
         if(typeof mainObj === "object" && typeof toMergeObj === "object") {
@@ -41,7 +50,12 @@ export default class ObjectUtils
         return mainObj;
     }
 
-    //Only adds obj to obj on the first Layer
+    /**
+     * Only adds obj to obj on the first Layer.
+     * @param mainOb
+     * @param addOb
+     * @param overwrite
+     */
     static addObToOb(mainOb : object,addOb : object,overwrite : boolean = false) : void
     {
         for(let key in addOb) {
@@ -53,6 +67,13 @@ export default class ObjectUtils
         }
     }
 
+    /**
+     * Add specific objects values with keys to an object.
+     * @param mainOb
+     * @param addOb
+     * @param overwrite
+     * @param onlyAddKeys
+     */
     static onlyAddObToOb(mainOb : object,addOb : object,overwrite : boolean = false, onlyAddKeys : object) : void
     {
         for(let key in addOb) {
@@ -64,6 +85,10 @@ export default class ObjectUtils
         }
     }
 
+    /**
+     * Returns an array with the values of the object.
+     * @param obj
+     */
     static getObjValues(obj : object) : any[]
     {
         let values : any[] = [];
@@ -75,6 +100,11 @@ export default class ObjectUtils
         return values;
     }
 
+    /**
+     * Checks if the object has one of these keys.
+     * @param obj
+     * @param keys
+     */
     static hasOneOf(obj : object,keys : any[]) : boolean
     {
         for(let i = 0; i < keys.length; i++) {
@@ -85,6 +115,11 @@ export default class ObjectUtils
         return false;
     }
 
+    /**
+     * Get all the keys of the search keys that the object owns.
+     * @param obj
+     * @param keys
+     */
     static getFoundKeys(obj : object,keys : any[]) : any[]
     {
         const found : any[] = [];
@@ -95,22 +130,5 @@ export default class ObjectUtils
             }
         }
         return found;
-    }
-
-    static deepClone(obj) {
-        // if not array or object or is null return self
-        if (typeof obj !== 'object'||obj === null) return obj;
-        let newO, i;
-        // handle case: array
-        if (obj instanceof Array) {
-            let l;
-            newO = [];
-            for (i = 0, l = obj.length; i < l; i++) newO[i] = ObjectUtils.deepClone(obj[i]);
-            return newO;
-        }
-        // handle case: object
-        newO = {};
-        for (i in obj) if (obj.hasOwnProperty(i)) newO[i] = ObjectUtils.deepClone(obj[i]);
-        return newO;
     }
 }

@@ -24,10 +24,10 @@ import MethodIsNotCompatibleError from "../helper/error/methodIsNotCompatibleErr
 import TokenUtils                 from "../helper/token/tokenUtils";
 import {ZationToken}              from "../helper/constants/internal";
 import JwtSignOptions             from "../helper/constants/jwt";
-import ObjectUtils                from "../helper/utils/objectUtils";
 import ChUtils                    from "../helper/channel/chUtils";
 import SocketInfo                 from "../helper/infoObjects/socketInfo";
 import ApiLevelUtils              from "../helper/apiLevel/apiLevelUtils";
+import CloneUtils                 from "../helper/utils/cloneUtils";
 
 export default class Bag extends SmallBag
 {
@@ -650,7 +650,7 @@ export default class Bag extends SmallBag
      * @throws AuthenticationError if the socket is not authenticated.
      */
     async setTokenVariable(path : string | string[],value : any) : Promise<void> {
-        const ctv = ObjectUtils.deepClone(TokenUtils.getCustomTokenVariables(this.shBridge.getToken()));
+        const ctv = CloneUtils.deepClone(TokenUtils.getCustomTokenVariables(this.shBridge.getToken()));
         ObjectPath.set(ctv,path,value);
         await TokenUtils.setCustomVar(ctv,this.shBridge);
     }
@@ -672,7 +672,7 @@ export default class Bag extends SmallBag
      */
     async deleteTokenVariable(path ?: string | string[]) : Promise<void> {
         if(!!path) {
-            const ctv = ObjectUtils.deepClone(TokenUtils.getCustomTokenVariables(this.shBridge.getToken()));
+            const ctv = CloneUtils.deepClone(TokenUtils.getCustomTokenVariables(this.shBridge.getToken()));
             ObjectPath.del(ctv,path);
             await TokenUtils.setCustomVar(ctv,this.shBridge);
         }
@@ -703,7 +703,7 @@ export default class Bag extends SmallBag
      */
     seqEditTokenVariables() : ObjectPathSequence
     {
-        return new ObjectPathSequence(ObjectUtils.deepClone(
+        return new ObjectPathSequence(CloneUtils.deepClone(
             TokenUtils.getCustomTokenVariables(this.shBridge.getToken())),
             async (obj)=> {
                 await TokenUtils.setCustomVar(obj,this.shBridge);
