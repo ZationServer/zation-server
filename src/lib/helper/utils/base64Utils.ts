@@ -23,7 +23,7 @@ export default class Base64Utils
             return result;
         }
 
-        let contentType = base64.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+        const contentType = base64.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
 
         if(contentType && contentType.length){
             result = contentType[1]
