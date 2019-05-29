@@ -612,9 +612,43 @@ export interface ValueModelConfig extends ModelOptional
      * minByteSize : 20
      */
     minByteSize ?: number;
+    /**
+     * Validate if a base64 input is from a specific mime type.
+     * You also can define more valid mime types in an array.
+     * The value null means that unknown mime type is allowed
+     * that can happen if the base64 string did not specify a mime type.
+     * @example
+     * mimeType : 'image'
+     */
     mimeType ?: string | null | (string | null)[];
+    /**
+     * Validate if a base64 input is from a specific sub mime type.
+     * You also can define more valid sub mime types in an array.
+     * The value null means that unknown sub mime type is allowed
+     * that can happen if the base64 string did not specify a sub mime type.
+     * @example
+     * mimeSubType : ['jpeg','png','jpg']
+     */
     mimeSubType ?: string | null | (string | null)[];
+    /**
+     * Validate if a date is before another date.
+     * You can provide the other date as a Date object or as a function that returns a date object.
+     * @example
+     * before : () => {
+     *      return new Date();
+     * }
+     * before : someDate
+     */
     before ?: Date | GetDateFunction;
+    /**
+     * Validate if a date is after another date.
+     * You can provide the other date as a Date object or as a function that returns a date object.
+     * @example
+     * after : () => {
+     *      return new Date();
+     * }
+     * after : someDate
+     */
     after ?: Date | GetDateFunction;
     /**
      * Validate the value model with your validation checks.
@@ -659,26 +693,67 @@ export interface ValueModelConfig extends ModelOptional
 }
 
 export interface ModelOptional {
+    /**
+     * Specifies if this model is optional,
+     * so the input doesn't need to provide the data for it.
+     * @default false
+     */
     isOptional  ?: boolean;
+    /**
+     * Define a default value that will be used
+     * if the input had not provided the value.
+     */
     default ?: any
 }
 
 export type ObjectProperties = Record<string,Model>;
-export type ConvertObjectFunction = (obj: any, smallBag : SmallBag) => Promise<any> | any;
+export type ConvertObjectFunction = (obj: Record<string,any>, smallBag : SmallBag) => Promise<any> | any;
 export type ConstructObjectFunction = (self : any, smallBag : SmallBag) => Promise<void> | void;
 
 export interface ObjectModelConfig extends ModelOptional
 {
+    /**
+     * Specifies the properties of the object.
+     * This property is required to define an object model.
+     * @example
+     * properties : {
+     *     name : {},
+     *     age : {},
+     *     email : {}
+     * }
+     */
     properties : ObjectProperties;
     extends  ?: string;
+    /**
+     *
+     */
     prototype  ?: object;
     construct  ?: ConstructObjectFunction;
+    /**
+     * Convert the input object in a specific value;
+     * for example, you only want the name value of the object.
+     * The converting process will only be invoked if the object model has no validation errors.
+     * @example
+     * convert : (obj,smallBag) => {
+     *    return obj['name'];
+     * }
+     */
     convert  ?: ConvertObjectFunction;
+    /**
+     * Set if the input can have more properties as there defined in the model
+     * @default false
+     */
     moreInputAllowed ?: boolean;
 }
 
 export interface ArrayModelConfig extends ArraySettings
 {
+    /**
+     * Define the model of the items that the array can contain.
+     * This property is required to define an array model.
+     * @example
+     * array : 'name'
+     */
     array : Model
 }
 
@@ -686,14 +761,45 @@ export type ConvertArrayFunction = (array: any[], smallBag : SmallBag) => Promis
 
 export interface ArraySettings extends ModelOptional
 {
+    /**
+     * MinLength defines the minimum length of the input array.
+     * @example
+     * minLength : 3
+     */
     minLength  ?: number;
+    /**
+     * MaxLength defines the maximum length of the input array.
+     * @example
+     * maxLength : 10
+     */
     maxLength  ?: number;
+    /**
+     * Length defines the exact length of the input array.
+     * @example
+     * length : 5
+     */
     length  ?: number;
+    /**
+     * Convert the input array in a specific value; for example,
+     * you want only to have the first item.
+     * The converting process will only be invoked if the array model has no validation errors.
+     * @example
+     * convert : (array,smallBag) => {
+     *    return array[0];
+     * }
+     */
     convert  ?: ConvertArrayFunction
 }
 
 export interface ArrayModelShortSyntax extends Array<Model | ArraySettings | undefined>
 {
+    /**
+     * Specifies the model of the items that the array can contain.
+     */
     0 : Model
+    /**
+     * Define settings of the array model.
+     * @default {}
+     */
     1 ?: ArraySettings
 }
