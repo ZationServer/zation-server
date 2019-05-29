@@ -58,9 +58,10 @@ ObjectModel[nameof<ObjectModelConfig>(s => s.properties)] = {types : ['object'],
 ObjectModel[nameof<ObjectModelConfig>(s => s.construct)]  = {types : ['function'],isOptional : true};
 ObjectModel[nameof<ObjectModelConfig>(s => s.extends)]    = {types : ['string'],isOptional : true};
 ObjectModel[nameof<ObjectModelConfig>(s => s.isOptional)] = {types : ['boolean'],isOptional: true};
-ObjectModel[nameof<ObjectModelConfig>(s => s.default)]     = {types : ['string','array','number','boolean','object','function'],isOptional : true};
+ObjectModel[nameof<ObjectModelConfig>(s => s.default)]    = {types : ['string','array','number','boolean','object','function'],isOptional : true};
 ObjectModel[nameof<ObjectModelConfig>(s => s.prototype)]  = {types : ['object'],isOptional : true};
 ObjectModel[nameof<ObjectModelConfig>(s => s.convert)]    = {types : ['function'],isOptional : true};
+ObjectModel[nameof<ObjectModelConfig>(s => s.morePropsAllowed)] = {types : ['boolean'],isOptional : true};
 
 const ControllerConfig = {};
 ControllerConfig[nameof<ControllerConfig>(s => s.input)]            = {types : ['object','array'],isOptional : true};

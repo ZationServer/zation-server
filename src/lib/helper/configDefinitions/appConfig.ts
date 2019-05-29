@@ -743,7 +743,7 @@ export interface ObjectModelConfig extends ModelOptional
      * Set if the input can have more properties as there defined in the model
      * @default false
      */
-    moreInputAllowed ?: boolean;
+    morePropsAllowed ?: boolean;
 }
 
 export interface ArrayModelConfig extends ArraySettings

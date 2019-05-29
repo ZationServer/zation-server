@@ -74,7 +74,7 @@ export default class ModelInputProcessor
         if(typeof input === 'object')
         {
             //check if the input has unknown property
-            if(!config[nameof<ObjectModelConfig>(s => s.moreInputAllowed)])
+            if(!config[nameof<ObjectModelConfig>(s => s.morePropsAllowed)])
             {
                 for(let k in input)
                 {
