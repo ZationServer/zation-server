@@ -56,7 +56,7 @@ export default class ValidatorEngine
             if(Array.isArray(type))
             {
                 let foundAValidTyp = false;
-                let errorBagTemp = new BackErrorBag();
+                const errorBagTemp = new BackErrorBag();
                 for(let i = 0; i < type.length; i++) {
                     const tempErrorCount = errorBagTemp.getBackErrorCount();
                     ValidatorEngine.validateType(input,type[i],strictType,errorBagTemp,preparedErrorData);
