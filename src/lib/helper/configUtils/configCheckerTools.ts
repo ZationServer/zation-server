@@ -78,7 +78,7 @@ export default class ConfigCheckerTools
                         if(Array.isArray(obj[k])) {
                             let array = obj[k];
                             for(let i = 0; i < array.length; i++) {
-                                if(allowedType && ConfigCheckerTools.isCorrectType(array[i],allowedType)) {
+                                if(allowedType && !ConfigCheckerTools.isCorrectType(array[i],allowedType)) {
                                     configErrorBag.addConfigError(new ConfigError(configName,
                                         `${target.getTarget()} value: '${array[i]}' in property array: '${k}' is not allowed. Allowed type is: ${allowedType}.`));
                                 }
