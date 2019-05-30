@@ -36,7 +36,7 @@ export default class ApiLevelUtils
         return (apiLevel) => {
             for(let i = 0; i < optionsLevels.length; i++){
                 if(ApiLevelUtils.apiLevelIsCompatible(apiLevel,optionsLevels[i])){
-                    return apiLevelSwitch[i];
+                    return apiLevelSwitch[optionsLevels[i]];
                 }
             }
             return undefined;
