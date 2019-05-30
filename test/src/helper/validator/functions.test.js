@@ -4,12 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const BackErrorBag      = require("../../../../dist/lib/api/BackErrorBag").default;
+const BackErrorBag       = require("../../../../dist/lib/api/BackErrorBag").default;
 const Base64TestData     = require("../../../testData/base64");
-const ZationConfigStub   = require("../../../stubs/zationConfig");
+const ZationConfigStub   = require("../../../stubs/zationConfigFull");
 const {ValidationTypes}  = require("../../../../dist");
 const {FormatLetters}    = require("../../../../dist/lib/helper/constants/validation");
-const ConfigPreCompiler  = require("../../../../dist/lib/helper/config/configPreCompiler").default;
+const ConfigPreCompiler  = require("../../../../dist/lib/helper/configUtils/configPreCompiler").default;
 const {ValidatorLibrary} = require("../../../../dist/lib/helper/validator/validatorLibrary");
 const assert             = require("chai").assert;
 

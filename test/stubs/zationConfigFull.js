@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const ZationConfig    = require("../../dist/lib/main/zationConfig").default;
-const sinon           = require("sinon");
+const ZationConfigFull  = require("../../dist/lib/helper/configManager/zationConfigFull").default;
+const sinon             = require("sinon");
 
-const zcStub = sinon.createStubInstance(ZationConfig);
+const zcStub = sinon.createStubInstance(ZationConfigFull);
 
 sinon.stub(zcStub,"appConfig").value({});
 sinon.stub(zcStub,"channelConfig").value({});

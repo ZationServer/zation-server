@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const ZationReqTools  = require("../../../../dist/lib/helper/tools/zationReqTools").default;
+const ZationReqUtils  = require("../../../../dist/lib/helper/utils/zationReqUtils").default;
 const assert          = require("chai").assert;
 
-describe('HELPER.TOOLS.ZATION_REQ_TOOLS',() => {
+describe('HELPER.TOOLS.ZATION_ReqUtils',() => {
 
     describe('Methods',() => {
 
@@ -22,7 +22,7 @@ describe('HELPER.TOOLS.ZATION_REQ_TOOLS',() => {
             ].forEach(([req,wsReq,expect],index) =>
             {
                 it('test-'+index,() => {
-                    assert.equal(ZationReqTools.isValidReqStructure(req,wsReq),expect);
+                    assert.equal(ZationReqUtils.isValidReqStructure(req,wsReq),expect);
                 });
             });
 

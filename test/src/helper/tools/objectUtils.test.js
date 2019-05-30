@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-const ObjectTools     = require("../../../../dist/lib/helper/tools/objectTools").default;
+const ObjectUtils     = require("../../../../dist/lib/helper/utils/objectUtils").default;
 const assert          = require("chai").assert;
 
-describe('HELPER.TOOLS.ObjectTools',() => {
+describe('HELPER.TOOLS.ObjectUtils',() => {
 
     describe('Methods',() => {
 
@@ -26,7 +26,7 @@ describe('HELPER.TOOLS.ObjectTools',() => {
                 name : 'peter'
             };
 
-            assert.deepEqual(ObjectTools.mergeObjects([obj1,obj2,obj3]),{
+            assert.deepEqual(ObjectUtils.mergeObjects([obj1,obj2,obj3]),{
                 name : 'luca',
                 age : 19,
                 hello : 'hello',
@@ -36,11 +36,11 @@ describe('HELPER.TOOLS.ObjectTools',() => {
         });
 
         it('MergeObjects test-2',() => {
-            assert.deepEqual(ObjectTools.mergeObjects([]),{});
+            assert.deepEqual(ObjectUtils.mergeObjects([]),{});
         });
 
         it('MergeObjects test-3',() => {
-            assert.deepEqual(ObjectTools.mergeObjects([{hello : 'hello'}]),{hello : 'hello'});
+            assert.deepEqual(ObjectUtils.mergeObjects([{hello : 'hello'}]),{hello : 'hello'});
         });
 
         it('MergeObjects test-4',() => {
@@ -64,7 +64,7 @@ describe('HELPER.TOOLS.ObjectTools',() => {
                 }
             };
 
-            assert.deepEqual(ObjectTools.mergeObjects([obj1,obj2,obj3]),{
+            assert.deepEqual(ObjectUtils.mergeObjects([obj1,obj2,obj3]),{
                 name : 'luca',
                 age : 19,
                 hello : 'hello',
@@ -88,7 +88,7 @@ describe('HELPER.TOOLS.ObjectTools',() => {
                 age : 10
             };
 
-            ObjectTools.addObToOb(obj1,obj2,true);
+            ObjectUtils.addObToOb(obj1,obj2,true);
             assert.deepEqual(obj1,{
                 name : 'luca',
                 age : 10,
@@ -108,7 +108,7 @@ describe('HELPER.TOOLS.ObjectTools',() => {
                 hello2 : 'hello2'
             };
 
-            ObjectTools.onlyAddObToOb(obj1,obj2,true,{hello:''});
+            ObjectUtils.onlyAddObToOb(obj1,obj2,true,{hello:''});
             assert.deepEqual(obj1,{
                 name : 'luca',
                 age : 19,
@@ -123,7 +123,7 @@ describe('HELPER.TOOLS.ObjectTools',() => {
                 name : 'luca',
                 age : 19,
             };
-            assert.deepEqual(ObjectTools.getObjValues(obj1),['luca',19]);
+            assert.deepEqual(ObjectUtils.getObjValues(obj1),['luca',19]);
         });
 
         it('HasOneOf',() => {
@@ -133,8 +133,8 @@ describe('HELPER.TOOLS.ObjectTools',() => {
                 age : 19,
             };
 
-            assert(ObjectTools.hasOneOf(obj1,['name']));
-            assert.isFalse(ObjectTools.hasOneOf(obj1,['hello']));
+            assert(ObjectUtils.hasOneOf(obj1,['name']));
+            assert.isFalse(ObjectUtils.hasOneOf(obj1,['hello']));
         });
 
         it('GetFoundKeys',() => {
@@ -143,8 +143,8 @@ describe('HELPER.TOOLS.ObjectTools',() => {
                 name : 'luca',
                 age : 19,
             };
-            assert.deepEqual(ObjectTools.getFoundKeys(obj1,['name']),['name']);
-            assert.deepEqual(ObjectTools.getFoundKeys(obj1,['hello']),[]);
+            assert.deepEqual(ObjectUtils.getFoundKeys(obj1,['name']),['name']);
+            assert.deepEqual(ObjectUtils.getFoundKeys(obj1,['hello']),[]);
         });
 
     });
