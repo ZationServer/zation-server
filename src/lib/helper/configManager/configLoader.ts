@@ -12,6 +12,7 @@ import {InternalMainConfig, OPTION_AUTO, OPTION_HALF_AUTO} from "../configDefini
 import ConfigLocations     from "./configLocations";
 import crypto            = require('crypto');
 const  uuidV4            = require('uuid/v4');
+const  os                = require('os');
 import moment            = require('moment-timezone');
 import {EventConfig}      from "../configDefinitions/eventConfig";
 import {AppConfig}        from "../configDefinitions/appConfig";
@@ -19,6 +20,7 @@ import {ChannelConfig}    from "../configDefinitions/channelConfig";
 import {ServiceConfig}    from "../configDefinitions/serviceConfig";
 import {Structures}       from "../configDefinitions/structures";
 import {OtherLoadedConfigSet} from "./configSets";
+import RequireUtils           from "../utils/requireUtils";
 
 export default class ConfigLoader {
 
@@ -162,12 +164,12 @@ export default class ConfigLoader {
         return cPath + this._starterConfig[key];
     }
 
-    static async loadOtherConfigs(configLocations : ConfigLocations) : Promise<OtherLoadedConfigSet> {
+    static loadOtherConfigs(configLocations : ConfigLocations) : OtherLoadedConfigSet {
         return {
-            eventConfig : require(configLocations.eventConfig),
-            channelConfig : require(configLocations.channelConfig),
-            appConfig : require(configLocations.appConfig),
-            serviceConfig : require(configLocations.serviceConfig)
+            eventConfig : RequireUtils.safeRequire(configLocations.eventConfig),
+            channelConfig : RequireUtils.safeRequire(configLocations.channelConfig),
+            appConfig : RequireUtils.safeRequire(configLocations.appConfig),
+            serviceConfig : RequireUtils.safeRequire(configLocations.serviceConfig)
         };
     }
 
@@ -177,15 +179,15 @@ export default class ConfigLoader {
             const mainConfig = require(this._configLocations.mainConfig);
             ObjectUtils.addObToOb(this._mainConfig,mainConfig,true);
             this._loadedConfigs.push(nameof<StarterConfig>(s => s.mainConfig));
-
-            //load starter config to main.
-            ObjectUtils.onlyAddObToOb(this._mainConfig,this._starterConfig,true,Structures.Main);
-
-            this.readMainConfigEnvVariables();
-
-            this.processMainConfig();
         }
         catch (e) {}
+
+        //load starter config to main.
+        ObjectUtils.onlyAddObToOb(this._mainConfig,this._starterConfig,true,Structures.Main);
+
+        this.readMainConfigEnvVariables();
+
+        this.processMainConfig();
     }
 
     private readMainConfigEnvVariables() {
@@ -204,10 +206,26 @@ export default class ConfigLoader {
     }
 
     async loadOtherConfigs() {
-        this._eventConfig = require(this._configLocations.eventConfig);
-        this._channelConfig = require(this._configLocations.channelConfig);
-        this._appConfig = require(this._configLocations.appConfig);
-        this._serviceConfig = require(this._configLocations.serviceConfig);
+        try {
+            this._eventConfig = require(this._configLocations.eventConfig);
+            this._loadedConfigs.push(nameof<StarterConfig>(s => s.eventConfig));
+        }
+        catch (e) {}
+        try {
+            this._channelConfig = require(this._configLocations.channelConfig);
+            this._loadedConfigs.push(nameof<StarterConfig>(s => s.channelConfig));
+        }
+        catch (e) {}
+        try {
+            this._appConfig = require(this._configLocations.appConfig);
+            this._loadedConfigs.push(nameof<StarterConfig>(s => s.appConfig));
+        }
+        catch (e) {}
+        try {
+            this._serviceConfig = require(this._configLocations.serviceConfig);
+            this._loadedConfigs.push(nameof<StarterConfig>(s => s.serviceConfig));
+        }
+        catch (e) {}
     }
 
     getRootPath() : string {
@@ -234,7 +252,7 @@ export default class ConfigLoader {
     private static createValueWithOsAuto(checkValue : any) {
         let result = 1;
         if(checkValue === OPTION_AUTO || checkValue === OPTION_HALF_AUTO) {
-            result = require('os').cpus().length;
+            result = os.cpus().length;
             if(checkValue === OPTION_HALF_AUTO){
                 result/=2;
             }

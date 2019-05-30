@@ -150,7 +150,7 @@ class ZationWorker extends SCWorker
         startPromises.push(this.viewEngine.loadViews());
 
         Logger.startStopWatch();
-        const otherConfigsLoadedSet = await ConfigLoader.loadOtherConfigs(this.zc.configLocations);
+        const otherConfigsLoadedSet = ConfigLoader.loadOtherConfigs(this.zc.configLocations);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has loaded other zation configuration files.`,true);
 
         //start loading client js
