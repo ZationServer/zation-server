@@ -388,6 +388,16 @@ export default class ConfigPreCompiler
             //check input
             if(value.hasOwnProperty(nameof<ObjectModelConfig>(s => s.properties)))
             {
+                //check props
+                const props = value[nameof<ObjectModelConfig>(s => s.properties)];
+                if(typeof props === 'object'){
+                    for(let propName in props) {
+                        if(props.hasOwnProperty(propName)) {
+                            this.modelPreCompileStep2(props[propName]);
+                        }
+                    }
+                }
+
                 //isObject
                 if(typeof value[nameof<ObjectModelConfig>(s => s.extends)] === 'string')
                 {
@@ -395,18 +405,8 @@ export default class ConfigPreCompiler
                     //check super extends before this
                     const superName = value[nameof<ObjectModelConfig>(s => s.extends)];
                     this.modelPreCompileStep2(this.modelsConfig[superName]);
+
                     //lastExtend
-
-                    //check props
-                    const props = value[nameof<ObjectModelConfig>(s => s.properties)];
-                    if(typeof props === 'object'){
-                        for(let propName in props) {
-                            if(props.hasOwnProperty(propName)) {
-                                this.modelPreCompileStep2(props[propName]);
-                            }
-                        }
-                    }
-
                     const superObj = this.modelImportEngine.extendsResolve(superName);
 
                     //extend Props
