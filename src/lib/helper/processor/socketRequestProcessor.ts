@@ -9,6 +9,7 @@ import UpSocket              from "../sc/socket";
 import ZationConfig          from "../configManager/zationConfig";
 import Logger                from "../logger/logger";
 import ZationReqUtils        from "../utils/zationReqUtils";
+import StringifyUtils        from "../utils/stringifyUtils";
 
 export default class SocketRequestProcessor
 {
@@ -26,7 +27,7 @@ export default class SocketRequestProcessor
     async prepareReq(socket : UpSocket, input, respond, reqId : string)
     {
         if(this.debug){
-            Logger.printDebugInfo(`Socket Request id: ${reqId} -> `,input);
+            Logger.printDebugInfo(`Socket Request id: ${reqId} -> `,StringifyUtils.object(input));
         }
         if(this.zc.mainConfig.logRequests){
             Logger.logFileInfo(`Socket Request id: ${reqId} -> `,input);

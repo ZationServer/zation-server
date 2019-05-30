@@ -13,6 +13,7 @@ import TokenUtils        from "../token/tokenUtils";
 import Logger            from "../logger/logger";
 import {MainBackErrors}  from "../zationBackErrors/mainBackErrors";
 import SHBridgeHttp      from "../bridges/shBridgeHttp";
+import StringifyUtils    from "../utils/stringifyUtils";
 
 export default class Returner
 {
@@ -84,7 +85,7 @@ export default class Returner
         if(wsResp)
         {
             if(this.debugMode){
-                Logger.printDebugInfo(`Socket Result id: ${reqId} ->`,resp);
+                Logger.printDebugInfo(`Socket Result id: ${reqId} ->`,StringifyUtils.object(resp));
             }
             if(this.zc.mainConfig.logRequests){
                 Logger.logFileInfo(`Socket Result id: ${reqId} ->`,resp);
@@ -93,7 +94,7 @@ export default class Returner
         else
         {
             if(this.debugMode){
-                Logger.printDebugInfo(`Http Result id: ${reqId} ->`,resp);
+                Logger.printDebugInfo(`Http Result id: ${reqId} ->`,StringifyUtils.object(resp));
             }
             if(this.zc.mainConfig.logRequests){
                 Logger.logFileInfo(`Http Result id: ${reqId} ->`,resp);

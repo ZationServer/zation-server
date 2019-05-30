@@ -17,6 +17,7 @@ import TokenUtils, {TokenClusterKeyCheckFunction} from "../token/tokenUtils";
 import JsonConverter                from "../utils/jsonConverter";
 import ZationConfigFull             from "../configManager/zationConfigFull";
 import MiddlewareUtils              from "../utils/middlewareUtils";
+import StringifyUtils               from "../utils/stringifyUtils";
 
 export default class HttpRequestProcessor
 {
@@ -42,7 +43,7 @@ export default class HttpRequestProcessor
         // @ts-ignore
         if (req.method === 'POST' && req.body[zc.mainConfig.postKey]) {
             if(this.debug){
-                Logger.printDebugInfo(`Http Post Request id: ${reqId} -> `,req.body[this.zc.mainConfig.postKey]);
+                Logger.printDebugInfo(`Http Post Request id: ${reqId} -> `,StringifyUtils.object(req.body[this.zc.mainConfig.postKey]));
             }
             if(this.zc.mainConfig.logRequests){
                 Logger.logFileInfo(`Http Post Request id: ${reqId} -> `,req.body[this.zc.mainConfig.postKey]);
@@ -58,7 +59,7 @@ export default class HttpRequestProcessor
             const query = req.query;
 
             if(this.debug){
-                Logger.printDebugInfo(`Http Get Request id: ${reqId} -> `,query);
+                Logger.printDebugInfo(`Http Get Request id: ${reqId} -> `,StringifyUtils.object(query));
             }
             if(this.zc.mainConfig.logRequests){
                 Logger.logFileInfo(`Http Get Request id: ${reqId} -> `,query);

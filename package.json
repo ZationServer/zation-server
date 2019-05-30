@@ -68,6 +68,7 @@
     "uuid": "3.3.2",
     "validator": "10.11.0",
     "fast-stringify": "1.1.1",
+    "stringify-object": "3.3.0",
     "ws": "6.2.1",
     "zation-client": "0.8.1",
     "zation-service": "0.3.4"
