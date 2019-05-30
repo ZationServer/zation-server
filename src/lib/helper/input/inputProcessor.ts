@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Model, ModelProcessable, ParamInput} from "../configDefinitions/appConfig";
+import {Model, ModelPreparedInfo, ParamInput} from "../configDefinitions/appConfig";
 import ModelInputProcessor       from "./modelInputProcessor";
 import ZationWorker            = require("../../main/zationWorker");
 import BackErrorBag              from "../../api/BackErrorBag";
@@ -54,7 +54,7 @@ export default class InputProcessor
                         (input,paramName,paramInput[paramName],paramName,processInfo));
                 }
                 else {
-                    const {defaultValue,isOptional} = (paramInput[paramName] as ModelProcessable)._optionalInfo;
+                    const {defaultValue,isOptional} = (paramInput[paramName] as ModelPreparedInfo)._optionalInfo;
                     if(!isOptional){
                         //ups something is missing
                         taskErrorBag.addBackError(new BackError(MainBackErrors.inputParamIsMissing,
@@ -118,7 +118,7 @@ export default class InputProcessor
                 }))
             }
             else {
-                const {defaultValue,isOptional} = (paramInput[paramInputKeys[i]] as ModelProcessable)._optionalInfo;
+                const {defaultValue,isOptional} = (paramInput[paramInputKeys[i]] as ModelPreparedInfo)._optionalInfo;
                 if(!isOptional){
                     //ups something is missing
                     taskErrorBag.addBackError(new BackError(MainBackErrors.inputParamIsMissing,

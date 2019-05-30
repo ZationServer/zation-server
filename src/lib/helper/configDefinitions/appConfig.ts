@@ -833,7 +833,7 @@ export interface ArrayModelShortSyntax extends Array<Model | ArraySettings | und
     1 ?: ArraySettings
 }
 
-export interface ModelProcessable {
+export interface ModelPreparedInfo {
     _process : ModelProcessFunction
     _optionalInfo : {isOptional : boolean,defaultValue : any}
 }

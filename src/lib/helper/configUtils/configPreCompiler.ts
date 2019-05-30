@@ -19,7 +19,7 @@ import {
     ParamInput,
     ObjectModelConfig,
     ValueModelConfig,
-    SingleModelInput, ModelProcessable,
+    SingleModelInput, ModelPreparedInfo,
 } from "../configDefinitions/appConfig";
 import ModelImportEngine from "./modelImportEngine";
 import ObjectUtils       from "../utils/objectUtils";
@@ -459,8 +459,8 @@ export default class ConfigPreCompiler
                     value[nameof<ObjectModelConfig>(s => s.extends)] = undefined;
                 }
 
-                if(!value.hasOwnProperty(nameof<ModelProcessable>(s => s._process))){
-                    (value as ModelProcessable)._process =
+                if(!value.hasOwnProperty(nameof<ModelPreparedInfo>(s => s._process))){
+                    (value as ModelPreparedInfo)._process =
                         ModelInputProcessor.createObjectModelProcessor(value);
                 }
             }
@@ -470,8 +470,8 @@ export default class ConfigPreCompiler
                 const inArray = value[nameof<ArrayModelConfig>(s => s.array)];
                 this.modelPreCompileStep2(inArray);
 
-                if(!value.hasOwnProperty(nameof<ModelProcessable>(s => s._process))){
-                    (value as ModelProcessable)._process =
+                if(!value.hasOwnProperty(nameof<ModelPreparedInfo>(s => s._process))){
+                    (value as ModelPreparedInfo)._process =
                         ModelInputProcessor.createArrayModelProcessor(value);
                 }
             }
@@ -482,8 +482,8 @@ export default class ConfigPreCompiler
                     this.modelPreCompileStep2(value);
                 },value[nameof<AnyOfModelConfig>(s => s.anyOf)]);
 
-                if(!value.hasOwnProperty(nameof<ModelProcessable>(s => s._process))){
-                    (value as ModelProcessable)._process =
+                if(!value.hasOwnProperty(nameof<ModelPreparedInfo>(s => s._process))){
+                    (value as ModelPreparedInfo)._process =
                         ModelInputProcessor.createAnyOfModelProcessor(value);
                 }
             }
@@ -491,13 +491,13 @@ export default class ConfigPreCompiler
                 //value
                 this.preCompileValueExtend(value,value);
 
-                if(!value.hasOwnProperty(nameof<ModelProcessable>(s => s._process))){
-                    (value as ModelProcessable)._process =
+                if(!value.hasOwnProperty(nameof<ModelPreparedInfo>(s => s._process))){
+                    (value as ModelPreparedInfo)._process =
                         ModelInputProcessor.createValueModelProcessor(value);
                 }
             }
-            if(!value.hasOwnProperty(nameof<ModelProcessable>(s => s._optionalInfo))){
-                (value as ModelProcessable)._optionalInfo =
+            if(!value.hasOwnProperty(nameof<ModelPreparedInfo>(s => s._optionalInfo))){
+                (value as ModelPreparedInfo)._optionalInfo =
                     OptionalProcessor.process(value);
             }
         }

@@ -9,7 +9,7 @@ import {
     ArrayModelConfig, ConstructObjectFunction, ConvertArrayFunction, ConvertObjectFunction,
     ConvertValueFunction,
     Model,
-    ModelProcessable, ObjectModelConfig, ValueModelConfig,
+    ModelPreparedInfo, ObjectModelConfig, ValueModelConfig,
 } from "../configDefinitions/appConfig";
 import BackErrorBag          from "../../api/BackErrorBag";
 import SmallBag              from "../../api/SmallBag";
@@ -19,7 +19,6 @@ import BackError             from "../../api/BackError";
 import {MainBackErrors}      from "../zationBackErrors/mainBackErrors";
 import Iterator              from "../utils/iterator";
 import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";
-import OptionalProcessor     from "./optionalProcessor";
 import CloneUtils            from "../utils/cloneUtils";
 import {ProcessTask}         from "./processTaskEngine";
 
@@ -50,7 +49,7 @@ export default class ModelInputProcessor
      */
     async processModel(srcObj : object, srcKey : string | number, config : Model, currentInputPath : string, processInfo : ProcessInfo) : Promise<any>
     {
-        await (config as ModelProcessable)
+        await (config as ModelPreparedInfo)
             ._process(this._preparedSmallBag,srcObj,srcKey,currentInputPath,processInfo);
     }
 
@@ -101,9 +100,9 @@ export default class ModelInputProcessor
      * Creates a closure to process a array model.
      * @param arrayModel
      */
-    static createArrayModelProcessor(arrayModel : ArrayModelConfig & ModelProcessable) : ModelProcessFunction
+    static createArrayModelProcessor(arrayModel : ArrayModelConfig & ModelPreparedInfo) : ModelProcessFunction
     {
-        const arrayInputConfig = (arrayModel.array as Model & ModelProcessable);
+        const arrayInputConfig = (arrayModel.array as Model & ModelPreparedInfo);
         const hasConvert = typeof arrayModel.convert === 'function';
 
         return async (sb, srcObj, srcKey, currentInputPath, processInfo) => {
@@ -152,7 +151,7 @@ export default class ModelInputProcessor
      * Creates a closure to process a anyOf model.
      * @param anyOfModel
      */
-    static createAnyOfModelProcessor(anyOfModel : AnyOfModelConfig & ModelProcessable) : ModelProcessFunction
+    static createAnyOfModelProcessor(anyOfModel : AnyOfModelConfig & ModelPreparedInfo) : ModelProcessFunction
     {
         const anyOf = anyOfModel.anyOf;
         const breakIterator = Iterator.createBreakIterator(anyOf);
@@ -160,7 +159,7 @@ export default class ModelInputProcessor
         return async (sb, srcObj, srcKey, currentInputPath, processInfo) => {
             let found = false;
             const tmpTaskErrorBags : Record<string|number,BackErrorBag> = {};
-            await breakIterator(async (key, value : ModelProcessable) =>
+            await breakIterator(async (key, value : ModelPreparedInfo) =>
             {
                 tmpTaskErrorBags[key] = new BackErrorBag();
                 const tmpProcessInfo : ProcessInfo =
@@ -212,14 +211,6 @@ export default class ModelInputProcessor
         const processConvert = typeof objectModel.convert === 'function';
         const processPrototype = typeof objectModel.prototype === 'object';
 
-        //prepare optional info
-        const optionalInfo : Record<string,{defaultValue : any,isOptional : boolean}> = {};
-        for(let k in props){
-            if(props.hasOwnProperty(k)){
-                optionalInfo[k] = OptionalProcessor.process(props[k]);
-            }
-        }
-
         return async (sb, srcObj, srcKey, currentInputPath, processInfo) => {
 
             const input = srcObj[srcKey];
@@ -255,14 +246,14 @@ export default class ModelInputProcessor
 
                     if(input.hasOwnProperty(propName)) {
                         //allOk lets check the props
-                        promises.push((props[propName] as ModelProcessable)._process
+                        promises.push((props[propName] as ModelPreparedInfo)._process
                         (sb,input,propName,currentInputPathNew,processInfo));
                     }
                     else
                     {
                         //is this input optional?
                         //or is it really missing?
-                        const {defaultValue,isOptional} = optionalInfo[propName];
+                        const {defaultValue,isOptional} = (props[propName] as ModelPreparedInfo)._optionalInfo;
                         if(!isOptional){
                             //oh its missing!
                             errorBag.addBackError(new BackError
