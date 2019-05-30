@@ -4,104 +4,108 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ArraySettings, ValueModelConfig} from "../configDefinitions/appConfig";
-import {ConfigNames}       from "../constants/internal";
+import {ArraySettings, ValidateFunction, ValueModelConfig} from "../configDefinitions/appConfig";
 // noinspection TypeScriptPreferShortImport
-import {ValidationTypes}   from "./../constants/validationTypes";
-import BackErrorBag        from "../../api/BackErrorBag";
-import BackError           from "../../api/BackError";
-import {ValidatorLibrary}  from "./validatorLibrary";
+import {ValidationTypes}     from "./../constants/validationTypes";
+import BackErrorBag          from "../../api/BackErrorBag";
+import BackError             from "../../api/BackError";
+import {ValidatorLibrary}    from "./validatorLibrary";
 import FuncUtils             from "../utils/funcUtils";
 import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";
-import Logger                from "../logger/logger";
 import SmallBag              from "../../api/SmallBag";
 
 const ValidatorFunctions   = ValidatorLibrary.Functions;
 const ValidatorTypes       = ValidatorLibrary.Types;
 
+export type ValueTypeValidateFunction =
+    (input : any,errorBag : BackErrorBag,preparedErrorData : PreparedErrorData) => string | undefined;
+export type ValueValidateFunction =
+    (input : any,errorBag : BackErrorBag,preparedErrorData : PreparedErrorData,smallBag : SmallBag,type : string | undefined) => Promise<any>;
+
+export interface PreparedErrorData {
+    inputPath : string,
+    inputValue : any
+}
+
+type PreparedFunctionValidator =
+    (input : any,backErrorBag  : BackErrorBag, prepareErrorData : PreparedErrorData, preparedSmallBag : SmallBag,type : string | undefined) => Promise<void> | void
+
 export default class ValidatorEngine
 {
-    static async validateValue(input, config : any, preparedErrorData : {inputPath : string,inputValue : any}, errorBag : BackErrorBag, preparedSmallBag : SmallBag, type) : Promise<any>
+    /**
+     * Creates a closure to validate the type of the input data.
+     * @param config
+     */
+    static createValueValidator(config : ValueModelConfig) : ValueValidateFunction
     {
-        const promises : Promise<void>[] = [];
-        for(let cKey in config)
-        {
-            if(config.hasOwnProperty(cKey))
-            {
+        const validatorFunctions : PreparedFunctionValidator[] = [];
+        let validateFunction : ValidateFunction = () => {};
+
+        for(let cKey in config) {
+            if(config.hasOwnProperty(cKey)) {
                 const cValue = config[cKey];
-                if(cKey === nameof<ValueModelConfig>(s => s.validate)) {
-                    //own validate
-                    promises.push(FuncUtils.emitEvent(cValue,input,errorBag,preparedErrorData.inputPath,preparedSmallBag,type));
+                if(ValidatorFunctions.hasOwnProperty(cKey)) {
+                    validatorFunctions.push((input, backErrorBag, prepareErrorData, preparedSmallBag, type) => {
+                        return ValidatorFunctions[cKey](input,cValue,backErrorBag,prepareErrorData,preparedSmallBag,type);
+                    });
                 }
-                else if(ValidatorFunctions.hasOwnProperty(cKey)) {
-                    promises.push(ValidatorFunctions[cKey](input,cValue,errorBag,preparedErrorData,preparedSmallBag,type));
+                else if(cKey === nameof<ValueModelConfig>(s => s.validate)) {
+                    validateFunction = FuncUtils.createFuncAsyncInvoker(cValue);
                 }
             }
         }
-        await Promise.all(promises);
+
+        return async (input, errorBag, preparedErrorData, smallBag, type) => {
+            const promises : (Promise<void> | void)[] = [];
+            for(let i = 0; i < validatorFunctions.length; i++){
+                promises.push(validatorFunctions[i](input,errorBag,preparedErrorData,smallBag,type));
+            }
+            promises.push(validateFunction(input,errorBag,preparedErrorData.inputPath,smallBag,type));
+            await Promise.all(promises);
+        };
     }
 
     /**
-     * Validate the model value type.
-     * @param input
+     * Creates a closure to validate the input type.
      * @param type
      * @param strictType
-     * @param preparedErrorData
-     * @param errorBag
      */
-    static validateValueType(input,type,strictType,preparedErrorData : {inputPath : string,inputValue : any},errorBag : BackErrorBag) : string
-    {
-        let usedType = type;
+    static createValueTypeValidator(type : string | string[] | undefined,strictType : boolean) : ValueTypeValidateFunction {
         if(type !== undefined && type !== ValidationTypes.ALL) {
-            if(Array.isArray(type))
-            {
-                let foundAValidTyp = false;
-                const errorBagTemp = new BackErrorBag();
-                for(let i = 0; i < type.length; i++) {
-                    const tempErrorCount = errorBagTemp.getBackErrorCount();
-                    ValidatorEngine.validateType(input,type[i],strictType,errorBagTemp,preparedErrorData);
-                    if(tempErrorCount === errorBagTemp.getBackErrorCount()) {
-                        foundAValidTyp = true;
-                        usedType = type[i];
-                        break;
+            if(Array.isArray(type)){
+                return (input, errorBag, preparedErrorData) => {
+                    let foundAValidTyp = false;
+                    let typeTmp;
+                    const errorBagTemp = new BackErrorBag();
+                    for(let i = 0; i < type.length; i++) {
+                        const tempErrorCount = errorBagTemp.getBackErrorCount();
+                        ValidatorTypes[type[i]](input,errorBagTemp,preparedErrorData,strictType);
+                        if(tempErrorCount === errorBagTemp.getBackErrorCount()) {
+                            foundAValidTyp = true;
+                            typeTmp = type[i];
+                            break;
+                        }
                     }
-                }
-                if(!foundAValidTyp) {
-                    errorBag.addBackError(new BackError(ValidatorBackErrors.noValidTypeWasFound,
-                        {
-                            inputPath : preparedErrorData.inputPath,
-                            inputValue : preparedErrorData.inputValue,
-                            types : type
-                        }));
+                    if(!foundAValidTyp) {
+                        errorBag.addBackError(new BackError(ValidatorBackErrors.noValidTypeWasFound,
+                            {
+                                inputPath : preparedErrorData.inputPath,
+                                inputValue : preparedErrorData.inputValue,
+                                types : type
+                            }));
+                    }
+                    return typeTmp;
                 }
             }
             else {
-                ValidatorEngine.validateType(input,type,strictType,errorBag,preparedErrorData);
+                return (input, errorBag, preparedErrorData) => {
+                    ValidatorTypes[type](input,errorBag,preparedErrorData,strictType);
+                    return type;
+                }
             }
         }
-        return usedType;
-    }
-
-    /**
-     * Validate value type.
-     * @param input
-     * @param type
-     * @param strictType
-     * @param errorBag
-     * @param preparedErrorData
-     */
-    private static validateType(input,type,strictType,errorBag,preparedErrorData)
-    {
-        if(ValidatorTypes.hasOwnProperty(type)) {
-            ValidatorTypes[type](input,errorBag,preparedErrorData,strictType);
-        }
-        else if(type === '') {
-           Logger.printConfigWarning
-           (ConfigNames.APP,`No validator type in inputPath: '${preparedErrorData.inputPath}' found.`)
-        }
-        else if(type.length > 0) {
-            Logger.printConfigWarning
-            (ConfigNames.APP,`No valid validator type in inputPath: '${preparedErrorData.inputPath}'.`)
+        else {
+            return () => {return undefined;}
         }
     }
 

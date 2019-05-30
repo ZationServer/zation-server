@@ -13,7 +13,13 @@ import {
 import {
     AnyOfModelConfig,
     ArrayModelConfig,
-    ControllerConfig, InputConfig, Model, ParamInput, ObjectModelConfig, ValueModelConfig, SingleModelInput,
+    ControllerConfig,
+    InputConfig,
+    Model,
+    ParamInput,
+    ObjectModelConfig,
+    ValueModelConfig,
+    SingleModelInput, ModelProcessable,
 } from "../configDefinitions/appConfig";
 import ModelImportEngine from "./modelImportEngine";
 import ObjectUtils       from "../utils/objectUtils";
@@ -23,7 +29,10 @@ import {OtherLoadedConfigSet, OtherPreCompiledConfigSet} from "../configManager/
 import {
     PreCompiledEventConfig,
 } from "../configDefinitions/eventConfig";
-import ControllerUtils from "../controller/controllerUtils";
+import ControllerUtils             from "../controller/controllerUtils";
+import ModelInputProcessor         from "../input/modelInputProcessor";
+import {SystemController}          from "../systemController/systemControler.config";
+import OptionalProcessor from "../input/optionalProcessor";
 
 export default class ConfigPreCompiler
 {
@@ -45,6 +54,7 @@ export default class ConfigPreCompiler
         this.preCompileTmpBuilds();
         this.preCompileControllerDefaults();
         this.preCompileController();
+        this.preCompileSystemController();
         this.preCompileChannelConfig();
         this.preCompileServiceModules();
         this.preCompileEventConfig();
@@ -251,17 +261,15 @@ export default class ConfigPreCompiler
             }
         }
 
-        //than resolve the links,short syntax,values...
         for(let name in models) {
             if(models.hasOwnProperty(name)) {
-                this.preCompileModel(name,models);
+                this.modelPreCompileStep1(name,models);
             }
         }
 
-        //than resolve the objects inheritance
         for(let name in models) {
             if(models.hasOwnProperty(name)) {
-                this.preCompileInheritance(models[name]);
+                this.modelPreCompileStep2(models[name]);
             }
         }
 
@@ -276,7 +284,7 @@ export default class ConfigPreCompiler
         const properties = obj.properties;
         for(let propName in properties) {
             if (properties.hasOwnProperty(propName)) {
-                this.preCompileModel(propName,properties);
+                this.modelPreCompileStep1(propName,properties);
             }
         }
     }
@@ -298,7 +306,13 @@ export default class ConfigPreCompiler
         }
     }
 
-    private preCompileModel(key : string, obj : object) : void
+    /**
+     * The first model pre-compile step that will resolve all links and will pre-compile value models.
+     * Also, it will convert the array short syntax to an array model.
+     * @param key
+     * @param obj
+     */
+    private modelPreCompileStep1(key : string, obj : object) : void
     {
         const nowValue = obj[key];
 
@@ -329,7 +343,7 @@ export default class ConfigPreCompiler
             obj[key][nameof<ArrayModelConfig>(s => s.array)] = inArray;
 
             if(needArrayPreCompile) {
-                this.preCompileModel(nameof<ArrayModelConfig>(s => s.array),obj[key]);
+                this.modelPreCompileStep1(nameof<ArrayModelConfig>(s => s.array),obj[key]);
             }
         }
         else if(typeof nowValue === "object")
@@ -338,58 +352,36 @@ export default class ConfigPreCompiler
                 //isObject
                 //check all properties of object!
                 this.preCompileObjectProperties(nowValue);
+
+                //preCompileObject
+
             }
             else if(nowValue.hasOwnProperty(nameof<ArrayModelConfig>(s => s.array))) {
                 //we have array look in the array body!
-                this.preCompileModel(nameof<ArrayModelConfig>(s => s.array),nowValue);
+                this.modelPreCompileStep1(nameof<ArrayModelConfig>(s => s.array),nowValue);
             }
             else if(nowValue.hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf)))
             {
                 //anyOf
                 Iterator.iterateSync((key,value,src) => {
-                    this.preCompileModel(key,src);
+                    this.modelPreCompileStep1(key,src);
                 },nowValue[nameof<AnyOfModelConfig>(s => s.anyOf)]);
             }
             else {
                 //value!
                 this.preCompileValidationFunctions(nowValue);
-                this.preCompileValueExtend(nowValue,nowValue);
             }
         }
     }
 
-    private preCompileValueExtend(mainValue : ValueModelConfig,exValueConfig : ValueModelConfig) {
-        if(typeof exValueConfig.extends === 'string'){
-            const nextExValueConfig = this.modelImportEngine.extendsResolve(exValueConfig.extends);
-            ObjectUtils.addObToOb(mainValue,nextExValueConfig);
-            return this.preCompileValueExtend(mainValue,nextExValueConfig);
-        }
-    }
-
-    // noinspection JSMethodCanBeStatic
-    private preCompileValidationFunctions(value : ValueModelConfig) : void
-    {
-        //charClass function
-        if(typeof value.charClass === "string") {
-            // @ts-ignore
-            //ignore because its used internal for performance speed
-            value.charClass = new RegExp("^["+value.charClass+"]*$");
-        }
-
-        //regex
-        if(typeof value.regex === "string"){
-            value.regex = new RegExp(value.regex);
-        }
-        else if(typeof value.regex === "object"){
-            for(let regexName in value.regex) {
-                if(value.regex.hasOwnProperty(regexName) && typeof value.regex[regexName] === 'string'){
-                    value.regex[regexName] = new RegExp(value.regex[regexName]);
-                }
-            }
-        }
-    }
-
-    private preCompileInheritance(value : any) : void
+    /**
+     * The second model pre-compile that will resolve the object model and value model inheritance.
+     * That process needs to be done after pre-compile step one because
+     * all string links have to be resolved before duplicate them.
+     * Also, this step will create the underscore process closure for the runtime.
+     * @param value
+     */
+    private modelPreCompileStep2(value : any) : void
     {
         if(typeof value === "object")
         {
@@ -402,7 +394,7 @@ export default class ConfigPreCompiler
                     //extends there
                     //check super extends before this
                     const superName = value[nameof<ObjectModelConfig>(s => s.extends)];
-                    this.preCompileInheritance(this.modelsConfig[superName]);
+                    this.modelPreCompileStep2(this.modelsConfig[superName]);
                     //lastExtend
 
                     //check props
@@ -410,13 +402,12 @@ export default class ConfigPreCompiler
                     if(typeof props === 'object'){
                         for(let propName in props) {
                             if(props.hasOwnProperty(propName)) {
-                                this.preCompileInheritance(props[propName]);
+                                this.modelPreCompileStep2(props[propName]);
                             }
                         }
                     }
 
                     const superObj = this.modelImportEngine.extendsResolve(superName);
-
 
                     //extend Props
                     const superProps = superObj[nameof<ObjectModelConfig>(s => s.properties)];
@@ -467,19 +458,87 @@ export default class ConfigPreCompiler
                     //remove extension
                     value[nameof<ObjectModelConfig>(s => s.extends)] = undefined;
                 }
+
+                if(!value.hasOwnProperty(nameof<ModelProcessable>(s => s._process))){
+                    (value as ModelProcessable)._process =
+                        ModelInputProcessor.createObjectModelProcessor(value);
+                }
             }
             else if(value.hasOwnProperty(nameof<ArrayModelConfig>(s => s.array)))
             {
                 //is array
-                let inArray = value[nameof<ArrayModelConfig>(s => s.array)];
-                this.preCompileInheritance(inArray);
+                const inArray = value[nameof<ArrayModelConfig>(s => s.array)];
+                this.modelPreCompileStep2(inArray);
+
+                if(!value.hasOwnProperty(nameof<ModelProcessable>(s => s._process))){
+                    (value as ModelProcessable)._process =
+                        ModelInputProcessor.createArrayModelProcessor(value);
+                }
             }
             else if(value.hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf)))
             {
                 //any of
                 Iterator.iterateSync((key,value) => {
-                    this.preCompileInheritance(value);
+                    this.modelPreCompileStep2(value);
                 },value[nameof<AnyOfModelConfig>(s => s.anyOf)]);
+
+                if(!value.hasOwnProperty(nameof<ModelProcessable>(s => s._process))){
+                    (value as ModelProcessable)._process =
+                        ModelInputProcessor.createAnyOfModelProcessor(value);
+                }
+            }
+            else {
+                //value
+                this.preCompileValueExtend(value,value);
+
+                if(!value.hasOwnProperty(nameof<ModelProcessable>(s => s._process))){
+                    (value as ModelProcessable)._process =
+                        ModelInputProcessor.createValueModelProcessor(value);
+                }
+            }
+            if(!value.hasOwnProperty(nameof<ModelProcessable>(s => s._optionalInfo))){
+                (value as ModelProcessable)._optionalInfo =
+                    OptionalProcessor.process(value);
+            }
+        }
+    }
+
+    /**
+     * A function that will recursively resolve the inheritance of value models.
+     * @param mainValue
+     * @param exValueConfig
+     */
+    private preCompileValueExtend(mainValue : ValueModelConfig,exValueConfig : ValueModelConfig) {
+        if(typeof exValueConfig.extends === 'string'){
+            const nextExValueConfig = this.modelImportEngine.extendsResolve(exValueConfig.extends);
+            ObjectUtils.addObToOb(mainValue,nextExValueConfig);
+            return this.preCompileValueExtend(mainValue,nextExValueConfig);
+        }
+    }
+
+    // noinspection JSMethodCanBeStatic
+    /**
+     * A function that will precompile validation functions of a value model.
+     * @param value
+     */
+    private preCompileValidationFunctions(value : ValueModelConfig) : void
+    {
+        //charClass function
+        if(typeof value.charClass === "string") {
+            // @ts-ignore
+            //ignore because its used internal for performance speed
+            value.charClass = new RegExp("^["+value.charClass+"]*$");
+        }
+
+        //regex
+        if(typeof value.regex === "string"){
+            value.regex = new RegExp(value.regex);
+        }
+        else if(typeof value.regex === "object"){
+            for(let regexName in value.regex) {
+                if(value.regex.hasOwnProperty(regexName) && typeof value.regex[regexName] === 'string'){
+                    value.regex[regexName] = new RegExp(value.regex[regexName]);
+                }
             }
         }
     }
@@ -515,6 +574,15 @@ export default class ConfigPreCompiler
         }
     }
 
+    private preCompileSystemController() : void
+    {
+        for(let k in SystemController){
+            if(SystemController.hasOwnProperty(k)){
+                this.preCompileInputConfig(SystemController[k].config);
+            }
+        }
+    }
+
     private preCompileInputConfig(inputConfig : InputConfig) : void {
         //array is also a object
         if(typeof inputConfig.input === 'object') {
@@ -535,14 +603,14 @@ export default class ConfigPreCompiler
         for(let inputName in multiInput)
             if(multiInput.hasOwnProperty(inputName)) {
                 //resolve values,object,array links and resolve inheritance
-                this.preCompileModel(inputName,multiInput);
-                this.preCompileInheritance(multiInput[inputName]);
+                this.modelPreCompileStep1(inputName,multiInput);
+                this.modelPreCompileStep2(multiInput[inputName]);
             }
     }
 
     private preCompileSingleInput(singleModelInput : SingleModelInput) : void {
-        this.preCompileModel('0',singleModelInput);
-        this.preCompileInheritance(singleModelInput[0]);
+        this.modelPreCompileStep1('0',singleModelInput);
+        this.modelPreCompileStep2(singleModelInput[0]);
     }
 
 }

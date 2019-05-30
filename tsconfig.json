@@ -14,7 +14,8 @@
     "strict": true,
     "alwaysStrict" : true,
     "plugins": [{ "transform": "ts-nameof", "type": "raw" }],
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "strictBindCallApply": true
   },
   "include": [
     "src/**/*"

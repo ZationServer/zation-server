@@ -32,6 +32,19 @@ export default class FuncUtils
     }
 
     /**
+     * Creates a async closure for invoke a function or functions.
+     * @param func
+     */
+    static createFuncAsyncInvoker(func : AnyFunction[] | AnyFunction) : EventInvokerAsync {
+        if(typeof func === 'function') {
+            return func;
+        }
+        else {
+            return FuncUtils.createFuncArrayAsyncInvoker(func);
+        }
+    }
+
+    /**
      * Creates a sync closure for invoke a function.
      * @param functions
      */

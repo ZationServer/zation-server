@@ -4,14 +4,14 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Model, ParamInput}       from "../configDefinitions/appConfig";
-import OptionalProcessor         from "./optionalProcessor";
+import {Model, ModelProcessable, ParamInput} from "../configDefinitions/appConfig";
 import ModelInputProcessor       from "./modelInputProcessor";
 import ZationWorker            = require("../../main/zationWorker");
 import BackErrorBag              from "../../api/BackErrorBag";
 import BackError                 from "../../api/BackError";
 import {ProcessTask}             from "./processTaskEngine";
 import {MainBackErrors}          from "../zationBackErrors/mainBackErrors";
+import CloneUtils                from "../utils/cloneUtils";
 
 /**
  * Class for processing input data. Can be a param based input or single model input.
@@ -54,7 +54,7 @@ export default class InputProcessor
                         (input,paramName,paramInput[paramName],paramName,processInfo));
                 }
                 else {
-                    const {defaultValue,isOptional} = await OptionalProcessor.process(paramInput[paramName]);
+                    const {defaultValue,isOptional} = (paramInput[paramName] as ModelProcessable)._optionalInfo;
                     if(!isOptional){
                         //ups something is missing
                         taskErrorBag.addBackError(new BackError(MainBackErrors.inputParamIsMissing,
@@ -65,7 +65,7 @@ export default class InputProcessor
                     }
                     else {
                         //set default value
-                        input[paramName] = defaultValue;
+                        input[paramName] = CloneUtils.deepClone(defaultValue);
                     }
                 }
             }
@@ -118,7 +118,7 @@ export default class InputProcessor
                 }))
             }
             else {
-                const {defaultValue,isOptional} = await OptionalProcessor.process(paramInput[paramInputKeys[i]]);
+                const {defaultValue,isOptional} = (paramInput[paramInputKeys[i]] as ModelProcessable)._optionalInfo;
                 if(!isOptional){
                     //ups something is missing
                     taskErrorBag.addBackError(new BackError(MainBackErrors.inputParamIsMissing,
@@ -129,7 +129,7 @@ export default class InputProcessor
                 }
                 else {
                     //set default value
-                    result[paramInputKeys[i]] = defaultValue;
+                    result[paramInputKeys[i]] = CloneUtils.deepClone(defaultValue);
                 }
             }
         }

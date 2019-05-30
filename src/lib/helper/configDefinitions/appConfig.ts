@@ -4,15 +4,16 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Bag from '../../api/Bag';
-import {ControllerClass} from "../../api/Controller";
+import Bag                    from '../../api/Bag';
+import {ControllerClass}      from "../../api/Controller";
 // noinspection TypeScriptPreferShortImport
-import {ValidationTypes} from "../constants/validationTypes";
-import BackErrorBag from "../../api/BackErrorBag";
-import SmallBag from "../../api/SmallBag";
-import ZationTokenInfo from "../infoObjects/zationTokenInfo";
-import {ApiLevelSwitch} from "../apiLevel/apiLevelUtils";
-import {FormatLetters} from "../constants/validation";
+import {ValidationTypes}      from "../constants/validationTypes";
+import BackErrorBag           from "../../api/BackErrorBag";
+import SmallBag               from "../../api/SmallBag";
+import ZationTokenInfo        from "../infoObjects/zationTokenInfo";
+import {ApiLevelSwitch}       from "../apiLevel/apiLevelUtils";
+import {FormatLetters}        from "../constants/validation";
+import {ModelProcessFunction} from "../input/modelInputProcessor";
 
 export interface AppConfig
 {
@@ -439,7 +440,7 @@ export interface ControllerConfig extends InputConfig
     systemAccess ?: 'all' | string[];
 }
 
-export type ValidatorFunction = (value : any,backErrorBag : BackErrorBag,inputPath : string,smallBag : SmallBag,type ?: string) => Promise<void> | void;
+export type ValidateFunction = (value : any, backErrorBag : BackErrorBag, inputPath : string, smallBag : SmallBag, type : string | undefined) => Promise<void> | void;
 export type ConvertValueFunction = (value : any, smallBag : SmallBag) => Promise<any> | any;
 export type GetDateFunction = (smallBag : SmallBag) => Promise<Date> | Date;
 
@@ -665,7 +666,7 @@ export interface ValueModelConfig extends ModelOptional
      *   }
      * }]
      */
-    validate  ?: ValidatorFunction | ValidatorFunction[];
+    validate  ?: ValidateFunction | ValidateFunction[];
     /**
      * Convert the input value in a specific value; for example,
      * you want to add something to the end of a string.
@@ -830,4 +831,9 @@ export interface ArrayModelShortSyntax extends Array<Model | ArraySettings | und
      * @default {}
      */
     1 ?: ArraySettings
+}
+
+export interface ModelProcessable {
+    _process : ModelProcessFunction
+    _optionalInfo : {isOptional : boolean,defaultValue : any}
 }

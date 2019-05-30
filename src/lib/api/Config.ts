@@ -59,7 +59,7 @@ import
     ControllerConfig,
     ObjectProperties,
     TaskFunction,
-    ValidatorFunction,
+    ValidateFunction,
     ConvertObjectFunction,
     ConvertValueFunction,
     ConvertArrayFunction,
@@ -374,7 +374,7 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static convertValue(c : ConvertValueFunction) :  ConvertValueFunction {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static validate(func : ValidatorFunction) : ValidatorFunction {return func;}
+    static validate(func : ValidateFunction) : ValidateFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static getDate(func : GetDateFunction) : GetDateFunction {return func;}
 

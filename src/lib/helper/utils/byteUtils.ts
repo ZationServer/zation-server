@@ -11,7 +11,7 @@ import Base64Utils       from "./base64Utils";
 
 export default class ByteUtils
 {
-    static getByteSize(value : string,type : string) : number {
+    static getByteSize(value : string,type : string | undefined) : number {
          return type === ValidationTypes.BASE64 ? Base64Utils.getByteSize(value) : byteLength(value);
     }
 }

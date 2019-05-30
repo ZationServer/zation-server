@@ -6,11 +6,15 @@ GitHub: LucaCode
 
 import {AnyOfModelConfig, Model, ModelOptional} from "../configDefinitions/appConfig";
 import Iterator                                 from "../utils/iterator";
-import CloneUtils                               from "../utils/cloneUtils";
 
 export default class OptionalProcessor
 {
-    static async process(config : AnyOfModelConfig | Model) : Promise<{isOptional : boolean,defaultValue : any}>
+    /**
+     * Returns if a model is optional and what the default value is.
+     * Works also with the anyOf model modifier.
+     * @param config
+     */
+    static process(config : AnyOfModelConfig | Model) : {isOptional : boolean,defaultValue : any}
     {
         //fallback
         let isOptional = false;
@@ -21,7 +25,7 @@ export default class OptionalProcessor
             defaultValue = config[nameof<ModelOptional>(s => s.default)];
         }
         else if(config.hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf))) {
-            await Iterator.breakIterate(async (key, value) => {
+            Iterator.iterateSync((key, value) => {
                 if(value.hasOwnProperty(nameof<ModelOptional>(s => s.isOptional))){
                     isOptional = value[nameof<ModelOptional>(s => s.isOptional)];
                     defaultValue = value[nameof<ModelOptional>(s => s.default)];
@@ -33,8 +37,7 @@ export default class OptionalProcessor
 
         return {
             isOptional : isOptional,
-            defaultValue : CloneUtils.deepClone(defaultValue)
+            defaultValue : defaultValue
         }
     }
 }
-
