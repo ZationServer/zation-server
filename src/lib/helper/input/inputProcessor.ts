@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Model, ModelPreparedInfo, ParamInput} from "../configDefinitions/appConfig";
+import {Model, ParamInput}       from "../configDefinitions/appConfig";
 import ModelInputProcessor       from "./modelInputProcessor";
 import ZationWorker            = require("../../main/zationWorker");
 import BackErrorBag              from "../../api/BackErrorBag";
@@ -12,6 +12,7 @@ import BackError                 from "../../api/BackError";
 import {ProcessTask}             from "./processTaskEngine";
 import {MainBackErrors}          from "../zationBackErrors/mainBackErrors";
 import CloneUtils                from "../utils/cloneUtils";
+import {ModelPreparationMem}     from "../configUtils/configPreCompiler";
 
 /**
  * Class for processing input data. Can be a param based input or single model input.
@@ -54,7 +55,7 @@ export default class InputProcessor
                         (input,paramName,paramInput[paramName],paramName,processInfo));
                 }
                 else {
-                    const {defaultValue,isOptional} = (paramInput[paramName] as ModelPreparedInfo)._optionalInfo;
+                    const {defaultValue,isOptional} = (paramInput[paramName] as ModelPreparationMem)._optionalInfo;
                     if(!isOptional){
                         //ups something is missing
                         taskErrorBag.addBackError(new BackError(MainBackErrors.inputParamIsMissing,
@@ -118,7 +119,7 @@ export default class InputProcessor
                 }))
             }
             else {
-                const {defaultValue,isOptional} = (paramInput[paramInputKeys[i]] as ModelPreparedInfo)._optionalInfo;
+                const {defaultValue,isOptional} = (paramInput[paramInputKeys[i]] as ModelPreparationMem)._optionalInfo;
                 if(!isOptional){
                     //ups something is missing
                     taskErrorBag.addBackError(new BackError(MainBackErrors.inputParamIsMissing,

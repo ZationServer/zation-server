@@ -13,7 +13,6 @@ import SmallBag               from "../../api/SmallBag";
 import ZationTokenInfo        from "../infoObjects/zationTokenInfo";
 import {ApiLevelSwitch}       from "../apiLevel/apiLevelUtils";
 import {FormatLetters}        from "../constants/validation";
-import {ModelProcessFunction} from "../input/modelInputProcessor";
 
 export interface AppConfig
 {
@@ -831,9 +830,4 @@ export interface ArrayModelShortSyntax extends Array<Model | ArraySettings | und
      * @default {}
      */
     1 ?: ArraySettings
-}
-
-export interface ModelPreparedInfo {
-    _process : ModelProcessFunction
-    _optionalInfo : {isOptional : boolean,defaultValue : any}
 }

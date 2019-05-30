@@ -19,7 +19,7 @@ import {
     ParamInput,
     ObjectModelConfig,
     ValueModelConfig,
-    SingleModelInput, ModelPreparedInfo,
+    SingleModelInput,
 } from "../configDefinitions/appConfig";
 import ModelImportEngine from "./modelImportEngine";
 import ObjectUtils       from "../utils/objectUtils";
@@ -30,9 +30,14 @@ import {
     PreCompiledEventConfig,
 } from "../configDefinitions/eventConfig";
 import ControllerUtils             from "../controller/controllerUtils";
-import ModelInputProcessor         from "../input/modelInputProcessor";
+import ModelInputProcessor, {ModelProcessFunction} from "../input/modelInputProcessor";
 import {SystemController}          from "../systemController/systemControler.config";
-import OptionalProcessor from "../input/optionalProcessor";
+import OptionalProcessor           from "../input/optionalProcessor";
+
+export interface ModelPreparationMem {
+    _process : ModelProcessFunction
+    _optionalInfo : {isOptional : boolean,defaultValue : any}
+}
 
 export default class ConfigPreCompiler
 {
@@ -459,8 +464,8 @@ export default class ConfigPreCompiler
                     value[nameof<ObjectModelConfig>(s => s.extends)] = undefined;
                 }
 
-                if(!value.hasOwnProperty(nameof<ModelPreparedInfo>(s => s._process))){
-                    (value as ModelPreparedInfo)._process =
+                if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
+                    (value as ModelPreparationMem)._process =
                         ModelInputProcessor.createObjectModelProcessor(value);
                 }
             }
@@ -470,8 +475,8 @@ export default class ConfigPreCompiler
                 const inArray = value[nameof<ArrayModelConfig>(s => s.array)];
                 this.modelPreCompileStep2(inArray);
 
-                if(!value.hasOwnProperty(nameof<ModelPreparedInfo>(s => s._process))){
-                    (value as ModelPreparedInfo)._process =
+                if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
+                    (value as ModelPreparationMem)._process =
                         ModelInputProcessor.createArrayModelProcessor(value);
                 }
             }
@@ -482,8 +487,8 @@ export default class ConfigPreCompiler
                     this.modelPreCompileStep2(value);
                 },value[nameof<AnyOfModelConfig>(s => s.anyOf)]);
 
-                if(!value.hasOwnProperty(nameof<ModelPreparedInfo>(s => s._process))){
-                    (value as ModelPreparedInfo)._process =
+                if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
+                    (value as ModelPreparationMem)._process =
                         ModelInputProcessor.createAnyOfModelProcessor(value);
                 }
             }
@@ -491,13 +496,13 @@ export default class ConfigPreCompiler
                 //value
                 this.preCompileValueExtend(value,value);
 
-                if(!value.hasOwnProperty(nameof<ModelPreparedInfo>(s => s._process))){
-                    (value as ModelPreparedInfo)._process =
+                if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
+                    (value as ModelPreparationMem)._process =
                         ModelInputProcessor.createValueModelProcessor(value);
                 }
             }
-            if(!value.hasOwnProperty(nameof<ModelPreparedInfo>(s => s._optionalInfo))){
-                (value as ModelPreparedInfo)._optionalInfo =
+            if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._optionalInfo))){
+                (value as ModelPreparationMem)._optionalInfo =
                     OptionalProcessor.process(value);
             }
         }

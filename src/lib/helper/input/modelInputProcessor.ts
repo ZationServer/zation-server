@@ -9,7 +9,7 @@ import {
     ArrayModelConfig, ConstructObjectFunction, ConvertArrayFunction, ConvertObjectFunction,
     ConvertValueFunction,
     Model,
-    ModelPreparedInfo, ObjectModelConfig, ValueModelConfig,
+    ObjectModelConfig, ValueModelConfig,
 } from "../configDefinitions/appConfig";
 import BackErrorBag          from "../../api/BackErrorBag";
 import SmallBag              from "../../api/SmallBag";
@@ -21,6 +21,7 @@ import Iterator              from "../utils/iterator";
 import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";
 import CloneUtils            from "../utils/cloneUtils";
 import {ProcessTask}         from "./processTaskEngine";
+import {ModelPreparationMem} from "../configUtils/configPreCompiler";
 
 export interface ProcessInfo {
     errorBag : BackErrorBag,
@@ -49,7 +50,7 @@ export default class ModelInputProcessor
      */
     async processModel(srcObj : object, srcKey : string | number, config : Model, currentInputPath : string, processInfo : ProcessInfo) : Promise<any>
     {
-        await (config as ModelPreparedInfo)
+        await (config as ModelPreparationMem)
             ._process(this._preparedSmallBag,srcObj,srcKey,currentInputPath,processInfo);
     }
 
@@ -100,9 +101,9 @@ export default class ModelInputProcessor
      * Creates a closure to process a array model.
      * @param arrayModel
      */
-    static createArrayModelProcessor(arrayModel : ArrayModelConfig & ModelPreparedInfo) : ModelProcessFunction
+    static createArrayModelProcessor(arrayModel : ArrayModelConfig & ModelPreparationMem) : ModelProcessFunction
     {
-        const arrayInputConfig = (arrayModel.array as Model & ModelPreparedInfo);
+        const arrayInputConfig = (arrayModel.array as Model & ModelPreparationMem);
         const hasConvert = typeof arrayModel.convert === 'function';
 
         return async (sb, srcObj, srcKey, currentInputPath, processInfo) => {
@@ -151,7 +152,7 @@ export default class ModelInputProcessor
      * Creates a closure to process a anyOf model.
      * @param anyOfModel
      */
-    static createAnyOfModelProcessor(anyOfModel : AnyOfModelConfig & ModelPreparedInfo) : ModelProcessFunction
+    static createAnyOfModelProcessor(anyOfModel : AnyOfModelConfig & ModelPreparationMem) : ModelProcessFunction
     {
         const anyOf = anyOfModel.anyOf;
         const breakIterator = Iterator.createBreakIterator(anyOf);
@@ -159,7 +160,7 @@ export default class ModelInputProcessor
         return async (sb, srcObj, srcKey, currentInputPath, processInfo) => {
             let found = false;
             const tmpTaskErrorBags : Record<string|number,BackErrorBag> = {};
-            await breakIterator(async (key, value : ModelPreparedInfo) =>
+            await breakIterator(async (key, value : ModelPreparationMem) =>
             {
                 tmpTaskErrorBags[key] = new BackErrorBag();
                 const tmpProcessInfo : ProcessInfo =
@@ -246,14 +247,14 @@ export default class ModelInputProcessor
 
                     if(input.hasOwnProperty(propName)) {
                         //allOk lets check the props
-                        promises.push((props[propName] as ModelPreparedInfo)._process
+                        promises.push((props[propName] as ModelPreparationMem)._process
                         (sb,input,propName,currentInputPathNew,processInfo));
                     }
                     else
                     {
                         //is this input optional?
                         //or is it really missing?
-                        const {defaultValue,isOptional} = (props[propName] as ModelPreparedInfo)._optionalInfo;
+                        const {defaultValue,isOptional} = (props[propName] as ModelPreparationMem)._optionalInfo;
                         if(!isOptional){
                             //oh its missing!
                             errorBag.addBackError(new BackError
