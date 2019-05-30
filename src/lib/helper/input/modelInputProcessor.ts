@@ -179,27 +179,20 @@ export default class ModelInputProcessor
                 }
             });
 
-            const {defaultValue,isOptional} = (anyOfModel as ModelPreparedInfo)._optionalInfo;
-
             if(!found) {
-                if(!isOptional){
-                    for(let key in tmpTaskErrorBags) {
-                        if(tmpTaskErrorBags.hasOwnProperty(key)) {
-                            processInfo.errorBag.addFromBackErrorBag(tmpTaskErrorBags[key]);
-                        }
+                for(let key in tmpTaskErrorBags) {
+                    if(tmpTaskErrorBags.hasOwnProperty(key)) {
+                        processInfo.errorBag.addFromBackErrorBag(tmpTaskErrorBags[key]);
                     }
-                    processInfo.errorBag.addBackError(new BackError
-                    (
-                        ValidatorBackErrors.noAnyOfMatch,
-                        {
-                            inputPath : currentInputPath,
-                            inputValue : srcObj[srcKey]
-                        }
-                    ))
                 }
-                else {
-                    srcObj[srcKey] = CloneUtils.deepClone(defaultValue);
-                }
+                processInfo.errorBag.addBackError(new BackError
+                (
+                    ValidatorBackErrors.noAnyOfMatch,
+                    {
+                        inputPath : currentInputPath,
+                        inputValue : srcObj[srcKey]
+                    }
+                ))
             }
         }
     }
