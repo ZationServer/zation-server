@@ -84,19 +84,19 @@ export default class Returner
         if(wsResp)
         {
             if(this.debugMode){
-                Logger.printDebugInfo(`Socket Result id: ${reqId} ->`,resp,true);
+                Logger.printDebugInfo(`Socket Result id: ${reqId} ->`,resp);
             }
             if(this.zc.mainConfig.logRequests){
-                Logger.logFileInfo(`Socket Result id: ${reqId} ->`,resp,true);
+                Logger.logFileInfo(`Socket Result id: ${reqId} ->`,resp);
             }
         }
         else
         {
             if(this.debugMode){
-                Logger.printDebugInfo(`Http Result id: ${reqId} ->`,resp,true);
+                Logger.printDebugInfo(`Http Result id: ${reqId} ->`,resp);
             }
             if(this.zc.mainConfig.logRequests){
-                Logger.logFileInfo(`Http Result id: ${reqId} ->`,resp,true);
+                Logger.logFileInfo(`Http Result id: ${reqId} ->`,resp);
             }
         }
     }

@@ -58,10 +58,10 @@ export default class HttpRequestProcessor
             const query = req.query;
 
             if(this.debug){
-                Logger.printDebugInfo(`Http Get Request id: ${reqId} -> `,query,true);
+                Logger.printDebugInfo(`Http Get Request id: ${reqId} -> `,query);
             }
             if(this.zc.mainConfig.logRequests){
-                Logger.logFileInfo(`Http Get Request id: ${reqId} -> `,query,true);
+                Logger.logFileInfo(`Http Get Request id: ${reqId} -> `,query);
             }
 
             if(ZationReqUtils.isValidGetReq(query)) {
