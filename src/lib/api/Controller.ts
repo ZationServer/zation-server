@@ -9,6 +9,7 @@ import Bag                from './Bag';
 import {ControllerConfig} from "../helper/configDefinitions/appConfig";
 import SmallBag           from "./SmallBag";
 import ObjectPath         from "../helper/utils/objectPath";
+import BackErrorBag       from "./BackErrorBag";
 
 export default class Controller {
     private _storage: object = {};
@@ -85,13 +86,14 @@ export default class Controller {
      * Gets invokes when the controller gets an request with wrong input.
      * @param bag
      * @param input
+     * @param backErrorBag
      * @throws
      * You can throw BackError or BackErrorBag
      * than the errors will be merged with the previous errors and send back to the client.
      * Notice that only the BackError or BackErrorBag sends back to the client.
      * All other errors or objects will be converted to an unknown BackError.
      */
-    async wrongInput(bag: Bag, input: any): Promise<void> {
+    async wrongInput(bag: Bag, input: any, backErrorBag : BackErrorBag): Promise<void> {
     }
 
     //Controller storage

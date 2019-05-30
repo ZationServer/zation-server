@@ -137,7 +137,7 @@ export default class MainRequestProcessor
                                     input
                                 );
                                 try {
-                                    await controllerInstance.wrongInput(bag,input);
+                                    await controllerInstance.wrongInput(bag,input,e);
                                 }
                                 catch (innerErr) {
                                     if(innerErr instanceof BackError) {
