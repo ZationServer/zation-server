@@ -27,7 +27,7 @@ import FuncUtils from "../helper/utils/funcUtils";
 
 export default class ZationMaster {
     private static instance: ZationMaster | null = null;
-    private static readonly version: string = '0.9.9';
+    private static readonly version: string = '1.0.0';
 
     private readonly serverStartedTimeStamp: number;
     private zc: ZationConfigMaster;
