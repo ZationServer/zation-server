@@ -35,21 +35,21 @@ export default class ChMiddlewareHelper
         const {name,id} = ChUtils.getCustomIdChannelInfo(trySubName);
 
         if(name === undefined || name === '') {
-            const err : any = new Error('You need an name, to sub an custom id channel!');
+            const err : any = new Error('The custom id channel name is required to subscribe to a custom id channel.');
             err.code = 4592;
             return Error;
         }
         if(id === undefined || id === '') {
-            const err : any = new Error('You need an id, to sub an custom id channel!');
+            const err : any = new Error('The custom id channel id is required to subscribe to a custom id channel.');
             err.code = 4591;
             return Error;
         }
 
         if(!this.channelPrepare.existCustomIdCh(name)) {
-            const err : any = new Error('Unknown custom id channel!');
+            const err : any = new Error('Unknown custom id channel.');
             err.code = 4593;
             Logger.printDebugInfo
-            (`Socket with id: ${socket.id} try to subscribe an unknown custom id channel. Name: '${name}',Id: '${id}'.`);
+            (`The socket with id: ${socket.id} cannot subscribe to an unknown custom id channel name: '${name}'.`);
             return Error;
         }
         else {
@@ -62,12 +62,12 @@ export default class ChMiddlewareHelper
                 chInfo
             ))) {
                 Logger.printDebugInfo
-                (`Socket with id: ${socket.id} subscribes custom id channel. Name: '${name}',Id: '${id}'.`);
+                (`The socket with id: ${socket.id} subscribes the custom id channel: '${name}' with id: '${id}'.`);
 
                 return undefined;
             }
             else {
-                const err : any = new Error(`Socket with id: ${socket.id}: access denied to subscribe custom id channel. Name: '${name}',Id: '${id}'.`);
+                const err : any = new Error(`Subscribe to this custom id channel denied.`);
                 err.code = 4594;
                 return err;
             }
@@ -85,21 +85,21 @@ export default class ChMiddlewareHelper
         const {name,id} = ChUtils.getCustomIdChannelInfo(tryPubName);
 
         if(name === undefined || name === '') {
-            const err : any = new Error('You need an name, to pub in custom id channel!');
+            const err : any = new Error('The custom id channel name is required to publish in a custom id channel.');
             err.code = 4595;
             return Error;
         }
         if(id === undefined || id === '') {
-            const err : any = new Error('You need an id, to pub in custom id channel!');
+            const err : any = new Error('The custom id channel id is required to publish in a custom id channel.');
             err.code = 4596;
             return Error;
         }
 
         if(!this.channelPrepare.existCustomIdCh(name)) {
-            const err : any = new Error('Unknown custom id channel!');
+            const err : any = new Error('Unknown custom id channel.');
             err.code = 4597;
             Logger.printDebugInfo
-            (`Socket with id: ${socket.id} try to publish in unknown custom id channel. Name: '${name}',Id: '${id}'.`);
+            (`The socket with id: ${socket.id} cannot publish in an unknown custom id channel name: '${name}'.`);
             return Error;
         }
         else {
@@ -113,7 +113,7 @@ export default class ChMiddlewareHelper
                 chInfo
             ))) {
                 Logger.printDebugInfo
-                (`Socket with id: ${socket.id} publish in custom id channel. Name: '${name}',Id: '${id}'.`);
+                (`The socket with id: ${socket.id} publish in the custom id channel: '${name}' with id: '${id}'.`);
 
                 preChInfo.onClientPub(
                     this.smallBag,
@@ -125,7 +125,7 @@ export default class ChMiddlewareHelper
                 return undefined;
             }
             else {
-                const err : any = new Error('No access to publish in this custom id channel!');
+                const err : any = new Error('Publish in this custom id channel denied.');
                 err.code = 4598;
                 return err;
             }
@@ -142,16 +142,16 @@ export default class ChMiddlewareHelper
         const name = ChUtils.getCustomChannelName(trySubName);
 
         if(name === undefined || name === '') {
-            const err : any = new Error('You need an channel name, to sub a custom channel!');
+            const err : any = new Error('The custom channel name is required to subscribe to a custom channel.');
             err.code = 4582;
             return Error;
         }
 
         if(!this.channelPrepare.existCustomCh(name)) {
-            const err : any = new Error('Unknown custom channel!');
+            const err : any = new Error('Unknown custom channel.');
             err.code = 4583;
             Logger.printDebugInfo
-            (`Socket with id: ${socket.id} try to subscribe an unknown custom channel. Name: '${name}'.`);
+            (`The socket with id: ${socket.id} cannot subscribe to an unknown custom channel name: '${name}'.`);
             return Error;
         }
         else {
@@ -164,12 +164,12 @@ export default class ChMiddlewareHelper
                 chInfo
             ))) {
                 Logger.printDebugInfo
-                (`Socket with id: ${socket.id} subscribes a custom channel: '${name}'.`);
+                (`The socket with id: ${socket.id} subscribes the custom channel: '${name}'.`);
 
                 return undefined;
             }
             else {
-                const err : any = new Error(`Socket with id: ${socket.id}: access denied to subscribe a custom channel: '${name}'.`);
+                const err : any = new Error(`Subscribe to this custom channel denied.`);
                 err.code = 4584;
                 return err;
             }
@@ -187,16 +187,16 @@ export default class ChMiddlewareHelper
         const name = ChUtils.getCustomChannelName(tryPubName);
 
         if(name === undefined || name === '') {
-            const err : any = new Error('You need an channel name, to pub in custom channel!');
+            const err : any = new Error('The custom channel name is required to publish in a custom channel.');
             err.code = 4585;
             return Error;
         }
 
         if(!this.channelPrepare.existCustomCh(name)) {
-            const err : any = new Error('Unknown custom channel!');
+            const err : any = new Error('Unknown custom channel.');
             err.code = 4586;
             Logger.printDebugInfo
-            (`Socket with id: ${socket.id} try to publish in an unknown custom channel. Name: '${name}'.`);
+            (`The socket with id: ${socket.id} cannot publish in an unknown custom channel name: '${name}'.`);
             return Error;
         }
         else {
@@ -210,7 +210,7 @@ export default class ChMiddlewareHelper
                 chInfo
             ))) {
                 Logger.printDebugInfo
-                (`Socket with id: ${socket.id} publish in a custom channel: '${name}'.`);
+                (`The socket with id: ${socket.id} publish in the custom channel: '${name}'.`);
 
                 preChInfo.onClientPub(
                     this.smallBag,
@@ -222,7 +222,7 @@ export default class ChMiddlewareHelper
                 return undefined;
             }
             else {
-                const err : any = new Error('No access to publish in this custom channel!');
+                const err : any = new Error('Publish in this custom channel denied.');
                 err.code = 4587;
                 return err;
             }

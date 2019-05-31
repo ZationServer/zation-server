@@ -443,17 +443,17 @@ class ZationWorker extends SCWorker
                     if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
                         if(id !== undefined) {
                             if (ZationChannel.USER_CHANNEL_PREFIX + id === channel) {
-                                Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes user channel '${id}'`);
+                                Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes the user channel: '${id}'.`);
                                 next();
                             }
                             else {
-                                const err : any = new Error(`User: ${id} can\'t subscribe an other user Channel: '${channel}'!`);
+                                const err : any = new Error(`A client can only subscribe to the user group channel where his user id belongs to.`);
                                 err.code = 4543;
                                 next(err); //Block!
                             }
                         }
                         else {
-                            const err : any = new Error(`User: with undefined id can\'t subscribe user Channel: '${channel}'!`);
+                            const err : any = new Error(`A client with undefined user id cannot subscribe to this user group channel.`);
                             err.code = 4542;
                             next(err); //Block!
                         }
@@ -462,23 +462,23 @@ class ZationWorker extends SCWorker
                         if(authUserGroup !== undefined) {
                             if (ZationChannel.AUTH_USER_GROUP_PREFIX + authUserGroup === channel) {
                                 Logger.printDebugInfo
-                                (`Socket with id: ${req.socket.id} subscribes auth user group channel '${authUserGroup}'`);
+                                (`Socket with id: ${req.socket.id} subscribes the auth user group channel: '${authUserGroup}'.`);
                                 next();
                             }
                             else {
-                                const err : any = new Error('User can\'t subscribe an other auth user group channel.');
+                                const err : any = new Error('A client can only subscribe to the auth user group channel where his auth user group belongs to.');
                                 err.code = 4533;
                                 next(err); //Block!
                             }
                         }
                         else {
-                            const err : any = new Error(`User: with undefined auth user group can\'t subscribe auth user group channel!`);
+                            const err : any = new Error(`A client with undefined auth user group cannot subscribe to this auth user group channel.`);
                             err.code = 4532;
                             next(err); //Block!
                         }
                     }
                     else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
-                        const err : any = new Error('Authenticated user can\' subscribe default user group channel!');
+                        const err : any = new Error('An authenticated client cannot subscribe to the default user group channel.');
                         err.code = 4521;
                         next(err); //Block!
                     }
@@ -486,57 +486,57 @@ class ZationWorker extends SCWorker
                         if (typeof authToken[nameof<ZationToken>(s => s.zationPanelAccess)] === 'boolean' &&
                             authToken[nameof<ZationToken>(s => s.zationPanelAccess)]) {
                             Logger.printDebugInfo
-                            (`Socket with id: ${req.socket.id} subscribes panel out channel`);
+                            (`Socket with id: ${req.socket.id} subscribes the panel out channel.`);
                             next();
                         }
                         else {
-                            const err : any = new Error('User with no panel access can\'t subscribe panel out channel!');
+                            const err : any = new Error('A client without panel access cannot subscribe to the panel out channel!');
                             err.code = 4502;
                             next(err); //Block!
                         }
                     }
                     else if(channel === ZationChannel.PANEL_IN) {
-                        const err : any = new Error('User can\'t subscribe panel in channel!');
+                        const err : any = new Error('A client cannot subscribe the panel in channel.');
                         err.code = 4901;
                         next(err); //Block!
                     }
                     else if(channel === ZationChannel.ALL_WORKER) {
-                        const err : any = new Error('User can\'t subscribe all worker channel!');
+                        const err : any = new Error('A client cannot subscribe the all worker channel.');
                         err.code = 4503;
                         next(err); //Block!
                     }
                     else {
-                        Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes '${channel}'`);
+                        Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes the '${channel}' channel.`);
                         next();
                     }
                 }
                 else {
                     if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
-                        const err : any = new Error('Anonymous user can\'t subscribe a user Channel!');
+                        const err : any = new Error('An anonymous client cannot subscribe to this user group channel.');
                         err.code = 4541;
                         next(err); //Block!
                     }
                     else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
-                        const err : any = new Error('Anonymous user can\'t subscribe a auth user group channel!');
+                        const err : any = new Error('An anonymous client cannot subscribe to this auth user group channel.');
                         err.code = 4531;
                         next(err); //Block!
                     }
                     else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
-                        Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes default user group channel`);
+                        Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes the default user group channel.`);
                         next();
                     }
                     else if(channel === ZationChannel.PANEL_IN || channel  === ZationChannel.PANEL_OUT) {
-                        const err : any = new Error('Anonymous user can\'t subscribe panel in or out channel!');
+                        const err : any = new Error('An anonymous client cannot subscribe to the panel in or out channel.');
                         err.code = 4501;
                         next(err); //Block!
                     }
                     else if(channel === ZationChannel.ALL_WORKER) {
-                        const err : any = new Error('User can\'t subscribe all worker Channel!');
+                        const err : any = new Error('A client cannot subscribe the all worker channel.');
                         err.code = 4504;
                         next(err); //Block!
                     }
                     else {
-                        Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes '${channel}'`);
+                        Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes the '${channel}' channel.`);
                         next();
                     }
                 }
@@ -565,7 +565,7 @@ class ZationWorker extends SCWorker
                     next();
                 }
                 else{
-                    const err : any = new Error('Client publication not allowed in this user channel!');
+                    const err : any = new Error('Publish in this user group channel denied.');
                     err.code = 4546;
                     next(err); //Block!
                 }
@@ -588,7 +588,7 @@ class ZationWorker extends SCWorker
                     next();
                 }
                 else{
-                    const err : any = new Error('Client publication not allowed in this auth user group channel!');
+                    const err : any = new Error('Publish in this auth user group channel denied.');
                     err.code = 4536;
                     next(err); //Block!
                 }
@@ -603,7 +603,7 @@ class ZationWorker extends SCWorker
                     next();
                 }
                 else {
-                    const err : any = new Error('Client publication not allowed in all channel!');
+                    const err : any = new Error('Publish in the all channel denied.');
                     err.code = 4556;
                     next(err); //Block!
                 }
@@ -618,13 +618,13 @@ class ZationWorker extends SCWorker
                     next();
                 }
                 else{
-                    const err : any = new Error('Client publication not allowed in default user group channel!');
+                    const err : any = new Error('Publish in the default user group channel denied.');
                     err.code = 4526;
                     next(err); //Block!
                 }
             }
             else if(channel === ZationChannel.PANEL_OUT) {
-                const err : any = new Error('Client publication not allowed in panel out channel!');
+                const err : any = new Error('A client cannot publish in the panel out channel.');
                 err.code = 4506;
                 next(err); //Block!
             }
@@ -636,14 +636,14 @@ class ZationWorker extends SCWorker
                     next();
                 }
                 else {
-                    const err : any = new Error('User with no panel access can\'t publish in panel in channel!');
+                    const err : any = new Error('A client without panel access cannot publish in the panel in channel.');
                     err.code = 4902;
                     next(err); //Block!
                 }
             }
             //Important! (Otherwise every socket can publish in worker channel and can modify the whole network.)
             else if(req.channel === ZationChannel.ALL_WORKER) {
-                const err : any = new Error('User can\'t publish in all worker channel!');
+                const err : any = new Error('A client cannot publish in the all worker channel.');
                 err.code = 4507;
                 next(err); //Block!
             }
