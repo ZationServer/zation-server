@@ -37,6 +37,8 @@ import OptionalProcessor           from "../input/optionalProcessor";
 export interface ModelPreparationMem {
     _process : ModelProcessFunction
     _optionalInfo : {isOptional : boolean,defaultValue : any}
+    _pcStep1 : boolean,
+    _pcStep2 : boolean
 }
 
 export default class ConfigPreCompiler
@@ -353,6 +355,10 @@ export default class ConfigPreCompiler
         }
         else if(typeof nowValue === "object")
         {
+            if((nowValue as ModelPreparationMem)._pcStep1){
+                return;
+            }
+
             if(nowValue.hasOwnProperty(nameof<ObjectModelConfig>(s => s.properties))) {
                 //isObject
                 //check all properties of object!
@@ -376,6 +382,8 @@ export default class ConfigPreCompiler
                 //value!
                 this.preCompileValidationFunctions(nowValue);
             }
+
+            (nowValue as ModelPreparationMem)._pcStep1 = true;
         }
     }
 
@@ -390,6 +398,10 @@ export default class ConfigPreCompiler
     {
         if(typeof value === "object")
         {
+            if((value as ModelPreparationMem)._pcStep2){
+                return;
+            }
+
             //check input
             if(value.hasOwnProperty(nameof<ObjectModelConfig>(s => s.properties)))
             {
@@ -505,6 +517,8 @@ export default class ConfigPreCompiler
                 (value as ModelPreparationMem)._optionalInfo =
                     OptionalProcessor.process(value);
             }
+
+            (value as ModelPreparationMem)._pcStep2 = true;
         }
     }
 
