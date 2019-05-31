@@ -43,16 +43,17 @@ export default class HttpRequestProcessor
     async prepareReq(req,res,reqId : string)
     {
         if (req.method === 'POST' && req.body[this.postKey]) {
-            if(this.debug){
-                Logger.printDebugInfo(`Http Post Request id: ${reqId} -> `,StringifyUtils.object(req.body[this.postKey]));
-            }
-            if(this.zc.mainConfig.logRequests){
-                Logger.logFileInfo(`Http Post Request id: ${reqId} -> `,req.body[this.postKey]);
-            }
-
             HttpRequestProcessor.setHeader(res);
 
             const zationData = await JsonConverter.parse(req.body[this.postKey]);
+
+            if(this.debug){
+                Logger.printDebugInfo(`Http Post Request id: ${reqId} -> `,StringifyUtils.object(zationData));
+            }
+            if(this.zc.mainConfig.logRequests){
+                Logger.logFileInfo(`Http Post Request id: ${reqId} -> `,zationData);
+            }
+
             return await this.mainProcess(req,res,zationData,reqId);
         }
         else if(req.method === 'GET' && !(Object.keys(req.query).length === 0))
