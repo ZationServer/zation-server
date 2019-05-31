@@ -27,6 +27,7 @@ export default class HttpRequestProcessor
     private readonly tokenClusterKeyCheck : TokenClusterKeyCheckFunction;
     private readonly aePreparedPart : AEPreparedPart;
     private readonly defaultApiLevel : number;
+    private readonly postKey : string;
 
     constructor(zc : ZationConfigFull, worker : ZationWorker,tokenClusterKeyCheck : TokenClusterKeyCheckFunction) {
         this.zc = zc;
@@ -35,23 +36,23 @@ export default class HttpRequestProcessor
         this.worker = worker;
         this.tokenClusterKeyCheck = tokenClusterKeyCheck;
         this.aePreparedPart = worker.getAEPreparedPart();
+        this.postKey = this.zc.mainConfig.postKey;
     }
 
     //HTTP Extra Layer
     async prepareReq(req,res,reqId : string)
     {
-        // @ts-ignore
-        if (req.method === 'POST' && req.body[zc.mainConfig.postKey]) {
+        if (req.method === 'POST' && req.body[this.postKey]) {
             if(this.debug){
-                Logger.printDebugInfo(`Http Post Request id: ${reqId} -> `,StringifyUtils.object(req.body[this.zc.mainConfig.postKey]));
+                Logger.printDebugInfo(`Http Post Request id: ${reqId} -> `,StringifyUtils.object(req.body[this.postKey]));
             }
             if(this.zc.mainConfig.logRequests){
-                Logger.logFileInfo(`Http Post Request id: ${reqId} -> `,req.body[this.zc.mainConfig.postKey]);
+                Logger.logFileInfo(`Http Post Request id: ${reqId} -> `,req.body[this.postKey]);
             }
 
             HttpRequestProcessor.setHeader(res);
-            // @ts-ignore
-            const zationData = await JsonConverter.parse(req.body[zc.mainConfig.postKey]);
+
+            const zationData = await JsonConverter.parse(req.body[this.postKey]);
             return await this.mainProcess(req,res,zationData,reqId);
         }
         else if(req.method === 'GET' && !(Object.keys(req.query).length === 0))
@@ -101,8 +102,8 @@ export default class HttpRequestProcessor
         {
             //normal Req
             if(!!zationData.to) {
-                // @ts-ignore
-                const token : ZationToken = await TokenUtils.verifyToken(zationData.to,this.zc);
+
+                const token : ZationToken = (await TokenUtils.verifyToken(zationData.to,this.zc) as ZationToken);
                 req.zationToken = token;
 
                 //throws back error if token is not valid.
@@ -138,6 +139,4 @@ export default class HttpRequestProcessor
     private static setHeader(resp) : void {
         resp.setHeader('Content-Type', 'application/json');
     }
-
 }
-
