@@ -10,8 +10,8 @@ import BaseSHBridgeSocket   from "../bridges/baseSHBridgeSocket";
 import AuthEngine           from "../auth/authEngine";
 import SocketInfo           from "../infoObjects/socketInfo";
 
-export type OnHandlerFunction = (data : any, response : ResponseFunction) => void
-export type ResponseFunction = (err ?: any | number, responseData ?: any) => void
+export type OnHandlerFunction = (data : any, response : RespondFunction) => void
+export type RespondFunction = (err ?: any | number, responseData ?: any) => void
 
 /**
  * Normal socket from socket cluster.
@@ -32,7 +32,7 @@ export interface ScSocket {
 
     getState() : string;
     disconnect(code ?: any, data ?: any) : void;
-    emit(event : string, data : object, callback ?: ResponseFunction) : void;
+    emit(event : string, data : object, callback ?: RespondFunction) : void;
     on(event : string, handler : OnHandlerFunction) : void;
     off(event ?: string, handler ?: Function) : void;
     send(data : any, options ?: object) : void;

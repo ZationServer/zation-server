@@ -14,6 +14,8 @@ import Logger            from "../logger/logger";
 import {MainBackErrors}  from "../zationBackErrors/mainBackErrors";
 import SHBridgeHttp      from "../bridges/shBridgeHttp";
 import StringifyUtils    from "../utils/stringifyUtils";
+import {Response}        from "express";
+import {RespondFunction} from "../sc/socket";
 
 export default class Returner
 {
@@ -27,7 +29,7 @@ export default class Returner
         this.debugMode = this.zc.isDebug();
     }
 
-    respSuccessWs(data : any,respond,reqId) : void
+    respSuccessWs(data : any, respond : RespondFunction, reqId : string) : void
     {
         if(data !== undefined) {
             const resp = this.createWsResp(data,undefined);
@@ -39,7 +41,7 @@ export default class Returner
         }
     }
 
-    async respSuccessHttp(data : any,response,reqId,shBridge : SHBridge | undefined) : Promise<void>
+    async respSuccessHttp(data : any,response : Response,reqId : string,shBridge : SHBridge | undefined) : Promise<void>
     {
         const resp = await this.createHttpResp
         (data,undefined,shBridge,response['zationInfo']);
@@ -48,13 +50,13 @@ export default class Returner
         this.printResp(resp,reqId,false);
     }
 
-    respErrorWs(err : any,respond,reqId) : void {
+    respErrorWs(err : any, respond : RespondFunction, reqId : string) : void {
         const resp = this.createWsResp(undefined,this.errorJsonObj(err));
         respond(null,resp);
         this.printResp(resp,reqId,true);
     }
 
-    async respErrorHttp(err : any,response,reqId,shBridge : SHBridge | undefined) : Promise<void> {
+    async respErrorHttp(err : any,response : Response,reqId : string,shBridge : SHBridge | undefined) : Promise<void> {
         const resp = await this.createHttpResp
         (undefined,this.errorJsonObj(err),shBridge,response['zationInfo']);
         response.write(JSON.stringify(resp));
@@ -80,7 +82,7 @@ export default class Returner
         return errors;
     }
 
-    private printResp(resp,reqId,wsResp)
+    private printResp(resp : ResponseResult,reqId : string,wsResp : boolean)
     {
         if(wsResp)
         {
@@ -137,4 +139,3 @@ export default class Returner
         return obj;
     }
 }
-

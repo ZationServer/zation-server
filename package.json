@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@types/cookie-parser": "1.4.1",
-    "@types/express": "4.16.0",
+    "@types/express": "4.16.1",
     "@types/express-fileupload": "0.1.1",
     "@types/hashset": "3.0.28",
     "@types/http-server": "0.10.0",

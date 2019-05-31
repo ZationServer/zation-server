@@ -19,6 +19,7 @@ import OriginsUtils, {OriginChecker} from "../helper/origins/originsUtils";
 import {SyncTokenActions}     from "../helper/constants/syncTokenActions";
 
 import express      = require('express');
+import {Request , Response} from "express";
 import cookieParser = require('cookie-parser');
 import bodyParser   = require('body-parser');
 import fileUpload   = require('express-fileupload');
@@ -400,9 +401,9 @@ class ZationWorker extends SCWorker
         }
 
         //Request
-        this.app.all(`${serverPath}`, async (req, res) => {
+        this.app.all(`${serverPath}`, async (req : Request, res : Response) => {
             //Run Zation
-            await this.zationReqHandler.processHttpReq(res,req);
+            await this.zationReqHandler.processHttpReq(req,res);
         });
 
         await this.zc.eventConfig.httpServerStarted(this.zc.getZationInfo());

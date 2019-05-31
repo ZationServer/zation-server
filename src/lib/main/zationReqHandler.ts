@@ -10,13 +10,14 @@ import MainRequestProcessor  from "../helper/processor/mainRequestProcessor";
 import SocketRequestProcessor       from "../helper/processor/socketRequestProcessor";
 import HttpRequestProcessor         from "../helper/processor/httpRequestProcessor";
 import ValidCheckProcessor   from "../helper/processor/validCheckProcessor";
-import UpSocket              from "../helper/sc/socket";
+import UpSocket, {RespondFunction} from "../helper/sc/socket";
 import BackError             from "../api/BackError";
 import BackErrorBag          from "../api/BackErrorBag";
 import IdCounter             from "../helper/utils/idCounter";
 import Logger                from "../helper/logger/logger";
 import CodeError             from "../helper/error/codeError";
 import ZationConfigFull      from "../helper/configManager/zationConfigFull";
+import {Request,Response}    from "express";
 
 export default class ZationReqHandler
 {
@@ -48,7 +49,7 @@ export default class ZationReqHandler
         this.reqIdPreFix = `${this.worker.options.instanceId}-${this.worker.getFullWorkerId()}-`;
     }
 
-    async processSocketReq(input : any, socket : UpSocket, respond)
+    async processSocketReq(input : any, socket : UpSocket, respond : RespondFunction)
     {
         const reqId = this.createReqId();
         let shBridge;
@@ -62,7 +63,7 @@ export default class ZationReqHandler
         }
     }
 
-    async processHttpReq(req,res)
+    async processHttpReq(req : Request,res : Response)
     {
         const reqId = this.createReqId();
         let shBridge;
