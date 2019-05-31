@@ -76,11 +76,11 @@ export default class InputClosureCreator
 
                         const {path,keyPath} = InputUtils.processPathInfo(iCheckData.ip);
 
-                        const basePath =  keyPath.length === 0;
+                        const basePath = keyPath.length === 0;
 
                         let specificConfig = inputDefinition;
                         if(keyPath.length > 0){
-                            specificConfig = InputUtils.getModelAtPath(keyPath,inputDefinition,(!singleInputModel && basePath));
+                            specificConfig = InputUtils.getModelAtPath(keyPath,inputDefinition,(!singleInputModel));
                             if(specificConfig === undefined){
                                 errorBag.addBackError(new BackError(MainBackErrors.inputPathNotResolvable,
                                     {
