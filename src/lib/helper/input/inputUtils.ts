@@ -12,31 +12,32 @@ export default class InputUtils
      * Returns the input model at the path.
      * @param path
      * @param input
+     * @param paramBased
      */
-    static getModelAtPath(path : string[], input : object) : object | undefined
+    static getModelAtPath(path : string[], input : object, paramBased : boolean) : object | undefined
     {
         let tempConfig = input;
-        let lastIrritate = path.length -1;
-        for(let i = 0; i < path.length; i++)
-        {
+        let i = 0;
+        while (i < path.length) {
             const k = path[i];
-            if(tempConfig.hasOwnProperty(k) && typeof tempConfig[k] === 'object')
-            {
-                if(tempConfig[k].hasOwnProperty(nameof<ObjectModelConfig>(s => s.properties)) && i < lastIrritate) {
-                    //if not end of inputPath return the properties of the object
-                    tempConfig = tempConfig[k][nameof<ObjectModelConfig>(s => s.properties)];
-                }
-                else if(tempConfig[k].hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf)) && i < lastIrritate) {
-                    //if not end of inputPath return the anyOf of the object
-                    tempConfig = tempConfig[k][nameof<AnyOfModelConfig>(s => s.anyOf)];
-                }
-                else {
-                    tempConfig = tempConfig[k];
-                }
+            if(!paramBased && tempConfig.hasOwnProperty(nameof<ObjectModelConfig>(s => s.properties))) {
+                //if not paramBase return the properties of the object
+                tempConfig = tempConfig[nameof<ObjectModelConfig>(s => s.properties)];
+            }
+            else if(!paramBased && tempConfig.hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf))) {
+                //if not paramBase return the anyOf of the object
+                tempConfig = tempConfig[nameof<AnyOfModelConfig>(s => s.anyOf)];
             }
             else {
-                return undefined;
+                if(tempConfig.hasOwnProperty(k) && typeof tempConfig[k] === 'object') {
+                    tempConfig = tempConfig[k];
+                }
+                else {
+                    return undefined;
+                }
+                i++;
             }
+            paramBased = false;
         }
         return tempConfig;
     }
