@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ObjectModelConfig} from "../configDefinitions/appConfig";
+import {AnyOfModelConfig, ObjectModelConfig} from "../configDefinitions/appConfig";
 
 export default class InputUtils
 {
@@ -22,10 +22,13 @@ export default class InputUtils
             const k = path[i];
             if(tempConfig.hasOwnProperty(k) && typeof tempConfig[k] === 'object')
             {
-                if(tempConfig[k].hasOwnProperty(nameof<ObjectModelConfig>(s => s.properties))
-                    && i < lastIrritate) {
+                if(tempConfig[k].hasOwnProperty(nameof<ObjectModelConfig>(s => s.properties)) && i < lastIrritate) {
                     //if not end of inputPath return the properties of the object
                     tempConfig = tempConfig[k][nameof<ObjectModelConfig>(s => s.properties)];
+                }
+                else if(tempConfig[k].hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf)) && i < lastIrritate) {
+                    //if not end of inputPath return the anyOf of the object
+                    tempConfig = tempConfig[k][nameof<AnyOfModelConfig>(s => s.anyOf)];
                 }
                 else {
                     tempConfig = tempConfig[k];
