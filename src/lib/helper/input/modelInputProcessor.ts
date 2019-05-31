@@ -217,7 +217,7 @@ export default class ModelInputProcessor
             const input = srcObj[srcKey];
             const errorBag = processInfo.errorBag;
 
-            if(typeof input === 'object')
+            if(typeof input === 'object' && !Array.isArray(input))
             {
                 //check if the input has unknown property
                 if(!morePropsAllowed) {
