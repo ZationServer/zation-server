@@ -752,7 +752,7 @@ export interface ObjectModelConfig extends ModelOptional
      * It will be called with the input object as this and the small bag
      * that allows you to add properties to the object.
      * @example
-     * construct : (smallBag) => {
+     * construct : function(smallBag) {
      *    this.fullName = `${this.firstName} ${this.lastName}`;
      * }
      */
