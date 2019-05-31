@@ -24,6 +24,7 @@ import ZationConfigMaster      from "../helper/configManager/zationConfigMaster"
 // noinspection TypeScriptPreferShortImport
 import {StartMode}             from "./../helper/constants/startMode";
 import FuncUtils from "../helper/utils/funcUtils";
+import ConfigBuildError from "../helper/configManager/configBuildError";
 
 export default class ZationMaster {
     private static instance: ZationMaster | null = null;
@@ -99,7 +100,13 @@ export default class ZationMaster {
                     }
                 }
                 catch (e) {
-                    Logger.printStartFail(`Exception when trying to start server -> ${e.stack}`);
+                    if(e instanceof ConfigBuildError){
+                        Logger.printStartFail(`An error was thrown by try to build a configuration -> ${e.stack}`);
+                    }
+                    else {
+                        Logger.printStartFail(`An error was thrown on server start -> ${e.stack}`);
+                    }
+
                 }
             })();
         }

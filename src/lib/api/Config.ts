@@ -118,6 +118,7 @@ import ZationInfo       from "../helper/infoObjects/zationInfo";
 import {ApiLevelSwitch} from "../helper/apiLevel/apiLevelUtils";
 // noinspection TypeScriptPreferShortImport
 import {StartMode}      from "../helper/constants/startMode";
+import ConfigBuildError  from "../helper/configManager/configBuildError";
 
 export default class Config
 {
@@ -208,7 +209,7 @@ export default class Config
             Config.tmpModels[name] = model;
         }
         else {
-            throw new Error(`The model name: ${name} is already defined.`);
+            throw new ConfigBuildError(`The model name: ${name} is already defined.`);
         }
     }
 
@@ -262,7 +263,7 @@ export default class Config
     static registerController(id : string, controllerClass : ControllerClass, apiLevel ?: number) {
         if(typeof apiLevel === 'number'){
             if(typeof Config.tmpController[id] === 'function'){
-                throw new Error(`The controller id: ${id} is already defined.`+
+                throw new ConfigBuildError(`The controller id: ${id} is already defined.`+
                     ` To define more controllers with the same id every register should provide an API level.`);
             }
             else {
@@ -271,7 +272,7 @@ export default class Config
                 }
 
                 if(Config.tmpController[id].hasOwnProperty(apiLevel)){
-                    throw new Error(`The controller id: ${id} with the API level ${apiLevel} is already defined.`);
+                    throw new ConfigBuildError(`The controller id: ${id} with the API level ${apiLevel} is already defined.`);
                 }
                 else {
                     Config.tmpController[id][apiLevel] = controllerClass;
@@ -280,7 +281,7 @@ export default class Config
         }
         else {
             if(Config.tmpController.hasOwnProperty(id)){
-                throw new Error(`The controller id: ${id} is already defined.`+
+                throw new ConfigBuildError(`The controller id: ${id} is already defined.`+
                     ` To define more controllers with the same id every register should provide an API level.`);
             }
             else {
@@ -318,7 +319,7 @@ export default class Config
             for(let name in Config.tmpModels){
                 if(Config.tmpModels.hasOwnProperty(name)){
                     if(config.models.hasOwnProperty(name)){
-                        throw new Error
+                        throw new ConfigBuildError
                         (`Conflict with model name: ${name}, the model name is defined in the app config and with the method defineModel or defineModels.`);
                     }
                     else {
@@ -330,7 +331,7 @@ export default class Config
             for(let name in Config.tmpController){
                 if(Config.tmpController.hasOwnProperty(name)){
                     if(config.controllers.hasOwnProperty(name)){
-                        throw new Error
+                        throw new ConfigBuildError
                         (`Conflict with controller id: ${name}, the controller id is defined in the app config and with the config utils.`);
                     }
                     else {

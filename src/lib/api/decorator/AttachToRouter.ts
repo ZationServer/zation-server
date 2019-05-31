@@ -6,6 +6,7 @@ GitHub: LucaCode
 
 import Controller, {ControllerClass} from "../Controller";
 import Router                        from "../Router";
+import ConfigBuildError               from "../../helper/configManager/configBuildError";
 
 /**
  * Attach a controller to a router.
@@ -21,7 +22,7 @@ export const AttachToRouter = (id : string, router : Router, apiLevel ?: number)
             router.attach(id,target,apiLevel);
         }
         else {
-            throw new Error(`The attach to router decorator can only be used on classes that extend the Controller class.`);
+            throw new ConfigBuildError(`The attach to router decorator can only be used on classes that extend the Controller class.`);
         }
     }
 };

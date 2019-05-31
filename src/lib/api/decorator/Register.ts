@@ -6,6 +6,7 @@ GitHub: LucaCode
 
 import Config                        from "../Config";
 import Controller, {ControllerClass} from "../Controller";
+import ConfigBuildError               from "../../helper/configManager/configBuildError";
 
 /**
  * Register a controller in the app config.
@@ -21,7 +22,7 @@ export const Register = (id : string, apiLevel ?: number) => {
             Config.registerController(id,target,apiLevel);
         }
         else {
-            throw new Error(`The register decorator can only be used on classes that extend the Controller class.`);
+            throw new ConfigBuildError(`The register decorator can only be used on classes that extend the Controller class.`);
         }
     }
 };

@@ -21,6 +21,7 @@ import {ServiceConfig}    from "../configDefinitions/serviceConfig";
 import {Structures}       from "../configDefinitions/structures";
 import {OtherLoadedConfigSet} from "./configSets";
 import RequireUtils           from "../utils/requireUtils";
+import ConfigBuildError        from "./configBuildError";
 
 export default class ConfigLoader {
 
@@ -210,22 +211,28 @@ export default class ConfigLoader {
             this._eventConfig = require(this._configLocations.eventConfig);
             this._loadedConfigs.push(nameof<StarterConfig>(s => s.eventConfig));
         }
-        catch (e) {}
+        catch (e) {ConfigLoader.throwErrIfConfigFail(e)}
         try {
             this._channelConfig = require(this._configLocations.channelConfig);
             this._loadedConfigs.push(nameof<StarterConfig>(s => s.channelConfig));
         }
-        catch (e) {}
+        catch (e) {ConfigLoader.throwErrIfConfigFail(e)}
         try {
             this._appConfig = require(this._configLocations.appConfig);
             this._loadedConfigs.push(nameof<StarterConfig>(s => s.appConfig));
         }
-        catch (e) {}
+        catch (e) {ConfigLoader.throwErrIfConfigFail(e)}
         try {
             this._serviceConfig = require(this._configLocations.serviceConfig);
             this._loadedConfigs.push(nameof<StarterConfig>(s => s.serviceConfig));
         }
-        catch (e) {}
+        catch (e) {ConfigLoader.throwErrIfConfigFail(e)}
+    }
+
+    static throwErrIfConfigFail(err) {
+        if(err instanceof ConfigBuildError || err.code !== 'MODULE_NOT_FOUND'){
+            throw err;
+        }
     }
 
     getRootPath() : string {
