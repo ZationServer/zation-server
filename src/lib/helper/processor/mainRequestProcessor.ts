@@ -70,8 +70,7 @@ export default class MainRequestProcessor
             }
 
             //is checked by isValidReqStructure!
-            // @ts-ignore
-            const task : ZationTask = reqData.t;
+            const task : ZationTask = (reqData.t as ZationTask);
 
             const isSystemController = ZationReqUtils.isSystemControllerReq(task);
             const controllerId = ZationReqUtils.getControllerId(task,isSystemController);

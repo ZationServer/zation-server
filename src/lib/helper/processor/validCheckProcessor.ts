@@ -35,8 +35,7 @@ export default class ValidCheckProcessor
         if(ZationReqUtils.isValidValidationStructure(reqData))
         {
             //is checked in isValidValidationStructure
-            // @ts-ignore
-            const validReq : ZationValidationCheck = reqData.v;
+            const validReq : ZationValidationCheck = (reqData.v as ZationValidationCheck);
 
             const isSystemController = ZationReqUtils.isSystemControllerReq(validReq);
             const cId = ZationReqUtils.getControllerId(validReq,isSystemController);
