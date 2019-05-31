@@ -28,7 +28,7 @@ import ConfigBuildError from "../helper/configManager/configBuildError";
 
 export default class ZationMaster {
     private static instance: ZationMaster | null = null;
-    private static readonly version: string = '1.0.0';
+    private static readonly version: string = '1.0.1';
 
     private readonly serverStartedTimeStamp: number;
     private zc: ZationConfigMaster;
