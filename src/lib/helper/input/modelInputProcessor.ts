@@ -289,7 +289,7 @@ export default class ModelInputProcessor
 
                         //2.construct
                         if(processConstruct) {
-                            await (objectModel.construct as ConstructObjectFunction)(input,sb);
+                            await (objectModel.construct as ConstructObjectFunction).call(input,sb);
                         }
 
                         //3.convert

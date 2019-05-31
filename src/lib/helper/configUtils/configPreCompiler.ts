@@ -446,13 +446,13 @@ export default class ConfigPreCompiler
                         async () => {};
                     const currentConstruct = value[nameof<ObjectModelConfig>(s => s.construct)];
                     if(typeof currentConstruct === 'function') {
-                        value[nameof<ObjectModelConfig>(s => s.construct)] = async (obj, smallBag) => {
-                            await superConstruct(obj,smallBag);
-                            await currentConstruct(obj,smallBag);
+                        value[nameof<ObjectModelConfig>(s => s.construct)] = async function(smallBag){
+                            await superConstruct.call(this,smallBag);
+                            await currentConstruct.call(this,smallBag);
                         };
                     }else {
-                        value[nameof<ObjectModelConfig>(s => s.construct)] = async (obj, smallBag) => {
-                            await superConstruct(obj,smallBag);
+                        value[nameof<ObjectModelConfig>(s => s.construct)] = async function(smallBag){
+                            await superConstruct.call(this,smallBag);
                         };
                     }
 

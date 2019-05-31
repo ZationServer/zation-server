@@ -709,7 +709,7 @@ export interface ModelOptional {
 
 export type ObjectProperties = Record<string,Model>;
 export type ConvertObjectFunction = (obj: Record<string,any>, smallBag : SmallBag) => Promise<any> | any;
-export type ConstructObjectFunction = (self : Record<string,any>, smallBag : SmallBag) => Promise<void> | void;
+export type ConstructObjectFunction = (this : Record<string,any>, smallBag : SmallBag) => Promise<void> | void;
 
 export interface ObjectModelConfig extends ModelOptional
 {
@@ -749,11 +749,11 @@ export interface ObjectModelConfig extends ModelOptional
     /**
      * Set the construct function of the object model,
      * that function can be as a constructor on the input object.
-     * It will be called with the input object and the small bag
+     * It will be called with the input object as this and the small bag
      * that allows you to add properties to the object.
      * @example
-     * construct : (self,smallBag) => {
-     *    self.fullName = `${self.firstName} ${self.lastName}`;
+     * construct : (smallBag) => {
+     *    this.fullName = `${this.firstName} ${this.lastName}`;
      * }
      */
     construct  ?: ConstructObjectFunction;
