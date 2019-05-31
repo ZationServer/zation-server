@@ -60,22 +60,17 @@ export default class HttpRequestProcessor
         {
             const query = req.query;
 
-            if(this.debug){
-                Logger.printDebugInfo(`Http Get Request id: ${reqId} -> `,StringifyUtils.object(query));
-            }
-            if(this.zc.mainConfig.logRequests){
-                Logger.logFileInfo(`Http Get Request id: ${reqId} -> `,query);
-            }
-
             if(ZationReqUtils.isValidGetReq(query)) {
                 HttpRequestProcessor.setHeader(res);
                 const zationData = await ZationReqUtils.convertGetRequest(query);
+                this.logGetRequest(reqId,zationData);
                 return await this.mainProcess(req,res,zationData,reqId);
             }
             else if(ZationReqUtils.isValidValidationGetReq(query))
             {
                 HttpRequestProcessor.setHeader(res);
                 const zationData = await ZationReqUtils.convertValidationGetRequest(query);
+                this.logGetRequest(reqId,zationData);
                 return await this.mainProcess(req,res,zationData,reqId);
             }
             else {
@@ -90,6 +85,15 @@ export default class HttpRequestProcessor
         else {
             Logger.printDebugInfo(`Http Request id: ${reqId} -> No zation data found`);
             HttpRequestProcessor.printDefaultHtmlSite(res,this.worker);
+        }
+    }
+
+    private logGetRequest(reqId : string, zationData : any) {
+        if(this.debug){
+            Logger.printDebugInfo(`Http Get Request id: ${reqId} -> `,StringifyUtils.object(zationData));
+        }
+        if(this.zc.mainConfig.logRequests){
+            Logger.logFileInfo(`Http Get Request id: ${reqId} -> `,zationData);
         }
     }
 
