@@ -11,7 +11,7 @@ import SmallBag           from "./SmallBag";
 import ObjectPath         from "../helper/utils/objectPath";
 import BackErrorBag       from "./BackErrorBag";
 
-export default class Controller<I = any> {
+export default class Controller {
     private _storage: object = {};
 
     /**
@@ -66,7 +66,7 @@ export default class Controller<I = any> {
      * Notice that only the BackError or BackErrorBag sends back to the client.
      * All other errors or objects will be converted to an unknown BackError.
      */
-    async handle(bag: Bag, input: I): Promise<any> {
+    async handle(bag: Bag, input: any): Promise<any> {
     }
 
     /**
@@ -78,7 +78,7 @@ export default class Controller<I = any> {
      * @param bag
      * @param input
      */
-    async finallyHandle(bag: Bag, input: I): Promise<void> {
+    async finallyHandle(bag: Bag, input: any): Promise<void> {
     }
 
     /**
