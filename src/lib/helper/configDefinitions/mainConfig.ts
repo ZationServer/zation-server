@@ -312,6 +312,12 @@ export interface MainConfig
      */
     logStarted ?: boolean;
 
+    /**
+     * Specifies if the worker leader should console log the precompiled configs.
+     * @default false
+     */
+    showPrecompiledConfigs ?: boolean;
+
     //Cluster
     /**
      * The cluster auth key defines a key that
@@ -634,6 +640,7 @@ export interface InternalMainConfig extends MainConfig {
     logServerErrors : boolean;
     logCodeErrors : boolean;
     logStarted : boolean;
+    showPrecompiledConfigs : boolean;
     variables : any;
 }
 

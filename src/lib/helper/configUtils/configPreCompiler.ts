@@ -33,6 +33,7 @@ import ControllerUtils             from "../controller/controllerUtils";
 import InputProcessorCreator, {Processable} from "../input/inputProcessorCreator";
 import {SystemController}          from "../systemController/systemControler.config";
 import OptionalProcessor           from "../input/optionalProcessor";
+import ZationConfig                from "../configManager/zationConfig";
 
 export interface ModelPreparationMem extends Processable{
     _optionalInfo : {isOptional : boolean,defaultValue : any}
@@ -54,7 +55,7 @@ export default class ConfigPreCompiler
         this.prepare();
     }
 
-    preCompile() : OtherPreCompiledConfigSet
+    preCompile(zc : ZationConfig,showPrecompiledConfigs : boolean) : OtherPreCompiledConfigSet
     {
         this.preCompileModels(this.modelsConfig);
         this.preCompileTmpBuilds();
@@ -66,8 +67,20 @@ export default class ConfigPreCompiler
         this.preCompileEventConfig();
 
         //view precompiled configs
-        //console.dir(this.configs.appConfig,{depth:null});
-        //console.dir(this.configs.channelConfig,{depth:null});
+        if(showPrecompiledConfigs){
+            console.log('StarterConfig');
+            console.dir(zc.starterConfig,{depth:null});
+            console.log('MainConfig');
+            console.dir(zc.mainConfig,{depth:null});
+            console.log('AppConfig');
+            console.dir(this.configs.appConfig,{depth:null});
+            console.log('ChannelConfig');
+            console.dir(this.configs.channelConfig,{depth:null});
+            console.log('EventConfig');
+            console.dir(this.configs.eventConfig,{depth:null});
+            console.log('ServiceConfig');
+            console.dir(this.configs.serviceConfig,{depth:null});
+        }
 
         // @ts-ignore
         return this.configs;

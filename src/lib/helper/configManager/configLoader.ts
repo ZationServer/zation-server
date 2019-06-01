@@ -104,6 +104,7 @@ export default class ConfigLoader {
         logServerErrors : true,
         logCodeErrors : true,
         logStarted : true,
+        showPrecompiledConfigs : false,
         variables : {}
     };
 

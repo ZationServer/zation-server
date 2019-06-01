@@ -157,7 +157,7 @@ class ZationWorker extends SCWorker
 
         Logger.startStopWatch();
         let preCompiler = new ConfigPreCompiler(otherConfigsLoadedSet);
-        this.zc.setOtherConfigs(preCompiler.preCompile());
+        this.zc.setOtherConfigs(preCompiler.preCompile(this.zc,this.zc.mainConfig.showPrecompiledConfigs && this.isLeader));
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has pre compiled configurations.`, true);
 
         //Origins checker

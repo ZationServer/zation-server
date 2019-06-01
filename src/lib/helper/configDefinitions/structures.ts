@@ -142,6 +142,8 @@ Main[nameof<MainConfig>(s => s.logServerErrors)]  = {types : ['boolean'],isOptio
 Main[nameof<MainConfig>(s => s.logCodeErrors)]    = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.logStarted)]       = {types : ['boolean'],isOptional : true};
 
+Main[nameof<MainConfig>(s => s.showPrecompiledConfigs)] = {types : ['boolean'],isOptional : true};
+
 //Cluster
 Main[nameof<MainConfig>(s => s.clusterAuthKey)]     = {types : ['string','null'],isOptional : true};
 Main[nameof<MainConfig>(s => s.clusterSecretKey)]   = {types : ['string','null'],isOptional : true};
