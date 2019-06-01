@@ -17,7 +17,6 @@ import {SystemController}            from "../systemController/systemControler.c
 import SmallBag                      from "../../api/SmallBag";
 import ZationConfigFull              from "../configManager/zationConfigFull";
 import InputClosureCreator, {InputConsumeFunction, InputValidationCheckFunction} from "../input/inputClosureCreator";
-import InputProcessor                    from "../input/inputProcessor";
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction} from "../apiLevel/apiLevelUtils";
 
 interface ControllerPrepareData {
@@ -36,17 +35,15 @@ export default class ControllerPrepare
     private readonly zc : ZationConfigFull;
     private readonly worker : ZationWorker;
     private readonly smallBag : SmallBag;
-    private readonly inputDataProcessor : InputProcessor;
 
     private readonly systemController : Record<string,ControllerPrepareData>;
     private readonly appController : Record<string,ApiLevelSwitchFunction<ControllerPrepareData>>;
 
-    constructor(zc : ZationConfigFull,worker : ZationWorker,smallBag : SmallBag,inputDataProcessor : InputProcessor)
+    constructor(zc : ZationConfigFull,worker : ZationWorker,smallBag : SmallBag)
     {
         this.zc = zc;
         this.worker = worker;
         this.smallBag = smallBag;
-        this.inputDataProcessor = inputDataProcessor;
 
         this.systemController = {};
         this.appController = {};
@@ -180,8 +177,8 @@ export default class ControllerPrepare
             systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
             tokenStateCheck : AuthAccessChecker.createTokenStateAccessChecker(config,this.smallBag),
             prepareHandleInvoke : ControllerUtils.createPrepareHandleInvoker(config),
-            inputConsume : InputClosureCreator.createControllerInputConsumer(config,this.inputDataProcessor),
-            inputValidationCheck : InputClosureCreator.createControllerValidationChecker(config,this.inputDataProcessor)
+            inputConsume : InputClosureCreator.createControllerInputConsumer(config,this.smallBag),
+            inputValidationCheck : InputClosureCreator.createControllerValidationChecker(config,this.smallBag)
         };
     }
 }

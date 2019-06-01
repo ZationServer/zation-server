@@ -64,9 +64,14 @@ c = controller
 sc = systemController
  */
 export interface ZationValidationCheck {
-    i : {ip : string | string[], v : any}[]
+    i : ValidationCheckPair[]
     c ?: string,
     sc ?: string
+}
+
+export interface ValidationCheckPair {
+    ip : string | string[],
+    v : any
 }
 
 //legend

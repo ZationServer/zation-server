@@ -9,10 +9,9 @@ import {
     ArrayModelConfig, ConstructObjectFunction, ConvertArrayFunction, ConvertObjectFunction,
     ConvertValueFunction,
     Model,
-    ObjectModelConfig, ValueModelConfig,
+    ObjectModelConfig, ParamInput, ValueModelConfig,
 } from "../configDefinitions/appConfig";
 import BackErrorBag          from "../../api/BackErrorBag";
-import SmallBag              from "../../api/SmallBag";
 import ValidatorEngine       from "../validator/validatorEngine";
 import ConvertEngine         from "../convert/convertEngine";
 import BackError             from "../../api/BackError";
@@ -22,6 +21,7 @@ import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";
 import CloneUtils            from "../utils/cloneUtils";
 import {ProcessTask}         from "./processTaskEngine";
 import {ModelPreparationMem} from "../configUtils/configPreCompiler";
+import SmallBag from "../../api/SmallBag";
 
 export interface ProcessInfo {
     errorBag : BackErrorBag,
@@ -29,36 +29,20 @@ export interface ProcessInfo {
     createProcessTaskList : boolean
 }
 
-export type ModelProcessFunction = (sb : SmallBag, srcObj : object, srcKey : string | number, currentInputPath : string,
-                                    {errorBag,processTaskList,createProcessTaskList} : ProcessInfo) => Promise<any>;
+export type InputProcessFunction = (sb : SmallBag, srcObj : object, srcKey : string | number, currentInputPath : string,
+                                    {errorBag,processTaskList,createProcessTaskList} : ProcessInfo) => Promise<void>;
 
-export default class ModelInputProcessor
+export interface Processable {
+    _process : InputProcessFunction
+}
+
+export default class InputProcessorCreator
 {
-    private readonly _preparedSmallBag : SmallBag;
-
-    constructor(preparedSmallBag : SmallBag) {
-        this._preparedSmallBag = preparedSmallBag;
-    }
-
-    /**
-     * Start processing the input with a model recursive.
-     * @param srcObj
-     * @param srcKey
-     * @param config
-     * @param currentInputPath
-     * @param processInfo
-     */
-    async processModel(srcObj : object, srcKey : string | number, config : Model, currentInputPath : string, processInfo : ProcessInfo) : Promise<any>
-    {
-        await (config as ModelPreparationMem)
-            ._process(this._preparedSmallBag,srcObj,srcKey,currentInputPath,processInfo);
-    }
-
     /**
      * Creates a closure to process a value model.
      * @param valueModel
      */
-    static createValueModelProcessor(valueModel : ValueModelConfig) : ModelProcessFunction
+    static createValueModelProcessor(valueModel : ValueModelConfig) : InputProcessFunction
     {
         const type = valueModel.type;
         const strictType = typeof valueModel.strictType === 'boolean' ? valueModel.strictType : true;
@@ -101,7 +85,7 @@ export default class ModelInputProcessor
      * Creates a closure to process a array model.
      * @param arrayModel
      */
-    static createArrayModelProcessor(arrayModel : ArrayModelConfig & ModelPreparationMem) : ModelProcessFunction
+    static createArrayModelProcessor(arrayModel : ArrayModelConfig & ModelPreparationMem) : InputProcessFunction
     {
         const arrayInputConfig = (arrayModel.array as Model & ModelPreparationMem);
         const hasConvert = typeof arrayModel.convert === 'function';
@@ -152,7 +136,7 @@ export default class ModelInputProcessor
      * Creates a closure to process a anyOf model.
      * @param anyOfModel
      */
-    static createAnyOfModelProcessor(anyOfModel : AnyOfModelConfig & ModelPreparationMem) : ModelProcessFunction
+    static createAnyOfModelProcessor(anyOfModel : AnyOfModelConfig & ModelPreparationMem) : InputProcessFunction
     {
         const anyOf = anyOfModel.anyOf;
         const breakIterator = Iterator.createBreakIterator(anyOf);
@@ -202,7 +186,7 @@ export default class ModelInputProcessor
      * Creates a closure to process a object model.
      * @param objectModel
      */
-    static createObjectModelProcessor(objectModel : ObjectModelConfig) : ModelProcessFunction
+    static createObjectModelProcessor(objectModel : ObjectModelConfig) : InputProcessFunction
     {
         const props = objectModel.properties;
         const morePropsAllowed = objectModel.morePropsAllowed;
@@ -313,6 +297,106 @@ export default class ModelInputProcessor
                 );
             }
         };
+    }
+
+    /**
+     * Creates a closure for validating and format a param based input.
+     * @param paramInputConfig
+     */
+    static createParamInputProcessor(paramInputConfig : ParamInput) : InputProcessFunction {
+
+        const paramKeys = Object.keys(paramInputConfig);
+
+        return async (sb, srcObj, srcKey, currentInputPath, processInfo) =>
+        {
+            const promises : Promise<void>[] = [];
+            let input = srcObj[srcKey];
+            let paramName : string;
+
+            if(!Array.isArray(input)){
+                //object input
+
+                if(input === undefined){
+                    input = {};
+                }
+                else if(typeof input !== "object") {
+                    processInfo.errorBag.addBackError(new BackError(MainBackErrors.wrongInputTypeInParamBasedInput,{inputType : typeof input}));
+                    return;
+                }
+
+                for(let i = 0; i < paramKeys.length; i++) {
+                    paramName = paramKeys[i];
+                    if(input[paramName] !== undefined){
+                        promises.push((paramInputConfig[paramName] as ModelPreparationMem)
+                            ._process(sb,input,paramName,(currentInputPath+paramName),processInfo));
+                    }
+                    else {
+                        const {defaultValue,isOptional} = (paramInputConfig[paramName] as ModelPreparationMem)._optionalInfo;
+                        if(!isOptional){
+                            //ups something is missing
+                            processInfo.errorBag.addBackError(new BackError(MainBackErrors.inputParamIsMissing,
+                                {
+                                    paramName : paramName,
+                                    input : input
+                                }));
+                        }
+                        else {
+                            //set default value
+                            input[paramName] = CloneUtils.deepClone(defaultValue);
+                        }
+                    }
+                }
+                //check for unknown input properties
+                for(let inputName in input) {
+                    if(input.hasOwnProperty(inputName) && !paramInputConfig.hasOwnProperty(inputName)){
+                        processInfo.errorBag.addBackError(new BackError(MainBackErrors.unknownInputParam,
+                            {
+                                paramName : inputName
+                            }));
+                    }
+                }
+            }
+            else {
+                //array input
+                const result = {};
+                for(let i = 0; i < paramKeys.length; i++)
+                {
+                    paramName = paramKeys[i];
+                    if(typeof input[i] !== 'undefined') {
+                        promises.push((async () => {
+                            result[paramName] = input[i];
+                            await (paramInputConfig[paramName] as ModelPreparationMem)
+                                ._process(sb,result,paramName,(currentInputPath+paramName),processInfo);
+                        })());
+                    }
+                    else {
+                        const {defaultValue,isOptional} = (paramInputConfig[paramName] as ModelPreparationMem)._optionalInfo;
+                        if(!isOptional){
+                            //ups something is missing
+                            processInfo.errorBag.addBackError(new BackError(MainBackErrors.inputParamIsMissing,
+                                {
+                                    paramName : paramKeys[i],
+                                    input : input
+                                }));
+                        }
+                        else {
+                            //set default value
+                            result[paramName] = CloneUtils.deepClone(defaultValue);
+                        }
+                    }
+                }
+                //check to much input
+                for(let i = paramKeys.length; i < input.length; i++) {
+                    processInfo.errorBag.addBackError(new BackError(MainBackErrors.inputParamNotAssignable,
+                        {
+                            index : i,
+                            value : input[i]
+                        }));
+                }
+                srcObj[srcKey] = result;
+            }
+            await Promise.all(promises);
+        }
     }
 
 }

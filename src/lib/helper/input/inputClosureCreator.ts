@@ -4,16 +4,22 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ControllerConfig, InputConfig, Model, ParamInput} from "../configDefinitions/appConfig";
+import {ControllerConfig, InputConfig, ParamInput, SingleModelInput} from "../configDefinitions/appConfig";
 import BackErrorBag                     from "../../api/BackErrorBag";
 import ProcessTaskEngine, {ProcessTask} from "./processTaskEngine";
-import InputProcessor                   from "./inputProcessor";
+import InputProcessor, {Processable}    from "./inputProcessorCreator";
 import BackError                        from "../../api/BackError";
 import {MainBackErrors}                 from "../zationBackErrors/mainBackErrors";
 import InputUtils                       from "./inputUtils";
+import SmallBag                         from "../../api/SmallBag";
+import {ValidationCheckPair}            from "../constants/internal";
 
 export type InputConsumeFunction = (input : any) => Promise<any>;
-export type InputValidationCheckFunction = (checkData : {ip : string | string[], v : any}[]) => Promise<void>;
+export type InputValidationCheckFunction = (checkData : ValidationCheckPair[]) => Promise<void>;
+
+const DefaultParamProcessable : Processable = {
+    _process : InputProcessor.createParamInputProcessor({})
+};
 
 /**
  * A class that provides methods for creating closures to consume the input.
@@ -23,35 +29,35 @@ export default class InputClosureCreator
     /**
      * Creates a closure to consume the input (validate and format) from a request to a controller.
      * @param controllerConfig
-     * @param inputDataProcessor
+     * @param smallBag
      */
-    static createControllerInputConsumer(controllerConfig : ControllerConfig,inputDataProcessor : InputProcessor) : InputConsumeFunction
+    static createControllerInputConsumer(controllerConfig : ControllerConfig,smallBag : SmallBag) : InputConsumeFunction
     {
         if(controllerConfig.inputAllAllow) {
             return (input) => input;
         }
-        return InputClosureCreator.createInputConsumer(controllerConfig,inputDataProcessor);
+        return InputClosureCreator.createInputConsumer(controllerConfig,smallBag);
     }
 
     /**
      * Creates a closure to only validate the input from a validation request to a controller.
      * @param controllerConfig
-     * @param inputDataProcessor
+     * @param smallBag
      */
-    static createControllerValidationChecker(controllerConfig : ControllerConfig,inputDataProcessor : InputProcessor) : InputValidationCheckFunction
+    static createControllerValidationChecker(controllerConfig : ControllerConfig,smallBag : SmallBag) : InputValidationCheckFunction
     {
-        if(typeof controllerConfig.inputAllAllow === 'boolean' && controllerConfig.inputAllAllow) {
+        if(controllerConfig.inputAllAllow) {
             return async () => {}
         }
-        return InputClosureCreator.createInputValidationChecker(controllerConfig,inputDataProcessor);
+        return InputClosureCreator.createInputValidationChecker(controllerConfig,smallBag);
     }
 
     /**
      * Creates a closure to only validate the input from a validation request.
      * @param inputConfig
-     * @param inputDataProcessor
+     * @param smallBag
      */
-    private static createInputValidationChecker(inputConfig : InputConfig, inputDataProcessor : InputProcessor) : InputValidationCheckFunction
+    private static createInputValidationChecker(inputConfig : InputConfig,smallBag : SmallBag) : InputValidationCheckFunction
     {
         let inputDefinition;
         let singleInputModel = false;
@@ -76,8 +82,6 @@ export default class InputClosureCreator
 
                         const {path,keyPath} = InputUtils.processPathInfo(iCheckData.ip);
 
-                        const basePath = keyPath.length === 0;
-
                         let specificConfig = inputDefinition;
                         if(keyPath.length > 0){
                             specificConfig = InputUtils.getModelAtPath(keyPath,inputDefinition,(!singleInputModel));
@@ -91,17 +95,13 @@ export default class InputClosureCreator
                             }
                         }
 
-                        await inputDataProcessor.processInputCheck(
-                            iCheckData.v,
-                            specificConfig,
-                            singleInputModel,
-                            basePath,
-                            path,
-                            errorBag,
-                        );
+                        await (specificConfig as Processable)._process(smallBag,iCheckData,nameof<ValidationCheckPair>(s => s.v),path,{
+                            errorBag : errorBag,
+                            createProcessTaskList : false,
+                            processTaskList : [],
+                        });
                     }
-                    else
-                    {
+                    else {
                         errorBag.addBackError(new BackError(MainBackErrors.wrongValidationCheckStructure,
                             {
                                 checkIndex : i
@@ -119,71 +119,38 @@ export default class InputClosureCreator
     /**
      * Creates a closure to consume the input (validate and format) from a request.
      * @param inputConfig
-     * @param inputDataProcessor
+     * @param smallBag
      */
-    private static createInputConsumer(inputConfig : InputConfig, inputDataProcessor : InputProcessor) : InputConsumeFunction {
-        const inputDefinition = inputConfig.input;
-        if(Array.isArray(inputDefinition))
-        {
-            const singleInputModel : Model = inputDefinition[0];
-            return async (input) => {
+    private static createInputConsumer(inputConfig : InputConfig, smallBag : SmallBag) : InputConsumeFunction {
+        // @ts-ignore
+        const inputDefinition : (ParamInput | SingleModelInput) & Processable = inputConfig.input;
 
-                const taskList : ProcessTask[] = [];
-                const taskErrorBag : BackErrorBag = new BackErrorBag();
-
-                const result = await inputDataProcessor.processSingleModelInput
-                (input,singleInputModel,taskList,taskErrorBag);
-
-                //throw validation/structure errors if any there
-                taskErrorBag.throwIfHasError();
-
-                //wait for process tasks
-                await ProcessTaskEngine.processTasks(taskList);
-
-                return result;
-            }
+        let processable : Processable;
+        if(Array.isArray(inputDefinition)) {
+            processable = inputDefinition[0];
         }
         else {
-            //param input definition
-            //If it is not a array than it is a object with param based input.
-            // @ts-ignore
-            const inputParamsDefinition : ParamInput = typeof inputDefinition === 'object' ? inputDefinition : {};
-            const inputParamsDefinitionKeys = Object.keys(inputParamsDefinition);
+            processable = typeof inputDefinition === 'object' ? (inputDefinition as Processable) : DefaultParamProcessable;
+        }
 
-            return async (input) => {
+        return async (input) => {
+            const taskList : ProcessTask[] = [];
+            const taskErrorBag : BackErrorBag = new BackErrorBag();
+            const wrapper = {i : input};
 
-                if(input === undefined){
-                    input = {};
-                }
-                else if(typeof input !== "object") {
-                    throw new BackError(MainBackErrors.wrongInputTypeInParamBasedInput,{inputType : typeof input});
-                }
+            await processable._process(smallBag,wrapper,'i','',{
+                processTaskList : taskList,
+                errorBag : taskErrorBag,
+                createProcessTaskList :  true
+            });
 
-                const taskList : ProcessTask[] = [];
-                const taskErrorBag : BackErrorBag = new BackErrorBag();
+            //throw validation/structure errors if any there
+            taskErrorBag.throwIfHasError();
 
-                let result = input;
+            //wait for process tasks
+            await ProcessTaskEngine.processTasks(taskList);
 
-                if(Array.isArray(input)) {
-                    //throws if the validation or structure has an error
-                    // noinspection TypeScriptValidateTypes
-                    result = await inputDataProcessor.processParamInputArray
-                    (input,inputParamsDefinition,inputParamsDefinitionKeys,taskList,taskErrorBag);
-                }
-                else {
-                    //throws if the validation or structure has an error or structure
-                    result = await inputDataProcessor.processParamInputObject
-                    (input,inputParamsDefinition,taskList,taskErrorBag);
-                }
-
-                //throw validation/structure errors if any there
-                taskErrorBag.throwIfHasError();
-
-                //check process tasks
-                await ProcessTaskEngine.processTasks(taskList);
-
-                return result;
-            }
+            return wrapper.i;
         }
     }
 }
