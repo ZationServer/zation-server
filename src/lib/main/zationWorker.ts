@@ -113,7 +113,7 @@ class ZationWorker extends SCWorker
 
     constructor() {
         super();
-        this.isRespawn = !!process.env.respawn;
+        this.isRespawn = (process.env.respawn == 'true');
     }
 
     // noinspection JSUnusedGlobalSymbols
