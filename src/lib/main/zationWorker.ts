@@ -275,8 +275,13 @@ class ZationWorker extends SCWorker
 
         Logger.printStartDebugInfo(`The Worker with id ${this.id} is started.`,false);
 
+        //init event
+        Logger.startStopWatch();
+        await this.zc.eventConfig.workerInit(this.preparedSmallBag,this.isLeader);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} invoked init event.`,true);
+
         //Fire event is started
-        await this.zc.eventConfig.workerStarted(this.preparedSmallBag,this.zc.getZationInfo(),this);
+        this.zc.eventConfig.workerStarted(this.preparedSmallBag,this.zc.getZationInfo(),this);
 
         if(this.isLeader){
             this.zc.eventConfig.workerLeaderStarted(this.preparedSmallBag,this.zc.getZationInfo(),this);

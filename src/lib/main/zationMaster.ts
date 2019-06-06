@@ -183,6 +183,13 @@ export default class ZationMaster {
                 this.killServer(e);
             }
         }
+
+        //init event
+        Logger.startStopWatch();
+        await FuncUtils.createFuncAsyncInvokeSafe(this.zcLoader.eventConfig.masterInit)
+        (this.zc.getZationInfo());
+        Logger.printStartDebugInfo('Master invoked init event.',true);
+
         this.startSocketClusterWithLog();
     }
 
@@ -342,7 +349,8 @@ export default class ZationMaster {
 
            if(this.startUpCB){this.startUpCB();}
 
-           await this.emitStartedEvent();
+            await FuncUtils.createFuncAsyncInvokeSafe(this.zcLoader.eventConfig.started)
+            (this.zc.getZationInfo());
         });
 
         // noinspection JSUnresolvedFunction
@@ -409,16 +417,6 @@ export default class ZationMaster {
                 this.brokerIds.remove(id);
             }
         });
-    }
-
-    private async emitStartedEvent() {
-        if(this.zcLoader.eventConfig.started) {
-            let started = this.zcLoader.eventConfig.started;
-            if(Array.isArray(started)) {
-                started = FuncUtils.createFuncArrayAsyncInvoker(started);
-            }
-            await started(this.zc.getZationInfo());
-        }
     }
 
     private printStartedInformation()

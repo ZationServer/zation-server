@@ -6,8 +6,8 @@ GitHub: LucaCode
 
 type AnyFunction = (...args : any[]) => any
 
-export type EventInvokerAsync<P extends AnyFunction> = (...args : Parameters<P>) => Promise<void>;
-export type EventInvokerSync<P extends AnyFunction> = (...args : Parameters<P>) => void;
+export type EventInvokerAsync<P extends AnyFunction = any> = (...args : Parameters<P>) => Promise<void>;
+export type EventInvokerSync<P extends AnyFunction = any> = (...args : Parameters<P>) => void;
 
 export default class FuncUtils
 {

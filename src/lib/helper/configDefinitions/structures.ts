@@ -292,6 +292,8 @@ AuthUserGroup[nameof<AuthUserGroupConfig>(s => s.panelDisplayName)] = {types : [
 const EventConfig = {};
 EventConfig[nameof<EventConfig>(s => s.express)]                = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.scServer)]               = {types : ['function','array'],arrayType : 'function',isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.workerInit)]             = {types : ['function','array'],arrayType : 'function',isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.masterInit)]             = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.workerStarted)]          = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.workerLeaderStarted)]    = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.httpServerStarted)]      = {types : ['function','array'],arrayType : 'function',isOptional : true};

@@ -18,6 +18,8 @@ import CodeError                       from "../error/codeError";
 
 export type ExpressFunction = (smallBag : SmallBag, express : ExpressCore.Express) => Promise<void> | void;
 export type ScServerFunction = (smallBag : SmallBag, scServer : ScServer) => Promise<void> | void;
+export type WorkerInitFunction = (smallBag : SmallBag,isLeader : boolean) => Promise<void> | void;
+export type MasterInitFunction = (info : ZationInfo) => Promise<void> | void;
 export type WorkerStartedFunction = (smallBag : SmallBag, info : ZationInfo, worker : ZationWorker) => Promise<void> | void;
 export type HttpServerStartedFunction = (info : ZationInfo) => Promise<void> | void;
 export type WsServerStartedFunction = (info : ZationInfo) => Promise<void> | void;
@@ -73,6 +75,18 @@ export interface EventConfig
      * @example (smallBag,scServer) => {}
      */
     scServer  ?: ScServerFunction | ScServerFunction[];
+    /**
+     * An event that can be used to do extra things in the startup of a worker.
+     * The worker startup process will wait for the promise of this event to be resolved.
+     * @example async (smallBag,isLeader) => {}
+     */
+    workerInit ?: WorkerInitFunction | WorkerInitFunction[];
+    /**
+     * An event that can be used to do extra things in the startup of the master.
+     * The master startup process will wait for the promise of this event to be resolved.
+     * @example async (zationInfo) => {}
+     */
+    masterInit ?: MasterInitFunction | MasterInitFunction[];
     /**
      * An event that gets invoked when a worker is started.
      * @example (smallBag,zationInfo,worker) => {}
@@ -365,6 +379,8 @@ export interface PreCompiledEventConfig extends EventConfig
 {
     express  : ExpressFunction;
     scServer  : ScServerFunction;
+    workerInit : WorkerInitFunction;
+    masterInit : MasterInitFunction;
     workerStarted  : WorkerStartedFunction;
     workerLeaderStarted : WorkerStartedFunction;
     httpServerStarted  : HttpServerStartedFunction;
