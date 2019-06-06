@@ -265,13 +265,13 @@ export default class ZationMaster {
         const scLogLevel = this.zc.mainConfig.scConsoleLog ?
             this.zc.mainConfig.scLogLevel || null : 0;
 
-        let scOptions = {
+        const scOptions = {
             workers : this.zc.mainConfig.workers,
             brokers : this.zc.mainConfig.brokers,
             appName: this.zc.mainConfig.appName,
             workerController:__dirname + '/zationWorker.js',
             brokerController:__dirname  + '/zationBroker.js',
-            workerClusterController: null,
+            workerClusterController: __dirname + '/workerClusterController.js',
             environment : this.zc.mainConfig.environment,
             port  : this.zc.mainConfig.port,
             path  : this.zc.mainConfig.path,
