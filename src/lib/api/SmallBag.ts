@@ -366,6 +366,15 @@ export default class SmallBag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
+     * Returns if this worker process is a respawn process.
+     */
+    isRespawn(): boolean {
+        return this.worker.isRespwan();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
      * Returns if this server instance is the leader of the cluster.
      * Notice that this server can lose his leader ship again!
      * If cluster mode is not active (means only one server is running without state server)

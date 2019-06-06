@@ -67,6 +67,7 @@ class ZationWorker extends SCWorker
     private userBackgroundTasks : Record<string,TaskFunction> = {};
 
     private workerFullId : string;
+    private readonly isRespawn : boolean;
 
     private workerStartedTimeStamp : number;
     private serverStartedTimeStamp : number;
@@ -112,6 +113,7 @@ class ZationWorker extends SCWorker
 
     constructor() {
         super();
+        this.isRespawn = !!process.env.respawn;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -277,14 +279,14 @@ class ZationWorker extends SCWorker
 
         //init event
         Logger.startStopWatch();
-        await this.zc.eventConfig.workerInit(this.preparedSmallBag,this.isLeader);
+        await this.zc.eventConfig.workerInit(this.preparedSmallBag,this.isLeader,this.isRespawn);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} invoked init event.`,true);
 
         //Fire event is started
-        this.zc.eventConfig.workerStarted(this.preparedSmallBag,this.zc.getZationInfo(),this);
+        this.zc.eventConfig.workerStarted(this.preparedSmallBag,this.zc.getZationInfo(),this.isRespawn,this);
 
         if(this.isLeader){
-            this.zc.eventConfig.workerLeaderStarted(this.preparedSmallBag,this.zc.getZationInfo(),this);
+            this.zc.eventConfig.workerLeaderStarted(this.preparedSmallBag,this.zc.getZationInfo(),this.isRespawn,this);
         }
     }
 
@@ -1653,6 +1655,10 @@ class ZationWorker extends SCWorker
 
     getTokenClusterKeyCheck() : TokenClusterKeyCheckFunction {
         return this.tokenClusterKeyCheck;
+    }
+
+    isRespwan() : boolean {
+        return this.isRespawn;
     }
 }
 

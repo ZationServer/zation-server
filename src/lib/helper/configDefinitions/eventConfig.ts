@@ -18,9 +18,9 @@ import CodeError                       from "../error/codeError";
 
 export type ExpressFunction = (smallBag : SmallBag, express : ExpressCore.Express) => Promise<void> | void;
 export type ScServerFunction = (smallBag : SmallBag, scServer : ScServer) => Promise<void> | void;
-export type WorkerInitFunction = (smallBag : SmallBag,isLeader : boolean) => Promise<void> | void;
+export type WorkerInitFunction = (smallBag : SmallBag,isLeader : boolean,isRespawn : boolean) => Promise<void> | void;
 export type MasterInitFunction = (info : ZationInfo) => Promise<void> | void;
-export type WorkerStartedFunction = (smallBag : SmallBag, info : ZationInfo, worker : ZationWorker) => Promise<void> | void;
+export type WorkerStartedFunction = (smallBag : SmallBag, info : ZationInfo, isRespawn : boolean, worker : ZationWorker) => Promise<void> | void;
 export type HttpServerStartedFunction = (info : ZationInfo) => Promise<void> | void;
 export type WsServerStartedFunction = (info : ZationInfo) => Promise<void> | void;
 export type StartedFunction = (info : ZationInfo) => Promise<void> | void;
