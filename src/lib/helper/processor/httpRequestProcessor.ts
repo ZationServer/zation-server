@@ -43,8 +43,10 @@ export default class HttpRequestProcessor
     async prepareReq(req,res,reqId : string)
     {
         if (req.method === 'POST' && req.body[this.postKey]) {
+            if(this.debug){
+                Logger.printDebugInfo(`Http Post Request id: ${reqId}`);
+            }
             HttpRequestProcessor.setHeader(res);
-
             const zationData = await JsonConverter.parse(req.body[this.postKey]);
 
             if(this.debug){
@@ -58,6 +60,9 @@ export default class HttpRequestProcessor
         }
         else if(req.method === 'GET' && !(Object.keys(req.query).length === 0))
         {
+            if(this.debug){
+                Logger.printDebugInfo(`Http Get Request id: ${reqId}`);
+            }
             const query = req.query;
 
             if(ZationReqUtils.isValidGetReq(query)) {
