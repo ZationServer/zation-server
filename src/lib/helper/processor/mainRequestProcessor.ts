@@ -164,7 +164,7 @@ export default class MainRequestProcessor
                         return await this.processController(controllerInstance,bag,prepareHandleInvoke);
                     }
                     else {
-                        throw new BackError(MainBackErrors.noAccessWithAuth,
+                        throw new BackError(MainBackErrors.noAccessWithTokenState,
                             {
                                 authUserGroup: authEngine.getAuthUserGroup(),
                                 authIn: authEngine.isAuth(),

@@ -255,9 +255,9 @@ export const MainBackErrors = {
         fromZationSystem : true
     },
 
-    noAccessWithAuth  : {
-        name          : 'noAccessWithAuth',
-        description   : 'You have no access with the auth state, to this controller.',
+    noAccessWithTokenState  : {
+        name          : 'noAccessWithTokenState',
+        description   : 'You have no access with the token state, to this controller.',
         type          : ErrorType.NO_ACCESS_ERROR,
         sendInfo      : true,
         //INFO
