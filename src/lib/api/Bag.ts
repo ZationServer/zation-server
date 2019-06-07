@@ -117,14 +117,20 @@ export default class Bag extends SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws InputIsNotCompatibleError
-     * Can happen if inputAllAllow is activated and input is not from type object.
+     * Can happen if you provided a path, inputAllAllow is activated,
+     * and input is not from type object.
      */
     getInput<R>(path ?: string | string[]) : R {
-        if(typeof this.input === 'object'){
-            return ObjectPath.get(this.input,path);
+        if(path !== undefined){
+            if(typeof this.input === 'object'){
+                return ObjectPath.get(this.input,path);
+            }
+            else {
+                throw new InputIsNotCompatibleError();
+            }
         }
         else {
-            throw new InputIsNotCompatibleError();
+            return this.input;
         }
     }
 
@@ -137,14 +143,20 @@ export default class Bag extends SmallBag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws InputIsNotCompatibleError
-     * Can happen if inputAllAllow is activated and input is not from type object.
+     * Can happen if you provided a path, inputAllAllow is activated,
+     * and input is not from type object.
      */
     hasInput(path: string | string[]) : boolean {
-        if(typeof this.input === 'object'){
-            return ObjectPath.has(this.input,path);
+        if(path !== undefined){
+            if(typeof this.input === 'object'){
+                return ObjectPath.has(this.input,path);
+            }
+            else {
+                throw new InputIsNotCompatibleError();
+            }
         }
         else {
-            throw new InputIsNotCompatibleError();
+            return this.input !== undefined;
         }
     }
 

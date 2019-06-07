@@ -161,7 +161,7 @@ export default class MainRequestProcessor
                             authEngine,
                             input
                         );
-                        return await this.processController(controllerInstance,bag,prepareHandleInvoke);
+                        return await this.processController(controllerInstance,bag,input,prepareHandleInvoke);
                     }
                     else {
                         throw new BackError(MainBackErrors.noAccessWithTokenState,
@@ -194,24 +194,24 @@ export default class MainRequestProcessor
     }
 
     // noinspection JSMethodCanBeStatic
-    private async processController(controllerInstance : Controller,bag : Bag,prepareHandleInvoke : PrepareHandleInvokeFunction) : Promise<ResponseResult>
+    private async processController(controllerInstance : Controller,bag : Bag,input : any,prepareHandleInvoke : PrepareHandleInvokeFunction) : Promise<ResponseResult>
     {
         //process the controller handle, before handle events and finally handle.
         try {
             await prepareHandleInvoke(controllerInstance,bag);
 
-            const result : Result | any = await controllerInstance.handle(bag,bag.getInput());
+            const result : Result | any = await controllerInstance.handle(bag,input);
 
             if (!(result instanceof Result)) {
                 return {r : result};
             }
 
-            await controllerInstance.finallyHandle(bag,bag.getInput());
+            await controllerInstance.finallyHandle(bag,input);
 
             return result._getJsonObj();
         }
         catch(e) {
-            try {await controllerInstance.finallyHandle(bag,bag.getInput());}
+            try {await controllerInstance.finallyHandle(bag,input);}
             catch (e) {}
             throw e;
         }
