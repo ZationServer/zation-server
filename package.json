@@ -70,7 +70,7 @@
     "fast-stringify": "1.1.1",
     "stringify-object": "3.3.0",
     "ws": "6.2.1",
-    "zation-client": "0.8.3",
+    "zation-client": "0.8.6",
     "zation-service": "0.3.4"
   },
   "devDependencies": {
