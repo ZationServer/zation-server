@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-export enum ErrorNames {
+export enum ErrorName {
     ID_MISSING                   = 'IS_MISSING',
     NAME_MISSING                 = 'NAME_MISSING',
     UNKNOWN_CHANNEL              = 'UNKNOWN_CHANNEL',
