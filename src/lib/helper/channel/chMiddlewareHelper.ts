@@ -60,6 +60,11 @@ export default class ChMiddlewareHelper
             const preChInfo = this.channelPrepare.getSafeCustomIdChInfo(name);
             const chInfo = {name,id};
 
+            const idCheckRes = await preChInfo.idChecker(id);
+            if(idCheckRes !== undefined){
+                return idCheckRes;
+            }
+
             if((await preChInfo.subscribeAccessChecker(
                 socket.authEngine,
                 socket.socketInfo,
@@ -101,7 +106,6 @@ export default class ChMiddlewareHelper
             err.name = ErrorName.ID_MISSING;
             return Error;
         }
-
         if(!this.channelPrepare.existCustomIdCh(name)) {
             const err : any = new Error('Unknown custom id channel.');
             err.code = 4597;
@@ -113,6 +117,11 @@ export default class ChMiddlewareHelper
         else {
             const preChInfo = this.channelPrepare.getSafeCustomIdChInfo(name);
             const chInfo = {name,id};
+
+            const idCheckRes = await preChInfo.idChecker(id);
+            if(idCheckRes !== undefined){
+                return idCheckRes;
+            }
 
             if((await preChInfo.clientPublishAccessChecker(
                 socket.authEngine,

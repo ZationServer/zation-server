@@ -9,6 +9,7 @@ import SmallBag             from "../../api/SmallBag";
 import PubData              from "../infoObjects/pubData";
 import CIdChInfo            from "../infoObjects/cIdChInfo";
 import CChInfo              from "../infoObjects/cChInfo";
+import {IdCheckConfig}      from "./extraConfig";
 
 type AnyFunction = (...args : any[]) => Promise<any> | any
 
@@ -339,14 +340,14 @@ export interface CustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub 
     subscribeAccess  ?: SubAccess | boolean | string | number | (string|number)[];
 }
 
-export type CustomIdCh = CustomChannelConfig<
+export type CustomIdCh = (CustomChannelConfig<
     CIdChannelOnClientPubFunction,
     CIdChannelOnBagPubFunction,
     CIdChannelOnSubFunction,
     CIdChannelOnUnsubFunction,
     CIdChannelClientPubAccessFunction,
     CIdChannelSubAccessFunction
-    >;
+    >) & IdCheckConfig;
 
 export type CustomCh = CustomChannelConfig<
     CChannelOnClientPubFunction,

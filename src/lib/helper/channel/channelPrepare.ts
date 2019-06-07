@@ -18,6 +18,7 @@ import {
 import ZationConfigFull              from "../configManager/zationConfigFull";
 import FuncUtils, {EventInvokerSync} from "../utils/funcUtils";
 import SmallBag                      from "../../api/SmallBag";
+import IdCheckerUtils, {IdChecker}   from "../id/idCheckerUtils";
 import ChAccessHelper, {ChPubAccessChecker, ChSubAccessChecker} from "./chAccessHelper";
 
 interface Events {
@@ -29,6 +30,10 @@ interface Events {
 
 interface CustomChStorage extends Events, ChStorage {
     subscribeAccessChecker : ChSubAccessChecker,
+}
+
+interface CustomIdChStorage extends CustomChStorage {
+    idChecker : IdChecker
 }
 
 interface ChStorage extends Events {
@@ -48,11 +53,14 @@ export class ChannelPrepare {
     private readonly defaultCustomChStorage : CustomChStorage
         = ChannelPrepare.getCustomChStorageDefaults();
 
+    private readonly defaultCustomIdChStorage : CustomIdChStorage
+        = ChannelPrepare.getCustomIdChStorageDefaults();
+
     private readonly defaultChStorage : ChStorage
         = ChannelPrepare.getChStorageDefaults();
 
     private infoCustomCh: Record<string,CustomChStorage> = {};
-    private infoCustomIdCh: Record<string,CustomChStorage> = {};
+    private infoCustomIdCh: Record<string,CustomIdChStorage> = {};
 
     constructor(zc: ZationConfigFull) {
         this.zc = zc;
@@ -84,6 +92,16 @@ export class ChannelPrepare {
     }
 
     /**
+     * Create defaults an for custom id channel storage.
+     */
+    static getCustomIdChStorageDefaults() : CustomIdChStorage  {
+        return {
+            ...ChannelPrepare.getCustomChStorageDefaults(),
+            idChecker : async () => {}
+        };
+    }
+
+    /**
      * Prepare a channel with the configuration.
      * @param name
      * @param smallBag
@@ -102,8 +120,8 @@ export class ChannelPrepare {
         this.infoDefaultUserGroupCh = this.prepareChannel(nameof<ChannelConfig>(s => s.defaultUserGroupCh),smallBag);
         this.infoAllCh = this.prepareChannel(nameof<ChannelConfig>(s => s.allCh),smallBag);
 
-        this.infoCustomCh = this.processCustomChannel(nameof<ChannelConfig>(s => s.customChannels),smallBag);
-        this.infoCustomIdCh = this.processCustomChannel(nameof<ChannelConfig>(s => s.customIdChannels),smallBag);
+        this.infoCustomCh = this.processCustomChannels(smallBag);
+        this.infoCustomIdCh = this.processCustomIdChannels(smallBag);
     }
 
     /**
@@ -130,33 +148,60 @@ export class ChannelPrepare {
     }
 
     /**
-     * Prepare process for a custom channel.
-     * @param key
+     * Prepare process for a custom id channels.
      * @param smallBag
      */
-    private processCustomChannel(key: string,smallBag : SmallBag): Record<string,CustomChStorage> {
-        const res : Record<string,CustomChStorage> = {};
-        if (this.chConfig.hasOwnProperty(key)) {
-            const channels = this.chConfig[key];
+    private processCustomIdChannels(smallBag : SmallBag): Record<string,CustomIdChStorage> {
+        const res : Record<string,CustomIdChStorage> = {};
+        if (typeof this.chConfig.customIdChannels === 'object') {
+            const channels = this.chConfig.customIdChannels;
             for (let ch in channels) {
                 if (channels.hasOwnProperty(ch) && ch !== nameof<ChannelDefault<CustomIdCh>>(s => s.default)) {
-                    const chConfig : CustomChannelConfig = channels[ch];
-                    const cChStorage : ChStorage = this.processChannel(chConfig,smallBag);
-
-                    const subAccessInfo = ChannelPrepare.processAccessInvert(chConfig,
-                        nameof<CustomChannelConfig>(s => s.subscribeAccess),
-                        nameof<CustomChannelConfig>(s => s.subscribeNotAccess)
-                    );
-
                     res[ch] = {
-                        ...cChStorage,
-                        subscribeAccessChecker : ChAccessHelper.createSubChAccessChecker
-                        (subAccessInfo.value,subAccessInfo.inverted,smallBag)
-                    };
+                        ...this.processCustomChannel(channels[ch],smallBag),
+                        idChecker : IdCheckerUtils.createIdChecker(channels[ch],smallBag)
+                    }
                 }
             }
         }
         return res;
+    }
+
+    /**
+     * Prepare process for a custom channels.
+     * @param smallBag
+     */
+    private processCustomChannels(smallBag : SmallBag): Record<string,CustomChStorage> {
+        const res : Record<string,CustomChStorage> = {};
+        if (typeof this.chConfig.customChannels === 'object') {
+            const channels = this.chConfig.customChannels;
+            for (let ch in channels) {
+                if (channels.hasOwnProperty(ch) && ch !== nameof<ChannelDefault<CustomIdCh>>(s => s.default)) {
+                    res[ch] = this.processCustomChannel(channels[ch],smallBag);
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Prepare process for a custom channel.
+     * @param chConfig
+     * @param smallBag
+     */
+    private processCustomChannel(chConfig : CustomChannelConfig,smallBag : SmallBag): CustomChStorage {
+        const cChStorage : ChStorage = this.processChannel(chConfig,smallBag);
+
+        const subAccessInfo = ChannelPrepare.processAccessInvert(chConfig,
+            nameof<CustomChannelConfig>(s => s.subscribeAccess),
+            nameof<CustomChannelConfig>(s => s.subscribeNotAccess)
+        );
+
+        return {
+            ...cChStorage,
+            subscribeAccessChecker : ChAccessHelper.createSubChAccessChecker
+            (subAccessInfo.value,subAccessInfo.inverted,smallBag)
+        };
     }
 
     // noinspection JSMethodCanBeStatic
@@ -217,8 +262,8 @@ export class ChannelPrepare {
         return this.infoCustomIdCh.hasOwnProperty(chName);
     }
 
-    getSafeCustomIdChInfo(chName : string) : CustomChStorage {
-        return this.infoCustomIdCh[chName] || this.defaultCustomChStorage;
+    getSafeCustomIdChInfo(chName : string) : CustomIdChStorage {
+        return this.infoCustomIdCh[chName] || this.defaultCustomIdChStorage;
     }
 }
 
