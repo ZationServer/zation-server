@@ -13,6 +13,7 @@ import SmallBag               from "../../api/SmallBag";
 import ZationTokenInfo        from "../infoObjects/zationTokenInfo";
 import {ApiLevelSwitch}       from "../apiLevel/apiLevelUtils";
 import {FormatLetters}        from "../constants/validation";
+import {SystemAccessConfig, VersionAccessConfig} from "./configComponents";
 
 export interface AppConfig
 {
@@ -321,7 +322,7 @@ export type PrepareHandleFunction = (bag : Bag) => Promise<void> | void;
 
 export type ControllerAccessFunction = (smallBag : SmallBag,token : ZationTokenInfo | null) => Promise<boolean> | boolean;
 
-export interface ControllerConfig extends InputConfig
+export interface ControllerConfig extends InputConfig, VersionAccessConfig, SystemAccessConfig
 {
     /**
      * This property can be used to add functions in the prepare handle event of this controller.
