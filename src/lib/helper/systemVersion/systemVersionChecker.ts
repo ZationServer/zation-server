@@ -5,53 +5,60 @@ GitHub: LucaCode
  */
 
 import BaseSHBridge       from "../bridges/baseSHBridge";
-import BackError          from "../../api/BackError";
-import {MainBackErrors}   from "../zationBackErrors/mainBackErrors";
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../configDefinitions/appConfig";
+import {SystemAccessConfig, VersionAccessConfig} from "../configDefinitions/configComponents";
 
-export type VersionSystemAccessCheckFunction = (shBridge : BaseSHBridge) => void;
+export type VersionSystemAccessCheckFunction = (shBridge : BaseSHBridge) => boolean;
+
+type VersionCheckFunction = (version : number) => boolean;
 
 export default class SystemVersionChecker
 {
     /**
      * Returns a Closures for checking the version.
-     * @param controllerConfig
+     * @param versionAccessConfig
      */
-    static createVersionChecker(controllerConfig : ControllerConfig) : VersionSystemAccessCheckFunction {
-        const versionAccess = controllerConfig.versionAccess;
+    static createVersionChecker(versionAccessConfig : VersionAccessConfig) : VersionSystemAccessCheckFunction {
+        const versionAccess = versionAccessConfig.versionAccess;
         if(typeof versionAccess === 'object') {
-            return (shBridge) =>  {
-                const system = shBridge.getSystem();
-                if(versionAccess.hasOwnProperty(system)) {
-                    const version = shBridge.getVersion();
-                    const sVersion = versionAccess[system];
-                    if((Array.isArray(sVersion) && !sVersion.includes(version)) || (typeof sVersion === 'number' && sVersion > version)) {
-                        throw new BackError(MainBackErrors.noAccessWithVersion,{version : version});
+            const preparedVersionChecker : Record<string,VersionCheckFunction> = {};
+            for(let system in versionAccess){
+                if(versionAccess.hasOwnProperty(system)){
+                    const setting = versionAccess[system];
+                    if(Array.isArray(setting)){
+                        preparedVersionChecker[system] = (version) => {return setting.includes(version);};
+                    }
+                    else if(typeof setting === 'number'){
+                        preparedVersionChecker[system] = (version) => {return version >= setting}
                     }
                 }
             }
+            return (shBridge) =>  {
+                const system = shBridge.getSystem();
+                if(preparedVersionChecker.hasOwnProperty(system)) {
+                    return preparedVersionChecker[system](shBridge.getVersion());
+                }
+                return true;
+            }
         }
         else {
-            return () => {};
+            return () => {return true;};
         }
     }
 
     /**
      * Returns a Closures for checking the system.
-     * @param controllerConfig
+     * @param systemAccessConfig
      */
-    static createSystemChecker(controllerConfig : ControllerConfig) : VersionSystemAccessCheckFunction {
-        const systemAccess = controllerConfig.systemAccess;
+    static createSystemChecker(systemAccessConfig : SystemAccessConfig) : VersionSystemAccessCheckFunction {
+        const systemAccess = systemAccessConfig.systemAccess;
         if(Array.isArray(systemAccess)) {
             return (shBridge) =>  {
-                if(!systemAccess.includes(shBridge.getSystem())) {
-                    throw new BackError(MainBackErrors.noAccessWithSystem,{system : shBridge.getSystem()});
-                }
+                return systemAccess.includes(shBridge.getSystem());
             }
         }
         else {
-            return () => {};
+            return () => {return true;};
         }
     }
 }

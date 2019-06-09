@@ -89,11 +89,14 @@ export default class MainRequestProcessor
                 inputConsume
             } = this.controllerPrepare.getControllerPrepareData(controllerId,shBridge.getApiLevel(),isSystemController);
 
-            //Throws if access denied
-            systemAccessCheck(shBridge);
 
-            //Throws if access denied
-            versionAccessCheck(shBridge);
+            if(!systemAccessCheck(shBridge)){
+                throw new BackError(MainBackErrors.noAccessWithSystem,{system : shBridge.getSystem()});
+            }
+
+            if(!versionAccessCheck(shBridge)){
+                throw new BackError(MainBackErrors.noAccessWithVersion,{version : shBridge.getVersion()});
+            }
 
             const authEngine : AuthEngine = shBridge.getAuthEngine();
 
