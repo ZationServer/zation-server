@@ -9,6 +9,7 @@ import UpSocket         from "../sc/socket";
 import TokenUtils     from "../token/tokenUtils";
 import ObjectPath     from "../utils/objectPath";
 import ChUtils from "../channel/chUtils";
+import BaseSHBridge from "../bridges/baseSHBridge";
 
 export default class SocketInfo
 {
@@ -42,6 +43,14 @@ export default class SocketInfo
      */
     get socket(): object {
         return this._socket;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns the base sh bridge of the socket.
+     */
+    get shBridge() : BaseSHBridge {
+        return this._socket.baseSHBridge;
     }
 
     // noinspection JSUnusedGlobalSymbols
