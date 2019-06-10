@@ -27,6 +27,10 @@ import Router                       from "./lib/api/Router";
 import {Register}                   from "./lib/api/decorator/Register";
 import {AttachToRouter}             from "./lib/api/decorator/AttachToRouter";
 import {ModelConfigTranslatable,InputConfigTranslatable} from "./lib/api/ConfigTranslatable";
+import {Model}                      from "./lib/api/decorator/Model";
+import {ObjectModel}                from "./lib/api/decorator/ObjectModel";
+import {Method}                     from "./lib/api/decorator/Method";
+import {ParamInput}                 from "./lib/api/decorator/ParamInput";
 const  FsUtil : any               = require('socketcluster/fsutil');
 
 //starter
@@ -56,6 +60,10 @@ export {
         Router,
         Register,
         AttachToRouter,
+        Model,
+        Method,
+        ObjectModel,
+        ParamInput,
         Controller,
         ControllerConfig,
         Result,
