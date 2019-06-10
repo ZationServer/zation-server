@@ -262,7 +262,7 @@ CustomChItem[nameof<CustomChannelConfig>(s => s.systemAccess)]             = {ty
 CustomChItem[nameof<ChannelSettings>(s => s.socketGetOwnPublish)]          = {types : ['boolean','array'],isOptional : true};
 
 const CustomIdChItem = {};
-ObjectUtils.addObToOb(CustomChItem,CustomIdChItem);
+ObjectUtils.addObToOb(CustomIdChItem,CustomChItem);
 CustomIdChItem[nameof<CustomIdCh>(s => s.idCheck)]                         = {types : ['function'],isOptional : true};
 
 const ChannelNormalItem = {};
