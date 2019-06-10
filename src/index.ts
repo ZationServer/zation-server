@@ -26,6 +26,7 @@ import ZationMaster                 from "./lib/main/zationMaster";
 import Router                       from "./lib/api/Router";
 import {Register}                   from "./lib/api/decorator/Register";
 import {AttachToRouter}             from "./lib/api/decorator/AttachToRouter";
+import {ModelConfigTranslatable,InputConfigTranslatable} from "./lib/api/ConfigTranslatable";
 const  FsUtil : any               = require('socketcluster/fsutil');
 
 //starter
@@ -63,6 +64,8 @@ export {
         BackErrorBag,
         ErrorType,
         Config,
+        InputConfigTranslatable,
+        ModelConfigTranslatable,
         ServiceNotFoundError,
         ValidationTypes,
         AuthenticationError,

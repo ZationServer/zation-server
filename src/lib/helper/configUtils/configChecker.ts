@@ -43,6 +43,7 @@ import Iterator             from "../utils/iterator";
 import ObjectUtils          from "../utils/objectUtils";
 import ConfigLoader         from "../configManager/configLoader";
 import ControllerUtils      from "../controller/controllerUtils";
+import {isInputConfigTranslatable, isModelConfigTranslatable} from "../../api/ConfigTranslatable";
 
 export default class ConfigChecker
 {
@@ -769,7 +770,12 @@ export default class ConfigChecker
          * Check main structure with structure of controller or stream.
          */
         if(typeof inputConfig.input === 'object'){
-            const input = inputConfig.input;
+
+            let input = inputConfig.input;
+            if(isInputConfigTranslatable(input)){
+                input = input.__toInputConfig();
+            }
+
             if(Array.isArray(input)){
                 if(input.length === 1){
                     this.checkSingleInput(input[0],target);
@@ -895,6 +901,11 @@ export default class ConfigChecker
      */
     private circularCheck(value,target,mainSrc : {name : string,isObj : boolean},otherSrc : {models : string[],ex : string[]} = {models : [],ex:[]})
     {
+        if(isModelConfigTranslatable(value)){
+            this.circularCheck(value.__toModelConfig(),target,mainSrc,otherSrc);
+            return;
+        }
+
         if (typeof value === 'string') {
             if(ModelImportEngine.correctSyntax(value)) {
                 const {exist,linkedValue,name} = this.modelImportEngine.peakCheck(value);
@@ -977,6 +988,12 @@ export default class ConfigChecker
      * @param baseName
      */
     private checkModel(value, target, baseName : string | undefined = undefined) {
+
+        if(isModelConfigTranslatable(value)){
+            this.checkModel(value.__toModelConfig(),target,baseName);
+            return;
+        }
+
         if (typeof value === 'string') {
             //model link
            this.checkLink(value,target);

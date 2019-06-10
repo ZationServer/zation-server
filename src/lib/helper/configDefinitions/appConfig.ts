@@ -115,7 +115,7 @@ export interface PreCompiledAppConfig extends AppConfig{
 }
 
 export type Model =
-    ValueModelConfig | ObjectModelConfig | ArrayModelConfig | ArrayModelShortSyntax | string | AnyOfModelConfig;
+    ValueModelConfig | ObjectModelConfig | ArrayModelConfig | ArrayModelShortSyntax | string | AnyOfModelConfig | Record<string,any>;
 
 export interface AnyOfModelConfig extends ModelOptional
 {
@@ -308,7 +308,7 @@ export interface InputConfig {
     input ?: Input;
 }
 
-export type Input = ParamInput | SingleModelInput;
+export type Input = ParamInput | SingleModelInput | Record<string,any>;
 
 export interface SingleModelInput {
     [0]: Model;

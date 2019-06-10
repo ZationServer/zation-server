@@ -34,6 +34,7 @@ import InputProcessorCreator, {Processable} from "../input/inputProcessorCreator
 import {SystemController}          from "../systemController/systemControler.config";
 import OptionalProcessor           from "../input/optionalProcessor";
 import ZationConfig                from "../configManager/zationConfig";
+import {isInputConfigTranslatable, isModelConfigTranslatable} from "../../api/ConfigTranslatable";
 
 export interface ModelPreparationMem extends Processable{
     _optionalInfo : {isOptional : boolean,defaultValue : any}
@@ -337,6 +338,12 @@ export default class ConfigPreCompiler
     {
         const nowValue = obj[key];
 
+        if(isModelConfigTranslatable(nowValue)){
+            obj[key] = nowValue.__toModelConfig();
+            this.modelPreCompileStep1(key,obj);
+            return;
+        }
+
         if(typeof nowValue === 'string')
         {
             //resolve object import
@@ -619,7 +626,13 @@ export default class ConfigPreCompiler
     private preCompileInputConfig(inputConfig : InputConfig) : void {
         //array is also a object
         if(typeof inputConfig.input === 'object') {
-            const input = inputConfig.input;
+
+            let input = inputConfig.input;
+            if(isInputConfigTranslatable(input)){
+                input = input.__toInputConfig();
+                inputConfig.input = input;
+            }
+
             if(Array.isArray(input)) {
                 //resolve single input shortcut
                 // @ts-ignore
