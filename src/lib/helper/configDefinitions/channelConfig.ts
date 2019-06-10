@@ -9,7 +9,7 @@ import SmallBag             from "../../api/SmallBag";
 import PubData              from "../infoObjects/pubData";
 import CIdChInfo            from "../infoObjects/cIdChInfo";
 import CChInfo              from "../infoObjects/cChInfo";
-import {IdCheckConfig}      from "./extraConfig";
+import {IdCheckConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
 
 type AnyFunction = (...args : any[]) => Promise<any> | any
 
@@ -289,7 +289,7 @@ export type NormalChannel = ZationChannelConfig<
     >;
 
 export interface CustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub = AnyFunction,Unsub = AnyFunction,PubAccess = AnyFunction,SubAccess = AnyFunction>
-    extends ZationChannelConfig<Pub,BagPub,Sub,Unsub,PubAccess> {
+    extends ZationChannelConfig<Pub,BagPub,Sub,Unsub,PubAccess>, VersionAccessConfig, SystemAccessConfig {
     /**
      * @description
      * Set the access rule which clients are not allowed to subscribe this channel.

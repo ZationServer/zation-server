@@ -23,6 +23,7 @@ export interface VersionAccessConfig {
      * Version access defines access rules which depends on the client app version.
      * Notice that it will not check the system.
      * Look in the examples to see what possibilities you have.
+     * @default From default config otherwise all.
      * @example
      * //string
      * versionAccess : 'all'       // All clients are allowed
@@ -42,6 +43,7 @@ export interface SystemAccessConfig {
     /**
      * System access specifies access rules which depend on the system of the clients.
      * Look in the examples to see what possibilities you have.
+     * @default From default config otherwise all.
      * @example
      * //string
      * systemAccess : 'all'         // All clients are allowed

@@ -20,23 +20,26 @@ import FuncUtils, {EventInvokerSync} from "../utils/funcUtils";
 import SmallBag                      from "../../api/SmallBag";
 import IdCheckerUtils, {IdChecker}   from "../id/idCheckerUtils";
 import ChAccessHelper, {ChPubAccessChecker, ChSubAccessChecker} from "./chAccessHelper";
+import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
 
-interface Events {
+export interface Events {
     onClientPub : EventInvokerSync,
     onBagPub : EventInvokerSync,
     onSub : EventInvokerSync,
     onUnsub : EventInvokerSync
 }
 
-interface CustomChStorage extends Events, ChStorage {
+export interface CustomChStorage extends Events, ChStorage {
     subscribeAccessChecker : ChSubAccessChecker,
+    versionAccessCheck : VersionSystemAccessCheckFunction,
+    systemAccessCheck : VersionSystemAccessCheckFunction
 }
 
-interface CustomIdChStorage extends CustomChStorage {
+export interface CustomIdChStorage extends CustomChStorage {
     idChecker : IdChecker
 }
 
-interface ChStorage extends Events {
+export interface ChStorage extends Events {
     clientPublishAccessChecker : ChPubAccessChecker,
     socketGetOwnPub : boolean,
 }
@@ -87,7 +90,9 @@ export class ChannelPrepare {
     static getCustomChStorageDefaults() : CustomChStorage  {
         return {
             ...ChannelPrepare.getChStorageDefaults(),
-            subscribeAccessChecker : async () => {return  false}
+            subscribeAccessChecker : async () => {return  false},
+            versionAccessCheck : () => true,
+            systemAccessCheck : () => true
         };
     }
 
@@ -200,7 +205,9 @@ export class ChannelPrepare {
         return {
             ...cChStorage,
             subscribeAccessChecker : ChAccessHelper.createSubChAccessChecker
-            (subAccessInfo.value,subAccessInfo.inverted,smallBag)
+            (subAccessInfo.value,subAccessInfo.inverted,smallBag),
+            versionAccessCheck : SystemVersionChecker.createVersionChecker(chConfig),
+            systemAccessCheck : SystemVersionChecker.createSystemChecker(chConfig)
         };
     }
 

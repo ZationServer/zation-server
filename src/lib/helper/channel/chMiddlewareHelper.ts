@@ -5,12 +5,13 @@ GitHub: LucaCode
  */
 
 import UpSocket             from "../sc/socket";
-import {ChannelPrepare}     from "./channelPrepare";
+import {ChannelPrepare, CustomChStorage} from "./channelPrepare";
 import SmallBag             from "../../api/SmallBag";
 import ChUtils              from "./chUtils";
 import Logger               from "../logger/logger";
 import PubData              from "../infoObjects/pubData";
 import {ErrorName}          from "../constants/errorName";
+import BaseSHBridge from "../bridges/baseSHBridge";
 
 /**
  * Class for help in channel middleware by checking the
@@ -24,6 +25,26 @@ export default class ChMiddlewareHelper
     constructor(chConfigManager : ChannelPrepare, smallBag : SmallBag) {
         this.channelPrepare = chConfigManager;
         this.smallBag = smallBag;
+    }
+
+    /**
+     * Util function to check the access to the channel
+     * with the client system and version.
+     * @param shBridge
+     * @param preChInfo
+     */
+    static checkVersionSystemAccess(shBridge : BaseSHBridge, preChInfo : CustomChStorage) : Error | undefined
+    {
+        if(!preChInfo.systemAccessCheck(shBridge)){
+            const err : any = new Error(`Access to this channel with client system denied`);
+            err.name = ErrorName.NO_ACCESS_WITH_SYSTEM;
+            return err;
+        }
+        if(!preChInfo.versionAccessCheck(shBridge)){
+            const err : any = new Error(`Access to this channel with client version denied`);
+            err.name = ErrorName.NO_ACCESS_WITH_VERSION;
+            return err;
+        }
     }
 
     /**
@@ -60,8 +81,13 @@ export default class ChMiddlewareHelper
             const preChInfo = this.channelPrepare.getSafeCustomIdChInfo(name);
             const chInfo = {name,id};
 
+            const systemVersionCheck = ChMiddlewareHelper.checkVersionSystemAccess(socket.baseSHBridge,preChInfo);
+            if(systemVersionCheck) {
+                return systemVersionCheck;
+            }
+
             const idCheckRes = await preChInfo.idChecker(id);
-            if(idCheckRes !== undefined){
+            if(idCheckRes){
                 return idCheckRes;
             }
 
@@ -117,6 +143,11 @@ export default class ChMiddlewareHelper
         else {
             const preChInfo = this.channelPrepare.getSafeCustomIdChInfo(name);
             const chInfo = {name,id};
+
+            const systemVersionCheck = ChMiddlewareHelper.checkVersionSystemAccess(socket.baseSHBridge,preChInfo);
+            if(systemVersionCheck) {
+                return systemVersionCheck;
+            }
 
             const idCheckRes = await preChInfo.idChecker(id);
             if(idCheckRes !== undefined){
@@ -178,6 +209,11 @@ export default class ChMiddlewareHelper
             const preChInfo = this.channelPrepare.getSafeCustomChInfo(name);
             const chInfo = {name};
 
+            const systemVersionCheck = ChMiddlewareHelper.checkVersionSystemAccess(socket.baseSHBridge,preChInfo);
+            if(systemVersionCheck) {
+                return systemVersionCheck;
+            }
+
             if((await preChInfo.subscribeAccessChecker(
                 socket.authEngine,
                 socket.socketInfo,
@@ -225,6 +261,11 @@ export default class ChMiddlewareHelper
         else {
             const preChInfo = this.channelPrepare.getSafeCustomChInfo(name);
             const chInfo = {name : name};
+
+            const systemVersionCheck = ChMiddlewareHelper.checkVersionSystemAccess(socket.baseSHBridge,preChInfo);
+            if(systemVersionCheck) {
+                return systemVersionCheck;
+            }
 
             if((await preChInfo.clientPublishAccessChecker(
                 socket.authEngine,

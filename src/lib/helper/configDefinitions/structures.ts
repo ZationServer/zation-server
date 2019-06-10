@@ -24,7 +24,7 @@ import {StarterConfig}   from "./starterConfig";
 import {ValidationTypes} from "../constants/validationTypes";
 import {FormatLetters}   from "../constants/validation";
 import {ServiceConfig}   from "./serviceConfig";
-import {ChannelConfig, ChannelSettings, CustomChannelConfig, ZationChannelConfig} from "./channelConfig";
+import {ChannelConfig, ChannelSettings, CustomChannelConfig, CustomIdCh, ZationChannelConfig} from "./channelConfig";
 import {ServiceModule}   from "zation-service";
 import ObjectUtils       from "../utils/objectUtils";
 
@@ -248,16 +248,22 @@ const PanelUserConfig = {};
 PanelUserConfig[nameof<PanelUserConfig>(s => s.username)]     = {types : ['string'],isOptional : false};
 PanelUserConfig[nameof<PanelUserConfig>(s => s.password)]     = {types : ['string'],isOptional : false};
 
-const ChannelFullItem = {};
-ChannelFullItem[nameof<CustomChannelConfig>(s => s.clientPublishAccess)]      = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelFullItem[nameof<CustomChannelConfig>(s => s.clientPublishNotAccess)]   = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelFullItem[nameof<CustomChannelConfig>(s => s.subscribeAccess)]          = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelFullItem[nameof<CustomChannelConfig>(s => s.subscribeNotAccess)]       = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelFullItem[nameof<CustomChannelConfig>(s => s.onClientPublish)]          = {types : ['function','array'],isOptional : true};
-ChannelFullItem[nameof<CustomChannelConfig>(s => s.onBagPublish)]             = {types : ['function','array'],isOptional : true};
-ChannelFullItem[nameof<CustomChannelConfig>(s => s.onSubscription)]           = {types : ['function','array'],isOptional : true};
-ChannelFullItem[nameof<CustomChannelConfig>(s => s.onUnsubscription)]         = {types : ['function','array'],isOptional : true};
-ChannelFullItem[nameof<ChannelSettings>(s => s.socketGetOwnPublish)]          = {types : ['boolean','array'],isOptional : true};
+const CustomChItem = {};
+CustomChItem[nameof<CustomChannelConfig>(s => s.clientPublishAccess)]      = {types : ['function','boolean','number','array','string'],isOptional : true};
+CustomChItem[nameof<CustomChannelConfig>(s => s.clientPublishNotAccess)]   = {types : ['function','boolean','number','array','string'],isOptional : true};
+CustomChItem[nameof<CustomChannelConfig>(s => s.subscribeAccess)]          = {types : ['function','boolean','number','array','string'],isOptional : true};
+CustomChItem[nameof<CustomChannelConfig>(s => s.subscribeNotAccess)]       = {types : ['function','boolean','number','array','string'],isOptional : true};
+CustomChItem[nameof<CustomChannelConfig>(s => s.onClientPublish)]          = {types : ['function','array'],isOptional : true};
+CustomChItem[nameof<CustomChannelConfig>(s => s.onBagPublish)]             = {types : ['function','array'],isOptional : true};
+CustomChItem[nameof<CustomChannelConfig>(s => s.onSubscription)]           = {types : ['function','array'],isOptional : true};
+CustomChItem[nameof<CustomChannelConfig>(s => s.onUnsubscription)]         = {types : ['function','array'],isOptional : true};
+CustomChItem[nameof<CustomChannelConfig>(s => s.versionAccess)]            = {types : ['string','object'],isOptional : true};
+CustomChItem[nameof<CustomChannelConfig>(s => s.systemAccess)]             = {types : ['array'],arrayType : 'string',isOptional : true};
+CustomChItem[nameof<ChannelSettings>(s => s.socketGetOwnPublish)]          = {types : ['boolean','array'],isOptional : true};
+
+const CustomIdChItem = {};
+ObjectUtils.addObToOb(CustomChItem,CustomIdChItem);
+CustomIdChItem[nameof<CustomIdCh>(s => s.idCheck)]                         = {types : ['function'],isOptional : true};
 
 const ChannelNormalItem = {};
 ChannelNormalItem[nameof<ChannelSettings>(s => s.socketGetOwnPublish)]    = {types : ['boolean'],isOptional : true};
@@ -352,7 +358,8 @@ export const Structures = {
     ValueModel : ValueModel,
     ChannelConfig : ChannelConfig,
     ServiceConfig : ServiceConfig,
-    ChannelFullItem : ChannelFullItem,
+    CustomCh : CustomChItem,
+    CustomIdCh : CustomIdChItem,
     ChannelNormalItem : ChannelNormalItem,
     ArrayModel : ArrayModel,
     ArrayShortCutSpecify : ArrayShortCutSpecify,

@@ -271,7 +271,8 @@ export default class ConfigChecker
         let mainChannels = this.zcLoader.channelConfig;
         for (let key in mainChannels) {
             if (mainChannels.hasOwnProperty(key) && typeof mainChannels[key] === 'object') {
-                if (key === nameof<ChannelConfig>(s => s.customChannels) || key === nameof<ChannelConfig>(s => s.customIdChannels)) {
+                const isCustomIdCh = key === nameof<ChannelConfig>(s => s.customIdChannels);
+                if (key === nameof<ChannelConfig>(s => s.customChannels) || isCustomIdCh) {
                     const chPart = mainChannels[key];
                     const firstTarget = new Target(key);
                     if(typeof chPart === 'object')
@@ -279,7 +280,7 @@ export default class ConfigChecker
                         for (let chName in chPart) {
                             if (chPart.hasOwnProperty(chName)) {
                                 this.checkCustomName(chName,'channel name',firstTarget.getTarget() + ' ');
-                                this.checkFullChannelItem(chPart[chName], firstTarget, chName);
+                                this.checkCustomChannelItem(chPart[chName], firstTarget, chName, isCustomIdCh);
                             }
                         }
                     }
@@ -332,11 +333,11 @@ export default class ConfigChecker
         }
     }
 
-    private checkFullChannelItem(channel: CustomChannelConfig, firstTarget: Target, chName: string): void {
+    private checkCustomChannelItem(channel: CustomChannelConfig, firstTarget: Target, chName: string, isCustomIdCh : boolean): void {
         const mainTarget = firstTarget.addPath(chName);
 
         ConfigCheckerTools.assertStructure
-        (Structures.ChannelFullItem, channel, ConfigNames.CHANNEL, this.ceb, mainTarget);
+        (isCustomIdCh ? Structures.CustomIdCh : Structures.CustomCh, channel, ConfigNames.CHANNEL, this.ceb, mainTarget);
 
         if (typeof channel === 'object') {
             this.checkClientPubAccess(channel,mainTarget);

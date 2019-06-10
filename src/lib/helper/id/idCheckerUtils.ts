@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import SmallBag        from "../../api/SmallBag";
-import {IdCheckConfig} from "../configDefinitions/extraConfig";
+import {IdCheckConfig} from "../configDefinitions/configComponents";
 import {ErrorName}     from "../constants/errorName";
 
 export type IdChecker = (id : string) => Promise<Error | void>;
