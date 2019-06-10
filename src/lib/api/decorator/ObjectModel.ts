@@ -39,7 +39,7 @@ export const ObjectModel = (register : boolean = true, name ?: string) => {
             construct : function(smallBag) {
                 this.smallBag = smallBag;
                 for(let i = 0; i < constructMethodNames.length; i++){
-                    this[constructMethodNames[i]] = constructMethods[constructMethodNames[i]];
+                    this[constructMethodNames[i]] = constructMethods[constructMethodNames[i]].bind(this);
                 }
             }
         };
