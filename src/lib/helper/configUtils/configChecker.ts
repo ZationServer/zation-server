@@ -45,6 +45,10 @@ import ConfigLoader         from "../configManager/configLoader";
 import ControllerUtils      from "../controller/controllerUtils";
 import {isInputConfigTranslatable, isModelConfigTranslatable} from "../../api/ConfigTranslatable";
 
+export interface ModelCheckedMem {
+    _checked : boolean
+}
+
 export default class ConfigChecker
 {
     private readonly zcLoader: ConfigLoader;
@@ -1000,6 +1004,11 @@ export default class ConfigChecker
             //model array short cut
             this.checkArrayShortCut(value, target);
         } else if (typeof value === "object") {
+
+            if((value as ModelCheckedMem)._checked){
+                return;
+            }
+
             this.checkOptionalArrayWarning(value,target);
             //check input
             if (value.hasOwnProperty(nameof<ObjectModelConfig>(s => s.properties))) {
@@ -1033,6 +1042,8 @@ export default class ConfigChecker
                 //is value model
                 this.checkValueProperty(value,target,baseName);
             }
+
+            (value as ModelCheckedMem)._checked = true;
         } else {
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} wrong value type. Use a string to link to a model or an object to define an anonymous model or an array shortcut.`));
