@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {InputConfigTranslatable, ModelConfigTranslatable} from "../ConfigTranslatable";
-import {ObjectModelConfig}       from "../../helper/configDefinitions/appConfig";
-import CloneUtils                from "../../helper/utils/cloneUtils";
-import Config                    from "../Config";
+import {InputConfigTranslatable, ModelConfigTranslatable} from "../../ConfigTranslatable";
+import {ObjectModelConfig}       from "../../../helper/configDefinitions/appConfig";
+import CloneUtils                from "../../../helper/utils/cloneUtils";
+import Config                    from "../../Config";
 
 /**
  * A class decorator that can be used to mark the class as an object model.
@@ -36,6 +36,7 @@ export const ObjectModel = (register : boolean = true, name ?: string) => {
 
         const objectModel : ObjectModelConfig = {
             properties : typeof prototype['___models___'] === 'object' ? prototype['___models___'] : {},
+            ...(prototype['___extends___'] !== undefined ? {extends : prototype['___extends___']} : {}),
             construct : function(smallBag) {
                 this.smallBag = smallBag;
                 for(let i = 0; i < constructMethodNames.length; i++){

@@ -24,13 +24,14 @@ import {StarterConfig}              from "./lib/helper/configDefinitions/starter
 import {StartMode}                  from "./lib/helper/constants/startMode";
 import ZationMaster                 from "./lib/main/zationMaster";
 import Router                       from "./lib/api/Router";
-import {Register}                   from "./lib/api/decorator/Register";
-import {AttachToRouter}             from "./lib/api/decorator/AttachToRouter";
+import {Register}                   from "./lib/api/decorator/controller/Register";
+import {AttachToRouter}             from "./lib/api/decorator/controller/AttachToRouter";
 import {ModelConfigTranslatable,InputConfigTranslatable} from "./lib/api/ConfigTranslatable";
-import {Model}                      from "./lib/api/decorator/Model";
-import {ObjectModel}                from "./lib/api/decorator/ObjectModel";
-import {Method}                     from "./lib/api/decorator/Method";
-import {ParamInput}                 from "./lib/api/decorator/ParamInput";
+import {Model}                      from "./lib/api/decorator/input/Model";
+import {ObjectModel}                from "./lib/api/decorator/input/ObjectModel";
+import {Method}                     from "./lib/api/decorator/input/Method";
+import {ParamInput}                 from "./lib/api/decorator/input/ParamInput";
+import {Extends}                    from "./lib/api/decorator/input/Extends";
 const  FsUtil : any               = require('socketcluster/fsutil');
 
 //starter
@@ -62,6 +63,7 @@ export {
         AttachToRouter,
         Model,
         Method,
+        Extends,
         ObjectModel,
         ParamInput,
         Controller,

@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Config                        from "../Config";
-import Controller, {ControllerClass} from "../Controller";
-import ConfigBuildError               from "../../helper/configManager/configBuildError";
+import Config                        from "../../Config";
+import Controller, {ControllerClass} from "../../Controller";
+import ConfigBuildError               from "../../../helper/configManager/configBuildError";
 
 /**
  * Register a controller in the app config.

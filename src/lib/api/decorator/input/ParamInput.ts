@@ -4,8 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {InputConfigTranslatable} from "../ConfigTranslatable";
-import {ParamInput as ParamInputConfig} from "../../helper/configDefinitions/appConfig";
+import {InputConfigTranslatable} from "../../ConfigTranslatable";
+import {ParamInput as ParamInputConfig} from "../../../helper/configDefinitions/appConfig";
 
 /**
  * A class decorator that will mark the class as a param based input config.

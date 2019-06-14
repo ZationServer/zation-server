@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Controller, {ControllerClass} from "../Controller";
-import Router                        from "../Router";
-import ConfigBuildError               from "../../helper/configManager/configBuildError";
+import Controller, {ControllerClass} from "../../Controller";
+import Router                        from "../../Router";
+import ConfigBuildError               from "../../../helper/configManager/configBuildError";
 
 /**
  * Attach a controller to a router.

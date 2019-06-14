@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ConfigBuildError from "../../helper/configManager/configBuildError";
+import ConfigBuildError from "../../../helper/configManager/configBuildError";
 
 /**
  * A method decorator that will mark that
