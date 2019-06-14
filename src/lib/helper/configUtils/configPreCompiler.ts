@@ -315,16 +315,14 @@ export default class ConfigPreCompiler
     private preCompileArrayShortSyntax(key : string,obj : object) : void
     {
         const nowValue = obj[key];
-        if(Array.isArray(nowValue))
-        {
-            const inArray = nowValue[0];
+        if(Array.isArray(nowValue)) {
             let arrayExtras = {};
 
             if(nowValue.length === 2 && typeof nowValue[1] === 'object') {
                 arrayExtras = nowValue[1];
             }
             obj[key] = arrayExtras;
-            obj[key][nameof<ArrayModelConfig>(s => s.array)] = inArray;
+            obj[key][nameof<ArrayModelConfig>(s => s.array)] = nowValue[0];
         }
     }
 
@@ -485,11 +483,11 @@ export default class ConfigPreCompiler
                     const currentConvert = value[nameof<ObjectModelConfig>(s => s.convert)];
                     if(typeof currentConvert === 'function') {
                         value[nameof<ObjectModelConfig>(s => s.convert)] = async (obj, smallBag) => {
-                            return await currentConvert(await superConvert(obj,smallBag),smallBag);
+                            return currentConvert(await superConvert(obj,smallBag),smallBag);
                         };
                     }else {
                         value[nameof<ObjectModelConfig>(s => s.convert)] = async (obj, smallBag) => {
-                            return await superConvert(obj,smallBag);
+                            return superConvert(obj, smallBag);
                         };
                     }
 
@@ -624,9 +622,7 @@ export default class ConfigPreCompiler
     }
 
     private preCompileInputConfig(inputConfig : InputConfig) : void {
-        //array is also a object
-        if(typeof inputConfig.input === 'object') {
-
+        if(inputConfig.input) {
             let input = inputConfig.input;
             if(isInputConfigTranslatable(input)){
                 input = input.__toInputConfig();

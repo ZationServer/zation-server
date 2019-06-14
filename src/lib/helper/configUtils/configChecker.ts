@@ -769,8 +769,7 @@ export default class ConfigChecker
         /**
          * Check main structure with structure of controller or stream.
          */
-        if(typeof inputConfig.input === 'object'){
-
+        if(inputConfig.input){
             let input = inputConfig.input;
             if(isInputConfigTranslatable(input)){
                 input = input.__toInputConfig();
