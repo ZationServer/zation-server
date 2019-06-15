@@ -14,6 +14,7 @@ import ZationTokenInfo        from "../infoObjects/zationTokenInfo";
 import {ApiLevelSwitch}       from "../apiLevel/apiLevelUtils";
 import {FormatLetters}        from "../constants/validation";
 import {SystemAccessConfig, VersionAccessConfig} from "./configComponents";
+import {InputConfigTranslatable, ModelConfigTranslatable} from "../../..";
 
 export interface AppConfig
 {
@@ -115,7 +116,7 @@ export interface PreCompiledAppConfig extends AppConfig{
 }
 
 export type Model =
-    ValueModelConfig | ObjectModelConfig | ArrayModelConfig | ArrayModelShortSyntax | string | AnyOfModelConfig | Record<string,any>;
+    ValueModelConfig | ObjectModelConfig | ArrayModelConfig | ArrayModelShortSyntax | string | AnyOfModelConfig | AnyClass | AnyModelConfigTranslatable;
 
 export interface AnyOfModelConfig extends ModelOptional
 {
@@ -308,7 +309,7 @@ export interface InputConfig {
     input ?: Input;
 }
 
-export type Input = ParamInput | SingleModelInput | Record<string,any>;
+export type Input = ParamInput | SingleModelInput | AnyClass | AnyInputConfigTranslatable;
 
 export interface SingleModelInput {
     [0]: Model;
@@ -802,4 +803,18 @@ export interface ArrayModelShortSyntax extends Array<Model | ArraySettings | und
      * @default {}
      */
     1 ?: ArraySettings
+}
+
+interface AnyClass {
+    prototype : object,
+    new () : any
+    [key : string] : any;
+}
+
+interface AnyInputConfigTranslatable extends InputConfigTranslatable {
+    [key : string] : any;
+}
+
+interface AnyModelConfigTranslatable extends ModelConfigTranslatable {
+    [key : string] : any;
 }

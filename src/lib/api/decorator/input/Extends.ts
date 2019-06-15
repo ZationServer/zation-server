@@ -5,6 +5,7 @@ GitHub: LucaCode
  */
 
 import ConfigBuildError from "../../../helper/configManager/configBuildError";
+import {InDecoratorMem} from "./InDecoratorMem";
 
 /**
  * A class decorator that can be used to add a
@@ -15,14 +16,14 @@ import ConfigBuildError from "../../../helper/configManager/configBuildError";
  */
 export const Extends = (objectModelName : string) => {
     return (target : any) => {
-        const prototype = target.prototype;
+        const prototype : InDecoratorMem = target.prototype;
 
-        if(prototype['___extends___'] === undefined){
-            prototype['___extends___'] = objectModelName;
+        if(prototype.___extends___ === undefined){
+            prototype.___extends___ = objectModelName;
         }
         else {
             throw new ConfigBuildError
-            (`Can not add an extension (${objectModelName}) to object model when it already has an extension (${prototype['___extends___']}).`);
+            (`Can not add an extension (${objectModelName}) to object model when it already has an extension (${prototype.___extends___}).`);
         }
     }
 };

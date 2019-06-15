@@ -483,7 +483,7 @@ export default class ConfigPreCompiler
                     const currentConvert = value[nameof<ObjectModelConfig>(s => s.convert)];
                     if(typeof currentConvert === 'function') {
                         value[nameof<ObjectModelConfig>(s => s.convert)] = async (obj, smallBag) => {
-                            return currentConvert(await superConvert(obj,smallBag),smallBag);
+                            return currentConvert((await superConvert(obj,smallBag)),smallBag);
                         };
                     }else {
                         value[nameof<ObjectModelConfig>(s => s.convert)] = async (obj, smallBag) => {
