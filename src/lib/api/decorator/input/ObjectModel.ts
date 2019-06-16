@@ -49,17 +49,26 @@ export const ObjectModel = (register : boolean = true, name ?: string) => {
             }
         };
 
-        (target as ModelConfigTranslatable).__toModelConfig = () => {
-            return objectModel;
-        };
-
-        (target as InputConfigTranslatable).__toInputConfig = () => {
-            return [objectModel];
-        };
-
         if(register) {
             const regName = typeof name === 'string' ? name : target.name;
             Config.defineModel(regName,objectModel);
+
+            (target as ModelConfigTranslatable).__toModelConfig = () => {
+                return regName;
+            };
+
+            (target as InputConfigTranslatable).__toInputConfig = () => {
+                return [regName];
+            };
+        }
+        else {
+            (target as ModelConfigTranslatable).__toModelConfig = () => {
+                return objectModel;
+            };
+
+            (target as InputConfigTranslatable).__toInputConfig = () => {
+                return [objectModel];
+            };
         }
     }
 };
