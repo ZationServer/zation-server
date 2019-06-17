@@ -134,16 +134,7 @@ export default class ZationMaster {
         }
 
         Logger.startStopWatch();
-        await this.zcLoader.loadOtherConfigs();
-
-        if(this.zcLoader.loadedConfigs.length > 0) {
-            const moreConfigs = this.zcLoader.loadedConfigs.length>1;
-            Logger.printDebugInfo
-            (`The configuration${moreConfigs ? 's' : ''}: ${this.zcLoader.loadedConfigs.toString()} ${moreConfigs ? 'are' : 'is'} loaded.`);
-        }
-        else {
-            Logger.printDebugInfo(`No config file with root path: '${this.zc.rootPath}' was found.`)
-        }
+        await this.configFileLoad();
         Logger.printStartDebugInfo(`The Master has loaded the other config files.`, true);
 
         if(this.zc.starterConfig.checkConfigs) {
@@ -206,6 +197,19 @@ export default class ZationMaster {
         Logger.printStartDebugInfo(`Checked starter config.`, true);
 
         Logger.startStopWatch();
+        await this.configFileLoad();
+        Logger.printStartDebugInfo(`Loaded the other config files.`, true);
+
+        Logger.startStopWatch();
+        configChecker.checkAllConfigs();
+        if (configErrorBag.hasConfigError()) {
+            Logger.printConfigErrorBag(configErrorBag);
+            process.exit();
+        }
+        Logger.log('\x1b[32m%s\x1b[0m', '   [CHECKED]','✅ No configuration errors found.');
+    }
+
+    public async configFileLoad() {
         await this.zcLoader.loadOtherConfigs();
 
         if(this.zcLoader.loadedConfigs.length > 0) {
@@ -216,15 +220,6 @@ export default class ZationMaster {
         else {
             Logger.printDebugInfo(`No config file with root path: '${this.zc.rootPath}' was found.`)
         }
-        Logger.printStartDebugInfo(`Loaded the other config files.`, true);
-
-        Logger.startStopWatch();
-        configChecker.checkAllConfigs();
-        if (configErrorBag.hasConfigError()) {
-            Logger.printConfigErrorBag(configErrorBag);
-            process.exit();
-        }
-        Logger.log('\x1b[32m%s\x1b[0m', '   [CHECKED]','✅ No configuration errors found.');
     }
 
     public startSocketClusterWithLog() {
