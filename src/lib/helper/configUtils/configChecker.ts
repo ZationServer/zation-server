@@ -462,7 +462,7 @@ export default class ConfigChecker
                 this.checkObjExtendResolve(target,srcTarget,this.modelsConfig[value],srcObjModel,processInfo,true);
             }
             else {
-                if(!beforeReqModel){
+                if(processInfo.baseModelLevel){
                     this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                         `${target.getTarget()} the inheritance dependency to object model: '${value}' can not be resolved, Object model not found.`));
                 }
@@ -480,7 +480,7 @@ export default class ConfigChecker
                 }
 
                 if(!ConfigChecker.isObjModel(res)){
-                    if(!beforeReqModel){
+                    if(processInfo.baseModelLevel){
                         this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                             `${target.getTarget()} an object model can only extend an object model.`));
                     }
@@ -499,7 +499,7 @@ export default class ConfigChecker
                         this.checkOverrideProp(srcObjModel.properties,res,target,srcTarget);
 
                         //Check only new anonymous object models.
-                        if(!beforeReqModel && !(res as ModelCheckedMem)._checked){
+                        if(processInfo.baseModelLevel && !(res as ModelCheckedMem)._checked){
                             this.checkObject(res,target,false,false);
                             (res as ModelCheckedMem)._checked = true;
                         }
@@ -1217,7 +1217,7 @@ export default class ConfigChecker
                 this.checkProcessValueInheritance(target,this.modelsConfig[value],srcValueModel,processInfo,true);
             }
             else {
-                if(!beforeRegModel){
+                if(processInfo.baseModelLevel){
                     this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                         `${target.getTarget()} the inheritance dependency to value model: '${value}' can not be resolved, Value model not found.`));
                 }
@@ -1235,7 +1235,7 @@ export default class ConfigChecker
                 }
 
                 if(!ConfigChecker.isValueModel(res)){
-                    if(!beforeRegModel){
+                    if(processInfo.baseModelLevel){
                         this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                             `${target.getTarget()} a value model can only extend a value model.`));
                     }
@@ -1254,7 +1254,7 @@ export default class ConfigChecker
                         ObjectUtils.addObToOb(srcValueModel,res);
 
                         //Check only new anonymous value models.
-                        if(!beforeRegModel && !(res as ModelCheckedMem)._checked){
+                        if(processInfo.baseModelLevel && !(res as ModelCheckedMem)._checked){
                             this.checkValueProperty(res,target,false,false);
                             (res as ModelCheckedMem)._checked = true;
                         }
