@@ -133,7 +133,7 @@ export default class TokenUtils
      * @param zc
      * @param jwtOptions
      */
-    static async verifyToken(signedToken,zc : ZationConfigFull,jwtOptions : JwtVerifyOptions = {})
+    static async verifyToken(signedToken,zc : ZationConfigFull,jwtOptions : JwtVerifyOptions = {}) : Promise<Record<string,any>>
     {
         return new Promise((resolve, reject) =>
         {

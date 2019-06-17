@@ -496,7 +496,7 @@ export default class SmallBag {
      *
      */
     async getAsymmetricKeyPair(): Promise<AsymmetricKeyPairs> {
-        return await crypto2.createKeyPair();
+        return crypto2.createKeyPair();
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -509,7 +509,7 @@ export default class SmallBag {
      * @param publicKey
      */
     async asymmetricEncrypt(message: string, publicKey: string): Promise<string> {
-        return await crypto2.encrypt.rsa(message, publicKey);
+        return crypto2.encrypt.rsa(message, publicKey);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -522,7 +522,7 @@ export default class SmallBag {
      * @param privateKey
      */
     async asymmetricDecrypt(encryptedMessage: string, privateKey: string): Promise<string> {
-        return await crypto2.decrypt.rsa(encryptedMessage, privateKey);
+        return crypto2.decrypt.rsa(encryptedMessage, privateKey);
     }
 
     //Symmetric Encryption
@@ -535,7 +535,7 @@ export default class SmallBag {
      * @param secret
      */
     async generatePassword(secret: String = this.generateRandomString()): Promise<string> {
-        return await crypto2.createPassword(secret);
+        return crypto2.createPassword(secret);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -546,7 +546,7 @@ export default class SmallBag {
      * const password = await generateIv();
      */
     async generateIv(): Promise<string> {
-        return await crypto2.createIv();
+        return crypto2.createIv();
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -560,7 +560,7 @@ export default class SmallBag {
      * @param iv
      */
     async symmetricEncrypt(message: string, password: string, iv: string): Promise<string> {
-        return await crypto2.encrypt.aes256cbc(message, password, iv);
+        return crypto2.encrypt.aes256cbc(message, password, iv);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -574,7 +574,7 @@ export default class SmallBag {
      * @param iv
      */
     async symmetricDecrypt(encryptedMessage: string, password: string, iv: string): Promise<string> {
-        return await crypto2.decrypt.aes256cbc(encryptedMessage, password, iv);
+        return crypto2.decrypt.aes256cbc(encryptedMessage, password, iv);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -588,7 +588,7 @@ export default class SmallBag {
      */
     async asymmetricSign(message: string, privateKey: string): Promise<string> {
         // noinspection TypeScriptValidateJSTypes
-        return await crypto2.sign(message, privateKey);
+        return crypto2.sign(message, privateKey);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -603,7 +603,7 @@ export default class SmallBag {
      */
     async asymmetricVerify(message: string, publicKey: string, signature: string): Promise<boolean> {
         // noinspection TypeScriptValidateJSTypes
-        return await crypto2.verify(message, publicKey, signature);
+        return crypto2.verify(message, publicKey, signature);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -642,7 +642,7 @@ export default class SmallBag {
      * @param jwtOptions
      */
     async signToken(data: object, jwtOptions: JwtSignOptions = {}): Promise<string> {
-        return await TokenUtils.signToken(data, this.zc, jwtOptions);
+        return TokenUtils.signToken(data, this.zc, jwtOptions);
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
@@ -658,7 +658,7 @@ export default class SmallBag {
      * @throws BackError with names: tokenExpiredError, jsonWebTokenError or unknownTokenVerifyError.
      */
     async verifyToken(signedToken: string, jwtOptions: JwtVerifyOptions = {}): Promise<Record<string, any>> {
-        return await TokenUtils.verifyToken(signedToken, this.zc, jwtOptions);
+        return TokenUtils.verifyToken(signedToken, this.zc, jwtOptions);
     }
 
     //Part Socket Channel
@@ -677,7 +677,7 @@ export default class SmallBag {
      * If this param is undefined, will be published anonymously.
      */
     async publishInUserCh(userId: string | number | (number | string)[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return await this.exchangeEngine.publishInUserCh(userId, eventName, data, srcSocketSid);
+        return this.exchangeEngine.publishInUserCh(userId, eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -694,7 +694,7 @@ export default class SmallBag {
      * If this param is undefined, will be published anonymously.
      */
     async pubUserCh(userId: string | number | (number | string)[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return await this.publishInUserCh(userId, eventName, data, srcSocketSid)
+        return this.publishInUserCh(userId, eventName, data, srcSocketSid)
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -709,7 +709,7 @@ export default class SmallBag {
      * If this param is undefined, will be published anonymously.
      */
     async publishInAllCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return await this.exchangeEngine.publishInAllCh(eventName, data, srcSocketSid);
+        return this.exchangeEngine.publishInAllCh(eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -724,7 +724,7 @@ export default class SmallBag {
      * If this param is undefined, will be published anonymously.
      */
     async pubAllCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return await this.publishInAllCh(eventName, data, srcSocketSid);
+        return this.publishInAllCh(eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -741,7 +741,7 @@ export default class SmallBag {
      * If this param is undefined, will be published anonymously.
      */
     async publishInAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return await this.exchangeEngine.publishInAuthUserGroupCh(authUserGroup, eventName, data, srcSocketSid);
+        return this.exchangeEngine.publishInAuthUserGroupCh(authUserGroup, eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -758,7 +758,7 @@ export default class SmallBag {
      * If this param is undefined, will be published anonymously.
      */
     async pubAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return await this.publishInAuthUserGroupCh(authUserGroup, eventName, data, srcSocketSid);
+        return this.publishInAuthUserGroupCh(authUserGroup, eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -773,7 +773,7 @@ export default class SmallBag {
      * If this param is undefined, will be published anonymously.
      */
     async publishInDefaultUserGroupCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return await this.exchangeEngine.publishInDefaultUserGroupCh(eventName, data, srcSocketSid);
+        return this.exchangeEngine.publishInDefaultUserGroupCh(eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -788,7 +788,7 @@ export default class SmallBag {
      * If this param is undefined, will be published anonymously.
      */
     async pubDefaultUserGroupCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return await this.publishInDefaultUserGroupCh(eventName, data, srcSocketSid);
+        return this.publishInDefaultUserGroupCh(eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -803,7 +803,7 @@ export default class SmallBag {
      * If this param is undefined, will be published anonymously.
      */
     async publishInAllAuthUserGroupsCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return await this.exchangeEngine.publishInAllAuthUserGroupCh(eventName, data, srcSocketSid);
+        return this.exchangeEngine.publishInAllAuthUserGroupCh(eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -818,7 +818,7 @@ export default class SmallBag {
      * If this param is undefined, will be published anonymously.
      */
     async pubAllAuthUserGroupsCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return await this.publishInAllAuthUserGroupsCh(eventName, data, srcSocketSid);
+        return this.publishInAllAuthUserGroupsCh(eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -835,7 +835,7 @@ export default class SmallBag {
      * If this param is undefined, will be published anonymously.
      */
     async publishInCustomIdCh(channel: string, id: string, eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return await this.exchangeEngine.publishInCustomIdChannel(channel, id, eventName, data, srcSocketSid);
+        return this.exchangeEngine.publishInCustomIdChannel(channel, id, eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -852,7 +852,7 @@ export default class SmallBag {
      * If this param is undefined, will be published anonymously.
      */
     async pubCustomIdCh(channel: string, id: string, eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return await this.publishInCustomIdCh(channel, id, eventName, data, srcSocketSid);
+        return this.publishInCustomIdCh(channel, id, eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -886,7 +886,7 @@ export default class SmallBag {
      * If this param is undefined, will be published anonymously.
      */
     async pubCustomCh(channel: string | string[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return await this.publishInCustomCh(channel, eventName, data, srcSocketSid);
+        return this.publishInCustomCh(channel, eventName, data, srcSocketSid);
     }
 
     //Part Custom Services
@@ -900,7 +900,7 @@ export default class SmallBag {
      * @param  configName Default: 'default'
      */
     async getService<S>(serviceName: string, configName: string = 'default'): Promise<S> {
-        return await this.serviceEngine.getService<S>(serviceName, configName);
+        return this.serviceEngine.getService<S>(serviceName, configName);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1113,7 +1113,7 @@ export default class SmallBag {
      * @param init
      */
     async fetch(url: string | Request, init?: RequestInit): Promise<Response> {
-        return await fetch(url, init);
+        return fetch(url, init);
     }
 
     //Part Channel KickOut

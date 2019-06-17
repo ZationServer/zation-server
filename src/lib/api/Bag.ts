@@ -1479,7 +1479,7 @@ export default class Bag extends SmallBag
     async publishInUserCh(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
         const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
-        return await this.exchangeEngine.publishInUserCh
+        return this.exchangeEngine.publishInUserCh
         (userId,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
@@ -1499,7 +1499,7 @@ export default class Bag extends SmallBag
      */
     async pubUserCh(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.publishInUserCh(userId,eventName,data,srcSocketSid);
+        return this.publishInUserCh(userId,eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1517,7 +1517,7 @@ export default class Bag extends SmallBag
     async publishInAllCh(eventName : string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
         const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
-        return await this.exchangeEngine.publishInAllCh
+        return this.exchangeEngine.publishInAllCh
         (eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
@@ -1535,7 +1535,7 @@ export default class Bag extends SmallBag
      */
     async pubAllCh(eventName : string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.publishInAllCh(eventName,data,srcSocketSid);
+        return this.publishInAllCh(eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1555,7 +1555,7 @@ export default class Bag extends SmallBag
     async publishInAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
         const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
-        return await this.exchangeEngine.publishInAuthUserGroupCh
+        return this.exchangeEngine.publishInAuthUserGroupCh
         (authUserGroup,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
@@ -1575,7 +1575,7 @@ export default class Bag extends SmallBag
      */
     async pubAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.publishInAuthUserGroupCh(authUserGroup,eventName,data,srcSocketSid);
+        return this.publishInAuthUserGroupCh(authUserGroup,eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1593,7 +1593,7 @@ export default class Bag extends SmallBag
     async publishInDefaultUserGroupCh(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
         const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
-        return await this.exchangeEngine.publishInDefaultUserGroupCh
+        return this.exchangeEngine.publishInDefaultUserGroupCh
         (eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
@@ -1611,7 +1611,7 @@ export default class Bag extends SmallBag
      */
     async pubDefaultUserGroupCh(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.publishInDefaultUserGroupCh(eventName,data,srcSocketSid);
+        return this.publishInDefaultUserGroupCh(eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1629,7 +1629,7 @@ export default class Bag extends SmallBag
     async publishInAllAuthUserGroupsCh(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
         const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
-        return await this.exchangeEngine.publishInAllAuthUserGroupCh
+        return this.exchangeEngine.publishInAllAuthUserGroupCh
         (eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
@@ -1647,7 +1647,7 @@ export default class Bag extends SmallBag
      */
     async pubAllAuthUserGroupsCh(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.publishInAllAuthUserGroupsCh(eventName,data,srcSocketSid);
+        return this.publishInAllAuthUserGroupsCh(eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1667,7 +1667,7 @@ export default class Bag extends SmallBag
     async publishInCustomIdCh(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
         const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
-        return await this.exchangeEngine.publishInCustomIdChannel
+        return this.exchangeEngine.publishInCustomIdChannel
         (channel,id,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
@@ -1687,7 +1687,7 @@ export default class Bag extends SmallBag
      */
     async pubCustomIdCh(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.publishInCustomIdCh(channel,id,eventName,data,srcSocketSid);
+        return this.publishInCustomIdCh(channel,id,eventName,data,srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1727,7 +1727,7 @@ export default class Bag extends SmallBag
      */
     async pubCustomCh(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        return await this.publishInCustomCh(channel,eventName,data,srcSocketSid);
+        return this.publishInCustomCh(channel,eventName,data,srcSocketSid);
     }
 
     private _processSrcSocketSid(srcSocketSid : string | null | undefined) : undefined | string {
