@@ -686,8 +686,8 @@ export interface ModelOptional {
 }
 
 export type ObjectProperties = Record<string,Model>;
-export type ConvertObjectFunction = (obj: any, smallBag : SmallBag) => Promise<any> | any;
-export type ConstructObjectFunction = (this : any, smallBag : SmallBag) => Promise<void> | void;
+export type ConvertObjectFunction = (obj: Record<string,any>, smallBag : SmallBag) => Promise<any> | any;
+export type ConstructObjectFunction = (this : Record<string,any>, smallBag : SmallBag) => Promise<void> | void;
 
 export interface ObjectModelConfig extends ModelOptional
 {
