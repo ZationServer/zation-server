@@ -13,8 +13,13 @@ import SmallBag               from "../../api/SmallBag";
 import ZationTokenInfo        from "../infoObjects/zationTokenInfo";
 import {ApiLevelSwitch}       from "../apiLevel/apiLevelUtils";
 import {FormatLetters}        from "../constants/validation";
-import {SystemAccessConfig, VersionAccessConfig} from "./configComponents";
-import {InputConfigTranslatable, ModelConfigTranslatable} from "../../..";
+import {
+    AnyClass,
+    AnyInputConfigTranslatable,
+    AnyModelConfigTranslatable,
+    SystemAccessConfig,
+    VersionAccessConfig
+} from "./configComponents";
 
 export interface AppConfig
 {
@@ -663,7 +668,7 @@ export interface ValueModelConfig extends ModelOptional
      * @example
      * extends : 'personName'
      */
-    extends ?: string;
+    extends ?: string | ValueModelConfig | AnyModelConfigTranslatable | AnyClass;
 }
 
 export interface ModelOptional {
@@ -708,7 +713,7 @@ export interface ObjectModelConfig extends ModelOptional
      * @example
      * extends : 'person'
      */
-    extends  ?: string;
+    extends  ?: string | ObjectModelConfig | AnyModelConfigTranslatable | AnyClass;
     /**
      * Set the prototype of the input object to a specific prototype.
      * @example
@@ -803,18 +808,4 @@ export interface ArrayModelShortSyntax extends Array<Model | ArraySettings | und
      * @default {}
      */
     1 ?: ArraySettings
-}
-
-interface AnyClass {
-    prototype : object,
-    new () : any
-    [key : string] : any;
-}
-
-interface AnyInputConfigTranslatable extends InputConfigTranslatable {
-    [key : string] : any;
-}
-
-interface AnyModelConfigTranslatable extends ModelConfigTranslatable {
-    [key : string] : any;
 }

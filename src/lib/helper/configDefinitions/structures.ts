@@ -56,7 +56,7 @@ ServiceModule[nameof<ServiceModuleDefault>(s => s.service)]        = {types : ['
 const ObjectModel = {};
 ObjectModel[nameof<ObjectModelConfig>(s => s.properties)] = {types : ['object'],isOptional : false};
 ObjectModel[nameof<ObjectModelConfig>(s => s.construct)]  = {types : ['function'],isOptional : true};
-ObjectModel[nameof<ObjectModelConfig>(s => s.extends)]    = {types : ['string'],isOptional : true};
+ObjectModel[nameof<ObjectModelConfig>(s => s.extends)]    = {types : ['string','object','function'],isOptional : true};
 ObjectModel[nameof<ObjectModelConfig>(s => s.isOptional)] = {types : ['boolean'],isOptional: true};
 ObjectModel[nameof<ObjectModelConfig>(s => s.default)]    = {types : ['string','array','number','boolean','object','function'],isOptional : true};
 ObjectModel[nameof<ObjectModelConfig>(s => s.prototype)]  = {types : ['object'],isOptional : true};
@@ -206,7 +206,7 @@ const ValueModel = {};
 ValueModel[nameof<ValueModelConfig>(s => s.isOptional)]   = {types : ['boolean'],isOptional : true};
 ValueModel[nameof<ValueModelConfig>(s => s.default)]      = {types : ['string','array','number','boolean','object','function'],isOptional : true};
 ValueModel[nameof<ValueModelConfig>(s => s.convert)]      = {types : ['function'],isOptional : true};
-ValueModel[nameof<ValueModelConfig>(s => s.extends)]      = {types : ['string'],isOptional : true};
+ValueModel[nameof<ValueModelConfig>(s => s.extends)]      = {types : ['string','object','function'],isOptional : true};
 ValueModel[nameof<ValueModelConfig>(s => s.type)]         = {types : ['string','array'],isOptional : true,enum:allValidationTypes};
 ValueModel[nameof<ValueModelConfig>(s => s.strictType)]   = {types : ['boolean'],isOptional : true};
 ValueModel[nameof<ValueModelConfig>(s => s.convertType)]  = {types : ['boolean'],isOptional : true};

@@ -29,7 +29,7 @@ import {
     OnlyStringFunctions,
     TypeTypes
 } from "../constants/validation";
-import ModelImportEngine    from "./modelImportEngine";
+import ModelResolveEngine    from "./modelResolveEngine";
 import ConfigErrorBag       from "./configErrorBag";
 import ConfigCheckerTools   from "./configCheckerTools";
 import {Structures}         from "../configDefinitions/structures";
@@ -43,7 +43,8 @@ import Iterator             from "../utils/iterator";
 import ObjectUtils          from "../utils/objectUtils";
 import ConfigLoader         from "../configManager/configLoader";
 import ControllerUtils      from "../controller/controllerUtils";
-import {isInputConfigTranslatable, isModelConfigTranslatable} from "../../api/ConfigTranslatable";
+import {isInputConfigTranslatable} from "../../api/ConfigTranslatable";
+import ResolveUtils from "./resolveUtils";
 
 export interface ModelCheckedMem {
     _checked : boolean
@@ -59,7 +60,7 @@ export default class ConfigChecker
     private bagExPropNames : string[] = [];
     private serviceNames : string[] = [];
 
-    private modelImportEngine : ModelImportEngine;
+    private modelImportEngine : ModelResolveEngine;
 
     constructor(zationConfigLoader, configErrorBag) {
         this.zcLoader = zationConfigLoader;
@@ -80,7 +81,7 @@ export default class ConfigChecker
     private prepare() {
         this.prepareAllValidUserGroupsAndCheck();
         this.modelsConfig = typeof this.zcLoader.appConfig.models === 'object' ? this.zcLoader.appConfig.models : {};
-        this.modelImportEngine = new ModelImportEngine(this.modelsConfig);
+        this.modelImportEngine = new ModelResolveEngine(this.modelsConfig);
     }
 
     private checkAppBagExtensions()
@@ -394,8 +395,8 @@ export default class ConfigChecker
                 // noinspection SuspiciousTypeOfGuard
                 if(Array.isArray(model) || typeof model === 'object' || typeof model === 'string') {
                     const target = new Target(`Models: ${name}`);
-                    this.checkModel(model,target,name);
-                    this.circularCheck(model,target,{name : name,isObj : ConfigChecker.isObjModel(model)});
+                    this.checkModel(model,target,true);
+                    this.circularCheck(model,target,{name : name,model,isObj : ConfigChecker.isObjModel(model)});
                 }
                 else {
                     this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
@@ -405,7 +406,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkObject(obj: ObjectModelConfig, target: Target) {
+    private checkObject(obj: ObjectModelConfig, target: Target,mainModel : boolean,inheritanceCheck : boolean = true) {
         ConfigCheckerTools.assertStructure(Structures.ObjectModel, obj, ConfigNames.APP, this.ceb, target);
         const prototype = typeof obj.prototype === 'object' ? obj.prototype : {};
         //check property body and prototype property name problem
@@ -424,8 +425,9 @@ export default class ConfigChecker
             }
         }
         //check for extend
-        if (typeof obj.extends === 'string') {
-            this.checkObjExtendResolve(obj.properties,obj.extends,target);
+        if (obj.extends !== undefined && inheritanceCheck) {
+            this.checkObjExtendResolve
+            (target,target,obj.extends,obj,{otherSrc : [], regModel : mainModel,baseModelLevel : true});
         }
     }
 
@@ -433,7 +435,7 @@ export default class ConfigChecker
         return typeof obj === 'object' && typeof obj[nameof<ObjectModelConfig>(s => s.properties)] === 'object';
     }
 
-    private static isValueModel(obj : any) : boolean {
+    private static isValueModel(obj : any) : obj is ValueModelConfig {
         return typeof obj === 'object' &&
             obj[nameof<ObjectModelConfig>(s => s.properties)] === undefined &&
             obj[nameof<ArrayModelConfig>(s => s.array)] === undefined &&
@@ -449,46 +451,75 @@ export default class ConfigChecker
         );
     }
 
-    private checkObjExtendResolve(objProps,objExtendName, target) {
-        if (!this.modelsConfig.hasOwnProperty(objExtendName)) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                `${target.getTarget()} the inheritance dependency to object model: '${objExtendName}' can not be resolved, Object model not found.`));
+    private checkObjExtendResolve(target : Target,srcTarget : Target,value : any,srcObjModel : ObjectModelConfig,
+                                         processInfo : {otherSrc : any[], baseModelLevel : boolean,regModel : boolean},beforeExtend : boolean = false) : void
+    {
+        const valueType = typeof value;
+        if(valueType === 'string'){
+            if(this.modelsConfig.hasOwnProperty(value)){
+                target = target.addPath(`extends=>${value}`);
+                processInfo.baseModelLevel = false;
+                this.checkObjExtendResolve(target,srcTarget,this.modelsConfig[value],srcObjModel,processInfo,true);
+            }
+            else {
+                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    `${target.getTarget()} the inheritance dependency to object model: '${value}' can not be resolved, Object model not found.`));
+                return;
+            }
         }
-        else {
-            try {
-                const {value,keyPath} = this.modelImportEngine.tryExtendsResolveCheck(objExtendName);
-                if(!ConfigChecker.isObjModel(value)) {
-                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                        `${target.getTarget()} the inheritance dependency to object model: '${objExtendName}' can not be resolved, model is not an object model.`));
+        else if(valueType === 'object' || valueType === 'function') {
+            const res = ResolveUtils.modelResolveCheck(value);
+            if(typeof res === "string"){
+                this.checkObjExtendResolve(target,srcTarget,res,srcObjModel,processInfo);
+            }
+            else {
+                if(!beforeExtend){
+                    target = target.addPath(`extends=>AnonymousModel`);
                 }
 
-                this.checkOverrideProp(objProps,value,target,`extends=>${keyPath.join('->')}`);
-            }
-            catch (e) {}
-        }
-    }
+                if(!ConfigChecker.isObjModel(res)){
+                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                        `${target.getTarget()} an object model can only extend an object model.`));
+                    return;
+                }
+                else {
+                    const sameModelBase = res === srcObjModel;
+                    if(processInfo.otherSrc.includes(res) || sameModelBase){
+                        if(processInfo.baseModelLevel || sameModelBase){
+                            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                                `${target.getTarget()} creates a circular inheritance.`));
+                        }
+                    }
+                    else {
+                        processInfo.otherSrc.push(res);
+                        this.checkOverrideProp(srcObjModel.properties,res,target,srcTarget);
 
-    private checkOverrideProp(props,superObj,target : Target,extendPath,ex : string[] = []) {
-        if (typeof superObj === 'object' && typeof props === 'object') {
-            if (typeof superObj.prototype === 'object') {
-                const superPrototype = superObj.prototype;
-                for (let prop in props) {
-                    if (props.hasOwnProperty(prop)) {
-                        if (superPrototype.hasOwnProperty(prop)) {
-                            Logger.printConfigWarning(
-                                ConfigNames.APP,
-                                `${target.getTarget()} Property '${prop}' will shadowing an inherited prototype property '${prop}' from model object '${extendPath}'.`);
+                        if(!(res as ModelCheckedMem)._checked){
+                            this.checkObject(res,target,false,false);
+                            (res as ModelCheckedMem)._checked = true;
+                        }
+
+                        if(res.extends !== undefined){
+                            this.checkObjExtendResolve(target,srcTarget,res.extends,srcObjModel,processInfo);
                         }
                     }
                 }
             }
-            if (typeof superObj.extends === 'string' && !ex.includes(superObj.extends)) {
-                ex.push(superObj.extends);
-                try {
-                    const {value,keyPath} = this.modelImportEngine.tryExtendsResolveCheck(superObj.extends);
-                    this.checkOverrideProp(props,value,target.addPath(extendPath),`extends=>${keyPath.join('->')}`,ex);
+        }
+    }
+
+    // noinspection JSMethodCanBeStatic
+    private checkOverrideProp(props,superObj,target : Target,srcTarget : Target) {
+        if (typeof props === 'object' && typeof superObj.prototype === 'object') {
+            const superPrototype = superObj.prototype;
+            for (let prop in props) {
+                if (props.hasOwnProperty(prop)) {
+                    if (superPrototype.hasOwnProperty(prop)) {
+                        Logger.printConfigWarning(
+                            ConfigNames.APP,
+                            `${srcTarget.getTarget()} Property '${prop}' is shadowing an inherited prototype property '${prop}' from ${target.getPath()}.`);
+                    }
                 }
-                catch (e) {}
             }
         }
     }
@@ -839,7 +870,7 @@ export default class ConfigChecker
 
     private checkLink(link : string,target : Target)
     {
-        if(ModelImportEngine.correctSyntax(link)) {
+        if(ModelResolveEngine.correctSyntax(link)) {
             let {exist,name,linkedValue,isOp} = this.modelImportEngine.peakCheck(link);
             if(!exist) {
                 this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
@@ -900,17 +931,16 @@ export default class ConfigChecker
      * @param mainSrc
      * name -> name of the main src
      * isObj -> true indicates model is an object model and false indicates unknown type.
-     * @param otherSrc
+     * @param processInfo
      */
-    private circularCheck(value,target,mainSrc : {name : string,isObj : boolean},otherSrc : {models : string[],ex : string[]} = {models : [],ex:[]})
+    private circularCheck(value,target,mainSrc : {name : string,model : Model,isObj : boolean},
+                          processInfo : {inBaseModel : boolean,models : any[],ex : any[]} = {inBaseModel : true,models : [],ex:[]})
     {
-        if(isModelConfigTranslatable(value)){
-            this.circularCheck(value.__toModelConfig(),target,mainSrc,otherSrc);
-            return;
-        }
+        value = ResolveUtils.modelResolveCheck(value);
 
         if (typeof value === 'string') {
-            if(ModelImportEngine.correctSyntax(value)) {
+            processInfo.inBaseModel = false;
+            if(ModelResolveEngine.correctSyntax(value)) {
                 const {exist,linkedValue,name} = this.modelImportEngine.peakCheck(value);
                 /*
                 Check only basename is not included in the import chain.
@@ -920,63 +950,93 @@ export default class ConfigChecker
                 D -> C NotOk
                 Abort check if we detect an repeat of import.
                  */
-                if(name === mainSrc.name){
+                /**
+                 * Protects against
+                 * 'A' -> 'A'
+                 */
+                if(name === mainSrc.name || linkedValue === mainSrc.model){
                     this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                         `${target.getTarget()} creates a circular import.`));
                 }
-                else if(exist && !otherSrc.models.includes(name)) {
-                    otherSrc.models.push(name);
-                    this.circularCheck(linkedValue,target.addPath(`import-model=>${name}`),mainSrc,otherSrc);
+                else if(exist && !processInfo.models.includes(name)) {
+                    processInfo.models.push(name);
+                    this.circularCheck(linkedValue,target.addPath(`import-model=>${name}`),mainSrc,processInfo);
                 }
             }
         } else if (Array.isArray(value)) {
             //array model
             if(value.length > 0){
-                this.circularCheck(value[0], target.addPath('ArrayItem'), mainSrc,otherSrc);
+                this.circularCheck(value[0], target.addPath('ArrayItem'), mainSrc,processInfo);
             }
         } else if (typeof value === "object") {
+            if(processInfo.inBaseModel && processInfo.models.includes(value)){
+                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    `${target.getTarget()} creates a circular import.`));
+                return;
+            }
+            processInfo.models.push(value);
+
             if (typeof value[nameof<ObjectModelConfig>(s => s.properties)] === 'object') {
                 //object model
-                this.circularObjectCheck(value,target,[],mainSrc,otherSrc);
+                this.circularObjectCheck(value,target,[],mainSrc,processInfo);
             } else if (typeof value[nameof<ArrayModelConfig>(s => s.array)] === 'object') {
                 //array model
                 const inArray = value[nameof<ArrayModelConfig>(s => s.array)];
-                this.circularCheck(inArray,target.addPath('ArrayItem'), mainSrc,otherSrc);
+                this.circularCheck(inArray,target.addPath('ArrayItem'), mainSrc,processInfo);
             } else if(value.hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf)))
             {
                 //any of model
                 const anyOf = value[nameof<AnyOfModelConfig>(s => s.anyOf)];
                 if(typeof anyOf === 'object' || Array.isArray(anyOf)) {
                     Iterator.iterateSync((key,value) => {
-                        this.circularCheck(value,target.addPath(key),mainSrc,otherSrc);
+                        this.circularCheck(value,target.addPath(key),mainSrc,processInfo);
                     },anyOf);
                 }
             }
         }
     }
 
-    circularObjectCheck(value,target,excludeProps : string[],mainSrc : {name : string,isObj : boolean},otherSrc : {models : string[],ex : string[]})
+    circularObjectCheck(value,target,excludeProps : string[],mainSrc : {name : string,model,isObj : boolean},
+                        processInfo : {models : any[],inBaseModel : boolean,ex : any[]})
     {
         const props = value[nameof<ObjectModelConfig>(s => s.properties)];
 
         //ex check
         const extend = value[nameof<ObjectModelConfig>(s => s.extends)];
 
-        if (typeof extend === 'string' && this.modelsConfig[extend] !== undefined && !otherSrc.ex.includes(extend)) {
-            if(mainSrc.isObj && mainSrc.name === extend) {
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `${target.addPath(`extends=>${extend}`).getTarget()} creates a circular inheritance.`));
+        let extendExists = false;
+        let extendValue;
+        const extendType = typeof extend;
+        let extendPathAdd;
+        if(extendType === 'string'){
+            if(this.modelsConfig[extend] !== undefined){
+                extendValue = this.modelsConfig[extend];
+                extendExists = true;
+                extendPathAdd = `extends=>${extend}`;
+            }
+        }
+        else if(extendType === 'object' || extendType === 'function'){
+            extendExists = true;
+            extendValue = ResolveUtils.modelResolveCheck(extend);
+            if(typeof extendValue === 'string'){
+                extendPathAdd = `extends=>${extendValue}`
             }
             else {
-                otherSrc.ex.push(extend);
-                this.circularObjectCheck(this.modelsConfig[extend],target.addPath(`extends=>${extend}`),Object.keys(props),mainSrc,otherSrc);
+                extendPathAdd = `extends=>AnonymousModel`
             }
+        }
+
+        if(extendExists && !processInfo.ex.includes(extendValue)
+            && mainSrc.name !== extendValue && mainSrc.model !== extendValue)
+        {
+            processInfo.ex.push(extendValue);
+            this.circularObjectCheck(extendValue,target.addPath(extendPathAdd),Object.keys(props),mainSrc,processInfo);
         }
 
         if(typeof props === 'object') {
             for(let propName in props){
                 if(props.hasOwnProperty(propName) && !excludeProps.includes(propName)) {
-                    this.circularCheck(props[propName],target.addPath(propName), mainSrc,otherSrc);
+                    this.circularCheck(props[propName],target.addPath(propName), mainSrc,processInfo);
                 }
             }
         }
@@ -988,14 +1048,11 @@ export default class ConfigChecker
      * (checks also for value circle extensions)
      * @param value
      * @param target
-     * @param baseName
+     * @param mainModel
      */
-    private checkModel(value, target, baseName : string | undefined = undefined) {
+    private checkModel(value, target,mainModel : boolean = false) {
 
-        if(isModelConfigTranslatable(value)){
-            this.checkModel(value.__toModelConfig(),target,baseName);
-            return;
-        }
+        value = ResolveUtils.modelResolveCheck(value);
 
         if (typeof value === 'string') {
             //model link
@@ -1013,7 +1070,7 @@ export default class ConfigChecker
             //check input
             if (value.hasOwnProperty(nameof<ObjectModelConfig>(s => s.properties))) {
                 //is object model
-                this.checkObject(value, target);
+                this.checkObject(value, target, mainModel);
             } else if (value.hasOwnProperty(nameof<ArrayModelConfig>(s => s.array))) {
                 //is array model
                 ConfigCheckerTools.assertStructure(Structures.ArrayModel, value, ConfigNames.APP, this.ceb, target);
@@ -1040,7 +1097,7 @@ export default class ConfigChecker
             }
             else {
                 //is value model
-                this.checkValueProperty(value,target,baseName);
+                this.checkValueProperty(value,target,mainModel);
             }
 
             (value as ModelCheckedMem)._checked = true;
@@ -1124,7 +1181,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkValueProperty(config : object,target : Target,baseName ?: string)
+    private checkValueProperty(config : ValueModelConfig,target : Target,mainModel : boolean,inheritanceCheck : boolean = true)
     {
         //isNormalInputBody
         ConfigCheckerTools.assertStructure(Structures.ValueModel, config, ConfigNames.APP, this.ceb, target);
@@ -1133,53 +1190,72 @@ export default class ConfigChecker
         this.checkCharClassFunction(config,target);
 
         //check extends
-        const ex = config[nameof<ValueModelConfig>(s => s.extends)];
-        if(typeof ex === 'string') {
-            if(!this.modelsConfig.hasOwnProperty(ex)) {
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `${target.getTarget()} the inheritance dependency to value model: '${ex}' can not be resolved, Value model not found.`));
-            }
-            else if(typeof baseName === 'string') {
-                //check no self inheritance
-                config = this.checkProcessValueInheritance(target,config,config,baseName,[],true);
-                target = target.setExtraInfo('Compiled with inheritance');
-            }
+        const ex = config.extends;
+        if(ex !== undefined && inheritanceCheck){
+            //check no self inheritance
+            this.checkProcessValueInheritance(target,ex,config,{baseModelLevel : true,otherSrc : [],regModel : mainModel});
+            target = target.setExtraInfo('Compiled with inheritance');
         }
         //check for only number/string functions
         this.checkOnlyValidationFunction(config,target);
     }
 
-    private checkProcessValueInheritance(target : Target,mainConfig : object,exConfig : object,valueName : string,otherSrc : string[] = [],base : boolean = false) : object
+
+    private checkProcessValueInheritance(target : Target,value : any,srcValueModel : ValueModelConfig,
+                                         processInfo : {otherSrc : any[], baseModelLevel : boolean,regModel : boolean},beforeExtend : boolean = false) : void
     {
-        const ex = exConfig[nameof<ValueModelConfig>(s => s.extends)];
-        if(this.modelsConfig.hasOwnProperty(ex)) {
-            if(ex === valueName) {
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `${target.addPath(`extends=>${ex}`).getTarget()} creates a circular inheritance.`));
+        const valueType = typeof value;
+        if(valueType === 'string'){
+            if(this.modelsConfig.hasOwnProperty(value)){
+                target = target.addPath(`extends=>${value}`);
+                processInfo.baseModelLevel = false;
+                this.checkProcessValueInheritance(target,this.modelsConfig[value],srcValueModel,processInfo,true);
             }
             else {
-                try {
-                    const {value,keyPath} = this.modelImportEngine.tryExtendsResolveCheck(ex);
-                    if(!ConfigChecker.isValueModel(value)) {
-                        //only check if this process is the base process.
-                        if(base){
-                            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                                `${target.getTarget()} value model can only extend value models and '${keyPath.join('->')}' refers not to a value model.`));
-                        }
-                    }
-                    else if(!otherSrc.includes(ex)) {
-                        otherSrc.push(ex);
-                        ObjectUtils.addObToOb(mainConfig,value);
-
-                        //add also the extension from an extension
-                        return this.checkProcessValueInheritance
-                        (target.addPath(`extends=>${keyPath.join('->')}`),mainConfig,value,valueName,otherSrc);
-                    }
-                }
-                catch (e) {}
+                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    `${target.getTarget()} the inheritance dependency to value model: '${value}' can not be resolved, Value model not found.`));
+                return;
             }
         }
-        return mainConfig;
+        else if(valueType === 'object' || valueType === 'function') {
+            const res = ResolveUtils.modelResolveCheck(value);
+            if(typeof res === "string"){
+                this.checkProcessValueInheritance(target,res,srcValueModel,processInfo);
+            }
+            else {
+                if(!beforeExtend){
+                    target = target.addPath(`extends=>AnonymousModel`);
+                }
+
+                if(!ConfigChecker.isValueModel(res)){
+                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                        `${target.getTarget()} a value model can only extend a value model.`));
+                    return;
+                }
+                else {
+                    const sameModelBase = res === srcValueModel;
+                    if(processInfo.otherSrc.includes(res) || sameModelBase){
+                        if(processInfo.baseModelLevel || sameModelBase){
+                            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                                `${target.getTarget()} creates a circular inheritance.`));
+                        }
+                    }
+                    else {
+                        processInfo.otherSrc.push(res);
+                        ObjectUtils.addObToOb(srcValueModel,res);
+
+                        if(!(res as ModelCheckedMem)._checked){
+                            this.checkValueProperty(res,target,false,false);
+                            (res as ModelCheckedMem)._checked = true;
+                        }
+
+                        if(res.extends !== undefined){
+                            this.checkProcessValueInheritance(target,res.extends,srcValueModel,processInfo);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private checkCharClassFunction(value : ValueModelConfig,target) {
@@ -1278,5 +1354,4 @@ export default class ConfigChecker
                 `${preString}'${name}' is not a valid ${type} name! Only letters, numbers and the minus symbol are allowed.`));
         }
     }
-
 }

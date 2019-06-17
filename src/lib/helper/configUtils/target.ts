@@ -61,6 +61,10 @@ export default class Target
         this.extraInfo = info;
     }
 
+    getPath() : string | undefined {
+        return this.path;
+    }
+
     getTarget() : string {
         const extraInfo = this.extraInfo !== undefined ? `(${this.extraInfo}) ` : '';
 

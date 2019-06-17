@@ -21,7 +21,7 @@ import {
     ValueModelConfig,
     SingleModelInput,
 } from "../configDefinitions/appConfig";
-import ModelImportEngine from "./modelImportEngine";
+import ModelResolveEngine from "./modelResolveEngine";
 import ObjectUtils       from "../utils/objectUtils";
 import Iterator          from "../utils/iterator";
 import FuncUtils         from "../utils/funcUtils";
@@ -48,7 +48,7 @@ export default class ConfigPreCompiler
 
     private controllerDefaults : object;
     private modelsConfig : object;
-    private modelImportEngine : ModelImportEngine;
+    private modelImportEngine : ModelResolveEngine;
 
     constructor(configs : OtherLoadedConfigSet)
     {
@@ -92,7 +92,7 @@ export default class ConfigPreCompiler
         this.prepareControllerDefaults();
         this.prepareModelsConfig();
         this.prepareBagExtensions();
-        this.modelImportEngine = new ModelImportEngine(this.modelsConfig);
+        this.modelImportEngine = new ModelResolveEngine(this.modelsConfig);
     }
 
     private prepareBagExtensions() {
@@ -435,15 +435,15 @@ export default class ConfigPreCompiler
                 }
 
                 //isObject
-                if(typeof value[nameof<ObjectModelConfig>(s => s.extends)] === 'string')
+                if(value[nameof<ObjectModelConfig>(s => s.extends)] !== undefined)
                 {
                     //extends there
                     //check super extends before this
-                    const superName = value[nameof<ObjectModelConfig>(s => s.extends)];
-                    this.modelPreCompileStep2(this.modelsConfig[superName]);
-
                     //lastExtend
-                    const superObj = this.modelImportEngine.extendsResolve(superName);
+                    const superObj =
+                        this.modelImportEngine.extendsResolve(value[nameof<ObjectModelConfig>(s => s.extends)]);
+
+                    this.modelPreCompileStep2(superObj);
 
                     //extend Props
                     const superProps = superObj[nameof<ObjectModelConfig>(s => s.properties)];
@@ -547,7 +547,7 @@ export default class ConfigPreCompiler
      * @param exValueConfig
      */
     private preCompileValueExtend(mainValue : ValueModelConfig,exValueConfig : ValueModelConfig) {
-        if(typeof exValueConfig.extends === 'string'){
+        if(exValueConfig.extends !== undefined){
             const nextExValueConfig = this.modelImportEngine.extendsResolve(exValueConfig.extends);
             ObjectUtils.addObToOb(mainValue,nextExValueConfig);
             return this.preCompileValueExtend(mainValue,nextExValueConfig);

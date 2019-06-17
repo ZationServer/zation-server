@@ -5,6 +5,7 @@ GitHub: LucaCode
  */
 
 import SmallBag from "../../api/SmallBag";
+import {InputConfigTranslatable, ModelConfigTranslatable} from "../../..";
 
 export type IdCheck = (id : string,smallBag : SmallBag) => Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void;
 
@@ -51,4 +52,18 @@ export interface SystemAccessConfig {
      * systemAccess : ['IOS','WEB'] // Only clients with system 'IOS' or 'WEB' are allowed.
      */
     systemAccess ?: 'all' | string[];
+}
+
+export interface AnyClass {
+    prototype : object,
+    new () : any
+    [key : string] : any;
+}
+
+export interface AnyInputConfigTranslatable extends InputConfigTranslatable {
+    [key : string] : any;
+}
+
+export interface AnyModelConfigTranslatable extends ModelConfigTranslatable {
+    [key : string] : any;
 }

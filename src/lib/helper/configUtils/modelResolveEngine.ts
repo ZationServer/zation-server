@@ -4,10 +4,11 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import copyObject    = require('copy-object');
 import {ModelOptional} from "../configDefinitions/appConfig";
+import CloneUtils      from "../utils/cloneUtils";
+import ResolveUtils    from "./resolveUtils";
 
-export default class ModelImportEngine
+export default class ModelResolveEngine
 {
     private _tmpCreatedModels : object = {req : {},op : {}};
 
@@ -82,20 +83,35 @@ export default class ModelImportEngine
     /**
      * Try to resolves extension to final level.
      * Throws in error if circle loop.
-     * @param name
+     * @param extendValue
      */
-    tryExtendsResolveCheck(name : string) : {value : any,keyPath : string[]} {
+    tryExtendsResolveCheck(extendValue : object | string) : {value : any,keyPath : string[]} {
         const keys : string[] = [name];
-
-        let v = this.models[name];
-
-        while (typeof v === 'string') {
-            if(!keys.includes(v) && this.models.hasOwnProperty(v)) {
-                keys.push(v);
-                v = this.models[v];
+        let v = extendValue;
+        while (true) {
+            const typeV = typeof v;
+            if(typeV === 'string'){
+                if(!keys.includes(v as string)) {
+                    if(this.models.hasOwnProperty(v as string)){
+                        keys.push(v as string);
+                        v = this.models[v as string];
+                    }
+                    else {
+                        throw new Error('Resolve Error');
+                    }
+                }
+                else {
+                    throw new Error('Circle Loop!');
+                }
+            }
+            else if(typeV === 'object' || typeV === 'function') {
+                v = ResolveUtils.modelResolveCheck(v);
+                if(typeof v !== 'string'){
+                    break;
+                }
             }
             else {
-                throw new Error('Circle Loop!');
+                throw new Error('Unknown type');
             }
         }
         return {value : v,keyPath : keys};
@@ -104,11 +120,16 @@ export default class ModelImportEngine
     /**
      * Resolves extension to final level.
      * Only use after config circle check with no errors.
-     * @param name
+     * @param value
      */
-    extendsResolve(name : string) : any {
-        const v = this.models[name];
-        return typeof v === 'string' ? this.extendsResolve(v) : v;
+    extendsResolve(value : string | object) : any {
+        if(typeof value !== "string"){
+            value = ResolveUtils.modelResolveCheck(value);
+        }
+        else {
+            value = this.models[value];
+        }
+        return typeof value === 'string' ? this.extendsResolve(value) : value;
     }
 
     /**
@@ -161,7 +182,7 @@ export default class ModelImportEngine
                 return tmp;
             }
             else {
-                const obj = copyObject(this.models[name]);
+                const obj = CloneUtils.deepClone(this.models[name]);
                 obj[nameof<ModelOptional>(s => s.isOptional)] = !isReq;
                 this._tmpCreatedModels[key][name] = obj;
                 return obj;
