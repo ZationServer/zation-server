@@ -55,8 +55,7 @@ export default class HttpRequestProcessor
             if(this.zc.mainConfig.logRequests){
                 Logger.logFileInfo(`Http Post Request id: ${reqId} -> `,zationData);
             }
-
-            return await this.mainProcess(req,res,zationData,reqId);
+            return this.mainProcess(req,res,zationData,reqId);
         }
         else if(req.method === 'GET' && !(Object.keys(req.query).length === 0))
         {
@@ -69,14 +68,14 @@ export default class HttpRequestProcessor
                 HttpRequestProcessor.setHeader(res);
                 const zationData = await ZationReqUtils.convertGetRequest(query);
                 this.logGetRequest(reqId,zationData);
-                return await this.mainProcess(req,res,zationData,reqId);
+                return this.mainProcess(req,res,zationData,reqId);
             }
             else if(ZationReqUtils.isValidValidationGetReq(query))
             {
                 HttpRequestProcessor.setHeader(res);
                 const zationData = await ZationReqUtils.convertValidationGetRequest(query);
                 this.logGetRequest(reqId,zationData);
-                return await this.mainProcess(req,res,zationData,reqId);
+                return this.mainProcess(req,res,zationData,reqId);
             }
             else {
                 throw new BackError(MainBackErrors.wrongInputDataStructure,

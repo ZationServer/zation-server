@@ -37,7 +37,7 @@ export default class ZationReqUtils
 
         //input convert
         const input = typeof query[HttpGetRequest.INPUT] === 'string' ?
-            await JsonConverter.parse(query[HttpGetRequest.INPUT]) : undefined;
+            await JsonConverter.parse(decodeURIComponent(query[HttpGetRequest.INPUT])) : undefined;
 
         //version,system,token
         res.s = query[HttpGetRequest.SYSTEM];
@@ -71,7 +71,7 @@ export default class ZationReqUtils
             typeof query[HttpGetRequest.API_LEVEL] === 'number' ? {al : query[HttpGetRequest.API_LEVEL]} : {};
 
         //input convert
-        const input : any = await JsonConverter.parse(query[HttpGetRequest.INPUT]);
+        const input : any = await JsonConverter.parse(decodeURIComponent(query[HttpGetRequest.INPUT]));
 
         const main : ZationValidationCheck = {
             i : input
