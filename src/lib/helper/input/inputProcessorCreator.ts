@@ -101,7 +101,7 @@ export default class InputProcessorCreator
                     //input reference so we can return it normal
                     for(let i = 0; i < input.length; i++) {
                         promises.push(arrayInputConfig._process
-                        (sb,input,i,`${currentInputPath}.${i}`,processInfo));
+                        (sb,input,i,(currentInputPath === '' ? `${i}` : `${currentInputPath}.${i}`),processInfo));
                     }
                     await Promise.all(promises);
 
@@ -154,7 +154,7 @@ export default class InputProcessorCreator
                         createProcessTaskList : processInfo.createProcessTaskList
                     };
                 await value._process
-                (sb,srcObj,srcKey,`${currentInputPath}.${key}`,tmpProcessInfo);
+                (sb,srcObj,srcKey,(currentInputPath === '' ? key : `${currentInputPath}.${key}`),tmpProcessInfo);
 
                 if(tmpProcessInfo.errorBag.isEmpty()){
                     found = true;
@@ -211,7 +211,7 @@ export default class InputProcessorCreator
                             errorBag.addBackError(new BackError
                                 (
                                     MainBackErrors.unknownObjectProperty, {
-                                        inputPath : `${currentInputPath}.${k}`,
+                                        inputPath : currentInputPath === '' ? k : `${currentInputPath}.${k}`,
                                         propertyName : k
                                     }
                                 )
@@ -227,7 +227,8 @@ export default class InputProcessorCreator
                 for(let i = 0; i < propKeys.length; i++){
                     const propName = propKeys[i];
 
-                    const currentInputPathNew = `${currentInputPath}.${propName}`;
+                    const currentInputPathNew = currentInputPath === '' ?
+                        propName : `${currentInputPath}.${propName}`;
 
                     if(input.hasOwnProperty(propName)) {
                         //allOk lets check the props
