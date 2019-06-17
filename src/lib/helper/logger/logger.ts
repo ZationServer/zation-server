@@ -152,7 +152,7 @@ export default class Logger
 
         Logger.log('\x1b[31m%s\x1b[0m'
             ,'   [CONFIG]',
-            `${errorCount} configuration error${errorCount > 1 ? 's' : ''} are detected!`);
+            `${errorCount} configuration error${errorCount === 0 || errorCount > 1 ? 's are' : ' is'} detected!`);
 
 
         for(let i = 0; i < configErrors.length; i++)
