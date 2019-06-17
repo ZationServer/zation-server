@@ -462,8 +462,10 @@ export default class ConfigChecker
                 this.checkObjExtendResolve(target,srcTarget,this.modelsConfig[value],srcObjModel,processInfo,true);
             }
             else {
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `${target.getTarget()} the inheritance dependency to object model: '${value}' can not be resolved, Object model not found.`));
+                if(!beforeReqModel){
+                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                        `${target.getTarget()} the inheritance dependency to object model: '${value}' can not be resolved, Object model not found.`));
+                }
                 return;
             }
         }
@@ -478,8 +480,10 @@ export default class ConfigChecker
                 }
 
                 if(!ConfigChecker.isObjModel(res)){
-                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                        `${target.getTarget()} an object model can only extend an object model.`));
+                    if(!beforeReqModel){
+                        this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                            `${target.getTarget()} an object model can only extend an object model.`));
+                    }
                     return;
                 }
                 else {
@@ -1213,8 +1217,10 @@ export default class ConfigChecker
                 this.checkProcessValueInheritance(target,this.modelsConfig[value],srcValueModel,processInfo,true);
             }
             else {
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                    `${target.getTarget()} the inheritance dependency to value model: '${value}' can not be resolved, Value model not found.`));
+                if(!beforeRegModel){
+                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                        `${target.getTarget()} the inheritance dependency to value model: '${value}' can not be resolved, Value model not found.`));
+                }
                 return;
             }
         }
@@ -1229,8 +1235,10 @@ export default class ConfigChecker
                 }
 
                 if(!ConfigChecker.isValueModel(res)){
-                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                        `${target.getTarget()} a value model can only extend a value model.`));
+                    if(!beforeRegModel){
+                        this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                            `${target.getTarget()} a value model can only extend a value model.`));
+                    }
                     return;
                 }
                 else {
