@@ -32,28 +32,25 @@ export const ObjectModel = (register : boolean = true, name ?: string) => {
             CloneUtils.deepClone(prototype.___constructorMethods___) : [];
 
         const models = typeof prototype.___models___ === 'object' ? prototype.___models___ : {};
-        const modelsKeys = Object.keys(models);
 
         const objectModel : ObjectModelConfig = {
             properties : models,
             ...(prototype.___extends___ !== undefined ? {extends : prototype.___extends___} : {}),
-            convert : async (self,smallBag) => {
-
-                const res = Reflect.construct(target,[smallBag]);
-
-                for(let i = 0; i < modelsKeys.length; i++){
-                    if(self.hasOwnProperty(modelsKeys[i])){
-                        res[modelsKeys[i]] = self[modelsKeys[i]];
-                    }
+            construct : async function(smallBag)
+            {
+                let proto = this;
+                let nextProto = Object.getPrototypeOf(proto);
+                while (nextProto !== null && nextProto !== Object.prototype){
+                    proto = nextProto;
+                    nextProto = Object.getPrototypeOf(nextProto);
                 }
+                Object.setPrototypeOf(proto,Reflect.construct(target,[smallBag]));
 
                 const promises : Promise<void>[] = [];
                 for(let i = 0; i < constructorMethods.length; i++){
-                    promises.push(constructorMethods[i].call(res,smallBag));
+                    promises.push(constructorMethods[i].call(this,smallBag));
                 }
                 await Promise.all(promises);
-
-                return res;
             }
         };
 
