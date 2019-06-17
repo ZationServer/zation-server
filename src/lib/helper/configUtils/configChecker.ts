@@ -452,7 +452,7 @@ export default class ConfigChecker
     }
 
     private checkObjExtendResolve(target : Target,srcTarget : Target,value : any,srcObjModel : ObjectModelConfig,
-                                         processInfo : {otherSrc : any[], baseModelLevel : boolean,regModel : boolean},beforeExtend : boolean = false) : void
+                                         processInfo : {otherSrc : any[], baseModelLevel : boolean,regModel : boolean},beforeReqModel : boolean = false) : void
     {
         const valueType = typeof value;
         if(valueType === 'string'){
@@ -473,7 +473,7 @@ export default class ConfigChecker
                 this.checkObjExtendResolve(target,srcTarget,res,srcObjModel,processInfo);
             }
             else {
-                if(!beforeExtend){
+                if(!beforeReqModel){
                     target = target.addPath(`extends=>AnonymousModel`);
                 }
 
@@ -494,7 +494,8 @@ export default class ConfigChecker
                         processInfo.otherSrc.push(res);
                         this.checkOverrideProp(srcObjModel.properties,res,target,srcTarget);
 
-                        if(!(res as ModelCheckedMem)._checked){
+                        //Check only new anonymous object models.
+                        if(!beforeReqModel && !(res as ModelCheckedMem)._checked){
                             this.checkObject(res,target,false,false);
                             (res as ModelCheckedMem)._checked = true;
                         }
@@ -1202,7 +1203,7 @@ export default class ConfigChecker
 
 
     private checkProcessValueInheritance(target : Target,value : any,srcValueModel : ValueModelConfig,
-                                         processInfo : {otherSrc : any[], baseModelLevel : boolean,regModel : boolean},beforeExtend : boolean = false) : void
+                                         processInfo : {otherSrc : any[], baseModelLevel : boolean,regModel : boolean},beforeRegModel : boolean = false) : void
     {
         const valueType = typeof value;
         if(valueType === 'string'){
@@ -1223,7 +1224,7 @@ export default class ConfigChecker
                 this.checkProcessValueInheritance(target,res,srcValueModel,processInfo);
             }
             else {
-                if(!beforeExtend){
+                if(!beforeRegModel){
                     target = target.addPath(`extends=>AnonymousModel`);
                 }
 
@@ -1244,7 +1245,8 @@ export default class ConfigChecker
                         processInfo.otherSrc.push(res);
                         ObjectUtils.addObToOb(srcValueModel,res);
 
-                        if(!(res as ModelCheckedMem)._checked){
+                        //Check only new anonymous value models.
+                        if(!beforeRegModel && !(res as ModelCheckedMem)._checked){
                             this.checkValueProperty(res,target,false,false);
                             (res as ModelCheckedMem)._checked = true;
                         }
