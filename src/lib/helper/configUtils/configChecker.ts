@@ -451,6 +451,16 @@ export default class ConfigChecker
         );
     }
 
+    /**
+     * Check object inheritance that also can include
+     * new anonymous object models or already checked object models.
+     * @param target
+     * @param srcTarget
+     * @param value
+     * @param srcObjModel
+     * @param processInfo
+     * @param beforeReqModel
+     */
     private checkObjExtendResolve(target : Target,srcTarget : Target,value : any,srcObjModel : ObjectModelConfig,
                                          processInfo : {otherSrc : any[], baseModelLevel : boolean,regModel : boolean},beforeReqModel : boolean = false) : void
     {
