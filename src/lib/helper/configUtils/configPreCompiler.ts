@@ -453,9 +453,11 @@ export default class ConfigPreCompiler
                     const superPrototype = superObj[nameof<ObjectModelConfig>(s => s.prototype)];
                     if(superPrototype){
                         if(!value[nameof<ObjectModelConfig>(s => s.prototype)]){
-                            value[nameof<ObjectModelConfig>(s => s.prototype)] = {};
+                            value[nameof<ObjectModelConfig>(s => s.prototype)] = superPrototype;
                         }
-                        Object.setPrototypeOf(value[nameof<ObjectModelConfig>(s => s.prototype)],superPrototype);
+                        else {
+                            Object.setPrototypeOf(value[nameof<ObjectModelConfig>(s => s.prototype)],superPrototype);
+                        }
                     }
 
                     //extend construct
