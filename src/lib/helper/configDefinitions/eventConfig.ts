@@ -38,6 +38,7 @@ export type SocketDeauthenticatedFunction = (smallBag : SmallBag, socketInfo : S
 export type MiddlewareAuthenticationFunction = (smallBag : SmallBag,zationToken : ZationToken) => Promise<boolean | object | any> | boolean | object | any;
 export type MiddlewareSocketFunction = (smallBag : SmallBag,socket : HandshakeSocket) => Promise<boolean | object | any> | boolean | object | any;
 
+//sc
 export type SocketErrorFunction = (smallBag : SmallBag, socket : UpSocket, error : object) => Promise<void> | void;
 export type SocketRawFunction = (smallBag : SmallBag, socket : UpSocket, data : any) => Promise<void> | void;
 export type SocketConnectFunction = (smallBag : SmallBag, socket : UpSocket, conState : {isAuthenticated : boolean, authError ?: object}) => Promise<void> | void;
