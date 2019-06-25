@@ -8,9 +8,6 @@ import Bag from './../../api/Bag';
 import {ConfigNames, DefaultUserGroupFallBack, ZationAccess} from "../constants/internal";
 import BagExtension, {
     AppConfig,
-    ControllerConfig,
-    InputConfig, ParamInput,
-    ModelOptional, ObjectModelConfig, AnyOfModelConfig, ArrayModelConfig, ValueModelConfig, Model,
 } from "../configDefinitions/appConfig";
 import {PanelUserConfig}      from "../configDefinitions/mainConfig";
 import {MainService, Service} from "../configDefinitions/serviceConfig";
@@ -45,6 +42,16 @@ import ConfigLoader         from "../configManager/configLoader";
 import ControllerUtils      from "../controller/controllerUtils";
 import {isInputConfigTranslatable} from "../../api/ConfigTranslatable";
 import ResolveUtils from "./resolveUtils";
+import {
+    AnyOfModelConfig,
+    ArrayModelConfig,
+    InputConfig,
+    Model, ModelOptional,
+    ObjectModelConfig, ParamInput,
+    ValueModelConfig
+} from "../configDefinitions/inputConfig";
+// noinspection TypeScriptPreferShortImport
+import {ControllerConfig} from "../../helper/configDefinitions/controllerConfig";
 
 export interface ModelCheckedMem {
     _checked : boolean

@@ -6,12 +6,9 @@ GitHub: LucaCode
 
 import {EventConfig} from "./eventConfig";
 import BagExtension, {
-    AnyOfModelConfig,
-    AppConfig, ArrayModelConfig, ArraySettings,
+    AppConfig,
     AuthUserGroupConfig,
-    BackgroundTask,
-    ControllerConfig,
-    ModelOptional, ObjectModelConfig, ValueModelConfig
+    BackgroundTask
 } from "./appConfig";
 import {
     MainConfig,
@@ -27,6 +24,15 @@ import {ServiceConfig}   from "./serviceConfig";
 import {ChannelConfig, ChannelSettings, CustomChannelConfig, CustomIdCh, ZationChannelConfig} from "./channelConfig";
 import {ServiceModule}   from "zation-service";
 import ObjectUtils       from "../utils/objectUtils";
+import {
+    AnyOfModelConfig,
+    ArrayModelConfig,
+    ArraySettings,
+    ModelOptional,
+    ObjectModelConfig,
+    ValueModelConfig
+} from "./inputConfig";
+import {ControllerConfig} from "./controllerConfig";
 
 const App = {};
 App[nameof<AppConfig>(s => s.authController)]     = {types : ['string'],isOptional : true};

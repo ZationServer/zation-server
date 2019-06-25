@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import {InputConfigTranslatable, ModelConfigTranslatable} from "../../ConfigTranslatable";
-import {ObjectModelConfig}       from "../../../helper/configDefinitions/appConfig";
+import {ObjectModelConfig}       from "../../../helper/configDefinitions/inputConfig";
 import CloneUtils                from "../../../helper/utils/cloneUtils";
 import Config                    from "../../Config";
 import {InDecoratorMem} from "./InDecoratorMem";

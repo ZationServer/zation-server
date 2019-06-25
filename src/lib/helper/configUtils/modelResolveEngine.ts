@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ModelOptional} from "../configDefinitions/appConfig";
+import {ModelOptional} from "../configDefinitions/inputConfig";
 import CloneUtils      from "../utils/cloneUtils";
 import ResolveUtils    from "./resolveUtils";
 

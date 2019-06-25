@@ -7,7 +7,7 @@ GitHub: LucaCode
 // noinspection TypeScriptPreferShortImport
 import Controller         from "../../../api/Controller";
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../../configDefinitions/appConfig";
+import {ControllerConfig} from "../../configDefinitions/controllerConfig";
 
 export default class ZationSC_Ping extends Controller
 {

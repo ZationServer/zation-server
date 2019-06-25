@@ -13,14 +13,13 @@ import {
 import {
     AnyOfModelConfig,
     ArrayModelConfig,
-    ControllerConfig,
     InputConfig,
     Model,
     ParamInput,
     ObjectModelConfig,
     ValueModelConfig,
     SingleModelInput,
-} from "../configDefinitions/appConfig";
+} from "../configDefinitions/inputConfig";
 import ModelResolveEngine from "./modelResolveEngine";
 import ObjectUtils       from "../utils/objectUtils";
 import Iterator          from "../utils/iterator";
@@ -35,6 +34,8 @@ import {SystemController}          from "../systemController/systemControler.con
 import OptionalProcessor           from "../input/optionalProcessor";
 import ZationConfig                from "../configManager/zationConfig";
 import {isInputConfigTranslatable, isModelConfigTranslatable} from "../../api/ConfigTranslatable";
+// noinspection TypeScriptPreferShortImport
+import {ControllerConfig} from "../../helper/configDefinitions/controllerConfig";
 
 export interface ModelPreparationMem extends Processable{
     _optionalInfo : {isOptional : boolean,defaultValue : any}

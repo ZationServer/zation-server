@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import ConfigBuildError    from "../../../helper/configManager/configBuildError";
 import {InDecoratorMem}    from "./InDecoratorMem";
-import {ObjectModelConfig} from "../../../helper/configDefinitions/appConfig";
+import {ObjectModelConfig} from "../../../helper/configDefinitions/inputConfig";
 import {AnyClass, AnyModelConfigTranslatable} from "../../../helper/configDefinitions/configComponents";
 
 /**

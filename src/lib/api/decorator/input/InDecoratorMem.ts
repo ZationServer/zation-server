@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ObjectModelConfig} from "../../../helper/configDefinitions/appConfig";
+import {ObjectModelConfig} from "../../../helper/configDefinitions/inputConfig";
 import {AnyClass, AnyModelConfigTranslatable} from "../../../helper/configDefinitions/configComponents";
 
 export interface InDecoratorMem {

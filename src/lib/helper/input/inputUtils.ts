@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {AnyOfModelConfig, ObjectModelConfig} from "../configDefinitions/appConfig";
+import {AnyOfModelConfig, ObjectModelConfig} from "../configDefinitions/inputConfig";
 
 export default class InputUtils
 {

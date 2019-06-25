@@ -7,7 +7,7 @@ GitHub: LucaCode
 // noinspection TypeScriptPreferShortImport
 import Bag                           from '../../api/Bag';
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig}            from "../configDefinitions/appConfig";
+import {ControllerConfig}            from "../configDefinitions/controllerConfig";
 import Controller, {ControllerClass} from "../../api/Controller";
 import {ApiLevelSwitch}              from "../apiLevel/apiLevelUtils";
 

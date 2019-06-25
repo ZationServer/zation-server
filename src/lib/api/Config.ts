@@ -54,20 +54,8 @@ import
 import
 {
     AppConfig,
-    ConstructObjectFunction,
-    ControllerAccessFunction,
-    ControllerConfig,
-    ObjectProperties,
     TaskFunction,
-    ValidateFunction,
-    ConvertObjectFunction,
-    ConvertValueFunction,
-    ConvertArrayFunction,
     BackgroundTask,
-    GetDateFunction,
-    ObjectModelConfig,
-    ValueModelConfig,
-    ArrayModelConfig, ArrayModelShortSyntax, Model, PrepareHandleFunction, Input, SingleModelInput
 } from "../helper/configDefinitions/appConfig";
 import BackErrorConstruct from "../helper/constants/backErrorConstruct";
 import {
@@ -119,6 +107,18 @@ import {ApiLevelSwitch} from "../helper/apiLevel/apiLevelUtils";
 // noinspection TypeScriptPreferShortImport
 import {StartMode}      from "../helper/constants/startMode";
 import ConfigBuildError  from "../helper/configManager/configBuildError";
+import {
+    ArrayModelConfig, ArrayModelShortSyntax,
+    ConstructObjectFunction, ConvertArrayFunction, ConvertObjectFunction, ConvertValueFunction, GetDateFunction, Input,
+    Model,
+    ObjectModelConfig, ObjectProperties,
+    SingleModelInput, ValidateFunction, ValueModelConfig
+} from "../helper/configDefinitions/inputConfig";
+import {
+    ControllerAccessFunction,
+    ControllerConfig,
+    PrepareHandleFunction
+} from "../helper/configDefinitions/controllerConfig";
 
 export default class Config
 {

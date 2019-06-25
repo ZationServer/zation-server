@@ -19,7 +19,7 @@ import InputIsNotCompatibleError    from './lib/helper/error/inputIsNotCompatibl
 import CodeError                    from './lib/helper/error/codeError';
 import {ErrorType}                  from "./lib/helper/constants/errorType";
 import {ValidationTypes}            from './lib/helper/constants/validationTypes';
-import {ControllerConfig}           from "./lib/helper/configDefinitions/appConfig";
+import {ControllerConfig}           from "./lib/helper/configDefinitions/controllerConfig";
 import {StarterConfig}              from "./lib/helper/configDefinitions/starterConfig";
 import {StartMode}                  from "./lib/helper/constants/startMode";
 import ZationMaster                 from "./lib/main/zationMaster";
