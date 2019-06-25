@@ -5,11 +5,11 @@ GitHub: LucaCode
  */
 
 import ZationWorker        = require("./zationWorker");
-import Returner              from "../helper/response/returner";
-import MainRequestProcessor  from "../helper/processor/mainRequestProcessor";
-import SocketRequestProcessor       from "../helper/processor/socketRequestProcessor";
-import HttpRequestProcessor         from "../helper/processor/httpRequestProcessor";
-import ValidCheckProcessor   from "../helper/processor/validCheckProcessor";
+import RequestResponder              from "../helper/request/requestResponder";
+import MainRequestProcessor  from "../helper/request/mainRequestProcessor";
+import SocketRequestProcessor       from "../helper/request/socketRequestProcessor";
+import HttpRequestProcessor         from "../helper/request/httpRequestProcessor";
+import ValidCheckRequestProcessor   from "../helper/request/validCheckRequestProcessor";
 import UpSocket, {RespondFunction} from "../helper/sc/socket";
 import BackError             from "../api/BackError";
 import BackErrorBag          from "../api/BackErrorBag";
@@ -30,7 +30,7 @@ export default class ZationReqHandler
     private readonly mainRequestProcessor : MainRequestProcessor;
     private readonly socketProcessor : SocketRequestProcessor;
     private readonly httpProcessor : HttpRequestProcessor;
-    private readonly returner : Returner;
+    private readonly requestResponder : RequestResponder;
 
 
     constructor(worker)
@@ -39,12 +39,12 @@ export default class ZationReqHandler
         this.worker = worker;
         this.reqIdCounter = new IdCounter();
 
-        const validCheckProcessor = new ValidCheckProcessor(this.zc,worker);
+        const validCheckProcessor = new ValidCheckRequestProcessor(this.zc,worker);
         this.mainRequestProcessor = new MainRequestProcessor(this.zc,worker,validCheckProcessor);
         this.socketProcessor = new SocketRequestProcessor(this.zc);
         this.httpProcessor = new HttpRequestProcessor(this.zc,worker,worker.getTokenClusterKeyCheck());
 
-        this.returner = new Returner(this.zc);
+        this.requestResponder = new RequestResponder(this.zc);
 
         this.reqIdPreFix = `${this.worker.options.instanceId}-${this.worker.getFullWorkerId()}-`;
     }
@@ -55,10 +55,10 @@ export default class ZationReqHandler
         let shBridge;
         try {
             shBridge = await this.socketProcessor.prepareReq(socket,input,respond,reqId);
-            await this.returner.respSuccessWs((await this.mainRequestProcessor.process(shBridge)),respond,reqId);
+            await this.requestResponder.respSuccessWs((await this.mainRequestProcessor.process(shBridge)),respond,reqId);
         }
         catch (err) {
-            await this.returner.respErrorWs(err,respond,reqId);
+            await this.requestResponder.respErrorWs(err,respond,reqId);
             await this.handleReqError(err);
         }
     }
@@ -69,10 +69,10 @@ export default class ZationReqHandler
         let shBridge;
         try {
             shBridge = await this.httpProcessor.prepareReq(req,res,reqId);
-            await this.returner.respSuccessHttp((await this.mainRequestProcessor.process(shBridge)),res,reqId,shBridge);
+            await this.requestResponder.respSuccessHttp((await this.mainRequestProcessor.process(shBridge)),res,reqId,shBridge);
         }
         catch (err) {
-            await this.returner.respErrorHttp(err,res,reqId,shBridge);
+            await this.requestResponder.respErrorHttp(err,res,reqId,shBridge);
             await this.handleReqError(err);
         }
     }

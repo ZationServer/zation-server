@@ -17,7 +17,7 @@ import StringifyUtils    from "../utils/stringifyUtils";
 import {Response}        from "express";
 import {RespondFunction} from "../sc/socket";
 
-export default class Returner
+export default class RequestResponder
 {
     private readonly zc : ZationConfig;
     private readonly sendErrorDesc : boolean;
@@ -34,7 +34,7 @@ export default class Returner
         if(data !== undefined) {
             const resp = this.createWsResp(data,undefined);
             respond(null,resp);
-            this.printResp(resp,reqId,true);
+            this.printWsResp(resp,reqId);
         }
         else {
             respond();
@@ -47,13 +47,13 @@ export default class Returner
         (data,undefined,shBridge,response['zationInfo']);
         response.write(stringify(resp));
         response.end();
-        this.printResp(resp,reqId,false);
+        this.printHttpResp(resp,reqId);
     }
 
     respErrorWs(err : any, respond : RespondFunction, reqId : string) : void {
         const resp = this.createWsResp(undefined,this.errorJsonObj(err));
         respond(null,resp);
-        this.printResp(resp,reqId,true);
+        this.printWsResp(resp,reqId);
     }
 
     async respErrorHttp(err : any,response : Response,reqId : string,shBridge : SHBridge | undefined) : Promise<void> {
@@ -61,7 +61,7 @@ export default class Returner
         (undefined,this.errorJsonObj(err),shBridge,response['zationInfo']);
         response.write(JSON.stringify(resp));
         response.end();
-        this.printResp(resp,reqId,false);
+        this.printHttpResp(resp,reqId);
     }
 
     private errorJsonObj(err)
@@ -82,25 +82,21 @@ export default class Returner
         return errors;
     }
 
-    private printResp(resp : ResponseResult,reqId : string,wsResp : boolean)
-    {
-        if(wsResp)
-        {
-            if(this.debugMode){
-                Logger.printDebugInfo(`Socket Result id: ${reqId} ->`,StringifyUtils.object(resp));
-            }
-            if(this.zc.mainConfig.logRequests){
-                Logger.logFileInfo(`Socket Result id: ${reqId} ->`,resp);
-            }
+    private printWsResp(resp : ResponseResult,reqId : string) {
+        if(this.debugMode){
+            Logger.printDebugInfo(`Socket Result id: ${reqId} ->`,StringifyUtils.object(resp));
         }
-        else
-        {
-            if(this.debugMode){
-                Logger.printDebugInfo(`Http Result id: ${reqId} ->`,StringifyUtils.object(resp));
-            }
-            if(this.zc.mainConfig.logRequests){
-                Logger.logFileInfo(`Http Result id: ${reqId} ->`,resp);
-            }
+        if(this.zc.mainConfig.logRequests){
+            Logger.logFileInfo(`Socket Result id: ${reqId} ->`,resp);
+        }
+    }
+
+    private printHttpResp(resp : ResponseResult,reqId : string) {
+        if(this.debugMode){
+            Logger.printDebugInfo(`Http Result id: ${reqId} ->`,StringifyUtils.object(resp));
+        }
+        if(this.zc.mainConfig.logRequests){
+            Logger.logFileInfo(`Http Result id: ${reqId} ->`,resp);
         }
     }
 

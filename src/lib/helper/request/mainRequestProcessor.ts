@@ -9,7 +9,7 @@ import ZationWorker          = require("../../main/zationWorker");
 import Controller              from'../../api/Controller';
 import {ResponseResult, ZationTask} from "../constants/internal";
 import SHBridge                from "../bridges/shBridge";
-import ValidCheckProcessor     from "./validCheckProcessor";
+import ValidCheckRequestProcessor     from "./validCheckRequestProcessor";
 import AuthEngine              from "../auth/authEngine";
 import BackError               from "../../api/BackError";
 import BackErrorBag            from "../../api/BackErrorBag";
@@ -25,7 +25,7 @@ export default class MainRequestProcessor
 {
     private readonly zc : ZationConfigFull;
     private readonly worker : ZationWorker;
-    private readonly validCheckProcessor : ValidCheckProcessor;
+    private readonly validCheckProcessor : ValidCheckRequestProcessor;
 
     //tmp variables for faster access
     private readonly authController : string | undefined;
@@ -34,7 +34,7 @@ export default class MainRequestProcessor
     private readonly useTokenStateCheck : boolean;
     private readonly controllerPrepare : ControllerPrepare;
 
-    constructor(zc : ZationConfigFull,worker : ZationWorker,validCheckProcessor : ValidCheckProcessor) {
+    constructor(zc : ZationConfigFull,worker : ZationWorker,validCheckProcessor : ValidCheckRequestProcessor) {
         this.zc = zc;
         this.worker = worker;
         this.validCheckProcessor = validCheckProcessor;
@@ -164,7 +164,7 @@ export default class MainRequestProcessor
                             authEngine,
                             input
                         );
-                        return await this.processController(controllerInstance,bag,input,prepareHandleInvoke);
+                        return this.processController(controllerInstance,bag,input,prepareHandleInvoke);
                     }
                     else {
                         throw new BackError(MainBackErrors.noAccessWithTokenState,

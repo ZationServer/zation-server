@@ -13,7 +13,7 @@ import ZationReqUtils           from "../utils/zationReqUtils";
 import {MainBackErrors}         from "../zationBackErrors/mainBackErrors";
 import SHBridge                 from "../bridges/shBridge";
 
-export default class ValidCheckProcessor
+export default class ValidCheckRequestProcessor
 {
     private readonly zc : ZationConfig;
     private readonly worker : ZationWorker;
