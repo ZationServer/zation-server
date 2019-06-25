@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {BackgroundTask}   from "../configDefinitions/appConfig";
-import ZationConfigFull from "../configManager/zationConfigFull";
-import FuncUtils from "../utils/funcUtils";
+import {BackgroundTask}   from "../configDefinitions/backgroundTasks";
+import ZationConfigFull   from "../configManager/zationConfigFull";
+import FuncUtils          from "../utils/funcUtils";
 
 type SaveTask = (name : string, task : ((...any : any[])=> void)) => void;
 

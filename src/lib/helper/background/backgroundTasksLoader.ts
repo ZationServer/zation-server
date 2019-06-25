@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {BackgroundTask}   from "../configDefinitions/appConfig";
+import {BackgroundTask}   from "../configDefinitions/backgroundTasks";
 
 type SetTask = (name : string,time : any,clusterSafe : boolean,task : any) => void;
 

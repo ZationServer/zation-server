@@ -54,8 +54,6 @@ import
 import
 {
     AppConfig,
-    TaskFunction,
-    BackgroundTask,
 } from "../helper/configDefinitions/appConfig";
 import BackErrorConstruct from "../helper/constants/backErrorConstruct";
 import {
@@ -119,6 +117,7 @@ import {
     ControllerConfig,
     PrepareHandleFunction
 } from "../helper/configDefinitions/controllerConfig";
+import {BackgroundTask, TaskFunction} from "../helper/configDefinitions/backgroundTasks";
 
 export default class Config
 {

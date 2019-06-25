@@ -8,7 +8,6 @@ import {EventConfig} from "./eventConfig";
 import BagExtension, {
     AppConfig,
     AuthUserGroupConfig,
-    BackgroundTask
 } from "./appConfig";
 import {
     MainConfig,
@@ -33,6 +32,7 @@ import {
     ValueModelConfig
 } from "./inputConfig";
 import {ControllerConfig} from "./controllerConfig";
+import {BackgroundTask}   from "./backgroundTasks";
 
 const App = {};
 App[nameof<AppConfig>(s => s.authController)]     = {types : ['string'],isOptional : true};

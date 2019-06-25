@@ -58,7 +58,7 @@ import {
 } from "../helper/sc/scMiddlewareReq";
 import ExpressUtils   from "../helper/utils/expressUtils";
 import {SocketAction} from "../helper/constants/socketAction";
-import {TaskFunction} from "../helper/configDefinitions/appConfig";
+import {TaskFunction} from "../helper/configDefinitions/backgroundTasks";
 import {ErrorName}    from "../helper/constants/errorName";
 
 const  SCWorker : any        = require('socketcluster/scworker');
