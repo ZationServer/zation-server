@@ -80,7 +80,7 @@ export default class SocketUpgradeEngine
                 authEngine.refresh(newToken);
 
                 (async () => {
-                    const p = ChAccessHelper.checkSocketCustomChAccess(socket,this.channelPrepare);
+                    const p : Promise<void> = ChAccessHelper.checkSocketCustomChAccess(socket,this.channelPrepare);
                     ChAccessHelper.checkSocketZationChAccess(socket);
                     await p;
                 })();
@@ -142,12 +142,7 @@ export default class SocketUpgradeEngine
                     if(currentToken !== null) {
                         //Deauthenticated remove from other mappings that requires a token
                         //if the old token was a token.
-                        this.mapAuthUserGroupToSc.unMap(currentToken.zationAuthUserGroup,socket);
-                        this.mapTokenIdToSc.unMap(currentToken.zationTokenId,socket);
-                        if(currentToken.zationUserId !== undefined){
-                            this.mapUserIdToSc.unMap(currentToken.zationUserId.toString(),socket);
-                        }
-                        this.panelUserSet.remove(socket);
+                        this.worker.unmapSocketToken(currentToken,socket);
                     }
                 }
 

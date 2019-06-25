@@ -592,7 +592,7 @@ class ZationWorker extends SCWorker
             }
             else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
                 const authUserGroup = ChUtils.getUserAuthGroupFromCh(channel);
-                if(authUserGroupChInfo.clientPublishAccessChecker(socket.authEngine,req.data,socket.socketInfo,authUserGroup)) {
+                if(await authUserGroupChInfo.clientPublishAccessChecker(socket.authEngine,req.data,socket.socketInfo,authUserGroup)) {
                     authUserGroupChInfo.onClientPub(
                         this.preparedSmallBag,
                         req.data,
@@ -609,7 +609,7 @@ class ZationWorker extends SCWorker
                 }
             }
             else if (channel === ZationChannel.ALL) {
-                if(allChInfo.clientPublishAccessChecker(socket.authEngine,req.data,socket.socketInfo,undefined)) {
+                if(await allChInfo.clientPublishAccessChecker(socket.authEngine,req.data,socket.socketInfo,undefined)) {
                     allChInfo.onClientPub(
                         this.preparedSmallBag,
                         req.data,
@@ -625,7 +625,7 @@ class ZationWorker extends SCWorker
                 }
             }
             else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
-                if(defaultUserGroupChInfo.clientPublishAccessChecker(socket.authEngine,req.data,socket.socketInfo,undefined)) {
+                if(await defaultUserGroupChInfo.clientPublishAccessChecker(socket.authEngine,req.data,socket.socketInfo,undefined)) {
                     defaultUserGroupChInfo.onClientPub(
                         this.preparedSmallBag,
                         req.data,
@@ -857,12 +857,7 @@ class ZationWorker extends SCWorker
              */
             const token = socket.authToken;
             if(token !== null){
-                this.mapAuthUserGroupToSc.unMap(token.zationAuthUserGroup,socket);
-                this.mapTokenIdToSc.unMap(token.zationTokenId,socket);
-                if(token.zationUserId !== undefined){
-                    this.mapUserIdToSc.unMap(token.zationUserId.toString(),socket);
-                }
-                this.panelUserSet.remove(socket);
+                this.unmapSocketToken(token,socket);
             }
             this.defaultUserGroupSet.remove(socket);
 
@@ -1091,7 +1086,7 @@ class ZationWorker extends SCWorker
      */
     private async registerWorkerChannel()
     {
-        const channel = this.exchange.subscribe(ZationChannel.ALL_WORKER);
+        const channel = (this.exchange.subscribe as any)(ZationChannel.ALL_WORKER);
         channel.watch(async (data) =>
         {
             switch (data.actionType) {
@@ -1142,111 +1137,54 @@ class ZationWorker extends SCWorker
         const mainData = data.mainData;
         const emitData = mainData.data;
 
+        let socketAction : SocketAction | undefined = undefined;
         switch (data.action) {
             case WorkerChMapTaskActions.KICK_OUT:
                 const ch = mainData.ch;
-                if(ch)
-                {
-                    const kickOutAction = (s : UpSocket) => {
+                if(ch !== undefined) {
+                    socketAction = (s : UpSocket) => {
                         ChUtils.kickOutSearch(s,ch);
                     };
-                    switch (data.target) {
-                        case WorkerChTargets.USER_IDS:
-                            this.forUserIds(ids,exceptSocketSids,kickOutAction);
-                            break;
-                        case WorkerChTargets.TOKEN_IDS:
-                            this.forTokenIds(ids,exceptSocketSids,kickOutAction);
-                            break;
-                        case WorkerChTargets.ALL_SOCKETS:
-                            this.forAllSockets(exceptSocketSids,kickOutAction);
-                            break;
-                        case WorkerChTargets.SOCKETS_SIDS:
-                            this.forAllSocketSids(ids,kickOutAction);
-                            break;
-                        case WorkerChTargets.AUTH_USER_GROUPS:
-                            this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,kickOutAction);
-                            break;
-                        case WorkerChTargets.DEFAULT_USER_GROUP:
-                            this.forDefaultUserGroup(exceptSocketSids,kickOutAction);
-                            break;
-                    }
                 }
                 break;
             case WorkerChMapTaskActions.EMIT:
-                const emitAction = (s : UpSocket) => {
+                socketAction = (s : UpSocket) => {
                     s.emit(mainData.event,emitData);
                 };
-                switch (data.target) {
-                    case WorkerChTargets.USER_IDS:
-                        this.forUserIds(ids,exceptSocketSids,emitAction);
-                        break;
-                    case WorkerChTargets.TOKEN_IDS:
-                        this.forTokenIds(ids,exceptSocketSids,emitAction);
-                        break;
-                    case WorkerChTargets.ALL_SOCKETS:
-                        this.forAllSockets(exceptSocketSids,emitAction);
-                        break;
-                    case WorkerChTargets.SOCKETS_SIDS:
-                        this.forAllSocketSids(ids,emitAction);
-                        break;
-                    case WorkerChTargets.AUTH_USER_GROUPS:
-                        this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,emitAction);
-                        break;
-                    case WorkerChTargets.DEFAULT_USER_GROUP:
-                        this.forDefaultUserGroup(exceptSocketSids,emitAction);
-                        break;
-                }
                 break;
             case WorkerChMapTaskActions.DISCONNECT:
-                const disconnectAction = (s : UpSocket) => {
+                socketAction = (s : UpSocket) => {
                     s.disconnect();
                 };
-                switch (data.target) {
-                    case WorkerChTargets.USER_IDS:
-                        this.forUserIds(ids,exceptSocketSids,disconnectAction);
-                        break;
-                    case WorkerChTargets.TOKEN_IDS:
-                        this.forTokenIds(ids,exceptSocketSids,disconnectAction);
-                        break;
-                    case WorkerChTargets.ALL_SOCKETS:
-                        this.forAllSockets(exceptSocketSids,disconnectAction);
-                        break;
-                    case WorkerChTargets.SOCKETS_SIDS:
-                        this.forAllSocketSids(ids,disconnectAction);
-                        break;
-                    case WorkerChTargets.AUTH_USER_GROUPS:
-                        this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,disconnectAction);
-                        break;
-                    case WorkerChTargets.DEFAULT_USER_GROUP:
-                        this.forDefaultUserGroup(exceptSocketSids,disconnectAction);
-                        break;
-                }
                 break;
             case WorkerChMapTaskActions.DEAUTHENTICATE:
-                const deauthenticateAction = (s : UpSocket) => {
+                socketAction = (s : UpSocket) => {
                     s.deauthenticate();
                 };
-                switch (data.target) {
-                    case WorkerChTargets.USER_IDS:
-                        this.forUserIds(ids,exceptSocketSids,deauthenticateAction);
-                        break;
-                    case WorkerChTargets.TOKEN_IDS:
-                        this.forTokenIds(ids,exceptSocketSids,deauthenticateAction);
-                        break;
-                    case WorkerChTargets.ALL_SOCKETS:
-                        this.forAllSockets(exceptSocketSids,deauthenticateAction);
-                        break;
-                    case WorkerChTargets.SOCKETS_SIDS:
-                        this.forAllSocketSids(ids,deauthenticateAction);
-                        break;
-                    case WorkerChTargets.AUTH_USER_GROUPS:
-                        this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,deauthenticateAction);
-                        break;
-                    case WorkerChTargets.DEFAULT_USER_GROUP:
-                        this.forDefaultUserGroup(exceptSocketSids,deauthenticateAction);
-                        break;
-                }
                 break;
+        }
+
+        if(socketAction !== undefined){
+            switch (data.target) {
+                case WorkerChTargets.USER_IDS:
+                    this.forUserIds(ids,exceptSocketSids,socketAction);
+                    break;
+                case WorkerChTargets.TOKEN_IDS:
+                    this.forTokenIds(ids,exceptSocketSids,socketAction);
+                    break;
+                case WorkerChTargets.ALL_SOCKETS:
+                    this.forAllSockets(exceptSocketSids,socketAction);
+                    break;
+                case WorkerChTargets.SOCKETS_SIDS:
+                    this.forAllSocketSids(ids,socketAction);
+                    break;
+                case WorkerChTargets.AUTH_USER_GROUPS:
+                    this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,socketAction);
+                    break;
+                case WorkerChTargets.DEFAULT_USER_GROUP:
+                    this.forDefaultUserGroup(exceptSocketSids,socketAction);
+                    break;
+            }
         }
     }
 
@@ -1590,6 +1528,20 @@ class ZationWorker extends SCWorker
             },4000);
         }
 
+    }
+
+    /**
+     * Unmap the socket from every mapper with the token information.
+     * @param token
+     * @param socket
+     */
+    unmapSocketToken(token : ZationToken, socket : UpSocket) {
+        this.mapAuthUserGroupToSc.unMap(token.zationAuthUserGroup,socket);
+        this.mapTokenIdToSc.unMap(token.zationTokenId,socket);
+        if(token.zationUserId !== undefined){
+            this.mapUserIdToSc.unMap(token.zationUserId.toString(),socket);
+        }
+        this.panelUserSet.remove(socket);
     }
 
     getServerVersion() : string {
