@@ -8,7 +8,7 @@ import {ControllerClass}      from "../../api/Controller";
 import {ApiLevelSwitch}       from "../apiLevel/apiLevelUtils";
 import {ControllerConfig}     from "./controllerConfig";
 import {Model}                from "./inputConfig";
-import {BackgroundTask}       from "./backgroundTasks";
+import {BackgroundTask}       from "./backgroundTaskConfig";
 
 export interface AppConfig
 {

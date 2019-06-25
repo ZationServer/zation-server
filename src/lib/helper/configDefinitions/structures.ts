@@ -32,7 +32,7 @@ import {
     ValueModelConfig
 } from "./inputConfig";
 import {ControllerConfig} from "./controllerConfig";
-import {BackgroundTask}   from "./backgroundTasks";
+import {BackgroundTask}   from "./backgroundTaskConfig";
 
 const App = {};
 App[nameof<AppConfig>(s => s.authController)]     = {types : ['string'],isOptional : true};

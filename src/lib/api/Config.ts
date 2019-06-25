@@ -117,7 +117,7 @@ import {
     ControllerConfig,
     PrepareHandleFunction
 } from "../helper/configDefinitions/controllerConfig";
-import {BackgroundTask, TaskFunction} from "../helper/configDefinitions/backgroundTasks";
+import {BackgroundTask, TaskFunction} from "../helper/configDefinitions/backgroundTaskConfig";
 
 export default class Config
 {
