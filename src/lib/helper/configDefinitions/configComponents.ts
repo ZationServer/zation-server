@@ -6,6 +6,58 @@ GitHub: LucaCode
 
 import SmallBag from "../../api/SmallBag";
 import {InputConfigTranslatable, ModelConfigTranslatable} from "../../..";
+import ZationTokenInfo from "../infoObjects/zationTokenInfo";
+
+export type AuthAccessFunction = (smallBag : SmallBag, token : ZationTokenInfo | null) => Promise<boolean> | boolean;
+
+export interface AuthAccessConfig {
+    /**
+     * @description
+     * Set the (Client Token State) access rule which clients are allowed to access this component.
+     * Notice that only one of the options 'access' or 'notAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default default config otherwise false
+     * @example
+     * //boolean
+     * true            // All clients are allowed
+     * false           // No client is allowed
+     * //string
+     * 'all'           // All clients are allowed
+     * 'allAuth'       // Only all authenticated clients are allowed
+     * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed)
+     * 'admin'         // Only all admins are allowed
+     * //number
+     * 10              // Only all clients with user id 10 are allowed
+     * //array
+     * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
+     * //function
+     * (smallBag : SmallBag,token : ZationTokenInfo | null) => {} // If returns true the client is allowed, false will not allow.
+     */
+    access  ?: string | number | (string | number)[] | AuthAccessFunction;
+    /**
+     * @description
+     * Set the (Client Token State) access rule which clients are not allowed to access this component.
+     * Notice that only one of the options 'access' or 'notAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default default config otherwise false
+     * @example
+     * //boolean
+     * true            // No client is allowed
+     * false           // All clients are allowed
+     * //string
+     * 'all'           // No client is allowed
+     * 'allAuth'       // All authenticated clients are not allowed
+     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
+     * 'admin'         // All admins are not allowed
+     * //number
+     * 10              // All clients with user id 10 are not allowed
+     * //array
+     * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
+     * //function
+     * (smallBag : SmallBag,token : ZationTokenInfo | null) => {}  // If returns true the client is not allowed, false will allow.
+     */
+    notAccess  ?: string | number | (string | number)[] | AuthAccessFunction;
+}
 
 export type IdCheck = (id : string,smallBag : SmallBag) => Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void;
 

@@ -113,11 +113,11 @@ import {
     SingleModelInput, ValidateFunction, ValueModelConfig
 } from "../helper/configDefinitions/inputConfig";
 import {
-    ControllerAccessFunction,
     ControllerConfig,
     PrepareHandleFunction
 } from "../helper/configDefinitions/controllerConfig";
 import {BackgroundTask, TaskFunction} from "../helper/configDefinitions/backgroundTaskConfig";
+import {AuthAccessFunction} from "../helper/configDefinitions/configComponents";
 
 export default class Config
 {
@@ -394,7 +394,7 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static prepareHandle(func : PrepareHandleFunction) : PrepareHandleFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static controllerAccess(func : ControllerAccessFunction) : ControllerAccessFunction {return func;}
+    static controllerAccess(func : AuthAccessFunction) : AuthAccessFunction {return func;}
 
     //Part Background tasks
     // noinspection JSUnusedGlobalSymbols

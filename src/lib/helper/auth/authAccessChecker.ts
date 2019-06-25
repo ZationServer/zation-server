@@ -5,12 +5,11 @@ GitHub: LucaCode
  */
 
 // noinspection TypeScriptPreferShortImport
-import {ControllerAccessFunction, ControllerConfig} from "../configDefinitions/controllerConfig";
 import AuthEngine         from "./authEngine";
 import ZationTokenInfo    from "../infoObjects/zationTokenInfo";
-import Logger             from "../logger/logger";
 import SmallBag           from "../../api/SmallBag";
 import AccessUtils        from "../access/accessUtils";
+import {AuthAccessFunction, AuthAccessConfig} from "../configDefinitions/configComponents";
 
 export type TokenStateAccessCheckFunction = (authEngine : AuthEngine) => Promise<boolean>;
 
@@ -18,13 +17,13 @@ export default class AuthAccessChecker
 {
     /**
      * Returns a Closures for checking the token state access to a controller.
-     * @param controllerConfig
+     * @param accessConfig
      * @param smallBag
      */
-    static createTokenStateAccessChecker(controllerConfig : ControllerConfig, smallBag : SmallBag) : TokenStateAccessCheckFunction {
+    static createAuthAccessChecker(accessConfig : AuthAccessConfig, smallBag : SmallBag) : TokenStateAccessCheckFunction {
 
-        const notAccess = controllerConfig.notAccess;
-        const access    = controllerConfig.access;
+        const notAccess = accessConfig.notAccess;
+        const access    = accessConfig.access;
 
         let accessProcess : (boolean) => boolean;
         let accessValue;
@@ -33,21 +32,20 @@ export default class AuthAccessChecker
         //search One
         if(notAccess !== undefined) {
             accessProcess = (b) => !b;
-            accessValue = controllerConfig.notAccess;
+            accessValue = accessConfig.notAccess;
         }
         else if(access !== undefined) {
             accessProcess = (b) => b;
-            accessValue = controllerConfig.access;
+            accessValue = accessConfig.access;
         }
         else {
             //access is not defined
             return async () => {
-                Logger.printDebugWarning('No controller access config found! Access will denied!');
                 return false;
             };
         }
 
-        return AccessUtils.createAccessChecker<TokenStateAccessCheckFunction,ControllerAccessFunction>
+        return AccessUtils.createAccessChecker<TokenStateAccessCheckFunction,AuthAccessFunction>
         (accessValue,accessProcess,(func) => {
             return async (authEngine) => {
                 const token = authEngine.getSHBridge().getToken();
