@@ -4,20 +4,20 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationWorker          = require("../../main/zationWorker");
-import {ZationRequest, ZationToken} from "../constants/internal";
-import SHBridgeHttp                 from "../bridges/shBridgeHttp";
-import ZationTokenInfo              from "../infoObjects/zationTokenInfo";
-import AEPreparedPart               from "../auth/aePreparedPart";
-import BackError                    from "../../api/BackError";
-import Logger                       from "../logger/logger";
-import ZationReqUtils               from "../utils/zationReqUtils";
-import {MainBackErrors}             from "../zationBackErrors/mainBackErrors";
-import TokenUtils, {TokenClusterKeyCheckFunction} from "../token/tokenUtils";
-import JsonConverter                from "../utils/jsonConverter";
-import ZationConfigFull             from "../configManager/zationConfigFull";
-import MiddlewareUtils              from "../utils/middlewareUtils";
-import StringifyUtils               from "../utils/stringifyUtils";
+import ZationWorker          = require("../../../main/zationWorker");
+import {ZationRequest, ZationToken} from "../../constants/internal";
+import SHBridgeHttp                 from "../../bridges/shBridgeHttp";
+import ZationTokenInfo              from "../../infoObjects/zationTokenInfo";
+import AEPreparedPart               from "../../auth/aePreparedPart";
+import BackError                    from "../../../api/BackError";
+import Logger                       from "../../logger/logger";
+import ZationReqUtils               from "../../utils/zationReqUtils";
+import {MainBackErrors}             from "../../zationBackErrors/mainBackErrors";
+import TokenUtils, {TokenClusterKeyCheckFunction} from "../../token/tokenUtils";
+import JsonConverter                from "../../utils/jsonConverter";
+import ZationConfigFull             from "../../configManager/zationConfigFull";
+import MiddlewareUtils              from "../../utils/middlewareUtils";
+import StringifyUtils               from "../../utils/stringifyUtils";
 
 export default class HttpRequestProcessor
 {

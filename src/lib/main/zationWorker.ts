@@ -27,7 +27,7 @@ import url          = require('url');
 
 import process          = require("process");
 import {WorkerChTaskType} from "../helper/constants/workerChTaskType";
-import ZationReqHandler   from "./zationReqHandler";
+import ZationReqHandler   from "../helper/request/zationReqHandler";
 import AEPreparedPart     from "../helper/auth/aePreparedPart";
 import ZationTokenInfo    from "../helper/infoObjects/zationTokenInfo";
 import ControllerPrepare  from "../helper/controller/controllerPrepare";

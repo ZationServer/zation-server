@@ -4,22 +4,22 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Bag                     from '../../api/Bag';
-import ZationWorker          = require("../../main/zationWorker");
-import Controller              from'../../api/Controller';
-import {ResponseResult, ZationTask} from "../constants/internal";
-import SHBridge                from "../bridges/shBridge";
+import Bag                     from '../../../api/Bag';
+import ZationWorker          = require("../../../main/zationWorker");
+import Controller              from '../../../api/Controller';
+import {ResponseResult, ZationTask} from "../../constants/internal";
+import SHBridge                from "../../bridges/shBridge";
 import ValidCheckRequestProcessor     from "./validCheckRequestProcessor";
-import AuthEngine              from "../auth/authEngine";
-import BackError               from "../../api/BackError";
-import BackErrorBag            from "../../api/BackErrorBag";
-import ControllerPrepare       from "../controller/controllerPrepare";
-import ProtocolAccessChecker   from "../protocolAccess/protocolAccessChecker";
-import {MainBackErrors}        from "../zationBackErrors/mainBackErrors";
-import ZationReqUtils          from "../utils/zationReqUtils";
-import Result                  from "../../api/Result";
-import {PrepareHandleInvokeFunction} from "../controller/controllerUtils";
-import ZationConfigFull        from "../configManager/zationConfigFull";
+import AuthEngine              from "../../auth/authEngine";
+import BackError               from "../../../api/BackError";
+import BackErrorBag            from "../../../api/BackErrorBag";
+import ControllerPrepare       from "../../controller/controllerPrepare";
+import ProtocolAccessChecker   from "../../protocolAccess/protocolAccessChecker";
+import {MainBackErrors}        from "../../zationBackErrors/mainBackErrors";
+import ZationReqUtils          from "../../utils/zationReqUtils";
+import Result                  from "../../../api/Result";
+import {PrepareHandleInvokeFunction} from "../../controller/controllerUtils";
+import ZationConfigFull        from "../../configManager/zationConfigFull";
 
 export default class MainRequestProcessor
 {

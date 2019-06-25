@@ -4,12 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import SHBridgeSocket        from "../bridges/shBridgeSocket";
-import UpSocket              from "../sc/socket";
-import ZationConfig          from "../configManager/zationConfig";
-import Logger                from "../logger/logger";
-import ZationReqUtils        from "../utils/zationReqUtils";
-import StringifyUtils        from "../utils/stringifyUtils";
+import SHBridgeSocket        from "../../bridges/shBridgeSocket";
+import UpSocket              from "../../sc/socket";
+import ZationConfig          from "../../configManager/zationConfig";
+import Logger                from "../../logger/logger";
+import ZationReqUtils        from "../../utils/zationReqUtils";
+import StringifyUtils        from "../../utils/stringifyUtils";
 
 export default class SocketRequestProcessor
 {

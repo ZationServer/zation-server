@@ -4,19 +4,19 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationWorker        = require("./zationWorker");
-import RequestResponder              from "../helper/request/requestResponder";
-import MainRequestProcessor  from "../helper/request/mainRequestProcessor";
-import SocketRequestProcessor       from "../helper/request/socketRequestProcessor";
-import HttpRequestProcessor         from "../helper/request/httpRequestProcessor";
-import ValidCheckRequestProcessor   from "../helper/request/validCheckRequestProcessor";
-import UpSocket, {RespondFunction} from "../helper/sc/socket";
-import BackError             from "../api/BackError";
-import BackErrorBag          from "../api/BackErrorBag";
-import IdCounter             from "../helper/utils/idCounter";
-import Logger                from "../helper/logger/logger";
-import CodeError             from "../helper/error/codeError";
-import ZationConfigFull      from "../helper/configManager/zationConfigFull";
+import ZationWorker        = require("../../main/zationWorker");
+import RequestResponder              from "./requestResponder";
+import MainRequestProcessor  from "./processor/mainRequestProcessor";
+import SocketRequestProcessor       from "./processor/socketRequestProcessor";
+import HttpRequestProcessor         from "./processor/httpRequestProcessor";
+import ValidCheckRequestProcessor   from "./processor/validCheckRequestProcessor";
+import UpSocket, {RespondFunction} from "../sc/socket";
+import BackError             from "../../api/BackError";
+import BackErrorBag          from "../../api/BackErrorBag";
+import IdCounter             from "../utils/idCounter";
+import Logger                from "../logger/logger";
+import CodeError             from "../error/codeError";
+import ZationConfigFull      from "../configManager/zationConfigFull";
 import {Request,Response}    from "express";
 
 export default class ZationReqHandler

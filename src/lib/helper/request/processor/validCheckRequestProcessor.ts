@@ -4,14 +4,14 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ZationRequest, ZationValidationCheck} from "../constants/internal";
-import ZationWorker          = require("../../main/zationWorker");
-import BackError                from "../../api/BackError";
-import ControllerPrepare        from "../controller/controllerPrepare";
-import ZationConfig             from "../configManager/zationConfig";
-import ZationReqUtils           from "../utils/zationReqUtils";
-import {MainBackErrors}         from "../zationBackErrors/mainBackErrors";
-import SHBridge                 from "../bridges/shBridge";
+import {ZationRequest, ZationValidationCheck} from "../../constants/internal";
+import ZationWorker          = require("../../../main/zationWorker");
+import BackError                from "../../../api/BackError";
+import ControllerPrepare        from "../../controller/controllerPrepare";
+import ZationConfig             from "../../configManager/zationConfig";
+import ZationReqUtils           from "../../utils/zationReqUtils";
+import {MainBackErrors}         from "../../zationBackErrors/mainBackErrors";
+import SHBridge                 from "../../bridges/shBridge";
 
 export default class ValidCheckRequestProcessor
 {
