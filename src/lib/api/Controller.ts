@@ -8,12 +8,9 @@ import Bag                from './Bag';
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../helper/configDefinitions/controllerConfig";
 import SmallBag           from "./SmallBag";
-import ObjectPath         from "../helper/utils/objectPath";
 import BackErrorBag       from "./BackErrorBag";
 
 export default class Controller {
-    private _storage: object = {};
-
     /**
      * @description
      * The prepared small bag from the worker.
@@ -94,64 +91,6 @@ export default class Controller {
      * All other errors or objects will be converted to an unknown BackError.
      */
     async wrongInput(bag: Bag, input: any, backErrorBag : BackErrorBag): Promise<void> {
-    }
-
-    //Controller storage
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Set a controller variable (server side) with object path.
-     * @example
-     * setControllerVariable('email','example@gmail.com');
-     * @param path
-     * The path to the variable, you can split the keys with a dot or an string array.
-     * @param value
-     */
-    protected setControllerVariable(path: string | string[], value: any): void {
-        ObjectPath.set(this._storage, path, value);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Has a controller variable (server side) with object path.
-     * @example
-     * hasControllerVariable('email');
-     * @param path
-     * The path to the variable, you can split the keys with a dot or an string array.
-     */
-    protected hasControllerVariable(path ?: string | string[]): boolean {
-        return ObjectPath.has(this._storage, path);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Get controller variable (server side) with object path.
-     * @example
-     * getControllerVariable('email');
-     * @param path
-     * The path to the variable, you can split the keys with a dot or an string array.
-     */
-    protected getControllerVariable<R>(path ?: string | string[]): R {
-        return ObjectPath.get(this._storage, path);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Delete a controller variable (server side) with object path.
-     * @example
-     * deleteControllerVariable('email');
-     * @param path
-     * The path to the variable, you can split the keys with a dot or an string array.
-     */
-    protected deleteControllerVariable(path ?: string | string[]): void {
-        if (!!path) {
-            ObjectPath.del(this._storage, path);
-        } else {
-            this._storage = {};
-        }
     }
 }
 
