@@ -5,20 +5,20 @@ GitHub: LucaCode
  */
 
 import SmallBag        from "../../api/SmallBag";
-import {IdCheckConfig} from "../configDefinitions/configComponents";
+import {IdValidConfig} from "../configDefinitions/configComponents";
 import {ErrorName}     from "../constants/errorName";
 
-export type IdChecker = (id : string) => Promise<Error | void>;
+export type IdValidChecker = (id : string) => Promise<Error | void>;
 
-export default class IdCheckerUtils {
+export default class IdValidCheckerUtils {
 
     /**
-     * Returns a Closures for checking an id.
-     * @param idCheckConfig
+     * Returns a Closures for checking if an id is valid.
+     * @param idValidConfig
      * @param smallBag
      */
-    static createIdChecker(idCheckConfig : IdCheckConfig,smallBag : SmallBag) : IdChecker {
-        const func = idCheckConfig.idCheck;
+    static createIdValidChecker(idValidConfig : IdValidConfig, smallBag : SmallBag) : IdValidChecker {
+        const func = idValidConfig.idValid;
         if(typeof func !== "function"){
             return async () => {}
         }

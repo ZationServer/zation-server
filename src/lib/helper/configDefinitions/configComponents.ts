@@ -59,16 +59,16 @@ export interface AuthAccessConfig {
     notAccess  ?: string | number | (string | number)[] | AuthAccessFunction;
 }
 
-export type IdCheck = (id : string,smallBag : SmallBag) => Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void;
+export type IdValid = (id : string, smallBag : SmallBag) => Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void;
 
-export interface IdCheckConfig {
+export interface IdValidConfig {
 
     /**
      * Check if the id is valid or not.
      * To block the id, you only need to return an object (that can be error information) or false.
      * If you want to allow the id, you have to return nothing or a true.
      */
-    idCheck ?: IdCheck
+    idValid ?: IdValid
 }
 
 export interface VersionAccessConfig {

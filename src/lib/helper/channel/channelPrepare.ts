@@ -18,7 +18,7 @@ import {
 import ZationConfigFull              from "../configManager/zationConfigFull";
 import FuncUtils, {EventInvokerSync} from "../utils/funcUtils";
 import SmallBag                      from "../../api/SmallBag";
-import IdCheckerUtils, {IdChecker}   from "../id/idCheckerUtils";
+import IdValidCheckerUtils, {IdValidChecker}   from "../id/idValidCheckerUtils";
 import ChAccessHelper, {ChPubAccessChecker, ChSubAccessChecker} from "./chAccessHelper";
 import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
 
@@ -36,7 +36,7 @@ export interface CustomChStorage extends Events, ChStorage {
 }
 
 export interface CustomIdChStorage extends CustomChStorage {
-    idChecker : IdChecker
+    idValidChecker : IdValidChecker
 }
 
 export interface ChStorage extends Events {
@@ -102,7 +102,7 @@ export class ChannelPrepare {
     static getCustomIdChStorageDefaults() : CustomIdChStorage  {
         return {
             ...ChannelPrepare.getCustomChStorageDefaults(),
-            idChecker : async () => {}
+            idValidChecker : async () => {}
         };
     }
 
@@ -164,7 +164,7 @@ export class ChannelPrepare {
                 if (channels.hasOwnProperty(ch) && ch !== nameof<ChannelDefault<CustomIdCh>>(s => s.default)) {
                     res[ch] = {
                         ...this.processCustomChannel(channels[ch],smallBag),
-                        idChecker : IdCheckerUtils.createIdChecker(channels[ch],smallBag)
+                        idValidChecker : IdValidCheckerUtils.createIdValidChecker(channels[ch],smallBag)
                     }
                 }
             }

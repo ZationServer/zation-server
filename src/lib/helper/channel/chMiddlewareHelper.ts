@@ -86,7 +86,7 @@ export default class ChMiddlewareHelper
                 return systemVersionCheck;
             }
 
-            const idCheckRes = await preChInfo.idChecker(id);
+            const idCheckRes = await preChInfo.idValidChecker(id);
             if(idCheckRes){
                 return idCheckRes;
             }
@@ -149,7 +149,7 @@ export default class ChMiddlewareHelper
                 return systemVersionCheck;
             }
 
-            const idCheckRes = await preChInfo.idChecker(id);
+            const idCheckRes = await preChInfo.idValidChecker(id);
             if(idCheckRes !== undefined){
                 return idCheckRes;
             }
