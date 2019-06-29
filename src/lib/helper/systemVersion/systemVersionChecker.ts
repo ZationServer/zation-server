@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import BaseSHBridge       from "../bridges/baseSHBridge";
 // noinspection TypeScriptPreferShortImport
-import {SystemAccessConfig, VersionAccessConfig} from "../configDefinitions/configComponents";
+import {SystemAccessConfig, VersionAccessConfig} from "../config/definitions/configComponents";
 
 export type VersionSystemAccessCheckFunction = (shBridge : BaseSHBridge) => boolean;
 

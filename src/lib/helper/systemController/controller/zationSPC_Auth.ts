@@ -6,7 +6,7 @@ GitHub: LucaCode
 // noinspection TypeScriptPreferShortImport
 import {ZationToken}      from "../../constants/internal";
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../../configDefinitions/controllerConfig";
+import {ControllerConfig} from "../../config/definitions/controllerConfig";
 import BackError          from "../../../api/BackError";
 import Controller         from "../../../api/Controller";
 import {MainBackErrors}   from "../../zationBackErrors/mainBackErrors";

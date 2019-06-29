@@ -5,10 +5,10 @@ GitHub: LucaCode
  */
 
 import {InputConfigTranslatable, ModelConfigTranslatable} from "../../ConfigTranslatable";
-import {ObjectModelConfig}       from "../../../helper/configDefinitions/inputConfig";
+import {ObjectModelConfig}       from "../../../helper/config/definitions/inputConfig";
 import CloneUtils                from "../../../helper/utils/cloneUtils";
 import Config                    from "../../Config";
-import {InDecoratorMem} from "./InDecoratorMem";
+import {InDecoratorMem}          from "./InDecoratorMem";
 
 /**
  * A class decorator that can be used to mark the class as an object model.

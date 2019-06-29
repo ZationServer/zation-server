@@ -12,11 +12,11 @@ import AsymmetricKeyPairs                                   from "../helper/info
 import {WorkerMessageActions}                               from "../helper/constants/workerMessageActions";
 import BackErrorConstruct                                   from "../helper/constants/backErrorConstruct";
 import {ZationChannel, ZationToken}                         from "../helper/constants/internal";
-import {InternalMainConfig}                                 from "../helper/configDefinitions/mainConfig";
-import {AppConfig}                                          from "../helper/configDefinitions/appConfig";
-import {ChannelConfig}                                      from "../helper/configDefinitions/channelConfig";
-import {EventConfig}                                        from "../helper/configDefinitions/eventConfig";
-import {ServiceConfig}                                      from "../helper/configDefinitions/serviceConfig";
+import {InternalMainConfig}                                 from "../helper/config/definitions/mainConfig";
+import {AppConfig}                                          from "../helper/config/definitions/appConfig";
+import {ChannelConfig}                                      from "../helper/config/definitions/channelConfig";
+import {EventConfig}                                        from "../helper/config/definitions/eventConfig";
+import {ServiceConfig}                                      from "../helper/config/definitions/serviceConfig";
 import {byteLength}                                         from "byte-length";
 
 const crypto : any                                          = require('crypto');
@@ -32,7 +32,7 @@ import BackError                                            from "./BackError";
 import BackErrorBag                                         from "./BackErrorBag";
 import ChannelBagEngine                                     from "../helper/channel/channelBagEngine";
 import ServiceEngine                                        from "../helper/services/serviceEngine";
-import ZationConfig                                         from "../helper/configManager/zationConfig";
+import ZationConfig                                         from "../helper/config/manager/zationConfig";
 import ObjectPath                                           from "../helper/utils/objectPath";
 import Result                                               from "./Result";
 import Logger                                               from "../helper/logger/logger";
@@ -42,7 +42,7 @@ import TokenUtils                                           from "../helper/toke
 import ObjectPathSequence                                   from "../helper/utils/objectPathSequence";
 import ObjectPathActionSequence                             from "../helper/utils/objectPathActionSequence";
 import Base64Utils                                          from "../helper/utils/base64Utils";
-import ZationConfigFull                                     from "../helper/configManager/zationConfigFull";
+import ZationConfigFull                                     from "../helper/config/manager/zationConfigFull";
 import CloneUtils                                           from "../helper/utils/cloneUtils";
 import JwtSignOptions                                       from "../helper/constants/jwt";
 import JwtVerifyOptions                                     from "../helper/constants/jwt";

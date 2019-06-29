@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ArraySettings, ValidateFunction, ValueModelConfig} from "../configDefinitions/inputConfig";
+import {ArraySettings, ValidateFunction, ValueModelConfig} from "../config/definitions/inputConfig";
 // noinspection TypeScriptPreferShortImport
 import {ValidationTypes}     from "./../constants/validationTypes";
 import BackErrorBag          from "../../api/BackErrorBag";

@@ -9,7 +9,7 @@ import AuthEngine         from "./authEngine";
 import ZationTokenInfo    from "../infoObjects/zationTokenInfo";
 import SmallBag           from "../../api/SmallBag";
 import AccessUtils        from "../access/accessUtils";
-import {AuthAccessFunction, AuthAccessConfig} from "../configDefinitions/configComponents";
+import {AuthAccessFunction, AuthAccessConfig} from "../config/definitions/configComponents";
 
 export type TokenStateAccessCheckFunction = (authEngine : AuthEngine) => Promise<boolean>;
 

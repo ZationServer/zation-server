@@ -27,7 +27,7 @@ import url          = require('url');
 
 import process          = require("process");
 import {WorkerChTaskType} from "../helper/constants/workerChTaskType";
-import ZationReqHandler   from "../helper/request/zationReqHandler";
+import ZationCReqHandler   from "../helper/controller/request/zationCReqHandler";
 import AEPreparedPart     from "../helper/auth/aePreparedPart";
 import ZationTokenInfo    from "../helper/infoObjects/zationTokenInfo";
 import ControllerPrepare  from "../helper/controller/controllerPrepare";
@@ -36,7 +36,7 @@ import SmallBag           from "../api/SmallBag";
 import Mapper             from "../helper/utils/mapper";
 import ViewEngine         from "../helper/views/viewEngine";
 import Logger             from "../helper/logger/logger";
-import ConfigPreCompiler  from "../helper/configUtils/configPreCompiler";
+import ConfigPreCompiler  from "../helper/config/utils/configPreCompiler";
 import PanelEngine        from "../helper/panel/panelEngine";
 import SidBuilder         from "../helper/utils/sidBuilder";
 import ChUtils            from "../helper/channel/chUtils";
@@ -44,8 +44,8 @@ import TokenUtils, {TokenClusterKeyCheckFunction} from "../helper/token/tokenUti
 import SystemInfo         from "../helper/utils/systemInfo";
 import BackgroundTasksWorkerSaver from "../helper/background/backgroundTasksWorkerSaver";
 import MiddlewareUtils    from "../helper/utils/middlewareUtils";
-import ZationConfigFull   from "../helper/configManager/zationConfigFull";
-import ConfigLoader       from "../helper/configManager/configLoader";
+import ZationConfigFull   from "../helper/config/manager/zationConfigFull";
+import ConfigLoader       from "../helper/config/manager/configLoader";
 import SocketUpgradeEngine from "../helper/socket/socketUpgradeEngine";
 import ChannelBagEngine    from "../helper/channel/channelBagEngine";
 import {
@@ -58,7 +58,7 @@ import {
 } from "../helper/sc/scMiddlewareReq";
 import ExpressUtils   from "../helper/utils/expressUtils";
 import {SocketAction} from "../helper/constants/socketAction";
-import {TaskFunction} from "../helper/configDefinitions/backgroundTaskConfig";
+import {TaskFunction} from "../helper/config/definitions/backgroundTaskConfig";
 import {ErrorName}    from "../helper/constants/errorName";
 
 const  SCWorker : any        = require('socketcluster/scworker');
@@ -86,7 +86,7 @@ class ZationWorker extends SCWorker
     private channelBagEngine : ChannelBagEngine;
     private originCheck : OriginChecker;
     private channelPrepare : ChannelPrepare;
-    private zationReqHandler : ZationReqHandler;
+    private zationReqHandler : ZationCReqHandler;
     private socketUpdateEngine : SocketUpgradeEngine;
     private tokenClusterKeyCheck : TokenClusterKeyCheckFunction;
 
@@ -247,7 +247,7 @@ class ZationWorker extends SCWorker
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has registered to the worker channel.`,true);
 
         Logger.startStopWatch();
-        this.zationReqHandler = new ZationReqHandler(this);
+        this.zationReqHandler = new ZationCReqHandler(this);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the zation request handler.`,true);
 
         Logger.startStopWatch();
@@ -327,6 +327,10 @@ class ZationWorker extends SCWorker
 
             socket.on('>', async (data, respond) => {
                 await this.zationReqHandler.processSocketReq(data,socket,respond);
+            });
+
+            socket.on('>D', async () => {
+
             });
 
             await Promise.all([
@@ -449,14 +453,12 @@ class ZationWorker extends SCWorker
                             }
                             else {
                                 const err : any = new Error(`A client can only subscribe to the user group channel where his user id belongs to.`);
-                                err.code = 4543;
                                 err.name = ErrorName.ACCESS_DENIED;
                                 next(err); //Block!
                             }
                         }
                         else {
                             const err : any = new Error(`A client with undefined user id cannot subscribe to this user group channel.`);
-                            err.code = 4542;
                             err.name = ErrorName.ACCESS_DENIED;
                             next(err); //Block!
                         }
@@ -470,21 +472,18 @@ class ZationWorker extends SCWorker
                             }
                             else {
                                 const err : any = new Error('A client can only subscribe to the auth user group channel where his auth user group belongs to.');
-                                err.code = 4533;
                                 err.name = ErrorName.ACCESS_DENIED;
                                 next(err); //Block!
                             }
                         }
                         else {
                             const err : any = new Error(`A client with undefined auth user group cannot subscribe to this auth user group channel.`);
-                            err.code = 4532;
                             err.name = ErrorName.ACCESS_DENIED;
                             next(err); //Block!
                         }
                     }
                     else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
                         const err : any = new Error('An authenticated client cannot subscribe to the default user group channel.');
-                        err.code = 4521;
                         err.name = ErrorName.ACCESS_DENIED;
                         next(err); //Block!
                     }
@@ -497,20 +496,17 @@ class ZationWorker extends SCWorker
                         }
                         else {
                             const err : any = new Error('A client without panel access cannot subscribe to the panel out channel!');
-                            err.code = 4502;
                             err.name = ErrorName.ACCESS_DENIED;
                             next(err); //Block!
                         }
                     }
                     else if(channel === ZationChannel.PANEL_IN) {
                         const err : any = new Error('A client cannot subscribe the panel in channel.');
-                        err.code = 4901;
                         err.name = ErrorName.ACCESS_DENIED;
                         next(err); //Block!
                     }
                     else if(channel === ZationChannel.ALL_WORKER) {
                         const err : any = new Error('A client cannot subscribe the all worker channel.');
-                        err.code = 4503;
                         err.name = ErrorName.ACCESS_DENIED;
                         next(err); //Block!
                     }
@@ -522,13 +518,11 @@ class ZationWorker extends SCWorker
                 else {
                     if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
                         const err : any = new Error('An anonymous client cannot subscribe to this user group channel.');
-                        err.code = 4541;
                         err.name = ErrorName.ACCESS_DENIED;
                         next(err); //Block!
                     }
                     else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
                         const err : any = new Error('An anonymous client cannot subscribe to this auth user group channel.');
-                        err.code = 4531;
                         err.name = ErrorName.ACCESS_DENIED;
                         next(err); //Block!
                     }
@@ -538,13 +532,11 @@ class ZationWorker extends SCWorker
                     }
                     else if(channel === ZationChannel.PANEL_IN || channel  === ZationChannel.PANEL_OUT) {
                         const err : any = new Error('An anonymous client cannot subscribe to the panel in or out channel.');
-                        err.code = 4501;
                         err.name = ErrorName.ACCESS_DENIED;
                         next(err); //Block!
                     }
                     else if(channel === ZationChannel.ALL_WORKER) {
                         const err : any = new Error('A client cannot subscribe the all worker channel.');
-                        err.code = 4504;
                         err.name = ErrorName.ACCESS_DENIED;
                         next(err); //Block!
                     }
@@ -579,7 +571,6 @@ class ZationWorker extends SCWorker
                 }
                 else{
                     const err : any = new Error('Publish in this user group channel denied.');
-                    err.code = 4546;
                     err.name = ErrorName.ACCESS_DENIED;
                     next(err); //Block!
                 }
@@ -603,7 +594,6 @@ class ZationWorker extends SCWorker
                 }
                 else{
                     const err : any = new Error('Publish in this auth user group channel denied.');
-                    err.code = 4536;
                     err.name = ErrorName.ACCESS_DENIED;
                     next(err); //Block!
                 }
@@ -619,7 +609,6 @@ class ZationWorker extends SCWorker
                 }
                 else {
                     const err : any = new Error('Publish in the all channel denied.');
-                    err.code = 4556;
                     err.name = ErrorName.ACCESS_DENIED;
                     next(err); //Block!
                 }
@@ -635,14 +624,12 @@ class ZationWorker extends SCWorker
                 }
                 else{
                     const err : any = new Error('Publish in the default user group channel denied.');
-                    err.code = 4526;
                     err.name = ErrorName.ACCESS_DENIED;
                     next(err); //Block!
                 }
             }
             else if(channel === ZationChannel.PANEL_OUT) {
                 const err : any = new Error('A client cannot publish in the panel out channel.');
-                err.code = 4506;
                 err.name = ErrorName.ACCESS_DENIED;
                 next(err); //Block!
             }
@@ -655,7 +642,6 @@ class ZationWorker extends SCWorker
                 }
                 else {
                     const err : any = new Error('A client without panel access cannot publish in the panel in channel.');
-                    err.code = 4902;
                     err.name = ErrorName.ACCESS_DENIED;
                     next(err); //Block!
                 }
@@ -663,7 +649,6 @@ class ZationWorker extends SCWorker
             //Important! (Otherwise every socket can publish in worker channel and can modify the whole network.)
             else if(req.channel === ZationChannel.ALL_WORKER) {
                 const err : any = new Error('A client cannot publish in the all worker channel.');
-                err.code = 4507;
                 err.name = ErrorName.ACCESS_DENIED;
                 next(err); //Block!
             }

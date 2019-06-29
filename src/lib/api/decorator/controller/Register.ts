@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import Config                        from "../../Config";
 import Controller, {ControllerClass} from "../../Controller";
-import ConfigBuildError               from "../../../helper/configManager/configBuildError";
+import ConfigBuildError               from "../../../helper/config/manager/configBuildError";
 
 /**
  * Register a controller in the app config.

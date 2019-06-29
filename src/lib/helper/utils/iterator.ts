@@ -4,6 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+import {ApiLevelSwitch} from "../apiLevel/apiLevelUtils";
+
 export type BreakIterator =
     (func : (key : string,value : any,src : object | any []) => Promise<boolean | void>) => Promise<void>;
 
@@ -54,6 +56,27 @@ export default class Iterator
             for(let k in value) {
                 if(value.hasOwnProperty(k)){
                     func(k,value[k],value);
+                }
+            }
+        }
+    }
+
+    /**
+     * A method that will help to iterate over components
+     * which can have an API level e.g., controllers or dataBoxes.
+     * @param definition
+     * @param iterator
+     */
+    static iterateCompDefinition<T extends object>(definition : T | ApiLevelSwitch<T>,
+                                                   iterator : (tClass : T,key : string | undefined) => void)
+    {
+        if(typeof definition === 'function'){
+            iterator(definition,undefined);
+        }
+        else {
+            for(let k in definition){
+                if(definition.hasOwnProperty(k)){
+                    iterator(definition[k],k);
                 }
             }
         }

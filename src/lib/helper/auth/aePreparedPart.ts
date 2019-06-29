@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {AuthUserGroupConfig, UserGroupsConfig} from "../configDefinitions/appConfig";
+import {AuthUserGroupConfig, UserGroupsConfig} from "../config/definitions/appConfig";
 import {DefaultUserGroupFallBack}              from "../constants/internal";
-import ZationConfigFull                        from "../configManager/zationConfigFull";
+import ZationConfigFull                        from "../config/manager/zationConfigFull";
 
 export default class AEPreparedPart
 {

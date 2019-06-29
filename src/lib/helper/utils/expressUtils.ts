@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import ExpressCore                   = require("express-serve-static-core");
-import ZationConfig                    from "../configManager/zationConfig";
+import ZationConfig                    from "../config/manager/zationConfig";
 
 export type LogFileDownloader = (req :  ExpressCore.Request,res :  ExpressCore.Response) => void
 

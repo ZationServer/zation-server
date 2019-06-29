@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationConfig from "../configManager/zationConfig";
+import ZationConfig from "../config/manager/zationConfig";
 
 export default class ZationInfo
 {

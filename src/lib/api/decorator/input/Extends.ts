@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ConfigBuildError    from "../../../helper/configManager/configBuildError";
+import ConfigBuildError    from "../../../helper/config/manager/configBuildError";
 import {InDecoratorMem}    from "./InDecoratorMem";
-import {ObjectModelConfig} from "../../../helper/configDefinitions/inputConfig";
-import {AnyClass, AnyModelConfigTranslatable} from "../../../helper/configDefinitions/configComponents";
+import {ObjectModelConfig} from "../../../helper/config/definitions/inputConfig";
+import {AnyClass, AnyModelConfigTranslatable} from "../../../helper/config/definitions/configComponents";
 
 /**
  * A class decorator that can be used to add a

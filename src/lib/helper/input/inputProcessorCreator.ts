@@ -10,7 +10,7 @@ import {
     ConvertValueFunction,
     Model,
     ObjectModelConfig, ParamInput, ValueModelConfig,
-} from "../configDefinitions/inputConfig";
+} from "../config/definitions/inputConfig";
 import BackErrorBag          from "../../api/BackErrorBag";
 import ValidatorEngine       from "../validator/validatorEngine";
 import ConvertEngine         from "../convert/convertEngine";
@@ -20,7 +20,7 @@ import Iterator              from "../utils/iterator";
 import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";
 import CloneUtils            from "../utils/cloneUtils";
 import {ProcessTask}         from "./processTaskEngine";
-import {ModelPreparationMem} from "../configUtils/configPreCompiler";
+import {ModelPreparationMem} from "../config/utils/configPreCompiler";
 import SmallBag from "../../api/SmallBag";
 
 export interface ProcessInfo {

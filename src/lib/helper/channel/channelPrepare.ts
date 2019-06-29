@@ -14,11 +14,11 @@ import {
     CustomChannelConfig,
     CustomIdCh,
     ZationChannelConfig
-} from "../configDefinitions/channelConfig";
-import ZationConfigFull              from "../configManager/zationConfigFull";
+} from "../config/definitions/channelConfig";
+import ZationConfigFull              from "../config/manager/zationConfigFull";
 import FuncUtils, {EventInvokerSync} from "../utils/funcUtils";
 import SmallBag                      from "../../api/SmallBag";
-import IdValidCheckerUtils, {IdValidChecker}   from "../id/idValidCheckerUtils";
+import IdValidCheckerUtils, {IdValidChecker}                    from "../id/idValidCheckerUtils";
 import ChAccessHelper, {ChPubAccessChecker, ChSubAccessChecker} from "./chAccessHelper";
 import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
 
@@ -159,12 +159,14 @@ export class ChannelPrepare {
     private processCustomIdChannels(smallBag : SmallBag): Record<string,CustomIdChStorage> {
         const res : Record<string,CustomIdChStorage> = {};
         if (typeof this.chConfig.customIdChannels === 'object') {
-            const channels = this.chConfig.customIdChannels;
+            const channels : Record<string,CustomIdCh> =
+                (this.chConfig.customIdChannels as Record<string,CustomIdCh>);
+
             for (let ch in channels) {
                 if (channels.hasOwnProperty(ch) && ch !== nameof<ChannelDefault<CustomIdCh>>(s => s.default)) {
                     res[ch] = {
                         ...this.processCustomChannel(channels[ch],smallBag),
-                        idValidChecker : IdValidCheckerUtils.createIdValidChecker(channels[ch],smallBag)
+                        idValidChecker : IdValidCheckerUtils.createIdValidChecker(channels[ch].idValid,smallBag)
                     }
                 }
             }

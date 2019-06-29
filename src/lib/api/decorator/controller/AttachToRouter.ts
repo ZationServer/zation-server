@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import Controller, {ControllerClass} from "../../Controller";
 import Router                        from "../../Router";
-import ConfigBuildError               from "../../../helper/configManager/configBuildError";
+import ConfigBuildError               from "../../../helper/config/manager/configBuildError";
 
 /**
  * Attach a controller to a router.

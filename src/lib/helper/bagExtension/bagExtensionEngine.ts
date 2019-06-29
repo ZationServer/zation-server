@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import SmallBag           from "../../api/SmallBag";
 import Bag                from "../../api/Bag";
-import ZationConfigFull from "../configManager/zationConfigFull";
+import ZationConfigFull from "../config/manager/zationConfigFull";
 
 export default class BagExtensionEngine
 {

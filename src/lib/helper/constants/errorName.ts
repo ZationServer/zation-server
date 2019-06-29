@@ -12,5 +12,11 @@ export enum ErrorName {
     NO_ACCESS_WITH_SYSTEM        = 'NO_ACCESS_WITH_SYSTEM',
     ACCESS_DENIED                = 'ACCESS_DENIED',
     ID_IS_NOT_VALID              = 'ID_IS_NOT_VALID',
+
+    API_LEVEL_NOT_COMPATIBLE     = 'API_LEVEL_NOT_COMPATIBLE',
+    UNKNOWN_DATABOX              = 'UNKNOWN_DATABOX'
+
+
+
 }
 

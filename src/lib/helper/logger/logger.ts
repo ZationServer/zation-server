@@ -5,8 +5,8 @@ GitHub: LucaCode
  */
 
 import * as cluster     from "cluster";
-import ZationConfig     from "../configManager/zationConfig";
-import ConfigErrorBag   from "../configUtils/configErrorBag";
+import ZationConfig     from "../config/manager/zationConfig";
+import ConfigErrorBag   from "../config/utils/configErrorBag";
 const SimpleNodeLogger  = require('simple-node-logger');
 
 export default class Logger

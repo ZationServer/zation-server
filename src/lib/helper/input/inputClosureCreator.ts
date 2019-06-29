@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {InputConfig, ParamInput, SingleModelInput} from "../configDefinitions/inputConfig";
+import {InputConfig, ParamInput, SingleModelInput} from "../config/definitions/inputConfig";
 import BackErrorBag                     from "../../api/BackErrorBag";
 import ProcessTaskEngine, {ProcessTask} from "./processTaskEngine";
 import InputProcessor, {Processable}    from "./inputProcessorCreator";
@@ -14,7 +14,7 @@ import InputUtils                       from "./inputUtils";
 import SmallBag                         from "../../api/SmallBag";
 import {ValidationCheckPair}            from "../constants/internal";
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig}               from "../../helper/configDefinitions/controllerConfig";
+import {ControllerConfig}               from "../config/definitions/controllerConfig";
 
 export type InputConsumeFunction = (input : any) => Promise<any>;
 export type InputValidationCheckFunction = (checkData : ValidationCheckPair[]) => Promise<void>;

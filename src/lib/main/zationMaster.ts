@@ -4,27 +4,27 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ConfigLoader from "../helper/configManager/configLoader";
+import ConfigLoader from "../helper/config/manager/configLoader";
 
 const  SocketCluster : any   = require('socketcluster');
 const  isWindows             = require('is-windows');
 import {WorkerMessageActions}  from "../helper/constants/workerMessageActions";
-import {StarterConfig}         from "../helper/configDefinitions/starterConfig";
+import {StarterConfig}         from "../helper/config/definitions/starterConfig";
 import StringSet               from "../helper/utils/simpleSet";
 import StateServerEngine       from "../helper/cluster/stateServerEngine";
 import Logger                  from "../helper/logger/logger";
-import ConfigErrorBag          from "../helper/configUtils/configErrorBag";
-import ConfigChecker           from "../helper/configUtils/configChecker";
+import ConfigErrorBag          from "../helper/config/utils/configErrorBag";
+import ConfigChecker           from "../helper/config/utils/configChecker";
 import ClientPrepare           from "../helper/client/clientPrepare";
 import PortChecker             from "../helper/utils/portChecker";
 import TimeUtils               from "../helper/utils/timeUtils";
 import BackgroundTasksSender   from "../helper/background/backgroundTasksSender";
 import BackgroundTasksLoader   from "../helper/background/backgroundTasksLoader";
-import ZationConfigMaster      from "../helper/configManager/zationConfigMaster";
+import ZationConfigMaster      from "../helper/config/manager/zationConfigMaster";
 // noinspection TypeScriptPreferShortImport
 import {StartMode}             from "./../helper/constants/startMode";
 import FuncUtils from "../helper/utils/funcUtils";
-import ConfigBuildError from "../helper/configManager/configBuildError";
+import ConfigBuildError from "../helper/config/manager/configBuildError";
 
 export default class ZationMaster {
     private static instance: ZationMaster | null = null;

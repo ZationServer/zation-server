@@ -44,17 +44,17 @@ import
     SocketBadAuthTokenFunction,
     SocketAuthStateChangeFunction,
     ScServerSocketCodeDataFunction
-} from "../helper/configDefinitions/eventConfig";
+} from "../helper/config/definitions/eventConfig";
 
 import
 {
     MainService, ServiceConfig
-} from "../helper/configDefinitions/serviceConfig";
+} from "../helper/config/definitions/serviceConfig";
 
 import
 {
     AppConfig,
-} from "../helper/configDefinitions/appConfig";
+} from "../helper/config/definitions/appConfig";
 import BackErrorConstruct from "../helper/constants/backErrorConstruct";
 import {
     AuthUserGroupChannel,
@@ -86,9 +86,9 @@ import {
     UserChOnClientPubFunction,
     UserChOnSubFunction,
     UserChOnUnsubFunction
-} from "../helper/configDefinitions/channelConfig";
-import {StarterConfig}  from "../helper/configDefinitions/starterConfig";
-import {MainConfig}     from "../helper/configDefinitions/mainConfig";
+} from "../helper/config/definitions/channelConfig";
+import {StarterConfig}  from "../helper/config/definitions/starterConfig";
+import {MainConfig}     from "../helper/config/definitions/mainConfig";
 import SocketInfo       from "../helper/infoObjects/socketInfo";
 import ZationTokenInfo  from "../helper/infoObjects/zationTokenInfo";
 import BackError        from "./BackError";
@@ -104,20 +104,20 @@ import ZationInfo       from "../helper/infoObjects/zationInfo";
 import {ApiLevelSwitch} from "../helper/apiLevel/apiLevelUtils";
 // noinspection TypeScriptPreferShortImport
 import {StartMode}      from "../helper/constants/startMode";
-import ConfigBuildError  from "../helper/configManager/configBuildError";
+import ConfigBuildError  from "../helper/config/manager/configBuildError";
 import {
     ArrayModelConfig, ArrayModelShortSyntax,
     ConstructObjectFunction, ConvertArrayFunction, ConvertObjectFunction, ConvertValueFunction, GetDateFunction, Input,
     Model,
     ObjectModelConfig, ObjectProperties,
     SingleModelInput, ValidateFunction, ValueModelConfig
-} from "../helper/configDefinitions/inputConfig";
+} from "../helper/config/definitions/inputConfig";
 import {
     ControllerConfig,
     PrepareHandleFunction
-} from "../helper/configDefinitions/controllerConfig";
-import {BackgroundTask, TaskFunction} from "../helper/configDefinitions/backgroundTaskConfig";
-import {AuthAccessFunction} from "../helper/configDefinitions/configComponents";
+} from "../helper/config/definitions/controllerConfig";
+import {BackgroundTask, TaskFunction} from "../helper/config/definitions/backgroundTaskConfig";
+import {AuthAccessFunction} from "../helper/config/definitions/configComponents";
 
 export default class Config
 {

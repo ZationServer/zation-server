@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import {HttpGetRequest, ZationRequest, ZationTask, ZationValidationCheck} from "../constants/internal";
 import JsonConverter from "./jsonConverter";
-import ZationConfig  from "../configManager/zationConfig";
+import ZationConfig  from "../config/manager/zationConfig";
 
 export default class ZationReqUtils
 {
