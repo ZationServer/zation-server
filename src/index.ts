@@ -24,8 +24,8 @@ import {StarterConfig}              from "./lib/helper/config/definitions/starte
 import {StartMode}                  from "./lib/helper/constants/startMode";
 import ZationMaster                 from "./lib/main/zationMaster";
 import Router                       from "./lib/api/Router";
-import {Register}                   from "./lib/api/decorator/controller/Register";
-import {AttachToRouter}             from "./lib/api/decorator/controller/AttachToRouter";
+import {Register}                   from "./lib/api/decorator/component/Register";
+import {AttachToRouter}             from "./lib/api/decorator/component/AttachToRouter";
 import {ModelConfigTranslatable,InputConfigTranslatable} from "./lib/api/ConfigTranslatable";
 import {Model}                      from "./lib/api/decorator/input/Model";
 import {ObjectModel}                from "./lib/api/decorator/input/ObjectModel";
