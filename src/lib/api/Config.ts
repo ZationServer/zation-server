@@ -103,7 +103,7 @@ import PubData          from "../helper/infoObjects/pubData";
 import ZationInfo       from "../helper/infoObjects/zationInfo";
 import {ApiLevelSwitch} from "../helper/apiLevel/apiLevelUtils";
 // noinspection TypeScriptPreferShortImport
-import {StartMode}      from "../helper/constants/startMode";
+import {StartMode}       from "../helper/constants/startMode";
 import ConfigBuildError  from "../helper/config/manager/configBuildError";
 import {
     ArrayModelConfig, ArrayModelShortSyntax,
@@ -117,10 +117,11 @@ import {
     PrepareHandleFunction
 } from "../helper/config/definitions/controllerConfig";
 import {BackgroundTask, TaskFunction} from "../helper/config/definitions/backgroundTaskConfig";
-import {AuthAccessFunction} from "../helper/config/definitions/configComponents";
-import {DataBoxClassDef} from "../helper/config/definitions/dataBoxConfig";
-import DataIdBox from "./dataBox/DataIdBox";
-import DataBox from "./dataBox/DataBox";
+import {AuthAccessFunction}           from "../helper/config/definitions/configComponents";
+import {DataBoxClassDef}              from "../helper/config/definitions/dataBoxConfig";
+import DataIdBox                      from "./dataBox/DataIdBox";
+import DataBox                        from "./dataBox/DataBox";
+import {Component}                    from "../helper/config/definitions/component";
 
 export default class Config
 {
@@ -307,7 +308,7 @@ export default class Config
      * @param componentClass
      * @param apiLevel
      */
-    static registerComponent(id : string, componentClass : DataBoxClassDef | ControllerClass, apiLevel ?: number)
+    static registerComponent(id : string, componentClass : Component, apiLevel ?: number)
     {
         let name;
         let pName;

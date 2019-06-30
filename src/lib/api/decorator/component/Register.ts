@@ -4,9 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Config            from "../../Config";
-import {ControllerClass} from "../../Controller";
-import {DataBoxClassDef} from "../../../helper/config/definitions/dataBoxConfig";
+import Config      from "../../Config";
+import {Component} from "../../../helper/config/definitions/component";
 
 /**
  * Register a component (Controllers, DataBoxes or DataIdBoxes) in the app config.
@@ -17,7 +16,7 @@ import {DataBoxClassDef} from "../../../helper/config/definitions/dataBoxConfig"
  * @constructor
  */
 export const Register = (id : string, apiLevel ?: number) => {
-    return (target : ControllerClass | DataBoxClassDef) => {
+    return (target : Component) => {
         Config.registerComponent(id,target,apiLevel);
     }
 };
