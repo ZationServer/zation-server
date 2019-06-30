@@ -52,8 +52,8 @@ import {
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../definitions/controllerConfig";
 import {DataBoxClassDef, DataBoxConfig} from "../definitions/dataBoxConfig";
-import DataIdBox from "../../../api/dataCollection/DataIdBox";
-import DataBox from "../../../api/dataCollection/DataBox";
+import DataIdBox from "../../../api/dataBox/DataIdBox";
+import DataBox from "../../../api/dataBox/DataBox";
 import {AuthAccessConfig, VersionAccessConfig} from "../definitions/configComponents";
 
 export interface ModelCheckedMem {

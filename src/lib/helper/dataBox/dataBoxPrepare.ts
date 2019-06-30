@@ -9,11 +9,11 @@ import AuthAccessChecker, {TokenStateAccessCheckFunction}       from "../auth/au
 import ZationConfigFull                                         from "../config/manager/zationConfigFull";
 import SmallBag                                                 from "../../api/SmallBag";
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction}  from "../apiLevel/apiLevelUtils";
-import DataBoxCore                                              from "../../api/dataCollection/DataBoxCore";
+import DataBoxCore                                              from "../../api/dataBox/DataBoxCore";
 import ZationWorker                                           = require("../../main/zationWorker");
 import {ErrorName}                                              from "../constants/errorName";
 import {DataBoxClassDef, DataBoxConfig}                         from "../config/definitions/dataBoxConfig";
-import DataIdBox                                                from "../../api/dataCollection/DataIdBox";
+import DataIdBox                                                from "../../api/dataBox/DataIdBox";
 import IdValidCheckerUtils, {IdValidChecker}                    from "../id/idValidCheckerUtils";
 
 interface DataBoxPrepareData {

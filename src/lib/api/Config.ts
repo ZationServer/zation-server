@@ -118,12 +118,16 @@ import {
 } from "../helper/config/definitions/controllerConfig";
 import {BackgroundTask, TaskFunction} from "../helper/config/definitions/backgroundTaskConfig";
 import {AuthAccessFunction} from "../helper/config/definitions/configComponents";
+import {DataBoxClassDef} from "../helper/config/definitions/dataBoxConfig";
+import DataIdBox from "./dataBox/DataIdBox";
+import DataBox from "./dataBox/DataBox";
 
 export default class Config
 {
 
     private static tmpModels : Record<string,Model> = {};
-    private static tmpController : Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>> = {};
+    private static tmpControllers : Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>> = {};
+    private static tmpDataBoxes : Record<string,DataBoxClassDef | ApiLevelSwitch<DataBoxClassDef>> = {};
 
     //Part main helper methods
 
@@ -260,34 +264,96 @@ export default class Config
      * @param apiLevel
      */
     static registerController(id : string, controllerClass : ControllerClass, apiLevel ?: number) {
+        Config.registerComponent(id,controllerClass,apiLevel);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * This method registers a new DataBox or DataIdBox in the app config.
+     * Watch out that you don't use a id that is already defined in the DataBoxes of the app config.
+     * If you use this method in another file as the app config,
+     * make sure that you import this file in app config.
+     * Also, notice that if you want to register more DataBoxes with the same id and different API levels,
+     * make sure that all register methods with that id provided an API level.
+     * @example
+     * //without API level
+     * Config.registerDataBox('myDataBox',MyDataBox);
+     * //with API level
+     * Config.registerDataBox('myDataBox2',MyDataBox2Version1,1);
+     * Config.registerDataBox('myDataBox2',MyDataBox2Version2,2);
+     * @param id
+     * @param dataBoxClass
+     * @param apiLevel
+     */
+    static registerDataBox(id : string, dataBoxClass : DataBoxClassDef, apiLevel ?: number) {
+        Config.registerComponent(id,dataBoxClass,apiLevel);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * This method registers a new component (DataBox, DataIdBox or Controller) in the app config.
+     * Watch out that you don't use a id that is already defined in the app config.
+     * If you use this method in another file as the app config,
+     * make sure that you import this file in app config.
+     * Also, notice that if you want to register more components with the same id and different API levels,
+     * make sure that all register methods with that id provided an API level.
+     * @example
+     * //without API level
+     * Config.registerComponent('myDataBox',MyDataBox);
+     * //with API level
+     * Config.registerComponent('myController',MyControllerVersion1,1);
+     * Config.registerComponent('myController',MyControllerVersion2,2);
+     * @param id
+     * @param componentClass
+     * @param apiLevel
+     */
+    static registerComponent(id : string, componentClass : DataBoxClassDef | ControllerClass, apiLevel ?: number)
+    {
+        let name;
+        let pName;
+        let container;
+
+        if(componentClass.prototype instanceof Controller){
+            name = 'controller';
+            pName = 'controllers';
+            container = this.tmpControllers;
+        }
+        else if(componentClass.prototype instanceof  DataIdBox || componentClass.prototype instanceof DataBox){
+            name = 'dataBox';
+            pName = 'dataBoxes';
+            container = this.tmpDataBoxes;
+        }
+        else {
+            throw new ConfigBuildError(`Register component, can only register DataBoxes, DataIdBoxes or Controllers.`);
+        }
+
         if(typeof apiLevel === 'number'){
-            if(typeof Config.tmpController[id] === 'function'){
-                throw new ConfigBuildError(`The controller id: ${id} is already defined.`+
-                    ` To define more controllers with the same id every register should provide an API level.`);
+            if(typeof container[id] === 'function'){
+                throw new ConfigBuildError(`The ${name} id: ${id} is already defined.`+
+                    ` To define more ${pName} with the same id every register should provide an API level.`);
             }
             else {
-                if(!Config.tmpController.hasOwnProperty(id)){
-                    Config.tmpController[id] = {};
+                if(!container.hasOwnProperty(id)){
+                    container[id] = {};
                 }
 
-                if(Config.tmpController[id].hasOwnProperty(apiLevel)){
-                    throw new ConfigBuildError(`The controller id: ${id} with the API level ${apiLevel} is already defined.`);
+                if(container[id].hasOwnProperty(apiLevel)){
+                    throw new ConfigBuildError(`The ${name} id: ${id} with the API level ${apiLevel} is already defined.`);
                 }
                 else {
-                    Config.tmpController[id][apiLevel] = controllerClass;
+                    container[id][apiLevel] = componentClass;
                 }
             }
         }
         else {
-            if(Config.tmpController.hasOwnProperty(id)){
-                throw new ConfigBuildError(`The controller id: ${id} is already defined.`+
-                    ` To define more controllers with the same id every register should provide an API level.`);
+            if(container.hasOwnProperty(id)){
+                throw new ConfigBuildError(`The ${name} id: ${id} is already defined.`+
+                    ` To define more ${pName} with the same id every register should provide an API level.`);
             }
             else {
-                Config.tmpController[id] = controllerClass;
+                container[id] = componentClass;
             }
         }
-
     }
 
     static single(model : Model) : SingleModelInput {
@@ -306,13 +372,14 @@ export default class Config
      */
     static appConfig(config : AppConfig,isPrimaryAppConfig : boolean = true) : AppConfig {
         if(isPrimaryAppConfig){
-            //create models object if not created
             if(config.models === undefined){
                 config.models = {};
             }
-            //create controller object if not created
             if(config.controllers === undefined){
                 config.controllers = {};
+            }
+            if(config.dataBoxes === undefined){
+                config.dataBoxes = {};
             }
             //add registered models
             for(let name in Config.tmpModels){
@@ -327,14 +394,26 @@ export default class Config
                 }
             }
             //add registered controllers
-            for(let name in Config.tmpController){
-                if(Config.tmpController.hasOwnProperty(name)){
+            for(let name in Config.tmpControllers){
+                if(Config.tmpControllers.hasOwnProperty(name)){
                     if(config.controllers.hasOwnProperty(name)){
                         throw new ConfigBuildError
                         (`Conflict with controller id: ${name}, the controller id is defined in the app config and with the config utils.`);
                     }
                     else {
-                        config.controllers[name] = Config.tmpController[name];
+                        config.controllers[name] = Config.tmpControllers[name];
+                    }
+                }
+            }
+            //add registered dataBoxes
+            for(let name in Config.tmpDataBoxes){
+                if(Config.tmpDataBoxes.hasOwnProperty(name)){
+                    if(config.dataBoxes.hasOwnProperty(name)){
+                        throw new ConfigBuildError
+                        (`Conflict with dataBox id: ${name}, the dataBox id is defined in the app config and with the config utils.`);
+                    }
+                    else {
+                        config.dataBoxes[name] = Config.tmpDataBoxes[name];
                     }
                 }
             }

@@ -5,8 +5,8 @@ GitHub: LucaCode
  */
 
 import {AuthAccessConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
-import {DataBoxClass}   from "../../../api/dataCollection/DataBox";
-import {DataIdBoxClass} from "../../../api/dataCollection/DataIdBox";
+import {DataBoxClass}   from "../../../api/dataBox/DataBox";
+import {DataIdBoxClass} from "../../../api/dataBox/DataIdBox";
 
 export interface DataBoxConfig extends VersionAccessConfig, SystemAccessConfig, AuthAccessConfig
 {
