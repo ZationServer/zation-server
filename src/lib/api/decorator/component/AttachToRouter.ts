@@ -4,25 +4,29 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Controller, {ControllerClass} from "../../Controller";
+import Controller                    from "../../Controller";
 import Router                        from "../../Router";
-import ConfigBuildError               from "../../../helper/config/manager/configBuildError";
+import ConfigBuildError              from "../../../helper/config/manager/configBuildError";
+import {Component}                   from "../../../helper/config/definitions/component";
+import DataBox                       from "../../dataBox/DataBox";
+import DataIdBox                     from "../../dataBox/DataIdBox";
 
 /**
- * Attach a controller to a router.
- * You can attach multiple controllers with the same id but different API levels.
+ * Attach a component (Controller or DataBox) to a router.
+ * You can attach multiple components with the same id but different API levels.
  * @param id
  * @param router
  * @param apiLevel
  * @constructor
  */
 export const AttachToRouter = (id : string, router : Router, apiLevel ?: number) => {
-    return (target : ControllerClass) => {
-        if(target.prototype instanceof Controller){
+    return (target : Component) => {
+        if(target.prototype instanceof Controller || target.prototype instanceof DataBox
+            || target.prototype instanceof DataIdBox){
             router.attach(id,target,apiLevel);
         }
         else {
-            throw new ConfigBuildError(`The attach to router decorator can only be used on classes that extend the Controller class.`);
+            throw new ConfigBuildError(`The attach to router decorator can only be used on classes that extend the Controller, DataBox or DataIdBox class.`);
         }
     }
 };
