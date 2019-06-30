@@ -4,8 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ControllerClass} from "./Controller";
 import Config            from "./Config";
+import {Component}       from "../helper/config/definitions/component";
 
 /**
  * A simple router class where you can create routes for controllers.
@@ -39,15 +39,15 @@ export default class Router {
     }
 
     /**
-     * Attach a controller to this route.
-     * It will automatically register the controller in the app config with the specific route.
+     * Attach a component (Controller or DataBox) to this route.
+     * It will automatically register the component in the app config with the specific route.
      * You only have to import the file in the app config.
-     * You can attach multiple controllers with the same name but different API levels.
+     * You can attach multiple components with the same name but different API levels.
      * @param name
-     * @param controllerClass
+     * @param componentClass
      * @param apiLevel
      */
-    attach(name : string,controllerClass : ControllerClass,apiLevel ?: number) {
-        Config.registerController(this.route+name,controllerClass,apiLevel);
+    attach(name : string,componentClass : Component,apiLevel ?: number) {
+        Config.registerComponent(this.route+name,componentClass,apiLevel);
     }
 }

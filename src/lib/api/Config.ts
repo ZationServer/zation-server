@@ -292,7 +292,7 @@ export default class Config
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * This method registers a new component (DataBox, DataIdBox or Controller) in the app config.
+     * This method registers a new component (Controller or DataBox) in the app config.
      * Watch out that you don't use a id that is already defined in the app config.
      * If you use this method in another file as the app config,
      * make sure that you import this file in app config.

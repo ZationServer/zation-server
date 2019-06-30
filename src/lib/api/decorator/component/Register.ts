@@ -8,7 +8,7 @@ import Config      from "../../Config";
 import {Component} from "../../../helper/config/definitions/component";
 
 /**
- * Register a component (Controllers, DataBoxes or DataIdBoxes) in the app config.
+ * Register a component (Controller or DataBox) in the app config.
  * You only have to import the file in the app config.
  * You can register multiple components with the same id but different API levels.
  * @param id
