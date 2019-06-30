@@ -20,7 +20,7 @@ import {StarterConfig}   from "./starterConfig";
 import {ValidationTypes} from "../../constants/validationTypes";
 import {FormatLetters}   from "../../constants/validation";
 import {ServiceConfig}   from "./serviceConfig";
-import {ChannelConfig, ChannelSettings, CustomChannelConfig, CustomIdCh, ZationChannelConfig} from "./channelConfig";
+import {ChannelsConfig, ChannelSettings, CustomChannelConfig, CustomIdCh, ZationChannelConfig} from "./channelsConfig";
 import {ServiceModule}   from "zation-service";
 import ObjectUtils       from "../../utils/objectUtils";
 import {
@@ -42,6 +42,7 @@ App[nameof<AppConfig>(s => s.controllerDefaults)] = {types : ['object'],isOption
 App[nameof<AppConfig>(s => s.dataBoxes)]          = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.dataBoxDefaults)]    = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.models)]             = {types : ['object'],isOptional : true};
+App[nameof<AppConfig>(s => s.channels)]           = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.backgroundTasks)]    = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.bagExtensions)]      = {types : ['array'],isOptional : true};
 
@@ -210,7 +211,6 @@ StarterConfig[nameof<StarterConfig>(s => s.appConfig)]     = {types : ['string']
 StarterConfig[nameof<StarterConfig>(s => s.serviceConfig)] = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.errorConfig)]   = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.eventConfig)]   = {types : ['string'],isOptional : true};
-StarterConfig[nameof<StarterConfig>(s => s.channelConfig)] = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.mainConfig)]    = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.checkConfigs)]  = {types : ['boolean'],isOptional : true};
 
@@ -248,12 +248,12 @@ ValueModel[nameof<ValueModelConfig>(s => s.after)]        = {types : ['object','
 ValueModel[nameof<ValueModelConfig>(s => s.validate)]     = {types : ['function','array'],isOptional : true};
 
 const ChannelConfig = {};
-ChannelConfig[nameof<ChannelConfig>(s => s.customChannels)]       = {types : ['object'],isOptional : true};
-ChannelConfig[nameof<ChannelConfig>(s => s.customIdChannels)]     = {types : ['object'],isOptional : true};
-ChannelConfig[nameof<ChannelConfig>(s => s.userCh)]               = {types : ['object'],isOptional : true};
-ChannelConfig[nameof<ChannelConfig>(s => s.authUserGroupCh)]      = {types : ['object'],isOptional : true};
-ChannelConfig[nameof<ChannelConfig>(s => s.defaultUserGroupCh)]   = {types : ['object'],isOptional : true};
-ChannelConfig[nameof<ChannelConfig>(s => s.allCh)]                = {types : ['object'],isOptional : true};
+ChannelConfig[nameof<ChannelsConfig>(s => s.customChannels)]       = {types : ['object'],isOptional : true};
+ChannelConfig[nameof<ChannelsConfig>(s => s.customIdChannels)]     = {types : ['object'],isOptional : true};
+ChannelConfig[nameof<ChannelsConfig>(s => s.userCh)]               = {types : ['object'],isOptional : true};
+ChannelConfig[nameof<ChannelsConfig>(s => s.authUserGroupCh)]      = {types : ['object'],isOptional : true};
+ChannelConfig[nameof<ChannelsConfig>(s => s.defaultUserGroupCh)]   = {types : ['object'],isOptional : true};
+ChannelConfig[nameof<ChannelsConfig>(s => s.allCh)]                = {types : ['object'],isOptional : true};
 
 const ServiceConfig = {};
 ServiceConfig[nameof<ServiceConfig>(s => s.services)]               = {types : ['object'],isOptional : true};

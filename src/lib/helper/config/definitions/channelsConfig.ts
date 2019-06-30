@@ -98,7 +98,7 @@ export type NormalChOnUnsubFunction =
 export type NormalChClientPubAccessFunction =
     (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo) => Promise<boolean> | boolean;
 
-export interface ChannelConfig
+export interface ChannelsConfig
 {
     /**
      * Define your custom channels in objects and register event listeners.
@@ -175,7 +175,7 @@ export interface ChannelConfig
     allCh  ?: NormalChannel;
 }
 
-export interface PreCompiledChannelConfig extends ChannelConfig{
+export interface PreCompiledChannelConfig extends ChannelsConfig{
 }
 
 export interface ChannelDefault<T = any> {

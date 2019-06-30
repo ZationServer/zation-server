@@ -5,7 +5,6 @@ GitHub: LucaCode
  */
 
 import {AppConfig, PreCompiledAppConfig}         from "../definitions/appConfig";
-import {ChannelConfig, PreCompiledChannelConfig} from "../definitions/channelConfig";
 import {EventConfig, PreCompiledEventConfig}     from "../definitions/eventConfig";
 import {PreCompiledServiceConfig, ServiceConfig} from "../definitions/serviceConfig";
 import {StarterConfig}                           from "../definitions/starterConfig";
@@ -13,14 +12,12 @@ import {InternalMainConfig}                      from "../definitions/mainConfig
 
 export interface OtherPreCompiledConfigSet {
     appConfig : PreCompiledAppConfig,
-    channelConfig : PreCompiledChannelConfig,
     eventConfig : PreCompiledEventConfig,
     serviceConfig : PreCompiledServiceConfig
 }
 
 export interface OtherLoadedConfigSet {
     appConfig : AppConfig,
-    channelConfig : ChannelConfig,
     eventConfig : EventConfig,
     serviceConfig : ServiceConfig
 }

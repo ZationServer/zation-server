@@ -17,7 +17,7 @@ import AccessUtils, {AccessProcess} from "../access/accessUtils";
 import {
     CChannelClientPubAccessFunction,
     CChannelSubAccessFunction,
-} from "../config/definitions/channelConfig";
+} from "../config/definitions/channelsConfig";
 
 export type ChSubAccessChecker =
     (authEngine : AuthEngine, socketInfo : SocketInfo, chInfo : CChInfo) => Promise<boolean>

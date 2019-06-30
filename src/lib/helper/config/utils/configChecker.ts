@@ -12,11 +12,10 @@ import BagExtension, {
 import {PanelUserConfig}      from "../definitions/mainConfig";
 import {MainService, Service} from "../definitions/serviceConfig";
 import {
-    ChannelConfig,
-    ChannelDefault,
+    ChannelsConfig,
     CustomChannelConfig,
     ZationChannelConfig
-} from "../definitions/channelConfig";
+} from "../definitions/channelsConfig";
 // noinspection TypeScriptPreferShortImport
 import {ValidationTypes} from "../../constants/validationTypes";
 import {
@@ -227,7 +226,6 @@ export default class ConfigChecker
     private checkConfig() {
         this.checkMainConfig();
         this.checkAppConfig();
-        this.checkChannelConfig();
         this.checkServiceConfig();
         this.checkEventConfig();
     }
@@ -241,6 +239,7 @@ export default class ConfigChecker
         this.checkAuthController();
         this.checkBackgroundTasks();
         this.checkAppBagExtensions();
+        this.checkChannelsConfig()
     }
 
     private checkBackgroundTasks() {
@@ -280,32 +279,35 @@ export default class ConfigChecker
         (Structures.EventConfig, this.zcLoader.eventConfig, ConfigNames.EVENT, this.ceb);
     }
 
-    private checkChannelConfig() {
-        //main structure
-        ConfigCheckerTools.assertStructure
-        (Structures.ChannelConfig, this.zcLoader.channelConfig, ConfigNames.CHANNEL, this.ceb);
+    private checkChannelsConfig() {
+        const channels = this.zcLoader.appConfig.channels;
+        if(channels){
+            const target = new Target('Channels: ');
+            //main structure
+            ConfigCheckerTools.assertStructure
+            (Structures.ChannelConfig, channels, ConfigNames.APP, this.ceb, target);
 
-        let mainChannels = this.zcLoader.channelConfig;
-        for (let key in mainChannels) {
-            if (mainChannels.hasOwnProperty(key) && typeof mainChannels[key] === 'object') {
-                const isCustomIdCh = key === nameof<ChannelConfig>(s => s.customIdChannels);
-                if (key === nameof<ChannelConfig>(s => s.customChannels) || isCustomIdCh) {
-                    const chPart = mainChannels[key];
-                    const firstTarget = new Target(key);
-                    if(typeof chPart === 'object')
-                    {
-                        for (let chName in chPart) {
-                            if (chPart.hasOwnProperty(chName)) {
-                                this.checkCustomName(chName,'channel name',firstTarget.getTarget() + ' ');
-                                this.checkCustomChannelItem(chPart[chName], firstTarget, chName, isCustomIdCh);
+            for (let key in channels) {
+                if (channels.hasOwnProperty(key) && typeof channels[key] === 'object') {
+                    const isCustomIdCh = key === nameof<ChannelsConfig>(s => s.customIdChannels);
+                    if (key === nameof<ChannelsConfig>(s => s.customChannels) || isCustomIdCh) {
+                        const chPart = channels[key];
+                        const secTarget = target.addPath(key);
+                        if(typeof chPart === 'object')
+                        {
+                            for (let chName in chPart) {
+                                if (chPart.hasOwnProperty(chName)) {
+                                    this.checkCustomName(chName,'channel name',secTarget.getTarget() + ' ');
+                                    this.checkCustomChannelItem(chPart[chName], secTarget, chName, isCustomIdCh);
+                                }
                             }
                         }
+                    } else if
+                    (
+                        key === nameof<ChannelsConfig>(s => s.allCh) || key === nameof<ChannelsConfig>(s => s.defaultUserGroupCh) ||
+                        key === nameof<ChannelsConfig>(s => s.authUserGroupCh) || key === nameof<ChannelsConfig>(s => s.userCh)) {
+                        this.checkNormalChannelItem(channels[key],target.addPath(key));
                     }
-                } else if
-                (
-                    key === nameof<ChannelConfig>(s => s.allCh) || key === nameof<ChannelConfig>(s => s.defaultUserGroupCh) ||
-                    key === nameof<ChannelConfig>(s => s.authUserGroupCh) || key === nameof<ChannelConfig>(s => s.userCh)) {
-                    this.checkNormalChannelItem(mainChannels[key],new Target(key));
                 }
             }
         }
@@ -313,7 +315,7 @@ export default class ConfigChecker
 
     private checkClientPubAccess(channel : ZationChannelConfig,target : Target) {
         if (channel.clientPublishAccess !== undefined && channel.clientPublishNotAccess !== undefined) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.CHANNEL,
+            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} only 'publishAccess' or 'publishNotAccess' keyword is allow.`));
         }
 
@@ -329,7 +331,7 @@ export default class ConfigChecker
 
     private checkSubAccess(channel : CustomChannelConfig,target : Target) {
         if (channel.subscribeAccess !== undefined && channel.subscribeNotAccess !== undefined) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.CHANNEL,
+            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} only 'subscribeAccess' or 'subscribeNotAccess' keyword is allow.`));
         }
 
@@ -343,7 +345,7 @@ export default class ConfigChecker
 
     private checkNormalChannelItem(channel : ZationChannelConfig,target : Target) {
         ConfigCheckerTools.assertStructure
-        (Structures.ChannelNormalItem,channel, ConfigNames.CHANNEL, this.ceb, target);
+        (Structures.ChannelNormalItem,channel, ConfigNames.APP, this.ceb, target);
 
         if(typeof channel === 'object'){
             this.checkClientPubAccess(channel,target);
@@ -354,22 +356,11 @@ export default class ConfigChecker
         const mainTarget = firstTarget.addPath(chName);
 
         ConfigCheckerTools.assertStructure
-        (isCustomIdCh ? Structures.CustomIdCh : Structures.CustomCh, channel, ConfigNames.CHANNEL, this.ceb, mainTarget);
+        (isCustomIdCh ? Structures.CustomIdCh : Structures.CustomCh, channel, ConfigNames.APP, this.ceb, mainTarget);
 
         if (typeof channel === 'object') {
             this.checkClientPubAccess(channel,mainTarget);
             this.checkSubAccess(channel,mainTarget);
-        }
-
-        if
-        (
-            chName === nameof<ChannelDefault>(s => s.default) &&
-            !(
-                (channel.clientPublishAccess !== undefined || channel.clientPublishNotAccess !== undefined) &&
-                (channel.subscribeAccess !== undefined || channel.subscribeNotAccess !== undefined)
-            )
-        ) {
-            Logger.printConfigWarning(`${ConfigNames.CHANNEL} ${firstTarget.getMainTarget()}`, 'It is recommended to set a default value for clientPublishAccess and subscribeAccess.');
         }
     }
 
@@ -377,7 +368,7 @@ export default class ConfigChecker
     private warningForPublish(value: any, target: Target, convert: boolean = false): void {
         if (value !== undefined && (typeof value !== "boolean" || (convert ? !value : value))) {
             Logger.printConfigWarning
-            (ConfigNames.CHANNEL,
+            (ConfigNames.APP,
                 `${target.getTarget()} please notice that 'clientPubAccess' is used when a client publishes from outside in a channel! ` +
                 `That is only useful for advanced use cases otherwise its recommended to use a controller (with validation) and publish from the server side.`);
         }

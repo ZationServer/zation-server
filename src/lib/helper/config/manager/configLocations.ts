@@ -8,6 +8,5 @@ export default interface ConfigLocations {
     mainConfig : string,
     appConfig : string,
     eventConfig : string,
-    channelConfig : string,
     serviceConfig : string
 }

@@ -16,7 +16,6 @@ const  os                = require('os');
 import moment            = require('moment-timezone');
 import {EventConfig}      from "../definitions/eventConfig";
 import {AppConfig}        from "../definitions/appConfig";
-import {ChannelConfig}    from "../definitions/channelConfig";
 import {ServiceConfig}    from "../definitions/serviceConfig";
 import {Structures}       from "../definitions/structures";
 import {OtherLoadedConfigSet} from "./configSets";
@@ -30,7 +29,6 @@ export default class ConfigLoader {
         checkConfigs : true,
         mainConfig : 'main.config',
         appConfig : 'app.config',
-        channelConfig : 'channel.config',
         errorConfig : 'error.config',
         eventConfig : 'event.config',
         serviceConfig : 'service.config'
@@ -111,7 +109,6 @@ export default class ConfigLoader {
 
     private _eventConfig: EventConfig = {};
     private _appConfig: AppConfig = {};
-    private _channelConfig: ChannelConfig = {};
     private _serviceConfig: ServiceConfig = {};
 
     private readonly rootPath : string;
@@ -155,7 +152,6 @@ export default class ConfigLoader {
         return {
             mainConfig : this.loadZationConfigLocation(nameof<StarterConfig>(s => s.mainConfig)),
             appConfig : this.loadZationConfigLocation(nameof<StarterConfig>(s => s.appConfig)),
-            channelConfig : this.loadZationConfigLocation(nameof<StarterConfig>(s => s.channelConfig)),
             eventConfig : this.loadZationConfigLocation(nameof<StarterConfig>(s => s.eventConfig)),
             serviceConfig : this.loadZationConfigLocation(nameof<StarterConfig>(s => s.serviceConfig))
         };
@@ -170,7 +166,6 @@ export default class ConfigLoader {
     static loadOtherConfigs(configLocations : ConfigLocations) : OtherLoadedConfigSet {
         return {
             eventConfig : RequireUtils.safeRequire(configLocations.eventConfig),
-            channelConfig : RequireUtils.safeRequire(configLocations.channelConfig),
             appConfig : RequireUtils.safeRequire(configLocations.appConfig),
             serviceConfig : RequireUtils.safeRequire(configLocations.serviceConfig)
         };
@@ -210,18 +205,13 @@ export default class ConfigLoader {
 
     async loadOtherConfigs() {
         try {
-            this._eventConfig = require(this._configLocations.eventConfig);
-            this._loadedConfigs.push(nameof<StarterConfig>(s => s.eventConfig));
-        }
-        catch (e) {ConfigLoader.throwErrIfConfigFail(e)}
-        try {
-            this._channelConfig = require(this._configLocations.channelConfig);
-            this._loadedConfigs.push(nameof<StarterConfig>(s => s.channelConfig));
-        }
-        catch (e) {ConfigLoader.throwErrIfConfigFail(e)}
-        try {
             this._appConfig = require(this._configLocations.appConfig);
             this._loadedConfigs.push(nameof<StarterConfig>(s => s.appConfig));
+        }
+        catch (e) {ConfigLoader.throwErrIfConfigFail(e)}
+        try {
+            this._eventConfig = require(this._configLocations.eventConfig);
+            this._loadedConfigs.push(nameof<StarterConfig>(s => s.eventConfig));
         }
         catch (e) {ConfigLoader.throwErrIfConfigFail(e)}
         try {
@@ -274,10 +264,6 @@ export default class ConfigLoader {
 
     get loadedConfigs(): string[] {
         return this._loadedConfigs;
-    }
-
-    get channelConfig(): ChannelConfig {
-        return this._channelConfig;
     }
 
     get serviceConfig(): ServiceConfig {

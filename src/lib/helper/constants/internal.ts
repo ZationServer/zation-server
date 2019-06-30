@@ -166,7 +166,6 @@ export const DefaultUserGroupFallBack = 'default';
 export enum ConfigNames
 {
     APP             = 'App     :',
-    CHANNEL         = 'Channel :',
     MAIN            = 'Main    :',
     ERROR           = 'Error   :',
     EVENT           = 'Event   :',

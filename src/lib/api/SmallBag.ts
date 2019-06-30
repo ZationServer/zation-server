@@ -14,7 +14,6 @@ import BackErrorConstruct                                   from "../helper/cons
 import {ZationChannel, ZationToken}                         from "../helper/constants/internal";
 import {InternalMainConfig}                                 from "../helper/config/definitions/mainConfig";
 import {AppConfig}                                          from "../helper/config/definitions/appConfig";
-import {ChannelConfig}                                      from "../helper/config/definitions/channelConfig";
 import {EventConfig}                                        from "../helper/config/definitions/eventConfig";
 import {ServiceConfig}                                      from "../helper/config/definitions/serviceConfig";
 import {byteLength}                                         from "byte-length";
@@ -122,16 +121,6 @@ export default class SmallBag {
     getAppConfig(): AppConfig {
         // noinspection TypeScriptValidateJSTypes
         return this.zc.appConfig;
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Returns the channel config.
-     */
-    getChannelConfig(): ChannelConfig {
-        // noinspection TypeScriptValidateJSTypes
-        return this.zc.channelConfig;
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic

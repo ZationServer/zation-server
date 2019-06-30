@@ -5,11 +5,11 @@ GitHub: LucaCode
  */
 
 import {
-    ChannelConfig,
+    ChannelsConfig,
     ChannelDefault,
     ChannelSettings,
     CustomChannelConfig
-} from "../definitions/channelConfig";
+} from "../definitions/channelsConfig";
 import {
     AnyOfModelConfig,
     ArrayModelConfig,
@@ -67,9 +67,9 @@ export default class ConfigPreCompiler
         this.preCompileControllers();
         this.preCompileDataBoxes();
         this.preCompileSystemController();
-        this.preCompileChannelConfig();
         this.preCompileServiceModules();
         this.preCompileEventConfig();
+        this.preCompileChannelsConfig();
 
         //view precompiled configs
         if(showPrecompiledConfigs){
@@ -79,8 +79,6 @@ export default class ConfigPreCompiler
             console.dir(zc.mainConfig,{depth:null});
             console.log('AppConfig');
             console.dir(this.configs.appConfig,{depth:null});
-            console.log('ChannelConfig');
-            console.dir(this.configs.channelConfig,{depth:null});
             console.log('EventConfig');
             console.dir(this.configs.eventConfig,{depth:null});
             console.log('ServiceConfig');
@@ -126,26 +124,27 @@ export default class ConfigPreCompiler
         }
     }
 
-    private preCompileChannelConfig() : void
+    private preCompileChannelsConfig() : void
     {
-        const channelConfig = this.configs.channelConfig;
-
-        for(let k in channelConfig)
-        {
-            if(channelConfig.hasOwnProperty(k))
-            {
-                const ch = channelConfig[k];
-                if(typeof ch === 'object')
-                {
-                    if(k === nameof<ChannelConfig>(s => s.customIdChannels) ||
-                        k === nameof<ChannelConfig>(s => s.customChannels)) {
-                        this.preCompileChannelDefault(ch);
+        const channels = this.configs.appConfig.channels;
+        if(!channels){
+            this.configs.appConfig.channels = {};
+        }
+        else {
+            for(let k in channels) {
+                if(channels.hasOwnProperty(k)) {
+                    const ch = channels[k];
+                    if(typeof ch === 'object') {
+                        if(k === nameof<ChannelsConfig>(s => s.customIdChannels) ||
+                            k === nameof<ChannelsConfig>(s => s.customChannels)) {
+                            this.preCompileChannelDefault(ch);
+                        }
                     }
-                }
-                else {
-                    channelConfig[k] = {};
-                }
+                    else {
+                        channels[k] = {};
+                    }
 
+                }
             }
         }
     }

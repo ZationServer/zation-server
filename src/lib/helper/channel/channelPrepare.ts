@@ -9,12 +9,12 @@ For performance speed in publish in channels, sub channels..
  */
 
 import {
-    ChannelConfig,
+    ChannelsConfig,
     ChannelDefault,
     CustomChannelConfig,
     CustomIdCh,
     ZationChannelConfig
-} from "../config/definitions/channelConfig";
+} from "../config/definitions/channelsConfig";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
 import FuncUtils, {EventInvokerSync} from "../utils/funcUtils";
 import SmallBag                      from "../../api/SmallBag";
@@ -46,7 +46,7 @@ export interface ChStorage extends Events {
 
 export class ChannelPrepare {
     private zc: ZationConfigFull;
-    private readonly chConfig: ChannelConfig;
+    private readonly chConfig: ChannelsConfig;
 
     private infoUserCh: ChStorage;
     private infoAuthUserGroupCh: ChStorage;
@@ -67,7 +67,7 @@ export class ChannelPrepare {
 
     constructor(zc: ZationConfigFull) {
         this.zc = zc;
-        this.chConfig = this.zc.channelConfig;
+        this.chConfig = this.zc.appConfig.channels || {};
     }
 
     /**
@@ -120,10 +120,10 @@ export class ChannelPrepare {
      * Prepare all channels.
      */
     prepare(smallBag : SmallBag) {
-        this.infoUserCh = this.prepareChannel(nameof<ChannelConfig>(s => s.userCh),smallBag);
-        this.infoAuthUserGroupCh = this.prepareChannel(nameof<ChannelConfig>(s => s.authUserGroupCh),smallBag);
-        this.infoDefaultUserGroupCh = this.prepareChannel(nameof<ChannelConfig>(s => s.defaultUserGroupCh),smallBag);
-        this.infoAllCh = this.prepareChannel(nameof<ChannelConfig>(s => s.allCh),smallBag);
+        this.infoUserCh = this.prepareChannel(nameof<ChannelsConfig>(s => s.userCh),smallBag);
+        this.infoAuthUserGroupCh = this.prepareChannel(nameof<ChannelsConfig>(s => s.authUserGroupCh),smallBag);
+        this.infoDefaultUserGroupCh = this.prepareChannel(nameof<ChannelsConfig>(s => s.defaultUserGroupCh),smallBag);
+        this.infoAllCh = this.prepareChannel(nameof<ChannelsConfig>(s => s.allCh),smallBag);
 
         this.infoCustomCh = this.processCustomChannels(smallBag);
         this.infoCustomIdCh = this.processCustomIdChannels(smallBag);

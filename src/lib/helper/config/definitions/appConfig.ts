@@ -10,6 +10,7 @@ import {ControllerConfig}     from "./controllerConfig";
 import {Model}                from "./inputConfig";
 import {BackgroundTask}       from "./backgroundTaskConfig";
 import {DataBoxClassDef, DataBoxConfig} from "./dataBoxConfig";
+import {ChannelsConfig, PreCompiledChannelConfig} from "./channelsConfig";
 
 export interface AppConfig
 {
@@ -108,6 +109,18 @@ export interface AppConfig
     models ?: Record<string,Model>;
 
     /**
+     * In this property, you can configure all channels of the server
+     * or create your custom (id) channels.
+     * @example
+     * channels : {
+     *    customChannels : {
+     *        ...
+     *    }
+     * }
+     */
+    channels ?: ChannelsConfig;
+
+    /**
      * In this property, you can define background tasks.
      * @example
      * backgroundTasks : {
@@ -130,6 +143,7 @@ export interface AppConfig
 }
 
 export interface PreCompiledAppConfig extends AppConfig{
+    channels : PreCompiledChannelConfig
 }
 
 export default interface BagExtension {

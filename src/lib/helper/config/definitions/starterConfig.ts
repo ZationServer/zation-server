@@ -32,13 +32,6 @@ export interface StarterConfigMain
     appConfig  ?: string;
 
     /**
-     * The path to the channel config.
-     * This path is relative to the root and configs path.
-     * @default 'channel.config'
-     */
-    channelConfig  ?: string;
-
-    /**
      * The path to the main config.
      * This path is relative to the root and configs path.
      * @default 'main.config'

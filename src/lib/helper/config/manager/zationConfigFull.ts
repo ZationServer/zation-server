@@ -8,7 +8,6 @@ import ZationConfig                from "./zationConfig";
 import ZcTransport                 from "./zcTransport";
 import {PreCompiledEventConfig}    from "../definitions/eventConfig";
 import {PreCompiledAppConfig}      from "../definitions/appConfig";
-import {PreCompiledChannelConfig}  from "../definitions/channelConfig";
 import {PreCompiledServiceConfig}  from "../definitions/serviceConfig";
 import {OtherPreCompiledConfigSet} from "./configSets";
 
@@ -18,7 +17,6 @@ import {OtherPreCompiledConfigSet} from "./configSets";
 export default class ZationConfigFull extends ZationConfig {
 
     protected _appConfig : PreCompiledAppConfig;
-    protected _channelConfig : PreCompiledChannelConfig;
     protected _eventConfig : PreCompiledEventConfig;
     protected _serviceConfig : PreCompiledServiceConfig;
 
@@ -37,7 +35,6 @@ export default class ZationConfigFull extends ZationConfig {
     setOtherConfigs(preCompiledOtherConfigSet : OtherPreCompiledConfigSet) {
         this._appConfig = preCompiledOtherConfigSet.appConfig;
         this._eventConfig = preCompiledOtherConfigSet.eventConfig;
-        this._channelConfig = preCompiledOtherConfigSet.channelConfig;
         this._serviceConfig = preCompiledOtherConfigSet.serviceConfig;
     }
 
@@ -47,10 +44,6 @@ export default class ZationConfigFull extends ZationConfig {
 
     get appConfig(): PreCompiledAppConfig {
         return this._appConfig;
-    }
-
-    get channelConfig(): PreCompiledChannelConfig {
-        return this._channelConfig;
     }
 
     get serviceConfig(): PreCompiledServiceConfig {

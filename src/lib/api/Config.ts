@@ -68,7 +68,7 @@ import {
     CChannelOnSubFunction,
     CChannelOnUnsubFunction,
     CChannelSubAccessFunction,
-    ChannelConfig,
+    ChannelsConfig,
     CIdChannelClientPubAccessFunction,
     CIdChannelOnBagPubFunction,
     CIdChannelOnClientPubFunction,
@@ -86,7 +86,7 @@ import {
     UserChOnClientPubFunction,
     UserChOnSubFunction,
     UserChOnUnsubFunction
-} from "../helper/config/definitions/channelConfig";
+} from "../helper/config/definitions/channelsConfig";
 import {StarterConfig}  from "../helper/config/definitions/starterConfig";
 import {MainConfig}     from "../helper/config/definitions/mainConfig";
 import SocketInfo       from "../helper/infoObjects/socketInfo";
@@ -430,8 +430,6 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static mainConfig(config : MainConfig) : MainConfig {return config;}
     // noinspection JSUnusedGlobalSymbols
-    static channelConfig(config : ChannelConfig) : ChannelConfig {return config;}
-    // noinspection JSUnusedGlobalSymbols
     static starterConfig(config : StarterConfig) : StarterConfig {return config;}
 
     //Object
@@ -489,7 +487,9 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static models(m : Record<string,Model>) : Record<string,Model> {return m;}
 
-    //Part Channel Config functions
+    //Part Channels Config functions
+    // noinspection JSUnusedGlobalSymbols
+    static channels(config : ChannelsConfig) : ChannelsConfig {return config;}
     // noinspection JSUnusedGlobalSymbols
     static cIdChClientPubAccess(func : CIdChannelClientPubAccessFunction) : CIdChannelClientPubAccessFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
