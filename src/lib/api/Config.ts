@@ -118,7 +118,7 @@ import {
 } from "../helper/config/definitions/controllerConfig";
 import {BackgroundTask, TaskFunction} from "../helper/config/definitions/backgroundTaskConfig";
 import {AuthAccessFunction}           from "../helper/config/definitions/configComponents";
-import {DataBoxClassDef}              from "../helper/config/definitions/dataBoxConfig";
+import {DataBoxClassDef, DataBoxConfig} from "../helper/config/definitions/dataBoxConfig";
 import DataIdBox                      from "./dataBox/DataIdBox";
 import DataBox                        from "./dataBox/DataBox";
 import {Component}                    from "../helper/config/definitions/component";
@@ -487,9 +487,16 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static models(m : Record<string,Model>) : Record<string,Model> {return m;}
 
-    //Part Channels Config functions
+    //DataBox
+    // noinspection JSUnusedGlobalSymbols
+    static dataBoxConfig(c : DataBoxConfig) :  DataBoxConfig {return c;}
+    // noinspection JSUnusedGlobalSymbols
+    static dataBoxAccess(func : AuthAccessFunction) : AuthAccessFunction {return func;}
+
+    //Part Channels
     // noinspection JSUnusedGlobalSymbols
     static channels(config : ChannelsConfig) : ChannelsConfig {return config;}
+
     // noinspection JSUnusedGlobalSymbols
     static cIdChClientPubAccess(func : CIdChannelClientPubAccessFunction) : CIdChannelClientPubAccessFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
