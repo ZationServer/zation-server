@@ -967,14 +967,14 @@ class ZationWorker extends SCWorker
 
         this.scServer.on('authentication', async (socket,authToken) => {
             await Promise.all([
-                this.zc.eventConfig.socketAuthenticated(this.getPreparedSmallBag(),socket.socketInfo),
+                this.zc.eventConfig.socketAuthentication(this.getPreparedSmallBag(),socket.socketInfo),
                 this.zc.eventConfig.sc_serverAuthentication(this.getPreparedSmallBag(),socket,authToken)
             ]);
         });
 
         this.scServer.on('deauthentication', async (socket,oldAuthToken) => {
             await Promise.all([
-                this.zc.eventConfig.socketDeauthenticated(this.getPreparedSmallBag(),socket.socketInfo),
+                this.zc.eventConfig.socketDeauthentication(this.getPreparedSmallBag(),socket.socketInfo),
                 this.zc.eventConfig.sc_serverDeauthentication(this.getPreparedSmallBag(),socket,oldAuthToken)
             ]);
         });

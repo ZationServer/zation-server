@@ -32,8 +32,8 @@ export type WorkerMessageFunction = (smallBag : SmallBag, data : any) => Promise
 
 export type SocketConnectionFunction = (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
 export type SocketDisconnectionFunction = (smallBag : SmallBag, socketInfo : SocketInfo, code : any, data : any) => Promise<void> | void;
-export type SocketAuthenticatedFunction = (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
-export type SocketDeauthenticatedFunction = (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
+export type SocketAuthenticationFunction = (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
+export type SocketDeauthenticationFunction = (smallBag : SmallBag, socketInfo : SocketInfo) => Promise<void> | void;
 
 export type MiddlewareAuthenticationFunction = (smallBag : SmallBag,zationToken : ZationToken) => Promise<boolean | object | any> | boolean | object | any;
 export type MiddlewareSocketFunction = (smallBag : SmallBag,socket : HandshakeSocket) => Promise<boolean | object | any> | boolean | object | any;
@@ -155,12 +155,12 @@ export interface EventConfig
      * An event that gets invoked when a socket gets authenticated or the auth token is changed.
      * @example (smallBag,socketInfo) => {}
      */
-    socketAuthenticated  ?: SocketAuthenticatedFunction | SocketAuthenticatedFunction[];
+    socketAuthentication  ?: SocketAuthenticationFunction | SocketAuthenticationFunction[];
     /**
      * An event that gets invoked when a socket gets deauthenticated.
      * @example (smallBag,socketInfo) => {}
      */
-    socketDeauthenticated  ?: SocketDeauthenticatedFunction | SocketDeauthenticatedFunction[];
+    socketDeauthentication  ?: SocketDeauthenticationFunction | SocketDeauthenticationFunction[];
 
     /**
      * Middleware event where you can block wrong jwt tokens.
@@ -395,8 +395,8 @@ export interface PreCompiledEventConfig extends EventConfig
 
     socketConnection  : SocketConnectionFunction;
     socketDisconnection  : SocketDisconnectionFunction;
-    socketAuthenticated  : SocketAuthenticatedFunction;
-    socketDeauthenticated  : SocketDeauthenticatedFunction;
+    socketAuthentication  : SocketAuthenticationFunction;
+    socketDeauthentication  : SocketDeauthenticationFunction;
 
     middlewareAuthenticate  ?: MiddlewareAuthenticationFunction;
     middlewareSocket ?: MiddlewareSocketFunction;
