@@ -129,6 +129,9 @@ export default class Config
     private static tmpModels : Record<string,Model> = {};
     private static tmpControllers : Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>> = {};
     private static tmpDataBoxes : Record<string,DataBoxClassDef | ApiLevelSwitch<DataBoxClassDef>> = {};
+    private static tmpCustomChs : Record<string,CustomCh> = {};
+    private static tmpCustomIdChs : Record<string,CustomIdCh> = {};
+    private static tmpChannels : ChannelsConfig[] = [];
 
     //Part main helper methods
 
@@ -215,6 +218,72 @@ export default class Config
         else {
             throw new ConfigBuildError(`The model name: ${name} is already defined.`);
         }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * This method defines a new custom channel in the app config.
+     * Watch out that you don't use a name that is already defined in the custom channels of the app config.
+     * If you use this method in another file as the app config,
+     * make sure that you import this file in app config.
+     * @example
+     * Config.defineCustomCh('myCustomCh',{
+     *    subscribeAccess : 'allAuth',
+     * });
+     * @param name
+     * @param customCh
+     */
+    static defineCustomCh(name : string,customCh : CustomCh) {
+        if(!Config.tmpCustomChs.hasOwnProperty(name)){
+            Config.tmpCustomChs[name] = customCh;
+        }
+        else {
+            throw new ConfigBuildError(`The custom channel: ${name} is already defined.`);
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * This method defines a new custom id channel in the app config.
+     * Watch out that you don't use a name that is already defined in the custom id channels of the app config.
+     * If you use this method in another file as the app config,
+     * make sure that you import this file in app config.
+     * @example
+     * Config.defineCustomIdCh('myCustomIdCh',{
+     *    subscribeAccess : 'allAuth',
+     * });
+     * @param name
+     * @param customIdCh
+     */
+    static defineCustomIdCh(name : string,customIdCh : CustomIdCh) {
+        if(!Config.tmpCustomIdChs.hasOwnProperty(name)){
+            Config.tmpCustomIdChs[name] = customIdCh;
+        }
+        else {
+            throw new ConfigBuildError(`The custom id channel: ${name} is already defined.`);
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Merge channels config to the app config channels property.
+     * If you use this method in another file as the app config,
+     * make sure that you import this file in app config.
+     * @example
+     * Config.defineChannels({
+     *    customChannels : {
+     *     default : {
+     *         clientPublishAccess : false,
+     *         subscribeAccess : true,
+     *     },
+     *     stream : {
+     *         subscribeAccess : 'allAuth',
+     *     }
+     * }});
+     * @param config
+     */
+    static defineChannels(config : ChannelsConfig) {
+        Config.tmpChannels.push(config);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -382,45 +451,41 @@ export default class Config
             if(config.dataBoxes === undefined){
                 config.dataBoxes = {};
             }
-            //add registered models
-            for(let name in Config.tmpModels){
-                if(Config.tmpModels.hasOwnProperty(name)){
-                    if(config.models.hasOwnProperty(name)){
-                        throw new ConfigBuildError
-                        (`Conflict with model name: ${name}, the model name is defined in the app config and with the method defineModel or defineModels.`);
-                    }
-                    else {
-                        config.models[name] = Config.tmpModels[name];
-                    }
+            if(config.channels === undefined){
+                config.channels = {customChannels : {},customIdChannels : {}};
+            }
+            else {
+                if(config.channels.customChannels === undefined){
+                    config.channels.customChannels = {};
+                }
+                if(config.channels.customIdChannels === undefined){
+                    config.channels.customIdChannels = {};
                 }
             }
-            //add registered controllers
-            for(let name in Config.tmpControllers){
-                if(Config.tmpControllers.hasOwnProperty(name)){
-                    if(config.controllers.hasOwnProperty(name)){
-                        throw new ConfigBuildError
-                        (`Conflict with controller id: ${name}, the controller id is defined in the app config and with the config utils.`);
-                    }
-                    else {
-                        config.controllers[name] = Config.tmpControllers[name];
-                    }
-                }
-            }
-            //add registered dataBoxes
-            for(let name in Config.tmpDataBoxes){
-                if(Config.tmpDataBoxes.hasOwnProperty(name)){
-                    if(config.dataBoxes.hasOwnProperty(name)){
-                        throw new ConfigBuildError
-                        (`Conflict with dataBox id: ${name}, the dataBox id is defined in the app config and with the config utils.`);
-                    }
-                    else {
-                        config.dataBoxes[name] = Config.tmpDataBoxes[name];
-                    }
-                }
-            }
+            Config.configAdd(Config.tmpModels,config.models,'model name');
+            Config.configAdd(Config.tmpControllers,config.controllers,'controller id');
+            Config.configAdd(Config.tmpDataBoxes,config.dataBoxes,'dataBox id');
+            Config.configAdd(Config.tmpCustomChs,config.channels.customChannels as object,'custom channel');
+            Config.configAdd(Config.tmpCustomIdChs,config.channels.customIdChannels as object,'custom id channel');
 
+            Config.merge(config.channels,...Config.tmpChannels);
         }
         return config;
+    }
+
+    private static configAdd(tmpConfig : object,config : object,target : string)
+    {
+        for(let name in tmpConfig){
+            if(tmpConfig.hasOwnProperty(name)){
+                if(config.hasOwnProperty(name)){
+                    throw new ConfigBuildError
+                    (`Conflict with ${target}: ${name}, the ${target} is defined in the app config and with the config utils.`);
+                }
+                else {
+                    config[name] = tmpConfig[name];
+                }
+            }
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols
