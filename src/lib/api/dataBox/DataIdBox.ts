@@ -34,7 +34,8 @@ export default class DataIdBox extends DataBoxCore {
     }
 
     /**
-     * This method is used to get the current data or more data of the data box.
+     * **Can be overridden.**
+     * This method is used to get the current data or more data of the DataBox.
      * You usually request your database and return the data, and if no more data is available,
      * you should throw a NoMoreDataAvailableError or call the internal noMoreDataAvailable method.
      * A client can call that method multiple times.
@@ -58,7 +59,8 @@ export default class DataIdBox extends DataBoxCore {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Check if the id is valid for this data box.
+     * **Can be overridden.**
+     * Check if the id is valid for this DataBox.
      * To block the id, you only need to return an object (that can be error information) or false.
      * If you want to allow the id, you have to return nothing or a true.
      * @param id
@@ -67,6 +69,61 @@ export default class DataIdBox extends DataBoxCore {
     public isIdValid(id : string,smallBag : SmallBag) : Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void {
     }
 
+    /**
+     * **Not override this method.**
+     * The close function will close the DataBox with the id for every client on every server.
+     * You optionally can provide a code or any other information for the client.
+     * Usually, the close function is used when the data is completely deleted from the system.
+     * For example, a chat that doesn't exist anymore.
+     * @param id
+     * @param code
+     * @param data
+     */
+    close(id : string,code : number,data : any){
+    }
+
+    /**
+     * **Not override this method.**
+     * The reload function will force all clients of the DataBox to reload the data.
+     * This method is used internally if it was detected that a worker had
+     * missed a cud (create, update, or delete) operation.
+     * @param id
+     * @param forEveryServer
+     */
+    doReload(id : string,forEveryServer : boolean = false){
+    }
+
+    /**
+     * **Can be overridden.**
+     * A function that gets triggered before an insert into the DataBox.
+     * Can be used to insert the data in the database.
+     * @param id
+     * @param keyPath
+     * @param value
+     */
+    protected async beforeInsert(id : string,keyPath : string[],value : any) {
+    }
+
+    /**
+     * **Can be overridden.**
+     * A function that gets triggered before an update of data in the DataBox.
+     * Can be used to update the data in the database.
+     * @param id
+     * @param keyPath
+     * @param value
+     */
+    protected async beforeUpdate(id : string,keyPath : string[],value : any) {
+    }
+
+    /**
+     * **Can be overridden.**
+     * A function that gets triggered before a delete of data in the DataBox.
+     * Can be used to delete the data in the database.
+     * @param id
+     * @param keyPath
+     */
+    protected async beforeDelete(id : string,keyPath : string[]) {
+    }
 }
 
 export interface DataIdBoxClass {
