@@ -434,10 +434,10 @@ class ZationWorker extends SCWorker
             const authToken = req.socket.getAuthToken();
             const channel = req.channel;
 
-            if (channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
+            if (channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) === 0) {
                 next(await this.chMiddlewareHelper.checkAccessSubCustomIdCh(req.socket,channel));
             }
-            else if (channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
+            else if (channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
                 next(await this.chMiddlewareHelper.middlewareSubCustomCh(req.socket,channel));
             }
             else {
@@ -445,7 +445,7 @@ class ZationWorker extends SCWorker
                     const id = authToken[nameof<ZationToken>(s => s.zationUserId)];
                     const authUserGroup = authToken[nameof<ZationToken>(s => s.zationAuthUserGroup)];
 
-                    if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
+                    if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
                         if(id !== undefined) {
                             if (ZationChannel.USER_CHANNEL_PREFIX + id === channel) {
                                 Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes the user channel: '${id}'.`);
@@ -463,7 +463,7 @@ class ZationWorker extends SCWorker
                             next(err); //Block!
                         }
                     }
-                    else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
+                    else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
                         if(authUserGroup !== undefined) {
                             if (ZationChannel.AUTH_USER_GROUP_PREFIX + authUserGroup === channel) {
                                 Logger.printDebugInfo
@@ -516,12 +516,12 @@ class ZationWorker extends SCWorker
                     }
                 }
                 else {
-                    if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
+                    if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
                         const err : any = new Error('An anonymous client cannot subscribe to this user group channel.');
                         err.name = ErrorName.ACCESS_DENIED;
                         next(err); //Block!
                     }
-                    else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
+                    else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
                         const err : any = new Error('An anonymous client cannot subscribe to this auth user group channel.');
                         err.name = ErrorName.ACCESS_DENIED;
                         next(err); //Block!
@@ -558,7 +558,7 @@ class ZationWorker extends SCWorker
 
             ChUtils.pubDataAddSocketSrcSid(req,socket);
 
-            if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
+            if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
                 const userId = ChUtils.getUserIdFromCh(channel);
                 if(await (userChInfo.clientPublishAccessChecker(socket.authEngine,req.data,socket.socketInfo,userId))) {
                     userChInfo.onClientPub(
@@ -575,13 +575,13 @@ class ZationWorker extends SCWorker
                     next(err); //Block!
                 }
             }
-            else if (channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
+            else if (channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) === 0) {
                 next(await this.chMiddlewareHelper.checkAccessClientPubCustomIdCh(req.socket,channel,req.data));
             }
-            else if (channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
+            else if (channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
                 next(await this.chMiddlewareHelper.middlewareClientPubCustomCh(req.socket,channel,req.data));
             }
-            else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
+            else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
                 const authUserGroup = ChUtils.getUserAuthGroupFromCh(channel);
                 if(await authUserGroupChInfo.clientPublishAccessChecker(socket.authEngine,req.data,socket.socketInfo,authUserGroup)) {
                     authUserGroupChInfo.onClientPub(
@@ -667,24 +667,24 @@ class ZationWorker extends SCWorker
                 if
                 (
                     (
-                        req.channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1 &&
+                        req.channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0 &&
                         !userChInfo.socketGetOwnPub
                     )
                     ||
                     (
-                        req.channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1 &&
+                        req.channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) === 0 &&
                         !this.channelPrepare.getSafeCustomIdChInfo(ChUtils.getCustomIdChannelName(req.channel))
                             .socketGetOwnPub
                     )
                     ||
                     (
-                        req.channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1 &&
+                        req.channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0 &&
                         !this.channelPrepare.getSafeCustomChInfo(ChUtils.getCustomChannelName(req.channel))
                             .socketGetOwnPub
                     )
                     ||
                     (
-                        req.channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1 &&
+                        req.channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0 &&
                         !authUserGroupChInfo.socketGetOwnPub
                     )
                     ||
@@ -861,7 +861,7 @@ class ZationWorker extends SCWorker
          */
         this.scServer.on('subscription', async (socket : UpSocket, chName, chOptions) =>
         {
-            if(chName.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
+            if(chName.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) === 0) {
                 const {name,id} = ChUtils.getCustomIdChannelInfo(chName);
 
                 this.channelPrepare.getSafeCustomIdChInfo(name)
@@ -871,7 +871,7 @@ class ZationWorker extends SCWorker
                     {id,name}
                 );
             }
-            else if(chName.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
+            else if(chName.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
                 const name = ChUtils.getCustomChannelName(chName);
 
                 this.channelPrepare.getSafeCustomChInfo(name)
@@ -881,14 +881,14 @@ class ZationWorker extends SCWorker
                     {name}
                 );
             }
-            else if(chName.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
+            else if(chName.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
                 userChInfo.onSub(
                     this.preparedSmallBag,
                     socket.socketInfo,
                     ChUtils.getUserIdFromCh(chName)
                 );
             }
-            else if(chName.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
+            else if(chName.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
                 authUserGroupChInfo.onSub(
                     this.preparedSmallBag,
                     socket.socketInfo,
@@ -916,7 +916,7 @@ class ZationWorker extends SCWorker
         this.scServer.on('unsubscription', async (socket,chName) =>
         {
             //trigger sub customCh event and update mapper
-            if(chName.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
+            if(chName.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) === 0) {
                 const {name,id} = ChUtils.getCustomIdChannelInfo(chName);
 
                 this.channelPrepare.getSafeCustomIdChInfo(name)
@@ -926,7 +926,7 @@ class ZationWorker extends SCWorker
                     {name,id}
                 );
             }
-            else if(chName.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
+            else if(chName.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
                 const name = ChUtils.getCustomChannelName(chName);
 
                 this.channelPrepare.getSafeCustomChInfo(name)
@@ -936,14 +936,14 @@ class ZationWorker extends SCWorker
                     {name}
                 );
             }
-            else if(chName.indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
+            else if(chName.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
                 userChInfo.onUnsub(
                     this.preparedSmallBag,
                     socket.socketInfo,
                     ChUtils.getUserIdFromCh(chName)
                 );
             }
-            else if(chName.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
+            else if(chName.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
                 authUserGroupChInfo.onUnsub(
                     this.preparedSmallBag,
                     socket.socketInfo,
