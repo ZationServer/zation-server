@@ -4,9 +4,34 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+export interface ScChannel {
+    getState() : string
+    subscribe() : void
+    unsubscribe() : void
+    isSubscribed(includePending ?: boolean) : boolean
+    publish(data : any, callback ?: (err : any) => void) : void
+    watch(handler : (data : any) => void) : void
+    unwatch(handler ?: (data : any) => void) : void
+    watchers() : ((data : any) => void)[]
+    destroy() : void
+}
+
+export interface ScExchange {
+    publish(channel : string, data : any, callback ?: (err : any) => void) : void
+    subscribe(channelName : string) : ScChannel
+    unsubscribe(channelName : string) : void
+    watch(channel : string, handler : (data : any) => void) : void
+    unwatch(channel : string, handler ?: (data : any) => void) : void
+    channel(channelName : string) : ScChannel
+    watchers(channel) : ((data : any) => void)[]
+    destroyChannel(channelName : string) : void
+    subscriptions(includePending : boolean) : string[]
+    isSubscribed(channelName : string, includePending ?: boolean) :  boolean
+}
+
 export default interface ScServer
 {
-    exchange : any;
+    exchange : ScExchange;
     clients : object;
     clientsCount : number;
     pendingClients : object;
