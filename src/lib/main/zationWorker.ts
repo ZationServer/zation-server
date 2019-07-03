@@ -60,6 +60,7 @@ import ExpressUtils   from "../helper/utils/expressUtils";
 import {SocketAction} from "../helper/constants/socketAction";
 import {TaskFunction} from "../helper/config/definitions/backgroundTaskConfig";
 import {ErrorName}    from "../helper/constants/errorName";
+import {DATA_BOX_START_INDICATOR} from "../helper/dataBox/dbDefinitions";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -75,7 +76,7 @@ class ZationWorker extends SCWorker
     private serverVersion : string;
     private zc : ZationConfigFull;
 
-    public scServer : ScServer;
+    public readonly scServer : ScServer;
     private serviceEngine : ServiceEngine;
     private bagExtensionEngine : BagExtensionEngine;
     private preparedSmallBag : SmallBag;
@@ -440,111 +441,107 @@ class ZationWorker extends SCWorker
             else if (channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
                 next(await this.chMiddlewareHelper.middlewareSubCustomCh(req.socket,channel));
             }
-            else {
-                if (authToken !== null) {
-                    const id = authToken[nameof<ZationToken>(s => s.zationUserId)];
-                    const authUserGroup = authToken[nameof<ZationToken>(s => s.zationAuthUserGroup)];
-
-                    if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
-                        if(id !== undefined) {
-                            if (ZationChannel.USER_CHANNEL_PREFIX + id === channel) {
-                                Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes the user channel: '${id}'.`);
-                                next();
-                            }
-                            else {
-                                const err : any = new Error(`A client can only subscribe to the user group channel where his user id belongs to.`);
-                                err.name = ErrorName.ACCESS_DENIED;
-                                next(err); //Block!
-                            }
-                        }
-                        else {
-                            const err : any = new Error(`A client with undefined user id cannot subscribe to this user group channel.`);
-                            err.name = ErrorName.ACCESS_DENIED;
-                            next(err); //Block!
-                        }
-                    }
-                    else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
-                        if(authUserGroup !== undefined) {
-                            if (ZationChannel.AUTH_USER_GROUP_PREFIX + authUserGroup === channel) {
-                                Logger.printDebugInfo
-                                (`Socket with id: ${req.socket.id} subscribes the auth user group channel: '${authUserGroup}'.`);
-                                next();
-                            }
-                            else {
-                                const err : any = new Error('A client can only subscribe to the auth user group channel where his auth user group belongs to.');
-                                err.name = ErrorName.ACCESS_DENIED;
-                                next(err); //Block!
-                            }
-                        }
-                        else {
-                            const err : any = new Error(`A client with undefined auth user group cannot subscribe to this auth user group channel.`);
-                            err.name = ErrorName.ACCESS_DENIED;
-                            next(err); //Block!
-                        }
-                    }
-                    else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
-                        const err : any = new Error('An authenticated client cannot subscribe to the default user group channel.');
-                        err.name = ErrorName.ACCESS_DENIED;
-                        next(err); //Block!
-                    }
-                    else if (channel === ZationChannel.PANEL_OUT) {
-                        if (typeof authToken[nameof<ZationToken>(s => s.zationPanelAccess)] === 'boolean' &&
-                            authToken[nameof<ZationToken>(s => s.zationPanelAccess)]) {
-                            Logger.printDebugInfo
-                            (`Socket with id: ${req.socket.id} subscribes the panel out channel.`);
+            else if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
+                if(authToken !== null){
+                    const id = authToken.zationUserId;
+                    if(id !== undefined) {
+                        if (ZationChannel.USER_CHANNEL_PREFIX + id === channel) {
+                            Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes to the user channel: '${id}'.`);
                             next();
                         }
                         else {
-                            const err : any = new Error('A client without panel access cannot subscribe to the panel out channel!');
+                            const err : any = new Error(`A client can only subscribe to the user channel where his user id belongs to.`);
                             err.name = ErrorName.ACCESS_DENIED;
                             next(err); //Block!
                         }
                     }
-                    else if(channel === ZationChannel.PANEL_IN) {
-                        const err : any = new Error('A client cannot subscribe the panel in channel.');
-                        err.name = ErrorName.ACCESS_DENIED;
-                        next(err); //Block!
-                    }
-                    else if(channel === ZationChannel.ALL_WORKER) {
-                        const err : any = new Error('A client cannot subscribe the all worker channel.');
-                        err.name = ErrorName.ACCESS_DENIED;
-                        next(err); //Block!
-                    }
                     else {
-                        Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes the '${channel}' channel.`);
-                        next();
+                        const err : any = new Error(`A client with undefined user id cannot subscribe to this user channel.`);
+                        err.name = ErrorName.ACCESS_DENIED;
+                        next(err); //Block!
                     }
                 }
                 else {
-                    if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
-                        const err : any = new Error('An anonymous client cannot subscribe to this user group channel.');
-                        err.name = ErrorName.ACCESS_DENIED;
-                        next(err); //Block!
-                    }
-                    else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
-                        const err : any = new Error('An anonymous client cannot subscribe to this auth user group channel.');
-                        err.name = ErrorName.ACCESS_DENIED;
-                        next(err); //Block!
-                    }
-                    else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
-                        Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes the default user group channel.`);
-                        next();
-                    }
-                    else if(channel === ZationChannel.PANEL_IN || channel  === ZationChannel.PANEL_OUT) {
-                        const err : any = new Error('An anonymous client cannot subscribe to the panel in or out channel.');
-                        err.name = ErrorName.ACCESS_DENIED;
-                        next(err); //Block!
-                    }
-                    else if(channel === ZationChannel.ALL_WORKER) {
-                        const err : any = new Error('A client cannot subscribe the all worker channel.');
-                        err.name = ErrorName.ACCESS_DENIED;
-                        next(err); //Block!
+                    const err : any = new Error('An anonymous client cannot subscribe to this user channel.');
+                    err.name = ErrorName.ACCESS_DENIED;
+                    next(err); //Block!
+                }
+            }
+            else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
+                if(authToken !== null){
+                    const authUserGroup = authToken.zationAuthUserGroup;
+                    if(authUserGroup !== undefined) {
+                        if (ZationChannel.AUTH_USER_GROUP_PREFIX + authUserGroup === channel) {
+                            Logger.printDebugInfo
+                            (`Socket with id: ${req.socket.id} subscribes to the auth user group channel: '${authUserGroup}'.`);
+                            next();
+                        }
+                        else {
+                            const err : any = new Error('A client can only subscribe to the auth user group channel where his auth user group belongs to.');
+                            err.name = ErrorName.ACCESS_DENIED;
+                            next(err); //Block!
+                        }
                     }
                     else {
-                        Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes the '${channel}' channel.`);
-                        next();
+                        const err : any = new Error(`A client with undefined auth user group cannot subscribe to this auth user group channel.`);
+                        err.name = ErrorName.ACCESS_DENIED;
+                        next(err); //Block!
                     }
                 }
+                else {
+                    const err : any = new Error('An anonymous client cannot subscribe to this auth user group channel.');
+                    err.name = ErrorName.ACCESS_DENIED;
+                    next(err); //Block!
+                }
+            }
+            else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
+                if(authToken !== null){
+                    const err : any = new Error('An authenticated client cannot subscribe to the default user group channel.');
+                    err.name = ErrorName.ACCESS_DENIED;
+                    next(err); //Block!
+                }
+                else {
+                    Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes to the default user group channel.`);
+                    next();
+                }
+            }
+            else if (channel === ZationChannel.PANEL_OUT) {
+                if(authToken !== null){
+                    if (typeof authToken.zationPanelAccess === 'boolean' && authToken.zationPanelAccess) {
+                        Logger.printDebugInfo
+                        (`Socket with id: ${req.socket.id} subscribes to the panel out channel.`);
+                        next();
+                    }
+                    else {
+                        const err : any = new Error('A client without panel access cannot subscribe to the panel out channel!');
+                        err.name = ErrorName.ACCESS_DENIED;
+                        next(err); //Block!
+                    }
+                }
+                else {
+                    const err : any = new Error('An anonymous client cannot subscribe to the panel out channel.');
+                    err.name = ErrorName.ACCESS_DENIED;
+                    next(err); //Block!
+                }
+            }
+            else if(channel === ZationChannel.PANEL_IN) {
+                const err : any = new Error('A client cannot subscribe to the panel in channel.');
+                err.name = ErrorName.ACCESS_DENIED;
+                next(err); //Block!
+            }
+            else if(channel.indexOf(DATA_BOX_START_INDICATOR) === 0) {
+                const err : any = new Error('A client cannot subscribe to an internally DataBox channel.');
+                err.name = ErrorName.ACCESS_DENIED;
+                next(err); //Block!
+            }
+            else if(channel === ZationChannel.ALL_WORKER) {
+                const err : any = new Error('A client cannot subscribe to the all worker channel.');
+                err.name = ErrorName.ACCESS_DENIED;
+                next(err); //Block!
+            }
+            else {
+                Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes the '${channel}' channel.`);
+                next();
             }
         });
 
@@ -645,6 +642,11 @@ class ZationWorker extends SCWorker
                     err.name = ErrorName.ACCESS_DENIED;
                     next(err); //Block!
                 }
+            }
+            else if(req.channel.indexOf(DATA_BOX_START_INDICATOR) === 0) {
+                const err : any = new Error('A client cannot publish in an internally DataBox channel.');
+                err.name = ErrorName.ACCESS_DENIED;
+                next(err); //Block!
             }
             //Important! (Otherwise every socket can publish in worker channel and can modify the whole network.)
             else if(req.channel === ZationChannel.ALL_WORKER) {
