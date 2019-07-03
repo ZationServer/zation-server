@@ -36,12 +36,12 @@ export default class ChMiddlewareHelper
     static checkVersionSystemAccess(shBridge : BaseSHBridge, preChInfo : CustomChStorage) : void
     {
         if(!preChInfo.systemAccessCheck(shBridge)){
-            const err : any = new Error(`Access to this channel with client system denied`);
+            const err : any = new Error(`Access to this channel with client system denied.`);
             err.name = ErrorName.NO_ACCESS_WITH_SYSTEM;
             throw err;
         }
         if(!preChInfo.versionAccessCheck(shBridge)){
-            const err : any = new Error(`Access to this channel with client version denied`);
+            const err : any = new Error(`Access to this channel with client version denied.`);
             err.name = ErrorName.NO_ACCESS_WITH_VERSION;
             throw err;
         }
