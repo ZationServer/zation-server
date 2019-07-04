@@ -4,55 +4,44 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ZationChannel} from "../constants/internal";
 import UpSocket          from "../sc/socket";
-import Logger          from "../logger/logger";
-import PubData         from "../infoObjects/pubData";
+import Logger            from "../logger/logger";
+import PubData           from "../infoObjects/pubData";
+import {ZationChannel}   from "./channelDefinitions";
 
 export default class ChUtils
 {
 
     /**
-     * Build a custom id channel name.
+     * Build a custom channel.
      * @param name
      * @param id
      */
-    static buildCustomIdChannelName(name : string | undefined,id : string = '') : string {
+    static buildCustomChannelName(name ?: string,id ?: string) : string {
         if(name !== undefined) {
-            return ZationChannel.CUSTOM_ID_CHANNEL_PREFIX + name
-                + ZationChannel.CUSTOM_CHANNEL_ID + id;
+            if(id !== undefined){
+                return ZationChannel.CUSTOM_CHANNEL_PREFIX + name +
+                    ZationChannel.CUSTOM_CHANNEL_ID_SEPARATOR + id;
+            }
+            else {
+                return ZationChannel.CUSTOM_CHANNEL_PREFIX + name;
+            }
         }
         else {
-            return ZationChannel.CUSTOM_ID_CHANNEL_PREFIX;
+            return ZationChannel.CUSTOM_CHANNEL_PREFIX;
         }
     }
 
     /**
-     * Get full the custom id channel info from a built string.
+     * Get custom channel info from a built string.
      * @param ch
      */
-    static getCustomIdChannelInfo(ch : string) : {name : string,id : string} {
+    static getCustomChannelInfo(ch : string) : {name : string,id : string | undefined} {
         const nameAndId = ch.split('.');
         return {
             name : nameAndId[1],
             id : nameAndId[2]
         };
-    }
-
-    /**
-     * Get custom channel id channel name from a built string.
-     * @param ch
-     */
-    static getCustomIdChannelName(ch : string) : string {
-        return ch.split('.')[1];
-    }
-
-    /**
-     * Build a custom channel name.
-     * @param name
-     */
-    static buildCustomChannelName(name : string = '') : string {
-        return ZationChannel.CUSTOM_CHANNEL_PREFIX + name;
     }
 
     /**
@@ -145,15 +134,6 @@ export default class ChUtils
     }
 
     /**
-     * Returns all custom id channel subscriptions of a socket.
-     * @param socket
-     * @param name (optional filter for a specific name)
-     */
-    static getCustomIdChannelSubscriptions(socket : UpSocket,name ?: string) : string[] {
-        return ChUtils.subscriptionSearch(socket,ChUtils.buildCustomIdChannelName(name));
-    }
-
-    /**
      * Returns all custom channel subscriptions of a socket.
      * @param socket
      * @param name (optional filter for a specific name)
@@ -198,19 +178,10 @@ export default class ChUtils
      * Returns if the socket has subscribed the custom channel.
      * @param socket
      * @param name
-     */
-    static hasSubCustomCh(socket : UpSocket,name ?: string) : boolean {
-        return ChUtils.subscriptionFindSearch(socket,ChUtils.buildCustomChannelName(name));
-    }
-
-    /**
-     * Returns if the socket has subscribed the custom id channel.
-     * @param socket
-     * @param name
      * @param id
      */
-    static hasSubCustomIdCh(socket : UpSocket,name ?: string, id ?: string) : boolean {
-        return ChUtils.subscriptionFindSearch(socket,ChUtils.buildCustomIdChannelName(name,id));
+    static hasSubCustomCh(socket : UpSocket,name ?: string, id ?: string) : boolean {
+        return ChUtils.subscriptionFindSearch(socket,ChUtils.buildCustomChannelName(name,id));
     }
 
     /**
@@ -222,23 +193,13 @@ export default class ChUtils
     }
 
     /**
-     * Kick socket from custom id channel/s.
+     * Kick socket from custom channel/s.
      * @param socket
      * @param name
      * @param id
      */
-    static kickCustomIdChannel(socket : UpSocket, name ?: string, id ?: string) : void {
-        ChUtils.kickOutSearch(socket,ChUtils.buildCustomIdChannelName(name,id));
-    }
-
-
-    /**
-     * Kick socket from custom channel/s.
-     * @param socket
-     * @param name
-     */
-    static kickCustomChannel(socket : UpSocket, name ?: string) : void {
-        ChUtils.kickOutSearch(socket,ChUtils.buildCustomChannelName(name));
+    static kickCustomChannel(socket : UpSocket, name ?: string, id ?: string) : void {
+        ChUtils.kickOutSearch(socket,ChUtils.buildCustomChannelName(name,id));
     }
 
     /**

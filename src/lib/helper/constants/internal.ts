@@ -144,22 +144,6 @@ export interface PrepareZationToken {
     zationCustomVariables ?: object
 }
 
-export enum ZationChannel {
-    //Zation Main Channels
-    USER_CHANNEL_PREFIX = 'Z_U.',
-    AUTH_USER_GROUP_PREFIX = 'Z_AUG.',
-    DEFAULT_USER_GROUP = 'Z_DUG',
-    ALL = 'Z_ALL',
-    PANEL_IN = 'Z_PI',
-    PANEL_OUT = 'Z_PO',
-    //Custom Channels
-    CUSTOM_ID_CHANNEL_PREFIX = 'Z_CID_C.',
-    CUSTOM_CHANNEL_ID = '.',
-    CUSTOM_CHANNEL_PREFIX = 'Z_C_C.',
-    //intern channels
-    ALL_WORKER                  = 'Z_AW'
-}
-
 export const DefaultUserGroupFallBack = 'default';
 
 //CN = CONFIG_NAMES

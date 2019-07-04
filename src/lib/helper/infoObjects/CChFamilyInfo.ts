@@ -6,6 +6,6 @@ GitHub: LucaCode
 
 import CChInfo from "./cChInfo";
 
-export default interface CIdChInfo extends CChInfo {
+export default interface CChFamilyInfo extends CChInfo {
     id : string
 }

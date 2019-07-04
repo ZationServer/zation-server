@@ -275,7 +275,7 @@ export default class ChannelBagEngine
      */
     async publishInCustomIdChannel(channel : string, id : any, eventName : string, data : any, srcSocketSid ?: string, socketInfo ?: SocketInfo) : Promise<void>
     {
-        const onBagPub = this.chPrepare.getSafeCustomIdChInfo(channel).onBagPub;
+        const onBagPub = this.chPrepare.getSafeCustomChFamilyInfo(channel).onBagPub;
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
 
         await this.pubAsync(ChUtils.buildCustomIdChannelName(channel,id),pubData);

@@ -20,7 +20,13 @@ import {StarterConfig}   from "./starterConfig";
 import {ValidationTypes} from "../../constants/validationTypes";
 import {FormatLetters}   from "../../constants/validation";
 import {ServiceConfig}   from "./serviceConfig";
-import {ChannelsConfig, ChannelSettings, CustomChannelConfig, CustomIdCh, ZationChannelConfig} from "./channelsConfig";
+import {
+    ChannelSettings,
+    BaseCustomChannelConfig,
+    CustomChFamilyConfig,
+    ZationChannelConfig,
+    ZationChannelsConfig
+} from "./channelsConfig";
 import {ServiceModule}   from "zation-service";
 import ObjectUtils       from "../../utils/objectUtils";
 import {
@@ -42,7 +48,9 @@ App[nameof<AppConfig>(s => s.controllerDefaults)] = {types : ['object'],isOption
 App[nameof<AppConfig>(s => s.dataBoxes)]          = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.dataBoxDefaults)]    = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.models)]             = {types : ['object'],isOptional : true};
-App[nameof<AppConfig>(s => s.channels)]           = {types : ['object'],isOptional : true};
+App[nameof<AppConfig>(s => s.zationChannels)]     = {types : ['object'],isOptional : true};
+App[nameof<AppConfig>(s => s.customChannels)]     = {types : ['object'],isOptional : true};
+App[nameof<AppConfig>(s => s.customChannelDefaults)] = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.backgroundTasks)]    = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.bagExtensions)]      = {types : ['array'],isOptional : true};
 
@@ -247,13 +255,11 @@ ValueModel[nameof<ValueModelConfig>(s => s.before)]       = {types : ['object','
 ValueModel[nameof<ValueModelConfig>(s => s.after)]        = {types : ['object','function'],isOptional : true};
 ValueModel[nameof<ValueModelConfig>(s => s.validate)]     = {types : ['function','array'],isOptional : true};
 
-const ChannelConfig = {};
-ChannelConfig[nameof<ChannelsConfig>(s => s.customChannels)]       = {types : ['object'],isOptional : true};
-ChannelConfig[nameof<ChannelsConfig>(s => s.customIdChannels)]     = {types : ['object'],isOptional : true};
-ChannelConfig[nameof<ChannelsConfig>(s => s.userCh)]               = {types : ['object'],isOptional : true};
-ChannelConfig[nameof<ChannelsConfig>(s => s.authUserGroupCh)]      = {types : ['object'],isOptional : true};
-ChannelConfig[nameof<ChannelsConfig>(s => s.defaultUserGroupCh)]   = {types : ['object'],isOptional : true};
-ChannelConfig[nameof<ChannelsConfig>(s => s.allCh)]                = {types : ['object'],isOptional : true};
+const ZationChannelsConfig = {};
+ZationChannelsConfig[nameof<ZationChannelsConfig>(s => s.userCh)]             = {types : ['object'],isOptional : true};
+ZationChannelsConfig[nameof<ZationChannelsConfig>(s => s.authUserGroupCh)]    = {types : ['object'],isOptional : true};
+ZationChannelsConfig[nameof<ZationChannelsConfig>(s => s.defaultUserGroupCh)] = {types : ['object'],isOptional : true};
+ZationChannelsConfig[nameof<ZationChannelsConfig>(s => s.allCh)]              = {types : ['object'],isOptional : true};
 
 const ServiceConfig = {};
 ServiceConfig[nameof<ServiceConfig>(s => s.services)]               = {types : ['object'],isOptional : true};
@@ -263,31 +269,31 @@ const PanelUserConfig = {};
 PanelUserConfig[nameof<PanelUserConfig>(s => s.username)]     = {types : ['string'],isOptional : false};
 PanelUserConfig[nameof<PanelUserConfig>(s => s.password)]     = {types : ['string'],isOptional : false};
 
-const CustomChItem = {};
-CustomChItem[nameof<CustomChannelConfig>(s => s.clientPublishAccess)]      = {types : ['function','boolean','number','array','string'],isOptional : true};
-CustomChItem[nameof<CustomChannelConfig>(s => s.clientPublishNotAccess)]   = {types : ['function','boolean','number','array','string'],isOptional : true};
-CustomChItem[nameof<CustomChannelConfig>(s => s.subscribeAccess)]          = {types : ['function','boolean','number','array','string'],isOptional : true};
-CustomChItem[nameof<CustomChannelConfig>(s => s.subscribeNotAccess)]       = {types : ['function','boolean','number','array','string'],isOptional : true};
-CustomChItem[nameof<CustomChannelConfig>(s => s.onClientPublish)]          = {types : ['function','array'],isOptional : true};
-CustomChItem[nameof<CustomChannelConfig>(s => s.onBagPublish)]             = {types : ['function','array'],isOptional : true};
-CustomChItem[nameof<CustomChannelConfig>(s => s.onSubscription)]           = {types : ['function','array'],isOptional : true};
-CustomChItem[nameof<CustomChannelConfig>(s => s.onUnsubscription)]         = {types : ['function','array'],isOptional : true};
-CustomChItem[nameof<CustomChannelConfig>(s => s.versionAccess)]            = {types : ['string','object'],isOptional : true};
-CustomChItem[nameof<CustomChannelConfig>(s => s.systemAccess)]             = {types : ['array'],arrayType : 'string',isOptional : true};
-CustomChItem[nameof<ChannelSettings>(s => s.socketGetOwnPublish)]          = {types : ['boolean','array'],isOptional : true};
+const CustomChConfig = {};
+CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.clientPublishAccess)]      = {types : ['function','boolean','number','array','string'],isOptional : true};
+CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.clientPublishNotAccess)]   = {types : ['function','boolean','number','array','string'],isOptional : true};
+CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.subscribeAccess)]          = {types : ['function','boolean','number','array','string'],isOptional : true};
+CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.subscribeNotAccess)]       = {types : ['function','boolean','number','array','string'],isOptional : true};
+CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.onClientPublish)]          = {types : ['function','array'],isOptional : true};
+CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.onBagPublish)]             = {types : ['function','array'],isOptional : true};
+CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.onSubscription)]           = {types : ['function','array'],isOptional : true};
+CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.onUnsubscription)]         = {types : ['function','array'],isOptional : true};
+CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.versionAccess)]            = {types : ['string','object'],isOptional : true};
+CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.systemAccess)]             = {types : ['array'],arrayType : 'string',isOptional : true};
+CustomChConfig[nameof<ChannelSettings>(s => s.socketGetOwnPublish)]          = {types : ['boolean','array'],isOptional : true};
 
-const CustomIdChItem = {};
-ObjectUtils.addObToOb(CustomIdChItem,CustomChItem);
-CustomIdChItem[nameof<CustomIdCh>(s => s.idValid)]                         = {types : ['function'],isOptional : true};
+const CustomChFamilyConfig = {};
+ObjectUtils.addObToOb(CustomChFamilyConfig,CustomChConfig);
+CustomChFamilyConfig[nameof<CustomChFamilyConfig>(s => s.idValid)]          = {types : ['function'],isOptional : true};
 
-const ChannelNormalItem = {};
-ChannelNormalItem[nameof<ChannelSettings>(s => s.socketGetOwnPublish)]    = {types : ['boolean'],isOptional : true};
-ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onClientPublish)]    = {types : ['function','array'],isOptional : true};
-ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onBagPublish)]       = {types : ['function','array'],isOptional : true};
-ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onSubscription)]     = {types : ['function','array'],isOptional : true};
-ChannelNormalItem[nameof<ZationChannelConfig>(s => s.onUnsubscription)]   = {types : ['function','array'],isOptional : true};
-ChannelNormalItem[nameof<CustomChannelConfig>(s => s.clientPublishAccess)]      = {types : ['function','boolean','number','array','string'],isOptional : true};
-ChannelNormalItem[nameof<CustomChannelConfig>(s => s.clientPublishNotAccess)]   = {types : ['function','boolean','number','array','string'],isOptional : true};
+const ZationChannelConfig = {};
+ZationChannelConfig[nameof<ChannelSettings>(s => s.socketGetOwnPublish)]    = {types : ['boolean'],isOptional : true};
+ZationChannelConfig[nameof<ZationChannelConfig>(s => s.onClientPublish)]    = {types : ['function','array'],isOptional : true};
+ZationChannelConfig[nameof<ZationChannelConfig>(s => s.onBagPublish)]       = {types : ['function','array'],isOptional : true};
+ZationChannelConfig[nameof<ZationChannelConfig>(s => s.onSubscription)]     = {types : ['function','array'],isOptional : true};
+ZationChannelConfig[nameof<ZationChannelConfig>(s => s.onUnsubscription)]   = {types : ['function','array'],isOptional : true};
+ZationChannelConfig[nameof<BaseCustomChannelConfig>(s => s.clientPublishAccess)]      = {types : ['function','boolean','number','array','string'],isOptional : true};
+ZationChannelConfig[nameof<BaseCustomChannelConfig>(s => s.clientPublishNotAccess)]   = {types : ['function','boolean','number','array','string'],isOptional : true};
 
 const ArrayShortCutSpecify = {};
 ArrayShortCutSpecify[nameof<ArraySettings>(s => s.minLength)]         = {types : ['number'],isOptional : true};
@@ -372,11 +378,11 @@ export const Structures = {
     Main : Main,
     StarterConfig : StarterConfig,
     ValueModel : ValueModel,
-    ChannelConfig : ChannelConfig,
+    ZationChannelsConfig : ZationChannelsConfig,
     ServiceConfig : ServiceConfig,
-    CustomCh : CustomChItem,
-    CustomIdCh : CustomIdChItem,
-    ChannelNormalItem : ChannelNormalItem,
+    CustomChConfig : CustomChConfig,
+    CustomChFamilyConfig : CustomChFamilyConfig,
+    ZationChannelConfig : ZationChannelConfig,
     ArrayModel : ArrayModel,
     ArrayShortCutSpecify : ArrayShortCutSpecify,
     EventConfig : EventConfig,

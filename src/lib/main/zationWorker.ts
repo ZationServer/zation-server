@@ -675,7 +675,7 @@ class ZationWorker extends SCWorker
                     ||
                     (
                         req.channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) === 0 &&
-                        !this.channelPrepare.getSafeCustomIdChInfo(ChUtils.getCustomIdChannelName(req.channel))
+                        !this.channelPrepare.getSafeCustomChFamilyInfo(ChUtils.getCustomIdChannelName(req.channel))
                             .socketGetOwnPub
                     )
                     ||
@@ -866,7 +866,7 @@ class ZationWorker extends SCWorker
             if(chName.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) === 0) {
                 const {name,id} = ChUtils.getCustomIdChannelInfo(chName);
 
-                this.channelPrepare.getSafeCustomIdChInfo(name)
+                this.channelPrepare.getSafeCustomChFamilyInfo(name)
                 .onSub(
                     this.preparedSmallBag,
                     socket.socketInfo,
@@ -921,7 +921,7 @@ class ZationWorker extends SCWorker
             if(chName.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) === 0) {
                 const {name,id} = ChUtils.getCustomIdChannelInfo(chName);
 
-                this.channelPrepare.getSafeCustomIdChInfo(name)
+                this.channelPrepare.getSafeCustomChFamilyInfo(name)
                 .onUnsub(
                     this.preparedSmallBag,
                     socket.socketInfo,

@@ -7,29 +7,29 @@ GitHub: LucaCode
 import SocketInfo           from "../../infoObjects/socketInfo";
 import SmallBag             from "../../../api/SmallBag";
 import PubData              from "../../infoObjects/pubData";
-import CIdChInfo            from "../../infoObjects/cIdChInfo";
+import CChFamilyInfo        from "../../infoObjects/CChFamilyInfo";
 import CChInfo              from "../../infoObjects/cChInfo";
 import {IdValidConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
 
 type AnyFunction = (...args : any[]) => Promise<any> | any
 
-export type CIdChannelOnClientPubFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo, chInfo : CIdChInfo) => Promise<void> | void;
+export type CChannelFamilyOnClientPubFunction =
+    (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo, chInfo : CChFamilyInfo) => Promise<void> | void;
 
-export type CIdChannelOnBagPubFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo | undefined, chInfo : CIdChInfo) => Promise<void> | void;
+export type CChannelFamilyOnBagPubFunction =
+    (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo | undefined, chInfo : CChFamilyInfo) => Promise<void> | void;
 
-export type CIdChannelOnSubFunction =
-    (smallBag : SmallBag, socketInfo : SocketInfo, chInfo : CIdChInfo) => Promise<void> | void;
+export type CChannelFamilyOnSubFunction =
+    (smallBag : SmallBag, socketInfo : SocketInfo, chInfo : CChFamilyInfo) => Promise<void> | void;
 
-export type CIdChannelOnUnsubFunction =
-    (smallBag : SmallBag, socketInfo : SocketInfo, chInfo : CIdChInfo) => Promise<void> | void;
+export type CChannelFamilyOnUnsubFunction =
+    (smallBag : SmallBag, socketInfo : SocketInfo, chInfo : CChFamilyInfo) => Promise<void> | void;
 
-export type CIdChannelClientPubAccessFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo, chInfo : CIdChInfo) => Promise<boolean> | boolean;
+export type CChannelFamilyClientPubAccessFunction =
+    (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo, chInfo : CChFamilyInfo) => Promise<boolean> | boolean;
 
-export type CIdChannelSubAccessFunction =
-    (smallBag : SmallBag, socketInfo : SocketInfo, chInfo : CIdChInfo) => Promise<boolean> | boolean;
+export type CChannelFamilySubAccessFunction =
+    (smallBag : SmallBag, socketInfo : SocketInfo, chInfo : CChFamilyInfo) => Promise<boolean> | boolean;
 
 
 export type CChannelOnClientPubFunction =
@@ -98,47 +98,8 @@ export type NormalChOnUnsubFunction =
 export type NormalChClientPubAccessFunction =
     (smallBag : SmallBag, pubData : PubData, socketInfo : SocketInfo) => Promise<boolean> | boolean;
 
-export interface ChannelsConfig
+export interface ZationChannelsConfig
 {
-    /**
-     * Define your custom channels in objects and register event listeners.
-     * Use a custom channel if you only need one specific kind of this channel.
-     * For example, I have one stream where a particular group of clients can publish in or subscribe.
-     * The key of the object is the name of the channel.
-     * There is one particular key that is the default key.
-     * With this key, you can define default settings for every custom channel.
-     * @example
-     * customChannels : {
-     *     default : {
-     *         clientPublishAccess : false,
-     *         subscribeAccess : true,
-     *     },
-     *     stream : {
-     *         subscribeAccess : 'allAuth',
-     *     }
-     * }
-     */
-    customChannels  ?: Record<string,CustomCh> | ChannelDefault<CustomCh>;
-    /**
-     * Define your custom id channels in objects and register event listeners.
-     * Use a custom id channel if you need more than one channel of these type.
-     * For example, I have a private user chat where more chats can be created with a specific id.
-     * Now I can have more channels from type user chat with different identifiers.
-     * The key of the object is the name of the channel.
-     * There is one particular key that is the default key.
-     * With this key, you can define default settings for every custom id channel.
-     * @example
-     * customIdChannels : {
-     *     default : {
-     *         clientPublishAccess : false,
-     *         subscribeAccess : true,
-     *     },
-     *     userChat : {
-     *         subscribeAccess : 'allAuth',
-     *     }
-     * }
-     */
-    customIdChannels  ?: Record<string,CustomIdCh> | ChannelDefault<CustomIdCh>;
     /**
      * Add options or register event listeners to the user channels of zation.
      * Every user id has its own channel.
@@ -175,15 +136,7 @@ export interface ChannelsConfig
     allCh  ?: NormalChannel;
 }
 
-export interface PreCompiledChannelConfig extends ChannelsConfig{
-}
-
-export interface ChannelDefault<T = any> {
-    /**
-     * Set the default options.
-     */
-    default ?: T;
-}
+export type CustomChannelConfig = {[0]: CustomChFamilyConfig} | CustomCh
 
 export interface ChannelSettings {
     /**
@@ -288,7 +241,7 @@ export type NormalChannel = ZationChannelConfig<
     NormalChClientPubAccessFunction
     >;
 
-export interface CustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub = AnyFunction,Unsub = AnyFunction,PubAccess = AnyFunction,SubAccess = AnyFunction>
+export interface BaseCustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub = AnyFunction,Unsub = AnyFunction,PubAccess = AnyFunction,SubAccess = AnyFunction>
     extends ZationChannelConfig<Pub,BagPub,Sub,Unsub,PubAccess>, VersionAccessConfig, SystemAccessConfig {
     /**
      * @description
@@ -340,16 +293,16 @@ export interface CustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub 
     subscribeAccess  ?: SubAccess | boolean | string | number | (string|number)[];
 }
 
-export type CustomIdCh = (CustomChannelConfig<
-    CIdChannelOnClientPubFunction,
-    CIdChannelOnBagPubFunction,
-    CIdChannelOnSubFunction,
-    CIdChannelOnUnsubFunction,
-    CIdChannelClientPubAccessFunction,
-    CIdChannelSubAccessFunction
+export type CustomChFamilyConfig = (BaseCustomChannelConfig<
+    CChannelFamilyOnClientPubFunction,
+    CChannelFamilyOnBagPubFunction,
+    CChannelFamilyOnSubFunction,
+    CChannelFamilyOnUnsubFunction,
+    CChannelFamilyClientPubAccessFunction,
+    CChannelFamilySubAccessFunction
     >) & IdValidConfig;
 
-export type CustomCh = CustomChannelConfig<
+export type CustomCh = BaseCustomChannelConfig<
     CChannelOnClientPubFunction,
     CChannelOnBagPubFunction,
     CChannelOnSubFunction,

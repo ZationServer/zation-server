@@ -67,7 +67,7 @@ export default class ChMiddlewareHelper
             return Error;
         }
 
-        if(!this.channelPrepare.existCustomIdCh(name)) {
+        if(!this.channelPrepare.existCustomChFamily(name)) {
             const err : any = new Error('Unknown custom id channel.');
             err.name = ErrorName.UNKNOWN_CHANNEL;
             Logger.printDebugInfo
@@ -75,7 +75,7 @@ export default class ChMiddlewareHelper
             return Error;
         }
         else {
-            const preChInfo = this.channelPrepare.getSafeCustomIdChInfo(name);
+            const preChInfo = this.channelPrepare.getSafeCustomChFamilyInfo(name);
             const chInfo = {name,id};
 
             try {
@@ -124,7 +124,7 @@ export default class ChMiddlewareHelper
             err.name = ErrorName.ID_MISSING;
             return Error;
         }
-        if(!this.channelPrepare.existCustomIdCh(name)) {
+        if(!this.channelPrepare.existCustomChFamily(name)) {
             const err : any = new Error('Unknown custom id channel.');
             err.name = ErrorName.UNKNOWN_CHANNEL;
             Logger.printDebugInfo
@@ -132,7 +132,7 @@ export default class ChMiddlewareHelper
             return Error;
         }
         else {
-            const preChInfo = this.channelPrepare.getSafeCustomIdChInfo(name);
+            const preChInfo = this.channelPrepare.getSafeCustomChFamilyInfo(name);
             const chInfo = {name,id};
 
             try {

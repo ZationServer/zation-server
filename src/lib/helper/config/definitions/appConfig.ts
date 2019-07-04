@@ -10,7 +10,9 @@ import {ControllerConfig}     from "./controllerConfig";
 import {Model}                from "./inputConfig";
 import {BackgroundTask}       from "./backgroundTaskConfig";
 import {DataBoxClassDef, DataBoxConfig} from "./dataBoxConfig";
-import {ChannelsConfig, PreCompiledChannelConfig} from "./channelsConfig";
+import {
+    CustomChannelConfig, CustomCh, ZationChannelsConfig
+} from "./channelsConfig";
 
 export interface AppConfig
 {
@@ -51,7 +53,8 @@ export interface AppConfig
     controllers  ?: Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>>;
 
     /**
-     * With this property, you can define a default controller configuration that will be used in each controller.
+     * With this property, you can define a default controller configuration
+     * that will be used in each controller as a fallback.
      * @example
      * controllerDefaults : {
      *    wsAccess : true,
@@ -77,7 +80,8 @@ export interface AppConfig
     dataBoxes ?: Record<string,DataBoxClassDef | ApiLevelSwitch<DataBoxClassDef>>;
 
     /**
-     * With this property, you can define a default DataBox configuration that will be used in each DataBox.
+     * With this property, you can define a default DataBox configuration
+     * that will be used in each DataBox as a fallback.
      * @example
      * dataBoxDefaults : {
      *    access : 'all',
@@ -109,16 +113,50 @@ export interface AppConfig
     models ?: Record<string,Model>;
 
     /**
-     * In this property, you can configure all channels of the server
-     * or create your custom (id) channels.
+     * In this property, you can configure all predefined zation channels.
      * @example
-     * channels : {
-     *    customChannels : {
-     *        ...
+     * zationChannels : {
+     *    userCh : {
+     *        socketGetOwnPublish : false
      *    }
      * }
      */
-    channels ?: ChannelsConfig;
+    zationChannels ?: ZationChannelsConfig;
+
+    /**
+     * Define your custom channels. There are two different variants:
+     * The first variant is the usual custom channel,
+     * that is useful if you only need one instance of that channel type.
+     * The second variant is the custom channel family.
+     * You should use this variant if you need more than one channel
+     * of these type and they only differ by an id.
+     * For example, I have a private user chat where more chats can exist with a specific id.
+     * Now I can have more channels from type user chat with different identifiers.
+     * Look in the example below to see how you actually can define custom channels.
+     * @example
+     * customChannels : {
+     *     // Definition of a custom channel family.
+     *     // Notice the array brackets around the object!
+     *     privateChats : [{
+     *          subscribeAccess : 'allAuth',
+     *     }],
+     *     // Definition of a usual custom channel.
+     *     publicStream : {
+     *         subscribeAccess : 'allAuth',
+     *     }
+     * }
+     */
+    customChannels ?: Record<string,CustomChannelConfig>
+
+    /**
+     * With this property, you can define a default custom channel configuration
+     * that will be used in each custom channel as a fallback.
+     * @example
+     * customChannelDefaults : {
+     *     clientPublishAccess : false
+     * }
+     */
+    customChannelDefaults ?: CustomCh
 
     /**
      * In this property, you can define background tasks.
@@ -143,7 +181,6 @@ export interface AppConfig
 }
 
 export interface PreCompiledAppConfig extends AppConfig{
-    channels : PreCompiledChannelConfig
 }
 
 export default interface BagExtension {

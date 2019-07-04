@@ -100,7 +100,7 @@ export default class ChAccessHelper
         for(let i = 0; i < subs.length; i++) {
             if(subs[i].indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
                 const chInfo = ChUtils.getCustomIdChannelInfo(subs[i]);
-                const preChInfo = channelPrepare.getSafeCustomIdChInfo(chInfo.name);
+                const preChInfo = channelPrepare.getSafeCustomChFamilyInfo(chInfo.name);
 
                 if(!(await preChInfo.subscribeAccessChecker(
                     authEngine,

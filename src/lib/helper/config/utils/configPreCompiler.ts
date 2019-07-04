@@ -5,10 +5,8 @@ GitHub: LucaCode
  */
 
 import {
-    ChannelsConfig,
-    ChannelDefault,
     ChannelSettings,
-    CustomChannelConfig
+    BaseCustomChannelConfig
 } from "../definitions/channelsConfig";
 import {
     AnyOfModelConfig,
@@ -69,7 +67,7 @@ export default class ConfigPreCompiler
         this.preCompileSystemController();
         this.preCompileServiceModules();
         this.preCompileEventConfig();
-        this.preCompileChannelsConfig();
+        this.preCompileCustomChannels();
 
         //view precompiled configs
         if(showPrecompiledConfigs){
@@ -124,28 +122,57 @@ export default class ConfigPreCompiler
         }
     }
 
-    private preCompileChannelsConfig() : void
-    {
-        const channels = this.configs.appConfig.channels;
-        if(!channels){
-            this.configs.appConfig.channels = {};
-        }
-        else {
-            for(let k in channels) {
-                if(channels.hasOwnProperty(k)) {
-                    const ch = channels[k];
-                    if(typeof ch === 'object') {
-                        if(k === nameof<ChannelsConfig>(s => s.customIdChannels) ||
-                            k === nameof<ChannelsConfig>(s => s.customChannels)) {
-                            this.preCompileChannelDefault(ch);
-                        }
+    private preCompileCustomChannels() : void {
+        const customChannels = this.configs.appConfig.customChannels;
+        const customChannelDefaults = this.configs.appConfig.customChannelDefaults;
+        if(typeof customChannels === 'object' && typeof customChannelDefaults === 'object'){
+            for(let chName in customChannels){
+                if(customChannels.hasOwnProperty(chName)){
+
+                    let channel : BaseCustomChannelConfig;
+                    if(Array.isArray(customChannels[chName])){
+                        channel = customChannels[chName][0] || {};
                     }
                     else {
-                        channels[k] = {};
+                        channel = (customChannels[chName] as BaseCustomChannelConfig)
                     }
+
+                    //defaults
+                    if(channel.subscribeAccess === undefined && channel.subscribeNotAccess === undefined) {
+                        if(customChannelDefaults.subscribeAccess !== undefined) {
+                            channel.subscribeAccess = customChannelDefaults.subscribeAccess;
+                        }
+                        if(customChannelDefaults.subscribeNotAccess !== undefined) {
+                            channel.subscribeNotAccess = customChannelDefaults.subscribeNotAccess
+                        }
+                    }
+
+                    if(channel.clientPublishAccess !== undefined && channel.clientPublishNotAccess !== undefined) {
+                        if(customChannelDefaults.clientPublishAccess !== undefined) {
+                            channel.clientPublishAccess = customChannelDefaults.clientPublishAccess;
+                        }
+                        if(customChannelDefaults.clientPublishNotAccess !== undefined) {
+                            channel.clientPublishNotAccess = customChannelDefaults.clientPublishNotAccess
+                        }
+                    }
+
+                    this.processDefaultValue(channel,customChannelDefaults,nameof<BaseCustomChannelConfig>(s => s.onClientPublish));
+                    this.processDefaultValue(channel,customChannelDefaults,nameof<BaseCustomChannelConfig>(s => s.onSubscription));
+                    this.processDefaultValue(channel,customChannelDefaults,nameof<BaseCustomChannelConfig>(s => s.onUnsubscription));
+                    this.processDefaultValue(channel,customChannelDefaults,nameof<ChannelSettings>(s => s.socketGetOwnPublish));
 
                 }
             }
+        }
+    }
+
+    // noinspection JSMethodCanBeStatic
+    private processDefaultValue(obj : object,defaultObj : object,key : string) : void
+    {
+        if((!obj.hasOwnProperty(key))&&
+            defaultObj.hasOwnProperty(key))
+        {
+            obj[key] = defaultObj[key];
         }
     }
 
@@ -229,57 +256,6 @@ export default class ConfigPreCompiler
             // @ts-ignore
             this.configs.appConfig.bagExtensions.push(sm.bagExtensions);
         });
-    }
-
-    private preCompileChannelDefault(channels : object) : void
-    {
-        if(channels[nameof<ChannelDefault>(s => s.default)])
-        {
-            const defaultCh : CustomChannelConfig =
-                channels[nameof<ChannelDefault>(s => s.default)];
-
-            for(let chName in channels)
-            {
-                if(channels.hasOwnProperty(chName) && chName !== channels[nameof<ChannelDefault>(s => s.default)])
-                {
-                    const channel : CustomChannelConfig = channels[chName];
-
-                    if(!(channel.subscribeAccess !== undefined || channel.subscribeNotAccess !== undefined)) {
-                        if(defaultCh.subscribeAccess !== undefined) {
-                            channel.subscribeAccess = defaultCh.subscribeAccess;
-                        }
-                        if(defaultCh.subscribeNotAccess !== undefined) {
-                            channel.subscribeNotAccess = defaultCh.subscribeNotAccess
-                        }
-                    }
-
-                    if(!(channel.clientPublishAccess !== undefined || channel.clientPublishNotAccess !== undefined)) {
-                        if(defaultCh.clientPublishAccess !== undefined) {
-                            channel.clientPublishAccess = defaultCh.clientPublishAccess;
-                        }
-                        if(defaultCh.clientPublishNotAccess !== undefined) {
-                            channel.clientPublishNotAccess = defaultCh.clientPublishNotAccess
-                        }
-                    }
-
-                    this.processDefaultValue(channel,defaultCh,nameof<CustomChannelConfig>(s => s.onClientPublish));
-                    this.processDefaultValue(channel,defaultCh,nameof<CustomChannelConfig>(s => s.onSubscription));
-                    this.processDefaultValue(channel,defaultCh,nameof<CustomChannelConfig>(s => s.onUnsubscription));
-                    this.processDefaultValue(channel,defaultCh,nameof<ChannelSettings>(s => s.socketGetOwnPublish));
-                }
-            }
-            delete channels[nameof<ChannelDefault>(s => s.default)];
-        }
-    }
-
-    // noinspection JSMethodCanBeStatic
-    private processDefaultValue(obj : object,defaultObj : object,key : string) : void
-    {
-        if((!obj.hasOwnProperty(key))&&
-            defaultObj.hasOwnProperty(key))
-        {
-            obj[key] = defaultObj[key];
-        }
     }
 
     private prepareModelsConfig() : void {
