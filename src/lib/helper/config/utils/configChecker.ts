@@ -12,8 +12,7 @@ import BagExtension, {
 import {PanelUserConfig}      from "../definitions/mainConfig";
 import {MainService, Service} from "../definitions/serviceConfig";
 import {
-    ChannelsConfig,
-    CustomChannelConfig,
+    BaseCustomChannelConfig,
     ZationChannelConfig
 } from "../definitions/channelsConfig";
 // noinspection TypeScriptPreferShortImport
@@ -51,7 +50,7 @@ import {
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../definitions/controllerConfig";
 import {DataBoxClassDef, DataBoxConfig} from "../definitions/dataBoxConfig";
-import DataIdBox from "../../../api/dataBox/DataIdBox";
+import DataBoxFamily from "../../../api/dataBox/DataBoxFamily";
 import DataBox from "../../../api/dataBox/DataBox";
 import {AuthAccessConfig, VersionAccessConfig} from "../definitions/configComponents";
 
@@ -239,7 +238,9 @@ export default class ConfigChecker
         this.checkAuthController();
         this.checkBackgroundTasks();
         this.checkAppBagExtensions();
-        this.checkChannelsConfig()
+        this.checkCustomChannelsDefaults();
+        this.checkCustomChannels();
+        this.checkZationChannels();
     }
 
     private checkBackgroundTasks() {
@@ -279,35 +280,54 @@ export default class ConfigChecker
         (Structures.EventConfig, this.zcLoader.eventConfig, ConfigNames.EVENT, this.ceb);
     }
 
-    private checkChannelsConfig() {
-        const channels = this.zcLoader.appConfig.channels;
-        if(channels){
-            const target = new Target('Channels: ');
-            //main structure
-            ConfigCheckerTools.assertStructure
-            (Structures.ChannelConfig, channels, ConfigNames.APP, this.ceb, target);
+    private checkCustomChannelsDefaults(){
+        const customChannelsDefaults = this.zcLoader.appConfig.customChannelDefaults;
+        if(typeof customChannelsDefaults === 'object'){
+            this.checkCustomChannelConfig(customChannelsDefaults, new Target('Custom channel defaults: ') , false);
+        }
+    }
 
-            for (let key in channels) {
-                if (channels.hasOwnProperty(key) && typeof channels[key] === 'object') {
-                    const isCustomIdCh = key === nameof<ChannelsConfig>(s => s.customIdChannels);
-                    if (key === nameof<ChannelsConfig>(s => s.customChannels) || isCustomIdCh) {
-                        const chPart = channels[key];
-                        const secTarget = target.addPath(key);
-                        if(typeof chPart === 'object')
-                        {
-                            for (let chName in chPart) {
-                                if (chPart.hasOwnProperty(chName)) {
-                                    this.checkCustomName(chName,'channel name',secTarget.getTarget() + ' ');
-                                    this.checkCustomChannelItem(chPart[chName], secTarget, chName, isCustomIdCh);
-                                }
-                            }
+    private checkCustomChannels() {
+        const customChannels = this.zcLoader.appConfig.customChannels;
+        if(typeof customChannels === 'object'){
+            const target = new Target('Custom Channels: ');
+
+            for(let key in customChannels){
+                if(customChannels.hasOwnProperty(key)){
+
+                    const secTarget = target.addPath(key);
+
+                    let value : any = customChannels[key];
+                    let isFamily = false;
+
+                    if(Array.isArray(value)){
+                        if(value.length > 1){
+                            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                                `${secTarget.getTarget()} to define a custom channel family, the array should only contain one or zero elements.`));
                         }
-                    } else if
-                    (
-                        key === nameof<ChannelsConfig>(s => s.allCh) || key === nameof<ChannelsConfig>(s => s.defaultUserGroupCh) ||
-                        key === nameof<ChannelsConfig>(s => s.authUserGroupCh) || key === nameof<ChannelsConfig>(s => s.userCh)) {
-                        this.checkNormalChannelItem(channels[key],target.addPath(key));
+                        value = value[0] || {};
+                        isFamily = true;
                     }
+
+                    this.checkCustomName(key,'Custom channel name',target.getTarget() + ' ');
+                    this.checkCustomChannelConfig(value, secTarget, isFamily);
+                }
+            }
+        }
+    }
+
+    private checkZationChannels() {
+        const zationChannels = this.zcLoader.appConfig.zationChannels;
+
+        if(typeof zationChannels === 'object'){
+            const target = new Target('Zation Channels: ');
+
+            ConfigCheckerTools.assertStructure
+            (Structures.ZationChannelsConfig, zationChannels, ConfigNames.APP, this.ceb,target);
+
+            for(let key in zationChannels){
+                if(zationChannels.hasOwnProperty(key)){
+                    this.checkZationChannelConfig(zationChannels[key],target.addPath(key));
                 }
             }
         }
@@ -329,7 +349,7 @@ export default class ConfigChecker
         this.warningForPublish(channel.clientPublishNotAccess, target, true);
     }
 
-    private checkSubAccess(channel : CustomChannelConfig,target : Target) {
+    private checkSubAccess(channel : BaseCustomChannelConfig, target : Target) {
         if (channel.subscribeAccess !== undefined && channel.subscribeNotAccess !== undefined) {
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} only 'subscribeAccess' or 'subscribeNotAccess' keyword is allow.`));
@@ -337,30 +357,27 @@ export default class ConfigChecker
 
         //check protocolAccess dependency to userGroups
         this.checkAccessKeyDependency
-        (channel.subscribeAccess, nameof<CustomChannelConfig>(s => s.subscribeAccess), target);
+        (channel.subscribeAccess, nameof<BaseCustomChannelConfig>(s => s.subscribeAccess), target);
         this.checkAccessKeyDependency
-        (channel.subscribeNotAccess, nameof<CustomChannelConfig>(s => s.subscribeNotAccess), target);
+        (channel.subscribeNotAccess, nameof<BaseCustomChannelConfig>(s => s.subscribeNotAccess), target);
     }
 
 
-    private checkNormalChannelItem(channel : ZationChannelConfig,target : Target) {
+    private checkZationChannelConfig(channel : ZationChannelConfig,target : Target) {
         ConfigCheckerTools.assertStructure
-        (Structures.ChannelNormalItem,channel, ConfigNames.APP, this.ceb, target);
-
+        (Structures.ZationChannelConfig,channel, ConfigNames.APP, this.ceb, target);
         if(typeof channel === 'object'){
             this.checkClientPubAccess(channel,target);
         }
     }
 
-    private checkCustomChannelItem(channel: CustomChannelConfig, firstTarget: Target, chName: string, isCustomIdCh : boolean): void {
-        const mainTarget = firstTarget.addPath(chName);
-
+    private checkCustomChannelConfig(channel: BaseCustomChannelConfig, target: Target, isCustomChFamily : boolean): void {
         ConfigCheckerTools.assertStructure
-        (isCustomIdCh ? Structures.CustomIdCh : Structures.CustomCh, channel, ConfigNames.APP, this.ceb, mainTarget);
+        (isCustomChFamily ? Structures.CustomChFamilyConfig : Structures.CustomChConfig, channel, ConfigNames.APP, this.ceb, target);
 
         if (typeof channel === 'object') {
-            this.checkClientPubAccess(channel,mainTarget);
-            this.checkSubAccess(channel,mainTarget);
+            this.checkClientPubAccess(channel,target);
+            this.checkSubAccess(channel,target);
         }
     }
 
@@ -831,7 +848,7 @@ export default class ConfigChecker
     }
 
     private checkDataBox(cdb: DataBoxClassDef, target: Target) {
-        if(cdb.prototype instanceof DataIdBox || cdb.prototype instanceof DataBox) {
+        if(cdb.prototype instanceof DataBoxFamily || cdb.prototype instanceof DataBox) {
             this.checkDataBoxConfig(cdb.config,target);
         }
         else {

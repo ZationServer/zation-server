@@ -8,7 +8,7 @@ import Config           from "../../Config";
 import {Component}      from "../../../helper/config/definitions/component";
 import Controller       from "../../Controller";
 import DataBox          from "../../dataBox/DataBox";
-import DataIdBox        from "../../dataBox/DataIdBox";
+import DataBoxFamily        from "../../dataBox/DataBoxFamily";
 import ConfigBuildError from "../../../helper/config/manager/configBuildError";
 
 /**
@@ -22,7 +22,7 @@ import ConfigBuildError from "../../../helper/config/manager/configBuildError";
 export const Register = (id : string, apiLevel ?: number) => {
     return (target : Component) => {
         if(target.prototype instanceof Controller || target.prototype instanceof DataBox
-            || target.prototype instanceof DataIdBox){
+            || target.prototype instanceof DataBoxFamily){
             Config.registerComponent(id,target,apiLevel);
         }
         else {

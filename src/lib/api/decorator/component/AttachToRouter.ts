@@ -9,7 +9,7 @@ import Router                        from "../../Router";
 import ConfigBuildError              from "../../../helper/config/manager/configBuildError";
 import {Component}                   from "../../../helper/config/definitions/component";
 import DataBox                       from "../../dataBox/DataBox";
-import DataIdBox                     from "../../dataBox/DataIdBox";
+import DataBoxFamily                     from "../../dataBox/DataBoxFamily";
 
 /**
  * Attach a component (Controller or DataBox) to a router.
@@ -22,7 +22,7 @@ import DataIdBox                     from "../../dataBox/DataIdBox";
 export const AttachToRouter = (id : string, router : Router, apiLevel ?: number) => {
     return (target : Component) => {
         if(target.prototype instanceof Controller || target.prototype instanceof DataBox
-            || target.prototype instanceof DataIdBox){
+            || target.prototype instanceof DataBoxFamily){
             router.attach(id,target,apiLevel);
         }
         else {

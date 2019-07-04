@@ -33,7 +33,7 @@ import {ParamInput}                 from "./lib/api/decorator/input/ParamInput";
 import {Extends}                    from "./lib/api/decorator/input/Extends";
 import {Constructor}                from "./lib/api/decorator/input/Constructor";
 import NoMoreDataAvailableError     from "./lib/helper/dataBox/noMoreDataAvailable";
-import DataIdBox                    from "./lib/api/dataBox/DataIdBox";
+import DataBoxFamily                    from "./lib/api/dataBox/DataBoxFamily";
 import DataBox                      from "./lib/api/dataBox/DataBox";
 import {DataBoxConfig}              from "./lib/helper/config/definitions/dataBoxConfig";
 const  FsUtil : any               = require('socketcluster/fsutil');
@@ -71,7 +71,7 @@ export {
         ObjectModel,
         ParamInput,
         NoMoreDataAvailableError,
-        DataIdBox,
+        DataBoxFamily,
         DataBox,
         DataBoxConfig,
         Controller,

@@ -4,26 +4,18 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
-import AuthAccessChecker, {TokenStateAccessCheckFunction}       from "../auth/authAccessChecker";
+import SystemVersionChecker                                     from "../systemVersion/systemVersionChecker";
+import AuthAccessChecker                                        from "../auth/authAccessChecker";
 import ZationConfigFull                                         from "../config/manager/zationConfigFull";
 import SmallBag                                                 from "../../api/SmallBag";
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction}  from "../apiLevel/apiLevelUtils";
-import DataBoxCore                                              from "../../api/dataBox/DataBoxCore";
+import DataBoxCore, {DbPreparedData}                            from "../../api/dataBox/DataBoxCore";
 import ZationWorker                                           = require("../../main/zationWorker");
 import {ErrorName}                                              from "../constants/errorName";
 import {DataBoxClassDef, DataBoxConfig}                         from "../config/definitions/dataBoxConfig";
-import DataIdBox                                                from "../../api/dataBox/DataIdBox";
-import IdValidCheckerUtils, {IdValidChecker}                    from "../id/idValidCheckerUtils";
-
-interface DataBoxPrepareData {
-    dataBoxConfig : DataBoxConfig,
-    dataBoxInstance : DataBoxCore,
-    versionAccessCheck : VersionSystemAccessCheckFunction,
-    systemAccessCheck : VersionSystemAccessCheckFunction,
-    tokenStateCheck : TokenStateAccessCheckFunction,
-    idValidChecker ?: IdValidChecker
-}
+import DataBoxFamily, {DataIdBoxClass}                              from "../../api/dataBox/DataBoxFamily";
+import IdValidCheckerUtils                                      from "../id/idValidCheckerUtils";
+import DataBox, {DataBoxClass}                                  from "../../api/dataBox/DataBox";
 
 export default class DataBoxPrepare
 {
@@ -31,7 +23,7 @@ export default class DataBoxPrepare
     private readonly worker : ZationWorker;
     private readonly smallBag : SmallBag;
 
-    private readonly dataBoxes : Record<string,ApiLevelSwitchFunction<DataBoxPrepareData>>;
+    private readonly dataBoxes : Record<string,ApiLevelSwitchFunction<DataBoxCore>>;
 
     constructor(zc : ZationConfigFull,worker : ZationWorker,smallBag : SmallBag)
     {
@@ -43,13 +35,18 @@ export default class DataBoxPrepare
     }
 
     /**
-     * It will return the DataBox prepared data.
-     * If no DatBox with the API level is found, it will thrown an API level not compatible error.
+     * It will return the DataBox instance.
+     * If no DatBox with the API level is found,
+     * it will throw an API level not compatible error,
+     * and when the DataBox does not exist, it also throws an error.
      * @param id
      * @param apiLevel
      */
-    getDataBoxPrepareData(id : string,apiLevel : number) : DataBoxPrepareData
+    getDataBox(id : string,apiLevel : number) : DataBoxCore
     {
+        //throws if not exists
+        this.checkDataBoxExist(id);
+
         const dataBox = this.dataBoxes[id](apiLevel);
         if(dataBox !== undefined){
             return dataBox;
@@ -113,7 +110,7 @@ export default class DataBoxPrepare
         }
         else {
             const promises : Promise<void>[] = [];
-            const preparedDataMapper : Record<any,DataBoxPrepareData> = {};
+            const preparedDataMapper : Record<any,DataBoxCore> = {};
             for(let k in definition){
                 if(definition.hasOwnProperty(k)) {
                     promises.push((async () => {
@@ -122,7 +119,7 @@ export default class DataBoxPrepare
                 }
             }
             await Promise.all(promises);
-            this.dataBoxes[id] = ApiLevelUtils.createApiLevelSwitcher<DataBoxPrepareData>(preparedDataMapper);
+            this.dataBoxes[id] = ApiLevelUtils.createApiLevelSwitcher<DataBoxCore>(preparedDataMapper);
         }
     }
 
@@ -132,23 +129,32 @@ export default class DataBoxPrepare
      * @param id
      * @param apiLevel
      */
-    private async processDataBox(dataBox : DataBoxClassDef,id : string,apiLevel ?: number) : Promise<DataBoxPrepareData>
+    private async processDataBox(dataBox : DataBoxClassDef,id : string,apiLevel ?: number) : Promise<DataBoxCore>
     {
         const config : DataBoxConfig = dataBox.config;
-        const dbInstance : DataBoxCore = new dataBox(id,this.worker.getPreparedSmallBag(),apiLevel);
-        await dbInstance.initialize(this.worker.getPreparedSmallBag());
 
-        const extraPrepare = dbInstance instanceof DataIdBox ? {
-            idValidChecker : IdValidCheckerUtils.createIdValidChecker(dbInstance.isIdValid,this.smallBag)
-        } : {};
-
-        return  {
-            dataBoxConfig : config,
-            dataBoxInstance : dbInstance,
+        const dbPreparedData : DbPreparedData = {
             versionAccessCheck : SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
-            tokenStateCheck : AuthAccessChecker.createAuthAccessChecker(config,this.smallBag),
-            ...extraPrepare
+            tokenStateAccessCheck : AuthAccessChecker.createAuthAccessChecker(config,this.smallBag)
         };
+
+        let dbInstance;
+        if(dataBox.prototype instanceof DataBox){
+            dbInstance = new (dataBox as DataBoxClass)
+            (id,this.worker.getPreparedSmallBag(),dbPreparedData,apiLevel);
+        }
+        else if(dataBox.prototype instanceof DataBoxFamily){
+            dbInstance = new (dataBox as DataIdBoxClass)
+            (id,this.worker.getPreparedSmallBag(),dbPreparedData,
+                IdValidCheckerUtils.createIdValidChecker(dataBox.prototype.isIdValid,this.smallBag)
+                ,apiLevel);
+        }
+        else {
+            throw new Error('Unexpected DataBox class type');
+        }
+        await dbInstance.initialize(this.worker.getPreparedSmallBag());
+
+        return dbInstance;
     }
 }

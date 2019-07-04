@@ -69,14 +69,14 @@ import {
     CChannelOnUnsubFunction,
     CChannelSubAccessFunction,
     ChannelsConfig,
-    CIdChannelClientPubAccessFunction,
-    CIdChannelOnBagPubFunction,
-    CIdChannelOnClientPubFunction,
-    CIdChannelOnSubFunction,
-    CIdChannelOnUnsubFunction,
-    CIdChannelSubAccessFunction,
+    CChannelFamilyClientPubAccessFunction,
+    CChannelFamilyOnBagPubFunction,
+    CChannelFamilyOnClientPubFunction,
+    CChannelFamilyOnSubFunction,
+    CChannelFamilyOnUnsubFunction,
+    CChannelFamilySubAccessFunction,
     CustomCh,
-    CustomIdCh,
+    CustomChFamilyConfig,
     NormalChannel,
     NormalChOnBagPubFunction, NormalChOnClientPubFunction,
     NormalChOnSubFunction,
@@ -98,7 +98,7 @@ import Controller, {ControllerClass} from "./Controller";
 import CChInfo          from "../helper/infoObjects/cChInfo";
 import Result           from "./Result";
 import SmallBag         from "./SmallBag";
-import CIdChInfo        from "../helper/infoObjects/cIdChInfo";
+import CChFamilyInfo        from "../helper/infoObjects/CChFamilyInfo";
 import PubData          from "../helper/infoObjects/pubData";
 import ZationInfo       from "../helper/infoObjects/zationInfo";
 import {ApiLevelSwitch} from "../helper/apiLevel/apiLevelUtils";
@@ -119,7 +119,7 @@ import {
 import {BackgroundTask, TaskFunction} from "../helper/config/definitions/backgroundTaskConfig";
 import {AuthAccessFunction}           from "../helper/config/definitions/configComponents";
 import {DataBoxClassDef, DataBoxConfig} from "../helper/config/definitions/dataBoxConfig";
-import DataIdBox                      from "./dataBox/DataIdBox";
+import DataBoxFamily                      from "./dataBox/DataBoxFamily";
 import DataBox                        from "./dataBox/DataBox";
 import {Component}                    from "../helper/config/definitions/component";
 
@@ -130,7 +130,7 @@ export default class Config
     private static tmpControllers : Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>> = {};
     private static tmpDataBoxes : Record<string,DataBoxClassDef | ApiLevelSwitch<DataBoxClassDef>> = {};
     private static tmpCustomChs : Record<string,CustomCh> = {};
-    private static tmpCustomIdChs : Record<string,CustomIdCh> = {};
+    private static tmpCustomIdChs : Record<string,CustomChFamilyConfig> = {};
     private static tmpChannels : ChannelsConfig[] = [];
 
     //Part main helper methods
@@ -255,7 +255,7 @@ export default class Config
      * @param name
      * @param customIdCh
      */
-    static defineCustomIdCh(name : string,customIdCh : CustomIdCh) {
+    static defineCustomIdCh(name : string,customIdCh : CustomChFamilyConfig) {
         if(!Config.tmpCustomIdChs.hasOwnProperty(name)){
             Config.tmpCustomIdChs[name] = customIdCh;
         }
@@ -339,7 +339,7 @@ export default class Config
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * This method registers a new DataBox or DataIdBox in the app config.
+     * This method registers a new DataBox or DataBoxFamily in the app config.
      * Watch out that you don't use a id that is already defined in the DataBoxes of the app config.
      * If you use this method in another file as the app config,
      * make sure that you import this file in app config.
@@ -388,7 +388,7 @@ export default class Config
             pName = 'controllers';
             container = this.tmpControllers;
         }
-        else if(componentClass.prototype instanceof  DataIdBox || componentClass.prototype instanceof DataBox){
+        else if(componentClass.prototype instanceof  DataBoxFamily || componentClass.prototype instanceof DataBox){
             name = 'dataBox';
             pName = 'dataBoxes';
             container = this.tmpDataBoxes;
@@ -563,40 +563,40 @@ export default class Config
     static channels(config : ChannelsConfig) : ChannelsConfig {return config;}
 
     // noinspection JSUnusedGlobalSymbols
-    static cIdChClientPubAccess(func : CIdChannelClientPubAccessFunction) : CIdChannelClientPubAccessFunction {return func;}
+    static cIdChClientPubAccess(func : CChannelFamilyClientPubAccessFunction) : CChannelFamilyClientPubAccessFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static cChClientPubAccess(func : CChannelClientPubAccessFunction) : CChannelClientPubAccessFunction  {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static cIdChSubAccess(func : CIdChannelSubAccessFunction) : CIdChannelSubAccessFunction {return func;}
+    static cIdChSubAccess(func : CChannelFamilySubAccessFunction) : CChannelFamilySubAccessFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static cChSubAccess(func : CChannelSubAccessFunction) : CChannelSubAccessFunction {return func;}
 
     // noinspection JSUnusedGlobalSymbols
     static cChOnClientPub(func : CChannelOnClientPubFunction) : CChannelOnClientPubFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cIdChOnClientPub(func : CIdChannelOnClientPubFunction) : CIdChannelOnClientPubFunction {return func;}
+    static cIdChOnClientPub(func : CChannelFamilyOnClientPubFunction) : CChannelFamilyOnClientPubFunction {return func;}
 
     // noinspection JSUnusedGlobalSymbols
     static cChOnBagPub(func : CChannelOnBagPubFunction) : CChannelOnBagPubFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cIdChOnBagPub(func : CIdChannelOnBagPubFunction) : CIdChannelOnBagPubFunction {return func;}
+    static cIdChOnBagPub(func : CChannelFamilyOnBagPubFunction) : CChannelFamilyOnBagPubFunction {return func;}
 
     // noinspection JSUnusedGlobalSymbols
     static cChOnSub(func : CChannelOnSubFunction) : CChannelOnSubFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cIdChOnSub(func : CIdChannelOnSubFunction) : CIdChannelOnSubFunction {return func;}
+    static cIdChOnSub(func : CChannelFamilyOnSubFunction) : CChannelFamilyOnSubFunction {return func;}
 
     // noinspection JSUnusedGlobalSymbols
     static cChOnUnsub(func : CChannelOnUnsubFunction) : CChannelOnUnsubFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cIdChOnUnsub(func : CIdChannelOnUnsubFunction) : CIdChannelOnUnsubFunction {return func;}
+    static cIdChOnUnsub(func : CChannelFamilyOnUnsubFunction) : CChannelFamilyOnUnsubFunction {return func;}
 
     // noinspection JSUnusedGlobalSymbols
     static customCh(c : CustomCh) : CustomCh {return c;}
 
     // noinspection JSUnusedGlobalSymbols
-    static customIdCh(c : CustomIdCh) : CustomIdCh {return c;}
+    static customIdCh(c : CustomChFamilyConfig) : CustomChFamilyConfig {return c;}
 
     // noinspection JSUnusedGlobalSymbols
     static userCh(c : UserChannel) : UserChannel {return c;}
@@ -762,7 +762,7 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static customChInfo(cChInfo : CChInfo) : CChInfo {return cChInfo;}
     // noinspection JSUnusedGlobalSymbols
-    static customIdChInfo(cIdChInfo : CIdChInfo) : CIdChInfo {return cIdChInfo;}
+    static customIdChInfo(cIdChInfo : CChFamilyInfo) : CChFamilyInfo {return cIdChInfo;}
     // noinspection JSUnusedGlobalSymbols
     static pubDataInfo(pubDataInfo : PubData) : PubData {return pubDataInfo;}
     // noinspection JSUnusedGlobalSymbols

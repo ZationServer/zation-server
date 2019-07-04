@@ -7,7 +7,8 @@ GitHub: LucaCode
 // noinspection TypeScriptPreferShortImport
 import {DataBoxConfig}        from "../../helper/config/definitions/dataBoxConfig";
 import SmallBag               from "./../SmallBag";
-import DataBoxCore            from "./DataBoxCore";
+import DataBoxCore, {DbPreparedData} from "./DataBoxCore";
+import UpSocket from "../../helper/sc/socket";
 
 /**
  * If you want to present data on the client, the DataBox is the best choice.
@@ -23,8 +24,8 @@ import DataBoxCore            from "./DataBoxCore";
  */
 export default class DataBox extends DataBoxCore {
 
-    protected constructor(id : string,smallBag: SmallBag,apiLevel : number | undefined) {
-        super(id,smallBag,apiLevel);
+    protected constructor(id : string,smallBag: SmallBag,dbPreparedData : DbPreparedData,apiLevel : number | undefined) {
+        super(id,smallBag,dbPreparedData,apiLevel);
     }
 
     /**
@@ -72,6 +73,16 @@ export default class DataBox extends DataBoxCore {
     }
 
     /**
+     * **Not override this method.**
+     * With this function, you can kick out a socket this DataBox.
+     * This method is used internally.
+     * @param socket
+     */
+    kickOut(socket : UpSocket) : void {
+
+    }
+
+    /**
      * **Can be overridden.**
      * A function that gets triggered before an insert into the DataBox.
      * Can be used to insert the data in the database.
@@ -104,7 +115,7 @@ export default class DataBox extends DataBoxCore {
 export interface DataBoxClass {
     config: DataBoxConfig;
 
-    new(id : string,smallBag: SmallBag,apiLevel : number | undefined): DataBox;
+    new(id : string,smallBag: SmallBag,dbPreparedData : DbPreparedData,apiLevel : number | undefined): DataBox;
 
     prototype: any;
 }
