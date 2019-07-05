@@ -125,42 +125,47 @@ export default class ConfigPreCompiler
     private preCompileCustomChannels() : void {
         const customChannels = this.configs.appConfig.customChannels;
         const customChannelDefaults = this.configs.appConfig.customChannelDefaults;
-        if(typeof customChannels === 'object' && typeof customChannelDefaults === 'object'){
+
+        if(typeof customChannels === 'object'){
             for(let chName in customChannels){
                 if(customChannels.hasOwnProperty(chName)){
 
                     let channel : BaseCustomChannelConfig;
                     if(Array.isArray(customChannels[chName])){
-                        channel = customChannels[chName][0] || {};
+                        if(typeof customChannels[chName][0] !== 'object'){
+                            customChannels[chName][0] = {};
+                        }
+                        channel = customChannels[chName][0];
                     }
                     else {
                         channel = (customChannels[chName] as BaseCustomChannelConfig)
                     }
 
                     //defaults
-                    if(channel.subscribeAccess === undefined && channel.subscribeNotAccess === undefined) {
-                        if(customChannelDefaults.subscribeAccess !== undefined) {
-                            channel.subscribeAccess = customChannelDefaults.subscribeAccess;
+                    if(typeof customChannelDefaults === 'object'){
+                        if(channel.subscribeAccess === undefined && channel.subscribeNotAccess === undefined) {
+                            if(customChannelDefaults.subscribeAccess !== undefined) {
+                                channel.subscribeAccess = customChannelDefaults.subscribeAccess;
+                            }
+                            if(customChannelDefaults.subscribeNotAccess !== undefined) {
+                                channel.subscribeNotAccess = customChannelDefaults.subscribeNotAccess
+                            }
                         }
-                        if(customChannelDefaults.subscribeNotAccess !== undefined) {
-                            channel.subscribeNotAccess = customChannelDefaults.subscribeNotAccess
+
+                        if(channel.clientPublishAccess !== undefined && channel.clientPublishNotAccess !== undefined) {
+                            if(customChannelDefaults.clientPublishAccess !== undefined) {
+                                channel.clientPublishAccess = customChannelDefaults.clientPublishAccess;
+                            }
+                            if(customChannelDefaults.clientPublishNotAccess !== undefined) {
+                                channel.clientPublishNotAccess = customChannelDefaults.clientPublishNotAccess
+                            }
                         }
+
+                        this.processDefaultValue(channel,customChannelDefaults,nameof<BaseCustomChannelConfig>(s => s.onClientPublish));
+                        this.processDefaultValue(channel,customChannelDefaults,nameof<BaseCustomChannelConfig>(s => s.onSubscription));
+                        this.processDefaultValue(channel,customChannelDefaults,nameof<BaseCustomChannelConfig>(s => s.onUnsubscription));
+                        this.processDefaultValue(channel,customChannelDefaults,nameof<ChannelSettings>(s => s.socketGetOwnPublish));
                     }
-
-                    if(channel.clientPublishAccess !== undefined && channel.clientPublishNotAccess !== undefined) {
-                        if(customChannelDefaults.clientPublishAccess !== undefined) {
-                            channel.clientPublishAccess = customChannelDefaults.clientPublishAccess;
-                        }
-                        if(customChannelDefaults.clientPublishNotAccess !== undefined) {
-                            channel.clientPublishNotAccess = customChannelDefaults.clientPublishNotAccess
-                        }
-                    }
-
-                    this.processDefaultValue(channel,customChannelDefaults,nameof<BaseCustomChannelConfig>(s => s.onClientPublish));
-                    this.processDefaultValue(channel,customChannelDefaults,nameof<BaseCustomChannelConfig>(s => s.onSubscription));
-                    this.processDefaultValue(channel,customChannelDefaults,nameof<BaseCustomChannelConfig>(s => s.onUnsubscription));
-                    this.processDefaultValue(channel,customChannelDefaults,nameof<ChannelSettings>(s => s.socketGetOwnPublish));
-
                 }
             }
         }

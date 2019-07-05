@@ -76,7 +76,7 @@ import {
     CChannelFamilyOnUnsubFunction,
     CChannelFamilySubAccessFunction,
     CustomCh,
-    CustomChFamilyConfig,
+    CustomChFamily,
     NormalChannel,
     NormalChOnBagPubFunction, NormalChOnClientPubFunction,
     NormalChOnSubFunction,
@@ -130,7 +130,7 @@ export default class Config
     private static tmpControllers : Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>> = {};
     private static tmpDataBoxes : Record<string,DataBoxClassDef | ApiLevelSwitch<DataBoxClassDef>> = {};
     private static tmpCustomChs : Record<string,CustomCh> = {};
-    private static tmpCustomIdChs : Record<string,CustomChFamilyConfig> = {};
+    private static tmpCustomIdChs : Record<string,CustomChFamily> = {};
     private static tmpChannels : ChannelsConfig[] = [];
 
     //Part main helper methods
@@ -255,7 +255,7 @@ export default class Config
      * @param name
      * @param customIdCh
      */
-    static defineCustomIdCh(name : string,customIdCh : CustomChFamilyConfig) {
+    static defineCustomIdCh(name : string,customIdCh : CustomChFamily) {
         if(!Config.tmpCustomIdChs.hasOwnProperty(name)){
             Config.tmpCustomIdChs[name] = customIdCh;
         }
@@ -596,7 +596,7 @@ export default class Config
     static customCh(c : CustomCh) : CustomCh {return c;}
 
     // noinspection JSUnusedGlobalSymbols
-    static customIdCh(c : CustomChFamilyConfig) : CustomChFamilyConfig {return c;}
+    static customIdCh(c : CustomChFamily) : CustomChFamily {return c;}
 
     // noinspection JSUnusedGlobalSymbols
     static userCh(c : UserChannel) : UserChannel {return c;}

@@ -11,7 +11,7 @@ import {Model}                from "./inputConfig";
 import {BackgroundTask}       from "./backgroundTaskConfig";
 import {DataBoxClassDef, DataBoxConfig} from "./dataBoxConfig";
 import {
-    CustomChannelConfig, CustomCh, ZationChannelsConfig
+    CustomChannelConfig, CustomCh, ZationChannelsConfig, PreCompiledCustomChannelConfig
 } from "./channelsConfig";
 
 export interface AppConfig
@@ -180,9 +180,6 @@ export interface AppConfig
     bagExtensions ?: BagExtension[];
 }
 
-export interface PreCompiledAppConfig extends AppConfig{
-}
-
 export default interface BagExtension {
     /**
      * All extensions for the SmallBag.
@@ -229,4 +226,8 @@ export interface AuthUserGroupConfig
      * that will be displayed in the zation panel.
      */
     panelDisplayName  ?: string;
+}
+
+export interface PreCompiledAppConfig extends AppConfig{
+    customChannels ?: Record<string,PreCompiledCustomChannelConfig>
 }

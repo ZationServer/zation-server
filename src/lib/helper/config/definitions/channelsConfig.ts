@@ -136,7 +136,9 @@ export interface ZationChannelsConfig
     allCh  ?: NormalChannel;
 }
 
-export type CustomChannelConfig = {[0]: CustomChFamilyConfig} | CustomCh
+export type CustomChannelConfig = [CustomChFamily] | [] | CustomCh
+
+export type PreCompiledCustomChannelConfig = [CustomChFamily] | CustomCh;
 
 export interface ChannelSettings {
     /**
@@ -293,7 +295,7 @@ export interface BaseCustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,
     subscribeAccess  ?: SubAccess | boolean | string | number | (string|number)[];
 }
 
-export type CustomChFamilyConfig = (BaseCustomChannelConfig<
+export type CustomChFamily = (BaseCustomChannelConfig<
     CChannelFamilyOnClientPubFunction,
     CChannelFamilyOnBagPubFunction,
     CChannelFamilyOnSubFunction,

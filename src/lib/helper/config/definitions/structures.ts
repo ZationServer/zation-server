@@ -23,7 +23,7 @@ import {ServiceConfig}   from "./serviceConfig";
 import {
     ChannelSettings,
     BaseCustomChannelConfig,
-    CustomChFamilyConfig,
+    CustomChFamily,
     ZationChannelConfig,
     ZationChannelsConfig
 } from "./channelsConfig";
@@ -284,7 +284,7 @@ CustomChConfig[nameof<ChannelSettings>(s => s.socketGetOwnPublish)]          = {
 
 const CustomChFamilyConfig = {};
 ObjectUtils.addObToOb(CustomChFamilyConfig,CustomChConfig);
-CustomChFamilyConfig[nameof<CustomChFamilyConfig>(s => s.idValid)]          = {types : ['function'],isOptional : true};
+CustomChFamilyConfig[nameof<CustomChFamily>(s => s.idValid)]          = {types : ['function'],isOptional : true};
 
 const ZationChannelConfig = {};
 ZationChannelConfig[nameof<ChannelSettings>(s => s.socketGetOwnPublish)]    = {types : ['boolean'],isOptional : true};

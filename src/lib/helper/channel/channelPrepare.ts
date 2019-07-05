@@ -9,8 +9,8 @@ For performance speed in publish in channels, sub channels..
  */
 
 import {
-    BaseCustomChannelConfig, CustomChannelConfig,
-    CustomChFamilyConfig,
+    BaseCustomChannelConfig, CustomCh, CustomChannelConfig,
+    CustomChFamily, PreCompiledCustomChannelConfig,
     ZationChannelConfig, ZationChannelsConfig
 } from "../config/definitions/channelsConfig";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
@@ -45,7 +45,7 @@ export interface ChStorage extends Events {
 export class ChannelPrepare {
     private zc: ZationConfigFull;
     private readonly zationChConfig: ZationChannelsConfig;
-    private readonly customChannels : Record<string,CustomChannelConfig>;
+    private readonly customChannels : Record<string,PreCompiledCustomChannelConfig>;
 
     private infoUserCh: ChStorage;
     private infoAuthUserGroupCh: ChStorage;
@@ -158,16 +158,16 @@ export class ChannelPrepare {
         if (typeof this.customChannels === 'object') {
             for (let chName in this.customChannels) {
                 if(this.customChannels.hasOwnProperty(chName)) {
-                    let config;
+                    let config : CustomChFamily | CustomCh;
                     if(Array.isArray(this.customChannels[chName])){
-                        config = this.customChannels[chName][0] || {}; //todo really need safe or?
+                        config = this.customChannels[chName][0];
                         this.infoCustomChFamilies[chName] = {
                             ...this.processCustomChannel(config,smallBag),
-                            idValidChecker : IdValidCheckerUtils.createIdValidChecker((config as CustomChFamilyConfig).idValid,smallBag)
+                            idValidChecker : IdValidCheckerUtils.createIdValidChecker((config as CustomChFamily).idValid,smallBag)
                         }
                     }
                     else {
-                        config = this.customChannels[chName];
+                        config = (this.customChannels[chName] as CustomCh);
                         this.infoCustomCh[chName] = this.processCustomChannel(config, smallBag);
                     }
                 }
