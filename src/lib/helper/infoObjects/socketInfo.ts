@@ -4,12 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ZationToken}  from "../constants/internal";
+import {ZationToken}    from "../constants/internal";
 import UpSocket         from "../sc/socket";
-import TokenUtils     from "../token/tokenUtils";
-import ObjectPath     from "../utils/objectPath";
-import ChUtils from "../channel/chUtils";
-import BaseSHBridge from "../bridges/baseSHBridge";
+import TokenUtils       from "../token/tokenUtils";
+import ObjectPath       from "../utils/objectPath";
+import ChUtils          from "../channel/chUtils";
+import BaseSHBridge     from "../bridges/baseSHBridge";
 
 export default class SocketInfo
 {
@@ -41,7 +41,7 @@ export default class SocketInfo
     /**
      * Returns the raw socket.
      */
-    get socket(): object {
+    get socket(): UpSocket {
         return this._socket;
     }
 
