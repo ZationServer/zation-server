@@ -61,8 +61,6 @@ import {
     CChannelFamilyOnSubFunction,
     CChannelFamilyOnUnsubFunction,
     CChannelFamilySubAccessFunction,
-    CustomCh,
-    CustomChFamily,
     NormalChannel,
     NormalChOnBagPubFunction, NormalChOnClientPubFunction,
     NormalChOnSubFunction,
@@ -71,7 +69,7 @@ import {
     UserChOnBagPubFunction,
     UserChOnClientPubFunction,
     UserChOnSubFunction,
-    UserChOnUnsubFunction
+    UserChOnUnsubFunction, ZationChannelsConfig, CustomChannelConfig
 } from "../helper/config/definitions/channelsConfig";
 import {StarterConfig}  from "../helper/config/definitions/starterConfig";
 import {MainConfig}     from "../helper/config/definitions/mainConfig";
@@ -115,9 +113,8 @@ export default class Config
     private static tmpModels : Record<string,Model> = {};
     private static tmpControllers : Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>> = {};
     private static tmpDataBoxes : Record<string,DataBoxClassDef | ApiLevelSwitch<DataBoxClassDef>> = {};
-    private static tmpCustomChs : Record<string,CustomCh> = {};
-    private static tmpCustomIdChs : Record<string,CustomChFamily> = {};
-    private static tmpChannels : ChannelsConfig[] = [];
+    private static tmpCustomChs : Record<string,CustomChannelConfig> = {};
+    private static tmpZationChannels : ZationChannelsConfig[] = [];
 
     //Part main helper methods
 
@@ -219,7 +216,7 @@ export default class Config
      * @param name
      * @param customCh
      */
-    static defineCustomCh(name : string,customCh : CustomCh) {
+    static defineCustomCh(name : string,customCh : CustomChannelConfig) {
         if(!Config.tmpCustomChs.hasOwnProperty(name)){
             Config.tmpCustomChs[name] = customCh;
         }
@@ -230,46 +227,19 @@ export default class Config
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * This method defines a new custom id channel in the app config.
-     * Watch out that you don't use a name that is already defined in the custom id channels of the app config.
-     * If you use this method in another file as the app config,
-     * make sure that you import this file in app config.
-     * @example
-     * Config.defineCustomIdCh('myCustomIdCh',{
-     *    subscribeAccess : 'allAuth',
-     * });
-     * @param name
-     * @param customIdCh
-     */
-    static defineCustomIdCh(name : string,customIdCh : CustomChFamily) {
-        if(!Config.tmpCustomIdChs.hasOwnProperty(name)){
-            Config.tmpCustomIdChs[name] = customIdCh;
-        }
-        else {
-            throw new ConfigBuildError(`The custom id channel: ${name} is already defined.`);
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * Merge channels config to the app config channels property.
+     * Merge zation channel configs to the app config.
      * If you use this method in another file as the app config,
      * make sure that you import this file in app config.
      * @example
      * Config.defineChannels({
-     *    customChannels : {
-     *     default : {
-     *         clientPublishAccess : false,
-     *         subscribeAccess : true,
-     *     },
-     *     stream : {
-     *         subscribeAccess : 'allAuth',
-     *     }
-     * }});
+     *    userCh : {
+     *       clientPublishAccess : false
+     *    },
+     * });
      * @param config
      */
-    static defineChannels(config : ChannelsConfig) {
-        Config.tmpChannels.push(config);
+    static defineZationChannels(config : ZationChannelsConfig) {
+        Config.tmpZationChannels.push(config);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -437,24 +407,18 @@ export default class Config
             if(config.dataBoxes === undefined){
                 config.dataBoxes = {};
             }
-            if(config.channels === undefined){
-                config.channels = {customChannels : {},customIdChannels : {}};
+            if(config.customChannels === undefined){
+                config.customChannels = {};
             }
-            else {
-                if(config.channels.customChannels === undefined){
-                    config.channels.customChannels = {};
-                }
-                if(config.channels.customIdChannels === undefined){
-                    config.channels.customIdChannels = {};
-                }
+            if(config.zationChannels === undefined){
+                config.zationChannels = {};
             }
+
             Config.configAdd(Config.tmpModels,config.models,'model name');
             Config.configAdd(Config.tmpControllers,config.controllers,'controller id');
             Config.configAdd(Config.tmpDataBoxes,config.dataBoxes,'dataBox id');
-            Config.configAdd(Config.tmpCustomChs,config.channels.customChannels as object,'custom channel');
-            Config.configAdd(Config.tmpCustomIdChs,config.channels.customIdChannels as object,'custom id channel');
-
-            Config.merge(config.channels,...Config.tmpChannels);
+            Config.configAdd(Config.tmpCustomChs,config.customChannels as object,'custom channel');
+            Config.merge(config.zationChannels,...Config.tmpZationChannels);
         }
         return config;
     }
@@ -546,43 +510,40 @@ export default class Config
 
     //Part Channels
     // noinspection JSUnusedGlobalSymbols
-    static channels(config : ChannelsConfig) : ChannelsConfig {return config;}
+    static zationChannels(config : ZationChannelsConfig) : ZationChannelsConfig {return config;}
 
     // noinspection JSUnusedGlobalSymbols
-    static cIdChClientPubAccess(func : CChannelFamilyClientPubAccessFunction) : CChannelFamilyClientPubAccessFunction {return func;}
+    static cChFamilyClientPubAccess(func : CChannelFamilyClientPubAccessFunction) : CChannelFamilyClientPubAccessFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static cChClientPubAccess(func : CChannelClientPubAccessFunction) : CChannelClientPubAccessFunction  {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static cIdChSubAccess(func : CChannelFamilySubAccessFunction) : CChannelFamilySubAccessFunction {return func;}
+    static cChFamilySubAccess(func : CChannelFamilySubAccessFunction) : CChannelFamilySubAccessFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static cChSubAccess(func : CChannelSubAccessFunction) : CChannelSubAccessFunction {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static cChOnClientPub(func : CChannelOnClientPubFunction) : CChannelOnClientPubFunction {return func;}
+    static cChFamilyOnClientPub(func : CChannelFamilyOnClientPubFunction) : CChannelFamilyOnClientPubFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static cIdChOnClientPub(func : CChannelFamilyOnClientPubFunction) : CChannelFamilyOnClientPubFunction {return func;}
+    static cChOnClientPub(func : CChannelOnClientPubFunction) : CChannelOnClientPubFunction {return func;}
 
+    // noinspection JSUnusedGlobalSymbols
+    static cChFamilyOnBagPub(func : CChannelFamilyOnBagPubFunction) : CChannelFamilyOnBagPubFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static cChOnBagPub(func : CChannelOnBagPubFunction) : CChannelOnBagPubFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static cIdChOnBagPub(func : CChannelFamilyOnBagPubFunction) : CChannelFamilyOnBagPubFunction {return func;}
 
+    // noinspection JSUnusedGlobalSymbols
+    static cChFamilyOnSub(func : CChannelFamilyOnSubFunction) : CChannelFamilyOnSubFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static cChOnSub(func : CChannelOnSubFunction) : CChannelOnSubFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static cIdChOnSub(func : CChannelFamilyOnSubFunction) : CChannelFamilyOnSubFunction {return func;}
 
+    // noinspection JSUnusedGlobalSymbols
+    static cChFamilyOnUnsub(func : CChannelFamilyOnUnsubFunction) : CChannelFamilyOnUnsubFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static cChOnUnsub(func : CChannelOnUnsubFunction) : CChannelOnUnsubFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static cIdChOnUnsub(func : CChannelFamilyOnUnsubFunction) : CChannelFamilyOnUnsubFunction {return func;}
 
     // noinspection JSUnusedGlobalSymbols
-    static customCh(c : CustomCh) : CustomCh {return c;}
-
-    // noinspection JSUnusedGlobalSymbols
-    static customIdCh(c : CustomChFamily) : CustomChFamily {return c;}
+    static customCh(c : CustomChannelConfig) : CustomChannelConfig {return c;}
 
     // noinspection JSUnusedGlobalSymbols
     static userCh(c : UserChannel) : UserChannel {return c;}
