@@ -7,7 +7,7 @@ GitHub: LucaCode
 import ZationWorker          = require("../../../../main/zationWorker");
 import {ZationRequest, ZationToken} from "../../../constants/internal";
 import SHBridgeHttp                 from "../../../bridges/shBridgeHttp";
-import ZationTokenInfo              from "../../../infoObjects/zationTokenInfo";
+import ZationTokenInfo              from "../../../internalApi/zationTokenInfo";
 import AEPreparedPart               from "../../../auth/aePreparedPart";
 import BackError                    from "../../../../api/BackError";
 import Logger                       from "../../../logger/logger";

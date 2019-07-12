@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import PubData       from "../infoObjects/pubData";
+import PubData       from "../internalApi/pubData";
 import UpSocket, {HandshakeSocket} from "./socket";
 import {ZationToken}     from "../constants/internal";
 import {IncomingMessage} from 'http';

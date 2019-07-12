@@ -14,15 +14,16 @@ import ZationWorker = require("../../main/zationWorker");
 import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../constants/workerChTaskActions";
 import {WorkerChTargets}  from "../constants/workerChTargets";
 import ScServer           from "../sc/scServer";
-import {ZationChannel}    from "../constants/internal";
 import {SyncTokenActions} from "../constants/syncTokenActions";
 import {WorkerChTaskType} from "../constants/workerChTaskType";
-import ZSocket         from "../infoObjects/ZSocket";
+import ZSocket            from "../internalApi/ZSocket";
 import Logger             from "../logger/logger";
 import ChUtils            from "./chUtils";
 import {ChannelPrepare}   from "./channelPrepare";
 import AEPreparedPart     from "../auth/aePreparedPart";
 import SmallBag           from "../../api/SmallBag";
+import {ZationChannel}    from "./channelDefinitions";
+import UnknownCustomCh    from "../error/unknownCustomCh";
 
 export default class ChannelBagEngine
 {
@@ -266,54 +267,24 @@ export default class ChannelBagEngine
 
     /**
      * Publish in custom id channel.
-     * @param channel
-     * @param id
+     * @param target
      * @param eventName
      * @param data
      * @param srcSocketSid
      * @param socketInfo
+     * @throws UnknownCustomCh
      */
-    async publishInCustomIdChannel(channel : string, id : any, eventName : string, data : any, srcSocketSid ?: string, socketInfo ?: ZSocket) : Promise<void>
+    async publishInCustomCh({name,id} : {name : string,id ?: string}, eventName : string, data : any, srcSocketSid ?: string, socketInfo ?: ZSocket) : Promise<void>
     {
-        const onBagPub = this.chPrepare.getSafeCustomChFamilyInfo(channel).onBagPub;
-        const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
+        if(this.chPrepare.existCustomCh(name)){
+            const onBagPub = this.chPrepare.getCustomChPreInfo(name).onBagPub;
+            const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
 
-        await this.pubAsync(ChUtils.buildCustomIdChannelName(channel,id),pubData);
-        onBagPub(this._smallBag,pubData,socketInfo,{name : channel,id});
-    }
-
-    /**
-     * Publish in custom channel.
-     * @param channel
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * @param socketInfo
-     */
-    async publishInCustomChannel(channel : string | string[], eventName : string, data : any, srcSocketSid ?: string, socketInfo ?: ZSocket) : Promise<void>
-    {
-        const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
-
-        const eventTrigger = (name : string) => {
-            this.chPrepare.getSafeCustomChInfo(name).onBagPub(
-                this._smallBag,
-                pubData,
-                socketInfo,
-                {name}
-            );
-        };
-
-        if(Array.isArray(channel)) {
-            const promises : Promise<void>[] = [];
-            for(let i = 0; i < channel.length; i++) {
-                promises.push(this.pubAsync(ChUtils.buildCustomChannelName(channel[i]),pubData));
-                eventTrigger(channel[i]);
-            }
-            await Promise.all(promises);
+            await this.pubAsync(ChUtils.buildCustomChannelName(name,id),pubData);
+            onBagPub(this._smallBag,pubData,socketInfo,{name,id});
         }
         else {
-            await this.pubAsync(ChUtils.buildCustomChannelName(channel),pubData);
-            eventTrigger(channel);
+            throw new UnknownCustomCh(name);
         }
     }
 }

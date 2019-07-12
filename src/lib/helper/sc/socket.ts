@@ -8,7 +8,7 @@ import {ZationToken}        from "../constants/internal";
 import {IncomingMessage}    from "http";
 import BaseSHBridgeSocket   from "../bridges/baseSHBridgeSocket";
 import AuthEngine           from "../auth/authEngine";
-import ZSocket           from "../infoObjects/ZSocket";
+import ZSocket           from "../internalApi/ZSocket";
 
 export type OnHandlerFunction = (data : any, response : RespondFunction) => void
 export type RespondFunction = (err ?: any | number, responseData ?: any) => void

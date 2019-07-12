@@ -8,7 +8,7 @@ import UpSocket           from "../sc/socket";
 import SidBuilder         from "../utils/sidBuilder";
 import BaseSHBridgeSocket from "../bridges/baseSHBridgeSocket";
 import AuthEngine         from "../auth/authEngine";
-import ZSocket            from "../infoObjects/ZSocket";
+import ZSocket            from "../internalApi/ZSocket";
 import ZationWorker     = require("../../main/zationWorker");
 import Mapper             from "../utils/mapper";
 import SocketSet          from "../utils/socketSet";

@@ -5,25 +5,26 @@ GitHub: LucaCode
  */
 
 import UpSocket             from "../sc/socket";
-import {ZationChannel}      from "../constants/internal";
 import {ChannelPrepare}     from "./channelPrepare";
-import SocketInfo           from "../infoObjects/socketInfo";
+import ZSocket              from "../internalApi/ZSocket";
 import SmallBag             from "../../api/SmallBag";
-import CChInfo              from "../infoObjects/cChInfo";
+import CChInfo              from "../internalApi/cChInfo";
 import ChUtils              from "./chUtils";
-import PubData              from "../infoObjects/pubData";
+import PubData              from "../internalApi/pubData";
 import AuthEngine           from "../auth/authEngine";
 import AccessUtils, {AccessProcess} from "../access/accessUtils";
 import {
     CChannelClientPubAccessFunction,
     CChannelSubAccessFunction,
 } from "../config/definitions/channelsConfig";
+import CChFamilyInfo   from "../internalApi/cChFamilyInfo";
+import {ZationChannel} from "./channelDefinitions";
 
 export type ChSubAccessChecker =
-    (authEngine : AuthEngine, socketInfo : SocketInfo, chInfo : CChInfo) => Promise<boolean>
+    (authEngine : AuthEngine, socketInfo : ZSocket, chInfo : CChInfo | CChFamilyInfo) => Promise<boolean>
 
 export type ChPubAccessChecker =
-    (authEngine : AuthEngine, pubData : PubData, socketInfo : SocketInfo, chInfo : CChInfo | string | undefined) => Promise<boolean>
+    (authEngine : AuthEngine, pubData : PubData, socketInfo : ZSocket, chInfo : CChInfo | CChFamilyInfo | string | undefined) => Promise<boolean>
 
 /**
  * Helper class for channel access.
@@ -97,32 +98,22 @@ export default class ChAccessHelper
         const subs = socket.subscriptions();
         const authEngine = socket.authEngine;
 
-        for(let i = 0; i < subs.length; i++) {
-            if(subs[i].indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) !== -1) {
-                const chInfo = ChUtils.getCustomIdChannelInfo(subs[i]);
-                const preChInfo = channelPrepare.getSafeCustomChFamilyInfo(chInfo.name);
-
-                if(!(await preChInfo.subscribeAccessChecker(
-                    authEngine,
-                    socket.socketInfo,
-                    chInfo
-                ))) {
-                    ChUtils.kickOut(socket,subs[i]);
-                }
-            }
-            else if(subs[i].indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) !== -1) {
-                const name = ChUtils.getCustomChannelName(subs[i]);
-                const preChInfo = channelPrepare.getSafeCustomChInfo(name);
-
-                if(!(await preChInfo.subscribeAccessChecker(
-                    authEngine,
-                    socket.socketInfo,
-                    {name}
-                ))) {
-                    ChUtils.kickOut(socket,subs[i]);
+        try {
+            for(let i = 0; i < subs.length; i++) {
+                if(subs[i].indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0){
+                    const chInfo = ChUtils.getCustomChannelInfo(subs[i]);
+                    const preChInfo = channelPrepare.getCustomChPreInfo(chInfo.name);
+                    if(!(await preChInfo.subscribeAccessChecker(
+                        authEngine,
+                        socket.zSocket,
+                        chInfo
+                    ))) {
+                        ChUtils.kickOut(socket,subs[i]);
+                    }
                 }
             }
         }
+        catch (e) {}
     }
 
     /**

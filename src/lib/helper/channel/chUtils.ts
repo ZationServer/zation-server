@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import UpSocket          from "../sc/socket";
 import Logger            from "../logger/logger";
-import PubData           from "../infoObjects/pubData";
+import PubData           from "../internalApi/pubData";
 import {ZationChannel}   from "./channelDefinitions";
 
 export default class ChUtils

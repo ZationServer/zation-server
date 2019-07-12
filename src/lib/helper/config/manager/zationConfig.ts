@@ -9,7 +9,7 @@ import {StarterConfig}                              from "../definitions/starter
 import InternalData        from "../../constants/internalData";
 // noinspection TypeScriptPreferShortImport
 import {StartMode}         from "../../constants/startMode";
-import ZationInfo          from "../../infoObjects/zationInfo";
+import ZationInfo          from "../../internalApi/zationInfo";
 import ZcTransport         from "./zcTransport";
 import ConfigLocations     from "./configLocations";
 import JwtSignOptions      from "../../constants/jwt";

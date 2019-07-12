@@ -9,8 +9,7 @@ For performance speed in publish in channels, sub channels..
  */
 
 import {
-    BaseCustomChannelConfig, CustomCh, CustomChannelConfig,
-    CustomChFamily, PreCompiledCustomChannelConfig,
+    BaseCustomChannelConfig, CustomCh, CustomChFamily, PreCompiledCustomChannelConfig,
     ZationChannelConfig, ZationChannelsConfig
 } from "../config/definitions/channelsConfig";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
@@ -33,7 +32,7 @@ export interface CustomChStorage extends Events, ChStorage {
     systemAccessCheck : VersionSystemAccessCheckFunction
 }
 
-export interface CustomIdChStorage extends CustomChStorage {
+export interface CustomChFamilyStorage extends CustomChStorage {
     idValidChecker : IdValidChecker
 }
 
@@ -52,17 +51,14 @@ export class ChannelPrepare {
     private infoDefaultUserGroupCh: ChStorage;
     private infoAllCh: ChStorage;
 
-    private readonly defaultCustomChStorage : CustomChStorage
-        = ChannelPrepare.getCustomChStorageDefaults();
-
-    private readonly defaultCustomIdChStorage : CustomIdChStorage
-        = ChannelPrepare.getCustomChFamilyStorageDefaults();
-
     private readonly defaultChStorage : ChStorage
         = ChannelPrepare.getChStorageDefaults();
 
+    private readonly defaultCustomChStorage : CustomChStorage
+        = ChannelPrepare.getCustomChStorageDefaults();
+
     private infoCustomCh: Record<string,CustomChStorage> = {};
-    private infoCustomChFamilies: Record<string,CustomIdChStorage> = {};
+    private infoCustomChFamilies: Record<string,CustomChFamilyStorage> = {};
 
     constructor(zc: ZationConfigFull) {
         this.zc = zc;
@@ -93,16 +89,6 @@ export class ChannelPrepare {
             subscribeAccessChecker : async () => {return  false},
             versionAccessCheck : () => true,
             systemAccessCheck : () => true
-        };
-    }
-
-    /**
-     * Create defaults an for custom id channel storage.
-     */
-    static getCustomChFamilyStorageDefaults() : CustomIdChStorage  {
-        return {
-            ...ChannelPrepare.getCustomChStorageDefaults(),
-            idValidChecker : async () => {}
         };
     }
 
@@ -244,19 +230,16 @@ export class ChannelPrepare {
     }
 
     existCustomCh(chName : string) : boolean {
-        return this.infoCustomCh.hasOwnProperty(chName);
+        return this.infoCustomCh.hasOwnProperty(chName) ||
+            this.infoCustomChFamilies.hasOwnProperty(chName);
     }
 
-    getSafeCustomChInfo(chName : string) : CustomChStorage {
-        return this.infoCustomCh[chName] || this.defaultCustomChStorage;
-    }
-
-    existCustomChFamily(chName : string) : boolean {
+    isCustomChFamily(chName : string) : boolean {
         return this.infoCustomChFamilies.hasOwnProperty(chName);
     }
 
-    getSafeCustomChFamilyInfo(chName : string) : CustomIdChStorage {
-        return this.infoCustomChFamilies[chName] || this.defaultCustomIdChStorage;
+    getCustomChPreInfo(chName : string) : CustomChStorage | CustomChFamilyStorage {
+        return this.infoCustomCh[chName] || this.infoCustomChFamilies[chName] || this.defaultCustomChStorage;
     }
 }
 

@@ -9,7 +9,7 @@ import ChMiddlewareHelper     from '../helper/channel/chMiddlewareHelper';
 import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../helper/constants/workerChTaskActions";
 import UpSocket               from "../helper/sc/socket";
 import {WorkerChTargets}      from "../helper/constants/workerChTargets";
-import {ZationChannel, ZationToken} from "../helper/constants/internal";
+import {ZationToken}          from "../helper/constants/internal";
 import {WorkerMessageActions} from "../helper/constants/workerMessageActions";
 import {ChannelPrepare}       from "../helper/channel/channelPrepare";
 import BagExtensionEngine     from "../helper/bagExtension/bagExtensionEngine";
@@ -29,7 +29,7 @@ import process          = require("process");
 import {WorkerChTaskType} from "../helper/constants/workerChTaskType";
 import ZationCReqHandler   from "../helper/controller/request/zationCReqHandler";
 import AEPreparedPart     from "../helper/auth/aePreparedPart";
-import ZationTokenInfo    from "../helper/infoObjects/zationTokenInfo";
+import ZationTokenInfo    from "../helper/internalApi/zationTokenInfo";
 import ControllerPrepare  from "../helper/controller/controllerPrepare";
 import ServiceEngine      from "../helper/services/serviceEngine";
 import SmallBag           from "../api/SmallBag";
@@ -61,6 +61,7 @@ import {SocketAction} from "../helper/constants/socketAction";
 import {TaskFunction} from "../helper/config/definitions/backgroundTaskConfig";
 import {ErrorName}    from "../helper/constants/errorName";
 import {DATA_BOX_START_INDICATOR} from "../helper/dataBox/dbDefinitions";
+import {ZationChannel}            from "../helper/channel/channelDefinitions";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -69,7 +70,7 @@ class ZationWorker extends SCWorker
     private userBackgroundTasks : Record<string,TaskFunction> = {};
 
     private workerFullId : string;
-    private readonly isRespawn : boolean;
+    private readonly _isRespawn : boolean;
 
     private workerStartedTimeStamp : number;
     private serverStartedTimeStamp : number;
@@ -115,7 +116,7 @@ class ZationWorker extends SCWorker
 
     constructor() {
         super();
-        this.isRespawn = (process.env.respawn == 'true');
+        this._isRespawn = (process.env.respawn == 'true');
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -281,14 +282,14 @@ class ZationWorker extends SCWorker
 
         //init event
         Logger.startStopWatch();
-        await this.zc.eventConfig.workerInit(this.preparedSmallBag,this.isLeader,this.isRespawn);
+        await this.zc.eventConfig.workerInit(this.preparedSmallBag,this.isLeader,this._isRespawn);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} invoked init event.`,true);
 
         //Fire event is started
-        this.zc.eventConfig.workerStarted(this.preparedSmallBag,this.zc.getZationInfo(),this.isRespawn,this);
+        this.zc.eventConfig.workerStarted(this.preparedSmallBag,this.zc.getZationInfo(),this._isRespawn,this);
 
         if(this.isLeader){
-            this.zc.eventConfig.workerLeaderStarted(this.preparedSmallBag,this.zc.getZationInfo(),this.isRespawn,this);
+            this.zc.eventConfig.workerLeaderStarted(this.preparedSmallBag,this.zc.getZationInfo(),this._isRespawn,this);
         }
     }
 
@@ -432,11 +433,8 @@ class ZationWorker extends SCWorker
             const authToken = req.socket.getAuthToken();
             const channel = req.channel;
 
-            if (channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) === 0) {
-                next(await this.chMiddlewareHelper.checkAccessSubCustomIdCh(req.socket,channel));
-            }
-            else if (channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
-                next(await this.chMiddlewareHelper.middlewareSubCustomCh(req.socket,channel));
+            if (channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
+                next(await this.chMiddlewareHelper.checkAccessSubCustomCh(req.socket,channel));
             }
             else if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
                 if(authToken !== null){
@@ -569,11 +567,8 @@ class ZationWorker extends SCWorker
                     next(err); //Block!
                 }
             }
-            else if (channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) === 0) {
-                next(await this.chMiddlewareHelper.checkAccessClientPubCustomIdCh(req.socket,channel,req.data));
-            }
             else if (channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
-                next(await this.chMiddlewareHelper.middlewareClientPubCustomCh(req.socket,channel,req.data));
+                next(await this.chMiddlewareHelper.checkAccessClientPubCustomCh(req.socket,channel,req.data));
             }
             else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
                 const authUserGroup = ChUtils.getUserAuthGroupFromCh(channel);
@@ -671,14 +666,8 @@ class ZationWorker extends SCWorker
                     )
                     ||
                     (
-                        req.channel.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) === 0 &&
-                        !this.channelPrepare.getSafeCustomChFamilyInfo(ChUtils.getCustomIdChannelName(req.channel))
-                            .socketGetOwnPub
-                    )
-                    ||
-                    (
                         req.channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0 &&
-                        !this.channelPrepare.getSafeCustomChInfo(ChUtils.getCustomChannelName(req.channel))
+                        !this.channelPrepare.getCustomChPreInfo(ChUtils.getCustomChannelName(req.channel))
                             .socketGetOwnPub
                     )
                     ||
@@ -837,24 +826,14 @@ class ZationWorker extends SCWorker
          */
         this.scServer.on('subscription', async (socket : UpSocket, chName, chOptions) =>
         {
-            if(chName.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) === 0) {
-                const {name,id} = ChUtils.getCustomIdChannelInfo(chName);
+            if(chName.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
+                const {name,id} = ChUtils.getCustomChannelInfo(chName);
 
-                this.channelPrepare.getSafeCustomChFamilyInfo(name)
+                this.channelPrepare.getCustomChPreInfo(name)
                 .onSub(
                     this.preparedSmallBag,
                     socket.zSocket,
                     {id,name}
-                );
-            }
-            else if(chName.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
-                const name = ChUtils.getCustomChannelName(chName);
-
-                this.channelPrepare.getSafeCustomChInfo(name)
-                .onSub(
-                    this.preparedSmallBag,
-                    socket.zSocket,
-                    {name}
                 );
             }
             else if(chName.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
@@ -892,24 +871,14 @@ class ZationWorker extends SCWorker
         this.scServer.on('unsubscription', async (socket : UpSocket,chName) =>
         {
             //trigger sub customCh event and update mapper
-            if(chName.indexOf(ZationChannel.CUSTOM_ID_CHANNEL_PREFIX) === 0) {
-                const {name,id} = ChUtils.getCustomIdChannelInfo(chName);
+            if(chName.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
+                const {name,id} = ChUtils.getCustomChannelInfo(chName);
 
-                this.channelPrepare.getSafeCustomChFamilyInfo(name)
+                this.channelPrepare.getCustomChPreInfo(name)
                 .onUnsub(
                     this.preparedSmallBag,
                     socket.zSocket,
                     {name,id}
-                );
-            }
-            else if(chName.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
-                const name = ChUtils.getCustomChannelName(chName);
-
-                this.channelPrepare.getSafeCustomChInfo(name)
-                .onUnsub(
-                    this.preparedSmallBag,
-                    socket.zSocket,
-                    {name}
                 );
             }
             else if(chName.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
@@ -1537,8 +1506,8 @@ class ZationWorker extends SCWorker
         return this.tokenClusterKeyCheck;
     }
 
-    isRespwan() : boolean {
-        return this.isRespawn;
+    isRespawn() : boolean {
+        return this._isRespawn;
     }
 }
 

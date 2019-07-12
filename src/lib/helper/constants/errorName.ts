@@ -6,6 +6,7 @@ GitHub: LucaCode
 
 export enum ErrorName {
     ID_MISSING                   = 'IS_MISSING',
+    UNKNOWN_ID                   = 'UNKNOWN_ID',
     NAME_MISSING                 = 'NAME_MISSING',
     UNKNOWN_CHANNEL              = 'UNKNOWN_CHANNEL',
     NO_ACCESS_WITH_VERSION       = 'NO_ACCESS_WITH_VERSION',

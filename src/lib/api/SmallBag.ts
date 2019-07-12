@@ -8,10 +8,10 @@ import UpSocket                                             from "../helper/sc/s
 import fetch, {Request, RequestInit, Response}              from 'node-fetch';
 import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../helper/constants/workerChTaskActions";
 import {WorkerChTargets}                                    from "../helper/constants/workerChTargets";
-import AsymmetricKeyPairs                                   from "../helper/infoObjects/asymmetricKeyPairs";
+import AsymmetricKeyPairs                                   from "../helper/internalApi/asymmetricKeyPairs";
 import {WorkerMessageActions}                               from "../helper/constants/workerMessageActions";
 import BackErrorConstruct                                   from "../helper/constants/backErrorConstruct";
-import {ZationChannel, ZationToken}                         from "../helper/constants/internal";
+import {ZationToken}                                        from "../helper/constants/internal";
 import {InternalMainConfig}                                 from "../helper/config/definitions/mainConfig";
 import {AppConfig}                                          from "../helper/config/definitions/appConfig";
 import {EventConfig}                                        from "../helper/config/definitions/eventConfig";
@@ -46,6 +46,7 @@ import CloneUtils                                           from "../helper/util
 import JwtSignOptions                                       from "../helper/constants/jwt";
 import JwtVerifyOptions                                     from "../helper/constants/jwt";
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction} from "../helper/apiLevel/apiLevelUtils";
+import {ZationChannel} from "../helper/channel/channelDefinitions";
 
 
 export default class SmallBag {
@@ -358,7 +359,7 @@ export default class SmallBag {
      * Returns if this worker process is a respawn process.
      */
     isRespawn(): boolean {
-        return this.worker.isRespwan();
+        return this.worker.isRespawn();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -813,69 +814,37 @@ export default class SmallBag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom id channel.
+     * Publish in an custom channel.
      * @example
-     * publishInCustomIdCh('imageChannel','image2','like',{fromUserId : '1'});
-     * @param channel
-     * @param id
+     * publishInCustomCh({name : 'imageChannel', id : 'image2'},'like',{fromUserId : '1'});
+     * publishInCustomCh({name : 'publicChat'},'msg',{msg : 'Hello',fromUserId : '1'});
+     * @param target
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
+     * @throws UnknownCustomCh
      */
-    async publishInCustomIdCh(channel: string, id: string, eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return this.exchangeEngine.publishInCustomIdChannel(channel, id, eventName, data, srcSocketSid);
+    async publishInCustomCh(target : {name : string,id ?: string}, eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return this.exchangeEngine.publishInCustomCh(target, eventName, data, srcSocketSid);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom id channel.
+     * Publish in an custom channel.
      * @example
-     * pubCustomIdCh('imageChannel','image2','like',{fromUserId : '1'});
-     * @param channel
-     * @param id
+     * publishInCustomCh({name : 'imageChannel', id : 'image2'},'like',{fromUserId : '1'});
+     * publishInCustomCh({name : 'publicChat'},'msg',{msg : 'Hello',fromUserId : '1'});
+     * @param target
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
+     * @throws UnknownCustomCh
      */
-    async pubCustomIdCh(channel: string, id: string, eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return this.publishInCustomIdCh(channel, id, eventName, data, srcSocketSid);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in an custom channel/s.
-     * @example
-     * publishInCustomCh('messageChannel','message',{message : 'hello',fromUserId : '1'});
-     * publishInCustomCh(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
-     * @param channel or an array of channels.
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * If this param is undefined, will be published anonymously.
-     */
-    async publishInCustomCh(channel: string | string[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return this.exchangeEngine.publishInCustomChannel(channel, eventName, data, srcSocketSid);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in an custom channel/s.
-     * @example
-     * pubCustomCh('messageChannel','message',{message : 'hello',fromUserId : '1'});
-     * pubCustomCh(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
-     * @param channel or an array of channels.
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * If this param is undefined, will be published anonymously.
-     */
-    async pubCustomCh(channel: string | string[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        return this.publishInCustomCh(channel, eventName, data, srcSocketSid);
+    async pubCustomCh(target : {name : string,id ?: string}, eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return this.publishInCustomCh(target,eventName,data,srcSocketSid);
     }
 
     //Part Custom Services
@@ -1110,36 +1079,18 @@ export default class SmallBag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with userId from an custom id channel (server side).
-     * @example
-     * kickUserCustomIdCh('user20','chatGroup');
-     * kickUserCustomIdCh(['tom39','lara23'],'image','2');
-     * kickUserCustomIdCh(['tom39','lara23'],'image',undefined,'EXCEPT-SOCKET-SID');
-     * @param userId or more user ids in an array.
-     * @param channel is optional, if it is not given the users will be kicked out from all custom id channels.
-     * @param id is optional, if it is not given the users will be kicked out from all ids of this channel.
-     * @param exceptSocketSids
-     */
-    async kickUserCustomIdCh(userId: number | string | (number | string)[], channel ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildCustomIdChannelName(channel, id);
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.KICK_OUT, userId, exceptSocketSids, {ch});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
      * KickOut all sockets on the complete system with userId from an custom channel (server side).
      * @example
      * kickUserCustomCh('user20','chatGroup');
-     * kickUserCustomCh(['tom39','lara23'],'image');
-     * kickUserCustomCh(['tom39','lara23'],'image','EXCEPT-SOCKET-SID');
+     * kickUserCustomCh(['tom39','lara23'],'image','2');
+     * kickUserCustomCh(['tom39','lara23'],'image',undefined,'EXCEPT-SOCKET-SID');
      * @param userId or more user ids in an array.
-     * @param channel is optional, if it is not given the users will be kicked out from all custom channels.
+     * @param name is optional, if it is not given the users will be kicked out from all custom channels.
+     * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      * @param exceptSocketSids
      */
-    async kickUserCustomCh(userId: number | string | (number | string)[], channel ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildCustomChannelName(channel);
+    async kickUserCustomCh(userId: number | string | (number | string)[], name ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+        const ch = ChUtils.buildCustomChannelName(name, id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.KICK_OUT, userId, exceptSocketSids, {ch});
     }
@@ -1197,35 +1148,18 @@ export default class SmallBag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with token id from an custom id channel (server side).
-     * @example
-     * kickTokenCustomIdCh('TOKEN-UUID1','chatGroup');
-     * kickTokenCustomIdCh(['TOKEN-UUID1','TOKEN-UUID2'],'image','2');
-     * kickTokenCustomIdCh(['TOKEN-UUID1','TOKEN-UUID2'],'image',undefined,'EXCEPT-SOCKET-SID');
-     * @param tokenId or more tokenIds in an array.
-     * @param channel is optional, if it is not given the sockets with tokenId will be kicked out from all custom id channels.
-     * @param id is optional, if it is not given the sockets with tokenId will be kicked out from all ids of this channel.
-     * @param exceptSocketSids
-     */
-    async kickTokensCustomIdCh(tokenId: string | string[], channel ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildCustomIdChannelName(channel, id);
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.TOKEN_IDS, WorkerChMapTaskActions.KICK_OUT, tokenId, exceptSocketSids, {ch});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
      * KickOut all sockets on the complete system with token id from an custom channel (server side).
      * @example
-     * kickTokenCustomCh('TOKEN-UUID1','chatGroup');
-     * kickTokenCustomCh(['TOKEN-UUID1','TOKEN-UUID2'],'image','EXCEPT-SOCKET-SID');
+     * kickTokenCustomCh('TOKEN-UUID1','publicChat');
+     * kickTokenCustomCh(['TOKEN-UUID1','TOKEN-UUID2'],'image','2');
+     * kickTokenCustomCh(['TOKEN-UUID1','TOKEN-UUID2'],'image',undefined,'EXCEPT-SOCKET-SID');
      * @param tokenId or more tokenIds in an array.
-     * @param channel is optional, if it is not given the sockets with tokenId will be kicked out from all custom channels.
+     * @param name is optional, if it is not given the sockets with tokenId will be kicked out from all custom channels.
+     * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      * @param exceptSocketSids
      */
-    async kickTokensCustomCh(tokenId: string | string[], channel ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildCustomChannelName(channel);
+    async kickTokensCustomCh(tokenId: string | string[], name ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+        const ch = ChUtils.buildCustomChannelName(name, id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.TOKEN_IDS, WorkerChMapTaskActions.KICK_OUT, tokenId, exceptSocketSids, {ch});
     }
@@ -1280,30 +1214,16 @@ export default class SmallBag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Kick out all sockets on the complete system from an custom id channel.
-     * @example
-     * kickOutAllSocketsCustomIdCh('CUSTOM-CH-NAME','ID');
-     * @param channel is optional, if it is not given the sockets will be kicked out from all custom id channels.
-     * @param id is optional, if it is not given the sockets will be kicked out from all ids of this channel.
-     * @param exceptSocketSids
-     */
-    async kickAllSocketsCustomIdCh(channel ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildCustomIdChannelName(channel, id);
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS, WorkerChMapTaskActions.KICK_OUT, [], exceptSocketSids, {ch: ch});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
      * Kick out all sockets on the complete system from an custom channel.
      * @example
+     * kickOutAllSocketsCustomCh('CUSTOM-CH-NAME','ID');
      * kickOutAllSocketsCustomCh('CUSTOM-CH-NAME');
-     * @param channel is optional, if it is not given the sockets will be kicked out from all custom channels.
+     * @param name is optional, if it is not given the sockets will be kicked out from all custom channels.
+     * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      * @param exceptSocketSids
      */
-    async kickAllSocketsCustomCh(channel ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildCustomChannelName(channel);
+    async kickAllSocketsCustomCh(name ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+        const ch = ChUtils.buildCustomChannelName(name, id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.ALL_SOCKETS, WorkerChMapTaskActions.KICK_OUT, [], exceptSocketSids, {ch: ch});
     }
@@ -1352,32 +1272,16 @@ export default class SmallBag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system with sid from an custom id channel (server side).
-     * @example
-     * kickSocketsCustomIdCh('SOCKET-SID','chatGroup');
-     * kickSocketsCustomIdCh(['SOCKET-SID-1','SOCKET-SID-2'],'image','2');
-     * @param socketSid or more socketSids in an array.
-     * @param channel is optional, if it is not given the sockets will be kicked out from all custom id channels.
-     * @param id is optional, if it is not given the sockets will be kicked out from all ids of this channel.
-     */
-    async kickSocketsCustomIdCh(socketSid: string | string[], channel ?: string, id ?: string): Promise<void> {
-        const ch = ChUtils.buildCustomIdChannelName(channel, id);
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.KICK_OUT, socketSid, [], {ch});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
      * KickOut all sockets on the complete system with sid from an custom channel (server side).
      * @example
-     * kickSocketsCustomCh('SOCKET-SID','chatGroup');
-     * kickSocketsCustomCh(['SOCKET-SID-1','SOCKET-SID-2'],'image');
+     * kickSocketsCustomCh('SOCKET-SID','publicChat');
+     * kickSocketsCustomCh(['SOCKET-SID-1','SOCKET-SID-2'],'image','2');
      * @param socketSid or more socketSids in an array.
-     * @param channel is optional, if it is not given the sockets will be kicked out from all custom channels.
+     * @param name is optional, if it is not given the sockets will be kicked out from all custom channels.
+     * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      */
-    async kickSocketsCustomCh(socketSid: string | string[], channel ?: string): Promise<void> {
-        const ch = ChUtils.buildCustomChannelName(channel);
+    async kickSocketsCustomCh(socketSid: string | string[], name ?: string, id ?: string): Promise<void> {
+        const ch = ChUtils.buildCustomChannelName(name, id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.KICK_OUT, socketSid, [], {ch});
     }
@@ -1429,38 +1333,19 @@ export default class SmallBag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system which belongs to the auth user groups from an custom id channel (server side).
-     * @example
-     * kickAuthUserGroupsCustomIdCh('user','chatGroup');
-     * kickAuthUserGroupsCustomIdCh(['user','admin'],'image','2');
-     * kickAuthUserGroupsCustomIdCh(['user','admin'],'image',undefined,'EXCEPT-SOCKET-SID');
-     * @param authUserGroup or more authUserGroups in an array
-     * or null witch stands for all auth user groups
-     * @param channel is optional, if it is not given the sockets will be kicked out from all custom id channels.
-     * @param id is optional, if it is not given the sockets will be kicked out from all ids of this channel.
-     * @param exceptSocketSids
-     */
-    async kickAuthUserGroupsCustomIdCh(authUserGroup: string | null | (string)[], channel ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildCustomIdChannelName(channel, id);
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.AUTH_USER_GROUPS, WorkerChMapTaskActions.KICK_OUT,
-            authUserGroup || [], exceptSocketSids, {ch, all: authUserGroup === null});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
      * KickOut all sockets on the complete system which belongs to the auth user groups from an custom channel (server side).
      * @example
-     * kickAuthUserGroupsCustomCh('user','chatGroup');
-     * kickAuthUserGroupsCustomCh(['user','admin'],'image','EXCEPT-SOCKET-SID');
+     * kickAuthUserGroupsCustomCh('user','publicChat');
+     * kickAuthUserGroupsCustomCh(['user','admin'],'image','2');
+     * kickAuthUserGroupsCustomCh(['user','admin'],'image',undefined,'EXCEPT-SOCKET-SID');
      * @param authUserGroup or more authUserGroups in an array
      * or null witch stands for all auth user groups
-     * @param channel is optional, if it is not given the sockets will be kicked out from all custom channels.
+     * @param name is optional, if it is not given the sockets will be kicked out from all custom channels.
+     * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      * @param exceptSocketSids
      */
-    async kickAuthUserGroupsCustomCh(authUserGroup: string | null | (string)[], channel ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildCustomChannelName(channel);
+    async kickAuthUserGroupsCustomCh(authUserGroup: string | null | (string)[], name ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+        const ch = ChUtils.buildCustomChannelName(name, id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.AUTH_USER_GROUPS, WorkerChMapTaskActions.KICK_OUT,
             authUserGroup || [], exceptSocketSids, {ch, all: authUserGroup === null});
@@ -1486,34 +1371,18 @@ export default class SmallBag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * KickOut all sockets on the complete system which belongs to the default user group from an custom id channel (server side).
-     * @example
-     * kickDefaultUserGroupCustomIdCh();
-     * kickDefaultUserGroupCustomIdCh('image','2');
-     * kickDefaultUserGroupCustomIdCh('image',undefined,'EXCEPT-SOCKET-SID');
-     * @param channel is optional, if it is not given the sockets will be kicked out from all custom id channels.
-     * @param id is optional, if it is not given the sockets will be kicked out from all ids of this channel.
-     * @param exceptSocketSids
-     */
-    async kickDefaultUserGroupCustomIdCh(channel ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildCustomIdChannelName(channel, id);
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.DEFAULT_USER_GROUP, WorkerChMapTaskActions.KICK_OUT, [], exceptSocketSids, {ch});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
      * KickOut all sockets on the complete system which belongs to the default user group from an custom channel (server side).
      * @example
      * kickDefaultUserGroupCustomCh();
-     * kickDefaultUserGroupCustomCh('image');
-     * kickDefaultUserGroupCustomCh('image','EXCEPT-SOCKET-SID');
-     * @param channel is optional, if it is not given the sockets will be kicked out from all custom id channels.
+     * kickDefaultUserGroupCustomCh('publicChat');
+     * kickDefaultUserGroupCustomCh('image','2');
+     * kickDefaultUserGroupCustomCh('image',undefined,'EXCEPT-SOCKET-SID');
+     * @param name is optional, if it is not given the sockets will be kicked out from all custom channels.
+     * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      * @param exceptSocketSids
      */
-    async kickDefaultUserGroupCustomCh(channel ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildCustomChannelName(channel);
+    async kickDefaultUserGroupCustomCh(name ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+        const ch = ChUtils.buildCustomChannelName(name, id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.DEFAULT_USER_GROUP, WorkerChMapTaskActions.KICK_OUT, [], exceptSocketSids, {ch});
     }

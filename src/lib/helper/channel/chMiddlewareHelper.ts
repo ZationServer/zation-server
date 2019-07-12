@@ -5,11 +5,11 @@ GitHub: LucaCode
  */
 
 import UpSocket             from "../sc/socket";
-import {ChannelPrepare, CustomChStorage} from "./channelPrepare";
+import {ChannelPrepare, CustomChFamilyStorage, CustomChStorage} from "./channelPrepare";
 import SmallBag             from "../../api/SmallBag";
 import ChUtils              from "./chUtils";
 import Logger               from "../logger/logger";
-import PubData              from "../infoObjects/pubData";
+import PubData              from "../internalApi/pubData";
 import {ErrorName}          from "../constants/errorName";
 import BaseSHBridge from "../bridges/baseSHBridge";
 
@@ -48,175 +48,69 @@ export default class ChMiddlewareHelper
     }
 
     /**
-     * Middleware check for subscribe a custom id channel.
-     * @param socket
-     * @param trySubName
-     */
-    async checkAccessSubCustomIdCh(socket : UpSocket, trySubName : string) : Promise<any>
-    {
-        const {name,id} = ChUtils.getCustomIdChannelInfo(trySubName);
-
-        if(name === undefined || name === '') {
-            const err : any = new Error('The custom id channel name is required to subscribe to a custom id channel.');
-            err.name = ErrorName.NAME_MISSING;
-            return Error;
-        }
-        if(id === undefined || id === '') {
-            const err : any = new Error('The custom id channel id is required to subscribe to a custom id channel.');
-            err.name = ErrorName.ID_MISSING;
-            return Error;
-        }
-
-        if(!this.channelPrepare.existCustomChFamily(name)) {
-            const err : any = new Error('Unknown custom id channel.');
-            err.name = ErrorName.UNKNOWN_CHANNEL;
-            Logger.printDebugInfo
-            (`The socket with id: ${socket.id} cannot subscribe to an unknown custom id channel name: '${name}'.`);
-            return Error;
-        }
-        else {
-            const preChInfo = this.channelPrepare.getSafeCustomChFamilyInfo(name);
-            const chInfo = {name,id};
-
-            try {
-                ChMiddlewareHelper.checkVersionSystemAccess(socket.baseSHBridge,preChInfo);
-                await preChInfo.idValidChecker(id);
-            }
-            catch (e) {
-                return e;
-            }
-
-            if((await preChInfo.subscribeAccessChecker(
-                socket.authEngine,
-                socket.zSocket,
-                chInfo
-            ))) {
-                Logger.printDebugInfo
-                (`The socket with id: ${socket.id} subscribes the custom id channel: '${name}' with id: '${id}'.`);
-
-                return undefined;
-            }
-            else {
-                const err : any = new Error(`Subscribe to this custom id channel denied.`);
-                err.name = ErrorName.ACCESS_DENIED;
-                return err;
-            }
-        }
-    }
-
-    /**
-     * Middleware check and event emit for client publish in custom id channel.
-     * @param socket
-     * @param tryPubName
-     * @param pubData
-     */
-    async checkAccessClientPubCustomIdCh(socket : UpSocket, tryPubName : string, pubData : PubData) : Promise<any>
-    {
-        const {name,id} = ChUtils.getCustomIdChannelInfo(tryPubName);
-
-        if(name === undefined || name === '') {
-            const err : any = new Error('The custom id channel name is required to publish in a custom id channel.');
-            err.name = ErrorName.NAME_MISSING;
-            return Error;
-        }
-        if(id === undefined || id === '') {
-            const err : any = new Error('The custom id channel id is required to publish in a custom id channel.');
-            err.name = ErrorName.ID_MISSING;
-            return Error;
-        }
-        if(!this.channelPrepare.existCustomChFamily(name)) {
-            const err : any = new Error('Unknown custom id channel.');
-            err.name = ErrorName.UNKNOWN_CHANNEL;
-            Logger.printDebugInfo
-            (`The socket with id: ${socket.id} cannot publish in an unknown custom id channel name: '${name}'.`);
-            return Error;
-        }
-        else {
-            const preChInfo = this.channelPrepare.getSafeCustomChFamilyInfo(name);
-            const chInfo = {name,id};
-
-            try {
-                ChMiddlewareHelper.checkVersionSystemAccess(socket.baseSHBridge,preChInfo);
-                await preChInfo.idValidChecker(id);
-            }
-            catch (e) {
-                return e;
-            }
-
-            if((await preChInfo.clientPublishAccessChecker(
-                socket.authEngine,
-                pubData,
-                socket.zSocket,
-                chInfo
-            ))) {
-                Logger.printDebugInfo
-                (`The socket with id: ${socket.id} publish in the custom id channel: '${name}' with id: '${id}'.`);
-
-                preChInfo.onClientPub(
-                    this.smallBag,
-                    pubData,
-                    socket.zSocket,
-                    chInfo
-                );
-
-                return undefined;
-            }
-            else {
-                const err : any = new Error('Publish in this custom id channel denied.');
-                err.name = ErrorName.ACCESS_DENIED;
-                return err;
-            }
-        }
-    }
-
-    /**
      * Middleware check for subscribe a custom channel.
      * @param socket
      * @param trySubName
      */
-    async middlewareSubCustomCh(socket, trySubName : string) : Promise<any>
+    async checkAccessSubCustomCh(socket : UpSocket, trySubName : string) : Promise<any>
     {
-        const name = ChUtils.getCustomChannelName(trySubName);
+        const {name,id} = ChUtils.getCustomChannelInfo(trySubName);
 
-        if(name === undefined || name === '') {
+        if(name === undefined){
             const err : any = new Error('The custom channel name is required to subscribe to a custom channel.');
             err.name = ErrorName.NAME_MISSING;
             return Error;
         }
 
-        if(!this.channelPrepare.existCustomCh(name)) {
+        if(!this.channelPrepare.existCustomCh(name)){
             const err : any = new Error('Unknown custom channel.');
             err.name = ErrorName.UNKNOWN_CHANNEL;
             Logger.printDebugInfo
             (`The socket with id: ${socket.id} cannot subscribe to an unknown custom channel name: '${name}'.`);
             return Error;
         }
+
+
+        const isCustomChFamily = this.channelPrepare.isCustomChFamily(name);
+        const idProvided = id !== undefined;
+
+
+        if(isCustomChFamily && !idProvided){
+            const err : any = new Error('The family member id is required to subscribe to a custom channel family.');
+            err.name = ErrorName.ID_MISSING;
+            return Error;
+        }
+        if(!isCustomChFamily && idProvided){
+            const err : any = new Error('Unknown member id provided to subscribe to a normal custom channel.');
+            err.name = ErrorName.UNKNOWN_ID;
+            return Error;
+        }
+
+        const preChInfo = this.channelPrepare.getCustomChPreInfo(name);
+
+        try {
+            ChMiddlewareHelper.checkVersionSystemAccess(socket.baseSHBridge,preChInfo);
+            if(isCustomChFamily){
+                await (preChInfo as CustomChFamilyStorage).idValidChecker((id as string));
+            }
+        }
+        catch (e) {
+            return e;
+        }
+
+        if((await preChInfo.subscribeAccessChecker(
+            socket.authEngine,
+            socket.zSocket,
+            {name,id}
+        ))) {
+            Logger.printDebugInfo
+            (`The socket with id: ${socket.id} subscribes the custom channel: '${name}'${idProvided ? ` with member id: '${id}'`:''}.`);
+            return undefined;
+        }
         else {
-            const preChInfo = this.channelPrepare.getSafeCustomChInfo(name);
-            const chInfo = {name};
-
-            try {
-                ChMiddlewareHelper.checkVersionSystemAccess(socket.baseSHBridge,preChInfo);
-            }
-            catch (e) {
-                return e;
-            }
-
-            if((await preChInfo.subscribeAccessChecker(
-                socket.authEngine,
-                socket.socketInfo,
-                chInfo
-            ))) {
-                Logger.printDebugInfo
-                (`The socket with id: ${socket.id} subscribes the custom channel: '${name}'.`);
-
-                return undefined;
-            }
-            else {
-                const err : any = new Error(`Subscribe to this custom channel denied.`);
-                err.name = ErrorName.ACCESS_DENIED;
-                return err;
-            }
+            const err : any = new Error(`Subscribe to this custom channel denied.`);
+            err.name = ErrorName.ACCESS_DENIED;
+            return err;
         }
     }
 
@@ -226,58 +120,75 @@ export default class ChMiddlewareHelper
      * @param tryPubName
      * @param pubData
      */
-    async middlewareClientPubCustomCh(socket : UpSocket, tryPubName : string, pubData : PubData) : Promise<any>
+    async checkAccessClientPubCustomCh(socket : UpSocket, tryPubName : string, pubData : PubData) : Promise<any>
     {
-        const name = ChUtils.getCustomChannelName(tryPubName);
+        const {name,id} = ChUtils.getCustomChannelInfo(tryPubName);
 
-        if(name === undefined || name === '') {
+        if(name === undefined){
             const err : any = new Error('The custom channel name is required to publish in a custom channel.');
             err.name = ErrorName.NAME_MISSING;
             return Error;
         }
 
-        if(!this.channelPrepare.existCustomCh(name)) {
+        if(!this.channelPrepare.existCustomCh(name)){
             const err : any = new Error('Unknown custom channel.');
             err.name = ErrorName.UNKNOWN_CHANNEL;
             Logger.printDebugInfo
             (`The socket with id: ${socket.id} cannot publish in an unknown custom channel name: '${name}'.`);
             return Error;
         }
-        else {
-            const preChInfo = this.channelPrepare.getSafeCustomChInfo(name);
-            const chInfo = {name : name};
 
-            try {
-                ChMiddlewareHelper.checkVersionSystemAccess(socket.baseSHBridge,preChInfo);
-            }
-            catch (e) {
-                return e;
-            }
 
-            if((await preChInfo.clientPublishAccessChecker(
-                socket.authEngine,
+        const isCustomChFamily = this.channelPrepare.isCustomChFamily(name);
+        const idProvided = id !== undefined;
+
+
+        if(isCustomChFamily && !idProvided){
+            const err : any = new Error('The family member id is required to publish in a custom channel family.');
+            err.name = ErrorName.ID_MISSING;
+            return Error;
+        }
+        if(!isCustomChFamily && idProvided){
+            const err : any = new Error('Unknown member id provided to publish in a normal custom channel.');
+            err.name = ErrorName.UNKNOWN_ID;
+            return Error;
+        }
+
+        const preChInfo = this.channelPrepare.getCustomChPreInfo(name);
+        const chInfo = {name,id};
+
+        try {
+            ChMiddlewareHelper.checkVersionSystemAccess(socket.baseSHBridge,preChInfo);
+            if(isCustomChFamily){
+                await (preChInfo as CustomChFamilyStorage).idValidChecker((id as string));
+            }
+        }
+        catch (e) {
+            return e;
+        }
+
+        if((await preChInfo.clientPublishAccessChecker(
+            socket.authEngine,
+            pubData,
+            socket.zSocket,
+             chInfo
+        ))) {
+            Logger.printDebugInfo
+            (`The socket with id: ${socket.id} publishes in the custom channel: '${name}'${idProvided ? ` with member id: '${id}'`:''}.`);
+
+            preChInfo.onClientPub(
+                this.smallBag,
                 pubData,
                 socket.zSocket,
                 chInfo
-            ))) {
-                Logger.printDebugInfo
-                (`The socket with id: ${socket.id} publish in the custom channel: '${name}'.`);
+            );
 
-                preChInfo.onClientPub(
-                    this.smallBag,
-                    pubData,
-                    socket.zSocket,
-                    chInfo
-                );
-
-                return undefined;
-            }
-            else {
-                const err : any = new Error('Publish in this custom channel denied.');
-                err.name = ErrorName.ACCESS_DENIED;
-                return err;
-            }
+            return undefined;
         }
-
+        else {
+            const err : any = new Error(`Publish in this custom channel denied.`);
+            err.name = ErrorName.ACCESS_DENIED;
+            return err;
+        }
     }
 }

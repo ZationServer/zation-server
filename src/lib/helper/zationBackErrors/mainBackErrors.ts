@@ -121,6 +121,17 @@ export const MainBackErrors = {
         fromZationSystem : true
     },
 
+    unknownCustomChError  : {
+        name          : 'unknownCustomChError',
+        description   : 'Unknown custom channel',
+        type          : ErrorType.SYSTEM_ERROR,
+        sendInfo      : false,
+        private       : true,
+        //INFO
+        // name
+        fromZationSystem : true
+    },
+
     inputParamIsMissing    : {
         name          : 'inputParamIsMissing',
         description   : 'Input param is missing.',

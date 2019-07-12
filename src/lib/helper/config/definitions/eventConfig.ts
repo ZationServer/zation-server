@@ -12,8 +12,8 @@ import {ZationToken}                   from "../../constants/internal";
 import BackError                       from "../../../api/BackError";
 import BackErrorBag                    from "../../../api/BackErrorBag";
 import SmallBag                        from "../../../api/SmallBag";
-import ZationInfo                      from "../../infoObjects/zationInfo";
-import ZSocket                         from "../../infoObjects/ZSocket";
+import ZationInfo                      from "../../internalApi/zationInfo";
+import ZSocket                         from "../../internalApi/ZSocket";
 import CodeError                       from "../../error/codeError";
 
 export type ExpressFunction = (smallBag : SmallBag, express : ExpressCore.Express) => Promise<void> | void;

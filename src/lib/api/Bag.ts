@@ -25,7 +25,7 @@ import TokenUtils                 from "../helper/token/tokenUtils";
 import {ZationToken}              from "../helper/constants/internal";
 import JwtSignOptions             from "../helper/constants/jwt";
 import ChUtils                    from "../helper/channel/chUtils";
-import ZSocket                 from "../helper/infoObjects/ZSocket";
+import ZSocket                    from "../helper/internalApi/ZSocket";
 import ApiLevelUtils              from "../helper/apiLevel/apiLevelUtils";
 import CloneUtils                 from "../helper/utils/cloneUtils";
 
@@ -1129,22 +1129,6 @@ export default class Bag extends SmallBag
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Returns all custom id channel subscriptions of the socket.
-     * @param name (optional filter for a specific name)
-     * Requires ws request!
-     * @throws MethodIsNotCompatibleError
-     */
-    getCustomIdChSubscriptions(name ?: string) : string[] {
-        if(this.shBridge.isWebSocket) {
-            return ChUtils.getCustomIdChannelSubscriptions(this.shBridge.getSocket(),name);
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get subscribed custom id channels.');
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
      * Returns all custom channel subscriptions of the socket.
      * @param name (optional filter for a specific name)
      * Requires ws request!
@@ -1227,31 +1211,11 @@ export default class Bag extends SmallBag
      * @param name
      * if it is not provided,
      * it returns if the socket has subscribed any custom channel.
-     */
-    hasSubCustomCh(name ?: string) : boolean {
-        if(this.shBridge.isWebSocket) {
-            return ChUtils.hasSubCustomCh(this.shBridge.getSocket(),name);
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Access channel subscriptions');
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * Returns if the socket has subscribed the custom id channel.
-     * Requires ws request!
-     * @throws MethodIsNotCompatibleError
-     * @param name
-     * if it is not provided,
-     * it returns if the socket has subscribed any custom id channel.
      * @param id
-     * if it is not provided,
-     * it returns if the socket has subscribed any custom id channel with the provided name.
      */
-    hasSubCustomIdCh(name ?: string, id ?: string) : boolean {
+    hasSubCustomCh(name ?: string, id ?: string) : boolean {
         if(this.shBridge.isWebSocket) {
-            return ChUtils.hasSubCustomIdCh(this.shBridge.getSocket(),name,id);
+            return ChUtils.hasSubCustomCh(this.shBridge.getSocket(),name,id);
         }
         else {
             throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Access channel subscriptions');
@@ -1276,39 +1240,19 @@ export default class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Kick the current socket from an custom id channel.
-     * Requires ws request!
-     * @example
-     * kickFromCustomIdCh('images','10');
-     * kickFromCustomIdCh('messageStreams');
-     * @param channel is optional, if it is not given the users will be kicked out from all custom id channels.
-     * @param id is optional, if it is not given the users will be kicked out from all ids of this channel.
-     * @throws MethodIsNotCompatibleError
-     */
-    kickFromCustomIdCh(channel ?: string,id : string = '') : void
-    {
-        if(this.shBridge.isWebSocket) {
-            ChUtils.kickCustomIdChannel(this.shBridge.getSocket(),channel,id);
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Kick from a channel.');
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
      * Kick the current socket from an custom channel.
      * Requires ws request!
      * @example
-     * kickFromCustomCh('stream');
-     * @param channel is optional, if it is not given the users will be kicked out from all custom channels.
+     * kickFromCustomIdCh('images','10');
+     * kickFromCustomIdCh('publicChat');
+     * @param name is optional, if it is not given the users will be kicked out from all custom channels.
+     * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      * @throws MethodIsNotCompatibleError
      */
-    kickFromCustomCh(channel ?: string) : void
+    kickFromCustomIdCh(name ?: string,id ?: string) : void
     {
         if(this.shBridge.isWebSocket) {
-            ChUtils.kickCustomChannel(this.shBridge.getSocket(),channel);
+            ChUtils.kickCustomChannel(this.shBridge.getSocket(),name,id);
         }
         else {
             throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Kick from a channel.');
@@ -1653,81 +1597,40 @@ export default class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom id channel.
+     * Publish in an custom channel.
      * @example
-     * publishInCustomIdCh('imageChannel','image2','like',{fromUserId : '1'});
-     * @param channel
-     * @param id
+     * publishInCustomCh({name : 'imageChannel', id : 'image2'},'like',{fromUserId : '1'});
+     * publishInCustomCh({name : 'publicChat'},'msg',{msg : 'Hello',fromUserId : '1'});
+     * @param target
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
+     * @throws UnknownCustomCh
      */
-    async publishInCustomIdCh(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
-    {
+    async publishInCustomCh(target : {name : string,id ?: string}, eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
         const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket : undefined;
-        return this.exchangeEngine.publishInCustomIdChannel
-        (channel,id,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
+        return this.exchangeEngine.publishInCustomCh(target,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Publish in an custom id channel.
+     * Publish in an custom channel.
      * @example
-     * pubCustomIdCh('imageChannel','image2','like',{fromUserId : '1'});
-     * @param channel
-     * @param id
+     * publishInCustomCh({name : 'imageChannel', id : 'image2'},'like',{fromUserId : '1'});
+     * publishInCustomCh({name : 'publicChat'},'msg',{msg : 'Hello',fromUserId : '1'});
+     * @param target
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
+     * @throws UnknownCustomCh
      */
-    async pubCustomIdCh(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
-    {
-        return this.publishInCustomIdCh(channel,id,eventName,data,srcSocketSid);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in an custom channel/s.
-     * @example
-     * publishInCustomCh('messageChannel','message',{message : 'hello',fromUserId : '1'});
-     * publishInCustomCh(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
-     * @param channel or an array of channels.
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
-     * If it is null, will be published anonymously.
-     */
-    async publishInCustomCh(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
-    {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket : undefined;
-        return this.exchangeEngine.publishInCustomChannel
-        (channel,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in an custom channel/s.
-     * @example
-     * pubCustomCh('messageChannel','message',{message : 'hello',fromUserId : '1'});
-     * pubCustomCh(['messageChannel','otherChannel'],'message',{message : 'hello',fromUserId : '1'});
-     * @param channel or an array of channels.
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
-     * If it is null, will be published anonymously.
-     */
-    async pubCustomCh(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
-    {
-        return this.publishInCustomCh(channel,eventName,data,srcSocketSid);
+    async pubCustomCh(target : {name : string,id ?: string}, eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+        return this.publishInCustomCh(target,eventName,data,srcSocketSid);
     }
 
     private _processSrcSocketSid(srcSocketSid : string | null | undefined) : undefined | string {

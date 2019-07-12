@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 // noinspection TypeScriptPreferShortImport
 import AuthEngine         from "./authEngine";
-import ZationTokenInfo    from "../infoObjects/zationTokenInfo";
+import ZationTokenInfo    from "../internalApi/zationTokenInfo";
 import SmallBag           from "../../api/SmallBag";
 import AccessUtils        from "../access/accessUtils";
 import {AuthAccessFunction, AuthAccessConfig} from "../config/definitions/configComponents";

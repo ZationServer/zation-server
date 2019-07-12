@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import SmallBag from "../../../api/SmallBag";
 import {InputConfigTranslatable, ModelConfigTranslatable} from "../../../../index";
-import ZationTokenInfo from "../../infoObjects/zationTokenInfo";
+import ZationTokenInfo from "../../internalApi/zationTokenInfo";
 
 export type AuthAccessFunction = (smallBag : SmallBag, token : ZationTokenInfo | null) => Promise<boolean> | boolean;
 
