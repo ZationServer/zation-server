@@ -14,36 +14,23 @@ import
     ExpressFunction,
     HttpServerStartedFunction,
     StartedFunction,
-    ScServerAuthenticationFunction,
-    ScServerBadSocketAuthTokenFunction,
-    ScServerConnectionFunction,
-    ScServerDeauthenticationFunction,
-    ScServerErrorFunction,
-    ScServerNoticeFunction,
-    ScServerReadyFunction,
-    ScServerSocketFunction,
-    ScServerSubscriptionFunction,
-    ScServerUnsubscriptionFunction,
     SocketErrorFunction,
-    SocketMessageFunction,
-    SocketAuthenticateFunction,
     WorkerStartedFunction,
     WsServerStartedFunction,
-    SocketDeauthenticateFunction,
     MiddlewareAuthenticationFunction,
-    ScServerFunction,
+    SocketServerFunction,
     SocketConnectionFunction,
     SocketDisconnectionFunction,
     WorkerMessageFunction,
-    ScServerAuthenticationStateChangeFunction,
     SocketRawFunction,
-    SocketConnectFunction,
-    SocketCodeDataFunction,
-    SocketSubscribeFunction,
-    SocketUnsubscribeFunction,
+    SocketSubscriptionFunction,
+    SocketUnsubscriptionFunction,
     SocketBadAuthTokenFunction,
     SocketAuthStateChangeFunction,
-    ScServerSocketCodeDataFunction
+    WorkerInitFunction,
+    MasterInitFunction,
+    BeforeCodeErrorFunction,
+    SocketAuthenticationFunction, SocketDeauthenticationFunction, SocketConnectionAbortFunction, MiddlewareSocketFunction,
 } from "../helper/config/definitions/eventConfig";
 
 import
@@ -68,7 +55,6 @@ import {
     CChannelOnSubFunction,
     CChannelOnUnsubFunction,
     CChannelSubAccessFunction,
-    ChannelsConfig,
     CChannelFamilyClientPubAccessFunction,
     CChannelFamilyOnBagPubFunction,
     CChannelFamilyOnClientPubFunction,
@@ -89,18 +75,18 @@ import {
 } from "../helper/config/definitions/channelsConfig";
 import {StarterConfig}  from "../helper/config/definitions/starterConfig";
 import {MainConfig}     from "../helper/config/definitions/mainConfig";
-import SocketInfo       from "../helper/infoObjects/socketInfo";
-import ZationTokenInfo  from "../helper/infoObjects/zationTokenInfo";
+import ZSocket       from "../helper/internalApi/ZSocket";
+import ZationTokenInfo  from "../helper/internalApi/zationTokenInfo";
 import BackError        from "./BackError";
 import BackErrorBag     from "./BackErrorBag";
 import ObjectUtils      from "../helper/utils/objectUtils";
 import Controller, {ControllerClass} from "./Controller";
-import CChInfo          from "../helper/infoObjects/cChInfo";
+import CChInfo          from "../helper/internalApi/cChInfo";
 import Result           from "./Result";
 import SmallBag         from "./SmallBag";
-import CChFamilyInfo        from "../helper/infoObjects/CChFamilyInfo";
-import PubData          from "../helper/infoObjects/pubData";
-import ZationInfo       from "../helper/infoObjects/zationInfo";
+import CChFamilyInfo        from "../helper/internalApi/cChFamilyInfo";
+import PubData          from "../helper/internalApi/pubData";
+import ZationInfo       from "../helper/internalApi/zationInfo";
 import {ApiLevelSwitch} from "../helper/apiLevel/apiLevelUtils";
 // noinspection TypeScriptPreferShortImport
 import {StartMode}       from "../helper/constants/startMode";
@@ -654,21 +640,18 @@ export default class Config
 
     //Part Zation Events
     // noinspection JSUnusedGlobalSymbols
+    static express(func : ExpressFunction) : ExpressFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static scServer(func : SocketServerFunction) : SocketServerFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static workerInit(func : WorkerInitFunction) : WorkerInitFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static masterInit(func : MasterInitFunction) : MasterInitFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
     static workerStarted(func : WorkerStartedFunction) : WorkerStartedFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static workerLeaderStarted(func : WorkerStartedFunction) : WorkerStartedFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static express(func : ExpressFunction) : ExpressFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scServer(func : ScServerFunction) : ScServerFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static socketConnection(func : SocketConnectionFunction) : SocketConnectionFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static beforeError(func : BeforeErrorFunction) : BeforeErrorFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static beforeBackError(func : BeforeBackErrorFunction) : BeforeBackErrorFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static beforeBackErrorBag(func : BeforeBackErrorBagFunction) : BeforeBackErrorBagFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static httpServerStarted(func : HttpServerStartedFunction) : HttpServerStartedFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
@@ -676,71 +659,44 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static started(func : StartedFunction) : StartedFunction{return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketDisconnection(func : SocketDisconnectionFunction) : SocketDisconnectionFunction {return func;}
+    static beforeError(func : BeforeErrorFunction) : BeforeErrorFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static beforeBackError(func : BeforeBackErrorFunction) : BeforeBackErrorFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static beforeBackErrorBag(func : BeforeBackErrorBagFunction) : BeforeBackErrorBagFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static beforeCodeError(func : BeforeCodeErrorFunction) : BeforeCodeErrorFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static workerMessage(func : WorkerMessageFunction) : WorkerMessageFunction {return func;}
 
-    //Zation Middleware
     // noinspection JSUnusedGlobalSymbols
-    static middlewareAuthenticate(func : MiddlewareAuthenticationFunction) : MiddlewareAuthenticationFunction {return func;}
-
-    //Part Socket Events (SC)
+    static socketConnection(func : SocketConnectionFunction) : SocketConnectionFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static socketDisconnection(func : SocketDisconnectionFunction) : SocketDisconnectionFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static socketAuthentication(func : SocketAuthenticationFunction) : SocketAuthenticationFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static socketDeauthentication(func : SocketDeauthenticationFunction) : SocketDeauthenticationFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static socketAuthStateChange(func : SocketAuthStateChangeFunction) : SocketAuthStateChangeFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static socketSubscription(func : SocketSubscriptionFunction) : SocketSubscriptionFunction {return func;}
+    // noinspection JSUnusedGlobalSymbols
+    static socketUnsubscription(func : SocketUnsubscriptionFunction) : SocketUnsubscriptionFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static socketError(func : SocketErrorFunction) : SocketErrorFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static socketRaw(func : SocketRawFunction) : SocketRawFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketConnect(func : SocketConnectFunction) : SocketConnectFunction {return func;}
+    static socketConnectionAbort(func : SocketConnectionAbortFunction) : SocketConnectionAbortFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static socketDisconnect(func : SocketCodeDataFunction) : SocketCodeDataFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static socketConnectAbort(func : SocketCodeDataFunction) : SocketCodeDataFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static socketClose(func : SocketCodeDataFunction) : SocketCodeDataFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static socketSubscribe(func : SocketSubscribeFunction) : SocketSubscribeFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static socketUnsubscribe(func : SocketUnsubscribeFunction) : SocketUnsubscribeFunction{return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static socketBadAuthToken(func : SocketBadAuthTokenFunction) : SocketBadAuthTokenFunction{return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static socketAuthenticate(func : SocketAuthenticateFunction) : SocketAuthenticateFunction{return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static socketDeauthenticate(func : SocketDeauthenticateFunction) : SocketDeauthenticateFunction{return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static socketAuthStateChange(func : SocketAuthStateChangeFunction) : SocketAuthStateChangeFunction{return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static socketMessage(func : SocketMessageFunction) : SocketMessageFunction{return func;}
+    static socketBadAuthToken(func : SocketBadAuthTokenFunction) : SocketBadAuthTokenFunction {return func;}
 
-    //Part ScServer Events (SC)
+    //Zation Middleware
     // noinspection JSUnusedGlobalSymbols
-    static scServerError(func : ScServerErrorFunction) : ScServerErrorFunction {return func;}
+    static middlewareAuthenticate(func : MiddlewareAuthenticationFunction) : MiddlewareAuthenticationFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static scServerNotice(func : ScServerNoticeFunction) : ScServerNoticeFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scServerHandshake(func : ScServerSocketFunction) : ScServerSocketFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scServerConnectionAbort(func : ScServerSocketCodeDataFunction) : ScServerSocketCodeDataFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scServerDisconnection(func : ScServerSocketCodeDataFunction) : ScServerSocketCodeDataFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scServerClosure(func : ScServerSocketCodeDataFunction) : ScServerSocketCodeDataFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scServerConnection(func : ScServerConnectionFunction) : ScServerConnectionFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scServerSubscription(func : ScServerSubscriptionFunction) : ScServerSubscriptionFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scServerUnsubscription(func : ScServerUnsubscriptionFunction) : ScServerUnsubscriptionFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scServerAuthentication(func : ScServerAuthenticationFunction) : ScServerAuthenticationFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scServerDeauthentication(func : ScServerDeauthenticationFunction) : ScServerDeauthenticationFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scServerAuthenticationStateChange(func : ScServerAuthenticationStateChangeFunction) : ScServerAuthenticationStateChangeFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scServerBadSocketAuthToken(func : ScServerBadSocketAuthTokenFunction) : ScServerBadSocketAuthTokenFunction {return func;}
-    // noinspection JSUnusedGlobalSymbols
-    static scServerReady(func : ScServerReadyFunction) : ScServerReadyFunction {return func;}
+    static middlewareSocket(func : MiddlewareSocketFunction) : MiddlewareSocketFunction {return func;}
 
     //Part Types
     // noinspection JSUnusedGlobalSymbols
@@ -766,7 +722,7 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static pubDataInfo(pubDataInfo : PubData) : PubData {return pubDataInfo;}
     // noinspection JSUnusedGlobalSymbols
-    static socketInfo(socketInfo : SocketInfo) : SocketInfo {return socketInfo;}
+    static socketInfo(socketInfo : ZSocket) : ZSocket {return socketInfo;}
     // noinspection JSUnusedGlobalSymbols
     static zationInfo(zationInfo : ZationInfo) : ZationInfo {return zationInfo;}
     // noinspection JSUnusedGlobalSymbols
