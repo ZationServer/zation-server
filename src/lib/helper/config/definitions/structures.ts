@@ -82,7 +82,7 @@ ObjectModel[nameof<ObjectModelConfig>(s => s.morePropsAllowed)] = {types : ['boo
 
 const ControllerConfig = {};
 ControllerConfig[nameof<ControllerConfig>(s => s.input)]            = {types : ['object','array','function'],isOptional : true};
-ControllerConfig[nameof<ControllerConfig>(s => s.prepareHandle)]    = {types : ['function','array'],arrayType : 'function',isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.middleware)]       = {types : ['function','array'],arrayType : 'function',isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.wsAccess)]         = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.httpAccess)]       = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.httpGetAllowed)]   = {types : ['boolean'],isOptional : true};
@@ -318,7 +318,7 @@ AuthUserGroup[nameof<AuthUserGroupConfig>(s => s.panelDisplayName)] = {types : [
 
 const EventConfig = {};
 EventConfig[nameof<EventConfig>(s => s.express)]                = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.socketServer)]               = {types : ['function','array'],arrayType : 'function',isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.socketServer)]           = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.workerInit)]             = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.masterInit)]             = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.workerStarted)]          = {types : ['function','array'],arrayType : 'function',isOptional : true};

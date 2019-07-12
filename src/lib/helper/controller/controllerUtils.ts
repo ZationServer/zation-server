@@ -10,30 +10,30 @@ import Bag                           from '../../api/Bag';
 import {ControllerConfig}            from "../config/definitions/controllerConfig";
 import Controller                    from "../../api/Controller";
 
-export type PrepareHandleInvokeFunction = (controllerInstance : Controller,bag : Bag) => Promise<void >;
+export type MiddlewareInvokeFunction = (controllerInstance : Controller, bag : Bag) => Promise<void >;
 
 export default class ControllerUtils
 {
     /**
-     * Returns a Closures for invoking the controller before handle event.
+     * Returns a Closures for invoking the controller middleware event.
      * @param controllerConfig
      */
-    static createPrepareHandleInvoker(controllerConfig : ControllerConfig) : PrepareHandleInvokeFunction {
-        const prepareHandle = controllerConfig.prepareHandle;
-        if(prepareHandle !== undefined)
+    static createMiddlewareInvoker(controllerConfig : ControllerConfig) : MiddlewareInvokeFunction {
+        const middleware = controllerConfig.middleware;
+        if(middleware !== undefined)
         {
-            if(Array.isArray(prepareHandle)) {
+            if(Array.isArray(middleware)) {
                 return async (cInstance,bag) => {
                     const promises : (Promise<void> | void)[] = [];
-                    for(let i = 0; i < prepareHandle.length; i++) {
-                        promises.push(prepareHandle[i].apply(cInstance,[bag]));
+                    for(let i = 0; i < middleware.length; i++) {
+                        promises.push(middleware[i].apply(cInstance,[bag]));
                     }
                     await Promise.all(promises);
                 };
             }
             else {
                 return async (cInstance,bag) => {
-                    await prepareHandle.apply(cInstance,[bag]);
+                    await middleware.apply(cInstance,[bag]);
                 };
             }
         }

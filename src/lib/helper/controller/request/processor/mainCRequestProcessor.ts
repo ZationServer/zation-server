@@ -18,7 +18,7 @@ import ProtocolAccessChecker   from "../../../protocolAccess/protocolAccessCheck
 import {MainBackErrors}        from "../../../zationBackErrors/mainBackErrors";
 import ZationReqUtils          from "../../../utils/zationReqUtils";
 import Result                  from "../../../../api/Result";
-import {PrepareHandleInvokeFunction} from "../../controllerUtils";
+import {MiddlewareInvokeFunction} from "../../controllerUtils";
 import ZationConfigFull        from "../../../config/manager/zationConfigFull";
 
 export default class MainCRequestProcessor
@@ -85,7 +85,7 @@ export default class MainCRequestProcessor
                 systemAccessCheck,
                 versionAccessCheck,
                 tokenStateCheck,
-                prepareHandleInvoke,
+                middlewareInvoke,
                 inputConsume
             } = this.controllerPrepare.getControllerPrepareData(controllerId,shBridge.getApiLevel(),isSystemController);
 
@@ -164,7 +164,7 @@ export default class MainCRequestProcessor
                             authEngine,
                             input
                         );
-                        return this.processController(controllerInstance,bag,input,prepareHandleInvoke);
+                        return this.processController(controllerInstance,bag,input,middlewareInvoke);
                     }
                     else {
                         throw new BackError(MainBackErrors.noAccessWithTokenState,
@@ -197,11 +197,11 @@ export default class MainCRequestProcessor
     }
 
     // noinspection JSMethodCanBeStatic
-    private async processController(controllerInstance : Controller,bag : Bag,input : any,prepareHandleInvoke : PrepareHandleInvokeFunction) : Promise<ResponseResult>
+    private async processController(controllerInstance : Controller,bag : Bag,input : any,middlewareInvoke : MiddlewareInvokeFunction) : Promise<ResponseResult>
     {
         //process the controller handle, before handle events and finally handle.
         try {
-            await prepareHandleInvoke(controllerInstance,bag);
+            await middlewareInvoke(controllerInstance,bag);
 
             const result : Result | any = await controllerInstance.handle(bag,input);
 

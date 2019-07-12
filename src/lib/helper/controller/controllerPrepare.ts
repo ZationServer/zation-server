@@ -12,7 +12,7 @@ import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemV
 import AuthAccessChecker, {TokenStateAccessCheckFunction} from "../auth/authAccessChecker";
 import Controller, {ControllerClass} from "../../api/Controller";
 import {MainBackErrors}              from "../zationBackErrors/mainBackErrors";
-import ControllerUtils, {PrepareHandleInvokeFunction} from "./controllerUtils";
+import ControllerUtils, {MiddlewareInvokeFunction} from "./controllerUtils";
 import {SystemController}            from "../systemController/systemControler.config";
 import SmallBag                      from "../../api/SmallBag";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
@@ -25,7 +25,7 @@ interface ControllerPrepareData {
     versionAccessCheck : VersionSystemAccessCheckFunction,
     systemAccessCheck : VersionSystemAccessCheckFunction,
     tokenStateCheck : TokenStateAccessCheckFunction,
-    prepareHandleInvoke : PrepareHandleInvokeFunction,
+    middlewareInvoke : MiddlewareInvokeFunction,
     inputConsume : InputConsumeFunction,
     inputValidationCheck : InputValidationCheckFunction
 }
@@ -176,7 +176,7 @@ export default class ControllerPrepare
             versionAccessCheck : SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
             tokenStateCheck : AuthAccessChecker.createAuthAccessChecker(config,this.smallBag),
-            prepareHandleInvoke : ControllerUtils.createPrepareHandleInvoker(config),
+            middlewareInvoke : ControllerUtils.createMiddlewareInvoker(config),
             inputConsume : InputClosureCreator.createControllerInputConsumer(config,this.smallBag),
             inputValidationCheck : InputClosureCreator.createControllerValidationChecker(config,this.smallBag)
         };

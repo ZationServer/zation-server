@@ -8,23 +8,24 @@ import Bag                                       from "../../../api/Bag";
 import {AuthAccessConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
 import {InputConfig}                             from "./inputConfig";
 
-export type PrepareHandleFunction = (bag : Bag) => Promise<void> | void;
+export type ControllerMiddlewareFunction = (bag : Bag) => Promise<void> | void;
 
 export interface ControllerConfig extends InputConfig, VersionAccessConfig, SystemAccessConfig, AuthAccessConfig
 {
     /**
-     * This property can be used to add functions in the prepare handle event of this controller.
-     * This event gets invoked before the handle method of the controller.
-     * Every prepare handle method will also be bound to the controller instance.
-     * It can be used to prepare stuff on the bag.
-     * (The bag is unique for every request.)
-     * It is also possible to throw an error to the client.
+     * This property can be used to add middleware function before the
+     * handle event of this controller occurs.
+     * Every middleware function will be bound to the controller instance.
+     * It can be used to prepare stuff on the bag
+     * (The bag is unique for every request).
+     * It is also possible to use that middleware as a shield
+     * of the controller because you can throw an error back to the client.
      * @example
-     * prepareHandle : [(bag) => {...}]
+     * middleware : [(bag) => {...}]
      * @throws
      * You can also throw TaskErrors, which are sent to the client with a not success response.
      */
-    prepareHandle ?: PrepareHandleFunction[] | PrepareHandleFunction;
+    middleware ?: ControllerMiddlewareFunction[] | ControllerMiddlewareFunction;
     /**
      * Define if web socket protocol requests have access to this controller.
      * @default From default controller config otherwise true.

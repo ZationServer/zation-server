@@ -98,7 +98,7 @@ import {
 } from "../helper/config/definitions/inputConfig";
 import {
     ControllerConfig,
-    PrepareHandleFunction
+    ControllerMiddlewareFunction
 } from "../helper/config/definitions/controllerConfig";
 import {BackgroundTask, TaskFunction} from "../helper/config/definitions/backgroundTaskConfig";
 import {AuthAccessFunction}           from "../helper/config/definitions/configComponents";
@@ -485,7 +485,7 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static input(c : Input) : Input {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static prepareHandle(func : PrepareHandleFunction) : PrepareHandleFunction {return func;}
+    static controllerMiddleware(func : ControllerMiddlewareFunction) : ControllerMiddlewareFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static controllerAccess(func : AuthAccessFunction) : AuthAccessFunction {return func;}
 
