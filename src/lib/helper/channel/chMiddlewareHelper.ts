@@ -88,7 +88,7 @@ export default class ChMiddlewareHelper
 
             if((await preChInfo.subscribeAccessChecker(
                 socket.authEngine,
-                socket.socketInfo,
+                socket.zSocket,
                 chInfo
             ))) {
                 Logger.printDebugInfo
@@ -146,7 +146,7 @@ export default class ChMiddlewareHelper
             if((await preChInfo.clientPublishAccessChecker(
                 socket.authEngine,
                 pubData,
-                socket.socketInfo,
+                socket.zSocket,
                 chInfo
             ))) {
                 Logger.printDebugInfo
@@ -155,7 +155,7 @@ export default class ChMiddlewareHelper
                 preChInfo.onClientPub(
                     this.smallBag,
                     pubData,
-                    socket.socketInfo,
+                    socket.zSocket,
                     chInfo
                 );
 
@@ -257,7 +257,7 @@ export default class ChMiddlewareHelper
             if((await preChInfo.clientPublishAccessChecker(
                 socket.authEngine,
                 pubData,
-                socket.socketInfo,
+                socket.zSocket,
                 chInfo
             ))) {
                 Logger.printDebugInfo
@@ -266,7 +266,7 @@ export default class ChMiddlewareHelper
                 preChInfo.onClientPub(
                     this.smallBag,
                     pubData,
-                    socket.socketInfo,
+                    socket.zSocket,
                     chInfo
                 );
 

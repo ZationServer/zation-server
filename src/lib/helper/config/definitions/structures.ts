@@ -318,7 +318,7 @@ AuthUserGroup[nameof<AuthUserGroupConfig>(s => s.panelDisplayName)] = {types : [
 
 const EventConfig = {};
 EventConfig[nameof<EventConfig>(s => s.express)]                = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.scServer)]               = {types : ['function','array'],arrayType : 'function',isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.socketServer)]               = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.workerInit)]             = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.masterInit)]             = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.workerStarted)]          = {types : ['function','array'],arrayType : 'function',isOptional : true};
@@ -327,47 +327,25 @@ EventConfig[nameof<EventConfig>(s => s.httpServerStarted)]      = {types : ['fun
 EventConfig[nameof<EventConfig>(s => s.wsServerStarted)]        = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.started)]                = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.beforeError)]            = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.beforeBackError)]        = {types : ['function','array'],arrayType : 'function',isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.beforeBackError)]        = {types : ['function','array'],arrayType : 'function',isOptional : true}
+EventConfig[nameof<EventConfig>(s => s.beforeBackErrorBag)]     = {types : ['function','array'],arrayType : 'function',isOptional : true};;
 EventConfig[nameof<EventConfig>(s => s.beforeCodeError)]        = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.beforeBackErrorBag)]     = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.workerMessage)]          = {types : ['function','array'],arrayType : 'function',isOptional : true};
 
-EventConfig[nameof<EventConfig>(s => s.socketConnection)]       = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.socketDisconnection)]    = {types : ['function','array'],arrayType : 'function',isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.socketConnection)]        = {types : ['function','array'],arrayType : 'function',isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.socketDisconnection)]     = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.socketAuthentication)]    = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.socketDeauthentication)]  = {types : ['function','array'],arrayType : 'function',isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.socketAuthStateChange)]   = {types : ['function','array'],arrayType : 'function',isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.socketSubscription)]      = {types : ['function','array'],arrayType : 'function',isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.socketUnsubscription)]    = {types : ['function','array'],arrayType : 'function',isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.socketError)]             = {types : ['function','array'],arrayType : 'function',isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.socketRaw)]               = {types : ['function','array'],arrayType : 'function',isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.socketConnectionAbort)]   = {types : ['function','array'],arrayType : 'function',isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.socketBadAuthToken)]      = {types : ['function','array'],arrayType : 'function',isOptional : true};
 
 EventConfig[nameof<EventConfig>(s => s.middlewareAuthenticate)] = {types : ['function'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.middlewareSocket)]       = {types : ['function'],isOptional : true};
-
-EventConfig[nameof<EventConfig>(s => s.sc_serverError)]           = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_serverNotice)]          = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_serverHandshake)]       = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_serverConnectionAbort)] = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_serverConnection)]      = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_serverDisconnection)]   = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_serverClosure)]         = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_serverSubscription)]    = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_serverUnsubscription)]  = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_serverAuthentication)]  = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_serverDeauthentication)]          = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_serverAuthenticationStateChange)] = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_serverBadSocketAuthToken)]        = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_serverReady)]                     = {types : ['function','array'],arrayType : 'function',isOptional : true};
-
-EventConfig[nameof<EventConfig>(s => s.sc_socketError)]              = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_socketRaw)]                = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_socketConnect)]            = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_socketDisconnect)]         = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_socketConnectAbort)]       = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_socketClose)]              = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_socketSubscribe)]          = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_socketUnsubscribe)]        = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_socketBadAuthToken)]       = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_socketAuthenticate)]       = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_socketDeauthenticate)]     = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_socketAuthStateChange)]    = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.sc_socketMessage)]            = {types : ['function','array'],arrayType : 'function',isOptional : true};
 
 export const Structures = {
     App : App,

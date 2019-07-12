@@ -8,15 +8,12 @@ import {ZationToken}        from "../constants/internal";
 import {IncomingMessage}    from "http";
 import BaseSHBridgeSocket   from "../bridges/baseSHBridgeSocket";
 import AuthEngine           from "../auth/authEngine";
-import SocketInfo           from "../infoObjects/socketInfo";
+import ZSocket           from "../infoObjects/ZSocket";
 
 export type OnHandlerFunction = (data : any, response : RespondFunction) => void
 export type RespondFunction = (err ?: any | number, responseData ?: any) => void
 
-/**
- * Normal socket from socket cluster.
- */
-export interface ScSocket {
+export interface RawSocket {
     readonly id : string;
     readonly request : IncomingMessage;
     readonly remoteAddress : string;
@@ -58,7 +55,7 @@ export interface ScSocket {
 /**
  * Socket after sc handshake.
  */
-export interface HandshakeSocket extends ScSocket {
+export interface HandshakeSocket extends RawSocket {
     readonly handshakeVariables : Record<string,any>;
     readonly zationClient : {
         readonly version : number,
@@ -77,6 +74,6 @@ export default interface UpSocket extends HandshakeSocket {
     zationSocketVariables : Record<string,any>;
     readonly baseSHBridge : BaseSHBridgeSocket;
     readonly authEngine : AuthEngine;
-    readonly socketInfo : SocketInfo;
+    readonly zSocket : ZSocket;
 }
 

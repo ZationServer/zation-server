@@ -4,11 +4,11 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import UpSocket             from "../sc/socket";
+import UpSocket           from "../sc/socket";
 import SidBuilder         from "../utils/sidBuilder";
 import BaseSHBridgeSocket from "../bridges/baseSHBridgeSocket";
 import AuthEngine         from "../auth/authEngine";
-import SocketInfo         from "../infoObjects/socketInfo";
+import ZSocket            from "../infoObjects/ZSocket";
 import ZationWorker     = require("../../main/zationWorker");
 import Mapper             from "../utils/mapper";
 import SocketSet          from "../utils/socketSet";
@@ -62,7 +62,7 @@ export default class SocketUpgradeEngine
         socket.authEngine = authEngine;
 
         // @ts-ignore
-        socket.socketInfo = new SocketInfo(socket);
+        socket.zSocket = new ZSocket(socket);
 
         //socket variables
         // @ts-ignore

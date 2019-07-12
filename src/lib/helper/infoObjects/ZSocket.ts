@@ -11,7 +11,7 @@ import ObjectPath       from "../utils/objectPath";
 import ChUtils          from "../channel/chUtils";
 import BaseSHBridge     from "../bridges/baseSHBridge";
 
-export default class SocketInfo
+export default class ZSocket
 {
     private readonly _socket : UpSocket;
 
@@ -149,15 +149,6 @@ export default class SocketInfo
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Returns all custom id channel subscriptions of the socket.
-     * @param name (optional filter for a specific name)
-     */
-    getCustomIdChSubscriptions(name ?: string) : string[] {
-        return ChUtils.getCustomIdChannelSubscriptions(this._socket,name);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
      * Returns all custom channel subscriptions of the socket.
      * @param name (optional filter for a specific name)
      */
@@ -203,23 +194,12 @@ export default class SocketInfo
      * @param name
      * if it is not provided,
      * it returns if the socket has subscribed any custom channel.
-     */
-    hasSubCustomCh(name ?: string) : boolean {
-        return ChUtils.hasSubCustomCh(this._socket,name);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * Returns if the socket has subscribed the custom id channel.
-     * @param name
-     * if it is not provided,
-     * it returns if the socket has subscribed any custom id channel.
      * @param id
      * if it is not provided,
-     * it returns if the socket has subscribed any custom id channel with the provided name.
+     * it returns if the socket has subscribed any custom channel with the provided name.
      */
-    hasSubCustomIdCh(name ?: string, id ?: string) : boolean {
-        return ChUtils.hasSubCustomIdCh(this._socket,name,id);
+    hasSubCustomCh(name ?: string, id ?: string) : boolean {
+        return ChUtils.hasSubCustomCh(this._socket,name);
     }
 
     // noinspection JSUnusedGlobalSymbols

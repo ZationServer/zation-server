@@ -25,7 +25,7 @@ import TokenUtils                 from "../helper/token/tokenUtils";
 import {ZationToken}              from "../helper/constants/internal";
 import JwtSignOptions             from "../helper/constants/jwt";
 import ChUtils                    from "../helper/channel/chUtils";
-import SocketInfo                 from "../helper/infoObjects/socketInfo";
+import ZSocket                 from "../helper/infoObjects/ZSocket";
 import ApiLevelUtils              from "../helper/apiLevel/apiLevelUtils";
 import CloneUtils                 from "../helper/utils/cloneUtils";
 
@@ -995,13 +995,13 @@ export default class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socket info.
+     * Returns the zSocket.
      * Requires ws request!
      * @throws MethodIsNotCompatibleError
      */
-    getSocketInfo() : SocketInfo {
+    getZSocket() : ZSocket {
         if(this.shBridge.isWebSocket) {
-            return this.shBridge.getSocket().socketInfo;
+            return this.shBridge.getSocket().zSocket;
         }
         else {
             throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get the socket info.');
@@ -1478,7 +1478,7 @@ export default class Bag extends SmallBag
      */
     async publishInUserCh(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket : undefined;
         return this.exchangeEngine.publishInUserCh
         (userId,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
@@ -1516,7 +1516,7 @@ export default class Bag extends SmallBag
      */
     async publishInAllCh(eventName : string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket : undefined;
         return this.exchangeEngine.publishInAllCh
         (eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
@@ -1554,7 +1554,7 @@ export default class Bag extends SmallBag
      */
     async publishInAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket : undefined;
         return this.exchangeEngine.publishInAuthUserGroupCh
         (authUserGroup,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
@@ -1592,7 +1592,7 @@ export default class Bag extends SmallBag
      */
     async publishInDefaultUserGroupCh(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket : undefined;
         return this.exchangeEngine.publishInDefaultUserGroupCh
         (eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
@@ -1628,7 +1628,7 @@ export default class Bag extends SmallBag
      */
     async publishInAllAuthUserGroupsCh(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket : undefined;
         return this.exchangeEngine.publishInAllAuthUserGroupCh
         (eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
@@ -1666,7 +1666,7 @@ export default class Bag extends SmallBag
      */
     async publishInCustomIdCh(channel : string, id : string, eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket : undefined;
         return this.exchangeEngine.publishInCustomIdChannel
         (channel,id,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
@@ -1706,7 +1706,7 @@ export default class Bag extends SmallBag
      */
     async publishInCustomCh(channel : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
     {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().socketInfo : undefined;
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket : undefined;
         return this.exchangeEngine.publishInCustomChannel
         (channel,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }

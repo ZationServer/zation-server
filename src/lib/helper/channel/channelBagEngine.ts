@@ -17,7 +17,7 @@ import ScServer           from "../sc/scServer";
 import {ZationChannel}    from "../constants/internal";
 import {SyncTokenActions} from "../constants/syncTokenActions";
 import {WorkerChTaskType} from "../constants/workerChTaskType";
-import SocketInfo         from "../infoObjects/socketInfo";
+import ZSocket         from "../infoObjects/ZSocket";
 import Logger             from "../logger/logger";
 import ChUtils            from "./chUtils";
 import {ChannelPrepare}   from "./channelPrepare";
@@ -162,7 +162,7 @@ export default class ChannelBagEngine
      * @param srcSocketSid
      * @param socketInfo
      */
-    async publishInUserCh(id : number | string | (string | number)[],eventName : string,data : any,srcSocketSid ?: string,socketInfo ?: SocketInfo) : Promise<void>
+    async publishInUserCh(id : number | string | (string | number)[],eventName : string,data : any,srcSocketSid ?: string,socketInfo ?: ZSocket) : Promise<void>
     {
         const onBagPub = this.chPrepare.getUserChInfo().onBagPub;
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
@@ -192,7 +192,7 @@ export default class ChannelBagEngine
      * @param srcSocketSid
      * @param socketInfo
      */
-    async publishInDefaultUserGroupCh(eventName : string, data : any,srcSocketSid ?: string,socketInfo ?: SocketInfo) : Promise<void>
+    async publishInDefaultUserGroupCh(eventName : string, data : any,srcSocketSid ?: string,socketInfo ?: ZSocket) : Promise<void>
     {
         const onBagPub = this.chPrepare.getDefaultUserGroupChInfo().onBagPub;
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
@@ -208,7 +208,7 @@ export default class ChannelBagEngine
      * @param srcSocketSid
      * @param socketInfo
      */
-    async publishInAllCh(eventName : string,data : any,srcSocketSid ?: string,socketInfo ?: SocketInfo) : Promise<void>
+    async publishInAllCh(eventName : string,data : any,srcSocketSid ?: string,socketInfo ?: ZSocket) : Promise<void>
     {
         const onBagPub = this.chPrepare.getAllChInfo().onBagPub;
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
@@ -225,7 +225,7 @@ export default class ChannelBagEngine
      * @param srcSocketSid
      * @param socketInfo
      */
-    async publishInAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : any,srcSocketSid ?: string,socketInfo ?: SocketInfo) : Promise<void>
+    async publishInAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : any,srcSocketSid ?: string,socketInfo ?: ZSocket) : Promise<void>
     {
         const onBagPub = this.chPrepare.getAuthUserGroupChInfo().onBagPub;
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
@@ -258,7 +258,7 @@ export default class ChannelBagEngine
     async publishInAllAuthUserGroupCh(eventName : string,
                                       data : any,
                                       srcSocketSid ?: string,
-                                      socketInfo ?: SocketInfo) : Promise<void>
+                                      socketInfo ?: ZSocket) : Promise<void>
     {
         await this.publishInAuthUserGroupCh
         (Object.keys(this.aePreparedPart.getAuthGroups()),eventName,data,srcSocketSid,socketInfo);
@@ -273,7 +273,7 @@ export default class ChannelBagEngine
      * @param srcSocketSid
      * @param socketInfo
      */
-    async publishInCustomIdChannel(channel : string, id : any, eventName : string, data : any, srcSocketSid ?: string, socketInfo ?: SocketInfo) : Promise<void>
+    async publishInCustomIdChannel(channel : string, id : any, eventName : string, data : any, srcSocketSid ?: string, socketInfo ?: ZSocket) : Promise<void>
     {
         const onBagPub = this.chPrepare.getSafeCustomChFamilyInfo(channel).onBagPub;
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
@@ -290,7 +290,7 @@ export default class ChannelBagEngine
      * @param srcSocketSid
      * @param socketInfo
      */
-    async publishInCustomChannel(channel : string | string[], eventName : string, data : any, srcSocketSid ?: string, socketInfo ?: SocketInfo) : Promise<void>
+    async publishInCustomChannel(channel : string | string[], eventName : string, data : any, srcSocketSid ?: string, socketInfo ?: ZSocket) : Promise<void>
     {
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
 
