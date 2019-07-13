@@ -30,6 +30,7 @@ export type BeforeCodeErrorFunction = (smallBag : SmallBag, codeError : CodeErro
 export type BeforeBackErrorBagFunction = (smallBag : SmallBag, backErrorBag : BackErrorBag) => Promise<void> | void;
 export type WorkerMessageFunction = (smallBag : SmallBag, data : any) => Promise<void> | void;
 
+export type SocketInitFunction = (smallBag : SmallBag, socket : ZSocket) => Promise<void> | void;
 export type SocketConnectionFunction = (smallBag : SmallBag, socket : ZSocket) => Promise<void> | void;
 export type SocketDisconnectionFunction = (smallBag : SmallBag, socket : ZSocket, code : any, data : any) => Promise<void> | void;
 export type SocketAuthenticationFunction = (smallBag : SmallBag, socket : ZSocket) => Promise<void> | void;
@@ -124,23 +125,28 @@ export interface EventConfig
     workerMessage  ?: WorkerMessageFunction | WorkerMessageFunction[];
 
     /**
+     * An event that can be used to do extra things in the creation process of a socket.
+     * @example (smallBag,zSocket) => {}
+     */
+    socketInit  ?: SocketInitFunction | SocketInitFunction[];
+    /**
      * An event that gets invoked when a new socket is connected to the server.
-     * @example (smallBag,socketInfo) => {}
+     * @example (smallBag,zSocket) => {}
      */
     socketConnection  ?: SocketConnectionFunction | SocketConnectionFunction[];
     /**
      * An event that gets invoked when a socket is disconnected.
-     * @example (smallBag,socketInfo,code,data) => {}
+     * @example (smallBag,zSocket,code,data) => {}
      */
     socketDisconnection  ?: SocketDisconnectionFunction | SocketDisconnectionFunction[];
     /**
      * An event that gets invoked when a socket gets authenticated or the auth token is changed.
-     * @example (smallBag,socketInfo) => {}
+     * @example (smallBag,zSocket) => {}
      */
     socketAuthentication  ?: SocketAuthenticationFunction | SocketAuthenticationFunction[];
     /**
      * An event that gets invoked when a socket gets deauthenticated.
-     * @example (smallBag,socketInfo) => {}
+     * @example (smallBag,zSocket) => {}
      */
     socketDeauthentication  ?: SocketDeauthenticationFunction | SocketDeauthenticationFunction[];
     /**
@@ -221,6 +227,7 @@ export interface PreCompiledEventConfig extends EventConfig
     beforeCodeError  : BeforeCodeErrorFunction;
     workerMessage  : WorkerMessageFunction;
 
+    socketInit : SocketInitFunction;
     socketConnection  : SocketConnectionFunction;
     socketDisconnection  : SocketDisconnectionFunction;
     socketAuthentication  : SocketAuthenticationFunction;

@@ -30,7 +30,11 @@ import
     WorkerInitFunction,
     MasterInitFunction,
     BeforeCodeErrorFunction,
-    SocketAuthenticationFunction, SocketDeauthenticationFunction, SocketConnectionAbortFunction, MiddlewareSocketFunction,
+    SocketAuthenticationFunction,
+    SocketDeauthenticationFunction,
+    SocketConnectionAbortFunction,
+    MiddlewareSocketFunction,
+    SocketInitFunction,
 } from "../helper/config/definitions/eventConfig";
 
 import
@@ -630,6 +634,8 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static workerMessage(func : WorkerMessageFunction) : WorkerMessageFunction {return func;}
 
+    // noinspection JSUnusedGlobalSymbols
+    static socketInit(func : SocketInitFunction) : SocketInitFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
     static socketConnection(func : SocketConnectionFunction) : SocketConnectionFunction {return func;}
     // noinspection JSUnusedGlobalSymbols

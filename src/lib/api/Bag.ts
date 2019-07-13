@@ -22,7 +22,7 @@ import SmallBag                   from "./SmallBag";
 import InputIsNotCompatibleError  from "../helper/error/inputIsNotCompatibleError";
 import MethodIsNotCompatibleError from "../helper/error/methodIsNotCompatibleError";
 import TokenUtils                 from "../helper/token/tokenUtils";
-import {ZationToken}              from "../helper/constants/internal";
+import {ZationCustomEmitNamespace, ZationToken} from "../helper/constants/internal";
 import JwtSignOptions             from "../helper/constants/jwt";
 import ChUtils                    from "../helper/channel/chUtils";
 import ZSocket                    from "../helper/internalApi/ZSocket";
@@ -979,16 +979,16 @@ export default class Bag extends SmallBag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socket.
+     * Returns the raw socket.
      * Requires ws request!
      * @throws MethodIsNotCompatibleError
      */
-    getSocket() : UpSocket {
+    getRawSocket() : UpSocket {
         if(this.shBridge.isWebSocket) {
             return this.shBridge.getSocket();
         }
         else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get the socket.');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get the raw socket.');
         }
     }
 
@@ -999,12 +999,12 @@ export default class Bag extends SmallBag
      * Requires ws request!
      * @throws MethodIsNotCompatibleError
      */
-    getZSocket() : ZSocket {
+    getSocket() : ZSocket {
         if(this.shBridge.isWebSocket) {
             return this.shBridge.getSocket().zSocket;
         }
         else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get the socket info.');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get the socket.');
         }
     }
 
@@ -1079,30 +1079,40 @@ export default class Bag extends SmallBag
     }
 
     //Part Socket
-
+    // noinspection JSUnusedGlobalSymbols
+    async emitToSocket(eventName : string,data : any,onlyTransmit : true) : Promise<void>
+    // noinspection JSUnusedGlobalSymbols
+    async emitToSocket(eventName : string,data : any,onlyTransmit : false) : Promise<any>
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Emit to socket, the return value is an promises with the result.
+     * Emit to the socket.
+     * If you not only transmit than the return value is a promise with the result,
+     * and if an error occurs while emitting to socket, this error is thrown.
      * If this method is used in an http request, an error is thrown.
-     * If an error occurs while emitting to socket, this error is also thrown.
+     * It uses the custom zation emit namespace (so you cannot have name conflicts with internal emit names).
      * Requires ws request!
      * @throws MethodIsNotCompatibleError
-     * @param eventName
+     * @param event
      * @param data
+     * @param onlyTransmit
+     * Indicates if you only want to transmit data.
+     * If not than the promise will be resolved with the result when the client responded on the emit.
      */
-    async emitToSocket(eventName : string,data : any) : Promise<object>
+    async emitToSocket(event : string,data : any,onlyTransmit : boolean = true) : Promise<object | void>
     {
         return new Promise<object>((resolve, reject) => {
             if(this.shBridge.isWebSocket()) {
-                this.shBridge.getSocket().emit(eventName,data,(err,data) => {
-                    if(err) {
-                        reject(err);
-                    }
-                    else {
-                        resolve(data);
-                    }
-                });
+                // noinspection DuplicatedCode
+                if(onlyTransmit){
+                    this.shBridge.getSocket().emit(ZationCustomEmitNamespace+event,data);
+                    resolve();
+                }
+                else {
+                    this.shBridge.getSocket().emit(ZationCustomEmitNamespace+event,data,(err,data) => {
+                        err ? reject(err) : resolve(data);
+                    });
+                }
             }
             else {
                 reject(new MethodIsNotCompatibleError(this.getProtocol(),'ws','Emit to socket.'));
@@ -1243,13 +1253,13 @@ export default class Bag extends SmallBag
      * Kick the current socket from an custom channel.
      * Requires ws request!
      * @example
-     * kickFromCustomIdCh('images','10');
-     * kickFromCustomIdCh('publicChat');
+     * kickFromCustomCh('images','10');
+     * kickFromCustomCh('publicChat');
      * @param name is optional, if it is not given the users will be kicked out from all custom channels.
      * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      * @throws MethodIsNotCompatibleError
      */
-    kickFromCustomIdCh(name ?: string,id ?: string) : void
+    kickFromCustomCh(name ?: string,id ?: string) : void
     {
         if(this.shBridge.isWebSocket) {
             ChUtils.kickCustomChannel(this.shBridge.getSocket(),name,id);

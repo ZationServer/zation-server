@@ -199,6 +199,7 @@ export default class ConfigPreCompiler
             beforeCodeError  : defaultFunc,
             beforeBackErrorBag  : defaultFunc,
             workerMessage  : defaultFunc,
+            socketInit : defaultFunc,
             socketConnection  : defaultFunc,
             socketDisconnection  : defaultFunc,
             socketAuthentication  : defaultFunc,

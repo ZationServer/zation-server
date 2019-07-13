@@ -11,7 +11,7 @@ import {WorkerChTargets}                                    from "../helper/cons
 import AsymmetricKeyPairs                                   from "../helper/internalApi/asymmetricKeyPairs";
 import {WorkerMessageActions}                               from "../helper/constants/workerMessageActions";
 import BackErrorConstruct                                   from "../helper/constants/backErrorConstruct";
-import {ZationToken}                                        from "../helper/constants/internal";
+import {ZationCustomEmitNamespace, ZationToken} from "../helper/constants/internal";
 import {InternalMainConfig}                                 from "../helper/config/definitions/mainConfig";
 import {AppConfig}                                          from "../helper/config/definitions/appConfig";
 import {EventConfig}                                        from "../helper/config/definitions/eventConfig";
@@ -1406,6 +1406,7 @@ export default class SmallBag {
     /**
      * @description
      * Emit to all sockets on complete system with user id (server side).
+     * It uses the custom zation emit namespace (so you cannot have name conflicts with internal emit names).
      * @example
      * emitUser('joel2','myEvent',{myData : 'test'});
      * emitUser('joel2','myEvent',{myData : 'test'},'EXCEPT-SOCKET-SID');
@@ -1416,13 +1417,14 @@ export default class SmallBag {
      */
     async emitUser(userId: number | string | (number | string)[], event: string, data: any = {}, exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.EMIT, userId, exceptSocketSids, {event, data});
+        (WorkerChTargets.USER_IDS, WorkerChMapTaskActions.EMIT, userId, exceptSocketSids, {event:ZationCustomEmitNamespace+event,data});
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
      * Emit to all sockets on complete system with token id (server side).
+     * It uses the custom zation emit namespace (so you cannot have name conflicts with internal emit names).
      * @example
      * emitToken('TOKEN-UUID1','myEvent',{myData : 'test'});
      * emitToken('TOKEN-UUID2','myEvent',{myData : 'test'},'EXCEPT-SOCKET-SID');
@@ -1433,13 +1435,14 @@ export default class SmallBag {
      */
     async emitTokens(tokenId: string | string[], event: string, data: any = {}, exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.TOKEN_IDS, WorkerChMapTaskActions.EMIT, tokenId, exceptSocketSids, {event, data});
+        (WorkerChTargets.TOKEN_IDS, WorkerChMapTaskActions.EMIT, tokenId, exceptSocketSids, {event:ZationCustomEmitNamespace+event, data});
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
      * Emit to all sockets on complete system (server side).
+     * It uses the custom zation emit namespace (so you cannot have name conflicts with internal emit names).
      * @example
      * emitAllSockets('myEvent',{myData : 'test'});
      * emitAllSockets('myEvent',{myData : 'test'},'EXCEPT-SOCKET-SID');
@@ -1449,13 +1452,14 @@ export default class SmallBag {
      */
     async emitAllSockets(event: string, data: any = {}, exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.ALL_SOCKETS, WorkerChMapTaskActions.EMIT, [], exceptSocketSids, {event, data});
+        (WorkerChTargets.ALL_SOCKETS, WorkerChMapTaskActions.EMIT, [], exceptSocketSids, {event:ZationCustomEmitNamespace+event, data});
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
      * Emit to all sockets with sid on complete system (server side).
+     * It uses the custom zation emit namespace (so you cannot have name conflicts with internal emit names).
      * @example
      * emitSockets('SOCKET-SID','myEvent',{myData : 'test'});
      * emitSockets(['SOCKET-SID-1','SOCKET-SID-2'],'myEvent',{myData : 'test'});
@@ -1465,13 +1469,14 @@ export default class SmallBag {
      */
     async emitSockets(socketSid: string | string[], event: string, data: any = {}): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.EMIT, socketSid, [], {event, data});
+        (WorkerChTargets.SOCKETS_SIDS, WorkerChMapTaskActions.EMIT, socketSid, [], {event:ZationCustomEmitNamespace+event, data});
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
      * Emit to specific auth user groups on complete system (server side).
+     * It uses the custom zation emit namespace (so you cannot have name conflicts with internal emit names).
      * @example
      * emitAuthUserGroups('admin','myEvent',{myData : 'test'});
      * emitAuthUserGroups(['user','admin'],'myEvent',{myData : 'test'});
@@ -1484,7 +1489,7 @@ export default class SmallBag {
     async emitAuthUserGroups(authUserGroup: string | null | (string)[], event: string, data: any = {}, exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChTargets.AUTH_USER_GROUPS, WorkerChMapTaskActions.EMIT, authUserGroup || [], exceptSocketSids, {
-            event,
+            event:ZationCustomEmitNamespace+event,
             data,
             all: authUserGroup === null
         });
@@ -1494,6 +1499,7 @@ export default class SmallBag {
     /**
      * @description
      * Emit to default user group on complete system (server side).
+     * It uses the custom zation emit namespace (so you cannot have name conflicts with internal emit names).
      * @example
      * emitDefaultUserGroup('myEvent',{myData : 'test'});
      * emitDefaultUserGroup('myEvent',{myData : 'test'},'EXCEPT-SOCKET-SID');
@@ -1503,7 +1509,7 @@ export default class SmallBag {
      */
     async emitDefaultUserGroup(event: string, data: any = {}, exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChTargets.DEFAULT_USER_GROUP, WorkerChMapTaskActions.EMIT, [], exceptSocketSids, {event, data});
+        (WorkerChTargets.DEFAULT_USER_GROUP, WorkerChMapTaskActions.EMIT, [], exceptSocketSids, {event:ZationCustomEmitNamespace+event, data});
     }
 
     //Part Security

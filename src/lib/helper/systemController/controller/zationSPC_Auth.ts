@@ -41,7 +41,7 @@ export default class ZationSPC_Auth extends Controller
             const token = TokenUtils.generateToken(bag.getZationConfig().internalData.tokenClusterKey);
             token[nameof<ZationToken>(s => s.zationPanelAccess)] = true;
             token[nameof<ZationToken>(s => s.zationOnlyPanelToken)] = true;
-            bag.getSocket().setAuthToken(token);
+            bag.getRawSocket().setAuthToken(token);
 
             await bag.setTokenVariable('ZATION-PANEL-USER-NAME',username);
         }

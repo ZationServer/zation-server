@@ -4,8 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ZationToken}    from "../constants/internal";
-import UpSocket         from "../sc/socket";
+import {ZationCustomEmitNamespace, ZationToken} from "../constants/internal";
+import UpSocket, {OnHandlerFunction}            from "../sc/socket";
 import TokenUtils       from "../token/tokenUtils";
 import ObjectPath       from "../utils/objectPath";
 import ChUtils          from "../channel/chUtils";
@@ -208,5 +208,51 @@ export default class ZSocket
      */
     hasPanelOutCh() : boolean {
         return ChUtils.hasSubPanelOutCh(this._socket);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    async emit(eventName : string,data : any,onlyTransmit : true) : Promise<void>
+    // noinspection JSUnusedGlobalSymbols
+    async emit(eventName : string,data : any,onlyTransmit : false) : Promise<any>
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Emit to the socket.
+     * If you not only transmit than the return value is a promise with the result,
+     * and if an error occurs while emitting to socket, this error is thrown.
+     * It uses the custom zation emit namespace (so you cannot have name conflicts with internal emit names).
+     * @param event
+     * @param data
+     * @param onlyTransmit
+     * Indicates if you only want to transmit data.
+     * If not than the promise will be resolved with the result when the client responded on the emit.
+     */
+    async emit(event : string,data : any,onlyTransmit : boolean = true) : Promise<object | void>
+    {
+        return new Promise<object>((resolve, reject) => {
+            // noinspection DuplicatedCode
+            if(onlyTransmit){
+                this.shBridge.getSocket().emit(ZationCustomEmitNamespace+event,data);
+                resolve();
+            }
+            else {
+                this.shBridge.getSocket().emit(ZationCustomEmitNamespace+event,data,(err,data) => {
+                    err ? reject(err) : resolve(data);
+                });
+            }
+        });
+    }
+
+    /**
+     * Respond on emit events of the socket.
+     * It uses the custom zation emit namespace
+     * (so you cannot have name conflicts with internal emit names).
+     * @param event
+     * @param handler
+     * The function that gets called when the event occurs,
+     * parameters are the data and a response function that you can call to respond on the event back.
+     */
+    on(event : string,handler : OnHandlerFunction){
+        this.socket.on(ZationCustomEmitNamespace+event,handler);
     }
 }

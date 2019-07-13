@@ -327,11 +327,12 @@ EventConfig[nameof<EventConfig>(s => s.httpServerStarted)]      = {types : ['fun
 EventConfig[nameof<EventConfig>(s => s.wsServerStarted)]        = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.started)]                = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.beforeError)]            = {types : ['function','array'],arrayType : 'function',isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.beforeBackError)]        = {types : ['function','array'],arrayType : 'function',isOptional : true}
-EventConfig[nameof<EventConfig>(s => s.beforeBackErrorBag)]     = {types : ['function','array'],arrayType : 'function',isOptional : true};;
+EventConfig[nameof<EventConfig>(s => s.beforeBackError)]        = {types : ['function','array'],arrayType : 'function',isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.beforeBackErrorBag)]     = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.beforeCodeError)]        = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.workerMessage)]          = {types : ['function','array'],arrayType : 'function',isOptional : true};
 
+EventConfig[nameof<EventConfig>(s => s.socketInit)]              = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.socketConnection)]        = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.socketDisconnection)]     = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.socketAuthentication)]    = {types : ['function','array'],arrayType : 'function',isOptional : true};
