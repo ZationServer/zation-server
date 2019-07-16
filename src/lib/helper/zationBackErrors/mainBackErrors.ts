@@ -132,6 +132,17 @@ export const MainBackErrors = {
         fromZationSystem : true
     },
 
+    dataBoxNotFound  : {
+        name          : 'dataBoxNotFound',
+        description   : 'The DataBox is not found.',
+        type          : ErrorType.SYSTEM_ERROR,
+        sendInfo      : false,
+        private       : true,
+        //INFO
+        // className
+        fromZationSystem : true
+    },
+
     inputParamIsMissing    : {
         name          : 'inputParamIsMissing',
         description   : 'Input param is missing.',
