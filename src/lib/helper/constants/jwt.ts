@@ -13,4 +13,5 @@ export default interface JwtSignOptions extends Record<string,any> {
 export default interface JwtVerifyOptions extends Record<string,any> {
     algorithms ?: string[];
     maxAge ?: string | number;
+    ignoreExpiration ?: boolean;
 }
