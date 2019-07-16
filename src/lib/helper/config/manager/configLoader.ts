@@ -29,7 +29,6 @@ export default class ConfigLoader {
         checkConfigs : true,
         mainConfig : 'main.config',
         appConfig : 'app.config',
-        errorConfig : 'error.config',
         eventConfig : 'event.config',
         serviceConfig : 'service.config'
     };
