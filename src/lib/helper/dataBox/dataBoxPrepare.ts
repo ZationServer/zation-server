@@ -13,7 +13,7 @@ import DataBoxCore, {DbPreparedData}                            from "../../api/
 import ZationWorker                                           = require("../../main/zationWorker");
 import {ErrorName}                                              from "../constants/errorName";
 import {DataBoxClassDef, DataBoxConfig}                         from "../config/definitions/dataBoxConfig";
-import DataBoxFamily, {DataIdBoxClass}                              from "../../api/dataBox/DataBoxFamily";
+import DataBoxFamily, {DataBoxFamilyClass}                      from "../../api/dataBox/DataBoxFamily";
 import IdValidCheckerUtils                                      from "../id/idValidCheckerUtils";
 import DataBox, {DataBoxClass}                                  from "../../api/dataBox/DataBox";
 
@@ -145,7 +145,7 @@ export default class DataBoxPrepare
             (id,this.worker.getPreparedSmallBag(),dbPreparedData,apiLevel);
         }
         else if(dataBox.prototype instanceof DataBoxFamily){
-            dbInstance = new (dataBox as DataIdBoxClass)
+            dbInstance = new (dataBox as DataBoxFamilyClass)
             (id,this.worker.getPreparedSmallBag(),dbPreparedData,
                 IdValidCheckerUtils.createIdValidChecker(dataBox.prototype.isIdValid,this.smallBag)
                 ,apiLevel);
@@ -153,6 +153,14 @@ export default class DataBoxPrepare
         else {
             throw new Error('Unexpected DataBox class type');
         }
+
+        Object.defineProperty(dataBox,'___instance',{
+            value : dbInstance,
+            configurable : false,
+            enumerable : false,
+            writable : false
+        });
+
         await dbInstance.initialize(this.worker.getPreparedSmallBag());
 
         return dbInstance;
