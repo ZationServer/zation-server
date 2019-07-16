@@ -10,6 +10,8 @@ import TokenUtils       from "../token/tokenUtils";
 import ObjectPath       from "../utils/objectPath";
 import ChUtils          from "../channel/chUtils";
 import BaseSHBridge     from "../bridges/baseSHBridge";
+import DataBoxFamily    from "../../api/dataBox/DataBoxFamily";
+import DataBox          from "../../api/dataBox/DataBox";
 
 export default class ZSocket
 {
@@ -208,6 +210,14 @@ export default class ZSocket
      */
     hasPanelOutCh() : boolean {
         return ChUtils.hasSubPanelOutCh(this._socket);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns the DataBoxes where the socket is connected to.
+     */
+    getDataBoxes() : (DataBoxFamily | DataBox)[] {
+        return this.socket.dataBoxes;
     }
 
     // noinspection JSUnusedGlobalSymbols
