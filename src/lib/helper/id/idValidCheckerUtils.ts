@@ -29,10 +29,7 @@ export default class IdValidCheckerUtils {
                     const err : any = new Error(`The id: '${id}' is not valid.`);
                     err.name = ErrorName.ID_IS_NOT_VALID;
                     if(isObject){err.info = res;}
-                    return err;
-                }
-                else {
-                    return;
+                    throw err;
                 }
             }
         }
