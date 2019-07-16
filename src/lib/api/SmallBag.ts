@@ -46,8 +46,12 @@ import CloneUtils                                           from "../helper/util
 import JwtSignOptions                                       from "../helper/constants/jwt";
 import JwtVerifyOptions                                     from "../helper/constants/jwt";
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction} from "../helper/apiLevel/apiLevelUtils";
-import {ZationChannel} from "../helper/channel/channelDefinitions";
-
+import {ZationChannel}                                         from "../helper/channel/channelDefinitions";
+import {DataBoxFamilyClass}                                    from "./dataBox/DataBoxFamily";
+import DataBoxFamilyContainer                                  from "../helper/dataBox/container/dataBoxFamilyContainer";
+import DataBoxContainer                                        from "../helper/dataBox/container/dataBoxContainer";
+import {DataBoxClass}                                          from "./dataBox/DataBox";
+import DataBoxUtils                                            from "../helper/dataBox/dataBoxUtils";
 
 export default class SmallBag {
     protected readonly exchangeEngine: ChannelBagEngine;
@@ -2397,5 +2401,56 @@ export default class SmallBag {
     async sendWorkerMessage(data : any) : Promise<void> {
         await this.exchangeEngine.publishSpecialTaskToWorker
         (WorkerChSpecialTaskActions.MESSAGE, {data : data});
+    }
+
+    /**
+     * This function helps to access your DataBoxes.
+     * You only need to call the method with the classes of the DataBoxes.
+     * It returns a DataBoxContainer or DataBoxFamilyContainer.
+     * With these containers, you can interact with one or more boxes.
+     * So, for example, if you have two DataBoxes with different API levels from the same type,
+     * you can communicate directly with both.
+     * It is recommended if you use this method in a controller
+     * that you prepare the creation of the Container in the initialize method.
+     * @example
+     * dataBox(ProfileDataBoxFamilyV1,ProfileDataBoxFamilyV2);
+     * dataBox(PublicChatDataBox);
+     * @param dataBoxes
+     * The classes of the DataBoxes.
+     */
+    dataBox(...dataBoxes : DataBoxFamilyClass[]) : DataBoxFamilyContainer;
+    /**
+     * This function helps to access your DataBoxes.
+     * You only need to call the method with the classes of the DataBoxes.
+     * It returns a DataBoxContainer or DataBoxFamilyContainer.
+     * With these containers, you can interact with one or more boxes.
+     * So, for example, if you have two DataBoxes with different API levels from the same type,
+     * you can communicate directly with both.
+     * It is recommended if you use this method in a controller
+     * that you prepare the creation of the Container in the initialize method.
+     * @example
+     * dataBox(ProfileDataBoxFamilyV1,ProfileDataBoxFamilyV2);
+     * dataBox(PublicChatDataBox);
+     * @param dataBoxes
+     * The classes of the DataBoxes.
+     */
+    dataBox(...dataBoxes : DataBoxClass[]) : DataBoxContainer;
+    /**
+     * This function helps to access your DataBoxes.
+     * You only need to call the method with the classes of the DataBoxes.
+     * It returns a DataBoxContainer or DataBoxFamilyContainer.
+     * With these containers, you can interact with one or more boxes.
+     * So, for example, if you have two DataBoxes with different API levels from the same type,
+     * you can communicate directly with both.
+     * It is recommended if you use this method in a controller
+     * that you prepare the creation of the Container in the initialize method.
+     * @example
+     * dataBox(ProfileDataBoxFamilyV1,ProfileDataBoxFamilyV2);
+     * dataBox(PublicChatDataBox);
+     * @param dataBoxes
+     * The classes of the DataBoxes.
+     */
+    dataBox(...dataBoxes : DataBoxFamilyClass[] | DataBoxClass[]) : DataBoxFamilyContainer | DataBoxContainer {
+       return DataBoxUtils.getDbContainer(dataBoxes);
     }
 }
