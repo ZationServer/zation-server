@@ -16,40 +16,40 @@ import JwtSignOptions      from "../../constants/jwt";
 
 export default abstract class ZationConfig {
 
-    protected _starterConfig : StarterConfig;
-    protected _mainConfig : InternalMainConfig;
-    protected _preLoadJwtSignOptions : JwtSignOptions = {};
+    protected _starterConfig: StarterConfig;
+    protected _mainConfig: InternalMainConfig;
+    protected _preLoadJwtSignOptions: JwtSignOptions = {};
 
-    protected _configLocations : ConfigLocations;
+    protected _configLocations: ConfigLocations;
 
     protected _internalData: InternalData;
 
-    protected _rootPath : string;
-    protected _startMode : number;
+    protected _rootPath: string;
+    protected _startMode: number;
 
-    private readonly _preparedZationInfo : ZationInfo = new ZationInfo(this);
+    private readonly _preparedZationInfo: ZationInfo = new ZationInfo(this);
 
-    inTestMode() : boolean {
+    inTestMode(): boolean {
         return this._startMode == StartMode.TEST;
     }
 
-    inNormalMode() : boolean {
+    inNormalMode(): boolean {
         return this._startMode == StartMode.NORMAL;
     }
 
-    getStartMode() : StartMode {
+    getStartMode(): StartMode {
         return this._startMode;
     }
 
     getZcTransport(): ZcTransport {
         return {
-            mainConfig : this._mainConfig,
-            starterConfig : this._starterConfig,
-            startMode : this._startMode,
-            rootPath : this._rootPath,
-            internalData : this._internalData,
-            configLocations : this._configLocations,
-            preLoadJwtSignOptions : this._preLoadJwtSignOptions
+            mainConfig: this._mainConfig,
+            starterConfig: this._starterConfig,
+            startMode: this._startMode,
+            rootPath: this._rootPath,
+            internalData: this._internalData,
+            configLocations: this._configLocations,
+            preLoadJwtSignOptions: this._preLoadJwtSignOptions
         };
     }
 
@@ -76,6 +76,10 @@ export default abstract class ZationConfig {
 
     getSignKey(): any {
         return this._internalData.signKey;
+    }
+
+    getDataBoxKey(): string {
+        return this.internalData.dataBoxKey;
     }
 
     getZationInfo(): ZationInfo {

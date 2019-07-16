@@ -7,6 +7,7 @@ GitHub: LucaCode
 export default interface InternalData {
     tokenClusterKey : string,
     signKey : string,
-    verifyKey : string
+    verifyKey : string,
+    dataBoxKey : string
 }
 
