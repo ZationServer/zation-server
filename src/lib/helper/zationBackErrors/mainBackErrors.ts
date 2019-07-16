@@ -121,8 +121,8 @@ export const MainBackErrors = {
         fromZationSystem : true
     },
 
-    unknownCustomChError  : {
-        name          : 'unknownCustomChError',
+    unknownCustomCh  : {
+        name          : 'unknownCustomCh',
         description   : 'Unknown custom channel',
         type          : ErrorType.SYSTEM_ERROR,
         sendInfo      : false,

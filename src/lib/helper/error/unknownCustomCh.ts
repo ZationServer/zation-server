@@ -13,7 +13,7 @@ export default class UnknownCustomCh extends CodeError
 
     constructor(chName : string)
     {
-        super(MainBackErrors.unknownCustomChError,{name : chName});
+        super(MainBackErrors.unknownCustomCh,{name : chName});
         this.chName = chName;
     }
 
