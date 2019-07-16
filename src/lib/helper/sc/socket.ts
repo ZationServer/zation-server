@@ -8,7 +8,9 @@ import {ZationToken}        from "../constants/internal";
 import {IncomingMessage}    from "http";
 import BaseSHBridgeSocket   from "../bridges/baseSHBridgeSocket";
 import AuthEngine           from "../auth/authEngine";
-import ZSocket           from "../internalApi/ZSocket";
+import ZSocket              from "../internalApi/ZSocket";
+import DataBox              from "../../api/dataBox/DataBox";
+import DataBoxFamily        from "../../api/dataBox/DataBoxFamily";
 
 export type OnHandlerFunction = (data : any, response : RespondFunction) => void
 export type RespondFunction = (err ?: any | number, responseData ?: any) => void
@@ -72,6 +74,7 @@ export default interface UpSocket extends HandshakeSocket {
     readonly tid : string;
 
     zationSocketVariables : Record<string,any>;
+    dataBoxes : (DataBox | DataBoxFamily)[];
     readonly baseSHBridge : BaseSHBridgeSocket;
     readonly authEngine : AuthEngine;
     readonly zSocket : ZSocket;
