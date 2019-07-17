@@ -8,6 +8,7 @@ import DataBox              from "../../../api/dataBox/DataBox";
 import UpSocket             from "../../sc/socket";
 import DbCudActionSequence  from "../dbCudActionSequence";
 import DataBoxUtils         from "../dataBoxUtils";
+import {InfoOption, IfContainsOption, TimestampOption} from "../dbDefinitions";
 
 export default class DataBoxContainer {
 
@@ -27,15 +28,12 @@ export default class DataBoxContainer {
      * If you want to do more changes, you should look at the seqEdit method.
      * @param keyPath
      * @param value
-     * @param timestamp
-     * This parameter is optional and only for advanced use cases.
-     * The timeout is used to keep the sequence of data.
-     * The client, for example, will only update data that is older as incoming data
+     * @param options
      */
-    async insert(keyPath: string[] | string, value: any,timestamp ?: number): Promise<void> {
+    async insert(keyPath: string[] | string, value: any,options : IfContainsOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.dataBoxes.length;i++) {
-            promises.push(this.dataBoxes[i].insert(keyPath,value,timestamp));
+            promises.push(this.dataBoxes[i].insert(keyPath,value,options));
         }
         await Promise.all(promises);
     }
@@ -50,15 +48,12 @@ export default class DataBoxContainer {
      * If you want to do more changes, you should look at the seqEdit method.
      * @param keyPath
      * @param value
-     * @param timestamp
-     * This parameter is optional and only for advanced use cases.
-     * The timeout is used to keep the sequence of data.
-     * The client, for example, will only update data that is older as incoming data
+     * @param options
      */
-    async update(keyPath: string[] | string, value: any,timestamp ?: number): Promise<void> {
+    async update(keyPath: string[] | string, value: any,options : InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.dataBoxes.length;i++) {
-            promises.push(this.dataBoxes[i].update(keyPath,value,timestamp));
+            promises.push(this.dataBoxes[i].update(keyPath,value,options));
         }
         await Promise.all(promises);
     }
@@ -72,15 +67,12 @@ export default class DataBoxContainer {
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * @param keyPath
-     * @param timestamp
-     * This parameter is optional and only for advanced use cases.
-     * The timeout is used to keep the sequence of data.
-     * The client, for example, will only update data that is older as incoming data
+     * @param options
      */
-    async delete(keyPath: string[] | string,timestamp ?: number): Promise<void> {
+    async delete(keyPath: string[] | string,options : InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.dataBoxes.length;i++) {
-            promises.push(this.dataBoxes[i].delete(keyPath,timestamp));
+            promises.push(this.dataBoxes[i].delete(keyPath,options));
         }
         await Promise.all(promises);
     }
@@ -93,9 +85,9 @@ export default class DataBoxContainer {
      * It will not automatically update the databank,
      * so you have to do it in the before-events or before calling this method.
      * @param timestamp
-     * This parameter is optional and only for advanced use cases.
-     * The timeout is used to keep the sequence of data.
-     * The client, for example, will only update data that is older as incoming data
+     * With the timestamp option, you can change the sequence of data.
+     * The client, for example, will only update data that is older as incoming data.
+     * Use this option only if you know what you are doing.
      */
     seqEdit(timestamp ?: number): DbCudActionSequence {
         return new DbCudActionSequence(async (actions) => {
@@ -115,10 +107,11 @@ export default class DataBoxContainer {
      * For example, a chat that doesn't exist anymore.
      * @param code
      * @param data
+     * @param forEveryWorker
      */
-    close(code: number, data: any): void {
+    close(code ?: number | string, data ?: any,forEveryWorker : boolean = true): void {
         for(let i = 0; i < this.dataBoxes.length;i++) {
-            this.dataBoxes[i].close(code,data);
+            this.dataBoxes[i].close(code,data,forEveryWorker);
         }
     }
 
@@ -126,11 +119,13 @@ export default class DataBoxContainer {
      * The reload function will force all clients of the DataBox to reload the data.
      * This method is used internally if it was detected that a worker had
      * missed a cud (create, update, or delete) operation.
-     * @param forEveryServer
+     * @param forEveryWorker
+     * @param code
+     * @param data
      */
-    doReload(forEveryServer: boolean): void {
+    doReload(forEveryWorker: boolean = false,code ?: number | string,data ?: any): void {
         for(let i = 0; i < this.dataBoxes.length;i++) {
-            this.dataBoxes[i].doReload(forEveryServer);
+            this.dataBoxes[i].doReload(forEveryWorker,code,data);
         }
     }
 
@@ -138,10 +133,12 @@ export default class DataBoxContainer {
      * With this function, you can kick out a socket from the DataBox.
      * This method is used internally.
      * @param socket
+     * @param code
+     * @param data
      */
-    kickOut(socket: UpSocket): void {
+    kickOut(socket: UpSocket,code ?: number | string,data ?: any): void {
         for(let i = 0; i < this.dataBoxes.length;i++) {
-            this.dataBoxes[i].kickOut(socket);
+            this.dataBoxes[i].kickOut(socket,code,data);
         }
     }
 }

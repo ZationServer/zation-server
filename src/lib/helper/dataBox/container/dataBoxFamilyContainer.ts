@@ -8,6 +8,7 @@ import UpSocket             from "../../sc/socket";
 import DbCudActionSequence  from "../dbCudActionSequence";
 import DataBoxFamily        from "../../../api/dataBox/DataBoxFamily";
 import DataBoxUtils         from "../dataBoxUtils";
+import {InfoOption, IfContainsOption, TimestampOption} from "../dbDefinitions";
 
 export default class DataBoxFamilyContainer {
 
@@ -28,15 +29,12 @@ export default class DataBoxFamilyContainer {
      * @param id The member of the family you want to update.
      * @param keyPath
      * @param value
-     * @param timestamp
-     * This parameter is optional and only for advanced use cases.
-     * The timeout is used to keep the sequence of data.
-     * The client, for example, will only update data that is older as incoming data
+     * @param options
      */
-    async insert(id : string,keyPath: string[] | string, value: any,timestamp ?: number): Promise<void> {
+    async insert(id : string,keyPath: string[] | string, value: any,options : IfContainsOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.dataBoxFamilies.length;i++) {
-            promises.push(this.dataBoxFamilies[i].insert(id,keyPath,value,timestamp));
+            promises.push(this.dataBoxFamilies[i].insert(id,keyPath,value,options));
         }
         await Promise.all(promises);
     }
@@ -52,15 +50,12 @@ export default class DataBoxFamilyContainer {
      * @param id The member of the family you want to update.
      * @param keyPath
      * @param value
-     * @param timestamp
-     * This parameter is optional and only for advanced use cases.
-     * The timeout is used to keep the sequence of data.
-     * The client, for example, will only update data that is older as incoming data
+     * @param options
      */
-    async update(id : string,keyPath: string[] | string, value: any,timestamp ?: number): Promise<void> {
+    async update(id : string,keyPath: string[] | string, value: any,options : InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.dataBoxFamilies.length;i++) {
-            promises.push(this.dataBoxFamilies[i].update(id,keyPath,value,timestamp));
+            promises.push(this.dataBoxFamilies[i].update(id,keyPath,value,options));
         }
         await Promise.all(promises);
     }
@@ -75,15 +70,12 @@ export default class DataBoxFamilyContainer {
      * If you want to do more changes, you should look at the seqEdit method.
      * @param id The member of the family you want to update.
      * @param keyPath
-     * @param timestamp
-     * This parameter is optional and only for advanced use cases.
-     * The timeout is used to keep the sequence of data.
-     * The client, for example, will only update data that is older as incoming data
+     * @param options
      */
-    async delete(id : string,keyPath: string[] | string,timestamp ?: number): Promise<void> {
+    async delete(id : string,keyPath: string[] | string,options : InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.dataBoxFamilies.length;i++) {
-            promises.push(this.dataBoxFamilies[i].delete(id,keyPath,timestamp));
+            promises.push(this.dataBoxFamilies[i].delete(id,keyPath,options));
         }
         await Promise.all(promises);
     }
@@ -97,9 +89,9 @@ export default class DataBoxFamilyContainer {
      * so you have to do it in the before-events or before calling this method.
      * @param id The member of the family you want to edit.
      * @param timestamp
-     * This parameter is optional and only for advanced use cases.
-     * The timeout is used to keep the sequence of data.
-     * The client, for example, will only update data that is older as incoming data
+     * With the timestamp option, you can change the sequence of data.
+     * The client, for example, will only update data that is older as incoming data.
+     * Use this option only if you know what you are doing.
      */
     seqEdit(id : string,timestamp ?: number): DbCudActionSequence {
         return new DbCudActionSequence(async (actions) => {
@@ -120,10 +112,11 @@ export default class DataBoxFamilyContainer {
      * @param id The member of the family you want to close.
      * @param code
      * @param data
+     * @param forEveryWorker
      */
-    close(id : string,code: number, data: any): void {
+    close(id : string,code ?: number | string, data ?: any,forEveryWorker : boolean = true): void {
         for(let i = 0; i < this.dataBoxFamilies.length;i++) {
-            this.dataBoxFamilies[i].close(id,code,data);
+            this.dataBoxFamilies[i].close(id,code,data,forEveryWorker);
         }
     }
 
@@ -132,11 +125,13 @@ export default class DataBoxFamilyContainer {
      * This method is used internally if it was detected that a worker had
      * missed a cud (create, update, or delete) operation.
      * @param id The member of the family you want to force to reload.
-     * @param forEveryServer
+     * @param forEveryWorker
+     * @param code
+     * @param data
      */
-    doReload(id : string,forEveryServer: boolean): void {
+    doReload(id : string,forEveryWorker: boolean = false,code ?: number | string,data ?: any): void {
         for(let i = 0; i < this.dataBoxFamilies.length;i++) {
-            this.dataBoxFamilies[i].doReload(id,forEveryServer);
+            this.dataBoxFamilies[i].doReload(id,forEveryWorker,code,data);
         }
     }
 
@@ -144,10 +139,12 @@ export default class DataBoxFamilyContainer {
      * With this function, you can kick out a socket from the DataBox.
      * This method is used internally.
      * @param socket
+     * @param code
+     * @param data
      */
-    kickOut(socket: UpSocket): void {
+    kickOut(socket: UpSocket,code ?: number | string,data ?: any): void {
         for(let i = 0; i < this.dataBoxFamilies.length;i++) {
-            this.dataBoxFamilies[i].kickOut(socket);
+            this.dataBoxFamilies[i].kickOut(socket,code,data);
         }
     }
 }
