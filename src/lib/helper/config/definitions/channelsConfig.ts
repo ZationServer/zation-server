@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import ZSocket              from "../../internalApi/ZSocket";
-import SmallBag             from "../../../api/SmallBag";
+import Bag                  from "../../../api/Bag";
 import PubData              from "../../internalApi/pubData";
 import CChFamilyInfo        from "../../internalApi/cChFamilyInfo";
 import CChInfo              from "../../internalApi/cChInfo";
@@ -14,89 +14,89 @@ import {IdValidConfig, SystemAccessConfig, VersionAccessConfig} from "./configCo
 type AnyFunction = (...args : any[]) => Promise<any> | any
 
 export type CChannelFamilyOnClientPubFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : ZSocket, chInfo : CChFamilyInfo) => Promise<void> | void;
+    (bag : Bag, pubData : PubData, socketInfo : ZSocket, chInfo : CChFamilyInfo) => Promise<void> | void;
 
 export type CChannelFamilyOnBagPubFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : ZSocket | undefined, chInfo : CChFamilyInfo) => Promise<void> | void;
+    (bag : Bag, pubData : PubData, socketInfo : ZSocket | undefined, chInfo : CChFamilyInfo) => Promise<void> | void;
 
 export type CChannelFamilyOnSubFunction =
-    (smallBag : SmallBag, socketInfo : ZSocket, chInfo : CChFamilyInfo) => Promise<void> | void;
+    (bag : Bag, socketInfo : ZSocket, chInfo : CChFamilyInfo) => Promise<void> | void;
 
 export type CChannelFamilyOnUnsubFunction =
-    (smallBag : SmallBag, socketInfo : ZSocket, chInfo : CChFamilyInfo) => Promise<void> | void;
+    (bag : Bag, socketInfo : ZSocket, chInfo : CChFamilyInfo) => Promise<void> | void;
 
 export type CChannelFamilyClientPubAccessFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : ZSocket, chInfo : CChFamilyInfo) => Promise<boolean> | boolean;
+    (bag : Bag, pubData : PubData, socketInfo : ZSocket, chInfo : CChFamilyInfo) => Promise<boolean> | boolean;
 
 export type CChannelFamilySubAccessFunction =
-    (smallBag : SmallBag, socketInfo : ZSocket, chInfo : CChFamilyInfo) => Promise<boolean> | boolean;
+    (bag : Bag, socketInfo : ZSocket, chInfo : CChFamilyInfo) => Promise<boolean> | boolean;
 
 
 export type CChannelOnClientPubFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : ZSocket, chInfo : CChInfo) => Promise<void> | void;
+    (bag : Bag, pubData : PubData, socketInfo : ZSocket, chInfo : CChInfo) => Promise<void> | void;
 
 export type CChannelOnBagPubFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : ZSocket | undefined, chInfo : CChInfo) => Promise<void> | void;
+    (bag : Bag, pubData : PubData, socketInfo : ZSocket | undefined, chInfo : CChInfo) => Promise<void> | void;
 
 export type CChannelOnSubFunction =
-    (smallBag : SmallBag, socketInfo : ZSocket, chInfo : CChInfo) => Promise<void> | void;
+    (bag : Bag, socketInfo : ZSocket, chInfo : CChInfo) => Promise<void> | void;
 
 export type CChannelOnUnsubFunction =
-    (smallBag : SmallBag, socketInfo : ZSocket, chInfo : CChInfo) => Promise<void> | void;
+    (bag : Bag, socketInfo : ZSocket, chInfo : CChInfo) => Promise<void> | void;
 
 export type CChannelClientPubAccessFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : ZSocket, chInfo : CChInfo) => Promise<boolean> | boolean;
+    (bag : Bag, pubData : PubData, socketInfo : ZSocket, chInfo : CChInfo) => Promise<boolean> | boolean;
 
 export type CChannelSubAccessFunction =
-    (smallBag : SmallBag, socketInfo : ZSocket, chInfo : CChInfo) => Promise<boolean> | boolean;
+    (bag : Bag, socketInfo : ZSocket, chInfo : CChInfo) => Promise<boolean> | boolean;
 
 
 export type UserChOnClientPubFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : ZSocket, userId : string) => Promise<void> | void;
+    (bag : Bag, pubData : PubData, socketInfo : ZSocket, userId : string) => Promise<void> | void;
 
 export type UserChOnBagPubFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : ZSocket | undefined, userId : string) => Promise<void> | void;
+    (bag : Bag, pubData : PubData, socketInfo : ZSocket | undefined, userId : string) => Promise<void> | void;
 
 export type UserChOnSubFunction =
-    (smallBag : SmallBag, socketInfo : ZSocket, userId : string) => Promise<void> | void;
+    (bag : Bag, socketInfo : ZSocket, userId : string) => Promise<void> | void;
 
 export type UserChOnUnsubFunction =
-    (smallBag : SmallBag, socketInfo : ZSocket, userId : string) => Promise<void> | void;
+    (bag : Bag, socketInfo : ZSocket, userId : string) => Promise<void> | void;
 
 export type UserChClientPubAccessFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : ZSocket, userId : string) => Promise<boolean> | boolean;
+    (bag : Bag, pubData : PubData, socketInfo : ZSocket, userId : string) => Promise<boolean> | boolean;
 
 
 export type AuthUserGroupChOnClientPubFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : ZSocket, authUserGroup  : string,) => Promise<void> | void;
+    (bag : Bag, pubData : PubData, socketInfo : ZSocket, authUserGroup  : string,) => Promise<void> | void;
 
 export type AuthUserGroupChOnBagPubFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : ZSocket | undefined, authUserGroup  : string) => Promise<void> | void;
+    (bag : Bag, pubData : PubData, socketInfo : ZSocket | undefined, authUserGroup  : string) => Promise<void> | void;
 
 export type AuthUserGroupChOnSubFunction =
-    (smallBag : SmallBag, socketInfo : ZSocket, authUserGroup : string) => Promise<void> | void;
+    (bag : Bag, socketInfo : ZSocket, authUserGroup : string) => Promise<void> | void;
 
 export type AuthUserGroupChOnUnsubFunction =
-    (smallBag : SmallBag, socketInfo : ZSocket, authUserGroup  : string) => Promise<void> | void;
+    (bag : Bag, socketInfo : ZSocket, authUserGroup  : string) => Promise<void> | void;
 
 export type AuthUserGroupChClientPubAccessFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : ZSocket, authUserGroup : string) => Promise<boolean> | boolean;
+    (bag : Bag, pubData : PubData, socketInfo : ZSocket, authUserGroup : string) => Promise<boolean> | boolean;
 
 
 export type NormalChOnClientPubFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : ZSocket) => Promise<void> | void;
+    (bag : Bag, pubData : PubData, socketInfo : ZSocket) => Promise<void> | void;
 
 export type NormalChOnBagPubFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : ZSocket | undefined) => Promise<void> | void;
+    (bag : Bag, pubData : PubData, socketInfo : ZSocket | undefined) => Promise<void> | void;
 
 export type NormalChOnSubFunction =
-    (smallBag : SmallBag, socketInfo : ZSocket) => Promise<void> | void;
+    (bag : Bag, socketInfo : ZSocket) => Promise<void> | void;
 
 export type NormalChOnUnsubFunction =
-    (smallBag : SmallBag, socketInfo : ZSocket) => Promise<void> | void;
+    (bag : Bag, socketInfo : ZSocket) => Promise<void> | void;
 
 export type NormalChClientPubAccessFunction =
-    (smallBag : SmallBag, pubData : PubData, socketInfo : ZSocket) => Promise<boolean> | boolean;
+    (bag : Bag, pubData : PubData, socketInfo : ZSocket) => Promise<boolean> | boolean;
 
 export interface ZationChannelsConfig
 {
@@ -189,7 +189,7 @@ export interface ZationChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub 
      * //array
      * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
      * //function
-     * (smallBag,...) => {} // If returns true the client is not allowed, false will allow.
+     * (bag,...) => {} // If returns true the client is not allowed, false will allow.
      * To see all arguments of the function, check out the current generic function type.
      */
     clientPublishNotAccess  ?: PubAccess | boolean | string | number | (string|number)[];
@@ -213,7 +213,7 @@ export interface ZationChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub 
      * //array
      * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
      * //function
-     * (smallBag,...) => {} // If returns true the client is allowed, false will not allow.
+     * (bag,...) => {} // If returns true the client is allowed, false will not allow.
      * To see all arguments of the function, check out the current generic function type.
      */
     clientPublishAccess  ?: PubAccess | boolean | string | number | (string|number)[];
@@ -265,7 +265,7 @@ export interface BaseCustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,
      * //array
      * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
      * //function
-     * (smallBag,...) => {} // If returns true the client is not allowed, false will allow.
+     * (bag,...) => {} // If returns true the client is not allowed, false will allow.
      * To see all arguments of the function, check out the current generic function type.
      */
     subscribeNotAccess  ?: SubAccess | boolean | string | number | (string|number)[];
@@ -289,7 +289,7 @@ export interface BaseCustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,
      * //array
      * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
      * //function
-     * (smallBag,...) => {} // If returns true the client is allowed, false will not allow.
+     * (bag,...) => {} // If returns true the client is allowed, false will not allow.
      * To see all arguments of the function, check out the current generic function type.
      */
     subscribeAccess  ?: SubAccess | boolean | string | number | (string|number)[];

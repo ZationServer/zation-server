@@ -31,14 +31,14 @@ import {Structures}         from "../definitions/structures";
 import ConfigError          from "./configError";
 import Target               from "./target";
 import Logger               from "../../logger/logger";
-import SmallBag             from "../../../api/SmallBag";
+import Bag                  from "../../../api/Bag";
 import ObjectPath           from "../../utils/objectPath";
 import Controller, {ControllerClass} from "../../../api/Controller";
 import Iterator             from "../../utils/iterator";
 import ObjectUtils          from "../../utils/objectUtils";
 import ConfigLoader         from "../manager/configLoader";
 import {isInputConfigTranslatable} from "../../../api/ConfigTranslatable";
-import ResolveUtils from "./resolveUtils";
+import ResolveUtils                from "./resolveUtils";
 import {
     AnyOfModelConfig,
     ArrayModelConfig,
@@ -124,11 +124,11 @@ export default class ConfigChecker
                     }
                 }
             }
-            const smallBagExProps = extension.smallBag;
-            if(typeof smallBagExProps === 'object') {
-                for(let k in smallBagExProps){
-                    if(smallBagExProps.hasOwnProperty(k)){
-                        this.checkBagExtensionProp(k,smallBagExProps,true,configName,target);
+            const bagExProps = extension.bag;
+            if(typeof bagExProps === 'object') {
+                for(let k in bagExProps){
+                    if(bagExProps.hasOwnProperty(k)){
+                        this.checkBagExtensionProp(k,bagExProps,true,configName,target);
 
                         if(!moduleBagExProps.includes(k)){moduleBagExProps.push(k);}
                     }
@@ -148,15 +148,15 @@ export default class ConfigChecker
     (
         propName : string,
         exProps,
-        isSmallBag : boolean,
+        isBag : boolean,
         configName : ConfigNames,
         target : Target
     )
     {
-        if(isSmallBag) {
-            if(SmallBag.prototype.hasOwnProperty(propName)){
+        if(isBag) {
+            if(Bag.prototype.hasOwnProperty(propName)){
                 this.ceb.addConfigError(new ConfigError(configName,
-                    `${target.getTarget()} conflict with SmallBag property name: ${propName}.`));
+                    `${target.getTarget()} conflict with Bag property name: ${propName}.`));
             }
         }
         else {

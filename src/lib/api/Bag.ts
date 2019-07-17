@@ -53,7 +53,7 @@ import DataBoxContainer                                        from "../helper/d
 import {DataBoxClass}                                          from "./dataBox/DataBox";
 import DataBoxUtils                                            from "../helper/dataBox/dataBoxUtils";
 
-export default class SmallBag {
+export default class Bag {
     protected readonly exchangeEngine: ChannelBagEngine;
     protected readonly serviceEngine: ServiceEngine;
     protected readonly zc: ZationConfigFull;
@@ -67,6 +67,7 @@ export default class SmallBag {
     }
 
     //PART CONFIG ACCESS
+
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description

@@ -6,12 +6,12 @@ GitHub: LucaCode
 
 import UpSocket             from "../sc/socket";
 import {ChannelPrepare, CustomChFamilyStorage, CustomChStorage} from "./channelPrepare";
-import SmallBag             from "../../api/SmallBag";
+import Bag                  from "../../api/Bag";
 import ChUtils              from "./chUtils";
 import Logger               from "../logger/logger";
 import PubData              from "../internalApi/pubData";
 import {ErrorName}          from "../constants/errorName";
-import BaseSHBridge from "../bridges/baseSHBridge";
+import BaseSHBridge         from "../bridges/baseSHBridge";
 
 /**
  * Class for help in channel middleware by checking the
@@ -20,11 +20,11 @@ import BaseSHBridge from "../bridges/baseSHBridge";
 export default class ChMiddlewareHelper
 {
     private readonly channelPrepare : ChannelPrepare;
-    private readonly smallBag : SmallBag;
+    private readonly bag : Bag;
 
-    constructor(chConfigManager : ChannelPrepare, smallBag : SmallBag) {
+    constructor(chConfigManager : ChannelPrepare, bag : Bag) {
         this.channelPrepare = chConfigManager;
-        this.smallBag = smallBag;
+        this.bag = bag;
     }
 
     /**
@@ -177,7 +177,7 @@ export default class ChMiddlewareHelper
             (`The socket with id: ${socket.id} publishes in the custom channel: '${name}'${idProvided ? ` with member id: '${id}'`:''}.`);
 
             preChInfo.onClientPub(
-                this.smallBag,
+                this.bag,
                 pubData,
                 socket.zSocket,
                 chInfo

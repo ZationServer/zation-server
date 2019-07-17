@@ -7,7 +7,7 @@ GitHub: LucaCode
 /*
 Class Description :
 This class is to publish into channels with the scServer.exchange object.
-It is used by the SmallBag and the ChannelEngine.
+It is used by the Bag and the ChannelEngine.
  */
 
 import ZationWorker = require("../../main/zationWorker");
@@ -21,7 +21,7 @@ import Logger             from "../logger/logger";
 import ChUtils            from "./chUtils";
 import {ChannelPrepare}   from "./channelPrepare";
 import AEPreparedPart     from "../auth/aePreparedPart";
-import SmallBag           from "../../api/SmallBag";
+import Bag                from "../../api/Bag";
 import {ZationChannel}    from "./channelDefinitions";
 import UnknownCustomCh    from "../error/unknownCustomCh";
 
@@ -31,7 +31,7 @@ export default class ChannelBagEngine
     private readonly chPrepare : ChannelPrepare;
     private readonly aePreparedPart : AEPreparedPart;
 
-    private _smallBag : SmallBag;
+    private _bag : Bag;
 
     constructor(worker: ZationWorker,aePreparedPart : AEPreparedPart,chPrepare : ChannelPrepare) {
         this.scServer = worker.scServer;
@@ -39,8 +39,8 @@ export default class ChannelBagEngine
         this.chPrepare = chPrepare;
     }
 
-    set smallBag(value: SmallBag) {
-        this._smallBag = value;
+    set bag(value: Bag) {
+        this._bag = value;
     }
 
     //PART Publish
@@ -169,7 +169,7 @@ export default class ChannelBagEngine
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
 
         const eventTrigger = (selectedId : number | string) => {
-            onBagPub(this._smallBag,pubData,socketInfo,selectedId.toString());
+            onBagPub(this._bag,pubData,socketInfo,selectedId.toString());
         };
 
         if(Array.isArray(id)) {
@@ -199,7 +199,7 @@ export default class ChannelBagEngine
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
 
         await this.pubAsync(ZationChannel.DEFAULT_USER_GROUP,pubData);
-        onBagPub(this._smallBag,pubData,socketInfo);
+        onBagPub(this._bag,pubData,socketInfo);
     }
 
     /**
@@ -215,7 +215,7 @@ export default class ChannelBagEngine
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
 
         await this.pubAsync(ZationChannel.ALL,pubData);
-        onBagPub(this._smallBag,pubData,socketInfo);
+        onBagPub(this._bag,pubData,socketInfo);
     }
 
     /**
@@ -232,7 +232,7 @@ export default class ChannelBagEngine
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
 
         const eventTrigger = (selectedAuthUserGroup : string) => {
-            onBagPub(this._smallBag,pubData,socketInfo,selectedAuthUserGroup);
+            onBagPub(this._bag,pubData,socketInfo,selectedAuthUserGroup);
         };
 
         if(Array.isArray(authUserGroup)) {
@@ -281,7 +281,7 @@ export default class ChannelBagEngine
             const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
 
             await this.pubAsync(ChUtils.buildCustomChannelName(name,id),pubData);
-            onBagPub(this._smallBag,pubData,socketInfo,{name,id});
+            onBagPub(this._bag,pubData,socketInfo,{name,id});
         }
         else {
             throw new UnknownCustomCh(name);

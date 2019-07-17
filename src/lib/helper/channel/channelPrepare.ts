@@ -14,7 +14,7 @@ import {
 } from "../config/definitions/channelsConfig";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
 import FuncUtils, {EventInvokerSync} from "../utils/funcUtils";
-import SmallBag                      from "../../api/SmallBag";
+import Bag                           from "../../api/Bag";
 import IdValidCheckerUtils, {IdValidChecker}                    from "../id/idValidCheckerUtils";
 import ChAccessHelper, {ChPubAccessChecker, ChSubAccessChecker} from "./chAccessHelper";
 import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
@@ -95,22 +95,22 @@ export class ChannelPrepare {
     /**
      * Prepare a zation channel with the configuration.
      * @param name
-     * @param smallBag
+     * @param bag
      */
-    private prepareZationChannel(name : string,smallBag : SmallBag) : ChStorage {
-        return this.zationChConfig.hasOwnProperty(name) ? this.processChannel(this.zationChConfig[name],smallBag) :
+    private prepareZationChannel(name : string,bag : Bag) : ChStorage {
+        return this.zationChConfig.hasOwnProperty(name) ? this.processChannel(this.zationChConfig[name],bag) :
             this.defaultChStorage;
     }
 
     /**
      * Prepare all channels.
      */
-    prepare(smallBag : SmallBag) {
-        this.infoUserCh = this.prepareZationChannel(nameof<ZationChannelsConfig>(s => s.userCh),smallBag);
-        this.infoAuthUserGroupCh = this.prepareZationChannel(nameof<ZationChannelsConfig>(s => s.authUserGroupCh),smallBag);
-        this.infoDefaultUserGroupCh = this.prepareZationChannel(nameof<ZationChannelsConfig>(s => s.defaultUserGroupCh),smallBag);
-        this.infoAllCh = this.prepareZationChannel(nameof<ZationChannelsConfig>(s => s.allCh),smallBag);
-        this.processCustomChannels(smallBag);
+    prepare(bag : Bag) {
+        this.infoUserCh = this.prepareZationChannel(nameof<ZationChannelsConfig>(s => s.userCh),bag);
+        this.infoAuthUserGroupCh = this.prepareZationChannel(nameof<ZationChannelsConfig>(s => s.authUserGroupCh),bag);
+        this.infoDefaultUserGroupCh = this.prepareZationChannel(nameof<ZationChannelsConfig>(s => s.defaultUserGroupCh),bag);
+        this.infoAllCh = this.prepareZationChannel(nameof<ZationChannelsConfig>(s => s.allCh),bag);
+        this.processCustomChannels(bag);
     }
 
     /**
@@ -138,9 +138,9 @@ export class ChannelPrepare {
 
     /**
      * Prepare process for a custom id channels.
-     * @param smallBag
+     * @param bag
      */
-    private processCustomChannels(smallBag : SmallBag) {
+    private processCustomChannels(bag : Bag) {
         if (typeof this.customChannels === 'object') {
             for (let chName in this.customChannels) {
                 if(this.customChannels.hasOwnProperty(chName)) {
@@ -148,13 +148,13 @@ export class ChannelPrepare {
                     if(Array.isArray(this.customChannels[chName])){
                         config = this.customChannels[chName][0];
                         this.infoCustomChFamilies[chName] = {
-                            ...this.processCustomChannel(config,smallBag),
-                            idValidChecker : IdValidCheckerUtils.createIdValidChecker((config as CustomChFamily).idValid,smallBag)
+                            ...this.processCustomChannel(config,bag),
+                            idValidChecker : IdValidCheckerUtils.createIdValidChecker((config as CustomChFamily).idValid,bag)
                         }
                     }
                     else {
                         config = (this.customChannels[chName] as CustomCh);
-                        this.infoCustomCh[chName] = this.processCustomChannel(config, smallBag);
+                        this.infoCustomCh[chName] = this.processCustomChannel(config, bag);
                     }
                 }
             }
@@ -164,10 +164,10 @@ export class ChannelPrepare {
     /**
      * Prepare process for a custom channel.
      * @param chConfig
-     * @param smallBag
+     * @param bag
      */
-    private processCustomChannel(chConfig : BaseCustomChannelConfig, smallBag : SmallBag): CustomChStorage {
-        const cChStorage : ChStorage = this.processChannel(chConfig,smallBag);
+    private processCustomChannel(chConfig : BaseCustomChannelConfig, bag : Bag): CustomChStorage {
+        const cChStorage : ChStorage = this.processChannel(chConfig,bag);
 
         const subAccessInfo = ChannelPrepare.processAccessInvert(chConfig,
             nameof<BaseCustomChannelConfig>(s => s.subscribeAccess),
@@ -177,7 +177,7 @@ export class ChannelPrepare {
         return {
             ...cChStorage,
             subscribeAccessChecker : ChAccessHelper.createSubChAccessChecker
-            (subAccessInfo.value,subAccessInfo.inverted,smallBag),
+            (subAccessInfo.value,subAccessInfo.inverted,bag),
             versionAccessCheck : SystemVersionChecker.createVersionChecker(chConfig),
             systemAccessCheck : SystemVersionChecker.createSystemChecker(chConfig)
         };
@@ -187,16 +187,16 @@ export class ChannelPrepare {
     /**
      * Prepare process for a channel.
      * @param channel
-     * @param smallBag
+     * @param bag
      */
-    private processChannel(channel : ZationChannelConfig,smallBag : SmallBag): ChStorage {
+    private processChannel(channel : ZationChannelConfig,bag : Bag): ChStorage {
         const pubAccessInfo = ChannelPrepare.processAccessInvert(channel,
             nameof<ZationChannelConfig>(s => s.clientPublishAccess),
             nameof<BaseCustomChannelConfig>(s => s.clientPublishNotAccess)
         );
         return {
             clientPublishAccessChecker : ChAccessHelper.createPubChAccessChecker
-            (pubAccessInfo.value,pubAccessInfo.inverted,smallBag),
+            (pubAccessInfo.value,pubAccessInfo.inverted,bag),
             socketGetOwnPub : ChannelPrepare.processSocketGetOwnPub(channel.socketGetOwnPublish),
             onClientPub : channel.onBagPublish ? FuncUtils.createEventSyncInvoker(channel.onBagPublish) : () => {},
             onBagPub : channel.onBagPublish ? FuncUtils.createEventSyncInvoker(channel.onBagPublish) : () => {},

@@ -73,7 +73,7 @@ export default class PanelEngine
 
     private addUser(config : PanelUserConfig) : void {
         this.panelAccessData.push({
-            p : this.zw.getPreparedSmallBag().hashSha512(config.password),
+            p : this.zw.getPreparedBag().hashSha512(config.password),
             u : config.username
         });
     }
@@ -146,7 +146,7 @@ export default class PanelEngine
     isPanelLoginDataValid(userName : string,password : string) : boolean
     {
         const passwordHash =
-            this.zw.getPreparedSmallBag().hashSha512(password);
+            this.zw.getPreparedBag().hashSha512(password);
 
         let foundUser = false;
         for(let i = 0; i < this.panelAccessData.length; i++)

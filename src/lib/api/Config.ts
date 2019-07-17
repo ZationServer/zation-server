@@ -77,7 +77,7 @@ import {
 } from "../helper/config/definitions/channelsConfig";
 import {StarterConfig}  from "../helper/config/definitions/starterConfig";
 import {MainConfig}     from "../helper/config/definitions/mainConfig";
-import ZSocket       from "../helper/internalApi/ZSocket";
+import ZSocket          from "../helper/internalApi/ZSocket";
 import ZationTokenInfo  from "../helper/internalApi/zationTokenInfo";
 import BackError        from "./BackError";
 import BackErrorBag     from "./BackErrorBag";
@@ -85,8 +85,8 @@ import ObjectUtils      from "../helper/utils/objectUtils";
 import Controller, {ControllerClass} from "./Controller";
 import CChInfo          from "../helper/internalApi/cChInfo";
 import Result           from "./Result";
-import SmallBag         from "./SmallBag";
-import CChFamilyInfo        from "../helper/internalApi/cChFamilyInfo";
+import Bag              from "./Bag";
+import CChFamilyInfo    from "../helper/internalApi/cChFamilyInfo";
 import PubData          from "../helper/internalApi/pubData";
 import ZationInfo       from "../helper/internalApi/zationInfo";
 import {ApiLevelSwitch} from "../helper/apiLevel/apiLevelUtils";
@@ -667,7 +667,7 @@ export default class Config
 
     //Part Types
     // noinspection JSUnusedGlobalSymbols
-    static typeSmallBag(smallBag : SmallBag) : SmallBag {return smallBag;}
+    static typeBag(bag : Bag) : Bag {return bag;}
     // noinspection JSUnusedGlobalSymbols
     static typeReqBag(reqBag : ReqBag) : ReqBag {return reqBag;}
     // noinspection JSUnusedGlobalSymbols

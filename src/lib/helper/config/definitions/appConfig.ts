@@ -182,10 +182,10 @@ export interface AppConfig
 
 export default interface BagExtension {
     /**
-     * All extensions for the SmallBag.
-     * Notice that the Bag extends the SmallBag
+     * All extensions for the Bag.
+     * Notice that the ReqBag extends the Bag.
      */
-    smallBag ?: Record<string,any>,
+    bag ?: Record<string,any>,
     /**
      * All extensions for the ReqBag.
      */

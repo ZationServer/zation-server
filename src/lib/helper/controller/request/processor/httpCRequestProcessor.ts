@@ -128,7 +128,7 @@ export default class HttpCRequestProcessor
 
                 //will throw if auth is blocked
                 await MiddlewareUtils.checkMiddleware
-                (this.zc.eventConfig.middlewareAuthenticate,HttpCRequestProcessor.middlewareAuthNext,this.worker.getPreparedSmallBag(),new ZationTokenInfo(token));
+                (this.zc.eventConfig.middlewareAuthenticate,HttpCRequestProcessor.middlewareAuthNext,this.worker.getPreparedBag(),new ZationTokenInfo(token));
             }
             return new SHBridgeHttp(res,req,reqId,zationData,false,this.defaultApiLevel,this.worker);
         }

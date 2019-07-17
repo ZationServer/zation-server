@@ -21,7 +21,7 @@ import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";
 import CloneUtils            from "../utils/cloneUtils";
 import {ProcessTask}         from "./processTaskEngine";
 import {ModelPreparationMem} from "../config/utils/configPreCompiler";
-import SmallBag from "../../api/SmallBag";
+import Bag                   from "../../api/Bag";
 
 export interface ProcessInfo {
     errorBag : BackErrorBag,
@@ -29,7 +29,7 @@ export interface ProcessInfo {
     createProcessTaskList : boolean
 }
 
-export type InputProcessFunction = (sb : SmallBag, srcObj : object, srcKey : string | number, currentInputPath : string,
+export type InputProcessFunction = (bag : Bag, srcObj : object, srcKey : string | number, currentInputPath : string,
                                     {errorBag,processTaskList,createProcessTaskList} : ProcessInfo) => Promise<void>;
 
 export interface Processable {
@@ -52,7 +52,7 @@ export default class InputProcessorCreator
         const typeValidate = ValidatorEngine.createValueTypeValidator(type,strictType);
         const valueValidate = ValidatorEngine.createValueValidator(valueModel);
 
-        return async (sb,srcObj,srcKey,currentInputPath,{errorBag,processTaskList,createProcessTaskList}) => {
+        return async (bag,srcObj,srcKey,currentInputPath,{errorBag,processTaskList,createProcessTaskList}) => {
             const preparedErrorData = {
                 inputValue : srcObj[srcKey],
                 inputPath : currentInputPath
@@ -66,7 +66,7 @@ export default class InputProcessorCreator
                 srcObj[srcKey] = ConvertEngine.convert(srcObj[srcKey],selectedType,strictType);
             }
 
-            await valueValidate(srcObj[srcKey],errorBag,preparedErrorData,sb,selectedType);
+            await valueValidate(srcObj[srcKey],errorBag,preparedErrorData,bag,selectedType);
 
             //check for convertTask
             if(
@@ -75,7 +75,7 @@ export default class InputProcessorCreator
                 hasConvert
             ) {
                 processTaskList.push(async () => {
-                    srcObj[srcKey] = await (valueModel.convert as ConvertValueFunction)(srcObj[srcKey],sb);
+                    srcObj[srcKey] = await (valueModel.convert as ConvertValueFunction)(srcObj[srcKey],bag);
                 });
             }
         };
@@ -90,7 +90,7 @@ export default class InputProcessorCreator
         const arrayInputConfig = (arrayModel.array as Model & ModelPreparationMem);
         const hasConvert = typeof arrayModel.convert === 'function';
 
-        return async (sb, srcObj, srcKey, currentInputPath, processInfo) => {
+        return async (bag, srcObj, srcKey, currentInputPath, processInfo) => {
             const input = srcObj[srcKey];
             const errorBag = processInfo.errorBag;
 
@@ -101,7 +101,7 @@ export default class InputProcessorCreator
                     //input reference so we can return it normal
                     for(let i = 0; i < input.length; i++) {
                         promises.push(arrayInputConfig._process
-                        (sb,input,i,(currentInputPath === '' ? `${i}` : `${currentInputPath}.${i}`),processInfo));
+                        (bag,input,i,(currentInputPath === '' ? `${i}` : `${currentInputPath}.${i}`),processInfo));
                     }
                     await Promise.all(promises);
 
@@ -112,7 +112,7 @@ export default class InputProcessorCreator
                         hasConvert)
                     {
                         processInfo.processTaskList.push(async () => {
-                            srcObj[srcKey] = await (arrayModel.convert as ConvertArrayFunction)(input,sb);
+                            srcObj[srcKey] = await (arrayModel.convert as ConvertArrayFunction)(input,bag);
                         });
                     }
                 }
@@ -141,7 +141,7 @@ export default class InputProcessorCreator
         const anyOf = anyOfModel.anyOf;
         const breakIterator = Iterator.createBreakIterator(anyOf);
 
-        return async (sb, srcObj, srcKey, currentInputPath, processInfo) => {
+        return async (bag, srcObj, srcKey, currentInputPath, processInfo) => {
             let found = false;
             const tmpTaskErrorBags : Record<string|number,BackErrorBag> = {};
             await breakIterator(async (key, value : ModelPreparationMem) =>
@@ -154,7 +154,7 @@ export default class InputProcessorCreator
                         createProcessTaskList : processInfo.createProcessTaskList
                     };
                 await value._process
-                (sb,srcObj,srcKey,(currentInputPath === '' ? key : `${currentInputPath}.${key}`),tmpProcessInfo);
+                (bag,srcObj,srcKey,(currentInputPath === '' ? key : `${currentInputPath}.${key}`),tmpProcessInfo);
 
                 if(tmpProcessInfo.errorBag.isEmpty()){
                     found = true;
@@ -196,7 +196,7 @@ export default class InputProcessorCreator
         const processConvert = typeof objectModel.convert === 'function';
         const processPrototype = typeof objectModel.prototype === 'object';
 
-        return async (sb, srcObj, srcKey, currentInputPath, processInfo) => {
+        return async (bag, srcObj, srcKey, currentInputPath, processInfo) => {
 
             const input = srcObj[srcKey];
             const errorBag = processInfo.errorBag;
@@ -233,7 +233,7 @@ export default class InputProcessorCreator
                     if(input.hasOwnProperty(propName)) {
                         //allOk lets check the props
                         promises.push((props[propName] as ModelPreparationMem)._process
-                        (sb,input,propName,currentInputPathNew,processInfo));
+                        (bag,input,propName,currentInputPathNew,processInfo));
                     }
                     else
                     {
@@ -274,12 +274,12 @@ export default class InputProcessorCreator
 
                         //2.construct
                         if(processConstruct) {
-                            await (objectModel.construct as ConstructObjectFunction).call(input,sb);
+                            await (objectModel.construct as ConstructObjectFunction).call(input,bag);
                         }
 
                         //3.convert
                         if(processConvert) {
-                            srcObj[srcKey] = await (objectModel.convert as ConvertObjectFunction)(input,sb);
+                            srcObj[srcKey] = await (objectModel.convert as ConvertObjectFunction)(input,bag);
                         }
                     });
                 }
@@ -308,7 +308,7 @@ export default class InputProcessorCreator
 
         const paramKeys = Object.keys(paramInputConfig);
 
-        return async (sb, srcObj, srcKey, currentInputPath, processInfo) =>
+        return async (bag, srcObj, srcKey, currentInputPath, processInfo) =>
         {
             const promises : Promise<void>[] = [];
             let input = srcObj[srcKey];
@@ -329,7 +329,7 @@ export default class InputProcessorCreator
                     paramName = paramKeys[i];
                     if(input[paramName] !== undefined){
                         promises.push((paramInputConfig[paramName] as ModelPreparationMem)
-                            ._process(sb,input,paramName,(currentInputPath+paramName),processInfo));
+                            ._process(bag,input,paramName,(currentInputPath+paramName),processInfo));
                     }
                     else {
                         const {defaultValue,isOptional} = (paramInputConfig[paramName] as ModelPreparationMem)._optionalInfo;
@@ -367,7 +367,7 @@ export default class InputProcessorCreator
                         promises.push((async () => {
                             result[paramName] = input[i];
                             await (paramInputConfig[paramName] as ModelPreparationMem)
-                                ._process(sb,result,paramName,(currentInputPath+paramName),processInfo);
+                                ._process(bag,result,paramName,(currentInputPath+paramName),processInfo);
                         })());
                     }
                     else {

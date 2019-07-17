@@ -11,7 +11,7 @@ import InputProcessor, {Processable}    from "./inputProcessorCreator";
 import BackError                        from "../../api/BackError";
 import {MainBackErrors}                 from "../zationBackErrors/mainBackErrors";
 import InputUtils                       from "./inputUtils";
-import SmallBag                         from "../../api/SmallBag";
+import Bag                              from "../../api/Bag";
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig}               from "../config/definitions/controllerConfig";
 import {ValidationCheckPair}            from "../controller/request/controllerDefinitions";
@@ -31,35 +31,35 @@ export default class InputClosureCreator
     /**
      * Creates a closure to consume the input (validate and format) from a request to a controller.
      * @param controllerConfig
-     * @param smallBag
+     * @param bag
      */
-    static createControllerInputConsumer(controllerConfig : ControllerConfig,smallBag : SmallBag) : InputConsumeFunction
+    static createControllerInputConsumer(controllerConfig : ControllerConfig,bag : Bag) : InputConsumeFunction
     {
         if(controllerConfig.inputAllAllow) {
             return (input) => input;
         }
-        return InputClosureCreator.createInputConsumer(controllerConfig,smallBag);
+        return InputClosureCreator.createInputConsumer(controllerConfig,bag);
     }
 
     /**
      * Creates a closure to only validate the input from a validation request to a controller.
      * @param controllerConfig
-     * @param smallBag
+     * @param bag
      */
-    static createControllerValidationChecker(controllerConfig : ControllerConfig,smallBag : SmallBag) : InputValidationCheckFunction
+    static createControllerValidationChecker(controllerConfig : ControllerConfig,bag : Bag) : InputValidationCheckFunction
     {
         if(controllerConfig.inputAllAllow) {
             return async () => {}
         }
-        return InputClosureCreator.createInputValidationChecker(controllerConfig,smallBag);
+        return InputClosureCreator.createInputValidationChecker(controllerConfig,bag);
     }
 
     /**
      * Creates a closure to only validate the input from a validation request.
      * @param inputConfig
-     * @param smallBag
+     * @param bag
      */
-    private static createInputValidationChecker(inputConfig : InputConfig,smallBag : SmallBag) : InputValidationCheckFunction
+    private static createInputValidationChecker(inputConfig : InputConfig,bag : Bag) : InputValidationCheckFunction
     {
         let inputDefinition;
         let singleInputModel = false;
@@ -97,7 +97,7 @@ export default class InputClosureCreator
                             }
                         }
 
-                        await (specificConfig as Processable)._process(smallBag,iCheckData,nameof<ValidationCheckPair>(s => s.v),path,{
+                        await (specificConfig as Processable)._process(bag,iCheckData,nameof<ValidationCheckPair>(s => s.v),path,{
                             errorBag : errorBag,
                             createProcessTaskList : false,
                             processTaskList : [],
@@ -121,9 +121,9 @@ export default class InputClosureCreator
     /**
      * Creates a closure to consume the input (validate and format) from a request.
      * @param inputConfig
-     * @param smallBag
+     * @param bag
      */
-    private static createInputConsumer(inputConfig : InputConfig, smallBag : SmallBag) : InputConsumeFunction {
+    private static createInputConsumer(inputConfig : InputConfig, bag : Bag) : InputConsumeFunction {
         // @ts-ignore
         const inputDefinition : (ParamInput | SingleModelInput) & Processable = inputConfig.input;
 
@@ -140,7 +140,7 @@ export default class InputClosureCreator
             const taskErrorBag : BackErrorBag = new BackErrorBag();
             const wrapper = {i : input};
 
-            await processable._process(smallBag,wrapper,'i','',{
+            await processable._process(bag,wrapper,'i','',{
                 processTaskList : taskList,
                 errorBag : taskErrorBag,
                 createProcessTaskList :  true

@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import SmallBag from "../../../api/SmallBag";
+import Bag from "../../../api/Bag";
 
-export type TaskFunction = (smallBag : SmallBag) => Promise<void> | void;
+export type TaskFunction = (bag : Bag) => Promise<void> | void;
 
 export interface BackgroundTask
 {
@@ -44,8 +44,8 @@ export interface BackgroundTask
      * The task method defines the general task of the background task.
      * Optionally you can pass an array of tasks.
      * @example
-     * task : (sb : SmallBag) => {
-     *    console.log(`TaskRunning on worker -> ${sb.getWorkerId()}`);
+     * task : (b : Bag) => {
+     *    console.log(`TaskRunning on worker -> ${b.getWorkerId()}`);
      * },
      */
     task  ?: TaskFunction | TaskFunction[];

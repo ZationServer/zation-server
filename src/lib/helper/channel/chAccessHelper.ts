@@ -7,7 +7,7 @@ GitHub: LucaCode
 import UpSocket             from "../sc/socket";
 import {ChannelPrepare}     from "./channelPrepare";
 import ZSocket              from "../internalApi/ZSocket";
-import SmallBag             from "../../api/SmallBag";
+import Bag                  from "../../api/Bag";
 import CChInfo              from "../internalApi/cChInfo";
 import ChUtils              from "./chUtils";
 import PubData              from "../internalApi/pubData";
@@ -35,13 +35,13 @@ export default class ChAccessHelper
      * Returns a Closures for checking the client publish access to a channel.
      * @param accessValue
      * @param invertResult
-     * @param smallBag
+     * @param bag
      */
     static createPubChAccessChecker
     (
         accessValue : any,
         invertResult : boolean | undefined,
-        smallBag : SmallBag)
+        bag : Bag)
         : ChPubAccessChecker
     {
         if(accessValue !== undefined) {
@@ -49,7 +49,7 @@ export default class ChAccessHelper
             return AccessUtils.createAccessChecker<ChPubAccessChecker,CChannelClientPubAccessFunction>
             (accessValue,accessProcess,(f) => {
                 return async (_a,pubData,socketInfo,chInfo) => {
-                    return accessProcess((await f(smallBag,pubData,socketInfo,chInfo)));
+                    return accessProcess((await f(bag,pubData,socketInfo,chInfo)));
                 };
             });
         }
@@ -62,13 +62,13 @@ export default class ChAccessHelper
      * Returns a Closures for checking the subscribe access to a channel.
      * @param accessValue
      * @param invertResult
-     * @param smallBag
+     * @param bag
      */
     static createSubChAccessChecker
     (
         accessValue : any,
         invertResult : boolean | undefined,
-        smallBag : SmallBag)
+        bag : Bag)
         : ChSubAccessChecker
     {
         if(accessValue !== undefined) {
@@ -76,7 +76,7 @@ export default class ChAccessHelper
             return AccessUtils.createAccessChecker<ChSubAccessChecker,CChannelSubAccessFunction>
             (accessValue,accessProcess,(f) => {
                 return async (_a,socketInfo,chInfo) => {
-                    return accessProcess((await f(smallBag,socketInfo,chInfo)));
+                    return accessProcess((await f(bag,socketInfo,chInfo)));
                 };
             });
         }

@@ -23,14 +23,14 @@ import Base64Utils           from "../utils/base64Utils";
 import ByteUtils             from "../utils/byteUtils";
 import BackErrorBag          from "../../api/BackErrorBag";
 import {PreparedErrorData}   from "./validatorEngine";
-import SmallBag              from "../../api/SmallBag";
+import Bag                   from "../../api/Bag";
 
 const functionLibrary : Record<string,FunctionValidator> = {};
 const typeLibrary : Record<string,TypeValidator> = {};
 
 
 export type FunctionValidator =
-    (input : any, settings : any, backErrorBag  : BackErrorBag, prepareErrorData : PreparedErrorData, preparedSmallBag : SmallBag,type : string | undefined) => void | Promise<void>
+    (input : any, settings : any, backErrorBag  : BackErrorBag, prepareErrorData : PreparedErrorData, preparedBag : Bag, type : string | undefined) => void | Promise<void>
 
 export type TypeValidator =
     (input : any,backErrorBag : BackErrorBag,prepareErrorData : PreparedErrorData,strictType : boolean) => Promise<void> | void;
@@ -483,12 +483,12 @@ functionLibrary[nameof<ValueModelConfig>(s => s.charClass)] = (input, settings, 
     }
 };
 
-functionLibrary[nameof<ValueModelConfig>(s => s.before)] = async (input, settings, backErrorBag, prepareErrorData, preparedSmallBag) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.before)] = async (input, settings, backErrorBag, prepareErrorData, preparedBag) =>
 {
     if((typeof input === "string" && EasyValidator.isDate(input)) || input instanceof Date)
     {
         const inputDate : Date = typeof input === 'string' ? new Date(input) : input;
-        const checkDate : Date = typeof settings === 'function' ? await settings(preparedSmallBag) : settings;
+        const checkDate : Date = typeof settings === 'function' ? await settings(preparedBag) : settings;
         if(inputDate > checkDate) {
             backErrorBag.addNewBackError(ValidatorBackErrors.inputDateIsNotBefore,
                 {
@@ -500,12 +500,12 @@ functionLibrary[nameof<ValueModelConfig>(s => s.before)] = async (input, setting
     }
 };
 
-functionLibrary[nameof<ValueModelConfig>(s => s.after)] = async (input, settings, backErrorBag, prepareErrorData, preparedSmallBag) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.after)] = async (input, settings, backErrorBag, prepareErrorData, preparedBag) =>
 {
     if((typeof input === "string" && EasyValidator.isDate(input)) || input instanceof Date)
     {
         const inputDate : Date = typeof input === 'string' ? new Date(input) : input;
-        const checkDate : Date = typeof settings === 'function' ? await settings(preparedSmallBag) : settings;
+        const checkDate : Date = typeof settings === 'function' ? await settings(preparedBag) : settings;
         if(inputDate < checkDate) {
             backErrorBag.addNewBackError(ValidatorBackErrors.inputDateIsNotAfter,
                 {
@@ -517,7 +517,7 @@ functionLibrary[nameof<ValueModelConfig>(s => s.after)] = async (input, settings
     }
 };
 
-functionLibrary[nameof<ValueModelConfig>(s => s.minByteSize)] = async (input, settings, backErrorBag, prepareErrorData, preparedSmallBag,type) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.minByteSize)] = async (input, settings, backErrorBag, prepareErrorData, preparedBag,type) =>
 {
     if(typeof input === "string" && ByteUtils.getByteSize(input,type) < settings)
     {
@@ -530,7 +530,7 @@ functionLibrary[nameof<ValueModelConfig>(s => s.minByteSize)] = async (input, se
     }
 };
 
-functionLibrary[nameof<ValueModelConfig>(s => s.maxByteSize)] = async (input, settings, backErrorBag, prepareErrorData, preparedSmallBag,type) =>
+functionLibrary[nameof<ValueModelConfig>(s => s.maxByteSize)] = async (input, settings, backErrorBag, prepareErrorData, preparedBag,type) =>
 {
     if(typeof input === "string" && ByteUtils.getByteSize(input,type) > settings)
     {

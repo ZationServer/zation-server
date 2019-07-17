@@ -18,7 +18,7 @@ import AuthEngine                 from "../helper/auth/authEngine";
 import ProtocolAccessChecker      from "../helper/protocolAccess/protocolAccessChecker";
 import ObjectPath                 from "../helper/utils/objectPath";
 import ObjectPathSequence         from "../helper/utils/objectPathSequence";
-import SmallBag                   from "./SmallBag";
+import Bag                        from "./Bag";
 import InputIsNotCompatibleError  from "../helper/error/inputIsNotCompatibleError";
 import MethodIsNotCompatibleError from "../helper/error/methodIsNotCompatibleError";
 import TokenUtils                 from "../helper/token/tokenUtils";
@@ -29,7 +29,7 @@ import ZSocket                    from "../helper/internalApi/ZSocket";
 import ApiLevelUtils              from "../helper/apiLevel/apiLevelUtils";
 import CloneUtils                 from "../helper/utils/cloneUtils";
 
-export default class ReqBag extends SmallBag
+export default class ReqBag extends Bag
 {
     private reqVariables : object;
     private readonly shBridge : SHBridge;

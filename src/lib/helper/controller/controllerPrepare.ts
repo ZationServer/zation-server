@@ -14,7 +14,7 @@ import Controller, {ControllerClass} from "../../api/Controller";
 import {MainBackErrors}              from "../zationBackErrors/mainBackErrors";
 import ControllerUtils, {MiddlewareInvokeFunction} from "./controllerUtils";
 import {SystemController}            from "../systemController/systemControler.config";
-import SmallBag                      from "../../api/SmallBag";
+import Bag                           from "../../api/Bag";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
 import InputClosureCreator, {InputConsumeFunction, InputValidationCheckFunction} from "../input/inputClosureCreator";
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction} from "../apiLevel/apiLevelUtils";
@@ -34,16 +34,16 @@ export default class ControllerPrepare
 {
     private readonly zc : ZationConfigFull;
     private readonly worker : ZationWorker;
-    private readonly smallBag : SmallBag;
+    private readonly bag : Bag;
 
     private readonly systemController : Record<string,ControllerPrepareData>;
     private readonly appController : Record<string,ApiLevelSwitchFunction<ControllerPrepareData>>;
 
-    constructor(zc : ZationConfigFull,worker : ZationWorker,smallBag : SmallBag)
+    constructor(zc : ZationConfigFull,worker : ZationWorker,bag : Bag)
     {
         this.zc = zc;
         this.worker = worker;
-        this.smallBag = smallBag;
+        this.bag = bag;
 
         this.systemController = {};
         this.appController = {};
@@ -167,18 +167,18 @@ export default class ControllerPrepare
     private async processController(controller : ControllerClass,id : string,apiLevel ?: number) : Promise<ControllerPrepareData>
     {
         const config : ControllerConfig = controller.config;
-        const cInstance : Controller = new controller(id,this.worker.getPreparedSmallBag(),apiLevel);
-        await cInstance.initialize(this.worker.getPreparedSmallBag());
+        const cInstance : Controller = new controller(id,this.worker.getPreparedBag(),apiLevel);
+        await cInstance.initialize(this.worker.getPreparedBag());
 
         return  {
             controllerConfig : config,
             controllerInstance: cInstance,
             versionAccessCheck : SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
-            tokenStateCheck : AuthAccessChecker.createAuthAccessChecker(config,this.smallBag),
+            tokenStateCheck : AuthAccessChecker.createAuthAccessChecker(config,this.bag),
             middlewareInvoke : ControllerUtils.createMiddlewareInvoker(config),
-            inputConsume : InputClosureCreator.createControllerInputConsumer(config,this.smallBag),
-            inputValidationCheck : InputClosureCreator.createControllerValidationChecker(config,this.smallBag)
+            inputConsume : InputClosureCreator.createControllerInputConsumer(config,this.bag),
+            inputValidationCheck : InputClosureCreator.createControllerValidationChecker(config,this.bag)
         };
     }
 }

@@ -6,8 +6,9 @@ GitHub: LucaCode
 
 import {AnyClass, AnyInputConfigTranslatable, AnyModelConfigTranslatable} from "./configComponents";
 import BackErrorBag                                                       from "../../../api/BackErrorBag";
-import SmallBag                                                           from "../../../api/SmallBag";
-import {ValidationTypes}                                                  from "../../../../index";
+import Bag                                                                from "../../../api/Bag";
+// noinspection TypeScriptPreferShortImport
+import {ValidationTypes}                                                  from "../../constants/validationTypes.js";
 import {FormatLetters}                                                    from "../../constants/validation";
 
 export type Model =
@@ -93,9 +94,9 @@ export interface ParamInput {
     [key: string]: Model;
 }
 
-export type ValidateFunction = (value : any, backErrorBag : BackErrorBag, inputPath : string, smallBag : SmallBag, type : string | undefined) => Promise<void> | void;
-export type ConvertValueFunction = (value : any, smallBag : SmallBag) => Promise<any> | any;
-export type GetDateFunction = (smallBag : SmallBag) => Promise<Date> | Date;
+export type ValidateFunction = (value : any, backErrorBag : BackErrorBag, inputPath : string, bag : Bag, type : string | undefined) => Promise<void> | void;
+export type ConvertValueFunction = (value : any, bag : Bag) => Promise<any> | any;
+export type GetDateFunction = (bag : Bag) => Promise<Date> | Date;
 
 export interface ValueModelConfig extends ModelOptional
 {
@@ -310,10 +311,10 @@ export interface ValueModelConfig extends ModelOptional
      * This is useful to do advance checks; for example,
      * you want to check if the email is already registered in the database.
      * @example
-     * validate : [async (value,backErrorBag,inputPath,smallBag,type) => {
+     * validate : [async (value,backErrorBag,inputPath,bag,type) => {
      *   if(....){
      *       //error
-     *       bagErrorBag.addBackError(smallBag.newBackError({
+     *       bagErrorBag.addBackError(bag.newBackError({
      *          reason : ...
      *      }));
      *   }
@@ -325,7 +326,7 @@ export interface ValueModelConfig extends ModelOptional
      * you want to add something to the end of a string.
      * The converting process will only be invoked if the value model has no validation errors.
      * @example
-     * convert : async (value,smallBag) => {
+     * convert : async (value,bag) => {
      *     return value+'end';
      * }
      */
@@ -362,8 +363,8 @@ export interface ModelOptional {
 }
 
 export type ObjectProperties = Record<string,Model>;
-export type ConvertObjectFunction = (obj: Record<string,any>, smallBag : SmallBag) => Promise<any> | any;
-export type ConstructObjectFunction = (this : Record<string,any>, smallBag : SmallBag) => Promise<void> | void;
+export type ConvertObjectFunction = (obj: Record<string,any>, bag : Bag) => Promise<any> | any;
+export type ConstructObjectFunction = (this : Record<string,any>, bag : Bag) => Promise<void> | void;
 
 export interface ObjectModelConfig extends ModelOptional
 {
@@ -406,7 +407,7 @@ export interface ObjectModelConfig extends ModelOptional
      * It will be called with the input object as this and the small bag
      * that allows you to add properties to the object.
      * @example
-     * construct : function(smallBag) {
+     * construct : function(bag) {
      *    this.fullName = `${this.firstName} ${this.lastName}`;
      * }
      */
@@ -416,7 +417,7 @@ export interface ObjectModelConfig extends ModelOptional
      * for example, you only want the name value of the object.
      * The converting process will only be invoked if the object model has no validation errors.
      * @example
-     * convert : (obj,smallBag) => {
+     * convert : (obj,bag) => {
      *    return obj['name'];
      * }
      */
@@ -439,7 +440,7 @@ export interface ArrayModelConfig extends ArraySettings
     array : Model
 }
 
-export type ConvertArrayFunction = (array: any[], smallBag : SmallBag) => Promise<any> | any;
+export type ConvertArrayFunction = (array: any[], bag : Bag) => Promise<any> | any;
 
 export interface ArraySettings extends ModelOptional
 {
@@ -466,7 +467,7 @@ export interface ArraySettings extends ModelOptional
      * you want only to have the first item.
      * The converting process will only be invoked if the array model has no validation errors.
      * @example
-     * convert : (array,smallBag) => {
+     * convert : (array,bag) => {
      *    return array[0];
      * }
      */

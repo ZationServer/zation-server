@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 // noinspection TypeScriptPreferShortImport
 import {DataBoxConfig} from "../../helper/config/definitions/dataBoxConfig";
-import SmallBag from "./../SmallBag";
+import Bag from "../Bag";
 import DataBoxCore, {DbPreparedData} from "./DataBoxCore";
 import UpSocket from "../../helper/sc/socket";
 import {IdValidChecker} from "../../helper/id/idValidCheckerUtils";
@@ -76,11 +76,11 @@ export default class DataBoxFamily extends DataBoxCore {
 
     static ___instance___ : DataBoxFamily;
 
-    constructor(id : string,smallBag: SmallBag,dbPreparedData : DbPreparedData,idValidCheck : IdValidChecker,apiLevel : number | undefined) {
-        super(id,smallBag,dbPreparedData,apiLevel);
+    constructor(id : string, bag: Bag, dbPreparedData : DbPreparedData, idValidCheck : IdValidChecker, apiLevel : number | undefined) {
+        super(id,bag,dbPreparedData,apiLevel);
         this.idValidCheck = idValidCheck;
-        this.scExchange = smallBag.getWorker().scServer.exchange;
-        this.workerFullId = smallBag.getWorker().getFullWorkerId();
+        this.scExchange = bag.getWorker().scServer.exchange;
+        this.workerFullId = bag.getWorker().getFullWorkerId();
         this.dbEventPreFix = `${DATA_BOX_START_INDICATOR}-${this.id}-${apiLevel !== undefined ? apiLevel : ''}-`;
     }
 
@@ -495,9 +495,9 @@ export default class DataBoxFamily extends DataBoxCore {
      * To block the id, you only need to return an object (that can be error information) or false.
      * If you want to allow the id, you have to return nothing or a true.
      * @param id
-     * @param smallBag
+     * @param bag
      */
-    public isIdValid(id : string,smallBag : SmallBag) : Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void {
+    public isIdValid(id : string,bag : Bag) : Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void {
     }
 
     /**
@@ -603,7 +603,7 @@ export default class DataBoxFamily extends DataBoxCore {
 export interface DataBoxFamilyClass {
     config: DataBoxConfig;
 
-    new(id : string,smallBag: SmallBag,dbPreparedData : DbPreparedData,idValidCheck : IdValidChecker,apiLevel : number | undefined): DataBoxFamily;
+    new(id : string, bag: Bag, dbPreparedData : DbPreparedData, idValidCheck : IdValidChecker, apiLevel : number | undefined): DataBoxFamily;
 
     prototype: any;
     name : string;

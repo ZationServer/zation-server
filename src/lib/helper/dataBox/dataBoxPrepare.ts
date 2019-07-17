@@ -7,7 +7,7 @@ GitHub: LucaCode
 import SystemVersionChecker                                     from "../systemVersion/systemVersionChecker";
 import AuthAccessChecker                                        from "../auth/authAccessChecker";
 import ZationConfigFull                                         from "../config/manager/zationConfigFull";
-import SmallBag                                                 from "../../api/SmallBag";
+import Bag                                                      from "../../api/Bag";
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction}  from "../apiLevel/apiLevelUtils";
 import DataBoxCore, {DbPreparedData}                            from "../../api/dataBox/DataBoxCore";
 import ZationWorker                                           = require("../../main/zationWorker");
@@ -21,15 +21,15 @@ export default class DataBoxPrepare
 {
     private readonly zc : ZationConfigFull;
     private readonly worker : ZationWorker;
-    private readonly smallBag : SmallBag;
+    private readonly bag : Bag;
 
     private readonly dataBoxes : Record<string,ApiLevelSwitchFunction<DataBoxCore>>;
 
-    constructor(zc : ZationConfigFull,worker : ZationWorker,smallBag : SmallBag)
+    constructor(zc : ZationConfigFull,worker : ZationWorker,bag : Bag)
     {
         this.zc = zc;
         this.worker = worker;
-        this.smallBag = smallBag;
+        this.bag = bag;
 
         this.dataBoxes = {};
     }
@@ -136,18 +136,18 @@ export default class DataBoxPrepare
         const dbPreparedData : DbPreparedData = {
             versionAccessCheck : SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
-            tokenStateAccessCheck : AuthAccessChecker.createAuthAccessChecker(config,this.smallBag)
+            tokenStateAccessCheck : AuthAccessChecker.createAuthAccessChecker(config,this.bag)
         };
 
         let dbInstance;
         if(dataBox.prototype instanceof DataBox){
             dbInstance = new (dataBox as DataBoxClass)
-            (id,this.worker.getPreparedSmallBag(),dbPreparedData,apiLevel);
+            (id,this.worker.getPreparedBag(),dbPreparedData,apiLevel);
         }
         else if(dataBox.prototype instanceof DataBoxFamily){
             dbInstance = new (dataBox as DataBoxFamilyClass)
-            (id,this.worker.getPreparedSmallBag(),dbPreparedData,
-                IdValidCheckerUtils.createIdValidChecker(dataBox.prototype.isIdValid,this.smallBag)
+            (id,this.worker.getPreparedBag(),dbPreparedData,
+                IdValidCheckerUtils.createIdValidChecker(dataBox.prototype.isIdValid,this.bag)
                 ,apiLevel);
         }
         else {
@@ -161,7 +161,7 @@ export default class DataBoxPrepare
             writable : false
         });
 
-        await dbInstance.initialize(this.worker.getPreparedSmallBag());
+        await dbInstance.initialize(this.worker.getPreparedBag());
 
         return dbInstance;
     }

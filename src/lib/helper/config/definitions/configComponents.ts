@@ -4,11 +4,12 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import SmallBag from "../../../api/SmallBag";
-import {InputConfigTranslatable, ModelConfigTranslatable} from "../../../../index";
+import Bag from "../../../api/Bag";
+// noinspection TypeScriptPreferShortImport
+import {InputConfigTranslatable, ModelConfigTranslatable} from "../../../api/ConfigTranslatable";
 import ZationTokenInfo from "../../internalApi/zationTokenInfo";
 
-export type AuthAccessFunction = (smallBag : SmallBag, token : ZationTokenInfo | null) => Promise<boolean> | boolean;
+export type AuthAccessFunction = (bag : Bag, token : ZationTokenInfo | null) => Promise<boolean> | boolean;
 
 export interface AuthAccessConfig {
     /**
@@ -31,7 +32,7 @@ export interface AuthAccessConfig {
      * //array
      * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
      * //function
-     * (smallBag : SmallBag,token : ZationTokenInfo | null) => {} // If returns true the client is allowed, false will not allow.
+     * (bag : Bag,token : ZationTokenInfo | null) => {} // If returns true the client is allowed, false will not allow.
      */
     access  ?: string | number | (string | number)[] | AuthAccessFunction;
     /**
@@ -54,12 +55,12 @@ export interface AuthAccessConfig {
      * //array
      * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
      * //function
-     * (smallBag : SmallBag,token : ZationTokenInfo | null) => {}  // If returns true the client is not allowed, false will allow.
+     * (bag : Bag,token : ZationTokenInfo | null) => {}  // If returns true the client is not allowed, false will allow.
      */
     notAccess  ?: string | number | (string | number)[] | AuthAccessFunction;
 }
 
-export type IdValid = (id : string, smallBag : SmallBag) => Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void;
+export type IdValid = (id : string, bag : Bag) => Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void;
 
 export interface IdValidConfig {
 

@@ -5,10 +5,10 @@ GitHub: LucaCode
  */
 
 // noinspection TypeScriptPreferShortImport
-import {DataBoxConfig} from "../../helper/config/definitions/dataBoxConfig";
-import SmallBag from "./../SmallBag";
+import {DataBoxConfig}               from "../../helper/config/definitions/dataBoxConfig";
+import Bag                           from "../Bag";
 import DataBoxCore, {DbPreparedData} from "./DataBoxCore";
-import UpSocket from "../../helper/sc/socket";
+import UpSocket                      from "../../helper/sc/socket";
 import {
     CudAction,
     CudPackage,
@@ -63,10 +63,10 @@ export default class DataBox extends DataBoxCore {
 
     static ___instance___ : DataBox;
 
-    constructor(id : string,smallBag: SmallBag,dbPreparedData : DbPreparedData,apiLevel : number | undefined) {
-        super(id,smallBag,dbPreparedData,apiLevel);
-        this.scExchange = smallBag.getWorker().scServer.exchange;
-        this.workerFullId = smallBag.getWorker().getFullWorkerId();
+    constructor(id : string, bag: Bag, dbPreparedData : DbPreparedData, apiLevel : number | undefined) {
+        super(id,bag,dbPreparedData,apiLevel);
+        this.scExchange = bag.getWorker().scServer.exchange;
+        this.workerFullId = bag.getWorker().getFullWorkerId();
         this.dbEvent = `${DATA_BOX_START_INDICATOR}-${this.id}-${apiLevel !== undefined ? apiLevel : ''}`;
 
         this._reg();
@@ -480,7 +480,7 @@ export default class DataBox extends DataBoxCore {
 export interface DataBoxClass {
     config: DataBoxConfig;
 
-    new(id : string,smallBag: SmallBag,dbPreparedData : DbPreparedData,apiLevel : number | undefined): DataBox;
+    new(id : string, bag: Bag, dbPreparedData : DbPreparedData, apiLevel : number | undefined): DataBox;
 
     prototype: any;
     name : string;

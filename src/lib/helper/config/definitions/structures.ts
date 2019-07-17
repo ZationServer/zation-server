@@ -61,8 +61,8 @@ BackgroundTask[nameof<BackgroundTask>(s => s.task)]  = {types : ['function','arr
 BackgroundTask[nameof<BackgroundTask>(s => s.clusterSafe)] = {types : ['boolean'],isOptional : true};
 
 const BagExtension = {};
+BagExtension[nameof<BagExtension>(s => s.reqBag)]       = {types : ['object'],isOptional : false};
 BagExtension[nameof<BagExtension>(s => s.bag)]          = {types : ['object'],isOptional : false};
-BagExtension[nameof<BagExtension>(s => s.smallBag)]     = {types : ['object'],isOptional : false};
 
 type ServiceModuleDefault = ServiceModule<any,any,any>;
 const ServiceModule = {};

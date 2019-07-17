@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 // noinspection TypeScriptPreferShortImport
 import {DataBoxConfig}           from "../../helper/config/definitions/dataBoxConfig";
-import SmallBag                  from "./../SmallBag";
+import Bag                  from "../Bag";
 import NoMoreDataAvailableError  from "../../helper/dataBox/noMoreDataAvailable";
 import {VersionSystemAccessCheckFunction} from "../../helper/systemVersion/systemVersionChecker";
 import {TokenStateAccessCheckFunction}    from "../../helper/auth/authAccessChecker";
@@ -32,9 +32,9 @@ import {DbSessionData} from "../../helper/dataBox/dbDefinitions";
 export default abstract class DataBoxCore {
     /**
      * @description
-     * The prepared small bag from the worker.
+     * The prepared bag from the worker.
      */
-    protected smallBag: SmallBag;
+    protected bag: Bag;
 
     /**
      * @description
@@ -62,15 +62,15 @@ export default abstract class DataBoxCore {
      */
     protected readonly apiLevel: number | undefined;
 
-    protected constructor(id : string,smallBag: SmallBag,dbPreparedData : DbPreparedData,apiLevel : number | undefined) {
+    protected constructor(id : string, bag: Bag, dbPreparedData : DbPreparedData, apiLevel : number | undefined) {
         this.id = id;
         this.apiLevel = apiLevel;
-        this.smallBag = smallBag;
+        this.bag = bag;
         this.dbPreparedData = dbPreparedData;
-        this.useTokenStateCheck = this.smallBag.getMainConfig().useTokenStateCheck;
+        this.useTokenStateCheck = this.bag.getMainConfig().useTokenStateCheck;
 
         this.preparedTokenSessionKey =
-            `${smallBag.getZationConfig().getDataBoxKey()}.${this.dbTokenVersion}.${this.id}${apiLevel !== undefined ? apiLevel : ''}`;
+            `${bag.getZationConfig().getDataBoxKey()}.${this.dbTokenVersion}.${this.id}${apiLevel !== undefined ? apiLevel : ''}`;
     }
 
     /**
@@ -151,9 +151,9 @@ export default abstract class DataBoxCore {
     /**
      * @description
      * Gets invokes when the zation system is creating instance of the DataCollection (in worker start).
-     * @param smallBag
+     * @param bag
      */
-    async initialize(smallBag: SmallBag): Promise<void> {
+    async initialize(bag: Bag): Promise<void> {
     }
 
     // noinspection JSMethodCanBeStatic

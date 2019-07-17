@@ -7,7 +7,7 @@ GitHub: LucaCode
 // noinspection TypeScriptPreferShortImport
 import AuthEngine         from "./authEngine";
 import ZationTokenInfo    from "../internalApi/zationTokenInfo";
-import SmallBag           from "../../api/SmallBag";
+import Bag                from "../../api/Bag";
 import AccessUtils        from "../access/accessUtils";
 import {AuthAccessFunction, AuthAccessConfig} from "../config/definitions/configComponents";
 
@@ -18,9 +18,9 @@ export default class AuthAccessChecker
     /**
      * Returns a Closures for checking the token state access to a controller.
      * @param accessConfig
-     * @param smallBag
+     * @param bag
      */
-    static createAuthAccessChecker(accessConfig : AuthAccessConfig, smallBag : SmallBag) : TokenStateAccessCheckFunction {
+    static createAuthAccessChecker(accessConfig : AuthAccessConfig, bag : Bag) : TokenStateAccessCheckFunction {
 
         const notAccess = accessConfig.notAccess;
         const access    = accessConfig.access;
@@ -49,7 +49,7 @@ export default class AuthAccessChecker
         (accessValue,accessProcess,(func) => {
             return async (authEngine) => {
                 const token = authEngine.getSHBridge().getToken();
-                return accessProcess((await func(smallBag,token !== null ? new ZationTokenInfo(token) : null)));
+                return accessProcess((await func(bag,token !== null ? new ZationTokenInfo(token) : null)));
             };
         });
     }

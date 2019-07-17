@@ -7,7 +7,7 @@ GitHub: LucaCode
 import ReqBag                from './ReqBag';
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../helper/config/definitions/controllerConfig";
-import SmallBag           from "./SmallBag";
+import Bag           from "./Bag";
 import BackErrorBag       from "./BackErrorBag";
 
 /**
@@ -25,9 +25,9 @@ import BackErrorBag       from "./BackErrorBag";
 export default class Controller {
     /**
      * @description
-     * The prepared small bag from the worker.
+     * The prepared bag from the worker.
      */
-    protected smallBag: SmallBag;
+    protected bag: Bag;
 
     /**
      * @description
@@ -42,10 +42,10 @@ export default class Controller {
      */
     protected readonly apiLevel: number | undefined;
 
-    constructor(id : string,smallBag: SmallBag,apiLevel : number | undefined) {
+    constructor(id : string, bag: Bag, apiLevel : number | undefined) {
         this.id = id;
         this.apiLevel = apiLevel;
-        this.smallBag = smallBag;
+        this.bag = bag;
     }
 
     /**
@@ -57,9 +57,9 @@ export default class Controller {
     /**
      * @description
      * Gets invokes when the zation system is creating instance of the controller (in worker start).
-     * @param smallBag
+     * @param bag
      */
-    async initialize(smallBag: SmallBag): Promise<void> {
+    async initialize(bag: Bag): Promise<void> {
     }
 
     /**
@@ -109,7 +109,7 @@ export default class Controller {
 export interface ControllerClass {
     config: ControllerConfig;
 
-    new(id : string,smallBag: SmallBag,apiLevel : number | undefined): Controller;
+    new(id : string, bag: Bag, apiLevel : number | undefined): Controller;
 
     prototype: any;
 }
