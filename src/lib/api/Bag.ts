@@ -999,7 +999,7 @@ export default class Bag extends SmallBag
      * Requires ws request!
      * @throws MethodIsNotCompatibleError
      */
-    getSocket() : ZSocket {
+    get socket() : ZSocket {
         if(this.shBridge.isWebSocket) {
             return this.shBridge.getSocket().zSocket;
         }
