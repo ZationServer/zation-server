@@ -62,6 +62,9 @@ import {TaskFunction} from "../helper/config/definitions/backgroundTaskConfig";
 import {ErrorName}    from "../helper/constants/errorName";
 import {DATA_BOX_START_INDICATOR} from "../helper/dataBox/dbDefinitions";
 import {ZationChannel}            from "../helper/channel/channelDefinitions";
+import DataBoxHandler             from "../helper/dataBox/handle/dataBoxHandler";
+import DataBoxPrepare             from "../helper/dataBox/dataBoxPrepare";
+import RespondUtils               from "../helper/utils/respondUtils";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -82,6 +85,7 @@ class ZationWorker extends SCWorker
     private bagExtensionEngine : BagExtensionEngine;
     private preparedSmallBag : SmallBag;
     private controllerPrepare : ControllerPrepare;
+    private dataBoxPrepare : DataBoxPrepare;
     private aePreparedPart : AEPreparedPart;
     private panelEngine : PanelEngine;
     private chMiddlewareHelper : ChMiddlewareHelper;
@@ -89,6 +93,7 @@ class ZationWorker extends SCWorker
     private originCheck : OriginChecker;
     private channelPrepare : ChannelPrepare;
     private zationReqHandler : ZationCReqHandler;
+    private zationDbHandler : DataBoxHandler;
     private socketUpdateEngine : SocketUpgradeEngine;
     private tokenClusterKeyCheck : TokenClusterKeyCheckFunction;
 
@@ -211,6 +216,11 @@ class ZationWorker extends SCWorker
         this.socketUpdateEngine = new SocketUpgradeEngine(this,this.channelPrepare);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the socket update engine.`,true);
 
+        Logger.startStopWatch();
+        this.dataBoxPrepare = new DataBoxPrepare(this.zc,this,this.preparedSmallBag);
+        await this.dataBoxPrepare.prepare();
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the DataBoxes.`,true);
+
         //PrepareChannels after smallBag!
         Logger.startStopWatch();
         this.channelPrepare.prepare(this.preparedSmallBag);
@@ -251,6 +261,10 @@ class ZationWorker extends SCWorker
         Logger.startStopWatch();
         this.zationReqHandler = new ZationCReqHandler(this);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the zation request handler.`,true);
+
+        Logger.startStopWatch();
+        this.zationDbHandler = new DataBoxHandler(this.dataBoxPrepare,this.zc);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the zation DataBox handler.`,true);
 
         Logger.startStopWatch();
         this.checkAuthStart();
@@ -331,8 +345,8 @@ class ZationWorker extends SCWorker
                 await this.zationReqHandler.processSocketReq(data,socket,respond);
             });
 
-            socket.on('>D', async () => {
-
+            socket.on('>D', async (data,respond) => {
+                await RespondUtils.respondWithFunc(respond,this.zationDbHandler.processRegisterReq,data,socket);
             });
 
             await this.zc.eventConfig.socketConnection(this.getPreparedSmallBag(),socket.zSocket);
