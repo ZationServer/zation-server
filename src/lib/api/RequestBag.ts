@@ -29,7 +29,7 @@ import ZSocket                    from "../helper/internalApi/ZSocket";
 import ApiLevelUtils              from "../helper/apiLevel/apiLevelUtils";
 import CloneUtils                 from "../helper/utils/cloneUtils";
 
-export default class ReqBag extends Bag
+export default class RequestBag extends Bag
 {
     private reqVariables : object;
     private readonly shBridge : SHBridge;

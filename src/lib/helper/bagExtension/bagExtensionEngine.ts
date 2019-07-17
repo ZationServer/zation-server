@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import Bag                from "../../api/Bag";
-import ReqBag             from "../../api/ReqBag";
+import RequestBag         from "../../api/RequestBag";
 import ZationConfigFull   from "../config/manager/zationConfigFull";
 
 export default class BagExtensionEngine
@@ -25,7 +25,7 @@ export default class BagExtensionEngine
             const extensions = this.zc.appConfig.bagExtensions;
             for(let i = 0; i < extensions.length; i++) {
                 this.add(Bag,extensions[i].bag);
-                this.add(ReqBag,extensions[i].reqBag);
+                this.add(RequestBag,extensions[i].requestBag);
             }
         }
     }

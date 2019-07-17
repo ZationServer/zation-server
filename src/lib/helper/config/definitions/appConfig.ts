@@ -187,9 +187,9 @@ export default interface BagExtension {
      */
     bag ?: Record<string,any>,
     /**
-     * All extensions for the ReqBag.
+     * All extensions for the RequestBag.
      */
-    reqBag ?: Record<string,any>
+    requestBag ?: Record<string,any>
 }
 
 export interface UserGroupsConfig

@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ReqBag from '../../../api/ReqBag';
+import RequestBag                                            from '../../../api/RequestBag';
 import {ConfigNames, DefaultUserGroupFallBack, ZationAccess} from "../../constants/internal";
 import BagExtension, {
     AppConfig,
@@ -48,10 +48,10 @@ import {
     ValueModelConfig
 } from "../definitions/inputConfig";
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../definitions/controllerConfig";
-import {DataBoxClassDef, DataBoxConfig} from "../definitions/dataBoxConfig";
-import DataBoxFamily from "../../../api/dataBox/DataBoxFamily";
-import DataBox from "../../../api/dataBox/DataBox";
+import {ControllerConfig}                      from "../definitions/controllerConfig";
+import {DataBoxClassDef, DataBoxConfig}        from "../definitions/dataBoxConfig";
+import DataBoxFamily                           from "../../../api/dataBox/DataBoxFamily";
+import DataBox                                 from "../../../api/dataBox/DataBox";
 import {AuthAccessConfig, VersionAccessConfig} from "../definitions/configComponents";
 
 export interface ModelCheckedMem {
@@ -114,7 +114,7 @@ export default class ConfigChecker
         const moduleBagExProps : string[] = [];
 
         if(typeof extension === 'object'){
-            const reqBagExProps = extension.reqBag;
+            const reqBagExProps = extension.requestBag;
             if(typeof reqBagExProps === 'object') {
                 for(let k in reqBagExProps){
                     if(reqBagExProps.hasOwnProperty(k)){
@@ -160,9 +160,9 @@ export default class ConfigChecker
             }
         }
         else {
-            if(ReqBag.prototype.hasOwnProperty(propName)){
+            if(RequestBag.prototype.hasOwnProperty(propName)){
                 this.ceb.addConfigError(new ConfigError(configName,
-                    `${target.getTarget()} conflict with ReqBag property name: ${propName}.`));
+                    `${target.getTarget()} conflict with RequestBag property name: ${propName}.`));
             }
 
         }

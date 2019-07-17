@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ReqBag                  from '../../../../api/ReqBag';
+import RequestBag              from '../../../../api/RequestBag';
 import ZationWorker          = require("../../../../main/zationWorker");
 import Controller              from '../../../../api/Controller';
 import SHBridge                from "../../../bridges/shBridge";
@@ -15,7 +15,7 @@ import BackErrorBag            from "../../../../api/BackErrorBag";
 import ControllerPrepare       from "../../controllerPrepare";
 import ProtocolAccessChecker   from "../../../protocolAccess/protocolAccessChecker";
 import {MainBackErrors}        from "../../../zationBackErrors/mainBackErrors";
-import ControllerReqUtils          from "../controllerReqUtils";
+import ControllerReqUtils      from "../controllerReqUtils";
 import Result                            from "../../../../api/Result";
 import {MiddlewareInvokeFunction}        from "../../controllerUtils";
 import ZationConfigFull                  from "../../../config/manager/zationConfigFull";
@@ -132,7 +132,7 @@ export default class MainCRequestProcessor
                                 e = errorBag;
 
                                 const input = task.i;
-                                const reqBag = new ReqBag(
+                                const reqBag = new RequestBag(
                                     shBridge,
                                     this.worker,
                                     authEngine,
@@ -158,7 +158,7 @@ export default class MainCRequestProcessor
                             throw e;
                         }
 
-                        const reqBag = new ReqBag(
+                        const reqBag = new RequestBag(
                             shBridge,
                             this.worker,
                             authEngine,
@@ -197,7 +197,7 @@ export default class MainCRequestProcessor
     }
 
     // noinspection JSMethodCanBeStatic
-    private async processController(controllerInstance : Controller, reqBag : ReqBag, input : any, middlewareInvoke : MiddlewareInvokeFunction) : Promise<ResponseResult>
+    private async processController(controllerInstance : Controller, reqBag : RequestBag, input : any, middlewareInvoke : MiddlewareInvokeFunction) : Promise<ResponseResult>
     {
         //process the controller handle, before handle events and finally handle.
         try {

@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ReqBag                from './ReqBag';
+import RequestBag         from './RequestBag';
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../helper/config/definitions/controllerConfig";
-import Bag           from "./Bag";
+import Bag                from "./Bag";
 import BackErrorBag       from "./BackErrorBag";
 
 /**
@@ -75,7 +75,7 @@ export default class Controller {
      * Notice that only the BackError or BackErrorBag sends back to the client.
      * All other errors or objects will be converted to an unknown BackError.
      */
-    async handle(reqBag: ReqBag, input: any): Promise<any> {
+    async handle(reqBag: RequestBag, input: any): Promise<any> {
     }
 
     /**
@@ -83,11 +83,11 @@ export default class Controller {
      * This method will be every time invoked when the handle is finished.
      * Also if the handle method has thrown an error.
      * You can use this method to clean up resources or close connections.
-     * (Use the req variable storage to save the resources on the reqBag because the ReqBag is unique for every request).
+     * (Use the req variable storage to save the resources on the RequestBag because the RequestBag is unique for every request).
      * @param reqBag
      * @param input
      */
-    async finallyHandle(reqBag: ReqBag, input: any): Promise<void> {
+    async finallyHandle(reqBag: RequestBag, input: any): Promise<void> {
     }
 
     /**
@@ -102,7 +102,7 @@ export default class Controller {
      * Notice that only the BackError or BackErrorBag sends back to the client.
      * All other errors or objects will be converted to an unknown BackError.
      */
-    async wrongInput(reqBag: ReqBag, input: any, backErrorBag : BackErrorBag): Promise<void> {
+    async wrongInput(reqBag: RequestBag, input: any, backErrorBag : BackErrorBag): Promise<void> {
     }
 }
 

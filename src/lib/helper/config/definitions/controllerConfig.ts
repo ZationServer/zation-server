@@ -4,11 +4,11 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ReqBag                                    from "../../../api/ReqBag";
+import RequestBag                                from "../../../api/RequestBag";
 import {AuthAccessConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
 import {InputConfig}                             from "./inputConfig";
 
-export type ControllerMiddlewareFunction = (bag : ReqBag) => Promise<void> | void;
+export type ControllerMiddlewareFunction = (reqBag : RequestBag) => Promise<void> | void;
 
 export interface ControllerConfig extends InputConfig, VersionAccessConfig, SystemAccessConfig, AuthAccessConfig
 {
