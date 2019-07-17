@@ -33,9 +33,12 @@ import {ParamInput}                 from "./lib/api/decorator/input/ParamInput";
 import {Extends}                    from "./lib/api/decorator/input/Extends";
 import {Constructor}                from "./lib/api/decorator/input/Constructor";
 import NoMoreDataAvailableError     from "./lib/helper/dataBox/noMoreDataAvailable";
-import DataBoxFamily                    from "./lib/api/dataBox/DataBoxFamily";
+import DataBoxFamily                from "./lib/api/dataBox/DataBoxFamily";
 import DataBox                      from "./lib/api/dataBox/DataBox";
 import {DataBoxConfig}              from "./lib/helper/config/definitions/dataBoxConfig";
+import DataBoxContainer             from "./lib/helper/dataBox/container/dataBoxContainer";
+import DataBoxFamilyContainer       from "./lib/helper/dataBox/container/dataBoxFamilyContainer";
+import {buildKeyArray}              from "./lib/helper/dataBox/dbKeyArrayUtils";
 const  FsUtil : any               = require('socketcluster/fsutil');
 
 //starter
@@ -72,7 +75,9 @@ export {
         ParamInput,
         NoMoreDataAvailableError,
         DataBoxFamily,
+        DataBoxFamilyContainer,
         DataBox,
+        DataBoxContainer,
         DataBoxConfig,
         Controller,
         ControllerConfig,
@@ -91,5 +96,6 @@ export {
         MethodIsNotCompatibleError,
         InputIsNotCompatibleError,
         FsUtil,
-        single
+        single,
+        buildKeyArray
     };
