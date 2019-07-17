@@ -84,7 +84,7 @@ export default class ZSocket
     /**
      * Returns if the socket is authenticated with a token.
      */
-    get isAuthIn(): boolean {
+    get isAuth(): boolean {
         return this._socket.authToken !== null;
     }
 
