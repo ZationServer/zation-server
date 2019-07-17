@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ZationRequest}     from "../constants/internal";
 import * as core           from "express-serve-static-core";
 import BaseSHBridge        from "./baseSHBridge";
+import {ZationRequest}     from "../controller/request/controllerDefinitions";
 
 /**
  * Socket, http bridge interface

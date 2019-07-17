@@ -12,9 +12,9 @@ import BackError                        from "../../api/BackError";
 import {MainBackErrors}                 from "../zationBackErrors/mainBackErrors";
 import InputUtils                       from "./inputUtils";
 import SmallBag                         from "../../api/SmallBag";
-import {ValidationCheckPair}            from "../constants/internal";
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig}               from "../config/definitions/controllerConfig";
+import {ValidationCheckPair}            from "../controller/request/controllerDefinitions";
 
 export type InputConsumeFunction = (input : any) => Promise<any>;
 export type InputValidationCheckFunction = (checkData : ValidationCheckPair[]) => Promise<void>;

@@ -4,22 +4,22 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationWorker        = require("../../../main/zationWorker");
-import CRequestResponder              from "./cRequestResponder";
-import MainCRequestProcessor  from "./processor/mainCRequestProcessor";
+import ZationWorker                = require("../../../main/zationWorker");
+import ControllerRequestResponder             from "./controllerRequestResponder";
+import MainCRequestProcessor         from "./processor/mainCRequestProcessor";
 import SocketCRequestProcessor       from "./processor/socketCRequestProcessor";
 import HttpCRequestProcessor         from "./processor/httpCRequestProcessor";
 import ValidCheckCRequestProcessor   from "./processor/validCheckCRequestProcessor";
-import UpSocket, {RespondFunction} from "../../sc/socket";
-import BackError             from "../../../api/BackError";
-import BackErrorBag          from "../../../api/BackErrorBag";
-import IdCounter             from "../../utils/idCounter";
-import Logger                from "../../logger/logger";
-import CodeError             from "../../error/codeError";
-import ZationConfigFull      from "../../config/manager/zationConfigFull";
-import {Request,Response}    from "express";
+import UpSocket, {RespondFunction}   from "../../sc/socket";
+import BackError                     from "../../../api/BackError";
+import BackErrorBag                  from "../../../api/BackErrorBag";
+import IdCounter                     from "../../utils/idCounter";
+import Logger                        from "../../logger/logger";
+import CodeError                     from "../../error/codeError";
+import ZationConfigFull              from "../../config/manager/zationConfigFull";
+import {Request,Response}            from "express";
 
-export default class ZationCReqHandler
+export default class ControllerReqHandler
 {
     private readonly zc : ZationConfigFull;
     private readonly worker : ZationWorker;
@@ -30,7 +30,7 @@ export default class ZationCReqHandler
     private readonly mainRequestProcessor : MainCRequestProcessor;
     private readonly socketProcessor : SocketCRequestProcessor;
     private readonly httpProcessor : HttpCRequestProcessor;
-    private readonly requestResponder : CRequestResponder;
+    private readonly requestResponder : ControllerRequestResponder;
 
 
     constructor(worker)
@@ -44,7 +44,7 @@ export default class ZationCReqHandler
         this.socketProcessor = new SocketCRequestProcessor(this.zc);
         this.httpProcessor = new HttpCRequestProcessor(this.zc,worker,worker.getTokenClusterKeyCheck());
 
-        this.requestResponder = new CRequestResponder(this.zc);
+        this.requestResponder = new ControllerRequestResponder(this.zc);
 
         this.reqIdPreFix = `${this.worker.options.instanceId}-${this.worker.getFullWorkerId()}-`;
     }

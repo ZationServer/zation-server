@@ -27,7 +27,7 @@ import url          = require('url');
 
 import process          = require("process");
 import {WorkerChTaskType} from "../helper/constants/workerChTaskType";
-import ZationCReqHandler   from "../helper/controller/request/zationCReqHandler";
+import ControllerReqHandler  from "../helper/controller/request/controllerReqHandler";
 import AEPreparedPart     from "../helper/auth/aePreparedPart";
 import ZationTokenInfo    from "../helper/internalApi/zationTokenInfo";
 import ControllerPrepare  from "../helper/controller/controllerPrepare";
@@ -92,7 +92,7 @@ class ZationWorker extends SCWorker
     private channelBagEngine : ChannelBagEngine;
     private originCheck : OriginChecker;
     private channelPrepare : ChannelPrepare;
-    private zationReqHandler : ZationCReqHandler;
+    private zationCReqHandler : ControllerReqHandler;
     private zationDbHandler : DataBoxHandler;
     private socketUpdateEngine : SocketUpgradeEngine;
     private tokenClusterKeyCheck : TokenClusterKeyCheckFunction;
@@ -259,7 +259,7 @@ class ZationWorker extends SCWorker
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has registered to the worker channel.`,true);
 
         Logger.startStopWatch();
-        this.zationReqHandler = new ZationCReqHandler(this);
+        this.zationCReqHandler = new ControllerReqHandler(this);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the zation request handler.`,true);
 
         Logger.startStopWatch();
@@ -344,7 +344,7 @@ class ZationWorker extends SCWorker
             Logger.printDebugInfo(`Socket with id: ${socket.id} is connected!`);
 
             socket.on('>', async (data, respond) => {
-                await this.zationReqHandler.processSocketReq(data,socket,respond);
+                await this.zationCReqHandler.processSocketReq(data,socket,respond);
             });
 
             socket.on('>D', async (data,respond) => {
@@ -424,7 +424,7 @@ class ZationWorker extends SCWorker
         //Request
         this.app.all(`${serverPath}`, async (req : Request, res : Response) => {
             //Run Zation
-            await this.zationReqHandler.processHttpReq(req,res);
+            await this.zationCReqHandler.processHttpReq(req,res);
         });
 
         await this.zc.eventConfig.httpServerStarted(this.zc.getZationInfo());

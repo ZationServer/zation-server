@@ -8,7 +8,7 @@ import SHBridgeSocket        from "../../../bridges/shBridgeSocket";
 import UpSocket              from "../../../sc/socket";
 import ZationConfig          from "../../../config/manager/zationConfig";
 import Logger                from "../../../logger/logger";
-import ZationReqUtils        from "../../../utils/zationReqUtils";
+import ControllerReqUtils    from "../controllerReqUtils";
 import StringifyUtils        from "../../../utils/stringifyUtils";
 
 export default class SocketCRequestProcessor
@@ -34,7 +34,7 @@ export default class SocketCRequestProcessor
         }
 
         //check for validationCheckRequest
-        return new SHBridgeSocket(socket,reqId,input,ZationReqUtils.isValidationCheckReq(input),this.defaultApiLevel);
+        return new SHBridgeSocket(socket,reqId,input,ControllerReqUtils.isValidationCheckReq(input),this.defaultApiLevel);
     }
 
 }

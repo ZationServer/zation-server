@@ -5,19 +5,20 @@ GitHub: LucaCode
  */
 
 import ZationWorker          = require("../../../../main/zationWorker");
-import {ZationRequest, ZationToken} from "../../../constants/internal";
+import {ZationToken}                from "../../../constants/internal";
 import SHBridgeHttp                 from "../../../bridges/shBridgeHttp";
 import ZationTokenInfo              from "../../../internalApi/zationTokenInfo";
 import AEPreparedPart               from "../../../auth/aePreparedPart";
 import BackError                    from "../../../../api/BackError";
 import Logger                       from "../../../logger/logger";
-import ZationReqUtils               from "../../../utils/zationReqUtils";
+import ControllerReqUtils           from "../controllerReqUtils";
 import {MainBackErrors}             from "../../../zationBackErrors/mainBackErrors";
 import TokenUtils, {TokenClusterKeyCheckFunction} from "../../../token/tokenUtils";
 import JsonConverter                from "../../../utils/jsonConverter";
 import ZationConfigFull             from "../../../config/manager/zationConfigFull";
 import MiddlewareUtils              from "../../../utils/middlewareUtils";
 import StringifyUtils               from "../../../utils/stringifyUtils";
+import {ZationRequest}              from "../controllerDefinitions";
 
 export default class HttpCRequestProcessor
 {
@@ -64,16 +65,16 @@ export default class HttpCRequestProcessor
             }
             const query = req.query;
 
-            if(ZationReqUtils.isValidGetReq(query)) {
+            if(ControllerReqUtils.isValidGetReq(query)) {
                 HttpCRequestProcessor.setHeader(res);
-                const zationData = await ZationReqUtils.convertGetRequest(query);
+                const zationData = await ControllerReqUtils.convertGetRequest(query);
                 this.logGetRequest(reqId,zationData);
                 return this.mainProcess(req,res,zationData,reqId);
             }
-            else if(ZationReqUtils.isValidValidationGetReq(query))
+            else if(ControllerReqUtils.isValidValidationGetReq(query))
             {
                 HttpCRequestProcessor.setHeader(res);
-                const zationData = await ZationReqUtils.convertValidationGetRequest(query);
+                const zationData = await ControllerReqUtils.convertValidationGetRequest(query);
                 this.logGetRequest(reqId,zationData);
                 return this.mainProcess(req,res,zationData,reqId);
             }
@@ -104,7 +105,7 @@ export default class HttpCRequestProcessor
     private async mainProcess(req,res,zationData : ZationRequest,reqId : string)
     {
         //check for validationCheckRequest
-        if(ZationReqUtils.isValidationCheckReq(zationData)) {
+        if(ControllerReqUtils.isValidationCheckReq(zationData)) {
             return new SHBridgeHttp(res,req,reqId,zationData,true,this.defaultApiLevel,this.worker);
         }
         else

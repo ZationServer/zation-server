@@ -7,7 +7,8 @@ GitHub: LucaCode
 import BackErrorConstruct   from "../helper/constants/backErrorConstruct";
 // noinspection TypeScriptPreferShortImport
 import {ErrorType}          from "../helper/constants/errorType";
-import {ErrorResponse, BackErrorInfo} from "../helper/constants/internal";
+import {BackErrorInfo}      from "../helper/constants/internal";
+import {ErrorResponse}      from "../helper/controller/request/controllerDefinitions";
 
 export default class BackError extends Error
 {

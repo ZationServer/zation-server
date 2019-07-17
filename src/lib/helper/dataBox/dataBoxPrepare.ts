@@ -154,7 +154,7 @@ export default class DataBoxPrepare
             throw new Error('Unexpected DataBox class type');
         }
 
-        Object.defineProperty(dataBox,'___instance',{
+        Object.defineProperty(dataBox,'___instance___',{
             value : dbInstance,
             configurable : false,
             enumerable : false,

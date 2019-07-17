@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ZationHttpInfo, ZationRequest, ZationToken} from "../constants/internal";
+import {ZationToken}     from "../constants/internal";
 import * as core         from "express-serve-static-core";
 import {IncomingMessage} from "http";
 import SHBridge          from "./shBridge";
@@ -12,7 +12,8 @@ import UpSocket          from "../sc/socket";
 import JwtOptions        from "../constants/jwt";
 import AuthEngine        from "../auth/authEngine";
 import ZationWorker    = require("../../main/zationWorker");
-import BaseSHBridgeDefault from "./baseSHBridgeDefault";
+import BaseSHBridgeDefault             from "./baseSHBridgeDefault";
+import {ZationHttpInfo, ZationRequest} from "../controller/request/controllerDefinitions";
 
 /**
  * BaseShBridge implementation for http.

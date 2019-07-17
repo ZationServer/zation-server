@@ -4,10 +4,10 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ZationRequest}      from "../constants/internal";
 import SHBridge             from "./shBridge";
 import BaseSHBridgeSocket   from "./baseSHBridgeSocket";
 import UpSocket             from "../sc/socket";
+import {ZationRequest}      from "../controller/request/controllerDefinitions";
 
 /**
  * ShBridge implementation for socket.

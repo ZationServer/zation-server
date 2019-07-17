@@ -5,7 +5,8 @@ GitHub: LucaCode
  */
 
 import UpSocket             from "../sc/socket";
-import DataBoxCore from "../../api/dataBox/DataBoxCore";
+import {DataBox}            from "../../../index";
+import DataBoxFamily        from "../../api/dataBox/DataBoxFamily";
 
 /**
  * Helper class for dataBox access.
@@ -22,7 +23,7 @@ export default class DataBoxAccessHelper
         const promises : Promise<void>[] = [];
         for(let i = 0;i < dataBoxes.length; i++) {
             promises.push((async () => {
-               if(!dataBoxes[i].tokenStateAccessCheck(socket)){
+               if(!dataBoxes[i]._tokenStateAccessCheck(socket)){
                    dataBoxes[i].kickOut(socket);
                }
             })());
@@ -35,7 +36,7 @@ export default class DataBoxAccessHelper
      * @param db
      * @param socket
      */
-    static addDb(db : DataBoxCore,socket : UpSocket) {
+    static addDb(db : DataBox | DataBoxFamily,socket : UpSocket) {
         socket.dataBoxes.push(db);
     }
 
@@ -44,7 +45,7 @@ export default class DataBoxAccessHelper
      * @param db
      * @param socket
      */
-    static rmDb(db : DataBoxCore,socket : UpSocket){
+    static rmDb(db : DataBox | DataBoxFamily,socket : UpSocket){
         const index = socket.dataBoxes.indexOf(db);
         if (index > -1) {
             socket.dataBoxes.splice(index, 1);

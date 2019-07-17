@@ -3,7 +3,7 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-import {ResponseResult, ZationResponse, ZationToken} from "../../constants/internal";
+import {ZationToken}     from "../../constants/internal";
 import SHBridge          from "../../bridges/shBridge";
 import stringify         from "fast-stringify";
 import BackError         from "../../../api/BackError";
@@ -16,8 +16,9 @@ import SHBridgeHttp      from "../../bridges/shBridgeHttp";
 import StringifyUtils    from "../../utils/stringifyUtils";
 import {Response}        from "express";
 import {RespondFunction} from "../../sc/socket";
+import {ResponseResult, ZationResponse} from "./controllerDefinitions";
 
-export default class CRequestResponder
+export default class ControllerRequestResponder
 {
     private readonly zc : ZationConfig;
     private readonly sendErrorDesc : boolean;

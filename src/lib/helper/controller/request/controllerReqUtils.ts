@@ -4,11 +4,11 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {HttpGetRequest, ZationRequest, ZationTask, ZationValidationCheck} from "../constants/internal";
-import JsonConverter from "./jsonConverter";
-import ZationConfig  from "../config/manager/zationConfig";
+import JsonConverter from "../../utils/jsonConverter";
+import ZationConfig  from "../../config/manager/zationConfig";
+import {HttpGetRequest, ZationRequest, ZationTask, ZationValidationCheck} from "./controllerDefinitions";
 
-export default class ZationReqUtils
+export default class ControllerReqUtils
 {
     static isValidReqStructure(zationReq : ZationRequest,isWsReq : boolean) : boolean
     {

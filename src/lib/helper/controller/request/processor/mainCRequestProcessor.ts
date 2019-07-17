@@ -7,7 +7,6 @@ GitHub: LucaCode
 import Bag                     from '../../../../api/Bag';
 import ZationWorker          = require("../../../../main/zationWorker");
 import Controller              from '../../../../api/Controller';
-import {ResponseResult, ZationTask} from "../../../constants/internal";
 import SHBridge                from "../../../bridges/shBridge";
 import ValidCheckCRequestProcessor     from "./validCheckCRequestProcessor";
 import AuthEngine              from "../../../auth/authEngine";
@@ -16,10 +15,11 @@ import BackErrorBag            from "../../../../api/BackErrorBag";
 import ControllerPrepare       from "../../controllerPrepare";
 import ProtocolAccessChecker   from "../../../protocolAccess/protocolAccessChecker";
 import {MainBackErrors}        from "../../../zationBackErrors/mainBackErrors";
-import ZationReqUtils          from "../../../utils/zationReqUtils";
-import Result                  from "../../../../api/Result";
-import {MiddlewareInvokeFunction} from "../../controllerUtils";
-import ZationConfigFull        from "../../../config/manager/zationConfigFull";
+import ControllerReqUtils          from "../controllerReqUtils";
+import Result                            from "../../../../api/Result";
+import {MiddlewareInvokeFunction}        from "../../controllerUtils";
+import ZationConfigFull                  from "../../../config/manager/zationConfigFull";
+import {ResponseResult, ZationTask}      from "../controllerDefinitions";
 
 export default class MainCRequestProcessor
 {
@@ -55,14 +55,14 @@ export default class MainCRequestProcessor
 
         let reqData = shBridge.getZationData();
 
-        if(ZationReqUtils.isValidReqStructure(reqData,shBridge.isWebSocket()))
+        if(ControllerReqUtils.isValidReqStructure(reqData,shBridge.isWebSocket()))
         {
             //Check for a auth req
-            if(ZationReqUtils.isZationAuthReq(reqData)) {
+            if(ControllerReqUtils.isZationAuthReq(reqData)) {
                 if(!this.authController) {
                     throw new BackError(MainBackErrors.authControllerNotSet);
                 }
-                reqData = ZationReqUtils.dissolveZationAuthReq(this.zc,reqData);
+                reqData = ControllerReqUtils.dissolveZationAuthReq(this.zc,reqData);
             }
             // check auth start active ?
             else if(this.worker.getIsAuthStartActive()) {
@@ -72,8 +72,8 @@ export default class MainCRequestProcessor
             //is checked by isValidReqStructure!
             const task : ZationTask = (reqData.t as ZationTask);
 
-            const isSystemController = ZationReqUtils.isSystemControllerReq(task);
-            const controllerId = ZationReqUtils.getControllerId(task,isSystemController);
+            const isSystemController = ControllerReqUtils.isSystemControllerReq(task);
+            const controllerId = ControllerReqUtils.getControllerId(task,isSystemController);
 
             //Trows if not exists
             this.controllerPrepare.checkControllerExist(controllerId,isSystemController);

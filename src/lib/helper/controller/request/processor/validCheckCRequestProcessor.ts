@@ -4,14 +4,14 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ZationRequest, ZationValidationCheck} from "../../../constants/internal";
 import ZationWorker          = require("../../../../main/zationWorker");
 import BackError                from "../../../../api/BackError";
 import ControllerPrepare        from "../../controllerPrepare";
 import ZationConfig             from "../../../config/manager/zationConfig";
-import ZationReqUtils           from "../../../utils/zationReqUtils";
 import {MainBackErrors}         from "../../../zationBackErrors/mainBackErrors";
 import SHBridge                 from "../../../bridges/shBridge";
+import {ZationRequest, ZationValidationCheck} from "../controllerDefinitions";
+import ControllerReqUtils               from "../controllerReqUtils";
 
 export default class ValidCheckCRequestProcessor
 {
@@ -32,13 +32,13 @@ export default class ValidCheckCRequestProcessor
 
     async process(reqData : ZationRequest,shBridge : SHBridge)
     {
-        if(ZationReqUtils.isValidValidationStructure(reqData))
+        if(ControllerReqUtils.isValidValidationStructure(reqData))
         {
             //is checked in isValidValidationStructure
             const validReq : ZationValidationCheck = (reqData.v as ZationValidationCheck);
 
-            const isSystemController = ZationReqUtils.isSystemControllerReq(validReq);
-            const cId = ZationReqUtils.getControllerId(validReq,isSystemController);
+            const isSystemController = ControllerReqUtils.isSystemControllerReq(validReq);
+            const cId = ControllerReqUtils.getControllerId(validReq,isSystemController);
 
             //Throws if not exists
             this.controllerPrepare.checkControllerExist(cId,isSystemController);
