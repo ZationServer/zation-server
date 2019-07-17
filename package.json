@@ -70,7 +70,7 @@
     "stringify-object": "3.3.0",
     "ws": "6.2.1",
     "zation-client": "0.8.7",
-    "zation-service": "0.3.6"
+    "zation-service": "0.3.7"
   },
   "devDependencies": {
     "@types/chai": "4.1.7",
