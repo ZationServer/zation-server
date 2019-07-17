@@ -82,7 +82,7 @@ export default class Bag {
     /**
      * @description
      * Returns the root path of the project.
-     * Typescript project will return path to dist folder.
+     * In a typescript project, it will return the path to the dist folder.
      */
     getRootPath(): string {
         // noinspection TypeScriptValidateJSTypes
@@ -413,6 +413,7 @@ export default class Bag {
     }
 
     //Part Crypto
+
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
@@ -487,7 +488,7 @@ export default class Bag {
      * @description
      * Returns an object with private an public key for Asymmetric Encryption.
      * @example
-     * const { privateKey, publicKey } = await getAsyncKeyPair();
+     * const { privateKey, publicKey } = await getAsymmetricKeyPair();
      *
      */
     async getAsymmetricKeyPair(): Promise<AsymmetricKeyPairs> {
@@ -873,8 +874,8 @@ export default class Bag {
      * @param serviceName
      * @param configName Default: 'default'
      */
-    isService(serviceName: string, configName: string = 'default'): boolean {
-        return this.serviceEngine.isService(serviceName, configName);
+    hasService(serviceName: string, configName: string = 'default'): boolean {
+        return this.serviceEngine.hasService(serviceName, configName);
     }
 
     //Part Errors
@@ -946,6 +947,7 @@ export default class Bag {
     }
 
     //Part Logger
+
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
@@ -1067,6 +1069,7 @@ export default class Bag {
     }
 
     //Part Http
+
     // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
     /**
      * @description
@@ -2226,7 +2229,7 @@ export default class Bag {
      * @example
      * getWorkerClients();
      */
-    getWorkerClients(): object {
+    getWorkerClients(): Record<string,UpSocket> {
         return this.worker.scServer.clients;
     }
 
@@ -2403,6 +2406,8 @@ export default class Bag {
         await this.exchangeEngine.publishSpecialTaskToWorker
         (WorkerChSpecialTaskActions.MESSAGE, {data : data});
     }
+
+    //Part DataBoxes
 
     /**
      * This function helps to access your DataBoxes.

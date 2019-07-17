@@ -4,6 +4,8 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
+import UpSocket from "./socket";
+
 export interface ScChannel {
     getState() : string
     subscribe() : void
@@ -32,7 +34,7 @@ export interface ScExchange {
 export default interface ScServer
 {
     exchange : ScExchange;
-    clients : object;
+    clients : Record<string,UpSocket>;
     clientsCount : number;
     pendingClients : object;
     pendingClientsCount : number;

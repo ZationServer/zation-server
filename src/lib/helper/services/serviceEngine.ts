@@ -68,7 +68,7 @@ export default class ServiceEngine
     }
 
     // noinspection JSUnusedGlobalSymbols
-    isService(serviceName : string,configName : string = 'default') : boolean
+    hasService(serviceName : string, configName : string = 'default') : boolean
     {
         if(this.services[serviceName] instanceof ServiceBox) {
             return this.services[serviceName].isServiceExists(configName);
