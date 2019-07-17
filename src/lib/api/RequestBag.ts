@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import ZationWorker             = require("../main/zationWorker");
 import useragent                = require('useragent');
-import UpSocket                   from "../helper/sc/socket";
+import UpSocket, {OnHandlerFunction} from "../helper/sc/socket";
 import ScServer                   from "../helper/sc/scServer";
 import * as core                  from "express-serve-static-core";
 import {IncomingHttpHeaders, IncomingMessage} from "http";
@@ -22,9 +22,8 @@ import Bag                        from "./Bag";
 import InputIsNotCompatibleError  from "../helper/error/inputIsNotCompatibleError";
 import MethodIsNotCompatibleError from "../helper/error/methodIsNotCompatibleError";
 import TokenUtils                 from "../helper/token/tokenUtils";
-import {ZationCustomEmitNamespace, ZationToken} from "../helper/constants/internal";
+import {ZationToken}              from "../helper/constants/internal";
 import JwtSignOptions             from "../helper/constants/jwt";
-import ChUtils                    from "../helper/channel/chUtils";
 import ZSocket                    from "../helper/internalApi/ZSocket";
 import ApiLevelUtils              from "../helper/apiLevel/apiLevelUtils";
 import CloneUtils                 from "../helper/utils/cloneUtils";
@@ -196,14 +195,8 @@ export default class RequestBag extends Bag
      * @param value
      * @throws MethodIsNotCompatibleError
      */
-    setSocketVariable(path : string | string[],value : any) : void
-    {
-        if(this.shBridge.isWebSocket()) {
-            ObjectPath.set(this.shBridge.getSocket().zationSocketVariables,path,value);
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Set a socket variable.');
-        }
+    setSocketVariable(path : string | string[],value : any) : void {
+        this.socket.setSocketVariable(path,value);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -217,14 +210,8 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws MethodIsNotCompatibleError
      */
-    hasSocketVariable(path ?: string | string[]) : boolean
-    {
-        if(this.shBridge.isWebSocket()) {
-            return ObjectPath.has(this.shBridge.getSocket().zationSocketVariables,path);
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Check has a socket variable.');
-        }
+    hasSocketVariable(path ?: string | string[]) : boolean {
+        return this.socket.hasSocketVariable(path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -238,14 +225,8 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws MethodIsNotCompatibleError
      */
-    getSocketVariable<R>(path ?: string | string[]) : R
-    {
-        if(this.shBridge.isWebSocket()) {
-            return ObjectPath.get(this.shBridge.getSocket().zationSocketVariables,path);
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get a socket variable.');
-        }
+    getSocketVariable<R>(path ?: string | string[]) : R {
+        return this.socket.getSocketVariable(path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -259,19 +240,8 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws MethodIsNotCompatibleError
      */
-    deleteSocketVariable(path ?: string | string[]) : void
-    {
-        if(this.shBridge.isWebSocket()) {
-            if(!!path) {
-                ObjectPath.del(this.shBridge.getSocket().zationSocketVariables,path);
-            }
-            else {
-                this.shBridge.getSocket().zationSocketVariables = {};
-            }
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Delete a socket variable.');
-        }
+    deleteSocketVariable(path ?: string | string[]) : void {
+        this.socket.deleteSocketVariable(path);
     }
 
     //Part Auth 2
@@ -615,12 +585,7 @@ export default class RequestBag extends Bag
      * @throws MethodIsNotCompatibleError
      */
     getSocketHandshakeVariable<R>(path ?: string | string[]) : R {
-        if(this.shBridge.isWebSocket()) {
-            return ObjectPath.get(this.shBridge.getSocket().handshakeVariables,path);
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','To get socket handshake variable.');
-        }
+        return this.socket.getSocketHandshakeVariable(path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -635,12 +600,7 @@ export default class RequestBag extends Bag
      * @throws MethodIsNotCompatibleError
      */
     hasSocketHandshakeVariable(path ?: string | string[]) : boolean {
-        if(this.shBridge.isWebSocket()) {
-            return ObjectPath.has(this.shBridge.getSocket().handshakeVariables,path);
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','To has socket handshake variable.');
-        }
+        return this.socket.hasSocketHandshakeVariable(path);
     }
 
     //Part Token Variable
@@ -660,7 +620,7 @@ export default class RequestBag extends Bag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
-     * @throws AuthenticationError if the socket is not authenticated.
+     * @throws AuthenticationError if the client is not authenticated.
      */
     async setTokenVariable(path : string | string[],value : any) : Promise<void> {
         const ctv = CloneUtils.deepClone(TokenUtils.getCustomTokenVariables(this.shBridge.getToken()));
@@ -681,7 +641,7 @@ export default class RequestBag extends Bag
      * await deleteTokenVariable('person.email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws AuthenticationError if the socket is not authenticated.
+     * @throws AuthenticationError if the client is not authenticated.
      */
     async deleteTokenVariable(path ?: string | string[]) : Promise<void> {
         if(!!path) {
@@ -712,7 +672,7 @@ export default class RequestBag extends Bag
      *       .set('person.name','Luca')
      *       .set('person.email','example@gmail.com')
      *       .commit();
-     * @throws AuthenticationError if the socket is not authenticated.
+     * @throws AuthenticationError if the client is not authenticated.
      */
     seqEditTokenVariables() : ObjectPathSequence
     {
@@ -739,7 +699,7 @@ export default class RequestBag extends Bag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
-     * @throws AuthenticationError if the socket is not authenticated.
+     * @throws AuthenticationError if the client is not authenticated.
      */
     async setTokenVariableIdSync(path : string | string[],value : any) : Promise<void> {
         await this.setTokenVariable(path,value);
@@ -761,7 +721,7 @@ export default class RequestBag extends Bag
      * await deleteTokenVariableIdSync('person.email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws AuthenticationError if the socket is not authenticated.
+     * @throws AuthenticationError if the client is not authenticated.
      */
     async deleteTokenVariableIdSync(path ?: string | string[]) : Promise<void> {
         await this.deleteTokenVariable(path);
@@ -788,7 +748,7 @@ export default class RequestBag extends Bag
      *       .set('person.name','Luca')
      *       .set('person.email','example@gmail.com')
      *       .commit();
-     * @throws AuthenticationError if the socket is not authenticated.
+     * @throws AuthenticationError if the client is not authenticated.
      */
     seqEditTokenVariablesIdSync() : ObjectPathCombineSequence {
         return new ObjectPathCombineSequence(
@@ -814,7 +774,7 @@ export default class RequestBag extends Bag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
-     * @throws AuthenticationError if the socket is not authenticated.
+     * @throws AuthenticationError if the client is not authenticated.
      */
     async setTokenVariableGroupSync(path : string | string[],value : any) : Promise<void> {
         await this.setTokenVariable(path,value);
@@ -836,7 +796,7 @@ export default class RequestBag extends Bag
      * await deleteTokenVariableGroupSync('person.email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws AuthenticationError if the socket is not authenticated.
+     * @throws AuthenticationError if the client is not authenticated.
      */
     async deleteTokenVariableGroupSync(path ?: string | string[]) : Promise<void> {
         await this.deleteTokenVariable(path);
@@ -863,7 +823,7 @@ export default class RequestBag extends Bag
      *       .set('person.name','Luca')
      *       .set('person.email','example@gmail.com')
      *       .commit();
-     * @throws AuthenticationError if the socket is not authenticated.
+     * @throws AuthenticationError if the client is not authenticated.
      */
     seqEditTokenVariablesGroupSync() : ObjectPathCombineSequence {
         return new ObjectPathCombineSequence(
@@ -885,7 +845,7 @@ export default class RequestBag extends Bag
      * hasTokenVariable('person.email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws AuthenticationError if the socket is not authenticated.
+     * @throws AuthenticationError if the client is not authenticated.
      */
     hasTokenVariable(path ?: string | string[]) : boolean {
         return ObjectPath.has(TokenUtils.getCustomTokenVariables(this.shBridge.getToken()),path);
@@ -903,7 +863,7 @@ export default class RequestBag extends Bag
      * getTokenVariable('person.email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws AuthenticationError if the socket is not authenticated.
+     * @throws AuthenticationError if the client is not authenticated.
      */
     getTokenVariable<R>(path ?: string | string[]) : R {
         return ObjectPath.get(TokenUtils.getCustomTokenVariables(this.shBridge.getToken()),path);
@@ -949,14 +909,8 @@ export default class RequestBag extends Bag
      * Requires ws request!
      * @throws MethodIsNotCompatibleError
      */
-    getSocketId() : string
-    {
-        if(this.shBridge.isWebSocket) {
-            return this.shBridge.getSocket().id;
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get the socket id.');
-        }
+    getSocketId() : string {
+        return this.socket.socketId;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -967,14 +921,8 @@ export default class RequestBag extends Bag
      * Requires ws request!
      * @throws MethodIsNotCompatibleError
      */
-    getSocketSid() : string
-    {
-        if(this.shBridge.isWebSocket) {
-            return this.shBridge.getSocket().sid;
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get the socket sid.');
-        }
+    getSocketSid() : string {
+        return this.socket.socketSid;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -985,12 +933,7 @@ export default class RequestBag extends Bag
      * @throws MethodIsNotCompatibleError
      */
     getRawSocket() : UpSocket {
-        if(this.shBridge.isWebSocket) {
-            return this.shBridge.getSocket();
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get the raw socket.');
-        }
+        return this.socket.rawSocket;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1005,7 +948,7 @@ export default class RequestBag extends Bag
             return this.shBridge.getSocket().zSocket;
         }
         else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get the socket.');
+            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Access the socket.');
         }
     }
 
@@ -1082,16 +1025,11 @@ export default class RequestBag extends Bag
     //Part Socket
 
     // noinspection JSUnusedGlobalSymbols
-    async emitToSocket(eventName : string,data : any,onlyTransmit : true) : Promise<void>
-    // noinspection JSUnusedGlobalSymbols
-    async emitToSocket(eventName : string,data : any,onlyTransmit : false) : Promise<any>
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @description
      * Emit to the socket.
      * If you not only transmit than the return value is a promise with the result,
      * and if an error occurs while emitting to socket, this error is thrown.
-     * If this method is used in an http request, an error is thrown.
      * It uses the custom zation emit namespace (so you cannot have name conflicts with internal emit names).
      * Requires ws request!
      * @throws MethodIsNotCompatibleError
@@ -1101,25 +1039,26 @@ export default class RequestBag extends Bag
      * Indicates if you only want to transmit data.
      * If not than the promise will be resolved with the result when the client responded on the emit.
      */
-    async emitToSocket(event : string,data : any,onlyTransmit : boolean = true) : Promise<object | void>
-    {
-        return new Promise<object>((resolve, reject) => {
-            if(this.shBridge.isWebSocket()) {
-                // noinspection DuplicatedCode
-                if(onlyTransmit){
-                    this.shBridge.getSocket().emit(ZationCustomEmitNamespace+event,data);
-                    resolve();
-                }
-                else {
-                    this.shBridge.getSocket().emit(ZationCustomEmitNamespace+event,data,(err,data) => {
-                        err ? reject(err) : resolve(data);
-                    });
-                }
-            }
-            else {
-                reject(new MethodIsNotCompatibleError(this.getProtocol(),'ws','Emit to socket.'));
-            }
-        });
+    async socketEmit<T extends boolean>(event : string, data : any, onlyTransmit : T) : Promise<T extends true ? void : any>
+    // noinspection JSUnusedGlobalSymbols
+    async socketEmit(event : string, data : any, onlyTransmit : boolean = true) : Promise<object | void> {
+        return this.socket.emit(event,data,onlyTransmit);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Respond on emit events of the socket.
+     * It uses the custom zation emit namespace
+     * (so you cannot have name conflicts with internal emit names).
+     * Requires ws request!
+     * @throws MethodIsNotCompatibleError
+     * @param event
+     * @param handler
+     * The function that gets called when the event occurs,
+     * parameters are the data and a response function that you can call to respond on the event back.
+     */
+    socketOn(event : string,handler : OnHandlerFunction){
+        this.socket.on(event,handler);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1129,14 +1068,8 @@ export default class RequestBag extends Bag
      * Requires ws request!
      * @throws MethodIsNotCompatibleError
      */
-    getSubscriptions() : string[]
-    {
-        if(this.shBridge.isWebSocket) {
-            return this.shBridge.getSocket().subscriptions();
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get subscribed channels.');
-        }
+    getSubscriptions() : string[] {
+        return this.socket.getSubscriptions();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1147,12 +1080,7 @@ export default class RequestBag extends Bag
      * @throws MethodIsNotCompatibleError
      */
     getCustomChSubscriptions(name ?: string) : string[] {
-        if(this.shBridge.isWebSocket) {
-            return ChUtils.getCustomChannelSubscriptions(this.shBridge.getSocket(),name);
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Get subscribed custom channels.');
-        }
+        return this.socket.getCustomChSubscriptions(name);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1162,12 +1090,7 @@ export default class RequestBag extends Bag
      * @throws MethodIsNotCompatibleError
      */
     hasSubUserCh() : boolean {
-        if(this.shBridge.isWebSocket) {
-            return ChUtils.hasSubUserCh(this.shBridge.getSocket());
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Access channel subscriptions');
-        }
+        return this.socket.hasSubUserCh();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1177,12 +1100,7 @@ export default class RequestBag extends Bag
      * @throws MethodIsNotCompatibleError
      */
     hasSubAuthUserGroupCh() : boolean {
-        if(this.shBridge.isWebSocket) {
-            return ChUtils.hasSubAuthUserGroupCh(this.shBridge.getSocket());
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Access channel subscriptions');
-        }
+        return this.socket.hasSubAuthUserGroupCh();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1192,12 +1110,7 @@ export default class RequestBag extends Bag
      * @throws MethodIsNotCompatibleError
      */
     hasSubDefaultUserGroupCh() : boolean {
-        if(this.shBridge.isWebSocket) {
-            return ChUtils.hasSubDefaultUserGroupCh(this.shBridge.getSocket());
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Access channel subscriptions');
-        }
+        return this.socket.hasSubDefaultUserGroupCh();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1207,12 +1120,7 @@ export default class RequestBag extends Bag
      * @throws MethodIsNotCompatibleError
      */
     hasSubAllCh() : boolean {
-        if(this.shBridge.isWebSocket) {
-            return ChUtils.hasSubAllCh(this.shBridge.getSocket());
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Access channel subscriptions');
-        }
+        return this.socket.hasSubAllCh();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1224,14 +1132,11 @@ export default class RequestBag extends Bag
      * if it is not provided,
      * it returns if the socket has subscribed any custom channel.
      * @param id
+     * if it is not provided,
+     * it returns if the socket has subscribed any custom channel with the provided name.
      */
     hasSubCustomCh(name ?: string, id ?: string) : boolean {
-        if(this.shBridge.isWebSocket) {
-            return ChUtils.hasSubCustomCh(this.shBridge.getSocket(),name,id);
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Access channel subscriptions');
-        }
+        return this.socket.hasSubCustomCh(name,id);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1240,13 +1145,8 @@ export default class RequestBag extends Bag
      * Requires ws request!
      * @throws MethodIsNotCompatibleError
      */
-    hasPanelOutCh() : boolean {
-        if(this.shBridge.isWebSocket) {
-            return ChUtils.hasSubPanelOutCh(this.shBridge.getSocket());
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Access channel subscriptions');
-        }
+    hasSubPanelOutCh() : boolean {
+        return this.socket.hasSubPanelOutCh();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1261,14 +1161,8 @@ export default class RequestBag extends Bag
      * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      * @throws MethodIsNotCompatibleError
      */
-    kickFromCustomCh(name ?: string,id ?: string) : void
-    {
-        if(this.shBridge.isWebSocket) {
-            ChUtils.kickCustomChannel(this.shBridge.getSocket(),name,id);
-        }
-        else {
-            throw new MethodIsNotCompatibleError(this.getProtocol(),'ws','Kick from a channel.');
-        }
+    kickFromCustomCh(name ?: string,id ?: string) : void {
+        this.socket.kickFromCustomCh(name,id);
     }
 
     //Part General req info
