@@ -12,6 +12,8 @@ import ChUtils          from "../channel/chUtils";
 import BaseSHBridge     from "../bridges/baseSHBridge";
 import DataBoxFamily    from "../../api/dataBox/DataBoxFamily";
 import DataBox          from "../../api/dataBox/DataBox";
+import CloneUtils from "../utils/cloneUtils";
+import ObjectPathSequence from "../utils/objectPathSequence";
 
 export default class ZSocket
 {
@@ -43,7 +45,7 @@ export default class ZSocket
     /**
      * Returns the raw socket.
      */
-    get socket(): UpSocket {
+    get rawSocket(): UpSocket {
         return this._socket;
     }
 
@@ -104,6 +106,84 @@ export default class ZSocket
      */
     get panelAccess(): boolean | undefined {
         return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationPanelAccess),this._socket.authToken);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Set a token variable with object path.
+     * Every change on the token will update the authentication of the socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * That means there can be no naming conflicts with zation variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * Check that the socket is authenticated (has a token).
+     * @example
+     * await setTokenVariable('person.email','example@gmail.com');
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @param value
+     * @throws AuthenticationError if the socket is not authenticated.
+     */
+    async setTokenVariable(path : string | string[],value : any) : Promise<void> {
+        const ctv = CloneUtils.deepClone(TokenUtils.getCustomTokenVariables(this._socket.authToken));
+        ObjectPath.set(ctv,path,value);
+        await TokenUtils.setCustomVar(ctv,this._socket.baseSHBridge);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Delete a token variable with object path.
+     * Every change on the token will update the authentication of the socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * Check that the socket is authenticated (has a token).
+     * @example
+     * await deleteTokenVariable('person.email');
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @throws AuthenticationError if the socket is not authenticated.
+     */
+    async deleteTokenVariable(path ?: string | string[]) : Promise<void> {
+        if(!!path) {
+            const ctv = CloneUtils.deepClone(TokenUtils.getCustomTokenVariables(this._socket.authToken));
+            ObjectPath.del(ctv,path);
+            await TokenUtils.setCustomVar(ctv,this._socket.baseSHBridge);
+        }
+        else {
+            await TokenUtils.setCustomVar({},this._socket.baseSHBridge);
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Sequence edit the token variables.
+     * Useful if you want to make several changes.
+     * This will do everything in one and saves performance.
+     * Every change on the token will update the authentication of the socket. (Like a new authentication on top)
+     * Notice that the token variables are separated from the main zation token variables.
+     * That means there can be no naming conflicts with zation variables.
+     * You can access this variables on client and server side.
+     * But only change, delete or set on the server.
+     * Check that the socket is authenticated (has a token).
+     * @example
+     * await seqEditTokenVariables()
+     *       .delete('person.lastName')
+     *       .set('person.name','Luca')
+     *       .set('person.email','example@gmail.com')
+     *       .commit();
+     * @throws AuthenticationError if the socket is not authenticated.
+     */
+    seqEditTokenVariables() : ObjectPathSequence
+    {
+        return new ObjectPathSequence(CloneUtils.deepClone(
+            TokenUtils.getCustomTokenVariables(this._socket.authToken)),
+            async (obj)=> {
+                await TokenUtils.setCustomVar(obj,this._socket.baseSHBridge);
+            });
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -208,8 +288,22 @@ export default class ZSocket
     /**
      * Returns if the socket has subscribed the panel out channel.
      */
-    hasPanelOutCh() : boolean {
+    hasSubPanelOutCh() : boolean {
         return ChUtils.hasSubPanelOutCh(this._socket);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Kick the current socket from an custom channel.
+     * @example
+     * kickFromCustomCh('images','10');
+     * kickFromCustomCh('publicChat');
+     * @param name is optional, if it is not given the users will be kicked out from all custom channels.
+     * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
+     */
+    kickFromCustomCh(name ?: string,id ?: string) : void {
+        ChUtils.kickCustomChannel(this._socket,name,id);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -217,13 +311,9 @@ export default class ZSocket
      * Returns the DataBoxes where the socket is connected to.
      */
     getDataBoxes() : (DataBoxFamily | DataBox)[] {
-        return this.socket.dataBoxes;
+        return this._socket.dataBoxes;
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    async emit(eventName : string,data : any,onlyTransmit : true) : Promise<void>
-    // noinspection JSUnusedGlobalSymbols
-    async emit(eventName : string,data : any,onlyTransmit : false) : Promise<any>
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
@@ -237,6 +327,8 @@ export default class ZSocket
      * Indicates if you only want to transmit data.
      * If not than the promise will be resolved with the result when the client responded on the emit.
      */
+    async emit<T extends boolean>(event : string,data : any,onlyTransmit : T) : Promise<T extends true ? void : any>
+    // noinspection JSUnusedGlobalSymbols
     async emit(event : string,data : any,onlyTransmit : boolean = true) : Promise<object | void>
     {
         return new Promise<object>((resolve, reject) => {
@@ -263,6 +355,95 @@ export default class ZSocket
      * parameters are the data and a response function that you can call to respond on the event back.
      */
     on(event : string,handler : OnHandlerFunction){
-        this.socket.on(ZationCustomEmitNamespace+event,handler);
+        this._socket.on(ZationCustomEmitNamespace+event,handler);
+    }
+
+    //Part Socket Variables
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Set socket variable (server side) with object path.
+     * @example
+     * setSocketVariable('email','example@gmail.com');
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     * @param value
+     */
+    setSocketVariable(path : string | string[],value : any) : void {
+        ObjectPath.set(this._socket.zationSocketVariables,path,value);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Has socket variable (server side) with object path.
+     * @example
+     * hasSocketVariable('email');
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     */
+    hasSocketVariable(path ?: string | string[]) : boolean {
+        return ObjectPath.has(this._socket.zationSocketVariables,path);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Get socket variable (server side) with object path.
+     * @example
+     * getSocketVariable('email');
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     */
+    getSocketVariable<R>(path ?: string | string[]) : R {
+        return ObjectPath.get(this._socket.zationSocketVariables,path);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Delete socket variable (server side) with object path.
+     * @example
+     * deleteSocketVariable('email');
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     */
+    deleteSocketVariable(path ?: string | string[]) : void
+    {
+        if(!!path) {
+            ObjectPath.del(this._socket.zationSocketVariables,path);
+        }
+        else {
+            this._socket.zationSocketVariables = {};
+        }
+    }
+
+    //Part Handshake variables
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Get a socket handshake variable with object path.
+     * @example
+     * getSocketHandshakeVariable('deviceCode');
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     */
+    getSocketHandshakeVariable<R>(path ?: string | string[]) : R {
+        return ObjectPath.get(this._socket.handshakeVariables,path);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Has a socket handshake variable with object path.
+     * @example
+     * hasSocketHandshakeVariable('deviceCode');
+     * @param path
+     * The path to the variable, you can split the keys with a dot or an string array.
+     */
+    hasSocketHandshakeVariable(path ?: string | string[]) : boolean {
+        return ObjectPath.has(this._socket.handshakeVariables,path);
     }
 }
