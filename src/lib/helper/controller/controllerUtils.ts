@@ -5,12 +5,12 @@ GitHub: LucaCode
  */
 
 // noinspection TypeScriptPreferShortImport
-import Bag                           from '../../api/Bag';
+import ReqBag                        from '../../api/ReqBag';
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig}            from "../config/definitions/controllerConfig";
 import Controller                    from "../../api/Controller";
 
-export type MiddlewareInvokeFunction = (controllerInstance : Controller, bag : Bag) => Promise<void >;
+export type MiddlewareInvokeFunction = (controllerInstance : Controller, reqBag : ReqBag) => Promise<void >;
 
 export default class ControllerUtils
 {

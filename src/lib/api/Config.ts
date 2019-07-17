@@ -3,7 +3,7 @@ Author: Luca Scaringella
 GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
-import Bag                   from './Bag';
+import ReqBag                  from './ReqBag';
 import ExpressCore           = require("express-serve-static-core");
 import
 {
@@ -669,7 +669,7 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static typeSmallBag(smallBag : SmallBag) : SmallBag {return smallBag;}
     // noinspection JSUnusedGlobalSymbols
-    static typeBag(bag : Bag) : Bag {return bag;}
+    static typeReqBag(reqBag : ReqBag) : ReqBag {return reqBag;}
     // noinspection JSUnusedGlobalSymbols
     static typeResult(result : Result) : Result {return result;}
     // noinspection JSUnusedGlobalSymbols

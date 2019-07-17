@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Bag                     from '../../../../api/Bag';
+import ReqBag                  from '../../../../api/ReqBag';
 import ZationWorker          = require("../../../../main/zationWorker");
 import Controller              from '../../../../api/Controller';
 import SHBridge                from "../../../bridges/shBridge";
@@ -132,14 +132,14 @@ export default class MainCRequestProcessor
                                 e = errorBag;
 
                                 const input = task.i;
-                                const bag = new Bag(
+                                const reqBag = new ReqBag(
                                     shBridge,
                                     this.worker,
                                     authEngine,
                                     input
                                 );
                                 try {
-                                    await controllerInstance.wrongInput(bag,input,e);
+                                    await controllerInstance.wrongInput(reqBag,input,e);
                                 }
                                 catch (innerErr) {
                                     if(innerErr instanceof BackError) {
@@ -158,13 +158,13 @@ export default class MainCRequestProcessor
                             throw e;
                         }
 
-                        const bag = new Bag(
+                        const reqBag = new ReqBag(
                             shBridge,
                             this.worker,
                             authEngine,
                             input
                         );
-                        return this.processController(controllerInstance,bag,input,middlewareInvoke);
+                        return this.processController(controllerInstance,reqBag,input,middlewareInvoke);
                     }
                     else {
                         throw new BackError(MainBackErrors.noAccessWithTokenState,
@@ -197,24 +197,24 @@ export default class MainCRequestProcessor
     }
 
     // noinspection JSMethodCanBeStatic
-    private async processController(controllerInstance : Controller,bag : Bag,input : any,middlewareInvoke : MiddlewareInvokeFunction) : Promise<ResponseResult>
+    private async processController(controllerInstance : Controller, reqBag : ReqBag, input : any, middlewareInvoke : MiddlewareInvokeFunction) : Promise<ResponseResult>
     {
         //process the controller handle, before handle events and finally handle.
         try {
-            await middlewareInvoke(controllerInstance,bag);
+            await middlewareInvoke(controllerInstance,reqBag);
 
-            const result : Result | any = await controllerInstance.handle(bag,input);
+            const result : Result | any = await controllerInstance.handle(reqBag,input);
 
             if (!(result instanceof Result)) {
                 return {r : result};
             }
 
-            await controllerInstance.finallyHandle(bag,input);
+            await controllerInstance.finallyHandle(reqBag,input);
 
             return result._getJsonObj();
         }
         catch(e) {
-            try {await controllerInstance.finallyHandle(bag,input);}
+            try {await controllerInstance.finallyHandle(reqBag,input);}
             catch (e) {}
             throw e;
         }

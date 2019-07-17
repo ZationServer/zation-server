@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Bag                from './Bag';
+import ReqBag                from './ReqBag';
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../helper/config/definitions/controllerConfig";
 import SmallBag           from "./SmallBag";
@@ -66,7 +66,7 @@ export default class Controller {
      * @description
      * Gets invokes when the controller gets an request and input is correct.
      * This method will only be invoked when the beforeHandle method has not thrown an error.
-     * @param bag
+     * @param reqBag
      * @param input
      * @return
      * The Return value of the function is send to the client with an success response.
@@ -75,7 +75,7 @@ export default class Controller {
      * Notice that only the BackError or BackErrorBag sends back to the client.
      * All other errors or objects will be converted to an unknown BackError.
      */
-    async handle(bag: Bag, input: any): Promise<any> {
+    async handle(reqBag: ReqBag, input: any): Promise<any> {
     }
 
     /**
@@ -83,17 +83,17 @@ export default class Controller {
      * This method will be every time invoked when the handle is finished.
      * Also if the handle method has thrown an error.
      * You can use this method to clean up resources or close connections.
-     * (Use the bag storage to save the resources the bag is unique for every request).
-     * @param bag
+     * (Use the req variable storage to save the resources on the reqBag because the ReqBag is unique for every request).
+     * @param reqBag
      * @param input
      */
-    async finallyHandle(bag: Bag, input: any): Promise<void> {
+    async finallyHandle(reqBag: ReqBag, input: any): Promise<void> {
     }
 
     /**
      * @description
      * Gets invokes when the controller gets an request with wrong input.
-     * @param bag
+     * @param reqBag
      * @param input
      * @param backErrorBag
      * @throws
@@ -102,7 +102,7 @@ export default class Controller {
      * Notice that only the BackError or BackErrorBag sends back to the client.
      * All other errors or objects will be converted to an unknown BackError.
      */
-    async wrongInput(bag: Bag, input: any, backErrorBag : BackErrorBag): Promise<void> {
+    async wrongInput(reqBag: ReqBag, input: any, backErrorBag : BackErrorBag): Promise<void> {
     }
 }
 

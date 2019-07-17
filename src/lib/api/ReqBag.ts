@@ -29,9 +29,9 @@ import ZSocket                    from "../helper/internalApi/ZSocket";
 import ApiLevelUtils              from "../helper/apiLevel/apiLevelUtils";
 import CloneUtils                 from "../helper/utils/cloneUtils";
 
-export default class Bag extends SmallBag
+export default class ReqBag extends SmallBag
 {
-    private bagVariables : object;
+    private reqVariables : object;
     private readonly shBridge : SHBridge;
     private readonly authEngine : AuthEngine;
     private readonly input : any;
@@ -39,70 +39,70 @@ export default class Bag extends SmallBag
     constructor(shBridge : SHBridge, worker : ZationWorker, authEngine : AuthEngine, input : object)
     {
         super(worker,worker.getChannelBagEngine());
-        this.bagVariables = {};
+        this.reqVariables = {};
         this.shBridge = shBridge;
         this.authEngine = authEngine;
         this.input = input;
     }
 
-    //Part Bag Variable
+    //Part Request Variables
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set a bag variable with objectPath.
+     * Set a request variable with objectPath.
      * @example
-     * setBagVariable('my.variable','hello');
+     * setReqVariable('my.variable','hello');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
      */
-    setBagVariable(path : string | string[],value : any) : void {
-        ObjectPath.set(this.bagVariables,path,value);
+    setReqVariable(path : string | string[], value : any) : void {
+        ObjectPath.set(this.reqVariables,path,value);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Has a bag variable with objectPath.
+     * Has a request variable with objectPath.
      * @example
-     * hasBagVariable('my.variable');
+     * hasReqVariable('my.variable');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    hasBagVariable(path ?: string | string[]) : boolean {
-        return ObjectPath.has(this.bagVariables,path);
+    hasReqVariable(path ?: string | string[]) : boolean {
+        return ObjectPath.has(this.reqVariables,path);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Get a bag variable with objectPath.
+     * Get a request variable with objectPath.
      * @example
-     * getBagVariable('my.variable');
+     * getReqVariable('my.variable');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getBagVariable<R>(path ?: string | string[]) : R {
-        return ObjectPath.get(this.bagVariables,path);
+    getReqVariable<R>(path ?: string | string[]) : R {
+        return ObjectPath.get(this.reqVariables,path);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Delete a bag variable with objectPath.
+     * Delete a request variable with objectPath.
      * @example
-     * deleteBagVariable('my.variable');
-     * deleteBagVariable(); //deletes all variables
+     * deleteReqVariable('my.variable');
+     * deleteReqVariable(); //deletes all variables
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    deleteBagVariables(path ?: string | string[]) : void {
+    deleteReqVariable(path ?: string | string[]) : void {
         if(!!path) {
-            ObjectPath.del(this.bagVariables,path);
+            ObjectPath.del(this.reqVariables,path);
         }
         else {
-            this.bagVariables = {};
+            this.reqVariables = {};
         }
     }
 
@@ -644,6 +644,7 @@ export default class Bag extends SmallBag
     }
 
     //Part Token Variable
+
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
@@ -1079,6 +1080,7 @@ export default class Bag extends SmallBag
     }
 
     //Part Socket
+
     // noinspection JSUnusedGlobalSymbols
     async emitToSocket(eventName : string,data : any,onlyTransmit : true) : Promise<void>
     // noinspection JSUnusedGlobalSymbols

@@ -7,7 +7,7 @@ GitHub: LucaCode
 import BackError                    from "./lib/api/BackError";
 import BackErrorBag                 from "./lib/api/BackErrorBag";
 import SmallBag                     from './lib/api/SmallBag';
-import Bag                          from './lib/api/Bag';
+import ReqBag                          from './lib/api/ReqBag';
 import Result                       from './lib/api/Result';
 import Controller                   from './lib/api/Controller';
 import Config, {single}             from './lib/api/Config';
@@ -63,7 +63,7 @@ const start = (options : StarterConfig,startMode : number | string | StartMode =
 export {
         start,
         StartMode,
-        Bag,
+        ReqBag,
         SmallBag,
         Router,
         Register,

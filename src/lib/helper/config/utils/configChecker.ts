@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import Bag from '../../../api/Bag';
+import ReqBag from '../../../api/ReqBag';
 import {ConfigNames, DefaultUserGroupFallBack, ZationAccess} from "../../constants/internal";
 import BagExtension, {
     AppConfig,
@@ -114,11 +114,11 @@ export default class ConfigChecker
         const moduleBagExProps : string[] = [];
 
         if(typeof extension === 'object'){
-            const bagExProps = extension.bag;
-            if(typeof bagExProps === 'object') {
-                for(let k in bagExProps){
-                    if(bagExProps.hasOwnProperty(k)){
-                        this.checkBagExtensionProp(k,bagExProps,false,configName,target);
+            const reqBagExProps = extension.reqBag;
+            if(typeof reqBagExProps === 'object') {
+                for(let k in reqBagExProps){
+                    if(reqBagExProps.hasOwnProperty(k)){
+                        this.checkBagExtensionProp(k,reqBagExProps,false,configName,target);
 
                         if(!moduleBagExProps.includes(k)){moduleBagExProps.push(k);}
                     }
@@ -160,9 +160,9 @@ export default class ConfigChecker
             }
         }
         else {
-            if(Bag.prototype.hasOwnProperty(propName)){
+            if(ReqBag.prototype.hasOwnProperty(propName)){
                 this.ceb.addConfigError(new ConfigError(configName,
-                    `${target.getTarget()} conflict with Bag property name: ${propName}.`));
+                    `${target.getTarget()} conflict with ReqBag property name: ${propName}.`));
             }
 
         }
