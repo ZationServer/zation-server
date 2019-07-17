@@ -334,10 +334,12 @@ class ZationWorker extends SCWorker
         }
 
         //START SOCKET SERVER
-        this.scServer.on('connection', async (socket : UpSocket, conState) => {
+        this.scServer.on('connection', async (socket : UpSocket) => {
 
             this.socketUpdateEngine.upgradeSocket(socket);
             this.initSocketEvents(socket);
+
+            const initPromise = this.zc.eventConfig.socketInit(this.getPreparedSmallBag(),socket.zSocket);
 
             Logger.printDebugInfo(`Socket with id: ${socket.id} is connected!`);
 
@@ -349,6 +351,7 @@ class ZationWorker extends SCWorker
                 await RespondUtils.respondWithFunc(respond,this.zationDbHandler.processRegisterReq,data,socket);
             });
 
+            await initPromise;
             await this.zc.eventConfig.socketConnection(this.getPreparedSmallBag(),socket.zSocket);
         });
         await this.zc.eventConfig.wsServerStarted(this.zc.getZationInfo());
