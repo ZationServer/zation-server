@@ -12,7 +12,7 @@ import ChUtils          from "../channel/chUtils";
 import BaseSHBridge     from "../bridges/baseSHBridge";
 import DataBoxFamily    from "../../api/dataBox/DataBoxFamily";
 import DataBox          from "../../api/dataBox/DataBox";
-import CloneUtils from "../utils/cloneUtils";
+import CloneUtils         from "../utils/cloneUtils";
 import ObjectPathSequence from "../utils/objectPathSequence";
 
 export default class ZSocket
