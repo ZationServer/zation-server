@@ -87,7 +87,7 @@ ControllerConfig[nameof<ControllerConfig>(s => s.wsAccess)]         = {types : [
 ControllerConfig[nameof<ControllerConfig>(s => s.httpAccess)]       = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.httpGetAllowed)]   = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.httpPostAllowed)]  = {types : ['boolean'],isOptional : true};
-ControllerConfig[nameof<ControllerConfig>(s => s.inputAllAllow)]    = {types : ['boolean'],isOptional : true};
+ControllerConfig[nameof<ControllerConfig>(s => s.allowAnyInput)]    = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.access)]           = {types : ['string','function','number','array'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.notAccess)]        = {types : ['string','function','number','array'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.versionAccess)]    = {types : ['string','object'],isOptional : true};
