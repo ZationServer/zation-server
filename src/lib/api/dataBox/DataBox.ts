@@ -8,7 +8,7 @@ GitHub: LucaCode
 import {DataBoxConfig}               from "../../helper/config/definitions/dataBoxConfig";
 import Bag                           from "../Bag";
 import DataBoxCore, {DbPreparedData} from "./DataBoxCore";
-import UpSocket                      from "../../helper/sc/socket";
+import UpSocket, {RespondFunction} from "../../helper/sc/socket";
 import {
     CudAction,
     CudPackage,
@@ -22,7 +22,7 @@ import {
     DbClientSenderAction,
     DbClientSenderPackage,
     DBClientSenderSessionTarget,
-    DbGetDataClientResponse,
+    DbFetchDataClientResponse,
     DbSessionData,
     DbWorkerAction,
     DbWorkerBroadcastPackage,
@@ -92,16 +92,16 @@ export default class DataBox extends DataBoxCore {
             this._unregisterSocket(socket,disconnectHandler);
         };
 
-        socket.on(this.dbEvent,async (data : DbClientSenderPackage, respond) => {
-            switch (data.a) {
-                case DbClientSenderAction.getData:
-                    await RespondUtils.respondWithFunc(respond,this._getData,sessionData,data.t);
+        socket.on(this.dbEvent,async (senderPackage : DbClientSenderPackage, respond : RespondFunction) => {
+            switch (senderPackage.a) {
+                case DbClientSenderAction.fetchData:
+                    await RespondUtils.respondWithFunc(respond,this._fetchData,sessionData,senderPackage.t);
                     break;
                 case DbClientSenderAction.resetSession:
-                    await RespondUtils.respondWithFunc(respond,this._resetSession,sessionData,data.t);
+                    await RespondUtils.respondWithFunc(respond,this._resetSession,sessionData,senderPackage.t);
                     break;
                 case DbClientSenderAction.copySession:
-                    await RespondUtils.respondWithFunc(respond,this._copySession,sessionData,data.t);
+                    await RespondUtils.respondWithFunc(respond,this._copySession,sessionData,senderPackage.t);
                     break;
                 case DbClientSenderAction.getLastCudId:
                     respond(null,this._getLastCudId());
@@ -140,11 +140,11 @@ export default class DataBox extends DataBoxCore {
         return this.lastCudData.id;
     }
 
-    private async _getData(sessionData : DbSessionData,target ?: DBClientSenderSessionTarget) : Promise<DbGetDataClientResponse> {
+    private async _fetchData(sessionData : DbSessionData,target ?: DBClientSenderSessionTarget) : Promise<DbFetchDataClientResponse> {
         const session = DataBoxUtils.getSession(sessionData,target);
 
         const counter = session.c;
-        const data = await this.getData(session.c,session.d);
+        const data = await this.fetchData(session.c,session.d);
         session.c++;
 
         return {
@@ -375,13 +375,15 @@ export default class DataBox extends DataBoxCore {
 
     /**
      * **Can be overridden.**
-     * This method is used to get the current data or more data of the DataBox.
-     * You usually request your database and return the data, and if no more data is available,
+     * This method is used to fetch data for the clients of the DataBox.
+     * A client can call that method multiple times to fetch more and more data.
+     * You usually request data from your database and return it, and if no more data is available,
      * you should throw a NoMoreDataAvailableError or call the internal noMoreDataAvailable method.
-     * A client can call that method multiple times.
-     * That's why the counter parameter indicates the number of the current call.
+     * The counter parameter indicates the number of the current call, it starts counting at zero.
      * Also, you extra get a session object, this object you can use to save variables that are
      * important to get more data in the future, for example, the last id of the item that the client had received.
+     * If you design the DataBox in such a way that the next fetch is not depending on the previous one,
+     * you can activate the parallelFetch option in the DataBox config.
      * The data what you are returning can be of any type.
      * But if you want to return more complex data,
      * it is recommended that the information consists of key-value able components
@@ -390,7 +392,7 @@ export default class DataBox extends DataBoxCore {
      * @param counter
      * @param sessionData
      */
-    protected getData<T extends object = object>(counter : number,sessionData : T){
+    protected async fetchData<T extends object = object>(counter : number, sessionData : T) : Promise<any>{
         this.noMoreDataAvailable();
     }
 

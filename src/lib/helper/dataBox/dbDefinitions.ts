@@ -48,7 +48,7 @@ export enum CudType {
     delete
 }
 
-export interface DbGetDataClientResponse {
+export interface DbFetchDataClientResponse {
     /**
      * counter
      */
@@ -223,7 +223,7 @@ export enum DBClientSenderSessionTarget {
  * Actions that a client can send to the server.
  */
 export enum DbClientSenderAction {
-    getData,
+    fetchData,
     resetSession,
     copySession,
     close,

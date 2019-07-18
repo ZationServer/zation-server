@@ -8,7 +8,7 @@ GitHub: LucaCode
 import {DataBoxConfig} from "../../helper/config/definitions/dataBoxConfig";
 import Bag from "../Bag";
 import DataBoxCore, {DbPreparedData} from "./DataBoxCore";
-import UpSocket from "../../helper/sc/socket";
+import UpSocket, {RespondFunction} from "../../helper/sc/socket";
 import {IdValidChecker} from "../../helper/id/idValidCheckerUtils";
 import {ScExchange} from "../../helper/sc/scServer";
 import {
@@ -28,12 +28,12 @@ import {
     TimestampOption,
     IfContainsOption,
     DBClientSenderSessionTarget,
-    DbGetDataClientResponse,
+    DbFetchDataClientResponse,
     DbWorkerBroadcastPackage,
     DbWorkerPackage,
     DbClientClosePackage,
     DbWorkerClosePackage,
-    RemoveSocketFunction, DbClientKickOutPackage
+    RemoveSocketFunction, DbClientKickOutPackage, DbClientSenderPackage
 } from "../../helper/dataBox/dbDefinitions";
 import DataBoxAccessHelper from "../../helper/dataBox/dataBoxAccessHelper";
 import DataBoxUtils        from "../../helper/dataBox/dataBoxUtils";
@@ -49,7 +49,7 @@ import {ErrorName}         from "../../helper/constants/errorName";
  * and the client did not get an update of the data.
  * It's also the right choice if you want to present a significant amount of data
  * because DataBoxes support the functionality to stream the data
- * to the client whenever the client need more data.
+ * to the clients whenever a client needs more data.
  * Additionally, it keeps the network traffic low because it
  * only sends the changed data information, not the whole data again.
  *
@@ -106,16 +106,16 @@ export default class DataBoxFamily extends DataBoxCore {
             this._unregisterSocket(socket,disconnectHandler,id);
         };
 
-        socket.on(event,async (data, respond) => {
-            switch (data.action) {
-                case DbClientSenderAction.getData:
-                    await RespondUtils.respondWithFunc(respond,this._getData,id,sessionData,data.t);
+        socket.on(event,async (senderPackage : DbClientSenderPackage, respond : RespondFunction) => {
+            switch (senderPackage.a) {
+                case DbClientSenderAction.fetchData:
+                    await RespondUtils.respondWithFunc(respond,this._fetchData,id,sessionData,senderPackage.t);
                     break;
                 case DbClientSenderAction.resetSession:
-                    await RespondUtils.respondWithFunc(respond,this._resetSession,id,sessionData,data.t);
+                    await RespondUtils.respondWithFunc(respond,this._resetSession,id,sessionData,senderPackage.t);
                     break;
                 case DbClientSenderAction.copySession:
-                    await RespondUtils.respondWithFunc(respond,this._copySession,id,sessionData,data.t);
+                    await RespondUtils.respondWithFunc(respond,this._copySession,id,sessionData,senderPackage.t);
                     break;
                 case DbClientSenderAction.close:
                     this._unregisterSocket(socket,disconnectHandler,id);
@@ -159,11 +159,11 @@ export default class DataBoxFamily extends DataBoxCore {
         return '';
     }
 
-    private async _getData(id : string,sessionData : DbSessionData,target ?: DBClientSenderSessionTarget) : Promise<DbGetDataClientResponse> {
+    private async _fetchData(id : string,sessionData : DbSessionData,target ?: DBClientSenderSessionTarget) : Promise<DbFetchDataClientResponse> {
         const session = DataBoxUtils.getSession(sessionData,target);
 
         const counter = session.c;
-        const data = await this.getData(id,session.c,session.d);
+        const data = await this.fetchData(id,session.c,session.d);
         session.c++;
 
         return {
@@ -479,13 +479,15 @@ export default class DataBoxFamily extends DataBoxCore {
 
     /**
      * **Can be overridden.**
-     * This method is used to get the current data or more data of the DataBox.
-     * You usually request your database and return the data, and if no more data is available,
+     * This method is used to fetch data for the clients of the DataBox.
+     * A client can call that method multiple times to fetch more and more data.
+     * You usually request data from your database and return it, and if no more data is available,
      * you should throw a NoMoreDataAvailableError or call the internal noMoreDataAvailable method.
-     * A client can call that method multiple times.
-     * That's why the counter parameter indicates the number of the current call.
+     * The counter parameter indicates the number of the current call, it starts counting at zero.
      * Also, you extra get a session object, this object you can use to save variables that are
      * important to get more data in the future, for example, the last id of the item that the client had received.
+     * If you design the DataBox in such a way that the next fetch is not depending on the previous one,
+     * you can activate the parallelFetch option in the DataBox config.
      * The data what you are returning can be of any type.
      * But if you want to return more complex data,
      * it is recommended that the information consists of key-value able components
@@ -495,7 +497,7 @@ export default class DataBoxFamily extends DataBoxCore {
      * @param counter
      * @param sessionData
      */
-    protected getData<T extends object = object>(id : string,counter : number,sessionData : T){
+    protected async fetchData<T extends object = object>(id : string, counter : number, sessionData : T) : Promise<any>{
         this.noMoreDataAvailable();
     }
 
