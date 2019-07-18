@@ -143,12 +143,12 @@ export default class DataBox extends DataBoxCore {
     private async _fetchData(sessionData : DbSessionData,target ?: DBClientSenderSessionTarget) : Promise<DbFetchDataClientResponse> {
         const session = DataBoxUtils.getSession(sessionData,target);
 
-        const counter = session.c;
-        const data = await this.fetchData(session.c,session.d);
+        const currentCounter = session.c;
         session.c++;
+        const data = await this.fetchData(currentCounter,session.d);
 
         return {
-            c : counter,
+            c : currentCounter,
             d : data,
             t : await this._signSessionToken(sessionData)
         };

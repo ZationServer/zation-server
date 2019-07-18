@@ -162,12 +162,12 @@ export default class DataBoxFamily extends DataBoxCore {
     private async _fetchData(id : string,sessionData : DbSessionData,target ?: DBClientSenderSessionTarget) : Promise<DbFetchDataClientResponse> {
         const session = DataBoxUtils.getSession(sessionData,target);
 
-        const counter = session.c;
-        const data = await this.fetchData(id,session.c,session.d);
+        const currentCounter = session.c;
         session.c++;
+        const data = await this.fetchData(id,currentCounter,session.d);
 
         return {
-            c : counter,
+            c : currentCounter,
             d : data,
             t : await this._signSessionToken(sessionData,id)
         };
