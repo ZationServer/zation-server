@@ -39,7 +39,8 @@ import DataBoxAccessHelper from "../../helper/dataBox/dataBoxAccessHelper";
 import {ScExchange} from "../../helper/sc/scServer";
 import DataBoxUtils from "../../helper/dataBox/dataBoxUtils";
 import DbCudActionSequence from "../../helper/dataBox/dbCudActionSequence";
-import RespondUtils from "../../helper/utils/respondUtils";
+import RespondUtils        from "../../helper/utils/respondUtils";
+import {ErrorName}         from "../../helper/constants/errorName";
 
 /**
  * If you want to present data on the client, the DataBox is the best choice.
@@ -110,7 +111,9 @@ export default class DataBox extends DataBoxCore {
                     respond(null);
                     break;
                 default :
-                    respond('Unknown action');
+                    const err : any = new Error('Unknown action');
+                    err.name = ErrorName.UNKNOWN_ACTION;
+                    respond(err);
             }
         });
 
