@@ -44,8 +44,7 @@ import {
     ArrayModelConfig,
     InputConfig,
     Model, ModelOptional,
-    ObjectModelConfig, ParamInput,
-    ValueModelConfig
+    ObjectModelConfig, ParamInput, ValueModelConfig
 } from "../definitions/inputConfig";
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig}                      from "../definitions/controllerConfig";
@@ -842,7 +841,6 @@ export default class ConfigChecker
     {
         ConfigCheckerTools.assertStructure(Structures.ControllerConfig, config, ConfigNames.APP, this.ceb, target);
         this.checkAuthAccessConfig(config, target);
-        this.checkInputAllAllow(config, target);
         this.checkInputConfig(config,target);
         this.checkVersionAccessConfig(config, target);
     }
@@ -865,13 +863,13 @@ export default class ConfigChecker
     }
 
     // noinspection JSMethodCanBeStatic
-    private checkInputAllAllow(cc: ControllerConfig, target: Target) {
-        if (typeof cc.inputAllAllow === 'boolean' &&
-            cc.inputAllAllow &&
-            (typeof cc.input === 'object')) {
+    private checkInputAllAllow(inputConfig: InputConfig, target: Target) {
+        if (typeof inputConfig.allowAnyInput === 'boolean' &&
+            inputConfig.allowAnyInput &&
+            (typeof inputConfig.input === 'object')) {
             Logger.printConfigWarning(
                 ConfigNames.APP,
-                `${target.getTarget()} the property input is ignored with inputAllAllow true.`
+                `${target.getTarget()} the property input is ignored with allowAnyInput true.`
             );
         }
     }
@@ -900,6 +898,7 @@ export default class ConfigChecker
                 this.checkParamInput(input,target);
             }
         }
+        this.checkInputAllAllow(inputConfig, target);
     }
 
     private checkParamInput(paramInput : ParamInput, target : Target) {
