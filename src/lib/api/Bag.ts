@@ -52,6 +52,7 @@ import DataBoxFamilyContainer                                  from "../helper/d
 import DataBoxContainer                                        from "../helper/dataBox/container/dataBoxContainer";
 import {DataBoxClass}                                          from "./dataBox/DataBox";
 import DataBoxUtils                                            from "../helper/dataBox/dataBoxUtils";
+import ScServer                                                from "../helper/sc/scServer";
 
 export default class Bag {
     protected readonly exchangeEngine: ChannelBagEngine;
@@ -170,6 +171,8 @@ export default class Bag {
         return ObjectPath.get(this.zc.mainConfig.variables, path);
     }
 
+    //Part Auth
+
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
@@ -198,6 +201,15 @@ export default class Bag {
     getAuthUserGroupNames(): string[] {
         // noinspection TypeScriptValidateJSTypes
         return Object.keys(this.worker.getAEPreparedPart().getAuthGroups());
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns true if the server is using the token state check.
+     */
+    isUseTokenStateCheck() : boolean {
+        return this.worker.getAEPreparedPart().isUseTokenStateCheck();
     }
 
     //PART Server
@@ -2231,6 +2243,15 @@ export default class Bag {
      */
     getWorkerClients(): Record<string,UpSocket> {
         return this.worker.scServer.clients;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the sc server from worker.
+     */
+    getScServer() : ScServer {
+        return this.worker.scServer;
     }
 
     // noinspection JSUnusedGlobalSymbols

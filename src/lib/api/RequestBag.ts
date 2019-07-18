@@ -7,7 +7,6 @@ GitHub: LucaCode
 import ZationWorker             = require("../main/zationWorker");
 import useragent                = require('useragent');
 import UpSocket, {OnHandlerFunction} from "../helper/sc/socket";
-import ScServer                   from "../helper/sc/scServer";
 import * as core                  from "express-serve-static-core";
 import {IncomingHttpHeaders, IncomingMessage} from "http";
 import {Agent}                    from "useragent";
@@ -393,15 +392,6 @@ export default class RequestBag extends Bag
      */
     isDefault() : boolean {
         return this.authEngine.isDefault();
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns true if the server is using the token state check.
-     */
-    isUseTokenStateCheck() : boolean {
-        return this.authEngine.isUseTokenStateCheck();
     }
 
     //Part Cookie
@@ -952,15 +942,6 @@ export default class RequestBag extends Bag
         }
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns the sc server from worker.
-     */
-    getScServer() : ScServer {
-        return this.worker.scServer;
-    }
-
     //Part Protocol
 
     // noinspection JSUnusedGlobalSymbols
@@ -1017,8 +998,7 @@ export default class RequestBag extends Bag
      * @Example
      * 7dd60337-bdeb-494a-ae5d-a92188b0c535-2.90-1543143397178.0.0
      */
-    getRequestId() : string
-    {
+    getRequestId() : string {
         return this.shBridge.getReqId();
     }
 
@@ -1181,8 +1161,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns the only public remote ip address from the current request.
      */
-    getPublicRemoteAddress() : string
-    {
+    getPublicRemoteAddress() : string {
         return this.shBridge.getPublicRemoteAddress();
     }
 
@@ -1191,8 +1170,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns if the user agent of the client is set.
      */
-    hasUserAgent() : boolean
-    {
+    hasUserAgent() : boolean {
         return this.getHandshakeHeader()["user-agent"] !== undefined;
     }
 
@@ -1205,8 +1183,7 @@ export default class RequestBag extends Bag
      * @example
      * Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.107 Safari/537.36
      */
-    getRawUserAgent() : string | undefined
-    {
+    getRawUserAgent() : string | undefined {
         // @ts-ignore
         return this.getHandshakeHeader()["user-agent"];
     }
@@ -1225,8 +1202,7 @@ export default class RequestBag extends Bag
      * //get device
      * getUserAgent().device.toString(); // 'Asus A100'
      */
-    getUserAgent() : Agent
-    {
+    getUserAgent() : Agent {
         return useragent.parse(this.getRawUserAgent());
     }
 
@@ -1239,8 +1215,7 @@ export default class RequestBag extends Bag
      * @example
      * en-US,en;q=0.8,et;q=0.6"
      */
-    getAcceptLanguage() : undefined | string | string[]
-    {
+    getAcceptLanguage() : undefined | string | string[]{
         return this.getHandshakeHeader()["accept-language"];
     }
 
@@ -1249,8 +1224,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns if the accept language of the client is set.
      */
-    hasAcceptLanguage() : boolean
-    {
+    hasAcceptLanguage() : boolean {
         return this.getHandshakeHeader()["accept-language"] !== undefined;
     }
 
