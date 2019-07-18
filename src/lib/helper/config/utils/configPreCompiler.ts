@@ -578,12 +578,8 @@ export default class ConfigPreCompiler
             if(controller.hasOwnProperty(k)) {
                 Iterator.iterateCompDefinition<ControllerClass>(controller[k],(controllerClass) => {
                     const config : ControllerConfig = controllerClass.config;
-                    //set the defaults if property missing
-                    for(let property in this.controllerDefaults) {
-                        if(this.controllerDefaults.hasOwnProperty(property) && config[property] === undefined) {
-                            config[property] = this.controllerDefaults[property];
-                        }
-                    }
+                    //set the defaults
+                    ObjectUtils.addObToOb(config,this.controllerDefaults,false);
                     this.preCompileInputConfig(config);
                 });
             }
@@ -612,12 +608,8 @@ export default class ConfigPreCompiler
             if(dataBoxes.hasOwnProperty(k)) {
                 Iterator.iterateCompDefinition<DataBoxClassDef>(dataBoxes[k],(dataBoxClass) => {
                     const config : DataBoxConfig = dataBoxClass.config;
-                    //set the defaults if property missing
-                    for(let property in this.dataBoxDefaults) {
-                        if(this.dataBoxDefaults.hasOwnProperty(property) && config[property] === undefined) {
-                            config[property] = this.dataBoxDefaults[property];
-                        }
-                    }
+                    //set the defaults
+                    ObjectUtils.addObToOb(config,this.dataBoxDefaults,false);
                 });
             }
         }
