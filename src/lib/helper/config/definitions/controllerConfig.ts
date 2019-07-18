@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import RequestBag                                from "../../../api/RequestBag";
+import RequestBag                                                  from "../../../api/RequestBag";
 import {AuthAccessConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
-import {InputConfig}                             from "./inputConfig";
+import {InputConfig}                                               from "./inputConfig";
 
 export type ControllerMiddlewareFunction = (reqBag : RequestBag) => Promise<void> | void;
 
@@ -46,10 +46,4 @@ export interface ControllerConfig extends InputConfig, VersionAccessConfig, Syst
      * @default From default controller config otherwise true.
      */
     httpPostAllowed  ?: boolean;
-    /**
-     * Specify if every input is allowed
-     * that means the input validation and converter are disabled.
-     * @default From default controller config otherwise false.
-     */
-    inputAllAllow  ?: boolean;
 }

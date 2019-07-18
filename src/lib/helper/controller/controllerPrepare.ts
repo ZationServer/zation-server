@@ -177,8 +177,8 @@ export default class ControllerPrepare
             systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
             tokenStateCheck : AuthAccessChecker.createAuthAccessChecker(config,this.bag),
             middlewareInvoke : ControllerUtils.createMiddlewareInvoker(config),
-            inputConsume : InputClosureCreator.createControllerInputConsumer(config,this.bag),
-            inputValidationCheck : InputClosureCreator.createControllerValidationChecker(config,this.bag)
+            inputConsume : InputClosureCreator.createInputConsumer(config,this.bag),
+            inputValidationCheck : InputClosureCreator.createValidationChecker(config,this.bag)
         };
     }
 }

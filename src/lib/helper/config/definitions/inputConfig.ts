@@ -82,6 +82,12 @@ export interface InputConfig {
      * "ThisIsAnyString"
      */
     input ?: Input;
+    /**
+     * Specifies if any input is allowed
+     * that means the input validation and converter are disabled.
+     * @default false.
+     */
+    allowAnyInput  ?: boolean;
 }
 
 export type Input = ParamInput | SingleModelInput | AnyClass | AnyInputConfigTranslatable;
