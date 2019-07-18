@@ -129,15 +129,13 @@ export default class ChAccessHelper
             if(subs[i] === ZationChannel.DEFAULT_USER_GROUP && authEngine.isAuth()) {
                 ChUtils.kickOut(socket,ZationChannel.DEFAULT_USER_GROUP);
             }
-            else if(subs[i].indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) !== -1) {
-                const authGroupSub = ChUtils.getUserAuthGroupFromCh(subs[i]);
-                if(authGroupSub !== authEngine.getAuthUserGroup()) {
+            else if(subs[i].indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
+                if(ZationChannel.AUTH_USER_GROUP_PREFIX + authEngine.getAuthUserGroup() !== subs[i]) {
                     ChUtils.kickOut(socket,subs[i]);
                 }
             }
-            else if(subs[i].indexOf(ZationChannel.USER_CHANNEL_PREFIX) !== -1) {
-                //only onw '=' user id can also be a number.
-                if(authEngine.getUserId() != ChUtils.getUserIdFromCh(subs[i])) {
+            else if(subs[i].indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
+                if(ZationChannel.USER_CHANNEL_PREFIX + authEngine.getUserId() !== subs[i]) {
                     ChUtils.kickOut(socket,subs[i]);
                 }
             }
