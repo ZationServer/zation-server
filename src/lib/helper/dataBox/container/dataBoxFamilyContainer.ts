@@ -27,11 +27,12 @@ export default class DataBoxFamilyContainer {
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * @param id The member of the family you want to update.
+     * Numbers will be converted to a string.
      * @param keyPath
      * @param value
      * @param options
      */
-    async insert(id : string,keyPath: string[] | string, value: any,options : IfContainsOption & InfoOption & TimestampOption = {}): Promise<void> {
+    async insert(id : string | number,keyPath: string[] | string, value: any,options : IfContainsOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.dataBoxFamilies.length;i++) {
             promises.push(this.dataBoxFamilies[i].insert(id,keyPath,value,options));
@@ -48,11 +49,12 @@ export default class DataBoxFamilyContainer {
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * @param id The member of the family you want to update.
+     * Numbers will be converted to a string.
      * @param keyPath
      * @param value
      * @param options
      */
-    async update(id : string,keyPath: string[] | string, value: any,options : InfoOption & TimestampOption = {}): Promise<void> {
+    async update(id : string | number,keyPath: string[] | string, value: any,options : InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.dataBoxFamilies.length;i++) {
             promises.push(this.dataBoxFamilies[i].update(id,keyPath,value,options));
@@ -69,10 +71,11 @@ export default class DataBoxFamilyContainer {
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * @param id The member of the family you want to update.
+     * Numbers will be converted to a string.
      * @param keyPath
      * @param options
      */
-    async delete(id : string,keyPath: string[] | string,options : InfoOption & TimestampOption = {}): Promise<void> {
+    async delete(id : string | number,keyPath: string[] | string,options : InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.dataBoxFamilies.length;i++) {
             promises.push(this.dataBoxFamilies[i].delete(id,keyPath,options));
@@ -88,17 +91,19 @@ export default class DataBoxFamilyContainer {
      * It will not automatically update the databank,
      * so you have to do it in the before-events or before calling this method.
      * @param id The member of the family you want to edit.
+     * Numbers will be converted to a string.
      * @param timestamp
      * With the timestamp option, you can change the sequence of data.
      * The client, for example, will only update data that is older as incoming data.
      * Use this option only if you know what you are doing.
      */
-    seqEdit(id : string,timestamp ?: number): DbCudActionSequence {
+    seqEdit(id : string | number,timestamp ?: number): DbCudActionSequence {
         return new DbCudActionSequence(async (actions) => {
             const promises : Promise<void>[] = [];
             for(let i = 0; i < this.dataBoxFamilies.length;i++) {
                 promises.push(this.dataBoxFamilies[i]._emitCudPackage(
-                    DataBoxUtils.buildPreCudPackage(...actions),id,timestamp));
+                    DataBoxUtils.buildPreCudPackage(...actions),
+                    typeof id === "string" ? id : id.toString(),timestamp));
             }
             await Promise.all(promises);
         })
@@ -110,11 +115,12 @@ export default class DataBoxFamilyContainer {
      * Usually, the close function is used when the data is completely deleted from the system.
      * For example, a chat that doesn't exist anymore.
      * @param id The member of the family you want to close.
+     * Numbers will be converted to a string.
      * @param code
      * @param data
      * @param forEveryWorker
      */
-    close(id : string,code ?: number | string, data ?: any,forEveryWorker : boolean = true): void {
+    close(id : string | number,code ?: number | string, data ?: any,forEveryWorker : boolean = true): void {
         for(let i = 0; i < this.dataBoxFamilies.length;i++) {
             this.dataBoxFamilies[i].close(id,code,data,forEveryWorker);
         }
@@ -125,11 +131,12 @@ export default class DataBoxFamilyContainer {
      * This method is used internally if it was detected that a worker had
      * missed a cud (create, update, or delete) operation.
      * @param id The member of the family you want to force to reload.
+     * Numbers will be converted to a string.
      * @param forEveryWorker
      * @param code
      * @param data
      */
-    doReload(id : string,forEveryWorker: boolean = false,code ?: number | string,data ?: any): void {
+    doReload(id : string | number,forEveryWorker: boolean = false,code ?: number | string,data ?: any): void {
         for(let i = 0; i < this.dataBoxFamilies.length;i++) {
             this.dataBoxFamilies[i].doReload(id,forEveryWorker,code,data);
         }

@@ -392,6 +392,7 @@ export default class DataBoxFamily extends DataBoxCore {
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * @param id The member of the family you want to update.
+     * Numbers will be converted to a string.
      * @param keyPath
      * @param value
      * @param ifContains
@@ -399,10 +400,11 @@ export default class DataBoxFamily extends DataBoxCore {
      * @param code
      * @param data
      */
-    async insert(id : string,keyPath : string[] | string, value : any,{ifContains,timestamp,code,data} : IfContainsOption & InfoOption & TimestampOption = {}) {
+    async insert(id : string | number,keyPath : string[] | string, value : any,{ifContains,timestamp,code,data} : IfContainsOption & InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataBoxUtils.buildPreCudPackage(
-                DataBoxUtils.buildInsert(keyPath,value,ifContains,code,data)),id,timestamp);
+                DataBoxUtils.buildInsert(keyPath,value,ifContains,code,data)),
+            typeof id === "string" ? id : id.toString(),timestamp);
     }
 
     /**
@@ -414,16 +416,18 @@ export default class DataBoxFamily extends DataBoxCore {
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * @param id The member of the family you want to update.
+     * Numbers will be converted to a string.
      * @param keyPath
      * @param value
      * @param timestamp
      * @param code
      * @param data
      */
-    async update(id : string,keyPath : string[] | string, value : any,{timestamp,code,data} : InfoOption & TimestampOption = {}) {
+    async update(id : string | number,keyPath : string[] | string, value : any,{timestamp,code,data} : InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataBoxUtils.buildPreCudPackage(
-                DataBoxUtils.buildUpdate(keyPath,value,code,data)),id,timestamp);
+                DataBoxUtils.buildUpdate(keyPath,value,code,data)),
+            typeof id === "string" ? id : id.toString(),timestamp);
     }
 
     /**
@@ -435,15 +439,17 @@ export default class DataBoxFamily extends DataBoxCore {
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * @param id The member of the family you want to update.
+     * Numbers will be converted to a string.
      * @param keyPath
      * @param timestamp
      * @param code
      * @param data
      */
-    async delete(id : string,keyPath : string[] | string,{timestamp,code,data} : InfoOption & TimestampOption = {}) {
+    async delete(id : string | number,keyPath : string[] | string,{timestamp,code,data} : InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataBoxUtils.buildPreCudPackage(
-                DataBoxUtils.buildDelete(keyPath,code,data)),id,timestamp);
+                DataBoxUtils.buildDelete(keyPath,code,data)),
+            typeof id === "string" ? id : id.toString(),timestamp);
     }
 
     /**
@@ -454,15 +460,17 @@ export default class DataBoxFamily extends DataBoxCore {
      * It will not automatically update the databank,
      * so you have to do it in the before-events or before calling this method.
      * @param id The member of the family you want to edit.
+     * Numbers will be converted to a string.
      * @param timestamp
      * With the timestamp option, you can change the sequence of data.
      * The client, for example, will only update data that is older as incoming data.
      * Use this option only if you know what you are doing.
      */
-    seqEdit(id : string,timestamp ?: number) : DbCudActionSequence {
+    seqEdit(id : string | number,timestamp ?: number) : DbCudActionSequence {
         return new DbCudActionSequence(async (actions) => {
             await this._emitCudPackage(
-                DataBoxUtils.buildPreCudPackage(...actions),id,timestamp);
+                DataBoxUtils.buildPreCudPackage(...actions),
+                typeof id === "string" ? id : id.toString(),timestamp);
         });
     }
 
@@ -508,11 +516,13 @@ export default class DataBoxFamily extends DataBoxCore {
      * Usually, the close function is used when the data is completely deleted from the system.
      * For example, a chat that doesn't exist anymore.
      * @param id The member of the family you want to close.
+     * Numbers will be converted to a string.
      * @param code
      * @param data
      * @param forEveryWorker
      */
-    close(id : string,code ?: number | string,data ?: any,forEveryWorker : boolean = true){
+    close(id : string | number,code ?: number | string,data ?: any,forEveryWorker : boolean = true){
+        id = typeof id === "string" ? id : id.toString();
         const clientPackage = DataBoxUtils.buildClientClosePackage(code,data);
         if(forEveryWorker){
             this._sendToWorker(id,
@@ -531,11 +541,13 @@ export default class DataBoxFamily extends DataBoxCore {
      * This method is used internally if it was detected that a worker had
      * missed a cud (create, update, or delete) operation.
      * @param id The member of the family you want to force to reload.
+     * Numbers will be converted to a string.
      * @param forEveryWorker
      * @param code
      * @param data
      */
-    doReload(id : string,forEveryWorker : boolean = false,code ?: number | string,data ?: any){
+    doReload(id : string | number,forEveryWorker : boolean = false,code ?: number | string,data ?: any){
+        id = typeof id === "string" ? id : id.toString();
         const clientPackage = DataBoxUtils.buildClientReloadPackage(code,data);
         if(forEveryWorker){
             this._broadcastToOtherSockets(id,clientPackage);
