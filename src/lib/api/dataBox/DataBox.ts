@@ -251,19 +251,20 @@ export default class DataBox extends DataBoxCore {
 
     /**
      * **Not override this method.**
+     * This method is used to send the cud package to
+     * all workers and execute it on the current worker.
      * @param preCudPackage
      * @param timestamp
      */
     async _emitCudPackage(preCudPackage : PreCudPackage,timestamp ?: number) {
         await this._fireBeforeEvents(preCudPackage.a);
         const cudPackage = DataBoxUtils.buildCudPackage(preCudPackage,timestamp);
-        this._processCudActions(cudPackage);
-        const workerPackage : DbWorkerCudPackage = {
+        this._sendToWorker({
             a : DbWorkerAction.cud,
             d : cudPackage,
             w : this.workerFullId
-        };
-        this._sendToWorker(workerPackage);
+        } as DbWorkerCudPackage);
+        this._processCudActions(cudPackage);
     }
 
     private _broadcastToOtherSockets(clientPackage : DbClientPackage) {
@@ -402,7 +403,6 @@ export default class DataBox extends DataBoxCore {
      */
     close(code ?: number | string,data ?: any,forEveryWorker : boolean = true){
         const clientPackage = DataBoxUtils.buildClientClosePackage(code,data);
-        this._close(clientPackage);
         if(forEveryWorker){
             this._sendToWorker(
                 {
@@ -411,6 +411,7 @@ export default class DataBox extends DataBoxCore {
                     w : this.workerFullId
                 } as DbWorkerClosePackage);
         }
+        this._close(clientPackage);
     }
 
     /**
@@ -424,10 +425,10 @@ export default class DataBox extends DataBoxCore {
      */
     doReload(forEveryWorker : boolean = false,code ?: number | string,data ?: any){
         const clientPackage = DataBoxUtils.buildClientReloadPackage(code,data);
-        this._sendToSockets(clientPackage);
         if(forEveryWorker){
             this._broadcastToOtherSockets(clientPackage);
         }
+        this._sendToSockets(clientPackage);
     }
 
     /**

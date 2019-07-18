@@ -337,6 +337,8 @@ export default class DataBoxFamily extends DataBoxCore {
 
     /**
      * **Not override this method.**
+     * This method is used to send the cud package to
+     * all workers and execute it on the current worker.
      * @param preCudPackage
      * @param id
      * @param timestamp
@@ -344,13 +346,12 @@ export default class DataBoxFamily extends DataBoxCore {
     async _emitCudPackage(preCudPackage : PreCudPackage,id : string,timestamp ?: number) {
         await this._fireBeforeEvents(id,preCudPackage.a);
         const cudPackage = DataBoxUtils.buildCudPackage(preCudPackage,timestamp);
-        this._processCudPackage(id,cudPackage);
-        const workerPackage : DbWorkerCudPackage = {
+        this._sendToWorker(id,{
             a : DbWorkerAction.cud,
             d : cudPackage,
             w : this.workerFullId
-        };
-        this._sendToWorker(id,workerPackage);
+        } as DbWorkerCudPackage);
+        this._processCudPackage(id,cudPackage);
     }
 
     private _broadcastToOtherSockets(id : string,clientPackage : DbClientPackage) {
@@ -513,7 +514,6 @@ export default class DataBoxFamily extends DataBoxCore {
      */
     close(id : string,code ?: number | string,data ?: any,forEveryWorker : boolean = true){
         const clientPackage = DataBoxUtils.buildClientClosePackage(code,data);
-        this._close(id,clientPackage);
         if(forEveryWorker){
             this._sendToWorker(id,
                 {
@@ -522,6 +522,7 @@ export default class DataBoxFamily extends DataBoxCore {
                     w : this.workerFullId
                 } as DbWorkerClosePackage);
         }
+        this._close(id,clientPackage);
     }
 
     /**
@@ -536,10 +537,10 @@ export default class DataBoxFamily extends DataBoxCore {
      */
     doReload(id : string,forEveryWorker : boolean = false,code ?: number | string,data ?: any){
         const clientPackage = DataBoxUtils.buildClientReloadPackage(code,data);
-        this._sendToSockets(id,clientPackage);
         if(forEveryWorker){
             this._broadcastToOtherSockets(id,clientPackage);
         }
+        this._sendToSockets(id,clientPackage);
     }
 
     /**
