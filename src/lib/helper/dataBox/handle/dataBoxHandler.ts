@@ -58,7 +58,7 @@ export default class DataBoxHandler
 
         if(socket.dataBoxes.length > this.socketDataBoxLimit){
             const err : any = new Error(`Socket limit of DataBoxes is reached.`);
-            err.name = ErrorName.DATABOX_LIMIT_REACHED;
+            err.name = ErrorName.DATA_BOX_LIMIT_REACHED;
             throw err;
         }
 
