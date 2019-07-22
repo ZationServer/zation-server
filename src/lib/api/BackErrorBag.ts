@@ -6,6 +6,7 @@ GitHub: LucaCode
 
 import BackErrorConstruct   from "../helper/constants/backErrorConstruct";
 import BackError            from "./BackError";
+import {ResponseError} from "../helper/controller/request/controllerDefinitions";
 
 export default class BackErrorBag
 {
@@ -77,11 +78,11 @@ export default class BackErrorBag
      * This method is used internal!
      * @param withDesc
      */
-    _getJsonObj(withDesc : boolean) : object
+    _toResponseErrorArray(withDesc : boolean) : ResponseError[]
     {
-        let obj: object[] = [];
+        const obj: ResponseError[] = [];
         for(let i = 0; i < this.backErrors.length; i++) {
-            obj.push(this.backErrors[i]._getJsonObj(withDesc));
+            obj.push(this.backErrors[i]._toResponseError(withDesc));
         }
         return obj;
     }

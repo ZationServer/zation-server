@@ -6,16 +6,14 @@ GitHub: LucaCode
 import {ZationToken}     from "../../constants/internal";
 import SHBridge          from "../../bridges/shBridge";
 import stringify         from "fast-stringify";
-import BackError         from "../../../api/BackError";
-import BackErrorBag      from "../../../api/BackErrorBag";
 import ZationConfig      from "../../config/manager/zationConfig";
 import TokenUtils        from "../../token/tokenUtils";
 import Logger            from "../../logger/logger";
-import {MainBackErrors}  from "../../zationBackErrors/mainBackErrors";
 import SHBridgeHttp      from "../../bridges/shBridgeHttp";
 import StringifyUtils    from "../../utils/stringifyUtils";
 import {Response}        from "express";
 import {RespondFunction} from "../../sc/socket";
+import ErrorUtils        from "../../utils/errorUtils";
 import {ResponseResult, ZationResponse} from "./controllerDefinitions";
 
 export default class ControllerRequestResponder
@@ -52,35 +50,27 @@ export default class ControllerRequestResponder
     }
 
     respErrorWs(err : any, respond : RespondFunction, reqId : string) : void {
-        const resp = this.createWsResp(undefined,this.errorJsonObj(err));
+        const resp = this.createWsResp
+        (
+            undefined,
+            ErrorUtils.convertErrorToResponseErrors(err,this.sendErrorDesc)
+        );
+
         respond(null,resp);
         this.printWsResp(resp,reqId);
     }
 
     async respErrorHttp(err : any,response : Response,reqId : string,shBridge : SHBridge | undefined) : Promise<void> {
         const resp = await this.createHttpResp
-        (undefined,this.errorJsonObj(err),shBridge,response['zationInfo']);
+        (
+            undefined,
+            ErrorUtils.convertErrorToResponseErrors(err,this.sendErrorDesc),
+            shBridge,response['zationInfo']
+        );
+
         response.write(JSON.stringify(resp));
         response.end();
         this.printHttpResp(resp,reqId);
-    }
-
-    private errorJsonObj(err)
-    {
-        let errors;
-        if(err instanceof BackError) {
-            errors = [err._getJsonObj(this.sendErrorDesc)];
-        }
-        else {
-            // noinspection SuspiciousInstanceOfGuard
-            if(err instanceof BackErrorBag) {
-                errors = err._getJsonObj(this.sendErrorDesc);
-            }
-            else {
-                errors = [(new BackError(MainBackErrors.unknownError))._getJsonObj()];
-            }
-        }
-        return errors;
     }
 
     private printWsResp(resp : ResponseResult,reqId : string) {

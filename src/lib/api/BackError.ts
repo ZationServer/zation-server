@@ -8,7 +8,7 @@ import BackErrorConstruct   from "../helper/constants/backErrorConstruct";
 // noinspection TypeScriptPreferShortImport
 import {ErrorType}          from "../helper/constants/errorType";
 import {BackErrorInfo}      from "../helper/constants/internal";
-import {ErrorResponse}      from "../helper/controller/request/controllerDefinitions";
+import {ResponseError}      from "../helper/controller/request/controllerDefinitions";
 
 export default class BackError extends Error
 {
@@ -77,7 +77,7 @@ export default class BackError extends Error
      * This method is used internal!
      * @param withDesc
      */
-    _getJsonObj(withDesc : boolean = false) : ErrorResponse
+    _toResponseError(withDesc : boolean = false) : ResponseError
     {
         if(this.privateE){
             return {
@@ -87,19 +87,14 @@ export default class BackError extends Error
             }
         }
         else{
-            const err : ErrorResponse = {
+            return {
                 n : this.name,
                 g : this.group,
                 t : this.type,
                 zs : this.fromZationSystem,
-                i : this.sendInfo ? this.info : {}
+                i : this.sendInfo ? this.info : {},
+                ...(withDesc ? {d : this.description} : {})
             };
-
-            if(withDesc){
-                err.d = this.description;
-            }
-
-            return err;
         }
     }
 

@@ -81,7 +81,7 @@ d = description
 zs = from zation system
 i = info
  */
-export interface ErrorResponse {
+export interface ResponseError {
     n : string,
     g ?: string,
     t : string
@@ -99,7 +99,7 @@ t = token (st = signedToken,pt = plainToken)
 zhi = zation http info
  */
 export interface ZationResponse {
-    e : ErrorResponse[],
+    e : ResponseError[],
     r : ResponseResult
     t ?: {
         st : string,
