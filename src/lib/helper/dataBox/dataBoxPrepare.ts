@@ -16,6 +16,7 @@ import {DataBoxClassDef, DataBoxConfig}                         from "../config/
 import DataBoxFamily, {DataBoxFamilyClass}                      from "../../api/dataBox/DataBoxFamily";
 import IdValidCheckerUtils                                      from "../id/idValidCheckerUtils";
 import DataBox, {DataBoxClass}                                  from "../../api/dataBox/DataBox";
+import InputClosureCreator from "../input/inputClosureCreator";
 
 export default class DataBoxPrepare
 {
@@ -136,7 +137,10 @@ export default class DataBoxPrepare
         const dbPreparedData : DbPreparedData = {
             versionAccessCheck : SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
-            tokenStateAccessCheck : AuthAccessChecker.createAuthAccessChecker(config,this.bag)
+            tokenStateAccessCheck : AuthAccessChecker.createAuthAccessChecker(config,this.bag),
+            inputConsumer : InputClosureCreator.createInputConsumer(config,this.bag),
+            parallelFetch : config.parallelFetch !== undefined ? config.parallelFetch : false,
+            maxBackpressure : config.maxBackpressure !== undefined ? config.maxBackpressure : 30
         };
 
         let dbInstance;

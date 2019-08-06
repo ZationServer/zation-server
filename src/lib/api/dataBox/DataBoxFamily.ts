@@ -5,12 +5,12 @@ GitHub: LucaCode
  */
 
 // noinspection TypeScriptPreferShortImport
-import {DataBoxConfig} from "../../helper/config/definitions/dataBoxConfig";
-import Bag from "../Bag";
+import {DataBoxConfig}               from "../../helper/config/definitions/dataBoxConfig";
+import Bag                           from "../Bag";
 import DataBoxCore, {DbPreparedData} from "./DataBoxCore";
-import UpSocket, {RespondFunction} from "../../helper/sc/socket";
-import {IdValidChecker} from "../../helper/id/idValidCheckerUtils";
-import {ScExchange} from "../../helper/sc/scServer";
+import UpSocket, {RespondFunction}   from "../../helper/sc/socket";
+import {IdValidChecker}              from "../../helper/id/idValidCheckerUtils";
+import {ScExchange}                  from "../../helper/sc/scServer";
 import {
     CudAction,
     DATA_BOX_START_INDICATOR,
@@ -33,13 +33,14 @@ import {
     DbWorkerPackage,
     DbClientClosePackage,
     DbWorkerClosePackage,
-    RemoveSocketFunction, DbClientKickOutPackage, DbClientSenderPackage
+    RemoveSocketFunction, DbClientKickOutPackage, DbClientSenderPackage, DbClientFetchSenderPackage
 } from "../../helper/dataBox/dbDefinitions";
 import DataBoxAccessHelper from "../../helper/dataBox/dataBoxAccessHelper";
 import DataBoxUtils        from "../../helper/dataBox/dataBoxUtils";
 import DbCudActionSequence from "../../helper/dataBox/dbCudActionSequence";
 import RespondUtils        from "../../helper/utils/respondUtils";
 import {ErrorName}         from "../../helper/constants/errorName";
+import DataBoxFetchManager, {FetchManagerBuilder} from "../../helper/dataBox/dataBoxFetchManager";
 
 /**
  * If you want to present data on the client, the DataBox is the best choice.
@@ -75,6 +76,8 @@ export default class DataBoxFamily extends DataBoxCore {
     private readonly scExchange : ScExchange;
     private readonly workerFullId : string;
 
+    private readonly buildFetchManager : FetchManagerBuilder<typeof DataBoxFamily.prototype._fetchData>;
+
     static ___instance___ : DataBoxFamily;
 
     constructor(id : string, bag: Bag, dbPreparedData : DbPreparedData, idValidCheck : IdValidChecker, apiLevel : number | undefined) {
@@ -83,6 +86,9 @@ export default class DataBoxFamily extends DataBoxCore {
         this.scExchange = bag.getWorker().scServer.exchange;
         this.workerFullId = bag.getWorker().getFullWorkerId();
         this.dbEventPreFix = `${DATA_BOX_START_INDICATOR}-${this.id}-${apiLevel !== undefined ? apiLevel : ''}-`;
+
+        this.buildFetchManager = DataBoxFetchManager.buildFetchMangerBuilder
+        (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
     }
 
     //Core
@@ -106,10 +112,25 @@ export default class DataBoxFamily extends DataBoxCore {
             this._unregisterSocket(socket,disconnectHandler,id);
         };
 
+        const fetchManager = this.buildFetchManager();
+
         socket.on(event,async (senderPackage : DbClientSenderPackage, respond : RespondFunction) => {
             switch (senderPackage.a) {
                 case DbClientSenderAction.fetchData:
-                    await RespondUtils.respondWithFunc(respond,this._fetchData,id,sessionData,senderPackage.t);
+                    //try because _consumeFetchInput can throw an error.
+                    try {
+                        await fetchManager(
+                            respond,
+                            this._fetchData,
+                            id,
+                            sessionData,
+                            await this._consumeFetchInput((senderPackage as DbClientFetchSenderPackage).i),
+                            senderPackage.t
+                        );
+                    }
+                    catch (err) {
+                        respond(err);
+                    }
                     break;
                 case DbClientSenderAction.resetSession:
                     await RespondUtils.respondWithFunc(respond,this._resetSession,id,sessionData,senderPackage.t);
@@ -159,12 +180,12 @@ export default class DataBoxFamily extends DataBoxCore {
         return '';
     }
 
-    private async _fetchData(id : string,sessionData : DbSessionData,target ?: DBClientSenderSessionTarget) : Promise<DbFetchDataClientResponse> {
+    private async _fetchData(id : string,sessionData : DbSessionData,fetchInput : any,target ?: DBClientSenderSessionTarget) : Promise<DbFetchDataClientResponse> {
         const session = DataBoxUtils.getSession(sessionData,target);
 
         const currentCounter = session.c;
         session.c++;
-        const data = await this.fetchData(id,currentCounter,session.d);
+        const data = await this.fetchData(id,currentCounter,fetchInput,session.d);
 
         return {
             c : currentCounter,
@@ -391,7 +412,7 @@ export default class DataBoxFamily extends DataBoxCore {
      * The keyPath can be a string array or a
      * string where you can separate the keys with a dot.
      * Notice that this method will only update the DataBox and invoke the before-event.
-     * It will not automatically update the databank,
+     * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * @param id The member of the family you want to update.
@@ -484,8 +505,11 @@ export default class DataBoxFamily extends DataBoxCore {
      * You usually request data from your database and return it, and if no more data is available,
      * you should throw a NoMoreDataAvailableError or call the internal noMoreDataAvailable method.
      * The counter parameter indicates the number of the current call, it starts counting at zero.
+     * The client can send additional data when calling the fetch process,
+     * this data is available as the fetch input parameter.
      * Also, you extra get a session object, this object you can use to save variables that are
      * important to get more data in the future, for example, the last id of the item that the client had received.
+     * The session object is only available on the server-side and can not be modified on the client-side.
      * If you design the DataBox in such a way that the next fetch is not depending on the previous one,
      * you can activate the parallelFetch option in the DataBox config.
      * The data what you are returning can be of any type.
@@ -495,9 +519,10 @@ export default class DataBoxFamily extends DataBoxCore {
      * That can be done by using an object or a key-array.
      * @param id
      * @param counter
+     * @param input
      * @param sessionData
      */
-    protected async fetchData<T extends object = object>(id : string, counter : number, sessionData : T) : Promise<any>{
+    protected async fetchData<T extends object = object>(id : string,counter : number,input : any,sessionData : T) : Promise<any>{
         this.noMoreDataAvailable();
     }
 

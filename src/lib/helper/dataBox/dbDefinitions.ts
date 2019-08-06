@@ -35,7 +35,11 @@ export interface DataBoxRegisterRes {
     /**
      * Event key
      */
-    k : string
+    k : string,
+    /**
+     * Parallel fetching
+     */
+    pf : boolean
 }
 
 export type RemoveSocketFunction = () => void;
@@ -122,8 +126,25 @@ export interface CudAction {
  * The package that the client can send to the server to invoke an action.
  */
 export interface DbClientSenderPackage {
+    /**
+     * Action
+     */
     a : DbClientSenderAction,
+    /**
+     * Session Target
+     */
     t ?: DBClientSenderSessionTarget
+}
+
+/**
+ * The package that the client can send to the server to fetch data.
+ */
+export interface DbClientFetchSenderPackage extends DbClientSenderPackage{
+    a : DbClientSenderAction.fetchData,
+    /**
+     * input
+     */
+    i : any
 }
 
 /**

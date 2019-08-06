@@ -859,6 +859,7 @@ export default class ConfigChecker
     {
         ConfigCheckerTools.assertStructure(Structures.DataBoxConfig, config, ConfigNames.APP, this.ceb, target);
         this.checkAuthAccessConfig(config, target);
+        this.checkInputConfig(config,target);
         this.checkVersionAccessConfig(config, target);
     }
 

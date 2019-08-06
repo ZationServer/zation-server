@@ -89,7 +89,8 @@ export default class DataBoxHandler
         return {
             ut : sessionData !== undefined,
             k : eventKey,
-            ci : lastCudId
+            ci : lastCudId,
+            pf : db.isParallelFetch()
         };
     }
 }

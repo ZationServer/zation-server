@@ -5,17 +5,19 @@ GitHub: LucaCode
  */
 
 // noinspection TypeScriptPreferShortImport
-import {DataBoxConfig}           from "../../helper/config/definitions/dataBoxConfig";
-import Bag                  from "../Bag";
-import NoMoreDataAvailableError  from "../../helper/dataBox/noMoreDataAvailable";
+import {DataBoxConfig}                    from "../../helper/config/definitions/dataBoxConfig";
+import Bag                                from "../Bag";
+import NoMoreDataAvailableError           from "../../helper/dataBox/noMoreDataAvailable";
 import {VersionSystemAccessCheckFunction} from "../../helper/systemVersion/systemVersionChecker";
 import {TokenStateAccessCheckFunction}    from "../../helper/auth/authAccessChecker";
 import UpSocket                           from "../../helper/sc/socket";
 import {ErrorName}                        from "../../helper/constants/errorName";
 const  Jwt : any                        = require('jsonwebtoken');
 import JwtVerifyOptions                   from "../../helper/constants/jwt";
-import DbKeyArrayUtils from "../../helper/dataBox/dbKeyArrayUtils";
-import {DbSessionData} from "../../helper/dataBox/dbDefinitions";
+import DbKeyArrayUtils                    from "../../helper/dataBox/dbKeyArrayUtils";
+import {DbSessionData}                    from "../../helper/dataBox/dbDefinitions";
+import {InputConsumeFunction}             from "../../helper/input/inputClosureCreator";
+import ErrorUtils from "../../helper/utils/errorUtils";
 
 /**
  * If you want to present data on the client, the DataBox is the best choice.
@@ -53,6 +55,7 @@ export default abstract class DataBoxCore {
 
     private readonly dbPreparedData : DbPreparedData;
     private readonly useTokenStateCheck : boolean;
+    private readonly sendErrorDescription : boolean;
     private readonly preparedTokenSessionKey : string;
 
     /**
@@ -62,15 +65,48 @@ export default abstract class DataBoxCore {
      */
     protected readonly apiLevel: number | undefined;
 
+    private readonly parallelFetch : boolean;
+    private readonly inputConsumer : InputConsumeFunction;
+
     protected constructor(id : string, bag: Bag, dbPreparedData : DbPreparedData, apiLevel : number | undefined) {
         this.id = id;
         this.apiLevel = apiLevel;
         this.bag = bag;
         this.dbPreparedData = dbPreparedData;
         this.useTokenStateCheck = this.bag.getMainConfig().useTokenStateCheck;
+        this.sendErrorDescription = this.bag.getMainConfig().sendErrorDescription;
+
+        this.parallelFetch = dbPreparedData.parallelFetch;
+        this.inputConsumer = dbPreparedData.inputConsumer;
 
         this.preparedTokenSessionKey =
             `${bag.getZationConfig().getDataBoxKey()}.${this.dbTokenVersion}.${this.id}${apiLevel !== undefined ? apiLevel : ''}`;
+    }
+
+    /**
+     * **Not override this method.**
+     */
+    isParallelFetch() : boolean {
+        return this.parallelFetch;
+    }
+
+    /**
+     * **Not override this method.**
+     * A function to consume the fetch input.
+     * @param input
+     * @private
+     */
+    async _consumeFetchInput(input : any) : Promise<any>
+    {
+        try {
+            return await this.inputConsumer(input);
+        }
+        catch (inputError) {
+            const err : any = new Error('Invalid input to fetch data.');
+            err.name = ErrorName.INVALID_INPUT;
+            err.backErrors = ErrorUtils.convertErrorToResponseErrors(inputError,this.sendErrorDescription);
+            throw err;
+        }
     }
 
     /**
@@ -189,4 +225,7 @@ export interface DbPreparedData {
     versionAccessCheck : VersionSystemAccessCheckFunction,
     systemAccessCheck : VersionSystemAccessCheckFunction,
     tokenStateAccessCheck : TokenStateAccessCheckFunction,
+    inputConsumer : InputConsumeFunction,
+    parallelFetch : boolean,
+    maxBackpressure : number
 }

@@ -39,6 +39,7 @@ import {
 } from "./inputConfig";
 import {ControllerConfig} from "./controllerConfig";
 import {BackgroundTask}   from "./backgroundTaskConfig";
+import {DataBoxConfig}    from "./dataBoxConfig";
 
 const App = {};
 App[nameof<AppConfig>(s => s.userGroups)]         = {types : ['object'],isOptional : true};
@@ -94,10 +95,14 @@ ControllerConfig[nameof<ControllerConfig>(s => s.versionAccess)]    = {types : [
 ControllerConfig[nameof<ControllerConfig>(s => s.systemAccess)]     = {types : ['array'],arrayType : 'string',isOptional : true};
 
 const DataBoxConfig = {};
-DataBoxConfig[nameof<ControllerConfig>(s => s.access)]           = {types : ['string','function','number','array'],isOptional : true};
-DataBoxConfig[nameof<ControllerConfig>(s => s.notAccess)]        = {types : ['string','function','number','array'],isOptional : true};
-DataBoxConfig[nameof<ControllerConfig>(s => s.versionAccess)]    = {types : ['string','object'],isOptional : true};
-DataBoxConfig[nameof<ControllerConfig>(s => s.systemAccess)]     = {types : ['array'],arrayType : 'string',isOptional : true};
+DataBoxConfig[nameof<DataBoxConfig>(s => s.access)]           = {types : ['string','function','number','array'],isOptional : true};
+DataBoxConfig[nameof<DataBoxConfig>(s => s.notAccess)]        = {types : ['string','function','number','array'],isOptional : true};
+DataBoxConfig[nameof<DataBoxConfig>(s => s.versionAccess)]    = {types : ['string','object'],isOptional : true};
+DataBoxConfig[nameof<DataBoxConfig>(s => s.systemAccess)]     = {types : ['array'],arrayType : 'string',isOptional : true};
+DataBoxConfig[nameof<DataBoxConfig>(s => s.parallelFetch)]    = {types : ['boolean'],isOptional : true};
+DataBoxConfig[nameof<DataBoxConfig>(s => s.maxBackpressure)]  = {types : ['number'],isOptional : true};
+DataBoxConfig[nameof<DataBoxConfig>(s => s.input)]            = {types : ['object','array','function'],isOptional : true};
+DataBoxConfig[nameof<DataBoxConfig>(s => s.allowAnyInput)]    = {types : ['boolean'],isOptional : true};
 
 const AnyOf = {};
 AnyOf[nameof<AnyOfModelConfig>(s => s.anyOf)]     = {types : ['array','object'],isOptional : false};

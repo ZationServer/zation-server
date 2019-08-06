@@ -15,7 +15,7 @@ import {
     CudType,
     DATA_BOX_START_INDICATOR,
     DbClientClosePackage,
-    DbClientCudPackage,
+    DbClientCudPackage, DbClientFetchSenderPackage,
     DbClientKickOutPackage,
     DbClientPackage,
     DbClientReceiverEvent,
@@ -36,11 +36,12 @@ import {
     TimestampOption
 } from "../../helper/dataBox/dbDefinitions";
 import DataBoxAccessHelper from "../../helper/dataBox/dataBoxAccessHelper";
-import {ScExchange} from "../../helper/sc/scServer";
-import DataBoxUtils from "../../helper/dataBox/dataBoxUtils";
+import {ScExchange}        from "../../helper/sc/scServer";
+import DataBoxUtils        from "../../helper/dataBox/dataBoxUtils";
 import DbCudActionSequence from "../../helper/dataBox/dbCudActionSequence";
 import RespondUtils        from "../../helper/utils/respondUtils";
 import {ErrorName}         from "../../helper/constants/errorName";
+import DataBoxFetchManager, {FetchManagerBuilder} from "../../helper/dataBox/dataBoxFetchManager";
 
 /**
  * If you want to present data on the client, the DataBox is the best choice.
@@ -62,6 +63,8 @@ export default class DataBox extends DataBoxCore {
     private readonly workerFullId : string;
     private readonly dbEvent : string;
 
+    private readonly buildFetchManager : FetchManagerBuilder<typeof DataBox.prototype._fetchData>;
+
     static ___instance___ : DataBox;
 
     constructor(id : string, bag: Bag, dbPreparedData : DbPreparedData, apiLevel : number | undefined) {
@@ -69,6 +72,9 @@ export default class DataBox extends DataBoxCore {
         this.scExchange = bag.getWorker().scServer.exchange;
         this.workerFullId = bag.getWorker().getFullWorkerId();
         this.dbEvent = `${DATA_BOX_START_INDICATOR}-${this.id}-${apiLevel !== undefined ? apiLevel : ''}`;
+
+        this.buildFetchManager = DataBoxFetchManager.buildFetchMangerBuilder
+        (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
 
         this._reg();
     }
@@ -92,10 +98,24 @@ export default class DataBox extends DataBoxCore {
             this._unregisterSocket(socket,disconnectHandler);
         };
 
+        const fetchManager = this.buildFetchManager();
+
         socket.on(this.dbEvent,async (senderPackage : DbClientSenderPackage, respond : RespondFunction) => {
             switch (senderPackage.a) {
                 case DbClientSenderAction.fetchData:
-                    await RespondUtils.respondWithFunc(respond,this._fetchData,sessionData,senderPackage.t);
+                    //try because _consumeFetchInput can throw an error.
+                    try {
+                        await fetchManager(
+                            respond,
+                            this._fetchData,
+                            sessionData,
+                            await this._consumeFetchInput((senderPackage as DbClientFetchSenderPackage).i),
+                            senderPackage.t
+                        );
+                    }
+                    catch (err) {
+                        respond(err);
+                    }
                     break;
                 case DbClientSenderAction.resetSession:
                     await RespondUtils.respondWithFunc(respond,this._resetSession,sessionData,senderPackage.t);
@@ -140,12 +160,12 @@ export default class DataBox extends DataBoxCore {
         return this.lastCudData.id;
     }
 
-    private async _fetchData(sessionData : DbSessionData,target ?: DBClientSenderSessionTarget) : Promise<DbFetchDataClientResponse> {
+    private async _fetchData(sessionData : DbSessionData,fetchInput : any,target ?: DBClientSenderSessionTarget) : Promise<DbFetchDataClientResponse> {
         const session = DataBoxUtils.getSession(sessionData,target);
 
         const currentCounter = session.c;
         session.c++;
-        const data = await this.fetchData(currentCounter,session.d);
+        const data = await this.fetchData(currentCounter,fetchInput,session.d);
 
         return {
             c : currentCounter,
@@ -359,7 +379,7 @@ export default class DataBox extends DataBoxCore {
      * Notice that this method will only update the DataBox and invoke the before-events.
      * This method is ideal for doing multiple changes on a DataBox
      * because it will pack them all together and send them all in ones.
-     * It will not automatically update the databank,
+     * It will not automatically update the database,
      * so you have to do it in the before-events or before calling this method.
      * @param timestamp
      * With the timestamp option, you can change the sequence of data.
@@ -380,8 +400,11 @@ export default class DataBox extends DataBoxCore {
      * You usually request data from your database and return it, and if no more data is available,
      * you should throw a NoMoreDataAvailableError or call the internal noMoreDataAvailable method.
      * The counter parameter indicates the number of the current call, it starts counting at zero.
+     * The client can send additional data when calling the fetch process,
+     * this data is available as the fetch input parameter.
      * Also, you extra get a session object, this object you can use to save variables that are
      * important to get more data in the future, for example, the last id of the item that the client had received.
+     * The session object is only available on the server-side and can not be modified on the client-side.
      * If you design the DataBox in such a way that the next fetch is not depending on the previous one,
      * you can activate the parallelFetch option in the DataBox config.
      * The data what you are returning can be of any type.
@@ -390,9 +413,10 @@ export default class DataBox extends DataBoxCore {
      * so that you can identify each value with a key path.
      * That can be done by using an object or a key-array.
      * @param counter
+     * @param input
      * @param sessionData
      */
-    protected async fetchData<T extends object = object>(counter : number, sessionData : T) : Promise<any>{
+    protected async fetchData<T extends object = object>(counter : number,input : any,sessionData : T) : Promise<any>{
         this.noMoreDataAvailable();
     }
 

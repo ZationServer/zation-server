@@ -67,7 +67,7 @@ export default class InputClosureCreator
             return wrapper.i;
         }
     }
-    
+
     /**
      * Creates a closure to only validate the input from a validation request to a component.
      * @param inputConfig
