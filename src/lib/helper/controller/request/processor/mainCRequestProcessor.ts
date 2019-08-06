@@ -118,7 +118,7 @@ export default class MainCRequestProcessor
                             input = await inputConsume(task.i);
                         }
                         catch (e) {
-                            //invoke controller wrong input function
+                            //invoke controller invalid input function
                             if(e instanceof BackError || e instanceof BackErrorBag) {
 
                                 //create backErrorBag
@@ -139,7 +139,7 @@ export default class MainCRequestProcessor
                                     input
                                 );
                                 try {
-                                    await controllerInstance.wrongInput(reqBag,input,e);
+                                    await controllerInstance.invalidInput(reqBag,input,e);
                                 }
                                 catch (innerErr) {
                                     if(innerErr instanceof BackError) {

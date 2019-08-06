@@ -92,7 +92,7 @@ export default class Controller {
 
     /**
      * @description
-     * Gets invokes when the controller gets an request with wrong input.
+     * Gets invokes when the controller gets an request with invalid input.
      * @param reqBag
      * @param input
      * @param backErrorBag
@@ -102,7 +102,7 @@ export default class Controller {
      * Notice that only the BackError or BackErrorBag sends back to the client.
      * All other errors or objects will be converted to an unknown BackError.
      */
-    async wrongInput(reqBag: RequestBag, input: any, backErrorBag : BackErrorBag): Promise<void> {
+    async invalidInput(reqBag: RequestBag, input: any, backErrorBag : BackErrorBag): Promise<void> {
     }
 }
 
