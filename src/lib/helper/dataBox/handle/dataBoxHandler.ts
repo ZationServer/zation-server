@@ -9,7 +9,7 @@ import DataBoxPrepare              from "../dataBoxPrepare";
 import ZationConfig                from "../../config/manager/zationConfig";
 import DataBoxCore                 from "../../../api/dataBox/DataBoxCore";
 import DataBoxFamily               from "../../../api/dataBox/DataBoxFamily";
-import {DataBoxRegisterReq, DataBoxRegisterRes, DbSessionData} from "../dbDefinitions";
+import {DataBoxRegisterReq, DataBoxRegisterRes, DbRegisterResult, DbSessionData} from "../dbDefinitions";
 import DataBoxReqUtils             from "./dataBoxReqUtils";
 import {ErrorName}                 from "../../constants/errorName";
 import DataBox                     from "../../../api/dataBox/DataBox";
@@ -75,22 +75,23 @@ export default class DataBoxHandler
         }
 
         //register
-        let eventKey;
+        let keys : DbRegisterResult;
         let lastCudId;
         if(isFamily){
-            eventKey = await (db as DataBoxFamily)._registerSocket(socket,(input.i as string),sessionData);
+            keys = await (db as DataBoxFamily)._registerSocket(socket,(input.i as string),sessionData);
             lastCudId = (db as DataBoxFamily)._getLastCudId(input.i as string);
         }
         else {
-            eventKey = await (db as DataBox)._registerSocket(socket,sessionData);
+            keys = await (db as DataBox)._registerSocket(socket,sessionData);
             lastCudId = (db as DataBox)._getLastCudId();
         }
 
         return {
             ut : sessionData !== undefined,
-            k : eventKey,
             ci : lastCudId,
-            pf : db.isParallelFetch()
+            pf : db.isParallelFetch(),
+            i : keys.inputCh,
+            o : keys.outputCh
         };
     }
 }

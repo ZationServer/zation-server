@@ -101,6 +101,7 @@ DataBoxConfig[nameof<DataBoxConfig>(s => s.versionAccess)]    = {types : ['strin
 DataBoxConfig[nameof<DataBoxConfig>(s => s.systemAccess)]     = {types : ['array'],arrayType : 'string',isOptional : true};
 DataBoxConfig[nameof<DataBoxConfig>(s => s.parallelFetch)]    = {types : ['boolean'],isOptional : true};
 DataBoxConfig[nameof<DataBoxConfig>(s => s.maxBackpressure)]  = {types : ['number'],isOptional : true};
+DataBoxConfig[nameof<DataBoxConfig>(s => s.maxSocketInputChannels)] = {types : ['number'],isOptional : true};
 DataBoxConfig[nameof<DataBoxConfig>(s => s.input)]            = {types : ['object','array','function'],isOptional : true};
 DataBoxConfig[nameof<DataBoxConfig>(s => s.allowAnyInput)]    = {types : ['boolean'],isOptional : true};
 

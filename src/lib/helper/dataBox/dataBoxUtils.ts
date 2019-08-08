@@ -192,4 +192,27 @@ export default class DataBoxUtils {
             dbSessionData.restore = {c:0,d:{}};
         }
     }
+
+    /**
+     * Generates a unique channel input id.
+     * @param inputChIds
+     */
+    static generateInputChId(inputChIds : Set<string>) : string {
+        const id = uniqid.time();
+        return inputChIds.has(id) ? DataBoxUtils.generateInputChId(inputChIds) : id;
+    }
+
+    /**
+     * Checker for checking the max socket input channel limit,
+     * it will throw an error to deny access.
+     * @param current
+     * @param max
+     */
+    static maxInputChannelsCheck(current : number,max : number) : void {
+        if(current >= max){
+            const err : any = new Error('Maximum socket input channels reached.');
+            err.name = ErrorName.MAX_INPUT_CHANNELS_REACHED;
+            throw err;
+        }
+    }
 }

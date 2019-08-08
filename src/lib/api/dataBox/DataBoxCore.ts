@@ -227,5 +227,6 @@ export interface DbPreparedData {
     tokenStateAccessCheck : TokenStateAccessCheckFunction,
     inputConsumer : InputConsumeFunction,
     parallelFetch : boolean,
-    maxBackpressure : number
+    maxBackpressure : number,
+    maxSocketInputChannels : number
 }

@@ -33,16 +33,20 @@ export interface DataBoxRegisterRes {
      */
     ut : boolean,
     /**
-     * Event key
+     * Input key
      */
-    k : string,
+    i : string,
+    /**
+     * Output key
+     */
+    o : string,
     /**
      * Parallel fetching
      */
     pf : boolean
 }
 
-export type RemoveSocketFunction = () => void;
+export type UnregisterSocketFunction = (inputChannelId ?: string) => void;
 
 export const DATA_BOX_START_INDICATOR = '>D';
 
@@ -388,4 +392,20 @@ export interface IfContainsOption {
      * but only to the clients that are already loaded this old data section.
      */
     ifContains ?: string
+}
+
+/**
+ * The memory that DataBoxes stores internally for each socket.
+ */
+export interface DbSocketMemory {
+    unregisterSocket : UnregisterSocketFunction,
+    inputChIds : Set<string>
+}
+
+/**
+ * The DataBox register result.
+ */
+export interface DbRegisterResult {
+    inputCh : string,
+    outputCh : string
 }

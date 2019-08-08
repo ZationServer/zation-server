@@ -140,7 +140,9 @@ export default class DataBoxPrepare
             tokenStateAccessCheck : AuthAccessChecker.createAuthAccessChecker(config,this.bag),
             inputConsumer : InputClosureCreator.createInputConsumer(config,this.bag),
             parallelFetch : config.parallelFetch !== undefined ? config.parallelFetch : false,
-            maxBackpressure : config.maxBackpressure !== undefined ? config.maxBackpressure : 30
+            maxBackpressure : config.maxBackpressure !== undefined ? config.maxBackpressure : 30,
+            maxSocketInputChannels : config.maxSocketInputChannels !== undefined ?
+                config.maxSocketInputChannels : 20
         };
 
         let dbInstance;

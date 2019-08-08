@@ -858,6 +858,12 @@ export default class ConfigChecker
     private checkDataBoxConfig(config : DataBoxConfig,target : Target)
     {
         ConfigCheckerTools.assertStructure(Structures.DataBoxConfig, config, ConfigNames.APP, this.ceb, target);
+
+        if(typeof config.maxSocketInputChannels === 'number' && config.maxSocketInputChannels <= 0){
+            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                `${target.getTarget()} the maximum socket input channels must be greater than 0.`));
+        }
+
         this.checkAuthAccessConfig(config, target);
         this.checkInputConfig(config,target);
         this.checkVersionAccessConfig(config, target);
