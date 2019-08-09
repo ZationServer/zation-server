@@ -347,7 +347,7 @@ class ZationWorker extends SCWorker
                 await this.zationCReqHandler.processSocketReq(data,socket,respond);
             });
 
-            socket.on('>D', async (data,respond) => {
+            socket.on(DATA_BOX_START_INDICATOR, async (data,respond) => {
                 await RespondUtils.respondWithFunc(respond,this.zationDbHandler.processRegisterReq,data,socket);
             });
 
