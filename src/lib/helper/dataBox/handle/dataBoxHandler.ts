@@ -63,10 +63,10 @@ export default class DataBoxHandler
         }
 
         //access and id check
-        await db._checkAccess(socket);
         if(isFamily){
             await (db as DataBoxFamily)._checkIdIsValid(input.i as string);
         }
+        await db._checkAccess(socket);
 
         //token check
         let sessionData : undefined | DbSessionData = undefined;

@@ -7,7 +7,7 @@ GitHub: LucaCode
 import Bag from "../../../api/Bag";
 // noinspection TypeScriptPreferShortImport
 import {InputConfigTranslatable, ModelConfigTranslatable} from "../../../api/ConfigTranslatable";
-import ZationTokenInfo from "../../internalApi/zationTokenInfo";
+import ZationTokenInfo                                    from "../../internalApi/zationTokenInfo";
 
 export type AuthAccessFunction = (bag : Bag, token : ZationTokenInfo | null) => Promise<boolean> | boolean;
 
