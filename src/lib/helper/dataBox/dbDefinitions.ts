@@ -409,3 +409,8 @@ export interface DbRegisterResult {
     inputCh : string,
     outputCh : string
 }
+
+/**
+ * Function for the cud middleware to change the value.
+ */
+export type ChangeValue = (newData : any) => void;

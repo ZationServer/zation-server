@@ -194,11 +194,20 @@ export default abstract class DataBoxCore {
 
     // noinspection JSMethodCanBeStatic
     /**
-     * This method should be called in the getData method
+     * This method should be called in the fetchData method
      * whenever no more data is available for the client.
      */
     protected noMoreDataAvailable(){
         throw new NoMoreDataAvailableError();
+    }
+
+    // noinspection JSMethodCanBeStatic
+    /**
+     * This method should be called in a cud middleware
+     * to block the operation.
+     */
+    protected block(){
+        throw new Error('Block cud operation');
     }
 
     // noinspection JSMethodCanBeStatic

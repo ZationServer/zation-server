@@ -8,7 +8,7 @@ GitHub: LucaCode
 import {DataBoxConfig}               from "../../helper/config/definitions/dataBoxConfig";
 import Bag                           from "../Bag";
 import DataBoxCore, {DbPreparedData} from "./DataBoxCore";
-import UpSocket, {RespondFunction} from "../../helper/sc/socket";
+import UpSocket, {RespondFunction}   from "../../helper/sc/socket";
 import {
     CudAction,
     CudPackage,
@@ -32,7 +32,7 @@ import {
     IfContainsOption,
     InfoOption,
     PreCudPackage,
-    TimestampOption, DbRegisterResult, DbSocketMemory
+    TimestampOption, DbRegisterResult, DbSocketMemory, ChangeValue
 } from "../../helper/dataBox/dbDefinitions";
 import DataBoxAccessHelper from "../../helper/dataBox/dataBoxAccessHelper";
 import {ScExchange}        from "../../helper/sc/scServer";
@@ -41,6 +41,9 @@ import DbCudActionSequence from "../../helper/dataBox/dbCudActionSequence";
 import RespondUtils        from "../../helper/utils/respondUtils";
 import {ErrorName}         from "../../helper/constants/errorName";
 import DataBoxFetchManager, {FetchManagerBuilder} from "../../helper/dataBox/dataBoxFetchManager";
+import ZSocket                                    from "../../helper/internalApi/zSocket";
+import CloneUtils                                 from "../../helper/utils/cloneUtils";
+const DefaultSymbol                              = Symbol();
 
 /**
  * If you want to present data on the client, the DataBox is the best choice.
@@ -64,6 +67,7 @@ export default class DataBox extends DataBoxCore {
     private readonly maxSocketInputChannels : number;
 
     private readonly buildFetchManager : FetchManagerBuilder<typeof DataBox.prototype._fetchData>;
+    private readonly sendCudToSockets : (dbClientCudPackage : DbClientCudPackage) => Promise<void> | void;
 
     static ___instance___ : DataBox;
 
@@ -76,8 +80,26 @@ export default class DataBox extends DataBoxCore {
 
         this.buildFetchManager = DataBoxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
+        this.sendCudToSockets = this.getSendCudToSocketsHandler();
 
         this._reg();
+    }
+
+    /**
+     * Returns the send cud to socket handler.
+     * Uses only the complex send to socket cud (with middleware)
+     * if at least one of the middleware function was overwritten.
+     */
+    private getSendCudToSocketsHandler() : (dbClientCudPackage : DbClientCudPackage) => Promise<void> | void {
+        if(!this.insertMiddleware[DefaultSymbol] ||
+            !this.updateMiddleware[DefaultSymbol] ||
+            !this.deleteMiddleware[DefaultSymbol])
+        {
+            return this._sendCudToSocketsWithMiddleware;
+        }
+        else {
+            return this._sendToSockets;
+        }
     }
 
     //Core
@@ -239,11 +261,11 @@ export default class DataBox extends DataBoxCore {
      */
     private _reg() {
         this.scExchange.subscribe(this.dbEvent)
-            .watch((data) => {
+            .watch(async (data) => {
                 if((data as DbWorkerCudPackage).w !== this.workerFullId) {
                     switch (data.action) {
                         case DbWorkerAction.cud:
-                            this._processCudActions((data as DbWorkerCudPackage).d);
+                            await this._processCudActions((data as DbWorkerCudPackage).d);
                             break;
                         case DbWorkerAction.close:
                             this._close((data as DbWorkerClosePackage).d);
@@ -268,11 +290,73 @@ export default class DataBox extends DataBoxCore {
     }
 
     /**
+     * Sends a DataBox cud package to sockets of the DataBox after passing the cud middleware.
+     * @param dbClientPackage
+     * @private
+     */
+    private async _sendCudToSocketsWithMiddleware(dbClientPackage : DbClientCudPackage) {
+
+        const actions = dbClientPackage.d.a;
+        const socketPromises : Promise<void>[] = [];
+
+        for(let socket of this.regSockets.keys()) {
+
+            const filteredActions : CudAction[] = [];
+            const promises : Promise<void>[] = [];
+
+            for(let i = 0; i < actions.length; i++){
+                const action = CloneUtils.deepClone(actions[i]);
+                switch (action.t) {
+                    case CudType.update:
+                        promises.push((async () => {
+                            try {
+                                await this.updateMiddleware(socket.zSocket,action.k,action.v,(value) => {
+                                    action.d = value;
+                                },action.c,action.d);
+                                filteredActions.push(action);
+                            }
+                            catch (e) {}
+                        })());
+                        break;
+                    case CudType.insert:
+                        promises.push((async () => {
+                            try {
+                                await this.insertMiddleware(socket.zSocket,action.k,action.v,(value) => {
+                                    action.d = value;
+                                },action.c,action.d);
+                                filteredActions.push(action);
+                            }
+                            catch (e) {}
+                        })());
+                        break;
+                    case CudType.delete:
+                        promises.push((async () => {
+                            try {
+                                await this.deleteMiddleware(socket.zSocket,action.k,action.c,action.d);
+                                filteredActions.push(action);
+                            }
+                            catch (e) {}
+                        })());
+                        break;
+                }
+            }
+
+            socketPromises.push(Promise.all(promises).then(() => {
+                if(filteredActions.length > 0){
+                    dbClientPackage.d.a = filteredActions;
+                    socket.emit(this.dbEvent,dbClientPackage);
+                }
+            }));
+        }
+        await Promise.all(socketPromises);
+    }
+
+    /**
      * Processes new cud packages.
      * @param cudPackage
      */
-    private _processCudActions(cudPackage : CudPackage){
-        this._sendToSockets({a : DbClientReceiverEvent.cud,d : cudPackage} as DbClientCudPackage);
+    private async _processCudActions(cudPackage : CudPackage){
+        await this.sendCudToSockets({a : DbClientReceiverEvent.cud,d : cudPackage} as DbClientCudPackage);
         //updated last cud id.
         if(this.lastCudData.timestamp <= cudPackage.t){
             this.lastCudData = {id : cudPackage.ci, timestamp : cudPackage.t};
@@ -317,7 +401,7 @@ export default class DataBox extends DataBoxCore {
             d : cudPackage,
             w : this.workerFullId
         } as DbWorkerCudPackage);
-        this._processCudActions(cudPackage);
+        await this._processCudActions(cudPackage);
     }
 
     private _broadcastToOtherSockets(clientPackage : DbClientPackage) {
@@ -540,7 +624,78 @@ export default class DataBox extends DataBoxCore {
      */
     protected async beforeDelete(keyPath : string[]) {
     }
+
+    /**
+     * **Can be overridden.**
+     * The insert middleware.
+     * You should only use a cud middleware in advance use cases because they
+     * create a performance overhead.
+     * You should not invoke long process tasks in this middleware.
+     * Instead, try to prepare stuff in the token of the socket or the socket variables.
+     * The middleware will be called before each socket reaches a cud operation.
+     * You can change the value with the parameter changeValue by simply calling
+     * the function with the new value.
+     * With this functionality, you can make parts of the data invisible to some clients.
+     * You are also able to block the complete operation for the socket
+     * by calling the internal block method or throwing any error.
+     * @param socket
+     * @param keyPath
+     * @param value
+     * @param changeValue
+     * @param code
+     * @param data
+     */
+    protected async insertMiddleware(socket : ZSocket,keyPath : string[],value : any,changeValue : ChangeValue,
+                                     code : string | number | undefined,data : any) : Promise<void> {
+    }
+
+    /**
+     * **Can be overridden.**
+     * The update middleware.
+     * You should only use a cud middleware in advance use cases because they
+     * create a performance overhead.
+     * You should not invoke long process tasks in this middleware.
+     * Instead, try to prepare stuff in the token of the socket or the socket variables.
+     * The middleware will be called before each socket reaches a cud operation.
+     * You can change the value with the parameter changeValue by simply calling
+     * the function with the new value.
+     * With this functionality, you can make parts of the data invisible to some clients.
+     * You are also able to block the complete operation for the socket
+     * by calling the internal block method or throwing any error.
+     * @param socket
+     * @param keyPath
+     * @param value
+     * @param changeValue
+     * @param code
+     * @param data
+     */
+    protected async updateMiddleware(socket : ZSocket,keyPath : string[],value : any,changeValue : ChangeValue,
+                                     code : string | number | undefined,data : any) : Promise<void> {
+    }
+
+    /**
+     * **Can be overridden.**
+     * The delete middleware.
+     * You should only use a cud middleware in advance use cases because they
+     * create a performance overhead.
+     * You should not invoke long process tasks in this middleware.
+     * Instead, try to prepare stuff in the token of the socket or the socket variables.
+     * The middleware will be called before each socket reaches a cud operation.
+     * You are able to block the complete operation for the socket
+     * by calling the internal block method or throwing any error.
+     * @param socket
+     * @param keyPath
+     * @param code
+     * @param data
+     */
+    protected async deleteMiddleware(socket : ZSocket,keyPath : string[],
+                                     code : string | number | undefined,data : any) : Promise<void> {
+    }
 }
+
+DataBox.prototype['insertMiddleware'][DefaultSymbol] = true;
+DataBox.prototype['updateMiddleware'][DefaultSymbol] = true;
+DataBox.prototype['deleteMiddleware'][DefaultSymbol] = true;
 
 export interface DataBoxClass {
     config: DataBoxConfig;
