@@ -1397,7 +1397,7 @@ export default class ConfigChecker
         return keyWord;
     }
 
-    private checkAuthAccessConfig(cc: AuthAccessConfig, target) {
+    private checkAuthAccessConfig(cc: AuthAccessConfig<any>, target) {
         const notAccess = cc.notAccess;
         const access = cc.access;
 

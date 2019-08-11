@@ -96,7 +96,7 @@ export default class DataBoxFamily extends DataBoxCore {
         this.scExchange = bag.getWorker().scServer.exchange;
         this.workerFullId = bag.getWorker().getFullWorkerId();
         this.maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
-        this.dbEventPreFix = `${DATA_BOX_START_INDICATOR}-${this.id}-${apiLevel !== undefined ? apiLevel : ''}-`;
+        this.dbEventPreFix = `${DATA_BOX_START_INDICATOR}-${this.name}-${apiLevel !== undefined ? apiLevel : ''}-`;
 
         this.buildFetchManager = DataBoxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
@@ -737,27 +737,35 @@ export default class DataBoxFamily extends DataBoxCore {
 
     /**
      * **Not override this method.**
-     * With this function, you can kick out a socket from all DataBoxes of this family.
+     * With this function, you can kick out a socket from a family member of the DataBox.
      * This method is used internally.
+     * @param id
      * @param socket
      * @param code
      * @param data
      */
-    kickOut(socket : UpSocket,code ?: number | string,data ?: any) : void {
-        const memberIds = this.socketMembers.get(socket);
-        if(memberIds){
-            for(let id of memberIds.values()) {
-                const socketMap = this.regMember.get(id);
-                if(socketMap){
-                    const socketMemory = socketMap.get(socket);
-                    if(socketMemory){
-                        socket.emit(this.dbEventPreFix+id,
-                            {a : DbClientReceiverEvent.kickOut,c : code,d : data} as DbClientKickOutPackage);
-                        socketMemory.unregisterSocket();
-                    }
-                }
+    kickOut(id : string,socket : UpSocket,code ?: number | string,data ?: any) : void {
+        const socketMap = this.regMember.get(id);
+        if(socketMap){
+            const socketMemory = socketMap.get(socket);
+            if(socketMemory){
+                socket.emit(this.dbEventPreFix+id,
+                    {a : DbClientReceiverEvent.kickOut,c : code,d : data} as DbClientKickOutPackage);
+                socketMemory.unregisterSocket();
             }
         }
+    }
+
+    /**
+     * **Not override this method.**
+     * This method returns a string array with all
+     * member ids where the socket is registered.
+     * This method is used internally.
+     * @param socket
+     */
+    getSocketRegIds(socket : UpSocket) : string[] {
+        const memberIds = this.socketMembers.get(socket);
+        return memberIds ? Array.from(memberIds) : [];
     }
 
     /**
@@ -870,7 +878,7 @@ DataBoxFamily.prototype['deleteMiddleware'][DefaultSymbol] = true;
 export interface DataBoxFamilyClass {
     config: DataBoxConfig;
 
-    new(id : string, bag: Bag, dbPreparedData : DbPreparedData, idValidCheck : IdValidChecker, apiLevel : number | undefined): DataBoxFamily;
+    new(name : string, bag: Bag, dbPreparedData : DbPreparedData, idValidCheck : IdValidChecker, apiLevel : number | undefined): DataBoxFamily;
 
     prototype: any;
     name : string;

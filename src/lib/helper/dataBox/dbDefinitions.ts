@@ -414,3 +414,11 @@ export interface DbRegisterResult {
  * Function for the cud middleware to change the value.
  */
 export type ChangeValue = (newData : any) => void;
+
+/**
+ * The DataBox info object.
+ */
+export interface DataBoxInfo {
+    name : string,
+    id : any
+}

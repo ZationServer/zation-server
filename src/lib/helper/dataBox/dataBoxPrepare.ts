@@ -5,7 +5,6 @@ GitHub: LucaCode
  */
 
 import SystemVersionChecker                                     from "../systemVersion/systemVersionChecker";
-import AuthAccessChecker                                        from "../auth/authAccessChecker";
 import ZationConfigFull                                         from "../config/manager/zationConfigFull";
 import Bag                                                      from "../../api/Bag";
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction}  from "../apiLevel/apiLevelUtils";
@@ -16,7 +15,8 @@ import {DataBoxClassDef, DataBoxConfig}                         from "../config/
 import DataBoxFamily, {DataBoxFamilyClass}                      from "../../api/dataBox/DataBoxFamily";
 import IdValidCheckerUtils                                      from "../id/idValidCheckerUtils";
 import DataBox, {DataBoxClass}                                  from "../../api/dataBox/DataBox";
-import InputClosureCreator from "../input/inputClosureCreator";
+import InputClosureCreator                                      from "../input/inputClosureCreator";
+import DataBoxAccessHelper                                      from "./dataBoxAccessHelper";
 
 export default class DataBoxPrepare
 {
@@ -88,9 +88,9 @@ export default class DataBoxPrepare
         const uDataBoxes = this.zc.appConfig.dataBoxes || {};
 
         const promises : Promise<void>[] = [];
-        for(let cId in uDataBoxes) {
-            if(uDataBoxes.hasOwnProperty(cId)) {
-                promises.push(this.addDataBox(cId,uDataBoxes[cId]));
+        for(let name in uDataBoxes) {
+            if(uDataBoxes.hasOwnProperty(name)) {
+                promises.push(this.addDataBox(name,uDataBoxes[name]));
             }
         }
         await Promise.all(promises);
@@ -98,14 +98,14 @@ export default class DataBoxPrepare
 
     /**
      * Add a DataBox to the prepare process.
-     * @param id
+     * @param name
      * @param definition
      */
-    private async addDataBox(id : string,definition : DataBoxClassDef | ApiLevelSwitch<DataBoxClassDef>) : Promise<void>
+    private async addDataBox(name : string,definition : DataBoxClassDef | ApiLevelSwitch<DataBoxClassDef>) : Promise<void>
     {
         if(typeof definition === 'function') {
-            const preparedDataBoxData = await this.processDataBox(definition,id);
-            this.dataBoxes[id] = () => {
+            const preparedDataBoxData = await this.processDataBox(definition,name);
+            this.dataBoxes[name] = () => {
                 return preparedDataBoxData
             };
         }
@@ -115,29 +115,29 @@ export default class DataBoxPrepare
             for(let k in definition){
                 if(definition.hasOwnProperty(k)) {
                     promises.push((async () => {
-                        preparedDataMapper[k] = await this.processDataBox(definition[k],id,parseInt(k));
+                        preparedDataMapper[k] = await this.processDataBox(definition[k],name,parseInt(k));
                     })());
                 }
             }
             await Promise.all(promises);
-            this.dataBoxes[id] = ApiLevelUtils.createApiLevelSwitcher<DataBoxCore>(preparedDataMapper);
+            this.dataBoxes[name] = ApiLevelUtils.createApiLevelSwitcher<DataBoxCore>(preparedDataMapper);
         }
     }
 
     /**
      * Process a DataBox and create the prepared data.
      * @param dataBox
-     * @param id
+     * @param name
      * @param apiLevel
      */
-    private async processDataBox(dataBox : DataBoxClassDef,id : string,apiLevel ?: number) : Promise<DataBoxCore>
+    private async processDataBox(dataBox : DataBoxClassDef,name : string,apiLevel ?: number) : Promise<DataBoxCore>
     {
         const config : DataBoxConfig = dataBox.config;
 
         const dbPreparedData : DbPreparedData = {
             versionAccessCheck : SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
-            tokenStateAccessCheck : AuthAccessChecker.createAuthAccessChecker(config,this.bag),
+            accessCheck : DataBoxAccessHelper.createAccessChecker(config,this.bag),
             inputConsumer : InputClosureCreator.createInputConsumer(config,this.bag),
             parallelFetch : config.parallelFetch !== undefined ? config.parallelFetch : false,
             maxBackpressure : config.maxBackpressure !== undefined ? config.maxBackpressure : 30,
@@ -148,11 +148,11 @@ export default class DataBoxPrepare
         let dbInstance;
         if(dataBox.prototype instanceof DataBox){
             dbInstance = new (dataBox as DataBoxClass)
-            (id,this.worker.getPreparedBag(),dbPreparedData,apiLevel);
+            (name,this.worker.getPreparedBag(),dbPreparedData,apiLevel);
         }
         else if(dataBox.prototype instanceof DataBoxFamily){
             dbInstance = new (dataBox as DataBoxFamilyClass)
-            (id,this.worker.getPreparedBag(),dbPreparedData,
+            (name,this.worker.getPreparedBag(),dbPreparedData,
                 IdValidCheckerUtils.createIdValidChecker(dataBox.prototype.isIdValid,this.bag)
                 ,apiLevel);
         }

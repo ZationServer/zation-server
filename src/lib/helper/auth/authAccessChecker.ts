@@ -9,7 +9,7 @@ import AuthEngine         from "./authEngine";
 import ZationTokenInfo    from "../internalApi/zationTokenInfo";
 import Bag                from "../../api/Bag";
 import AccessUtils        from "../access/accessUtils";
-import {AuthAccessFunction, AuthAccessConfig} from "../config/definitions/configComponents";
+import {NormalAuthAccessFunction, AuthAccessConfig} from "../config/definitions/configComponents";
 
 export type TokenStateAccessCheckFunction = (authEngine : AuthEngine) => Promise<boolean>;
 
@@ -20,38 +20,48 @@ export default class AuthAccessChecker
      * @param accessConfig
      * @param bag
      */
-    static createAuthAccessChecker(accessConfig : AuthAccessConfig, bag : Bag) : TokenStateAccessCheckFunction {
+    static createAuthAccessChecker(accessConfig : AuthAccessConfig<NormalAuthAccessFunction>, bag : Bag) : TokenStateAccessCheckFunction {
 
+        const info = AuthAccessChecker.processAuthAccessInfo(accessConfig);
+
+        if(info){
+            const {accessValue,accessProcess} = info;
+            return AccessUtils.createAccessChecker<TokenStateAccessCheckFunction,NormalAuthAccessFunction>
+            (accessValue,accessProcess,(func) => {
+                return async (authEngine) => {
+                    const token = authEngine.getSHBridge().getToken();
+                    return accessProcess((await func(bag,token !== null ? new ZationTokenInfo(token) : null)));
+                };
+            });
+        }
+        //access is not defined
+        return async () => {
+            return false;
+        };
+    }
+
+    static processAuthAccessInfo(accessConfig : AuthAccessConfig<any>) :
+        {accessValue : any, accessProcess : (bool : boolean) => boolean} | undefined
+    {
         const notAccess = accessConfig.notAccess;
         const access    = accessConfig.access;
-
-        let accessProcess : (boolean) => boolean;
-        let accessValue;
 
         //double keyword is checked in the starter checkConfig
         //search One
         if(notAccess !== undefined) {
-            accessProcess = (b) => !b;
-            accessValue = accessConfig.notAccess;
+            return {
+                accessProcess : (b) => !b,
+                accessValue : accessConfig.notAccess
+            };
         }
         else if(access !== undefined) {
-            accessProcess = (b) => b;
-            accessValue = accessConfig.access;
+            return {
+                accessProcess : (b) => b,
+                accessValue : accessConfig.access
+            };
         }
         else {
-            //access is not defined
-            return async () => {
-                return false;
-            };
+           return undefined;
         }
-
-        return AccessUtils.createAccessChecker<TokenStateAccessCheckFunction,AuthAccessFunction>
-        (accessValue,accessProcess,(func) => {
-            return async (authEngine) => {
-                const token = authEngine.getSHBridge().getToken();
-                return accessProcess((await func(bag,token !== null ? new ZationTokenInfo(token) : null)));
-            };
-        });
     }
 }
-

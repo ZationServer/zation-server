@@ -9,15 +9,15 @@ import {DataBoxConfig}                    from "../../helper/config/definitions/
 import Bag                                from "../Bag";
 import NoMoreDataAvailableError           from "../../helper/dataBox/noMoreDataAvailable";
 import {VersionSystemAccessCheckFunction} from "../../helper/systemVersion/systemVersionChecker";
-import {TokenStateAccessCheckFunction}    from "../../helper/auth/authAccessChecker";
 import UpSocket                           from "../../helper/sc/socket";
 import {ErrorName}                        from "../../helper/constants/errorName";
 const  Jwt : any                        = require('jsonwebtoken');
 import JwtVerifyOptions                   from "../../helper/constants/jwt";
 import DbKeyArrayUtils                    from "../../helper/dataBox/dbKeyArrayUtils";
-import {DbSessionData}                    from "../../helper/dataBox/dbDefinitions";
+import {DataBoxInfo, DbSessionData}       from "../../helper/dataBox/dbDefinitions";
 import {InputConsumeFunction}             from "../../helper/input/inputClosureCreator";
-import ErrorUtils from "../../helper/utils/errorUtils";
+import ErrorUtils                         from "../../helper/utils/errorUtils";
+import {DbAccessCheckFunction}            from "../../helper/dataBox/dataBoxAccessHelper";
 
 /**
  * If you want to present data on the client, the DataBox is the best choice.
@@ -40,9 +40,9 @@ export default abstract class DataBoxCore {
 
     /**
      * @description
-     * The id of the DataCollection from the app config.
+     * The name of the DataCollection from the app config.
      */
-    protected readonly id: string;
+    protected readonly name: string;
 
     /**
      * @description
@@ -54,7 +54,6 @@ export default abstract class DataBoxCore {
     protected readonly dbTokenVersion : number = 0;
 
     private readonly dbPreparedData : DbPreparedData;
-    private readonly useTokenStateCheck : boolean;
     private readonly sendErrorDescription : boolean;
     private readonly preparedTokenSessionKey : string;
 
@@ -68,19 +67,18 @@ export default abstract class DataBoxCore {
     private readonly parallelFetch : boolean;
     private readonly inputConsumer : InputConsumeFunction;
 
-    protected constructor(id : string, bag: Bag, dbPreparedData : DbPreparedData, apiLevel : number | undefined) {
-        this.id = id;
+    protected constructor(name : string, bag: Bag, dbPreparedData : DbPreparedData, apiLevel : number | undefined) {
+        this.name = name;
         this.apiLevel = apiLevel;
         this.bag = bag;
         this.dbPreparedData = dbPreparedData;
-        this.useTokenStateCheck = this.bag.getMainConfig().useTokenStateCheck;
         this.sendErrorDescription = this.bag.getMainConfig().sendErrorDescription;
 
         this.parallelFetch = dbPreparedData.parallelFetch;
         this.inputConsumer = dbPreparedData.inputConsumer;
 
         this.preparedTokenSessionKey =
-            `${bag.getZationConfig().getDataBoxKey()}.${this.dbTokenVersion}.${this.id}${apiLevel !== undefined ? apiLevel : ''}`;
+            `${bag.getZationConfig().getDataBoxKey()}.${this.dbTokenVersion}.${this.name}${apiLevel !== undefined ? apiLevel : ''}`;
     }
 
     /**
@@ -114,8 +112,9 @@ export default abstract class DataBoxCore {
      * A function that is used internally to check if a socket has access to a DataBox.
      * If the access is denied, it will throw an error.
      * @param socket
+     * @param dbInfo
      */
-    async _checkAccess(socket : UpSocket){
+    async _checkAccess(socket : UpSocket,dbInfo : DataBoxInfo){
         const {systemAccessCheck,versionAccessCheck} = this.dbPreparedData;
 
         if(!systemAccessCheck(socket.baseSHBridge)){
@@ -130,7 +129,7 @@ export default abstract class DataBoxCore {
             throw err;
         }
 
-        if(await this._tokenStateAccessCheck(socket)){
+        if(await this._accessCheck(socket,dbInfo)){
             const err : any = new Error('Access to this DataBox denied.');
             err.name = ErrorName.ACCESS_DENIED;
             throw err;
@@ -171,11 +170,12 @@ export default abstract class DataBoxCore {
 
     /**
      * **Not override this method.**
-     * Checks if the client has token state access to the DataBox.
+     * Checks if the client has access to the DataBox.
      * @param socket
+     * @param dbInfo
      */
-    async _tokenStateAccessCheck(socket : UpSocket) : Promise<boolean> {
-        return !this.useTokenStateCheck || await this.dbPreparedData.tokenStateAccessCheck(socket.authEngine);
+    async _accessCheck(socket : UpSocket, dbInfo : DataBoxInfo) : Promise<boolean> {
+        return await this.dbPreparedData.accessCheck(socket.authEngine,socket.zSocket,dbInfo);
     }
 
     /**
@@ -185,6 +185,7 @@ export default abstract class DataBoxCore {
     public static readonly config: DataBoxConfig = {};
 
     /**
+     * **Can be overridden.**
      * @description
      * Gets invokes when the zation system is creating instance of the DataCollection (in worker start).
      * @param bag
@@ -194,6 +195,7 @@ export default abstract class DataBoxCore {
 
     // noinspection JSMethodCanBeStatic
     /**
+     * **Not override this method.**
      * This method should be called in the fetchData method
      * whenever no more data is available for the client.
      */
@@ -203,6 +205,7 @@ export default abstract class DataBoxCore {
 
     // noinspection JSMethodCanBeStatic
     /**
+     * **Not override this method.**
      * This method should be called in a cud middleware
      * to block the operation.
      */
@@ -210,8 +213,9 @@ export default abstract class DataBoxCore {
         throw new Error('Block cud operation');
     }
 
-    // noinspection JSMethodCanBeStatic
+    // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
     /**
+     * **Not override this method.**
      * This method can be used to build a raw key array.
      * These arrays are useful to present data in a sequence and as a key-value map.
      * To create a key array you need to have an array that contains objects,
@@ -227,13 +231,19 @@ export default abstract class DataBoxCore {
         return DbKeyArrayUtils.buildKeyArray(array,key);
     }
 
-    abstract kickOut(socket : UpSocket) : void;
+    /**
+     * **Not override this method.**
+     * Returns the name of the DataCollection from the app config.
+     */
+    public getName() {
+        return this.name;
+    }
 }
 
 export interface DbPreparedData {
     versionAccessCheck : VersionSystemAccessCheckFunction,
     systemAccessCheck : VersionSystemAccessCheckFunction,
-    tokenStateAccessCheck : TokenStateAccessCheckFunction,
+    accessCheck : DbAccessCheckFunction,
     inputConsumer : InputConsumeFunction,
     parallelFetch : boolean,
     maxBackpressure : number,

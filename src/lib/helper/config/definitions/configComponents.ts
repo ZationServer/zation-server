@@ -9,9 +9,9 @@ import Bag from "../../../api/Bag";
 import {InputConfigTranslatable, ModelConfigTranslatable} from "../../../api/ConfigTranslatable";
 import ZationTokenInfo                                    from "../../internalApi/zationTokenInfo";
 
-export type AuthAccessFunction = (bag : Bag, token : ZationTokenInfo | null) => Promise<boolean> | boolean;
+export type NormalAuthAccessFunction = (bag : Bag, token : ZationTokenInfo | null) => Promise<boolean> | boolean;
 
-export interface AuthAccessConfig {
+export interface AuthAccessConfig<T extends Function = NormalAuthAccessFunction> {
     /**
      * @description
      * Set the (Client Token State) access rule which clients are allowed to access this component.
@@ -34,7 +34,7 @@ export interface AuthAccessConfig {
      * //function
      * (bag : Bag,token : ZationTokenInfo | null) => {} // If returns true the client is allowed, false will not allow.
      */
-    access  ?: string | number | (string | number)[] | AuthAccessFunction;
+    access  ?: string | number | (string | number)[] | T;
     /**
      * @description
      * Set the (Client Token State) access rule which clients are not allowed to access this component.
@@ -57,7 +57,7 @@ export interface AuthAccessConfig {
      * //function
      * (bag : Bag,token : ZationTokenInfo | null) => {}  // If returns true the client is not allowed, false will allow.
      */
-    notAccess  ?: string | number | (string | number)[] | AuthAccessFunction;
+    notAccess  ?: string | number | (string | number)[] | T;
 }
 
 export type IdValid = (id : string, bag : Bag) => Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void;

@@ -9,7 +9,7 @@ import DataBoxPrepare              from "../dataBoxPrepare";
 import ZationConfig                from "../../config/manager/zationConfig";
 import DataBoxCore                 from "../../../api/dataBox/DataBoxCore";
 import DataBoxFamily               from "../../../api/dataBox/DataBoxFamily";
-import {DataBoxRegisterReq, DataBoxRegisterRes, DbRegisterResult, DbSessionData} from "../dbDefinitions";
+import {DataBoxInfo, DataBoxRegisterReq, DataBoxRegisterRes, DbRegisterResult, DbSessionData} from "../dbDefinitions";
 import DataBoxReqUtils             from "./dataBoxReqUtils";
 import {ErrorName}                 from "../../constants/errorName";
 import DataBox                     from "../../../api/dataBox/DataBox";
@@ -62,11 +62,17 @@ export default class DataBoxHandler
             throw err;
         }
 
+        const dbInfo : DataBoxInfo = {
+            name : (input.d as string),
+            id : undefined
+        };
+
         //access and id check
         if(isFamily){
             await (db as DataBoxFamily)._checkIdIsValid(input.i as string);
+            dbInfo.id = (input.i as string);
         }
-        await db._checkAccess(socket);
+        await db._checkAccess(socket,dbInfo);
 
         //token check
         let sessionData : undefined | DbSessionData = undefined;

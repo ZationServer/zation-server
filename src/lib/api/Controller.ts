@@ -31,9 +31,9 @@ export default class Controller {
 
     /**
      * @description
-     * The id of the controller from the app config.
+     * The name of the controller from the app config.
      */
-    protected readonly id: string;
+    protected readonly name: string;
 
     /**
      * @description
@@ -42,8 +42,8 @@ export default class Controller {
      */
     protected readonly apiLevel: number | undefined;
 
-    constructor(id : string, bag: Bag, apiLevel : number | undefined) {
-        this.id = id;
+    constructor(name : string, bag: Bag, apiLevel : number | undefined) {
+        this.name = name;
         this.apiLevel = apiLevel;
         this.bag = bag;
     }
@@ -109,7 +109,7 @@ export default class Controller {
 export interface ControllerClass {
     config: ControllerConfig;
 
-    new(id : string, bag: Bag, apiLevel : number | undefined): Controller;
+    new(name : string, bag: Bag, apiLevel : number | undefined): Controller;
 
     prototype: any;
 }

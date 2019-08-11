@@ -8,9 +8,63 @@ import {AuthAccessConfig, SystemAccessConfig, VersionAccessConfig} from "./confi
 import {DataBoxClass}                                              from "../../../api/dataBox/DataBox";
 import {DataBoxFamilyClass}                                        from "../../../api/dataBox/DataBoxFamily";
 import {InputConfig}                                               from "./inputConfig";
+import Bag                                                         from "../../../api/Bag";
+import {DataBoxInfo}                                               from "../../dataBox/dbDefinitions";
+import ZSocket                                                     from "../../internalApi/zSocket";
 
-export interface DataBoxConfig extends VersionAccessConfig, SystemAccessConfig, AuthAccessConfig, InputConfig
+export type DbAccessFunction = (bag : Bag, socket : ZSocket, dbInfo : DataBoxInfo) => Promise<boolean> | boolean;
+
+export interface DataBoxConfig extends VersionAccessConfig, SystemAccessConfig, AuthAccessConfig<DbAccessFunction>, InputConfig
 {
+    /**
+     * @description
+     * Set the access rule which clients are allowed to access this DataBox.
+     * Notice that in case of a DataBoxFamily the id is checked before the access.
+     * Notice that only one of the options 'access' or 'notAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default default config otherwise false
+     * @example
+     * //boolean
+     * true            // All clients are allowed
+     * false           // No client is allowed
+     * //string
+     * 'all'           // All clients are allowed
+     * 'allAuth'       // Only all authenticated clients are allowed
+     * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed)
+     * 'admin'         // Only all admins are allowed
+     * //number
+     * 10              // Only all clients with user id 10 are allowed
+     * //array
+     * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
+     * //function
+     * (bag : Bag,socket : ZSocket,dbInfo : DataBoxInfo) => {} // If returns true the client is allowed, false will not allow.
+     */
+    access  ?: string | number | (string | number)[] | DbAccessFunction;
+    /**
+     * @description
+     * Set the access rule which clients are not allowed to access this DataBox.
+     * Notice that in case of a DataBoxFamily the id is checked before the access.
+     * Notice that only one of the options 'access' or 'notAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default default config otherwise false
+     * @example
+     * //boolean
+     * true            // No client is allowed
+     * false           // All clients are allowed
+     * //string
+     * 'all'           // No client is allowed
+     * 'allAuth'       // All authenticated clients are not allowed
+     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
+     * 'admin'         // All admins are not allowed
+     * //number
+     * 10              // All clients with user id 10 are not allowed
+     * //array
+     * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
+     * //function
+     * (bag : Bag,socket : ZSocket,dbInfo : DataBoxInfo) => {}  // If returns true the client is not allowed, false will allow.
+     */
+    notAccess  ?: string | number | (string | number)[] | DbAccessFunction;
+
     /**
      * This option can be activated when you have designed
      * this DataBox in such a way that the fetching of data

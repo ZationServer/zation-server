@@ -109,15 +109,15 @@ export default class ControllerPrepare
 
         const promises : Promise<void>[] = [];
 
-        for(let cId in uController) {
-            if(uController.hasOwnProperty(cId)) {
-                promises.push(this.addController(cId,false,uController[cId]));
+        for(let cName in uController) {
+            if(uController.hasOwnProperty(cName)) {
+                promises.push(this.addController(cName,false,uController[cName]));
             }
         }
 
-        for(let cId in SystemController) {
-            if(SystemController.hasOwnProperty(cId)) {
-                promises.push(this.addController(cId,true,SystemController[cId]));
+        for(let cName in SystemController) {
+            if(SystemController.hasOwnProperty(cName)) {
+                promises.push(this.addController(cName,true,SystemController[cName]));
             }
         }
 
@@ -126,19 +126,19 @@ export default class ControllerPrepare
 
     /**
      * Add a controller to the prepare process.
-     * @param id
+     * @param name
      * @param systemController
      * @param definition
      */
-    private async addController(id : string,systemController : boolean,definition : ControllerClass | ApiLevelSwitch<ControllerClass>) : Promise<void>
+    private async addController(name : string,systemController : boolean,definition : ControllerClass | ApiLevelSwitch<ControllerClass>) : Promise<void>
     {
         if(typeof definition === 'function') {
-            const preparedControllerData = await this.processController(definition,id);
+            const preparedControllerData = await this.processController(definition,name);
             if(systemController){
-                this.systemController[id] = preparedControllerData;
+                this.systemController[name] = preparedControllerData;
             }
             else {
-                this.appController[id] = () => {
+                this.appController[name] = () => {
                     return preparedControllerData
                 };
             }
@@ -149,25 +149,25 @@ export default class ControllerPrepare
             for(let k in definition){
                 if(definition.hasOwnProperty(k)) {
                     promises.push((async () => {
-                        preparedDataMapper[k] = await this.processController(definition[k],id,parseInt(k));
+                        preparedDataMapper[k] = await this.processController(definition[k],name,parseInt(k));
                     })());
                 }
             }
             await Promise.all(promises);
-            this.appController[id] = ApiLevelUtils.createApiLevelSwitcher<ControllerPrepareData>(preparedDataMapper);
+            this.appController[name] = ApiLevelUtils.createApiLevelSwitcher<ControllerPrepareData>(preparedDataMapper);
         }
     }
 
     /**
      * Process a controller and create the prepared data.
      * @param controller
-     * @param id
+     * @param name
      * @param apiLevel
      */
-    private async processController(controller : ControllerClass,id : string,apiLevel ?: number) : Promise<ControllerPrepareData>
+    private async processController(controller : ControllerClass,name : string,apiLevel ?: number) : Promise<ControllerPrepareData>
     {
         const config : ControllerConfig = controller.config;
-        const cInstance : Controller = new controller(id,this.worker.getPreparedBag(),apiLevel);
+        const cInstance : Controller = new controller(name,this.worker.getPreparedBag(),apiLevel);
         await cInstance.initialize(this.worker.getPreparedBag());
 
         return  {

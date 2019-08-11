@@ -104,12 +104,12 @@ import {
     ControllerConfig,
     ControllerMiddlewareFunction
 } from "../helper/config/definitions/controllerConfig";
-import {BackgroundTask, TaskFunction} from "../helper/config/definitions/backgroundTaskConfig";
-import {AuthAccessFunction}           from "../helper/config/definitions/configComponents";
-import {DataBoxClassDef, DataBoxConfig} from "../helper/config/definitions/dataBoxConfig";
-import DataBoxFamily                      from "./dataBox/DataBoxFamily";
-import DataBox                        from "./dataBox/DataBox";
-import {Component}                    from "../helper/config/definitions/component";
+import {BackgroundTask, TaskFunction}       from "../helper/config/definitions/backgroundTaskConfig";
+import {NormalAuthAccessFunction}           from "../helper/config/definitions/configComponents";
+import {DataBoxClassDef, DataBoxConfig, DbAccessFunction} from "../helper/config/definitions/dataBoxConfig";
+import DataBoxFamily                        from "./dataBox/DataBoxFamily";
+import DataBox                              from "./dataBox/DataBox";
+import {Component}                          from "../helper/config/definitions/component";
 
 export default class Config
 {
@@ -491,7 +491,7 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static controllerMiddleware(func : ControllerMiddlewareFunction) : ControllerMiddlewareFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static controllerAccess(func : AuthAccessFunction) : AuthAccessFunction {return func;}
+    static controllerAccess(func : NormalAuthAccessFunction) : NormalAuthAccessFunction {return func;}
 
     //Part Background tasks
     // noinspection JSUnusedGlobalSymbols
@@ -510,7 +510,7 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static dataBoxConfig(c : DataBoxConfig) :  DataBoxConfig {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static dataBoxAccess(func : AuthAccessFunction) : AuthAccessFunction {return func;}
+    static dataBoxAccess(func : DbAccessFunction) : DbAccessFunction {return func;}
 
     //Part Channels
     // noinspection JSUnusedGlobalSymbols

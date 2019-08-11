@@ -77,6 +77,7 @@ export default class DataBoxContainer {
         await Promise.all(promises);
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Sequence edit the DataBox.
      * Notice that this method will only update the DataBox and invoke the before-events.
@@ -115,6 +116,7 @@ export default class DataBoxContainer {
         }
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * The reload function will force all clients of the DataBox to reload the data.
      * This method is used internally if it was detected that a worker had

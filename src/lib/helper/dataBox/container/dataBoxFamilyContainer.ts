@@ -83,6 +83,7 @@ export default class DataBoxFamilyContainer {
         await Promise.all(promises);
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Sequence edit the DataBox.
      * Notice that this method will only update the DataBox and invoke the before-events.
@@ -126,6 +127,7 @@ export default class DataBoxFamilyContainer {
         }
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * The reload function will force all clients of the DataBox to reload the data.
      * This method is used internally if it was detected that a worker had
@@ -143,15 +145,16 @@ export default class DataBoxFamilyContainer {
     }
 
     /**
-     * With this function, you can kick out a socket from the DataBox.
+     * With this function, you can kick out a socket from a family member of the DataBox.
      * This method is used internally.
+     * @param id
      * @param socket
      * @param code
      * @param data
      */
-    kickOut(socket: UpSocket,code ?: number | string,data ?: any): void {
+    kickOut(id : string,socket: UpSocket,code ?: number | string,data ?: any): void {
         for(let i = 0; i < this.dataBoxFamilies.length;i++) {
-            this.dataBoxFamilies[i].kickOut(socket,code,data);
+            this.dataBoxFamilies[i].kickOut(id,socket,code,data);
         }
     }
 }

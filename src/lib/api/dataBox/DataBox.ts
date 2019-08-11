@@ -76,7 +76,7 @@ export default class DataBox extends DataBoxCore {
         this.scExchange = bag.getWorker().scServer.exchange;
         this.workerFullId = bag.getWorker().getFullWorkerId();
         this.maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
-        this.dbEvent = `${DATA_BOX_START_INDICATOR}-${this.id}-${apiLevel !== undefined ? apiLevel : ''}`;
+        this.dbEvent = `${DATA_BOX_START_INDICATOR}-${this.name}-${apiLevel !== undefined ? apiLevel : ''}`;
 
         this.buildFetchManager = DataBoxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
@@ -702,7 +702,7 @@ DataBox.prototype['deleteMiddleware'][DefaultSymbol] = true;
 export interface DataBoxClass {
     config: DataBoxConfig;
 
-    new(id : string, bag: Bag, dbPreparedData : DbPreparedData, apiLevel : number | undefined): DataBox;
+    new(name : string, bag: Bag, dbPreparedData : DbPreparedData, apiLevel : number | undefined): DataBox;
 
     prototype: any;
     name : string;
