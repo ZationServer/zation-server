@@ -532,6 +532,10 @@ export default class DataBox extends DataBoxCore {
      * it is recommended that the information consists of key-value able components
      * so that you can identify each value with a key path.
      * That can be done by using an object or a key-array.
+     * Whenever you are using the socket parameter to filter the data for the specific user,
+     * you also have to use the cud middleware to filter the cud events for the socket.
+     * You mostly should avoid this because if you are overwriting a cud middleware,
+     * the DataBox switches to a more costly performance implementation.
      * @param counter
      * @param sessionData
      * @param input
@@ -630,8 +634,9 @@ export default class DataBox extends DataBoxCore {
     /**
      * **Can be overridden.**
      * The insert middleware.
-     * You should only use a cud middleware in advance use cases because they
-     * create a performance overhead.
+     * You should only use a cud middleware if you can find no other way
+     * because when your overwrite at least one of them, the DataBox
+     * switches to a more costly performance implementation.
      * You should not invoke long process tasks in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket variables.
      * The middleware will be called before each socket reaches a cud operation.
@@ -654,8 +659,9 @@ export default class DataBox extends DataBoxCore {
     /**
      * **Can be overridden.**
      * The update middleware.
-     * You should only use a cud middleware in advance use cases because they
-     * create a performance overhead.
+     * You should only use a cud middleware if you can find no other way
+     * because when your overwrite at least one of them, the DataBox
+     * switches to a more costly performance implementation.
      * You should not invoke long process tasks in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket variables.
      * The middleware will be called before each socket reaches a cud operation.
@@ -678,8 +684,9 @@ export default class DataBox extends DataBoxCore {
     /**
      * **Can be overridden.**
      * The delete middleware.
-     * You should only use a cud middleware in advance use cases because they
-     * create a performance overhead.
+     * You should only use a cud middleware if you can find no other way
+     * because when your overwrite at least one of them, the DataBox
+     * switches to a more costly performance implementation.
      * You should not invoke long process tasks in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket variables.
      * The middleware will be called before each socket reaches a cud operation.
