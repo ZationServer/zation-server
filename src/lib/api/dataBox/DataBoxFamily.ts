@@ -455,6 +455,7 @@ export default class DataBoxFamily extends DataBoxCore {
     }
 
     /**
+     * **Not override this method.**
      * Insert a new value in the DataBox.
      * The keyPath can be a string array or a
      * string where you can separate the keys with a dot.
@@ -479,6 +480,7 @@ export default class DataBoxFamily extends DataBoxCore {
     }
 
     /**
+     * **Not override this method.**
      * Update a value in the DataBox.
      * The keyPath can be a string array or a
      * string where you can separate the keys with a dot.
@@ -502,6 +504,7 @@ export default class DataBoxFamily extends DataBoxCore {
     }
 
     /**
+     * **Not override this method.**
      * Delete a value in the DataBox.
      * The keyPath can be a string array or a
      * string where you can separate the keys with a dot.
@@ -525,6 +528,7 @@ export default class DataBoxFamily extends DataBoxCore {
 
     // noinspection JSUnusedGlobalSymbols
     /**
+     * **Not override this method.**
      * Sequence edit the DataBox.
      * Notice that this method will only update the DataBox and invoke the before-events.
      * This method is ideal for doing multiple changes on a DataBox
