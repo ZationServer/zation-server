@@ -56,6 +56,18 @@ const DefaultSymbol                              = Symbol();
  * to the client whenever the client need more data.
  * Additionally, it keeps the network traffic low because it
  * only sends the changed data information, not the whole data again.
+ *
+ * You can override these methods:
+ * - initialize
+ * - fetchData
+ * - beforeInsert
+ * - beforeUpdate
+ * - beforeDelete
+ *
+ * and the cud middleware methods:
+ * - insertMiddleware
+ * - updateMiddleware
+ * - deleteMiddleware
  */
 export default class DataBox extends DataBoxCore {
 
@@ -514,38 +526,6 @@ export default class DataBox extends DataBoxCore {
     }
 
     /**
-     * **Can be overridden.**
-     * This method is used to fetch data for the clients of the DataBox.
-     * A client can call that method multiple times to fetch more and more data.
-     * You usually request data from your database and return it, and if no more data is available,
-     * you should throw a NoMoreDataAvailableError or call the internal noMoreDataAvailable method.
-     * The counter parameter indicates the number of the current call, it starts counting at zero.
-     * The client can send additional data when calling the fetch process,
-     * this data is available as the fetch input parameter.
-     * Also, you extra get a session object, this object you can use to save variables that are
-     * important to get more data in the future, for example, the last id of the item that the client had received.
-     * The session object is only available on the server-side and can not be modified on the client-side.
-     * If you design the DataBox in such a way that the next fetch is not depending on the previous one,
-     * you can activate the parallelFetch option in the DataBox config.
-     * The data what you are returning can be of any type.
-     * But if you want to return more complex data,
-     * it is recommended that the information consists of key-value able components
-     * so that you can identify each value with a key path.
-     * That can be done by using an object or a key-array.
-     * Whenever you are using the socket parameter to filter the data for the specific user,
-     * you also have to use the cud middleware to filter the cud events for the socket.
-     * You mostly should avoid this because if you are overwriting a cud middleware,
-     * the DataBox switches to a more costly performance implementation.
-     * @param counter
-     * @param sessionData
-     * @param input
-     * @param socket
-     */
-    protected async fetchData<T extends object = object>(counter : number,sessionData : T,input : any,socket : ZSocket) : Promise<any>{
-        this.noMoreDataAvailable();
-    }
-
-    /**
      * **Not override this method.**
      * The close function will close the DataBox for every client on every server.
      * You optionally can provide a code or any other information for the client.
@@ -604,12 +584,44 @@ export default class DataBox extends DataBoxCore {
 
     /**
      * **Can be overridden.**
+     * This method is used to fetch data for the clients of the DataBox.
+     * A client can call that method multiple times to fetch more and more data.
+     * You usually request data from your database and return it, and if no more data is available,
+     * you should throw a NoMoreDataAvailableError or call the internal noMoreDataAvailable method.
+     * The counter parameter indicates the number of the current call, it starts counting at zero.
+     * The client can send additional data when calling the fetch process,
+     * this data is available as the fetch input parameter.
+     * Also, you extra get a session object, this object you can use to save variables that are
+     * important to get more data in the future, for example, the last id of the item that the client had received.
+     * The session object is only available on the server-side and can not be modified on the client-side.
+     * If you design the DataBox in such a way that the next fetch is not depending on the previous one,
+     * you can activate the parallelFetch option in the DataBox config.
+     * The data what you are returning can be of any type.
+     * But if you want to return more complex data,
+     * it is recommended that the information consists of key-value able components
+     * so that you can identify each value with a key path.
+     * That can be done by using an object or a key-array.
+     * Whenever you are using the socket parameter to filter the data for the specific user,
+     * you also have to use the cud middleware to filter the cud events for the socket.
+     * You mostly should avoid this because if you are overwriting a cud middleware,
+     * the DataBox switches to a more costly performance implementation.
+     * @param counter
+     * @param sessionData
+     * @param input
+     * @param socket
+     */
+    protected async fetchData<T extends object = object>(counter : number,sessionData : T,input : any,socket : ZSocket) : Promise<any>{
+        this.noMoreDataAvailable();
+    }
+
+    /**
+     * **Can be overridden.**
      * A function that gets triggered before an insert into the DataBox.
      * Can be used to insert the data in the database.
      * @param keyPath
      * @param value
      */
-    protected async beforeInsert(keyPath : string[],value : any) {
+    protected async beforeInsert(keyPath : string[],value : any) : Promise<void> {
     }
 
     /**
@@ -619,7 +631,7 @@ export default class DataBox extends DataBoxCore {
      * @param keyPath
      * @param value
      */
-    protected async beforeUpdate(keyPath : string[],value : any) {
+    protected async beforeUpdate(keyPath : string[],value : any) : Promise<void> {
     }
 
     /**
@@ -628,7 +640,7 @@ export default class DataBox extends DataBoxCore {
      * Can be used to delete the data in the database.
      * @param keyPath
      */
-    protected async beforeDelete(keyPath : string[]) {
+    protected async beforeDelete(keyPath : string[]) : Promise<void> {
     }
 
     /**
