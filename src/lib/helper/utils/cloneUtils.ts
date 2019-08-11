@@ -10,7 +10,7 @@ export default class CloneUtils
      * Clone any value.
      * @param v
      */
-    static deepClone(v) {
+    static deepClone<T extends any = any>(v : T) : T {
         // if not array or object or is null return self
         if (typeof v !== 'object'||v === null) return v;
         let newO, i;
