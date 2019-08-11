@@ -156,6 +156,7 @@ export default class DataBoxFamily extends DataBoxCore {
                             id,
                             sessionData,
                             await this._consumeFetchInput((senderPackage as DbClientFetchSenderPackage).i),
+                            socket.zSocket,
                             senderPackage.t
                         );
                     }
@@ -212,12 +213,12 @@ export default class DataBoxFamily extends DataBoxCore {
         return '';
     }
 
-    private async _fetchData(id : string,sessionData : DbSessionData,fetchInput : any,target ?: DBClientSenderSessionTarget) : Promise<DbFetchDataClientResponse> {
+    private async _fetchData(id : string,sessionData : DbSessionData,fetchInput : any,zSocket : ZSocket,target ?: DBClientSenderSessionTarget) : Promise<DbFetchDataClientResponse> {
         const session = DataBoxUtils.getSession(sessionData,target);
 
         const currentCounter = session.c;
         session.c++;
-        const data = await this.fetchData(id,currentCounter,fetchInput,session.d);
+        const data = await this.fetchData(id,currentCounter,session.d,fetchInput,zSocket);
 
         return {
             c : currentCounter,
@@ -667,10 +668,11 @@ export default class DataBoxFamily extends DataBoxCore {
      * That can be done by using an object or a key-array.
      * @param id
      * @param counter
-     * @param input
      * @param sessionData
+     * @param input
+     * @param socket
      */
-    protected async fetchData<T extends object = object>(id : string,counter : number,input : any,sessionData : T) : Promise<any>{
+    protected async fetchData<T extends object = object>(id : string,counter : number,sessionData : T,input : any,socket : ZSocket) : Promise<any>{
         this.noMoreDataAvailable();
     }
 
