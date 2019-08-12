@@ -92,7 +92,7 @@ export default class DataBox extends DataBoxCore {
 
         this.buildFetchManager = DataBoxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
-        this.sendCudToSockets = this.getSendCudToSocketsHandler();
+        this.sendCudToSockets = this._getSendCudToSocketsHandler();
 
         this._reg();
     }
@@ -102,7 +102,7 @@ export default class DataBox extends DataBoxCore {
      * Uses only the complex send to socket cud (with middleware)
      * if at least one of the middleware function was overwritten.
      */
-    private getSendCudToSocketsHandler() : (dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void {
+    private _getSendCudToSocketsHandler() : (dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void {
         if(!this.insertMiddleware[DefaultSymbol] ||
             !this.updateMiddleware[DefaultSymbol] ||
             !this.deleteMiddleware[DefaultSymbol])
