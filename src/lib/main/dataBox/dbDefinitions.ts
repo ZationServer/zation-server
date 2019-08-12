@@ -60,6 +60,9 @@ export enum CudType {
  * A full-defined cud package that the server can send to the clients.
  */
 export interface CudPackage extends PreCudPackage{
+    /**
+     * timestamp
+     */
     t : number,
 }
 
