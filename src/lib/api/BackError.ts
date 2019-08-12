@@ -4,11 +4,11 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import BackErrorConstruct   from "../helper/constants/backErrorConstruct";
+import BackErrorConstruct   from "../main/constants/backErrorConstruct";
 // noinspection TypeScriptPreferShortImport
-import {ErrorType}          from "../helper/constants/errorType";
-import {BackErrorInfo}      from "../helper/constants/internal";
-import {ResponseError}      from "../helper/controller/request/controllerDefinitions";
+import {ErrorType}          from "../main/constants/errorType";
+import {BackErrorInfo}      from "../main/constants/internal";
+import {ResponseError}      from "../main/controller/request/controllerDefinitions";
 
 export default class BackError extends Error
 {

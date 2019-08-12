@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {Model as ModelConfig} from "../../../helper/config/definitions/inputConfig";
+import {Model as ModelConfig} from "../../../main/config/definitions/inputConfig";
 import {InDecoratorMem}       from "./InDecoratorMem";
 
 /**

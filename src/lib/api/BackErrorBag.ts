@@ -4,9 +4,9 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import BackErrorConstruct   from "../helper/constants/backErrorConstruct";
+import BackErrorConstruct   from "../main/constants/backErrorConstruct";
 import BackError            from "./BackError";
-import {ResponseError} from "../helper/controller/request/controllerDefinitions";
+import {ResponseError}      from "../main/controller/request/controllerDefinitions";
 
 export default class BackErrorBag
 {

@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import Config            from "./Config";
-import {Component}       from "../helper/config/definitions/component";
+import {Component}       from "../main/config/definitions/component";
 
 /**
  * A simple router class where you can create routes for controllers.

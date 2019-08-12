@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ResponseResult} from "../helper/controller/request/controllerDefinitions";
+import {ResponseResult} from "../main/controller/request/controllerDefinitions";
 
 export default class Result
 {

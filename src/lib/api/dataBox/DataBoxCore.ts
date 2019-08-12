@@ -5,19 +5,19 @@ GitHub: LucaCode
  */
 
 // noinspection TypeScriptPreferShortImport
-import {DataBoxConfig}                    from "../../helper/config/definitions/dataBoxConfig";
+import {DataBoxConfig}                    from "../../main/config/definitions/dataBoxConfig";
 import Bag                                from "../Bag";
-import NoMoreDataAvailableError           from "../../helper/dataBox/noMoreDataAvailable";
-import {VersionSystemAccessCheckFunction} from "../../helper/systemVersion/systemVersionChecker";
-import UpSocket                           from "../../helper/sc/socket";
-import {ErrorName}                        from "../../helper/constants/errorName";
+import NoMoreDataAvailableError           from "../../main/dataBox/noMoreDataAvailable";
+import {VersionSystemAccessCheckFunction} from "../../main/systemVersion/systemVersionChecker";
+import UpSocket                           from "../../main/sc/socket";
+import {ErrorName}                        from "../../main/constants/errorName";
 const  Jwt : any                        = require('jsonwebtoken');
-import JwtVerifyOptions                   from "../../helper/constants/jwt";
-import DbKeyArrayUtils                    from "../../helper/dataBox/dbKeyArrayUtils";
-import {DataBoxInfo, DbSessionData}       from "../../helper/dataBox/dbDefinitions";
-import {InputConsumeFunction}             from "../../helper/input/inputClosureCreator";
-import ErrorUtils                         from "../../helper/utils/errorUtils";
-import {DbAccessCheckFunction}            from "../../helper/dataBox/dataBoxAccessHelper";
+import JwtVerifyOptions                   from "../../main/constants/jwt";
+import DbKeyArrayUtils                    from "../../main/dataBox/dbKeyArrayUtils";
+import {DataBoxInfo, DbSessionData}       from "../../main/dataBox/dbDefinitions";
+import {InputConsumeFunction}             from "../../main/input/inputClosureCreator";
+import ErrorUtils                         from "../../main/utils/errorUtils";
+import {DbAccessCheckFunction}            from "../../main/dataBox/dataBoxAccessHelper";
 
 /**
  * If you want to present data on the client, the DataBox is the best choice.

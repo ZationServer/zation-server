@@ -6,7 +6,7 @@ GitHub: LucaCode
 
 import RequestBag         from './RequestBag';
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../helper/config/definitions/controllerConfig";
+import {ControllerConfig} from "../main/config/definitions/controllerConfig";
 import Bag                from "./Bag";
 import BackErrorBag       from "./BackErrorBag";
 

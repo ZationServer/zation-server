@@ -5,11 +5,11 @@ GitHub: LucaCode
  */
 
 import Config           from "../../Config";
-import {Component}      from "../../../helper/config/definitions/component";
+import {Component}      from "../../../main/config/definitions/component";
 import Controller       from "../../Controller";
 import DataBox          from "../../dataBox/DataBox";
 import DataBoxFamily        from "../../dataBox/DataBoxFamily";
-import ConfigBuildError from "../../../helper/config/manager/configBuildError";
+import ConfigBuildError from "../../../main/config/manager/configBuildError";
 
 /**
  * Register a component (Controller or DataBox) in the app config.

@@ -4,28 +4,28 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ZationWorker             = require("../main/zationWorker");
+import ZationWorker             = require("../core/zationWorker");
 import useragent                = require('useragent');
-import UpSocket, {OnHandlerFunction} from "../helper/sc/socket";
+import UpSocket, {OnHandlerFunction} from "../main/sc/socket";
 import * as core                  from "express-serve-static-core";
 import {IncomingHttpHeaders, IncomingMessage} from "http";
 import {Agent}                    from "useragent";
 import {UploadedFile}             from "express-fileupload";
-import ObjectPathCombineSequence  from "../helper/utils/objectPathCombineSequence";
-import SHBridge                   from "../helper/bridges/shBridge";
-import AuthEngine                 from "../helper/auth/authEngine";
-import ProtocolAccessChecker      from "../helper/protocolAccess/protocolAccessChecker";
-import ObjectPath                 from "../helper/utils/objectPath";
-import ObjectPathSequence         from "../helper/utils/objectPathSequence";
+import ObjectPathCombineSequence  from "../main/utils/objectPathCombineSequence";
+import SHBridge                   from "../main/bridges/shBridge";
+import AuthEngine                 from "../main/auth/authEngine";
+import ProtocolAccessChecker      from "../main/protocolAccess/protocolAccessChecker";
+import ObjectPath                 from "../main/utils/objectPath";
+import ObjectPathSequence         from "../main/utils/objectPathSequence";
 import Bag                        from "./Bag";
-import InputIsNotCompatibleError  from "../helper/error/inputIsNotCompatibleError";
-import MethodIsNotCompatibleError from "../helper/error/methodIsNotCompatibleError";
-import TokenUtils                 from "../helper/token/tokenUtils";
-import {ZationToken}              from "../helper/constants/internal";
-import JwtSignOptions             from "../helper/constants/jwt";
-import ZSocket                    from "../helper/internalApi/ZSocket";
-import ApiLevelUtils              from "../helper/apiLevel/apiLevelUtils";
-import CloneUtils                 from "../helper/utils/cloneUtils";
+import InputIsNotCompatibleError  from "../main/error/inputIsNotCompatibleError";
+import MethodIsNotCompatibleError from "../main/error/methodIsNotCompatibleError";
+import TokenUtils                 from "../main/token/tokenUtils";
+import {ZationToken}              from "../main/constants/internal";
+import JwtSignOptions             from "../main/constants/jwt";
+import ZSocket                    from "../main/internalApi/ZSocket";
+import ApiLevelUtils              from "../main/apiLevel/apiLevelUtils";
+import CloneUtils                 from "../main/utils/cloneUtils";
 
 export default class RequestBag extends Bag
 {

@@ -6,8 +6,8 @@ GitHub: LucaCode
 
 import Controller                    from "../../Controller";
 import Router                        from "../../Router";
-import ConfigBuildError              from "../../../helper/config/manager/configBuildError";
-import {Component}                   from "../../../helper/config/definitions/component";
+import ConfigBuildError              from "../../../main/config/manager/configBuildError";
+import {Component}                   from "../../../main/config/definitions/component";
 import DataBox                       from "../../dataBox/DataBox";
 import DataBoxFamily                     from "../../dataBox/DataBoxFamily";
 

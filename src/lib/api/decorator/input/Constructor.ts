@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ConfigBuildError from "../../../helper/config/manager/configBuildError";
+import ConfigBuildError from "../../../main/config/manager/configBuildError";
 import {InDecoratorMem} from "./InDecoratorMem";
 
 /**

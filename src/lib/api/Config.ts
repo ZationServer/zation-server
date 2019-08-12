@@ -35,18 +35,18 @@ import
     SocketConnectionAbortFunction,
     MiddlewareSocketFunction,
     SocketInitFunction,
-} from "../helper/config/definitions/eventConfig";
+} from "../main/config/definitions/eventConfig";
 
 import
 {
     MainService, ServiceConfig
-} from "../helper/config/definitions/serviceConfig";
+} from "../main/config/definitions/serviceConfig";
 
 import
 {
     AppConfig,
-} from "../helper/config/definitions/appConfig";
-import BackErrorConstruct from "../helper/constants/backErrorConstruct";
+} from "../main/config/definitions/appConfig";
+import BackErrorConstruct from "../main/constants/backErrorConstruct";
 import {
     AuthUserGroupChannel,
     AuthUserGroupChOnBagPubFunction,
@@ -74,42 +74,42 @@ import {
     UserChOnClientPubFunction,
     UserChOnSubFunction,
     UserChOnUnsubFunction, ZationChannelsConfig, CustomChannelConfig
-} from "../helper/config/definitions/channelsConfig";
-import {StarterConfig}  from "../helper/config/definitions/starterConfig";
-import {MainConfig}     from "../helper/config/definitions/mainConfig";
-import ZSocket          from "../helper/internalApi/ZSocket";
-import ZationTokenInfo  from "../helper/internalApi/zationTokenInfo";
+} from "../main/config/definitions/channelsConfig";
+import {StarterConfig}  from "../main/config/definitions/starterConfig";
+import {MainConfig}     from "../main/config/definitions/mainConfig";
+import ZSocket          from "../main/internalApi/ZSocket";
+import ZationTokenInfo  from "../main/internalApi/zationTokenInfo";
 import BackError        from "./BackError";
 import BackErrorBag     from "./BackErrorBag";
-import ObjectUtils      from "../helper/utils/objectUtils";
+import ObjectUtils      from "../main/utils/objectUtils";
 import Controller, {ControllerClass} from "./Controller";
-import CChInfo          from "../helper/internalApi/cChInfo";
+import CChInfo          from "../main/internalApi/cChInfo";
 import Result           from "./Result";
 import Bag              from "./Bag";
-import CChFamilyInfo    from "../helper/internalApi/cChFamilyInfo";
-import PubData          from "../helper/internalApi/pubData";
-import ZationInfo       from "../helper/internalApi/zationInfo";
-import {ApiLevelSwitch} from "../helper/apiLevel/apiLevelUtils";
+import CChFamilyInfo    from "../main/internalApi/cChFamilyInfo";
+import PubData          from "../main/internalApi/pubData";
+import ZationInfo       from "../main/internalApi/zationInfo";
+import {ApiLevelSwitch} from "../main/apiLevel/apiLevelUtils";
 // noinspection TypeScriptPreferShortImport
-import {StartMode}       from "../helper/constants/startMode";
-import ConfigBuildError  from "../helper/config/manager/configBuildError";
+import {StartMode}       from "../main/constants/startMode";
+import ConfigBuildError  from "../main/config/manager/configBuildError";
 import {
     ArrayModelConfig, ArrayModelShortSyntax,
     ConstructObjectFunction, ConvertArrayFunction, ConvertObjectFunction, ConvertValueFunction, GetDateFunction, Input,
     Model,
     ObjectModelConfig, ObjectProperties,
     SingleModelInput, ValidateFunction, ValueModelConfig
-} from "../helper/config/definitions/inputConfig";
+} from "../main/config/definitions/inputConfig";
 import {
     ControllerConfig,
     ControllerMiddlewareFunction
-} from "../helper/config/definitions/controllerConfig";
-import {BackgroundTask, TaskFunction}       from "../helper/config/definitions/backgroundTaskConfig";
-import {NormalAuthAccessFunction}           from "../helper/config/definitions/configComponents";
-import {DataBoxClassDef, DataBoxConfig, DbAccessFunction} from "../helper/config/definitions/dataBoxConfig";
+} from "../main/config/definitions/controllerConfig";
+import {BackgroundTask, TaskFunction}       from "../main/config/definitions/backgroundTaskConfig";
+import {NormalAuthAccessFunction}           from "../main/config/definitions/configComponents";
+import {DataBoxClassDef, DataBoxConfig, DbAccessFunction} from "../main/config/definitions/dataBoxConfig";
 import DataBoxFamily                        from "./dataBox/DataBoxFamily";
 import DataBox                              from "./dataBox/DataBox";
-import {Component}                          from "../helper/config/definitions/component";
+import {Component}                          from "../main/config/definitions/component";
 
 export default class Config
 {

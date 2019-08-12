@@ -5,7 +5,7 @@ GitHub: LucaCode
  */
 
 import {InputConfigTranslatable}        from "../../ConfigTranslatable";
-import {ParamInput as ParamInputConfig} from "../../../helper/config/definitions/inputConfig";
+import {ParamInput as ParamInputConfig} from "../../../main/config/definitions/inputConfig";
 import {InDecoratorMem}                 from "./InDecoratorMem";
 
 /**

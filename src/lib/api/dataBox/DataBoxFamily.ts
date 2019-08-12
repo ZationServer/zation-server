@@ -5,12 +5,12 @@ GitHub: LucaCode
  */
 
 // noinspection TypeScriptPreferShortImport
-import {DataBoxConfig}               from "../../helper/config/definitions/dataBoxConfig";
+import {DataBoxConfig}               from "../../main/config/definitions/dataBoxConfig";
 import Bag                           from "../Bag";
 import DataBoxCore, {DbPreparedData} from "./DataBoxCore";
-import UpSocket, {RespondFunction}   from "../../helper/sc/socket";
-import {IdValidChecker}              from "../../helper/id/idValidCheckerUtils";
-import {ScExchange}                  from "../../helper/sc/scServer";
+import UpSocket, {RespondFunction}   from "../../main/sc/socket";
+import {IdValidChecker}              from "../../main/id/idValidCheckerUtils";
+import {ScExchange}                  from "../../main/sc/scServer";
 import {
     CudAction,
     DATA_BOX_START_INDICATOR,
@@ -39,15 +39,15 @@ import {
     DbSocketMemory,
     DbRegisterResult,
     ChangeValue
-} from "../../helper/dataBox/dbDefinitions";
-import DataBoxAccessHelper from "../../helper/dataBox/dataBoxAccessHelper";
-import DataBoxUtils        from "../../helper/dataBox/dataBoxUtils";
-import DbCudActionSequence from "../../helper/dataBox/dbCudActionSequence";
-import RespondUtils        from "../../helper/utils/respondUtils";
-import {ErrorName}         from "../../helper/constants/errorName";
-import DataBoxFetchManager, {FetchManagerBuilder} from "../../helper/dataBox/dataBoxFetchManager";
-import ZSocket                                    from "../../helper/internalApi/zSocket";
-import CloneUtils                                 from "../../helper/utils/cloneUtils";
+} from "../../main/dataBox/dbDefinitions";
+import DataBoxAccessHelper from "../../main/dataBox/dataBoxAccessHelper";
+import DataBoxUtils        from "../../main/dataBox/dataBoxUtils";
+import DbCudActionSequence from "../../main/dataBox/dbCudActionSequence";
+import RespondUtils        from "../../main/utils/respondUtils";
+import {ErrorName}         from "../../main/constants/errorName";
+import DataBoxFetchManager, {FetchManagerBuilder} from "../../main/dataBox/dataBoxFetchManager";
+import ZSocket                                    from "../../main/internalApi/zSocket";
+import CloneUtils                                 from "../../main/utils/cloneUtils";
 const DefaultSymbol                               = Symbol();
 
 /**
