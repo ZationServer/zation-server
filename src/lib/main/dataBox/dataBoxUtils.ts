@@ -7,10 +7,10 @@ Copyright(c) Luca Scaringella
 import {
     CudAction,
     CudPackage,
-    CudType, DbClientClosePackage,
-    DbClientReceiverEvent,
-    DbClientReloadPackage,
-    DBClientSenderSessionTarget,
+    CudType, DbClientOutputClosePackage,
+    DbClientOutputEvent,
+    DbClientOutputReloadPackage,
+    DBClientInputSessionTarget,
     DbSession,
     DbSessionData,
     PreCudPackage
@@ -78,17 +78,17 @@ export default class DataBoxUtils {
         };
     }
 
-    static buildClientReloadPackage(code ?: number | string, data ?: any) : DbClientReloadPackage {
+    static buildClientReloadPackage(code ?: number | string, data ?: any) : DbClientOutputReloadPackage {
         return {
-            a : DbClientReceiverEvent.reload,
+            a : DbClientOutputEvent.reload,
             ...(code !== undefined ? {c : code} : {}),
             ...(data !== undefined ? {d : data} : {})
         };
     }
 
-    static buildClientClosePackage(code ?: number | string, data ?: any) : DbClientClosePackage {
+    static buildClientClosePackage(code ?: number | string, data ?: any) : DbClientOutputClosePackage {
         return {
-            a : DbClientReceiverEvent.close,
+            a : DbClientOutputEvent.close,
             ...(code !== undefined ? {c : code} : {}),
             ...(data !== undefined ? {d : data} : {})
         };
@@ -144,15 +144,15 @@ export default class DataBoxUtils {
      * @param dbSessionData
      * @param target
      */
-    static getSession(dbSessionData : DbSessionData,target ?: DBClientSenderSessionTarget) : DbSession
+    static getSession(dbSessionData : DbSessionData,target ?: DBClientInputSessionTarget) : DbSession
     {
         if(target === undefined){
             return dbSessionData.main;
         }
         switch (target) {
-            case DBClientSenderSessionTarget.mainSession:
+            case DBClientInputSessionTarget.mainSession:
                 return dbSessionData.main;
-            case DBClientSenderSessionTarget.restoreSession:
+            case DBClientInputSessionTarget.restoreSession:
                 return dbSessionData.restore;
             default:
                 const err : any = new Error(`Unknown session target.`);
@@ -166,7 +166,7 @@ export default class DataBoxUtils {
      * @param dbSessionData
      * @param target
      */
-    static copySession(dbSessionData : DbSessionData,target ?: DBClientSenderSessionTarget) : void
+    static copySession(dbSessionData : DbSessionData,target ?: DBClientInputSessionTarget) : void
     {
         const selectedSession = DataBoxUtils.getSession(dbSessionData,target);
         if(dbSessionData.main !== selectedSession){
@@ -182,7 +182,7 @@ export default class DataBoxUtils {
      * @param dbSessionData
      * @param target
      */
-    static resetSession(dbSessionData : DbSessionData,target ?: DBClientSenderSessionTarget) : void
+    static resetSession(dbSessionData : DbSessionData,target ?: DBClientInputSessionTarget) : void
     {
         const selectedSession = DataBoxUtils.getSession(dbSessionData,target);
         if(dbSessionData.main === selectedSession){

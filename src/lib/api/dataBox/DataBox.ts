@@ -14,15 +14,15 @@ import {
     CudPackage,
     CudType,
     DATA_BOX_START_INDICATOR,
-    DbClientClosePackage,
-    DbClientCudPackage, DbClientFetchSenderPackage,
-    DbClientKickOutPackage,
-    DbClientPackage,
-    DbClientReceiverEvent,
-    DbClientSenderAction,
-    DbClientSenderPackage,
-    DBClientSenderSessionTarget,
-    DbFetchDataClientResponse,
+    DbClientOutputClosePackage,
+    DbClientOutputCudPackage, DbClientInputFetchPackage,
+    DbClientOutputKickOutPackage,
+    DbClientOutputPackage,
+    DbClientOutputEvent,
+    DbClientInputAction,
+    DbClientInputPackage,
+    DBClientInputSessionTarget,
+    DbClientInputFetchResponse,
     DbSessionData,
     DbWorkerAction,
     DbWorkerBroadcastPackage,
@@ -79,7 +79,7 @@ export default class DataBox extends DataBoxCore {
     private readonly maxSocketInputChannels : number;
 
     private readonly buildFetchManager : FetchManagerBuilder<typeof DataBox.prototype._fetchData>;
-    private readonly sendCudToSockets : (dbClientCudPackage : DbClientCudPackage) => Promise<void> | void;
+    private readonly sendCudToSockets : (dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void;
 
     static ___instance___ : DataBox;
 
@@ -102,7 +102,7 @@ export default class DataBox extends DataBoxCore {
      * Uses only the complex send to socket cud (with middleware)
      * if at least one of the middleware function was overwritten.
      */
-    private getSendCudToSocketsHandler() : (dbClientCudPackage : DbClientCudPackage) => Promise<void> | void {
+    private getSendCudToSocketsHandler() : (dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void {
         if(!this.insertMiddleware[DefaultSymbol] ||
             !this.updateMiddleware[DefaultSymbol] ||
             !this.deleteMiddleware[DefaultSymbol])
@@ -137,16 +137,16 @@ export default class DataBox extends DataBoxCore {
 
         const fetchManager = this.buildFetchManager();
 
-        socket.on(inputCh,async (senderPackage : DbClientSenderPackage, respond : RespondFunction) => {
+        socket.on(inputCh,async (senderPackage : DbClientInputPackage, respond : RespondFunction) => {
             switch (senderPackage.a) {
-                case DbClientSenderAction.fetchData:
+                case DbClientInputAction.fetchData:
                     //try because _consumeFetchInput can throw an error.
                     try {
                         await fetchManager(
                             respond,
                             this._fetchData,
                             sessionData,
-                            await this._consumeFetchInput((senderPackage as DbClientFetchSenderPackage).i),
+                            await this._consumeFetchInput((senderPackage as DbClientInputFetchPackage).i),
                             socket.zSocket,
                             senderPackage.t
                         );
@@ -155,16 +155,16 @@ export default class DataBox extends DataBoxCore {
                         respond(err);
                     }
                     break;
-                case DbClientSenderAction.resetSession:
+                case DbClientInputAction.resetSession:
                     await RespondUtils.respondWithFunc(respond,this._resetSession,sessionData,senderPackage.t);
                     break;
-                case DbClientSenderAction.copySession:
+                case DbClientInputAction.copySession:
                     await RespondUtils.respondWithFunc(respond,this._copySession,sessionData,senderPackage.t);
                     break;
-                case DbClientSenderAction.getLastCudId:
+                case DbClientInputAction.getLastCudId:
                     respond(null,this._getLastCudId());
                     break;
-                case DbClientSenderAction.close:
+                case DbClientInputAction.close:
                     unregisterSocket(chInputId);
                     respond(null);
                     break;
@@ -192,7 +192,7 @@ export default class DataBox extends DataBoxCore {
         return this.lastCudData.id;
     }
 
-    private async _fetchData(sessionData : DbSessionData,fetchInput : any,zSocket : ZSocket,target ?: DBClientSenderSessionTarget) : Promise<DbFetchDataClientResponse> {
+    private async _fetchData(sessionData : DbSessionData,fetchInput : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
         const session = DataBoxUtils.getSession(sessionData,target);
 
         const currentCounter = session.c;
@@ -206,12 +206,12 @@ export default class DataBox extends DataBoxCore {
         };
     }
 
-    private async _resetSession(sessionData : DbSessionData,target ?: DBClientSenderSessionTarget) : Promise<string> {
+    private async _resetSession(sessionData : DbSessionData,target ?: DBClientInputSessionTarget) : Promise<string> {
         DataBoxUtils.resetSession(sessionData,target);
         return this._signSessionToken(sessionData);
     }
 
-    private async _copySession(sessionData : DbSessionData,target ?: DBClientSenderSessionTarget) : Promise<string> {
+    private async _copySession(sessionData : DbSessionData,target ?: DBClientInputSessionTarget) : Promise<string> {
         DataBoxUtils.copySession(sessionData,target);
         return this._signSessionToken(sessionData);
     }
@@ -296,7 +296,7 @@ export default class DataBox extends DataBoxCore {
      * Sends a DataBox package to all sockets of the DataBox.
      * @param dbClientPackage
      */
-    private _sendToSockets(dbClientPackage : DbClientPackage) {
+    private _sendToSockets(dbClientPackage : DbClientOutputPackage) {
         for(let socket of this.regSockets.keys()) {
             socket.emit(this.dbEvent,dbClientPackage);
         }
@@ -307,7 +307,7 @@ export default class DataBox extends DataBoxCore {
      * @param dbClientPackage
      * @private
      */
-    private async _sendCudToSocketsWithMiddleware(dbClientPackage : DbClientCudPackage) {
+    private async _sendCudToSocketsWithMiddleware(dbClientPackage : DbClientOutputCudPackage) {
 
         const actions = dbClientPackage.d.a;
         const socketPromises : Promise<void>[] = [];
@@ -369,7 +369,7 @@ export default class DataBox extends DataBoxCore {
      * @param cudPackage
      */
     private async _processCudActions(cudPackage : CudPackage){
-        await this.sendCudToSockets({a : DbClientReceiverEvent.cud,d : cudPackage} as DbClientCudPackage);
+        await this.sendCudToSockets({a : DbClientOutputEvent.cud,d : cudPackage} as DbClientOutputCudPackage);
         //updated last cud id.
         if(this.lastCudData.timestamp <= cudPackage.t){
             this.lastCudData = {id : cudPackage.ci, timestamp : cudPackage.t};
@@ -417,7 +417,7 @@ export default class DataBox extends DataBoxCore {
         await this._processCudActions(cudPackage);
     }
 
-    private _broadcastToOtherSockets(clientPackage : DbClientPackage) {
+    private _broadcastToOtherSockets(clientPackage : DbClientOutputPackage) {
         this._sendToWorker({
             a : DbWorkerAction.broadcast,
             d : clientPackage,
@@ -434,7 +434,7 @@ export default class DataBox extends DataBoxCore {
      * @param closePackage
      * @private
      */
-    private _close(closePackage : DbClientClosePackage) {
+    private _close(closePackage : DbClientOutputClosePackage) {
         for(let [socket, socketMemory] of this.regSockets.entries()) {
             socket.emit(this.dbEvent,closePackage);
             socketMemory.unregisterSocket();
@@ -577,7 +577,7 @@ export default class DataBox extends DataBoxCore {
         const socketMemory = this.regSockets.get(socket);
         if(socketMemory){
             socket.emit(this.dbEvent,
-                {a : DbClientReceiverEvent.kickOut,c : code,d : data} as DbClientKickOutPackage);
+                {a : DbClientOutputEvent.kickOut,c : code,d : data} as DbClientOutputKickOutPackage);
             socketMemory.unregisterSocket();
         }
     }

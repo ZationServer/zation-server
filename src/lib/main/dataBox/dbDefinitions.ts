@@ -56,21 +56,6 @@ export enum CudType {
     delete
 }
 
-export interface DbFetchDataClientResponse {
-    /**
-     * counter
-     */
-    c : number,
-    /**
-     * token
-     */
-    t : string,
-    /**
-     * data
-     */
-    d : any
-}
-
 /**
  * A full-defined cud package that the server can send to the clients.
  */
@@ -129,32 +114,47 @@ export interface CudAction {
 /**
  * The package that the client can send to the server to invoke an action.
  */
-export interface DbClientSenderPackage {
+export interface DbClientInputPackage {
     /**
      * Action
      */
-    a : DbClientSenderAction,
+    a : DbClientInputAction,
     /**
      * Session Target
      */
-    t ?: DBClientSenderSessionTarget
+    t ?: DBClientInputSessionTarget
 }
 
 /**
  * The package that the client can send to the server to fetch data.
  */
-export interface DbClientFetchSenderPackage extends DbClientSenderPackage{
-    a : DbClientSenderAction.fetchData,
+export interface DbClientInputFetchPackage extends DbClientInputPackage{
+    a : DbClientInputAction.fetchData,
     /**
      * input
      */
     i : any
 }
 
+export interface DbClientInputFetchResponse {
+    /**
+     * counter
+     */
+    c : number,
+    /**
+     * token
+     */
+    t : string,
+    /**
+     * data
+     */
+    d : any
+}
+
 /**
  * Events that a client can receive from the server.
  */
-export enum DbClientReceiverEvent {
+export enum DbClientOutputEvent {
     cud,
     close,
     reload,
@@ -164,11 +164,11 @@ export enum DbClientReceiverEvent {
 /**
  * Packages that the server can send to the clients.
  */
-export interface DbClientPackage {
+export interface DbClientOutputPackage {
     /**
      * action
      */
-    a : DbClientReceiverEvent,
+    a : DbClientOutputEvent,
     /**
      * data
      */
@@ -183,11 +183,11 @@ export interface DbClientPackage {
  * Cud package that the server can send to the clients.
  * In case of an insert, update, or delete of data.
  */
-export interface DbClientCudPackage extends DbClientPackage{
+export interface DbClientOutputCudPackage extends DbClientOutputPackage{
     /**
      * action
      */
-    a : DbClientReceiverEvent.cud,
+    a : DbClientOutputEvent.cud,
     /**
      * data
      */
@@ -197,11 +197,11 @@ export interface DbClientCudPackage extends DbClientPackage{
 /**
  * Reload package that the server can send to the clients.
  */
-export interface DbClientReloadPackage extends DbClientPackage{
+export interface DbClientOutputReloadPackage extends DbClientOutputPackage{
     /**
      * action
      */
-    a : DbClientReceiverEvent.reload,
+    a : DbClientOutputEvent.reload,
     /**
      * data
      */
@@ -211,11 +211,11 @@ export interface DbClientReloadPackage extends DbClientPackage{
 /**
  * Close package that the server can send to the clients.
  */
-export interface DbClientClosePackage extends DbClientPackage{
+export interface DbClientOutputClosePackage extends DbClientOutputPackage{
     /**
      * action
      */
-    a : DbClientReceiverEvent.close,
+    a : DbClientOutputEvent.close,
     /**
      * data
      */
@@ -225,11 +225,11 @@ export interface DbClientClosePackage extends DbClientPackage{
 /**
  * Kick out package that the server can send to the clients.
  */
-export interface DbClientKickOutPackage extends DbClientPackage{
+export interface DbClientOutputKickOutPackage extends DbClientOutputPackage{
     /**
      * action
      */
-    a : DbClientReceiverEvent.kickOut,
+    a : DbClientOutputEvent.kickOut,
     /**
      * data
      */
@@ -239,7 +239,7 @@ export interface DbClientKickOutPackage extends DbClientPackage{
 /**
  * The target session that the server should use to process.
  */
-export enum DBClientSenderSessionTarget {
+export enum DBClientInputSessionTarget {
     mainSession,
     restoreSession
 }
@@ -247,7 +247,7 @@ export enum DBClientSenderSessionTarget {
 /**
  * Actions that a client can send to the server.
  */
-export enum DbClientSenderAction {
+export enum DbClientInputAction {
     fetchData,
     resetSession,
     copySession,
@@ -317,7 +317,7 @@ export interface DbWorkerClosePackage extends DbWorkerPackage{
     /**
      * The client close package.
      */
-    d : DbClientClosePackage
+    d : DbClientOutputClosePackage
 }
 
 /**
@@ -331,7 +331,7 @@ export interface DbWorkerBroadcastPackage extends DbWorkerPackage{
     /**
      * data
      */
-    d : DbClientPackage
+    d : DbClientOutputPackage
 }
 
 /**
