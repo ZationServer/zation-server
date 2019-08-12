@@ -26,7 +26,7 @@ class ZationBroker extends SCBroker
     async run()
     {
         this.zc = new ZationConfigFull(this.options.zationConfigWorkerTransport);
-        global['startMode'] = this.zc.getStartMode();
+        global['_ZATION_START_MODE'] = this.zc.getStartMode();
 
         process.title = `Zation Server: ${this.zc.mainConfig.instanceId} -> Broker - ${this.id}`;
 

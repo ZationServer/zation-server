@@ -134,7 +134,7 @@ class ZationWorker extends SCWorker
         this.workerFullId = this.id + '.' + process.pid;
 
         this.zc = new ZationConfigFull(this.options.zationConfigWorkerTransport);
-        global['startMode'] = this.zc.getStartMode();
+        global['_ZATION_START_MODE'] = this.zc.getStartMode();
 
         //setLogger
         Logger.setZationConfig(this.zc);

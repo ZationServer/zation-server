@@ -128,7 +128,7 @@ export default class Config
      * Returns if the server runs in test mode.
      */
     static inTestMode() : boolean {
-        return global['startMode'] === StartMode.TEST;
+        return global['_ZATION_START_MODE'] === StartMode.TEST;
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
@@ -137,7 +137,7 @@ export default class Config
      * Returns if the server runs in normal mode.
      */
     static inNormalMode(): boolean {
-        return global['startMode'] === StartMode.NORMAL;
+        return global['_ZATION_START_MODE'] === StartMode.NORMAL;
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
@@ -146,7 +146,7 @@ export default class Config
      * Returns the start mode of the server.
      */
     static getStartMode(): StartMode {
-        return global['startMode'];
+        return global['_ZATION_START_MODE'];
     }
 
     // noinspection JSUnusedGlobalSymbols
