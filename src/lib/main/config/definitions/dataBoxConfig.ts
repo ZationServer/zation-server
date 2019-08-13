@@ -17,6 +17,63 @@ export type DbAccessFunction = (bag : Bag, socket : ZSocket, dbInfo : DataBoxInf
 export interface DataBoxConfig extends VersionAccessConfig, SystemAccessConfig, AuthAccessConfig<DbAccessFunction>
 {
     /**
+     * This property defines the fetch input.
+     * The client can send these fetch input whenever he wants to fetch data.
+     * That means you can access this data in the fetchData method.
+     * It will be used to validate and format the fetch data that flows into the component.
+     * It can specify an input that is based on parameters
+     * so that you can map models to a parameter name.
+     * Or it can specify a single model as an input.
+     * - Parameter-based input.
+     * To define a parameter based input use an object as a value.
+     * The keys of the object are the parameter names,
+     * and the value defines an anonymous model or link to a declared model.
+     * Notice that it is strongly recommended to only use string keys (with letters) in the object literal,
+     * to keep the same order in a for in loop.
+     * That is important for zation when you send your data as an array.
+     * - Single model input
+     * To set a single model input, you have to use an array as a value with exactly one item.
+     * This item is an anonymous model or link to a declared model.
+     * Notice that you also can use the single method on the Config class
+     * for making it more clear that this is a single model input.
+     * @example
+     * //Parameter-based input
+     * input : {
+     *     name : {
+     *         type : 'string'
+     *     },
+     *     age : {
+     *         type : 'int',
+     *         minValue : 14
+     *     }
+     * }
+     * //Client can send  ->
+     * {name : 'Luca', age : 20}
+     * //or
+     * ['Luca',20]
+     *
+     * //-Single model input-
+     * input : [{
+     *     type : 'string',
+     *     minLength : 4
+     * }]
+     * //or
+     * input : Config.single({
+     *     type : 'string',
+     *     minLength : 4
+     * })
+     * //Client can send ->
+     * "ThisIsAnyString"
+     */
+    fetchInput ?: Input;
+    /**
+     * Specifies if any fetch input is allowed
+     * that means the fetch input validation and converter are disabled.
+     * @default false.
+     */
+    allowAnyFetchInput  ?: boolean;
+
+    /**
      * This property defines the init input.
      * The client can send these init input when it builds the connection.
      * You can access the init input whenever the fetchData method gets triggered,
@@ -73,63 +130,6 @@ export interface DataBoxConfig extends VersionAccessConfig, SystemAccessConfig, 
      * @default false.
      */
     allowAnyInitInput  ?: boolean;
-
-    /**
-     * This property defines the fetch input.
-     * The client can send these fetch input whenever he wants to fetch data.
-     * That means you can access this data in the fetchData method.
-     * It will be used to validate and format the fetch data that flows into the component.
-     * It can specify an input that is based on parameters
-     * so that you can map models to a parameter name.
-     * Or it can specify a single model as an input.
-     * - Parameter-based input.
-     * To define a parameter based input use an object as a value.
-     * The keys of the object are the parameter names,
-     * and the value defines an anonymous model or link to a declared model.
-     * Notice that it is strongly recommended to only use string keys (with letters) in the object literal,
-     * to keep the same order in a for in loop.
-     * That is important for zation when you send your data as an array.
-     * - Single model input
-     * To set a single model input, you have to use an array as a value with exactly one item.
-     * This item is an anonymous model or link to a declared model.
-     * Notice that you also can use the single method on the Config class
-     * for making it more clear that this is a single model input.
-     * @example
-     * //Parameter-based input
-     * input : {
-     *     name : {
-     *         type : 'string'
-     *     },
-     *     age : {
-     *         type : 'int',
-     *         minValue : 14
-     *     }
-     * }
-     * //Client can send  ->
-     * {name : 'Luca', age : 20}
-     * //or
-     * ['Luca',20]
-     *
-     * //-Single model input-
-     * input : [{
-     *     type : 'string',
-     *     minLength : 4
-     * }]
-     * //or
-     * input : Config.single({
-     *     type : 'string',
-     *     minLength : 4
-     * })
-     * //Client can send ->
-     * "ThisIsAnyString"
-     */
-    fetchInput ?: Input;
-    /**
-     * Specifies if any fetch input is allowed
-     * that means the fetch input validation and converter are disabled.
-     * @default false.
-     */
-    allowAnyFetchInput  ?: boolean;
 
     /**
      * @description

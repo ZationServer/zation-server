@@ -121,10 +121,10 @@ export default class DataBox extends DataBoxCore {
      * **Not override this method.**
      * @param socket
      * @param inSessionData
-     * @param initInput
+     * @param initData
      * @private
      */
-    async _registerSocket(socket : UpSocket,inSessionData : undefined | DbSessionData,initInput : any) : Promise<DbRegisterResult> {
+    async _registerSocket(socket : UpSocket,inSessionData : undefined | DbSessionData,initData : any) : Promise<DbRegisterResult> {
 
         const {inputChIds,unregisterSocket} = this._connectSocket(socket);
 
@@ -149,8 +149,8 @@ export default class DataBox extends DataBoxCore {
                             respond,
                             this._fetchData,
                             sessionData,
-                            initInput,
                             await this._consumeFetchInput((senderPackage as DbClientInputFetchPackage).i),
+                            initData,
                             socket.zSocket,
                             senderPackage.t
                         );
@@ -197,12 +197,12 @@ export default class DataBox extends DataBoxCore {
         return this._lastCudData.id;
     }
 
-    private async _fetchData(sessionData : DbSessionData,initInput : any,fetchInput : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
+    private async _fetchData(sessionData : DbSessionData,fetchInput : any,initData : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
         const session = DataBoxUtils.getSession(sessionData,target);
 
         const currentCounter = session.c;
         session.c++;
-        const data = await this.fetchData(currentCounter,session.d,fetchInput,initInput,zSocket);
+        const data = await this.fetchData(currentCounter,session.d,fetchInput,initData,zSocket);
 
         return {
             c : currentCounter,
@@ -387,7 +387,7 @@ export default class DataBox extends DataBoxCore {
      * @param cudActions
      */
     private async _fireBeforeEvents(cudActions : CudAction[]){
-        let promises : Promise<void>[] = [];
+        let promises : (Promise<void> | void)[] = [];
         for(let i = 0; i < cudActions.length;i++) {
             const action = cudActions[i];
             switch (action.t) {
@@ -595,8 +595,8 @@ export default class DataBox extends DataBoxCore {
      * You usually request data from your database and return it, and if no more data is available,
      * you should throw a NoMoreDataAvailableError or call the internal noMoreDataAvailable method.
      * The counter parameter indicates the number of the current call, it starts counting at zero.
-     * The client can send additional data when calling the fetch process,
-     * this data is available as the fetch input parameter.
+     * The client can send additional data when calling the fetch process (fetchInput),
+     * this data is available as the input parameter.
      * Also, you extra get a session object, this object you can use to save variables that are
      * important to get more data in the future, for example, the last id of the item that the client had received.
      * The session object is only available on the server-side and can not be modified on the client-side.
@@ -607,17 +607,18 @@ export default class DataBox extends DataBoxCore {
      * it is recommended that the information consists of key-value able components
      * so that you can identify each value with a key path.
      * That can be done by using an object or a key-array.
-     * Whenever you are using the socket parameter to filter the data for the specific user,
+     * To build a key-array, you can use the buildKeyArray method.
+     * Whenever you are using the socket to filter the data for a specific user,
      * you also have to use the cud middleware to filter the cud events for the socket.
      * You mostly should avoid this because if you are overwriting a cud middleware,
      * the DataBox switches to a more costly performance implementation.
      * @param counter
-     * @param sessionData
-     * @param fetchInput
-     * @param initInput
+     * @param session
+     * @param input
+     * @param initData
      * @param socket
      */
-    protected async fetchData<T extends object = object>(counter : number,sessionData : T,fetchInput : any,initInput : any,socket : ZSocket) : Promise<any>{
+    protected fetchData<T extends object = object>(counter : number,session : T,input : any,initData : any,socket : ZSocket) : Promise<any> | any {
         this.noMoreDataAvailable();
     }
 
@@ -628,7 +629,7 @@ export default class DataBox extends DataBoxCore {
      * @param keyPath
      * @param value
      */
-    protected async beforeInsert(keyPath : string[],value : any) : Promise<void> {
+    protected beforeInsert(keyPath : string[],value : any) : Promise<void> | void {
     }
 
     /**
@@ -638,7 +639,7 @@ export default class DataBox extends DataBoxCore {
      * @param keyPath
      * @param value
      */
-    protected async beforeUpdate(keyPath : string[],value : any) : Promise<void> {
+    protected beforeUpdate(keyPath : string[],value : any) : Promise<void> | void {
     }
 
     /**
@@ -647,7 +648,7 @@ export default class DataBox extends DataBoxCore {
      * Can be used to delete the data in the database.
      * @param keyPath
      */
-    protected async beforeDelete(keyPath : string[]) : Promise<void> {
+    protected beforeDelete(keyPath : string[]) : Promise<void> | void {
     }
 
     // noinspection JSUnusedLocalSymbols
@@ -688,8 +689,8 @@ export default class DataBox extends DataBoxCore {
      * @param code
      * @param data
      */
-    protected async insertMiddleware(socket : ZSocket,keyPath : string[],value : any,changeValue : ChangeValue,
-                                     code : string | number | undefined,data : any) : Promise<void> {
+    protected insertMiddleware(socket : ZSocket,keyPath : string[],value : any,changeValue : ChangeValue,
+                                     code : string | number | undefined,data : any) : Promise<void> | void {
     }
 
     /**
@@ -713,8 +714,8 @@ export default class DataBox extends DataBoxCore {
      * @param code
      * @param data
      */
-    protected async updateMiddleware(socket : ZSocket,keyPath : string[],value : any,changeValue : ChangeValue,
-                                     code : string | number | undefined,data : any) : Promise<void> {
+    protected updateMiddleware(socket : ZSocket,keyPath : string[],value : any,changeValue : ChangeValue,
+                                     code : string | number | undefined,data : any) : Promise<void> | void {
     }
 
     /**
@@ -733,8 +734,8 @@ export default class DataBox extends DataBoxCore {
      * @param code
      * @param data
      */
-    protected async deleteMiddleware(socket : ZSocket,keyPath : string[],
-                                     code : string | number | undefined,data : any) : Promise<void> {
+    protected deleteMiddleware(socket : ZSocket,keyPath : string[],
+                                     code : string | number | undefined,data : any) : Promise<void> | void {
     }
 }
 
