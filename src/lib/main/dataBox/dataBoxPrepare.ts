@@ -17,6 +17,7 @@ import IdValidCheckerUtils                                      from "../id/idVa
 import DataBox, {DataBoxClass}                                  from "../../api/dataBox/DataBox";
 import InputClosureCreator                                      from "../input/inputClosureCreator";
 import DataBoxAccessHelper                                      from "./dataBoxAccessHelper";
+import DbConfigUtils from "./dbConfigUtils";
 
 export default class DataBoxPrepare
 {
@@ -138,7 +139,8 @@ export default class DataBoxPrepare
             versionAccessCheck : SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
             accessCheck : DataBoxAccessHelper.createAccessChecker(config,this.bag),
-            inputConsumer : InputClosureCreator.createInputConsumer(config,this.bag),
+            initInputConsumer : InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbInitInput(config),this.bag),
+            fetchInputConsumer : InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbFetchInput(config),this.bag),
             parallelFetch : config.parallelFetch !== undefined ? config.parallelFetch : false,
             maxBackpressure : config.maxBackpressure !== undefined ? config.maxBackpressure : 30,
             maxSocketInputChannels : config.maxSocketInputChannels !== undefined ?

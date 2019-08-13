@@ -102,8 +102,10 @@ DataBoxConfig[nameof<DataBoxConfig>(s => s.systemAccess)]     = {types : ['array
 DataBoxConfig[nameof<DataBoxConfig>(s => s.parallelFetch)]    = {types : ['boolean'],isOptional : true};
 DataBoxConfig[nameof<DataBoxConfig>(s => s.maxBackpressure)]  = {types : ['number'],isOptional : true};
 DataBoxConfig[nameof<DataBoxConfig>(s => s.maxSocketInputChannels)] = {types : ['number'],isOptional : true};
-DataBoxConfig[nameof<DataBoxConfig>(s => s.input)]            = {types : ['object','array','function'],isOptional : true};
-DataBoxConfig[nameof<DataBoxConfig>(s => s.allowAnyInput)]    = {types : ['boolean'],isOptional : true};
+DataBoxConfig[nameof<DataBoxConfig>(s => s.initInput)]              = {types : ['object','array','function'],isOptional : true};
+DataBoxConfig[nameof<DataBoxConfig>(s => s.allowAnyInitInput)]      = {types : ['boolean'],isOptional : true};
+DataBoxConfig[nameof<DataBoxConfig>(s => s.fetchInput)]             = {types : ['object','array','function'],isOptional : true};
+DataBoxConfig[nameof<DataBoxConfig>(s => s.allowAnyFetchInput)]     = {types : ['boolean'],isOptional : true};
 
 const AnyOf = {};
 AnyOf[nameof<AnyOfModelConfig>(s => s.anyOf)]     = {types : ['array','object'],isOptional : false};

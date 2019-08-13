@@ -13,6 +13,7 @@ import {DataBoxInfo, DataBoxRegisterReq, DataBoxRegisterRes, DbRegisterResult, D
 import DataBoxReqUtils             from "./dataBoxReqUtils";
 import {ErrorName}                 from "../../constants/errorName";
 import DataBox                     from "../../../api/dataBox/DataBox";
+import ObjectUtils from "../../utils/objectUtils";
 
 export default class DataBoxHandler
 {
@@ -80,15 +81,20 @@ export default class DataBoxHandler
             sessionData = await db._verifySessionToken(input.t,isFamily ? input.i : undefined);
         }
 
+        const initInput = await db._consumeInitInput(input.ii);
+        if(typeof initInput === 'object'){
+            ObjectUtils.deepFreeze(initInput);
+        }
+
         //register
         let keys : DbRegisterResult;
         let lastCudId;
         if(isFamily){
-            keys = await (db as DataBoxFamily)._registerSocket(socket,(input.i as string),sessionData);
+            keys = await (db as DataBoxFamily)._registerSocket(socket,(input.i as string),sessionData,initInput);
             lastCudId = (db as DataBoxFamily)._getLastCudId(input.i as string);
         }
         else {
-            keys = await (db as DataBox)._registerSocket(socket,sessionData);
+            keys = await (db as DataBox)._registerSocket(socket,sessionData,initInput);
             lastCudId = (db as DataBox)._getLastCudId();
         }
 

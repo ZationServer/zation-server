@@ -52,6 +52,7 @@ import {DataBoxClassDef, DataBoxConfig}        from "../definitions/dataBoxConfi
 import DataBoxFamily                           from "../../../api/dataBox/DataBoxFamily";
 import DataBox                                 from "../../../api/dataBox/DataBox";
 import {AuthAccessConfig, VersionAccessConfig} from "../definitions/configComponents";
+import DbConfigUtils from "../../dataBox/dbConfigUtils";
 
 export interface ModelCheckedMem {
     _checked : boolean
@@ -841,7 +842,7 @@ export default class ConfigChecker
     {
         ConfigCheckerTools.assertStructure(Structures.ControllerConfig, config, ConfigNames.APP, this.ceb, target);
         this.checkAuthAccessConfig(config, target);
-        this.checkInputConfig(config,target);
+        this.checkInputConfig(config,target.addPath('input'));
         this.checkVersionAccessConfig(config, target);
     }
 
@@ -865,23 +866,36 @@ export default class ConfigChecker
         }
 
         this.checkAuthAccessConfig(config, target);
-        this.checkInputConfig(config,target);
+
+        this.checkInputConfig(DbConfigUtils.convertDbInitInput(config),
+            target.addPath('initInput'),'Init');
+
+        this.checkInputConfig(DbConfigUtils.convertDbFetchInput(config),
+            target.addPath('fetchInput'),'Fetch');
+
         this.checkVersionAccessConfig(config, target);
     }
 
     // noinspection JSMethodCanBeStatic
-    private checkInputAllAllow(inputConfig: InputConfig, target: Target) {
+    private checkInputAllAllow(inputConfig: InputConfig, target: Target,inputTypeName : string = '') {
         if (typeof inputConfig.allowAnyInput === 'boolean' &&
             inputConfig.allowAnyInput &&
             (typeof inputConfig.input === 'object')) {
             Logger.printConfigWarning(
                 ConfigNames.APP,
-                `${target.getTarget()} the property input is ignored with allowAnyInput true.`
+                `${target.getTarget()} is ignored with allowAny${inputTypeName}Input true.`
             );
         }
     }
 
-    private checkInputConfig(inputConfig : InputConfig, target : Target) {
+    /**
+     * Checks an input config.
+     * @param inputConfig
+     * @param target
+     * @param inputTypeName
+     * The input type starting with upper case letter.
+     */
+    private checkInputConfig(inputConfig : InputConfig, target : Target,inputTypeName : string = '') {
         /**
          * Check main structure with structure of controller or stream.
          */
@@ -897,7 +911,7 @@ export default class ConfigChecker
                 }
                 else {
                     this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                        `${target.getTarget()} to define a single input model with the input property the array must have exactly one item.`));
+                        `${target.getTarget()} to define a single input model the array must have exactly one item.`));
                 }
             }
             else {
@@ -905,7 +919,7 @@ export default class ConfigChecker
                 this.checkParamInput(input,target);
             }
         }
-        this.checkInputAllAllow(inputConfig, target);
+        this.checkInputAllAllow(inputConfig, target,inputTypeName);
     }
 
     private checkParamInput(paramInput : ParamInput, target : Target) {
@@ -918,7 +932,7 @@ export default class ConfigChecker
                             `${target.getTarget()} numeric key ${k} is not allowed in a param based input config because it changes the key order in a for in loop.`));
                     }
                     keys.push(k);
-                    this.checkCustomName(k,'controller input property',target.getTarget() + ' ');
+                    this.checkCustomName(k,'input property',target.getTarget() + ' ');
                     this.checkModel(paramInput[k], target.addPath(k));
                 }
             }

@@ -20,7 +20,11 @@ export interface DataBoxRegisterReq {
     /**
      * token
      */
-    t ?: string
+    t ?: string,
+    /**
+     * initInput
+     */
+    ii ?: any
 }
 
 export interface DataBoxRegisterRes {

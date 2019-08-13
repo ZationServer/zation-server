@@ -35,6 +35,7 @@ import {isInputConfigTranslatable, isModelConfigTranslatable} from "../../../api
 import {ControllerConfig} from "../definitions/controllerConfig";
 import {ControllerClass}  from "../../../api/Controller";
 import {DataBoxClassDef, DataBoxConfig} from "../definitions/dataBoxConfig";
+import DbConfigUtils from "../../dataBox/dbConfigUtils";
 
 export interface ModelPreparationMem extends Processable{
     _optionalInfo : {isOptional : boolean,defaultValue : any}
@@ -610,6 +611,8 @@ export default class ConfigPreCompiler
                     const config : DataBoxConfig = dataBoxClass.config;
                     //set the defaults
                     ObjectUtils.addObToOb(config,this.dataBoxDefaults,false);
+                    this.preCompileInputConfig(DbConfigUtils.convertDbInitInput(config));
+                    this.preCompileInputConfig(DbConfigUtils.convertDbFetchInput(config));
                 });
             }
         }

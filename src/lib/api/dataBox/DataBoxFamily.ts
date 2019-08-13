@@ -141,9 +141,10 @@ export default class DataBoxFamily extends DataBoxCore {
      * @param socket
      * @param id
      * @param inSessionData
+     * @param initInput
      * @private
      */
-    async _registerSocket(socket : UpSocket,id : string,inSessionData : undefined | DbSessionData) : Promise<DbRegisterResult> {
+    async _registerSocket(socket : UpSocket,id : string,inSessionData : undefined | DbSessionData,initInput : any) : Promise<DbRegisterResult> {
 
         const {inputChIds,unregisterSocket} = this._connectSocket(socket,id);
 
@@ -170,6 +171,7 @@ export default class DataBoxFamily extends DataBoxCore {
                             this._fetchData,
                             id,
                             sessionData,
+                            initInput,
                             await this._consumeFetchInput((senderPackage as DbClientInputFetchPackage).i),
                             socket.zSocket,
                             senderPackage.t
@@ -229,12 +231,12 @@ export default class DataBoxFamily extends DataBoxCore {
         return '';
     }
 
-    private async _fetchData(id : string,sessionData : DbSessionData,fetchInput : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
+    private async _fetchData(id : string,sessionData : DbSessionData,initInput : any,fetchInput : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
         const session = DataBoxUtils.getSession(sessionData,target);
 
         const currentCounter = session.c;
         session.c++;
-        const data = await this.fetchData(id,currentCounter,session.d,fetchInput,zSocket);
+        const data = await this.fetchData(id,currentCounter,session.d,fetchInput,initInput,zSocket);
 
         return {
             c : currentCounter,
@@ -769,10 +771,11 @@ export default class DataBoxFamily extends DataBoxCore {
      * @param id
      * @param counter
      * @param sessionData
-     * @param input
+     * @param fetchInput
+     * @param initInput
      * @param socket
      */
-    protected async fetchData<T extends object = object>(id : string,counter : number,sessionData : T,input : any,socket : ZSocket) : Promise<any>{
+    protected async fetchData<T extends object = object>(id : string,counter : number,sessionData : T,fetchInput : any,initInput : any,socket : ZSocket) : Promise<any>{
         this.noMoreDataAvailable();
     }
 

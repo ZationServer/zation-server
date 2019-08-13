@@ -65,7 +65,8 @@ export default abstract class DataBoxCore {
     protected readonly apiLevel: number | undefined;
 
     private readonly _parallelFetch : boolean;
-    private readonly _inputConsumer : InputConsumeFunction;
+    private readonly _initInputConsumer : InputConsumeFunction;
+    private readonly _fetchInputConsumer : InputConsumeFunction;
 
     protected constructor(name : string, bag: Bag, dbPreparedData : DbPreparedData, apiLevel : number | undefined) {
         this.name = name;
@@ -75,7 +76,8 @@ export default abstract class DataBoxCore {
         this._sendErrorDescription = this.bag.getMainConfig().sendErrorDescription;
 
         this._parallelFetch = dbPreparedData.parallelFetch;
-        this._inputConsumer = dbPreparedData.inputConsumer;
+        this._initInputConsumer = dbPreparedData.initInputConsumer;
+        this._fetchInputConsumer = dbPreparedData.fetchInputConsumer;
 
         this._preparedTokenSessionKey =
             `${bag.getZationConfig().getDataBoxKey()}.${this.dbTokenVersion}.${this.name}${apiLevel !== undefined ? apiLevel : ''}`;
@@ -97,10 +99,29 @@ export default abstract class DataBoxCore {
     async _consumeFetchInput(input : any) : Promise<any>
     {
         try {
-            return await this._inputConsumer(input);
+            return await this._fetchInputConsumer(input);
         }
         catch (inputError) {
             const err : any = new Error('Invalid input to fetch data.');
+            err.name = ErrorName.INVALID_INPUT;
+            err.backErrors = ErrorUtils.convertErrorToResponseErrors(inputError,this._sendErrorDescription);
+            throw err;
+        }
+    }
+
+    /**
+     * **Not override this method.**
+     * A function to consume the init input.
+     * @param input
+     * @private
+     */
+    async _consumeInitInput(input : any) : Promise<any>
+    {
+        try {
+            return await this._initInputConsumer(input);
+        }
+        catch (inputError) {
+            const err : any = new Error('Invalid init input.');
             err.name = ErrorName.INVALID_INPUT;
             err.backErrors = ErrorUtils.convertErrorToResponseErrors(inputError,this._sendErrorDescription);
             throw err;
@@ -244,7 +265,8 @@ export interface DbPreparedData {
     versionAccessCheck : VersionSystemAccessCheckFunction,
     systemAccessCheck : VersionSystemAccessCheckFunction,
     accessCheck : DbAccessCheckFunction,
-    inputConsumer : InputConsumeFunction,
+    initInputConsumer : InputConsumeFunction,
+    fetchInputConsumer : InputConsumeFunction,
     parallelFetch : boolean,
     maxBackpressure : number,
     maxSocketInputChannels : number
