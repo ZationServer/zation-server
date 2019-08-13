@@ -254,7 +254,7 @@ export enum DbClientInputAction {
     fetchData,
     resetSession,
     copySession,
-    close,
+    disconnect,
     getLastCudId
 }
 

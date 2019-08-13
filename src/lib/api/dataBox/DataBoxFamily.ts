@@ -185,7 +185,7 @@ export default class DataBoxFamily extends DataBoxCore {
                 case DbClientInputAction.copySession:
                     await RespondUtils.respondWithFunc(respond,this._copySession,id,sessionData,senderPackage.t);
                     break;
-                case DbClientInputAction.close:
+                case DbClientInputAction.disconnect:
                     unregisterSocket(chInputId);
                     respond(null);
                     break;

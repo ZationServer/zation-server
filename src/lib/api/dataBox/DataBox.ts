@@ -166,7 +166,7 @@ export default class DataBox extends DataBoxCore {
                 case DbClientInputAction.getLastCudId:
                     respond(null,this._getLastCudId());
                     break;
-                case DbClientInputAction.close:
+                case DbClientInputAction.disconnect:
                     unregisterSocket(chInputId);
                     respond(null);
                     break;
