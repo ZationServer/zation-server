@@ -71,28 +71,28 @@ const DefaultSymbol                              = Symbol();
  */
 export default class DataBox extends DataBoxCore {
 
-    private readonly regSockets : Map<UpSocket,DbSocketMemory> = new Map();
-    private lastCudData : {timestamp : number,id : string} = {timestamp : Date.now(),id : ''};
-    private readonly scExchange : ScExchange;
-    private readonly workerFullId : string;
-    private readonly dbEvent : string;
-    private readonly maxSocketInputChannels : number;
+    private readonly _regSockets : Map<UpSocket,DbSocketMemory> = new Map();
+    private _lastCudData : {timestamp : number,id : string} = {timestamp : Date.now(),id : ''};
+    private readonly _scExchange : ScExchange;
+    private readonly _workerFullId : string;
+    private readonly _dbEvent : string;
+    private readonly _maxSocketInputChannels : number;
 
-    private readonly buildFetchManager : FetchManagerBuilder<typeof DataBox.prototype._fetchData>;
-    private readonly sendCudToSockets : (dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void;
+    private readonly _buildFetchManager : FetchManagerBuilder<typeof DataBox.prototype._fetchData>;
+    private readonly _sendCudToSockets : (dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void;
 
     static ___instance___ : DataBox;
 
     constructor(id : string, bag: Bag, dbPreparedData : DbPreparedData, apiLevel : number | undefined) {
         super(id,bag,dbPreparedData,apiLevel);
-        this.scExchange = bag.getWorker().scServer.exchange;
-        this.workerFullId = bag.getWorker().getFullWorkerId();
-        this.maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
-        this.dbEvent = `${DATA_BOX_START_INDICATOR}-${this.name}-${apiLevel !== undefined ? apiLevel : ''}`;
+        this._scExchange = bag.getWorker().scServer.exchange;
+        this._workerFullId = bag.getWorker().getFullWorkerId();
+        this._maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
+        this._dbEvent = `${DATA_BOX_START_INDICATOR}-${this.name}-${apiLevel !== undefined ? apiLevel : ''}`;
 
-        this.buildFetchManager = DataBoxFetchManager.buildFetchMangerBuilder
+        this._buildFetchManager = DataBoxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
-        this.sendCudToSockets = this._getSendCudToSocketsHandler();
+        this._sendCudToSockets = this._getSendCudToSocketsHandler();
 
         this._reg();
     }
@@ -125,17 +125,17 @@ export default class DataBox extends DataBoxCore {
 
         const {inputChIds,unregisterSocket} = this._connectSocket(socket);
 
-        DataBoxUtils.maxInputChannelsCheck(inputChIds.size,this.maxSocketInputChannels);
+        DataBoxUtils.maxInputChannelsCheck(inputChIds.size,this._maxSocketInputChannels);
 
         //add input channel
         const chInputId = DataBoxUtils.generateInputChId(inputChIds);
         inputChIds.add(chInputId);
 
-        const inputCh = this.dbEvent+'-'+chInputId;
+        const inputCh = this._dbEvent+'-'+chInputId;
 
         const sessionData = inSessionData ? inSessionData : DataBoxUtils.createDbSessionData();
 
-        const fetchManager = this.buildFetchManager();
+        const fetchManager = this._buildFetchManager();
 
         socket.on(inputCh,async (senderPackage : DbClientInputPackage, respond : RespondFunction) => {
             switch (senderPackage.a) {
@@ -175,7 +175,7 @@ export default class DataBox extends DataBoxCore {
             }
         });
 
-        return {inputCh, outputCh : this.dbEvent}
+        return {inputCh, outputCh : this._dbEvent}
     }
 
     private _disconnectSocket(socket : UpSocket,disconnectHandler : () => void) {
@@ -189,7 +189,7 @@ export default class DataBox extends DataBoxCore {
      * @private
      */
     _getLastCudId() : string {
-        return this.lastCudData.id;
+        return this._lastCudData.id;
     }
 
     private async _fetchData(sessionData : DbSessionData,fetchInput : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
@@ -223,10 +223,10 @@ export default class DataBox extends DataBoxCore {
      */
     private _connectSocket(socket : UpSocket) : DbSocketMemory {
 
-        let socketMemoryData = this.regSockets.get(socket);
+        let socketMemoryData = this._regSockets.get(socket);
         if(!socketMemoryData){
             //new socket = connect
-            const inputChPrefix = `${this.dbEvent}-`;
+            const inputChPrefix = `${this._dbEvent}-`;
             const inputChIds = new Set<string>();
 
             const unregisterSocketFunction = (inputChannelId ?: string) => {
@@ -251,7 +251,7 @@ export default class DataBox extends DataBoxCore {
                 unregisterSocket : unregisterSocketFunction
             };
 
-            this.regSockets.set(socket,socketMemoryData);
+            this._regSockets.set(socket,socketMemoryData);
 
             socket.on('disconnect',unregisterSocketFunction);
             DataBoxAccessHelper.addDb(this,socket);
@@ -265,7 +265,7 @@ export default class DataBox extends DataBoxCore {
      * @private
      */
     private _rmSocket(socket : UpSocket){
-        this.regSockets.delete(socket);
+        this._regSockets.delete(socket);
     }
 
     /**
@@ -273,9 +273,9 @@ export default class DataBox extends DataBoxCore {
      * @private
      */
     private _reg() {
-        this.scExchange.subscribe(this.dbEvent)
+        this._scExchange.subscribe(this._dbEvent)
             .watch(async (data) => {
-                if((data as DbWorkerCudPackage).w !== this.workerFullId) {
+                if((data as DbWorkerCudPackage).w !== this._workerFullId) {
                     switch (data.action) {
                         case DbWorkerAction.cud:
                             await this._processCudActions((data as DbWorkerCudPackage).d);
@@ -297,8 +297,8 @@ export default class DataBox extends DataBoxCore {
      * @param dbClientPackage
      */
     private _sendToSockets(dbClientPackage : DbClientOutputPackage) {
-        for(let socket of this.regSockets.keys()) {
-            socket.emit(this.dbEvent,dbClientPackage);
+        for(let socket of this._regSockets.keys()) {
+            socket.emit(this._dbEvent,dbClientPackage);
         }
     }
 
@@ -312,7 +312,7 @@ export default class DataBox extends DataBoxCore {
         const actions = dbClientPackage.d.a;
         const socketPromises : Promise<void>[] = [];
 
-        for(let socket of this.regSockets.keys()) {
+        for(let socket of this._regSockets.keys()) {
 
             const filteredActions : CudAction[] = [];
             const promises : Promise<void>[] = [];
@@ -357,7 +357,7 @@ export default class DataBox extends DataBoxCore {
             socketPromises.push(Promise.all(promises).then(() => {
                 if(filteredActions.length > 0){
                     dbClientPackage.d.a = filteredActions;
-                    socket.emit(this.dbEvent,dbClientPackage);
+                    socket.emit(this._dbEvent,dbClientPackage);
                 }
             }));
         }
@@ -369,10 +369,10 @@ export default class DataBox extends DataBoxCore {
      * @param cudPackage
      */
     private async _processCudActions(cudPackage : CudPackage){
-        await this.sendCudToSockets({a : DbClientOutputEvent.cud,d : cudPackage} as DbClientOutputCudPackage);
+        await this._sendCudToSockets({a : DbClientOutputEvent.cud,d : cudPackage} as DbClientOutputCudPackage);
         //updated last cud id.
-        if(this.lastCudData.timestamp <= cudPackage.t){
-            this.lastCudData = {id : cudPackage.ci, timestamp : cudPackage.t};
+        if(this._lastCudData.timestamp <= cudPackage.t){
+            this._lastCudData = {id : cudPackage.ci, timestamp : cudPackage.t};
         }
     }
 
@@ -412,7 +412,7 @@ export default class DataBox extends DataBoxCore {
         this._sendToWorker({
             a : DbWorkerAction.cud,
             d : cudPackage,
-            w : this.workerFullId
+            w : this._workerFullId
         } as DbWorkerCudPackage);
         await this._processCudActions(cudPackage);
     }
@@ -421,12 +421,12 @@ export default class DataBox extends DataBoxCore {
         this._sendToWorker({
             a : DbWorkerAction.broadcast,
             d : clientPackage,
-            w : this.workerFullId
+            w : this._workerFullId
         } as DbWorkerBroadcastPackage);
     }
 
     private _sendToWorker(workerPackage : DbWorkerPackage) {
-        this.scExchange.publish(this.dbEvent,workerPackage);
+        this._scExchange.publish(this._dbEvent,workerPackage);
     }
 
     /**
@@ -435,8 +435,8 @@ export default class DataBox extends DataBoxCore {
      * @private
      */
     private _close(closePackage : DbClientOutputClosePackage) {
-        for(let [socket, socketMemory] of this.regSockets.entries()) {
-            socket.emit(this.dbEvent,closePackage);
+        for(let [socket, socketMemory] of this._regSockets.entries()) {
+            socket.emit(this._dbEvent,closePackage);
             socketMemory.unregisterSocket();
         }
     }
@@ -542,7 +542,7 @@ export default class DataBox extends DataBoxCore {
                 {
                     a : DbWorkerAction.close,
                     d : clientPackage,
-                    w : this.workerFullId
+                    w : this._workerFullId
                 } as DbWorkerClosePackage);
         }
         this._close(clientPackage);
@@ -574,9 +574,9 @@ export default class DataBox extends DataBoxCore {
      * @param data
      */
     kickOut(socket : UpSocket,code ?: number | string,data ?: any) : void {
-        const socketMemory = this.regSockets.get(socket);
+        const socketMemory = this._regSockets.get(socket);
         if(socketMemory){
-            socket.emit(this.dbEvent,
+            socket.emit(this._dbEvent,
                 {a : DbClientOutputEvent.kickOut,c : code,d : data} as DbClientOutputKickOutPackage);
             socketMemory.unregisterSocket();
         }

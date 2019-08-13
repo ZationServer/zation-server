@@ -53,9 +53,9 @@ export default abstract class DataBoxCore {
      */
     protected readonly dbTokenVersion : number = 0;
 
-    private readonly dbPreparedData : DbPreparedData;
-    private readonly sendErrorDescription : boolean;
-    private readonly preparedTokenSessionKey : string;
+    private readonly _dbPreparedData : DbPreparedData;
+    private readonly _sendErrorDescription : boolean;
+    private readonly _preparedTokenSessionKey : string;
 
     /**
      * @description
@@ -64,20 +64,20 @@ export default abstract class DataBoxCore {
      */
     protected readonly apiLevel: number | undefined;
 
-    private readonly parallelFetch : boolean;
-    private readonly inputConsumer : InputConsumeFunction;
+    private readonly _parallelFetch : boolean;
+    private readonly _inputConsumer : InputConsumeFunction;
 
     protected constructor(name : string, bag: Bag, dbPreparedData : DbPreparedData, apiLevel : number | undefined) {
         this.name = name;
         this.apiLevel = apiLevel;
         this.bag = bag;
-        this.dbPreparedData = dbPreparedData;
-        this.sendErrorDescription = this.bag.getMainConfig().sendErrorDescription;
+        this._dbPreparedData = dbPreparedData;
+        this._sendErrorDescription = this.bag.getMainConfig().sendErrorDescription;
 
-        this.parallelFetch = dbPreparedData.parallelFetch;
-        this.inputConsumer = dbPreparedData.inputConsumer;
+        this._parallelFetch = dbPreparedData.parallelFetch;
+        this._inputConsumer = dbPreparedData.inputConsumer;
 
-        this.preparedTokenSessionKey =
+        this._preparedTokenSessionKey =
             `${bag.getZationConfig().getDataBoxKey()}.${this.dbTokenVersion}.${this.name}${apiLevel !== undefined ? apiLevel : ''}`;
     }
 
@@ -85,7 +85,7 @@ export default abstract class DataBoxCore {
      * **Not override this method.**
      */
     isParallelFetch() : boolean {
-        return this.parallelFetch;
+        return this._parallelFetch;
     }
 
     /**
@@ -97,12 +97,12 @@ export default abstract class DataBoxCore {
     async _consumeFetchInput(input : any) : Promise<any>
     {
         try {
-            return await this.inputConsumer(input);
+            return await this._inputConsumer(input);
         }
         catch (inputError) {
             const err : any = new Error('Invalid input to fetch data.');
             err.name = ErrorName.INVALID_INPUT;
-            err.backErrors = ErrorUtils.convertErrorToResponseErrors(inputError,this.sendErrorDescription);
+            err.backErrors = ErrorUtils.convertErrorToResponseErrors(inputError,this._sendErrorDescription);
             throw err;
         }
     }
@@ -115,7 +115,7 @@ export default abstract class DataBoxCore {
      * @param dbInfo
      */
     async _checkAccess(socket : UpSocket,dbInfo : DataBoxInfo){
-        const {systemAccessCheck,versionAccessCheck} = this.dbPreparedData;
+        const {systemAccessCheck,versionAccessCheck} = this._dbPreparedData;
 
         if(!systemAccessCheck(socket.baseSHBridge)){
             const err : any = new Error('Access to this DataBox with client system denied.');
@@ -145,7 +145,7 @@ export default abstract class DataBoxCore {
      */
     async _verifySessionToken(token : string, keyAppend : string = '') : Promise<DbSessionData | undefined> {
         return new Promise<DbSessionData | undefined>((resolve) => {
-            Jwt.verify(token,this.preparedTokenSessionKey+keyAppend,{
+            Jwt.verify(token,this._preparedTokenSessionKey+keyAppend,{
                 ignoreExpiration : true
             } as JwtVerifyOptions,(err, decoded) => {
                 resolve(err ? undefined : decoded);
@@ -162,7 +162,7 @@ export default abstract class DataBoxCore {
      */
     async _signSessionToken(sessionData : DbSessionData, keyAppend : string = '') : Promise<string> {
         return new Promise<string>((resolve,reject) => {
-            Jwt.sign(sessionData,this.preparedTokenSessionKey+keyAppend,{},(err,signedToken) => {
+            Jwt.sign(sessionData,this._preparedTokenSessionKey+keyAppend,{},(err,signedToken) => {
                 err ? reject(new Error('Sign token failed')) : resolve(signedToken);
             });
         });
@@ -175,7 +175,7 @@ export default abstract class DataBoxCore {
      * @param dbInfo
      */
     async _accessCheck(socket : UpSocket, dbInfo : DataBoxInfo) : Promise<boolean> {
-        return await this.dbPreparedData.accessCheck(socket.authEngine,socket.zSocket,dbInfo);
+        return await this._dbPreparedData.accessCheck(socket.authEngine,socket.zSocket,dbInfo);
     }
 
     /**

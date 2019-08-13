@@ -86,34 +86,34 @@ export default class DataBoxFamily extends DataBoxCore {
     /**
      * Maps the member id to the sockets and remove socket function.
      */
-    private readonly regMember : Map<string,Map<UpSocket,DbSocketMemory>> = new Map();
+    private readonly _regMember : Map<string,Map<UpSocket,DbSocketMemory>> = new Map();
     /**
      * Maps the sockets to the member ids.
      */
-    private readonly socketMembers : Map<UpSocket,Set<string>> = new Map<UpSocket, Set<string>>();
-    private readonly lastCudData : Map<string,{timestamp : number,id : string}> = new Map();
-    private readonly idValidCheck : IdValidChecker;
-    private readonly dbEventPreFix : string;
-    private readonly scExchange : ScExchange;
-    private readonly workerFullId : string;
-    private readonly maxSocketInputChannels : number;
+    private readonly _socketMembers : Map<UpSocket,Set<string>> = new Map<UpSocket, Set<string>>();
+    private readonly _lastCudData : Map<string,{timestamp : number,id : string}> = new Map();
+    private readonly _idValidCheck : IdValidChecker;
+    private readonly _dbEventPreFix : string;
+    private readonly _scExchange : ScExchange;
+    private readonly _workerFullId : string;
+    private readonly _maxSocketInputChannels : number;
 
-    private readonly buildFetchManager : FetchManagerBuilder<typeof DataBoxFamily.prototype._fetchData>;
-    private readonly sendCudToSockets : (id : string,dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void;
+    private readonly _buildFetchManager : FetchManagerBuilder<typeof DataBoxFamily.prototype._fetchData>;
+    private readonly _sendCudToSockets : (id : string,dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void;
 
     static ___instance___ : DataBoxFamily;
 
     constructor(id : string, bag: Bag, dbPreparedData : DbPreparedData, idValidCheck : IdValidChecker, apiLevel : number | undefined) {
         super(id,bag,dbPreparedData,apiLevel);
-        this.idValidCheck = idValidCheck;
-        this.scExchange = bag.getWorker().scServer.exchange;
-        this.workerFullId = bag.getWorker().getFullWorkerId();
-        this.maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
-        this.dbEventPreFix = `${DATA_BOX_START_INDICATOR}-${this.name}-${apiLevel !== undefined ? apiLevel : ''}-`;
+        this._idValidCheck = idValidCheck;
+        this._scExchange = bag.getWorker().scServer.exchange;
+        this._workerFullId = bag.getWorker().getFullWorkerId();
+        this._maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
+        this._dbEventPreFix = `${DATA_BOX_START_INDICATOR}-${this.name}-${apiLevel !== undefined ? apiLevel : ''}-`;
 
-        this.buildFetchManager = DataBoxFetchManager.buildFetchMangerBuilder
+        this._buildFetchManager = DataBoxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
-        this.sendCudToSockets = this._getSendCudToSocketsHandler();
+        this._sendCudToSockets = this._getSendCudToSocketsHandler();
     }
 
     /**
@@ -145,18 +145,18 @@ export default class DataBoxFamily extends DataBoxCore {
 
         const {inputChIds,unregisterSocket} = this._connectSocket(socket,id);
 
-        DataBoxUtils.maxInputChannelsCheck(inputChIds.size,this.maxSocketInputChannels);
+        DataBoxUtils.maxInputChannelsCheck(inputChIds.size,this._maxSocketInputChannels);
 
         //add input channel
         const chInputId = DataBoxUtils.generateInputChId(inputChIds);
         inputChIds.add(chInputId);
 
-        const outputCh = this.dbEventPreFix+id;
+        const outputCh = this._dbEventPreFix+id;
         const inputCh = outputCh+'-'+chInputId;
 
         const sessionData = inSessionData ? inSessionData : DataBoxUtils.createDbSessionData();
 
-        const fetchManager = this.buildFetchManager();
+        const fetchManager = this._buildFetchManager();
 
         socket.on(inputCh,async (senderPackage : DbClientInputPackage, respond : RespondFunction) => {
             switch (senderPackage.a) {
@@ -219,7 +219,7 @@ export default class DataBoxFamily extends DataBoxCore {
      * @private
      */
     _getLastCudId(id : string) : string {
-        const lastCudId = this.lastCudData.get(id);
+        const lastCudId = this._lastCudData.get(id);
         if(lastCudId){
             return lastCudId.id;
         }
@@ -257,7 +257,7 @@ export default class DataBoxFamily extends DataBoxCore {
      * @private
      */
     async _checkIdIsValid(id : string) : Promise<void> {
-        await this.idValidCheck(id);
+        await this._idValidCheck(id);
     }
 
     /**
@@ -266,11 +266,11 @@ export default class DataBoxFamily extends DataBoxCore {
      * @private
      */
     private _buildSocketFamilyMemberMap(id : string) : Map<UpSocket,DbSocketMemory> {
-        let memberMap = this.regMember.get(id);
+        let memberMap = this._regMember.get(id);
         if(!memberMap){
             memberMap = new Map<UpSocket,DbSocketMemory>();
             this._registerMember(id);
-            this.regMember.set(id,memberMap);
+            this._regMember.set(id,memberMap);
         }
         return memberMap;
     }
@@ -288,7 +288,7 @@ export default class DataBoxFamily extends DataBoxCore {
         let socketMemoryData = memberMap.get(socket);
         if(!socketMemoryData){
             //new socket = connect
-            const inputChPrefix = `${this.dbEventPreFix}${id}-`;
+            const inputChPrefix = `${this._dbEventPreFix}${id}-`;
             const inputChIds = new Set<string>();
 
             const unregisterSocketFunction = (inputChannelId ?: string) => {
@@ -316,10 +316,10 @@ export default class DataBoxFamily extends DataBoxCore {
             memberMap.set(socket,socketMemoryData);
 
             //socket member map
-            let socketMemberSet = this.socketMembers.get(socket);
+            let socketMemberSet = this._socketMembers.get(socket);
             if(!socketMemberSet){
                 socketMemberSet = new Set<string>();
-                this.socketMembers.set(socket,socketMemberSet);
+                this._socketMembers.set(socket,socketMemberSet);
             }
             socketMemberSet.add(id);
 
@@ -337,21 +337,21 @@ export default class DataBoxFamily extends DataBoxCore {
      */
     private _rmSocket(socket : UpSocket,id : string){
         //main member socket map
-        const memberMap = this.regMember.get(id);
+        const memberMap = this._regMember.get(id);
         if(memberMap){
             memberMap.delete(socket);
             if(memberMap.size === 0){
-                this.regMember.delete(id);
+                this._regMember.delete(id);
                 this._unregisterMember(id);
             }
         }
 
         //socket member map
-        const socketMemberSet = this.socketMembers.get(socket);
+        const socketMemberSet = this._socketMembers.get(socket);
         if(socketMemberSet){
             socketMemberSet.delete(id);
             if(socketMemberSet.size === 0) {
-                this.socketMembers.delete(socket);
+                this._socketMembers.delete(socket);
             }
         }
     }
@@ -362,10 +362,10 @@ export default class DataBoxFamily extends DataBoxCore {
      * @private
      */
     private _registerMember(id : string) {
-        this.lastCudData.set(id,{timestamp : Date.now(),id : ''});
-        this.scExchange.subscribe(this.dbEventPreFix+id)
+        this._lastCudData.set(id,{timestamp : Date.now(),id : ''});
+        this._scExchange.subscribe(this._dbEventPreFix+id)
             .watch(async (data) => {
-                if((data as DbWorkerCudPackage).w !== this.workerFullId) {
+                if((data as DbWorkerCudPackage).w !== this._workerFullId) {
                     switch (data.action) {
                         case DbWorkerAction.cud:
                             await this._processCudPackage(id,(data as DbWorkerCudPackage).d);
@@ -388,10 +388,10 @@ export default class DataBoxFamily extends DataBoxCore {
      * @private
      */
     private _unregisterMember(id : string) {
-        const channel = this.scExchange.channel(this.dbEventPreFix+id);
+        const channel = this._scExchange.channel(this._dbEventPreFix+id);
         channel.unwatch();
         channel.destroy();
-        this.lastCudData.delete(id);
+        this._lastCudData.delete(id);
     }
 
     /**
@@ -400,9 +400,9 @@ export default class DataBoxFamily extends DataBoxCore {
      * @param dbClientPackage
      */
     private _sendToSockets(id : string,dbClientPackage : DbClientOutputPackage) {
-        const socketSet = this.regMember.get(id);
+        const socketSet = this._regMember.get(id);
         if(socketSet){
-            const outputCh = this.dbEventPreFix+id;
+            const outputCh = this._dbEventPreFix+id;
             for(let socket of socketSet.keys()) {
                 socket.emit(outputCh,dbClientPackage);
             }
@@ -417,10 +417,10 @@ export default class DataBoxFamily extends DataBoxCore {
      */
     private async _sendCudToSocketsWithMiddleware(id : string,dbClientPackage : DbClientOutputCudPackage) {
 
-        const socketSet = this.regMember.get(id);
+        const socketSet = this._regMember.get(id);
 
         if(socketSet){
-            const outputCh = this.dbEventPreFix+id;
+            const outputCh = this._dbEventPreFix+id;
             const actions = dbClientPackage.d.a;
             const socketPromises : Promise<void>[] = [];
 
@@ -484,11 +484,11 @@ export default class DataBoxFamily extends DataBoxCore {
      * @param cudPackage
      */
     private async _processCudPackage(id : string,cudPackage : CudPackage){
-        this.sendCudToSockets(id,{a : DbClientOutputEvent.cud,d : cudPackage} as DbClientOutputCudPackage);
+        this._sendCudToSockets(id,{a : DbClientOutputEvent.cud,d : cudPackage} as DbClientOutputCudPackage);
         //updated last cud id.
-        const lastCudId = this.lastCudData.get(id);
+        const lastCudId = this._lastCudData.get(id);
         if((lastCudId && lastCudId.timestamp <= cudPackage.t) || !lastCudId){
-            this.lastCudData.set(id,{id : cudPackage.ci, timestamp : cudPackage.t});
+            this._lastCudData.set(id,{id : cudPackage.ci, timestamp : cudPackage.t});
         }
     }
 
@@ -530,7 +530,7 @@ export default class DataBoxFamily extends DataBoxCore {
         this._sendToWorker(id,{
             a : DbWorkerAction.cud,
             d : cudPackage,
-            w : this.workerFullId
+            w : this._workerFullId
         } as DbWorkerCudPackage);
         await this._processCudPackage(id,cudPackage);
     }
@@ -539,12 +539,12 @@ export default class DataBoxFamily extends DataBoxCore {
         this._sendToWorker(id,{
             a : DbWorkerAction.broadcast,
             d : clientPackage,
-            w : this.workerFullId
+            w : this._workerFullId
         } as DbWorkerBroadcastPackage);
     }
 
     private _sendToWorker(id : string,workerPackage : DbWorkerPackage) {
-        this.scExchange.publish(this.dbEventPreFix+id,workerPackage);
+        this._scExchange.publish(this._dbEventPreFix+id,workerPackage);
     }
 
     /**
@@ -554,9 +554,9 @@ export default class DataBoxFamily extends DataBoxCore {
      * @private
      */
     private _close(id : string,closePackage : DbClientOutputClosePackage) {
-        const memberMap = this.regMember.get(id);
+        const memberMap = this._regMember.get(id);
         if(memberMap){
-            const outputCh = this.dbEventPreFix+id;
+            const outputCh = this._dbEventPreFix+id;
             for(let [socket, socketMemory] of memberMap.entries()) {
                 socket.emit(outputCh,closePackage);
                 socketMemory.unregisterSocket();
@@ -680,7 +680,7 @@ export default class DataBoxFamily extends DataBoxCore {
                 {
                     a : DbWorkerAction.close,
                     d : clientPackage,
-                    w : this.workerFullId
+                    w : this._workerFullId
                 } as DbWorkerClosePackage);
         }
         this._close(id,clientPackage);
@@ -716,11 +716,11 @@ export default class DataBoxFamily extends DataBoxCore {
      * @param data
      */
     kickOut(id : string,socket : UpSocket,code ?: number | string,data ?: any) : void {
-        const socketMap = this.regMember.get(id);
+        const socketMap = this._regMember.get(id);
         if(socketMap){
             const socketMemory = socketMap.get(socket);
             if(socketMemory){
-                socket.emit(this.dbEventPreFix+id,
+                socket.emit(this._dbEventPreFix+id,
                     {a : DbClientOutputEvent.kickOut,c : code,d : data} as DbClientOutputKickOutPackage);
                 socketMemory.unregisterSocket();
             }
@@ -735,7 +735,7 @@ export default class DataBoxFamily extends DataBoxCore {
      * @param socket
      */
     getSocketRegIds(socket : UpSocket) : string[] {
-        const memberIds = this.socketMembers.get(socket);
+        const memberIds = this._socketMembers.get(socket);
         return memberIds ? Array.from(memberIds) : [];
     }
 
