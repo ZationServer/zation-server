@@ -131,4 +131,22 @@ export default class ObjectUtils
         }
         return found;
     }
+
+    /**
+     * Freeze the object deep.
+     * @param obj
+     */
+    static deepFreeze(obj : object) : object
+    {
+        Object.freeze(obj);
+        Object.getOwnPropertyNames(obj).forEach(function (prop) {
+            if (obj.hasOwnProperty(prop)
+                && obj[prop] !== null
+                && (typeof obj[prop] === "object" || typeof obj[prop] === "function")
+                && !Object.isFrozen(obj[prop])) {
+                ObjectUtils.deepFreeze(obj[prop]);
+            }
+        });
+        return obj;
+    }
 }
