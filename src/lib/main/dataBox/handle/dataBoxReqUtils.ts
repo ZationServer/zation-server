@@ -4,11 +4,11 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {DataBoxRegisterReq} from "../dbDefinitions";
+import {DataBoxConnectReq} from "../dbDefinitions";
 
 export default class DataBoxReqUtils
 {
-    static isValidReqStructure(dataBoxReq : DataBoxRegisterReq) : boolean {
+    static isValidReqStructure(dataBoxReq : DataBoxConnectReq) : boolean {
        return typeof dataBoxReq === 'object' && typeof dataBoxReq.d === "string";
     }
 }
