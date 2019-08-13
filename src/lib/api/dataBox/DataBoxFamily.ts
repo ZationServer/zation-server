@@ -75,6 +75,8 @@ const DefaultSymbol                               = Symbol();
  * - beforeInsert
  * - beforeUpdate
  * - beforeDelete
+ * - onConnection
+ * - onDisconnection
  *
  * and the cud middleware methods:
  * - insertMiddleware
@@ -211,6 +213,7 @@ export default class DataBoxFamily extends DataBoxCore {
         socket.off('disconnect',disconnectHandler);
         DataBoxAccessHelper.rmDb(this,socket);
         this._rmSocket(socket,id);
+        this.onDisconnection(id,socket.zSocket);
     }
 
     /**
@@ -325,6 +328,7 @@ export default class DataBoxFamily extends DataBoxCore {
 
             socket.on('disconnect',unregisterSocketFunction);
             DataBoxAccessHelper.addDb(this,socket);
+            this.onConnection(id,socket.zSocket);
         }
         return socketMemoryData;
     }
@@ -814,6 +818,23 @@ export default class DataBoxFamily extends DataBoxCore {
      * @param keyPath
      */
     protected async beforeDelete(id : string,keyPath : string[]) : Promise<void> {
+    }
+
+    // noinspection JSUnusedLocalSymbols
+    /**
+     * **Can be overridden.**
+     * A function that gets triggered whenever a new socket is connected to the DataBox.
+     */
+    protected onConnection(id : string,socket : ZSocket) : Promise<void> | void {
+    }
+
+    // noinspection JSUnusedLocalSymbols
+    /**
+     * **Can be overridden.**
+     * A function that gets triggered whenever a socket is disconnected from the DataBox.
+     * Notice that means all input channels are closed.
+     */
+    protected onDisconnection(id : string,socket : ZSocket) : Promise<void> | void {
     }
 
     /**
