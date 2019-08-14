@@ -342,6 +342,20 @@ export interface DbWorkerBroadcastPackage extends DbWorkerPackage{
 }
 
 /**
+ * The DataBox token.
+ */
+export interface DbToken {
+    /**
+     * The init data.
+     */
+    initData : any;
+    /**
+     * The DataBox sessions.
+     */
+    sessions : DbSessionData,
+}
+
+/**
  * All session data of a client.
  */
 export interface DbSessionData {

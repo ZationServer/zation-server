@@ -11,13 +11,14 @@ import NoMoreDataAvailableError           from "../../main/dataBox/noMoreDataAva
 import {VersionSystemAccessCheckFunction} from "../../main/systemVersion/systemVersionChecker";
 import UpSocket                           from "../../main/sc/socket";
 import {ErrorName}                        from "../../main/constants/errorName";
-const  Jwt : any                        = require('jsonwebtoken');
-import JwtVerifyOptions                   from "../../main/constants/jwt";
+const  Jwt                              = require('jsonwebtoken');
+import {JwtSignFunction, JwtVerifyFunction, JwtVerifyOptions} from "../../main/constants/jwt";
 import DbKeyArrayUtils                    from "../../main/dataBox/dbKeyArrayUtils";
-import {DataBoxInfo, DbSessionData}       from "../../main/dataBox/dbDefinitions";
+import {DataBoxInfo, DbToken}             from "../../main/dataBox/dbDefinitions";
 import {InputConsumeFunction}             from "../../main/input/inputClosureCreator";
 import ErrorUtils                         from "../../main/utils/errorUtils";
 import {DbAccessCheckFunction}            from "../../main/dataBox/dataBoxAccessHelper";
+import ObjectUtils                        from "../../main/utils/objectUtils";
 
 /**
  * If you want to present data on the client, the DataBox is the best choice.
@@ -164,12 +165,20 @@ export default abstract class DataBoxCore {
      * @param token
      * @param keyAppend
      */
-    async _verifySessionToken(token : string, keyAppend : string = '') : Promise<DbSessionData | undefined> {
-        return new Promise<DbSessionData | undefined>((resolve) => {
-            Jwt.verify(token,this._preparedTokenSessionKey+keyAppend,{
+    async _verifyDbToken(token : string, keyAppend : string = '') : Promise<DbToken | undefined> {
+        return new Promise<DbToken | undefined>((resolve) => {(Jwt.verify as JwtVerifyFunction)
+            (token,this._preparedTokenSessionKey+keyAppend,{
                 ignoreExpiration : true
-            } as JwtVerifyOptions,(err, decoded) => {
-                resolve(err ? undefined : decoded);
+            } as JwtVerifyOptions,(err, token : DbToken) => {
+                if(err){
+                    return undefined;
+                }
+                else {
+                    if(typeof token.initData === 'object'){
+                        ObjectUtils.deepFreeze(token.initData);
+                    }
+                    resolve(token);
+                }
             });
         });
     }
@@ -178,12 +187,12 @@ export default abstract class DataBoxCore {
      * **Not override this method.**
      * Sign a session token of the DataBox.
      * This method is used internally.
-     * @param sessionData
+     * @param dbToken
      * @param keyAppend
      */
-    async _signSessionToken(sessionData : DbSessionData, keyAppend : string = '') : Promise<string> {
+    async _signDbToken(dbToken : DbToken, keyAppend : string = '') : Promise<string> {
         return new Promise<string>((resolve,reject) => {
-            Jwt.sign(sessionData,this._preparedTokenSessionKey+keyAppend,{},(err,signedToken) => {
+            (Jwt.sign as JwtSignFunction)(dbToken,this._preparedTokenSessionKey+keyAppend,{},(err,signedToken) => {
                 err ? reject(new Error('Sign token failed')) : resolve(signedToken);
             });
         });

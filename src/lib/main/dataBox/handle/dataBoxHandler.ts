@@ -9,11 +9,17 @@ import DataBoxPrepare              from "../dataBoxPrepare";
 import ZationConfig                from "../../config/manager/zationConfig";
 import DataBoxCore                 from "../../../api/dataBox/DataBoxCore";
 import DataBoxFamily               from "../../../api/dataBox/DataBoxFamily";
-import {DataBoxInfo, DataBoxConnectReq, DataBoxConnectRes, DbRegisterResult, DbSessionData} from "../dbDefinitions";
+import {
+    DataBoxInfo,
+    DataBoxConnectReq,
+    DataBoxConnectRes,
+    DbRegisterResult,
+    DbToken
+} from "../dbDefinitions";
 import DataBoxReqUtils             from "./dataBoxReqUtils";
 import {ErrorName}                 from "../../constants/errorName";
 import DataBox                     from "../../../api/dataBox/DataBox";
-import ObjectUtils from "../../utils/objectUtils";
+import DataBoxUtils                from "../dataBoxUtils";
 
 export default class DataBoxHandler
 {
@@ -76,30 +82,28 @@ export default class DataBoxHandler
         await db._checkAccess(socket,dbInfo);
 
         //token check
-        let sessionData : undefined | DbSessionData = undefined;
+        let dbToken : undefined | DbToken = undefined;
         if(typeof input.t === 'string'){
-            sessionData = await db._verifySessionToken(input.t,isFamily ? input.i : undefined);
+            dbToken = await db._verifyDbToken(input.t,isFamily ? input.i : undefined);
         }
-
-        const initInput = await db._consumeInitInput(input.ii);
-        if(typeof initInput === 'object'){
-            ObjectUtils.deepFreeze(initInput);
+        if(!dbToken){
+            dbToken = DataBoxUtils.createDbToken((await db._consumeInitInput(input.ii)));
         }
 
         //register
         let keys : DbRegisterResult;
         let lastCudId;
         if(isFamily){
-            keys = await (db as DataBoxFamily)._registerSocket(socket,(input.i as string),sessionData,initInput);
+            keys = await (db as DataBoxFamily)._registerSocket(socket,(input.i as string),dbToken);
             lastCudId = (db as DataBoxFamily)._getLastCudId(input.i as string);
         }
         else {
-            keys = await (db as DataBox)._registerSocket(socket,sessionData,initInput);
+            keys = await (db as DataBox)._registerSocket(socket,dbToken);
             lastCudId = (db as DataBox)._getLastCudId();
         }
 
         return {
-            ut : sessionData !== undefined,
+            ut : dbToken !== undefined,
             ci : lastCudId,
             pf : db.isParallelFetch(),
             i : keys.inputCh,

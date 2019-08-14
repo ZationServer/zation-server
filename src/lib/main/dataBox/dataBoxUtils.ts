@@ -13,7 +13,7 @@ import {
     DBClientInputSessionTarget,
     DbSession,
     DbSessionData,
-    PreCudPackage
+    PreCudPackage, DbToken
 } from "./dbDefinitions";
 import DataBoxFamily, {DataBoxFamilyClass} from "../../api/dataBox/DataBoxFamily";
 import DataBoxFamilyContainer              from "./container/dataBoxFamilyContainer";
@@ -21,6 +21,7 @@ import DataBox, {DataBoxClass}             from "../../api/dataBox/DataBox";
 import DataBoxContainer                    from "./container/dataBoxContainer";
 import DataBoxNotFound                     from "../error/dataBoxNotFound";
 import {ErrorName}                         from "../constants/errorName";
+import ObjectUtils from "../utils/objectUtils";
 const uniqid                             = require('uniqid');
 
 export default class DataBoxUtils {
@@ -125,6 +126,20 @@ export default class DataBoxUtils {
         else {
             return new DataBoxFamilyContainer(dataBoxFamilyInstances);
         }
+    }
+
+    /**
+     * Creates a new DataBox token.
+     * @param initData
+     */
+    static createDbToken(initData : any) : DbToken {
+        if(typeof initData === 'object'){
+            ObjectUtils.deepFreeze(initData);
+        }
+        return {
+            initData,
+            sessions : DataBoxUtils.createDbSessionData()
+        };
     }
 
     /**

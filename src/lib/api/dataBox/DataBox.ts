@@ -23,7 +23,6 @@ import {
     DbClientInputPackage,
     DBClientInputSessionTarget,
     DbClientInputFetchResponse,
-    DbSessionData,
     DbWorkerAction,
     DbWorkerBroadcastPackage,
     DbWorkerClosePackage,
@@ -32,7 +31,7 @@ import {
     IfContainsOption,
     InfoOption,
     PreCudPackage,
-    TimestampOption, DbRegisterResult, DbSocketMemory, ChangeValue
+    TimestampOption, DbRegisterResult, DbSocketMemory, ChangeValue, DbToken
 } from "../../main/dataBox/dbDefinitions";
 import DataBoxAccessHelper from "../../main/dataBox/dataBoxAccessHelper";
 import {ScExchange}        from "../../main/sc/scServer";
@@ -120,11 +119,10 @@ export default class DataBox extends DataBoxCore {
     /**
      * **Not override this method.**
      * @param socket
-     * @param inSessionData
-     * @param initData
+     * @param dbToken
      * @private
      */
-    async _registerSocket(socket : UpSocket,inSessionData : undefined | DbSessionData,initData : any) : Promise<DbRegisterResult> {
+    async _registerSocket(socket : UpSocket,dbToken : DbToken) : Promise<DbRegisterResult> {
 
         const {inputChIds,unregisterSocket} = this._connectSocket(socket);
 
@@ -136,8 +134,6 @@ export default class DataBox extends DataBoxCore {
 
         const inputCh = this._dbEvent+'-'+chInputId;
 
-        const sessionData = inSessionData ? inSessionData : DataBoxUtils.createDbSessionData();
-
         const fetchManager = this._buildFetchManager();
 
         socket.on(inputCh,async (senderPackage : DbClientInputPackage, respond : RespondFunction) => {
@@ -148,9 +144,8 @@ export default class DataBox extends DataBoxCore {
                         await fetchManager(
                             respond,
                             this._fetchData,
-                            sessionData,
+                            dbToken,
                             await this._consumeFetchInput((senderPackage as DbClientInputFetchPackage).i),
-                            initData,
                             socket.zSocket,
                             senderPackage.t
                         );
@@ -160,10 +155,10 @@ export default class DataBox extends DataBoxCore {
                     }
                     break;
                 case DbClientInputAction.resetSession:
-                    await RespondUtils.respondWithFunc(respond,this._resetSession,sessionData,senderPackage.t);
+                    await RespondUtils.respondWithFunc(respond,this._resetSession,dbToken,senderPackage.t);
                     break;
                 case DbClientInputAction.copySession:
-                    await RespondUtils.respondWithFunc(respond,this._copySession,sessionData,senderPackage.t);
+                    await RespondUtils.respondWithFunc(respond,this._copySession,dbToken,senderPackage.t);
                     break;
                 case DbClientInputAction.getLastCudId:
                     respond(null,this._getLastCudId());
@@ -197,28 +192,28 @@ export default class DataBox extends DataBoxCore {
         return this._lastCudData.id;
     }
 
-    private async _fetchData(sessionData : DbSessionData,fetchInput : any,initData : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
-        const session = DataBoxUtils.getSession(sessionData,target);
+    private async _fetchData(dbToken : DbToken,fetchInput : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
+        const session = DataBoxUtils.getSession(dbToken.sessions,target);
 
         const currentCounter = session.c;
         session.c++;
-        const data = await this.fetchData(currentCounter,session.d,fetchInput,initData,zSocket);
+        const data = await this.fetchData(currentCounter,session.d,fetchInput,dbToken.initData,zSocket);
 
         return {
             c : currentCounter,
             d : data,
-            t : await this._signSessionToken(sessionData)
+            t : await this._signDbToken(dbToken)
         };
     }
 
-    private async _resetSession(sessionData : DbSessionData,target ?: DBClientInputSessionTarget) : Promise<string> {
-        DataBoxUtils.resetSession(sessionData,target);
-        return this._signSessionToken(sessionData);
+    private async _resetSession(dbToken : DbToken,target ?: DBClientInputSessionTarget) : Promise<string> {
+        DataBoxUtils.resetSession(dbToken.sessions,target);
+        return this._signDbToken(dbToken);
     }
 
-    private async _copySession(sessionData : DbSessionData,target ?: DBClientInputSessionTarget) : Promise<string> {
-        DataBoxUtils.copySession(sessionData,target);
-        return this._signSessionToken(sessionData);
+    private async _copySession(dbToken : DbToken,target ?: DBClientInputSessionTarget) : Promise<string> {
+        DataBoxUtils.copySession(dbToken.sessions,target);
+        return this._signDbToken(dbToken);
     }
 
     /**
