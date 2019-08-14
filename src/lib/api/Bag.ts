@@ -43,8 +43,7 @@ import ObjectPathActionSequence                             from "../main/utils/
 import Base64Utils                                          from "../main/utils/base64Utils";
 import ZationConfigFull                                     from "../main/config/manager/zationConfigFull";
 import CloneUtils                                           from "../main/utils/cloneUtils";
-import JwtSignOptions                                       from "../main/constants/jwt";
-import JwtVerifyOptions                                     from "../main/constants/jwt";
+import {JwtSignOptions,JwtVerifyOptions}                    from "../main/constants/jwt";
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction} from "../main/apiLevel/apiLevelUtils";
 import {ZationChannel}                                         from "../main/channel/channelDefinitions";
 import {DataBoxFamilyClass}                                    from "./dataBox/DataBoxFamily";

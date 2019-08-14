@@ -10,7 +10,7 @@ import BaseSHBridge         from "../bridges/baseSHBridge";
 import AEPreparedPart       from "./aePreparedPart";
 import AuthenticationError  from "../error/authenticationError";
 import TokenUtils           from "../token/tokenUtils";
-import JwtSignOptions       from "../constants/jwt";
+import {JwtSignOptions}     from "../constants/jwt";
 
 export default class AuthEngine
 {

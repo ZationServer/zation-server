@@ -4,14 +4,17 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-export default interface JwtSignOptions extends Record<string,any> {
+export interface JwtSignOptions extends Record<string,any> {
     expiresIn ?: number;
     notBefore ?: number;
     algorithm ?: string;
 }
 
-export default interface JwtVerifyOptions extends Record<string,any> {
+export interface JwtVerifyOptions extends Record<string,any> {
     algorithms ?: string[];
     maxAge ?: string | number;
     ignoreExpiration ?: boolean;
 }
+
+export type JwtSignFunction = (token : any,key : string,options : JwtVerifyOptions,callback : (err:any,token:string)=>void) => void;
+export type JwtVerifyFunction = (token : string,key : string,options : JwtSignOptions,callback : (err:any,token:any)=>void) => void;

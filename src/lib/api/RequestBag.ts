@@ -22,7 +22,7 @@ import InputIsNotCompatibleError  from "../main/error/inputIsNotCompatibleError"
 import MethodIsNotCompatibleError from "../main/error/methodIsNotCompatibleError";
 import TokenUtils                 from "../main/token/tokenUtils";
 import {ZationToken}              from "../main/constants/internal";
-import JwtSignOptions             from "../main/constants/jwt";
+import {JwtSignOptions}           from "../main/constants/jwt";
 import ZSocket                    from "../main/internalApi/ZSocket";
 import ApiLevelUtils              from "../main/apiLevel/apiLevelUtils";
 import CloneUtils                 from "../main/utils/cloneUtils";

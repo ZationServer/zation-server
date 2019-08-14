@@ -9,7 +9,7 @@ import * as core         from "express-serve-static-core";
 import {IncomingMessage} from "http";
 import SHBridge          from "./shBridge";
 import UpSocket          from "../sc/socket";
-import JwtOptions        from "../constants/jwt";
+import {JwtSignOptions}  from "../constants/jwt";
 import AuthEngine        from "../auth/authEngine";
 import ZationWorker    = require("../../core/zationWorker");
 import BaseSHBridgeDefault             from "./baseSHBridgeDefault";
@@ -33,7 +33,7 @@ export default class SHBridgeHttp extends BaseSHBridgeDefault implements SHBridg
 
     private newToken : boolean;
     private currentToken : ZationToken | null;
-    protected currentJwtSignOptions : JwtOptions = {};
+    protected currentJwtSignOptions : JwtSignOptions = {};
 
     constructor(httpRes : core.Response,
                 httpReq : core.Request,
@@ -137,7 +137,7 @@ export default class SHBridgeHttp extends BaseSHBridgeDefault implements SHBridg
         return false;
     }
 
-    async setToken(data : ZationToken,jwtOptions : JwtOptions = {}): Promise<void> {
+    async setToken(data : ZationToken,jwtOptions : JwtSignOptions = {}): Promise<void> {
         this.newToken = true;
         this.currentToken = data;
         this.currentJwtSignOptions = jwtOptions;
@@ -154,7 +154,7 @@ export default class SHBridgeHttp extends BaseSHBridgeDefault implements SHBridg
         return undefined;
     }
 
-    getJwtSignOptions() : JwtOptions {
+    getJwtSignOptions() : JwtSignOptions {
         return this.currentJwtSignOptions;
     }
 

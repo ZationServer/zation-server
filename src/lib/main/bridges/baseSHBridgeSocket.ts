@@ -10,7 +10,7 @@ import {IncomingMessage}   from "http";
 import BaseSHBridge        from "./baseSHBridge";
 import BaseSHBridgeDefault from "./baseSHBridgeDefault";
 import TokenUtils          from "../token/tokenUtils";
-import JwtOptions          from "../constants/jwt";
+import {JwtSignOptions}    from "../constants/jwt";
 import AuthEngine          from "../auth/authEngine";
 
 /**
@@ -67,7 +67,7 @@ export default class BaseSHBridgeSocket extends BaseSHBridgeDefault implements B
         return this.newToken;
     }
 
-    async setToken(data : object,jwtOptions : JwtOptions = {}) : Promise<void> {
+    async setToken(data : object,jwtOptions : JwtSignOptions = {}) : Promise<void> {
         await TokenUtils.setSocketTokenAsync(this.socket,data,jwtOptions);
         this.newToken = true;
     }

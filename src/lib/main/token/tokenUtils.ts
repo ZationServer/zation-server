@@ -6,16 +6,15 @@ GitHub: LucaCode
 
 import UpSocket              from "../sc/socket";
 import {PrepareZationToken, ZationToken} from "../constants/internal";
+import {JwtSignFunction, JwtSignOptions, JwtVerifyFunction, JwtVerifyOptions} from "../constants/jwt";
 import BaseSHBridge        from "../bridges/baseSHBridge";
 import AEPreparedPart      from "../auth/aePreparedPart";
 import BackError           from "../../api/BackError";
 import AuthenticationError from "../error/authenticationError";
 import {MainBackErrors}    from "../zationBackErrors/mainBackErrors";
 import ZationConfigFull    from "../config/manager/zationConfigFull";
-import JwtSignOptions      from "../constants/jwt";
 import ObjectUtils         from "../utils/objectUtils";
 import ZationConfig        from "../config/manager/zationConfig";
-import JwtVerifyOptions    from "../constants/jwt";
 const  Jwt : any         = require('jsonwebtoken');
 const uniqid             = require('uniqid');
 
@@ -137,7 +136,7 @@ export default class TokenUtils
     {
         return new Promise((resolve, reject) =>
         {
-            Jwt.verify(signedToken,zc.getVerifyKey(),jwtOptions,(err, decoded) => {
+            (Jwt.verify as JwtVerifyFunction)(signedToken,zc.getVerifyKey(),jwtOptions,(err, decoded) => {
                 if(err) {
                     if(err.name === 'TokenExpiredError') {
                         reject(new BackError(MainBackErrors.tokenExpiredError,{expiredAt : err.expiredAt}));
@@ -169,7 +168,7 @@ export default class TokenUtils
             const options = zc.getJwtSignOptions();
             ObjectUtils.addObToOb(options,jwtOptions);
 
-            Jwt.sign(data,zc.getSignKey(),options,(err,signedToken) => {
+            (Jwt.sign as JwtSignFunction)(data,zc.getSignKey(),options,(err,signedToken) => {
                 if(err) {
                     reject(new BackError(MainBackErrors.unknownTokenSignError,{err : err.toString()}));
                 }

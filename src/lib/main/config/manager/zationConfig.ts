@@ -12,7 +12,7 @@ import {StartMode}         from "../../constants/startMode";
 import ZationInfo          from "../../internalApi/zationInfo";
 import ZcTransport         from "./zcTransport";
 import ConfigLocations     from "./configLocations";
-import JwtSignOptions      from "../../constants/jwt";
+import {JwtSignOptions}    from "../../constants/jwt";
 
 export default abstract class ZationConfig {
 
