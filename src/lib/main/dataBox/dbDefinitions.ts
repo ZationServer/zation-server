@@ -248,7 +248,7 @@ export interface DbClientOutputKickOutPackage extends DbClientOutputPackage{
  */
 export enum DBClientInputSessionTarget {
     mainSession,
-    restoreSession
+    reloadSession
 }
 
 /**
@@ -350,9 +350,9 @@ export interface DbSessionData {
      */
     main : DbSession,
     /**
-     * restoreSession
+     * reloadSession
      */
-    restore: DbSession
+    reload: DbSession
 }
 
 /**

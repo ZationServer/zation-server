@@ -134,7 +134,7 @@ export default class DataBoxUtils {
     {
         return {
             main : {d:{},c:0},
-            restore : {d:{},c:0}
+            reload : {d:{},c:0}
         };
     }
 
@@ -152,8 +152,8 @@ export default class DataBoxUtils {
         switch (target) {
             case DBClientInputSessionTarget.mainSession:
                 return dbSessionData.main;
-            case DBClientInputSessionTarget.restoreSession:
-                return dbSessionData.restore;
+            case DBClientInputSessionTarget.reloadSession:
+                return dbSessionData.reload;
             default:
                 const err : any = new Error(`Unknown session target.`);
                 err.name = ErrorName.UNKNOWN_SESSION_TARGET;
@@ -170,10 +170,10 @@ export default class DataBoxUtils {
     {
         const selectedSession = DataBoxUtils.getSession(dbSessionData,target);
         if(dbSessionData.main !== selectedSession){
-            dbSessionData.main = dbSessionData.restore;
+            dbSessionData.main = dbSessionData.reload;
         }
         else {
-            dbSessionData.restore = dbSessionData.main;
+            dbSessionData.reload = dbSessionData.main;
         }
     }
 
@@ -189,7 +189,7 @@ export default class DataBoxUtils {
             dbSessionData.main = {c:0,d:{}};
         }
         else {
-            dbSessionData.restore = {c:0,d:{}};
+            dbSessionData.reload = {c:0,d:{}};
         }
     }
 
