@@ -21,7 +21,6 @@ import DataBox, {DataBoxClass}             from "../../api/dataBox/DataBox";
 import DataBoxContainer                    from "./container/dataBoxContainer";
 import DataBoxNotFound                     from "../error/dataBoxNotFound";
 import {ErrorName}                         from "../constants/errorName";
-import ObjectUtils from "../utils/objectUtils";
 const uniqid                             = require('uniqid');
 
 export default class DataBoxUtils {
