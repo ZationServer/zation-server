@@ -130,14 +130,11 @@ export default class DataBoxUtils {
 
     /**
      * Creates a new DataBox token.
-     * @param initData
+     * @param rawInitData
      */
-    static createDbToken(initData : any) : DbToken {
-        if(typeof initData === 'object'){
-            ObjectUtils.deepFreeze(initData);
-        }
+    static createDbToken(rawInitData : any) : DbToken {
         return {
-            initData,
+            rawInitData: rawInitData,
             sessions : DataBoxUtils.createDbSessionData()
         };
     }

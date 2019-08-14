@@ -18,7 +18,6 @@ import {DataBoxInfo, DbToken}             from "../../main/dataBox/dbDefinitions
 import {InputConsumeFunction}             from "../../main/input/inputClosureCreator";
 import ErrorUtils                         from "../../main/utils/errorUtils";
 import {DbAccessCheckFunction}            from "../../main/dataBox/dataBoxAccessHelper";
-import ObjectUtils                        from "../../main/utils/objectUtils";
 
 /**
  * If you want to present data on the client, the DataBox is the best choice.
@@ -170,15 +169,7 @@ export default abstract class DataBoxCore {
             (token,this._preparedTokenSessionKey+keyAppend,{
                 ignoreExpiration : true
             } as JwtVerifyOptions,(err, token : DbToken) => {
-                if(err){
-                    return undefined;
-                }
-                else {
-                    if(typeof token.initData === 'object'){
-                        ObjectUtils.deepFreeze(token.initData);
-                    }
-                    resolve(token);
-                }
+                resolve(err ? undefined : token);
             });
         });
     }

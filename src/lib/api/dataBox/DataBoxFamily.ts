@@ -140,9 +140,10 @@ export default class DataBoxFamily extends DataBoxCore {
      * @param socket
      * @param id
      * @param dbToken
+     * @param initData
      * @private
      */
-    async _registerSocket(socket : UpSocket,id : string,dbToken : DbToken) : Promise<DbRegisterResult> {
+    async _registerSocket(socket : UpSocket,id : string,dbToken : DbToken,initData : any) : Promise<DbRegisterResult> {
 
         const {inputChIds,unregisterSocket} = this._connectSocket(socket,id);
 
@@ -168,6 +169,7 @@ export default class DataBoxFamily extends DataBoxCore {
                             id,
                             dbToken,
                             await this._consumeFetchInput((senderPackage as DbClientInputFetchPackage).i),
+                            initData,
                             socket.zSocket,
                             senderPackage.t
                         );
@@ -226,12 +228,12 @@ export default class DataBoxFamily extends DataBoxCore {
         return '';
     }
 
-    private async _fetchData(id : string,dbToken : DbToken,fetchInput : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
+    private async _fetchData(id : string,dbToken : DbToken,fetchInput : any,initData : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
         const session = DataBoxUtils.getSession(dbToken.sessions,target);
 
         const currentCounter = session.c;
         session.c++;
-        const data = await this.fetchData(id,currentCounter,session.d,fetchInput,dbToken.initData,zSocket);
+        const data = await this.fetchData(id,currentCounter,session.d,fetchInput,initData,zSocket);
 
         return {
             c : currentCounter,
@@ -752,6 +754,7 @@ export default class DataBoxFamily extends DataBoxCore {
      * Also, you extra get a session object, this object you can use to save variables that are
      * important to get more data in the future, for example, the last id of the item that the client had received.
      * The session object is only available on the server-side and can not be modified on the client-side.
+     * Notice that you only can store JSON convertible data in the session.
      * If you design the DataBox in such a way that the next fetch is not depending on the previous one,
      * you can activate the parallelFetch option in the DataBox config.
      * The data what you are returning can be of any type.

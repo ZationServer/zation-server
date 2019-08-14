@@ -346,9 +346,9 @@ export interface DbWorkerBroadcastPackage extends DbWorkerPackage{
  */
 export interface DbToken {
     /**
-     * The init data.
+     * The raw init data.
      */
-    initData : any;
+    rawInitData : any;
     /**
      * The DataBox sessions.
      */

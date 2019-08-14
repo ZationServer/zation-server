@@ -20,6 +20,7 @@ import DataBoxReqUtils             from "./dataBoxReqUtils";
 import {ErrorName}                 from "../../constants/errorName";
 import DataBox                     from "../../../api/dataBox/DataBox";
 import DataBoxUtils                from "../dataBoxUtils";
+import ObjectUtils                 from "../../utils/objectUtils";
 
 export default class DataBoxHandler
 {
@@ -81,33 +82,49 @@ export default class DataBoxHandler
         }
         await db._checkAccess(socket,dbInfo);
 
-        //token check
+        //token check and init data
         let dbToken : undefined | DbToken = undefined;
-        if(typeof input.t === 'string'){
-            dbToken = await db._verifyDbToken(input.t,isFamily ? input.i : undefined);
+        let usedToken = false;
+        let processedInitData : any;
+        try {
+            if(typeof input.t === 'string'){
+                const tmpDbToken = await db._verifyDbToken(input.t,isFamily ? input.i : undefined);
+                if(tmpDbToken){
+                    processedInitData = await db._consumeInitInput(tmpDbToken.rawInitData);
+                    usedToken = true;
+                    dbToken = tmpDbToken;
+                }
+            }
         }
+        catch (e) {}
         if(!dbToken){
-            dbToken = DataBoxUtils.createDbToken((await db._consumeInitInput(input.ii)));
+            dbToken = DataBoxUtils.createDbToken(input.ii);
+            processedInitData = await db._consumeInitInput(input.ii);
+        }
+
+        if(typeof processedInitData === 'object'){
+            ObjectUtils.deepFreeze(processedInitData);
         }
 
         //register
         let keys : DbRegisterResult;
         let lastCudId;
         if(isFamily){
-            keys = await (db as DataBoxFamily)._registerSocket(socket,(input.i as string),dbToken);
+            keys = await (db as DataBoxFamily)._registerSocket(socket,(input.i as string),dbToken,processedInitData);
             lastCudId = (db as DataBoxFamily)._getLastCudId(input.i as string);
         }
         else {
-            keys = await (db as DataBox)._registerSocket(socket,dbToken);
+            keys = await (db as DataBox)._registerSocket(socket,dbToken,processedInitData);
             lastCudId = (db as DataBox)._getLastCudId();
         }
 
         return {
-            ut : dbToken !== undefined,
+            ut : usedToken,
             ci : lastCudId,
             pf : db.isParallelFetch(),
             i : keys.inputCh,
             o : keys.outputCh
         };
     }
+
 }
