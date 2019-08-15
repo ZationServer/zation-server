@@ -8,6 +8,8 @@ export default class CloneUtils
 {
     /**
      * Clone any value.
+     * Except for instances of an object
+     * (the prototype will not be set).
      * @param v
      */
     static deepClone<T extends any = any>(v : T) : T {
