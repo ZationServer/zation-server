@@ -407,12 +407,11 @@ export interface TimestampOption {
 
 export interface IfContainsOption {
     /**
-     * The if contains option gives you the possibility to define a condition
+     * The ifContains option gives you the possibility to define a condition
      * that the client only inserts the value when it has data with that specific key.
-     * Notice also that the new element will not be inserted at the end.
-     * Instead of it will be inserted before the ifContains element.
      * That can be useful if you want to reinsert old data,
      * but only to the clients that are already loaded this old data section.
+     * Notice also that in some cases the insertion sequence is changed.
      */
     ifContains ?: string
 }

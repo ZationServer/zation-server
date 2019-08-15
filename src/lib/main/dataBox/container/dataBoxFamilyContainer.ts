@@ -23,9 +23,26 @@ export default class DataBoxFamilyContainer {
      * The keyPath can be a string array or a
      * string where you can separate the keys with a dot.
      * Notice that this method will only update the DataBox and invoke the before-event.
-     * It will not automatically update the databank,
+     * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
+     * Insert behavior:
+     * Without ifContains (ifContains exists):
+     * Base (with keyPath [] or '') -> Nothing
+     * KeyArray -> Inserts the value at the end with the key
+     * (if the key does not exist). But if you are using a compare function,
+     * it will insert the value in the correct position.
+     * Object -> Inserts the value with the key (if the key does not exist).
+     * Array -> Key will be parsed to int if it is a number then it will be inserted at the index.
+     * Otherwise, it will be added at the end.
+     * With ifContains (ifContains exists):
+     * Base (with keyPath [] or '') -> Nothing
+     * KeyArray -> Inserts the value before the ifContains element with the key
+     * (if the key does not exist). But if you are using a compare function,
+     * it will insert the value in the correct position.
+     * Object -> Inserts the value with the key (if the key does not exist).
+     * Array -> Key will be parsed to int if it is a number then it will be inserted at the index.
+     * Otherwise, it will be added at the end.
      * @param id The member of the family you want to update.
      * Numbers will be converted to a string.
      * @param keyPath
@@ -45,9 +62,15 @@ export default class DataBoxFamilyContainer {
      * The keyPath can be a string array or a
      * string where you can separate the keys with a dot.
      * Notice that this method will only update the DataBox and invoke the before-event.
-     * It will not automatically update the databank,
+     * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
+     * Update behavior:
+     * Base (with keyPath [] or '') -> Updates the complete structure.
+     * KeyArray -> Updates the specific value (if the key does exist).
+     * Object -> Updates the specific value (if the key does exist).
+     * Array -> Key will be parsed to int if it is a number it will
+     * update the specific value (if the index exist).
      * @param id The member of the family you want to update.
      * Numbers will be converted to a string.
      * @param keyPath
@@ -67,9 +90,15 @@ export default class DataBoxFamilyContainer {
      * The keyPath can be a string array or a
      * string where you can separate the keys with a dot.
      * Notice that this method will only update the DataBox and invoke the before-event.
-     * It will not automatically update the databank,
+     * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
+     * Delete behavior:
+     * Base (with keyPath [] or '') -> Deletes the complete structure.
+     * KeyArray -> Deletes the specific value (if the key does exist).
+     * Object -> Deletes the specific value (if the key does exist).
+     * Array -> Key will be parsed to int if it is a number it will delete the
+     * specific value (if the index does exist). Otherwise, it will delete the last item.
      * @param id The member of the family you want to update.
      * Numbers will be converted to a string.
      * @param keyPath
@@ -89,7 +118,7 @@ export default class DataBoxFamilyContainer {
      * Notice that this method will only update the DataBox and invoke the before-events.
      * This method is ideal for doing multiple changes on a DataBox
      * because it will pack them all together and send them all in ones.
-     * It will not automatically update the databank,
+     * It will not automatically update the database,
      * so you have to do it in the before-events or before calling this method.
      * @param id The member of the family you want to edit.
      * Numbers will be converted to a string.
