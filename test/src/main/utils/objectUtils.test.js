@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 const ObjectUtils     = require("../../../../dist/lib/main/utils/objectUtils").default;
 const assert          = require("chai").assert;
 
-describe('HELPER.TOOLS.ObjectUtils',() => {
+describe('MAIN.UTILS.ObjectUtils',() => {
 
     describe('Methods',() => {
 

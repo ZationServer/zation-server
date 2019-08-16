@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 const BackErrorBuilder = require("../../../../dist/lib/main/builder/backErrorBuilder").default;
 const assert           = require("chai").assert;
 
-describe('HELPER.BackErrorBuilder',() => {
+describe('MAIN.BackErrorBuilder',() => {
 
     describe('Build', function () {
 

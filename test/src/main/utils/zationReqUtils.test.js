@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 const ControllerReqUtils  = require("../../../../dist/lib/main/controller/request/controllerReqUtils").default;
 const assert              = require("chai").assert;
 
-describe('HELPER.TOOLS.ZATION_ReqUtils',() => {
+describe('MAIN.UTILS.ZATION_ReqUtils',() => {
 
     describe('Methods',() => {
 

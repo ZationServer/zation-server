@@ -8,7 +8,7 @@ const TimeUtils       = require("../../../../dist/lib/main/utils/timeUtils").def
 const moment          = require("moment");
 const assert          = require("chai").assert;
 
-describe('HELPER.TOOLS.TimeUtils',() => {
+describe('MAIN.UTILS.TimeUtils',() => {
 
     describe('Methods',() => {
 

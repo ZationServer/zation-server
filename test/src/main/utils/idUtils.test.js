@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 const IdCounter       = require("../../../../dist/lib/main/utils/idCounter").default;
 const assert          = require("chai").assert;
 
-describe('HELPER.TOOLS.IdCounter',() => {
+describe('MAIN.UTILS.IdCounter',() => {
 
     describe('Methods',() => {
 
