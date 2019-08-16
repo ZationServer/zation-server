@@ -23,8 +23,6 @@ export default class DbCudActionSequence
 
     /**
      * Insert a new value in the DataBox.
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
      * Insert behavior:
      * Without ifContains (ifContains exists):
      * Base (with keyPath [] or '') -> Nothing
@@ -43,6 +41,8 @@ export default class DbCudActionSequence
      * Array -> Key will be parsed to int if it is a number then it will be inserted at the index.
      * Otherwise, it will be added at the end.
      * @param keyPath
+     * The keyPath can be a string array or a
+     * string where you can separate the keys with a dot.
      * @param value
      * @param ifContains
      * @param code
@@ -55,8 +55,6 @@ export default class DbCudActionSequence
 
     /**
      * Update a value in the DataBox.
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
      * Update behavior:
      * Base (with keyPath [] or '') -> Updates the complete structure.
      * KeyArray -> Updates the specific value (if the key does exist).
@@ -64,6 +62,8 @@ export default class DbCudActionSequence
      * Array -> Key will be parsed to int if it is a number it will
      * update the specific value (if the index exist).
      * @param keyPath
+     * The keyPath can be a string array or a
+     * string where you can separate the keys with a dot.
      * @param value
      * @param code
      * @param data
@@ -75,8 +75,6 @@ export default class DbCudActionSequence
 
     /**
      * Delete a value in the DataBox.
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
      * Delete behavior:
      * Base (with keyPath [] or '') -> Deletes the complete structure.
      * KeyArray -> Deletes the specific value (if the key does exist).
@@ -84,6 +82,8 @@ export default class DbCudActionSequence
      * Array -> Key will be parsed to int if it is a number it will delete the
      * specific value (if the index does exist). Otherwise, it will delete the last item.
      * @param keyPath
+     * The keyPath can be a string array or a
+     * string where you can separate the keys with a dot.
      * @param code
      * @param data
      */

@@ -570,8 +570,6 @@ export default class DataBoxFamily extends DataBoxCore {
     /**
      * **Not override this method.**
      * Insert a new value in the DataBox.
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
      * Notice that this method will only update the DataBox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
@@ -596,6 +594,8 @@ export default class DataBoxFamily extends DataBoxCore {
      * @param id The member of the family you want to update.
      * Numbers will be converted to a string.
      * @param keyPath
+     * The keyPath can be a string array or a
+     * string where you can separate the keys with a dot.
      * @param value
      * @param ifContains
      * @param timestamp
@@ -612,8 +612,6 @@ export default class DataBoxFamily extends DataBoxCore {
     /**
      * **Not override this method.**
      * Update a value in the DataBox.
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
      * Notice that this method will only update the DataBox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
@@ -627,6 +625,8 @@ export default class DataBoxFamily extends DataBoxCore {
      * @param id The member of the family you want to update.
      * Numbers will be converted to a string.
      * @param keyPath
+     * The keyPath can be a string array or a
+     * string where you can separate the keys with a dot.
      * @param value
      * @param timestamp
      * @param code
@@ -642,8 +642,6 @@ export default class DataBoxFamily extends DataBoxCore {
     /**
      * **Not override this method.**
      * Delete a value in the DataBox.
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
      * Notice that this method will only update the DataBox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
@@ -657,6 +655,8 @@ export default class DataBoxFamily extends DataBoxCore {
      * @param id The member of the family you want to update.
      * Numbers will be converted to a string.
      * @param keyPath
+     * The keyPath can be a string array or a
+     * string where you can separate the keys with a dot.
      * @param timestamp
      * @param code
      * @param data

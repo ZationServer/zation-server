@@ -20,8 +20,6 @@ export default class DataBoxFamilyContainer {
 
     /**
      * Insert a new value in the DataBox.
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
      * Notice that this method will only update the DataBox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
@@ -46,6 +44,8 @@ export default class DataBoxFamilyContainer {
      * @param id The member of the family you want to update.
      * Numbers will be converted to a string.
      * @param keyPath
+     * The keyPath can be a string array or a
+     * string where you can separate the keys with a dot.
      * @param value
      * @param options
      */
@@ -59,8 +59,6 @@ export default class DataBoxFamilyContainer {
 
     /**
      * Update a value in the DataBox.
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
      * Notice that this method will only update the DataBox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
@@ -74,6 +72,8 @@ export default class DataBoxFamilyContainer {
      * @param id The member of the family you want to update.
      * Numbers will be converted to a string.
      * @param keyPath
+     * The keyPath can be a string array or a
+     * string where you can separate the keys with a dot.
      * @param value
      * @param options
      */
@@ -87,8 +87,6 @@ export default class DataBoxFamilyContainer {
 
     /**
      * Delete a value in the DataBox.
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
      * Notice that this method will only update the DataBox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
@@ -102,6 +100,8 @@ export default class DataBoxFamilyContainer {
      * @param id The member of the family you want to update.
      * Numbers will be converted to a string.
      * @param keyPath
+     * The keyPath can be a string array or a
+     * string where you can separate the keys with a dot.
      * @param options
      */
     async delete(id : string | number,keyPath: string[] | string,options : InfoOption & TimestampOption = {}): Promise<void> {

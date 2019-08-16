@@ -447,8 +447,6 @@ export default class DataBox extends DataBoxCore {
     /**
      * **Not override this method.**
      * Insert a new value in the DataBox.
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
      * Notice that this method will only update the DataBox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
@@ -471,6 +469,8 @@ export default class DataBox extends DataBoxCore {
      * Array -> Key will be parsed to int if it is a number then it will be inserted at the index.
      * Otherwise, it will be added at the end.
      * @param keyPath
+     * The keyPath can be a string array or a
+     * string where you can separate the keys with a dot.
      * @param value
      * @param ifContains
      * @param timestamp
@@ -486,8 +486,6 @@ export default class DataBox extends DataBoxCore {
     /**
      * **Not override this method.**
      * Update a value in the DataBox.
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
      * Notice that this method will only update the DataBox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
@@ -499,6 +497,8 @@ export default class DataBox extends DataBoxCore {
      * Array -> Key will be parsed to int if it is a number it will
      * update the specific value (if the index exist).
      * @param keyPath
+     * The keyPath can be a string array or a
+     * string where you can separate the keys with a dot.
      * @param value
      * @param timestamp
      * @param code
@@ -513,8 +513,6 @@ export default class DataBox extends DataBoxCore {
     /**
      * **Not override this method.**
      * Delete a value in the DataBox.
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
      * Notice that this method will only update the DataBox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
@@ -526,6 +524,8 @@ export default class DataBox extends DataBoxCore {
      * Array -> Key will be parsed to int if it is a number it will delete the
      * specific value (if the index does exist). Otherwise, it will delete the last item.
      * @param keyPath
+     * The keyPath can be a string array or a
+     * string where you can separate the keys with a dot.
      * @param timestamp
      * @param code
      * @param data
