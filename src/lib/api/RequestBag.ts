@@ -1010,7 +1010,8 @@ export default class RequestBag extends Bag
      * Emit to the socket.
      * If you not only transmit than the return value is a promise with the result,
      * and if an error occurs while emitting to socket, this error is thrown.
-     * It uses the custom zation emit namespace (so you cannot have name conflicts with internal emit names).
+     * It uses the custom zation event namespace
+     * (so you cannot have name conflicts with internal event names).
      * Requires ws request!
      * @throws MethodIsNotCompatibleError
      * @param event
@@ -1027,9 +1028,9 @@ export default class RequestBag extends Bag
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Respond on emit events of the socket.
-     * It uses the custom zation emit namespace
-     * (so you cannot have name conflicts with internal emit names).
+     * Respond on an emit-event of the socket.
+     * It uses the custom zation event namespace
+     * (so you cannot have name conflicts with internal event names).
      * Requires ws request!
      * @throws MethodIsNotCompatibleError
      * @param event
@@ -1039,6 +1040,20 @@ export default class RequestBag extends Bag
      */
     socketOn(event : string,handler : OnHandlerFunction){
         this.socket.on(event,handler);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Respond on emit-event of the socket but only once.
+     * It uses the custom zation event namespace
+     * (so you cannot have name conflicts with internal event names).
+     * @param event
+     * @param handler
+     * The function that gets called when the event occurs,
+     * parameters are the data and a response function that you can call to respond on the event back.
+     */
+    socketOnce(event : string,handler : OnHandlerFunction) : void {
+        this.socket.once(event,handler);
     }
 
     // noinspection JSUnusedGlobalSymbols

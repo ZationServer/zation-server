@@ -34,7 +34,7 @@ export interface PrepareZationToken {
 
 export const DefaultUserGroupFallBack = 'default';
 
-export const ZationCustomEmitNamespace = '>CE.';
+export const ZationCustomEventNamespace = '>CE.';
 
 //CN = CONFIG_NAMES
 export enum ConfigNames

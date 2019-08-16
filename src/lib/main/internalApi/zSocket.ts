@@ -4,7 +4,7 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {ZationCustomEmitNamespace, ZationToken} from "../constants/internal";
+import {ZationCustomEventNamespace, ZationToken} from "../constants/internal";
 import UpSocket, {OnHandlerFunction}            from "../sc/socket";
 import TokenUtils       from "../token/tokenUtils";
 import ObjectPath       from "../utils/objectPath";
@@ -320,7 +320,8 @@ export default class ZSocket
      * Emit to the socket.
      * If you not only transmit than the return value is a promise with the result,
      * and if an error occurs while emitting to socket, this error is thrown.
-     * It uses the custom zation emit namespace (so you cannot have name conflicts with internal emit names).
+     * It uses the custom zation event namespace
+     * (so you cannot have name conflicts with internal event names).
      * @param event
      * @param data
      * @param onlyTransmit
@@ -334,11 +335,11 @@ export default class ZSocket
         return new Promise<object>((resolve, reject) => {
             // noinspection DuplicatedCode
             if(onlyTransmit){
-                this.shBridge.getSocket().emit(ZationCustomEmitNamespace+event,data);
+                this.shBridge.getSocket().emit(ZationCustomEventNamespace+event,data);
                 resolve();
             }
             else {
-                this.shBridge.getSocket().emit(ZationCustomEmitNamespace+event,data,(err,data) => {
+                this.shBridge.getSocket().emit(ZationCustomEventNamespace+event,data,(err, data) => {
                     err ? reject(err) : resolve(data);
                 });
             }
@@ -346,16 +347,33 @@ export default class ZSocket
     }
 
     /**
-     * Respond on emit events of the socket.
-     * It uses the custom zation emit namespace
-     * (so you cannot have name conflicts with internal emit names).
+     * Respond on an emit-event of the socket.
+     * It uses the custom zation event namespace
+     * (so you cannot have name conflicts with internal event names).
      * @param event
      * @param handler
      * The function that gets called when the event occurs,
      * parameters are the data and a response function that you can call to respond on the event back.
      */
     on(event : string,handler : OnHandlerFunction){
-        this._socket.on(ZationCustomEmitNamespace+event,handler);
+        this._socket.on(ZationCustomEventNamespace+event,handler);
+    }
+
+    /**
+     * Respond on emit-event of the socket but only once.
+     * It uses the custom zation event namespace
+     * (so you cannot have name conflicts with internal event names).
+     * @param event
+     * @param handler
+     * The function that gets called when the event occurs,
+     * parameters are the data and a response function that you can call to respond on the event back.
+     */
+    once(event : string,handler : OnHandlerFunction) : void {
+        const tmpHandler : OnHandlerFunction = (data, response) => {
+            tmpHandler(data,response);
+            this._socket.off(event,tmpHandler);
+        };
+        this._socket.on(event,tmpHandler);
     }
 
     //Part Socket Variables
