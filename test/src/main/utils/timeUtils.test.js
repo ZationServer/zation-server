@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-const TimeUtils       = require("../../../../dist/lib/helper/utils/timeUtils").default;
+const TimeUtils       = require("../../../../dist/lib/main/utils/timeUtils").default;
 const moment          = require("moment");
 const assert          = require("chai").assert;
 

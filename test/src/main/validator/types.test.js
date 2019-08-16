@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 const assert             = require("chai").assert;
 const BackErrorBag       = require('../../../../dist/lib/api/BackErrorBag').default;
-const typeValidator      = require('../../../../dist/lib/helper/validator/validatorLibrary').ValidatorLibrary.Types;
+const typeValidator      = require('../../../../dist/lib/main/validator/validatorLibrary').ValidatorLibrary.Types;
 const {ValidationTypes}  = require("../../../../dist");
 const Base64TestData     = require('../../../testData/base64');
 

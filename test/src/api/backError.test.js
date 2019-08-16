@@ -44,18 +44,18 @@ describe('API.BackError',() => {
 
     describe('Methods',() => {
 
-        describe('getJsonObject',() => {
+        describe('toResponseError',() => {
 
             it('normal',() => {
                 const te = new BackError({name: 'error1'});
-                assert.deepEqual(te._getJsonObj(true),{ n: 'error1',
+                assert.deepEqual(te._toResponseError(true),{ n: 'error1',
                     g: undefined,
                     t: 'NORMAL_ERROR',
                     zs: false,
                     i: {},
                     d: 'No Description define in Error' });
 
-                assert.deepEqual(te._getJsonObj(),{ n: 'error1',
+                assert.deepEqual(te._toResponseError(),{ n: 'error1',
                     g: undefined,
                     t: 'NORMAL_ERROR',
                     zs: false,
@@ -65,7 +65,7 @@ describe('API.BackError',() => {
             it('private',() => {
                 const te = new BackError({name: 'error1', private : true});
                 assert.deepEqual
-                (te._getJsonObj(true),{ n: 'BackError', t: 'NORMAL_ERROR', zs: false });
+                (te._toResponseError(true),{ n: 'BackError', t: 'NORMAL_ERROR', zs: false });
             });
 
         });

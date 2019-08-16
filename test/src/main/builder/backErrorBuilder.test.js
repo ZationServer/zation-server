@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-const BackErrorBuilder = require("../../../../dist/lib/helper/builder/backErrorBuilder").default;
+const BackErrorBuilder = require("../../../../dist/lib/main/builder/backErrorBuilder").default;
 const assert           = require("chai").assert;
 
 describe('HELPER.BackErrorBuilder',() => {

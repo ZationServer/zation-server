@@ -52,10 +52,10 @@ describe('API.BackErrorBag',() => {
             assert.equal(eb.getBackErrors()[0].name,'error1');
         });
 
-        it('GetJsonObj',() => {
+        it('toResponseErrorArray',() => {
             const eb = new BackErrorBag();
             eb.addNewBackError({name : 'error1'});
-            const json = eb._getJsonObj(true);
+            const json = eb._toResponseErrorArray(true);
             // noinspection JSCheckFunctionSignatures
             assert.sameDeepMembers(json, [ { n: 'error1',
                 g: undefined,

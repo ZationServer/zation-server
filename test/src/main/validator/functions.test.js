@@ -8,9 +8,9 @@ const BackErrorBag       = require("../../../../dist/lib/api/BackErrorBag").defa
 const Base64TestData     = require("../../../testData/base64");
 const ZationConfigStub   = require("../../../stubs/zationConfigFull");
 const {ValidationTypes}  = require("../../../../dist");
-const {FormatLetters}    = require("../../../../dist/lib/helper/constants/validation");
-const ConfigPreCompiler  = require("../../../../dist/lib/helper/configUtils/configPreCompiler").default;
-const {ValidatorLibrary} = require("../../../../dist/lib/helper/validator/validatorLibrary");
+const {FormatLetters}    = require("../../../../dist/lib/main/constants/validation");
+const ConfigPreCompiler  = require("../../../../dist/lib/main/config/utils/configPreCompiler").default;
+const {ValidatorLibrary} = require("../../../../dist/lib/main/validator/validatorLibrary");
 const assert             = require("chai").assert;
 
 const ValidatorFunctions  = ValidatorLibrary.Functions;

@@ -4,8 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-const ZationReqUtils  = require("../../../../dist/lib/helper/utils/zationReqUtils").default;
-const assert          = require("chai").assert;
+const ControllerReqUtils  = require("../../../../dist/lib/main/controller/request/controllerReqUtils").default;
+const assert              = require("chai").assert;
 
 describe('HELPER.TOOLS.ZATION_ReqUtils',() => {
 
@@ -22,7 +22,7 @@ describe('HELPER.TOOLS.ZATION_ReqUtils',() => {
             ].forEach(([req,wsReq,expect],index) =>
             {
                 it('test-'+index,() => {
-                    assert.equal(ZationReqUtils.isValidReqStructure(req,wsReq),expect);
+                    assert.equal(ControllerReqUtils.isValidReqStructure(req,wsReq),expect);
                 });
             });
 
