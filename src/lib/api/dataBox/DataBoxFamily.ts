@@ -50,8 +50,9 @@ import CloneUtils                                 from "../../main/utils/cloneUt
 const DefaultSymbol                               = Symbol();
 
 /**
- * If you want to present data on the client, the DataBox is the best choice.
- * The DataBox will keep the data up to date on the client in real time.
+ * If you always want to present the most recent data on the client,
+ * the DataBox is the best choice.
+ * The DataBox will keep the data up to date on the client in real-time.
  * Also, it will handle all problematic cases, for example,
  * when the connection to the server is lost,
  * and the client did not get an update of the data.

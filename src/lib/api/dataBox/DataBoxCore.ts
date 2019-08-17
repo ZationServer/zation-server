@@ -20,14 +20,15 @@ import ErrorUtils                         from "../../main/utils/errorUtils";
 import {DbAccessCheckFunction}            from "../../main/dataBox/dataBoxAccessHelper";
 
 /**
- * If you want to present data on the client, the DataBox is the best choice.
- * The DataBox will keep the data up to date on the client in real time.
+ * If you always want to present the most recent data on the client,
+ * the DataBox is the best choice.
+ * The DataBox will keep the data up to date on the client in real-time.
  * Also, it will handle all problematic cases, for example,
  * when the connection to the server is lost,
  * and the client did not get an update of the data.
  * It's also the right choice if you want to present a significant amount of data
  * because DataBoxes support the functionality to stream the data
- * to the client whenever the client need more data.
+ * to the clients whenever a client needs more data.
  * Additionally, it keeps the network traffic low because it
  * only sends the changed data information, not the whole data again.
  */
