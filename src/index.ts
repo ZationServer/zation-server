@@ -46,6 +46,7 @@ import PubData                      from "./lib/main/internalApi/pubData";
 import CChInfo                      from "./lib/main/internalApi/cChInfo";
 import CChFamilyInfo                from "./lib/main/internalApi/cChFamilyInfo";
 import AsymmetricKeyPairs           from "./lib/main/internalApi/asymmetricKeyPairs";
+import DbCudActionSequence          from "./lib/main/dataBox/dbCudActionSequence";
 const  FsUtil : any               = require('socketcluster/fsutil');
 
 //starter
@@ -111,5 +112,6 @@ export {
         PubData,
         CChInfo,
         CChFamilyInfo,
-        AsymmetricKeyPairs
+        AsymmetricKeyPairs,
+        DbCudActionSequence
     };
