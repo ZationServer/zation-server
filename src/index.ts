@@ -47,6 +47,7 @@ import CChInfo                      from "./lib/main/internalApi/cChInfo";
 import CChFamilyInfo                from "./lib/main/internalApi/cChFamilyInfo";
 import AsymmetricKeyPairs           from "./lib/main/internalApi/asymmetricKeyPairs";
 import DbCudActionSequence          from "./lib/main/dataBox/dbCudActionSequence";
+import {ObjectPathSequence}         from "./lib/main/internalApi/objectPathSequence/objectPathSequence";
 const  FsUtil : any               = require('socketcluster/fsutil');
 
 //starter
@@ -113,5 +114,6 @@ export {
         CChInfo,
         CChFamilyInfo,
         AsymmetricKeyPairs,
-        DbCudActionSequence
+        DbCudActionSequence,
+        ObjectPathSequence
     };

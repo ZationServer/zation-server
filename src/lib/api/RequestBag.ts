@@ -11,12 +11,12 @@ import * as core                  from "express-serve-static-core";
 import {IncomingHttpHeaders, IncomingMessage} from "http";
 import {Agent}                    from "useragent";
 import {UploadedFile}             from "express-fileupload";
-import ObjectPathCombineSequence  from "../main/utils/objectPathCombineSequence";
 import SHBridge                   from "../main/bridges/shBridge";
 import AuthEngine                 from "../main/auth/authEngine";
 import ProtocolAccessChecker      from "../main/protocolAccess/protocolAccessChecker";
 import ObjectPath                 from "../main/utils/objectPath";
-import ObjectPathSequence         from "../main/utils/objectPathSequence";
+import ObjectPathSequenceImp      from "../main/internalApi/objectPathSequence/objectPathSequenceImp";
+import ObjectPathSequenceBoxImp   from "../main/internalApi/objectPathSequence/objectPathSequenceBoxImp";
 import Bag                        from "./Bag";
 import InputIsNotCompatibleError  from "../main/error/inputIsNotCompatibleError";
 import MethodIsNotCompatibleError from "../main/error/methodIsNotCompatibleError";
@@ -26,6 +26,8 @@ import {JwtSignOptions}           from "../main/constants/jwt";
 import ZSocket                    from "../main/internalApi/ZSocket";
 import ApiLevelUtils              from "../main/apiLevel/apiLevelUtils";
 import CloneUtils                 from "../main/utils/cloneUtils";
+// noinspection TypeScriptPreferShortImport
+import {ObjectPathSequence}       from "../main/internalApi/objectPathSequence/objectPathSequence";
 
 export default class RequestBag extends Bag
 {
@@ -518,8 +520,7 @@ export default class RequestBag extends Bag
         }
         else {
             //using express-fileupload
-            // @ts-ignore
-            return this.shBridge.getRequest().files;
+            return (this.shBridge.getRequest().files || {}) as Record<string,UploadedFile>;
         }
     }
 
@@ -666,7 +667,7 @@ export default class RequestBag extends Bag
      */
     seqEditTokenVariables() : ObjectPathSequence
     {
-        return new ObjectPathSequence(CloneUtils.deepClone(
+        return new ObjectPathSequenceImp(CloneUtils.deepClone(
             TokenUtils.getCustomTokenVariables(this.shBridge.getToken())),
             async (obj)=> {
                 await TokenUtils.setCustomVar(obj,this.shBridge);
@@ -693,8 +694,9 @@ export default class RequestBag extends Bag
      */
     async setTokenVariableIdSync(path : string | string[],value : any) : Promise<void> {
         await this.setTokenVariable(path,value);
-        // @ts-ignore
-        await this.setTokenVariableOnUserId(this.getUserId(),path,value,this.getSocketSid());
+        const id = this.getUserId();
+        if(id !== undefined)
+        await this.setTokenVariableOnUserId(id,path,value,this.getSocketSid());
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -715,8 +717,9 @@ export default class RequestBag extends Bag
      */
     async deleteTokenVariableIdSync(path ?: string | string[]) : Promise<void> {
         await this.deleteTokenVariable(path);
-        // @ts-ignore
-        await this.deleteTokenVariableOnUserId(this.getUserId(),path,this.getSocketSid());
+        const id = this.getUserId();
+        if(id !== undefined)
+        await this.deleteTokenVariableOnUserId(id,path,this.getSocketSid());
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -740,11 +743,11 @@ export default class RequestBag extends Bag
      *       .commit();
      * @throws AuthenticationError if the client is not authenticated.
      */
-    seqEditTokenVariablesIdSync() : ObjectPathCombineSequence {
-        return new ObjectPathCombineSequence(
+    seqEditTokenVariablesIdSync() : ObjectPathSequence {
+        const id = this.getUserId();
+        return new ObjectPathSequenceBoxImp(
             this.seqEditTokenVariables(),
-            // @ts-ignore
-            this.seqEditTokenVariablesOnUserId(this.getUserId(),this.getSocketSid())
+            ...(id !== undefined ? [this.seqEditTokenVariablesOnUserId(id,this.getSocketSid())] : [])
         );
     }
 
@@ -768,8 +771,7 @@ export default class RequestBag extends Bag
      */
     async setTokenVariableGroupSync(path : string | string[],value : any) : Promise<void> {
         await this.setTokenVariable(path,value);
-        // @ts-ignore
-        await this.setTokenVariableOnGroup(this.getAuthUserGroup(),path,value,this.getSocketSid());
+        await this.setTokenVariableOnGroup(this.getAuthUserGroup() as string,path,value,this.getSocketSid());
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -790,8 +792,7 @@ export default class RequestBag extends Bag
      */
     async deleteTokenVariableGroupSync(path ?: string | string[]) : Promise<void> {
         await this.deleteTokenVariable(path);
-        // @ts-ignore
-        await this.deleteTokenVariableOnGroup(this.getAuthUserGroup(),path,this.getSocketSid());
+        await this.deleteTokenVariableOnGroup(this.getAuthUserGroup() as string,path,this.getSocketSid());
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -815,11 +816,10 @@ export default class RequestBag extends Bag
      *       .commit();
      * @throws AuthenticationError if the client is not authenticated.
      */
-    seqEditTokenVariablesGroupSync() : ObjectPathCombineSequence {
-        return new ObjectPathCombineSequence(
+    seqEditTokenVariablesGroupSync() : ObjectPathSequence {
+        return new ObjectPathSequenceBoxImp(
             this.seqEditTokenVariables(),
-            // @ts-ignore
-            this.seqEditTokenVariablesOnGroup(this.getAuthUserGroup(),this.getSocketSid())
+            this.seqEditTokenVariablesOnGroup(this.getAuthUserGroup() as string,this.getSocketSid())
         );
     }
 
@@ -1199,7 +1199,6 @@ export default class RequestBag extends Bag
      * Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.107 Safari/537.36
      */
     getRawUserAgent() : string | undefined {
-        // @ts-ignore
         return this.getHandshakeHeader()["user-agent"];
     }
 

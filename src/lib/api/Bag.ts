@@ -38,8 +38,8 @@ import Logger                                               from "../main/logger
 import ChUtils                                              from "../main/channel/chUtils";
 import SidBuilder                                           from "../main/utils/sidBuilder";
 import TokenUtils                                           from "../main/token/tokenUtils";
-import ObjectPathSequence                                   from "../main/utils/objectPathSequence";
-import ObjectPathActionSequence                             from "../main/utils/objectPathActionSequence";
+import ObjectPathSequenceImp                                from "../main/internalApi/objectPathSequence/objectPathSequenceImp";
+import ObjectPathActionSequenceImp                          from "../main/internalApi/objectPathSequence/objectPathActionSequenceImp";
 import Base64Utils                                          from "../main/utils/base64Utils";
 import ZationConfigFull                                     from "../main/config/manager/zationConfigFull";
 import CloneUtils                                           from "../main/utils/cloneUtils";
@@ -52,6 +52,8 @@ import DataBoxContainer                                        from "../main/dat
 import {DataBoxClass}                                          from "./dataBox/DataBox";
 import DataBoxUtils                                            from "../main/dataBox/dataBoxUtils";
 import ScServer                                                from "../main/sc/scServer";
+// noinspection TypeScriptPreferShortImport
+import {ObjectPathSequence}                                    from "../main/internalApi/objectPathSequence/objectPathSequence";
 
 export default class Bag {
     protected readonly exchangeEngine: ChannelBagEngine;
@@ -1907,7 +1909,7 @@ export default class Bag {
      * @throws AuthenticationError if the socket is not authenticated.
      */
     seqEditTokenVariablesWithSocket(socket: UpSocket): ObjectPathSequence {
-        return new ObjectPathSequence(CloneUtils.deepClone(
+        return new ObjectPathSequenceImp(CloneUtils.deepClone(
             TokenUtils.getCustomTokenVariables(socket.authToken)),
             async (obj) => {
                 await TokenUtils.setSocketCustomVar(obj, socket);
@@ -2014,8 +2016,8 @@ export default class Bag {
      * @param userId
      * @param exceptSocketSids
      */
-    seqEditTokenVariablesOnUserId(userId: string | number, exceptSocketSids: string[] | string = []): ObjectPathActionSequence {
-        return new ObjectPathActionSequence(async (actions) => {
+    seqEditTokenVariablesOnUserId(userId: string | number, exceptSocketSids: string[] | string = []): ObjectPathSequence {
+        return new ObjectPathActionSequenceImp(async (actions) => {
             if (actions.length > 0) {
                 await this.exchangeEngine.publishUpdateUserTokenWorkerTask
                 (actions, userId, exceptSocketSids);
@@ -2085,8 +2087,8 @@ export default class Bag {
      * @param authUserGroup
      * @param exceptSocketSids
      */
-    seqEditTokenVariablesOnGroup(authUserGroup: string, exceptSocketSids: string[] | string = []): ObjectPathActionSequence {
-        return new ObjectPathActionSequence(async (actions) => {
+    seqEditTokenVariablesOnGroup(authUserGroup: string, exceptSocketSids: string[] | string = []): ObjectPathSequence {
+        return new ObjectPathActionSequenceImp(async (actions) => {
             if (actions.length > 0) {
                 await this.exchangeEngine.publishUpdateGroupTokenWorkerTask
                 (actions, authUserGroup, exceptSocketSids);

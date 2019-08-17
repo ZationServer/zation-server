@@ -4,14 +4,15 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import ObjectPath from "./objectPath";
+import ObjectPath           from "../../utils/objectPath";
+import {ObjectPathSequence} from "./objectPathSequence";
 
 type CommitFunction = (object : object) => Promise<void>;
 
 /**
  * Edit an object directly with object paths.
  */
-export default class ObjectPathSequence
+export default class ObjectPathSequenceImp implements ObjectPathSequence
 {
     private object : object;
     private readonly commitFunction : CommitFunction;
@@ -21,13 +22,12 @@ export default class ObjectPathSequence
         this.commitFunction = commitFunc;
     }
 
-    set(path : string | string[],value : any) : ObjectPathSequence {
+    set(path : string | string[],value : any) : ObjectPathSequenceImp {
         ObjectPath.set(this.object,path,value);
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    delete(path ?: string | string[]) : ObjectPathSequence {
+    delete(path ?: string | string[]) : ObjectPathSequenceImp {
         if(!!path) {
             ObjectPath.del(this.object,path);
         }
@@ -37,7 +37,6 @@ export default class ObjectPathSequence
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     async commit() {
         await this.commitFunction(this.object);
     }

@@ -4,14 +4,15 @@ GitHub: LucaCode
 ©Copyright by Luca Scaringella
  */
 
-import {SyncTokenActions} from "../constants/syncTokenActions";
+import {SyncTokenActions}   from "../../constants/syncTokenActions";
+import {ObjectPathSequence} from "./objectPathSequence";
 
 type CommitFunction = (actions : { action: SyncTokenActions, params: any[] }[]) => Promise<void>;
 
 /**
  * Saves all commands for execute later.
  */
-export default class ObjectPathActionSequence
+export default class ObjectPathActionSequenceImp implements ObjectPathSequence
 {
     private actions : { action: SyncTokenActions, params: any[] }[] = [];
     private readonly commitFunction : CommitFunction;
@@ -20,18 +21,16 @@ export default class ObjectPathActionSequence
         this.commitFunction = commitFunc;
     }
 
-    set(path : string | string[],value : any) : ObjectPathActionSequence {
+    set(path : string | string[],value : any) : ObjectPathActionSequenceImp {
         this.actions.push({action : SyncTokenActions.SET,params : [path,value]});
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    delete(path ?: string | string[]) : ObjectPathActionSequence {
+    delete(path ?: string | string[]) : ObjectPathActionSequenceImp {
         this.actions.push({action : SyncTokenActions.DELETE,params : [path]});
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     async commit() {
         await this.commitFunction(this.actions);
     }

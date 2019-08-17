@@ -5,15 +5,16 @@ GitHub: LucaCode
  */
 
 import {ZationCustomEventNamespace, ZationToken} from "../constants/internal";
-import UpSocket, {OnHandlerFunction}            from "../sc/socket";
+import UpSocket, {OnHandlerFunction}             from "../sc/socket";
 import TokenUtils       from "../token/tokenUtils";
 import ObjectPath       from "../utils/objectPath";
 import ChUtils          from "../channel/chUtils";
 import BaseSHBridge     from "../bridges/baseSHBridge";
 import DataBoxFamily    from "../../api/dataBox/DataBoxFamily";
 import DataBox          from "../../api/dataBox/DataBox";
-import CloneUtils         from "../utils/cloneUtils";
-import ObjectPathSequence from "../utils/objectPathSequence";
+import CloneUtils            from "../utils/cloneUtils";
+import ObjectPathSequenceImp from "./objectPathSequence/objectPathSequenceImp";
+import {ObjectPathSequence}  from "./objectPathSequence/objectPathSequence";
 
 export default class ZSocket
 {
@@ -179,7 +180,7 @@ export default class ZSocket
      */
     seqEditTokenVariables() : ObjectPathSequence
     {
-        return new ObjectPathSequence(CloneUtils.deepClone(
+        return new ObjectPathSequenceImp(CloneUtils.deepClone(
             TokenUtils.getCustomTokenVariables(this._socket.authToken)),
             async (obj)=> {
                 await TokenUtils.setCustomVar(obj,this._socket.baseSHBridge);
