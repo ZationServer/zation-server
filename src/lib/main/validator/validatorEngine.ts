@@ -1,7 +1,7 @@
 /*
 Author: Luca Scaringella
 GitHub: LucaCode
-©Copyright by Luca Scaringella
+Copyright(c) Luca Scaringella
  */
 
 import {ArraySettings, ValidateFunction, ValueModelConfig} from "../config/definitions/inputConfig";

@@ -1,7 +1,7 @@
 /*
 Author: Luca Scaringella
 GitHub: LucaCode
-©Copyright by Luca Scaringella
+Copyright(c) Luca Scaringella
  */
 
 import {AnyOfModelConfig, ObjectModelConfig} from "../config/definitions/inputConfig";
