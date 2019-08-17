@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 // noinspection TypeScriptPreferShortImport
 import AuthEngine         from "./authEngine";
-import ZationTokenInfo    from "../internalApi/zationTokenInfo";
+import ZationTokenWrapper from "../internalApi/zationTokenWrapper";
 import Bag                from "../../api/Bag";
 import AccessUtils        from "../access/accessUtils";
 import {NormalAuthAccessFunction, AuthAccessConfig} from "../config/definitions/configComponents";
@@ -30,7 +30,7 @@ export default class AuthAccessChecker
             (accessValue,accessProcess,(func) => {
                 return async (authEngine) => {
                     const token = authEngine.getSHBridge().getToken();
-                    return accessProcess((await func(bag,token !== null ? new ZationTokenInfo(token) : null)));
+                    return accessProcess((await func(bag,token !== null ? new ZationTokenWrapper(token) : null)));
                 };
             });
         }

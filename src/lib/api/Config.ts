@@ -78,7 +78,6 @@ import {
 import {StarterConfig}  from "../main/config/definitions/starterConfig";
 import {MainConfig}     from "../main/config/definitions/mainConfig";
 import ZSocket          from "../main/internalApi/ZSocket";
-import ZationTokenInfo  from "../main/internalApi/zationTokenInfo";
 import BackError        from "./BackError";
 import BackErrorBag     from "./BackErrorBag";
 import ObjectUtils      from "../main/utils/objectUtils";
@@ -105,6 +104,7 @@ import {
     ControllerMiddlewareFunction
 } from "../main/config/definitions/controllerConfig";
 import {BackgroundTask, TaskFunction}       from "../main/config/definitions/backgroundTaskConfig";
+import ZationTokenWrapper                   from "../main/internalApi/zationTokenWrapper";
 import {NormalAuthAccessFunction}           from "../main/config/definitions/configComponents";
 import {DataBoxClassDef, DataBoxConfig, DbAccessFunction} from "../main/config/definitions/dataBoxConfig";
 import DataBoxFamily                        from "./dataBox/DataBoxFamily";
@@ -693,7 +693,7 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static zationInfo(zationInfo : ZationInfo) : ZationInfo {return zationInfo;}
     // noinspection JSUnusedGlobalSymbols
-    static zationTokenInfo(zationTokenInfo : ZationTokenInfo) : ZationTokenInfo {return zationTokenInfo;}
+    static zationTokenWrapper(zationTokenWrapper : ZationTokenWrapper) : ZationTokenWrapper {return zationTokenWrapper;}
 }
 
 export const single = Config.single;

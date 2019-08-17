@@ -29,7 +29,7 @@ import process          = require("process");
 import {WorkerChTaskType} from "../main/constants/workerChTaskType";
 import ControllerReqHandler  from "../main/controller/request/controllerReqHandler";
 import AEPreparedPart     from "../main/auth/aePreparedPart";
-import ZationTokenInfo    from "../main/internalApi/zationTokenInfo";
+import ZationTokenWrapper from "../main/internalApi/zationTokenWrapper";
 import ControllerPrepare  from "../main/controller/controllerPrepare";
 import ServiceEngine      from "../main/services/serviceEngine";
 import Bag                from "../api/Bag";
@@ -804,7 +804,7 @@ class ZationWorker extends SCWorker
             }
 
             const zationAuthMid = await MiddlewareUtils.checkMiddleware
-            (eventConfig.middlewareAuthenticate,next,this.getPreparedBag(),new ZationTokenInfo(token));
+            (eventConfig.middlewareAuthenticate,next,this.getPreparedBag(),new ZationTokenWrapper(token));
 
             if(zationAuthMid) {next();}
         });

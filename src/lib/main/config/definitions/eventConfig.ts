@@ -15,6 +15,7 @@ import Bag                             from "../../../api/Bag";
 import ZationInfo                      from "../../internalApi/zationInfo";
 import ZSocket                         from "../../internalApi/ZSocket";
 import CodeError                       from "../../error/codeError";
+import ZationTokenWrapper              from "../../internalApi/zationTokenWrapper";
 
 export type ExpressFunction = (bag : Bag, express : ExpressCore.Express) => Promise<void> | void;
 export type SocketServerFunction = (bag : Bag, scServer : ScServer) => Promise<void> | void;
@@ -43,7 +44,7 @@ export type SocketRawFunction = (bag : Bag, socket : RawSocket, data : any) => P
 export type SocketConnectionAbortFunction = (bag : Bag, socket : RawSocket, code : any, data : any) => Promise<void> | void;
 export type SocketBadAuthTokenFunction = (bag : Bag, socket : RawSocket, badAuthStatus : {authError : object,signedAuthToken : string}) => Promise<void> | void
 
-export type MiddlewareAuthenticationFunction = (bag : Bag, zationToken : ZationToken) => Promise<boolean | object | any> | boolean | object | any;
+export type MiddlewareAuthenticationFunction = (bag : Bag, token : ZationTokenWrapper) => Promise<boolean | object | any> | boolean | object | any;
 export type MiddlewareSocketFunction = (bag : Bag, socket : HandshakeSocket) => Promise<boolean | object | any> | boolean | object | any;
 
 export interface EventConfig

@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import ZationWorker          = require("../../../../core/zationWorker");
 import {ZationToken}                from "../../../constants/internal";
 import SHBridgeHttp                 from "../../../bridges/shBridgeHttp";
-import ZationTokenInfo              from "../../../internalApi/zationTokenInfo";
+import ZationTokenWrapper           from "../../../internalApi/zationTokenWrapper";
 import AEPreparedPart               from "../../../auth/aePreparedPart";
 import BackError                    from "../../../../api/BackError";
 import Logger                       from "../../../logger/logger";
@@ -128,7 +128,7 @@ export default class HttpCRequestProcessor
 
                 //will throw if auth is blocked
                 await MiddlewareUtils.checkMiddleware
-                (this.zc.eventConfig.middlewareAuthenticate,HttpCRequestProcessor.middlewareAuthNext,this.worker.getPreparedBag(),new ZationTokenInfo(token));
+                (this.zc.eventConfig.middlewareAuthenticate,HttpCRequestProcessor.middlewareAuthNext,this.worker.getPreparedBag(),new ZationTokenWrapper(token));
             }
             return new SHBridgeHttp(res,req,reqId,zationData,false,this.defaultApiLevel,this.worker);
         }
