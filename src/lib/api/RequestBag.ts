@@ -81,7 +81,7 @@ export default class RequestBag extends Bag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getReqVariable<R>(path ?: string | string[]) : R {
+    getReqVariable<R = any>(path ?: string | string[]) : R {
         return ObjectPath.get(this.reqVariables,path);
     }
 
@@ -118,7 +118,7 @@ export default class RequestBag extends Bag
      * Can happen if you provided a path, inputAllAllow is activated,
      * and input is not from type object.
      */
-    getInput<R>(path ?: string | string[]) : R {
+    getInput<R = any>(path ?: string | string[]) : R {
         if(path !== undefined){
             if(typeof this.input === 'object'){
                 return ObjectPath.get(this.input,path);
@@ -224,7 +224,7 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws MethodIsNotCompatibleError
      */
-    getSocketVariable<R>(path ?: string | string[]) : R {
+    getSocketVariable<R = any>(path ?: string | string[]) : R {
         return this.socket.getSocketVariable(path);
     }
 
@@ -404,7 +404,7 @@ export default class RequestBag extends Bag
      * @throws MethodIsNotCompatibleError
      * @param key
      */
-    getCookieVariable<R>(key : string) : R
+    getCookieVariable<R = any>(key : string) : R
     {
         if(this.shBridge.isWebSocket()) {
             throw new MethodIsNotCompatibleError(this.getProtocol(),'http','Get a cookie variable.');
@@ -574,7 +574,7 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws MethodIsNotCompatibleError
      */
-    getSocketHandshakeVariable<R>(path ?: string | string[]) : R {
+    getSocketHandshakeVariable<R = any>(path ?: string | string[]) : R {
         return this.socket.getSocketHandshakeVariable(path);
     }
 
@@ -855,7 +855,7 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the client is not authenticated.
      */
-    getTokenVariable<R>(path ?: string | string[]) : R {
+    getTokenVariable<R = any>(path ?: string | string[]) : R {
         return ObjectPath.get(TokenUtils.getCustomTokenVariables(this.shBridge.getToken()),path);
     }
 

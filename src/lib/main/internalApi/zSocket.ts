@@ -216,7 +216,7 @@ export default class ZSocket
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    getTokenVariable<R>(path ?: string | string[]) : R {
+    getTokenVariable<R = any>(path ?: string | string[]) : R {
         return ObjectPath.get(TokenUtils.getCustomTokenVariables(this._socket.authToken),path);
     }
 
@@ -414,7 +414,7 @@ export default class ZSocket
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getSocketVariable<R>(path ?: string | string[]) : R {
+    getSocketVariable<R = any>(path ?: string | string[]) : R {
         return ObjectPath.get(this._socket.zationSocketVariables,path);
     }
 
@@ -448,7 +448,7 @@ export default class ZSocket
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getSocketHandshakeVariable<R>(path ?: string | string[]) : R {
+    getSocketHandshakeVariable<R = any>(path ?: string | string[]) : R {
         return ObjectPath.get(this._socket.handshakeVariables,path);
     }
 

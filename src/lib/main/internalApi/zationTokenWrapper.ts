@@ -78,7 +78,7 @@ export default class ZationTokenWrapper
      * getTokenVariable('person.email');
      * @param path
      */
-    getTokenVariable<R>(path ?: string | string[]) : R {
+    getTokenVariable<R = any>(path ?: string | string[]) : R {
         return ObjectPath.get(this._token.zationCustomVariables || {},path);
     }
 }

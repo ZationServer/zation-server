@@ -166,7 +166,7 @@ export default class Bag {
      * Which you can define in the variables property in the main config.
      * @param path
      */
-    getMainConfigVariable<V>(path ?: string | string[]): V {
+    getMainConfigVariable<V = any>(path ?: string | string[]): V {
         return ObjectPath.get(this.zc.mainConfig.variables, path);
     }
 
@@ -874,7 +874,7 @@ export default class Bag {
      * @param  serviceName
      * @param  configName Default: 'default'
      */
-    async getService<S>(serviceName: string, configName: string = 'default'): Promise<S> {
+    async getService<S = any>(serviceName: string, configName: string = 'default'): Promise<S> {
         return this.serviceEngine.getService<S>(serviceName, configName);
     }
 
@@ -1812,7 +1812,7 @@ export default class Bag {
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getSocketVariableWithSocket<R>(socket: UpSocket, path ?: string | string[]): R {
+    getSocketVariableWithSocket<R = any>(socket: UpSocket, path ?: string | string[]): R {
         return ObjectPath.get(socket.zationSocketVariables, path);
     }
 
@@ -1948,7 +1948,7 @@ export default class Bag {
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    getTokenVariableWithSocket<R>(socket: UpSocket, path ?: string | string[]): R {
+    getTokenVariableWithSocket<R = any>(socket: UpSocket, path ?: string | string[]): R {
         return ObjectPath.get(TokenUtils.getCustomTokenVariables(socket.authToken), path);
     }
 
@@ -2131,7 +2131,7 @@ export default class Bag {
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getWorkerVariable<R>(path ?: string | string[]): R {
+    getWorkerVariable<R = any>(path ?: string | string[]): R {
         return ObjectPath.get(this.worker.getWorkerVariableStorage(), path);
     }
 
