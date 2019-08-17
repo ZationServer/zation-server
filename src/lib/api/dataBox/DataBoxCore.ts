@@ -211,7 +211,7 @@ export default abstract class DataBoxCore {
      * Gets invokes when the zation system is creating instance of the DataCollection (in worker start).
      * @param bag
      */
-    async initialize(bag: Bag): Promise<void> {
+    initialize(bag: Bag): Promise<void> | void {
     }
 
     // noinspection JSMethodCanBeStatic
