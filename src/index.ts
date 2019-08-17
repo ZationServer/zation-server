@@ -39,6 +39,13 @@ import {DataBoxConfig}              from "./lib/main/config/definitions/dataBoxC
 import DataBoxContainer             from "./lib/main/dataBox/container/dataBoxContainer";
 import DataBoxFamilyContainer       from "./lib/main/dataBox/container/dataBoxFamilyContainer";
 import {buildKeyArray}              from "./lib/main/dataBox/dbKeyArrayUtils";
+import ZSocket                      from "./lib/main/internalApi/zSocket";
+import ZationTokenWrapper           from "./lib/main/internalApi/zationTokenWrapper";
+import ZationInfo                   from "./lib/main/internalApi/zationInfo";
+import PubData                      from "./lib/main/internalApi/pubData";
+import CChInfo                      from "./lib/main/internalApi/cChInfo";
+import CChFamilyInfo                from "./lib/main/internalApi/cChFamilyInfo";
+import AsymmetricKeyPairs           from "./lib/main/internalApi/asymmetricKeyPairs";
 const  FsUtil : any               = require('socketcluster/fsutil');
 
 //starter
@@ -97,5 +104,12 @@ export {
         InputIsNotCompatibleError,
         FsUtil,
         single,
-        buildKeyArray
+        buildKeyArray,
+        ZSocket,
+        ZationTokenWrapper,
+        ZationInfo,
+        PubData,
+        CChInfo,
+        CChFamilyInfo,
+        AsymmetricKeyPairs
     };
