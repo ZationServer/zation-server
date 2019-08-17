@@ -75,7 +75,7 @@ export default class Controller {
      * Notice that only the BackError or BackErrorBag sends back to the client.
      * All other errors or objects will be converted to an unknown BackError.
      */
-    handle(reqBag: RequestBag, input: any): Promise<void> | void {
+    handle(reqBag: RequestBag, input: any): Promise<any> | any {
     }
 
     /**
