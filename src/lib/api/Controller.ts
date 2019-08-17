@@ -59,7 +59,7 @@ export default class Controller {
      * Gets invokes when the zation system is creating instance of the controller (in worker start).
      * @param bag
      */
-    async initialize(bag: Bag): Promise<void> {
+    initialize(bag: Bag): Promise<void> | void {
     }
 
     /**
@@ -75,7 +75,7 @@ export default class Controller {
      * Notice that only the BackError or BackErrorBag sends back to the client.
      * All other errors or objects will be converted to an unknown BackError.
      */
-    async handle(reqBag: RequestBag, input: any): Promise<any> {
+    handle(reqBag: RequestBag, input: any): Promise<void> | void {
     }
 
     /**
@@ -87,7 +87,7 @@ export default class Controller {
      * @param reqBag
      * @param input
      */
-    async finallyHandle(reqBag: RequestBag, input: any): Promise<void> {
+    finallyHandle(reqBag: RequestBag, input: any): Promise<void> | void {
     }
 
     /**
@@ -102,7 +102,7 @@ export default class Controller {
      * Notice that only the BackError or BackErrorBag sends back to the client.
      * All other errors or objects will be converted to an unknown BackError.
      */
-    async invalidInput(reqBag: RequestBag, input: any, backErrorBag : BackErrorBag): Promise<void> {
+    invalidInput(reqBag: RequestBag, input: any, backErrorBag : BackErrorBag): Promise<void> | void {
     }
 }
 
