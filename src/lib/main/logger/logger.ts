@@ -161,7 +161,7 @@ export default class Logger
         }
 
         Logger.log('\x1b[34m%s\x1b[0m','   [INFO]',
-            `Please fix the error${errorCount > 1 ? 's' : ''} to start Zation!`);
+            `Please fix the error${errorCount > 1 ? 's' : ''} to start Zation`);
     }
 
 }
