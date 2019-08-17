@@ -52,7 +52,7 @@ import {DataBoxClassDef, DataBoxConfig}        from "../definitions/dataBoxConfi
 import DataBoxFamily                           from "../../../api/dataBox/DataBoxFamily";
 import DataBox                                 from "../../../api/dataBox/DataBox";
 import {AuthAccessConfig, VersionAccessConfig} from "../definitions/configComponents";
-import DbConfigUtils from "../../dataBox/dbConfigUtils";
+import DbConfigUtils                           from "../../dataBox/dbConfigUtils";
 
 export interface ModelCheckedMem {
     _checked : boolean
@@ -99,7 +99,7 @@ export default class ConfigChecker
             for(let i = 0; i < appBagExtensions.length; i++) {
                 this.checkBagExtension(
                     appBagExtensions[i],
-                    new Target('BagExtensions -> ').addPath('index ' + i.toString()),
+                    new Target('BagExtensions').addPath('index ' + i.toString()),
                     ConfigNames.APP
                 );
             }
