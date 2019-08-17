@@ -48,7 +48,7 @@ export default class DbCudActionSequence
      * @param code
      * @param data
      */
-    insert(keyPath : string[] | string,value : any,{ifContains,code,data} : IfContainsOption & InfoOption) : DbCudActionSequence {
+    insert(keyPath : string[] | string,value : any,{ifContains,code,data} : IfContainsOption & InfoOption = {}) : DbCudActionSequence {
         this.actions.push(DataBoxUtils.buildInsert(keyPath,value,ifContains,code,data));
         return this;
     }
@@ -68,7 +68,7 @@ export default class DbCudActionSequence
      * @param code
      * @param data
      */
-    update(keyPath : string[] | string,value : any,{code,data} : InfoOption) : DbCudActionSequence {
+    update(keyPath : string[] | string,value : any,{code,data} : InfoOption = {}) : DbCudActionSequence {
         this.actions.push(DataBoxUtils.buildUpdate(keyPath,value,code,data));
         return this;
     }
@@ -87,7 +87,7 @@ export default class DbCudActionSequence
      * @param code
      * @param data
      */
-    delete(keyPath : string[] | string,{code,data} : InfoOption) : DbCudActionSequence {
+    delete(keyPath : string[] | string,{code,data} : InfoOption = {}) : DbCudActionSequence {
         this.actions.push(DataBoxUtils.buildDelete(keyPath,code,data));
         return this;
     }
