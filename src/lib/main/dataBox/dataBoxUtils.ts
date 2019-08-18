@@ -20,7 +20,7 @@ import DataBoxFamilyContainer              from "./container/dataBoxFamilyContai
 import DataBox, {DataBoxClass}             from "../../api/dataBox/DataBox";
 import DataBoxContainer                    from "./container/dataBoxContainer";
 import DataBoxNotFound                     from "../error/dataBoxNotFound";
-import {ErrorName}                         from "../constants/errorName";
+import {ClientErrorName}                   from "../constants/clientErrorName";
 const uniqid                             = require('uniqid');
 
 export default class DataBoxUtils {
@@ -167,7 +167,7 @@ export default class DataBoxUtils {
                 return dbSessionData.reload;
             default:
                 const err : any = new Error(`Unknown session target.`);
-                err.name = ErrorName.UNKNOWN_SESSION_TARGET;
+                err.name = ClientErrorName.UNKNOWN_SESSION_TARGET;
                 throw err;
         }
     }
@@ -222,7 +222,7 @@ export default class DataBoxUtils {
     static maxInputChannelsCheck(current : number,max : number) : void {
         if(current >= max){
             const err : any = new Error('Maximum socket input channels reached.');
-            err.name = ErrorName.MAX_INPUT_CHANNELS_REACHED;
+            err.name = ClientErrorName.MAX_INPUT_CHANNELS_REACHED;
             throw err;
         }
     }

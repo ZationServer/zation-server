@@ -17,7 +17,7 @@ import {
     DbToken
 } from "../dbDefinitions";
 import DataBoxReqUtils             from "./dataBoxReqUtils";
-import {ErrorName}                 from "../../constants/errorName";
+import {ClientErrorName}           from "../../constants/clientErrorName";
 import DataBox                     from "../../../api/dataBox/DataBox";
 import DataBoxUtils                from "../dataBoxUtils";
 import ObjectUtils                 from "../../utils/objectUtils";
@@ -39,7 +39,7 @@ export default class DataBoxHandler
         //check request valid
         if(!DataBoxReqUtils.isValidReqStructure(input)) {
             const err : any = new Error(`Not valid req structure.`);
-            err.name = ErrorName.INVALID_REQUEST;
+            err.name = ClientErrorName.INVALID_REQUEST;
             throw err;
         }
 
@@ -55,18 +55,18 @@ export default class DataBoxHandler
 
         if(isFamily && !idProvided){
             const err : any = new Error(`The id is missing to request a DataBoxFamily.`);
-            err.name = ErrorName.ID_MISSING;
+            err.name = ClientErrorName.ID_MISSING;
             throw err;
         }
         if(!isFamily && idProvided){
             const err : any = new Error(`Unknown id provided to request a DataBox.`);
-            err.name = ErrorName.UNKNOWN_ID;
+            err.name = ClientErrorName.UNKNOWN_ID;
             throw err;
         }
 
         if(socket.dataBoxes.length > this.socketDataBoxLimit){
             const err : any = new Error(`Socket limit of DataBoxes is reached.`);
-            err.name = ErrorName.DATA_BOX_LIMIT_REACHED;
+            err.name = ClientErrorName.DATA_BOX_LIMIT_REACHED;
             throw err;
         }
 

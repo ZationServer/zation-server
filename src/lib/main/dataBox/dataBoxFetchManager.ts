@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import {RespondFunction} from "../sc/socket";
 import RespondUtils      from "../utils/respondUtils";
 import AsyncChain        from "../utils/asyncChain";
-import {ErrorName}       from "../constants/errorName";
+import {ClientErrorName} from "../constants/clientErrorName";
 
 export type FetchManagerBuilder<F extends (input : any,...any : any[]) => any> = () => ((respond : RespondFunction, func : F, ...params : Parameters<F>) => Promise<void>);
 
@@ -37,7 +37,7 @@ export default class DataBoxFetchManager {
                     }
                     else {
                         const err : any = new Error('Max backpressure limit reached.');
-                        err.name = ErrorName.MAX_BACKPRESSURE_REACHED;
+                        err.name = ClientErrorName.MAX_BACKPRESSURE_REACHED;
                         respond(err);
                     }
                 };

@@ -10,7 +10,7 @@ import Bag                                from "../Bag";
 import NoMoreDataAvailableError           from "../../main/dataBox/noMoreDataAvailable";
 import {VersionSystemAccessCheckFunction} from "../../main/systemVersion/systemVersionChecker";
 import UpSocket                           from "../../main/sc/socket";
-import {ErrorName}                        from "../../main/constants/errorName";
+import {ClientErrorName}                  from "../../main/constants/clientErrorName";
 const  Jwt                              = require('jsonwebtoken');
 import {JwtSignFunction, JwtVerifyFunction, JwtVerifyOptions} from "../../main/constants/jwt";
 import DbKeyArrayUtils                    from "../../main/dataBox/dbKeyArrayUtils";
@@ -104,7 +104,7 @@ export default abstract class DataBoxCore {
         }
         catch (inputError) {
             const err : any = new Error('Invalid input to fetch data.');
-            err.name = ErrorName.INVALID_INPUT;
+            err.name = ClientErrorName.INVALID_INPUT;
             err.backErrors = ErrorUtils.convertErrorToResponseErrors(inputError,this._sendErrorDescription);
             throw err;
         }
@@ -123,7 +123,7 @@ export default abstract class DataBoxCore {
         }
         catch (inputError) {
             const err : any = new Error('Invalid init input.');
-            err.name = ErrorName.INVALID_INPUT;
+            err.name = ClientErrorName.INVALID_INPUT;
             err.backErrors = ErrorUtils.convertErrorToResponseErrors(inputError,this._sendErrorDescription);
             throw err;
         }
@@ -141,19 +141,19 @@ export default abstract class DataBoxCore {
 
         if(!systemAccessCheck(socket.baseSHBridge)){
             const err : any = new Error('Access to this DataBox with client system denied.');
-            err.name = ErrorName.NO_ACCESS_WITH_SYSTEM;
+            err.name = ClientErrorName.NO_ACCESS_WITH_SYSTEM;
             throw err;
         }
 
         if(!versionAccessCheck(socket.baseSHBridge)){
             const err : any = new Error('Access to this DataBox with client version denied.');
-            err.name = ErrorName.NO_ACCESS_WITH_VERSION;
+            err.name = ClientErrorName.NO_ACCESS_WITH_VERSION;
             throw err;
         }
 
         if(await this._accessCheck(socket,dbInfo)){
             const err : any = new Error('Access to this DataBox denied.');
-            err.name = ErrorName.ACCESS_DENIED;
+            err.name = ClientErrorName.ACCESS_DENIED;
             throw err;
         }
     }

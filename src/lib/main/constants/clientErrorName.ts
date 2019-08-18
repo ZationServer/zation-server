@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-export enum ErrorName {
+export enum ClientErrorName {
     ID_MISSING                   = 'IS_MISSING',
     UNKNOWN_ID                   = 'UNKNOWN_ID',
     NAME_MISSING                 = 'NAME_MISSING',

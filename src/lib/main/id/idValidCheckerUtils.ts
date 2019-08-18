@@ -4,9 +4,9 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import Bag             from "../../api/Bag";
-import {IdValid}       from "../config/definitions/configComponents";
-import {ErrorName}     from "../constants/errorName";
+import Bag                from "../../api/Bag";
+import {IdValid}          from "../config/definitions/configComponents";
+import {ClientErrorName}  from "../constants/clientErrorName";
 
 export type IdValidChecker = (id : string) => Promise<void>;
 
@@ -27,7 +27,7 @@ export default class IdValidCheckerUtils {
                 const isObject = typeof res === 'object';
                 if((typeof res === 'boolean' && !res) || isObject) {
                     const err : any = new Error(`The id: '${id}' is not valid.`);
-                    err.name = ErrorName.ID_IS_NOT_VALID;
+                    err.name = ClientErrorName.ID_IS_NOT_VALID;
                     if(isObject){err.info = res;}
                     throw err;
                 }

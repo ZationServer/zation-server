@@ -10,7 +10,7 @@ import Bag                                                      from "../../api/
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction}  from "../apiLevel/apiLevelUtils";
 import DataBoxCore, {DbPreparedData}                            from "../../api/dataBox/DataBoxCore";
 import ZationWorker                                           = require("../../core/zationWorker");
-import {ErrorName}                                              from "../constants/errorName";
+import {ClientErrorName}                                        from "../constants/clientErrorName";
 import {DataBoxClassDef, DataBoxConfig}                         from "../config/definitions/dataBoxConfig";
 import DataBoxFamily, {DataBoxFamilyClass}                      from "../../api/dataBox/DataBoxFamily";
 import IdValidCheckerUtils                                      from "../id/idValidCheckerUtils";
@@ -55,7 +55,7 @@ export default class DataBoxPrepare
         }
         else {
             const err : any = new Error('The client API level is not compatible with dataBox API levels.');
-            err.name = ErrorName.API_LEVEL_NOT_COMPATIBLE;
+            err.name = ClientErrorName.API_LEVEL_NOT_COMPATIBLE;
             throw err;
         }
     }
@@ -77,7 +77,7 @@ export default class DataBoxPrepare
     {
         if(!this.isDataBoxExist(id)) {
             const err : any = new Error(`The DataBox: '${id}' not exists.`);
-            err.name = ErrorName.UNKNOWN_DATA_BOX;
+            err.name = ClientErrorName.UNKNOWN_DATA_BOX;
             throw err;
         }
     }

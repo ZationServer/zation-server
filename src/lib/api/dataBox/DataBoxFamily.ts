@@ -43,7 +43,7 @@ import DataBoxAccessHelper from "../../main/dataBox/dataBoxAccessHelper";
 import DataBoxUtils        from "../../main/dataBox/dataBoxUtils";
 import DbCudActionSequence from "../../main/dataBox/dbCudActionSequence";
 import RespondUtils        from "../../main/utils/respondUtils";
-import {ErrorName}         from "../../main/constants/errorName";
+import {ClientErrorName}   from "../../main/constants/clientErrorName";
 import DataBoxFetchManager, {FetchManagerBuilder} from "../../main/dataBox/dataBoxFetchManager";
 import ZSocket                                    from "../../main/internalApi/zSocket";
 import CloneUtils                                 from "../../main/utils/cloneUtils";
@@ -194,7 +194,7 @@ export default class DataBoxFamily extends DataBoxCore {
                     break;
                 default :
                     const err : any = new Error('Unknown action');
-                    err.name = ErrorName.UNKNOWN_ACTION;
+                    err.name = ClientErrorName.UNKNOWN_ACTION;
                     respond(err);
             }
         });
