@@ -4,23 +4,23 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import DataBox              from "../../../api/dataBox/DataBox";
+import Databox              from "../../../api/databox/Databox";
 import UpSocket             from "../../sc/socket";
 import DbCudActionSequence  from "../dbCudActionSequence";
-import DataBoxUtils         from "../dataBoxUtils";
+import DataboxUtils         from "../databoxUtils";
 import {InfoOption, IfContainsOption, TimestampOption} from "../dbDefinitions";
 
-export default class DataBoxContainer {
+export default class DataboxContainer {
 
-    private readonly dataBoxes : DataBox[];
+    private readonly databoxes : Databox[];
 
-    constructor(dataBoxes : DataBox[]) {
-        this.dataBoxes = dataBoxes;
+    constructor(databoxes : Databox[]) {
+        this.databoxes = databoxes;
     }
 
     /**
-     * Insert a new value in the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-event.
+     * Insert a new value in the Databox.
+     * Notice that this method will only update the Databox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
@@ -49,15 +49,15 @@ export default class DataBoxContainer {
      */
     async insert(keyPath: string[] | string, value: any,options : IfContainsOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
-        for(let i = 0; i < this.dataBoxes.length;i++) {
-            promises.push(this.dataBoxes[i].insert(keyPath,value,options));
+        for(let i = 0; i < this.databoxes.length;i++) {
+            promises.push(this.databoxes[i].insert(keyPath,value,options));
         }
         await Promise.all(promises);
     }
 
     /**
-     * Update a value in the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-event.
+     * Update a value in the Databox.
+     * Notice that this method will only update the Databox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
@@ -75,15 +75,15 @@ export default class DataBoxContainer {
      */
     async update(keyPath: string[] | string, value: any,options : InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
-        for(let i = 0; i < this.dataBoxes.length;i++) {
-            promises.push(this.dataBoxes[i].update(keyPath,value,options));
+        for(let i = 0; i < this.databoxes.length;i++) {
+            promises.push(this.databoxes[i].update(keyPath,value,options));
         }
         await Promise.all(promises);
     }
 
     /**
-     * Delete a value in the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-event.
+     * Delete a value in the Databox.
+     * Notice that this method will only update the Databox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
@@ -100,17 +100,17 @@ export default class DataBoxContainer {
      */
     async delete(keyPath: string[] | string,options : InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
-        for(let i = 0; i < this.dataBoxes.length;i++) {
-            promises.push(this.dataBoxes[i].delete(keyPath,options));
+        for(let i = 0; i < this.databoxes.length;i++) {
+            promises.push(this.databoxes[i].delete(keyPath,options));
         }
         await Promise.all(promises);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Sequence edit the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-events.
-     * This method is ideal for doing multiple changes on a DataBox
+     * Sequence edit the Databox.
+     * Notice that this method will only update the Databox and invoke the before-events.
+     * This method is ideal for doing multiple changes on a Databox
      * because it will pack them all together and send them all in ones.
      * It will not automatically update the database,
      * so you have to do it in the before-events or before calling this method.
@@ -122,16 +122,16 @@ export default class DataBoxContainer {
     seqEdit(timestamp ?: number): DbCudActionSequence {
         return new DbCudActionSequence(async (actions) => {
             const promises : Promise<void>[] = [];
-            for(let i = 0; i < this.dataBoxes.length;i++) {
-                promises.push(this.dataBoxes[i]._emitCudPackage(
-                    DataBoxUtils.buildPreCudPackage(...actions),timestamp));
+            for(let i = 0; i < this.databoxes.length;i++) {
+                promises.push(this.databoxes[i]._emitCudPackage(
+                    DataboxUtils.buildPreCudPackage(...actions),timestamp));
             }
             await Promise.all(promises);
         })
     }
 
     /**
-     * The close function will close the DataBox for every client on every server.
+     * The close function will close the Databox for every client on every server.
      * You optionally can provide a code or any other information for the client.
      * Usually, the close function is used when the data is completely deleted from the system.
      * For example, a chat that doesn't exist anymore.
@@ -140,14 +140,14 @@ export default class DataBoxContainer {
      * @param forEveryWorker
      */
     close(code ?: number | string, data ?: any,forEveryWorker : boolean = true): void {
-        for(let i = 0; i < this.dataBoxes.length;i++) {
-            this.dataBoxes[i].close(code,data,forEveryWorker);
+        for(let i = 0; i < this.databoxes.length;i++) {
+            this.databoxes[i].close(code,data,forEveryWorker);
         }
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * The reload function will force all clients of the DataBox to reload the data.
+     * The reload function will force all clients of the Databox to reload the data.
      * This method is used internally if it was detected that a worker had
      * missed a cud (create, update, or delete) operation.
      * @param forEveryWorker
@@ -155,21 +155,21 @@ export default class DataBoxContainer {
      * @param data
      */
     doReload(forEveryWorker: boolean = false,code ?: number | string,data ?: any): void {
-        for(let i = 0; i < this.dataBoxes.length;i++) {
-            this.dataBoxes[i].doReload(forEveryWorker,code,data);
+        for(let i = 0; i < this.databoxes.length;i++) {
+            this.databoxes[i].doReload(forEveryWorker,code,data);
         }
     }
 
     /**
-     * With this function, you can kick out a socket from the DataBox.
+     * With this function, you can kick out a socket from the Databox.
      * This method is used internally.
      * @param socket
      * @param code
      * @param data
      */
     kickOut(socket: UpSocket,code ?: number | string,data ?: any): void {
-        for(let i = 0; i < this.dataBoxes.length;i++) {
-            this.dataBoxes[i].kickOut(socket,code,data);
+        for(let i = 0; i < this.databoxes.length;i++) {
+            this.databoxes[i].kickOut(socket,code,data);
         }
     }
 }

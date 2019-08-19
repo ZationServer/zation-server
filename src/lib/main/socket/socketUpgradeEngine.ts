@@ -15,7 +15,7 @@ import SocketSet          from "../utils/socketSet";
 import {ZationToken}      from "../constants/internal";
 import ChAccessHelper     from "../channel/chAccessHelper";
 import {ChannelPrepare}   from "../channel/channelPrepare";
-import DataBoxAccessHelper from "../dataBox/dataBoxAccessHelper";
+import DataboxAccessHelper from "../databox/databoxAccessHelper";
 
 export default class SocketUpgradeEngine
 {
@@ -69,8 +69,8 @@ export default class SocketUpgradeEngine
         // @ts-ignore
         socket.zationSocketVariables = {};
 
-        //dataBoxes
-        socket.dataBoxes = [];
+        //databoxes
+        socket.databoxes = [];
 
         //token observer
         //for update the authEngine and worker socket mapper
@@ -86,7 +86,7 @@ export default class SocketUpgradeEngine
                 (async () => {
                     const p : Promise<void>[] = [];
                     p.push(ChAccessHelper.checkSocketCustomChAccess(socket,this.channelPrepare));
-                    p.push(DataBoxAccessHelper.checkSocketDataBoxAccess(socket));
+                    p.push(DataboxAccessHelper.checkSocketDataboxAccess(socket));
                     ChAccessHelper.checkSocketZationChAccess(socket);
                     await Promise.all(p);
                 })();

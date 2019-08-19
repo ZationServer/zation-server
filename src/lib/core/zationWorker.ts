@@ -60,10 +60,10 @@ import ExpressUtils   from "../main/utils/expressUtils";
 import {SocketAction} from "../main/constants/socketAction";
 import {TaskFunction} from "../main/config/definitions/backgroundTaskConfig";
 import {ClientErrorName}          from "../main/constants/clientErrorName";
-import {DATA_BOX_START_INDICATOR} from "../main/dataBox/dbDefinitions";
+import {DATA_BOX_START_INDICATOR} from "../main/databox/dbDefinitions";
 import {ZationChannel}            from "../main/channel/channelDefinitions";
-import DataBoxHandler             from "../main/dataBox/handle/dataBoxHandler";
-import DataBoxPrepare             from "../main/dataBox/dataBoxPrepare";
+import DataboxHandler             from "../main/databox/handle/databoxHandler";
+import DataboxPrepare             from "../main/databox/databoxPrepare";
 import RespondUtils               from "../main/utils/respondUtils";
 
 const  SCWorker : any        = require('socketcluster/scworker');
@@ -85,7 +85,7 @@ class ZationWorker extends SCWorker
     private bagExtensionEngine : BagExtensionEngine;
     private preparedBag : Bag;
     private controllerPrepare : ControllerPrepare;
-    private dataBoxPrepare : DataBoxPrepare;
+    private databoxPrepare : DataboxPrepare;
     private aePreparedPart : AEPreparedPart;
     private panelEngine : PanelEngine;
     private chMiddlewareHelper : ChMiddlewareHelper;
@@ -93,7 +93,7 @@ class ZationWorker extends SCWorker
     private originCheck : OriginChecker;
     private channelPrepare : ChannelPrepare;
     private zationCReqHandler : ControllerReqHandler;
-    private zationDbHandler : DataBoxHandler;
+    private zationDbHandler : DataboxHandler;
     private socketUpdateEngine : SocketUpgradeEngine;
     private tokenClusterKeyCheck : TokenClusterKeyCheckFunction;
 
@@ -217,9 +217,9 @@ class ZationWorker extends SCWorker
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the socket update engine.`,true);
 
         Logger.startStopWatch();
-        this.dataBoxPrepare = new DataBoxPrepare(this.zc,this,this.preparedBag);
-        await this.dataBoxPrepare.prepare();
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the DataBoxes.`,true);
+        this.databoxPrepare = new DataboxPrepare(this.zc,this,this.preparedBag);
+        await this.databoxPrepare.prepare();
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the Databoxes.`,true);
 
         //PrepareChannels after Bag!
         Logger.startStopWatch();
@@ -263,8 +263,8 @@ class ZationWorker extends SCWorker
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the zation request handler.`,true);
 
         Logger.startStopWatch();
-        this.zationDbHandler = new DataBoxHandler(this.dataBoxPrepare,this.zc);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the zation DataBox handler.`,true);
+        this.zationDbHandler = new DataboxHandler(this.databoxPrepare,this.zc);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the zation Databox handler.`,true);
 
         Logger.startStopWatch();
         this.checkAuthStart();
@@ -542,7 +542,7 @@ class ZationWorker extends SCWorker
                 next(err); //Block!
             }
             else if(channel.indexOf(DATA_BOX_START_INDICATOR) === 0) {
-                const err : any = new Error('A client cannot subscribe to an internally DataBox channel.');
+                const err : any = new Error('A client cannot subscribe to an internally Databox channel.');
                 err.name = ClientErrorName.ACCESS_DENIED;
                 next(err); //Block!
             }
@@ -653,7 +653,7 @@ class ZationWorker extends SCWorker
                 }
             }
             else if(req.channel.indexOf(DATA_BOX_START_INDICATOR) === 0) {
-                const err : any = new Error('A client cannot publish in an internally DataBox channel.');
+                const err : any = new Error('A client cannot publish in an internally Databox channel.');
                 err.name = ClientErrorName.ACCESS_DENIED;
                 next(err); //Block!
             }

@@ -8,6 +8,6 @@ export default interface InternalData {
     tokenClusterKey : string,
     signKey : string,
     verifyKey : string,
-    dataBoxKey : string
+    databoxKey : string
 }
 

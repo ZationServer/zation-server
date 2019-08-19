@@ -132,9 +132,9 @@ export const MainBackErrors = {
         fromZationSystem : true
     },
 
-    dataBoxNotFound  : {
-        name          : 'dataBoxNotFound',
-        description   : 'The DataBox is not found.',
+    databoxNotFound  : {
+        name          : 'databoxNotFound',
+        description   : 'The Databox is not found.',
         type          : ErrorType.SYSTEM_ERROR,
         sendInfo      : false,
         private       : true,

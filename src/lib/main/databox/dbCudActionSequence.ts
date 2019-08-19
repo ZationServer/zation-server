@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {CudAction, InfoOption, IfContainsOption} from "./dbDefinitions";
-import DataBoxUtils                              from "./dataBoxUtils";
+import DataboxUtils                              from "./databoxUtils";
 
 type CommitFunction = (actions : CudAction[]) => Promise<void>;
 
@@ -22,7 +22,7 @@ export default class DbCudActionSequence
     }
 
     /**
-     * Insert a new value in the DataBox.
+     * Insert a new value in the Databox.
      * Insert behavior:
      * Without ifContains (ifContains exists):
      * Base (with keyPath [] or '') -> Nothing
@@ -49,12 +49,12 @@ export default class DbCudActionSequence
      * @param data
      */
     insert(keyPath : string[] | string,value : any,{ifContains,code,data} : IfContainsOption & InfoOption = {}) : DbCudActionSequence {
-        this.actions.push(DataBoxUtils.buildInsert(keyPath,value,ifContains,code,data));
+        this.actions.push(DataboxUtils.buildInsert(keyPath,value,ifContains,code,data));
         return this;
     }
 
     /**
-     * Update a value in the DataBox.
+     * Update a value in the Databox.
      * Update behavior:
      * Base (with keyPath [] or '') -> Updates the complete structure.
      * KeyArray -> Updates the specific value (if the key does exist).
@@ -69,12 +69,12 @@ export default class DbCudActionSequence
      * @param data
      */
     update(keyPath : string[] | string,value : any,{code,data} : InfoOption = {}) : DbCudActionSequence {
-        this.actions.push(DataBoxUtils.buildUpdate(keyPath,value,code,data));
+        this.actions.push(DataboxUtils.buildUpdate(keyPath,value,code,data));
         return this;
     }
 
     /**
-     * Delete a value in the DataBox.
+     * Delete a value in the Databox.
      * Delete behavior:
      * Base (with keyPath [] or '') -> Deletes the complete structure.
      * KeyArray -> Deletes the specific value (if the key does exist).
@@ -88,13 +88,13 @@ export default class DbCudActionSequence
      * @param data
      */
     delete(keyPath : string[] | string,{code,data} : InfoOption = {}) : DbCudActionSequence {
-        this.actions.push(DataBoxUtils.buildDelete(keyPath,code,data));
+        this.actions.push(DataboxUtils.buildDelete(keyPath,code,data));
         return this;
     }
 
     /**
-     * Apply all changes on the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-events.
+     * Apply all changes on the Databox.
+     * Notice that this method will only update the Databox and invoke the before-events.
      * It will not automatically update the database,
      * so you have to do it in the before-events or before calling this method.
      */

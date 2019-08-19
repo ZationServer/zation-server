@@ -244,7 +244,7 @@ export interface MainConfig
      * The limit of how many data boxes a socket can have.
      * @default 30
      */
-    socketDataBoxLimit ?: number;
+    socketDataboxLimit ?: number;
     /**
      * This property gives you the possibility to pass extra variables in the main config.
      * You can access them with the small bag.
@@ -614,7 +614,7 @@ export interface InternalMainConfig extends MainConfig {
     authPrivateKey  : string | null;
     authPublicKey  : string | null;
     validationCheckLimit : number;
-    socketDataBoxLimit : number;
+    socketDataboxLimit : number;
     useTokenClusterKeyCheck : boolean;
     clusterShareTokenAuth  : boolean;
     scLogLevel  : number;

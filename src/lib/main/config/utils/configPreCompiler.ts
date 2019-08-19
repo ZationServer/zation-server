@@ -34,8 +34,8 @@ import {isInputConfigTranslatable, isModelConfigTranslatable} from "../../../api
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../definitions/controllerConfig";
 import {ControllerClass}  from "../../../api/Controller";
-import {DataBoxClassDef, DataBoxConfig} from "../definitions/dataBoxConfig";
-import DbConfigUtils from "../../dataBox/dbConfigUtils";
+import {DataboxClassDef, DataboxConfig} from "../definitions/databoxConfig";
+import DbConfigUtils from "../../databox/dbConfigUtils";
 
 export interface ModelPreparationMem extends Processable{
     _optionalInfo : {isOptional : boolean,defaultValue : any}
@@ -48,7 +48,7 @@ export default class ConfigPreCompiler
     private readonly configs : OtherLoadedConfigSet;
 
     private controllerDefaults : object;
-    private dataBoxDefaults : object;
+    private databoxDefaults : object;
     private modelsConfig : object;
     private modelImportEngine : ModelResolveEngine;
 
@@ -64,7 +64,7 @@ export default class ConfigPreCompiler
         this.preCompileTmpBuilds();
         this.preCompileControllerDefaults();
         this.preCompileControllers();
-        this.preCompileDataBoxes();
+        this.preCompileDataboxes();
         this.preCompileSystemController();
         this.preCompileServiceModules();
         this.preCompileEventConfig();
@@ -91,7 +91,7 @@ export default class ConfigPreCompiler
     private prepare() : void
     {
         this.prepareControllerDefaults();
-        this.prepareDataBoxDefaults();
+        this.prepareDataboxDefaults();
         this.prepareModelsConfig();
         this.prepareBagExtensions();
         this.modelImportEngine = new ModelResolveEngine(this.modelsConfig);
@@ -113,13 +113,13 @@ export default class ConfigPreCompiler
         }
     }
 
-    private prepareDataBoxDefaults() : void
+    private prepareDataboxDefaults() : void
     {
-        this.dataBoxDefaults = {};
-        let dbDefaults = this.configs.appConfig.dataBoxDefaults;
+        this.databoxDefaults = {};
+        let dbDefaults = this.configs.appConfig.databoxDefaults;
         //setDefaults if not set!
         if(dbDefaults !== undefined) {
-            this.dataBoxDefaults = dbDefaults;
+            this.databoxDefaults = dbDefaults;
         }
     }
 
@@ -596,21 +596,21 @@ export default class ConfigPreCompiler
         }
     }
 
-    private preCompileDataBoxes() : void
+    private preCompileDataboxes() : void
     {
-        //set if dataBox property is not found
-        if(!this.configs.appConfig.dataBoxes) {
-            this.configs.appConfig.dataBoxes = {};
+        //set if databox property is not found
+        if(!this.configs.appConfig.databoxes) {
+            this.configs.appConfig.databoxes = {};
         }
 
-        //iterate over DataBoxes
-        const dataBoxes = this.configs.appConfig.dataBoxes;
-        for(let k in dataBoxes) {
-            if(dataBoxes.hasOwnProperty(k)) {
-                Iterator.iterateCompDefinition<DataBoxClassDef>(dataBoxes[k],(dataBoxClass) => {
-                    const config : DataBoxConfig = dataBoxClass.config;
+        //iterate over Databoxes
+        const databoxes = this.configs.appConfig.databoxes;
+        for(let k in databoxes) {
+            if(databoxes.hasOwnProperty(k)) {
+                Iterator.iterateCompDefinition<DataboxClassDef>(databoxes[k],(databoxClass) => {
+                    const config : DataboxConfig = databoxClass.config;
                     //set the defaults
-                    ObjectUtils.addObToOb(config,this.dataBoxDefaults,false);
+                    ObjectUtils.addObToOb(config,this.databoxDefaults,false);
                     this.preCompileInputConfig(DbConfigUtils.convertDbInitInput(config));
                     this.preCompileInputConfig(DbConfigUtils.convertDbFetchInput(config));
                 });

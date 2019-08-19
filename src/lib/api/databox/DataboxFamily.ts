@@ -5,9 +5,9 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import {DataBoxConfig}               from "../../main/config/definitions/dataBoxConfig";
+import {DataboxConfig}               from "../../main/config/definitions/databoxConfig";
 import Bag                           from "../Bag";
-import DataBoxCore, {DbPreparedData} from "./DataBoxCore";
+import DataboxCore, {DbPreparedData} from "./DataboxCore";
 import UpSocket, {RespondFunction}   from "../../main/sc/socket";
 import {IdValidChecker}              from "../../main/id/idValidCheckerUtils";
 import {ScExchange}                  from "../../main/sc/scServer";
@@ -38,35 +38,35 @@ import {
     DbSocketMemory,
     DbRegisterResult,
     ChangeValue, DbToken
-} from "../../main/dataBox/dbDefinitions";
-import DataBoxAccessHelper from "../../main/dataBox/dataBoxAccessHelper";
-import DataBoxUtils        from "../../main/dataBox/dataBoxUtils";
-import DbCudActionSequence from "../../main/dataBox/dbCudActionSequence";
+} from "../../main/databox/dbDefinitions";
+import DataboxAccessHelper from "../../main/databox/databoxAccessHelper";
+import DataboxUtils        from "../../main/databox/databoxUtils";
+import DbCudActionSequence from "../../main/databox/dbCudActionSequence";
 import RespondUtils        from "../../main/utils/respondUtils";
 import {ClientErrorName}   from "../../main/constants/clientErrorName";
-import DataBoxFetchManager, {FetchManagerBuilder} from "../../main/dataBox/dataBoxFetchManager";
+import DataboxFetchManager, {FetchManagerBuilder} from "../../main/databox/databoxFetchManager";
 import ZSocket                                    from "../../main/internalApi/zSocket";
 import CloneUtils                                 from "../../main/utils/cloneUtils";
 const DefaultSymbol                               = Symbol();
 
 /**
  * If you always want to present the most recent data on the client,
- * the DataBox is the best choice.
- * The DataBox will keep the data up to date on the client in real-time.
+ * the Databox is the best choice.
+ * The Databox will keep the data up to date on the client in real-time.
  * Also, it will handle all problematic cases, for example,
  * when the connection to the server is lost,
  * and the client did not get an update of the data.
  * It's also the right choice if you want to present a significant amount of data
- * because DataBoxes support the functionality to stream the data
+ * because Databoxes support the functionality to stream the data
  * to the clients whenever a client needs more data.
  * Additionally, it keeps the network traffic low because it
  * only sends the changed data information, not the whole data again.
  *
- * The DataBoxFamily class gives you the possibility to define a
- * family of DataBoxes that only differ by an id (also named memberId).
+ * The DataboxFamily class gives you the possibility to define a
+ * family of Databoxes that only differ by an id (also named memberId).
  * That is useful in a lot of cases, for example,
- * if you want to have a DataBoxFamily for user profiles.
- * Than the DataBoxes only differ by the ids of the users.
+ * if you want to have a DataboxFamily for user profiles.
+ * Than the Databoxes only differ by the ids of the users.
  *
  * You can override these methods:
  * - initialize
@@ -83,7 +83,7 @@ const DefaultSymbol                               = Symbol();
  * - updateMiddleware
  * - deleteMiddleware
  */
-export default class DataBoxFamily extends DataBoxCore {
+export default class DataboxFamily extends DataboxCore {
 
     /**
      * Maps the member id to the sockets and remove socket function.
@@ -100,10 +100,10 @@ export default class DataBoxFamily extends DataBoxCore {
     private readonly _workerFullId : string;
     private readonly _maxSocketInputChannels : number;
 
-    private readonly _buildFetchManager : FetchManagerBuilder<typeof DataBoxFamily.prototype._fetchData>;
+    private readonly _buildFetchManager : FetchManagerBuilder<typeof DataboxFamily.prototype._fetchData>;
     private readonly _sendCudToSockets : (id : string,dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void;
 
-    static ___instance___ : DataBoxFamily;
+    static ___instance___ : DataboxFamily;
 
     constructor(id : string, bag: Bag, dbPreparedData : DbPreparedData, idValidCheck : IdValidChecker, apiLevel : number | undefined) {
         super(id,bag,dbPreparedData,apiLevel);
@@ -113,7 +113,7 @@ export default class DataBoxFamily extends DataBoxCore {
         this._maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
         this._dbEventPreFix = `${DATA_BOX_START_INDICATOR}-${this.name}-${apiLevel !== undefined ? apiLevel : ''}-`;
 
-        this._buildFetchManager = DataBoxFetchManager.buildFetchMangerBuilder
+        this._buildFetchManager = DataboxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
         this._sendCudToSockets = this._getSendCudToSocketsHandler();
     }
@@ -148,10 +148,10 @@ export default class DataBoxFamily extends DataBoxCore {
 
         const {inputChIds,unregisterSocket} = this._connectSocket(socket,id);
 
-        DataBoxUtils.maxInputChannelsCheck(inputChIds.size,this._maxSocketInputChannels);
+        DataboxUtils.maxInputChannelsCheck(inputChIds.size,this._maxSocketInputChannels);
 
         //add input channel
-        const chInputId = DataBoxUtils.generateInputChId(inputChIds);
+        const chInputId = DataboxUtils.generateInputChId(inputChIds);
         inputChIds.add(chInputId);
 
         const outputCh = this._dbEventPreFix+id;
@@ -211,7 +211,7 @@ export default class DataBoxFamily extends DataBoxCore {
      */
     private _disconnectSocket(socket : UpSocket,disconnectHandler : () => void,id : string) {
         socket.off('disconnect',disconnectHandler);
-        DataBoxAccessHelper.rmDb(this,socket);
+        DataboxAccessHelper.rmDb(this,socket);
         this._rmSocket(socket,id);
         this.onDisconnection(id,socket.zSocket);
     }
@@ -230,7 +230,7 @@ export default class DataBoxFamily extends DataBoxCore {
     }
 
     private async _fetchData(id : string,dbToken : DbToken,fetchInput : any,initData : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
-        const session = DataBoxUtils.getSession(dbToken.sessions,target);
+        const session = DataboxUtils.getSession(dbToken.sessions,target);
 
         const currentCounter = session.c;
         session.c++;
@@ -244,12 +244,12 @@ export default class DataBoxFamily extends DataBoxCore {
     }
 
     private async _resetSession(id : string,dbToken : DbToken,target ?: DBClientInputSessionTarget) : Promise<string> {
-        DataBoxUtils.resetSession(dbToken.sessions,target);
+        DataboxUtils.resetSession(dbToken.sessions,target);
         return this._signDbToken(dbToken,id);
     }
 
     private async _copySession(id : string,dbToken : DbToken,target ?: DBClientInputSessionTarget) : Promise<string> {
-        DataBoxUtils.copySession(dbToken.sessions,target);
+        DataboxUtils.copySession(dbToken.sessions,target);
         return this._signDbToken(dbToken,id);
     }
 
@@ -279,7 +279,7 @@ export default class DataBoxFamily extends DataBoxCore {
     }
 
     /**
-     * Connects a socket internally with the DataBox, if it's not already connected.
+     * Connects a socket internally with the Databox, if it's not already connected.
      * (To get updates of this family member)
      * @param socket
      * @param id
@@ -327,7 +327,7 @@ export default class DataBoxFamily extends DataBoxCore {
             socketMemberSet.add(id);
 
             socket.on('disconnect',unregisterSocketFunction);
-            DataBoxAccessHelper.addDb(this,socket);
+            DataboxAccessHelper.addDb(this,socket);
             this.onConnection(id,socket.zSocket);
         }
         return socketMemoryData;
@@ -399,7 +399,7 @@ export default class DataBoxFamily extends DataBoxCore {
     }
 
     /**
-     * Sends a DataBox package to all sockets of a family member.
+     * Sends a Databox package to all sockets of a family member.
      * @param id
      * @param dbClientPackage
      */
@@ -414,7 +414,7 @@ export default class DataBoxFamily extends DataBoxCore {
     }
 
     /**
-     * Sends a DataBox cud package to sockets of the DataBox after passing the cud middleware.
+     * Sends a Databox cud package to sockets of the Databox after passing the cud middleware.
      * @param id
      * @param dbClientPackage
      * @private
@@ -530,7 +530,7 @@ export default class DataBoxFamily extends DataBoxCore {
      */
     async _emitCudPackage(preCudPackage : PreCudPackage,id : string,timestamp ?: number) {
         await this._fireBeforeEvents(id,preCudPackage.a);
-        const cudPackage = DataBoxUtils.buildCudPackage(preCudPackage,timestamp);
+        const cudPackage = DataboxUtils.buildCudPackage(preCudPackage,timestamp);
         this._sendToWorker(id,{
             a : DbWorkerAction.cud,
             d : cudPackage,
@@ -552,7 +552,7 @@ export default class DataBoxFamily extends DataBoxCore {
     }
 
     /**
-     * Close the family member of this DataBox.
+     * Close the family member of this Databox.
      * @param id
      * @param closePackage
      * @private
@@ -570,8 +570,8 @@ export default class DataBoxFamily extends DataBoxCore {
 
     /**
      * **Not override this method.**
-     * Insert a new value in the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-event.
+     * Insert a new value in the Databox.
+     * Notice that this method will only update the Databox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
@@ -605,15 +605,15 @@ export default class DataBoxFamily extends DataBoxCore {
      */
     async insert(id : string | number,keyPath : string[] | string, value : any,{ifContains,timestamp,code,data} : IfContainsOption & InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
-            DataBoxUtils.buildPreCudPackage(
-                DataBoxUtils.buildInsert(keyPath,value,ifContains,code,data)),
+            DataboxUtils.buildPreCudPackage(
+                DataboxUtils.buildInsert(keyPath,value,ifContains,code,data)),
             typeof id === "string" ? id : id.toString(),timestamp);
     }
 
     /**
      * **Not override this method.**
-     * Update a value in the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-event.
+     * Update a value in the Databox.
+     * Notice that this method will only update the Databox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
@@ -635,15 +635,15 @@ export default class DataBoxFamily extends DataBoxCore {
      */
     async update(id : string | number,keyPath : string[] | string, value : any,{timestamp,code,data} : InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
-            DataBoxUtils.buildPreCudPackage(
-                DataBoxUtils.buildUpdate(keyPath,value,code,data)),
+            DataboxUtils.buildPreCudPackage(
+                DataboxUtils.buildUpdate(keyPath,value,code,data)),
             typeof id === "string" ? id : id.toString(),timestamp);
     }
 
     /**
      * **Not override this method.**
-     * Delete a value in the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-event.
+     * Delete a value in the Databox.
+     * Notice that this method will only update the Databox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
@@ -664,17 +664,17 @@ export default class DataBoxFamily extends DataBoxCore {
      */
     async delete(id : string | number,keyPath : string[] | string,{timestamp,code,data} : InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
-            DataBoxUtils.buildPreCudPackage(
-                DataBoxUtils.buildDelete(keyPath,code,data)),
+            DataboxUtils.buildPreCudPackage(
+                DataboxUtils.buildDelete(keyPath,code,data)),
             typeof id === "string" ? id : id.toString(),timestamp);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * **Not override this method.**
-     * Sequence edit the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-events.
-     * This method is ideal for doing multiple changes on a DataBox
+     * Sequence edit the Databox.
+     * Notice that this method will only update the Databox and invoke the before-events.
+     * This method is ideal for doing multiple changes on a Databox
      * because it will pack them all together and send them all in ones.
      * It will not automatically update the database,
      * so you have to do it in the before-events or before calling this method.
@@ -688,14 +688,14 @@ export default class DataBoxFamily extends DataBoxCore {
     seqEdit(id : string | number,timestamp ?: number) : DbCudActionSequence {
         return new DbCudActionSequence(async (actions) => {
             await this._emitCudPackage(
-                DataBoxUtils.buildPreCudPackage(...actions),
+                DataboxUtils.buildPreCudPackage(...actions),
                 typeof id === "string" ? id : id.toString(),timestamp);
         });
     }
 
     /**
      * **Not override this method.**
-     * The close function will close the DataBox with the id for every client on every server.
+     * The close function will close the Databox with the id for every client on every server.
      * You optionally can provide a code or any other information for the client.
      * Usually, the close function is used when the data is completely deleted from the system.
      * For example, a chat that doesn't exist anymore.
@@ -707,7 +707,7 @@ export default class DataBoxFamily extends DataBoxCore {
      */
     close(id : string | number,code ?: number | string,data ?: any,forEveryWorker : boolean = true){
         id = typeof id === "string" ? id : id.toString();
-        const clientPackage = DataBoxUtils.buildClientClosePackage(code,data);
+        const clientPackage = DataboxUtils.buildClientClosePackage(code,data);
         if(forEveryWorker){
             this._sendToWorker(id,
                 {
@@ -721,7 +721,7 @@ export default class DataBoxFamily extends DataBoxCore {
 
     /**
      * **Not override this method.**
-     * The reload function will force all clients of the DataBox to reload the data.
+     * The reload function will force all clients of the Databox to reload the data.
      * This method is used internally if it was detected that a worker had
      * missed a cud (create, update, or delete) operation.
      * @param id The member of the family you want to force to reload.
@@ -732,7 +732,7 @@ export default class DataBoxFamily extends DataBoxCore {
      */
     doReload(id : string | number,forEveryWorker : boolean = false,code ?: number | string,data ?: any){
         id = typeof id === "string" ? id : id.toString();
-        const clientPackage = DataBoxUtils.buildClientReloadPackage(code,data);
+        const clientPackage = DataboxUtils.buildClientReloadPackage(code,data);
         if(forEveryWorker){
             this._broadcastToOtherSockets(id,clientPackage);
         }
@@ -741,7 +741,7 @@ export default class DataBoxFamily extends DataBoxCore {
 
     /**
      * **Not override this method.**
-     * With this function, you can kick out a socket from a family member of the DataBox.
+     * With this function, you can kick out a socket from a family member of the Databox.
      * This method is used internally.
      * @param id
      * @param socket
@@ -774,7 +774,7 @@ export default class DataBoxFamily extends DataBoxCore {
 
     /**
      * **Can be overridden.**
-     * This method is used to fetch data for the clients of the DataBox.
+     * This method is used to fetch data for the clients of the Databox.
      * A client can call that method multiple times to fetch more and more data.
      * You usually request data from your database and return it, and if no more data is available,
      * you should throw a NoMoreDataAvailableError or call the internal noMoreDataAvailable method.
@@ -785,8 +785,8 @@ export default class DataBoxFamily extends DataBoxCore {
      * important to get more data in the future, for example, the last id of the item that the client had received.
      * The session object is only available on the server-side and can not be modified on the client-side.
      * Notice that you only can store JSON convertible data in the session.
-     * If you design the DataBox in such a way that the next fetch is not depending on the previous one,
-     * you can activate the parallelFetch option in the DataBox config.
+     * If you design the Databox in such a way that the next fetch is not depending on the previous one,
+     * you can activate the parallelFetch option in the Databox config.
      * The data what you are returning can be of any type.
      * But if you want to return more complex data,
      * it is recommended that the information consists of key-value able components
@@ -796,7 +796,7 @@ export default class DataBoxFamily extends DataBoxCore {
      * Whenever you are using the socket to filter the data for a specific user,
      * you also have to use the cud middleware to filter the cud events for the socket.
      * You mostly should avoid this because if you are overwriting a cud middleware,
-     * the DataBox switches to a more costly performance implementation.
+     * the Databox switches to a more costly performance implementation.
      * @param id
      * @param counter
      * @param session
@@ -811,7 +811,7 @@ export default class DataBoxFamily extends DataBoxCore {
     // noinspection JSUnusedGlobalSymbols
     /**
      * **Can be overridden.**
-     * Check if the member id is valid for this DataBoxFamily.
+     * Check if the member id is valid for this DataboxFamily.
      * To block the id, you only need to return an object (that can be error information) or false.
      * If you want to allow the id, you have to return nothing or a true.
      * @param id
@@ -822,7 +822,7 @@ export default class DataBoxFamily extends DataBoxCore {
 
     /**
      * **Can be overridden.**
-     * A function that gets triggered before an insert into the DataBox.
+     * A function that gets triggered before an insert into the Databox.
      * Can be used to insert the data in the database.
      * @param id
      * @param keyPath
@@ -833,7 +833,7 @@ export default class DataBoxFamily extends DataBoxCore {
 
     /**
      * **Can be overridden.**
-     * A function that gets triggered before an update of data in the DataBox.
+     * A function that gets triggered before an update of data in the Databox.
      * Can be used to update the data in the database.
      * @param id
      * @param keyPath
@@ -844,7 +844,7 @@ export default class DataBoxFamily extends DataBoxCore {
 
     /**
      * **Can be overridden.**
-     * A function that gets triggered before a delete of data in the DataBox.
+     * A function that gets triggered before a delete of data in the Databox.
      * Can be used to delete the data in the database.
      * @param id
      * @param keyPath
@@ -855,7 +855,7 @@ export default class DataBoxFamily extends DataBoxCore {
     // noinspection JSUnusedLocalSymbols
     /**
      * **Can be overridden.**
-     * A function that gets triggered whenever a new socket is connected to the DataBox.
+     * A function that gets triggered whenever a new socket is connected to the Databox.
      */
     protected onConnection(id : string,socket : ZSocket) : Promise<void> | void {
     }
@@ -863,7 +863,7 @@ export default class DataBoxFamily extends DataBoxCore {
     // noinspection JSUnusedLocalSymbols
     /**
      * **Can be overridden.**
-     * A function that gets triggered whenever a socket is disconnected from the DataBox.
+     * A function that gets triggered whenever a socket is disconnected from the Databox.
      * Notice that means all input channels are closed.
      */
     protected onDisconnection(id : string,socket : ZSocket) : Promise<void> | void {
@@ -873,7 +873,7 @@ export default class DataBoxFamily extends DataBoxCore {
      * **Can be overridden.**
      * The insert middleware.
      * You should only use a cud middleware if you can find no other way
-     * because when your overwrite at least one of them, the DataBox
+     * because when your overwrite at least one of them, the Databox
      * switches to a more costly performance implementation.
      * You should not invoke long process tasks in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket variables.
@@ -899,7 +899,7 @@ export default class DataBoxFamily extends DataBoxCore {
      * **Can be overridden.**
      * The update middleware.
      * You should only use a cud middleware if you can find no other way
-     * because when your overwrite at least one of them, the DataBox
+     * because when your overwrite at least one of them, the Databox
      * switches to a more costly performance implementation.
      * You should not invoke long process tasks in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket variables.
@@ -925,7 +925,7 @@ export default class DataBoxFamily extends DataBoxCore {
      * **Can be overridden.**
      * The delete middleware.
      * You should only use a cud middleware if you can find no other way
-     * because when your overwrite at least one of them, the DataBox
+     * because when your overwrite at least one of them, the Databox
      * switches to a more costly performance implementation.
      * You should not invoke long process tasks in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket variables.
@@ -943,17 +943,17 @@ export default class DataBoxFamily extends DataBoxCore {
     }
 }
 
-DataBoxFamily.prototype['insertMiddleware'][DefaultSymbol] = true;
-DataBoxFamily.prototype['updateMiddleware'][DefaultSymbol] = true;
-DataBoxFamily.prototype['deleteMiddleware'][DefaultSymbol] = true;
+DataboxFamily.prototype['insertMiddleware'][DefaultSymbol] = true;
+DataboxFamily.prototype['updateMiddleware'][DefaultSymbol] = true;
+DataboxFamily.prototype['deleteMiddleware'][DefaultSymbol] = true;
 
-export interface DataBoxFamilyClass {
-    config: DataBoxConfig;
+export interface DataboxFamilyClass {
+    config: DataboxConfig;
 
-    new(name : string, bag: Bag, dbPreparedData : DbPreparedData, idValidCheck : IdValidChecker, apiLevel : number | undefined): DataBoxFamily;
+    new(name : string, bag: Bag, dbPreparedData : DbPreparedData, idValidCheck : IdValidChecker, apiLevel : number | undefined): DataboxFamily;
 
     prototype: any;
     name : string;
 
-    readonly ___instance___ : DataBoxFamily | undefined;
+    readonly ___instance___ : DataboxFamily | undefined;
 }

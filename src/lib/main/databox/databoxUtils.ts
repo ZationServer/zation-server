@@ -15,15 +15,15 @@ import {
     DbSessionData,
     PreCudPackage, DbToken
 } from "./dbDefinitions";
-import DataBoxFamily, {DataBoxFamilyClass} from "../../api/dataBox/DataBoxFamily";
-import DataBoxFamilyContainer              from "./container/dataBoxFamilyContainer";
-import DataBox, {DataBoxClass}             from "../../api/dataBox/DataBox";
-import DataBoxContainer                    from "./container/dataBoxContainer";
-import DataBoxNotFound                     from "../error/dataBoxNotFound";
+import DataboxFamily, {DataboxFamilyClass} from "../../api/databox/DataboxFamily";
+import DataboxFamilyContainer              from "./container/databoxFamilyContainer";
+import Databox, {DataboxClass}             from "../../api/databox/Databox";
+import DataboxContainer                    from "./container/databoxContainer";
+import DataboxNotFound                     from "../error/databoxNotFound";
 import {ClientErrorName}                   from "../constants/clientErrorName";
 const uniqid                             = require('uniqid');
 
-export default class DataBoxUtils {
+export default class DataboxUtils {
 
     // noinspection JSMethodCanBeStatic
     /**
@@ -51,7 +51,7 @@ export default class DataBoxUtils {
      static buildInsert(keyPath : string[] | string, value : any, ifContains ?: string, code ?: number | string, data ?: any) : CudAction {
          return {
              t : CudType.insert,
-             k : DataBoxUtils.handleKeyPath(keyPath),
+             k : DataboxUtils.handleKeyPath(keyPath),
              v : value,
              ...(ifContains !== undefined ? {i : ifContains} : {}),
              ...(code !== undefined ? {c : code} : {}),
@@ -62,7 +62,7 @@ export default class DataBoxUtils {
     static buildUpdate(keyPath : string[] | string, value : any,code ?: number | string, data ?: any) : CudAction {
         return {
             t : CudType.update,
-            k : DataBoxUtils.handleKeyPath(keyPath),
+            k : DataboxUtils.handleKeyPath(keyPath),
             v : value,
             ...(code !== undefined ? {c : code} : {}),
             ...(data !== undefined ? {d : data} : {})
@@ -72,7 +72,7 @@ export default class DataBoxUtils {
     static buildDelete(keyPath : string[] | string,code ?: number | string, data ?: any) : CudAction {
         return {
             t : CudType.delete,
-            k : DataBoxUtils.handleKeyPath(keyPath),
+            k : DataboxUtils.handleKeyPath(keyPath),
             ...(code !== undefined ? {c : code} : {}),
             ...(data !== undefined ? {d : data} : {})
         };
@@ -95,46 +95,46 @@ export default class DataBoxUtils {
     }
 
     /**
-     * A method that will load the instances from DataBox classes
+     * A method that will load the instances from Databox classes
      * and will return the correct container for it.
-     * @param dataBoxes
+     * @param databoxes
      */
-    static getDbContainer(dataBoxes : DataBoxClass[] | DataBoxFamilyClass[]) :  DataBoxFamilyContainer | DataBoxContainer {
+    static getDbContainer(databoxes : DataboxClass[] | DataboxFamilyClass[]) :  DataboxFamilyContainer | DataboxContainer {
 
-        const dataBoxInstances : DataBox[] = [];
-        const dataBoxFamilyInstances : DataBoxFamily[] = [];
+        const databoxInstances : Databox[] = [];
+        const databoxFamilyInstances : DataboxFamily[] = [];
 
-        for(let i = 0; i < dataBoxes.length; i++){
-            const instance = dataBoxes[i].___instance___;
+        for(let i = 0; i < databoxes.length; i++){
+            const instance = databoxes[i].___instance___;
             if(instance !== undefined){
-                if(instance instanceof DataBox){
-                    dataBoxInstances.push(instance);
+                if(instance instanceof Databox){
+                    databoxInstances.push(instance);
                 }
                 else {
-                    dataBoxFamilyInstances.push(instance);
+                    databoxFamilyInstances.push(instance);
                 }
             }
             else {
-                throw new DataBoxNotFound(dataBoxes[i].name);
+                throw new DataboxNotFound(databoxes[i].name);
             }
         }
 
-        if(dataBoxInstances.length>0){
-            return new DataBoxContainer(dataBoxInstances);
+        if(databoxInstances.length>0){
+            return new DataboxContainer(databoxInstances);
         }
         else {
-            return new DataBoxFamilyContainer(dataBoxFamilyInstances);
+            return new DataboxFamilyContainer(databoxFamilyInstances);
         }
     }
 
     /**
-     * Creates a new DataBox token.
+     * Creates a new Databox token.
      * @param rawInitData
      */
     static createDbToken(rawInitData : any) : DbToken {
         return {
             rawInitData: rawInitData,
-            sessions : DataBoxUtils.createDbSessionData()
+            sessions : DataboxUtils.createDbSessionData()
         };
     }
 
@@ -179,7 +179,7 @@ export default class DataBoxUtils {
      */
     static copySession(dbSessionData : DbSessionData,target ?: DBClientInputSessionTarget) : void
     {
-        const selectedSession = DataBoxUtils.getSession(dbSessionData,target);
+        const selectedSession = DataboxUtils.getSession(dbSessionData,target);
         if(dbSessionData.main !== selectedSession){
             dbSessionData.main = dbSessionData.reload;
         }
@@ -195,7 +195,7 @@ export default class DataBoxUtils {
      */
     static resetSession(dbSessionData : DbSessionData,target ?: DBClientInputSessionTarget) : void
     {
-        const selectedSession = DataBoxUtils.getSession(dbSessionData,target);
+        const selectedSession = DataboxUtils.getSession(dbSessionData,target);
         if(dbSessionData.main === selectedSession){
             dbSessionData.main = {c:0,d:{}};
         }
@@ -210,7 +210,7 @@ export default class DataBoxUtils {
      */
     static generateInputChId(inputChIds : Set<string>) : string {
         const id = uniqid.time();
-        return inputChIds.has(id) ? DataBoxUtils.generateInputChId(inputChIds) : id;
+        return inputChIds.has(id) ? DataboxUtils.generateInputChId(inputChIds) : id;
     }
 
     /**

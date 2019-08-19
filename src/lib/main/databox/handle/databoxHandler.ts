@@ -5,39 +5,39 @@ Copyright(c) Luca Scaringella
  */
 
 import UpSocket                    from "../../sc/socket";
-import DataBoxPrepare              from "../dataBoxPrepare";
+import DataboxPrepare              from "../databoxPrepare";
 import ZationConfig                from "../../config/manager/zationConfig";
-import DataBoxCore                 from "../../../api/dataBox/DataBoxCore";
-import DataBoxFamily               from "../../../api/dataBox/DataBoxFamily";
+import DataboxCore                 from "../../../api/databox/DataboxCore";
+import DataboxFamily               from "../../../api/databox/DataboxFamily";
 import {
-    DataBoxInfo,
-    DataBoxConnectReq,
-    DataBoxConnectRes,
+    DataboxInfo,
+    DataboxConnectReq,
+    DataboxConnectRes,
     DbRegisterResult,
     DbToken
 } from "../dbDefinitions";
-import DataBoxReqUtils             from "./dataBoxReqUtils";
+import DataboxReqUtils             from "./databoxReqUtils";
 import {ClientErrorName}           from "../../constants/clientErrorName";
-import DataBox                     from "../../../api/dataBox/DataBox";
-import DataBoxUtils                from "../dataBoxUtils";
+import Databox                     from "../../../api/databox/Databox";
+import DataboxUtils                from "../databoxUtils";
 import ObjectUtils                 from "../../utils/objectUtils";
 
-export default class DataBoxHandler
+export default class DataboxHandler
 {
-    private readonly dbPrepare : DataBoxPrepare;
+    private readonly dbPrepare : DataboxPrepare;
     private readonly defaultApiLevel : number;
-    private readonly socketDataBoxLimit : number;
+    private readonly socketDataboxLimit : number;
 
-    constructor(dbPrepare : DataBoxPrepare,zc : ZationConfig) {
+    constructor(dbPrepare : DataboxPrepare, zc : ZationConfig) {
         this.dbPrepare = dbPrepare;
         this.defaultApiLevel = zc.mainConfig.defaultClientApiLevel;
-        this.socketDataBoxLimit = zc.mainConfig.socketDataBoxLimit;
+        this.socketDataboxLimit = zc.mainConfig.socketDataboxLimit;
     }
 
-    async processConnectReq(input : DataBoxConnectReq, socket : UpSocket) : Promise<DataBoxConnectRes>
+    async processConnectReq(input : DataboxConnectReq, socket : UpSocket) : Promise<DataboxConnectRes>
     {
         //check request valid
-        if(!DataBoxReqUtils.isValidReqStructure(input)) {
+        if(!DataboxReqUtils.isValidReqStructure(input)) {
             const err : any = new Error(`Not valid req structure.`);
             err.name = ClientErrorName.INVALID_REQUEST;
             throw err;
@@ -48,36 +48,36 @@ export default class DataBoxHandler
         const apiLevel = reqApiLevel || socket.apiLevel || this.defaultApiLevel;
 
         //throws if not exists or api level is not compatible
-        const db : DataBoxCore = this.dbPrepare.getDataBox((input.d as string),apiLevel);
+        const db : DataboxCore = this.dbPrepare.getDatabox((input.d as string),apiLevel);
 
-        const isFamily = DataBoxCore instanceof DataBoxFamily;
+        const isFamily = DataboxCore instanceof DataboxFamily;
         const idProvided = input.i !== undefined;
 
         if(isFamily && !idProvided){
-            const err : any = new Error(`The id is missing to request a DataBoxFamily.`);
+            const err : any = new Error(`The id is missing to request a DataboxFamily.`);
             err.name = ClientErrorName.ID_MISSING;
             throw err;
         }
         if(!isFamily && idProvided){
-            const err : any = new Error(`Unknown id provided to request a DataBox.`);
+            const err : any = new Error(`Unknown id provided to request a Databox.`);
             err.name = ClientErrorName.UNKNOWN_ID;
             throw err;
         }
 
-        if(socket.dataBoxes.length > this.socketDataBoxLimit){
-            const err : any = new Error(`Socket limit of DataBoxes is reached.`);
+        if(socket.databoxes.length > this.socketDataboxLimit){
+            const err : any = new Error(`Socket limit of Databoxes is reached.`);
             err.name = ClientErrorName.DATA_BOX_LIMIT_REACHED;
             throw err;
         }
 
-        const dbInfo : DataBoxInfo = {
+        const dbInfo : DataboxInfo = {
             name : (input.d as string),
             id : undefined
         };
 
         //access and id check
         if(isFamily){
-            await (db as DataBoxFamily)._checkIdIsValid(input.i as string);
+            await (db as DataboxFamily)._checkIdIsValid(input.i as string);
             dbInfo.id = (input.i as string);
         }
         await db._checkAccess(socket,dbInfo);
@@ -98,7 +98,7 @@ export default class DataBoxHandler
         }
         catch (e) {}
         if(!dbToken){
-            dbToken = DataBoxUtils.createDbToken(input.ii);
+            dbToken = DataboxUtils.createDbToken(input.ii);
             processedInitData = await db._consumeInitInput(input.ii);
         }
 
@@ -110,12 +110,12 @@ export default class DataBoxHandler
         let keys : DbRegisterResult;
         let lastCudId;
         if(isFamily){
-            keys = await (db as DataBoxFamily)._registerSocket(socket,(input.i as string),dbToken,processedInitData);
-            lastCudId = (db as DataBoxFamily)._getLastCudId(input.i as string);
+            keys = await (db as DataboxFamily)._registerSocket(socket,(input.i as string),dbToken,processedInitData);
+            lastCudId = (db as DataboxFamily)._getLastCudId(input.i as string);
         }
         else {
-            keys = await (db as DataBox)._registerSocket(socket,dbToken,processedInitData);
-            lastCudId = (db as DataBox)._getLastCudId();
+            keys = await (db as Databox)._registerSocket(socket,dbToken,processedInitData);
+            lastCudId = (db as Databox)._getLastCudId();
         }
 
         return {

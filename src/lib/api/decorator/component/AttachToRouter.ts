@@ -8,11 +8,11 @@ import Controller                    from "../../Controller";
 import Router                        from "../../Router";
 import ConfigBuildError              from "../../../main/config/manager/configBuildError";
 import {Component}                   from "../../../main/config/definitions/component";
-import DataBox                       from "../../dataBox/DataBox";
-import DataBoxFamily                     from "../../dataBox/DataBoxFamily";
+import Databox                       from "../../databox/Databox";
+import DataboxFamily                     from "../../databox/DataboxFamily";
 
 /**
- * Attach a component (Controller or DataBox) to a router.
+ * Attach a component (Controller or Databox) to a router.
  * You can attach multiple components with the same id but different API levels.
  * @param id
  * @param router
@@ -21,12 +21,12 @@ import DataBoxFamily                     from "../../dataBox/DataBoxFamily";
  */
 export const AttachToRouter = (id : string, router : Router, apiLevel ?: number) => {
     return (target : Component) => {
-        if(target.prototype instanceof Controller || target.prototype instanceof DataBox
-            || target.prototype instanceof DataBoxFamily){
+        if(target.prototype instanceof Controller || target.prototype instanceof Databox
+            || target.prototype instanceof DataboxFamily){
             router.attach(id,target,apiLevel);
         }
         else {
-            throw new ConfigBuildError(`The attach to router decorator can only be used on classes that extend the Controller, DataBox or DataIdBox class.`);
+            throw new ConfigBuildError(`The attach to router decorator can only be used on classes that extend the Controller, Databox or DataIdBox class.`);
         }
     }
 };

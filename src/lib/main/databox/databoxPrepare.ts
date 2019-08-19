@@ -8,24 +8,24 @@ import SystemVersionChecker                                     from "../systemV
 import ZationConfigFull                                         from "../config/manager/zationConfigFull";
 import Bag                                                      from "../../api/Bag";
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction}  from "../apiLevel/apiLevelUtils";
-import DataBoxCore, {DbPreparedData}                            from "../../api/dataBox/DataBoxCore";
+import DataboxCore, {DbPreparedData}                            from "../../api/databox/DataboxCore";
 import ZationWorker                                           = require("../../core/zationWorker");
 import {ClientErrorName}                                        from "../constants/clientErrorName";
-import {DataBoxClassDef, DataBoxConfig}                         from "../config/definitions/dataBoxConfig";
-import DataBoxFamily, {DataBoxFamilyClass}                      from "../../api/dataBox/DataBoxFamily";
+import {DataboxClassDef, DataboxConfig}                         from "../config/definitions/databoxConfig";
+import DataboxFamily, {DataboxFamilyClass}                      from "../../api/databox/DataboxFamily";
 import IdValidCheckerUtils                                      from "../id/idValidCheckerUtils";
-import DataBox, {DataBoxClass}                                  from "../../api/dataBox/DataBox";
+import Databox, {DataboxClass}                                  from "../../api/databox/Databox";
 import InputClosureCreator                                      from "../input/inputClosureCreator";
-import DataBoxAccessHelper                                      from "./dataBoxAccessHelper";
+import DataboxAccessHelper                                      from "./databoxAccessHelper";
 import DbConfigUtils from "./dbConfigUtils";
 
-export default class DataBoxPrepare
+export default class DataboxPrepare
 {
     private readonly zc : ZationConfigFull;
     private readonly worker : ZationWorker;
     private readonly bag : Bag;
 
-    private readonly dataBoxes : Record<string,ApiLevelSwitchFunction<DataBoxCore>>;
+    private readonly databoxes : Record<string,ApiLevelSwitchFunction<DataboxCore>>;
 
     constructor(zc : ZationConfigFull,worker : ZationWorker,bag : Bag)
     {
@@ -33,112 +33,112 @@ export default class DataBoxPrepare
         this.worker = worker;
         this.bag = bag;
 
-        this.dataBoxes = {};
+        this.databoxes = {};
     }
 
     /**
-     * It will return the DataBox instance.
+     * It will return the Databox instance.
      * If no DatBox with the API level is found,
      * it will throw an API level not compatible error,
-     * and when the DataBox does not exist, it also throws an error.
+     * and when the Databox does not exist, it also throws an error.
      * @param id
      * @param apiLevel
      */
-    getDataBox(id : string,apiLevel : number) : DataBoxCore
+    getDatabox(id : string,apiLevel : number) : DataboxCore
     {
         //throws if not exists
-        this.checkDataBoxExist(id);
+        this.checkDataboxExist(id);
 
-        const dataBox = this.dataBoxes[id](apiLevel);
-        if(dataBox !== undefined){
-            return dataBox;
+        const databox = this.databoxes[id](apiLevel);
+        if(databox !== undefined){
+            return databox;
         }
         else {
-            const err : any = new Error('The client API level is not compatible with dataBox API levels.');
+            const err : any = new Error('The client API level is not compatible with databox API levels.');
             err.name = ClientErrorName.API_LEVEL_NOT_COMPATIBLE;
             throw err;
         }
     }
 
     /**
-     * Returns a boolean that indicates if the DataBox exists.
+     * Returns a boolean that indicates if the Databox exists.
      * @param id
      */
-    isDataBoxExist(id : string) : boolean {
-        return this.dataBoxes.hasOwnProperty(id);
+    isDataboxExist(id : string) : boolean {
+        return this.databoxes.hasOwnProperty(id);
     }
 
     /**
-     * Checks if the DataBox exists.
-     * It will throw a error if the DataBox is not found.
+     * Checks if the Databox exists.
+     * It will throw a error if the Databox is not found.
      * @param id
      */
-    checkDataBoxExist(id : string) : void
+    checkDataboxExist(id : string) : void
     {
-        if(!this.isDataBoxExist(id)) {
-            const err : any = new Error(`The DataBox: '${id}' not exists.`);
+        if(!this.isDataboxExist(id)) {
+            const err : any = new Error(`The Databox: '${id}' not exists.`);
             err.name = ClientErrorName.UNKNOWN_DATA_BOX;
             throw err;
         }
     }
 
     /**
-     * Prepare all DataBoxes.
+     * Prepare all Databoxes.
      */
     async prepare() : Promise<void> {
-        const uDataBoxes = this.zc.appConfig.dataBoxes || {};
+        const uDataboxes = this.zc.appConfig.databoxes || {};
 
         const promises : Promise<void>[] = [];
-        for(let name in uDataBoxes) {
-            if(uDataBoxes.hasOwnProperty(name)) {
-                promises.push(this.addDataBox(name,uDataBoxes[name]));
+        for(let name in uDataboxes) {
+            if(uDataboxes.hasOwnProperty(name)) {
+                promises.push(this.addDatabox(name,uDataboxes[name]));
             }
         }
         await Promise.all(promises);
     }
 
     /**
-     * Add a DataBox to the prepare process.
+     * Add a Databox to the prepare process.
      * @param name
      * @param definition
      */
-    private async addDataBox(name : string,definition : DataBoxClassDef | ApiLevelSwitch<DataBoxClassDef>) : Promise<void>
+    private async addDatabox(name : string,definition : DataboxClassDef | ApiLevelSwitch<DataboxClassDef>) : Promise<void>
     {
         if(typeof definition === 'function') {
-            const preparedDataBoxData = await this.processDataBox(definition,name);
-            this.dataBoxes[name] = () => {
-                return preparedDataBoxData
+            const preparedDataboxData = await this.processDatabox(definition,name);
+            this.databoxes[name] = () => {
+                return preparedDataboxData
             };
         }
         else {
             const promises : Promise<void>[] = [];
-            const preparedDataMapper : Record<any,DataBoxCore> = {};
+            const preparedDataMapper : Record<any,DataboxCore> = {};
             for(let k in definition){
                 if(definition.hasOwnProperty(k)) {
                     promises.push((async () => {
-                        preparedDataMapper[k] = await this.processDataBox(definition[k],name,parseInt(k));
+                        preparedDataMapper[k] = await this.processDatabox(definition[k],name,parseInt(k));
                     })());
                 }
             }
             await Promise.all(promises);
-            this.dataBoxes[name] = ApiLevelUtils.createApiLevelSwitcher<DataBoxCore>(preparedDataMapper);
+            this.databoxes[name] = ApiLevelUtils.createApiLevelSwitcher<DataboxCore>(preparedDataMapper);
         }
     }
 
     /**
-     * Process a DataBox and create the prepared data.
-     * @param dataBox
+     * Process a Databox and create the prepared data.
+     * @param databox
      * @param name
      * @param apiLevel
      */
-    private async processDataBox(dataBox : DataBoxClassDef,name : string,apiLevel ?: number) : Promise<DataBoxCore>
+    private async processDatabox(databox : DataboxClassDef, name : string, apiLevel ?: number) : Promise<DataboxCore>
     {
-        const config : DataBoxConfig = dataBox.config;
+        const config : DataboxConfig = databox.config;
 
         const dbPreparedData : DbPreparedData = {
             versionAccessCheck : SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
-            accessCheck : DataBoxAccessHelper.createAccessChecker(config,this.bag),
+            accessCheck : DataboxAccessHelper.createAccessChecker(config,this.bag),
             initInputConsumer : InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbInitInput(config),this.bag),
             fetchInputConsumer : InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbFetchInput(config),this.bag),
             parallelFetch : config.parallelFetch !== undefined ? config.parallelFetch : false,
@@ -148,21 +148,21 @@ export default class DataBoxPrepare
         };
 
         let dbInstance;
-        if(dataBox.prototype instanceof DataBox){
-            dbInstance = new (dataBox as DataBoxClass)
+        if(databox.prototype instanceof Databox){
+            dbInstance = new (databox as DataboxClass)
             (name,this.worker.getPreparedBag(),dbPreparedData,apiLevel);
         }
-        else if(dataBox.prototype instanceof DataBoxFamily){
-            dbInstance = new (dataBox as DataBoxFamilyClass)
+        else if(databox.prototype instanceof DataboxFamily){
+            dbInstance = new (databox as DataboxFamilyClass)
             (name,this.worker.getPreparedBag(),dbPreparedData,
-                IdValidCheckerUtils.createIdValidChecker(dataBox.prototype.isIdValid,this.bag)
+                IdValidCheckerUtils.createIdValidChecker(databox.prototype.isIdValid,this.bag)
                 ,apiLevel);
         }
         else {
-            throw new Error('Unexpected DataBox class type');
+            throw new Error('Unexpected Databox class type');
         }
 
-        Object.defineProperty(dataBox,'___instance___',{
+        Object.defineProperty(databox,'___instance___',{
             value : dbInstance,
             configurable : false,
             enumerable : false,

@@ -6,15 +6,15 @@ Copyright(c) Luca Scaringella
 
 import {InputConfig}   from "../config/definitions/inputConfig";
 // noinspection TypeScriptPreferShortImport
-import {DataBoxConfig} from "../config/definitions/dataBoxConfig";
+import {DataboxConfig} from "../config/definitions/databoxConfig";
 
 export default class DbConfigUtils {
 
     /**
-     * Converts the DataBox fetch input config to an input config.
+     * Converts the Databox fetch input config to an input config.
      * @param config
      */
-    static convertDbFetchInput(config : DataBoxConfig) : InputConfig {
+    static convertDbFetchInput(config : DataboxConfig) : InputConfig {
         return {
             input : config.fetchInput,
             allowAnyInput : config.allowAnyFetchInput
@@ -22,10 +22,10 @@ export default class DbConfigUtils {
     }
 
     /**
-     * Converts the DataBox init input config to an input config.
+     * Converts the Databox init input config to an input config.
      * @param config
      */
-    static convertDbInitInput(config : DataBoxConfig) : InputConfig {
+    static convertDbInitInput(config : DataboxConfig) : InputConfig {
         return {
             input : config.initInput,
             allowAnyInput : config.allowAnyFetchInput

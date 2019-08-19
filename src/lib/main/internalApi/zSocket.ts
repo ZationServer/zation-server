@@ -10,8 +10,8 @@ import TokenUtils       from "../token/tokenUtils";
 import ObjectPath       from "../utils/objectPath";
 import ChUtils          from "../channel/chUtils";
 import BaseSHBridge     from "../bridges/baseSHBridge";
-import DataBoxFamily    from "../../api/dataBox/DataBoxFamily";
-import DataBox          from "../../api/dataBox/DataBox";
+import DataboxFamily    from "../../api/databox/DataboxFamily";
+import Databox          from "../../api/databox/Databox";
 import CloneUtils            from "../utils/cloneUtils";
 import ObjectPathSequenceImp from "./objectPathSequence/objectPathSequenceImp";
 import {ObjectPathSequence}  from "./objectPathSequence/objectPathSequence";
@@ -309,10 +309,10 @@ export default class ZSocket
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Returns the DataBoxes where the socket is connected to.
+     * Returns the Databoxes where the socket is connected to.
      */
-    getDataBoxes() : (DataBoxFamily | DataBox)[] {
-        return this._socket.dataBoxes;
+    getDataboxes() : (DataboxFamily | Databox)[] {
+        return this._socket.databoxes;
     }
 
     // noinspection JSUnusedGlobalSymbols

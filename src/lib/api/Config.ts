@@ -106,9 +106,9 @@ import {
 import {BackgroundTask, TaskFunction}       from "../main/config/definitions/backgroundTaskConfig";
 import ZationTokenWrapper                   from "../main/internalApi/zationTokenWrapper";
 import {NormalAuthAccessFunction}           from "../main/config/definitions/configComponents";
-import {DataBoxClassDef, DataBoxConfig, DbAccessFunction} from "../main/config/definitions/dataBoxConfig";
-import DataBoxFamily                        from "./dataBox/DataBoxFamily";
-import DataBox                              from "./dataBox/DataBox";
+import {DataboxClassDef, DataboxConfig, DbAccessFunction} from "../main/config/definitions/databoxConfig";
+import DataboxFamily                        from "./databox/DataboxFamily";
+import Databox                              from "./databox/Databox";
 import {Component}                          from "../main/config/definitions/component";
 
 export default class Config
@@ -116,7 +116,7 @@ export default class Config
 
     private static tmpModels : Record<string,Model> = {};
     private static tmpControllers : Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>> = {};
-    private static tmpDataBoxes : Record<string,DataBoxClassDef | ApiLevelSwitch<DataBoxClassDef>> = {};
+    private static tmpDataboxes : Record<string,DataboxClassDef | ApiLevelSwitch<DataboxClassDef>> = {};
     private static tmpCustomChs : Record<string,CustomChannelConfig> = {};
     private static tmpZationChannels : ZationChannelsConfig[] = [];
 
@@ -299,29 +299,29 @@ export default class Config
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * This method registers a new DataBox or DataBoxFamily in the app config.
-     * Watch out that you don't use a id that is already defined in the DataBoxes of the app config.
+     * This method registers a new Databox or DataboxFamily in the app config.
+     * Watch out that you don't use a id that is already defined in the Databoxes of the app config.
      * If you use this method in another file as the app config,
      * make sure that you import this file in app config.
-     * Also, notice that if you want to register more DataBoxes with the same id and different API levels,
+     * Also, notice that if you want to register more Databoxes with the same id and different API levels,
      * make sure that all register methods with that id provided an API level.
      * @example
      * //without API level
-     * Config.registerDataBox('myDataBox',MyDataBox);
+     * Config.registerDatabox('myDatabox',MyDatabox);
      * //with API level
-     * Config.registerDataBox('myDataBox2',MyDataBox2Version1,1);
-     * Config.registerDataBox('myDataBox2',MyDataBox2Version2,2);
+     * Config.registerDatabox('myDatabox2',MyDatabox2Version1,1);
+     * Config.registerDatabox('myDatabox2',MyDatabox2Version2,2);
      * @param id
-     * @param dataBoxClass
+     * @param databoxClass
      * @param apiLevel
      */
-    static registerDataBox(id : string, dataBoxClass : DataBoxClassDef, apiLevel ?: number) {
-        Config.registerComponent(id,dataBoxClass,apiLevel);
+    static registerDatabox(id : string, databoxClass : DataboxClassDef, apiLevel ?: number) {
+        Config.registerComponent(id,databoxClass,apiLevel);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * This method registers a new component (Controller or DataBox) in the app config.
+     * This method registers a new component (Controller or Databox) in the app config.
      * Watch out that you don't use a id that is already defined in the app config.
      * If you use this method in another file as the app config,
      * make sure that you import this file in app config.
@@ -329,7 +329,7 @@ export default class Config
      * make sure that all register methods with that id provided an API level.
      * @example
      * //without API level
-     * Config.registerComponent('myDataBox',MyDataBox);
+     * Config.registerComponent('myDatabox',MyDatabox);
      * //with API level
      * Config.registerComponent('myController',MyControllerVersion1,1);
      * Config.registerComponent('myController',MyControllerVersion2,2);
@@ -348,13 +348,13 @@ export default class Config
             pName = 'controllers';
             container = this.tmpControllers;
         }
-        else if(componentClass.prototype instanceof  DataBoxFamily || componentClass.prototype instanceof DataBox){
-            name = 'dataBox';
-            pName = 'dataBoxes';
-            container = this.tmpDataBoxes;
+        else if(componentClass.prototype instanceof  DataboxFamily || componentClass.prototype instanceof Databox){
+            name = 'databox';
+            pName = 'databoxes';
+            container = this.tmpDataboxes;
         }
         else {
-            throw new ConfigBuildError(`Register component can only register classes that extend the DataBox, DataIdBox, or Controller class.`);
+            throw new ConfigBuildError(`Register component can only register classes that extend the Databox, DataIdBox, or Controller class.`);
         }
 
         if(typeof apiLevel === 'number'){
@@ -408,8 +408,8 @@ export default class Config
             if(config.controllers === undefined){
                 config.controllers = {};
             }
-            if(config.dataBoxes === undefined){
-                config.dataBoxes = {};
+            if(config.databoxes === undefined){
+                config.databoxes = {};
             }
             if(config.customChannels === undefined){
                 config.customChannels = {};
@@ -420,7 +420,7 @@ export default class Config
 
             Config.configAdd(Config.tmpModels,config.models,'model name');
             Config.configAdd(Config.tmpControllers,config.controllers,'controller id');
-            Config.configAdd(Config.tmpDataBoxes,config.dataBoxes,'dataBox id');
+            Config.configAdd(Config.tmpDataboxes,config.databoxes,'databox id');
             Config.configAdd(Config.tmpCustomChs,config.customChannels as object,'custom channel');
             Config.merge(config.zationChannels,...Config.tmpZationChannels);
         }
@@ -506,11 +506,11 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static models(m : Record<string,Model>) : Record<string,Model> {return m;}
 
-    //DataBox
+    //Databox
     // noinspection JSUnusedGlobalSymbols
-    static dataBoxConfig(c : DataBoxConfig) :  DataBoxConfig {return c;}
+    static databoxConfig(c : DataboxConfig) :  DataboxConfig {return c;}
     // noinspection JSUnusedGlobalSymbols
-    static dataBoxAccess(func : DbAccessFunction) : DbAccessFunction {return func;}
+    static databoxAccess(func : DbAccessFunction) : DbAccessFunction {return func;}
 
     //Part Channels
     // noinspection JSUnusedGlobalSymbols

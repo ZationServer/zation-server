@@ -38,7 +38,7 @@ export default class ZationConfigMaster extends ZationConfig {
             verifyKey : privateAndPublicSet ? this.mainConfig.authPublicKey : this.mainConfig.authSecretKey,
             // @ts-ignore
             signKey : privateAndPublicSet ? this.mainConfig.authPrivateKey : this.mainConfig.authSecretKey,
-            dataBoxKey : crypto.randomBytes(32).toString('hex')
+            databoxKey : crypto.randomBytes(32).toString('hex')
         }
     }
 

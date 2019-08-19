@@ -5,6 +5,6 @@ Copyright(c) Luca Scaringella
  */
 
 import {ControllerClass} from "../../../api/Controller";
-import {DataBoxClassDef} from "./dataBoxConfig";
+import {DataboxClassDef} from "./databoxConfig";
 
-export type Component = ControllerClass | DataBoxClassDef;
+export type Component = ControllerClass | DataboxClassDef;

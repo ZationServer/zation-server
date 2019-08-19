@@ -63,7 +63,7 @@ export default class Iterator
 
     /**
      * A method that will help to iterate over components
-     * which can have an API level e.g., controllers or dataBoxes.
+     * which can have an API level e.g., controllers or databoxes.
      * @param definition
      * @param iterator
      */

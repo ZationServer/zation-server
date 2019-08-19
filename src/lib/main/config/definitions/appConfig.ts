@@ -9,7 +9,7 @@ import {ApiLevelSwitch}       from "../../apiLevel/apiLevelUtils";
 import {ControllerConfig}     from "./controllerConfig";
 import {Model}                from "./inputConfig";
 import {BackgroundTask}       from "./backgroundTaskConfig";
-import {DataBoxClassDef, DataBoxConfig} from "./dataBoxConfig";
+import {DataboxClassDef, DataboxConfig} from "./databoxConfig";
 import {
     CustomChannelConfig, CustomCh, ZationChannelsConfig, PreCompiledCustomChannelConfig
 } from "./channelsConfig";
@@ -67,27 +67,27 @@ export interface AppConfig
     controllerDefaults  ?: ControllerConfig;
 
     /**
-     * In this property, you can define all your DataBoxes.
+     * In this property, you can define all your Databoxes.
      * The value must be an object.
-     * The key of each property is the id of the DataBox.
-     * The value of each property is the imported DataBox class.
+     * The key of each property is the id of the Databox.
+     * The value of each property is the imported Databox class.
      * @example
-     * dataBoxes : {
-     *    profile : ProfileDataBox,
-     *    chat : ChatDataBox,
+     * databoxes : {
+     *    profile : ProfileDatabox,
+     *    chat : ChatDatabox,
      * }
      */
-    dataBoxes ?: Record<string,DataBoxClassDef | ApiLevelSwitch<DataBoxClassDef>>;
+    databoxes ?: Record<string,DataboxClassDef | ApiLevelSwitch<DataboxClassDef>>;
 
     /**
-     * With this property, you can define a default DataBox configuration
-     * that will be used in each DataBox as a fallback.
+     * With this property, you can define a default Databox configuration
+     * that will be used in each Databox as a fallback.
      * @example
-     * dataBoxDefaults : {
+     * databoxDefaults : {
      *    access : 'all',
      * },
      */
-    dataBoxDefaults ?: DataBoxConfig;
+    databoxDefaults ?: DataboxConfig;
 
     /**
      * In this property, you can define all your models.

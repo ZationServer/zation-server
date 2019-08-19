@@ -7,12 +7,12 @@ Copyright(c) Luca Scaringella
 import Config           from "../../Config";
 import {Component}      from "../../../main/config/definitions/component";
 import Controller       from "../../Controller";
-import DataBox          from "../../dataBox/DataBox";
-import DataBoxFamily        from "../../dataBox/DataBoxFamily";
+import Databox          from "../../databox/Databox";
+import DataboxFamily        from "../../databox/DataboxFamily";
 import ConfigBuildError from "../../../main/config/manager/configBuildError";
 
 /**
- * Register a component (Controller or DataBox) in the app config.
+ * Register a component (Controller or Databox) in the app config.
  * You only have to import the file in the app config.
  * You can register multiple components with the same id but different API levels.
  * @param id
@@ -21,12 +21,12 @@ import ConfigBuildError from "../../../main/config/manager/configBuildError";
  */
 export const Register = (id : string, apiLevel ?: number) => {
     return (target : Component) => {
-        if(target.prototype instanceof Controller || target.prototype instanceof DataBox
-            || target.prototype instanceof DataBoxFamily){
+        if(target.prototype instanceof Controller || target.prototype instanceof Databox
+            || target.prototype instanceof DataboxFamily){
             Config.registerComponent(id,target,apiLevel);
         }
         else {
-            throw new ConfigBuildError(`The register decorator can only be used on classes that extend the Controller, DataBox or DataIdBox class.`);
+            throw new ConfigBuildError(`The register decorator can only be used on classes that extend the Controller, Databox or DataIdBox class.`);
         }
     }
 };

@@ -53,7 +53,7 @@ export default class ConfigLoader {
         authPrivateKey: null,
         authDefaultExpiry: 86400,
         validationCheckLimit : 50,
-        socketDataBoxLimit : 30,
+        socketDataboxLimit : 30,
         timeZone: moment.tz.guess() || 'Europe/Berlin',
         authStart: false,
         authStartDuration: 20000,

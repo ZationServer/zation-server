@@ -9,7 +9,7 @@ export default class DbKeyArrayUtils {
     /**
      * This method can be used to build a raw key array.
      * These arrays are useful to present data in a sequence and as a key-value map.
-     * Later, when you use the DataBox,
+     * Later, when you use the Databox,
      * you easily can access the items by the key.
      * If you did not use a key array, the only possibility to
      * access the elements in an array is per index.

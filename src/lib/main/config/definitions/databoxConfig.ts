@@ -5,16 +5,16 @@ Copyright(c) Luca Scaringella
  */
 
 import {AuthAccessConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
-import {DataBoxClass}                                              from "../../../api/dataBox/DataBox";
-import {DataBoxFamilyClass}                                        from "../../../api/dataBox/DataBoxFamily";
+import {DataboxClass}                                              from "../../../api/databox/Databox";
+import {DataboxFamilyClass}                                        from "../../../api/databox/DataboxFamily";
 import Bag                                                         from "../../../api/Bag";
-import {DataBoxInfo}                                               from "../../dataBox/dbDefinitions";
+import {DataboxInfo}                                               from "../../databox/dbDefinitions";
 import ZSocket                                                     from "../../internalApi/zSocket";
 import {Input} from "./inputConfig";
 
-export type DbAccessFunction = (bag : Bag, socket : ZSocket, dbInfo : DataBoxInfo) => Promise<boolean> | boolean;
+export type DbAccessFunction = (bag : Bag, socket : ZSocket, dbInfo : DataboxInfo) => Promise<boolean> | boolean;
 
-export interface DataBoxConfig extends VersionAccessConfig, SystemAccessConfig, AuthAccessConfig<DbAccessFunction>
+export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, AuthAccessConfig<DbAccessFunction>
 {
     /**
      * This property defines the fetch input.
@@ -133,8 +133,8 @@ export interface DataBoxConfig extends VersionAccessConfig, SystemAccessConfig, 
 
     /**
      * @description
-     * Set the access rule which clients are allowed to access this DataBox.
-     * Notice that in case of a DataBoxFamily the id is checked before the access.
+     * Set the access rule which clients are allowed to access this Databox.
+     * Notice that in case of a DataboxFamily the id is checked before the access.
      * Notice that only one of the options 'access' or 'notAccess' is allowed.
      * Look in the examples to see what possibilities you have.
      * @default default config otherwise false
@@ -152,13 +152,13 @@ export interface DataBoxConfig extends VersionAccessConfig, SystemAccessConfig, 
      * //array
      * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
      * //function
-     * (bag : Bag,socket : ZSocket,dbInfo : DataBoxInfo) => {} // If returns true the client is allowed, false will not allow.
+     * (bag : Bag,socket : ZSocket,dbInfo : DataboxInfo) => {} // If returns true the client is allowed, false will not allow.
      */
     access  ?: string | number | (string | number)[] | DbAccessFunction;
     /**
      * @description
-     * Set the access rule which clients are not allowed to access this DataBox.
-     * Notice that in case of a DataBoxFamily the id is checked before the access.
+     * Set the access rule which clients are not allowed to access this Databox.
+     * Notice that in case of a DataboxFamily the id is checked before the access.
      * Notice that only one of the options 'access' or 'notAccess' is allowed.
      * Look in the examples to see what possibilities you have.
      * @default default config otherwise false
@@ -176,13 +176,13 @@ export interface DataBoxConfig extends VersionAccessConfig, SystemAccessConfig, 
      * //array
      * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
      * //function
-     * (bag : Bag,socket : ZSocket,dbInfo : DataBoxInfo) => {}  // If returns true the client is not allowed, false will allow.
+     * (bag : Bag,socket : ZSocket,dbInfo : DataboxInfo) => {}  // If returns true the client is not allowed, false will allow.
      */
     notAccess  ?: string | number | (string | number)[] | DbAccessFunction;
 
     /**
      * This option can be activated when you have designed
-     * this DataBox in such a way that the fetching of data
+     * this Databox in such a way that the fetching of data
      * is independent of the previous fetch.
      * Then the system is able to fetch the data in
      * parallel that will increase the performance in some cases.
@@ -199,16 +199,16 @@ export interface DataBoxConfig extends VersionAccessConfig, SystemAccessConfig, 
 
     /**
      * The maximal amount of input channels that a socket can create.
-     * Whenever a socket wants to register to a DataBox,
+     * Whenever a socket wants to register to a Databox,
      * the socket will be connected (if it is not already connected)
      * and then an input channel will be created. The input channel is used to
      * communicate from the client to the server, for example, to fetch data.
      * Every input channel has its session,
-     * that means that a client can have the same dataBox many times but independent of each other.
+     * that means that a client can have the same databox many times but independent of each other.
      * The minimum value is 1.
      * @default 20
      */
     maxSocketInputChannels ?: number;
 }
 
-export type DataBoxClassDef = DataBoxClass | DataBoxFamilyClass
+export type DataboxClassDef = DataboxClass | DataboxFamilyClass

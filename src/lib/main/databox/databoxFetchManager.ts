@@ -11,7 +11,7 @@ import {ClientErrorName} from "../constants/clientErrorName";
 
 export type FetchManagerBuilder<F extends (input : any,...any : any[]) => any> = () => ((respond : RespondFunction, func : F, ...params : Parameters<F>) => Promise<void>);
 
-export default class DataBoxFetchManager {
+export default class DataboxFetchManager {
 
     private constructor(){}
 

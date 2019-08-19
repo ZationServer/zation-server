@@ -32,13 +32,13 @@ import {ObjectModel}                from "./lib/api/decorator/input/ObjectModel"
 import {ParamInput}                 from "./lib/api/decorator/input/ParamInput";
 import {Extends}                    from "./lib/api/decorator/input/Extends";
 import {Constructor}                from "./lib/api/decorator/input/Constructor";
-import NoMoreDataAvailableError     from "./lib/main/dataBox/noMoreDataAvailable";
-import DataBoxFamily                from "./lib/api/dataBox/DataBoxFamily";
-import DataBox                      from "./lib/api/dataBox/DataBox";
-import {DataBoxConfig}              from "./lib/main/config/definitions/dataBoxConfig";
-import DataBoxContainer             from "./lib/main/dataBox/container/dataBoxContainer";
-import DataBoxFamilyContainer       from "./lib/main/dataBox/container/dataBoxFamilyContainer";
-import {buildKeyArray}              from "./lib/main/dataBox/dbKeyArrayUtils";
+import NoMoreDataAvailableError     from "./lib/main/databox/noMoreDataAvailable";
+import DataboxFamily                from "./lib/api/databox/DataboxFamily";
+import Databox                      from "./lib/api/databox/Databox";
+import {DataboxConfig}              from "./lib/main/config/definitions/databoxConfig";
+import DataboxContainer             from "./lib/main/databox/container/databoxContainer";
+import DataboxFamilyContainer       from "./lib/main/databox/container/databoxFamilyContainer";
+import {buildKeyArray}              from "./lib/main/databox/dbKeyArrayUtils";
 import ZSocket                      from "./lib/main/internalApi/zSocket";
 import ZationTokenWrapper           from "./lib/main/internalApi/zationTokenWrapper";
 import ZationInfo                   from "./lib/main/internalApi/zationInfo";
@@ -46,7 +46,7 @@ import PubData                      from "./lib/main/internalApi/pubData";
 import CChInfo                      from "./lib/main/internalApi/cChInfo";
 import CChFamilyInfo                from "./lib/main/internalApi/cChFamilyInfo";
 import AsymmetricKeyPairs           from "./lib/main/internalApi/asymmetricKeyPairs";
-import DbCudActionSequence          from "./lib/main/dataBox/dbCudActionSequence";
+import DbCudActionSequence          from "./lib/main/databox/dbCudActionSequence";
 import {ObjectPathSequence}         from "./lib/main/internalApi/objectPathSequence/objectPathSequence";
 import {StartErrorName}             from "./lib/main/constants/startErrorName";
 const  FsUtil : any               = require('socketcluster/fsutil');
@@ -85,11 +85,11 @@ export {
         ObjectModel,
         ParamInput,
         NoMoreDataAvailableError,
-        DataBoxFamily,
-        DataBoxFamilyContainer,
-        DataBox,
-        DataBoxContainer,
-        DataBoxConfig,
+        DataboxFamily,
+        DataboxFamilyContainer,
+        Databox,
+        DataboxContainer,
+        DataboxConfig,
         Controller,
         ControllerConfig,
         Result,

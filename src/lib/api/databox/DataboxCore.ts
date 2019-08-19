@@ -5,34 +5,34 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import {DataBoxConfig}                    from "../../main/config/definitions/dataBoxConfig";
+import {DataboxConfig}                    from "../../main/config/definitions/databoxConfig";
 import Bag                                from "../Bag";
-import NoMoreDataAvailableError           from "../../main/dataBox/noMoreDataAvailable";
+import NoMoreDataAvailableError           from "../../main/databox/noMoreDataAvailable";
 import {VersionSystemAccessCheckFunction} from "../../main/systemVersion/systemVersionChecker";
 import UpSocket                           from "../../main/sc/socket";
 import {ClientErrorName}                  from "../../main/constants/clientErrorName";
 const  Jwt                              = require('jsonwebtoken');
 import {JwtSignFunction, JwtVerifyFunction, JwtVerifyOptions} from "../../main/constants/jwt";
-import DbKeyArrayUtils                    from "../../main/dataBox/dbKeyArrayUtils";
-import {DataBoxInfo, DbToken}             from "../../main/dataBox/dbDefinitions";
+import DbKeyArrayUtils                    from "../../main/databox/dbKeyArrayUtils";
+import {DataboxInfo, DbToken}             from "../../main/databox/dbDefinitions";
 import {InputConsumeFunction}             from "../../main/input/inputClosureCreator";
 import ErrorUtils                         from "../../main/utils/errorUtils";
-import {DbAccessCheckFunction}            from "../../main/dataBox/dataBoxAccessHelper";
+import {DbAccessCheckFunction}            from "../../main/databox/databoxAccessHelper";
 
 /**
  * If you always want to present the most recent data on the client,
- * the DataBox is the best choice.
- * The DataBox will keep the data up to date on the client in real-time.
+ * the Databox is the best choice.
+ * The Databox will keep the data up to date on the client in real-time.
  * Also, it will handle all problematic cases, for example,
  * when the connection to the server is lost,
  * and the client did not get an update of the data.
  * It's also the right choice if you want to present a significant amount of data
- * because DataBoxes support the functionality to stream the data
+ * because Databoxes support the functionality to stream the data
  * to the clients whenever a client needs more data.
  * Additionally, it keeps the network traffic low because it
  * only sends the changed data information, not the whole data again.
  */
-export default abstract class DataBoxCore {
+export default abstract class DataboxCore {
     /**
      * @description
      * The prepared bag from the worker.
@@ -47,7 +47,7 @@ export default abstract class DataBoxCore {
 
     /**
      * @description
-     * The DataBox token version indicates the version of the data tokens.
+     * The Databox token version indicates the version of the data tokens.
      * You should change that version whenever you make a significant change in the session data structure.
      * Than this prevent you for old tokens with old structures.
      * @default 0
@@ -81,7 +81,7 @@ export default abstract class DataBoxCore {
         this._fetchInputConsumer = dbPreparedData.fetchInputConsumer;
 
         this._preparedTokenSessionKey =
-            `${bag.getZationConfig().getDataBoxKey()}.${this.dbTokenVersion}.${this.name}${apiLevel !== undefined ? apiLevel : ''}`;
+            `${bag.getZationConfig().getDataboxKey()}.${this.dbTokenVersion}.${this.name}${apiLevel !== undefined ? apiLevel : ''}`;
     }
 
     /**
@@ -131,28 +131,28 @@ export default abstract class DataBoxCore {
 
     /**
      * **Not override this method.**
-     * A function that is used internally to check if a socket has access to a DataBox.
+     * A function that is used internally to check if a socket has access to a Databox.
      * If the access is denied, it will throw an error.
      * @param socket
      * @param dbInfo
      */
-    async _checkAccess(socket : UpSocket,dbInfo : DataBoxInfo){
+    async _checkAccess(socket : UpSocket,dbInfo : DataboxInfo){
         const {systemAccessCheck,versionAccessCheck} = this._dbPreparedData;
 
         if(!systemAccessCheck(socket.baseSHBridge)){
-            const err : any = new Error('Access to this DataBox with client system denied.');
+            const err : any = new Error('Access to this Databox with client system denied.');
             err.name = ClientErrorName.NO_ACCESS_WITH_SYSTEM;
             throw err;
         }
 
         if(!versionAccessCheck(socket.baseSHBridge)){
-            const err : any = new Error('Access to this DataBox with client version denied.');
+            const err : any = new Error('Access to this Databox with client version denied.');
             err.name = ClientErrorName.NO_ACCESS_WITH_VERSION;
             throw err;
         }
 
         if(await this._accessCheck(socket,dbInfo)){
-            const err : any = new Error('Access to this DataBox denied.');
+            const err : any = new Error('Access to this Databox denied.');
             err.name = ClientErrorName.ACCESS_DENIED;
             throw err;
         }
@@ -160,7 +160,7 @@ export default abstract class DataBoxCore {
 
     /**
      * **Not override this method.**
-     * Verify a session token of the DataBox.
+     * Verify a session token of the Databox.
      * This method is used internally.
      * @param token
      * @param keyAppend
@@ -177,7 +177,7 @@ export default abstract class DataBoxCore {
 
     /**
      * **Not override this method.**
-     * Sign a session token of the DataBox.
+     * Sign a session token of the Databox.
      * This method is used internally.
      * @param dbToken
      * @param keyAppend
@@ -192,11 +192,11 @@ export default abstract class DataBoxCore {
 
     /**
      * **Not override this method.**
-     * Checks if the client has access to the DataBox.
+     * Checks if the client has access to the Databox.
      * @param socket
      * @param dbInfo
      */
-    async _accessCheck(socket : UpSocket, dbInfo : DataBoxInfo) : Promise<boolean> {
+    async _accessCheck(socket : UpSocket, dbInfo : DataboxInfo) : Promise<boolean> {
         return await this._dbPreparedData.accessCheck(socket.authEngine,socket.zSocket,dbInfo);
     }
 
@@ -204,7 +204,7 @@ export default abstract class DataBoxCore {
      * @description
      * This property is used for getting the configuration of this DataCollection.
      */
-    public static readonly config: DataBoxConfig = {};
+    public static readonly config: DataboxConfig = {};
 
     /**
      * **Can be overridden.**
@@ -242,7 +242,7 @@ export default abstract class DataBoxCore {
      * These arrays are useful to present data in a sequence and as a key-value map.
      * To create a key array you need to have an array that contains objects,
      * and each object has the same property that indicates the key.
-     * Later, when you use the DataBox,
+     * Later, when you use the Databox,
      * you easily can access the items by the key.
      * If you did not use a key array, the only possibility to access the elements in an array is per index.
      * But this is problematical if every client has a different amount of elements because

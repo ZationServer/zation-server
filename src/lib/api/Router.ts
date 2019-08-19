@@ -39,7 +39,7 @@ export default class Router {
     }
 
     /**
-     * Attach a component (Controller or DataBox) to this route.
+     * Attach a component (Controller or Databox) to this route.
      * It will automatically register the component in the app config with the specific route.
      * You only have to import the file in the app config.
      * You can attach multiple components with the same name but different API levels.

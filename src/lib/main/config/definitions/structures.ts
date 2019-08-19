@@ -39,15 +39,15 @@ import {
 } from "./inputConfig";
 import {ControllerConfig} from "./controllerConfig";
 import {BackgroundTask}   from "./backgroundTaskConfig";
-import {DataBoxConfig}    from "./dataBoxConfig";
+import {DataboxConfig}    from "./databoxConfig";
 
 const App = {};
 App[nameof<AppConfig>(s => s.userGroups)]         = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.authController)]     = {types : ['string'],isOptional : true};
 App[nameof<AppConfig>(s => s.controllers)]        = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.controllerDefaults)] = {types : ['object'],isOptional : true};
-App[nameof<AppConfig>(s => s.dataBoxes)]          = {types : ['object'],isOptional : true};
-App[nameof<AppConfig>(s => s.dataBoxDefaults)]    = {types : ['object'],isOptional : true};
+App[nameof<AppConfig>(s => s.databoxes)]          = {types : ['object'],isOptional : true};
+App[nameof<AppConfig>(s => s.databoxDefaults)]    = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.models)]             = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.zationChannels)]     = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.customChannels)]     = {types : ['object'],isOptional : true};
@@ -94,18 +94,18 @@ ControllerConfig[nameof<ControllerConfig>(s => s.notAccess)]        = {types : [
 ControllerConfig[nameof<ControllerConfig>(s => s.versionAccess)]    = {types : ['string','object'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.systemAccess)]     = {types : ['array'],arrayType : 'string',isOptional : true};
 
-const DataBoxConfig = {};
-DataBoxConfig[nameof<DataBoxConfig>(s => s.access)]           = {types : ['string','function','number','array'],isOptional : true};
-DataBoxConfig[nameof<DataBoxConfig>(s => s.notAccess)]        = {types : ['string','function','number','array'],isOptional : true};
-DataBoxConfig[nameof<DataBoxConfig>(s => s.versionAccess)]    = {types : ['string','object'],isOptional : true};
-DataBoxConfig[nameof<DataBoxConfig>(s => s.systemAccess)]     = {types : ['array'],arrayType : 'string',isOptional : true};
-DataBoxConfig[nameof<DataBoxConfig>(s => s.parallelFetch)]    = {types : ['boolean'],isOptional : true};
-DataBoxConfig[nameof<DataBoxConfig>(s => s.maxBackpressure)]  = {types : ['number'],isOptional : true};
-DataBoxConfig[nameof<DataBoxConfig>(s => s.maxSocketInputChannels)] = {types : ['number'],isOptional : true};
-DataBoxConfig[nameof<DataBoxConfig>(s => s.initInput)]              = {types : ['object','array','function'],isOptional : true};
-DataBoxConfig[nameof<DataBoxConfig>(s => s.allowAnyInitInput)]      = {types : ['boolean'],isOptional : true};
-DataBoxConfig[nameof<DataBoxConfig>(s => s.fetchInput)]             = {types : ['object','array','function'],isOptional : true};
-DataBoxConfig[nameof<DataBoxConfig>(s => s.allowAnyFetchInput)]     = {types : ['boolean'],isOptional : true};
+const DataboxConfig = {};
+DataboxConfig[nameof<DataboxConfig>(s => s.access)]           = {types : ['string','function','number','array'],isOptional : true};
+DataboxConfig[nameof<DataboxConfig>(s => s.notAccess)]        = {types : ['string','function','number','array'],isOptional : true};
+DataboxConfig[nameof<DataboxConfig>(s => s.versionAccess)]    = {types : ['string','object'],isOptional : true};
+DataboxConfig[nameof<DataboxConfig>(s => s.systemAccess)]     = {types : ['array'],arrayType : 'string',isOptional : true};
+DataboxConfig[nameof<DataboxConfig>(s => s.parallelFetch)]    = {types : ['boolean'],isOptional : true};
+DataboxConfig[nameof<DataboxConfig>(s => s.maxBackpressure)]  = {types : ['number'],isOptional : true};
+DataboxConfig[nameof<DataboxConfig>(s => s.maxSocketInputChannels)] = {types : ['number'],isOptional : true};
+DataboxConfig[nameof<DataboxConfig>(s => s.initInput)]              = {types : ['object','array','function'],isOptional : true};
+DataboxConfig[nameof<DataboxConfig>(s => s.allowAnyInitInput)]      = {types : ['boolean'],isOptional : true};
+DataboxConfig[nameof<DataboxConfig>(s => s.fetchInput)]             = {types : ['object','array','function'],isOptional : true};
+DataboxConfig[nameof<DataboxConfig>(s => s.allowAnyFetchInput)]     = {types : ['boolean'],isOptional : true};
 
 const AnyOf = {};
 AnyOf[nameof<AnyOfModelConfig>(s => s.anyOf)]     = {types : ['array','object'],isOptional : false};
@@ -156,7 +156,7 @@ Main[nameof<MainConfig>(s => s.authPrivateKey)]     = {types : ['string','null']
 Main[nameof<MainConfig>(s => s.authPublicKey)]      = {types : ['string','null'],isOptional : true};
 
 Main[nameof<MainConfig>(s => s.validationCheckLimit)]      = {types : ['number'],isOptional : true};
-Main[nameof<MainConfig>(s => s.socketDataBoxLimit)]        = {types : ['number'],isOptional : true};
+Main[nameof<MainConfig>(s => s.socketDataboxLimit)]        = {types : ['number'],isOptional : true};
 
 Main[nameof<MainConfig>(s => s.variables)]          = {types : ['object'],isOptional : true};
 
@@ -361,7 +361,7 @@ export const Structures = {
     BackgroundTask : BackgroundTask,
     ObjectModel : ObjectModel,
     ControllerConfig : ControllerConfig,
-    DataBoxConfig : DataBoxConfig,
+    DataboxConfig : DataboxConfig,
     Main : Main,
     StarterConfig : StarterConfig,
     ValueModel : ValueModel,

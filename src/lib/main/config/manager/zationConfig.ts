@@ -78,8 +78,8 @@ export default abstract class ZationConfig {
         return this._internalData.signKey;
     }
 
-    getDataBoxKey(): string {
-        return this.internalData.dataBoxKey;
+    getDataboxKey(): string {
+        return this.internalData.databoxKey;
     }
 
     getZationInfo(): ZationInfo {

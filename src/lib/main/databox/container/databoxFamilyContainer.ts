@@ -6,21 +6,21 @@ Copyright(c) Luca Scaringella
 
 import UpSocket             from "../../sc/socket";
 import DbCudActionSequence  from "../dbCudActionSequence";
-import DataBoxFamily        from "../../../api/dataBox/DataBoxFamily";
-import DataBoxUtils         from "../dataBoxUtils";
+import DataboxFamily        from "../../../api/databox/DataboxFamily";
+import DataboxUtils         from "../databoxUtils";
 import {InfoOption, IfContainsOption, TimestampOption} from "../dbDefinitions";
 
-export default class DataBoxFamilyContainer {
+export default class DataboxFamilyContainer {
 
-    private readonly dataBoxFamilies : DataBoxFamily[];
+    private readonly databoxFamilies : DataboxFamily[];
 
-    constructor(dataBoxFamilies : DataBoxFamily[]) {
-        this.dataBoxFamilies = dataBoxFamilies;
+    constructor(databoxFamilies : DataboxFamily[]) {
+        this.databoxFamilies = databoxFamilies;
     }
 
     /**
-     * Insert a new value in the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-event.
+     * Insert a new value in the Databox.
+     * Notice that this method will only update the Databox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
@@ -51,15 +51,15 @@ export default class DataBoxFamilyContainer {
      */
     async insert(id : string | number,keyPath: string[] | string, value: any,options : IfContainsOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
-        for(let i = 0; i < this.dataBoxFamilies.length;i++) {
-            promises.push(this.dataBoxFamilies[i].insert(id,keyPath,value,options));
+        for(let i = 0; i < this.databoxFamilies.length;i++) {
+            promises.push(this.databoxFamilies[i].insert(id,keyPath,value,options));
         }
         await Promise.all(promises);
     }
 
     /**
-     * Update a value in the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-event.
+     * Update a value in the Databox.
+     * Notice that this method will only update the Databox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
@@ -79,15 +79,15 @@ export default class DataBoxFamilyContainer {
      */
     async update(id : string | number,keyPath: string[] | string, value: any,options : InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
-        for(let i = 0; i < this.dataBoxFamilies.length;i++) {
-            promises.push(this.dataBoxFamilies[i].update(id,keyPath,value,options));
+        for(let i = 0; i < this.databoxFamilies.length;i++) {
+            promises.push(this.databoxFamilies[i].update(id,keyPath,value,options));
         }
         await Promise.all(promises);
     }
 
     /**
-     * Delete a value in the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-event.
+     * Delete a value in the Databox.
+     * Notice that this method will only update the Databox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
@@ -106,17 +106,17 @@ export default class DataBoxFamilyContainer {
      */
     async delete(id : string | number,keyPath: string[] | string,options : InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
-        for(let i = 0; i < this.dataBoxFamilies.length;i++) {
-            promises.push(this.dataBoxFamilies[i].delete(id,keyPath,options));
+        for(let i = 0; i < this.databoxFamilies.length;i++) {
+            promises.push(this.databoxFamilies[i].delete(id,keyPath,options));
         }
         await Promise.all(promises);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Sequence edit the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-events.
-     * This method is ideal for doing multiple changes on a DataBox
+     * Sequence edit the Databox.
+     * Notice that this method will only update the Databox and invoke the before-events.
+     * This method is ideal for doing multiple changes on a Databox
      * because it will pack them all together and send them all in ones.
      * It will not automatically update the database,
      * so you have to do it in the before-events or before calling this method.
@@ -130,9 +130,9 @@ export default class DataBoxFamilyContainer {
     seqEdit(id : string | number,timestamp ?: number): DbCudActionSequence {
         return new DbCudActionSequence(async (actions) => {
             const promises : Promise<void>[] = [];
-            for(let i = 0; i < this.dataBoxFamilies.length;i++) {
-                promises.push(this.dataBoxFamilies[i]._emitCudPackage(
-                    DataBoxUtils.buildPreCudPackage(...actions),
+            for(let i = 0; i < this.databoxFamilies.length;i++) {
+                promises.push(this.databoxFamilies[i]._emitCudPackage(
+                    DataboxUtils.buildPreCudPackage(...actions),
                     typeof id === "string" ? id : id.toString(),timestamp));
             }
             await Promise.all(promises);
@@ -140,7 +140,7 @@ export default class DataBoxFamilyContainer {
     }
 
     /**
-     * The close function will close the DataBox for every client on every server.
+     * The close function will close the Databox for every client on every server.
      * You optionally can provide a code or any other information for the client.
      * Usually, the close function is used when the data is completely deleted from the system.
      * For example, a chat that doesn't exist anymore.
@@ -151,14 +151,14 @@ export default class DataBoxFamilyContainer {
      * @param forEveryWorker
      */
     close(id : string | number,code ?: number | string, data ?: any,forEveryWorker : boolean = true): void {
-        for(let i = 0; i < this.dataBoxFamilies.length;i++) {
-            this.dataBoxFamilies[i].close(id,code,data,forEveryWorker);
+        for(let i = 0; i < this.databoxFamilies.length;i++) {
+            this.databoxFamilies[i].close(id,code,data,forEveryWorker);
         }
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * The reload function will force all clients of the DataBox to reload the data.
+     * The reload function will force all clients of the Databox to reload the data.
      * This method is used internally if it was detected that a worker had
      * missed a cud (create, update, or delete) operation.
      * @param id The member of the family you want to force to reload.
@@ -168,13 +168,13 @@ export default class DataBoxFamilyContainer {
      * @param data
      */
     doReload(id : string | number,forEveryWorker: boolean = false,code ?: number | string,data ?: any): void {
-        for(let i = 0; i < this.dataBoxFamilies.length;i++) {
-            this.dataBoxFamilies[i].doReload(id,forEveryWorker,code,data);
+        for(let i = 0; i < this.databoxFamilies.length;i++) {
+            this.databoxFamilies[i].doReload(id,forEveryWorker,code,data);
         }
     }
 
     /**
-     * With this function, you can kick out a socket from a family member of the DataBox.
+     * With this function, you can kick out a socket from a family member of the Databox.
      * This method is used internally.
      * @param id
      * @param socket
@@ -182,8 +182,8 @@ export default class DataBoxFamilyContainer {
      * @param data
      */
     kickOut(id : string,socket: UpSocket,code ?: number | string,data ?: any): void {
-        for(let i = 0; i < this.dataBoxFamilies.length;i++) {
-            this.dataBoxFamilies[i].kickOut(id,socket,code,data);
+        for(let i = 0; i < this.databoxFamilies.length;i++) {
+            this.databoxFamilies[i].kickOut(id,socket,code,data);
         }
     }
 }

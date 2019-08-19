@@ -5,9 +5,9 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import {DataBoxConfig}               from "../../main/config/definitions/dataBoxConfig";
+import {DataboxConfig}               from "../../main/config/definitions/databoxConfig";
 import Bag                           from "../Bag";
-import DataBoxCore, {DbPreparedData} from "./DataBoxCore";
+import DataboxCore, {DbPreparedData} from "./DataboxCore";
 import UpSocket, {RespondFunction}   from "../../main/sc/socket";
 import {
     CudAction,
@@ -32,27 +32,27 @@ import {
     InfoOption,
     PreCudPackage,
     TimestampOption, DbRegisterResult, DbSocketMemory, ChangeValue, DbToken
-} from "../../main/dataBox/dbDefinitions";
-import DataBoxAccessHelper from "../../main/dataBox/dataBoxAccessHelper";
+} from "../../main/databox/dbDefinitions";
+import DataboxAccessHelper from "../../main/databox/databoxAccessHelper";
 import {ScExchange}        from "../../main/sc/scServer";
-import DataBoxUtils        from "../../main/dataBox/dataBoxUtils";
-import DbCudActionSequence from "../../main/dataBox/dbCudActionSequence";
+import DataboxUtils        from "../../main/databox/databoxUtils";
+import DbCudActionSequence from "../../main/databox/dbCudActionSequence";
 import RespondUtils        from "../../main/utils/respondUtils";
 import {ClientErrorName}   from "../../main/constants/clientErrorName";
-import DataBoxFetchManager, {FetchManagerBuilder} from "../../main/dataBox/dataBoxFetchManager";
+import DataboxFetchManager, {FetchManagerBuilder} from "../../main/databox/databoxFetchManager";
 import ZSocket                                    from "../../main/internalApi/zSocket";
 import CloneUtils                                 from "../../main/utils/cloneUtils";
 const DefaultSymbol                              = Symbol();
 
 /**
  * If you always want to present the most recent data on the client,
- * the DataBox is the best choice.
- * The DataBox will keep the data up to date on the client in real-time.
+ * the Databox is the best choice.
+ * The Databox will keep the data up to date on the client in real-time.
  * Also, it will handle all problematic cases, for example,
  * when the connection to the server is lost,
  * and the client did not get an update of the data.
  * It's also the right choice if you want to present a significant amount of data
- * because DataBoxes support the functionality to stream the data
+ * because Databoxes support the functionality to stream the data
  * to the clients whenever a client needs more data.
  * Additionally, it keeps the network traffic low because it
  * only sends the changed data information, not the whole data again.
@@ -71,7 +71,7 @@ const DefaultSymbol                              = Symbol();
  * - updateMiddleware
  * - deleteMiddleware
  */
-export default class DataBox extends DataBoxCore {
+export default class Databox extends DataboxCore {
 
     private readonly _regSockets : Map<UpSocket,DbSocketMemory> = new Map();
     private _lastCudData : {timestamp : number,id : string} = {timestamp : Date.now(),id : ''};
@@ -80,10 +80,10 @@ export default class DataBox extends DataBoxCore {
     private readonly _dbEvent : string;
     private readonly _maxSocketInputChannels : number;
 
-    private readonly _buildFetchManager : FetchManagerBuilder<typeof DataBox.prototype._fetchData>;
+    private readonly _buildFetchManager : FetchManagerBuilder<typeof Databox.prototype._fetchData>;
     private readonly _sendCudToSockets : (dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void;
 
-    static ___instance___ : DataBox;
+    static ___instance___ : Databox;
 
     constructor(id : string, bag: Bag, dbPreparedData : DbPreparedData, apiLevel : number | undefined) {
         super(id,bag,dbPreparedData,apiLevel);
@@ -92,7 +92,7 @@ export default class DataBox extends DataBoxCore {
         this._maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
         this._dbEvent = `${DATA_BOX_START_INDICATOR}-${this.name}-${apiLevel !== undefined ? apiLevel : ''}`;
 
-        this._buildFetchManager = DataBoxFetchManager.buildFetchMangerBuilder
+        this._buildFetchManager = DataboxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
         this._sendCudToSockets = this._getSendCudToSocketsHandler();
 
@@ -128,10 +128,10 @@ export default class DataBox extends DataBoxCore {
 
         const {inputChIds,unregisterSocket} = this._connectSocket(socket);
 
-        DataBoxUtils.maxInputChannelsCheck(inputChIds.size,this._maxSocketInputChannels);
+        DataboxUtils.maxInputChannelsCheck(inputChIds.size,this._maxSocketInputChannels);
 
         //add input channel
-        const chInputId = DataBoxUtils.generateInputChId(inputChIds);
+        const chInputId = DataboxUtils.generateInputChId(inputChIds);
         inputChIds.add(chInputId);
 
         const inputCh = this._dbEvent+'-'+chInputId;
@@ -182,7 +182,7 @@ export default class DataBox extends DataBoxCore {
 
     private _disconnectSocket(socket : UpSocket,disconnectHandler : () => void) {
         socket.off('disconnect',disconnectHandler);
-        DataBoxAccessHelper.rmDb(this,socket);
+        DataboxAccessHelper.rmDb(this,socket);
         this._rmSocket(socket);
         this.onDisconnection(socket.zSocket);
     }
@@ -196,7 +196,7 @@ export default class DataBox extends DataBoxCore {
     }
 
     private async _fetchData(dbToken : DbToken,fetchInput : any,initData : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
-        const session = DataBoxUtils.getSession(dbToken.sessions,target);
+        const session = DataboxUtils.getSession(dbToken.sessions,target);
 
         const currentCounter = session.c;
         session.c++;
@@ -210,12 +210,12 @@ export default class DataBox extends DataBoxCore {
     }
 
     private async _resetSession(dbToken : DbToken,target ?: DBClientInputSessionTarget) : Promise<string> {
-        DataBoxUtils.resetSession(dbToken.sessions,target);
+        DataboxUtils.resetSession(dbToken.sessions,target);
         return this._signDbToken(dbToken);
     }
 
     private async _copySession(dbToken : DbToken,target ?: DBClientInputSessionTarget) : Promise<string> {
-        DataBoxUtils.copySession(dbToken.sessions,target);
+        DataboxUtils.copySession(dbToken.sessions,target);
         return this._signDbToken(dbToken);
     }
 
@@ -257,7 +257,7 @@ export default class DataBox extends DataBoxCore {
             this._regSockets.set(socket,socketMemoryData);
 
             socket.on('disconnect',unregisterSocketFunction);
-            DataBoxAccessHelper.addDb(this,socket);
+            DataboxAccessHelper.addDb(this,socket);
             this.onConnection(socket.zSocket);
         }
         return socketMemoryData;
@@ -273,7 +273,7 @@ export default class DataBox extends DataBoxCore {
     }
 
     /**
-     * Registers for listening to the DataBox channel.
+     * Registers for listening to the Databox channel.
      * @private
      */
     private _reg() {
@@ -297,7 +297,7 @@ export default class DataBox extends DataBoxCore {
     }
 
     /**
-     * Sends a DataBox package to all sockets of the DataBox.
+     * Sends a Databox package to all sockets of the Databox.
      * @param dbClientPackage
      */
     private _sendToSockets(dbClientPackage : DbClientOutputPackage) {
@@ -307,7 +307,7 @@ export default class DataBox extends DataBoxCore {
     }
 
     /**
-     * Sends a DataBox cud package to sockets of the DataBox after passing the cud middleware.
+     * Sends a Databox cud package to sockets of the Databox after passing the cud middleware.
      * @param dbClientPackage
      * @private
      */
@@ -412,7 +412,7 @@ export default class DataBox extends DataBoxCore {
      */
     async _emitCudPackage(preCudPackage : PreCudPackage,timestamp ?: number) {
         await this._fireBeforeEvents(preCudPackage.a);
-        const cudPackage = DataBoxUtils.buildCudPackage(preCudPackage,timestamp);
+        const cudPackage = DataboxUtils.buildCudPackage(preCudPackage,timestamp);
         this._sendToWorker({
             a : DbWorkerAction.cud,
             d : cudPackage,
@@ -434,7 +434,7 @@ export default class DataBox extends DataBoxCore {
     }
 
     /**
-     * Close this DataBox.
+     * Close this Databox.
      * @param closePackage
      * @private
      */
@@ -447,8 +447,8 @@ export default class DataBox extends DataBoxCore {
 
     /**
      * **Not override this method.**
-     * Insert a new value in the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-event.
+     * Insert a new value in the Databox.
+     * Notice that this method will only update the Databox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
@@ -480,14 +480,14 @@ export default class DataBox extends DataBoxCore {
      */
     async insert(keyPath : string[] | string, value : any,{ifContains,timestamp,code,data} : IfContainsOption & InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
-            DataBoxUtils.buildPreCudPackage(
-                DataBoxUtils.buildInsert(keyPath,value,ifContains,code,data)),timestamp);
+            DataboxUtils.buildPreCudPackage(
+                DataboxUtils.buildInsert(keyPath,value,ifContains,code,data)),timestamp);
     }
 
     /**
      * **Not override this method.**
-     * Update a value in the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-event.
+     * Update a value in the Databox.
+     * Notice that this method will only update the Databox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
@@ -507,14 +507,14 @@ export default class DataBox extends DataBoxCore {
      */
     async update(keyPath : string[] | string, value : any,{timestamp,code,data} : InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
-            DataBoxUtils.buildPreCudPackage(
-                DataBoxUtils.buildUpdate(keyPath,value,code,data)),timestamp);
+            DataboxUtils.buildPreCudPackage(
+                DataboxUtils.buildUpdate(keyPath,value,code,data)),timestamp);
     }
 
     /**
      * **Not override this method.**
-     * Delete a value in the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-event.
+     * Delete a value in the Databox.
+     * Notice that this method will only update the Databox and invoke the before-event.
      * It will not automatically update the database,
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
@@ -533,16 +533,16 @@ export default class DataBox extends DataBoxCore {
      */
     async delete(keyPath : string[] | string,{timestamp,code,data} : InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
-            DataBoxUtils.buildPreCudPackage(
-                DataBoxUtils.buildDelete(keyPath,code,data)),timestamp);
+            DataboxUtils.buildPreCudPackage(
+                DataboxUtils.buildDelete(keyPath,code,data)),timestamp);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * **Not override this method.**
-     * Sequence edit the DataBox.
-     * Notice that this method will only update the DataBox and invoke the before-events.
-     * This method is ideal for doing multiple changes on a DataBox
+     * Sequence edit the Databox.
+     * Notice that this method will only update the Databox and invoke the before-events.
+     * This method is ideal for doing multiple changes on a Databox
      * because it will pack them all together and send them all in ones.
      * It will not automatically update the database,
      * so you have to do it in the before-events or before calling this method.
@@ -554,13 +554,13 @@ export default class DataBox extends DataBoxCore {
     seqEdit(timestamp ?: number) : DbCudActionSequence {
         return new DbCudActionSequence(async (actions) => {
             await this._emitCudPackage(
-                DataBoxUtils.buildPreCudPackage(...actions),timestamp);
+                DataboxUtils.buildPreCudPackage(...actions),timestamp);
         });
     }
 
     /**
      * **Not override this method.**
-     * The close function will close the DataBox for every client on every server.
+     * The close function will close the Databox for every client on every server.
      * You optionally can provide a code or any other information for the client.
      * Usually, the close function is used when the data is completely deleted from the system.
      * For example, a chat that doesn't exist anymore.
@@ -569,7 +569,7 @@ export default class DataBox extends DataBoxCore {
      * @param forEveryWorker
      */
     close(code ?: number | string,data ?: any,forEveryWorker : boolean = true){
-        const clientPackage = DataBoxUtils.buildClientClosePackage(code,data);
+        const clientPackage = DataboxUtils.buildClientClosePackage(code,data);
         if(forEveryWorker){
             this._sendToWorker(
                 {
@@ -583,7 +583,7 @@ export default class DataBox extends DataBoxCore {
 
     /**
      * **Not override this method.**
-     * The reload function will force all clients of the DataBox to reload the data.
+     * The reload function will force all clients of the Databox to reload the data.
      * This method is used internally if it was detected that a worker had
      * missed a cud (create, update, or delete) operation.
      * @param forEveryWorker
@@ -591,7 +591,7 @@ export default class DataBox extends DataBoxCore {
      * @param data
      */
     doReload(forEveryWorker : boolean = false,code ?: number | string,data ?: any){
-        const clientPackage = DataBoxUtils.buildClientReloadPackage(code,data);
+        const clientPackage = DataboxUtils.buildClientReloadPackage(code,data);
         if(forEveryWorker){
             this._broadcastToOtherSockets(clientPackage);
         }
@@ -600,7 +600,7 @@ export default class DataBox extends DataBoxCore {
 
     /**
      * **Not override this method.**
-     * With this function, you can kick out a socket from this DataBox.
+     * With this function, you can kick out a socket from this Databox.
      * This method is used internally.
      * @param socket
      * @param code
@@ -617,7 +617,7 @@ export default class DataBox extends DataBoxCore {
 
     /**
      * **Can be overridden.**
-     * This method is used to fetch data for the clients of the DataBox.
+     * This method is used to fetch data for the clients of the Databox.
      * A client can call that method multiple times to fetch more and more data.
      * You usually request data from your database and return it, and if no more data is available,
      * you should throw a NoMoreDataAvailableError or call the internal noMoreDataAvailable method.
@@ -628,8 +628,8 @@ export default class DataBox extends DataBoxCore {
      * important to get more data in the future, for example, the last id of the item that the client had received.
      * The session object is only available on the server-side and can not be modified on the client-side.
      * Notice that you only can store JSON convertible data in the session.
-     * If you design the DataBox in such a way that the next fetch is not depending on the previous one,
-     * you can activate the parallelFetch option in the DataBox config.
+     * If you design the Databox in such a way that the next fetch is not depending on the previous one,
+     * you can activate the parallelFetch option in the Databox config.
      * The data what you are returning can be of any type.
      * But if you want to return more complex data,
      * it is recommended that the information consists of key-value able components
@@ -639,7 +639,7 @@ export default class DataBox extends DataBoxCore {
      * Whenever you are using the socket to filter the data for a specific user,
      * you also have to use the cud middleware to filter the cud events for the socket.
      * You mostly should avoid this because if you are overwriting a cud middleware,
-     * the DataBox switches to a more costly performance implementation.
+     * the Databox switches to a more costly performance implementation.
      * @param counter
      * @param session
      * @param input
@@ -652,7 +652,7 @@ export default class DataBox extends DataBoxCore {
 
     /**
      * **Can be overridden.**
-     * A function that gets triggered before an insert into the DataBox.
+     * A function that gets triggered before an insert into the Databox.
      * Can be used to insert the data in the database.
      * @param keyPath
      * @param value
@@ -662,7 +662,7 @@ export default class DataBox extends DataBoxCore {
 
     /**
      * **Can be overridden.**
-     * A function that gets triggered before an update of data in the DataBox.
+     * A function that gets triggered before an update of data in the Databox.
      * Can be used to update the data in the database.
      * @param keyPath
      * @param value
@@ -672,7 +672,7 @@ export default class DataBox extends DataBoxCore {
 
     /**
      * **Can be overridden.**
-     * A function that gets triggered before a delete of data in the DataBox.
+     * A function that gets triggered before a delete of data in the Databox.
      * Can be used to delete the data in the database.
      * @param keyPath
      */
@@ -682,7 +682,7 @@ export default class DataBox extends DataBoxCore {
     // noinspection JSUnusedLocalSymbols
     /**
      * **Can be overridden.**
-     * A function that gets triggered whenever a new socket is connected to the DataBox.
+     * A function that gets triggered whenever a new socket is connected to the Databox.
      */
     protected onConnection(socket : ZSocket) : Promise<void> | void {
     }
@@ -690,7 +690,7 @@ export default class DataBox extends DataBoxCore {
     // noinspection JSUnusedLocalSymbols
     /**
      * **Can be overridden.**
-     * A function that gets triggered whenever a socket is disconnected from the DataBox.
+     * A function that gets triggered whenever a socket is disconnected from the Databox.
      * Notice that means all input channels are closed.
      */
     protected onDisconnection(socket : ZSocket) : Promise<void> | void {
@@ -700,7 +700,7 @@ export default class DataBox extends DataBoxCore {
      * **Can be overridden.**
      * The insert middleware.
      * You should only use a cud middleware if you can find no other way
-     * because when your overwrite at least one of them, the DataBox
+     * because when your overwrite at least one of them, the Databox
      * switches to a more costly performance implementation.
      * You should not invoke long process tasks in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket variables.
@@ -725,7 +725,7 @@ export default class DataBox extends DataBoxCore {
      * **Can be overridden.**
      * The update middleware.
      * You should only use a cud middleware if you can find no other way
-     * because when your overwrite at least one of them, the DataBox
+     * because when your overwrite at least one of them, the Databox
      * switches to a more costly performance implementation.
      * You should not invoke long process tasks in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket variables.
@@ -750,7 +750,7 @@ export default class DataBox extends DataBoxCore {
      * **Can be overridden.**
      * The delete middleware.
      * You should only use a cud middleware if you can find no other way
-     * because when your overwrite at least one of them, the DataBox
+     * because when your overwrite at least one of them, the Databox
      * switches to a more costly performance implementation.
      * You should not invoke long process tasks in this middleware.
      * Instead, try to prepare stuff in the token of the socket or the socket variables.
@@ -767,17 +767,17 @@ export default class DataBox extends DataBoxCore {
     }
 }
 
-DataBox.prototype['insertMiddleware'][DefaultSymbol] = true;
-DataBox.prototype['updateMiddleware'][DefaultSymbol] = true;
-DataBox.prototype['deleteMiddleware'][DefaultSymbol] = true;
+Databox.prototype['insertMiddleware'][DefaultSymbol] = true;
+Databox.prototype['updateMiddleware'][DefaultSymbol] = true;
+Databox.prototype['deleteMiddleware'][DefaultSymbol] = true;
 
-export interface DataBoxClass {
-    config: DataBoxConfig;
+export interface DataboxClass {
+    config: DataboxConfig;
 
-    new(name : string, bag: Bag, dbPreparedData : DbPreparedData, apiLevel : number | undefined): DataBox;
+    new(name : string, bag: Bag, dbPreparedData : DbPreparedData, apiLevel : number | undefined): Databox;
 
     prototype: any;
     name : string;
 
-    readonly ___instance___ : DataBox | undefined;
+    readonly ___instance___ : Databox | undefined;
 }

@@ -48,11 +48,11 @@ import {
 } from "../definitions/inputConfig";
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig}                      from "../definitions/controllerConfig";
-import {DataBoxClassDef, DataBoxConfig}        from "../definitions/dataBoxConfig";
-import DataBoxFamily                           from "../../../api/dataBox/DataBoxFamily";
-import DataBox                                 from "../../../api/dataBox/DataBox";
+import {DataboxClassDef, DataboxConfig}        from "../definitions/databoxConfig";
+import DataboxFamily                           from "../../../api/databox/DataboxFamily";
+import Databox                                 from "../../../api/databox/Databox";
 import {AuthAccessConfig, VersionAccessConfig} from "../definitions/configComponents";
-import DbConfigUtils                           from "../../dataBox/dbConfigUtils";
+import DbConfigUtils                           from "../../databox/dbConfigUtils";
 
 export interface ModelCheckedMem {
     _checked : boolean
@@ -234,7 +234,7 @@ export default class ConfigChecker
         this.checkAppConfigMain();
         this.checkModelsConfig();
         this.checkControllersConfigs();
-        this.checkDataBoxConfigs();
+        this.checkDataboxConfigs();
         this.checkAuthController();
         this.checkBackgroundTasks();
         this.checkAppBagExtensions();
@@ -791,27 +791,27 @@ export default class ConfigChecker
 
     }
 
-    private checkDataBoxConfigs() {
-        //check DataBoxes
-        if (typeof this.zcLoader.appConfig.dataBoxes === 'object') {
-            const dataBoxes = this.zcLoader.appConfig.dataBoxes;
-            for (let cId in dataBoxes) {
-                if (dataBoxes.hasOwnProperty(cId)) {
-                    Iterator.iterateCompDefinition<DataBoxClassDef>(dataBoxes[cId],(dataBoxClass,apiLevel) =>{
+    private checkDataboxConfigs() {
+        //check Databoxes
+        if (typeof this.zcLoader.appConfig.databoxes === 'object') {
+            const databoxes = this.zcLoader.appConfig.databoxes;
+            for (let cId in databoxes) {
+                if (databoxes.hasOwnProperty(cId)) {
+                    Iterator.iterateCompDefinition<DataboxClassDef>(databoxes[cId],(databoxClass, apiLevel) =>{
                         if(apiLevel !== undefined && isNaN(parseInt(apiLevel))) {
                             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                                `DataBox: '${cId}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
+                                `Databox: '${cId}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
                         }
-                        this.checkDataBox(dataBoxClass, new Target(`DataBox: '${cId}' ${apiLevel ? `(API Level: ${apiLevel}) ` : ''}`));
+                        this.checkDatabox(databoxClass, new Target(`Databox: '${cId}' ${apiLevel ? `(API Level: ${apiLevel}) ` : ''}`));
                     });
                 }
             }
         }
 
-        //check DataBox defaults
-        if (typeof this.zcLoader.appConfig.dataBoxDefaults === 'object') {
-            const dataBox = this.zcLoader.appConfig.dataBoxDefaults;
-            this.checkDataBoxConfig(dataBox, new Target(nameof<AppConfig>(s => s.dataBoxDefaults)));
+        //check Databox defaults
+        if (typeof this.zcLoader.appConfig.databoxDefaults === 'object') {
+            const databox = this.zcLoader.appConfig.databoxDefaults;
+            this.checkDataboxConfig(databox, new Target(nameof<AppConfig>(s => s.databoxDefaults)));
         }
 
     }
@@ -846,19 +846,19 @@ export default class ConfigChecker
         this.checkVersionAccessConfig(config, target);
     }
 
-    private checkDataBox(cdb: DataBoxClassDef, target: Target) {
-        if(cdb.prototype instanceof DataBoxFamily || cdb.prototype instanceof DataBox) {
-            this.checkDataBoxConfig(cdb.config,target);
+    private checkDatabox(cdb: DataboxClassDef, target: Target) {
+        if(cdb.prototype instanceof DataboxFamily || cdb.prototype instanceof Databox) {
+            this.checkDataboxConfig(cdb.config,target);
         }
         else {
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                `${target.getTarget()} is not extends the main DataBox or DataIdBox class.`));
+                `${target.getTarget()} is not extends the main Databox or DataIdBox class.`));
         }
     }
 
-    private checkDataBoxConfig(config : DataBoxConfig,target : Target)
+    private checkDataboxConfig(config : DataboxConfig, target : Target)
     {
-        ConfigCheckerTools.assertStructure(Structures.DataBoxConfig, config, ConfigNames.APP, this.ceb, target);
+        ConfigCheckerTools.assertStructure(Structures.DataboxConfig, config, ConfigNames.APP, this.ceb, target);
 
         if(typeof config.maxSocketInputChannels === 'number' && config.maxSocketInputChannels <= 0){
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,

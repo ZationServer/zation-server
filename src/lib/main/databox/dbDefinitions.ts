@@ -4,9 +4,9 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-export interface DataBoxConnectReq {
+export interface DataboxConnectReq {
     /**
-     * dataBox (name)
+     * databox (name)
      */
     d ?: string,
     /**
@@ -27,7 +27,7 @@ export interface DataBoxConnectReq {
     ii ?: any
 }
 
-export interface DataBoxConnectRes {
+export interface DataboxConnectRes {
     /**
      * Last cud id
      */
@@ -271,7 +271,7 @@ export enum DbWorkerAction {
      */
     cud,
     /**
-     * Close the DataBox
+     * Close the Databox
      */
     close,
     /**
@@ -342,7 +342,7 @@ export interface DbWorkerBroadcastPackage extends DbWorkerPackage{
 }
 
 /**
- * The DataBox token.
+ * The Databox token.
  */
 export interface DbToken {
     /**
@@ -350,7 +350,7 @@ export interface DbToken {
      */
     rawInitData : any;
     /**
-     * The DataBox sessions.
+     * The Databox sessions.
      */
     sessions : DbSessionData,
 }
@@ -417,7 +417,7 @@ export interface IfContainsOption {
 }
 
 /**
- * The memory that DataBoxes stores internally for each socket.
+ * The memory that Databoxes stores internally for each socket.
  */
 export interface DbSocketMemory {
     unregisterSocket : UnregisterSocketFunction,
@@ -425,7 +425,7 @@ export interface DbSocketMemory {
 }
 
 /**
- * The DataBox register result.
+ * The Databox register result.
  */
 export interface DbRegisterResult {
     inputCh : string,
@@ -438,9 +438,9 @@ export interface DbRegisterResult {
 export type ChangeValue = (newData : any) => void;
 
 /**
- * The DataBox info object.
+ * The Databox info object.
  */
-export interface DataBoxInfo {
+export interface DataboxInfo {
     name : string,
     id : any
 }

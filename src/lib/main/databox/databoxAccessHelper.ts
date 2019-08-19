@@ -5,23 +5,23 @@ Copyright(c) Luca Scaringella
  */
 
 import UpSocket             from "../sc/socket";
-import {DataBox}            from "../../../index";
-import DataBoxFamily        from "../../api/dataBox/DataBoxFamily";
+import {Databox}            from "../../../index";
+import DataboxFamily        from "../../api/databox/DataboxFamily";
 import AccessUtils          from "../access/accessUtils";
 import {AuthAccessConfig}   from "../config/definitions/configComponents";
 import Bag                  from "../../api/Bag";
-import {DataBoxInfo}        from "./dbDefinitions";
+import {DataboxInfo}        from "./dbDefinitions";
 import AuthAccessChecker    from "../auth/authAccessChecker";
-import {DbAccessFunction}   from "../config/definitions/dataBoxConfig";
+import {DbAccessFunction}   from "../config/definitions/databoxConfig";
 import ZSocket              from "../internalApi/zSocket";
 import AuthEngine           from "../auth/authEngine";
 
-export type DbAccessCheckFunction = (authEngine : AuthEngine, socket : ZSocket, dbInfo : DataBoxInfo) => Promise<boolean>
+export type DbAccessCheckFunction = (authEngine : AuthEngine, socket : ZSocket, dbInfo : DataboxInfo) => Promise<boolean>
 
 /**
- * Helper class for dataBox access.
+ * Helper class for databox access.
  */
-export default class DataBoxAccessHelper
+export default class DataboxAccessHelper
 {
     /**
      * Returns a Closures for checking the subscribe access to a channel.
@@ -48,29 +48,29 @@ export default class DataBoxAccessHelper
     }
 
     /**
-     * Checks the socket DataBox access.
+     * Checks the socket Databox access.
      * @param socket
      */
-    static async checkSocketDataBoxAccess(socket : UpSocket) : Promise<void>
+    static async checkSocketDataboxAccess(socket : UpSocket) : Promise<void>
     {
-        const dataBoxes = socket.dataBoxes;
+        const databoxes = socket.databoxes;
         const promises : Promise<void>[] = [];
-        for(let i = 0;i < dataBoxes.length; i++) {
+        for(let i = 0;i < databoxes.length; i++) {
             promises.push((async () => {
-                const dataBox = dataBoxes[i];
-                const name = dataBox.getName();
+                const databox = databoxes[i];
+                const name = databox.getName();
 
-                if(dataBox instanceof DataBoxFamily){
-                    const memberIds = dataBox.getSocketRegIds(socket);
+                if(databox instanceof DataboxFamily){
+                    const memberIds = databox.getSocketRegIds(socket);
                     for(let i = 0; i < memberIds.length; i++){
-                        if(!(await dataBox._accessCheck(socket,{id : memberIds[i],name}))) {
-                            dataBox.kickOut(memberIds[i],socket);
+                        if(!(await databox._accessCheck(socket,{id : memberIds[i],name}))) {
+                            databox.kickOut(memberIds[i],socket);
                         }
                     }
                 }
                 else {
-                    if(!(await dataBox._accessCheck(socket,{name,id : undefined}))) {
-                        dataBox.kickOut(socket);
+                    if(!(await databox._accessCheck(socket,{name,id : undefined}))) {
+                        databox.kickOut(socket);
                     }
                 }
             })());
@@ -79,23 +79,23 @@ export default class DataBoxAccessHelper
     }
 
     /**
-     * Adds the DataBox to the socket.
+     * Adds the Databox to the socket.
      * @param db
      * @param socket
      */
-    static addDb(db : DataBox | DataBoxFamily,socket : UpSocket) {
-        socket.dataBoxes.push(db);
+    static addDb(db : Databox | DataboxFamily, socket : UpSocket) {
+        socket.databoxes.push(db);
     }
 
     /**
-     * Removes the DataBox to the socket.
+     * Removes the Databox to the socket.
      * @param db
      * @param socket
      */
-    static rmDb(db : DataBox | DataBoxFamily,socket : UpSocket){
-        const index = socket.dataBoxes.indexOf(db);
+    static rmDb(db : Databox | DataboxFamily, socket : UpSocket){
+        const index = socket.databoxes.indexOf(db);
         if (index > -1) {
-            socket.dataBoxes.splice(index, 1);
+            socket.databoxes.splice(index, 1);
         }
     }
 }
