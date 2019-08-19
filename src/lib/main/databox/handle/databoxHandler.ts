@@ -21,7 +21,6 @@ import {ClientErrorName}           from "../../constants/clientErrorName";
 import Databox                     from "../../../api/databox/Databox";
 import DataboxUtils                from "../databoxUtils";
 import ObjectUtils                 from "../../utils/objectUtils";
-import ErrorUtils                  from "../../utils/errorUtils";
 
 export default class DataboxHandler
 {
@@ -39,9 +38,7 @@ export default class DataboxHandler
         try {
             respond(null,(await this._processConnectReq(input,socket)));
         }
-        catch (err) {
-            respond(ErrorUtils.processErrorWithName(err));
-        }
+        catch (err) {respond(err);}
     }
 
     private async _processConnectReq(input : DataboxConnectReq, socket : UpSocket) : Promise<DataboxConnectRes>

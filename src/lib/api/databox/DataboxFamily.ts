@@ -46,7 +46,6 @@ import {ClientErrorName}   from "../../main/constants/clientErrorName";
 import DataboxFetchManager, {FetchManagerBuilder} from "../../main/databox/databoxFetchManager";
 import ZSocket                                    from "../../main/internalApi/zSocket";
 import CloneUtils                                 from "../../main/utils/cloneUtils";
-import ErrorUtils                                 from "../../main/utils/errorUtils";
 const DefaultSymbol                               = Symbol();
 
 /**
@@ -197,9 +196,7 @@ export default class DataboxFamily extends DataboxCore {
                         respond(err);
                 }
             }
-            catch (err) {
-                respond(ErrorUtils.processErrorWithName(err));
-            }
+            catch (err) {respond(err);}
         });
 
         return {inputCh, outputCh}

@@ -8,7 +8,6 @@ import BackError         from "../../api/BackError";
 import BackErrorBag      from "../../api/BackErrorBag";
 import {MainBackErrors}  from "../zationBackErrors/mainBackErrors";
 import {ResponseError}   from "../controller/request/controllerDefinitions";
-import {ClientErrorName} from "../constants/clientErrorName";
 
 export default class ErrorUtils {
 
@@ -30,17 +29,5 @@ export default class ErrorUtils {
         else {
             return [(new BackError(MainBackErrors.unknownError))._toResponseError()];
         }
-    }
-
-    /**
-     * Checks if the error with a name has a name.
-     * Otherwise, it will add a default name.
-     * @param err
-     */
-    static processErrorWithName(err : Error){
-        if(err.name === undefined){
-            err.name = ClientErrorName.UNKNOWN_SERVER_ERROR;
-        }
-        return err;
     }
 }
