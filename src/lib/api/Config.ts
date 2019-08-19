@@ -278,78 +278,78 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     /**
      * This method registers a new controller in the app config.
-     * Watch out that you don't use a id that is already defined in the controllers of the app config.
+     * Watch out that you don't use a name that is already defined in the controllers of the app config.
      * If you use this method in another file as the app config,
      * make sure that you import this file in app config.
-     * Also, notice that if you want to register more controllers with the same id and different API levels,
-     * make sure that all register methods with that id provided an API level.
+     * Also, notice that if you want to register more controllers with the same name and different API levels,
+     * make sure that all register methods with that name provided an API level.
      * @example
      * //without API level
      * Config.registerController('myController',MyController);
      * //with API level
      * Config.registerController('myController2',MyController2Version1,1);
      * Config.registerController('myController2',MyController2Version2,2);
-     * @param id
+     * @param name
      * @param controllerClass
      * @param apiLevel
      */
-    static registerController(id : string, controllerClass : ControllerClass, apiLevel ?: number) {
-        Config.registerComponent(id,controllerClass,apiLevel);
+    static registerController(name : string, controllerClass : ControllerClass, apiLevel ?: number) {
+        Config.registerComponent(name,controllerClass,apiLevel);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * This method registers a new Databox or DataboxFamily in the app config.
-     * Watch out that you don't use a id that is already defined in the Databoxes of the app config.
+     * Watch out that you don't use a name that is already defined in the Databoxes of the app config.
      * If you use this method in another file as the app config,
      * make sure that you import this file in app config.
-     * Also, notice that if you want to register more Databoxes with the same id and different API levels,
-     * make sure that all register methods with that id provided an API level.
+     * Also, notice that if you want to register more Databoxes with the same name and different API levels,
+     * make sure that all register methods with that name provided an API level.
      * @example
      * //without API level
      * Config.registerDatabox('myDatabox',MyDatabox);
      * //with API level
      * Config.registerDatabox('myDatabox2',MyDatabox2Version1,1);
      * Config.registerDatabox('myDatabox2',MyDatabox2Version2,2);
-     * @param id
+     * @param name
      * @param databoxClass
      * @param apiLevel
      */
-    static registerDatabox(id : string, databoxClass : DataboxClassDef, apiLevel ?: number) {
-        Config.registerComponent(id,databoxClass,apiLevel);
+    static registerDatabox(name : string, databoxClass : DataboxClassDef, apiLevel ?: number) {
+        Config.registerComponent(name,databoxClass,apiLevel);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * This method registers a new component (Controller or Databox) in the app config.
-     * Watch out that you don't use a id that is already defined in the app config.
+     * Watch out that you don't use a name that is already defined in the app config.
      * If you use this method in another file as the app config,
      * make sure that you import this file in app config.
-     * Also, notice that if you want to register more components with the same id and different API levels,
-     * make sure that all register methods with that id provided an API level.
+     * Also, notice that if you want to register more components with the same name and different API levels,
+     * make sure that all register methods with that name provided an API level.
      * @example
      * //without API level
      * Config.registerComponent('myDatabox',MyDatabox);
      * //with API level
      * Config.registerComponent('myController',MyControllerVersion1,1);
      * Config.registerComponent('myController',MyControllerVersion2,2);
-     * @param id
+     * @param name
      * @param componentClass
      * @param apiLevel
      */
-    static registerComponent(id : string, componentClass : Component, apiLevel ?: number)
+    static registerComponent(name : string, componentClass : Component, apiLevel ?: number)
     {
-        let name;
+        let type;
         let pName;
         let container;
 
         if(componentClass.prototype instanceof Controller){
-            name = 'controller';
+            type = 'controller';
             pName = 'controllers';
             container = this.tmpControllers;
         }
         else if(componentClass.prototype instanceof  DataboxFamily || componentClass.prototype instanceof Databox){
-            name = 'databox';
+            type = 'databox';
             pName = 'databoxes';
             container = this.tmpDataboxes;
         }
@@ -358,30 +358,30 @@ export default class Config
         }
 
         if(typeof apiLevel === 'number'){
-            if(typeof container[id] === 'function'){
-                throw new ConfigBuildError(`The ${name} id: ${id} is already defined.`+
-                    ` To define more ${pName} with the same id every register should provide an API level.`);
+            if(typeof container[name] === 'function'){
+                throw new ConfigBuildError(`The ${type} name: ${name} is already defined.`+
+                    ` To define more ${pName} with the same name every register should provide an API level.`);
             }
             else {
-                if(!container.hasOwnProperty(id)){
-                    container[id] = {};
+                if(!container.hasOwnProperty(name)){
+                    container[name] = {};
                 }
 
-                if(container[id].hasOwnProperty(apiLevel)){
-                    throw new ConfigBuildError(`The ${name} id: ${id} with the API level ${apiLevel} is already defined.`);
+                if(container[name].hasOwnProperty(apiLevel)){
+                    throw new ConfigBuildError(`The ${type} name: ${name} with the API level ${apiLevel} is already defined.`);
                 }
                 else {
-                    container[id][apiLevel] = componentClass;
+                    container[name][apiLevel] = componentClass;
                 }
             }
         }
         else {
-            if(container.hasOwnProperty(id)){
-                throw new ConfigBuildError(`The ${name} id: ${id} is already defined.`+
-                    ` To define more ${pName} with the same id every register should provide an API level.`);
+            if(container.hasOwnProperty(name)){
+                throw new ConfigBuildError(`The ${type} name: ${name} is already defined.`+
+                    ` To define more ${pName} with the same name every register should provide an API level.`);
             }
             else {
-                container[id] = componentClass;
+                container[name] = componentClass;
             }
         }
     }
@@ -419,8 +419,8 @@ export default class Config
             }
 
             Config.configAdd(Config.tmpModels,config.models,'model name');
-            Config.configAdd(Config.tmpControllers,config.controllers,'controller id');
-            Config.configAdd(Config.tmpDataboxes,config.databoxes,'databox id');
+            Config.configAdd(Config.tmpControllers,config.controllers,'controller name');
+            Config.configAdd(Config.tmpDataboxes,config.databoxes,'databox name');
             Config.configAdd(Config.tmpCustomChs,config.customChannels as object,'custom channel');
             Config.merge(config.zationChannels,...Config.tmpZationChannels);
         }

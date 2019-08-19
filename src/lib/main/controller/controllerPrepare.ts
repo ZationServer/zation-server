@@ -52,51 +52,51 @@ export default class ControllerPrepare
     /**
      * It will return the controller prepared data.
      * If no controller with the API level is found, it will thrown an API level not compatible back error.
-     * @param id
+     * @param name
      * @param apiLevel
      * @param isSystemController
      */
-    getControllerPrepareData(id : string,apiLevel : number,isSystemController : boolean) : ControllerPrepareData
+    getControllerPrepareData(name : string,apiLevel : number,isSystemController : boolean) : ControllerPrepareData
     {
         if(!isSystemController) {
-            const controller = this.appController[id](apiLevel);
+            const controller = this.appController[name](apiLevel);
             if(controller !== undefined){
                 return controller;
             }
             else {
                 throw new BackError(MainBackErrors.apiLevelNotCompatible,
-                    {controller: id, apiLevel : apiLevel});
+                    {controller: name, apiLevel : apiLevel});
             }
         }
         else {
-            return this.systemController[id];
+            return this.systemController[name];
         }
     }
 
     /**
      * Returns a boolean that indicates if the controller exists.
-     * @param id
+     * @param name
      * @param isSystemController
      */
-    isControllerExist(id : string,isSystemController : boolean) : boolean {
-        return !isSystemController ? this.appController.hasOwnProperty(id) :
-            this.systemController.hasOwnProperty(id);
+    isControllerExist(name : string,isSystemController : boolean) : boolean {
+        return !isSystemController ? this.appController.hasOwnProperty(name) :
+            this.systemController.hasOwnProperty(name);
     }
 
     /**
      * Checks if the controller exists.
      * It will throw a back error if the controller is not found.
-     * @param id
+     * @param name
      * @param isSystemController
      */
-    checkControllerExist(id : string,isSystemController : boolean) : void
+    checkControllerExist(name : string,isSystemController : boolean) : void
     {
-        if(!this.isControllerExist(id,isSystemController)) {
+        if(!this.isControllerExist(name,isSystemController)) {
             if(isSystemController) {
-                throw new BackError(MainBackErrors.systemControllerNotFound, {controller: id});
+                throw new BackError(MainBackErrors.systemControllerNotFound, {controller: name});
             }
             else {
-                throw new BackError(MainBackErrors.controllerNotFound, {controller: id});
+                throw new BackError(MainBackErrors.controllerNotFound, {controller: name});
             }
         }
     }

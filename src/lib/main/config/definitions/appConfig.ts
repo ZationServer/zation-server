@@ -31,7 +31,7 @@ export interface AppConfig
     userGroups  ?: UserGroupsConfig;
 
     /**
-     * The id of the authController.
+     * The name of the authController.
      * This property makes it possible to send an authentication request to the server.
      * Then the server will automatically use the linked controller.
      * @example
@@ -42,7 +42,7 @@ export interface AppConfig
     /**
     * In this property, you can define all your controllers.
     * The value must be an object.
-    * The key of each property is the id of the controller.
+    * The key of each property is the name of the controller.
     * The value of each property is the imported controller class.
     * @example
     * controllers : {
@@ -69,7 +69,7 @@ export interface AppConfig
     /**
      * In this property, you can define all your Databoxes.
      * The value must be an object.
-     * The key of each property is the id of the Databox.
+     * The key of each property is the name of the Databox.
      * The value of each property is the imported Databox class.
      * @example
      * databoxes : {
@@ -129,7 +129,7 @@ export interface AppConfig
      * that is useful if you only need one instance of that channel type.
      * The second variant is the custom channel family.
      * You should use this variant if you need more than one channel
-     * of these type and they only differ by an id.
+     * of these type and they only differ by an name.
      * For example, I have a private user chat where more chats can exist with a specific id.
      * Now I can have more channels from type user chat with different identifiers.
      * Look in the example below to see how you actually can define custom channels.

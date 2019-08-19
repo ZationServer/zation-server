@@ -41,15 +41,15 @@ export default class DataboxPrepare
      * If no DatBox with the API level is found,
      * it will throw an API level not compatible error,
      * and when the Databox does not exist, it also throws an error.
-     * @param id
+     * @param name
      * @param apiLevel
      */
-    getDatabox(id : string,apiLevel : number) : DataboxCore
+    getDatabox(name : string,apiLevel : number) : DataboxCore
     {
         //throws if not exists
-        this.checkDataboxExist(id);
+        this.checkDataboxExist(name);
 
-        const databox = this.databoxes[id](apiLevel);
+        const databox = this.databoxes[name](apiLevel);
         if(databox !== undefined){
             return databox;
         }
@@ -62,21 +62,21 @@ export default class DataboxPrepare
 
     /**
      * Returns a boolean that indicates if the Databox exists.
-     * @param id
+     * @param name
      */
-    isDataboxExist(id : string) : boolean {
-        return this.databoxes.hasOwnProperty(id);
+    isDataboxExist(name : string) : boolean {
+        return this.databoxes.hasOwnProperty(name);
     }
 
     /**
      * Checks if the Databox exists.
      * It will throw a error if the Databox is not found.
-     * @param id
+     * @param name
      */
-    checkDataboxExist(id : string) : void
+    checkDataboxExist(name : string) : void
     {
-        if(!this.isDataboxExist(id)) {
-            const err : any = new Error(`The Databox: '${id}' not exists.`);
+        if(!this.isDataboxExist(name)) {
+            const err : any = new Error(`The Databox: '${name}' not exists.`);
             err.name = ClientErrorName.UNKNOWN_DATA_BOX;
             throw err;
         }

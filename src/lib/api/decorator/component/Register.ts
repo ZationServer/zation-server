@@ -14,16 +14,16 @@ import ConfigBuildError from "../../../main/config/manager/configBuildError";
 /**
  * Register a component (Controller or Databox) in the app config.
  * You only have to import the file in the app config.
- * You can register multiple components with the same id but different API levels.
- * @param id
+ * You can register multiple components with the same name but different API levels.
+ * @param name
  * @param apiLevel
  * @constructor
  */
-export const Register = (id : string, apiLevel ?: number) => {
+export const Register = (name : string, apiLevel ?: number) => {
     return (target : Component) => {
         if(target.prototype instanceof Controller || target.prototype instanceof Databox
             || target.prototype instanceof DataboxFamily){
-            Config.registerComponent(id,target,apiLevel);
+            Config.registerComponent(name,target,apiLevel);
         }
         else {
             throw new ConfigBuildError(`The register decorator can only be used on classes that extend the Controller, Databox or DataIdBox class.`);
