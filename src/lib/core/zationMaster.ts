@@ -150,7 +150,14 @@ export default class ZationMaster {
             Logger.printStartDebugInfo(`The Master has checked the config files.`, true);
         }
 
-        await this.checkPort();
+        Logger.startStopWatch();
+        const portIsAvailable = await PortChecker.isPortAvailable(this.zc.mainConfig.port);
+        if(!portIsAvailable) {
+            const msg = `The port: ${this.zc.mainConfig.port} is in use. Try with a different port.`;
+            this.printStartFail(msg);
+            return this.rejectStart(StartErrorName.PORT_IN_USE,msg);
+        }
+        Logger.printStartDebugInfo('The Master has checked that the port is available.', true);
 
         Logger.startStopWatch();
         this.serverSettingsJs = ClientPrepare.createServerSettingsFile(this.zc);
@@ -231,19 +238,6 @@ export default class ZationMaster {
         Logger.startStopWatch();
         this.startSocketCluster();
         Logger.printStartDebugInfo('The Master has started sc-cluster.', true);
-    }
-
-    private async checkPort()
-    {
-        Logger.startStopWatch();
-        const port = this.zc.mainConfig.port;
-        const portIsAvailable = await PortChecker.isPortAvailable(port);
-        if(!portIsAvailable) {
-            const msg = `The port: ${port} is in use. Try with a different port.`;
-            this.printStartFail(msg);
-            return this.rejectStart(StartErrorName.PORT_IN_USE,msg);
-        }
-        Logger.printStartDebugInfo('The Master has checked that the port is available.', true);
     }
 
     private startSocketCluster()
