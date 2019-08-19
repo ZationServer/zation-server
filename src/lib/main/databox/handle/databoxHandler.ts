@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import UpSocket                    from "../../sc/socket";
+import UpSocket, {RespondFunction} from "../../sc/socket";
 import DataboxPrepare              from "../databoxPrepare";
 import ZationConfig                from "../../config/manager/zationConfig";
 import DataboxCore                 from "../../../api/databox/DataboxCore";
@@ -21,6 +21,7 @@ import {ClientErrorName}           from "../../constants/clientErrorName";
 import Databox                     from "../../../api/databox/Databox";
 import DataboxUtils                from "../databoxUtils";
 import ObjectUtils                 from "../../utils/objectUtils";
+import ErrorUtils                  from "../../utils/errorUtils";
 
 export default class DataboxHandler
 {
@@ -34,7 +35,16 @@ export default class DataboxHandler
         this.socketDataboxLimit = zc.mainConfig.socketDataboxLimit;
     }
 
-    async processConnectReq(input : DataboxConnectReq, socket : UpSocket) : Promise<DataboxConnectRes>
+    async processConnectReq(input : DataboxConnectReq, socket : UpSocket,respond : RespondFunction) : Promise<void> {
+        try {
+            respond(null,(await this._processConnectReq(input,socket)));
+        }
+        catch (err) {
+            respond(ErrorUtils.processErrorWithName(err));
+        }
+    }
+
+    private async _processConnectReq(input : DataboxConnectReq, socket : UpSocket) : Promise<DataboxConnectRes>
     {
         //check request valid
         if(!DataboxReqUtils.isValidReqStructure(input)) {

@@ -10,15 +10,18 @@ export default class AsyncChain {
     private pressure: number = 0;
 
     /**
-     * Adds an async task to the chain.
+     * Adds an async task to the chain
+     * and returns the promise of the task.
      * @param task
      */
-    addToChain(task : (...args : any[]) => Promise<void>) {
+    runInChain(task : (...args : any[]) => Promise<void>) : Promise<void> {
         this.pressure++;
-        this.lastPromise = this.lastPromise.then(async () => {
+        const promise = this.lastPromise.then(async () => {
             await task();
             this.pressure--;
-        })
+        });
+        this.lastPromise = promise;
+        return promise;
     }
 
     /**

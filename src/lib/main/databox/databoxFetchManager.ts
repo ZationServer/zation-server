@@ -5,11 +5,10 @@ Copyright(c) Luca Scaringella
  */
 
 import {RespondFunction} from "../sc/socket";
-import RespondUtils      from "../utils/respondUtils";
 import AsyncChain        from "../utils/asyncChain";
 import {ClientErrorName} from "../constants/clientErrorName";
 
-export type FetchManagerBuilder<F extends (input : any,...any : any[]) => any> = () => ((respond : RespondFunction, func : F, ...params : Parameters<F>) => Promise<void>);
+export type FetchManagerBuilder<F extends (input : any,...any : any[]) => any> = () => ((respond : RespondFunction,caller : () => any | Promise<any>) => Promise<void>);
 
 export default class DataboxFetchManager {
 
@@ -22,17 +21,19 @@ export default class DataboxFetchManager {
     {
         if(!parallelFetch) {
             return () => {
-                return RespondUtils.respondWithFunc;
+                return async (respond : RespondFunction,caller : () => any | Promise<any>) => {
+                    respond(null,(await caller()));
+                }
             };
         }
         else {
             return () => {
                 const chain = new AsyncChain();
-                return async (respond : RespondFunction,func : F,...params : Parameters<F>) => {
+                return async (respond : RespondFunction,caller : () => any | Promise<any>) => {
                     //process input before adding to chain
                     if(chain.getBackpressure() < maxBackpressure){
-                        chain.addToChain(async () => {
-                            await RespondUtils.respondWithFunc(respond,func,...params);
+                        await chain.runInChain(async () => {
+                            respond(null,(await caller()));
                         });
                     }
                     else {

@@ -64,7 +64,6 @@ import {DATA_BOX_START_INDICATOR} from "../main/databox/dbDefinitions";
 import {ZationChannel}            from "../main/channel/channelDefinitions";
 import DataboxHandler             from "../main/databox/handle/databoxHandler";
 import DataboxPrepare             from "../main/databox/databoxPrepare";
-import RespondUtils               from "../main/utils/respondUtils";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -348,7 +347,7 @@ class ZationWorker extends SCWorker
             });
 
             socket.on(DATA_BOX_START_INDICATOR, async (data,respond) => {
-                await RespondUtils.respondWithFunc(respond,this.zationDbHandler.processConnectReq,data,socket);
+                await this.zationDbHandler.processConnectReq(data,socket,respond);
             });
 
             await initPromise;

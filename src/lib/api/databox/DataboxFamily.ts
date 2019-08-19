@@ -42,11 +42,11 @@ import {
 import DataboxAccessHelper from "../../main/databox/databoxAccessHelper";
 import DataboxUtils        from "../../main/databox/databoxUtils";
 import DbCudActionSequence from "../../main/databox/dbCudActionSequence";
-import RespondUtils        from "../../main/utils/respondUtils";
 import {ClientErrorName}   from "../../main/constants/clientErrorName";
 import DataboxFetchManager, {FetchManagerBuilder} from "../../main/databox/databoxFetchManager";
 import ZSocket                                    from "../../main/internalApi/zSocket";
 import CloneUtils                                 from "../../main/utils/cloneUtils";
+import ErrorUtils                                 from "../../main/utils/errorUtils";
 const DefaultSymbol                               = Symbol();
 
 /**
@@ -160,42 +160,45 @@ export default class DataboxFamily extends DataboxCore {
         const fetchManager = this._buildFetchManager();
 
         socket.on(inputCh,async (senderPackage : DbClientInputPackage, respond : RespondFunction) => {
-            switch (senderPackage.a) {
-                case DbClientInputAction.fetchData:
-                    //try because _consumeFetchInput can throw an error.
-                    try {
+            try {
+                switch (senderPackage.a) {
+                    case DbClientInputAction.fetchData:
                         await fetchManager(
                             respond,
-                            this._fetchData,
-                            id,
-                            dbToken,
-                            await this._consumeFetchInput((senderPackage as DbClientInputFetchPackage).i),
-                            initData,
-                            socket.zSocket,
-                            senderPackage.t
+                            async () => {
+                                return await this._fetchData
+                                (
+                                    id,
+                                    dbToken,
+                                    await this._consumeFetchInput((senderPackage as DbClientInputFetchPackage).i),
+                                    initData,
+                                    socket.zSocket,
+                                    senderPackage.t
+                                )
+                            }
                         );
-                    }
-                    catch (err) {
+                        break;
+                    case DbClientInputAction.resetSession:
+                        respond(null,await this._resetSession(id,dbToken,senderPackage.t));
+                        break;
+                    case DbClientInputAction.copySession:
+                        respond(null,await this._copySession(id,dbToken,senderPackage.t));
+                        break;
+                    case DbClientInputAction.disconnect:
+                        unregisterSocket(chInputId);
+                        respond(null);
+                        break;
+                    case DbClientInputAction.getLastCudId:
+                        respond(null,this._getLastCudId(id));
+                        break;
+                    default :
+                        const err : any = new Error('Unknown action');
+                        err.name = ClientErrorName.UNKNOWN_ACTION;
                         respond(err);
-                    }
-                    break;
-                case DbClientInputAction.resetSession:
-                    await RespondUtils.respondWithFunc(respond,this._resetSession,id,dbToken,senderPackage.t);
-                    break;
-                case DbClientInputAction.copySession:
-                    await RespondUtils.respondWithFunc(respond,this._copySession,id,dbToken,senderPackage.t);
-                    break;
-                case DbClientInputAction.disconnect:
-                    unregisterSocket(chInputId);
-                    respond(null);
-                    break;
-                case DbClientInputAction.getLastCudId:
-                    respond(null,this._getLastCudId(id));
-                    break;
-                default :
-                    const err : any = new Error('Unknown action');
-                    err.name = ClientErrorName.UNKNOWN_ACTION;
-                    respond(err);
+                }
+            }
+            catch (err) {
+                respond(ErrorUtils.processErrorWithName(err));
             }
         });
 
