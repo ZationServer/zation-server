@@ -57,7 +57,7 @@ export default class DataboxHandler
         //throws if not exists or api level is not compatible
         const db : DataboxCore = this.dbPrepare.getDatabox((input.d as string),apiLevel);
 
-        const isFamily = DataboxCore instanceof DataboxFamily;
+        const isFamily = db instanceof DataboxFamily;
         const idProvided = input.i !== undefined;
 
         if(isFamily && !idProvided){
