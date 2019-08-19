@@ -643,16 +643,15 @@ export default class ConfigChecker
             config.username === 'admin' &&
             this.zcLoader.mainConfig.usePanel) {
             Logger.printConfigWarning
-            (ConfigNames.MAIN, `Its recommend to not use the default panel access credentials!` +
-                ` So please change them in the main config!`);
+            (ConfigNames.MAIN, `Don't forget to change the panel access credentials in the main configuration.`);
         }
 
         // for javascript version
         // noinspection SuspiciousTypeOfGuard
         if(typeof config.username === 'string' && config.username !== 'admin' &&
-        config.username === config.password) {
+        config.password.toLocaleUpperCase().indexOf(config.username.toLocaleLowerCase()) !== -1) {
             Logger.printConfigWarning
-            (ConfigNames.MAIN, `It's not recommended to use the panel username as a password also!`);
+            (ConfigNames.MAIN, `Please choose a more secure password (that not contains the username).`);
         }
     }
 
