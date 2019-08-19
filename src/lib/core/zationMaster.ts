@@ -20,6 +20,8 @@ import BackgroundTasksSender   from "../main/background/backgroundTasksSender";
 import BackgroundTasksLoader   from "../main/background/backgroundTasksLoader";
 import ZationConfigMaster      from "../main/config/manager/zationConfigMaster";
 // noinspection TypeScriptPreferShortImport
+import {StartErrorName}        from "../main/constants/startErrorName";
+// noinspection TypeScriptPreferShortImport
 import {StartMode}             from "../main/constants/startMode";
 import FuncUtils               from "../main/utils/funcUtils";
 import ConfigBuildError        from "../main/config/manager/configBuildError";
@@ -37,7 +39,8 @@ export default class ZationMaster {
     private brokerIds: StringSet;
     private master: any;
 
-    private readonly startUpCB : () => void;
+    private readonly startResolve : () => void;
+    private readonly startReject : (err : any) => void;
     private readonly startMode : number;
 
     //cluster
@@ -52,13 +55,14 @@ export default class ZationMaster {
     private serverSettingsJs : string;
 
 
-    constructor(options : StarterConfig,startUpCB : () => void,startMode : number | string = 0) {
+    constructor(options : StarterConfig,startResolve : () => void,startReject : (err : any) => void,startMode : number | string = 0) {
 
         if(typeof startMode === 'string'){startMode = parseInt(startMode);}
         startMode = startMode !== 0 && startMode !== 1 && startMode !== 2 ? 0 : startMode;
         global['_ZATION_START_MODE'] = startMode;
 
-        this.startUpCB = startUpCB;
+        this.startResolve = startResolve;
+        this.startReject = startReject;
         this.startMode = startMode;
 
         if (ZationMaster.instance === null) {
@@ -127,7 +131,7 @@ export default class ZationMaster {
             configChecker.checkStarterConfig();
             if (configErrorBag.hasConfigError()) {
                 Logger.printConfigErrorBag(configErrorBag);
-                process.exit();
+                return this.rejectStart(StartErrorName.CONFIG_ERRORS,'The starter config has errors.');
             }
             Logger.printStartDebugInfo(`The Master has checked the starter config.`, true);
         }
@@ -141,7 +145,7 @@ export default class ZationMaster {
             configChecker.checkAllConfigs();
             if (configErrorBag.hasConfigError()) {
                 Logger.printConfigErrorBag(configErrorBag);
-                process.exit();
+                return this.rejectStart(StartErrorName.CONFIG_ERRORS,'The configs have errors.');
             }
             Logger.printStartDebugInfo(`The Master has checked the config files.`, true);
         }
@@ -167,10 +171,12 @@ export default class ZationMaster {
             //cluster active
             this.stateServerEngine = new StateServerEngine(this.zc, this);
             try {
+                Logger.printStartDebugInfo('Master wait for connection to zation-cluster-state server...');
                 await this.stateServerEngine.registerStateServer();
             }
             catch (e) {
-                this.killServer(e);
+                this.printStartFail(e);
+                return this.rejectStart(StartErrorName.REGISTER_TO_STATE_SERVER_FAILED,'The configs have errors.');
             }
         }
 
@@ -191,7 +197,7 @@ export default class ZationMaster {
         configChecker.checkStarterConfig();
         if (configErrorBag.hasConfigError()) {
             Logger.printConfigErrorBag(configErrorBag);
-            process.exit();
+            return this.rejectStart(StartErrorName.CONFIG_ERRORS,'The starter config has errors.');
         }
         Logger.printStartDebugInfo(`Checked starter config.`, true);
 
@@ -203,7 +209,7 @@ export default class ZationMaster {
         configChecker.checkAllConfigs();
         if (configErrorBag.hasConfigError()) {
             Logger.printConfigErrorBag(configErrorBag);
-            process.exit();
+            return this.rejectStart(StartErrorName.CONFIG_ERRORS,'The configs have errors.');
         }
         Logger.log('\x1b[32m%s\x1b[0m', '   [CHECKED]','✅ No configuration errors found.');
     }
@@ -233,7 +239,9 @@ export default class ZationMaster {
         const port = this.zc.mainConfig.port;
         const portIsAvailable = await PortChecker.isPortAvailable(port);
         if(!portIsAvailable) {
-            this.killServer(`The port ${port} is not available! try with a different port!`);
+            const msg = `The port: ${port} is in use. Try with a different port.`;
+            this.printStartFail(msg);
+            return this.rejectStart(StartErrorName.PORT_IN_USE,msg);
         }
         Logger.printStartDebugInfo('The Master has checked that the port is available.', true);
     }
@@ -246,13 +254,13 @@ export default class ZationMaster {
             }
             catch (e) {
                 Logger.printStartFail
-                (`Failed to load sc-uws! Error -> ${e.toString()}.`);
+                (`Failed to load sc-uws. Error -> ${e.toString()}.`);
                 if(isWindows()) {
                     Logger.printStartFail(`Try to install c++ compiler with command 'npm install --global --production windows-build-tools' and 'npm install -g node-gyp'`);
                 }
                 Logger.printStartFail
                 (`${isWindows() ? 'Also you' : 'You'} can try to set the property 'useScUws' in Main or Start config to false. But you will lose performance!`);
-                process.exit();
+                return this.rejectStart(StartErrorName.LOAD_UWS_FAILED,'Failed to load sc-uws.');
             }
         }
 
@@ -341,7 +349,7 @@ export default class ZationMaster {
 
            this.printStartedInformation();
 
-           if(this.startUpCB){this.startUpCB();}
+           if(this.startResolve){this.startResolve();}
 
             await FuncUtils.createFuncAsyncInvokeSafe(this.zcLoader.eventConfig.started)
             (this.zc.getZationInfo());
@@ -504,10 +512,32 @@ export default class ZationMaster {
             this.master.killWorkers();
             this.master.killBrokers();
         }
+        this.printStartFail(error);
+        process.exit();
+    }
+
+    // noinspection JSMethodCanBeStatic
+    /**
+     * Print a start fail.
+     * @param error
+     */
+    private printStartFail(error : Error | string) {
         const txt = typeof error === 'object' ?
             error.message : error;
         Logger.printStartFail(txt);
-        process.exit();
+    }
+
+    /**
+     * Reject the start promise.
+     * @param name
+     * @param errMsg
+     */
+    public rejectStart(name : StartErrorName,errMsg : string) : void {
+        if(this.rejectStart){
+            const err = new Error(errMsg);
+            err.name = name;
+            this.startReject(err);
+        }
     }
 
     //PART BackgroundTasks

@@ -48,6 +48,7 @@ import CChFamilyInfo                from "./lib/main/internalApi/cChFamilyInfo";
 import AsymmetricKeyPairs           from "./lib/main/internalApi/asymmetricKeyPairs";
 import DbCudActionSequence          from "./lib/main/dataBox/dbCudActionSequence";
 import {ObjectPathSequence}         from "./lib/main/internalApi/objectPathSequence/objectPathSequence";
+import {StartErrorName}             from "./lib/main/constants/startErrorName";
 const  FsUtil : any               = require('socketcluster/fsutil');
 
 //starter
@@ -64,14 +65,15 @@ const  FsUtil : any               = require('socketcluster/fsutil');
  * 2 => onlyCheck
  */
 const start = (options : StarterConfig,startMode : number | string | StartMode = 0) => {
-    return new Promise((resolve) => {
-        new ZationMaster(options,() => {resolve();},startMode);
+    return new Promise((resolve,reject) => {
+        new ZationMaster(options,resolve,reject,startMode);
     });
 };
 
 export {
         start,
         StartMode,
+        StartErrorName,
         RequestBag,
         Bag,
         Router,

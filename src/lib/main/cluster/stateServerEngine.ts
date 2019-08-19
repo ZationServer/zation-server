@@ -161,7 +161,9 @@ export default class StateServerEngine
                 instancePort: this.zc.mainConfig.port,
                 instanceType: 'zation-master',
                 zationClusterVersion : ZATION_CLUSTER_VERSION
-            }
+            },
+
+            autoConnect : false
         };
     }
 
@@ -188,8 +190,7 @@ export default class StateServerEngine
     public registerStateServer() : Promise<void>
     {
         this.stateSocket = ScClient.connect(this.connectSettings);
-        Logger.printStartDebugInfo('Master wait for connection to zation-cluster-state server...');
-        return new Promise((resolve) =>
+        const promise = new Promise<void>((resolve,reject) =>
         {
             this.stateSocket.on('error',async (e) => {
                 Logger.printDebugWarning(`Error on state server connection socket: ${e}`);
@@ -253,6 +254,8 @@ export default class StateServerEngine
                 }
             });
         });
+        this.stateSocket.connect();
+        return promise;
     }
 
     /**
@@ -260,7 +263,7 @@ export default class StateServerEngine
      */
     private registerMaster()
     {
-        return new Promise((resolve) =>
+        return new Promise((resolve,reject) =>
         {
             this.stateSocket.emit
             ('zMasterRegister', {
@@ -274,7 +277,7 @@ export default class StateServerEngine
                         resolve();
                     }
                     else {
-                        throw err;
+                        reject(err);
                     }
                 });
         });
