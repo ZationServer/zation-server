@@ -63,6 +63,7 @@ const  FsUtil : any               = require('socketcluster/fsutil');
  * 0 => normal
  * 1 => test
  * 2 => onlyCheck
+ * @throws Error with the property: name of type StartErrorName.
  */
 const start = (options : StarterConfig,startMode : number | string | StartMode = 0) => {
     return new Promise((resolve,reject) => {
