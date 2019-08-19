@@ -151,7 +151,7 @@ export default abstract class DataboxCore {
             throw err;
         }
 
-        if(await this._accessCheck(socket,dbInfo)){
+        if(!(await this._accessCheck(socket,dbInfo))){
             const err : any = new Error('Access to this Databox denied.');
             err.name = ClientErrorName.ACCESS_DENIED;
             throw err;
