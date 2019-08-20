@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-export enum SyncTokenActions
+export const enum SyncTokenActions
 {
     DELETE,
     SET

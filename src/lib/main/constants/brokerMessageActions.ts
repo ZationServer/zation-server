@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-export enum BrokerMessageActions
+export const enum BrokerMessageActions
 {
     INFO
 }

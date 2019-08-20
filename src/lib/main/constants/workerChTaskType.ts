@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-export enum WorkerChTaskType
+export const enum WorkerChTaskType
 {
     MAP_TASK,
     SPECIAL_TASK

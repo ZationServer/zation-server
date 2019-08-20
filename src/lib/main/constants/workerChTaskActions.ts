@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-export enum WorkerChMapTaskActions
+export const enum WorkerChMapTaskActions
 {
     DISCONNECT,
     DEAUTHENTICATE,
@@ -12,7 +12,7 @@ export enum WorkerChMapTaskActions
     EMIT
 }
 
-export enum WorkerChSpecialTaskActions
+export const enum WorkerChSpecialTaskActions
 {
     UPDATE_USER_TOKENS,
     UPDATE_GROUP_TOKENS,

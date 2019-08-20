@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-export enum WorkerChTargets
+export const enum WorkerChTargets
 {
     USER_IDS,
     TOKEN_IDS,
