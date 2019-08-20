@@ -54,7 +54,7 @@ export type UnregisterSocketFunction = (inputChannelId ?: string) => void;
 
 export const DATA_BOX_START_INDICATOR = '>D';
 
-export enum CudType {
+export const enum CudType {
     insert,
     update,
     delete
@@ -246,7 +246,7 @@ export interface DbClientOutputKickOutPackage extends DbClientOutputPackage{
 /**
  * The target session that the server should use to process.
  */
-export enum DBClientInputSessionTarget {
+export const enum DBClientInputSessionTarget {
     mainSession,
     reloadSession
 }
@@ -254,7 +254,7 @@ export enum DBClientInputSessionTarget {
 /**
  * Actions that a client can send to the server.
  */
-export enum DbClientInputAction {
+export const enum DbClientInputAction {
     fetchData,
     resetSession,
     copySession,
@@ -265,7 +265,7 @@ export enum DbClientInputAction {
 /**
  * Actions that aa worker can send to another worker.
  */
-export enum DbWorkerAction {
+export const enum DbWorkerAction {
     /**
      * New create,update delete operation.
      */
