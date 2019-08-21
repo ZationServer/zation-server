@@ -46,7 +46,7 @@ import {ClientErrorName}   from "../../main/constants/clientErrorName";
 import DataboxFetchManager, {FetchManagerBuilder} from "../../main/databox/databoxFetchManager";
 import ZSocket                                    from "../../main/internalApi/zSocket";
 import CloneUtils                                 from "../../main/utils/cloneUtils";
-const DefaultSymbol                               = Symbol();
+const defaultSymbol                               = Symbol();
 
 /**
  * If you always want to present the most recent data on the client,
@@ -123,9 +123,9 @@ export default class DataboxFamily extends DataboxCore {
      * if at least one of the middleware function was overwritten.
      */
     private _getSendCudToSocketsHandler() : (id : string,dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void {
-        if(!this.insertMiddleware[DefaultSymbol] ||
-            !this.updateMiddleware[DefaultSymbol] ||
-            !this.deleteMiddleware[DefaultSymbol])
+        if(!this.insertMiddleware[defaultSymbol] ||
+            !this.updateMiddleware[defaultSymbol] ||
+            !this.deleteMiddleware[defaultSymbol])
         {
             return this._sendCudToSocketsWithMiddleware;
         }
@@ -943,9 +943,9 @@ export default class DataboxFamily extends DataboxCore {
     }
 }
 
-DataboxFamily.prototype['insertMiddleware'][DefaultSymbol] = true;
-DataboxFamily.prototype['updateMiddleware'][DefaultSymbol] = true;
-DataboxFamily.prototype['deleteMiddleware'][DefaultSymbol] = true;
+DataboxFamily.prototype['insertMiddleware'][defaultSymbol] = true;
+DataboxFamily.prototype['updateMiddleware'][defaultSymbol] = true;
+DataboxFamily.prototype['deleteMiddleware'][defaultSymbol] = true;
 
 export interface DataboxFamilyClass {
     config: DataboxConfig;
