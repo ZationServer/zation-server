@@ -4,10 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import Databox              from "../../../api/databox/Databox";
-import UpSocket             from "../../sc/socket";
-import DbCudActionSequence  from "../dbCudActionSequence";
-import DataboxUtils         from "../databoxUtils";
+import Databox                 from "../../../api/databox/Databox";
+import UpSocket                from "../../sc/socket";
+import DbCudOperationSequence  from "../dbCudOperationSequence";
+import DataboxUtils            from "../databoxUtils";
 import {InfoOption, IfContainsOption, TimestampOption} from "../dbDefinitions";
 
 export default class DataboxContainer {
@@ -119,12 +119,12 @@ export default class DataboxContainer {
      * The client, for example, will only update data that is older as incoming data.
      * Use this option only if you know what you are doing.
      */
-    seqEdit(timestamp ?: number): DbCudActionSequence {
-        return new DbCudActionSequence(async (actions) => {
+    seqEdit(timestamp ?: number): DbCudOperationSequence {
+        return new DbCudOperationSequence(async (operations) => {
             const promises : Promise<void>[] = [];
             for(let i = 0; i < this.databoxes.length;i++) {
                 promises.push(this.databoxes[i]._emitCudPackage(
-                    DataboxUtils.buildPreCudPackage(...actions),timestamp));
+                    DataboxUtils.buildPreCudPackage(...operations),timestamp));
             }
             await Promise.all(promises);
         })

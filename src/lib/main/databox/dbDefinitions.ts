@@ -83,15 +83,15 @@ export interface PreCudPackage {
      */
     t ?: number,
     /**
-     * actions
+     * operations
      */
-    a : CudAction[]
+    o : CudOperation[]
 }
 
 /**
  * A cud action.
  */
-export interface CudAction {
+export interface CudOperation {
     /**
      * type
      */

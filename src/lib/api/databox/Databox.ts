@@ -10,7 +10,7 @@ import Bag                           from "../Bag";
 import DataboxCore, {DbPreparedData} from "./DataboxCore";
 import UpSocket, {RespondFunction}   from "../../main/sc/socket";
 import {
-    CudAction,
+    CudOperation,
     CudPackage,
     CudType,
     DATA_BOX_START_INDICATOR,
@@ -36,8 +36,8 @@ import {
 import DataboxAccessHelper from "../../main/databox/databoxAccessHelper";
 import {ScExchange}        from "../../main/sc/scServer";
 import DataboxUtils        from "../../main/databox/databoxUtils";
-import DbCudActionSequence from "../../main/databox/dbCudActionSequence";
-import {ClientErrorName}   from "../../main/constants/clientErrorName";
+import DbCudOperationSequence                     from "../../main/databox/dbCudOperationSequence";
+import {ClientErrorName}                          from "../../main/constants/clientErrorName";
 import DataboxFetchManager, {FetchManagerBuilder} from "../../main/databox/databoxFetchManager";
 import ZSocket                                    from "../../main/internalApi/zSocket";
 import CloneUtils                                 from "../../main/utils/cloneUtils";
@@ -283,7 +283,7 @@ export default class Databox extends DataboxCore {
                 if((data as DbWorkerCudPackage).w !== this._workerFullId) {
                     switch (data.action) {
                         case DbWorkerAction.cud:
-                            await this._processCudActions((data as DbWorkerCudPackage).d);
+                            await this._processCudOperations((data as DbWorkerCudPackage).d);
                             break;
                         case DbWorkerAction.close:
                             this._close((data as DbWorkerClosePackage).d);
@@ -314,24 +314,24 @@ export default class Databox extends DataboxCore {
      */
     private async _sendCudToSocketsWithMiddleware(dbClientPackage : DbClientOutputCudPackage) {
 
-        const actions = dbClientPackage.d.a;
+        const operations = dbClientPackage.d.o;
         const socketPromises : Promise<void>[] = [];
 
         for(let socket of this._regSockets.keys()) {
 
-            const filteredActions : CudAction[] = [];
+            const filteredOperations : CudOperation[] = [];
             const promises : Promise<void>[] = [];
 
-            for(let i = 0; i < actions.length; i++){
-                const action = CloneUtils.deepClone(actions[i]);
-                switch (action.t) {
+            for(let i = 0; i < operations.length; i++){
+                const operation = CloneUtils.deepClone(operations[i]);
+                switch (operation.t) {
                     case CudType.update:
                         promises.push((async () => {
                             try {
-                                await this.updateMiddleware(socket.zSocket,action.k,action.v,(value) => {
-                                    action.d = value;
-                                },action.c,action.d);
-                                filteredActions.push(action);
+                                await this.updateMiddleware(socket.zSocket,operation.k,operation.v,(value) => {
+                                    operation.d = value;
+                                },operation.c,operation.d);
+                                filteredOperations.push(operation);
                             }
                             catch (e) {}
                         })());
@@ -339,10 +339,10 @@ export default class Databox extends DataboxCore {
                     case CudType.insert:
                         promises.push((async () => {
                             try {
-                                await this.insertMiddleware(socket.zSocket,action.k,action.v,(value) => {
-                                    action.d = value;
-                                },action.c,action.d);
-                                filteredActions.push(action);
+                                await this.insertMiddleware(socket.zSocket,operation.k,operation.v,(value) => {
+                                    operation.d = value;
+                                },operation.c,operation.d);
+                                filteredOperations.push(operation);
                             }
                             catch (e) {}
                         })());
@@ -350,8 +350,8 @@ export default class Databox extends DataboxCore {
                     case CudType.delete:
                         promises.push((async () => {
                             try {
-                                await this.deleteMiddleware(socket.zSocket,action.k,action.c,action.d);
-                                filteredActions.push(action);
+                                await this.deleteMiddleware(socket.zSocket,operation.k,operation.c,operation.d);
+                                filteredOperations.push(operation);
                             }
                             catch (e) {}
                         })());
@@ -360,8 +360,8 @@ export default class Databox extends DataboxCore {
             }
 
             socketPromises.push(Promise.all(promises).then(() => {
-                if(filteredActions.length > 0){
-                    dbClientPackage.d.a = filteredActions;
+                if(filteredOperations.length > 0){
+                    dbClientPackage.d.o = filteredOperations;
                     socket.emit(this._dbEvent,dbClientPackage);
                 }
             }));
@@ -373,7 +373,7 @@ export default class Databox extends DataboxCore {
      * Processes new cud packages.
      * @param cudPackage
      */
-    private async _processCudActions(cudPackage : CudPackage){
+    private async _processCudOperations(cudPackage : CudPackage){
         await this._sendCudToSockets({a : DbClientOutputEvent.cud,d : cudPackage} as DbClientOutputCudPackage);
         //updated last cud id.
         if(this._lastCudData.timestamp <= cudPackage.t){
@@ -383,21 +383,21 @@ export default class Databox extends DataboxCore {
 
     /**
      * Fire before events.
-     * @param cudActions
+     * @param cudOperations
      */
-    private async _fireBeforeEvents(cudActions : CudAction[]){
+    private async _fireBeforeEvents(cudOperations : CudOperation[]){
         let promises : (Promise<void> | void)[] = [];
-        for(let i = 0; i < cudActions.length;i++) {
-            const action = cudActions[i];
-            switch (action.t) {
+        for(let i = 0; i < cudOperations.length;i++) {
+            const operation = cudOperations[i];
+            switch (operation.t) {
                 case CudType.insert:
-                    promises.push(this.beforeInsert(action.k,action.v));
+                    promises.push(this.beforeInsert(operation.k,operation.v));
                     break;
                 case CudType.update:
-                    promises.push(this.beforeUpdate(action.k,action.v));
+                    promises.push(this.beforeUpdate(operation.k,operation.v));
                     break;
                 case CudType.delete:
-                    promises.push(this.beforeDelete(action.k));
+                    promises.push(this.beforeDelete(operation.k));
                     break;
             }
         }
@@ -412,14 +412,14 @@ export default class Databox extends DataboxCore {
      * @param timestamp
      */
     async _emitCudPackage(preCudPackage : PreCudPackage,timestamp ?: number) {
-        await this._fireBeforeEvents(preCudPackage.a);
+        await this._fireBeforeEvents(preCudPackage.o);
         const cudPackage = DataboxUtils.buildCudPackage(preCudPackage,timestamp);
         this._sendToWorker({
             a : DbWorkerAction.cud,
             d : cudPackage,
             w : this._workerFullId
         } as DbWorkerCudPackage);
-        await this._processCudActions(cudPackage);
+        await this._processCudOperations(cudPackage);
     }
 
     private _broadcastToOtherSockets(clientPackage : DbClientOutputPackage) {
@@ -552,10 +552,10 @@ export default class Databox extends DataboxCore {
      * The client, for example, will only update data that is older as incoming data.
      * Use this option only if you know what you are doing.
      */
-    seqEdit(timestamp ?: number) : DbCudActionSequence {
-        return new DbCudActionSequence(async (actions) => {
+    seqEdit(timestamp ?: number) : DbCudOperationSequence {
+        return new DbCudOperationSequence(async (operations) => {
             await this._emitCudPackage(
-                DataboxUtils.buildPreCudPackage(...actions),timestamp);
+                DataboxUtils.buildPreCudPackage(...operations),timestamp);
         });
     }
 

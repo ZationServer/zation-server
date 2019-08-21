@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {
-    CudAction,
+    CudOperation,
     CudPackage,
     CudType, DbClientOutputClosePackage,
     DbClientOutputEvent,
@@ -30,10 +30,10 @@ export default class DataboxUtils {
     /**
      * Creates a the PreCudPackage.
      */
-     static buildPreCudPackage(...actions : CudAction[]) : PreCudPackage {
+     static buildPreCudPackage(...operations : CudOperation[]) : PreCudPackage {
         return {
             ci : uniqid(),
-            a : actions
+            o : operations
         };
      }
 
@@ -49,7 +49,7 @@ export default class DataboxUtils {
              (keyPath === '' ? [] : keyPath.split('.')) : keyPath;
      }
 
-     static buildInsert(keyPath : string[] | string, value : any, ifContains ?: string, code ?: number | string, data ?: any) : CudAction {
+     static buildInsert(keyPath : string[] | string, value : any, ifContains ?: string, code ?: number | string, data ?: any) : CudOperation {
          return {
              t : CudType.insert,
              k : DataboxUtils.handleKeyPath(keyPath),
@@ -60,7 +60,7 @@ export default class DataboxUtils {
          };
      }
 
-    static buildUpdate(keyPath : string[] | string, value : any,code ?: number | string, data ?: any) : CudAction {
+    static buildUpdate(keyPath : string[] | string, value : any,code ?: number | string, data ?: any) : CudOperation {
         return {
             t : CudType.update,
             k : DataboxUtils.handleKeyPath(keyPath),
@@ -70,7 +70,7 @@ export default class DataboxUtils {
         };
     }
 
-    static buildDelete(keyPath : string[] | string,code ?: number | string, data ?: any) : CudAction {
+    static buildDelete(keyPath : string[] | string,code ?: number | string, data ?: any) : CudOperation {
         return {
             t : CudType.delete,
             k : DataboxUtils.handleKeyPath(keyPath),

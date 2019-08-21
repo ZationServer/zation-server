@@ -4,17 +4,17 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {CudAction, InfoOption, IfContainsOption} from "./dbDefinitions";
+import {CudOperation, InfoOption, IfContainsOption} from "./dbDefinitions";
 import DataboxUtils                              from "./databoxUtils";
 
-type CommitFunction = (actions : CudAction[]) => Promise<void>;
+type CommitFunction = (operations : CudOperation[]) => Promise<void>;
 
 /**
  * Saves all commands for execute later.
  */
-export default class DbCudActionSequence
+export default class DbCudOperationSequence
 {
-    private actions : CudAction[] = [];
+    private operations : CudOperation[] = [];
     private readonly commitFunction : CommitFunction;
 
     constructor(commitFunc : CommitFunction) {
@@ -48,8 +48,8 @@ export default class DbCudActionSequence
      * @param code
      * @param data
      */
-    insert(keyPath : string[] | string,value : any,{ifContains,code,data} : IfContainsOption & InfoOption = {}) : DbCudActionSequence {
-        this.actions.push(DataboxUtils.buildInsert(keyPath,value,ifContains,code,data));
+    insert(keyPath : string[] | string,value : any,{ifContains,code,data} : IfContainsOption & InfoOption = {}) : DbCudOperationSequence {
+        this.operations.push(DataboxUtils.buildInsert(keyPath,value,ifContains,code,data));
         return this;
     }
 
@@ -68,8 +68,8 @@ export default class DbCudActionSequence
      * @param code
      * @param data
      */
-    update(keyPath : string[] | string,value : any,{code,data} : InfoOption = {}) : DbCudActionSequence {
-        this.actions.push(DataboxUtils.buildUpdate(keyPath,value,code,data));
+    update(keyPath : string[] | string,value : any,{code,data} : InfoOption = {}) : DbCudOperationSequence {
+        this.operations.push(DataboxUtils.buildUpdate(keyPath,value,code,data));
         return this;
     }
 
@@ -87,8 +87,8 @@ export default class DbCudActionSequence
      * @param code
      * @param data
      */
-    delete(keyPath : string[] | string,{code,data} : InfoOption = {}) : DbCudActionSequence {
-        this.actions.push(DataboxUtils.buildDelete(keyPath,code,data));
+    delete(keyPath : string[] | string,{code,data} : InfoOption = {}) : DbCudOperationSequence {
+        this.operations.push(DataboxUtils.buildDelete(keyPath,code,data));
         return this;
     }
 
@@ -99,6 +99,6 @@ export default class DbCudActionSequence
      * so you have to do it in the before-events or before calling this method.
      */
     async commit() {
-        await this.commitFunction(this.actions);
+        await this.commitFunction(this.operations);
     }
 }

@@ -4,10 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import UpSocket             from "../../sc/socket";
-import DbCudActionSequence  from "../dbCudActionSequence";
-import DataboxFamily        from "../../../api/databox/DataboxFamily";
-import DataboxUtils         from "../databoxUtils";
+import UpSocket                from "../../sc/socket";
+import DbCudOperationSequence  from "../dbCudOperationSequence";
+import DataboxFamily           from "../../../api/databox/DataboxFamily";
+import DataboxUtils            from "../databoxUtils";
 import {InfoOption, IfContainsOption, TimestampOption} from "../dbDefinitions";
 
 export default class DataboxFamilyContainer {
@@ -127,12 +127,12 @@ export default class DataboxFamilyContainer {
      * The client, for example, will only update data that is older as incoming data.
      * Use this option only if you know what you are doing.
      */
-    seqEdit(id : string | number,timestamp ?: number): DbCudActionSequence {
-        return new DbCudActionSequence(async (actions) => {
+    seqEdit(id : string | number,timestamp ?: number): DbCudOperationSequence {
+        return new DbCudOperationSequence(async (operations) => {
             const promises : Promise<void>[] = [];
             for(let i = 0; i < this.databoxFamilies.length;i++) {
                 promises.push(this.databoxFamilies[i]._emitCudPackage(
-                    DataboxUtils.buildPreCudPackage(...actions),
+                    DataboxUtils.buildPreCudPackage(...operations),
                     typeof id === "string" ? id : id.toString(),timestamp));
             }
             await Promise.all(promises);
