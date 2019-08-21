@@ -19,7 +19,7 @@ import InputClosureCreator                                      from "../input/i
 import DataboxAccessHelper                                      from "./databoxAccessHelper";
 import DbConfigUtils                                            from "./dbConfigUtils";
 
-export const DataBoxIsFamilySymbol                            = Symbol();
+export const databoxIsFamilySymbol                            = Symbol();
 
 export default class DataboxPrepare
 {
@@ -76,7 +76,7 @@ export default class DataboxPrepare
      * @param db
      */
     static isDataBoxFamily(db : DataboxCore) : boolean {
-        return db[DataBoxIsFamilySymbol];
+        return db[databoxIsFamilySymbol];
     }
 
     /**
@@ -162,14 +162,14 @@ export default class DataboxPrepare
         if(databox.prototype instanceof Databox){
             dbInstance = new (databox as DataboxClass)
             (name,this.worker.getPreparedBag(),dbPreparedData,apiLevel);
-            dbInstance[DataBoxIsFamilySymbol] = false;
+            dbInstance[databoxIsFamilySymbol] = false;
         }
         else if(databox.prototype instanceof DataboxFamily){
             dbInstance = new (databox as DataboxFamilyClass)
             (name,this.worker.getPreparedBag(),dbPreparedData,
                 IdValidCheckerUtils.createIdValidChecker(databox.prototype.isIdValid,this.bag)
                 ,apiLevel);
-            dbInstance[DataBoxIsFamilySymbol] = true;
+            dbInstance[databoxIsFamilySymbol] = true;
         }
         else {
             throw new Error('Unexpected Databox class type');
