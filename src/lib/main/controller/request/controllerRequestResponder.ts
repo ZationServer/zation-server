@@ -75,19 +75,19 @@ export default class ControllerRequestResponder
 
     private printWsResp(resp : ResponseResult,reqId : string) {
         if(this.debugMode){
-            Logger.printDebugInfo(`Socket Result id: ${reqId} ->`,StringifyUtils.object(resp));
+            Logger.printDebugInfo(`Socket Controller Response id: ${reqId} ->`,StringifyUtils.object(resp));
         }
         if(this.zc.mainConfig.logControllerRequests){
-            Logger.logFileInfo(`Socket Result id: ${reqId} ->`,resp);
+            Logger.logFileInfo(`Socket Controller Response id: ${reqId} ->`,resp);
         }
     }
 
     private printHttpResp(resp : ResponseResult,reqId : string) {
         if(this.debugMode){
-            Logger.printDebugInfo(`Http Result id: ${reqId} ->`,StringifyUtils.object(resp));
+            Logger.printDebugInfo(`Http Controller Response id: ${reqId} ->`,StringifyUtils.object(resp));
         }
         if(this.zc.mainConfig.logControllerRequests){
-            Logger.logFileInfo(`Http Result id: ${reqId} ->`,resp);
+            Logger.logFileInfo(`Http Controller Response id: ${reqId} ->`,resp);
         }
     }
 

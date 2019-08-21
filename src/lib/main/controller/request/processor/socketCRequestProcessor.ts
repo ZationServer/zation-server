@@ -27,10 +27,10 @@ export default class SocketCRequestProcessor
     async prepareReq(socket : UpSocket, input, respond, reqId : string)
     {
         if(this.debug){
-            Logger.printDebugInfo(`Socket Request id: ${reqId} -> `,StringifyUtils.object(input));
+            Logger.printDebugInfo(`Socket Controller Request id: ${reqId} -> `,StringifyUtils.object(input));
         }
         if(this.zc.mainConfig.logControllerRequests){
-            Logger.logFileInfo(`Socket Request id: ${reqId} -> `,input);
+            Logger.logFileInfo(`Socket Controller Request id: ${reqId} -> `,input);
         }
 
         //check for validationCheckRequest

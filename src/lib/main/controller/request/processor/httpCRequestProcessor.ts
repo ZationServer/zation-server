@@ -51,17 +51,20 @@ export default class HttpCRequestProcessor
             const zationData = await JsonConverter.parse(req.body[this.postKey]);
 
             if(this.debug){
-                Logger.printDebugInfo(`Http Post Request id: ${reqId} -> `,StringifyUtils.object(zationData));
+                Logger.printDebugInfo(`Http Post Controller Request id: ${reqId} -> `,StringifyUtils.object(zationData));
             }
             if(this.zc.mainConfig.logControllerRequests){
-                Logger.logFileInfo(`Http Post Request id: ${reqId} -> `,zationData);
+                Logger.logFileInfo(`Http Post Controller Request id: ${reqId} -> `,zationData);
             }
             return this.mainProcess(req,res,zationData,reqId);
         }
         else if(req.method === 'GET' && !(Object.keys(req.query).length === 0))
         {
             if(this.debug){
-                Logger.printDebugInfo(`Http Get Request id: ${reqId}`);
+                Logger.printDebugInfo(`Http Get Controller Request id: ${reqId}`);
+            }
+            if(this.zc.mainConfig.logControllerRequests){
+                Logger.logFileInfo(`Http Get Controller Request id: ${reqId}`);
             }
             const query = req.query;
 
