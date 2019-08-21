@@ -170,6 +170,7 @@ Main[nameof<MainConfig>(s => s.logDownloadable)]  = {types : ['boolean'],isOptio
 Main[nameof<MainConfig>(s => s.logAccessKey)]     = {types : ['string'],isOptional : true};
 
 Main[nameof<MainConfig>(s => s.logControllerRequests)]  = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logDataboxRequests)]     = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.logServerErrors)]        = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.logCodeErrors)]          = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.logStarted)]             = {types : ['boolean'],isOptional : true};

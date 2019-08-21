@@ -300,6 +300,11 @@ export interface MainConfig
      */
     logControllerRequests ?: boolean;
     /**
+     * Specifies if the server should log every databox connection request to a file.
+     * @default false
+     */
+    logDataboxRequests ?: boolean;
+    /**
      * Specifies if the server should log every unknown error that was thrown on the server.
      * @default true
      */
@@ -643,6 +648,7 @@ export interface InternalMainConfig extends MainConfig {
     logDownloadable : boolean;
     logAccessKey : string;
     logControllerRequests : boolean;
+    logDataboxRequests : boolean;
     logServerErrors : boolean;
     logCodeErrors : boolean;
     logStarted : boolean;
