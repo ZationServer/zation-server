@@ -17,7 +17,9 @@ import IdValidCheckerUtils                                      from "../id/idVa
 import Databox, {DataboxClass}                                  from "../../api/databox/Databox";
 import InputClosureCreator                                      from "../input/inputClosureCreator";
 import DataboxAccessHelper                                      from "./databoxAccessHelper";
-import DbConfigUtils from "./dbConfigUtils";
+import DbConfigUtils                                            from "./dbConfigUtils";
+
+export const DataBoxIsFamilySymbol                            = Symbol();
 
 export default class DataboxPrepare
 {
@@ -66,6 +68,15 @@ export default class DataboxPrepare
      */
     isDataboxExist(name : string) : boolean {
         return this.databoxes.hasOwnProperty(name);
+    }
+
+    /**
+     * Returns if this instance is a Databox family.
+     * Works only with instances from the preparer.
+     * @param db
+     */
+    static isDataBoxFamily(db : DataboxCore) : boolean {
+        return db[DataBoxIsFamilySymbol];
     }
 
     /**
@@ -151,12 +162,14 @@ export default class DataboxPrepare
         if(databox.prototype instanceof Databox){
             dbInstance = new (databox as DataboxClass)
             (name,this.worker.getPreparedBag(),dbPreparedData,apiLevel);
+            dbInstance[DataBoxIsFamilySymbol] = false;
         }
         else if(databox.prototype instanceof DataboxFamily){
             dbInstance = new (databox as DataboxFamilyClass)
             (name,this.worker.getPreparedBag(),dbPreparedData,
                 IdValidCheckerUtils.createIdValidChecker(databox.prototype.isIdValid,this.bag)
                 ,apiLevel);
+            dbInstance[DataBoxIsFamilySymbol] = true;
         }
         else {
             throw new Error('Unexpected Databox class type');
