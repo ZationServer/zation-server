@@ -81,6 +81,11 @@ export default class SocketUpgradeEngine
                 return currentToken;
             },
 
+            /**
+             * @param newToken
+             * Notice that the token expire can be undefined of the new token.
+             * (SC sets the token and then sign the token)
+             */
             set: (newToken : ZationToken) => {
                 authEngine.refresh(newToken);
 
