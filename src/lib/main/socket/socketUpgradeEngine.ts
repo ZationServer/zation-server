@@ -74,7 +74,8 @@ export default class SocketUpgradeEngine
 
         //token observer
         //for update the authEngine and worker socket mapper
-        let currentToken = socket.authToken;
+        const initToken = socket.authToken;
+        let currentToken : ZationToken | null = null;
         Object.defineProperty(socket, 'authToken', {
             get: () => {
                 return currentToken;
@@ -158,8 +159,8 @@ export default class SocketUpgradeEngine
             configurable: true
         });
 
-        //fire update init event
-        socket.authToken = currentToken;
+        //fire update with init token
+        socket.authToken = initToken;
     }
 
 }
