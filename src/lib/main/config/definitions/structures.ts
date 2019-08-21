@@ -169,10 +169,10 @@ Main[nameof<MainConfig>(s => s.logPath)]          = {types : ['string'],isOption
 Main[nameof<MainConfig>(s => s.logDownloadable)]  = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.logAccessKey)]     = {types : ['string'],isOptional : true};
 
-Main[nameof<MainConfig>(s => s.logRequests)]      = {types : ['boolean'],isOptional : true};
-Main[nameof<MainConfig>(s => s.logServerErrors)]  = {types : ['boolean'],isOptional : true};
-Main[nameof<MainConfig>(s => s.logCodeErrors)]    = {types : ['boolean'],isOptional : true};
-Main[nameof<MainConfig>(s => s.logStarted)]       = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logControllerRequests)]  = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logServerErrors)]        = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logCodeErrors)]          = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logStarted)]             = {types : ['boolean'],isOptional : true};
 
 Main[nameof<MainConfig>(s => s.showPrecompiledConfigs)] = {types : ['boolean'],isOptional : true};
 

@@ -53,7 +53,7 @@ export default class HttpCRequestProcessor
             if(this.debug){
                 Logger.printDebugInfo(`Http Post Request id: ${reqId} -> `,StringifyUtils.object(zationData));
             }
-            if(this.zc.mainConfig.logRequests){
+            if(this.zc.mainConfig.logControllerRequests){
                 Logger.logFileInfo(`Http Post Request id: ${reqId} -> `,zationData);
             }
             return this.mainProcess(req,res,zationData,reqId);
@@ -97,7 +97,7 @@ export default class HttpCRequestProcessor
         if(this.debug){
             Logger.printDebugInfo(`Http Get Request id: ${reqId} -> `,StringifyUtils.object(zationData));
         }
-        if(this.zc.mainConfig.logRequests){
+        if(this.zc.mainConfig.logControllerRequests){
             Logger.logFileInfo(`Http Get Request id: ${reqId} -> `,zationData);
         }
     }

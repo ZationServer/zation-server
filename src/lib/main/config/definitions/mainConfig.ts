@@ -295,10 +295,10 @@ export interface MainConfig
      */
     logAccessKey ?: string;
     /**
-     * Specifies if the server should log every request to a file.
+     * Specifies if the server should log every controller request to a file.
      * @default false
      */
-    logRequests ?: boolean;
+    logControllerRequests ?: boolean;
     /**
      * Specifies if the server should log every unknown error that was thrown on the server.
      * @default true
@@ -642,7 +642,7 @@ export interface InternalMainConfig extends MainConfig {
     logPath : string;
     logDownloadable : boolean;
     logAccessKey : string;
-    logRequests : boolean;
+    logControllerRequests : boolean;
     logServerErrors : boolean;
     logCodeErrors : boolean;
     logStarted : boolean;

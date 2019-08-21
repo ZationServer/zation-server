@@ -98,7 +98,7 @@ export default class ConfigLoader {
         logPath : '',
         logDownloadable : true,
         logAccessKey : '',
-        logRequests : false,
+        logControllerRequests : false,
         logServerErrors : true,
         logCodeErrors : true,
         logStarted : true,
