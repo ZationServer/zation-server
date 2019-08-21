@@ -20,6 +20,7 @@ import DataboxAccessHelper                                      from "./databoxA
 import DbConfigUtils                                            from "./dbConfigUtils";
 
 export const databoxIsFamilySymbol                            = Symbol();
+export const databoxInstanceSymbol                            = Symbol();
 
 export default class DataboxPrepare
 {
@@ -175,7 +176,7 @@ export default class DataboxPrepare
             throw new Error('Unexpected Databox class type');
         }
 
-        Object.defineProperty(databox,'___instance___',{
+        Object.defineProperty(databox,databoxInstanceSymbol,{
             value : dbInstance,
             configurable : false,
             enumerable : false,

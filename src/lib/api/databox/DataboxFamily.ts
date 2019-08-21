@@ -46,6 +46,7 @@ import {ClientErrorName}   from "../../main/constants/clientErrorName";
 import DataboxFetchManager, {FetchManagerBuilder} from "../../main/databox/databoxFetchManager";
 import ZSocket                                    from "../../main/internalApi/zSocket";
 import CloneUtils                                 from "../../main/utils/cloneUtils";
+import {databoxInstanceSymbol}                    from "../../main/databox/databoxPrepare";
 const defaultSymbol                               = Symbol();
 
 /**
@@ -102,7 +103,7 @@ export default class DataboxFamily extends DataboxCore {
     private readonly _buildFetchManager : FetchManagerBuilder<typeof DataboxFamily.prototype._fetchData>;
     private readonly _sendCudToSockets : (id : string,dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void;
 
-    static ___instance___ : DataboxFamily;
+    static [databoxInstanceSymbol] : DataboxFamily;
 
     constructor(id : string, bag: Bag, dbPreparedData : DbPreparedData, idValidCheck : IdValidChecker, apiLevel : number | undefined) {
         super(id,bag,dbPreparedData,apiLevel);
@@ -955,5 +956,5 @@ export interface DataboxFamilyClass {
     prototype: any;
     name : string;
 
-    readonly ___instance___ : DataboxFamily | undefined;
+    readonly [databoxInstanceSymbol] : DataboxFamily | undefined;
 }

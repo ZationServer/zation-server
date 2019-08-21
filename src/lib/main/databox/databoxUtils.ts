@@ -21,6 +21,7 @@ import Databox, {DataboxClass}             from "../../api/databox/Databox";
 import DataboxContainer                    from "./container/databoxContainer";
 import DataboxNotFound                     from "../error/databoxNotFound";
 import {ClientErrorName}                   from "../constants/clientErrorName";
+import {databoxInstanceSymbol}             from "./databoxPrepare";
 const uniqid                             = require('uniqid');
 
 export default class DataboxUtils {
@@ -105,7 +106,7 @@ export default class DataboxUtils {
         const databoxFamilyInstances : DataboxFamily[] = [];
 
         for(let i = 0; i < databoxes.length; i++){
-            const instance = databoxes[i].___instance___;
+            const instance = databoxes[i][databoxInstanceSymbol];
             if(instance !== undefined){
                 if(instance instanceof Databox){
                     databoxInstances.push(instance);
