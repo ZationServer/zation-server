@@ -639,7 +639,7 @@ export default class Databox extends DataboxCore {
      * To build a key-array, you can use the buildKeyArray method.
      * Notice that the client can only merge components from the same type.
      * Otherwise, the new value will override the old value.
-     * Whenever you are using the socket to filter the data for a specific user,
+     * Whenever you are using the socket to filter secure data for a specific user,
      * you also have to use the cud middleware to filter the cud events for the socket.
      * You mostly should avoid this because if you are overwriting a cud middleware,
      * the Databox switches to a more costly performance implementation.
