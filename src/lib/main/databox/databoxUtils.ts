@@ -44,6 +44,13 @@ export default class DataboxUtils {
          };
      }
 
+     /**
+      * Generates the start cudId.
+      */
+     static generateStartCudId() : string {
+         return 'S-' + uniqid();
+     }
+
      static handleKeyPath(keyPath : string | string[]) : string[] {
          return typeof keyPath === 'string' ?
              (keyPath === '' ? [] : keyPath.split('.')) : keyPath;

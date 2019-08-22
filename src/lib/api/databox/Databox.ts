@@ -74,7 +74,7 @@ const defaultSymbol                              = Symbol();
 export default class Databox extends DataboxCore {
 
     private readonly _regSockets : Map<UpSocket,DbSocketMemory> = new Map();
-    private _lastCudData : {timestamp : number,id : string} = {timestamp : Date.now(),id : ''};
+    private _lastCudData : {timestamp : number,id : string} = {timestamp : Date.now(),id : DataboxUtils.generateStartCudId()};
     private readonly _scExchange : ScExchange;
     private readonly _workerFullId : string;
     private readonly _dbEvent : string;

@@ -227,7 +227,7 @@ export default class DataboxFamily extends DataboxCore {
         if(lastCudId){
             return lastCudId.id;
         }
-        return '';
+        return DataboxUtils.generateStartCudId();
     }
 
     private async _fetchData(id : string,dbToken : DbToken,fetchInput : any,initData : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
@@ -367,7 +367,7 @@ export default class DataboxFamily extends DataboxCore {
      * @private
      */
     private _registerMember(id : string) {
-        this._lastCudData.set(id,{timestamp : Date.now(),id : ''});
+        this._lastCudData.set(id,{timestamp : Date.now(),id : DataboxUtils.generateStartCudId()});
         this._scExchange.subscribe(this._dbEventPreFix+id)
             .watch(async (data) => {
                 if((data as DbWorkerCudPackage).w !== this._workerFullId) {
