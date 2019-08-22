@@ -150,7 +150,6 @@ export const MainBackErrors = {
         sendInfo      : true,
         //INFO
         // paramName (the name of the missing param)
-        // input (the input object where the param is missing)
         fromZationSystem : true
     },
 

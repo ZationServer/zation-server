@@ -337,8 +337,7 @@ export default class InputProcessorCreator
                             //ups something is missing
                             processInfo.errorBag.addBackError(new BackError(MainBackErrors.inputParamIsMissing,
                                 {
-                                    paramName : paramName,
-                                    input : input
+                                    paramName
                                 }));
                         }
                         else {
@@ -376,8 +375,7 @@ export default class InputProcessorCreator
                             //ups something is missing
                             processInfo.errorBag.addBackError(new BackError(MainBackErrors.inputParamIsMissing,
                                 {
-                                    paramName : paramKeys[i],
-                                    input : input
+                                    paramName : paramKeys[i]
                                 }));
                         }
                         else {
