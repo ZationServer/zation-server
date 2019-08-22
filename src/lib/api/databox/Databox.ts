@@ -649,7 +649,7 @@ export default class Databox extends DataboxCore {
      * @param initData
      * @param socket
      */
-    protected fetchData<T extends object = object>(counter : number,session : T,input : any,initData : any,socket : ZSocket) : Promise<any> | any {
+    protected fetchData(counter : number,session : any,input : any,initData : any,socket : ZSocket) : Promise<any> | any {
         this.noMoreDataAvailable();
     }
 

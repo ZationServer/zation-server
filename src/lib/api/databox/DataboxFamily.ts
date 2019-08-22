@@ -807,7 +807,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param initData
      * @param socket
      */
-    protected fetchData<T extends object = object>(id : string,counter : number,session : T,input : any,initData : any,socket : ZSocket) : Promise<any> | any {
+    protected fetchData(id : string,counter : number,session : any,input : any,initData : any,socket : ZSocket) : Promise<any> | any {
         this.noMoreDataAvailable();
     }
 
