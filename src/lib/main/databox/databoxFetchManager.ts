@@ -19,7 +19,7 @@ export default class DataboxFetchManager {
      */
     static buildFetchMangerBuilder<F extends (...any : any[]) => any>(parallelFetch : boolean,maxBackpressure : number) : FetchManagerBuilder<F>
     {
-        if(!parallelFetch) {
+        if(parallelFetch) {
             return () => {
                 return async (respond : RespondFunction,caller : () => any | Promise<any>) => {
                     respond(null,(await caller()));
