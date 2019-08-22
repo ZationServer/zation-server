@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-export enum ValidationTypes
+export enum ValidationType
 {
     //TYPES FOR VALIDATOR
     OBJECT           = 'object',

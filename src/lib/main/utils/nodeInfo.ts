@@ -5,8 +5,8 @@ Copyright(c) Luca Scaringella
  */
 
 import ZationWorker         = require("../../core/zationWorker");
-import {WorkerMessageActions} from "../constants/workerMessageActions";
-import {BrokerMessageActions} from "../constants/brokerMessageActions";
+import {WorkerMessageAction}  from "../constants/workerMessageAction";
+import {BrokerMessageAction}  from "../constants/brokerMessageAction";
 
 export default class NodeInfo {
 
@@ -15,7 +15,7 @@ export default class NodeInfo {
         let cBrokerInfo = {};
         let firstBroker = true;
         await (new Promise((resolve) => {
-            worker.exchange.send({action: BrokerMessageActions.INFO}, null , (err, data) => {
+            worker.exchange.send({action: BrokerMessageAction.INFO}, null , (err, data) => {
                 if (err) {
                     resolve();
                 } else {
@@ -36,7 +36,7 @@ export default class NodeInfo {
     static async getMasterInfo(worker : ZationWorker) : Promise<object> {
         let info = {};
         await (new Promise((resolve) => {
-            worker.sendToMaster({action: WorkerMessageActions.INFO},(err, data) => {
+            worker.sendToMaster({action: WorkerMessageAction.INFO},(err, data) => {
                 if (err) {
                     resolve();
                 } else {

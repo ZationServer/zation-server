@@ -18,7 +18,7 @@ import MethodIsNotCompatibleError   from './lib/main/error/methodIsNotCompatible
 import InputIsNotCompatibleError    from './lib/main/error/inputIsNotCompatibleError';
 import CodeError                    from './lib/main/error/codeError';
 import {ErrorType}                  from "./lib/main/constants/errorType";
-import {ValidationTypes}            from './lib/main/constants/validationTypes';
+import {ValidationType}             from './lib/main/constants/validationType';
 import {ControllerConfig}           from "./lib/main/config/definitions/controllerConfig";
 import {StarterConfig}              from "./lib/main/config/definitions/starterConfig";
 import {StartMode}                  from "./lib/main/constants/startMode";
@@ -102,7 +102,7 @@ export {
         InputConfigTranslatable,
         ModelConfigTranslatable,
         ServiceNotFoundError,
-        ValidationTypes,
+        ValidationType,
         AuthenticationError,
         CodeError,
         MethodIsNotCompatibleError,

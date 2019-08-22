@@ -11,19 +11,22 @@ It is used by the Bag and the ChannelEngine.
  */
 
 import ZationWorker = require("../../core/zationWorker");
-import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../constants/workerChTaskActions";
-import {WorkerChTargets}  from "../constants/workerChTargets";
-import ScServer           from "../sc/scServer";
-import {SyncTokenActions} from "../constants/syncTokenActions";
-import {WorkerChTaskType} from "../constants/workerChTaskType";
-import ZSocket            from "../internalApi/ZSocket";
-import Logger             from "../logger/logger";
-import ChUtils            from "./chUtils";
-import {ChannelPrepare}   from "./channelPrepare";
-import AEPreparedPart     from "../auth/aePreparedPart";
-import Bag                from "../../api/Bag";
-import {ZationChannel}    from "./channelDefinitions";
-import UnknownCustomCh    from "../error/unknownCustomCh";
+import {
+    WorkerChMapTaskAction, WorkerChSpecialTask,
+    WorkerChSpecialTaskAction,
+    WorkerChMapTarget,
+    WorkerChTaskType, WorkerChAbstractMapTask, WorkerChMapTask
+} from "../constants/workerChTaskDefinitions";
+import ScServer             from "../sc/scServer";
+import {SyncTokenDefinitions, UpdateTokenMainData} from "../constants/syncTokenDefinitions";
+import ZSocket              from "../internalApi/ZSocket";
+import Logger               from "../logger/logger";
+import ChUtils              from "./chUtils";
+import {ChannelPrepare}     from "./channelPrepare";
+import AEPreparedPart       from "../auth/aePreparedPart";
+import Bag                  from "../../api/Bag";
+import {ZationChannel}      from "./channelDefinitions";
+import UnknownCustomCh      from "../error/unknownCustomCh";
 
 export default class ChannelBagEngine
 {
@@ -66,7 +69,7 @@ export default class ChannelBagEngine
      * Publish to all worker.
      * @param data
      */
-    private async publishToWorker(data: any): Promise<void> {
+    private async publishToWorker<T extends any>(data: T): Promise<void> {
         try {
             await this.pubAsync(ZationChannel.ALL_WORKER, data);
         } catch (e) {
@@ -81,52 +84,54 @@ export default class ChannelBagEngine
      * @param action
      * @param ids
      * @param exceptSocketSids
-     * @param mainData
+     * @param data
      */
-    async publishMapTaskToWorker(target: WorkerChTargets,
-                                 action: WorkerChMapTaskActions,
+    async publishMapTaskToWorker(target: WorkerChMapTarget,
+                                 action: WorkerChMapTaskAction,
                                  ids: string | number | (string | number)[],
                                  exceptSocketSids: string[] | string,
-                                 mainData: object = {}): Promise<void>
+                                 data: WorkerChMapTask['data'] = {}): Promise<void>
     {
-        await this.publishToWorker({
+        await this.publishToWorker<WorkerChAbstractMapTask>({
+            taskType : WorkerChTaskType.MAP_TASK,
             ids: Array.isArray(ids) ? ids : [ids],
-            actionType : WorkerChTaskType.MAP_TASK,
             action: action,
             target: target,
-            mainData: mainData,
+            data: data,
             exceptSocketSids: Array.isArray(exceptSocketSids) ? exceptSocketSids : [exceptSocketSids]
         });
     }
 
+    async publishSpecialTaskToWorker(action : WorkerChSpecialTaskAction.UPDATE_GROUP_TOKENS, data : UpdateTokenMainData): Promise<void>
+    async publishSpecialTaskToWorker(action : WorkerChSpecialTaskAction.UPDATE_USER_TOKENS, data : UpdateTokenMainData): Promise<void>
+    async publishSpecialTaskToWorker(action : WorkerChSpecialTaskAction.MESSAGE, data : any): Promise<void>
     /**
      * Publish special task to worker.
      * @param action
-     * @param mainData
+     * @param data
      */
-    async publishSpecialTaskToWorker(action : WorkerChSpecialTaskActions,mainData : any): Promise<void> {
-        await this.publishToWorker({
-            actionType : WorkerChTaskType.SPECIAL_TASK,
+    async publishSpecialTaskToWorker(action : WorkerChSpecialTaskAction, data : UpdateTokenMainData | any): Promise<void> {
+        await this.publishToWorker<WorkerChSpecialTask>({
+            taskType : WorkerChTaskType.SPECIAL_TASK,
             action: action,
-            mainData: mainData
+            data: data
         });
     }
 
     /**
      * Publish update user token worker task.
-     * @param actions
+     * @param operations
      * @param userId
      * @param exceptSocketSids
      */
     async publishUpdateUserTokenWorkerTask(
-            actions: { action: SyncTokenActions, params: any[] }[],
+            operations: SyncTokenDefinitions[],
             userId,
             exceptSocketSids: string[] | string): Promise<void>
     {
         await this.publishSpecialTaskToWorker(
-            WorkerChSpecialTaskActions.UPDATE_USER_TOKENS,
-            {
-                actions : actions,
+            WorkerChSpecialTaskAction.UPDATE_USER_TOKENS, {
+                operations : operations,
                 target : userId,
                 exceptSocketSids : Array.isArray(exceptSocketSids) ? exceptSocketSids : [exceptSocketSids]
             }
@@ -135,19 +140,18 @@ export default class ChannelBagEngine
 
     /**
      * Publish update group token worker task.
-     * @param actions
+     * @param operations
      * @param authUserGroup
      * @param exceptSocketSids
      */
     async publishUpdateGroupTokenWorkerTask(
-            actions: { action: SyncTokenActions, params: any[] }[],
+            operations: SyncTokenDefinitions[],
             authUserGroup,
             exceptSocketSids: string[] | string): Promise<void>
     {
         await this.publishSpecialTaskToWorker(
-            WorkerChSpecialTaskActions.UPDATE_GROUP_TOKENS,
-            {
-                actions : actions,
+            WorkerChSpecialTaskAction.UPDATE_GROUP_TOKENS, {
+                operations : operations,
                 target : authUserGroup,
                 exceptSocketSids : Array.isArray(exceptSocketSids) ? exceptSocketSids : [exceptSocketSids]
             }

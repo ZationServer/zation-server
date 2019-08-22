@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import {ArraySettings, ValidateFunction, ValueModelConfig} from "../config/definitions/inputConfig";
 // noinspection TypeScriptPreferShortImport
-import {ValidationTypes}     from "./../constants/validationTypes";
+import {ValidationType}      from "../constants/validationType";
 import BackErrorBag          from "../../api/BackErrorBag";
 import BackError             from "../../api/BackError";
 import {ValidatorLibrary}    from "./validatorLibrary";
@@ -71,7 +71,7 @@ export default class ValidatorEngine
      * @param strictType
      */
     static createValueTypeValidator(type : string | string[] | undefined,strictType : boolean) : ValueTypeValidateFunction {
-        if(type !== undefined && type !== ValidationTypes.ALL) {
+        if(type !== undefined && type !== ValidationType.ALL) {
             if(Array.isArray(type)){
                 return (input, errorBag, preparedErrorData) => {
                     let foundAValidTyp = false;

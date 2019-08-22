@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {BrokerMessageActions} from "../main/constants/brokerMessageActions";
+import {BrokerMessageAction}  from "../main/constants/brokerMessageAction";
 import SystemInfo             from "../main/utils/systemInfo";
 import ZationConfig           from "../main/config/manager/zationConfig";
 import Logger                 from "../main/logger/logger";
@@ -65,7 +65,7 @@ class ZationBroker extends SCBroker
     private initBrokerEvents()
     {
         this.on('message', async (data, respond) => {
-            if(data.action === BrokerMessageActions.INFO){
+            if(data.action === BrokerMessageAction.INFO){
                 respond(null,{
                     id : this.id,
                     broker : {

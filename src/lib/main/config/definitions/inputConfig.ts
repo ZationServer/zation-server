@@ -8,7 +8,7 @@ import {AnyClass, AnyInputConfigTranslatable, AnyModelConfigTranslatable} from "
 import BackErrorBag                                                       from "../../../api/BackErrorBag";
 import Bag                                                                from "../../../api/Bag";
 // noinspection TypeScriptPreferShortImport
-import {ValidationTypes}                                                  from "../../constants/validationTypes.js";
+import {ValidationType}                                                   from "../../constants/validationType.js";
 import {FormatLetters}                                                    from "../../constants/validation";
 
 export type Model =
@@ -149,7 +149,7 @@ export interface ValueModelConfig extends ModelOptional
      * 'mongoId'
      * 'latLong'
      */
-    type  ?: ValidationTypes | string | (ValidationTypes | string)[];
+    type  ?: ValidationType | string | (ValidationType | string)[];
     /**
      * Specify if the value model should use strict type mode.
      * In this mode, types are checked strictly. For example, in strict mode,

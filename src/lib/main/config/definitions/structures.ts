@@ -17,7 +17,7 @@ import {
 } from "./mainConfig";
 import {StarterConfig}   from "./starterConfig";
 // noinspection TypeScriptPreferShortImport
-import {ValidationTypes} from "../../constants/validationTypes";
+import {ValidationType}  from "../../constants/validationType";
 import {FormatLetters}   from "../../constants/validation";
 import {ServiceConfig}   from "./serviceConfig";
 import {
@@ -231,7 +231,7 @@ StarterConfig[nameof<StarterConfig>(s => s.eventConfig)]   = {types : ['string']
 StarterConfig[nameof<StarterConfig>(s => s.mainConfig)]    = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.checkConfigs)]  = {types : ['boolean'],isOptional : true};
 
-const allValidationTypes = ObjectUtils.getObjValues(ValidationTypes);
+const allValidationTypes = ObjectUtils.getObjValues(ValidationType);
 const allFormatLetters = ObjectUtils.getObjValues(FormatLetters);
 
 const ValueModel = {};

@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 const BackErrorBag       = require("../../../../dist/lib/api/BackErrorBag").default;
 const Base64TestData     = require("../../../testData/base64");
 const ZationConfigStub   = require("../../../stubs/zationConfigFull");
-const {ValidationTypes}  = require("../../../../dist");
+const {ValidationType}   = require("../../../../dist");
 const {FormatLetters}    = require("../../../../dist/lib/main/constants/validation");
 const ConfigPreCompiler  = require("../../../../dist/lib/main/config/utils/configPreCompiler").default;
 const {ValidatorLibrary} = require("../../../../dist/lib/main/validator/validatorLibrary");
@@ -432,13 +432,13 @@ describe('Function Validation',() => {
 
             it('Not matching input should produce an error',() => {
                 const eb = new BackErrorBag;
-                ValidatorFunctions.minByteSize(Base64TestData.d1.data,Base64TestData.d1.fileByte*2,eb,{},undefined,ValidationTypes.BASE64);
+                ValidatorFunctions.minByteSize(Base64TestData.d1.data,Base64TestData.d1.fileByte*2,eb,{},undefined,ValidationType.BASE64);
                 assert(!eb.isEmpty());
             });
 
             it('Matching should produce no error',() => {
                 const eb = new BackErrorBag;
-                ValidatorFunctions.minByteSize(Base64TestData.d1.data,Base64TestData.d1.fileByte,eb,{},undefined,ValidationTypes.BASE64);
+                ValidatorFunctions.minByteSize(Base64TestData.d1.data,Base64TestData.d1.fileByte,eb,{},undefined,ValidationType.BASE64);
                 assert(eb.isEmpty());
             });
         });
@@ -470,13 +470,13 @@ describe('Function Validation',() => {
 
             it('Not matching input should produce an error',() => {
                 const eb = new BackErrorBag;
-                ValidatorFunctions.maxByteSize(Base64TestData.d1.data,Base64TestData.d1.fileByte,eb,{},undefined,ValidationTypes.BASE64);
+                ValidatorFunctions.maxByteSize(Base64TestData.d1.data,Base64TestData.d1.fileByte,eb,{},undefined,ValidationType.BASE64);
                 assert(!eb.isEmpty());
             });
 
             it('Matching should produce no error',() => {
                 const eb = new BackErrorBag;
-                ValidatorFunctions.maxByteSize(Base64TestData.d1.data,Base64TestData.d1.fileByte*2,eb,{},undefined,ValidationTypes.BASE64);
+                ValidatorFunctions.maxByteSize(Base64TestData.d1.data,Base64TestData.d1.fileByte*2,eb,{},undefined,ValidationType.BASE64);
                 assert(eb.isEmpty());
             });
         });

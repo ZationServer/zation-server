@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 const  SocketCluster : any   = require('socketcluster');
 const  isWindows             = require('is-windows');
-import {WorkerMessageActions}  from "../main/constants/workerMessageActions";
+import {WorkerMessageAction}   from "../main/constants/workerMessageAction";
 import {StarterConfig}         from "../main/config/definitions/starterConfig";
 import StringSet               from "../main/utils/stringSet";
 import StateServerEngine       from "../main/cluster/stateServerEngine";
@@ -372,7 +372,7 @@ export default class ZationMaster {
         {
             const action = data.action;
             switch (action) {
-                case WorkerMessageActions.INFO:
+                case WorkerMessageAction.INFO:
                     respond(null,{
                         isLeader : this.clusterLeader,
                         pid : process.pid,
@@ -380,16 +380,16 @@ export default class ZationMaster {
                         stateServerConnected : this.stateServerActive ? this.stateServerEngine.isConnected() : false
                     });
                     break;
-                case WorkerMessageActions.IS_LEADER:
+                case WorkerMessageAction.IS_LEADER:
                     respond(null,{isLeader : this.clusterLeader});
                     break;
-                case WorkerMessageActions.FULL_CLIENT_JS:
+                case WorkerMessageAction.FULL_CLIENT_JS:
                     respond(null,this.fullClientJs);
                     break;
-                case WorkerMessageActions.SERVER_SETTINGS_JS:
+                case WorkerMessageAction.SERVER_SETTINGS_JS:
                     respond(null,this.serverSettingsJs);
                     break;
-                case WorkerMessageActions.KILL_SERVER:
+                case WorkerMessageAction.KILL_SERVER:
                     this.killServer(data.data);
                     respond(null);
                     break;

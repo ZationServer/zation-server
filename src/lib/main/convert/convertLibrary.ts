@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import {ValidationTypes} from "../constants/validationTypes";
+import {ValidationType} from "../constants/validationType";
 import Converter         from "./converter";
 
 /*
@@ -14,7 +14,7 @@ Converter Library from Zation
 
 const converterLibrary :  Record<string,(input : any,strictType ?: boolean) => any> = {};
 
-converterLibrary[ValidationTypes.INT] = (input,strictType) =>
+converterLibrary[ValidationType.INT] = (input, strictType) =>
 {
     if(!strictType){
         return parseInt(input);
@@ -22,7 +22,7 @@ converterLibrary[ValidationTypes.INT] = (input,strictType) =>
     return input;
 };
 
-converterLibrary[ValidationTypes.FLOAT] = (input,strictType) =>
+converterLibrary[ValidationType.FLOAT] = (input, strictType) =>
 {
     if(!strictType){
         return parseFloat(input);
@@ -30,7 +30,7 @@ converterLibrary[ValidationTypes.FLOAT] = (input,strictType) =>
     return input;
 };
 
-converterLibrary[ValidationTypes.NUMBER] = (input,strictType) =>
+converterLibrary[ValidationType.NUMBER] = (input, strictType) =>
 {
     if(!strictType){
         return parseFloat(input);
@@ -38,12 +38,12 @@ converterLibrary[ValidationTypes.NUMBER] = (input,strictType) =>
     return input;
 };
 
-converterLibrary[ValidationTypes.DATE] = (input) =>
+converterLibrary[ValidationType.DATE] = (input) =>
 {
     return new Date(input);
 };
 
-converterLibrary[ValidationTypes.BOOLEAN] = (input,strictType) =>
+converterLibrary[ValidationType.BOOLEAN] = (input, strictType) =>
 {
     if(!strictType){
         if(typeof input === 'string'){

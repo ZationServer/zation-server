@@ -4,8 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-export const enum SyncTokenActions
+export const enum BrokerMessageAction
 {
-    DELETE,
-    SET
+    INFO
 }

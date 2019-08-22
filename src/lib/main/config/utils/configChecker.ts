@@ -16,7 +16,7 @@ import {
     ZationChannelConfig
 } from "../definitions/channelsConfig";
 // noinspection TypeScriptPreferShortImport
-import {ValidationTypes} from "../../constants/validationTypes";
+import {ValidationType} from "../../constants/validationType";
 import {
     OnlyBase64Functions,
     OnlyDateFunctions,
@@ -1229,19 +1229,19 @@ export default class ConfigChecker
             const type = Array.isArray(value.type) ? value.type : [value.type];
             const types : TypeTypes[] = [];
             for(let i = 0; i < type.length; i++) {
-                if (type[i] === ValidationTypes.INT || type[i] === ValidationTypes.FLOAT || type[i] === ValidationTypes.NUMBER) {
+                if (type[i] === ValidationType.INT || type[i] === ValidationType.FLOAT || type[i] === ValidationType.NUMBER) {
                     types.push(TypeTypes.NUMBER);
                 }
-                else if(type[i] === ValidationTypes.DATE) {
+                else if(type[i] === ValidationType.DATE) {
                     types.push(TypeTypes.DATE);
                 }
-                else if(type[i] === ValidationTypes.BASE64){
+                else if(type[i] === ValidationType.BASE64){
                     types.push(TypeTypes.BASE64);
                 }
-                else if(type[i] === ValidationTypes.NULL || type[i] === ValidationTypes.ARRAY || type[i] === ValidationTypes.OBJECT){
+                else if(type[i] === ValidationType.NULL || type[i] === ValidationType.ARRAY || type[i] === ValidationType.OBJECT){
                     types.push(TypeTypes.OTHER);
                 }
-                else if(type[i] === ValidationTypes.ALL) {
+                else if(type[i] === ValidationType.ALL) {
                     return;
                 }
                 else {

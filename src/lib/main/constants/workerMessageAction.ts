@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-export const enum WorkerMessageActions
+export const enum WorkerMessageAction
 {
    INFO,
    IS_LEADER,

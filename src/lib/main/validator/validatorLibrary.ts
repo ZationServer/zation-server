@@ -13,7 +13,7 @@ It not contains the type check.
  */
 
 // noinspection TypeScriptPreferShortImport
-import {ValidationTypes}  from "../constants/validationTypes";
+import {ValidationType}   from "../constants/validationType";
 import {FormatLetters}    from "../constants/validation";
 import {ValueModelConfig} from "../config/definitions/inputConfig";
 import BackError          from "../../api/BackError";
@@ -36,42 +36,42 @@ export type TypeValidator =
     (input : any,backErrorBag : BackErrorBag,prepareErrorData : PreparedErrorData,strictType : boolean) => Promise<void> | void;
 
 
-typeLibrary[ValidationTypes.OBJECT] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.OBJECT] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isObject(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeObject,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.ARRAY] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.ARRAY] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isArray(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeArray,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.STRING] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.STRING] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isString(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeString,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.CHAR] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.CHAR] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isChar(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeChar,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.NULL] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.NULL] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isNull(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeNull,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.INT] = (input,backErrorBag,prepareErrorData,strictType) =>
+typeLibrary[ValidationType.INT] = (input, backErrorBag, prepareErrorData, strictType) =>
 {
     if(!Number.isInteger(input)){
         if(!(!strictType && EasyValidator.isStringInt(input))) {
@@ -80,7 +80,7 @@ typeLibrary[ValidationTypes.INT] = (input,backErrorBag,prepareErrorData,strictTy
     }
 };
 
-typeLibrary[ValidationTypes.FLOAT] = (input,backErrorBag,prepareErrorData,strictType) =>
+typeLibrary[ValidationType.FLOAT] = (input, backErrorBag, prepareErrorData, strictType) =>
 {
     if(!EasyValidator.isFloat(input)) {
         if(!(!strictType && EasyValidator.isStringFloat(input))) {
@@ -89,7 +89,7 @@ typeLibrary[ValidationTypes.FLOAT] = (input,backErrorBag,prepareErrorData,strict
     }
 };
 
-typeLibrary[ValidationTypes.NUMBER] = (input,backErrorBag,prepareErrorData,strictType) =>
+typeLibrary[ValidationType.NUMBER] = (input, backErrorBag, prepareErrorData, strictType) =>
 {
     if(!EasyValidator.isNumber(input)) {
         if(!(!strictType && EasyValidator.isStringNumber(input))) {
@@ -98,21 +98,21 @@ typeLibrary[ValidationTypes.NUMBER] = (input,backErrorBag,prepareErrorData,stric
     }
 };
 
-typeLibrary[ValidationTypes.DATE] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.DATE] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isDate(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeDate,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.EMAIL] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.EMAIL] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isEmail(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeEmail,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.BOOLEAN] = (input,backErrorBag,prepareErrorData,strictType) =>
+typeLibrary[ValidationType.BOOLEAN] = (input, backErrorBag, prepareErrorData, strictType) =>
 {
     if(!EasyValidator.isBoolean(input)) {
         if(!(!strictType && (EasyValidator.isStringBoolean(input) || EasyValidator.isNumberBoolean(input)))) {
@@ -121,168 +121,168 @@ typeLibrary[ValidationTypes.BOOLEAN] = (input,backErrorBag,prepareErrorData,stri
     }
 };
 
-typeLibrary[ValidationTypes.SHA512] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.SHA512] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isSha512(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeSha512,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.SHA256] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.SHA256] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isSha256(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeSha256,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.SHA384] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.SHA384] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isSha384(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeSha384,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.SHA1] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.SHA1] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isSha1(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeSha1,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.MD5] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.MD5] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isMd5(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeMd5,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.HEX_COLOR] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.HEX_COLOR] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isHexColor(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeHexColor,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.HEXADECIMAL] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.HEXADECIMAL] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isHexadecimal(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeHexadecimal,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.IP_4] = (input, backErrorBag, prepareErrorData) =>
+typeLibrary[ValidationType.IP_4] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isIP4(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeIp4,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.IP_6] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.IP_6] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isIP6(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeIp6,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.ISBN_10] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.ISBN_10] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isISB10(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeIsbn10,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.ISBN_13] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.ISBN_13] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isISB13(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeIsbn13,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.JSON] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.JSON] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isJSON(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeJson,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.URL] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.URL] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isUrl(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeUrl,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.MIME_TYPE] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.MIME_TYPE] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isMimeType(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeMimeType,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.MAC_ADDRESS] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.MAC_ADDRESS] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isMACAddress(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeMacAddress,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.MOBILE_NUMBER] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.MOBILE_NUMBER] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isMobilePhone(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeMobileNumber,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.UUID_3] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.UUID_3] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isUUID3(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeUuid3,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.UUID_4] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.UUID_4] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isUUID4(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeUuid4,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.UUID_5] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.UUID_5] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isUUID5(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeUuid5,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.BASE64] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.BASE64] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isBase64(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeBase64,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.ASCII] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.ASCII] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isAscii(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeAscii,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.USER_ID] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.USER_ID] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!(EasyValidator.isString(input) || EasyValidator.isNumber(input))) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeUserId,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.MONGO_ID] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.MONGO_ID] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isMongoId(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeMongoId,prepareErrorData));
     }
 };
 
-typeLibrary[ValidationTypes.LAT_LONG] = (input,backErrorBag,prepareErrorData) =>
+typeLibrary[ValidationType.LAT_LONG] = (input, backErrorBag, prepareErrorData) =>
 {
     if(!EasyValidator.isLatLong(input)) {
         backErrorBag.addBackError(new BackError(ValidatorBackErrors.inputIsNotTypeLatLong,prepareErrorData));

@@ -6,17 +6,25 @@ Copyright(c) Luca Scaringella
 
 import ScServer               from "../main/sc/scServer";
 import ChMiddlewareHelper     from '../main/channel/chMiddlewareHelper';
-import {WorkerChMapTaskActions, WorkerChSpecialTaskActions} from "../main/constants/workerChTaskActions";
+import {
+    WorkerChMapTaskAction,
+    WorkerChSpecialTaskAction,
+    WorkerChMapTarget,
+    WorkerChTaskType,
+    WorkerChSpecialTask, WorkerTaskPackage, WorkerChMapTask
+} from "../main/constants/workerChTaskDefinitions";
 import UpSocket               from "../main/sc/socket";
-import {WorkerChTargets}      from "../main/constants/workerChTargets";
 import {ZationToken}          from "../main/constants/internal";
-import {WorkerMessageActions} from "../main/constants/workerMessageActions";
+import {WorkerMessageAction}  from "../main/constants/workerMessageAction";
 import {ChannelPrepare}       from "../main/channel/channelPrepare";
 import BagExtensionEngine     from "../main/bagExtension/bagExtensionEngine";
 import NodeInfo               from "../main/utils/nodeInfo";
 import SocketSet              from "../main/utils/socketSet";
 import OriginsUtils, {OriginChecker} from "../main/origins/originsUtils";
-import {SyncTokenActions}     from "../main/constants/syncTokenActions";
+import {
+    SyncTokenDefinitions,
+    SyncTokenOperationType,
+} from "../main/constants/syncTokenDefinitions";
 
 import express      = require('express');
 import {Request , Response} from "express";
@@ -26,28 +34,27 @@ import fileUpload   = require('express-fileupload');
 import url          = require('url');
 
 import process          = require("process");
-import {WorkerChTaskType} from "../main/constants/workerChTaskType";
-import ControllerReqHandler  from "../main/controller/request/controllerReqHandler";
-import AEPreparedPart     from "../main/auth/aePreparedPart";
-import ZationTokenWrapper from "../main/internalApi/zationTokenWrapper";
-import ControllerPrepare  from "../main/controller/controllerPrepare";
-import ServiceEngine      from "../main/services/serviceEngine";
-import Bag                from "../api/Bag";
-import Mapper             from "../main/utils/mapper";
-import ViewEngine         from "../main/views/viewEngine";
-import Logger             from "../main/logger/logger";
-import ConfigPreCompiler  from "../main/config/utils/configPreCompiler";
-import PanelEngine        from "../main/panel/panelEngine";
-import SidBuilder         from "../main/utils/sidBuilder";
-import ChUtils            from "../main/channel/chUtils";
+import ControllerReqHandler from "../main/controller/request/controllerReqHandler";
+import AEPreparedPart       from "../main/auth/aePreparedPart";
+import ZationTokenWrapper   from "../main/internalApi/zationTokenWrapper";
+import ControllerPrepare    from "../main/controller/controllerPrepare";
+import ServiceEngine        from "../main/services/serviceEngine";
+import Bag                  from "../api/Bag";
+import Mapper               from "../main/utils/mapper";
+import ViewEngine           from "../main/views/viewEngine";
+import Logger               from "../main/logger/logger";
+import ConfigPreCompiler    from "../main/config/utils/configPreCompiler";
+import PanelEngine          from "../main/panel/panelEngine";
+import SidBuilder           from "../main/utils/sidBuilder";
+import ChUtils              from "../main/channel/chUtils";
 import TokenUtils, {TokenClusterKeyCheckFunction} from "../main/token/tokenUtils";
-import SystemInfo         from "../main/utils/systemInfo";
+import SystemInfo           from "../main/utils/systemInfo";
 import BackgroundTasksWorkerSaver from "../main/background/backgroundTasksWorkerSaver";
-import MiddlewareUtils    from "../main/utils/middlewareUtils";
-import ZationConfigFull   from "../main/config/manager/zationConfigFull";
-import ConfigLoader       from "../main/config/manager/configLoader";
-import SocketUpgradeEngine from "../main/socket/socketUpgradeEngine";
-import ChannelBagEngine    from "../main/channel/channelBagEngine";
+import MiddlewareUtils      from "../main/utils/middlewareUtils";
+import ZationConfigFull     from "../main/config/manager/zationConfigFull";
+import ConfigLoader         from "../main/config/manager/configLoader";
+import SocketUpgradeEngine  from "../main/socket/socketUpgradeEngine";
+import ChannelBagEngine     from "../main/channel/channelBagEngine";
 import {
     AuthMiddlewareReq,
     HandshakeScMiddlewareReq,
@@ -980,9 +987,9 @@ class ZationWorker extends SCWorker
     private async registerWorkerChannel()
     {
         const channel = (this.exchange.subscribe as any)(ZationChannel.ALL_WORKER);
-        channel.watch(async (data) =>
+        channel.watch(async (data : WorkerTaskPackage) =>
         {
-            switch (data.actionType) {
+            switch (data.taskType) {
                 case WorkerChTaskType.MAP_TASK:
                      await this.processMapTask(data);
                      break;
@@ -995,62 +1002,57 @@ class ZationWorker extends SCWorker
 
     /**
      * Process a special worker task.
-     * @param data
+     * @param task
      */
-    async processSpecialTask(data : any)
+    async processSpecialTask(task : WorkerChSpecialTask)
     {
-        const mainData = data.mainData;
-        switch (data.action) {
-            case WorkerChSpecialTaskActions.UPDATE_USER_TOKENS:
+        const data = task.data;
+        switch (task.action) {
+            case WorkerChSpecialTaskAction.UPDATE_USER_TOKENS:
                 await this.updateTokens
-                (this.mapUserIdToSc,mainData.actions,mainData.target.toString(),mainData.exceptSocketSids);
+                (this.mapUserIdToSc,data.operations,data.target.toString(),data.exceptSocketSids);
                 break;
-            case WorkerChSpecialTaskActions.UPDATE_GROUP_TOKENS:
+            case WorkerChSpecialTaskAction.UPDATE_GROUP_TOKENS:
                 await this.updateTokens
-                (this.mapAuthUserGroupToSc,mainData.actions,mainData.target,mainData.exceptSocketSids);
+                (this.mapAuthUserGroupToSc,data.operations,data.target,data.exceptSocketSids);
                 break;
-            case WorkerChSpecialTaskActions.MESSAGE:
-                await this.zc.eventConfig.workerMessage(this.preparedBag,mainData.data);
+            case WorkerChSpecialTaskAction.MESSAGE:
+                await this.zc.eventConfig.workerMessage(this.preparedBag,data);
                 break;
         }
     }
 
     /**
      * Process a worker map task.
-     * @param data
+     * @param task
      */
-    async processMapTask(data : any)
+    async processMapTask(task : WorkerChMapTask)
     {
-        if(!Array.isArray(data.ids)) {
-            return;
-        }
-
-        const ids : any[] = data.ids;
-        const exceptSocketSids = data.exceptSocketSids;
-        const mainData = data.mainData;
-        const emitData = mainData.data;
+        const ids : any[] = task.ids;
+        const exceptSocketSids = task.exceptSocketSids;
 
         let socketAction : SocketAction | undefined = undefined;
-        switch (data.action) {
-            case WorkerChMapTaskActions.KICK_OUT:
-                const ch = mainData.ch;
+        switch (task.action) {
+            case WorkerChMapTaskAction.KICK_OUT:
+                const ch = task.data.ch;
                 if(ch !== undefined) {
                     socketAction = (s : UpSocket) => {
                         ChUtils.kickOutSearch(s,ch);
                     };
                 }
                 break;
-            case WorkerChMapTaskActions.EMIT:
+            case WorkerChMapTaskAction.EMIT:
+                const data = task.data;
                 socketAction = (s : UpSocket) => {
-                    s.emit(mainData.event,emitData);
+                    s.emit(data.event,data.data);
                 };
                 break;
-            case WorkerChMapTaskActions.DISCONNECT:
+            case WorkerChMapTaskAction.DISCONNECT:
                 socketAction = (s : UpSocket) => {
                     s.disconnect();
                 };
                 break;
-            case WorkerChMapTaskActions.DEAUTHENTICATE:
+            case WorkerChMapTaskAction.DEAUTHENTICATE:
                 socketAction = (s : UpSocket) => {
                     s.deauthenticate();
                 };
@@ -1058,23 +1060,23 @@ class ZationWorker extends SCWorker
         }
 
         if(socketAction !== undefined){
-            switch (data.target) {
-                case WorkerChTargets.USER_IDS:
+            switch (task.target) {
+                case WorkerChMapTarget.USER_IDS:
                     this.forUserIds(ids,exceptSocketSids,socketAction);
                     break;
-                case WorkerChTargets.TOKEN_IDS:
+                case WorkerChMapTarget.TOKEN_IDS:
                     this.forTokenIds(ids,exceptSocketSids,socketAction);
                     break;
-                case WorkerChTargets.ALL_SOCKETS:
+                case WorkerChMapTarget.ALL_SOCKETS:
                     this.forAllSockets(exceptSocketSids,socketAction);
                     break;
-                case WorkerChTargets.SOCKETS_SIDS:
+                case WorkerChMapTarget.SOCKETS_SIDS:
                     this.forAllSocketSids(ids,socketAction);
                     break;
-                case WorkerChTargets.AUTH_USER_GROUPS:
-                    this.forAuthUserGroups(ids,mainData.all,exceptSocketSids,socketAction);
+                case WorkerChMapTarget.AUTH_USER_GROUPS:
+                    this.forAuthUserGroups(ids,task.data.all || false,exceptSocketSids,socketAction);
                     break;
-                case WorkerChTargets.DEFAULT_USER_GROUP:
+                case WorkerChMapTarget.DEFAULT_USER_GROUP:
                     this.forDefaultUserGroup(exceptSocketSids,socketAction);
                     break;
             }
@@ -1084,23 +1086,23 @@ class ZationWorker extends SCWorker
     /**
      * Update all tokens from sockets in the map.
      * @param map
-     * @param actions
+     * @param operations
      * @param target
      * @param exceptSocketSids
      */
-    private async updateTokens(map : Mapper<UpSocket>, actions : {action : SyncTokenActions,params : any[]}[], target, exceptSocketSids : string[]) {
+    private async updateTokens(map : Mapper<UpSocket>, operations : SyncTokenDefinitions[], target, exceptSocketSids : string[]) {
         const filterExceptSocketIds : string[] = this.socketSidsFilter(exceptSocketSids);
         const promises : Promise<void>[] = [];
         map.forEach(target,(socket : UpSocket) => {
             if(!filterExceptSocketIds.includes(socket.id)) {
                 const edit = this.preparedBag.seqEditTokenVariablesWithSocket(socket);
-                for(let i = 0; i < actions.length; i++) {
-                    switch (actions[i].action) {
-                        case SyncTokenActions.SET :
-                            edit.set(actions[i].params[0],actions[i].params[1]);
+                for(let i = 0; i < operations.length; i++) {
+                    switch (operations[i].t) {
+                        case SyncTokenOperationType.SET :
+                            edit.set(operations[i].p as string | string[],operations[i].v);
                             break;
-                        case SyncTokenActions.DELETE :
-                            edit.delete(actions[i].params[0]);
+                        case SyncTokenOperationType.DELETE :
+                            edit.delete(operations[i].p);
                             break;
                     }
                 }
@@ -1309,11 +1311,11 @@ class ZationWorker extends SCWorker
         try {
             const promises : Promise<void>[] = [];
             promises.push(new Promise<void>(async (resolve) => {
-                this.serverSettingsJs = await this.sendToZationMaster({action : WorkerMessageActions.SERVER_SETTINGS_JS});
+                this.serverSettingsJs = await this.sendToZationMaster({action : WorkerMessageAction.SERVER_SETTINGS_JS});
                 resolve();
             }));
             promises.push(new Promise<void>(async (resolve) => {
-                this.fullClientJs = await this.sendToZationMaster({action : WorkerMessageActions.FULL_CLIENT_JS});
+                this.fullClientJs = await this.sendToZationMaster({action : WorkerMessageAction.FULL_CLIENT_JS});
                 resolve();
             }));
             await Promise.all(promises);
@@ -1327,7 +1329,7 @@ class ZationWorker extends SCWorker
      * Send data to the master.
      * @param data
      */
-    public sendToZationMaster(data : {action : WorkerMessageActions} | any) : Promise<any> {
+    public sendToZationMaster(data : {action : WorkerMessageAction} | any) : Promise<any> {
         return new Promise<boolean>((resolve,reject) => {
             this.sendToMaster(data,(err,data) => {
                 err ? reject(err) : resolve(data);
@@ -1340,7 +1342,7 @@ class ZationWorker extends SCWorker
      * @param error
      */
     public async killServer(error : Error | string) : Promise<void> {
-        await this.sendToZationMaster({action : WorkerMessageActions.KILL_SERVER, data : error});
+        await this.sendToZationMaster({action : WorkerMessageAction.KILL_SERVER, data : error});
     }
 
     //Part panel
