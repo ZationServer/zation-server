@@ -39,8 +39,8 @@ export default class ZationSPC_Auth extends Controller
                 throw new BackError(MainBackErrors.wrongPanelAuthData);
             }
             const token = TokenUtils.generateToken(bag.getZationConfig().internalData.tokenClusterKey);
-            token[nameof<ZationToken>(s => s.zationPanelAccess)] = true;
-            token[nameof<ZationToken>(s => s.zationOnlyPanelToken)] = true;
+            token[nameof<ZationToken>(s => s.panelAccess)] = true;
+            token[nameof<ZationToken>(s => s.onlyPanelToken)] = true;
             bag.getRawSocket().setAuthToken(token);
 
             await bag.setTokenVariable('ZATION-PANEL-USER-NAME',username);

@@ -15,21 +15,24 @@ export enum ZationAccess {
 }
 
 export interface ZationToken extends PrepareZationToken{
-    zationTokenId : string,
-    zationUserId ?: string | number,
+    tid : string,
+    userId ?: string | number,
     exp : number,
-    zationAuthUserGroup : string
+    authUserGroup : string
 }
 
 export interface PrepareZationToken {
-    zationAuthUserGroup ?: string,
-    zationUserId ?: string | number | undefined,
-    zationTokenId ?: string,
-    zationPanelAccess ?: boolean,
-    zationOnlyPanelToken ?: boolean,
+    authUserGroup ?: string,
+    userId ?: string | number | undefined,
+    /**
+     * Token id
+     */
+    tid ?: string,
+    panelAccess ?: boolean,
+    onlyPanelToken ?: boolean,
     exp ?: number,
-    zationTokenClusterKey ?: string,
-    zationCustomVariables ?: object
+    clusterKey ?: string,
+    variables ?: object
 }
 
 export const DefaultUserGroupFallBack = 'default';

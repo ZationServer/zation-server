@@ -296,7 +296,7 @@ export default class RequestBag extends Bag
      * @param userId
      * @param tokenVariables
      * If this parameter is used all previous variables will be deleted.
-     * Notice that the token variables are separated from the main zation token variables.
+     * Notice that the token variables are separated from the main zation token.
      * @param jwtOptions This optional options argument is an Object which can be used to modify the token's behavior.
      * Valid properties include any option accepted by the jsonwebtoken library's sign method.
      * For example, you can change the default expire of the token or add a time before the token gets valid.
@@ -614,7 +614,7 @@ export default class RequestBag extends Bag
      * @throws AuthenticationError if the client is not authenticated.
      */
     async setTokenVariable(path : string | string[],value : any) : Promise<void> {
-        const ctv = CloneUtils.deepClone(TokenUtils.getCustomTokenVariables(this.shBridge.getToken()));
+        const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this.shBridge.getToken()));
         ObjectPath.set(ctv,path,value);
         await TokenUtils.setCustomVar(ctv,this.shBridge);
     }
@@ -636,7 +636,7 @@ export default class RequestBag extends Bag
      */
     async deleteTokenVariable(path ?: string | string[]) : Promise<void> {
         if(!!path) {
-            const ctv = CloneUtils.deepClone(TokenUtils.getCustomTokenVariables(this.shBridge.getToken()));
+            const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this.shBridge.getToken()));
             ObjectPath.del(ctv,path);
             await TokenUtils.setCustomVar(ctv,this.shBridge);
         }
@@ -668,7 +668,7 @@ export default class RequestBag extends Bag
     seqEditTokenVariables() : ObjectPathSequence
     {
         return new ObjectPathSequenceImp(CloneUtils.deepClone(
-            TokenUtils.getCustomTokenVariables(this.shBridge.getToken())),
+            TokenUtils.getTokenVariables(this.shBridge.getToken())),
             async (obj)=> {
                 await TokenUtils.setCustomVar(obj,this.shBridge);
             });
@@ -838,7 +838,7 @@ export default class RequestBag extends Bag
      * @throws AuthenticationError if the client is not authenticated.
      */
     hasTokenVariable(path ?: string | string[]) : boolean {
-        return ObjectPath.has(TokenUtils.getCustomTokenVariables(this.shBridge.getToken()),path);
+        return ObjectPath.has(TokenUtils.getTokenVariables(this.shBridge.getToken()),path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -856,7 +856,7 @@ export default class RequestBag extends Bag
      * @throws AuthenticationError if the client is not authenticated.
      */
     getTokenVariable<R = any>(path ?: string | string[]) : R {
-        return ObjectPath.get(TokenUtils.getCustomTokenVariables(this.shBridge.getToken()),path);
+        return ObjectPath.get(TokenUtils.getTokenVariables(this.shBridge.getToken()),path);
     }
 
     //Part Token
@@ -868,7 +868,7 @@ export default class RequestBag extends Bag
      * @throws AuthenticationError if the socket is not authenticated.
      */
     getTokenId() : string {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationTokenId),this.shBridge.getToken());
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.tid),this.shBridge.getToken());
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -888,7 +888,7 @@ export default class RequestBag extends Bag
      * @throws AuthenticationError if the socket is not authenticated.
      */
     getPanelAccess() : boolean {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationPanelAccess),this.shBridge.getToken());
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.panelAccess),this.shBridge.getToken());
     }
 
     //Part Socket

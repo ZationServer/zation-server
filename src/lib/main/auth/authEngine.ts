@@ -40,8 +40,8 @@ export default class AuthEngine
      */
     refresh(token : null | ZationToken) : void {
         if(token !== null) {
-            this.currentUserId = token.zationUserId;
-            this.currentUserGroup = token.zationAuthUserGroup;
+            this.currentUserId = token.userId;
+            this.currentUserGroup = token.authUserGroup;
             this.currentDefault = false;
         }
         else {
@@ -70,7 +70,7 @@ export default class AuthEngine
         return this.currentUserId;
     }
 
-    async authenticate(authUserGroup : string, userId ?: string | number,tokenCustomVar : object = {},jwtOptions : JwtSignOptions = {}) : Promise<void>
+    async authenticate(authUserGroup : string, userId ?: string | number,tokenVariables : object = {},jwtOptions : JwtSignOptions = {}) : Promise<void>
     {
         if(this.checkIsIn(authUserGroup)) {
 
@@ -78,15 +78,15 @@ export default class AuthEngine
                 this.shBridge.hasToken() ?
                 {} : TokenUtils.generateToken(this.tokenClusterKey);
 
-            token.zationAuthUserGroup = authUserGroup;
-            token.zationCustomVariables = tokenCustomVar;
+            token.authUserGroup = authUserGroup;
+            token.variables = tokenVariables;
 
             if(userId !== undefined) {
-                token.zationUserId = userId;
+                token.userId = userId;
             }
             //check auto panelAccess
             if(this.aePreparedPart.authUserGroupPanelAccess(authUserGroup)) {
-                token.zationPanelAccess = true;
+                token.panelAccess = true;
             }
 
             await this.shBridge.setToken(TokenUtils.combineTokens(this.shBridge.getToken(),token),jwtOptions);
@@ -101,7 +101,7 @@ export default class AuthEngine
         let token = this.shBridge.getToken();
         if(token !== null) {
             token = {...token};
-            token.zationPanelAccess = access;
+            token.panelAccess = access;
             await this.shBridge.setToken(token);
         }
         else {
@@ -111,8 +111,8 @@ export default class AuthEngine
 
     hasPanelAccess() : boolean {
         const token = this.shBridge.getToken();
-        if(token !== null && typeof token.zationPanelAccess === 'boolean'){
-            return token.zationPanelAccess;
+        if(token !== null && typeof token.panelAccess === 'boolean'){
+            return token.panelAccess;
         }
         return false;
     }
@@ -121,7 +121,7 @@ export default class AuthEngine
         let token = this.shBridge.getToken();
         if(token !== null) {
             token = {...token};
-            token.zationUserId = userId;
+            token.userId = userId;
             await this.shBridge.setToken(token);
         }
         else {

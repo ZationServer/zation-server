@@ -1720,7 +1720,7 @@ export default class Bag {
      * @throws AuthenticationError if socket is not authenticated.
      */
     getUserIdFromSocket(socket: UpSocket): string | number | undefined {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationUserId), socket.authToken);
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.userId), socket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
@@ -1734,7 +1734,7 @@ export default class Bag {
      */
     getAuthUserGroupFromSocket(socket: UpSocket): string | undefined {
         try {
-            return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationAuthUserGroup), socket.authToken);
+            return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.authUserGroup), socket.authToken);
         } catch (e) {
             return undefined;
         }
@@ -1860,7 +1860,7 @@ export default class Bag {
      * @throws AuthenticationError if the socket is not authenticated.
      */
     async setTokenVariableWithSocket(socket: UpSocket, path: string | string[], value: any): Promise<void> {
-        const ctv = CloneUtils.deepClone(TokenUtils.getCustomTokenVariables(socket.authToken));
+        const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(socket.authToken));
         ObjectPath.set(ctv, path, value);
         await TokenUtils.setSocketCustomVar(ctv, socket);
     }
@@ -1883,7 +1883,7 @@ export default class Bag {
      */
     async deleteTokenVariableWithSocket(socket: UpSocket, path ?: string | string[]): Promise<void> {
         if (!!path) {
-            const ctv = CloneUtils.deepClone(TokenUtils.getCustomTokenVariables(socket.authToken));
+            const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(socket.authToken));
             ObjectPath.del(ctv, path);
             await TokenUtils.setSocketCustomVar(ctv, socket);
         } else {
@@ -1913,7 +1913,7 @@ export default class Bag {
      */
     seqEditTokenVariablesWithSocket(socket: UpSocket): ObjectPathSequence {
         return new ObjectPathSequenceImp(CloneUtils.deepClone(
-            TokenUtils.getCustomTokenVariables(socket.authToken)),
+            TokenUtils.getTokenVariables(socket.authToken)),
             async (obj) => {
                 await TokenUtils.setSocketCustomVar(obj, socket);
             });
@@ -1935,7 +1935,7 @@ export default class Bag {
      * @throws AuthenticationError if the socket is not authenticated.
      */
     hasTokenVariableWithSocket(socket: UpSocket, path ?: string | string[]): boolean {
-        return ObjectPath.has(TokenUtils.getCustomTokenVariables(socket.authToken), path);
+        return ObjectPath.has(TokenUtils.getTokenVariables(socket.authToken), path);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -1954,7 +1954,7 @@ export default class Bag {
      * @throws AuthenticationError if the socket is not authenticated.
      */
     getTokenVariableWithSocket<R = any>(socket: UpSocket, path ?: string | string[]): R {
-        return ObjectPath.get(TokenUtils.getCustomTokenVariables(socket.authToken), path);
+        return ObjectPath.get(TokenUtils.getTokenVariables(socket.authToken), path);
     }
 
     // noinspection JSUnusedGlobalSymbols

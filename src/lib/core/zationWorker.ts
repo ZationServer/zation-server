@@ -461,7 +461,7 @@ class ZationWorker extends SCWorker
             }
             else if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
                 if(authToken !== null){
-                    const id = authToken.zationUserId;
+                    const id = authToken.userId;
                     if(id !== undefined) {
                         if (ZationChannel.USER_CHANNEL_PREFIX + id === channel) {
                             Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes to the user channel: '${id}'.`);
@@ -487,7 +487,7 @@ class ZationWorker extends SCWorker
             }
             else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
                 if(authToken !== null){
-                    const authUserGroup = authToken.zationAuthUserGroup;
+                    const authUserGroup = authToken.authUserGroup;
                     if(authUserGroup !== undefined) {
                         if (ZationChannel.AUTH_USER_GROUP_PREFIX + authUserGroup === channel) {
                             Logger.printDebugInfo
@@ -525,7 +525,7 @@ class ZationWorker extends SCWorker
             }
             else if (channel === ZationChannel.PANEL_OUT) {
                 if(authToken !== null){
-                    if (typeof authToken.zationPanelAccess === 'boolean' && authToken.zationPanelAccess) {
+                    if (typeof authToken.panelAccess === 'boolean' && authToken.panelAccess) {
                         Logger.printDebugInfo
                         (`Socket with id: ${req.socket.id} subscribes to the panel out channel.`);
                         next();
@@ -647,8 +647,8 @@ class ZationWorker extends SCWorker
             }
             else if(channel === ZationChannel.PANEL_IN) {
                 const authToken = req.socket.getAuthToken();
-                if(authToken !== null && typeof authToken[nameof<ZationToken>(s => s.zationPanelAccess)] === 'boolean' &&
-                    authToken[nameof<ZationToken>(s => s.zationPanelAccess)])
+                if(authToken !== null && typeof authToken[nameof<ZationToken>(s => s.panelAccess)] === 'boolean' &&
+                    authToken[nameof<ZationToken>(s => s.panelAccess)])
                 {
                     next();
                 }
@@ -1431,10 +1431,10 @@ class ZationWorker extends SCWorker
      * @param socket
      */
     unmapSocketToken(token : ZationToken, socket : UpSocket) {
-        this.mapAuthUserGroupToSc.unMap(token.zationAuthUserGroup,socket);
-        this.mapTokenIdToSc.unMap(token.zationTokenId,socket);
-        if(token.zationUserId !== undefined){
-            this.mapUserIdToSc.unMap(token.zationUserId.toString(),socket);
+        this.mapAuthUserGroupToSc.unMap(token.authUserGroup,socket);
+        this.mapTokenIdToSc.unMap(token.tid,socket);
+        if(token.userId !== undefined){
+            this.mapUserIdToSc.unMap(token.userId.toString(),socket);
         }
         this.panelUserSet.remove(socket);
     }

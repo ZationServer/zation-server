@@ -17,22 +17,22 @@ export default class ZationTokenWrapper
 
     // noinspection JSUnusedGlobalSymbols
     isAuthIn() : boolean {
-        return this._token.zationAuthUserGroup !== undefined;
+        return this._token.authUserGroup !== undefined;
     }
 
     // noinspection JSUnusedGlobalSymbols
     get userId(): number | string | undefined {
-        return this._token.zationUserId;
+        return this._token.userId;
     }
 
     // noinspection JSUnusedGlobalSymbols
     get authUserGroup(): string | undefined {
-        return this._token.zationAuthUserGroup;
+        return this._token.authUserGroup;
     }
 
     // noinspection JSUnusedGlobalSymbols
     get tokenId(): string {
-        return this._token.zationTokenId;
+        return this._token.tid;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -42,7 +42,7 @@ export default class ZationTokenWrapper
 
     // noinspection JSUnusedGlobalSymbols
     get panelAccess(): boolean {
-        return !!this._token.zationPanelAccess;
+        return !!this._token.panelAccess;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -63,7 +63,7 @@ export default class ZationTokenWrapper
      * @param path
      */
     hasTokenVariable(path ?: string | string[]) : boolean {
-        return ObjectPath.has(this._token.zationCustomVariables || {},path);
+        return ObjectPath.has(this._token.variables || {},path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -79,7 +79,7 @@ export default class ZationTokenWrapper
      * @param path
      */
     getTokenVariable<R = any>(path ?: string | string[]) : R {
-        return ObjectPath.get(this._token.zationCustomVariables || {},path);
+        return ObjectPath.get(this._token.variables || {},path);
     }
 }
 

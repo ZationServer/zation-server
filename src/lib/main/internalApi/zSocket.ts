@@ -30,7 +30,7 @@ export default class ZSocket
      * @throws AuthenticationError if the socket is not authenticated.
      */
     get authUserGroup(): string | undefined {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationAuthUserGroup),this._socket.authToken);
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.authUserGroup),this._socket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -39,7 +39,7 @@ export default class ZSocket
      * @throws AuthenticationError if the socket is not authenticated.
      */
     get userId(): string | number | undefined {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationUserId),this._socket.authToken);
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.userId),this._socket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -80,7 +80,7 @@ export default class ZSocket
      * @throws AuthenticationError if the socket is not authenticated.
      */
     get tokenId(): string | undefined {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationTokenId),this._socket.authToken);
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.tid),this._socket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -106,7 +106,7 @@ export default class ZSocket
      * @throws AuthenticationError if the socket is not authenticated.
      */
     get panelAccess(): boolean | undefined {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationPanelAccess),this._socket.authToken);
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.panelAccess),this._socket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -127,7 +127,7 @@ export default class ZSocket
      * @throws AuthenticationError if the socket is not authenticated.
      */
     async setTokenVariable(path : string | string[],value : any) : Promise<void> {
-        const ctv = CloneUtils.deepClone(TokenUtils.getCustomTokenVariables(this._socket.authToken));
+        const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this._socket.authToken));
         ObjectPath.set(ctv,path,value);
         await TokenUtils.setCustomVar(ctv,this._socket.baseSHBridge);
     }
@@ -149,7 +149,7 @@ export default class ZSocket
      */
     async deleteTokenVariable(path ?: string | string[]) : Promise<void> {
         if(!!path) {
-            const ctv = CloneUtils.deepClone(TokenUtils.getCustomTokenVariables(this._socket.authToken));
+            const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this._socket.authToken));
             ObjectPath.del(ctv,path);
             await TokenUtils.setCustomVar(ctv,this._socket.baseSHBridge);
         }
@@ -181,7 +181,7 @@ export default class ZSocket
     seqEditTokenVariables() : ObjectPathSequence
     {
         return new ObjectPathSequenceImp(CloneUtils.deepClone(
-            TokenUtils.getCustomTokenVariables(this._socket.authToken)),
+            TokenUtils.getTokenVariables(this._socket.authToken)),
             async (obj)=> {
                 await TokenUtils.setCustomVar(obj,this._socket.baseSHBridge);
             });
@@ -201,7 +201,7 @@ export default class ZSocket
      * @throws AuthenticationError if the socket is not authenticated.
      */
     hasTokenVariable(path ?: string | string[]) : boolean {
-        return ObjectPath.has(TokenUtils.getCustomTokenVariables(this._socket.authToken),path);
+        return ObjectPath.has(TokenUtils.getTokenVariables(this._socket.authToken),path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -218,7 +218,7 @@ export default class ZSocket
      * @throws AuthenticationError if the socket is not authenticated.
      */
     getTokenVariable<R = any>(path ?: string | string[]) : R {
-        return ObjectPath.get(TokenUtils.getCustomTokenVariables(this._socket.authToken),path);
+        return ObjectPath.get(TokenUtils.getTokenVariables(this._socket.authToken),path);
     }
 
     // noinspection JSUnusedGlobalSymbols

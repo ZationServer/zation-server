@@ -104,42 +104,42 @@ export default class SocketUpgradeEngine
                         //that requires a token.
                         this.defaultUserGroupSet.remove(socket);
 
-                        if(newToken.zationAuthUserGroup !== undefined){
-                            this.mapAuthUserGroupToSc.map(newToken.zationAuthUserGroup,socket);
+                        if(newToken.authUserGroup !== undefined){
+                            this.mapAuthUserGroupToSc.map(newToken.authUserGroup,socket);
                         }
 
-                        this.mapTokenIdToSc.map(newToken.zationTokenId,socket);
+                        this.mapTokenIdToSc.map(newToken.tid,socket);
 
-                        if(newToken.zationUserId !== undefined){
-                            this.mapUserIdToSc.map(newToken.zationUserId.toString(),socket);
+                        if(newToken.userId !== undefined){
+                            this.mapUserIdToSc.map(newToken.userId.toString(),socket);
                         }
 
-                        if(typeof newToken.zationOnlyPanelToken === 'boolean' && newToken.zationOnlyPanelToken){
+                        if(typeof newToken.onlyPanelToken === 'boolean' && newToken.onlyPanelToken){
                             this.panelUserSet.add(socket);
                         }
                     }
                     else {
                         //updated authentication
                         //check for changes and update map
-                        if(newToken.zationAuthUserGroup !== currentToken.zationAuthUserGroup) {
-                            this.mapAuthUserGroupToSc.unMap(currentToken.zationAuthUserGroup,socket);
-                            if(newToken.zationAuthUserGroup !== undefined){
-                                this.mapAuthUserGroupToSc.map(newToken.zationAuthUserGroup,socket);
+                        if(newToken.authUserGroup !== currentToken.authUserGroup) {
+                            this.mapAuthUserGroupToSc.unMap(currentToken.authUserGroup,socket);
+                            if(newToken.authUserGroup !== undefined){
+                                this.mapAuthUserGroupToSc.map(newToken.authUserGroup,socket);
                             }
                         }
                         //token id can not be changed.
 
                         //Only one '=' (userId can be a number or string)
-                        if(newToken.zationUserId != currentToken.zationUserId){
-                            if(currentToken.zationUserId !== undefined){
-                                this.mapUserIdToSc.unMap(currentToken.zationUserId.toString(),socket);
+                        if(newToken.userId != currentToken.userId){
+                            if(currentToken.userId !== undefined){
+                                this.mapUserIdToSc.unMap(currentToken.userId.toString(),socket);
                             }
-                            if(newToken.zationUserId !== undefined){
-                                this.mapUserIdToSc.map(newToken.zationUserId.toString(),socket);
+                            if(newToken.userId !== undefined){
+                                this.mapUserIdToSc.map(newToken.userId.toString(),socket);
                             }
                         }
-                        if(newToken.zationOnlyPanelToken !== currentToken.zationOnlyPanelToken) {
-                            if(typeof newToken.zationOnlyPanelToken === 'boolean' && newToken.zationOnlyPanelToken){
+                        if(newToken.onlyPanelToken !== currentToken.onlyPanelToken) {
+                            if(typeof newToken.onlyPanelToken === 'boolean' && newToken.onlyPanelToken){
                                 this.panelUserSet.add(socket);
                             }
                             else {

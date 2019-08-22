@@ -30,7 +30,7 @@ export default class TokenUtils
         let token = shBridge.getToken();
         if(token !== null) {
             token = {...token};
-            token.zationCustomVariables = customVar;
+            token.variables = customVar;
             await shBridge.setToken(token);
         }
         else {
@@ -48,7 +48,7 @@ export default class TokenUtils
         let token = socket.authToken;
         if(token !== null) {
             token = {...token};
-            token.zationCustomVariables = customVar;
+            token.variables = customVar;
             await TokenUtils.setSocketTokenAsync(socket,token);
         }
         else {
@@ -98,17 +98,17 @@ export default class TokenUtils
 
     static generateToken(tokenCheckKey : string) : PrepareZationToken {
         return {
-            zationTokenId : uniqid(),
-            zationTokenClusterKey : tokenCheckKey
+            tid : uniqid(),
+            clusterKey : tokenCheckKey
         };
     }
 
     /**
-     * Get a custom token variables.
+     * Get the token variables.
      * @param token
      */
-    static getCustomTokenVariables(token : ZationToken | null) : object {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.zationCustomVariables),token)
+    static getTokenVariables(token : ZationToken | null) : object {
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.variables),token)
             || {};
     }
 
@@ -187,9 +187,9 @@ export default class TokenUtils
     static checkToken(token : ZationToken | null, ae : AEPreparedPart) {
         if(token !== null)
         {
-            const authUserGroup = token.zationAuthUserGroup;
+            const authUserGroup = token.authUserGroup;
             if(authUserGroup !== undefined) {
-                if(token.zationOnlyPanelToken){
+                if(token.onlyPanelToken){
                     throw new BackError(MainBackErrors.tokenWithAuthGroupAndOnlyPanel);
                 }
                 if (!ae.isAuthGroup(authUserGroup)) {
@@ -203,7 +203,7 @@ export default class TokenUtils
                 }
             }
             else {
-                if(!(typeof token.zationOnlyPanelToken === 'boolean' && token.zationOnlyPanelToken)) {
+                if(!(typeof token.onlyPanelToken === 'boolean' && token.onlyPanelToken)) {
                     //token without auth group and it is not a only panel token.
                     throw new BackError(MainBackErrors.tokenWithoutAuthGroup);
                 }
@@ -217,7 +217,7 @@ export default class TokenUtils
     static createTokenClusterKeyChecker(zc : ZationConfig) : TokenClusterKeyCheckFunction {
         if(zc.mainConfig.useTokenClusterKeyCheck){
             return (token) => {
-                if(token.zationTokenClusterKey !== zc.internalData.tokenClusterKey) {
+                if(token.clusterKey !== zc.internalData.tokenClusterKey) {
                     throw new Error('Wrong or missing token cluster key in the token.')
                 }
             }
