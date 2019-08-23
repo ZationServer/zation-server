@@ -4,6 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
+import afterPromise from "./promiseUtils";
+
 export default class AsyncChain {
 
     private lastPromise: Promise<void> = Promise.resolve();
@@ -16,10 +18,10 @@ export default class AsyncChain {
      */
     runInChain(task : (...args : any[]) => Promise<void>) : Promise<void> {
         this.pressure++;
-        const promise = this.lastPromise.finally(async () => {
+        const promise = afterPromise(this.lastPromise,(async () => {
             await task();
             this.pressure--;
-        });
+        }));
         this.lastPromise = promise;
         return promise;
     }
