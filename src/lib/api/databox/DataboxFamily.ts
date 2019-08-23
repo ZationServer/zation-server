@@ -301,16 +301,19 @@ export default class DataboxFamily extends DataboxCore {
                        socket.off(inputChPrefix+inChId);
                     }
                     //will also delete the inputChannels set
-                    this._disconnectSocket(socket,unregisterSocketFunction,id);
+                    this._disconnectSocket(socket,disconnectHandler,id);
                 }
                 else {
                     socket.off(inputChPrefix+inputChannelId);
                     inputChIds.delete(inputChannelId);
                     if(inputChIds.size === 0){
-                        this._disconnectSocket(socket,unregisterSocketFunction,id);
+                        this._disconnectSocket(socket,disconnectHandler,id);
                     }
                 }
             };
+
+            //Otherwise, the disconnect event calls it with parameters.
+            const disconnectHandler = () => unregisterSocketFunction();
 
             socketMemoryData = {
                 inputChIds: inputChIds,
@@ -327,7 +330,7 @@ export default class DataboxFamily extends DataboxCore {
             }
             socketMemberSet.add(id);
 
-            socket.on('disconnect',unregisterSocketFunction);
+            socket.on('disconnect',disconnectHandler);
             DataboxAccessHelper.addDb(this,socket);
             this.onConnection(id,socket.zSocket);
         }
