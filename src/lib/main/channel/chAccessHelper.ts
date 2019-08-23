@@ -108,7 +108,8 @@ export default class ChAccessHelper
                         socket.zSocket,
                         chInfo
                     ))) {
-                        ChUtils.kickOut(socket,subs[i]);
+                        ChUtils.kickOut(socket,subs[i],`custom channel: '${chInfo.name}'${chInfo.id !== undefined ?
+                        ` with id: '${chInfo.id}'` : ''}`);
                     }
                 }
             }
@@ -117,7 +118,7 @@ export default class ChAccessHelper
     }
 
     /**
-     * Checks the socket subscribe access to main zation channels.
+     * Checks the socket subscribe access to the main zation channels.
      * @param socket
      */
     static checkSocketZationChAccess(socket : UpSocket) : void
@@ -127,7 +128,7 @@ export default class ChAccessHelper
 
         for(let i = 0; i < subs.length; i++) {
             if(subs[i] === ZationChannel.DEFAULT_USER_GROUP && authEngine.isAuth()) {
-                ChUtils.kickOut(socket,ZationChannel.DEFAULT_USER_GROUP);
+                ChUtils.kickOut(socket,ZationChannel.DEFAULT_USER_GROUP,'default user group channel.');
             }
             else if(subs[i].indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
                 if(ZationChannel.AUTH_USER_GROUP_PREFIX + authEngine.getAuthUserGroup() !== subs[i]) {
@@ -140,7 +141,7 @@ export default class ChAccessHelper
                 }
             }
             else if(subs[i] === ZationChannel.PANEL_OUT && !authEngine.hasPanelAccess()) {
-                ChUtils.kickOut(socket,subs[i]);
+                ChUtils.kickOut(socket,subs[i],'panel out channel');
             }
         }
     }

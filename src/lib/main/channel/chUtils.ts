@@ -88,11 +88,12 @@ export default class ChUtils
      * Kick the socket from a channel with debug log.
      * @param socket
      * @param channel
+     * @param target
      */
-    static kickOut(socket : UpSocket, channel : string) : void {
+    static kickOut(socket : UpSocket, channel : string,target ?: string) : void {
         // noinspection JSUnresolvedFunction,JSValidateTypes,TypeScriptValidateJSTypes
         socket.kickOut(channel);
-        Logger.printDebugInfo(`Socket with id: ${socket.id} is kicked from channel ${channel}`);
+        Logger.printDebugInfo(`Socket with id: ${socket.id} is kicked from ${target !== undefined ? target : `channel ${channel}`}.`);
     }
 
     /**
