@@ -532,6 +532,7 @@ export default class ZationMaster {
             const err = new Error(errMsg);
             err.name = name;
             if(errCode !== undefined){err['code'] = errCode;}
+            if(this.stateServerEngine){this.stateServerEngine.destroy();}
             this.startReject(err);
         }
     }

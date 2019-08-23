@@ -188,6 +188,15 @@ export default class StateServerEngine
     }
 
     /**
+     * Destroy the state server socket.
+     */
+    destroy() : void {
+        if(this.stateSocket){
+            this.stateSocket.destroy();
+        }
+    }
+
+    /**
      * Start to connect and register to the state server.
      * Promise will be resolved after the connection is established, and the master has registered at the state server.
      */
@@ -197,7 +206,9 @@ export default class StateServerEngine
         const promise = new Promise<void>((resolve,reject) =>
         {
             this.stateSocket.on('error',async (e) => {
-                Logger.printDebugWarning(`Error on state server connection socket: ${e}`);
+                if(!this.inRegisterProcess){
+                    Logger.printDebugWarning(`Error on state server connection socket: ${e}`);
+                }
             });
 
             this.stateSocket.on('disconnect',async ()=>
