@@ -132,12 +132,12 @@ export default class ChAccessHelper
             }
             else if(subs[i].indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
                 if(ZationChannel.AUTH_USER_GROUP_PREFIX + authEngine.getAuthUserGroup() !== subs[i]) {
-                    ChUtils.kickOut(socket,subs[i]);
+                    ChUtils.kickOut(socket,subs[i],`auth user group channel: '${ChUtils.getUserAuthGroupFromCh(subs[i])}'`);
                 }
             }
             else if(subs[i].indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
                 if(ZationChannel.USER_CHANNEL_PREFIX + authEngine.getUserId() !== subs[i]) {
-                    ChUtils.kickOut(socket,subs[i]);
+                    ChUtils.kickOut(socket,subs[i],`user channel: '${ChUtils.getUserIdFromCh(subs[i])}'`);
                 }
             }
             else if(subs[i] === ZationChannel.PANEL_OUT && !authEngine.hasPanelAccess()) {
