@@ -18,10 +18,10 @@ export default class AsyncChain {
      */
     runInChain(task : (...args : any[]) => Promise<void>) : Promise<void> {
         this.pressure++;
-        const promise = afterPromise(this.lastPromise,(async () => {
+        const promise = afterPromise(this.lastPromise,async () => {
             await task();
             this.pressure--;
-        }));
+        });
         this.lastPromise = promise;
         return promise;
     }
