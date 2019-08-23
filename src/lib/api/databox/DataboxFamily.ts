@@ -178,7 +178,7 @@ export default class DataboxFamily extends DataboxCore {
                                     socket.zSocket,
                                     senderPackage.t
                                 )
-                            }
+                            },DataboxUtils.isReloadTarget(senderPackage.t)
                         );
                         break;
                     case DbClientInputAction.resetSession:

@@ -8,7 +8,8 @@ import {RespondFunction} from "../sc/socket";
 import AsyncChain        from "../utils/asyncChain";
 import {ClientErrorName} from "../constants/clientErrorName";
 
-export type FetchManagerBuilder<F extends (input : any,...any : any[]) => any> = () => ((respond : RespondFunction,caller : () => any | Promise<any>) => Promise<void>);
+export type FetchManagerBuilder<F extends (input : any,...any : any[]) => any> =
+    () => ((respond : RespondFunction,caller : () => any | Promise<any>,isReloadTarget : boolean) => Promise<void>);
 
 export default class DataboxFetchManager {
 
@@ -28,11 +29,12 @@ export default class DataboxFetchManager {
         }
         else {
             return () => {
-                const chain = new AsyncChain();
-                return async (respond : RespondFunction,caller : () => any | Promise<any>) => {
-                    //process input before adding to chain
-                    if(chain.getBackpressure() < maxBackpressure){
-                        await chain.runInChain(async () => {
+                const mainChain = new AsyncChain();
+                const reloadChain = new AsyncChain();
+                return async (respond : RespondFunction,caller : () => any | Promise<any>,isReloadTarget : boolean) => {
+                    const selectedChain = isReloadTarget ? reloadChain : mainChain;
+                    if(selectedChain.getBackpressure() < maxBackpressure){
+                        await selectedChain.runInChain(async () => {
                             respond(null,(await caller()));
                         });
                     }

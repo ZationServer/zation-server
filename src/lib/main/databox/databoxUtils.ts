@@ -7,13 +7,15 @@ Copyright(c) Luca Scaringella
 import {
     CudOperation,
     CudPackage,
-    CudType, DbClientOutputClosePackage,
+    CudType,
+    DBClientInputSessionTarget,
+    DbClientOutputClosePackage,
     DbClientOutputEvent,
     DbClientOutputReloadPackage,
-    DBClientInputSessionTarget,
     DbSession,
     DbSessionData,
-    PreCudPackage, DbToken
+    DbToken,
+    PreCudPackage
 } from "./dbDefinitions";
 import DataboxFamily, {DataboxFamilyClass} from "../../api/databox/DataboxFamily";
 import DataboxFamilyContainer              from "./container/databoxFamilyContainer";
@@ -178,6 +180,14 @@ export default class DataboxUtils {
                 err.name = ClientErrorName.UNKNOWN_SESSION_TARGET;
                 throw err;
         }
+    }
+
+    /**
+     * Returns if the session target is the reload session.
+     * @param target
+     */
+    static isReloadTarget(target ?: DBClientInputSessionTarget) : boolean {
+        return target === DBClientInputSessionTarget.reloadSession;
     }
 
     /**
