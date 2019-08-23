@@ -47,6 +47,7 @@ import DataboxFetchManager, {FetchManagerBuilder} from "../../main/databox/datab
 import ZSocket                                    from "../../main/internalApi/zSocket";
 import CloneUtils                                 from "../../main/utils/cloneUtils";
 import {databoxInstanceSymbol}                    from "../../main/databox/databoxPrepare";
+import Timeout                                    = NodeJS.Timeout;
 const defaultSymbol                               = Symbol();
 
 /**
@@ -94,6 +95,7 @@ export default class DataboxFamily extends DataboxCore {
      */
     private readonly _socketMembers : Map<UpSocket,Set<string>> = new Map<UpSocket, Set<string>>();
     private readonly _lastCudData : Map<string,{timestamp : number,id : string}> = new Map();
+    private readonly _unregisterMemberTimeoutMap : Map<string,Timeout> = new Map();
     private readonly _idValidCheck : IdValidChecker;
     private readonly _dbEventPreFix : string;
     private readonly _scExchange : ScExchange;
@@ -272,9 +274,10 @@ export default class DataboxFamily extends DataboxCore {
     private _buildSocketFamilyMemberMap(id : string) : Map<UpSocket,DbSocketMemory> {
         let memberMap = this._regMember.get(id);
         if(!memberMap){
-            memberMap = new Map<UpSocket,DbSocketMemory>();
-            this._registerMember(id);
-            this._regMember.set(id,memberMap);
+            memberMap = this._registerMember(id);
+        }
+        else {
+            this._clearUnregisterMemberTimeout(id);
         }
         return memberMap;
     }
@@ -349,8 +352,7 @@ export default class DataboxFamily extends DataboxCore {
         if(memberMap){
             memberMap.delete(socket);
             if(memberMap.size === 0){
-                this._regMember.delete(id);
-                this._unregisterMember(id);
+                this._createUnregisterMemberTimeout(id);
             }
         }
 
@@ -365,11 +367,38 @@ export default class DataboxFamily extends DataboxCore {
     }
 
     /**
+     * Clears the timeout to unregister the member.
+     * @param id
+     * @private
+     */
+    private _clearUnregisterMemberTimeout(id : string) : void {
+        const timeout = this._unregisterMemberTimeoutMap.get(id);
+        if(timeout !== undefined){clearTimeout(timeout);}
+        this._unregisterMemberTimeoutMap.delete(id);
+    }
+
+    /**
+     * Creates (set or renew) the timeout to unregister a member.
+     * @param id
+     * @private
+     */
+    private _createUnregisterMemberTimeout(id : string) : void {
+        const timeout = this._unregisterMemberTimeoutMap.get(id);
+        if(timeout !== undefined){clearTimeout(timeout);}
+        this._unregisterMemberTimeoutMap.set(id,setTimeout(() => {
+            this._unregisterMember(id);
+            this._unregisterMemberTimeoutMap.delete(id);
+        }, 120000));
+    }
+
+    /**
      * Registers for listening to a new family member.
      * @param id
      * @private
      */
-    private _registerMember(id : string) {
+    private _registerMember(id : string) : Map<UpSocket,DbSocketMemory> {
+        const memberMap = new Map<UpSocket,DbSocketMemory>();
+        this._regMember.set(id,memberMap);
         this._lastCudData.set(id,{timestamp : Date.now(),id : DataboxUtils.generateStartCudId()});
         this._scExchange.subscribe(this._dbEventPreFix+id)
             .watch(async (data) => {
@@ -388,6 +417,7 @@ export default class DataboxFamily extends DataboxCore {
                     }
                 }
             });
+        return memberMap;
     }
 
     /**
@@ -396,6 +426,7 @@ export default class DataboxFamily extends DataboxCore {
      * @private
      */
     private _unregisterMember(id : string) {
+        this._regMember.delete(id);
         const channel = this._scExchange.channel(this._dbEventPreFix+id);
         channel.unwatch();
         channel.destroy();
