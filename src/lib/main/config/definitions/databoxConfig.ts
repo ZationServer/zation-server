@@ -191,7 +191,8 @@ export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, 
     parallelFetch ?: boolean;
 
     /**
-     * The maximal backpressure that a client can build up with by calling fetch data.
+     * The maximal backpressure that a client can build up by calling fetch data.
+     * (Notice that the restore session has its own backpressure)
      * This option is unnecessary if the parallel fetch option is activated.
      * @default 30
      */
