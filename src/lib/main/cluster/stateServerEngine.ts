@@ -272,7 +272,7 @@ export default class StateServerEngine
                     catch (e) {
                         const err = new Error(`Register by state server is failed. Err: ${e.toString()}.`);
                         (err as any).code = (e as any).code;
-                        throw err;
+                        reject(err);
                     }
                 }
                 else {
@@ -299,13 +299,16 @@ export default class StateServerEngine
                 },
                 async (err,data) => {
                     if(!err) {
-                        await this.reactOnRegisterRespond(data);
-                        this.inRegisterProcess = false;
-                        resolve();
+                        try {
+                            await this.reactOnRegisterRespond(data);
+                            this.inRegisterProcess = false;
+                            resolve();
+                        }
+                        catch (e) {
+                         reject(e);
+                        }
                     }
-                    else {
-                        reject(err);
-                    }
+                    else {reject(err);}
                 });
         });
     }
@@ -332,10 +335,13 @@ export default class StateServerEngine
                 Logger.printStartDebugInfo
                 (`Zation-cluster-state server is in ${data['mode']} reconnectMode! Master is try again to connect in ${ms} ms.`);
 
-                await new Promise((resolve) => {
+                await new Promise((resolve,reject) => {
                     setTimeout(async () => {
-                        await this.registerMaster();
-                        resolve();
+                        try {
+                            await this.registerMaster();
+                            resolve();
+                        }
+                        catch (e) {reject(e);}
                     },Number(ms));
                 });
                 break;
