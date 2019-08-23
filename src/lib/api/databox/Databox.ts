@@ -142,13 +142,14 @@ export default class Databox extends DataboxCore {
             try {
                 switch (senderPackage.a) {
                     case DbClientInputAction.fetchData:
+                        const processedFetchInput = await this._consumeFetchInput((senderPackage as DbClientInputFetchPackage).i);
                         await fetchManager(
                             respond,
                             async () => {
                                 return await this._fetchData
                                 (
                                     dbToken,
-                                    await this._consumeFetchInput((senderPackage as DbClientInputFetchPackage).i),
+                                    processedFetchInput,
                                     initData,
                                     socket.zSocket,
                                     senderPackage.t
@@ -198,16 +199,20 @@ export default class Databox extends DataboxCore {
 
     private async _fetchData(dbToken : DbToken,fetchInput : any,initData : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
         const session = DataboxUtils.getSession(dbToken.sessions,target);
-
         const currentCounter = session.c;
         session.c++;
-        const data = await this.fetchData(currentCounter,session.d,fetchInput,initData,zSocket);
-
-        return {
-            c : currentCounter,
-            d : data,
-            t : await this._signDbToken(dbToken)
-        };
+        try {
+            const data = await this.fetchData(currentCounter,session.d,fetchInput,initData,zSocket);
+            return {
+                c : currentCounter,
+                d : data,
+                t : await this._signDbToken(dbToken)
+            };
+        }
+        catch (e) {
+            e['counter'] = currentCounter;
+            throw e;
+        }
     }
 
     private async _resetSession(dbToken : DbToken,target ?: DBClientInputSessionTarget) : Promise<string> {

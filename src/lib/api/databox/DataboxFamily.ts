@@ -165,6 +165,7 @@ export default class DataboxFamily extends DataboxCore {
             try {
                 switch (senderPackage.a) {
                     case DbClientInputAction.fetchData:
+                        const processedFetchInput = await this._consumeFetchInput((senderPackage as DbClientInputFetchPackage).i);
                         await fetchManager(
                             respond,
                             async () => {
@@ -172,7 +173,7 @@ export default class DataboxFamily extends DataboxCore {
                                 (
                                     id,
                                     dbToken,
-                                    await this._consumeFetchInput((senderPackage as DbClientInputFetchPackage).i),
+                                    processedFetchInput,
                                     initData,
                                     socket.zSocket,
                                     senderPackage.t
@@ -234,16 +235,20 @@ export default class DataboxFamily extends DataboxCore {
 
     private async _fetchData(id : string,dbToken : DbToken,fetchInput : any,initData : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
         const session = DataboxUtils.getSession(dbToken.sessions,target);
-
         const currentCounter = session.c;
         session.c++;
-        const data = await this.fetchData(id,currentCounter,session.d,fetchInput,initData,zSocket);
-
-        return {
-            c : currentCounter,
-            d : data,
-            t : await this._signDbToken(dbToken,id)
-        };
+        try {
+            const data = await this.fetchData(id,currentCounter,session.d,fetchInput,initData,zSocket);
+            return {
+                c : currentCounter,
+                d : data,
+                t : await this._signDbToken(dbToken,id)
+            };
+        }
+        catch (e) {
+            e['counter'] = currentCounter;
+            throw e;
+        }
     }
 
     private async _resetSession(id : string,dbToken : DbToken,target ?: DBClientInputSessionTarget) : Promise<string> {
