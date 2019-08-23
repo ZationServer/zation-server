@@ -16,7 +16,7 @@ export default class AsyncChain {
      */
     runInChain(task : (...args : any[]) => Promise<void>) : Promise<void> {
         this.pressure++;
-        const promise = this.lastPromise.then(async () => {
+        const promise = this.lastPromise.finally(async () => {
             await task();
             this.pressure--;
         });
