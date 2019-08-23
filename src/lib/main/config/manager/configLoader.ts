@@ -36,6 +36,7 @@ export default class ConfigLoader {
     private _mainConfig : InternalMainConfig = {
         debug: false,
         startDebug: false,
+        killOnStartFailure: true,
         showConfigWarnings: true,
         port: 3000,
         hostname: 'localhost',

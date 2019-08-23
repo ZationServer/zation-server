@@ -500,13 +500,13 @@ export default class ZationMaster {
      * Kill the complete server for a specific reason.
      * @param error
      */
-    public killServer(error : Error | string)
+    public killServer(error ?: Error | string)
     {
         if(this.master) {
             this.master.killWorkers();
             this.master.killBrokers();
         }
-        this.printStartFail(error);
+        if(error !== undefined){this.printStartFail(error);}
         process.exit();
     }
 
@@ -528,12 +528,16 @@ export default class ZationMaster {
      * @param errCode
      */
     public rejectStart(name : StartErrorName,errMsg : string,errCode ?: string) : void {
-        if(this.rejectStart){
+        if(!this.zc.mainConfig.killOnStartFailure  && this.rejectStart){
+            ZationMaster.instance = null;
             const err = new Error(errMsg);
             err.name = name;
             if(errCode !== undefined){err['code'] = errCode;}
             if(this.stateServerEngine){this.stateServerEngine.destroy();}
             this.startReject(err);
+        }
+        else {
+            this.killServer();
         }
     }
 

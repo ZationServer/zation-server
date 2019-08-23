@@ -73,6 +73,12 @@ export interface MainConfig
      */
     startDebug  ?: boolean;
     /**
+     * Indicates if the server should be killed in case
+     * of start failure instead of throwing an error.
+     * @default true
+     */
+    killOnStartFailure  ?: boolean;
+    /**
      * Boolean that indicates if the server should console log
      * config warnings after checking the configurations.
      * @default true
@@ -595,6 +601,7 @@ export interface InternalMainConfig extends MainConfig {
     scOrigins ?: string | null;
     debug  : boolean;
     startDebug  : boolean;
+    killOnStartFailure  : boolean;
     showConfigWarnings : boolean;
     environment  : 'dev' | 'prod';
     timeZone  : string;

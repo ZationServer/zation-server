@@ -118,6 +118,7 @@ Main[nameof<MainConfig>(s => s.port)]               = {types : ['number'],isOpti
 Main[nameof<MainConfig>(s => s.hostname)]           = {types : ['string'],isOptional : true};
 Main[nameof<MainConfig>(s => s.debug)]              = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.startDebug)]         = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.killOnStartFailure)] = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.showConfigWarnings)] = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.environment)]        = {types : ['string'],isOptional : true};
 Main[nameof<MainConfig>(s => s.timeZone)]           = {types : ['string'],isOptional : true};
