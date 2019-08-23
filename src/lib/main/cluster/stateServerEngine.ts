@@ -22,7 +22,7 @@ export default class StateServerEngine
     private readonly useClusterSecretKey : boolean;
     private encoder : Encoder;
 
-    private inBootProcess : boolean = true;
+    private inRegisterProcess : boolean = true;
     private firstConnection : boolean = true;
     private isClusterLeader : boolean = false;
 
@@ -101,8 +101,10 @@ export default class StateServerEngine
                 sharedData = this.encoder.decrypt(sharedData);
             }
             catch (e) {
-                this.zm.killServer(`Decrypting the shared variables failed.` +
+                const error = new Error(`Decrypt the shared variables failed.` +
                     `Check if every zation server has the same cluster secret key`);
+                (error as any).code = 'DECRYPT_SHARED_VARIABLES_FAILED';
+                throw error;
             }
         }
 
@@ -117,8 +119,10 @@ export default class StateServerEngine
             }
         }
         else {
-            this.zm.killServer(`Load the shared variables failed.` +
+            const error = new Error(`Load the shared variables failed.` +
                 `Check if every zation server has the same cluster secret key setting`);
+            (error as any).code = 'LOAD_SHARED_VARIABLES_FAILED';
+            throw error;
         }
     }
 
@@ -198,8 +202,10 @@ export default class StateServerEngine
 
             this.stateSocket.on('disconnect',async ()=>
             {
-                if(this.inBootProcess) {
-                    this.zm.killServer(`Connection to state server is lost in boot process!`);
+                if(this.inRegisterProcess) {
+                    const error = new Error(`Connection to state server is lost in register process!`);
+                    (error as any).code = 'CONNECTION_LOST';
+                    reject(error);
                 }
                 else {
                     //lost connection by running server
@@ -210,18 +216,25 @@ export default class StateServerEngine
 
             this.stateSocket.on('connectAbort',async (code,data)=>
             {
-                if(this.inBootProcess) {
+                if(this.inRegisterProcess) {
+                    let error;
                     switch (code) {
                         case 4010:
                             //BadZationClusterVersion
-                            this.zm.killServer(`This zation cluster version of this zation server version is not compatible with the state server version.`);
+                            error = new Error(`This zation cluster version of this zation server version is not compatible with the state server version.`);
+                            (error as any).code = 'VERSION_NOT_COMPATIBLE';
+                            reject(error);
                             break;
                         case 4011:
                             //BadClusterAuthError
-                            this.zm.killServer(`The provided 'clusterAuthKey' is wrong. Can't connect to zation-cluster-state server.`);
+                            error = new Error(`The provided 'clusterAuthKey' is wrong. Can't connect to zation-cluster-state server.`);
+                            (error as any).code = 'WRONG_CLUSTER_AUTH_KEY';
+                            reject(error);
                             break;
                         default :
-                            this.zm.killServer(`Connection to the state server is failed in the start process.!`);
+                            error = new Error(`Connection to the state server is failed in the register process.`);
+                            (error as any).code = 'CONNECTION_FAILED';
+                            reject(error);
                             break;
                     }
                 }
@@ -246,7 +259,9 @@ export default class StateServerEngine
                         resolve();
                     }
                     catch (e) {
-                        this.zm.killServer(`Register by state server is failed. Err: ${e.toString()}.`);
+                        const err = new Error(`Register by state server is failed. Err: ${e.toString()}.`);
+                        (err as any).code = (e as any).code;
+                        throw err;
                     }
                 }
                 else {
@@ -274,6 +289,7 @@ export default class StateServerEngine
                 async (err,data) => {
                     if(!err) {
                         await this.reactOnRegisterRespond(data);
+                        this.inRegisterProcess = false;
                         resolve();
                     }
                     else {
@@ -313,9 +329,10 @@ export default class StateServerEngine
                 });
                 break;
             case 'notSameSettings' :
-                this.zm.killServer(`Other connected servers with the zation-cluster-state server have different settings.`+
+                const error = new Error(`Other connected servers with the zation-cluster-state server have different settings.`+
                     `Try to shut down all servers and start the server with the new settings to accept the other settings.`);
-                break;
+                (error as any).code = 'DIFFERENT_SETTINGS';
+                throw error;
             case 'instanceIdAlreadyReg':
                 Logger.printStartDebugInfo
                 (`InstanceId: ${this.zc.mainConfig.instanceId} is already registered.` +
@@ -324,8 +341,9 @@ export default class StateServerEngine
                 await this.registerMaster();
                 break;
             default :
-                this.zm.killServer(`The respond info from the zation-cluster-state server could not be found.`);
-                break;
+                const unknownError = new Error(`The respond info from the zation-cluster-state server could not be found.`);
+                (unknownError as any).code = 'UNKNOWN_RESPOND_INFO';
+                throw unknownError;
         }
     }
 
@@ -354,10 +372,9 @@ export default class StateServerEngine
     }
 
     /**
-     * Will join the cluster, register for the new leader event and end the boot process.
+     * Will join the cluster, register for the new leader event.
      */
     public async start() {
-        this.inBootProcess = false;
         this.registerNewLeaderEvent();
         await this.joinCluster();
     }

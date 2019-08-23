@@ -182,8 +182,8 @@ export default class ZationMaster {
                 await this.stateServerEngine.registerStateServer();
             }
             catch (e) {
-                this.printStartFail(e);
-                return this.rejectStart(StartErrorName.REGISTER_TO_STATE_SERVER_FAILED,'The configs have errors.');
+                this.printStartFail(e.message);
+                return this.rejectStart(StartErrorName.REGISTER_TO_STATE_SERVER_FAILED,e.message,e.code);
             }
         }
 
@@ -525,11 +525,13 @@ export default class ZationMaster {
      * Reject the start promise.
      * @param name
      * @param errMsg
+     * @param errCode
      */
-    public rejectStart(name : StartErrorName,errMsg : string) : void {
+    public rejectStart(name : StartErrorName,errMsg : string,errCode ?: string) : void {
         if(this.rejectStart){
             const err = new Error(errMsg);
             err.name = name;
+            if(errCode !== undefined){err['code'] = errCode;}
             this.startReject(err);
         }
     }
