@@ -9,6 +9,8 @@ import {DataboxConnectReq} from "../dbDefinitions";
 export default class DataboxReqUtils
 {
     static isValidReqStructure(databoxReq : DataboxConnectReq) : boolean {
-       return typeof databoxReq === 'object' && typeof databoxReq.d === "string";
+       // noinspection SuspiciousTypeOfGuard
+        return typeof databoxReq === 'object' && typeof databoxReq.d === "string" &&
+           (databoxReq.i === undefined || typeof databoxReq.i === 'string');
     }
 }
