@@ -77,7 +77,7 @@ import {
 } from "../main/config/definitions/channelsConfig";
 import {StarterConfig}  from "../main/config/definitions/starterConfig";
 import {MainConfig}     from "../main/config/definitions/mainConfig";
-import ZSocket          from "../main/internalApi/ZSocket";
+import ZSocket          from "../main/internalApi/zSocket";
 import BackError        from "./BackError";
 import BackErrorBag     from "./BackErrorBag";
 import ObjectUtils      from "../main/utils/objectUtils";

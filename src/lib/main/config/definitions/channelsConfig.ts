@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import ZSocket              from "../../internalApi/ZSocket";
+import ZSocket              from "../../internalApi/zSocket";
 import Bag                  from "../../../api/Bag";
 import PubData              from "../../internalApi/pubData";
 import CChFamilyInfo        from "../../internalApi/cChFamilyInfo";

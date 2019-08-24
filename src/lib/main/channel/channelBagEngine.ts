@@ -19,7 +19,7 @@ import {
 } from "../constants/workerChTaskDefinitions";
 import ScServer             from "../sc/scServer";
 import {SyncTokenDefinitions, UpdateTokenMainData} from "../constants/syncTokenDefinitions";
-import ZSocket              from "../internalApi/ZSocket";
+import ZSocket              from "../internalApi/zSocket";
 import Logger               from "../logger/logger";
 import ChUtils              from "./chUtils";
 import {ChannelPrepare}     from "./channelPrepare";

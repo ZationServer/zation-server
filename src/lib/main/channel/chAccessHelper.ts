@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import UpSocket             from "../sc/socket";
 import {ChannelPrepare}     from "./channelPrepare";
-import ZSocket              from "../internalApi/ZSocket";
+import ZSocket              from "../internalApi/zSocket";
 import Bag                  from "../../api/Bag";
 import CChInfo              from "../internalApi/cChInfo";
 import ChUtils              from "./chUtils";

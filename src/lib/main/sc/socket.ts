@@ -8,7 +8,7 @@ import {ZationToken}        from "../constants/internal";
 import {IncomingMessage}    from "http";
 import BaseSHBridgeSocket   from "../bridges/baseSHBridgeSocket";
 import AuthEngine           from "../auth/authEngine";
-import ZSocket              from "../internalApi/ZSocket";
+import ZSocket              from "../internalApi/zSocket";
 import Databox              from "../../api/databox/Databox";
 import DataboxFamily        from "../../api/databox/DataboxFamily";
 

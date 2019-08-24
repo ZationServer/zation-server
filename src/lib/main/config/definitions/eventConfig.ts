@@ -13,7 +13,7 @@ import BackError                       from "../../../api/BackError";
 import BackErrorBag                    from "../../../api/BackErrorBag";
 import Bag                             from "../../../api/Bag";
 import ZationInfo                      from "../../internalApi/zationInfo";
-import ZSocket                         from "../../internalApi/ZSocket";
+import ZSocket                         from "../../internalApi/zSocket";
 import CodeError                       from "../../error/codeError";
 import ZationTokenWrapper              from "../../internalApi/zationTokenWrapper";
 
