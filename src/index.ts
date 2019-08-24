@@ -49,6 +49,7 @@ import AsymmetricKeyPairs           from "./lib/main/internalApi/asymmetricKeyPa
 import DbCudOperationSequence       from "./lib/main/databox/dbCudOperationSequence";
 import {ObjectPathSequence}         from "./lib/main/internalApi/objectPathSequence/objectPathSequence";
 import {StartErrorName}             from "./lib/main/constants/startErrorName";
+import NoDataAvailableError         from "./lib/main/databox/noDataAvailable";
 const  FsUtil : any               = require('socketcluster/fsutil');
 
 //starter
@@ -86,6 +87,7 @@ export {
         ObjectModel,
         ParamInput,
         NoMoreDataAvailableError,
+        NoDataAvailableError,
         DataboxFamily,
         DataboxFamilyContainer,
         Databox,

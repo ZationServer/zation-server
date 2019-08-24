@@ -18,6 +18,7 @@ import {DataboxInfo, DbToken}             from "../../main/databox/dbDefinitions
 import {InputConsumeFunction}             from "../../main/input/inputClosureCreator";
 import ErrorUtils                         from "../../main/utils/errorUtils";
 import {DbAccessCheckFunction}            from "../../main/databox/databoxAccessHelper";
+import NoDataAvailableError               from "../../main/databox/noDataAvailable";
 
 /**
  * If you always want to present the most recent data on the client,
@@ -223,6 +224,16 @@ export default abstract class DataboxCore {
      */
     protected noMoreDataAvailable(){
         throw new NoMoreDataAvailableError();
+    }
+
+    // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
+    /**
+     * **Not override this method.**
+     * This method should be called in the fetchData method
+     * whenever no more data is available for the client.
+     */
+    protected noDataAvailable(code ?: string | number,data ?: any){
+        throw new NoDataAvailableError(code,data);
     }
 
     // noinspection JSMethodCanBeStatic

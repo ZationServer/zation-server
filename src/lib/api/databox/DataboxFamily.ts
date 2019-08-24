@@ -818,6 +818,8 @@ export default class DataboxFamily extends DataboxCore {
      * A client can call that method multiple times to fetch more and more data.
      * You usually request data from your database and return it, and if no more data is available,
      * you should throw a NoMoreDataAvailableError or call the internal noMoreDataAvailable method.
+     * If no data is available for example the profile with the id ten is not found,
+     * you can throw a NoDataAvailableError or call the internal noDataAvailable method.
      * The counter parameter indicates the number of the current call, it starts counting at zero.
      * The client can send additional data when calling the fetch process (fetchInput),
      * this data is available as the input parameter.
@@ -847,13 +849,14 @@ export default class DataboxFamily extends DataboxCore {
      * @param socket
      */
     protected fetchData(id : string,counter : number,session : any,input : any,initData : any,socket : ZSocket) : Promise<any> | any {
-        this.noMoreDataAvailable();
+        this.noDataAvailable();
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * **Can be overridden.**
      * Check if the member id is valid for this DataboxFamily.
+     * Use this check only for security reason, for example, checking the format of the id.
      * To block the id, you only need to return an object (that can be error information) or false.
      * If you want to allow the id, you have to return nothing or a true.
      * @param id

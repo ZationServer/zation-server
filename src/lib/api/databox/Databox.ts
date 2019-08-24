@@ -630,6 +630,8 @@ export default class Databox extends DataboxCore {
      * A client can call that method multiple times to fetch more and more data.
      * You usually request data from your database and return it, and if no more data is available,
      * you should throw a NoMoreDataAvailableError or call the internal noMoreDataAvailable method.
+     * If no data is available for example the profile with the id ten is not found,
+     * you can throw a NoDataAvailableError or call the internal noDataAvailable method.
      * The counter parameter indicates the number of the current call, it starts counting at zero.
      * The client can send additional data when calling the fetch process (fetchInput),
      * this data is available as the input parameter.
@@ -658,7 +660,7 @@ export default class Databox extends DataboxCore {
      * @param socket
      */
     protected fetchData(counter : number,session : any,input : any,initData : any,socket : ZSocket) : Promise<any> | any {
-        this.noMoreDataAvailable();
+        this.noDataAvailable();
     }
 
     /**
