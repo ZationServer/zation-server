@@ -15,7 +15,8 @@
     "alwaysStrict" : true,
     "plugins": [{ "transform": "ts-nameof", "type": "raw" }],
     "noUnusedLocals": true,
-    "strictBindCallApply": true
+    "strictBindCallApply": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
     "src/**/*"
