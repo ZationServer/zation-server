@@ -216,7 +216,7 @@ export default abstract class DataboxCore {
     initialize(bag: Bag): Promise<void> | void {
     }
 
-    // noinspection JSMethodCanBeStatic
+    // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
     /**
      * **Not override this method.**
      * This method should be called in the fetchData method
@@ -230,7 +230,9 @@ export default abstract class DataboxCore {
     /**
      * **Not override this method.**
      * This method should be called in the fetchData method
-     * whenever no more data is available for the client.
+     * whenever no data is available for the client.
+     * @code Can be optionally provided for the client.
+     * @data Can be optionally provided for the client.
      */
     protected noDataAvailable(code ?: string | number,data ?: any){
         throw new NoDataAvailableError(code,data);
