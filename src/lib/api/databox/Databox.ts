@@ -289,7 +289,7 @@ export default class Databox extends DataboxCore {
         this._scExchange.subscribe(this._dbEvent)
             .watch(async (data) => {
                 if((data as DbWorkerCudPackage).w !== this._workerFullId) {
-                    switch (data.action) {
+                    switch ((data as DbWorkerPackage).a) {
                         case DbWorkerAction.cud:
                             await this._processCudOperations((data as DbWorkerCudPackage).d);
                             break;
