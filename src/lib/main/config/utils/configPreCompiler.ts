@@ -480,8 +480,12 @@ export default class ConfigPreCompiler
                 }
 
                 if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
-                    (value as ModelPreparationMem)._process =
-                        InputProcessorCreator.createObjectModelProcessor(value);
+                    Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._process),{
+                        value : InputProcessorCreator.createObjectModelProcessor(value),
+                        enumerable : false,
+                        writable : false,
+                        configurable : false
+                    });
                 }
             }
             else if(value.hasOwnProperty(nameof<ArrayModelConfig>(s => s.array)))
@@ -491,8 +495,12 @@ export default class ConfigPreCompiler
                 this.modelPreCompileStep2(inArray);
 
                 if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
-                    (value as ModelPreparationMem)._process =
-                        InputProcessorCreator.createArrayModelProcessor(value);
+                    Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._process),{
+                        value : InputProcessorCreator.createArrayModelProcessor(value),
+                        enumerable : false,
+                        writable : false,
+                        configurable : false
+                    });
                 }
             }
             else if(value.hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf)))
@@ -503,8 +511,12 @@ export default class ConfigPreCompiler
                 },value[nameof<AnyOfModelConfig>(s => s.anyOf)]);
 
                 if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
-                    (value as ModelPreparationMem)._process =
-                        InputProcessorCreator.createAnyOfModelProcessor(value);
+                    Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._process),{
+                        value : InputProcessorCreator.createAnyOfModelProcessor(value),
+                        enumerable : false,
+                        writable : false,
+                        configurable : false
+                    });
                 }
             }
             else {
@@ -512,8 +524,12 @@ export default class ConfigPreCompiler
                 this.preCompileValueExtend(value,value);
 
                 if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
-                    (value as ModelPreparationMem)._process =
-                        InputProcessorCreator.createValueModelProcessor(value);
+                    Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._process),{
+                        value : InputProcessorCreator.createValueModelProcessor(value),
+                        enumerable : false,
+                        writable : false,
+                        configurable : false
+                    });
                 }
             }
             if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._optionalInfo))){
