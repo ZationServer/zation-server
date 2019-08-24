@@ -52,7 +52,7 @@ export interface DataboxConnectRes {
 
 export type UnregisterSocketFunction = (inputChannelId ?: string) => void;
 
-export const DATA_BOX_START_INDICATOR = '>D';
+export const DATABOX_START_INDICATOR = '>D';
 
 export const enum CudType {
     insert,

@@ -67,7 +67,7 @@ import ExpressUtils   from "../main/utils/expressUtils";
 import {SocketAction} from "../main/constants/socketAction";
 import {TaskFunction} from "../main/config/definitions/backgroundTaskConfig";
 import {ClientErrorName}          from "../main/constants/clientErrorName";
-import {DATA_BOX_START_INDICATOR} from "../main/databox/dbDefinitions";
+import {DATABOX_START_INDICATOR}  from "../main/databox/dbDefinitions";
 import {ZationChannel}            from "../main/channel/channelDefinitions";
 import DataboxHandler             from "../main/databox/handle/databoxHandler";
 import DataboxPrepare             from "../main/databox/databoxPrepare";
@@ -353,7 +353,7 @@ class ZationWorker extends SCWorker
                 await this.zationCReqHandler.processSocketReq(data,socket,respond);
             });
 
-            socket.on(DATA_BOX_START_INDICATOR, async (data,respond) => {
+            socket.on(DATABOX_START_INDICATOR, async (data, respond) => {
                 await this.zationDbHandler.processConnectReq(data,socket,respond);
             });
 
@@ -547,7 +547,7 @@ class ZationWorker extends SCWorker
                 err.name = ClientErrorName.ACCESS_DENIED;
                 next(err); //Block!
             }
-            else if(channel.indexOf(DATA_BOX_START_INDICATOR) === 0) {
+            else if(channel.indexOf(DATABOX_START_INDICATOR) === 0) {
                 const err : any = new Error('A client cannot subscribe to an internally Databox channel.');
                 err.name = ClientErrorName.ACCESS_DENIED;
                 next(err); //Block!
@@ -658,7 +658,7 @@ class ZationWorker extends SCWorker
                     next(err); //Block!
                 }
             }
-            else if(req.channel.indexOf(DATA_BOX_START_INDICATOR) === 0) {
+            else if(req.channel.indexOf(DATABOX_START_INDICATOR) === 0) {
                 const err : any = new Error('A client cannot publish in an internally Databox channel.');
                 err.name = ClientErrorName.ACCESS_DENIED;
                 next(err); //Block!

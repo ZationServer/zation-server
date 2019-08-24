@@ -13,7 +13,7 @@ import {IdValidChecker}              from "../../main/id/idValidCheckerUtils";
 import {ScExchange}                  from "../../main/sc/scServer";
 import {
     CudOperation,
-    DATA_BOX_START_INDICATOR,
+    DATABOX_START_INDICATOR,
     DbClientOutputEvent,
     DbClientOutputPackage,
     DbWorkerAction,
@@ -113,7 +113,7 @@ export default class DataboxFamily extends DataboxCore {
         this._scExchange = bag.getWorker().scServer.exchange;
         this._workerFullId = bag.getWorker().getFullWorkerId();
         this._maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
-        this._dbEventPreFix = `${DATA_BOX_START_INDICATOR}-${this.name}-${apiLevel !== undefined ? apiLevel : ''}-`;
+        this._dbEventPreFix = `${DATABOX_START_INDICATOR}-${this.name}-${apiLevel !== undefined ? apiLevel : ''}-`;
 
         this._buildFetchManager = DataboxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);

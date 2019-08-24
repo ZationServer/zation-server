@@ -13,7 +13,7 @@ import {
     CudOperation,
     CudPackage,
     CudType,
-    DATA_BOX_START_INDICATOR,
+    DATABOX_START_INDICATOR,
     DbClientOutputClosePackage,
     DbClientOutputCudPackage, DbClientInputFetchPackage,
     DbClientOutputKickOutPackage,
@@ -90,7 +90,7 @@ export default class Databox extends DataboxCore {
         this._scExchange = bag.getWorker().scServer.exchange;
         this._workerFullId = bag.getWorker().getFullWorkerId();
         this._maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
-        this._dbEvent = `${DATA_BOX_START_INDICATOR}-${this.name}-${apiLevel !== undefined ? apiLevel : ''}`;
+        this._dbEvent = `${DATABOX_START_INDICATOR}-${this.name}-${apiLevel !== undefined ? apiLevel : ''}`;
 
         this._buildFetchManager = DataboxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);

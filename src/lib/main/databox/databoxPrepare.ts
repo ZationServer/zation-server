@@ -89,7 +89,7 @@ export default class DataboxPrepare
     {
         if(!this.isDataboxExist(name)) {
             const err : any = new Error(`The Databox: '${name}' not exists.`);
-            err.name = ClientErrorName.UNKNOWN_DATA_BOX;
+            err.name = ClientErrorName.UNKNOWN_DATABOX;
             throw err;
         }
     }
