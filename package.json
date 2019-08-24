@@ -1,6 +1,6 @@
 {
   "name": "zation-server",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "license": "MIT",
   "description": "The server component of the Zation framework",
   "main": "dist/index.js",
