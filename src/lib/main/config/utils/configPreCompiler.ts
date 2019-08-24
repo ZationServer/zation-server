@@ -379,7 +379,12 @@ export default class ConfigPreCompiler
                 this.preCompileValidationFunctions(nowValue);
             }
 
-            (nowValue as ModelPreparationMem)._pcStep1 = true;
+            Object.defineProperty(nowValue,nameof<ModelPreparationMem>(s => s._pcStep1),{
+                value : true,
+                enumerable : false,
+                writable : false,
+                configurable : false
+            });
         }
     }
 
@@ -512,11 +517,20 @@ export default class ConfigPreCompiler
                 }
             }
             if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._optionalInfo))){
-                (value as ModelPreparationMem)._optionalInfo =
-                    OptionalProcessor.process(value);
+                Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._optionalInfo),{
+                    value : OptionalProcessor.process(value),
+                    enumerable : false,
+                    writable : false,
+                    configurable : false
+                });
             }
 
-            (value as ModelPreparationMem)._pcStep2 = true;
+            Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._pcStep2),{
+                value : true,
+                enumerable : false,
+                writable : false,
+                configurable : false
+            });
         }
     }
 
@@ -647,8 +661,12 @@ export default class ConfigPreCompiler
             }
         }
         if(!paramInput.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
-            (paramInput as Processable)._process =
-                InputProcessorCreator.createParamInputProcessor((paramInput as ParamInput));
+            Object.defineProperty(paramInput,nameof<ModelPreparationMem>(s => s._process),{
+                value : InputProcessorCreator.createParamInputProcessor((paramInput as ParamInput)),
+                enumerable : false,
+                writable : false,
+                configurable : false
+            });
         }
     }
 
