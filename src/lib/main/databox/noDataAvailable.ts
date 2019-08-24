@@ -8,27 +8,26 @@ import {ClientErrorName} from "../constants/clientErrorName";
 
 export default class NoDataAvailableError extends Error
 {
-    private readonly _code ?: number | string;
-    private readonly _data ?: any;
+    private readonly info : {code ?: string |number,data ?: any} = {};
 
     constructor(code ?: string | number,data ?: any) {
         super();
         this.name = ClientErrorName.NO_MORE_DATA_AVAILABLE;
-        this._code = code;
-        this._data = data;
+        this.info.code = code;
+        this.info.data = data;
     }
 
     /**
      * Returns the code.
      */
     get code(): number | string | undefined {
-        return this._code;
+        return this.info.code;
     }
 
     /**
      * Returns the data.
      */
     get data(): any {
-        return this._data;
+        return this.info.data;
     }
 }
