@@ -5,7 +5,6 @@ Copyright(c) Luca Scaringella
  */
 
 import {ModelOptional} from "../definitions/inputConfig";
-import CloneUtils      from "../../utils/cloneUtils";
 import ResolveUtils    from "./resolveUtils";
 
 export default class ModelResolveEngine
@@ -182,7 +181,7 @@ export default class ModelResolveEngine
                 return tmp;
             }
             else {
-                const obj = CloneUtils.deepClone(this.models[name]);
+                const obj = {...this.models[name]};
                 obj[nameof<ModelOptional>(s => s.isOptional)] = !isReq;
                 this._tmpCreatedModels[key][name] = obj;
                 return obj;
