@@ -429,6 +429,7 @@ export default class ZationMaster {
         Logger.log(`            Time zone: ${this.zc.mainConfig.timeZone}`);
         Logger.log(`            Instance id: ${this.master.options.instanceId}`);
         Logger.log(`            WebSocket engine: ${this.master.options.wsEngine}`);
+        Logger.log(`            Node version: ${process.version}`);
         Logger.log(`            Machine scaling active: ${this.stateServerActive}`);
         Logger.log(`            Worker count: ${this.master.options.workers}`);
         Logger.log(`            Broker count: ${this.master.options.brokers}`);
