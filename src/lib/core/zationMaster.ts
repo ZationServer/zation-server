@@ -28,7 +28,7 @@ import ConfigLoader            from "../main/config/manager/configLoader";
 
 export default class ZationMaster {
     private static instance: ZationMaster | null = null;
-    private static readonly version: string = '1.3.2';
+    private static readonly version: string = '1.3.3';
 
     private readonly serverStartedTimeStamp: number;
     private zc: ZationConfigMaster;
