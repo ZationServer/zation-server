@@ -244,17 +244,15 @@ export default class ZationMaster {
     {
         if(this.zc.mainConfig.useZUws) {
             try {
-                require("sc-uws");
+                require("z-uws");
             }
             catch (e) {
                 Logger.printStartFail
-                (`Failed to load sc-uws. Error -> ${e.toString()}.`);
-                if(isWindows()) {
-                    Logger.printStartFail(`Try to install c++ compiler with command 'npm install --global --production windows-build-tools' and 'npm install -g node-gyp'`);
-                }
+                (`Failed to load z-uws. Error -> ${e.toString()}.`);
                 Logger.printStartFail
-                (`${isWindows() ? 'Also you' : 'You'} can try to set the property 'useScUws' in Main or Start config to false. But you will lose performance!`);
-                return this.rejectStart(StartErrorName.LOAD_UWS_FAILED,'Failed to load sc-uws.');
+                (`You can set the property 'useZUws' in main or starter config to false.'+ 
+                ' Then the server will use the ws package, but it is much slower than the z-uws.`);
+                return this.rejectStart(StartErrorName.LOAD_UWS_FAILED,'Failed to load z-uws.');
             }
         }
 
