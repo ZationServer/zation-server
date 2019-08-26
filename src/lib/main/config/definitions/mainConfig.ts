@@ -162,12 +162,13 @@ export interface MainConfig
      */
     scConsoleLog  ?: boolean;
     /**
-     * Specifies if the server should use z-uws (a modified version of uWebsockets
-     * v0.14 which is programmed in C++ and is incredibly fast) as a core engine.
-     * Otherwise, it will use the ws engine (which is a Node.Js implementation).
-     * @default true
+     * Specifies the wsEngine that the server should use.
+     * You can use 'z-uws' it is a modified version of uWebsockets v0.14
+     * that is programmed in C++ and is incredibly fast.
+     * Or you can use 'ws', which is a pure javascript solution and slower.
+     * @default 'z-uws'
      */
-    useZUws  ?: boolean;
+    wsEngine  ?: string;
     /**
      * The default API level a client will get when there is no API level provided in the request or connection.
      * Notice that the value cant be lesser than 1 and needs to be an integer.
@@ -615,7 +616,7 @@ export interface InternalMainConfig extends MainConfig {
     sendErrorDescription  : boolean;
     zationConsoleLog  : boolean;
     scConsoleLog  : boolean;
-    useZUws  : boolean;
+    wsEngine  : string;
     defaultClientApiLevel : number;
     usePanel  : boolean;
     provideClientJs  : boolean;

@@ -241,18 +241,13 @@ export default class ZationMaster {
 
     private startSocketCluster()
     {
-        if(this.zc.mainConfig.useZUws) {
-            try {
-                require("z-uws");
-            }
-            catch (e) {
-                Logger.printStartFail
-                (`Failed to load z-uws. Error -> ${e.toString()}.`);
-                Logger.printStartFail
-                (`You can set the property 'useZUws' in main or starter config to false.'+ 
-                ' Then the server will use the ws package, but it is much slower than the z-uws.`);
-                return this.rejectStart(StartErrorName.LOAD_UWS_FAILED,'Failed to load z-uws.');
-            }
+        try {
+            require(this.zc.mainConfig.wsEngine);
+        }
+        catch (e) {
+            Logger.printStartFail
+            (`Failed to load the wsEngine: ${this.zc.mainConfig.wsEngine}. Error -> ${e.toString()}.`);
+            return this.rejectStart(StartErrorName.LOAD_WS_ENGINE_FAILED,'Failed to load wsEngine.');
         }
 
         const scLogLevel = this.zc.mainConfig.scConsoleLog ?
@@ -261,17 +256,18 @@ export default class ZationMaster {
         const scOptions = {
             workers : this.zc.mainConfig.workers,
             brokers : this.zc.mainConfig.brokers,
-            appName: this.zc.mainConfig.appName,
-            workerController:__dirname + '/zationWorker.js',
-            brokerController:__dirname  + '/zationBroker.js',
+            appName : this.zc.mainConfig.appName,
+            workerController :__dirname + '/zationWorker.js',
+            brokerController :__dirname  + '/zationBroker.js',
             workerClusterController: __dirname + '/workerClusterController.js',
+            wsEngine : this.zc.mainConfig.wsEngine,
             environment : this.zc.mainConfig.environment,
-            port  : this.zc.mainConfig.port,
-            path  : this.zc.mainConfig.path,
+            port : this.zc.mainConfig.port,
+            path : this.zc.mainConfig.path,
             host : this.zc.mainConfig.hostname,
             protocol : this.zc.mainConfig.secure ? 'https' : 'http',
             protocolOptions: this.zc.mainConfig.httpsConfig,
-            authKey: this.zc.mainConfig.authSecretKey,
+            authKey : this.zc.mainConfig.authSecretKey,
             authAlgorithm: this.zc.mainConfig.authAlgorithm,
             authPublicKey: this.zc.mainConfig.authPublicKey,
             authPrivateKey: this.zc.mainConfig.authPrivateKey,
@@ -318,13 +314,6 @@ export default class ZationMaster {
             pubSubBatchDuration : this.zc.mainConfig.pubSubBatchDuration || null,
         };
 
-        if(this.zc.mainConfig.useZUws) {
-            scOptions['wsEngine'] = 'z-uws';
-        }
-        else {
-            scOptions['wsEngine'] = 'ws';
-        }
-
         this.master = new SocketCluster(scOptions);
 
         // noinspection JSUnresolvedFunction
@@ -338,7 +327,7 @@ export default class ZationMaster {
                await this.stateServerEngine.start();
            }
 
-           this.printStartedInformation();
+           this.logStartedInformation();
 
            if(this.startResolve){this.startResolve();}
 
@@ -412,7 +401,7 @@ export default class ZationMaster {
         });
     }
 
-    private printStartedInformation()
+    private logStartedInformation()
     {
         const hostName = this.zc.mainConfig.hostname;
         const port     = this.zc.mainConfig.port;
@@ -428,8 +417,8 @@ export default class ZationMaster {
         Logger.log(` ️          Time️: ${TimeUtils.getMoment(this.zc.mainConfig.timeZone)}`);
         Logger.log(`            Time zone: ${this.zc.mainConfig.timeZone}`);
         Logger.log(`            Instance id: ${this.master.options.instanceId}`);
-        Logger.log(`            WebSocket engine: ${this.master.options.wsEngine}`);
         Logger.log(`            Node version: ${process.version}`);
+        Logger.log(`            WsEngine: ${this.master.options.wsEngine}`);
         Logger.log(`            Machine scaling active: ${this.stateServerActive}`);
         Logger.log(`            Worker count: ${this.master.options.workers}`);
         Logger.log(`            Broker count: ${this.master.options.brokers}`);

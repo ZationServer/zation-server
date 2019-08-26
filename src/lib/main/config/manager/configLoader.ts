@@ -62,7 +62,7 @@ export default class ConfigLoader {
         brokers: OPTION_HALF_AUTO,
         zationConsoleLog: true,
         scConsoleLog: false,
-        useZUws: true,
+        wsEngine: 'z-uws',
         defaultClientApiLevel : 1,
         clusterAuthKey: null,
         stateServerHost: null,

@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 export enum StartErrorName {
     CONFIG_ERRORS               = 'CONFIG_ERRORS',
     PORT_IN_USE                 = 'PORT_IN_USE',
-    LOAD_UWS_FAILED             = 'LOAD_UWS_FAILED',
+    LOAD_WS_ENGINE_FAILED       = 'LOAD_WS_ENGINE_FAILED',
     REGISTER_TO_STATE_SERVER_FAILED = 'REGISTER_TO_STATE_SERVER_FAILED'
 }
 

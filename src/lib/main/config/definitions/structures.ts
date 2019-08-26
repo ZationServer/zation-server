@@ -124,7 +124,7 @@ Main[nameof<MainConfig>(s => s.environment)]        = {types : ['string'],isOpti
 Main[nameof<MainConfig>(s => s.timeZone)]           = {types : ['string'],isOptional : true};
 Main[nameof<MainConfig>(s => s.zationConsoleLog)]   = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.scConsoleLog)]       = {types : ['boolean'],isOptional : true};
-Main[nameof<MainConfig>(s => s.useZUws)]            = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.wsEngine)]           = {types : ['boolean'],isOptional : true};
 Main[nameof<MainConfig>(s => s.defaultClientApiLevel)]   = {types : ['number'],isOptional : true};
 Main[nameof<MainConfig>(s => s.useTokenClusterKeyCheck)] = {types : ['boolean'],isOptional : true};
 
