@@ -5,7 +5,6 @@ Copyright(c) Luca Scaringella
  */
 
 const  SocketCluster : any   = require('socketcluster');
-const  isWindows             = require('is-windows');
 import {WorkerMessageAction}   from "../main/constants/workerMessageAction";
 import {StarterConfig}         from "../main/config/definitions/starterConfig";
 import StringSet               from "../main/utils/stringSet";
