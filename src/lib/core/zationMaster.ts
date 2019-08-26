@@ -242,7 +242,7 @@ export default class ZationMaster {
 
     private startSocketCluster()
     {
-        if(this.zc.mainConfig.useScUws) {
+        if(this.zc.mainConfig.useZUws) {
             try {
                 require("sc-uws");
             }
@@ -321,8 +321,8 @@ export default class ZationMaster {
             pubSubBatchDuration : this.zc.mainConfig.pubSubBatchDuration || null,
         };
 
-        if(this.zc.mainConfig.useScUws) {
-            scOptions['wsEngine'] = 'sc-uws';
+        if(this.zc.mainConfig.useZUws) {
+            scOptions['wsEngine'] = 'z-uws';
         }
         else {
             scOptions['wsEngine'] = 'ws';

@@ -56,7 +56,6 @@
     "portscanner": "2.2.0",
     "process": "0.11.10",
     "sc-hasher": "1.0.1",
-    "sc-uws": "10.148.2",
     "scc-broker-client": "6.1.0",
     "simple-node-logger": "18.12.22",
     "socketcluster": "14.3.3",
@@ -69,6 +68,7 @@
     "fast-stringify": "1.1.1",
     "stringify-object": "3.3.0",
     "ws": "7.1.2",
+    "z-uws": "0.15.1",
     "zation-client": "0.9.5",
     "zation-service": "0.3.7"
   },

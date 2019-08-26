@@ -1360,7 +1360,7 @@ class ZationWorker extends SCWorker
             secure      : this.zc.mainConfig.secure,
             appName     : this.zc.mainConfig.appName,
             debug       : this.zc.mainConfig.debug,
-            useScUws    : this.zc.mainConfig.useScUws,
+            useZUws     : this.zc.mainConfig.useZUws,
             ip          : this.getPreparedBag().getServerIpAddress(),
             workerStartedTimestamp : this.workerStartedTimeStamp,
             serverStartedTimestamp : this.serverStartedTimeStamp,
