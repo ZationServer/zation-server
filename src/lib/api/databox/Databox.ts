@@ -80,7 +80,7 @@ export default class Databox extends DataboxCore {
     private readonly _dbEvent : string;
     private readonly _maxSocketInputChannels : number;
 
-    private readonly _buildFetchManager : FetchManagerBuilder<typeof Databox.prototype._fetchData>;
+    private readonly _buildFetchManager : FetchManagerBuilder<typeof Databox.prototype._fetch>;
     private readonly _sendCudToSockets : (dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void;
 
     static [databoxInstanceSymbol] : Databox;
@@ -141,12 +141,12 @@ export default class Databox extends DataboxCore {
         socket.on(inputCh,async (senderPackage : DbClientInputPackage, respond : RespondFunction) => {
             try {
                 switch (senderPackage.a) {
-                    case DbClientInputAction.fetchData:
+                    case DbClientInputAction.fetch:
                         const processedFetchInput = await this._consumeFetchInput((senderPackage as DbClientInputFetchPackage).i);
                         await fetchManager(
                             respond,
                             async () => {
-                                return await this._fetchData
+                                return await this._fetch
                                 (
                                     dbToken,
                                     processedFetchInput,
@@ -197,12 +197,12 @@ export default class Databox extends DataboxCore {
         return this._lastCudData.id;
     }
 
-    private async _fetchData(dbToken : DbToken,fetchInput : any,initData : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
+    private async _fetch(dbToken : DbToken,fetchInput : any,initData : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
         const session = DataboxUtils.getSession(dbToken.sessions,target);
         const currentCounter = session.c;
         session.c++;
         try {
-            const data = await this.fetchData(currentCounter,session.d,fetchInput,initData,zSocket);
+            const data = await this.fetch(currentCounter,session.d,fetchInput,initData,zSocket);
             return {
                 c : currentCounter,
                 d : data,
@@ -659,7 +659,7 @@ export default class Databox extends DataboxCore {
      * @param initData
      * @param socket
      */
-    protected fetchData(counter : number,session : any,input : any,initData : any,socket : ZSocket) : Promise<any> | any {
+    protected fetch(counter : number, session : any, input : any, initData : any, socket : ZSocket) : Promise<any> | any {
         this.noDataAvailable();
     }
 

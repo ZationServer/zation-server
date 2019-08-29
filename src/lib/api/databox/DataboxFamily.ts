@@ -102,7 +102,7 @@ export default class DataboxFamily extends DataboxCore {
     private readonly _workerFullId : string;
     private readonly _maxSocketInputChannels : number;
 
-    private readonly _buildFetchManager : FetchManagerBuilder<typeof DataboxFamily.prototype._fetchData>;
+    private readonly _buildFetchManager : FetchManagerBuilder<typeof DataboxFamily.prototype._fetch>;
     private readonly _sendCudToSockets : (id : string,dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void;
 
     static [databoxInstanceSymbol] : DataboxFamily;
@@ -164,12 +164,12 @@ export default class DataboxFamily extends DataboxCore {
         socket.on(inputCh,async (senderPackage : DbClientInputPackage, respond : RespondFunction) => {
             try {
                 switch (senderPackage.a) {
-                    case DbClientInputAction.fetchData:
+                    case DbClientInputAction.fetch:
                         const processedFetchInput = await this._consumeFetchInput((senderPackage as DbClientInputFetchPackage).i);
                         await fetchManager(
                             respond,
                             async () => {
-                                return await this._fetchData
+                                return await this._fetch
                                 (
                                     id,
                                     dbToken,
@@ -233,12 +233,12 @@ export default class DataboxFamily extends DataboxCore {
         return DataboxUtils.generateStartCudId();
     }
 
-    private async _fetchData(id : string,dbToken : DbToken,fetchInput : any,initData : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
+    private async _fetch(id : string,dbToken : DbToken,fetchInput : any,initData : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
         const session = DataboxUtils.getSession(dbToken.sessions,target);
         const currentCounter = session.c;
         session.c++;
         try {
-            const data = await this.fetchData(id,currentCounter,session.d,fetchInput,initData,zSocket);
+            const data = await this.fetch(id,currentCounter,session.d,fetchInput,initData,zSocket);
             return {
                 c : currentCounter,
                 d : data,
@@ -848,7 +848,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param initData
      * @param socket
      */
-    protected fetchData(id : string,counter : number,session : any,input : any,initData : any,socket : ZSocket) : Promise<any> | any {
+    protected fetch(id : string, counter : number, session : any, input : any, initData : any, socket : ZSocket) : Promise<any> | any {
         this.noDataAvailable();
     }
 
