@@ -800,6 +800,27 @@ export default class DataboxFamily extends DataboxCore {
         }
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * **Not override this method.**
+     * Send a signal to all clients of a specific member.
+     * The clients can listen to any signal.
+     * You also can send additional data with the signal.
+     * @param id
+     * Numbers will be converted to a string.
+     * @param signal
+     * @param data
+     * @param forEveryWorker
+     */
+    sendSignal(id : string | number,signal : string,data ?: any,forEveryWorker : boolean = true) {
+        id = typeof id === "string" ? id : id.toString();
+        const clientPackage = DataboxUtils.buildClientSignalPackage(signal,data);
+        if(forEveryWorker){
+            this._broadcastToOtherSockets(id,clientPackage);
+        }
+        this._sendToSockets(id,clientPackage);
+    }
+
     /**
      * **Not override this method.**
      * This method returns a string array with all

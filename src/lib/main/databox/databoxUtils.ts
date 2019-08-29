@@ -12,6 +12,7 @@ import {
     DbClientOutputClosePackage,
     DbClientOutputEvent,
     DbClientOutputReloadPackage,
+    DbClientOutputSignalPackage,
     DbSession,
     DbSessionData,
     DbToken,
@@ -100,6 +101,14 @@ export default class DataboxUtils {
         return {
             a : DbClientOutputEvent.close,
             ...(code !== undefined ? {c : code} : {}),
+            ...(data !== undefined ? {d : data} : {})
+        };
+    }
+
+    static buildClientSignalPackage(signal : string, data ?: any) : DbClientOutputSignalPackage {
+        return {
+            a : DbClientOutputEvent.signal,
+            s : signal,
             ...(data !== undefined ? {d : data} : {})
         };
     }

@@ -172,4 +172,20 @@ export default class DataboxContainer {
             this.databoxes[i].kickOut(socket,code,data);
         }
     }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * **Not override this method.**
+     * Send a signal to all clients.
+     * The clients can listen to any signal.
+     * You also can send additional data with the signal.
+     * @param signal
+     * @param data
+     * @param forEveryWorker
+     */
+    sendSignal(signal : string,data ?: any,forEveryWorker : boolean = true) {
+        for(let i = 0; i < this.databoxes.length;i++) {
+            this.databoxes[i].sendSignal(signal,data,forEveryWorker);
+        }
+    }
 }

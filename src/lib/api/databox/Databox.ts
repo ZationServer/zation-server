@@ -624,6 +624,24 @@ export default class Databox extends DataboxCore {
         }
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * **Not override this method.**
+     * Send a signal to all clients.
+     * The clients can listen to any signal.
+     * You also can send additional data with the signal.
+     * @param signal
+     * @param data
+     * @param forEveryWorker
+     */
+    sendSignal(signal : string,data ?: any,forEveryWorker : boolean = true) {
+        const clientPackage = DataboxUtils.buildClientSignalPackage(signal,data);
+        if(forEveryWorker){
+            this._broadcastToOtherSockets(clientPackage);
+        }
+        this._sendToSockets(clientPackage);
+    }
+
     /**
      * **Can be overridden.**
      * This method is used to fetch data for the clients of the Databox.
