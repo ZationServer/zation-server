@@ -7,9 +7,8 @@ Copyright(c) Luca Scaringella
 export default class CloneUtils
 {
     /**
-     * Clone any value.
-     * Except for instances of an object
-     * (the prototype will not be set).
+     * Deep clone any value.
+     * Notice that it only clones enumerable properties of an object.
      * @param v
      */
     static deepClone<T extends any = any>(v : T) : T {

@@ -2438,6 +2438,18 @@ export default class Bag {
         (WorkerChSpecialTaskAction.MESSAGE, data);
     }
 
+    //Part clone utils
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Deep clone any value.
+     * Notice that it only clones enumerable properties of an object.
+     * @param v
+     */
+    deepClone<T extends any = any>(v : T) : T {
+        return CloneUtils.deepClone(v);
+    }
+
     //Part Databoxes
 
     /**
