@@ -92,7 +92,7 @@ export default class ControllerReqHandler
             if(err instanceof CodeError) {
                 Logger.printDebugWarning(`Code error -> ${err.toString()}/n stack-> ${err.stack}`);
                 promises.push(this.zc.eventConfig.beforeCodeError(this.worker.getPreparedBag(),err));
-                if(this.zc.mainConfig.logCodeErrors){
+                if(this.zc.mainConfig.logFileCodeErrors){
                     Logger.logFileError(`Code error -> ${err.toString()}/n stack-> ${err.stack}`);
                 }
             }
@@ -104,7 +104,7 @@ export default class ControllerReqHandler
             }
             else {
                 Logger.printDebugWarning('UNKNOWN ERROR ON SERVER ->',err);
-                if(this.zc.mainConfig.logServerErrors){
+                if(this.zc.mainConfig.logFileServerErrors){
                     Logger.logFileError(`Unknown error on server -> ${err.stack}`);
                 }
             }

@@ -53,7 +53,7 @@ export default class HttpCRequestProcessor
             if(this.debug){
                 Logger.printDebugInfo(`Http Post Controller Request id: ${reqId} -> `,StringifyUtils.object(zationData));
             }
-            if(this.zc.mainConfig.logControllerRequests){
+            if(this.zc.mainConfig.logFileControllerRequests){
                 Logger.logFileInfo(`Http Post Controller Request id: ${reqId} -> `,zationData);
             }
             return this.mainProcess(req,res,zationData,reqId);
@@ -63,7 +63,7 @@ export default class HttpCRequestProcessor
             if(this.debug){
                 Logger.printDebugInfo(`Http Get Controller Request id: ${reqId}`);
             }
-            if(this.zc.mainConfig.logControllerRequests){
+            if(this.zc.mainConfig.logFileControllerRequests){
                 Logger.logFileInfo(`Http Get Controller Request id: ${reqId}`);
             }
             const query = req.query;
@@ -100,7 +100,7 @@ export default class HttpCRequestProcessor
         if(this.debug){
             Logger.printDebugInfo(`Http Get Request id: ${reqId} -> `,StringifyUtils.object(zationData));
         }
-        if(this.zc.mainConfig.logControllerRequests){
+        if(this.zc.mainConfig.logFileControllerRequests){
             Logger.logFileInfo(`Http Get Request id: ${reqId} -> `,zationData);
         }
     }

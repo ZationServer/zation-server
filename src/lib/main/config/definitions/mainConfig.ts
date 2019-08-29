@@ -282,18 +282,18 @@ export interface MainConfig
      * You also can use the small bag to log own information in the file.
      * @default false
      */
-    logToFile ?: boolean;
+    logFile ?: boolean;
     /**
      * Specifies the log file path but notice that the path is relative to the running directory.
      * @default ''
      */
-    logPath ?: string;
+    logFilePath ?: string;
     /**
      * Defines if the log file should be downloadable via Http.
      * You can use the property logAccessKey to set a secret password for access the download.
      * @default true
      */
-    logDownloadable ?: boolean;
+    logFileDownloadable ?: boolean;
     /**
      * Defines if a key to access the log file download.
      * The secret key will appear in the URL for access the log file via HTTP.
@@ -301,34 +301,34 @@ export interface MainConfig
      * @example
      * Log: http://localhost:3001/zation/log/theKey
      */
-    logAccessKey ?: string;
+    logFileAccessKey ?: string;
     /**
-     * Specifies if the server should log every controller request to a file.
+     * Specifies if the server should log every controller request to the log file.
      * @default false
      */
-    logControllerRequests ?: boolean;
+    logFileControllerRequests ?: boolean;
     /**
-     * Specifies if the server should log every databox connection request to a file.
+     * Specifies if the server should log every databox connection request to the log file.
      * @default false
      */
-    logDataboxRequests ?: boolean;
+    logFileDataboxRequests ?: boolean;
     /**
-     * Specifies if the server should log every unknown error that was thrown on the server.
+     * Specifies if the server should log every unknown error that was thrown on the server to the log file.
      * @default true
      */
-    logServerErrors ?: boolean;
+    logFileServerErrors ?: boolean;
     /**
-     * Specifies if the server should log code errors.
+     * Specifies if the server should log code errors to the log file.
      * Code errors can happen for example when you try to
      * access the HTTP request object with the bag by a web socket request.
      * @default true
      */
-    logCodeErrors ?: boolean;
+    logFileCodeErrors ?: boolean;
     /**
-     * Specifies if the server should log when the server is started.
+     * Specifies if the server should log when the server is started to the log file.
      * @default true
      */
-    logStarted ?: boolean;
+    logFileStarted ?: boolean;
 
     /**
      * Specifies if the worker leader should console log the precompiled configs.
@@ -652,15 +652,15 @@ export interface InternalMainConfig extends MainConfig {
     allowClientPublish  : boolean;
     workerStatusInterval  : number;
     killServerOnServicesCreateError : boolean;
-    logToFile : boolean;
-    logPath : string;
-    logDownloadable : boolean;
-    logAccessKey : string;
-    logControllerRequests : boolean;
-    logDataboxRequests : boolean;
-    logServerErrors : boolean;
-    logCodeErrors : boolean;
-    logStarted : boolean;
+    logFile : boolean;
+    logFilePath : string;
+    logFileDownloadable : boolean;
+    logFileAccessKey : string;
+    logFileControllerRequests : boolean;
+    logFileDataboxRequests : boolean;
+    logFileServerErrors : boolean;
+    logFileCodeErrors : boolean;
+    logFileStarted : boolean;
     showPrecompiledConfigs : boolean;
     variables : any;
 }

@@ -16,18 +16,18 @@ export default class Logger
 
     private static stopWatchStartTime : any = Date.now();
 
-    static initFileLog() : void
+    static initLogFile() : void
     {
-        if(Logger.zc.mainConfig.logToFile) {
+        if(Logger.zc.mainConfig.logFile) {
 
             let path;
             if(cluster.isMaster){
-                path = this.zc.rootPath + '/' + Logger.zc.mainConfig.logPath;
+                path = this.zc.rootPath + '/' + Logger.zc.mainConfig.logFilePath;
                 if(!path.endsWith('/')){path+='/'}
-                Logger.zc.mainConfig.logPath = path;
+                Logger.zc.mainConfig.logFilePath = path;
             }
             else {
-                path = Logger.zc.mainConfig.logPath;
+                path = Logger.zc.mainConfig.logFilePath;
             }
 
             Logger.sl = SimpleNodeLogger.createSimpleFileLogger({

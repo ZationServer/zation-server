@@ -165,16 +165,16 @@ Main[nameof<MainConfig>(s => s.variables)]          = {types : ['object'],isOpti
 Main[nameof<MainConfig>(s => s.killServerOnServicesCreateError)] = {types : ['boolean'],isOptional : true};
 
 //log
-Main[nameof<MainConfig>(s => s.logToFile)]        = {types : ['boolean'],isOptional : true};
-Main[nameof<MainConfig>(s => s.logPath)]          = {types : ['string'],isOptional : true};
-Main[nameof<MainConfig>(s => s.logDownloadable)]  = {types : ['boolean'],isOptional : true};
-Main[nameof<MainConfig>(s => s.logAccessKey)]     = {types : ['string'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logFile)]              = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logFilePath)]          = {types : ['string'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logFileDownloadable)]  = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logFileAccessKey)]     = {types : ['string'],isOptional : true};
 
-Main[nameof<MainConfig>(s => s.logControllerRequests)]  = {types : ['boolean'],isOptional : true};
-Main[nameof<MainConfig>(s => s.logDataboxRequests)]     = {types : ['boolean'],isOptional : true};
-Main[nameof<MainConfig>(s => s.logServerErrors)]        = {types : ['boolean'],isOptional : true};
-Main[nameof<MainConfig>(s => s.logCodeErrors)]          = {types : ['boolean'],isOptional : true};
-Main[nameof<MainConfig>(s => s.logStarted)]             = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logFileControllerRequests)]  = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logFileDataboxRequests)]     = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logFileServerErrors)]        = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logFileCodeErrors)]          = {types : ['boolean'],isOptional : true};
+Main[nameof<MainConfig>(s => s.logFileStarted)]             = {types : ['boolean'],isOptional : true};
 
 Main[nameof<MainConfig>(s => s.showPrecompiledConfigs)] = {types : ['boolean'],isOptional : true};
 

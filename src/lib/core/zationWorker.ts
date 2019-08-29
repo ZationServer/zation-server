@@ -149,8 +149,7 @@ class ZationWorker extends SCWorker
 
         process.title = `Zation Server: ${this.zc.mainConfig.instanceId} -> Worker - ${this.id}`;
 
-        //Check LogToFile
-        Logger.initFileLog();
+        Logger.initLogFile();
 
         await this.startZWorker();
     }

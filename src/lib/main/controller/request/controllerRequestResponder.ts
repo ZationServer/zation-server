@@ -77,7 +77,7 @@ export default class ControllerRequestResponder
         if(this.debugMode){
             Logger.printDebugInfo(`Socket Controller Response id: ${reqId} ->`,StringifyUtils.object(resp));
         }
-        if(this.zc.mainConfig.logControllerRequests){
+        if(this.zc.mainConfig.logFileControllerRequests){
             Logger.logFileInfo(`Socket Controller Response id: ${reqId} ->`,resp);
         }
     }
@@ -86,7 +86,7 @@ export default class ControllerRequestResponder
         if(this.debugMode){
             Logger.printDebugInfo(`Http Controller Response id: ${reqId} ->`,StringifyUtils.object(resp));
         }
-        if(this.zc.mainConfig.logControllerRequests){
+        if(this.zc.mainConfig.logFileControllerRequests){
             Logger.logFileInfo(`Http Controller Response id: ${reqId} ->`,resp);
         }
     }

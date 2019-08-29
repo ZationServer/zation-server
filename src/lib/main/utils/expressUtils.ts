@@ -16,11 +16,11 @@ export default class ExpressUtils
      * @param zc
      */
     static createLogFileDownloader(zc : ZationConfig) : LogFileDownloader {
-        if(zc.mainConfig.logToFile) {
-            if(zc.mainConfig.logDownloadable)
+        if(zc.mainConfig.logFile) {
+            if(zc.mainConfig.logFileDownloadable)
             {
-                const accessKey = zc.mainConfig.logAccessKey;
-                const logFile = zc.mainConfig.logPath + 'ZATION_LOG_FILE.log';
+                const accessKey = zc.mainConfig.logFileAccessKey;
+                const logFile = zc.mainConfig.logFilePath + 'ZATION_LOG_FILE.log';
 
                 return (req, res) => {
                     const key = req.params.key !== undefined ? req.params.key : '';

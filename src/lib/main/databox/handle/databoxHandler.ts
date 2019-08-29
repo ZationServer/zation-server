@@ -66,7 +66,7 @@ export default class DataboxHandler
         if(this.debug){
             Logger.printDebugInfo(`Databox Connection Request -> `,input);
         }
-        if(this.zc.mainConfig.logDataboxRequests){
+        if(this.zc.mainConfig.logFileDataboxRequests){
             Logger.logFileInfo(`Databox Connection Request -> `,input);
         }
 

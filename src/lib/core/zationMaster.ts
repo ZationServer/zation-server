@@ -92,8 +92,7 @@ export default class ZationMaster {
 
 
                     if(startMode !== StartMode.ONLY_CHECK) {
-                        //Check LogToFile
-                        Logger.initFileLog();
+                        Logger.initLogFile();
 
                         await this.start();
                     }
@@ -426,8 +425,8 @@ export default class ZationMaster {
         if(this.zc.mainConfig.usePanel) {
             Logger.log(`            Panel: ${server}/panel`);
         }
-        if(this.zc.mainConfig.logDownloadable && this.zc.mainConfig.logToFile) {
-            Logger.log(`            Log: ${server}/log/${this.zc.mainConfig.logAccessKey}`);
+        if(this.zc.mainConfig.logFileDownloadable && this.zc.mainConfig.logFile) {
+            Logger.log(`            Log: ${server}/log/${this.zc.mainConfig.logFileAccessKey}`);
         }
         if(this.zc.mainConfig.provideClientJs) {
             Logger.log(`            ClientJs: ${server}/client.js`);
@@ -436,7 +435,7 @@ export default class ZationMaster {
         Logger.log(`            StartTime: ${Date.now()-this.serverStartedTimeStamp} ms`);
         Logger.log('            Copyright by Luca Scaringella');
 
-        if(this.zc.mainConfig.logStarted){
+        if(this.zc.mainConfig.logFileStarted){
             Logger.logFileInfo
             (`Zation started 🚀 with Version ${ZationMaster.version} on Server Url ${server}`+
                 ` with options -> Machine scaling: ${this.stateServerActive}, WebSocket Engine: ${this.master.options.wsEngine}.`);

@@ -29,7 +29,7 @@ export default class SocketCRequestProcessor
         if(this.debug){
             Logger.printDebugInfo(`Socket Controller Request id: ${reqId} -> `,StringifyUtils.object(input));
         }
-        if(this.zc.mainConfig.logControllerRequests){
+        if(this.zc.mainConfig.logFileControllerRequests){
             Logger.logFileInfo(`Socket Controller Request id: ${reqId} -> `,input);
         }
 
