@@ -17,7 +17,7 @@ export default class CloneUtils
         if (typeof v !== 'object'||v === null) return v;
         let newO, i;
         // handle case: array
-        if (v instanceof Array) {
+        if (Array.isArray(v)) {
             let l;
             newO = [];
             for (i = 0, l = v.length; i < l; i++) newO[i] = CloneUtils.deepClone(v[i]);
