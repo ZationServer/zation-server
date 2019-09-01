@@ -37,7 +37,7 @@ import {
     DbClientInputFetchPackage,
     DbSocketMemory,
     DbRegisterResult,
-    ChangeValue, DbToken
+    ChangeValue, DbToken, DbCudSelector, DbCudProcessedSelector
 } from "../../main/databox/dbDefinitions";
 import DataboxAccessHelper    from "../../main/databox/databoxAccessHelper";
 import DataboxUtils           from "../../main/databox/databoxUtils";
@@ -479,7 +479,7 @@ export default class DataboxFamily extends DataboxCore {
                         case CudType.update:
                             promises.push((async () => {
                                 try {
-                                    await this.updateMiddleware(id,socket.zSocket,operation.k,operation.v,(value) => {
+                                    await this.updateMiddleware(id,socket.zSocket,operation.s,operation.v,(value) => {
                                         operation.d = value;
                                     },operation.c,operation.d);
                                     filteredOperations.push(operation);
@@ -490,7 +490,7 @@ export default class DataboxFamily extends DataboxCore {
                         case CudType.insert:
                             promises.push((async () => {
                                 try {
-                                    await this.insertMiddleware(id,socket.zSocket,operation.k,operation.v,(value) => {
+                                    await this.insertMiddleware(id,socket.zSocket,operation.s,operation.v,(value) => {
                                         operation.d = value;
                                     },operation.c,operation.d);
                                     filteredOperations.push(operation);
@@ -501,7 +501,7 @@ export default class DataboxFamily extends DataboxCore {
                         case CudType.delete:
                             promises.push((async () => {
                                 try {
-                                    await this.deleteMiddleware(id,socket.zSocket,operation.k,operation.c,operation.d);
+                                    await this.deleteMiddleware(id,socket.zSocket,operation.s,operation.c,operation.d);
                                     filteredOperations.push(operation);
                                 }
                                 catch (e) {}
@@ -547,13 +547,13 @@ export default class DataboxFamily extends DataboxCore {
             const operation = cudOperations[i];
             switch (operation.t) {
                 case CudType.insert:
-                    promises.push(this.beforeInsert(id,operation.k,operation.v));
+                    promises.push(this.beforeInsert(id,operation.s,operation.v));
                     break;
                 case CudType.update:
-                    promises.push(this.beforeUpdate(id,operation.k,operation.v));
+                    promises.push(this.beforeUpdate(id,operation.s,operation.v));
                     break;
                 case CudType.delete:
-                    promises.push(this.beforeDelete(id,operation.k));
+                    promises.push(this.beforeDelete(id,operation.s));
                     break;
             }
         }
@@ -617,7 +617,7 @@ export default class DataboxFamily extends DataboxCore {
      * If you want to do more changes, you should look at the seqEdit method.
      * Insert behavior:
      * Without ifContains (ifContains exists):
-     * Base (with keyPath [] or '') -> Nothing
+     * Base (with selector [] or '') -> Nothing
      * KeyArray -> Inserts the value at the end with the key
      * (if the key does not exist). But if you are using a compare function,
      * it will insert the value in the correct position.
@@ -625,7 +625,7 @@ export default class DataboxFamily extends DataboxCore {
      * Array -> Key will be parsed to int if it is a number then it will be inserted at the index.
      * Otherwise, it will be added at the end.
      * With ifContains (ifContains exists):
-     * Base (with keyPath [] or '') -> Nothing
+     * Base (with selector [] or '') -> Nothing
      * KeyArray -> Inserts the value before the ifContains element with the key
      * (if the key does not exist). But if you are using a compare function,
      * it will insert the value in the correct position.
@@ -634,19 +634,22 @@ export default class DataboxFamily extends DataboxCore {
      * Otherwise, it will be added at the end.
      * @param id The member of the family you want to update.
      * Numbers will be converted to a string.
-     * @param keyPath
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
+     * @param selector
+     * The selector can be a direct key-path,
+     * can contain filter queries (by using the forint library)
+     * or it can select all items with '*'.
+     * If you use a string as a param type,
+     * you need to notice that it will be split into a key-path by dots.
      * @param value
      * @param ifContains
      * @param timestamp
      * @param code
      * @param data
      */
-    async insert(id : string | number,keyPath : string[] | string, value : any,{ifContains,timestamp,code,data} : IfContainsOption & InfoOption & TimestampOption = {}) {
+    async insert(id : string | number,selector : DbCudSelector, value : any,{ifContains,timestamp,code,data} : IfContainsOption & InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataboxUtils.buildPreCudPackage(
-                DataboxUtils.buildInsert(keyPath,value,ifContains,code,data)),
+                DataboxUtils.buildInsert(selector,value,ifContains,code,data)),
             typeof id === "string" ? id : id.toString(),timestamp);
     }
 
@@ -658,25 +661,28 @@ export default class DataboxFamily extends DataboxCore {
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * Update behavior:
-     * Base (with keyPath [] or '') -> Updates the complete structure.
+     * Base (with selector [] or '') -> Updates the complete structure.
      * KeyArray -> Updates the specific value (if the key does exist).
      * Object -> Updates the specific value (if the key does exist).
      * Array -> Key will be parsed to int if it is a number it will
      * update the specific value (if the index exist).
      * @param id The member of the family you want to update.
      * Numbers will be converted to a string.
-     * @param keyPath
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
+     * @param selector
+     * The selector can be a direct key-path,
+     * can contain filter queries (by using the forint library)
+     * or it can select all items with '*'.
+     * If you use a string as a param type,
+     * you need to notice that it will be split into a key-path by dots.
      * @param value
      * @param timestamp
      * @param code
      * @param data
      */
-    async update(id : string | number,keyPath : string[] | string, value : any,{timestamp,code,data} : InfoOption & TimestampOption = {}) {
+    async update(id : string | number,selector : DbCudSelector, value : any,{timestamp,code,data} : InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataboxUtils.buildPreCudPackage(
-                DataboxUtils.buildUpdate(keyPath,value,code,data)),
+                DataboxUtils.buildUpdate(selector,value,code,data)),
             typeof id === "string" ? id : id.toString(),timestamp);
     }
 
@@ -688,24 +694,27 @@ export default class DataboxFamily extends DataboxCore {
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * Delete behavior:
-     * Base (with keyPath [] or '') -> Deletes the complete structure.
+     * Base (with selector [] or '') -> Deletes the complete structure.
      * KeyArray -> Deletes the specific value (if the key does exist).
      * Object -> Deletes the specific value (if the key does exist).
      * Array -> Key will be parsed to int if it is a number it will delete the
      * specific value (if the index does exist). Otherwise, it will delete the last item.
      * @param id The member of the family you want to update.
      * Numbers will be converted to a string.
-     * @param keyPath
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
+     * @param selector
+     * The selector can be a direct key-path,
+     * can contain filter queries (by using the forint library)
+     * or it can select all items with '*'.
+     * If you use a string as a param type,
+     * you need to notice that it will be split into a key-path by dots.
      * @param timestamp
      * @param code
      * @param data
      */
-    async delete(id : string | number,keyPath : string[] | string,{timestamp,code,data} : InfoOption & TimestampOption = {}) {
+    async delete(id : string | number,selector : DbCudSelector,{timestamp,code,data} : InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataboxUtils.buildPreCudPackage(
-                DataboxUtils.buildDelete(keyPath,code,data)),
+                DataboxUtils.buildDelete(selector,code,data)),
             typeof id === "string" ? id : id.toString(),timestamp);
     }
 
@@ -891,10 +900,10 @@ export default class DataboxFamily extends DataboxCore {
      * A function that gets triggered before an insert into the Databox.
      * Can be used to insert the data in the database.
      * @param id
-     * @param keyPath
+     * @param selector
      * @param value
      */
-    protected beforeInsert(id : string,keyPath : string[],value : any) : Promise<void> | void {
+    protected beforeInsert(id : string,selector : DbCudProcessedSelector,value : any) : Promise<void> | void {
     }
 
     /**
@@ -902,10 +911,10 @@ export default class DataboxFamily extends DataboxCore {
      * A function that gets triggered before an update of data in the Databox.
      * Can be used to update the data in the database.
      * @param id
-     * @param keyPath
+     * @param selector
      * @param value
      */
-    protected beforeUpdate(id : string,keyPath : string[],value : any) : Promise<void> | void {
+    protected beforeUpdate(id : string,selector : DbCudProcessedSelector,value : any) : Promise<void> | void {
     }
 
     /**
@@ -913,9 +922,9 @@ export default class DataboxFamily extends DataboxCore {
      * A function that gets triggered before a delete of data in the Databox.
      * Can be used to delete the data in the database.
      * @param id
-     * @param keyPath
+     * @param selector
      */
-    protected beforeDelete(id : string,keyPath : string[]) : Promise<void> | void {
+    protected beforeDelete(id : string,selector : DbCudProcessedSelector) : Promise<void> | void {
     }
 
     // noinspection JSUnusedLocalSymbols
@@ -951,13 +960,13 @@ export default class DataboxFamily extends DataboxCore {
      * by calling the internal block method or throwing any error.
      * @param id
      * @param socket
-     * @param keyPath
+     * @param selector
      * @param value
      * @param changeValue
      * @param code
      * @param data
      */
-    protected insertMiddleware(id : string,socket : ZSocket,keyPath : string[],value : any,changeValue : ChangeValue,
+    protected insertMiddleware(id : string,socket : ZSocket,selector : DbCudProcessedSelector,value : any,changeValue : ChangeValue,
                                      code : string | number | undefined,data : any) : Promise<void> | void {
     }
 
@@ -977,13 +986,13 @@ export default class DataboxFamily extends DataboxCore {
      * by calling the internal block method or throwing any error.
      * @param id
      * @param socket
-     * @param keyPath
+     * @param selector
      * @param value
      * @param changeValue
      * @param code
      * @param data
      */
-    protected updateMiddleware(id : string,socket : ZSocket,keyPath : string[],value : any,changeValue : ChangeValue,
+    protected updateMiddleware(id : string,socket : ZSocket,selector : DbCudProcessedSelector,value : any,changeValue : ChangeValue,
                                      code : string | number | undefined,data : any) : Promise<void> | void {
     }
 
@@ -1000,11 +1009,11 @@ export default class DataboxFamily extends DataboxCore {
      * by calling the internal block method or throwing any error.
      * @param id
      * @param socket
-     * @param keyPath
+     * @param selector
      * @param code
      * @param data
      */
-    protected deleteMiddleware(id : string,socket : ZSocket,keyPath : string[],
+    protected deleteMiddleware(id : string,socket : ZSocket,selector : DbCudProcessedSelector,
                                      code : string | number | undefined,data : any) : Promise<void> | void {
     }
 }

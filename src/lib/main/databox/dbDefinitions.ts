@@ -4,6 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
+import {ForintQuery} from "forint";
+
 export interface DataboxConnectReq {
     /**
      * databox (name)
@@ -97,9 +99,9 @@ export interface CudOperation {
      */
     t : CudType,
     /**
-     * keyPath
+     * selector
      */
-    k : string[],
+    s : DbCudProcessedSelector,
     /**
      * value
      */
@@ -463,3 +465,11 @@ export interface DataboxInfo {
     name : string,
     id : any
 }
+
+/**
+ * Selector types for cud operations.
+ */
+type DbForintQuery = {key ?: ForintQuery,value ?: ForintQuery};
+type DbCudSelectorItem = '*' | string | number | DbForintQuery;
+export type DbCudProcessedSelector = DbCudSelectorItem[];
+export type DbCudSelector = DbCudSelectorItem | DbCudSelectorItem[];

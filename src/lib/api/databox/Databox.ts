@@ -31,7 +31,7 @@ import {
     IfContainsOption,
     InfoOption,
     PreCudPackage,
-    TimestampOption, DbRegisterResult, DbSocketMemory, ChangeValue, DbToken
+    TimestampOption, DbRegisterResult, DbSocketMemory, ChangeValue, DbToken, DbCudSelector, DbCudProcessedSelector
 } from "../../main/databox/dbDefinitions";
 import DataboxAccessHelper from "../../main/databox/databoxAccessHelper";
 import {ScExchange}        from "../../main/sc/scServer";
@@ -336,7 +336,7 @@ export default class Databox extends DataboxCore {
                     case CudType.update:
                         promises.push((async () => {
                             try {
-                                await this.updateMiddleware(socket.zSocket,operation.k,operation.v,(value) => {
+                                await this.updateMiddleware(socket.zSocket,operation.s,operation.v,(value) => {
                                     operation.d = value;
                                 },operation.c,operation.d);
                                 filteredOperations.push(operation);
@@ -347,7 +347,7 @@ export default class Databox extends DataboxCore {
                     case CudType.insert:
                         promises.push((async () => {
                             try {
-                                await this.insertMiddleware(socket.zSocket,operation.k,operation.v,(value) => {
+                                await this.insertMiddleware(socket.zSocket,operation.s,operation.v,(value) => {
                                     operation.d = value;
                                 },operation.c,operation.d);
                                 filteredOperations.push(operation);
@@ -358,7 +358,7 @@ export default class Databox extends DataboxCore {
                     case CudType.delete:
                         promises.push((async () => {
                             try {
-                                await this.deleteMiddleware(socket.zSocket,operation.k,operation.c,operation.d);
+                                await this.deleteMiddleware(socket.zSocket,operation.s,operation.c,operation.d);
                                 filteredOperations.push(operation);
                             }
                             catch (e) {}
@@ -399,13 +399,13 @@ export default class Databox extends DataboxCore {
             const operation = cudOperations[i];
             switch (operation.t) {
                 case CudType.insert:
-                    promises.push(this.beforeInsert(operation.k,operation.v));
+                    promises.push(this.beforeInsert(operation.s,operation.v));
                     break;
                 case CudType.update:
-                    promises.push(this.beforeUpdate(operation.k,operation.v));
+                    promises.push(this.beforeUpdate(operation.s,operation.v));
                     break;
                 case CudType.delete:
-                    promises.push(this.beforeDelete(operation.k));
+                    promises.push(this.beforeDelete(operation.s));
                     break;
             }
         }
@@ -463,7 +463,7 @@ export default class Databox extends DataboxCore {
      * If you want to do more changes, you should look at the seqEdit method.
      * Insert behavior:
      * Without ifContains (ifContains exists):
-     * Base (with keyPath [] or '') -> Nothing
+     * Base (with selector [] or '') -> Nothing
      * KeyArray -> Inserts the value at the end with the key
      * (if the key does not exist). But if you are using a compare function,
      * it will insert the value in the correct position.
@@ -471,26 +471,29 @@ export default class Databox extends DataboxCore {
      * Array -> Key will be parsed to int if it is a number then it will be inserted at the index.
      * Otherwise, it will be added at the end.
      * With ifContains (ifContains exists):
-     * Base (with keyPath [] or '') -> Nothing
+     * Base (with selector [] or '') -> Nothing
      * KeyArray -> Inserts the value before the ifContains element with the key
      * (if the key does not exist). But if you are using a compare function,
      * it will insert the value in the correct position.
      * Object -> Inserts the value with the key (if the key does not exist).
      * Array -> Key will be parsed to int if it is a number then it will be inserted at the index.
      * Otherwise, it will be added at the end.
-     * @param keyPath
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
+     * @param selector
+     * The selector can be a direct key-path,
+     * can contain filter queries (by using the forint library)
+     * or it can select all items with '*'.
+     * If you use a string as a param type,
+     * you need to notice that it will be split into a key-path by dots.
      * @param value
      * @param ifContains
      * @param timestamp
      * @param code
      * @param data
      */
-    async insert(keyPath : string[] | string, value : any,{ifContains,timestamp,code,data} : IfContainsOption & InfoOption & TimestampOption = {}) {
+    async insert(selector : DbCudSelector, value : any,{ifContains,timestamp,code,data} : IfContainsOption & InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataboxUtils.buildPreCudPackage(
-                DataboxUtils.buildInsert(keyPath,value,ifContains,code,data)),timestamp);
+                DataboxUtils.buildInsert(selector,value,ifContains,code,data)),timestamp);
     }
 
     /**
@@ -501,23 +504,26 @@ export default class Databox extends DataboxCore {
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * Update behavior:
-     * Base (with keyPath [] or '') -> Updates the complete structure.
+     * Base (with selector [] or '') -> Updates the complete structure.
      * KeyArray -> Updates the specific value (if the key does exist).
      * Object -> Updates the specific value (if the key does exist).
      * Array -> Key will be parsed to int if it is a number it will
      * update the specific value (if the index exist).
-     * @param keyPath
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
+     * @param selector
+     * The selector can be a direct key-path,
+     * can contain filter queries (by using the forint library)
+     * or it can select all items with '*'.
+     * If you use a string as a param type,
+     * you need to notice that it will be split into a key-path by dots.
      * @param value
      * @param timestamp
      * @param code
      * @param data
      */
-    async update(keyPath : string[] | string, value : any,{timestamp,code,data} : InfoOption & TimestampOption = {}) {
+    async update(selector : DbCudSelector, value : any,{timestamp,code,data} : InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataboxUtils.buildPreCudPackage(
-                DataboxUtils.buildUpdate(keyPath,value,code,data)),timestamp);
+                DataboxUtils.buildUpdate(selector,value,code,data)),timestamp);
     }
 
     /**
@@ -528,22 +534,25 @@ export default class Databox extends DataboxCore {
      * so you have to do it in the before-event or before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * Delete behavior:
-     * Base (with keyPath [] or '') -> Deletes the complete structure.
+     * Base (with selector [] or '') -> Deletes the complete structure.
      * KeyArray -> Deletes the specific value (if the key does exist).
      * Object -> Deletes the specific value (if the key does exist).
      * Array -> Key will be parsed to int if it is a number it will delete the
      * specific value (if the index does exist). Otherwise, it will delete the last item.
-     * @param keyPath
-     * The keyPath can be a string array or a
-     * string where you can separate the keys with a dot.
+     * @param selector
+     * The selector can be a direct key-path,
+     * can contain filter queries (by using the forint library)
+     * or it can select all items with '*'.
+     * If you use a string as a param type,
+     * you need to notice that it will be split into a key-path by dots.
      * @param timestamp
      * @param code
      * @param data
      */
-    async delete(keyPath : string[] | string,{timestamp,code,data} : InfoOption & TimestampOption = {}) {
+    async delete(selector : DbCudSelector,{timestamp,code,data} : InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataboxUtils.buildPreCudPackage(
-                DataboxUtils.buildDelete(keyPath,code,data)),timestamp);
+                DataboxUtils.buildDelete(selector,code,data)),timestamp);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -685,29 +694,29 @@ export default class Databox extends DataboxCore {
      * **Can be overridden.**
      * A function that gets triggered before an insert into the Databox.
      * Can be used to insert the data in the database.
-     * @param keyPath
+     * @param selector
      * @param value
      */
-    protected beforeInsert(keyPath : string[],value : any) : Promise<void> | void {
+    protected beforeInsert(selector : DbCudProcessedSelector,value : any) : Promise<void> | void {
     }
 
     /**
      * **Can be overridden.**
      * A function that gets triggered before an update of data in the Databox.
      * Can be used to update the data in the database.
-     * @param keyPath
+     * @param selector
      * @param value
      */
-    protected beforeUpdate(keyPath : string[],value : any) : Promise<void> | void {
+    protected beforeUpdate(selector : DbCudProcessedSelector,value : any) : Promise<void> | void {
     }
 
     /**
      * **Can be overridden.**
      * A function that gets triggered before a delete of data in the Databox.
      * Can be used to delete the data in the database.
-     * @param keyPath
+     * @param selector
      */
-    protected beforeDelete(keyPath : string[]) : Promise<void> | void {
+    protected beforeDelete(selector : DbCudProcessedSelector) : Promise<void> | void {
     }
 
     // noinspection JSUnusedLocalSymbols
@@ -742,13 +751,13 @@ export default class Databox extends DataboxCore {
      * You are also able to block the complete operation for the socket
      * by calling the internal block method or throwing any error.
      * @param socket
-     * @param keyPath
+     * @param selector
      * @param value
      * @param changeValue
      * @param code
      * @param data
      */
-    protected insertMiddleware(socket : ZSocket,keyPath : string[],value : any,changeValue : ChangeValue,
+    protected insertMiddleware(socket : ZSocket,selector : DbCudProcessedSelector,value : any,changeValue : ChangeValue,
                                      code : string | number | undefined,data : any) : Promise<void> | void {
     }
 
@@ -767,13 +776,13 @@ export default class Databox extends DataboxCore {
      * You are also able to block the complete operation for the socket
      * by calling the internal block method or throwing any error.
      * @param socket
-     * @param keyPath
+     * @param selector
      * @param value
      * @param changeValue
      * @param code
      * @param data
      */
-    protected updateMiddleware(socket : ZSocket,keyPath : string[],value : any,changeValue : ChangeValue,
+    protected updateMiddleware(socket : ZSocket,selector : DbCudProcessedSelector,value : any,changeValue : ChangeValue,
                                      code : string | number | undefined,data : any) : Promise<void> | void {
     }
 
@@ -789,11 +798,11 @@ export default class Databox extends DataboxCore {
      * You are able to block the complete operation for the socket
      * by calling the internal block method or throwing any error.
      * @param socket
-     * @param keyPath
+     * @param selector
      * @param code
      * @param data
      */
-    protected deleteMiddleware(socket : ZSocket,keyPath : string[],
+    protected deleteMiddleware(socket : ZSocket,selector : DbCudProcessedSelector,
                                      code : string | number | undefined,data : any) : Promise<void> | void {
     }
 }

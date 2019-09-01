@@ -12,7 +12,8 @@ import {
     DbClientOutputClosePackage,
     DbClientOutputEvent,
     DbClientOutputReloadPackage,
-    DbClientOutputSignalPackage,
+    DbClientOutputSignalPackage, DbCudProcessedSelector,
+    DbCudSelector,
     DbSession,
     DbSessionData,
     DbToken,
@@ -54,15 +55,16 @@ export default class DataboxUtils {
          return 'S-' + uniqid();
      }
 
-     static handleKeyPath(keyPath : string | string[]) : string[] {
-         return typeof keyPath === 'string' ?
-             (keyPath === '' ? [] : keyPath.split('.')) : keyPath;
+     static processSelector(selector : DbCudSelector) : DbCudProcessedSelector {
+         if (typeof selector === 'string') return (selector === '' ? [] : selector.split('.'));
+         else if(!Array.isArray(selector)) return [selector];
+         return selector;
      }
 
-     static buildInsert(keyPath : string[] | string, value : any, ifContains ?: string, code ?: number | string, data ?: any) : CudOperation {
+     static buildInsert(selector : DbCudSelector, value : any, ifContains ?: string, code ?: number | string, data ?: any) : CudOperation {
          return {
              t : CudType.insert,
-             k : DataboxUtils.handleKeyPath(keyPath),
+             s : DataboxUtils.processSelector(selector),
              v : value,
              ...(ifContains !== undefined ? {i : ifContains} : {}),
              ...(code !== undefined ? {c : code} : {}),
@@ -70,20 +72,20 @@ export default class DataboxUtils {
          };
      }
 
-    static buildUpdate(keyPath : string[] | string, value : any,code ?: number | string, data ?: any) : CudOperation {
+    static buildUpdate(selector : DbCudSelector, value : any,code ?: number | string, data ?: any) : CudOperation {
         return {
             t : CudType.update,
-            k : DataboxUtils.handleKeyPath(keyPath),
+            s : DataboxUtils.processSelector(selector),
             v : value,
             ...(code !== undefined ? {c : code} : {}),
             ...(data !== undefined ? {d : data} : {})
         };
     }
 
-    static buildDelete(keyPath : string[] | string,code ?: number | string, data ?: any) : CudOperation {
+    static buildDelete(selector : DbCudSelector,code ?: number | string, data ?: any) : CudOperation {
         return {
             t : CudType.delete,
-            k : DataboxUtils.handleKeyPath(keyPath),
+            s : DataboxUtils.processSelector(selector),
             ...(code !== undefined ? {c : code} : {}),
             ...(data !== undefined ? {d : data} : {})
         };
