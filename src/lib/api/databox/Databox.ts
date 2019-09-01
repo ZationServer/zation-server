@@ -483,7 +483,8 @@ export default class Databox extends DataboxCore {
      * can contain filter queries (by using the forint library)
      * or it can select all items with '*'.
      * If you use a string as a param type,
-     * you need to notice that it will be split into a key-path by dots.
+     * you need to notice that it will be split into a path by dots.
+     * All numeric values will be converted to a string because the key can only be a string.
      * @param value
      * @param ifContains
      * @param timestamp
@@ -514,7 +515,8 @@ export default class Databox extends DataboxCore {
      * can contain filter queries (by using the forint library)
      * or it can select all items with '*'.
      * If you use a string as a param type,
-     * you need to notice that it will be split into a key-path by dots.
+     * you need to notice that it will be split into a path by dots.
+     * All numeric values will be converted to a string because the key can only be a string.
      * @param value
      * @param timestamp
      * @param code
@@ -544,7 +546,8 @@ export default class Databox extends DataboxCore {
      * can contain filter queries (by using the forint library)
      * or it can select all items with '*'.
      * If you use a string as a param type,
-     * you need to notice that it will be split into a key-path by dots.
+     * you need to notice that it will be split into a path by dots.
+     * All numeric values will be converted to a string because the key can only be a string.
      * @param timestamp
      * @param code
      * @param data

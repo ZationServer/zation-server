@@ -48,7 +48,8 @@ export default class DataboxFamilyContainer {
      * can contain filter queries (by using the forint library)
      * or it can select all items with '*'.
      * If you use a string as a param type,
-     * you need to notice that it will be split into a key-path by dots.
+     * you need to notice that it will be split into a path by dots.
+     * All numeric values will be converted to a string because the key can only be a string.
      * @param value
      * @param options
      */
@@ -79,7 +80,8 @@ export default class DataboxFamilyContainer {
      * can contain filter queries (by using the forint library)
      * or it can select all items with '*'.
      * If you use a string as a param type,
-     * you need to notice that it will be split into a key-path by dots.
+     * you need to notice that it will be split into a path by dots.
+     * All numeric values will be converted to a string because the key can only be a string.
      * @param value
      * @param options
      */
@@ -110,7 +112,8 @@ export default class DataboxFamilyContainer {
      * can contain filter queries (by using the forint library)
      * or it can select all items with '*'.
      * If you use a string as a param type,
-     * you need to notice that it will be split into a key-path by dots.
+     * you need to notice that it will be split into a path by dots.
+     * All numeric values will be converted to a string because the key can only be a string.
      * @param options
      */
     async delete(id : string | number,selector: DbCudSelector,options : InfoOption & TimestampOption = {}): Promise<void> {
