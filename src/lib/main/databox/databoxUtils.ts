@@ -12,8 +12,9 @@ import {
     DbClientOutputClosePackage,
     DbClientOutputEvent,
     DbClientOutputReloadPackage,
-    DbClientOutputSignalPackage, DbCudProcessedSelector,
-    DbCudSelector,
+    DbClientOutputSignalPackage,
+    DbCudProcessedSelector,
+    DbCudSelector, DbForintQuery,
     DbSession,
     DbSessionData,
     DbToken,
@@ -61,7 +62,7 @@ export default class DataboxUtils {
          return selector;
      }
 
-     static buildInsert(selector : DbCudSelector, value : any, ifContains ?: string, code ?: number | string, data ?: any) : CudOperation {
+     static buildInsert(selector : DbCudSelector, value : any, ifContains ?: DbForintQuery, code ?: number | string, data ?: any) : CudOperation {
          return {
              t : CudType.insert,
              s : DataboxUtils.processSelector(selector),

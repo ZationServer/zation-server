@@ -117,7 +117,7 @@ export interface CudOperation {
     /**
      * ifContains
      */
-    i ?: string;
+    i ?: DbForintQuery;
 }
 
 /**
@@ -429,12 +429,12 @@ export interface TimestampOption {
 export interface IfContainsOption {
     /**
      * The ifContains option gives you the possibility to define a condition
-     * that the client only inserts the value when it has data with that specific key.
+     * that the client only inserts the value when it has data that matches with a specific query.
      * That can be useful if you want to reinsert old data,
      * but only to the clients that are already loaded this old data section.
      * Notice also that in some cases the insertion sequence is changed.
      */
-    ifContains ?: string
+    ifContains ?: DbForintQuery
 }
 
 /**
@@ -467,9 +467,13 @@ export interface DataboxInfo {
 }
 
 /**
+ * Forint queries with the databox.
+ */
+export type DbForintQuery = {key ?: ForintQuery,value ?: ForintQuery};
+
+/**
  * Selector types for cud operations.
  */
-type DbForintQuery = {key ?: ForintQuery,value ?: ForintQuery};
 type DbCudSelectorItem = '*' | string | number | DbForintQuery;
 export type DbCudProcessedSelector = DbCudSelectorItem[];
 export type DbCudSelector = DbCudSelectorItem | DbCudSelectorItem[];
