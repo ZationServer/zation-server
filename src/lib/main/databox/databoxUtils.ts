@@ -57,9 +57,9 @@ export default class DataboxUtils {
      }
 
      static processSelector(selector : DbCudSelector) : DbCudProcessedSelector {
-         if(Array.isArray(selector)) return selector;
+         if(Array.isArray(selector)) return selector.map((v) => typeof v === 'number' ? v.toString() : v);
          else if (typeof selector === 'string') return (selector === '' ? [] : selector.split('.'));
-         return [selector];
+         return [typeof selector === 'number' ? selector.toString() : selector];
      }
 
      static buildInsert(selector : DbCudSelector, value : any, ifContains ?: DbForintQuery, code ?: number | string, data ?: any) : CudOperation {
