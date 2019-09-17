@@ -92,7 +92,7 @@ export default class HttpCRequestProcessor
             }
         }
         else {
-            Logger.printDebugInfo(`Http Request id: ${reqId} -> No zation data found`);
+            Logger.printDebugInfo(`Http Request id: ${reqId} -> Empty request`);
             HttpCRequestProcessor.printDefaultHtmlSite(res,this.worker);
         }
     }
