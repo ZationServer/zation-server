@@ -123,7 +123,7 @@ class ZationWorker extends SCWorker
     private serverSettingsJs : string;
 
     //prepareView
-    private viewEngine : ViewEngine = new ViewEngine();
+    private viewEngine : ViewEngine;
 
     constructor() {
         super();
@@ -141,6 +141,8 @@ class ZationWorker extends SCWorker
 
         this.zc = new ZationConfigFull(this.options.zationConfigWorkerTransport);
         global['_ZATION_START_MODE'] = this.zc.getStartMode();
+
+        this.viewEngine = new ViewEngine(this.options.license);
 
         //setLogger
         Logger.setZationConfig(this.zc);

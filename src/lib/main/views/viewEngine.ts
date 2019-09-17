@@ -4,15 +4,29 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
+import {License} from "../utils/licenseManager";
+
 const path : any           = require('path');
 import fs                  = require('fs');
 
 export default class ViewEngine
 {
     private defaultZationView : string;
+    private license : License | undefined;
+
+    constructor(license : License | undefined) {
+        this.license = license;
+    }
 
     async loadViews() : Promise<void> {
-        this.defaultZationView = await this.load('zationDefault');
+        const licenseMeta = this.license ?
+            `<meta name="licenseMeta" content="${this.license.i}#${this.license.cl}">` : undefined;
+        this.defaultZationView = this.template((await this.load('zationDefault')),'licenseMeta',licenseMeta);
+    }
+
+    private template(str : string, key : string, value ?: string | number) : string {
+        return str.replace
+        (new RegExp(`{{${key}}}`, 'g'),value !== undefined ? ('\n' + value) : '');
     }
 
     // noinspection JSMethodCanBeStatic

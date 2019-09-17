@@ -290,6 +290,7 @@ export default class ZationMaster {
             zationServerVersion : ZationMaster.version,
             zationServerStartedTimeStamp : this.serverStartedTimeStamp,
             logLevel : scLogLevel,
+            license : this.license,
             clusterAuthKey : this.zc.mainConfig.clusterAuthKey || null,
             clusterStateServerHost : this.clusterStateServerHost,
             clusterStateServerPort : this.zc.mainConfig.stateServerPort || null,
