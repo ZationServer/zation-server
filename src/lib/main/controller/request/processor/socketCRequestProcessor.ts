@@ -24,7 +24,7 @@ export default class SocketCRequestProcessor
     }
 
     //SOCKET Extra Layer
-    async prepareReq(socket : UpSocket, input, respond, reqId : string)
+    async prepareReq(socket : UpSocket, input, respond, reqId : string) : Promise<SHBridgeSocket>
     {
         if(this.debug){
             Logger.printDebugInfo(`Socket Controller Request id: ${reqId} -> `,StringifyUtils.object(input));

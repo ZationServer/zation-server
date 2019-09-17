@@ -69,6 +69,7 @@ export default class ControllerReqHandler
         let shBridge;
         try {
             shBridge = await this.httpProcessor.prepareReq(req,res,reqId);
+            if(shBridge)
             await this.requestResponder.respSuccessHttp((await this.mainRequestProcessor.process(shBridge)),res,reqId,shBridge);
         }
         catch (err) {

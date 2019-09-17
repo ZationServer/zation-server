@@ -19,6 +19,7 @@ import ZationConfigFull             from "../../../config/manager/zationConfigFu
 import MiddlewareUtils              from "../../../utils/middlewareUtils";
 import StringifyUtils               from "../../../utils/stringifyUtils";
 import {ZationRequest}              from "../controllerDefinitions";
+import SHBridge                     from "../../../bridges/shBridge";
 
 export default class HttpCRequestProcessor
 {
@@ -41,7 +42,7 @@ export default class HttpCRequestProcessor
     }
 
     //HTTP Extra Layer
-    async prepareReq(req,res,reqId : string)
+    async prepareReq(req,res,reqId : string) : Promise<SHBridge | undefined>
     {
         if (req.method === 'POST' && req.body[this.postKey]) {
             if(this.debug){
@@ -105,7 +106,7 @@ export default class HttpCRequestProcessor
         }
     }
 
-    private async mainProcess(req,res,zationData : ZationRequest,reqId : string)
+    private async mainProcess(req,res,zationData : ZationRequest,reqId : string) : Promise<SHBridge>
     {
         //check for validationCheckRequest
         if(ControllerReqUtils.isValidationCheckReq(zationData)) {
