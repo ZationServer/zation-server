@@ -68,6 +68,7 @@
     "forint": "0.1.4",
     "ws": "7.1.2",
     "z-uws": "0.15.1",
+    "eosjs-ecc": "4.0.4",
     "zation-client": "0.9.9",
     "zation-service": "0.3.7"
   },

@@ -18,6 +18,7 @@ import TimeUtils               from "../main/utils/timeUtils";
 import BackgroundTasksSender   from "../main/background/backgroundTasksSender";
 import BackgroundTasksLoader   from "../main/background/backgroundTasksLoader";
 import ZationConfigMaster      from "../main/config/manager/zationConfigMaster";
+import LicenseManager, {License, LicenseType} from "../main/utils/licenseManager";
 // noinspection TypeScriptPreferShortImport
 import {StartErrorName}        from "../main/constants/startErrorName";
 // noinspection TypeScriptPreferShortImport
@@ -33,6 +34,7 @@ export default class ZationMaster {
     private readonly serverStartedTimeStamp: number;
     private zc: ZationConfigMaster;
     private readonly zcLoader : ConfigLoader;
+    private license : License | undefined = undefined;
 
     private workerIds: StringSet;
     private brokerIds: StringSet;
@@ -146,6 +148,19 @@ export default class ZationMaster {
                 return this.rejectStart(StartErrorName.CONFIG_ERRORS,'The configs have errors.');
             }
             Logger.printStartDebugInfo(`The Master has checked the config files.`, true);
+        }
+
+        if(this.zc.mainConfig.license !== undefined){
+            Logger.startStopWatch();
+            try {
+                this.license = LicenseManager.processLicense(this.zc.mainConfig.license);
+            }
+            catch (e) {
+                const msg = 'The provided license is invalid.';
+                this.printStartFail(msg);
+                return this.rejectStart(StartErrorName.PORT_IN_USE,msg);
+            }
+            Logger.printStartDebugInfo('The Master has checked the license.', true);
         }
 
         Logger.startStopWatch();
@@ -407,6 +422,9 @@ export default class ZationMaster {
         const path     = this.zc.mainConfig.path;
         const protocol = this.zc.mainConfig.secure ? 'https' : 'http';
         const server   = `${protocol}://${hostName}:${port}${path}`;
+        const license = this.license ?
+            `Licensed to ${this.license.n} (${LicenseType[this.license.t]})` :
+            'No license (only for testing)';
 
         Logger.log('\x1b[32m%s\x1b[0m','   [ACTIVE]','Zation started 🚀' + (this.zc.inTestMode() ? ' in TestMode 🛠' : ''));
         Logger.log(`            Version: ${ZationMaster.version}`);
@@ -421,6 +439,12 @@ export default class ZationMaster {
         Logger.log(`            Machine scaling active: ${this.stateServerActive}`);
         Logger.log(`            Worker count: ${this.master.options.workers}`);
         Logger.log(`            Broker count: ${this.master.options.brokers}`);
+        Logger.log(`            License: ${license}`);
+        if(this.license){
+            const cl = this.license.cl;
+            Logger.log(`            ClusterLicense: ${cl === 0 ? 'No' : `Yes (${cl === -1 ? 'Unlimited' : `Max ${cl}`} instances)`}`);
+            Logger.log(`            LicenseId: ${this.license.i}`);
+        }
         Logger.log(`            Server: ${server}`);
         if(this.zc.mainConfig.usePanel) {
             Logger.log(`            Panel: ${server}/panel`);

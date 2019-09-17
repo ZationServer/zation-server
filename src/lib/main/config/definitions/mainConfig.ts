@@ -35,6 +35,16 @@ export interface MainConfig
      */
     path  ?: string;
     /**
+     * In this property, you can set your license
+     * (Notice that you only can use one unique license for a single running server instance).
+     * If your provided license is valid, you able to use this instance on a
+     * public server and to use more than ten components.
+     * For more information, look here:
+     * https://github.com/ZationServer/zation/wiki/Zation-End-User-License-Agreement
+     * @default Free Trial
+     */
+    license ?: string;
+    /**
      * With this property, you can specify what origins are allowed to communicate to the server.
      * You can specify the port and hostname.
      * Also, a star can be used as a wild card for any port or any hostname.
