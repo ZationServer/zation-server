@@ -8,6 +8,7 @@ import ZationConfig from "../config/manager/zationConfig";
 import ZationMaster from "../../core/zationMaster";
 import Encoder      from "../utils/encoder";
 import Logger       from "../logger/logger";
+import {License}    from "../utils/licenseManager";
 
 const  ScClient : any        = require('socketcluster-client');
 const  uuidV4                = require('uuid/v4');
@@ -30,14 +31,21 @@ export default class StateServerEngine
 
     private connectSettings : object;
     private serverSettings : object;
+    private licenseData : {id : string,cl : number} | undefined = undefined;
     private serverSharedData : SharedData | string;
 
     private readonly useSharedTokenAuth : boolean;
 
-    constructor(zc : ZationConfig,zm : ZationMaster)
+    constructor(zc : ZationConfig,zm : ZationMaster,license ?: License)
     {
         this.zc = zc;
         this.zm = zm;
+        if(license){
+            this.licenseData = {
+                id : license.i,
+                cl : license.cl
+            };
+        }
 
         this.useSharedTokenAuth = this.zc.mainConfig.clusterShareTokenAuth;
         this.useClusterSecretKey = typeof this.zc.mainConfig.clusterSecretKey === 'string';
@@ -295,7 +303,8 @@ export default class StateServerEngine
             ('zMasterRegister', {
                     settings : this.serverSettings,
                     sharedData : this.serverSharedData,
-                    instanceId : this.zc.mainConfig.instanceId
+                    instanceId : this.zc.mainConfig.instanceId,
+                    license : this.licenseData
                 },
                 async (err,data) => {
                     if(!err) {
@@ -443,6 +452,7 @@ export default class StateServerEngine
                     settings : this.serverSettings,
                     sharedData : this.serverSharedData,
                     instanceId : this.zc.mainConfig.instanceId,
+                    license : this.licenseData,
                     wasLeader : this.isClusterLeader
                 }
                 ,

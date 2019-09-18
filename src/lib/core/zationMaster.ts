@@ -195,7 +195,7 @@ export default class ZationMaster {
         this.checkClusterMode();
         if (this.stateServerActive) {
             //cluster active
-            this.stateServerEngine = new StateServerEngine(this.zc, this);
+            this.stateServerEngine = new StateServerEngine(this.zc, this, this.license);
             try {
                 Logger.printStartDebugInfo('Master wait for connection to zation-cluster-state server...');
                 await this.stateServerEngine.registerStateServer();
