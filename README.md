@@ -13,9 +13,10 @@ The server component of the zation framework.
 
 ## License
 
-While Zation source code is publicly available, the Zation server is not free.   
-All other repositories of the ZationServer organization that contain an MIT license .  
-are free to use with the conditions of the MIT license.   
-To use the Zation server on a public server, you need to purchase a license.   
+While Zation source code is publicly available, Zation **is not free**.  
+Except for the repositories of the ZationServer organization that contain an MIT license.   
+These repositories are free to use with the conditions of the MIT license.   
+
+To use Zation on a public server or for commercial usage, you need to purchase a license.  
 
 - https://github.com/ZationServer/zation/wiki/Zation-End-User-License-Agreement
