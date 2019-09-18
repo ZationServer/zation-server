@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import * as ecc from 'eosjs-ecc';
+import * as ecc     from 'eosjs-ecc';
 import ZationMaster from "../../core/zationMaster";
 
 export interface License {
@@ -21,12 +21,17 @@ export interface License {
      */
     t : LicenseType,
     /**
-     * indicates if the license is a cluster license and the maximal amount of instances which are allowed.
-     * 0 = no cluster license
-     * -1 = cluster license with unlimited amount.
-     * number > 0 = cluster license with his specific max amount.
+     * Indicates if the license is a multi-license,
+     * the maximal amount of instances which are allowed and if it is cluster dependent.
+     * FirstValue (Is multi-license and maximal amount)
+     * 0 = no multi-license
+     * -1 = multi-license with unlimited amount.
+     * number > 0 = multi-license with a specific max amount.
+     * SecondValue (Is cluster dependent)
+     * 0 = no
+     * 1 = yes
      */
-    cl : number,
+    m : [number,number],
     /**
      * version
      */

@@ -31,7 +31,7 @@ export default class StateServerEngine
 
     private connectSettings : object;
     private serverSettings : object;
-    private licenseData : {id : string,cl : number} | undefined = undefined;
+    private licenseData : {id : string,m : [number,number]} | undefined = undefined;
     private serverSharedData : SharedData | string;
 
     private readonly useSharedTokenAuth : boolean;
@@ -43,7 +43,7 @@ export default class StateServerEngine
         if(license){
             this.licenseData = {
                 id : license.i,
-                cl : license.cl
+                m : license.m
             };
         }
 

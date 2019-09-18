@@ -20,7 +20,7 @@ export default class ViewEngine
 
     async loadViews() : Promise<void> {
         const licenseMeta = this.license ?
-            `<meta name="licenseMeta" content="${this.license.i}#${this.license.cl}">` : undefined;
+            `<meta name="licenseMeta" content="${this.license.i}#${this.license.m[0]}.${this.license.m[1]}">` : undefined;
         this.defaultZationView = this.template((await this.load('zationDefault')),'licenseMeta',licenseMeta);
     }
 

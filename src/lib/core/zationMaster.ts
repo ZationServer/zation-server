@@ -448,8 +448,10 @@ export default class ZationMaster {
         Logger.log(`            Broker count: ${this.master.options.brokers}`);
         Logger.log(`            License: ${license}`);
         if(this.license){
-            const cl = this.license.cl;
-            Logger.log(`            ClusterLicense: ${cl === 0 ? 'No' : `Yes (${cl === -1 ? 'Unlimited' : `Max ${cl}`} instances)`}`);
+            const m = this.license.m;
+            Logger.log(`            MultiLicense: ${m[0] === 0 ? 'No' : 
+                `Yes (${m[0] === -1 ? 'Unlimited' : `Max ${m[0]}`} instances and `}${m[1] ? 'ClusterDependent' : 
+                'not ClusterDependent'})`);
             Logger.log(`            LicenseId: ${this.license.i}`);
         }
         Logger.log(`            Server: ${server}`);
