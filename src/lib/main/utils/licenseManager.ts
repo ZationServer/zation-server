@@ -55,7 +55,7 @@ export enum LicenseType {
     Multi
 }
 
-const publicKey = 'EOS5u8AB78h1dRCBBae2k2x8kWFmTaWad3NmK5VGtgGNpX88XBVDn';
+const publicKey = 'EOS6MHxuXnrdZMDiBVdyDqCKjBqDtJCD5ED1CFD3wkZuWojfqoUZZ';
 
 export default class LicenseManager {
     private constructor(){}
