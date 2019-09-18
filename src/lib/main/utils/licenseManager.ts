@@ -5,6 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import * as ecc from 'eosjs-ecc';
+import ZationMaster from "../../core/zationMaster";
 
 export interface License {
     /**
@@ -62,5 +63,9 @@ export default class LicenseManager {
         }
         catch (e) {}
         throw new Error('Invalid License');
+    }
+
+    static licenseVersionValid(license : License) : boolean {
+        return license.v >= ZationMaster.minLicenseVersionRequired;
     }
 }

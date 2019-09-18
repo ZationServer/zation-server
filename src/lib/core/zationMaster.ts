@@ -30,6 +30,7 @@ import ConfigLoader            from "../main/config/manager/configLoader";
 export default class ZationMaster {
     private static instance: ZationMaster | null = null;
     private static readonly version: string = '1.3.5';
+    static readonly minLicenseVersionRequired: number = 1;
 
     private readonly serverStartedTimeStamp: number;
     private zc: ZationConfigMaster;
@@ -159,6 +160,11 @@ export default class ZationMaster {
                 const msg = 'The provided license is invalid.';
                 this.printStartFail(msg);
                 return this.rejectStart(StartErrorName.PORT_IN_USE,msg);
+            }
+            if(!LicenseManager.licenseVersionValid(this.license)){
+                const msg = 'The version of the provided license is not compatible.';
+                this.printStartFail(msg);
+                return this.rejectStart(StartErrorName.LICENSE_VERSION_NOT_COMPATIBLE,msg);
             }
             Logger.printStartDebugInfo('The Master has checked the license.', true);
         }
