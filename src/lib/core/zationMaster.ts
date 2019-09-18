@@ -159,7 +159,7 @@ export default class ZationMaster {
             catch (e) {
                 const msg = 'The provided license is invalid.';
                 this.printStartFail(msg);
-                return this.rejectStart(StartErrorName.PORT_IN_USE,msg);
+                return this.rejectStart(StartErrorName.INVALID_LICENSE,msg);
             }
             if(!LicenseManager.licenseVersionValid(this.license)){
                 const msg = 'The version of the provided license is not compatible.';
