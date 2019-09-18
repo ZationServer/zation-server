@@ -18,7 +18,7 @@ import TimeUtils               from "../main/utils/timeUtils";
 import BackgroundTasksSender   from "../main/background/backgroundTasksSender";
 import BackgroundTasksLoader   from "../main/background/backgroundTasksLoader";
 import ZationConfigMaster      from "../main/config/manager/zationConfigMaster";
-import LicenseManager, {License, LicenseType} from "../main/utils/licenseManager";
+import LicenseManager, {License, LicenseLevel} from "../main/utils/licenseManager";
 // noinspection TypeScriptPreferShortImport
 import {StartErrorName}        from "../main/constants/startErrorName";
 // noinspection TypeScriptPreferShortImport
@@ -430,7 +430,7 @@ export default class ZationMaster {
         const protocol = this.zc.mainConfig.secure ? 'https' : 'http';
         const server   = `${protocol}://${hostName}:${port}${path}`;
         const license = this.license ?
-            `Licensed to ${this.license.n} (${LicenseType[this.license.t]})` :
+            `Licensed to ${this.license.n} (${LicenseLevel[this.license.l]})` :
             'No license (only for testing)';
 
         Logger.log('\x1b[32m%s\x1b[0m','   [ACTIVE]','Zation started 🚀' + (this.zc.inTestMode() ? ' in TestMode 🛠' : ''));
@@ -448,10 +448,7 @@ export default class ZationMaster {
         Logger.log(`            Broker count: ${this.master.options.brokers}`);
         Logger.log(`            License: ${license}`);
         if(this.license){
-            const m = this.license.m;
-            Logger.log(`            MultiLicense: ${m[0] === 0 ? 'No' : 
-                `Yes (${m[0] === -1 ? 'Unlimited' : `Max ${m[0]}`} instances and `}${m[1] ? 'ClusterDependent' : 
-                'not ClusterDependent'})`);
+            Logger.log(`            LicenseType: ${LicenseManager.licenseTypeToString(this.license)}`);
             Logger.log(`            LicenseId: ${this.license.i}`);
         }
         Logger.log(`            Server: ${server}`);

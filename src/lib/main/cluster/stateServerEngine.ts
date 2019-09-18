@@ -8,7 +8,7 @@ import ZationConfig from "../config/manager/zationConfig";
 import ZationMaster from "../../core/zationMaster";
 import Encoder      from "../utils/encoder";
 import Logger       from "../logger/logger";
-import {License}    from "../utils/licenseManager";
+import {License, LicenseLevel, LicenseType} from "../utils/licenseManager";
 
 const  ScClient : any        = require('socketcluster-client');
 const  uuidV4                = require('uuid/v4');
@@ -31,7 +31,7 @@ export default class StateServerEngine
 
     private connectSettings : object;
     private serverSettings : object;
-    private licenseData : {id : string,m : [number,number]} | undefined = undefined;
+    private licenseData : {id : string,l : LicenseLevel,t : LicenseType,mi : number} | undefined = undefined;
     private serverSharedData : SharedData | string;
 
     private readonly useSharedTokenAuth : boolean;
@@ -43,7 +43,9 @@ export default class StateServerEngine
         if(license){
             this.licenseData = {
                 id : license.i,
-                m : license.m
+                l : license.l,
+                t : license.t,
+                mi : license.mi
             };
         }
 

@@ -17,21 +17,20 @@ export interface License {
      */
     e : string,
     /**
+     * level
+     */
+    l : LicenseLevel,
+    /**
      * type
      */
-    t : LicenseType,
+    t : LicenseType
     /**
-     * Indicates if the license is a multi-license,
-     * the maximal amount of instances which are allowed and if it is cluster dependent.
-     * FirstValue (Is multi-license and maximal amount)
-     * 0 = no multi-license
-     * -1 = multi-license with unlimited amount.
-     * number > 0 = multi-license with a specific max amount.
-     * SecondValue (Is cluster dependent)
-     * 0 = no
-     * 1 = yes
+     * Max instances
+     * The maximal amount of instances which are allowed.
+     * -1 = unlimited amount.
+     * number > 0 = specific max amount.
      */
-    m : [number,number],
+    mi : number,
     /**
      * version
      */
@@ -46,8 +45,14 @@ export interface License {
     c : number
 }
 
-export enum LicenseType {
+export enum LicenseLevel {
     Standard
+}
+
+export enum LicenseType {
+    Single,
+    Cluster,
+    Multi
 }
 
 const publicKey = 'EOS5u8AB78h1dRCBBae2k2x8kWFmTaWad3NmK5VGtgGNpX88XBVDn';
@@ -72,5 +77,15 @@ export default class LicenseManager {
 
     static licenseVersionValid(license : License) : boolean {
         return license.v >= ZationMaster.minLicenseVersionRequired;
+    }
+
+    static licenseTypeToString(license : License) : string {
+        const maxInstance =
+            `(${license.mi === -1 ? 'Unlimited instances' : `Max ${license.mi} instance${license.mi > 1 ? 's' : ''}`})`;
+        return `${LicenseType[license.t]} License ${maxInstance}`;
+    }
+
+    static licenseToMeta(license : License) : string {
+        return `${license.i}#${license.l}.${license.t}.${license.mi}`;
     }
 }

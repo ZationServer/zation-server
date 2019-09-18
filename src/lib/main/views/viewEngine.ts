@@ -4,10 +4,9 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {License} from "../utils/licenseManager";
-
-const path : any           = require('path');
-import fs                  = require('fs');
+import LicenseManager, {License} from "../utils/licenseManager";
+const path : any               = require('path');
+import fs                      = require('fs');
 
 export default class ViewEngine
 {
@@ -20,10 +19,11 @@ export default class ViewEngine
 
     async loadViews() : Promise<void> {
         const licenseMeta = this.license ?
-            `<meta name="licenseMeta" content="${this.license.i}#${this.license.m[0]}.${this.license.m[1]}">` : undefined;
+            `<meta name="licenseMeta" content="${LicenseManager.licenseToMeta(this.license)}">` : undefined;
         this.defaultZationView = this.template((await this.load('zationDefault')),'licenseMeta',licenseMeta);
     }
 
+    // noinspection JSMethodCanBeStatic
     private template(str : string, key : string, value ?: string | number) : string {
         return str.replace
         (new RegExp(`{{${key}}}`, 'g'),value !== undefined ? ('\n' + value) : '');
