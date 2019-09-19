@@ -11,22 +11,28 @@ import fs                      = require('fs');
 export default class ViewEngine
 {
     private defaultZationView : string;
-    private license : License | undefined;
+    private readonly license : License | undefined;
+    private readonly instanceId : string;
+    private readonly workerId : string;
 
-    constructor(license : License | undefined) {
+    constructor(license : License | undefined,instanceId : string,workerId : string) {
         this.license = license;
+        this.instanceId = instanceId;
+        this.workerId = workerId;
     }
 
     async loadViews() : Promise<void> {
-        const licenseMeta = this.license ?
-            `<meta name="licenseMeta" content="${LicenseManager.licenseToMeta(this.license)}">` : undefined;
-        this.defaultZationView = this.template((await this.load('zationDefault')),'licenseMeta',licenseMeta);
+        let tmpDefaultView = await this.load('zationDefault');
+        tmpDefaultView = this.template(tmpDefaultView,'licenseMeta',
+            `<meta name="licenseMeta" content="${ this.license ? LicenseManager.licenseToMeta(this.license) : '-'}">` );
+
+        tmpDefaultView = this.template(tmpDefaultView,'instanceId',`<meta name="instanceId" content="${this.instanceId}">`);
+        this.defaultZationView = this.template(tmpDefaultView,'workerId',`<meta name="workerId" content="${this.workerId}">`);
     }
 
     // noinspection JSMethodCanBeStatic
-    private template(str : string, key : string, value ?: string | number) : string {
-        return str.replace
-        (new RegExp(`{{${key}}}`, 'g'),value !== undefined ? ('\n' + value) : '');
+    private template(str : string, key : string, value : string) : string {
+        return str.replace(new RegExp(`{{${key}}}`, 'g'),value);
     }
 
     // noinspection JSMethodCanBeStatic

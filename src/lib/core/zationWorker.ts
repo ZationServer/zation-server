@@ -142,7 +142,7 @@ class ZationWorker extends SCWorker
         this.zc = new ZationConfigFull(this.options.zationConfigWorkerTransport);
         global['_ZATION_START_MODE'] = this.zc.getStartMode();
 
-        this.viewEngine = new ViewEngine(this.options.license);
+        this.viewEngine = new ViewEngine(this.options.license,this.zc.mainConfig.instanceId,this.id.toString());
 
         //setLogger
         Logger.setZationConfig(this.zc);
