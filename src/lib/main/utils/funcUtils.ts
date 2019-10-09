@@ -16,9 +16,10 @@ export default class FuncUtils
      * @param functions
      */
     static createFuncArrayAsyncInvoker<T extends AnyFunction>(functions : T[]) : EventInvokerAsync<T> {
+        const length = functions.length;
         return async (...args) => {
             const promises : Promise<any>[] = [];
-            for(let i = 0; i < functions.length; i++) {
+            for(let i = 0; i < length; i++) {
                 promises.push(functions[i](...args));
             }
             await Promise.all(promises);
@@ -57,8 +58,9 @@ export default class FuncUtils
      * @param functions
      */
     static createFuncArraySyncInvoker<T extends AnyFunction>(functions : T[]) : EventInvokerSync<T> {
+        const length = functions.length;
         return async (...args) => {
-            for(let i = 0; i < functions.length; i++) {
+            for(let i = 0; i < length; i++) {
                 functions[i](...args);
             }
         }
