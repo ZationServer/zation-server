@@ -22,9 +22,9 @@ import ModelResolveEngine from "./modelResolveEngine";
 import ObjectUtils       from "../../utils/objectUtils";
 import Iterator          from "../../utils/iterator";
 import FuncUtils         from "../../utils/funcUtils";
-import {OtherLoadedConfigSet, OtherPreCompiledConfigSet} from "../manager/configSets";
+import {OtherLoadedConfigSet, OtherPrecompiledConfigSet} from "../manager/configSets";
 import {
-    PreCompiledEventConfig,
+    PrecompiledEventConfig,
 } from "../definitions/eventConfig";
 import InputProcessorCreator, {Processable} from "../../input/inputProcessorCreator";
 import {SystemController}          from "../../systemController/systemControler.config";
@@ -43,7 +43,7 @@ export interface ModelPreparationMem extends Processable{
     _pcStep2 : boolean
 }
 
-export default class ConfigPreCompiler
+export default class ConfigPrecompiler
 {
     private readonly configs : OtherLoadedConfigSet;
 
@@ -58,17 +58,17 @@ export default class ConfigPreCompiler
         this.prepare();
     }
 
-    preCompile(zc : ZationConfig,showPrecompiledConfigs : boolean) : OtherPreCompiledConfigSet
+    precompile(zc : ZationConfig, showPrecompiledConfigs : boolean) : OtherPrecompiledConfigSet
     {
-        this.preCompileModels(this.modelsConfig);
-        this.preCompileTmpBuilds();
-        this.preCompileControllerDefaults();
-        this.preCompileControllers();
-        this.preCompileDataboxes();
-        this.preCompileSystemController();
-        this.preCompileServiceModules();
-        this.preCompileEventConfig();
-        this.preCompileCustomChannels();
+        this.precompileModels(this.modelsConfig);
+        this.precompileTmpBuilds();
+        this.precompileControllerDefaults();
+        this.precompileControllers();
+        this.precompileDataboxes();
+        this.precompileSystemController();
+        this.precompileServiceModules();
+        this.precompileEventConfig();
+        this.precompileCustomChannels();
 
         //view precompiled configs
         if(showPrecompiledConfigs){
@@ -123,7 +123,7 @@ export default class ConfigPreCompiler
         }
     }
 
-    private preCompileCustomChannels() : void {
+    private precompileCustomChannels() : void {
         const customChannels = this.configs.appConfig.customChannels;
         const customChannelDefaults = this.configs.appConfig.customChannelDefaults;
 
@@ -182,10 +182,10 @@ export default class ConfigPreCompiler
         }
     }
 
-    private preCompileEventConfig() {
+    private precompileEventConfig() {
 
         const defaultFunc = () => {};
-        const resEventConfig : PreCompiledEventConfig = {
+        const resEventConfig : PrecompiledEventConfig = {
             express  : defaultFunc,
             socketServer  : defaultFunc,
             workerInit : defaultFunc,
@@ -214,7 +214,7 @@ export default class ConfigPreCompiler
             socketBadAuthToken : defaultFunc
         };
 
-        //preCompile events
+        //precompile events
         const eventConfig = this.configs.eventConfig;
         for(let k in eventConfig) {
             if (eventConfig.hasOwnProperty(k)) {
@@ -229,7 +229,7 @@ export default class ConfigPreCompiler
         this.configs.eventConfig = resEventConfig;
     }
 
-    private preCompileServiceModules()
+    private precompileServiceModules()
     {
         const sm = this.configs.serviceConfig.serviceModules ? this.configs.serviceConfig.serviceModules : [];
 
@@ -250,46 +250,46 @@ export default class ConfigPreCompiler
             this.configs.appConfig.models : {};
     }
 
-    private preCompileModels(models : Record<string,Model | any>) {
+    private precompileModels(models : Record<string,Model | any>) {
 
         //first pre compile the array short syntax on main level
         //to get references for fix import issues array
         for(let name in models) {
             if(models.hasOwnProperty(name)) {
-                this.preCompileArrayShortSyntax(name,models)
+                this.precompileArrayShortSyntax(name,models)
             }
         }
 
         for(let name in models) {
             if(models.hasOwnProperty(name)) {
-                this.modelPreCompileStep1(name,models);
+                this.modelPrecompileStep1(name,models);
             }
         }
 
         for(let name in models) {
             if(models.hasOwnProperty(name)) {
-                this.modelPreCompileStep2(models[name]);
+                this.modelPrecompileStep2(models[name]);
             }
         }
 
     }
 
-    private preCompileTmpBuilds() : void {
-        this.preCompileModels(this.modelImportEngine.tmpCreatedModels);
+    private precompileTmpBuilds() : void {
+        this.precompileModels(this.modelImportEngine.tmpCreatedModels);
     }
 
-    private preCompileObjectProperties(obj : ObjectModelConfig) : void
+    private precompileObjectProperties(obj : ObjectModelConfig) : void
     {
         const properties = obj.properties;
         for(let propName in properties) {
             if (properties.hasOwnProperty(propName)) {
-                this.modelPreCompileStep1(propName,properties);
+                this.modelPrecompileStep1(propName,properties);
             }
         }
     }
 
     // noinspection JSMethodCanBeStatic
-    private preCompileArrayShortSyntax(key : string,obj : object) : void
+    private precompileArrayShortSyntax(key : string,obj : object) : void
     {
         const nowValue = obj[key];
         if(Array.isArray(nowValue)) {
@@ -309,13 +309,13 @@ export default class ConfigPreCompiler
      * @param key
      * @param obj
      */
-    private modelPreCompileStep1(key : string, obj : object) : void
+    private modelPrecompileStep1(key : string, obj : object) : void
     {
         const nowValue = obj[key];
 
         if(isModelConfigTranslatable(nowValue)){
             obj[key] = nowValue.__toModelConfig();
-            this.modelPreCompileStep1(key,obj);
+            this.modelPrecompileStep1(key,obj);
             return;
         }
 
@@ -346,7 +346,7 @@ export default class ConfigPreCompiler
             obj[key][nameof<ArrayModelConfig>(s => s.array)] = inArray;
 
             if(needArrayPreCompile) {
-                this.modelPreCompileStep1(nameof<ArrayModelConfig>(s => s.array),obj[key]);
+                this.modelPrecompileStep1(nameof<ArrayModelConfig>(s => s.array),obj[key]);
             }
         }
         else if(typeof nowValue === "object")
@@ -358,25 +358,25 @@ export default class ConfigPreCompiler
             if(nowValue.hasOwnProperty(nameof<ObjectModelConfig>(s => s.properties))) {
                 //isObject
                 //check all properties of object!
-                this.preCompileObjectProperties(nowValue);
+                this.precompileObjectProperties(nowValue);
 
-                //preCompileObject
+                //precompileObject
 
             }
             else if(nowValue.hasOwnProperty(nameof<ArrayModelConfig>(s => s.array))) {
                 //we have array look in the array body!
-                this.modelPreCompileStep1(nameof<ArrayModelConfig>(s => s.array),nowValue);
+                this.modelPrecompileStep1(nameof<ArrayModelConfig>(s => s.array),nowValue);
             }
             else if(nowValue.hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf)))
             {
                 //anyOf
                 Iterator.iterateSync((key,value,src) => {
-                    this.modelPreCompileStep1(key,src);
+                    this.modelPrecompileStep1(key,src);
                 },nowValue[nameof<AnyOfModelConfig>(s => s.anyOf)]);
             }
             else {
                 //value!
-                this.preCompileValidationFunctions(nowValue);
+                this.precompileValidationFunctions(nowValue);
             }
 
             Object.defineProperty(nowValue,nameof<ModelPreparationMem>(s => s._pcStep1),{
@@ -395,7 +395,7 @@ export default class ConfigPreCompiler
      * Also, this step will create the underscore process closure for the runtime.
      * @param value
      */
-    private modelPreCompileStep2(value : any) : void
+    private modelPrecompileStep2(value : any) : void
     {
         if(typeof value === "object")
         {
@@ -411,7 +411,7 @@ export default class ConfigPreCompiler
                 if(typeof props === 'object'){
                     for(let propName in props) {
                         if(props.hasOwnProperty(propName)) {
-                            this.modelPreCompileStep2(props[propName]);
+                            this.modelPrecompileStep2(props[propName]);
                         }
                     }
                 }
@@ -425,7 +425,7 @@ export default class ConfigPreCompiler
                     const superObj =
                         this.modelImportEngine.extendsResolve(value[nameof<ObjectModelConfig>(s => s.extends)]);
 
-                    this.modelPreCompileStep2(superObj);
+                    this.modelPrecompileStep2(superObj);
 
                     //extend Props
                     const superProps = superObj[nameof<ObjectModelConfig>(s => s.properties)];
@@ -492,7 +492,7 @@ export default class ConfigPreCompiler
             {
                 //is array
                 const inArray = value[nameof<ArrayModelConfig>(s => s.array)];
-                this.modelPreCompileStep2(inArray);
+                this.modelPrecompileStep2(inArray);
 
                 if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
                     Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._process),{
@@ -507,7 +507,7 @@ export default class ConfigPreCompiler
             {
                 //any of
                 Iterator.iterateSync((key,value) => {
-                    this.modelPreCompileStep2(value);
+                    this.modelPrecompileStep2(value);
                 },value[nameof<AnyOfModelConfig>(s => s.anyOf)]);
 
                 if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
@@ -521,7 +521,7 @@ export default class ConfigPreCompiler
             }
             else {
                 //value
-                this.preCompileValueExtend(value,value);
+                this.precompileValueExtend(value,value);
 
                 if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
                     Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._process),{
@@ -555,11 +555,11 @@ export default class ConfigPreCompiler
      * @param mainValue
      * @param exValueConfig
      */
-    private preCompileValueExtend(mainValue : ValueModelConfig,exValueConfig : ValueModelConfig) {
+    private precompileValueExtend(mainValue : ValueModelConfig,exValueConfig : ValueModelConfig) {
         if(exValueConfig.extends !== undefined){
             const nextExValueConfig = this.modelImportEngine.extendsResolve(exValueConfig.extends);
             ObjectUtils.addObToOb(mainValue,nextExValueConfig);
-            return this.preCompileValueExtend(mainValue,nextExValueConfig);
+            return this.precompileValueExtend(mainValue,nextExValueConfig);
         }
     }
 
@@ -568,7 +568,7 @@ export default class ConfigPreCompiler
      * A function that will precompile validation functions of a value model.
      * @param value
      */
-    private preCompileValidationFunctions(value : ValueModelConfig) : void
+    private precompileValidationFunctions(value : ValueModelConfig) : void
     {
         //charClass function
         if(typeof value.charClass === "string") {
@@ -590,13 +590,13 @@ export default class ConfigPreCompiler
         }
     }
 
-    private preCompileControllerDefaults() : void {
+    private precompileControllerDefaults() : void {
         if(this.configs.appConfig.controllerDefaults) {
-            this.preCompileInputConfig(this.configs.appConfig.controllerDefaults);
+            this.precompileInputConfig(this.configs.appConfig.controllerDefaults);
         }
     }
 
-    private preCompileControllers() : void
+    private precompileControllers() : void
     {
         //set if controller property is not found
         if(!this.configs.appConfig.controllers) {
@@ -611,22 +611,22 @@ export default class ConfigPreCompiler
                     const config : ControllerConfig = controllerClass.config;
                     //set the defaults
                     ObjectUtils.addObToOb(config,this.controllerDefaults,false);
-                    this.preCompileInputConfig(config);
+                    this.precompileInputConfig(config);
                 });
             }
         }
     }
 
-    private preCompileSystemController() : void
+    private precompileSystemController() : void
     {
         for(let k in SystemController){
             if(SystemController.hasOwnProperty(k)){
-                this.preCompileInputConfig(SystemController[k].config);
+                this.precompileInputConfig(SystemController[k].config);
             }
         }
     }
 
-    private preCompileDataboxes() : void
+    private precompileDataboxes() : void
     {
         //set if databox property is not found
         if(!this.configs.appConfig.databoxes) {
@@ -641,14 +641,14 @@ export default class ConfigPreCompiler
                     const config : DataboxConfig = databoxClass.config;
                     //set the defaults
                     ObjectUtils.addObToOb(config,this.databoxDefaults,false);
-                    this.preCompileInputConfig(DbConfigUtils.convertDbInitInput(config));
-                    this.preCompileInputConfig(DbConfigUtils.convertDbFetchInput(config));
+                    this.precompileInputConfig(DbConfigUtils.convertDbInitInput(config));
+                    this.precompileInputConfig(DbConfigUtils.convertDbFetchInput(config));
                 });
             }
         }
     }
 
-    private preCompileInputConfig(inputConfig : InputConfig) : void {
+    private precompileInputConfig(inputConfig : InputConfig) : void {
         if(inputConfig.input) {
             let input = inputConfig.input;
             if(isInputConfigTranslatable(input)){
@@ -659,21 +659,21 @@ export default class ConfigPreCompiler
             if(Array.isArray(input)) {
                 //resolve single input shortcut
                 // @ts-ignore
-                this.preCompileSingleInput(input);
+                this.precompileSingleInput(input);
             }
             else {
                 // @ts-ignore
-                this.preCompileParamInput(input);
+                this.precompileParamInput(input);
             }
         }
     }
 
-    private preCompileParamInput(paramInput : ParamInput | Processable) : void {
+    private precompileParamInput(paramInput : ParamInput | Processable) : void {
         for(let inputName in paramInput) {
             if(paramInput.hasOwnProperty(inputName)) {
                 //resolve values,object,array links and resolve inheritance
-                this.modelPreCompileStep1(inputName,paramInput);
-                this.modelPreCompileStep2(paramInput[inputName]);
+                this.modelPrecompileStep1(inputName,paramInput);
+                this.modelPrecompileStep2(paramInput[inputName]);
             }
         }
         if(!paramInput.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
@@ -686,9 +686,9 @@ export default class ConfigPreCompiler
         }
     }
 
-    private preCompileSingleInput(singleModelInput : SingleModelInput) : void {
-        this.modelPreCompileStep1('0',singleModelInput);
-        this.modelPreCompileStep2(singleModelInput[0]);
+    private precompileSingleInput(singleModelInput : SingleModelInput) : void {
+        this.modelPrecompileStep1('0',singleModelInput);
+        this.modelPrecompileStep2(singleModelInput[0]);
     }
 
 }

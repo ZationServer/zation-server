@@ -6,19 +6,19 @@ Copyright(c) Luca Scaringella
 
 import ZationConfig                from "./zationConfig";
 import ZcTransport                 from "./zcTransport";
-import {PreCompiledEventConfig}    from "../definitions/eventConfig";
-import {PreCompiledAppConfig}      from "../definitions/appConfig";
-import {PreCompiledServiceConfig}  from "../definitions/serviceConfig";
-import {OtherPreCompiledConfigSet} from "./configSets";
+import {PrecompiledEventConfig}    from "../definitions/eventConfig";
+import {PrecompiledAppConfig}      from "../definitions/appConfig";
+import {PrecompiledServiceConfig}  from "../definitions/serviceConfig";
+import {OtherPrecompiledConfigSet} from "./configSets";
 
 /**
  * Zation config for active process (worker,broker).
  */
 export default class ZationConfigFull extends ZationConfig {
 
-    protected _appConfig : PreCompiledAppConfig;
-    protected _eventConfig : PreCompiledEventConfig;
-    protected _serviceConfig : PreCompiledServiceConfig;
+    protected _appConfig : PrecompiledAppConfig;
+    protected _eventConfig : PrecompiledEventConfig;
+    protected _serviceConfig : PrecompiledServiceConfig;
 
     constructor(zcTransport : ZcTransport) {
         super();
@@ -32,21 +32,21 @@ export default class ZationConfigFull extends ZationConfig {
         this._preLoadJwtSignOptions = zcTransport.preLoadJwtSignOptions;
     }
 
-    setOtherConfigs(preCompiledOtherConfigSet : OtherPreCompiledConfigSet) {
-        this._appConfig = preCompiledOtherConfigSet.appConfig;
-        this._eventConfig = preCompiledOtherConfigSet.eventConfig;
-        this._serviceConfig = preCompiledOtherConfigSet.serviceConfig;
+    setOtherConfigs(precompiledOtherConfigSet : OtherPrecompiledConfigSet) {
+        this._appConfig = precompiledOtherConfigSet.appConfig;
+        this._eventConfig = precompiledOtherConfigSet.eventConfig;
+        this._serviceConfig = precompiledOtherConfigSet.serviceConfig;
     }
 
-    get eventConfig() : PreCompiledEventConfig {
+    get eventConfig() : PrecompiledEventConfig {
         return this._eventConfig;
     }
 
-    get appConfig(): PreCompiledAppConfig {
+    get appConfig(): PrecompiledAppConfig {
         return this._appConfig;
     }
 
-    get serviceConfig(): PreCompiledServiceConfig {
+    get serviceConfig(): PrecompiledServiceConfig {
         return this._serviceConfig;
     }
 }

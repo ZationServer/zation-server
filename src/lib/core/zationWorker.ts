@@ -43,7 +43,7 @@ import Bag                  from "../api/Bag";
 import Mapper               from "../main/utils/mapper";
 import ViewEngine           from "../main/views/viewEngine";
 import Logger               from "../main/logger/logger";
-import ConfigPreCompiler    from "../main/config/utils/configPreCompiler";
+import ConfigPrecompiler    from "../main/config/utils/configPreCompiler";
 import PanelEngine          from "../main/panel/panelEngine";
 import SidBuilder           from "../main/utils/sidBuilder";
 import ChUtils              from "../main/channel/chUtils";
@@ -173,8 +173,8 @@ class ZationWorker extends SCWorker
         startPromises.push(this.loadClientJsData());
 
         Logger.startStopWatch();
-        let preCompiler = new ConfigPreCompiler(otherConfigsLoadedSet);
-        this.zc.setOtherConfigs(preCompiler.preCompile(this.zc,this.zc.mainConfig.showPrecompiledConfigs && this.isLeader));
+        let precompiler = new ConfigPrecompiler(otherConfigsLoadedSet);
+        this.zc.setOtherConfigs(precompiler.precompile(this.zc,this.zc.mainConfig.showPrecompiledConfigs && this.isLeader));
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has pre compiled configurations.`, true);
 
         //Origins checker

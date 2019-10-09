@@ -54,7 +54,7 @@ export interface ServiceConfig {
     services  ?: Record<string,MainService<any,any,any>>;
 }
 
-export interface PreCompiledServiceConfig extends ServiceConfig{
+export interface PrecompiledServiceConfig extends ServiceConfig{
 }
 
 export type MainService<Config,Created,Get> = Service<Config,Created,Get> | Record<string,Config> | DefaultConfig<Config>;

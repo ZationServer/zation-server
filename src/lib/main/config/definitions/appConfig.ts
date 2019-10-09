@@ -228,6 +228,6 @@ export interface AuthUserGroupConfig
     panelDisplayName  ?: string;
 }
 
-export interface PreCompiledAppConfig extends AppConfig{
+export interface PrecompiledAppConfig extends AppConfig{
     customChannels ?: Record<string,PreCompiledCustomChannelConfig>
 }

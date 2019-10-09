@@ -4,16 +4,16 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {AppConfig, PreCompiledAppConfig}         from "../definitions/appConfig";
-import {EventConfig, PreCompiledEventConfig}     from "../definitions/eventConfig";
-import {PreCompiledServiceConfig, ServiceConfig} from "../definitions/serviceConfig";
+import {AppConfig, PrecompiledAppConfig}         from "../definitions/appConfig";
+import {EventConfig, PrecompiledEventConfig}     from "../definitions/eventConfig";
+import {PrecompiledServiceConfig, ServiceConfig} from "../definitions/serviceConfig";
 import {StarterConfig}                           from "../definitions/starterConfig";
 import {InternalMainConfig}                      from "../definitions/mainConfig";
 
-export interface OtherPreCompiledConfigSet {
-    appConfig : PreCompiledAppConfig,
-    eventConfig : PreCompiledEventConfig,
-    serviceConfig : PreCompiledServiceConfig
+export interface OtherPrecompiledConfigSet {
+    appConfig : PrecompiledAppConfig,
+    eventConfig : PrecompiledEventConfig,
+    serviceConfig : PrecompiledServiceConfig
 }
 
 export interface OtherLoadedConfigSet {
