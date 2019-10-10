@@ -29,6 +29,7 @@ export default class DataboxPrepare
     private readonly bag : Bag;
 
     private readonly databoxes : Record<string,ApiLevelSwitchFunction<DataboxCore>>;
+    private readonly databoxInits : ((bag : Bag) => Promise<void> | void)[] = [];
 
     constructor(zc : ZationConfigFull,worker : ZationWorker,bag : Bag)
     {
@@ -99,14 +100,12 @@ export default class DataboxPrepare
      */
     async prepare() : Promise<void> {
         const uDataboxes = this.zc.appConfig.databoxes || {};
-
-        const promises : Promise<void>[] = [];
         for(let name in uDataboxes) {
             if(uDataboxes.hasOwnProperty(name)) {
-                promises.push(this.addDatabox(name,uDataboxes[name]));
+                this.addDatabox(name,uDataboxes[name]);
             }
         }
-        await Promise.all(promises);
+        await this.initDataboxes();
     }
 
     /**
@@ -114,25 +113,21 @@ export default class DataboxPrepare
      * @param name
      * @param definition
      */
-    private async addDatabox(name : string,definition : DataboxClassDef | ApiLevelSwitch<DataboxClassDef>) : Promise<void>
+    private addDatabox(name : string,definition : DataboxClassDef | ApiLevelSwitch<DataboxClassDef>) : void
     {
         if(typeof definition === 'function') {
-            const preparedDataboxData = await this.processDatabox(definition,name);
+            const preparedDataboxData = this.processDatabox(definition,name);
             this.databoxes[name] = () => {
                 return preparedDataboxData
             };
         }
         else {
-            const promises : Promise<void>[] = [];
             const preparedDataMapper : Record<any,DataboxCore> = {};
             for(let k in definition){
                 if(definition.hasOwnProperty(k)) {
-                    promises.push((async () => {
-                        preparedDataMapper[k] = await this.processDatabox(definition[k],name,parseInt(k));
-                    })());
+                    preparedDataMapper[k] = this.processDatabox(definition[k],name,parseInt(k));
                 }
             }
-            await Promise.all(promises);
             this.databoxes[name] = ApiLevelUtils.createApiLevelSwitcher<DataboxCore>(preparedDataMapper);
         }
     }
@@ -143,7 +138,7 @@ export default class DataboxPrepare
      * @param name
      * @param apiLevel
      */
-    private async processDatabox(databox : DataboxClassDef, name : string, apiLevel ?: number) : Promise<DataboxCore>
+    private processDatabox(databox : DataboxClassDef, name : string, apiLevel ?: number) : DataboxCore
     {
         const config : DataboxConfig = databox.config;
 
@@ -183,8 +178,20 @@ export default class DataboxPrepare
             writable : false
         });
 
-        await dbInstance.initialize(this.worker.getPreparedBag());
+        this.databoxInits.push(dbInstance.initialize);
 
         return dbInstance;
+    }
+
+    /**
+     * Calls every initialize method of each databox.
+     */
+    private async initDataboxes() {
+        const length = this.databoxInits.length;
+        const promises : (Promise<void> | void)[] = [];
+        for(let i = 0; i < length; i++){
+            promises.push(this.databoxInits[i](this.bag));
+        }
+        await Promise.all(promises);
     }
 }
