@@ -48,6 +48,7 @@ export type SocketBadAuthTokenFunction = (bag : Bag, socket : RawSocket, badAuth
 export type MiddlewareAuthenticationFunction = (bag : Bag, token : ZationTokenWrapper) => Promise<boolean | object | any> | boolean | object | any;
 export type MiddlewareSocketFunction = (bag : Bag, socket : HandshakeSocket) => Promise<boolean | object | any> | boolean | object | any;
 
+export type EventInitFunction<T>  = (bag : Bag) => T | Promise<T>;
 export type EventInit<T>          = {(bag : Bag) : T | Promise<T>, [eventInitSymbol] : true};
 export type Event<T>              = (EventInit<T> | T)[] | T | EventInit<T>;
 export type SimpleEvent<T>        = T | T[];

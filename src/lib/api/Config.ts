@@ -36,6 +36,7 @@ import
     MiddlewareSocketFunction,
     SocketInitFunction,
     EventInit,
+    EventInitFunction,
 } from "../main/config/definitions/eventConfig";
 
 import
@@ -406,9 +407,9 @@ export default class Config
      * })
      * @param init
      */
-    static eventInit<T>(init : EventInit<T>) : EventInit<T> {
+    static eventInit<T>(init : EventInitFunction<T>) : EventInit<T> {
         init[eventInitSymbol] = true;
-        return init;
+        return init as EventInit<T>;
     }
 
     //Part main configs
