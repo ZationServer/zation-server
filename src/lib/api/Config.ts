@@ -35,6 +35,7 @@ import
     SocketConnectionAbortFunction,
     MiddlewareSocketFunction,
     SocketInitFunction,
+    EventInit,
 } from "../main/config/definitions/eventConfig";
 
 import
@@ -110,6 +111,8 @@ import {DataboxClassDef, DataboxConfig, DbAccessFunction} from "../main/config/d
 import DataboxFamily                        from "./databox/DataboxFamily";
 import Databox                              from "./databox/Databox";
 import {Component}                          from "../main/config/definitions/component";
+
+export const eventInitSymbol              = Symbol();
 
 export default class Config
 {
@@ -388,6 +391,24 @@ export default class Config
 
     static single(model : Model) : SingleModelInput {
         return [model];
+    }
+
+    /**
+     * With this function,
+     * you can initialize and prepare variables for an event.
+     * @example
+     * eventInit((bag) => {
+     *    //prepare stuff
+     *    const db = bag.databox(ProfileDataboxFamilyV1);
+     *    return (bag,socket) => {
+     *        //the real event
+     *    }
+     * })
+     * @param init
+     */
+    static eventInit<T>(init : EventInit<T>) : EventInit<T> {
+        init[eventInitSymbol] = true;
+        return init;
     }
 
     //Part main configs
@@ -697,3 +718,4 @@ export default class Config
 }
 
 export const single = Config.single;
+export const eventInit = Config.eventInit;

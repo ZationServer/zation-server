@@ -19,13 +19,9 @@ import {
     SingleModelInput,
 } from "../definitions/inputConfig";
 import ModelResolveEngine from "./modelResolveEngine";
-import ObjectUtils       from "../../utils/objectUtils";
-import Iterator          from "../../utils/iterator";
-import FuncUtils         from "../../utils/funcUtils";
+import ObjectUtils        from "../../utils/objectUtils";
+import Iterator           from "../../utils/iterator";
 import {OtherLoadedConfigSet, OtherPrecompiledConfigSet} from "../manager/configSets";
-import {
-    PrecompiledEventConfig,
-} from "../definitions/eventConfig";
 import InputProcessorCreator, {Processable} from "../../input/inputProcessorCreator";
 import {SystemController}          from "../../systemController/systemControler.config";
 import OptionalProcessor           from "../../input/optionalProcessor";
@@ -67,7 +63,6 @@ export default class ConfigPrecompiler
         this.precompileDataboxes();
         this.precompileSystemController();
         this.precompileServiceModules();
-        this.precompileEventConfig();
         this.precompileCustomChannels();
 
         //view precompiled configs
@@ -180,53 +175,6 @@ export default class ConfigPrecompiler
         {
             obj[key] = defaultObj[key];
         }
-    }
-
-    private precompileEventConfig() {
-
-        const defaultFunc = () => {};
-        const resEventConfig : PrecompiledEventConfig = {
-            express  : defaultFunc,
-            socketServer  : defaultFunc,
-            workerInit : defaultFunc,
-            masterInit : defaultFunc,
-            workerStarted  : defaultFunc,
-            workerLeaderStarted : defaultFunc,
-            httpServerStarted  : defaultFunc,
-            wsServerStarted  : defaultFunc,
-            started  : defaultFunc,
-            beforeError  : defaultFunc,
-            beforeBackError  : defaultFunc,
-            beforeCodeError  : defaultFunc,
-            beforeBackErrorBag  : defaultFunc,
-            workerMessage  : defaultFunc,
-            socketInit : defaultFunc,
-            socketConnection  : defaultFunc,
-            socketDisconnection  : defaultFunc,
-            socketAuthentication  : defaultFunc,
-            socketDeauthentication  : defaultFunc,
-            socketAuthStateChange : defaultFunc,
-            socketSubscription : defaultFunc,
-            socketUnsubscription : defaultFunc,
-            socketError : defaultFunc,
-            socketRaw : defaultFunc,
-            socketConnectionAbort : defaultFunc,
-            socketBadAuthToken : defaultFunc
-        };
-
-        //precompile events
-        const eventConfig = this.configs.eventConfig;
-        for(let k in eventConfig) {
-            if (eventConfig.hasOwnProperty(k)) {
-                if(Array.isArray(eventConfig[k])) {
-                    resEventConfig[k] = FuncUtils.createFuncArrayAsyncInvoker(eventConfig[k]);
-                }
-                else if(typeof eventConfig[k] === 'function'){
-                    resEventConfig[k] = eventConfig[k];
-                }
-            }
-        }
-        this.configs.eventConfig = resEventConfig;
     }
 
     private precompileServiceModules()

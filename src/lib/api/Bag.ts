@@ -11,9 +11,9 @@ import {WorkerMessageAction}                                from "../main/consta
 import BackErrorConstruct                                   from "../main/constants/backErrorConstruct";
 import {ZationCustomEventNamespace, ZationToken}            from "../main/constants/internal";
 import {InternalMainConfig}                                 from "../main/config/definitions/mainConfig";
-import {AppConfig}                                          from "../main/config/definitions/appConfig";
-import {EventConfig}                                        from "../main/config/definitions/eventConfig";
-import {ServiceConfig}                                      from "../main/config/definitions/serviceConfig";
+import {PrecompiledAppConfig}                               from "../main/config/definitions/appConfig";
+import {PrecompiledEventConfig}                             from "../main/config/definitions/eventConfig";
+import {PrecompiledServiceConfig}                           from "../main/config/definitions/serviceConfig";
 import {byteLength}                                         from "byte-length";
 import {
     WorkerChMapTaskAction,
@@ -56,7 +56,7 @@ import {DataboxClass}                                          from "./databox/D
 import DataboxUtils                                            from "../main/databox/databoxUtils";
 import ScServer                                                from "../main/sc/scServer";
 // noinspection TypeScriptPreferShortImport
-import {ObjectPathSequence}                                 from "../main/internalApi/objectPathSequence/objectPathSequence";
+import {ObjectPathSequence}                                    from "../main/internalApi/objectPathSequence/objectPathSequence";
 
 export default class Bag {
     protected readonly exchangeEngine: ChannelBagEngine;
@@ -127,9 +127,9 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Returns the app config.
+     * Returns the precompiled app config.
      */
-    getAppConfig(): AppConfig {
+    getAppConfig(): PrecompiledAppConfig {
         // noinspection TypeScriptValidateJSTypes
         return this.zc.appConfig;
     }
@@ -137,9 +137,9 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Returns the event config.
+     * Returns the precompiled event config.
      */
-    getEventConfig(): EventConfig {
+    getEventConfig(): PrecompiledEventConfig {
         // noinspection TypeScriptValidateJSTypes
         return this.zc.eventConfig;
     }
@@ -157,9 +157,9 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Returns the service config.
+     * Returns the precompiled service config.
      */
-    getServiceConfig(): ServiceConfig {
+    getServiceConfig(): PrecompiledServiceConfig {
         // noinspection TypeScriptValidateJSTypes
         return this.zc.serviceConfig;
     }
@@ -2461,6 +2461,7 @@ export default class Bag {
      * you can communicate directly with both.
      * It is recommended if you use this method in a controller
      * that you prepare the creation of the Container in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the container.
      * @example
      * databox(ProfileDataboxFamilyV1,ProfileDataboxFamilyV2);
      * databox(PublicChatDatabox);
@@ -2477,6 +2478,7 @@ export default class Bag {
      * you can communicate directly with both.
      * It is recommended if you use this method in a controller
      * that you prepare the creation of the Container in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the container.
      * @example
      * databox(ProfileDataboxFamilyV1,ProfileDataboxFamilyV2);
      * databox(PublicChatDatabox);
@@ -2493,6 +2495,7 @@ export default class Bag {
      * you can communicate directly with both.
      * It is recommended if you use this method in a controller
      * that you prepare the creation of the Container in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the container.
      * @example
      * databox(ProfileDataboxFamilyV1,ProfileDataboxFamilyV2);
      * databox(PublicChatDatabox);

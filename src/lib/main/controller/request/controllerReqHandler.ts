@@ -87,21 +87,21 @@ export default class ControllerReqHandler
     private async handleReqError(err)
     {
         const promises : (Promise<void> | void)[] = [];
-        promises.push(this.zc.eventConfig.beforeError(this.worker.getPreparedBag(),err));
+        promises.push(this.zc.event.beforeError(this.worker.getPreparedBag(),err));
         if(err instanceof BackError)
         {
             if(err instanceof CodeError) {
                 Logger.printDebugWarning(`Code error -> ${err.toString()}/n stack-> ${err.stack}`);
-                promises.push(this.zc.eventConfig.beforeCodeError(this.worker.getPreparedBag(),err));
+                promises.push(this.zc.event.beforeCodeError(this.worker.getPreparedBag(),err));
                 if(this.zc.mainConfig.logFileCodeErrors){
                     Logger.logFileError(`Code error -> ${err.toString()}/n stack-> ${err.stack}`);
                 }
             }
-            promises.push(this.zc.eventConfig.beforeBackError(this.worker.getPreparedBag(),err));
+            promises.push(this.zc.event.beforeBackError(this.worker.getPreparedBag(),err));
         }
         else { // noinspection SuspiciousInstanceOfGuard
             if(err instanceof BackErrorBag) {
-                promises.push(this.zc.eventConfig.beforeBackErrorBag(this.worker.getPreparedBag(),err));
+                promises.push(this.zc.event.beforeBackErrorBag(this.worker.getPreparedBag(),err));
             }
             else {
                 Logger.printDebugWarning('UNKNOWN ERROR ON SERVER ->',err);

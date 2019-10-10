@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import ZationConfig                from "./zationConfig";
 import ZcTransport                 from "./zcTransport";
-import {PrecompiledEventConfig}    from "../definitions/eventConfig";
+import {PrecompiledEventConfig, PreprocessedEvents} from "../definitions/eventConfig";
 import {PrecompiledAppConfig}      from "../definitions/appConfig";
 import {PrecompiledServiceConfig}  from "../definitions/serviceConfig";
 import {OtherPrecompiledConfigSet} from "./configSets";
@@ -19,6 +19,7 @@ export default class ZationConfigFull extends ZationConfig {
     protected _appConfig : PrecompiledAppConfig;
     protected _eventConfig : PrecompiledEventConfig;
     protected _serviceConfig : PrecompiledServiceConfig;
+    protected _preprocessedEvents : PreprocessedEvents;
 
     constructor(zcTransport : ZcTransport) {
         super();
@@ -38,6 +39,10 @@ export default class ZationConfigFull extends ZationConfig {
         this._serviceConfig = precompiledOtherConfigSet.serviceConfig;
     }
 
+    setPreprocessedEvents(events : PreprocessedEvents) {
+        this._preprocessedEvents = events;
+    }
+
     get eventConfig() : PrecompiledEventConfig {
         return this._eventConfig;
     }
@@ -48,5 +53,13 @@ export default class ZationConfigFull extends ZationConfig {
 
     get serviceConfig(): PrecompiledServiceConfig {
         return this._serviceConfig;
+    }
+
+    /**
+     * Returns the preprocessed events.
+     * Warning! It is undefined before events are preprocessed.
+     */
+    get event() : PreprocessedEvents {
+        return this._preprocessedEvents;
     }
 }

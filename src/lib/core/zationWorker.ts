@@ -43,7 +43,7 @@ import Bag                  from "../api/Bag";
 import Mapper               from "../main/utils/mapper";
 import ViewEngine           from "../main/views/viewEngine";
 import Logger               from "../main/logger/logger";
-import ConfigPrecompiler    from "../main/config/utils/configPreCompiler";
+import ConfigPrecompiler    from "../main/config/utils/configPrecompiler";
 import PanelEngine          from "../main/panel/panelEngine";
 import SidBuilder           from "../main/utils/sidBuilder";
 import ChUtils              from "../main/channel/chUtils";
@@ -71,6 +71,7 @@ import {DATABOX_START_INDICATOR}  from "../main/databox/dbDefinitions";
 import {ZationChannel}            from "../main/channel/channelDefinitions";
 import DataboxHandler             from "../main/databox/handle/databoxHandler";
 import DataboxPrepare             from "../main/databox/databoxPrepare";
+import EventPreprocessor          from "../main/event/eventPreprocessor";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -234,10 +235,17 @@ class ZationWorker extends SCWorker
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the channels.`,true);
 
         //PrepareController after Bag!
+        //After databoxes prepare (To access databoxes using the bag).
         Logger.startStopWatch();
         this.controllerPrepare = new ControllerPrepare(this.zc,this,this.preparedBag);
         await this.controllerPrepare.prepare();
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the controllers.`,true);
+
+        //After databoxes prepare (To access databoxes using the bag).
+        Logger.startStopWatch();
+        const eventPreprocessor = new EventPreprocessor(this.preparedBag);
+        this.zc.setPreprocessedEvents(await eventPreprocessor.preprocessEventConfig(this.zc.eventConfig));
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has preprocessed the events.`,true);
 
         Logger.startStopWatch();
         this.panelEngine = new PanelEngine(this,this.aePreparedPart.getAuthGroups());
@@ -285,32 +293,33 @@ class ZationWorker extends SCWorker
         await this.startHttpServer();
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has started the http server.`,true);
 
+        //After events preprocessed
         Logger.startStopWatch();
         await this.startWebSocketServer();
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has started the web socket server.`,true);
 
         //Fire ExpressEvent
         Logger.startStopWatch();
-        await this.zc.eventConfig.express(this.preparedBag,this.app);
+        await this.zc.event.express(this.preparedBag,this.app);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has processed the express event.`,true);
 
         //Fire ScServerEvent
         Logger.startStopWatch();
-        await this.zc.eventConfig.socketServer(this.preparedBag,this.scServer);
+        await this.zc.event.socketServer(this.preparedBag,this.scServer);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has processed the scServer event.`,true);
 
         Logger.printStartDebugInfo(`The Worker with id ${this.id} is started.`,false);
 
         //init event
         Logger.startStopWatch();
-        await this.zc.eventConfig.workerInit(this.preparedBag,this.isLeader,this._isRespawn);
+        await this.zc.event.workerInit(this.preparedBag,this.isLeader,this._isRespawn);
         Logger.printStartDebugInfo(`The Worker with id ${this.id} invoked init event.`,true);
 
         //Fire event is started
-        this.zc.eventConfig.workerStarted(this.preparedBag,this.zc.getZationInfo(),this._isRespawn,this);
+        this.zc.event.workerStarted(this.preparedBag,this.zc.getZationInfo(),this._isRespawn,this);
 
         if(this.isLeader){
-            this.zc.eventConfig.workerLeaderStarted(this.preparedBag,this.zc.getZationInfo(),this._isRespawn,this);
+            this.zc.event.workerLeaderStarted(this.preparedBag,this.zc.getZationInfo(),this._isRespawn,this);
         }
     }
 
@@ -346,7 +355,7 @@ class ZationWorker extends SCWorker
             this.socketUpdateEngine.upgradeSocket(socket);
             this.initSocketEvents(socket);
 
-            const initPromise = this.zc.eventConfig.socketInit(this.getPreparedBag(),socket.zSocket);
+            const initPromise = this.zc.event.socketInit(this.getPreparedBag(),socket.zSocket);
 
             Logger.printDebugInfo(`Socket with id: ${socket.id} is connected!`);
 
@@ -359,9 +368,9 @@ class ZationWorker extends SCWorker
             });
 
             await initPromise;
-            await this.zc.eventConfig.socketConnection(this.getPreparedBag(),socket.zSocket);
+            await this.zc.event.socketConnection(this.getPreparedBag(),socket.zSocket);
         });
-        await this.zc.eventConfig.wsServerStarted(this.zc.getZationInfo());
+        await this.zc.event.wsServerStarted(this.zc.getZationInfo());
     }
 
     private async startHttpServer()
@@ -434,7 +443,7 @@ class ZationWorker extends SCWorker
             await this.zationCReqHandler.processHttpReq(req,res);
         });
 
-        await this.zc.eventConfig.httpServerStarted(this.zc.getZationInfo());
+        await this.zc.event.httpServerStarted(this.zc.getZationInfo());
     }
 
     getFullWorkerId() {
@@ -446,7 +455,7 @@ class ZationWorker extends SCWorker
      */
     private initSocketMiddleware()
     {
-        const eventConfig = this.zc.eventConfig;
+        const event = this.zc.event;
 
         const userChInfo = this.channelPrepare.getUserChInfo();
         const authUserGroupChInfo = this.channelPrepare.getAuthUserGroupChInfo();
@@ -748,9 +757,11 @@ class ZationWorker extends SCWorker
                     catch (e) {}
                 }
                 // @ts-ignore
+                // noinspection JSConstantReassignment
                 socket.handshakeVariables = variables;
 
                 // @ts-ignore
+                // noinspection JSConstantReassignment
                 socket.zationClient = {
                     version : parseFloat(query.version),
                     system : query.system,
@@ -758,12 +769,13 @@ class ZationWorker extends SCWorker
 
                 if(typeof query.apiLevel === 'string') {
                     // @ts-ignore
+                    // noinspection JSConstantReassignment
                     socket.apiLevel = parseInt(query.apiLevel);
                 }
 
                 const zationMidRes = await
                     MiddlewareUtils.checkMiddleware
-                    (eventConfig.middlewareSocket,next,this.getPreparedBag(),socket);
+                    (event.middlewareSocket,next,this.getPreparedBag(),socket);
 
                 if(zationMidRes) {next();}
             }
@@ -811,7 +823,7 @@ class ZationWorker extends SCWorker
             }
 
             const zationAuthMid = await MiddlewareUtils.checkMiddleware
-            (eventConfig.middlewareAuthenticate,next,this.getPreparedBag(),new ZationTokenWrapper(token));
+            (event.middlewareAuthenticate,next,this.getPreparedBag(),new ZationTokenWrapper(token));
 
             if(zationAuthMid) {next();}
         });
@@ -826,9 +838,10 @@ class ZationWorker extends SCWorker
         const authUserGroupChInfo = this.channelPrepare.getAuthUserGroupChInfo();
         const defaultUserGroupChInfo = this.channelPrepare.getDefaultUserGroupChInfo();
         const allChInfo = this.channelPrepare.getAllChInfo();
+        const event = this.zc.event;
 
         this.scServer.on('connectionAbort', async (socket : UpSocket,code,data) => {
-            await this.zc.eventConfig.socketConnectionAbort(this.getPreparedBag(),socket,code,data);
+            await event.socketConnectionAbort(this.getPreparedBag(),socket,code,data);
         });
 
         this.scServer.on('disconnection', async (socket : UpSocket, code, data) =>
@@ -842,7 +855,7 @@ class ZationWorker extends SCWorker
             }
             this.defaultUserGroupSet.remove(socket);
 
-            await this.zc.eventConfig.socketDisconnection(this.getPreparedBag(),socket.zSocket,code,data);
+            await event.socketDisconnection(this.getPreparedBag(),socket.zSocket,code,data);
         });
 
         /**
@@ -886,7 +899,7 @@ class ZationWorker extends SCWorker
                     socket.zSocket
                 );
             }
-            await this.zc.eventConfig.socketSubscription(this.getPreparedBag(),socket.zSocket,chName,chOptions);
+            await event.socketSubscription(this.getPreparedBag(),socket.zSocket,chName,chOptions);
         });
 
         /**
@@ -931,24 +944,24 @@ class ZationWorker extends SCWorker
                     socket.zSocket
                 );
             }
-            await this.zc.eventConfig.socketUnsubscription(this.getPreparedBag(),socket.zSocket,chName);
+            await event.socketUnsubscription(this.getPreparedBag(),socket.zSocket,chName);
         });
 
         this.scServer.on('authentication', async (socket : UpSocket) => {
-           await this.zc.eventConfig.socketAuthentication(this.getPreparedBag(),socket.zSocket);
+           await event.socketAuthentication(this.getPreparedBag(),socket.zSocket);
         });
 
         this.scServer.on('deauthentication', async (socket : UpSocket) => {
-            this.zc.eventConfig.socketDeauthentication(this.getPreparedBag(),socket.zSocket);
+            await event.socketDeauthentication(this.getPreparedBag(),socket.zSocket);
         });
 
         this.scServer.on('authenticationStateChange', async (socket : UpSocket,stateChangeData : any) => {
-            await this.zc.eventConfig.socketAuthStateChange(this.getPreparedBag(),socket.zSocket,stateChangeData);
+            await event.socketAuthStateChange(this.getPreparedBag(),socket.zSocket,stateChangeData);
         });
 
         this.scServer.on('badSocketAuthToken', async (socket : UpSocket,badAuthStatus) => {
             socket.emit('zationBadAuthToken',{});
-            await this.zc.eventConfig.socketBadAuthToken(this.getPreparedBag(),socket,badAuthStatus);
+            await event.socketBadAuthToken(this.getPreparedBag(),socket,badAuthStatus);
         });
     }
 
@@ -958,12 +971,13 @@ class ZationWorker extends SCWorker
      */
     private initSocketEvents(socket : UpSocket)
     {
+        const event = this.zc.event;
         socket.on('error', async (err) => {
-            await this.zc.eventConfig.socketError(this.getPreparedBag(),socket,err);
+            await event.socketError(this.getPreparedBag(),socket,err);
         });
 
         socket.on('raw', async (data) => {
-            await this.zc.eventConfig.socketRaw(this.getPreparedBag(),socket,data);
+            await event.socketRaw(this.getPreparedBag(),socket,data);
         });
     }
 
@@ -1018,7 +1032,7 @@ class ZationWorker extends SCWorker
                 (this.mapAuthUserGroupToSc,data.operations,data.target,data.exceptSocketSids);
                 break;
             case WorkerChSpecialTaskAction.MESSAGE:
-                await this.zc.eventConfig.workerMessage(this.preparedBag,data);
+                await this.zc.event.workerMessage(this.preparedBag,data);
                 break;
         }
     }
@@ -1274,7 +1288,7 @@ class ZationWorker extends SCWorker
             catch (e) {
                 Logger.printDebugInfo
                 (`The Worker with id: ${this.id}, error while invoking the background task : '${id}'`);
-                await this.zc.eventConfig.beforeError(this.preparedBag,e);
+                await this.zc.event.beforeError(this.preparedBag,e);
             }
         }
     }
