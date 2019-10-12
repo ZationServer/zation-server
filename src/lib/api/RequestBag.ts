@@ -900,7 +900,7 @@ export default class RequestBag extends Bag
      * @throws MethodIsNotCompatibleError
      */
     getSocketId() : string {
-        return this.socket.socketId;
+        return this.socket.id;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -912,7 +912,7 @@ export default class RequestBag extends Bag
      * @throws MethodIsNotCompatibleError
      */
     getSocketSid() : string {
-        return this.socket.socketSid;
+        return this.socket.sid;
     }
 
     // noinspection JSUnusedGlobalSymbols

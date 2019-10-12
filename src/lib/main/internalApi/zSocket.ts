@@ -62,7 +62,7 @@ export default class ZSocket
     /**
      * Returns the socket sid.
      */
-    get socketSid(): string {
+    get sid(): string {
         return this._socket.sid;
     }
 
@@ -70,7 +70,7 @@ export default class ZSocket
     /**
      * Returns the socket id.
      */
-    get socketId(): string {
+    get id(): string {
         return this._socket.id;
     }
 
