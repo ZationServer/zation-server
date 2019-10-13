@@ -228,7 +228,6 @@ StarterConfig[nameof<StarterConfig>(s => s.rootPath)]      = {types : ['string']
 StarterConfig[nameof<StarterConfig>(s => s.configs)]       = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.appConfig)]     = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.serviceConfig)] = {types : ['string'],isOptional : true};
-StarterConfig[nameof<StarterConfig>(s => s.errorConfig)]   = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.eventConfig)]   = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.mainConfig)]    = {types : ['string'],isOptional : true};
 StarterConfig[nameof<StarterConfig>(s => s.checkConfigs)]  = {types : ['boolean'],isOptional : true};

@@ -30,8 +30,7 @@ export default class BackError extends Error
      * @example
      * new BackError({name : 'inputNotMatchWithMinLength'},{minLength : 5, inputLength : 3}).throw();
      * @param backErrorConstruct
-     * Create a new back error construct
-     * or get one from the errorConfig by using the method getBackErrorConstruct on the bag/smallBag.
+     * Create a new back error construct.
      * @param info
      * The error info is a dynamic object which contains more detailed information.
      * For example, with an inputNotMatchWithMinLength error,

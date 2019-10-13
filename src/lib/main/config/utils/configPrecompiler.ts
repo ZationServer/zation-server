@@ -397,13 +397,13 @@ export default class ConfigPrecompiler
                         async () => {};
                     const currentConstruct = value[nameof<ObjectModelConfig>(s => s.construct)];
                     if(typeof currentConstruct === 'function') {
-                        value[nameof<ObjectModelConfig>(s => s.construct)] = async function(smallBag){
-                            await superConstruct.call(this,smallBag);
-                            await currentConstruct.call(this,smallBag);
+                        value[nameof<ObjectModelConfig>(s => s.construct)] = async function(bag){
+                            await superConstruct.call(this,bag);
+                            await currentConstruct.call(this,bag);
                         };
                     }else {
-                        value[nameof<ObjectModelConfig>(s => s.construct)] = async function(smallBag){
-                            await superConstruct.call(this,smallBag);
+                        value[nameof<ObjectModelConfig>(s => s.construct)] = async function(bag){
+                            await superConstruct.call(this,bag);
                         };
                     }
 
@@ -414,12 +414,12 @@ export default class ConfigPrecompiler
                             async (obj) => {return obj;};
                     const currentConvert = value[nameof<ObjectModelConfig>(s => s.convert)];
                     if(typeof currentConvert === 'function') {
-                        value[nameof<ObjectModelConfig>(s => s.convert)] = async (obj, smallBag) => {
-                            return currentConvert((await superConvert(obj,smallBag)),smallBag);
+                        value[nameof<ObjectModelConfig>(s => s.convert)] = async (obj, bag) => {
+                            return currentConvert((await superConvert(obj,bag)),bag);
                         };
                     }else {
-                        value[nameof<ObjectModelConfig>(s => s.convert)] = async (obj, smallBag) => {
-                            return superConvert(obj, smallBag);
+                        value[nameof<ObjectModelConfig>(s => s.convert)] = async (obj, bag) => {
+                            return superConvert(obj, bag);
                         };
                     }
 

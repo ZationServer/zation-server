@@ -36,8 +36,7 @@ export default class BackErrorBag
      * @example
      * addNewBackError({name : 'inputNotMatchWithMinLength'},{minLength : 5, inputLength : 3});
      * @param backErrorConstruct
-     * Create a new BackError construct
-     * or get one from the errorConfig by using the method getBackErrorConstruct on the bag/smallBag.
+     * Create a new BackError construct.
      * @param info
      * The BackError info is a dynamic object which contains more detailed information.
      * For example, with an inputNotMatchWithMinLength error,

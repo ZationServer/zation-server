@@ -36,7 +36,7 @@ export const ObjectModel = (register : boolean = true, name ?: string) => {
         const objectModel : ObjectModelConfig = {
             properties : models,
             ...(prototype.___extends___ !== undefined ? {extends : prototype.___extends___} : {}),
-            construct : async function(smallBag)
+            construct : async function(bag)
             {
                 let proto = this;
                 let nextProto = Object.getPrototypeOf(proto);
@@ -44,11 +44,11 @@ export const ObjectModel = (register : boolean = true, name ?: string) => {
                     proto = nextProto;
                     nextProto = Object.getPrototypeOf(nextProto);
                 }
-                Object.setPrototypeOf(proto,Reflect.construct(target,[smallBag]));
+                Object.setPrototypeOf(proto,Reflect.construct(target,[bag]));
 
                 const promises : Promise<void>[] = [];
                 for(let i = 0; i < constructorMethods.length; i++){
-                    promises.push(constructorMethods[i].call(this,smallBag));
+                    promises.push(constructorMethods[i].call(this,bag));
                 }
                 await Promise.all(promises);
             }

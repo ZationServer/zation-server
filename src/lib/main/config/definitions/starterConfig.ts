@@ -39,13 +39,6 @@ export interface StarterConfigMain
     mainConfig  ?: string;
 
     /**
-     * The path to the error config.
-     * This path is relative to the root and configs path.
-     * @default 'error.config'
-     */
-    errorConfig  ?: string;
-
-    /**
      * The path to the event config.
      * This path is relative to the root and configs path.
      * @default 'event.config'
