@@ -4,8 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {Model as ModelConfig} from "../../../main/config/definitions/inputConfig";
-import {InDecoratorMem}       from "./InDecoratorMem";
+import {Model as ModelConfig}        from "../../../main/config/definitions/inputConfig";
+import {InDecoratorMem, InDM_Models} from "./InDecoratorMem";
 
 /**
  * A decorator that will mark the property with a model config and
@@ -17,9 +17,9 @@ import {InDecoratorMem}       from "./InDecoratorMem";
 export const Model = (model : ModelConfig) => {
     return (target : any,propertyName : string) => {
         target = (target as InDecoratorMem);
-        if(typeof target.___models___ !== 'object'){
-            target.___models___ = {};
+        if(typeof target[InDM_Models] !== 'object'){
+            target[InDM_Models] = {};
         }
-        target.___models___[propertyName] = model;
+        target[InDM_Models][propertyName] = model;
     }
 };

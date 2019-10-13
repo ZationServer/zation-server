@@ -4,8 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import ConfigBuildError from "../../../main/config/manager/configBuildError";
-import {InDecoratorMem} from "./InDecoratorMem";
+import ConfigBuildError                          from "../../../main/config/manager/configBuildError";
+import {InDecoratorMem, InDM_ConstructorMethods} from "./InDecoratorMem";
 
 /**
  * A method decorator that will mark that the method
@@ -20,11 +20,11 @@ import {InDecoratorMem} from "./InDecoratorMem";
 export const Constructor = () => {
     return (target : any,propertyName : string) => {
         target = (target as InDecoratorMem);
-        if(!Array.isArray(target.___constructorMethods___)){
-            target.___constructorMethods___ = [];
+        if(!Array.isArray(target[InDM_ConstructorMethods])){
+            target[InDM_ConstructorMethods] = [];
         }
         if(typeof target[propertyName] === 'function'){
-           target.___constructorMethods___.push(target[propertyName]);
+           target[InDM_ConstructorMethods].push(target[propertyName]);
         }
         else {
             throw new ConfigBuildError(`Can not declare a property ('${propertyName}') as a constructor of an object when it is not a function.`);

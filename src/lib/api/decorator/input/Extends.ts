@@ -4,9 +4,9 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import ConfigBuildError    from "../../../main/config/manager/configBuildError";
-import {InDecoratorMem}    from "./InDecoratorMem";
-import {ObjectModelConfig} from "../../../main/config/definitions/inputConfig";
+import ConfigBuildError                       from "../../../main/config/manager/configBuildError";
+import {InDecoratorMem, InDM_Extends}         from "./InDecoratorMem";
+import {ObjectModelConfig}                    from "../../../main/config/definitions/inputConfig";
 import {AnyClass, AnyModelConfigTranslatable} from "../../../main/config/definitions/configComponents";
 
 /**
@@ -20,12 +20,12 @@ export const Extends = (extension : ObjectModelConfig | string | AnyClass | AnyM
     return (target : any) => {
         const prototype : InDecoratorMem = target.prototype;
 
-        if(prototype.___extends___ === undefined){
-            prototype.___extends___ = extension;
+        if(prototype[InDM_Extends] === undefined){
+            prototype[InDM_Extends] = extension;
         }
         else {
             throw new ConfigBuildError
-            (`Can not add an extension (${extension}) to object model when it already has an extension (${prototype.___extends___}).`);
+            (`Can not add an extension (${extension}) to object model when it already has an extension (${prototype[InDM_Extends]}).`);
         }
     }
 };

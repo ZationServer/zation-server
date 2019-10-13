@@ -8,7 +8,7 @@ import {InputConfigTranslatable, ModelConfigTranslatable} from "../../ConfigTran
 import {ObjectModelConfig}       from "../../../main/config/definitions/inputConfig";
 import CloneUtils                from "../../../main/utils/cloneUtils";
 import Config                    from "../../Config";
-import {InDecoratorMem}          from "./InDecoratorMem";
+import {InDecoratorMem, InDM_ConstructorMethods, InDM_Extends, InDM_Models} from "./InDecoratorMem";
 
 /**
  * A class decorator that can be used to mark the class as an object model.
@@ -28,14 +28,14 @@ export const ObjectModel = (register : boolean = true, name ?: string) => {
         const prototype : InDecoratorMem = target.prototype;
 
         //constructorMethods
-        const constructorMethods = Array.isArray(prototype.___constructorMethods___) ?
-            CloneUtils.deepClone(prototype.___constructorMethods___) : [];
+        const constructorMethods = Array.isArray(prototype[InDM_ConstructorMethods]) ?
+            CloneUtils.deepClone(prototype[InDM_ConstructorMethods]!) : [];
 
-        const models = typeof prototype.___models___ === 'object' ? prototype.___models___ : {};
+        const models = typeof prototype[InDM_Models] === 'object' ? prototype[InDM_Models]! : {};
 
         const objectModel : ObjectModelConfig = {
             properties : models,
-            ...(prototype.___extends___ !== undefined ? {extends : prototype.___extends___} : {}),
+            ...(prototype[InDM_Extends] !== undefined ? {extends : prototype[InDM_Extends]} : {}),
             construct : async function(bag)
             {
                 let proto = this;
