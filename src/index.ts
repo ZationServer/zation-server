@@ -50,7 +50,6 @@ import DbCudOperationSequence       from "./lib/main/databox/dbCudOperationSeque
 import {ObjectPathSequence}         from "./lib/main/internalApi/objectPathSequence/objectPathSequence";
 import {StartErrorName}             from "./lib/main/constants/startErrorName";
 import NoDataAvailableError         from "./lib/main/databox/noDataAvailable";
-const  FsUtil : any               = require('socketcluster/fsutil');
 
 //starter
 
@@ -109,7 +108,6 @@ export {
         CodeError,
         MethodIsNotCompatibleError,
         InputIsNotCompatibleError,
-        FsUtil,
         single,
         eventInit,
         buildKeyArray,
