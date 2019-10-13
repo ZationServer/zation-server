@@ -42,7 +42,7 @@ export interface RawSocket {
      * This is method is used internally;
      * if you do not use it carefully,
      * it can create a not valid zation token and break the worker memory stored information.
-     * So please use the Bag or SmallBag to change token variables.
+     * So please use the Bag or Bag to change token variables.
      * @param data
      * @param options
      * @param callback

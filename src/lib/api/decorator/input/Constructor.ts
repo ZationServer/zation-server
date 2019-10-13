@@ -14,7 +14,7 @@ import {InDecoratorMem} from "./InDecoratorMem";
  * async constructor functions and
  * register more than one constructor.
  * The constructor methods will automatically be invoked with a
- * SmallBag when the real class constructor was executed,
+ * Bag when the real class constructor was executed,
  * and the input data is assigned to the object.
  */
 export const Constructor = () => {

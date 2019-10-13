@@ -14,7 +14,7 @@ import {InDecoratorMem}          from "./InDecoratorMem";
  * A class decorator that can be used to mark the class as an object model.
  * That means you can use the class in the input configuration directly,
  * and the object model will be registered to the models.
- * The constructor of the class will be called with the SmallBag but notice
+ * The constructor of the class will be called with the Bag but notice
  * that the input data is not available in the real class constructor.
  * But you can declare other methods and declare them as a constructor
  * with the constructor method decorator.

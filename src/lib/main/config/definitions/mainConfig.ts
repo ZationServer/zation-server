@@ -14,7 +14,7 @@ export interface MainConfig
     /**
      * An ID that is associated with this specific instance of a zation server,
      * the id should be unique for every instance in a cluster.
-     * You can access the instanceId with the SmallBag.
+     * You can access the instanceId with the Bag.
      * If you don't provide an instanceId,zation will generate a random one (UUID v4).
      * @default random UUID v4
      */
