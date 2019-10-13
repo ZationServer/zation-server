@@ -433,7 +433,8 @@ export default class ZationMaster {
             `Licensed to ${this.license.n} (${LicenseLevel[this.license.l]})` :
             'No license (only for testing)';
 
-        Logger.log('\x1b[32m%s\x1b[0m','   [ACTIVE]','Zation started 🚀' + (this.zc.inTestMode() ? ' in TestMode 🛠' : ''));
+        Logger.log('\x1b[32m%s\x1b[0m','   [ACTIVE]',`Zation${this.license ? '' : ' (Unlicensed)'} started 🚀`
+            + (this.zc.inTestMode() ? ' in TestMode 🛠' : ''));
         Logger.log(`            Version: ${ZationMaster.version}`);
         Logger.log(`            Your app: ${this.zc.mainConfig.appName}`);
         Logger.log(`            Hostname: ${hostName}`);
