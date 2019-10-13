@@ -63,7 +63,7 @@
     "useragent": "2.3.0",
     "uuid": "3.3.2",
     "validator": "10.11.0",
-    "fast-stringify": "1.1.1",
+    "fast-stringify": "2.0.0",
     "stringify-object": "3.3.0",
     "forint": "0.1.4",
     "ws": "7.1.2",

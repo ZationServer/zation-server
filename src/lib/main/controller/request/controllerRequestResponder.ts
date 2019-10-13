@@ -68,7 +68,7 @@ export default class ControllerRequestResponder
             shBridge,response['zationInfo']
         );
 
-        response.write(JSON.stringify(resp));
+        response.write(stringify(resp));
         response.end();
         this.printHttpResp(resp,reqId);
     }
