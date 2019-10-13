@@ -123,6 +123,7 @@ export default class Config
     private static tmpDataboxes : Record<string,DataboxClassDef | ApiLevelSwitch<DataboxClassDef>> = {};
     private static tmpCustomChs : Record<string,CustomChannelConfig> = {};
     private static tmpZationChannels : ZationChannelsConfig[] = [];
+    private static tmpAuthController : string | undefined;
 
     //Part main helper methods
 
@@ -395,6 +396,20 @@ export default class Config
     }
 
     /**
+     * With this function, you can set the auth controller.
+     * Notice that you can set only one auth controller.
+     * @param name
+     */
+    static setAuthController(name : string) {
+        if(this.tmpAuthController !== undefined && name !== this.tmpAuthController){
+            throw new ConfigBuildError(`The authController: '${this.tmpAuthController}' is already set, you can not override it.`);
+        }
+        else {
+            this.tmpAuthController = name;
+        }
+    }
+
+    /**
      * With this function,
      * you can initialize and prepare variables for an event.
      * @example
@@ -424,27 +439,26 @@ export default class Config
      */
     static appConfig(config : AppConfig,isPrimaryAppConfig : boolean = true) : AppConfig {
         if(isPrimaryAppConfig){
-            if(config.models === undefined){
-                config.models = {};
-            }
-            if(config.controllers === undefined){
-                config.controllers = {};
-            }
-            if(config.databoxes === undefined){
-                config.databoxes = {};
-            }
-            if(config.customChannels === undefined){
-                config.customChannels = {};
-            }
-            if(config.zationChannels === undefined){
-                config.zationChannels = {};
-            }
+            config.models = config.models || {};
+            config.controllers = config.controllers || {};
+            config.databoxes = config.databoxes || {};
+            config.customChannels = config.customChannels || {};
+            config.zationChannels = config.zationChannels || {};
 
             Config.configAdd(Config.tmpModels,config.models,'model name');
             Config.configAdd(Config.tmpControllers,config.controllers,'controller name');
             Config.configAdd(Config.tmpDataboxes,config.databoxes,'databox name');
             Config.configAdd(Config.tmpCustomChs,config.customChannels as object,'custom channel');
             Config.merge(config.zationChannels,...Config.tmpZationChannels);
+
+            if(this.tmpAuthController !== undefined && config.authController !== undefined){
+                throw new ConfigBuildError(
+                    `Conflict with the auth controller, the authController is defined in the app config and the config utils.`);
+            }
+            else {
+                config.authController = this.tmpAuthController;
+            }
+
         }
         return config;
     }
