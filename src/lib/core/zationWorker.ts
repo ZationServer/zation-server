@@ -72,7 +72,7 @@ import {ZationChannel}            from "../main/channel/channelDefinitions";
 import DataboxHandler             from "../main/databox/handle/databoxHandler";
 import DataboxPrepare             from "../main/databox/databoxPrepare";
 import EventPreprocessor          from "../main/event/eventPreprocessor";
-import {License}                  from "../main/utils/licenseManager";
+import LicenseManager, {License}  from "../main/utils/licenseManager";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -1372,18 +1372,18 @@ class ZationWorker extends SCWorker
     {
         const infos =  {
             //static props
-            brokerCount : this.zc.mainConfig.brokers,
-            hostname    : this.zc.mainConfig.hostname,
-            port        : this.zc.mainConfig.port,
-            path        : this.zc.mainConfig.path,
-            postKey     : this.zc.mainConfig.postKey,
-            secure      : this.zc.mainConfig.secure,
-            appName     : this.zc.mainConfig.appName,
-            debug       : this.zc.mainConfig.debug,
-            wsEngine    : this.zc.mainConfig.wsEngine,
-            nodeVersion : process.version,
-            license     : this.license,
-            ip          : this.getPreparedBag().getServerIpAddress(),
+            brokerCount   : this.zc.mainConfig.brokers,
+            hostname      : this.zc.mainConfig.hostname,
+            port          : this.zc.mainConfig.port,
+            path          : this.zc.mainConfig.path,
+            postKey       : this.zc.mainConfig.postKey,
+            secure        : this.zc.mainConfig.secure,
+            appName       : this.zc.mainConfig.appName,
+            debug         : this.zc.mainConfig.debug,
+            wsEngine      : this.zc.mainConfig.wsEngine,
+            nodeVersion   : process.version,
+            license       : LicenseManager.licenseToPanelLicense(this.license),
+            ip            : this.getPreparedBag().getServerIpAddress(),
             zationServerVersion    : this.serverVersion,
             workerStartedTimestamp : this.workerStartedTimeStamp,
             serverStartedTimestamp : this.serverStartedTimeStamp,

@@ -88,4 +88,12 @@ export default class LicenseManager {
     static licenseToMeta(license : License) : string {
         return `${license.i}#${license.l}.${license.t}.${license.mi}`;
     }
+
+    static licenseToPanelLicense(license : License) {
+        return {
+            ...license,
+            l : LicenseLevel[license.l],
+            t : LicenseType[license.t]
+        };
+    }
 }
