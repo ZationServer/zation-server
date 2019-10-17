@@ -1384,6 +1384,7 @@ class ZationWorker extends SCWorker
             nodeVersion : process.version,
             license     : this.license,
             ip          : this.getPreparedBag().getServerIpAddress(),
+            zationServerVersion    : this.serverVersion,
             workerStartedTimestamp : this.workerStartedTimeStamp,
             serverStartedTimestamp : this.serverStartedTimeStamp,
             panelAuthUserMap : this.panelEngine.getPanelUserMap(),
