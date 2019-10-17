@@ -72,6 +72,7 @@ import {ZationChannel}            from "../main/channel/channelDefinitions";
 import DataboxHandler             from "../main/databox/handle/databoxHandler";
 import DataboxPrepare             from "../main/databox/databoxPrepare";
 import EventPreprocessor          from "../main/event/eventPreprocessor";
+import {License}                  from "../main/utils/licenseManager";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -119,6 +120,8 @@ class ZationWorker extends SCWorker
     private httpRequestCount = 0;
     private wsRequestCount = 0;
 
+    private license : License;
+
     //prepareClient
     private fullClientJs : string;
     private serverSettingsJs : string;
@@ -143,7 +146,9 @@ class ZationWorker extends SCWorker
         this.zc = new ZationConfigFull(this.options.zationConfigWorkerTransport);
         global['_ZATION_START_MODE'] = this.zc.getStartMode();
 
-        this.viewEngine = new ViewEngine(this.options.license,this.zc.mainConfig.instanceId,this.id.toString());
+        this.license = this.options.license;
+
+        this.viewEngine = new ViewEngine(this.license,this.zc.mainConfig.instanceId,this.id.toString());
 
         //setLogger
         Logger.setZationConfig(this.zc);
@@ -1376,6 +1381,8 @@ class ZationWorker extends SCWorker
             appName     : this.zc.mainConfig.appName,
             debug       : this.zc.mainConfig.debug,
             wsEngine    : this.zc.mainConfig.wsEngine,
+            nodeVersion : process.version,
+            license     : this.license,
             ip          : this.getPreparedBag().getServerIpAddress(),
             workerStartedTimestamp : this.workerStartedTimeStamp,
             serverStartedTimestamp : this.serverStartedTimeStamp,
