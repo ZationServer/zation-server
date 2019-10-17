@@ -1382,7 +1382,7 @@ class ZationWorker extends SCWorker
             debug         : this.zc.mainConfig.debug,
             wsEngine      : this.zc.mainConfig.wsEngine,
             nodeVersion   : process.version,
-            license       : LicenseManager.licenseToPanelLicense(this.license),
+            license       : this.license ? LicenseManager.licenseToPanelLicense(this.license) : undefined,
             ip            : this.getPreparedBag().getServerIpAddress(),
             zationServerVersion    : this.serverVersion,
             workerStartedTimestamp : this.workerStartedTimeStamp,
