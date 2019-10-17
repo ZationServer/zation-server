@@ -175,8 +175,11 @@ export default class OsUtils {
         if (platform === 'linux') {
             return OsUtils.getOsLinux()
         }
-        if (platform === 'darwin') {
+        else if (platform === 'darwin') {
             return OsUtils.getOsDarwin();
+        }
+        else if(platform === 'win32') {
+            return OsUtils.getOsWin();
         }
         return OsUtils.getOsLast();
     }
@@ -188,6 +191,17 @@ export default class OsUtils {
                     return resolve('Unknown');
                 }
                 return resolve(out)
+            })
+        })
+    }
+
+    private static getOsWin(): Promise<string> {
+        return new Promise(function (resolve) {
+            cp.exec('wmic os get Caption /value', {shell: true}, function (err, out) {
+                if (err && !out) {
+                    return OsUtils.getOsLast();
+                }
+                resolve(out.match(/[\n\r].*Caption=\s*([^\n\r]*)/)[1]);
             })
         })
     }
