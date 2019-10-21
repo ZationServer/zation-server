@@ -50,6 +50,7 @@ import DbCudOperationSequence       from "./lib/main/databox/dbCudOperationSeque
 import {ObjectPathSequence}         from "./lib/main/internalApi/objectPathSequence/objectPathSequence";
 import {StartErrorName}             from "./lib/main/constants/startErrorName";
 import NoDataAvailableError         from "./lib/main/databox/noDataAvailable";
+import {$value,$key,$pair}          from "./lib/api/databox/DbFilterUtils";
 
 //starter
 
@@ -92,6 +93,9 @@ export {
         Databox,
         DataboxContainer,
         DataboxConfig,
+        $key,
+        $value,
+        $pair,
         Controller,
         ControllerConfig,
         Result,
