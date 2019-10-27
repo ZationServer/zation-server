@@ -430,7 +430,7 @@ export default class ZationMaster {
         const protocol = this.zc.mainConfig.secure ? 'https' : 'http';
         const server   = `${protocol}://${hostName}:${port}${path}`;
         const license = this.license ?
-            `Licensed to ${this.license.n} (${LicenseLevel[this.license.l]})` :
+            `Licensed to ${this.license.h} (${LicenseLevel[this.license.l]})` :
             'No license (only for testing)';
 
         Logger.log('\x1b[32m%s\x1b[0m','   [ACTIVE]',`Zation${this.license ? '' : ' (Unlicensed)'} started 🚀`

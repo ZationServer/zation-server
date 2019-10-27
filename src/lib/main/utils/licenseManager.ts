@@ -9,9 +9,9 @@ import ZationMaster from "../../core/zationMaster";
 
 export interface License {
     /**
-     * name
+     * holder
      */
-    n : string,
+    h : string,
     /**
      * email
      */
