@@ -5,6 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import * as ecc     from 'eosjs-ecc';
+import base64url    from "base64url";
 import ZationMaster from "../../core/zationMaster";
 
 export interface License {
@@ -62,10 +63,10 @@ export default class LicenseManager {
 
     static processLicense(license : string) : License {
         try {
-            const encodedBase64 = Buffer.from(license,'base64').toString('utf8');
-            const splitSignIndex = encodedBase64.indexOf('#');
-            const signature = encodedBase64.substr(0,splitSignIndex);
-            const jsonData = encodedBase64.substr(splitSignIndex+1);
+            const decodedBase64 = base64url.decode(license);
+            const splitSignIndex = decodedBase64.indexOf('#');
+            const signature = decodedBase64.substr(0,splitSignIndex);
+            const jsonData = decodedBase64.substr(splitSignIndex+1);
 
             if(ecc.verify(signature, jsonData, publicKey,'utf8',true)){
                 const license = JSON.parse(jsonData) as License;
