@@ -6,6 +6,7 @@ Copyright(c) Luca Scaringella
 
 import UpSocket                                             from "../main/sc/socket";
 import fetch, {Request, RequestInit, Response}              from 'node-fetch';
+import base64url                                            from "base64url"
 import AsymmetricKeyPairs                                   from "../main/internalApi/asymmetricKeyPairs";
 import {WorkerMessageAction}                                from "../main/constants/workerMessageAction";
 import BackErrorConstruct                                   from "../main/constants/backErrorConstruct";
@@ -2210,6 +2211,34 @@ export default class Bag {
      */
     base64ContentInfo(encodedBase64: string): null | { mimeSubType: string, mimeType: string } {
         return Base64Utils.getContentInfo(encodedBase64);
+    }
+
+    // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
+    /**
+     * Encode a string or buffer to a base64 string.
+     * @param input
+     * @param urlSafe
+     * Indicates if the base64 string should be URL safe.
+     * @param encoding
+     * The encoding of the provided input. Default to utf8.
+     */
+    base64Encode(input: string | Buffer, urlSafe: boolean = true, encoding: BufferEncoding = "utf8") : string {
+        const base64 = Buffer.isBuffer(input) ? input.toString('base64') :
+            Buffer.from(input,encoding).toString('base64');
+        return (urlSafe ? base64url.fromBase64(base64) : base64);
+    }
+
+    // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
+    /**
+     * Decode a base64 string.
+     * @param base64
+     * @param urlSafe
+     * Indicates if the encoded base64 string is URL safe.
+     * @param encoding
+     * The expected encoding of the decoded result. Default to utf8.
+     */
+    base64Decode(base64: string, urlSafe: boolean = true, encoding: BufferEncoding = "utf8") : string {
+        return Buffer.from((urlSafe ? base64url.toBase64(base64) : base64), "base64").toString(encoding);
     }
 
     // ByteTools
