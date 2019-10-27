@@ -68,7 +68,10 @@ export default class LicenseManager {
             const jsonData = encodedBase64.substr(splitSignIndex+1);
 
             if(ecc.verify(signature, jsonData, publicKey,'utf8',true)){
-                return JSON.parse(jsonData) as License;
+                const license = JSON.parse(jsonData) as License;
+                if(LicenseType[license.t] !== undefined && LicenseLevel[license.l] !== undefined && license.mi > -2){
+                    return license;
+                }
             }
         }
         catch (e) {}
