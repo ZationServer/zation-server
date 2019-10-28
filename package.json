@@ -48,7 +48,6 @@
     "node-fetch": "^2.6.0",
     "object-encrypter": "0.1.3",
     "object-path": "0.11.4",
-    "os": "0.1.1",
     "path": "0.12.7",
     "pidusage": "2.0.17",
     "portscanner": "2.2.0",
