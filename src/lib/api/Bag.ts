@@ -7,6 +7,7 @@ Copyright(c) Luca Scaringella
 import UpSocket                                             from "../main/sc/socket";
 import fetch, {Request, RequestInit, Response}              from 'node-fetch';
 import base64url                                            from "base64url"
+import PortChecker                                          from "../main/utils/portChecker";
 import AsymmetricKeyPairs                                   from "../main/internalApi/asymmetricKeyPairs";
 import {WorkerMessageAction}                                from "../main/constants/workerMessageAction";
 import BackErrorConstruct                                   from "../main/constants/backErrorConstruct";
@@ -678,6 +679,36 @@ export default class Bag {
      */
     async verifyToken(signedToken: string, jwtOptions: JwtVerifyOptions = {}): Promise<Record<string, any>> {
         return TokenUtils.verifyToken(signedToken, this.zc, jwtOptions);
+    }
+
+    //Part Port
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Check if a specific port is available (closed).
+     * @param port
+     * @param host
+     */
+    async isPortAvailable(port: number, host: string = '127.0.0.1') : Promise<boolean> {
+        return PortChecker.isPortAvailable(port,host)
+    }
+
+    /**
+     * Finds the first port that is not in use (Closed).
+     * @param ports
+     * @param host
+     */
+    async findAPortNotInUse(ports: number[], host: string = '127.0.0.1') : Promise<number> {
+        return PortChecker.findAPortNotInUse(ports,host);
+    }
+
+    /**
+     * Finds the first port that is in use (Open or blocked).
+     * @param ports
+     * @param host
+     */
+    async findAPortInUse(ports: number[], host: string = '127.0.0.1') : Promise<number> {
+        return PortChecker.findAPortInUse(ports,host);
     }
 
     //Part Socket Channel
