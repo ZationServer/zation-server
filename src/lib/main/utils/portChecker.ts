@@ -8,13 +8,10 @@ import PortScanner = require('portscanner');
 
 export default class PortChecker
 {
-    public static async isPortAvailable(port : number | undefined) : Promise<boolean>
-    {
-        return new Promise<boolean>((resolve, reject) => {
-            PortScanner.checkPortStatus(port, '127.0.0.1', function(error, status) {
-                if(error){reject(error)}
-                else{resolve(status === 'closed');}
-            })
-        });
+    public static async isPortAvailable(port: number,host: string = '127.0.0.1') : Promise<boolean> {
+        return (await PortScanner.checkPortStatus(port,host)) === 'closed';
     }
+
+    public static findAPortNotInUse : (ports: number[],host: string) => Promise<number> = PortScanner.findAPortNotInUse;
+    public static findAPortInUse : (ports: number[],host: string) => Promise<number> = PortScanner.findAPortInUse;
 }
