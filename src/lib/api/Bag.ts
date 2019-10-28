@@ -17,6 +17,7 @@ import {PrecompiledAppConfig}                               from "../main/config
 import {PrecompiledEventConfig}                             from "../main/config/definitions/eventConfig";
 import {PrecompiledServiceConfig}                           from "../main/config/definitions/serviceConfig";
 import {byteLength}                                         from "byte-length";
+import * as ecc                                             from 'eosjs-ecc';
 import {
     WorkerChMapTaskAction,
     WorkerChSpecialTaskAction,
@@ -504,41 +505,116 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Returns an object with private an public key for Asymmetric Encryption.
+     * Returns an object with a private and public key for RSA Asymmetric Encryption.
      * @example
-     * const { privateKey, publicKey } = await getAsymmetricKeyPair();
-     *
+     * const { privateKey, publicKey } = await generateRsaAsymmetricKeyPair();
      */
-    async getAsymmetricKeyPair(): Promise<AsymmetricKeyPairs> {
+    async generateRsaAsymmetricKeyPair(): Promise<AsymmetricKeyPairs> {
         return crypto2.createKeyPair();
     }
 
-    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    // noinspection JSUnusedGlobalSymbols
     /**
-     * @description
-     * Encrypts a message with the publicKey and returns the encrypted message.
-     * It's using the asymmetric RSA encryption algorithm. Due to technical limitations of the RSA algorithm,
-     * the text to be encrypted must not be longer than 215 bytes when using keys with 2048 bits
+     * Returns an object with a private and public key for ECC Asymmetric Sign/Verify.
      * @example
-     * const encryptedMessage = await asymmetricEncrypt('MY-MESSAGE','PUBLIC-KEY');
-     * @param message
-     * @param publicKey
+     * const { privateKey, publicKey } = await generateEccAsymmetricKeyPair();
      */
-    async asymmetricEncrypt(message: string, publicKey: string): Promise<string> {
-        return crypto2.encrypt.rsa(message, publicKey);
+    async generateEccAsymmetricKeyPair(): Promise<AsymmetricKeyPairs> {
+        await ecc.initialize();
+        const wif = await ecc.randomKey();
+        return {privateKey : wif,publicKey : ecc.privateToPublic(wif)};
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Decrypts with the RSA algorithm the message with the privateKey and returns the decrypted message.
+     * Creates a signature from data with a private key and returns the signature.
+     * It will hash the data with SHA256 and encrypt it using rsa.
      * @example
-     * const decryptedMessage = await asymmetricDecrypt('ENCRYPTED-MESSAGE','PRIVATE-KEY');
-     * @param encryptedMessage
+     * const signature = await asymmetricRsaSign(data,privateKey);
+     * @param data
      * @param privateKey
      */
-    async asymmetricDecrypt(encryptedMessage: string, privateKey: string): Promise<string> {
-        return crypto2.decrypt.rsa(encryptedMessage, privateKey);
+    async asymmetricRsaSign(data: string, privateKey: string): Promise<string> {
+        // noinspection TypeScriptValidateJSTypes
+        return crypto2.sign.sha256(data, privateKey);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Verify the signature with the publicKey and the data.
+     * It returns if the signature is valid.
+     * It uses the SHA256 and RSA algorithm.
+     * @example
+     * const signature = await asymmetricRsaVerify(data,publicKey,signature);
+     * @param data
+     * @param publicKey
+     * @param signature
+     */
+    async asymmetricRsaVerify(data: string, publicKey: string, signature: string): Promise<boolean> {
+        // noinspection TypeScriptValidateJSTypes
+        return crypto2.verify.sha256(data, publicKey, signature);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Creates a signature from data with a private key and returns the signature.
+     * It will hash the data with SHA256 and encrypt it using ECC (Elliptic curve cryptography).
+     * @example
+     * const signature = await asymmetricEccSign(data,privateKey);
+     * @param data
+     * @param privateKey
+     * @param encoding
+     */
+    async asymmetricEccSign(data: string | Buffer, privateKey: string, encoding: string = 'utf8'): Promise<string> {
+        return ecc.sign(data,privateKey,encoding);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Verify the signature with the publicKey and the data.
+     * It returns if the signature is valid.
+     * It uses the SHA256 and ECC (Elliptic curve cryptography) algorithm.
+     * @example
+     * const signature = await asymmetricEccVerify(data,publicKey,signature);
+     * @param data
+     * @param publicKey
+     * @param signature
+     * @param encoding
+     */
+    async asymmetricEccVerify(data: string, publicKey: string, signature: string, encoding: string = 'utf8'): Promise<boolean> {
+        return ecc.verify(signature,data,publicKey,encoding,true);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Encrypts a data with the publicKey and returns the encrypted data.
+     * It's using the asymmetric RSA encryption algorithm. Due to technical limitations of the RSA algorithm,
+     * the text to be encrypted must not be longer than 215 bytes when using keys with 2048 bits
+     * @example
+     * const encryptedMessage = await asymmetricRsaEncrypt('MY-MESSAGE','PUBLIC-KEY');
+     * @param data
+     * @param publicKey
+     */
+    async asymmetricRsaEncrypt(data: string, publicKey: string): Promise<string> {
+        return crypto2.encrypt.rsa(data, publicKey);
+    }
+
+    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /**
+     * @description
+     * Decrypts with the RSA algorithm the data with the privateKey and returns the decrypted message.
+     * @example
+     * const decryptedMessage = await asymmetricRsaDecrypt('ENCRYPTED-MESSAGE','PRIVATE-KEY');
+     * @param encryptedData
+     * @param privateKey
+     */
+    async asymmetricRsaDecrypt(encryptedData: string, privateKey: string): Promise<string> {
+        return crypto2.decrypt.rsa(encryptedData, privateKey);
     }
 
     //Symmetric Encryption
@@ -593,37 +669,6 @@ export default class Bag {
      */
     async symmetricDecrypt(encryptedMessage: string, password: string, iv: string): Promise<string> {
         return crypto2.decrypt.aes256cbc(encryptedMessage, password, iv);
-    }
-
-    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-    /**
-     * @description
-     * Creates an signature from an message with a privateKey and returns the signature.
-     * It uses the SHA256 and RSA algorithm.
-     * @example
-     * const signature = await asymmetricSign(message,privateKey);
-     * @param message
-     * @param privateKey
-     */
-    async asymmetricSign(message: string, privateKey: string): Promise<string> {
-        // noinspection TypeScriptValidateJSTypes
-        return crypto2.sign(message, privateKey);
-    }
-
-    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-    /**
-     * @description
-     * Verify the signature with the publicKey and message and returns if the signature is valid.
-     * It uses the SHA256 and RSA algorithm.
-     * @example
-     * const signature = await asymmetricVerify(message,publicKey,signature);
-     * @param message
-     * @param publicKey
-     * @param signature
-     */
-    async asymmetricVerify(message: string, publicKey: string, signature: string): Promise<boolean> {
-        // noinspection TypeScriptValidateJSTypes
-        return crypto2.verify(message, publicKey, signature);
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
