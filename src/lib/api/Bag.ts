@@ -516,6 +516,8 @@ export default class Bag {
     /**
      * @description
      * Encrypts a message with the publicKey and returns the encrypted message.
+     * It's using the asymmetric RSA encryption algorithm. Due to technical limitations of the RSA algorithm,
+     * the text to be encrypted must not be longer than 215 bytes when using keys with 2048 bits
      * @example
      * const encryptedMessage = await asymmetricEncrypt('MY-MESSAGE','PUBLIC-KEY');
      * @param message
@@ -528,7 +530,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Decrypts the message with the privateKey and returns the decrypted message.
+     * Decrypts with the RSA algorithm the message with the privateKey and returns the decrypted message.
      * @example
      * const decryptedMessage = await asymmetricDecrypt('ENCRYPTED-MESSAGE','PRIVATE-KEY');
      * @param encryptedMessage
@@ -566,6 +568,7 @@ export default class Bag {
     /**
      * @description
      * Encrypts a message with a password and initialization vector than returns the encrypted message.
+     * It uses the aes256cbc algorithm.
      * @example
      * const encryptedMessage = await symmetricEncrypt('secret information',password,iv);
      * @param message
@@ -580,6 +583,7 @@ export default class Bag {
     /**
      * @description
      * Decrypts a message with a password and initialization vector than returns the decrypted message.
+     * It uses the aes256cbc algorithm.
      * @example
      * const password = await symmetricDecrypt(encryptedMessage,password,iv);
      * @param encryptedMessage
@@ -594,6 +598,7 @@ export default class Bag {
     /**
      * @description
      * Creates an signature from an message with a privateKey and returns the signature.
+     * It uses the SHA256 and RSA algorithm.
      * @example
      * const signature = await asymmetricSign(message,privateKey);
      * @param message
@@ -608,6 +613,7 @@ export default class Bag {
     /**
      * @description
      * Verify the signature with the publicKey and message and returns if the signature is valid.
+     * It uses the SHA256 and RSA algorithm.
      * @example
      * const signature = await asymmetricVerify(message,publicKey,signature);
      * @param message
