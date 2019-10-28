@@ -118,6 +118,10 @@ export interface CudOperation {
      * ifContains
      */
     i ?: DbForintQuery;
+    /**
+     * potentially Insert/Update
+     */
+    p ?: boolean;
 }
 
 /**
@@ -429,12 +433,31 @@ export interface TimestampOption {
 export interface IfContainsOption {
     /**
      * The ifContains option gives you the possibility to define a condition
-     * that the client only inserts the value when it has data that matches with a specific query.
-     * That can be useful if you want to reinsert old data,
+     * that the client only does the action when it has data that matches with a specific query.
+     * For example, it can be useful if you want to reinsert old data,
      * but only to the clients that are already loaded this old data section.
      * Notice also that in some cases the insertion sequence is changed.
      */
     ifContains ?: DbForintQuery
+}
+
+export interface PotentiallyUpdateOption {
+    /**
+     * With the potentiallyUpdate option, you indicate that the insert is potentially an update.
+     * For example, when the key already exists,
+     * the client will update the value instead of insert.
+     */
+    potentiallyUpdate ?: boolean
+}
+
+export interface PotentiallyInsertOption {
+    /**
+     * With the potentiallyInsert option, you indicate that the update is potentially an insert.
+     * For example, when the key does not exist,
+     * the client will insert the value instead of update.
+     * Notice that the potentiallyInsert only works when the path selector ends on a specific key.
+     */
+    potentiallyInsert ?: boolean
 }
 
 /**
@@ -474,7 +497,7 @@ export type DbForintQuery = {key ?: ForintQuery,value ?: ForintQuery};
 /**
  * Selector types for cud operations.
  */
-export type DbCudProcessedSelector = ('*' | string | ForintQuery)[];
+export type DbCudProcessedSelector = (string | ForintQuery)[];
 
-type DbCudSelectorItem = '*' | string | number | DbForintQuery;
+type DbCudSelectorItem = string | number | DbForintQuery;
 export type DbCudSelector = DbCudSelectorItem | DbCudSelectorItem[];

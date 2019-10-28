@@ -62,31 +62,38 @@ export default class DataboxUtils {
          return [typeof selector === 'number' ? selector.toString() : selector];
      }
 
-     static buildInsert(selector : DbCudSelector, value : any, ifContains ?: DbForintQuery, code ?: number | string, data ?: any) : CudOperation {
+     static buildInsert(selector : DbCudSelector, value : any, ifContains ?: DbForintQuery, potentiallyUpdate ?: boolean,
+                        code ?: number | string, data ?: any) : CudOperation {
          return {
              t : CudType.insert,
              s : DataboxUtils.processSelector(selector),
              v : value,
              ...(ifContains !== undefined ? {i : ifContains} : {}),
+             ...(potentiallyUpdate !== undefined ? {p : potentiallyUpdate} : {}),
              ...(code !== undefined ? {c : code} : {}),
              ...(data !== undefined ? {d : data} : {})
          };
      }
 
-    static buildUpdate(selector : DbCudSelector, value : any,code ?: number | string, data ?: any) : CudOperation {
+    static buildUpdate(selector : DbCudSelector, value : any, ifContains ?: DbForintQuery, potentiallyInsert ?: boolean,
+                       code ?: number | string, data ?: any) : CudOperation {
         return {
             t : CudType.update,
             s : DataboxUtils.processSelector(selector),
             v : value,
+            ...(ifContains !== undefined ? {i : ifContains} : {}),
+            ...(potentiallyInsert !== undefined ? {p : potentiallyInsert} : {}),
             ...(code !== undefined ? {c : code} : {}),
             ...(data !== undefined ? {d : data} : {})
         };
     }
 
-    static buildDelete(selector : DbCudSelector,code ?: number | string, data ?: any) : CudOperation {
+    static buildDelete(selector : DbCudSelector, ifContains ?: DbForintQuery,
+                       code ?: number | string, data ?: any) : CudOperation {
         return {
             t : CudType.delete,
             s : DataboxUtils.processSelector(selector),
+            ...(ifContains !== undefined ? {i : ifContains} : {}),
             ...(code !== undefined ? {c : code} : {}),
             ...(data !== undefined ? {d : data} : {})
         };

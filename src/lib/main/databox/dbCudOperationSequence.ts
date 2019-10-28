@@ -4,7 +4,14 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {CudOperation, InfoOption, IfContainsOption, DbCudSelector} from "./dbDefinitions";
+import {
+    CudOperation,
+    InfoOption,
+    IfContainsOption,
+    DbCudSelector,
+    PotentiallyUpdateOption,
+    PotentiallyInsertOption
+} from "./dbDefinitions";
 import DataboxUtils                              from "./databoxUtils";
 
 type CommitFunction = (operations : CudOperation[]) => Promise<void>;
@@ -24,83 +31,120 @@ export default class DbCudOperationSequence
     /**
      * Insert a new value in the Databox.
      * Insert behavior:
-     * Without ifContains (ifContains exists):
+     * Notice that in every case, the insert only happens when the key
+     * does not exist on the client.
+     * Otherwise, the client will ignore or convert it to an
+     * update when potentiallyUpdate is active.
+     * Without ifContains:
      * Base (with selector [] or '') -> Nothing
-     * KeyArray -> Inserts the value at the end with the key
-     * (if the key does not exist). But if you are using a compare function,
-     * it will insert the value in the correct position.
-     * Object -> Inserts the value with the key (if the key does not exist).
-     * Array -> Key will be parsed to int if it is a number then it will be inserted at the index.
-     * Otherwise, it will be added at the end.
+     * KeyArray -> Inserts the value at the end with the key.
+     * But if you are using a compare function, it will insert the value in the correct position.
+     * Object -> Insert the value with the key.
+     * Array -> Key will be parsed to int if it is a number, then it will be inserted at the index.
+     * Otherwise, it will be inserted at the end.
      * With ifContains (ifContains exists):
      * Base (with selector [] or '') -> Nothing
-     * KeyArray -> Inserts the value before the ifContains element with the key
-     * (if the key does not exist). But if you are using a compare function,
-     * it will insert the value in the correct position.
-     * Object -> Inserts the value with the key (if the key does not exist).
-     * Array -> Key will be parsed to int if it is a number then it will be inserted at the index.
+     * KeyArray -> Inserts the value before the ifContains element with the key.
+     * But if you are using a compare function, it will insert the value in the correct position.
+     * Object -> Insert the value with the key.
+     * Array -> Key will be parsed to int if it is a number, then it will be inserted at the index.
      * Otherwise, it will be added at the end.
      * @param selector
-     * The selector can be a direct key-path,
-     * can contain filter queries (by using the forint library)
-     * or it can select all items with '*'.
-     * If you use a string as a param type,
-     * you need to notice that it will be split into a path by dots.
-     * All numeric values will be converted to a string because the key can only be a string.
+     * The selector describes which key-value pairs should be
+     * deleted updated or where a value should be inserted.
+     * It can be a string array key path, but it also can contain
+     * filter queries (they work with the forint library).
+     * You can filter by value (with $value) by key (with $key) or
+     * select all keys with the constant $all.
+     * In the case of insertions, the selector must be key resolvable.
+     * That means it must end with a specific string key.
+     * Otherwise, the insertion is ignored by the client.
+     * Notice that all numeric values in the selector will be converted to a
+     * string because all keys need to be from type string.
+     * If you provide a string instead of an array, the string will be
+     * split by dots to create a string array.
      * @param value
      * @param ifContains
+     * @param potentiallyUpdate
      * @param code
      * @param data
      */
-    insert(selector : DbCudSelector,value : any,{ifContains,code,data} : IfContainsOption & InfoOption = {}) : DbCudOperationSequence {
-        this.operations.push(DataboxUtils.buildInsert(selector,value,ifContains,code,data));
+    insert(selector : DbCudSelector, value : any, {ifContains,potentiallyUpdate,code,data} : IfContainsOption & PotentiallyUpdateOption & InfoOption = {}) : DbCudOperationSequence {
+        this.operations.push(DataboxUtils.buildInsert(selector,value,ifContains,potentiallyUpdate,code,data));
         return this;
     }
 
     /**
      * Update a value in the Databox.
      * Update behavior:
+     * Notice that in every case, the update only happens when the key
+     * on the client does exist.
+     * Otherwise, the client will ignore or convert it to an
+     * insert when potentiallyInsert is active.
+     * Also, if the ifContains option is provided, the element must exist.
      * Base (with selector [] or '') -> Updates the complete structure.
-     * KeyArray -> Updates the specific value (if the key does exist).
-     * Object -> Updates the specific value (if the key does exist).
-     * Array -> Key will be parsed to int if it is a number it will
-     * update the specific value (if the index exist).
+     * KeyArray -> Updates the specific value.
+     * Object -> Updates the specific value.
+     * Array -> Key will be parsed to int if it is a number
+     * it will update the specific value.
      * @param selector
-     * The selector can be a direct key-path,
-     * can contain filter queries (by using the forint library)
-     * or it can select all items with '*'.
-     * If you use a string as a param type,
-     * you need to notice that it will be split into a path by dots.
-     * All numeric values will be converted to a string because the key can only be a string.
+     * The selector describes which key-value pairs should be
+     * deleted updated or where a value should be inserted.
+     * It can be a string array key path, but it also can contain
+     * filter queries (they work with the forint library).
+     * You can filter by value (with $value) by key (with $key) or
+     * select all keys with the constant $all.
+     * In the case of insertions, the selector must be key resolvable.
+     * That means it must end with a specific string key.
+     * Otherwise, the insertion is ignored by the client.
+     * Notice that all numeric values in the selector will be converted to a
+     * string because all keys need to be from type string.
+     * If you provide a string instead of an array, the string will be
+     * split by dots to create a string array.
      * @param value
+     * @param ifContains
+     * @param potentiallyInsert
      * @param code
      * @param data
      */
-    update(selector : DbCudSelector,value : any,{code,data} : InfoOption = {}) : DbCudOperationSequence {
-        this.operations.push(DataboxUtils.buildUpdate(selector,value,code,data));
+    update(selector : DbCudSelector, value : any, {ifContains,potentiallyInsert,code,data} : IfContainsOption & PotentiallyInsertOption & InfoOption = {}) : DbCudOperationSequence {
+        this.operations.push(DataboxUtils.buildUpdate(selector,value,ifContains,potentiallyInsert,code,data));
         return this;
     }
 
     /**
      * Delete a value in the Databox.
      * Delete behavior:
+     * Notice that in every case, the delete only happens when the key
+     * on the client does exist.
+     * Otherwise, the client will ignore it.
+     * Also, if the ifContains option is provided, the element must exist.
      * Base (with selector [] or '') -> Deletes the complete structure.
-     * KeyArray -> Deletes the specific value (if the key does exist).
-     * Object -> Deletes the specific value (if the key does exist).
-     * Array -> Key will be parsed to int if it is a number it will delete the
-     * specific value (if the index does exist). Otherwise, it will delete the last item.
+     * KeyArray -> Deletes the specific value.
+     * Object -> Deletes the specific value.
+     * Array -> Key will be parsed to int if it is a number it
+     * will delete the specific value.
+     * Otherwise, it will delete the last item.
      * @param selector
-     * The selector can be a direct key-path,
-     * can contain filter queries (by using the forint library)
-     * or it can select all items with '*'.
-     * If you use a string as a param type,
-     * you need to notice that it will be split into a path by dots.
-     * All numeric values will be converted to a string because the key can only be a string.
+     * The selector describes which key-value pairs should be
+     * deleted updated or where a value should be inserted.
+     * It can be a string array key path, but it also can contain
+     * filter queries (they work with the forint library).
+     * You can filter by value (with $value) by key (with $key) or
+     * select all keys with the constant $all.
+     * In the case of insertions, the selector must be key resolvable.
+     * That means it must end with a specific string key.
+     * Otherwise, the insertion is ignored by the client.
+     * Notice that all numeric values in the selector will be converted to a
+     * string because all keys need to be from type string.
+     * If you provide a string instead of an array, the string will be
+     * split by dots to create a string array.
+     * @param ifContains
      * @param code
      * @param data
      */
-    delete(selector : DbCudSelector,{code,data} : InfoOption = {}) : DbCudOperationSequence {
-        this.operations.push(DataboxUtils.buildDelete(selector,code,data));
+    delete(selector : DbCudSelector, {ifContains,code,data} : IfContainsOption & InfoOption = {}) : DbCudOperationSequence {
+        this.operations.push(DataboxUtils.buildDelete(selector,ifContains,code,data));
         return this;
     }
 
