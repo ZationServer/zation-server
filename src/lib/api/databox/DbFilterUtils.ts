@@ -34,3 +34,11 @@ export function $key<T>(query : ForintQuery<T>) : DbForintQuery {
 export function $pair<TK,TV>(keyQuery : ForintQuery<TK>,valueQuery : ForintQuery<TV>) : DbForintQuery {
     return {key : keyQuery,value : valueQuery};
 }
+
+/**
+ * @description
+ * Databox filter constant to select all values.
+ * @example
+ * await db.update([$all,'online'],true);
+ */
+export const $all = Object.freeze({});
