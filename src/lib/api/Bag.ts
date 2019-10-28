@@ -31,7 +31,10 @@ const uuidV4                                                = require('uuid/v4')
 const uniqid                                                = require('uniqid');
 import ZationWorker                                         = require("../core/zationWorker");
 import {SyncTokenOperationType}                             from "../main/constants/syncTokenDefinitions";
-import {StartMode}                                          from "../..";
+// noinspection TypeScriptPreferShortImport
+import {StartMode}                                          from "../main/constants/startMode";
+import OsUtils                                              from "../main/utils/osUtils";
+import SystemInfo                                           from "../main/utils/systemInfo";
 import BackErrorBuilder                                     from "../main/builder/backErrorBuilder";
 import BackError                                            from "./BackError";
 import BackErrorBag                                         from "./BackErrorBag";
@@ -429,6 +432,44 @@ export default class Bag {
      */
     getZationServerUrl(): string {
         return `${this.zc.mainConfig.secure ? 'https' : 'http'}://${this.zc.mainConfig.hostname}:${this.zc.mainConfig.port}${this.zc.mainConfig.path}`;
+    }
+
+    //Part Os
+
+    /**
+     * @description
+     * Returns the average Cpu usage in percentage from the server.
+     * Notice that the measurement will take at least 1 second.
+     */
+    async getCpuUsage() : Promise<number> {
+        return OsUtils.getAverageCpuUsage();
+    }
+
+    /**
+     * @description
+     * Returns the total and used memory in MB of the server.
+     */
+    async getMemoryUsage() : Promise<{totalMemMb : number,usedMemMb : number}> {
+        return OsUtils.getMemoryUsage();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns the CPU usage in percentage and the memory usage in MB.
+     */
+    async getPidUsage() : Promise<{cpu : number, memory : number}> {
+        return SystemInfo.getPidInfo();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the name of the server os.
+     * @example
+     * 'Mac OS X 10.15', 'Microsoft Windows 7 Enterprise', 'Linux 4.4.0-112-generic'
+     */
+    async getOsName() : Promise<string> {
+        return OsUtils.getOs();
     }
 
     //Part Crypto

@@ -28,7 +28,7 @@ export default class OsUtils {
         }
     }
 
-    static getCpuUsage(): Promise<number> {
+    static getAverageCpuUsage(): Promise<number> {
         return new Promise(function (resolve) {
             const startMeasure = OsUtils.cpuProcessAverage();
             setTimeout(() => {

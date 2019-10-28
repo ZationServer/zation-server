@@ -20,7 +20,7 @@ export default class SystemInfo {
         };
     }
 
-    static async getPidUsage() : Promise<any>
+    private static async getPidUsage() : Promise<any>
     {
         return new Promise<object>((resolve, reject) => {
             pidUsage(process.pid, (err, stats) => {
@@ -38,9 +38,9 @@ export default class SystemInfo {
         let memMb;
 
         let promises : Promise<any>[] = [];
-        promises.push(SystemInfo.getPidUsage().then((r) => pidUsage = r));
+        promises.push(SystemInfo.getPidInfo().then((r) => pidUsage = r));
         promises.push(OsUtils.getDriveUsed().then((r) => drive = r));
-        promises.push(OsUtils.getCpuUsage().then((r) => cpuUsage = r));
+        promises.push(OsUtils.getAverageCpuUsage().then((r) => cpuUsage = r));
         promises.push(OsUtils.getMemoryUsage().then((r) => memMb = r));
         await Promise.all(promises);
 
@@ -54,14 +54,16 @@ export default class SystemInfo {
                 },
                 cpu : cpuUsage
             },
-            pid : {
-                cpu : pidUsage.cpu,
-                memory : pidUsage.memory / 1e+6
-            }
+            pid : pidUsage
         }
     }
 
-    static async getPidInfo() : Promise<object>
+    /**
+     * @return
+     * The CPU usage in percentage.
+     * The memory usage in MB.
+     */
+    static async getPidInfo() : Promise<{cpu : number,memory : number}>
     {
         const pidUsage = await SystemInfo.getPidUsage();
         return {
