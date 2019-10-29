@@ -965,7 +965,6 @@ class ZationWorker extends SCWorker
         });
 
         this.scServer.on('badSocketAuthToken', async (socket : UpSocket,badAuthStatus) => {
-            socket.emit('zationBadAuthToken',{});
             await event.socketBadAuthToken(this.getPreparedBag(),socket,badAuthStatus);
         });
     }
