@@ -121,7 +121,7 @@ export interface CudOperation {
     /**
      * potentially Insert/Update
      */
-    p ?: boolean;
+    p ?: 0 | 1;
 }
 
 /**

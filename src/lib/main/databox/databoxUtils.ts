@@ -69,7 +69,7 @@ export default class DataboxUtils {
              s : DataboxUtils.processSelector(selector),
              v : value,
              ...(ifContains !== undefined ? {i : ifContains} : {}),
-             ...(potentiallyUpdate !== undefined ? {p : potentiallyUpdate} : {}),
+             ...(potentiallyUpdate !== undefined ? {p : potentiallyUpdate ? 1 : 0} : {}),
              ...(code !== undefined ? {c : code} : {}),
              ...(data !== undefined ? {d : data} : {})
          };
@@ -82,7 +82,7 @@ export default class DataboxUtils {
             s : DataboxUtils.processSelector(selector),
             v : value,
             ...(ifContains !== undefined ? {i : ifContains} : {}),
-            ...(potentiallyInsert !== undefined ? {p : potentiallyInsert} : {}),
+            ...(potentiallyInsert !== undefined ? {p : potentiallyInsert ? 1 : 0} : {}),
             ...(code !== undefined ? {c : code} : {}),
             ...(data !== undefined ? {d : data} : {})
         };
