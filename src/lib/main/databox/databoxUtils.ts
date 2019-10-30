@@ -62,27 +62,27 @@ export default class DataboxUtils {
          return [typeof selector === 'number' ? selector.toString() : selector];
      }
 
-     static buildInsert(selector : DbCudSelector, value : any, ifContains ?: DbForintQuery, potentiallyUpdate ?: boolean,
+     static buildInsert(selector : DbCudSelector, value : any, ifContains ?: DbForintQuery, potentialUpdate ?: boolean,
                         code ?: number | string, data ?: any) : CudOperation {
          return {
              t : CudType.insert,
              s : DataboxUtils.processSelector(selector),
              v : value,
              ...(ifContains !== undefined ? {i : ifContains} : {}),
-             ...(potentiallyUpdate !== undefined ? {p : potentiallyUpdate ? 1 : 0} : {}),
+             ...(potentialUpdate !== undefined ? {p : potentialUpdate ? 1 : 0} : {}),
              ...(code !== undefined ? {c : code} : {}),
              ...(data !== undefined ? {d : data} : {})
          };
      }
 
-    static buildUpdate(selector : DbCudSelector, value : any, ifContains ?: DbForintQuery, potentiallyInsert ?: boolean,
+    static buildUpdate(selector : DbCudSelector, value : any, ifContains ?: DbForintQuery, potentialInsert ?: boolean,
                        code ?: number | string, data ?: any) : CudOperation {
         return {
             t : CudType.update,
             s : DataboxUtils.processSelector(selector),
             v : value,
             ...(ifContains !== undefined ? {i : ifContains} : {}),
-            ...(potentiallyInsert !== undefined ? {p : potentiallyInsert ? 1 : 0} : {}),
+            ...(potentialInsert !== undefined ? {p : potentialInsert ? 1 : 0} : {}),
             ...(code !== undefined ? {c : code} : {}),
             ...(data !== undefined ? {d : data} : {})
         };

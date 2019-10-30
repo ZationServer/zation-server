@@ -119,7 +119,7 @@ export interface CudOperation {
      */
     i ?: DbForintQuery;
     /**
-     * potentially Insert/Update
+     * potential Insert/Update
      */
     p ?: 0 | 1;
 }
@@ -441,23 +441,23 @@ export interface IfContainsOption {
     ifContains ?: DbForintQuery
 }
 
-export interface PotentiallyUpdateOption {
+export interface PotentialUpdateOption {
     /**
-     * With the potentiallyUpdate option, you indicate that the insert is potentially an update.
+     * With the potentialUpdate option, you indicate that the insert is potential an update.
      * For example, when the key already exists,
      * the client will update the value instead of insert.
      */
-    potentiallyUpdate ?: boolean
+    potentialUpdate ?: boolean
 }
 
-export interface PotentiallyInsertOption {
+export interface PotentialInsertOption {
     /**
-     * With the potentiallyInsert option, you indicate that the update is potentially an insert.
+     * With the potentialInsert option, you indicate that the update is potential an insert.
      * For example, when the key does not exist,
      * the client will insert the value instead of update.
-     * Notice that the potentiallyInsert only works when the path selector ends on a specific key.
+     * Notice that the potentialInsert only works when the path selector ends on a specific key.
      */
-    potentiallyInsert ?: boolean
+    potentialInsert ?: boolean
 }
 
 /**

@@ -13,8 +13,8 @@ import {
     IfContainsOption,
     TimestampOption,
     DbCudSelector,
-    PotentiallyUpdateOption,
-    PotentiallyInsertOption
+    PotentialUpdateOption,
+    PotentialInsertOption
 } from "../dbDefinitions";
 
 export default class DataboxFamilyContainer {
@@ -35,7 +35,7 @@ export default class DataboxFamilyContainer {
      * Notice that in every case, the insert only happens when the key
      * does not exist on the client.
      * Otherwise, the client will ignore or convert it to an
-     * update when potentiallyUpdate is active.
+     * update when potentialUpdate is active.
      * Without ifContains:
      * Base (with selector [] or '') -> Nothing
      * KeyArray -> Inserts the value at the end with the key.
@@ -69,7 +69,7 @@ export default class DataboxFamilyContainer {
      * @param value
      * @param options
      */
-    async insert(id : string | number, selector: DbCudSelector, value: any, options : IfContainsOption & PotentiallyUpdateOption & InfoOption & TimestampOption = {}): Promise<void> {
+    async insert(id : string | number, selector: DbCudSelector, value: any, options : IfContainsOption & PotentialUpdateOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.databoxFamilies.length;i++) {
             promises.push(this.databoxFamilies[i].insert(id,selector,value,options));
@@ -87,7 +87,7 @@ export default class DataboxFamilyContainer {
      * Notice that in every case, the update only happens when the key
      * on the client does exist.
      * Otherwise, the client will ignore or convert it to an
-     * insert when potentiallyInsert is active.
+     * insert when potentialInsert is active.
      * Also, if the ifContains option is provided, the element must exist.
      * Base (with selector [] or '') -> Updates the complete structure.
      * KeyArray -> Updates the specific value.
@@ -113,7 +113,7 @@ export default class DataboxFamilyContainer {
      * @param value
      * @param options
      */
-    async update(id : string | number, selector: DbCudSelector, value: any, options : IfContainsOption & PotentiallyInsertOption & InfoOption & TimestampOption = {}): Promise<void> {
+    async update(id : string | number, selector: DbCudSelector, value: any, options : IfContainsOption & PotentialInsertOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.databoxFamilies.length;i++) {
             promises.push(this.databoxFamilies[i].update(id,selector,value,options));

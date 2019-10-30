@@ -9,8 +9,8 @@ import {
     InfoOption,
     IfContainsOption,
     DbCudSelector,
-    PotentiallyUpdateOption,
-    PotentiallyInsertOption
+    PotentialUpdateOption,
+    PotentialInsertOption
 } from "./dbDefinitions";
 import DataboxUtils                              from "./databoxUtils";
 
@@ -34,7 +34,7 @@ export default class DbCudOperationSequence
      * Notice that in every case, the insert only happens when the key
      * does not exist on the client.
      * Otherwise, the client will ignore or convert it to an
-     * update when potentiallyUpdate is active.
+     * update when potentialUpdate is active.
      * Without ifContains:
      * Base (with selector [] or '') -> Nothing
      * KeyArray -> Inserts the value at the end with the key.
@@ -65,12 +65,12 @@ export default class DbCudOperationSequence
      * split by dots to create a string array.
      * @param value
      * @param ifContains
-     * @param potentiallyUpdate
+     * @param potentialUpdate
      * @param code
      * @param data
      */
-    insert(selector : DbCudSelector, value : any, {ifContains,potentiallyUpdate,code,data} : IfContainsOption & PotentiallyUpdateOption & InfoOption = {}) : DbCudOperationSequence {
-        this.operations.push(DataboxUtils.buildInsert(selector,value,ifContains,potentiallyUpdate,code,data));
+    insert(selector : DbCudSelector, value : any, {ifContains,potentialUpdate,code,data} : IfContainsOption & PotentialUpdateOption & InfoOption = {}) : DbCudOperationSequence {
+        this.operations.push(DataboxUtils.buildInsert(selector,value,ifContains,potentialUpdate,code,data));
         return this;
     }
 
@@ -80,7 +80,7 @@ export default class DbCudOperationSequence
      * Notice that in every case, the update only happens when the key
      * on the client does exist.
      * Otherwise, the client will ignore or convert it to an
-     * insert when potentiallyInsert is active.
+     * insert when potentialInsert is active.
      * Also, if the ifContains option is provided, the element must exist.
      * Base (with selector [] or '') -> Updates the complete structure.
      * KeyArray -> Updates the specific value.
@@ -103,12 +103,12 @@ export default class DbCudOperationSequence
      * split by dots to create a string array.
      * @param value
      * @param ifContains
-     * @param potentiallyInsert
+     * @param potentialInsert
      * @param code
      * @param data
      */
-    update(selector : DbCudSelector, value : any, {ifContains,potentiallyInsert,code,data} : IfContainsOption & PotentiallyInsertOption & InfoOption = {}) : DbCudOperationSequence {
-        this.operations.push(DataboxUtils.buildUpdate(selector,value,ifContains,potentiallyInsert,code,data));
+    update(selector : DbCudSelector, value : any, {ifContains,potentialInsert,code,data} : IfContainsOption & PotentialInsertOption & InfoOption = {}) : DbCudOperationSequence {
+        this.operations.push(DataboxUtils.buildUpdate(selector,value,ifContains,potentialInsert,code,data));
         return this;
     }
 
