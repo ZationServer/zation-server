@@ -497,7 +497,7 @@ export type DbForintQuery = {key ?: ForintQuery,value ?: ForintQuery};
 /**
  * Selector types for cud operations.
  */
-export type DbCudProcessedSelector = (string | ForintQuery)[];
+export type DbCudProcessedSelector = (string | DbForintQuery)[];
 
 type DbCudSelectorItem = string | number | DbForintQuery;
 export type DbCudSelector = DbCudSelectorItem | DbCudSelectorItem[];
