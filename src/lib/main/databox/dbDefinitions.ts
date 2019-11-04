@@ -115,9 +115,9 @@ export interface CudOperation {
      */
     d ?: any;
     /**
-     * ifContains
+     * if conditions
      */
-    i ?: DbForintQuery;
+    i ?: IfOptionProcessedValue;
     /**
      * potential Insert/Update
      */
@@ -430,15 +430,39 @@ export interface TimestampOption {
     timestamp ?: number
 }
 
-export interface IfContainsOption {
+export interface IfQuery extends DbForintQuery {
+    not ?: boolean;
+}
+
+export type IfOptionValue = IfQuery | (IfQuery[]);
+export type IfOptionProcessedValue = IfQuery[];
+
+export interface IfOption {
     /**
-     * The ifContains option gives you the possibility to define a condition
-     * that the client only does the action when it has data that matches with a specific query.
-     * For example, it can be useful if you want to reinsert old data,
+     * @description
+     * The if option gives you the possibility to
+     * define conditions for the cud operation.
+     * All conditions must be evaluated to true;
+     * otherwise, the client will ignore the operation.
+     * You can define multiple conditions with an array or only one condition.
+     * There are two helper functions to build a condition
+     * the $contains and $notContains helper.
+     * In both helper functions, you pass in a forint query.
+     * With the queries, you can check that a specific key or value must exist or not.
+     * Or you can check with the $any constant, which refers to an empty query ({})
+     * if any element exists.
+     * In the case of a head selector (with selector [] or ''),
+     * the key always is: '' and the value references to the complete
+     * data structure (if the value is not undefined).)
+     * Some useful example would be to reinsert old data,
      * but only to the clients that are already loaded this old data section.
-     * Notice also that in some cases the insertion sequence is changed.
+     * Or to build a set where each element value should be unique.
+     * @example
+     * if : $notContains($any)
+     * if : $contains($key('20'))
+     * if : [$contains($value({name : 'luca'})),$notContains($key('30'))]
      */
-    ifContains ?: DbForintQuery
+    if ?: IfOptionValue;
 }
 
 export interface PotentialUpdateOption {

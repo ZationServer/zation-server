@@ -29,7 +29,7 @@ import {
     DbWorkerClosePackage,
     DbWorkerCudPackage,
     DbWorkerPackage,
-    IfContainsOption,
+    IfOption,
     InfoOption,
     PreCudPackage,
     TimestampOption,
@@ -474,31 +474,24 @@ export default class Databox extends DataboxCore {
      * Notice that in every case, the insert only happens when the key
      * does not exist on the client.
      * Otherwise, the client will ignore or convert it to an
-     * update when potentialUpdate is active.
-     * Without ifContains:
-     * Base (with selector [] or '') -> Nothing
+     * update when potentiallyUpdate is active.
+     * Other conditions are that the timeout is newer than the existing
+     * timeout and all if conditions are true.
+     * Head (with selector [] or '') -> Inserts the value.
      * KeyArray -> Inserts the value at the end with the key.
      * But if you are using a compare function, it will insert the value in the correct position.
      * Object -> Insert the value with the key.
      * Array -> Key will be parsed to int if it is a number, then it will be inserted at the index.
      * Otherwise, it will be inserted at the end.
-     * With ifContains (ifContains exists):
-     * Base (with selector [] or '') -> Nothing
-     * KeyArray -> Inserts the value before the ifContains element with the key.
-     * But if you are using a compare function, it will insert the value in the correct position.
-     * Object -> Insert the value with the key.
-     * Array -> Key will be parsed to int if it is a number, then it will be inserted at the index.
-     * Otherwise, it will be added at the end.
      * @param selector
      * The selector describes which key-value pairs should be
      * deleted updated or where a value should be inserted.
      * It can be a string array key path, but it also can contain
      * filter queries (they work with the forint library).
-     * You can filter by value (with $value) by key (with $key) or
-     * select all keys with the constant $all.
-     * In the case of insertions, the selector must be key resolvable.
-     * That means it must end with a specific string key.
-     * Otherwise, the insertion is ignored by the client.
+     * You can filter by value ($value or property value) by key ($key or property key) or
+     * select all keys with {} (For better readability use the constant $all).
+     * In the case of insertions, most times, the selector should end with
+     * a new key instead of a query.
      * Notice that all numeric values in the selector will be converted to a
      * string because all keys need to be from type string.
      * If you provide a string instead of an array, the string will be
@@ -510,10 +503,10 @@ export default class Databox extends DataboxCore {
      * @param code
      * @param data
      */
-    async insert(selector : DbCudSelector, value : any, {ifContains,potentialUpdate,timestamp,code,data} : IfContainsOption & PotentialUpdateOption & InfoOption & TimestampOption = {}) {
+    async insert(selector : DbCudSelector, value : any, {if : ifOption,potentialUpdate,timestamp,code,data} : IfOption & PotentialUpdateOption & InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataboxUtils.buildPreCudPackage(
-                DataboxUtils.buildInsert(selector,value,ifContains,potentialUpdate,code,data)),timestamp);
+                DataboxUtils.buildInsert(selector,value,ifOption,potentialUpdate,code,data)),timestamp);
     }
 
     /**
@@ -527,9 +520,10 @@ export default class Databox extends DataboxCore {
      * Notice that in every case, the update only happens when the key
      * on the client does exist.
      * Otherwise, the client will ignore or convert it to an
-     * insert when potentialInsert is active.
-     * Also, if the ifContains option is provided, the element must exist.
-     * Base (with selector [] or '') -> Updates the complete structure.
+     * insert when potentiallyInsert is active.
+     * Other conditions are that the timeout is newer than the existing
+     * timeout and all if conditions are true.
+     * Head (with selector [] or '') -> Updates the complete structure.
      * KeyArray -> Updates the specific value.
      * Object -> Updates the specific value.
      * Array -> Key will be parsed to int if it is a number
@@ -539,11 +533,10 @@ export default class Databox extends DataboxCore {
      * deleted updated or where a value should be inserted.
      * It can be a string array key path, but it also can contain
      * filter queries (they work with the forint library).
-     * You can filter by value (with $value) by key (with $key) or
-     * select all keys with the constant $all.
-     * In the case of insertions, the selector must be key resolvable.
-     * That means it must end with a specific string key.
-     * Otherwise, the insertion is ignored by the client.
+     * You can filter by value ($value or property value) by key ($key or property key) or
+     * select all keys with {} (For better readability use the constant $all).
+     * In the case of insertions, most times, the selector should end with
+     * a new key instead of a query.
      * Notice that all numeric values in the selector will be converted to a
      * string because all keys need to be from type string.
      * If you provide a string instead of an array, the string will be
@@ -555,10 +548,10 @@ export default class Databox extends DataboxCore {
      * @param code
      * @param data
      */
-    async update(selector : DbCudSelector, value : any, {ifContains,potentialInsert,timestamp,code,data} : IfContainsOption & PotentialInsertOption & InfoOption & TimestampOption = {}) {
+    async update(selector : DbCudSelector, value : any, {if : ifOption,potentialInsert,timestamp,code,data} : IfOption & PotentialInsertOption & InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataboxUtils.buildPreCudPackage(
-                DataboxUtils.buildUpdate(selector,value,ifContains,potentialInsert,code,data)),timestamp);
+                DataboxUtils.buildUpdate(selector,value,ifOption,potentialInsert,code,data)),timestamp);
     }
 
     /**
@@ -572,8 +565,9 @@ export default class Databox extends DataboxCore {
      * Notice that in every case, the delete only happens when the key
      * on the client does exist.
      * Otherwise, the client will ignore it.
-     * Also, if the ifContains option is provided, the element must exist.
-     * Base (with selector [] or '') -> Deletes the complete structure.
+     * Other conditions are that the timeout is newer than the existing
+     * timeout and all if conditions are true.
+     * Head (with selector [] or '') -> Deletes the complete structure.
      * KeyArray -> Deletes the specific value.
      * Object -> Deletes the specific value.
      * Array -> Key will be parsed to int if it is a number it
@@ -584,11 +578,10 @@ export default class Databox extends DataboxCore {
      * deleted updated or where a value should be inserted.
      * It can be a string array key path, but it also can contain
      * filter queries (they work with the forint library).
-     * You can filter by value (with $value) by key (with $key) or
-     * select all keys with the constant $all.
-     * In the case of insertions, the selector must be key resolvable.
-     * That means it must end with a specific string key.
-     * Otherwise, the insertion is ignored by the client.
+     * You can filter by value ($value or property value) by key ($key or property key) or
+     * select all keys with {} (For better readability use the constant $all).
+     * In the case of insertions, most times, the selector should end with
+     * a new key instead of a query.
      * Notice that all numeric values in the selector will be converted to a
      * string because all keys need to be from type string.
      * If you provide a string instead of an array, the string will be
@@ -598,10 +591,10 @@ export default class Databox extends DataboxCore {
      * @param code
      * @param data
      */
-    async delete(selector : DbCudSelector, {ifContains,timestamp,code,data} : IfContainsOption & InfoOption & TimestampOption = {}) {
+    async delete(selector : DbCudSelector, {if : ifOption,timestamp,code,data} : IfOption & InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataboxUtils.buildPreCudPackage(
-                DataboxUtils.buildDelete(selector,ifContains,code,data)),timestamp);
+                DataboxUtils.buildDelete(selector,ifOption,code,data)),timestamp);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -706,7 +699,7 @@ export default class Databox extends DataboxCore {
      * A client can call that method multiple times to fetch more and more data.
      * You usually request data from your database and return it, and if no more data is available,
      * you should throw a NoMoreDataAvailableError or call the internal noMoreDataAvailable method.
-     * If no data is available for example the profile with the id ten is not found,
+     * If no data is available, for example the profile with the id ten is not found,
      * you can throw a NoDataAvailableError or call the internal noDataAvailable method.
      * The counter parameter indicates the number of the current call, it starts counting at zero.
      * The client can send additional data when calling the fetch process (fetchInput),
@@ -715,16 +708,37 @@ export default class Databox extends DataboxCore {
      * important to get more data in the future, for example, the last id of the item that the client had received.
      * The session object is only available on the server-side and can not be modified on the client-side.
      * Notice that you only can store JSON convertible data in the session.
+     *
      * If you design the Databox in such a way that the next fetch is not depending on the previous one,
      * you can activate the parallelFetch option in the Databox config.
-     * The data what you are returning can be of any type.
-     * But if you want to return more complex data,
-     * it is recommended that the information consists of key-value able components
-     * so that you can identify each value with a key path.
-     * That can be done by using an object or a key-array.
-     * To build a key-array, you can use the buildKeyArray method.
-     * Notice that the client can only merge components from the same type.
+     *
+     * The data that you are returning can be of any type.
+     * The client will convert some data parts into specific databox storage components.
+     * These components will allow you to access specific values with a selector.
+     * There are three of them:
+     * The Object:
+     * It is a simple component that has no sequence, and you can access the values via property keys.
+     * The client will convert each JSON object to this component.
+     *
+     * The KeyArray:
+     * This component allows you to keep data in a specific sequence,
+     * but you still able to access the values via a string key.
+     * To build a key-array, you can use the buildKeyArray function.
+     * Notice that JSON arrays will not be converted to this component type.
+     *
+     * The Array:
+     * This component is a light way and simple component for an array.
+     * Instead of the key-array, you only can access values via an array index.
+     * Also, a difference is that the sequence of the elements is connected to the key (index).
+     * That means sorting the values changes the keys.
+     * All JSON arrays will be converted to this type.
+     * If you need resorting, more specific keys, or you manipulate lots of data in the array,
+     * you should use the key-array instead.
+     *
+     * When loading more data, the client will merge these data by using these components.
+     * But notice that the client can only merge components from the same type.
      * Otherwise, the new value will override the old value.
+     *
      * Whenever you are using the socket to filter secure data for a specific user,
      * you also have to use the cud middleware to filter the cud events for the socket.
      * You mostly should avoid this because if you are overwriting a cud middleware,

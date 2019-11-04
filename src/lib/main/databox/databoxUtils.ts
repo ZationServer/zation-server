@@ -14,10 +14,11 @@ import {
     DbClientOutputReloadPackage,
     DbClientOutputSignalPackage,
     DbCudProcessedSelector,
-    DbCudSelector, DbForintQuery,
+    DbCudSelector,
     DbSession,
     DbSessionData,
     DbToken,
+    IfOptionValue,
     PreCudPackage
 } from "./dbDefinitions";
 import DataboxFamily, {DataboxFamilyClass} from "../../api/databox/DataboxFamily";
@@ -62,38 +63,38 @@ export default class DataboxUtils {
          return [typeof selector === 'number' ? selector.toString() : selector];
      }
 
-     static buildInsert(selector : DbCudSelector, value : any, ifContains ?: DbForintQuery, potentialUpdate ?: boolean,
+     static buildInsert(selector : DbCudSelector, value : any, ifOption ?: IfOptionValue, potentialUpdate ?: boolean,
                         code ?: number | string, data ?: any) : CudOperation {
          return {
              t : CudType.insert,
              s : DataboxUtils.processSelector(selector),
              v : value,
-             ...(ifContains !== undefined ? {i : ifContains} : {}),
+             ...(ifOption !== undefined ? {i : Array.isArray(ifOption) ? ifOption : [ifOption]} : {}),
              ...(potentialUpdate !== undefined ? {p : potentialUpdate ? 1 : 0} : {}),
              ...(code !== undefined ? {c : code} : {}),
              ...(data !== undefined ? {d : data} : {})
          };
      }
 
-    static buildUpdate(selector : DbCudSelector, value : any, ifContains ?: DbForintQuery, potentialInsert ?: boolean,
+    static buildUpdate(selector : DbCudSelector, value : any, ifOption ?: IfOptionValue, potentialInsert ?: boolean,
                        code ?: number | string, data ?: any) : CudOperation {
         return {
             t : CudType.update,
             s : DataboxUtils.processSelector(selector),
             v : value,
-            ...(ifContains !== undefined ? {i : ifContains} : {}),
+            ...(ifOption !== undefined ? {i : Array.isArray(ifOption) ? ifOption : [ifOption]} : {}),
             ...(potentialInsert !== undefined ? {p : potentialInsert ? 1 : 0} : {}),
             ...(code !== undefined ? {c : code} : {}),
             ...(data !== undefined ? {d : data} : {})
         };
     }
 
-    static buildDelete(selector : DbCudSelector, ifContains ?: DbForintQuery,
+    static buildDelete(selector : DbCudSelector, ifOption ?: IfOptionValue,
                        code ?: number | string, data ?: any) : CudOperation {
         return {
             t : CudType.delete,
             s : DataboxUtils.processSelector(selector),
-            ...(ifContains !== undefined ? {i : ifContains} : {}),
+            ...(ifOption !== undefined ? {i : Array.isArray(ifOption) ? ifOption : [ifOption]} : {}),
             ...(code !== undefined ? {c : code} : {}),
             ...(data !== undefined ? {d : data} : {})
         };

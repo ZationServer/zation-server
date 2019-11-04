@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import {
     CudOperation,
     InfoOption,
-    IfContainsOption,
+    IfOption,
     DbCudSelector,
     PotentialUpdateOption,
     PotentialInsertOption
@@ -34,31 +34,24 @@ export default class DbCudOperationSequence
      * Notice that in every case, the insert only happens when the key
      * does not exist on the client.
      * Otherwise, the client will ignore or convert it to an
-     * update when potentialUpdate is active.
-     * Without ifContains:
-     * Base (with selector [] or '') -> Nothing
+     * update when potentiallyUpdate is active.
+     * Other conditions are that the timeout is newer than the existing
+     * timeout and all if conditions are true.
+     * Head (with selector [] or '') -> Inserts the value.
      * KeyArray -> Inserts the value at the end with the key.
      * But if you are using a compare function, it will insert the value in the correct position.
      * Object -> Insert the value with the key.
      * Array -> Key will be parsed to int if it is a number, then it will be inserted at the index.
      * Otherwise, it will be inserted at the end.
-     * With ifContains (ifContains exists):
-     * Base (with selector [] or '') -> Nothing
-     * KeyArray -> Inserts the value before the ifContains element with the key.
-     * But if you are using a compare function, it will insert the value in the correct position.
-     * Object -> Insert the value with the key.
-     * Array -> Key will be parsed to int if it is a number, then it will be inserted at the index.
-     * Otherwise, it will be added at the end.
      * @param selector
      * The selector describes which key-value pairs should be
      * deleted updated or where a value should be inserted.
      * It can be a string array key path, but it also can contain
      * filter queries (they work with the forint library).
-     * You can filter by value (with $value) by key (with $key) or
-     * select all keys with the constant $all.
-     * In the case of insertions, the selector must be key resolvable.
-     * That means it must end with a specific string key.
-     * Otherwise, the insertion is ignored by the client.
+     * You can filter by value ($value or property value) by key ($key or property key) or
+     * select all keys with {} (For better readability use the constant $all).
+     * In the case of insertions, most times, the selector should end with
+     * a new key instead of a query.
      * Notice that all numeric values in the selector will be converted to a
      * string because all keys need to be from type string.
      * If you provide a string instead of an array, the string will be
@@ -69,8 +62,8 @@ export default class DbCudOperationSequence
      * @param code
      * @param data
      */
-    insert(selector : DbCudSelector, value : any, {ifContains,potentialUpdate,code,data} : IfContainsOption & PotentialUpdateOption & InfoOption = {}) : DbCudOperationSequence {
-        this.operations.push(DataboxUtils.buildInsert(selector,value,ifContains,potentialUpdate,code,data));
+    insert(selector : DbCudSelector, value : any, {if : ifOption,potentialUpdate,code,data} : IfOption & PotentialUpdateOption & InfoOption = {}) : DbCudOperationSequence {
+        this.operations.push(DataboxUtils.buildInsert(selector,value,ifOption,potentialUpdate,code,data));
         return this;
     }
 
@@ -80,9 +73,10 @@ export default class DbCudOperationSequence
      * Notice that in every case, the update only happens when the key
      * on the client does exist.
      * Otherwise, the client will ignore or convert it to an
-     * insert when potentialInsert is active.
-     * Also, if the ifContains option is provided, the element must exist.
-     * Base (with selector [] or '') -> Updates the complete structure.
+     * insert when potentiallyInsert is active.
+     * Other conditions are that the timeout is newer than the existing
+     * timeout and all if conditions are true.
+     * Head (with selector [] or '') -> Updates the complete structure.
      * KeyArray -> Updates the specific value.
      * Object -> Updates the specific value.
      * Array -> Key will be parsed to int if it is a number
@@ -92,11 +86,10 @@ export default class DbCudOperationSequence
      * deleted updated or where a value should be inserted.
      * It can be a string array key path, but it also can contain
      * filter queries (they work with the forint library).
-     * You can filter by value (with $value) by key (with $key) or
-     * select all keys with the constant $all.
-     * In the case of insertions, the selector must be key resolvable.
-     * That means it must end with a specific string key.
-     * Otherwise, the insertion is ignored by the client.
+     * You can filter by value ($value or property value) by key ($key or property key) or
+     * select all keys with {} (For better readability use the constant $all).
+     * In the case of insertions, most times, the selector should end with
+     * a new key instead of a query.
      * Notice that all numeric values in the selector will be converted to a
      * string because all keys need to be from type string.
      * If you provide a string instead of an array, the string will be
@@ -107,8 +100,8 @@ export default class DbCudOperationSequence
      * @param code
      * @param data
      */
-    update(selector : DbCudSelector, value : any, {ifContains,potentialInsert,code,data} : IfContainsOption & PotentialInsertOption & InfoOption = {}) : DbCudOperationSequence {
-        this.operations.push(DataboxUtils.buildUpdate(selector,value,ifContains,potentialInsert,code,data));
+    update(selector : DbCudSelector, value : any, {if : ifOption,potentialInsert,code,data} : IfOption & PotentialInsertOption & InfoOption = {}) : DbCudOperationSequence {
+        this.operations.push(DataboxUtils.buildUpdate(selector,value,ifOption,potentialInsert,code,data));
         return this;
     }
 
@@ -118,8 +111,9 @@ export default class DbCudOperationSequence
      * Notice that in every case, the delete only happens when the key
      * on the client does exist.
      * Otherwise, the client will ignore it.
-     * Also, if the ifContains option is provided, the element must exist.
-     * Base (with selector [] or '') -> Deletes the complete structure.
+     * Other conditions are that the timeout is newer than the existing
+     * timeout and all if conditions are true.
+     * Head (with selector [] or '') -> Deletes the complete structure.
      * KeyArray -> Deletes the specific value.
      * Object -> Deletes the specific value.
      * Array -> Key will be parsed to int if it is a number it
@@ -130,11 +124,10 @@ export default class DbCudOperationSequence
      * deleted updated or where a value should be inserted.
      * It can be a string array key path, but it also can contain
      * filter queries (they work with the forint library).
-     * You can filter by value (with $value) by key (with $key) or
-     * select all keys with the constant $all.
-     * In the case of insertions, the selector must be key resolvable.
-     * That means it must end with a specific string key.
-     * Otherwise, the insertion is ignored by the client.
+     * You can filter by value ($value or property value) by key ($key or property key) or
+     * select all keys with {} (For better readability use the constant $all).
+     * In the case of insertions, most times, the selector should end with
+     * a new key instead of a query.
      * Notice that all numeric values in the selector will be converted to a
      * string because all keys need to be from type string.
      * If you provide a string instead of an array, the string will be
@@ -143,8 +136,8 @@ export default class DbCudOperationSequence
      * @param code
      * @param data
      */
-    delete(selector : DbCudSelector, {ifContains,code,data} : IfContainsOption & InfoOption = {}) : DbCudOperationSequence {
-        this.operations.push(DataboxUtils.buildDelete(selector,ifContains,code,data));
+    delete(selector : DbCudSelector, {if : ifOption,code,data} : IfOption & InfoOption = {}) : DbCudOperationSequence {
+        this.operations.push(DataboxUtils.buildDelete(selector,ifOption,code,data));
         return this;
     }
 

@@ -10,7 +10,7 @@ import DbCudOperationSequence  from "../dbCudOperationSequence";
 import DataboxUtils            from "../databoxUtils";
 import {
     InfoOption,
-    IfContainsOption,
+    IfOption,
     TimestampOption,
     DbCudSelector,
     PotentialUpdateOption,
@@ -35,31 +35,24 @@ export default class DataboxContainer {
      * Notice that in every case, the insert only happens when the key
      * does not exist on the client.
      * Otherwise, the client will ignore or convert it to an
-     * update when potentialUpdate is active.
-     * Without ifContains:
-     * Base (with selector [] or '') -> Nothing
+     * update when potentiallyUpdate is active.
+     * Other conditions are that the timeout is newer than the existing
+     * timeout and all if conditions are true.
+     * Head (with selector [] or '') -> Inserts the value.
      * KeyArray -> Inserts the value at the end with the key.
      * But if you are using a compare function, it will insert the value in the correct position.
      * Object -> Insert the value with the key.
      * Array -> Key will be parsed to int if it is a number, then it will be inserted at the index.
      * Otherwise, it will be inserted at the end.
-     * With ifContains (ifContains exists):
-     * Base (with selector [] or '') -> Nothing
-     * KeyArray -> Inserts the value before the ifContains element with the key.
-     * But if you are using a compare function, it will insert the value in the correct position.
-     * Object -> Insert the value with the key.
-     * Array -> Key will be parsed to int if it is a number, then it will be inserted at the index.
-     * Otherwise, it will be added at the end.
      * @param selector
      * The selector describes which key-value pairs should be
      * deleted updated or where a value should be inserted.
      * It can be a string array key path, but it also can contain
      * filter queries (they work with the forint library).
-     * You can filter by value (with $value) by key (with $key) or
-     * select all keys with the constant $all.
-     * In the case of insertions, the selector must be key resolvable.
-     * That means it must end with a specific string key.
-     * Otherwise, the insertion is ignored by the client.
+     * You can filter by value ($value or property value) by key ($key or property key) or
+     * select all keys with {} (For better readability use the constant $all).
+     * In the case of insertions, most times, the selector should end with
+     * a new key instead of a query.
      * Notice that all numeric values in the selector will be converted to a
      * string because all keys need to be from type string.
      * If you provide a string instead of an array, the string will be
@@ -67,7 +60,7 @@ export default class DataboxContainer {
      * @param value
      * @param options
      */
-    async insert(selector: DbCudSelector, value: any, options : IfContainsOption & PotentialUpdateOption & InfoOption & TimestampOption = {}): Promise<void> {
+    async insert(selector: DbCudSelector, value: any, options : IfOption & PotentialUpdateOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.databoxes.length;i++) {
             promises.push(this.databoxes[i].insert(selector,value,options));
@@ -85,9 +78,10 @@ export default class DataboxContainer {
      * Notice that in every case, the update only happens when the key
      * on the client does exist.
      * Otherwise, the client will ignore or convert it to an
-     * insert when potentialInsert is active.
-     * Also, if the ifContains option is provided, the element must exist.
-     * Base (with selector [] or '') -> Updates the complete structure.
+     * insert when potentiallyInsert is active.
+     * Other conditions are that the timeout is newer than the existing
+     * timeout and all if conditions are true.
+     * Head (with selector [] or '') -> Updates the complete structure.
      * KeyArray -> Updates the specific value.
      * Object -> Updates the specific value.
      * Array -> Key will be parsed to int if it is a number
@@ -97,11 +91,10 @@ export default class DataboxContainer {
      * deleted updated or where a value should be inserted.
      * It can be a string array key path, but it also can contain
      * filter queries (they work with the forint library).
-     * You can filter by value (with $value) by key (with $key) or
-     * select all keys with the constant $all.
-     * In the case of insertions, the selector must be key resolvable.
-     * That means it must end with a specific string key.
-     * Otherwise, the insertion is ignored by the client.
+     * You can filter by value ($value or property value) by key ($key or property key) or
+     * select all keys with {} (For better readability use the constant $all).
+     * In the case of insertions, most times, the selector should end with
+     * a new key instead of a query.
      * Notice that all numeric values in the selector will be converted to a
      * string because all keys need to be from type string.
      * If you provide a string instead of an array, the string will be
@@ -109,7 +102,7 @@ export default class DataboxContainer {
      * @param value
      * @param options
      */
-    async update(selector: DbCudSelector, value: any, options : IfContainsOption & PotentialInsertOption & InfoOption & TimestampOption = {}): Promise<void> {
+    async update(selector: DbCudSelector, value: any, options : IfOption & PotentialInsertOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.databoxes.length;i++) {
             promises.push(this.databoxes[i].update(selector,value,options));
@@ -127,8 +120,9 @@ export default class DataboxContainer {
      * Notice that in every case, the delete only happens when the key
      * on the client does exist.
      * Otherwise, the client will ignore it.
-     * Also, if the ifContains option is provided, the element must exist.
-     * Base (with selector [] or '') -> Deletes the complete structure.
+     * Other conditions are that the timeout is newer than the existing
+     * timeout and all if conditions are true.
+     * Head (with selector [] or '') -> Deletes the complete structure.
      * KeyArray -> Deletes the specific value.
      * Object -> Deletes the specific value.
      * Array -> Key will be parsed to int if it is a number it
@@ -139,18 +133,17 @@ export default class DataboxContainer {
      * deleted updated or where a value should be inserted.
      * It can be a string array key path, but it also can contain
      * filter queries (they work with the forint library).
-     * You can filter by value (with $value) by key (with $key) or
-     * select all keys with the constant $all.
-     * In the case of insertions, the selector must be key resolvable.
-     * That means it must end with a specific string key.
-     * Otherwise, the insertion is ignored by the client.
+     * You can filter by value ($value or property value) by key ($key or property key) or
+     * select all keys with {} (For better readability use the constant $all).
+     * In the case of insertions, most times, the selector should end with
+     * a new key instead of a query.
      * Notice that all numeric values in the selector will be converted to a
      * string because all keys need to be from type string.
      * If you provide a string instead of an array, the string will be
      * split by dots to create a string array.
      * @param options
      */
-    async delete(selector: DbCudSelector, options : IfContainsOption & InfoOption & TimestampOption = {}): Promise<void> {
+    async delete(selector: DbCudSelector, options : IfOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.databoxes.length;i++) {
             promises.push(this.databoxes[i].delete(selector,options));

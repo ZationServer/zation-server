@@ -27,6 +27,7 @@ import Router                       from "./lib/api/Router";
 import {Register}                   from "./lib/api/decorator/component/Register";
 import {AttachToRouter}             from "./lib/api/decorator/component/AttachToRouter";
 import {ModelConfigTranslatable,InputConfigTranslatable} from "./lib/api/ConfigTranslatable";
+import {$value, $key, $pair, $all, $any, $contains, $notContains} from "./lib/api/databox/DbApiUtils";
 import {Model}                      from "./lib/api/decorator/input/Model";
 import {ObjectModel}                from "./lib/api/decorator/input/ObjectModel";
 import {ParamInput}                 from "./lib/api/decorator/input/ParamInput";
@@ -50,7 +51,6 @@ import DbCudOperationSequence       from "./lib/main/databox/dbCudOperationSeque
 import {ObjectPathSequence}         from "./lib/main/internalApi/objectPathSequence/objectPathSequence";
 import {StartErrorName}             from "./lib/main/constants/startErrorName";
 import NoDataAvailableError         from "./lib/main/databox/noDataAvailable";
-import {$value,$key,$pair}          from "./lib/api/databox/DbFilterUtils";
 
 //starter
 
@@ -96,6 +96,10 @@ export {
         $key,
         $value,
         $pair,
+        $all,
+        $contains,
+        $notContains,
+        $any,
         Controller,
         ControllerConfig,
         Result,
