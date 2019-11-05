@@ -445,6 +445,8 @@ export interface IfOption {
      * All conditions must be evaluated to true;
      * otherwise, the client will ignore the operation.
      * You can define multiple conditions with an array or only one condition.
+     * If you have an operation that has a selector that has multiple key targets,
+     * the if conditions will only be evaluated once for every component.
      * There are two helper functions to build a condition
      * the $contains and $notContains helper.
      * In both helper functions, you pass in a forint query.
