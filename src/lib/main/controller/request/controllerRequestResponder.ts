@@ -5,16 +5,16 @@ Copyright(c) Luca Scaringella
  */
 import {ZationToken}     from "../../constants/internal";
 import SHBridge          from "../../bridges/shBridge";
-import stringify         from "fast-stringify";
 import ZationConfig      from "../../config/manager/zationConfig";
 import TokenUtils        from "../../token/tokenUtils";
 import Logger            from "../../logger/logger";
 import SHBridgeHttp      from "../../bridges/shBridgeHttp";
-import StringifyUtils    from "../../utils/stringifyUtils";
 import {Response}        from "express";
 import {RespondFunction} from "../../sc/socket";
 import ErrorUtils        from "../../utils/errorUtils";
+import PrettyStringifyUtils             from "../../utils/prettyStringifyUtils";
 import {ResponseResult, ZationResponse} from "./controllerDefinitions";
+import {jsonStringify}                  from "../../utils/jsonConverter";
 
 export default class ControllerRequestResponder
 {
@@ -44,7 +44,7 @@ export default class ControllerRequestResponder
     {
         const resp = await this.createHttpResp
         (data,undefined,shBridge,response['zationInfo']);
-        response.write(stringify(resp));
+        response.write(jsonStringify(resp));
         response.end();
         this.printHttpResp(resp,reqId);
     }
@@ -68,14 +68,14 @@ export default class ControllerRequestResponder
             shBridge,response['zationInfo']
         );
 
-        response.write(stringify(resp));
+        response.write(jsonStringify(resp));
         response.end();
         this.printHttpResp(resp,reqId);
     }
 
     private printWsResp(resp : ResponseResult,reqId : string) {
         if(this.debugMode){
-            Logger.printDebugInfo(`Socket Controller Response id: ${reqId} ->`,StringifyUtils.object(resp));
+            Logger.printDebugInfo(`Socket Controller Response id: ${reqId} ->`,PrettyStringifyUtils.object(resp));
         }
         if(this.zc.mainConfig.logFileControllerRequests){
             Logger.logFileInfo(`Socket Controller Response id: ${reqId} ->`,resp);
@@ -84,7 +84,7 @@ export default class ControllerRequestResponder
 
     private printHttpResp(resp : ResponseResult,reqId : string) {
         if(this.debugMode){
-            Logger.printDebugInfo(`Http Controller Response id: ${reqId} ->`,StringifyUtils.object(resp));
+            Logger.printDebugInfo(`Http Controller Response id: ${reqId} ->`,PrettyStringifyUtils.object(resp));
         }
         if(this.zc.mainConfig.logFileControllerRequests){
             Logger.logFileInfo(`Http Controller Response id: ${reqId} ->`,resp);

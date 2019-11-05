@@ -4,8 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import JsonConverter from "../../utils/jsonConverter";
 import ZationConfig  from "../../config/manager/zationConfig";
+import {jsonParse}   from "../../utils/jsonConverter";
 import {HttpGetRequest, ZationRequest, ZationTask, ZationValidationCheck} from "./controllerDefinitions";
 
 export default class ControllerReqUtils
@@ -37,7 +37,7 @@ export default class ControllerReqUtils
 
         //input convert
         const input = typeof query[HttpGetRequest.INPUT] === 'string' ?
-            await JsonConverter.parse(decodeURIComponent(query[HttpGetRequest.INPUT])) : undefined;
+            jsonParse(decodeURIComponent(query[HttpGetRequest.INPUT])) : undefined;
 
         //version,system,token
         res.s = query[HttpGetRequest.SYSTEM];
@@ -71,7 +71,7 @@ export default class ControllerReqUtils
             typeof query[HttpGetRequest.API_LEVEL] === 'number' ? {al : query[HttpGetRequest.API_LEVEL]} : {};
 
         //input convert
-        const input : any = await JsonConverter.parse(decodeURIComponent(query[HttpGetRequest.INPUT]));
+        const input : any = jsonParse(decodeURIComponent(query[HttpGetRequest.INPUT]));
 
         const main : ZationValidationCheck = {
             i : input

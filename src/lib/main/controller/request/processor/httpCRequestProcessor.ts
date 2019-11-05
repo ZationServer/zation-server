@@ -14,10 +14,10 @@ import Logger                       from "../../../logger/logger";
 import ControllerReqUtils           from "../controllerReqUtils";
 import {MainBackErrors}             from "../../../zationBackErrors/mainBackErrors";
 import TokenUtils, {TokenClusterKeyCheckFunction} from "../../../token/tokenUtils";
-import JsonConverter                from "../../../utils/jsonConverter";
+import {jsonParse}                  from "../../../utils/jsonConverter";
 import ZationConfigFull             from "../../../config/manager/zationConfigFull";
 import MiddlewareUtils              from "../../../utils/middlewareUtils";
-import StringifyUtils               from "../../../utils/stringifyUtils";
+import PrettyStringifyUtils         from "../../../utils/prettyStringifyUtils";
 import {ZationRequest}              from "../controllerDefinitions";
 import SHBridge                     from "../../../bridges/shBridge";
 
@@ -49,10 +49,10 @@ export default class HttpCRequestProcessor
                 Logger.printDebugInfo(`Http Post Request id: ${reqId}`);
             }
             HttpCRequestProcessor.setHeader(res);
-            const zationData = await JsonConverter.parse(req.body[this.postKey]);
+            const zationData = jsonParse(req.body[this.postKey]);
 
             if(this.debug){
-                Logger.printDebugInfo(`Http Post Controller Request id: ${reqId} -> `,StringifyUtils.object(zationData));
+                Logger.printDebugInfo(`Http Post Controller Request id: ${reqId} -> `,PrettyStringifyUtils.object(zationData));
             }
             if(this.zc.mainConfig.logFileControllerRequests){
                 Logger.logFileInfo(`Http Post Controller Request id: ${reqId} -> `,zationData);
@@ -99,7 +99,7 @@ export default class HttpCRequestProcessor
 
     private logGetRequest(reqId : string, zationData : any) {
         if(this.debug){
-            Logger.printDebugInfo(`Http Get Request id: ${reqId} -> `,StringifyUtils.object(zationData));
+            Logger.printDebugInfo(`Http Get Request id: ${reqId} -> `,PrettyStringifyUtils.object(zationData));
         }
         if(this.zc.mainConfig.logFileControllerRequests){
             Logger.logFileInfo(`Http Get Request id: ${reqId} -> `,zationData);
