@@ -51,7 +51,7 @@ export const $all = Object.freeze({});
  * await db.update(['34','name'],'luca',{if : $contains($key('35'))});
  * @param query
  */
-export function $contains<T>(query : DbForintQuery) : IfQuery {
+export function $contains<TK,TV>(query : DbForintQuery<TK,TV>) : IfQuery {
     return query;
 }
 
@@ -63,7 +63,7 @@ export function $contains<T>(query : DbForintQuery) : IfQuery {
  * await db.update(['34','name'],'luca',{if : $notContains($key('39'))});
  * @param query
  */
-export function $notContains<T>(query : DbForintQuery) : IfQuery {
+export function $notContains<TK,TV>(query : DbForintQuery<TK,TV>) : IfQuery {
     return {...query,not : true};
 }
 

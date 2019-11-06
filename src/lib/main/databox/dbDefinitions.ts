@@ -518,7 +518,7 @@ export interface DataboxInfo {
 /**
  * Forint queries with the databox.
  */
-export type DbForintQuery = {key ?: ForintQuery,value ?: ForintQuery};
+export type DbForintQuery<TK = any,TV = any> = {key ?: ForintQuery<TK>,value ?: ForintQuery<TV>};
 
 /**
  * Selector types for cud operations.
