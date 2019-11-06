@@ -37,8 +37,8 @@ import {
     DbSocketMemory,
     ChangeValue,
     DbToken,
-    DbCudSelector,
-    DbCudProcessedSelector,
+    DbSelector,
+    DbProcessedSelector,
     PotentialUpdateOption,
     PotentialInsertOption
 } from "../../main/databox/dbDefinitions";
@@ -503,7 +503,7 @@ export default class Databox extends DataboxCore {
      * @param code
      * @param data
      */
-    async insert(selector : DbCudSelector, value : any, {if : ifOption,potentialUpdate,timestamp,code,data} : IfOption & PotentialUpdateOption & InfoOption & TimestampOption = {}) {
+    async insert(selector : DbSelector, value : any, {if : ifOption,potentialUpdate,timestamp,code,data} : IfOption & PotentialUpdateOption & InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataboxUtils.buildPreCudPackage(
                 DataboxUtils.buildInsert(selector,value,ifOption,potentialUpdate,code,data)),timestamp);
@@ -548,7 +548,7 @@ export default class Databox extends DataboxCore {
      * @param code
      * @param data
      */
-    async update(selector : DbCudSelector, value : any, {if : ifOption,potentialInsert,timestamp,code,data} : IfOption & PotentialInsertOption & InfoOption & TimestampOption = {}) {
+    async update(selector : DbSelector, value : any, {if : ifOption,potentialInsert,timestamp,code,data} : IfOption & PotentialInsertOption & InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataboxUtils.buildPreCudPackage(
                 DataboxUtils.buildUpdate(selector,value,ifOption,potentialInsert,code,data)),timestamp);
@@ -591,7 +591,7 @@ export default class Databox extends DataboxCore {
      * @param code
      * @param data
      */
-    async delete(selector : DbCudSelector, {if : ifOption,timestamp,code,data} : IfOption & InfoOption & TimestampOption = {}) {
+    async delete(selector : DbSelector, {if : ifOption,timestamp,code,data} : IfOption & InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataboxUtils.buildPreCudPackage(
                 DataboxUtils.buildDelete(selector,ifOption,code,data)),timestamp);
@@ -762,7 +762,7 @@ export default class Databox extends DataboxCore {
      * @param code
      * @param data
      */
-    protected beforeInsert(selector : DbCudProcessedSelector, value : any,
+    protected beforeInsert(selector : DbProcessedSelector, value : any,
                            code : string | number | undefined, data : any) : Promise<void> | void {
     }
 
@@ -775,7 +775,7 @@ export default class Databox extends DataboxCore {
      * @param code
      * @param data
      */
-    protected beforeUpdate(selector : DbCudProcessedSelector, value : any,
+    protected beforeUpdate(selector : DbProcessedSelector, value : any,
                            code : string | number | undefined, data : any) : Promise<void> | void {
     }
 
@@ -787,7 +787,7 @@ export default class Databox extends DataboxCore {
      * @param code
      * @param data
      */
-    protected beforeDelete(selector : DbCudProcessedSelector,
+    protected beforeDelete(selector : DbProcessedSelector,
                            code : string | number | undefined, data : any) : Promise<void> | void {
     }
 
@@ -829,7 +829,7 @@ export default class Databox extends DataboxCore {
      * @param code
      * @param data
      */
-    protected insertMiddleware(socket : ZSocket, selector : DbCudProcessedSelector, value : any, changeValue : ChangeValue,
+    protected insertMiddleware(socket : ZSocket, selector : DbProcessedSelector, value : any, changeValue : ChangeValue,
                                code : string | number | undefined, data : any) : Promise<void> | void {
     }
 
@@ -854,7 +854,7 @@ export default class Databox extends DataboxCore {
      * @param code
      * @param data
      */
-    protected updateMiddleware(socket : ZSocket, selector : DbCudProcessedSelector, value : any, changeValue : ChangeValue,
+    protected updateMiddleware(socket : ZSocket, selector : DbProcessedSelector, value : any, changeValue : ChangeValue,
                                code : string | number | undefined, data : any) : Promise<void> | void {
     }
 
@@ -874,7 +874,7 @@ export default class Databox extends DataboxCore {
      * @param code
      * @param data
      */
-    protected deleteMiddleware(socket : ZSocket,selector : DbCudProcessedSelector,
+    protected deleteMiddleware(socket : ZSocket,selector : DbProcessedSelector,
                                      code : string | number | undefined,data : any) : Promise<void> | void {
     }
 }

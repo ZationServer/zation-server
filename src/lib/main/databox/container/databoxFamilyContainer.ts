@@ -12,7 +12,7 @@ import {
     InfoOption,
     IfOption,
     TimestampOption,
-    DbCudSelector,
+    DbSelector,
     PotentialUpdateOption,
     PotentialInsertOption
 } from "../dbDefinitions";
@@ -62,7 +62,7 @@ export default class DataboxFamilyContainer {
      * @param value
      * @param options
      */
-    async insert(id : string | number, selector: DbCudSelector, value: any, options : IfOption & PotentialUpdateOption & InfoOption & TimestampOption = {}): Promise<void> {
+    async insert(id : string | number, selector: DbSelector, value: any, options : IfOption & PotentialUpdateOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.databoxFamilies.length;i++) {
             promises.push(this.databoxFamilies[i].insert(id,selector,value,options));
@@ -106,7 +106,7 @@ export default class DataboxFamilyContainer {
      * @param value
      * @param options
      */
-    async update(id : string | number, selector: DbCudSelector, value: any, options : IfOption & PotentialInsertOption & InfoOption & TimestampOption = {}): Promise<void> {
+    async update(id : string | number, selector: DbSelector, value: any, options : IfOption & PotentialInsertOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.databoxFamilies.length;i++) {
             promises.push(this.databoxFamilies[i].update(id,selector,value,options));
@@ -149,7 +149,7 @@ export default class DataboxFamilyContainer {
      * split by dots to create a string array.
      * @param options
      */
-    async delete(id : string | number, selector: DbCudSelector, options : IfOption & InfoOption & TimestampOption = {}): Promise<void> {
+    async delete(id : string | number, selector: DbSelector, options : IfOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.databoxFamilies.length;i++) {
             promises.push(this.databoxFamilies[i].delete(id,selector,options));

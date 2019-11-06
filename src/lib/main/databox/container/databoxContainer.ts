@@ -12,7 +12,7 @@ import {
     InfoOption,
     IfOption,
     TimestampOption,
-    DbCudSelector,
+    DbSelector,
     PotentialUpdateOption,
     PotentialInsertOption
 } from "../dbDefinitions";
@@ -60,7 +60,7 @@ export default class DataboxContainer {
      * @param value
      * @param options
      */
-    async insert(selector: DbCudSelector, value: any, options : IfOption & PotentialUpdateOption & InfoOption & TimestampOption = {}): Promise<void> {
+    async insert(selector: DbSelector, value: any, options : IfOption & PotentialUpdateOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.databoxes.length;i++) {
             promises.push(this.databoxes[i].insert(selector,value,options));
@@ -102,7 +102,7 @@ export default class DataboxContainer {
      * @param value
      * @param options
      */
-    async update(selector: DbCudSelector, value: any, options : IfOption & PotentialInsertOption & InfoOption & TimestampOption = {}): Promise<void> {
+    async update(selector: DbSelector, value: any, options : IfOption & PotentialInsertOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.databoxes.length;i++) {
             promises.push(this.databoxes[i].update(selector,value,options));
@@ -143,7 +143,7 @@ export default class DataboxContainer {
      * split by dots to create a string array.
      * @param options
      */
-    async delete(selector: DbCudSelector, options : IfOption & InfoOption & TimestampOption = {}): Promise<void> {
+    async delete(selector: DbSelector, options : IfOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises : Promise<void>[] = [];
         for(let i = 0; i < this.databoxes.length;i++) {
             promises.push(this.databoxes[i].delete(selector,options));

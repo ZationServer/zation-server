@@ -101,7 +101,7 @@ export interface CudOperation {
     /**
      * selector
      */
-    s : DbCudProcessedSelector,
+    s : DbProcessedSelector,
     /**
      * value
      */
@@ -521,9 +521,9 @@ export interface DataboxInfo {
 export type DbForintQuery<TK = any,TV = any> = {key ?: ForintQuery<TK>,value ?: ForintQuery<TV>};
 
 /**
- * Selector types for cud operations.
+ * Selector types.
  */
-export type DbCudProcessedSelector = (string | DbForintQuery)[];
+export type DbProcessedSelector = (string | DbForintQuery)[];
 
-type DbCudSelectorItem = string | number | DbForintQuery;
-export type DbCudSelector = DbCudSelectorItem | DbCudSelectorItem[];
+type DbSelectorItem = string | number | DbForintQuery;
+export type DbSelector = DbSelectorItem | DbSelectorItem[];
