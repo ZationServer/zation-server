@@ -212,7 +212,7 @@ export default class TokenUtils
     }
 
     /**
-     * Creates a closure for checking the token check key.
+     * Creates a closure for checking the token cluster key.
      */
     static createTokenClusterKeyChecker(zc : ZationConfig) : TokenClusterKeyCheckFunction {
         if(zc.mainConfig.useTokenClusterKeyCheck){

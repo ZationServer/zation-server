@@ -127,20 +127,19 @@ export default class HttpCRequestProcessor
                     this.tokenClusterKeyCheck(token);
                 }
                 catch (err) {
-                    HttpCRequestProcessor.middlewareAuthNext(err);
+                    throw new BackError(MainBackErrors.tokenClusterKeyIsInvalid);
                 }
 
                 //will throw if auth is blocked
-                await MiddlewareUtils.checkMiddleware
-                (this.zc.event.middlewareAuthenticate,HttpCRequestProcessor.middlewareAuthNext,this.worker.getPreparedBag(),new ZationTokenWrapper(token));
+                const authMiddlewareRes = await MiddlewareUtils.checkMiddleware
+                (this.zc.event.middlewareAuthenticate,true,this.worker.getPreparedBag(),new ZationTokenWrapper(token));
+
+                if((authMiddlewareRes !== true)){
+                    throw new BackError(MainBackErrors.authenticateMiddlewareBlock,
+                        typeof authMiddlewareRes === 'object' ? {err : authMiddlewareRes} : {});
+                }
             }
             return new SHBridgeHttp(res,req,reqId,zationData,false,this.defaultApiLevel,this.worker);
-        }
-    }
-
-    private static middlewareAuthNext(err) {
-        if(err) {
-            throw new BackError(MainBackErrors.authenticateMiddlewareBlock,{err : err});
         }
     }
 

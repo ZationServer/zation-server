@@ -8,13 +8,13 @@ export default class MiddlewareUtils
 {
     /**
      * Check a middleware function.
-     * It returns true if the access is allowed and false if the access is denied.
-     * When the middleware function denied the access, the next function is called with the error.
+     * It returns true if the access is allowed and
+     * false or an object if the access is denied.
      * @param func
-     * @param next
+     * @param defaultValue
      * @param params
      */
-    static async checkMiddleware(func : Function | undefined, next : Function, ...params : any[]) : Promise<boolean> {
+    static async checkMiddleware(func : Function | undefined, defaultValue : boolean, ...params : any[]) : Promise<boolean | object> {
         if(typeof func === 'function') {
             const res  = await func(...params);
             if(typeof res === "boolean") {
@@ -24,21 +24,27 @@ export default class MiddlewareUtils
                 else {
                     const err : any = new Error('Access is in middleware from zation event blocked!');
                     err.code = 4650;
-                    next(err,true);
-                    return false;
+                    return err;
                 }
             }
             else if(typeof res === 'object') {
-                next(res,true);
-                return false;
+                return res;
             }
             else {
-                return true;
+                return defaultValue;
             }
         }
         else {
-            return true;
+            return defaultValue;
         }
+    }
+
+    /**
+     * Process the result in case of middleware block.
+     * @param res
+     */
+    static processBlockedResult(res : false | object) : true | object {
+        return !res ? true : res;
     }
 }
 

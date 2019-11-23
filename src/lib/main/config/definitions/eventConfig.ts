@@ -207,25 +207,29 @@ export interface EventConfig
 
     /**
      * Middleware event where you can block wrong jwt tokens.
-     * To block them, you only need to return an object (that can be an error) or false.
-     * If you want to allow them, you have to return nothing or a true.
-     * More middleware functions will be invoked in sequence.
+     * You can provide one function or multiple middleware functions.
+     * When providing multiple functions, they will be invoked in the sequence.
      * If one function returns some value, the chain will be broken,
      * and the value is the result.
-     * That means if one function returns true, the middleware allows the
-     * action without invoking the remaining functions.
+     * That means if you return nothing, the next function will be called.
+     * If no more function is remaining, the action will be allowed.
+     * If one function returns true, the chain is broken,
+     * and the token is allowed without invoking the remaining functions.
+     * To block the token, you can return an object (that can be an error) or false.
      * @example (bag,zationToken) => {}
      */
     middlewareAuthenticate ?: Event<MiddlewareAuthenticationFunction>;
     /**
      * Middleware event where you can block sockets.
-     * To block them, you only need to return an object (that can be an error) or false.
-     * If you want to allow them, you have to return nothing or a true.
-     * More middleware functions will be invoked in sequence.
+     * You can provide one function or multiple middleware functions.
+     * When providing multiple functions, they will be invoked in the sequence.
      * If one function returns some value, the chain will be broken,
      * and the value is the result.
-     * That means if one function returns true, the middleware allows the
-     * action without invoking the remaining functions.
+     * That means if you return nothing, the next function will be called.
+     * If no more function is remaining, the action will be allowed.
+     * If one function returns true, the chain is broken,
+     * and the socket is allowed without invoking the remaining functions.
+     * To block the socket, you can return an object (that can be an error) or false.
      * @example (bag,socket) => {}
      */
     middlewareSocket ?: Event<MiddlewareSocketFunction>;

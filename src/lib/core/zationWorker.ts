@@ -43,7 +43,6 @@ import Bag                  from "../api/Bag";
 import Mapper               from "../main/utils/mapper";
 import ViewEngine           from "../main/views/viewEngine";
 import Logger               from "../main/logger/logger";
-import ConfigPrecompiler    from "../main/config/utils/configPrecompiler";
 import PanelEngine          from "../main/panel/panelEngine";
 import SidBuilder           from "../main/utils/sidBuilder";
 import ChUtils              from "../main/channel/chUtils";
@@ -73,6 +72,7 @@ import DataboxHandler             from "../main/databox/handle/databoxHandler";
 import DataboxPrepare             from "../main/databox/databoxPrepare";
 import EventPreprocessor          from "../main/event/eventPreprocessor";
 import LicenseManager, {License}  from "../main/utils/licenseManager";
+import ConfigPrecompiler          from "../main/config/utils/configPrecompiler";
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -781,11 +781,10 @@ class ZationWorker extends SCWorker
                     socket.apiLevel = parseInt(query.apiLevel);
                 }
 
-                const zationMidRes = await
-                    MiddlewareUtils.checkMiddleware
-                    (event.middlewareSocket,next,this.getPreparedBag(),socket);
+                const zationMidRes = await MiddlewareUtils.checkMiddleware
+                    (event.middlewareSocket,true,this.getPreparedBag(),socket);
 
-                if(zationMidRes) {next();}
+                zationMidRes === true ? next() : next(MiddlewareUtils.processBlockedResult(zationMidRes));
             }
             else{
                 const err = new Error('Cannot connect without providing a valid version and system key in URL query argument.');
@@ -831,9 +830,9 @@ class ZationWorker extends SCWorker
             }
 
             const zationAuthMid = await MiddlewareUtils.checkMiddleware
-            (event.middlewareAuthenticate,next,this.getPreparedBag(),new ZationTokenWrapper(token));
+            (event.middlewareAuthenticate,true,this.getPreparedBag(),new ZationTokenWrapper(token));
 
-            if(zationAuthMid) {next();}
+            zationAuthMid === true ? next() : next(MiddlewareUtils.processBlockedResult(zationAuthMid));
         });
     }
 

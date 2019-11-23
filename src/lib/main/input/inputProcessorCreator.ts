@@ -20,7 +20,7 @@ import Iterator              from "../utils/iterator";
 import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";
 import CloneUtils            from "../utils/cloneUtils";
 import {ProcessTask}         from "./processTaskEngine";
-import {ModelPreparationMem} from "../config/utils/configPreCompiler";
+import {ModelPreparationMem} from "../config/utils/configPrecompiler";
 import Bag                   from "../../api/Bag";
 
 export interface ProcessInfo {
