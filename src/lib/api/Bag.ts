@@ -70,11 +70,53 @@ export default class Bag {
     protected readonly zc: ZationConfigFull;
     protected readonly worker: ZationWorker;
 
+    private static onReadyPromise : Promise<void> = new Promise<void>(resolve => {Bag.onReadyResolve = resolve});
+    private static onReadyResolve : () => void;
+    private static _instance : Bag;
+
     constructor(worker: ZationWorker, exchangeEngine: ChannelBagEngine) {
         this.exchangeEngine = exchangeEngine;
         this.serviceEngine = worker.getServiceEngine();
         this.zc = worker.getZationConfig();
         this.worker = worker;
+    }
+
+    //PART static access
+
+    /**
+     * This function returns a promise that will be resolved when a specific Bag is ready.
+     * It only works in a worker process, and when it is resolved,
+     * you are able to use the bag witch the static instance getter of the Bag class.
+     */
+    static get onReady() : Promise<void> {
+        return Bag.onReadyPromise;
+    }
+
+    /**
+     * Returns the prepared Bag of this process.
+     * It only works if the process is a worker process,
+     * and the onReady promise is resolved.
+     * Otherwise, the returned value is undefined.
+     *
+     * This method is really helpful if you want to build a helper function or class
+     * that will be used in multiple components,
+     * and you need access to a bag instance.
+     */
+    static get instance() : Bag | undefined {
+        return Bag._instance;
+    }
+
+    // noinspection JSUnusedLocalSymbols
+    /**
+     * Tells the Bag class that a specific prepared Bag is ready to use.
+     * This method is used internally.
+     * @param instance
+     * @private
+     */
+    // @ts-ignore
+    private static _isReady(instance : Bag) {
+        this._instance = instance;
+        this.onReadyResolve();
     }
 
     //PART CONFIG ACCESS
