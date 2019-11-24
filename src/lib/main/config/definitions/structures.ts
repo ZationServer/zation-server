@@ -355,8 +355,8 @@ EventConfig[nameof<EventConfig>(s => s.socketRaw)]               = {types : ['fu
 EventConfig[nameof<EventConfig>(s => s.socketConnectionAbort)]   = {types : ['function','array'],arrayType : 'function',isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.socketBadAuthToken)]      = {types : ['function','array'],arrayType : 'function',isOptional : true};
 
-EventConfig[nameof<EventConfig>(s => s.middlewareAuthenticate)] = {types : ['function'],isOptional : true};
-EventConfig[nameof<EventConfig>(s => s.middlewareSocket)]       = {types : ['function'],isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.middlewareAuthenticate)] = {types : ['function','array'],isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.middlewareSocket)]       = {types : ['function','array'],isOptional : true};
 
 export const Structures = {
     App : App,
