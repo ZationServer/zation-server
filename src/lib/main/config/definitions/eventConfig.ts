@@ -208,7 +208,7 @@ export interface EventConfig
     /**
      * Middleware event where you can block wrong jwt tokens.
      * You can provide one function or multiple middleware functions.
-     * When providing multiple functions, they will be invoked in the sequence.
+     * When providing multiple functions, they will be invoked in the defined sequence.
      * If one function returns some value, the chain will be broken,
      * and the value is the result.
      * That means if you return nothing, the next function will be called.
@@ -222,7 +222,7 @@ export interface EventConfig
     /**
      * Middleware event where you can block sockets.
      * You can provide one function or multiple middleware functions.
-     * When providing multiple functions, they will be invoked in the sequence.
+     * When providing multiple functions, they will be invoked in the defined sequence.
      * If one function returns some value, the chain will be broken,
      * and the value is the result.
      * That means if you return nothing, the next function will be called.
