@@ -83,6 +83,7 @@ export default class Bag {
 
     //PART static access
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * This function returns a promise that will be resolved when a specific Bag is ready.
      * It only works in a worker process, and when it is resolved,
