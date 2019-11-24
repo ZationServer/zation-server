@@ -47,6 +47,7 @@ export type SocketBadAuthTokenFunction = (bag : Bag, socket : RawSocket, badAuth
 
 export type MiddlewareAuthenticationFunction = (bag : Bag, token : ZationTokenWrapper) => Promise<boolean | object | any> | boolean | object | any;
 export type MiddlewareSocketFunction = (bag : Bag, socket : HandshakeSocket) => Promise<boolean | object | any> | boolean | object | any;
+export type MiddlewarePanelAuthFunction = (bag : Bag, username : string, password : string) => Promise<boolean | void> | boolean | void;
 
 export type EventInitFunction<T>  = (bag : Bag) => T | Promise<T>;
 export type EventInit<T>          = {(bag : Bag) : T | Promise<T>, [eventInitSymbol] : true};
@@ -233,12 +234,32 @@ export interface EventConfig
      * @example (bag,socket) => {}
      */
     middlewareSocket ?: Event<MiddlewareSocketFunction>;
+    /**
+     * In the panel auth middleware, you have the possibility
+     * to allow or block authentication requests to the panel with the credentials.
+     * This is useful if you want to change user accounts dynamically or
+     * connect them to users of a database.
+     * The middleware will only be used after Zation was not able
+     * to authenticate the user with the users defined in the main config.
+     * You can provide one function or multiple middleware functions.
+     * When providing multiple functions, they will be invoked in the defined sequence.
+     * If one function returns some value, the chain will be broken,
+     * and the value is the result.
+     * That means if you return nothing, the next function will be called.
+     * If no more function is remaining, the authentication request is blocked.
+     * If one function returns true, the chain is broken,
+     * and the authentication request is successful without
+     * invoking the remaining functions.
+     * To deny the authentication request, you can return false.
+     */
+    middlewarePanelAuth ?: Event<MiddlewarePanelAuthFunction>;
 }
 
 export const middlewareEvents =
     [
         nameof<EventConfig>(s => s.middlewareAuthenticate),
-        nameof<EventConfig>(s => s.middlewareSocket)
+        nameof<EventConfig>(s => s.middlewareSocket),
+        nameof<EventConfig>(s => s.middlewarePanelAuth)
     ];
 
 export interface PrecompiledEventConfig extends EventConfig {}
@@ -275,4 +296,5 @@ export interface PreprocessedEvents extends EventConfig
 
     middlewareAuthenticate  ?: MiddlewareAuthenticationFunction;
     middlewareSocket ?: MiddlewareSocketFunction;
+    middlewarePanelAuth ?: MiddlewarePanelAuthFunction;
 }

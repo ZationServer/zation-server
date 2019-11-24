@@ -253,7 +253,7 @@ class ZationWorker extends SCWorker
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has preprocessed the events.`,true);
 
         Logger.startStopWatch();
-        this.panelEngine = new PanelEngine(this,this.aePreparedPart.getAuthGroups());
+        this.panelEngine = new PanelEngine(this,this.preparedBag,this.aePreparedPart.getAuthGroups());
         if(this.zc.mainConfig.usePanel) {
             await this.initPanelUpdates();
             Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the panel engine.`,true);

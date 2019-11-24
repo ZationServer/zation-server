@@ -357,6 +357,7 @@ EventConfig[nameof<EventConfig>(s => s.socketBadAuthToken)]      = {types : ['fu
 
 EventConfig[nameof<EventConfig>(s => s.middlewareAuthenticate)] = {types : ['function','array'],isOptional : true};
 EventConfig[nameof<EventConfig>(s => s.middlewareSocket)]       = {types : ['function','array'],isOptional : true};
+EventConfig[nameof<EventConfig>(s => s.middlewarePanelAuth)]    = {types : ['function','array'],isOptional : true};
 
 export const Structures = {
     App : App,

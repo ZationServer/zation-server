@@ -8,9 +8,11 @@ import Timer               = NodeJS.Timer;
 import ZationWorker        = require("../../core/zationWorker");
 import {PanelUserConfig}     from "../config/definitions/mainConfig";
 import {AuthUserGroupConfig} from "../config/definitions/appConfig";
-import ZationConfig          from "../config/manager/zationConfig";
 import ChUtils               from "../channel/chUtils";
 import {ZationChannel}       from "../channel/channelDefinitions";
+import Bag                   from "../../api/Bag";
+import MiddlewareUtils       from "../utils/middlewareUtils";
+import ZationConfigFull      from "../config/manager/zationConfigFull";
 
 export default class PanelEngine
 {
@@ -19,7 +21,8 @@ export default class PanelEngine
     private panelInUseTimeout : Timer;
 
     private zw : ZationWorker;
-    private zc : ZationConfig;
+    private zc : ZationConfigFull;
+    private preparedBag : Bag;
 
     private readonly panelUserMap : Record<string,string>;
 
@@ -29,10 +32,11 @@ export default class PanelEngine
 
     private readonly idData;
 
-    constructor(zw : ZationWorker,authUserGroups : Record<string,AuthUserGroupConfig>)
+    constructor(zw : ZationWorker,preparedBag : Bag,authUserGroups : Record<string,AuthUserGroupConfig>)
     {
         this.zw = zw;
         this.zc = this.zw.getZationConfig();
+        this.preparedBag = preparedBag;
         this.panelUserMap = this.initPanelUserMap(authUserGroups);
         if(this.zc.mainConfig.usePanel) {
             this.loadPanelAccessData();
@@ -143,7 +147,7 @@ export default class PanelEngine
         return this.panelInUse;
     }
 
-    isPanelLoginDataValid(userName : string,password : string) : boolean
+    async isPanelLoginDataValid(username : string,password : string) : Promise<boolean>
     {
         const passwordHash =
             this.zw.getPreparedBag().hashSha512(password);
@@ -151,11 +155,15 @@ export default class PanelEngine
         let foundUser = false;
         for(let i = 0; i < this.panelAccessData.length; i++)
         {
-            if(this.panelAccessData[i].u === userName &&
+            if(this.panelAccessData[i].u === username &&
                this.panelAccessData[i].p === passwordHash) {
                 foundUser = true;
                 break;
             }
+        }
+        if(!foundUser){
+            return !!(await MiddlewareUtils.checkMiddleware
+            (this.zc.event.middlewarePanelAuth,false,this.preparedBag,username,password));
         }
         return foundUser;
     }

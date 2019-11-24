@@ -35,7 +35,7 @@ export default class ZationSPC_Auth extends Controller
             //wait 2seconds for avoiding brute force attacks
             await new Promise((resolve) => {setTimeout(()=>{resolve();},1500)});
 
-            if(!bag.getWorker().getPanelEngine().isPanelLoginDataValid(username,password)) {
+            if(!(await bag.getWorker().getPanelEngine().isPanelLoginDataValid(username,password))) {
                 throw new BackError(MainBackErrors.wrongPanelAuthData);
             }
             const token = TokenUtils.generateToken(bag.getZationConfig().internalData.tokenClusterKey);
