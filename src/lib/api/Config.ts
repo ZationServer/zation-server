@@ -107,11 +107,13 @@ import {
 } from "../main/config/definitions/controllerConfig";
 import {BackgroundTask, TaskFunction}       from "../main/config/definitions/backgroundTaskConfig";
 import ZationTokenWrapper                   from "../main/internalApi/zationTokenWrapper";
-import {NormalAuthAccessFunction}           from "../main/config/definitions/configComponents";
 import {DataboxClassDef, DataboxConfig, DbAccessFunction} from "../main/config/definitions/databoxConfig";
+import {createTokenCheckFunction, TokenCheckFunction}     from "../main/access/accessOptions";
 import DataboxFamily                        from "./databox/DataboxFamily";
 import Databox                              from "./databox/Databox";
 import {Component}                          from "../main/config/definitions/component";
+import {NormalAuthAccessCustomFunction}     from "../main/config/definitions/configComponents";
+import {ZationToken}                        from "../main/constants/internal";
 
 export const eventInitSymbol              = Symbol();
 
@@ -527,7 +529,7 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static controllerMiddleware(func : ControllerMiddlewareFunction) : ControllerMiddlewareFunction {return func;}
     // noinspection JSUnusedGlobalSymbols
-    static controllerAccess(func : NormalAuthAccessFunction) : NormalAuthAccessFunction {return func;}
+    static controllerAccess(func : NormalAuthAccessCustomFunction) : NormalAuthAccessCustomFunction {return func;}
 
     //Part Background tasks
     // noinspection JSUnusedGlobalSymbols
@@ -730,6 +732,24 @@ export default class Config
     static zationInfo(zationInfo : ZationInfo) : ZationInfo {return zationInfo;}
     // noinspection JSUnusedGlobalSymbols
     static zationTokenWrapper(zationTokenWrapper : ZationTokenWrapper) : ZationTokenWrapper {return zationTokenWrapper;}
+
+    //Advanced utils
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Creates a token check function.
+     * It can be used for more advanced use cases.
+     * With the token check-function, you can check the access with the token of a client.
+     * You can use it in the access check properties,
+     * for example, in the controller, databox, or custom channel config.
+     * @example
+     * access: Config.createTokenCheckFunction((token) => token !== null)
+     * @param checkFunction
+     */
+    static createTokenCheckFunction(checkFunction : (token : ZationToken | null) => boolean) : TokenCheckFunction {
+        return createTokenCheckFunction(checkFunction);
+    }
+
 }
 
 export const single = Config.single;

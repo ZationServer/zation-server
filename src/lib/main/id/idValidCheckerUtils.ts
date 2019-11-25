@@ -5,9 +5,9 @@ Copyright(c) Luca Scaringella
  */
 
 import Bag                from "../../api/Bag";
-import {IdValid}          from "../config/definitions/configComponents";
 import {ClientErrorName}  from "../constants/clientErrorName";
 
+export type IdValid = (id : string, bag : Bag) => Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void;
 export type IdValidChecker = (id : string) => Promise<void>;
 
 export default class IdValidCheckerUtils {

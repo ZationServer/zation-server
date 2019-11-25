@@ -171,52 +171,72 @@ export interface ZationChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub 
     onUnsubscription  ?: Unsub | Unsub[];
     /**
      * @description
-     * Set the access rule which clients are not allowed to publish in this channel.
-     * Notice that only one of the options 'clientPublishNotAccess' or 'clientPublishAccess' is allowed.
-     * Look in the examples to see what possibilities you have.
-     * @default (use clientPublishAccess)
-     * @example
-     * //boolean
-     * true            // No client is allowed
-     * false           // All clients are allowed
-     * //string
-     * 'all'           // No client is allowed
-     * 'allAuth'       // All authenticated clients are not allowed
-     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
-     * 'admin'         // All admins are not allowed
-     * //number
-     * 10              // All clients with user id 10 are not allowed
-     * //array
-     * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
-     * //function
-     * (bag,...) => {} // If returns true the client is not allowed, false will allow.
-     * To see all arguments of the function, check out the current generic function type.
-     */
-    clientPublishNotAccess  ?: PubAccess | boolean | string | number | (string|number)[];
-    /**
-     * @description
      * Set the access rule which clients are allowed to publish in this channel.
      * Notice that only one of the options 'clientPublishNotAccess' or 'clientPublishAccess' is allowed.
      * Look in the examples to see what possibilities you have.
      * @default false
      * @example
-     * //boolean
+     * //Boolean
      * true            // All clients are allowed
      * false           // No client is allowed
-     * //string
+     * //Special-Keywords
      * 'all'           // All clients are allowed
      * 'allAuth'       // Only all authenticated clients are allowed
      * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed)
+     * //UserGroups
      * 'admin'         // Only all admins are allowed
-     * //number
-     * 10              // Only all clients with user id 10 are allowed
-     * //array
-     * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
-     * //function
+     * 'guest'         // Only all clients with default user group are allowed
+     * //UserId
+     * $userId(10)        // Only all clients with user id 10 are allowed
+     * $userId(10,false)  // Only all clients with user id 10 or '10' are allowed
+     * $userId('lmc')     // Only all clients with user id 'lmc' are allowed
+     * //Custom-Function
      * (bag,...) => {} // If returns true the client is allowed, false will not allow.
      * To see all arguments of the function, check out the current generic function type.
+     * //Or-Conditions
+     * ['user','guest',$userId(23)] // Only all clients with user group: user, default user group or user id 23 are allowed.
+     * //And-Conditions (Array in Or-Condition-Array)
+     * [['user',$tokenHasVariables({canEdit : true})]] //Only clients with user group: user and token variable
+     * canEdit with the value true are allowed.
+     * //Complex
+     * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //Only clients with user group: admin or
+     * clients with user group: user and the token variable: age witch a value that's greater than 17, are allowed.
      */
     clientPublishAccess  ?: PubAccess | boolean | string | number | (string|number)[];
+    /**
+     * @description
+     * Set the access rule which clients are not allowed to publish in this channel.
+     * Notice that only one of the options 'clientPublishNotAccess' or 'clientPublishAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default (use clientPublishAccess)
+     * @example
+     * //Boolean
+     * true            // No client is allowed
+     * false           // All clients are allowed
+     * //Special-Keywords
+     * 'all'           // No client is allowed
+     * 'allAuth'       // All authenticated clients are not allowed
+     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
+     * //UserGroups
+     * 'admin'         // All admins are not allowed
+     * 'guest'         // All clients with default user group are not allowed
+     * //UserId
+     * $userId(10)        // All clients with user id 10 are not allowed
+     * $userId(10,false)  // All clients with user id 10 or '10' are not allowed
+     * $userId('lmc')     // All clients with user id 'lmc' are not allowed
+     * //Custom-Function
+     * (bag,...) => {} // If returns true the client is not allowed, false will allow.
+     * To see all arguments of the function, check out the current generic function type.
+     * //Or-Conditions
+     * ['user','guest',$userId(23)] // All clients with user group: user, default user group or user id 23 are not allowed.
+     * //And-Conditions (Array in Or-Condition-Array)
+     * [['user',$tokenHasVariables({canEdit : true})]] //All clients with user group: user and token variable
+     * canEdit with the value true are not allowed.
+     * //Complex
+     * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //All clients with user group: admin or
+     * clients with user group: user and the token variable: age witch a value that's greater than 17, are not allowed.
+     */
+    clientPublishNotAccess  ?: PubAccess | boolean | string | number | (string|number)[];
 }
 
 export type UserChannel = ZationChannelConfig<
@@ -247,52 +267,72 @@ export interface BaseCustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,
     extends ZationChannelConfig<Pub,BagPub,Sub,Unsub,PubAccess>, VersionAccessConfig, SystemAccessConfig {
     /**
      * @description
-     * Set the access rule which clients are not allowed to subscribe this channel.
-     * Notice that only one of the options 'subscribeNotAccess' or 'subscribeAccess' is allowed.
-     * Look in the examples to see what possibilities you have.
-     * @default (use subscribeAccess)
-     * @example
-     * //boolean
-     * true            // No client is allowed
-     * false           // All clients are allowed
-     * //string
-     * 'all'           // No client is allowed
-     * 'allAuth'       // All authenticated clients are not allowed
-     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
-     * 'admin'         // All admins are not allowed
-     * //number
-     * 10              // All clients with user id 10 are not allowed
-     * //array
-     * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
-     * //function
-     * (bag,...) => {} // If returns true the client is not allowed, false will allow.
-     * To see all arguments of the function, check out the current generic function type.
-     */
-    subscribeNotAccess  ?: SubAccess | boolean | string | number | (string|number)[];
-    /**
-     * @description
      * Set the access rule which clients are allowed to subscribe this channel.
      * Notice that only one of the options 'subscribeNotAccess' or 'subscribeAccess' is allowed.
      * Look in the examples to see what possibilities you have.
      * @default false
      * @example
-     * //boolean
+     * //Boolean
      * true            // All clients are allowed
      * false           // No client is allowed
-     * //string
+     * //Special-Keywords
      * 'all'           // All clients are allowed
      * 'allAuth'       // Only all authenticated clients are allowed
      * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed)
+     * //UserGroups
      * 'admin'         // Only all admins are allowed
-     * //number
-     * 10              // Only all clients with user id 10 are allowed
-     * //array
-     * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
-     * //function
+     * 'guest'         // Only all clients with default user group are allowed
+     * //UserId
+     * $userId(10)        // Only all clients with user id 10 are allowed
+     * $userId(10,false)  // Only all clients with user id 10 or '10' are allowed
+     * $userId('lmc')     // Only all clients with user id 'lmc' are allowed
+     * //Custom-Function
      * (bag,...) => {} // If returns true the client is allowed, false will not allow.
      * To see all arguments of the function, check out the current generic function type.
+     * //Or-Conditions
+     * ['user','guest',$userId(23)] // Only all clients with user group: user, default user group or user id 23 are allowed.
+     * //And-Conditions (Array in Or-Condition-Array)
+     * [['user',$tokenHasVariables({canEdit : true})]] //Only clients with user group: user and token variable
+     * canEdit with the value true are allowed.
+     * //Complex
+     * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //Only clients with user group: admin or
+     * clients with user group: user and the token variable: age witch a value that's greater than 17, are allowed.
      */
     subscribeAccess  ?: SubAccess | boolean | string | number | (string|number)[];
+    /**
+     * @description
+     * Set the access rule which clients are not allowed to subscribe this channel.
+     * Notice that only one of the options 'subscribeNotAccess' or 'subscribeAccess' is allowed.
+     * Look in the examples to see what possibilities you have.
+     * @default (use subscribeAccess)
+     * @example
+     * //Boolean
+     * true            // No client is allowed
+     * false           // All clients are allowed
+     * //Special-Keywords
+     * 'all'           // No client is allowed
+     * 'allAuth'       // All authenticated clients are not allowed
+     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
+     * //UserGroups
+     * 'admin'         // All admins are not allowed
+     * 'guest'         // All clients with default user group are not allowed
+     * //UserId
+     * $userId(10)        // All clients with user id 10 are not allowed
+     * $userId(10,false)  // All clients with user id 10 or '10' are not allowed
+     * $userId('lmc')     // All clients with user id 'lmc' are not allowed
+     * //Custom-Function
+     * (bag,...) => {} // If returns true the client is not allowed, false will allow.
+     * To see all arguments of the function, check out the current generic function type.
+     * //Or-Conditions
+     * ['user','guest',$userId(23)] // All clients with user group: user, default user group or user id 23 are not allowed.
+     * //And-Conditions (Array in Or-Condition-Array)
+     * [['user',$tokenHasVariables({canEdit : true})]] //All clients with user group: user and token variable
+     * canEdit with the value true are not allowed.
+     * //Complex
+     * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //All clients with user group: admin or
+     * clients with user group: user and the token variable: age witch a value that's greater than 17, are not allowed.
+     */
+    subscribeNotAccess  ?: SubAccess | boolean | string | number | (string|number)[];
 }
 
 export type CustomChFamily = (BaseCustomChannelConfig<

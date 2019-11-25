@@ -10,7 +10,8 @@ import {DataboxFamilyClass}                                        from "../../.
 import Bag                                                         from "../../../api/Bag";
 import {DataboxInfo}                                               from "../../databox/dbDefinitions";
 import ZSocket                                                     from "../../internalApi/zSocket";
-import {Input} from "./inputConfig";
+import {Input}                                                     from "./inputConfig";
+import {AccessConfigValue}                                         from "../../access/accessOptions";
 
 export type DbAccessFunction = (bag : Bag, socket : ZSocket, dbInfo : DataboxInfo) => Promise<boolean> | boolean;
 
@@ -154,7 +155,7 @@ export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, 
      * //function
      * (bag : Bag,socket : ZSocket,dbInfo : DataboxInfo) => {} // If returns true the client is allowed, false will not allow.
      */
-    access  ?: string | number | (string | number)[] | DbAccessFunction;
+    access ?: AccessConfigValue<DbAccessFunction>;
     /**
      * @description
      * Set the access rule which clients are not allowed to access this Databox.
@@ -178,7 +179,7 @@ export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, 
      * //function
      * (bag : Bag,socket : ZSocket,dbInfo : DataboxInfo) => {}  // If returns true the client is not allowed, false will allow.
      */
-    notAccess  ?: string | number | (string | number)[] | DbAccessFunction;
+    notAccess ?: AccessConfigValue<DbAccessFunction>;
 
     /**
      * This option can be activated when you have designed

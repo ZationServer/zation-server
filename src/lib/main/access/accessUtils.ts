@@ -4,8 +4,9 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import AuthEngine     from "../auth/authEngine";
-import {ZationAccess} from "../constants/internal";
+import AuthEngine                                from "../auth/authEngine";
+import {ZationAccess}                            from "../constants/internal";
+import {AccessConfigValue, isTokenCheckFunction} from "./accessOptions";
 
 export type AccessProcess = (boolean) => boolean;
 
@@ -19,12 +20,15 @@ export default class AccessUtils
      * @param value
      * @param accessProcess
      * @param accessFunctionCallCreate
+     * @param useArrayOrConditions
      */
     static createAccessChecker<T extends MinAccessChecker,F extends (...args : any[]) => any>
     (
-        value : any,
+        value : AccessConfigValue<F> | undefined,
         accessProcess : AccessProcess,
-        accessFunctionCallCreate : AccessFunctionCallCreate<T,F>) : MinAccessChecker
+        accessFunctionCallCreate : AccessFunctionCallCreate<T,F>,
+        useArrayOrConditions : boolean = true
+        ) : MinAccessChecker
     {
         if(typeof value === 'boolean') {
             return async () => {return accessProcess((value))};
@@ -42,24 +46,49 @@ export default class AccessUtils
             }
         }
         else if(Array.isArray(value)) {
-            return async (a) => {
-                let found = false;
-                for(let i = 0; i < value.length;i++) {
-                    if((typeof value[i] === 'string' && value[i] === a.getUserGroup())
-                        ||
-                        (typeof value[i] === 'number' && value[i] == a.getUserId())) {
-                        found = true;
-                        break;
+            const preparedChecks : MinAccessChecker[] = [];
+            const preparedChecksLength = value.length;
+            for(let i = 0; i < value.length; i++){
+                preparedChecks[i] = AccessUtils.createAccessChecker(value[i],accessProcess,accessFunctionCallCreate,false);
+            }
+            if(useArrayOrConditions){
+                //OrConnection
+                return async (a) => {
+                    for(let i = 0; i < preparedChecksLength;i++) {
+                       if(preparedChecks[i](a)){
+                           return accessProcess(true);
+                       }
                     }
+                    return accessProcess(false);
                 }
-                return accessProcess(found);
+            }
+            else {
+                //AndConnection
+                return async (a) => {
+                    for(let i = 0; i < preparedChecksLength;i++) {
+                        if(!preparedChecks[i](a)){
+                            return accessProcess(false);
+                        }
+                    }
+                    return accessProcess(true);
+                }
             }
         }
         else if(typeof value === 'function') {
-            return accessFunctionCallCreate(value);
+            if(isTokenCheckFunction(value)){
+                return async (a) => {return accessProcess(value(a.getSHBridge().getToken()))};
+            }
+            else {
+                return accessFunctionCallCreate(value);
+            }
         }
-        else if(typeof value === 'number') {
-            return async (a) => {return accessProcess(a.getUserId() == value)};
+        else if(typeof value === 'object') {
+            if(value.strictTypeCheck){
+                return async (a) => {return accessProcess(a.getUserId() === value.id)};
+            }
+            else {
+                return async (a) => {return accessProcess(a.getUserId() == value.id)};
+            }
         }
         else {
             return async () => {return false;}

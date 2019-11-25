@@ -4,14 +4,16 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import Bag from "../../../api/Bag";
 // noinspection TypeScriptPreferShortImport
-import {InputConfigTranslatable, ModelConfigTranslatable} from "../../../api/ConfigTranslatable";
-import ZationTokenWrapper                                 from "../../internalApi/zationTokenWrapper";
+import {InputConfigTranslatable, ModelConfigTranslatable}  from "../../../api/ConfigTranslatable";
+import {AccessConfigValue}                                 from "../../access/accessOptions";
+import {IdValid}                                           from "../../id/idValidCheckerUtils";
+import Bag                                                 from "../../../api/Bag";
+import ZationTokenWrapper                                  from "../../internalApi/zationTokenWrapper";
 
-export type NormalAuthAccessFunction = (bag : Bag, token : ZationTokenWrapper | null) => Promise<boolean> | boolean;
+export type NormalAuthAccessCustomFunction = (bag : Bag, token : ZationTokenWrapper | null) => Promise<boolean> | boolean;
 
-export interface AuthAccessConfig<T extends Function = NormalAuthAccessFunction> {
+export interface AuthAccessConfig<T extends Function = NormalAuthAccessCustomFunction> {
     /**
      * @description
      * Set the (Client Token State) access rule which clients are allowed to access this component.
@@ -19,48 +21,66 @@ export interface AuthAccessConfig<T extends Function = NormalAuthAccessFunction>
      * Look in the examples to see what possibilities you have.
      * @default default config otherwise false
      * @example
-     * //boolean
+     * //Boolean
      * true            // All clients are allowed
      * false           // No client is allowed
-     * //string
+     * //Special-Keywords
      * 'all'           // All clients are allowed
      * 'allAuth'       // Only all authenticated clients are allowed
      * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed)
+     * //UserGroups
      * 'admin'         // Only all admins are allowed
-     * //number
-     * 10              // Only all clients with user id 10 are allowed
-     * //array
-     * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
-     * //function
+     * 'guest'         // Only all clients with default user group are allowed
+     * //UserId
+     * $userId(10)        // Only all clients with user id 10 are allowed
+     * $userId(10,false)  // Only all clients with user id 10 or '10' are allowed
+     * $userId('lmc')     // Only all clients with user id 'lmc' are allowed
+     * //Custom-Function
      * (bag : Bag,token : ZationTokenInfo | null) => {} // If returns true the client is allowed, false will not allow.
+     * //Or-Conditions
+     * ['user','guest',$userId(23)] // Only all clients with user group: user, default user group or user id 23 are allowed.
+     * //And-Conditions (Array in Or-Condition-Array)
+     * [['user',$tokenHasVariables({canEdit : true})]] //Only clients with user group: user and token variable
+     * canEdit with the value true are allowed.
+     * //Complex
+     * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //Only clients with user group: admin or
+     * clients with user group: user and the token variable: age witch a value that's greater than 17, are allowed.
      */
-    access  ?: string | number | (string | number)[] | T;
+    access ?: AccessConfigValue<T>;
     /**
      * @description
      * Set the (Client Token State) access rule which clients are not allowed to access this component.
      * Notice that only one of the options 'access' or 'notAccess' is allowed.
      * Look in the examples to see what possibilities you have.
-     * @default default config otherwise false
+     * @default (use access)
      * @example
-     * //boolean
+     * //Boolean
      * true            // No client is allowed
      * false           // All clients are allowed
-     * //string
+     * //Special-Keywords
      * 'all'           // No client is allowed
      * 'allAuth'       // All authenticated clients are not allowed
      * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
+     * //UserGroups
      * 'admin'         // All admins are not allowed
-     * //number
-     * 10              // All clients with user id 10 are not allowed
-     * //array
-     * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
-     * //function
-     * (bag : Bag,token : ZationTokenInfo | null) => {}  // If returns true the client is not allowed, false will allow.
+     * 'guest'         // All clients with default user group are not allowed
+     * //UserId
+     * $userId(10)        // All clients with user id 10 are not allowed
+     * $userId(10,false)  // All clients with user id 10 or '10' are not allowed
+     * $userId('lmc')     // All clients with user id 'lmc' are not allowed
+     * //Custom-Function
+     * (bag : Bag,token : ZationTokenInfo | null) => {} // If returns true the client is not allowed, false will allow.
+     * //Or-Conditions
+     * ['user','guest',$userId(23)] // All clients with user group: user, default user group or user id 23 are not allowed.
+     * //And-Conditions (Array in Or-Condition-Array)
+     * [['user',$tokenHasVariables({canEdit : true})]] //All clients with user group: user and token variable
+     * canEdit with the value true are not allowed.
+     * //Complex
+     * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //All clients with user group: admin or
+     * clients with user group: user and the token variable: age witch a value that's greater than 17, are not allowed.
      */
-    notAccess  ?: string | number | (string | number)[] | T;
+    notAccess ?: AccessConfigValue<T>;
 }
-
-export type IdValid = (id : string, bag : Bag) => Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void;
 
 export interface IdValidConfig {
 

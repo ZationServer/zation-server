@@ -24,7 +24,7 @@ export type DbAccessCheckFunction = (authEngine : AuthEngine, socket : ZSocket, 
 export default class DataboxAccessHelper
 {
     /**
-     * Returns a Closures for checking the subscribe access to a channel.
+     * Returns a closure for checking the access to the databox.
      * @param accessConfig
      * @param bag
      */

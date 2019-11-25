@@ -9,24 +9,24 @@ import AuthEngine         from "./authEngine";
 import ZationTokenWrapper from "../internalApi/zationTokenWrapper";
 import Bag                from "../../api/Bag";
 import AccessUtils        from "../access/accessUtils";
-import {NormalAuthAccessFunction, AuthAccessConfig} from "../config/definitions/configComponents";
+import {AuthAccessConfig, NormalAuthAccessCustomFunction} from "../config/definitions/configComponents";
 
 export type TokenStateAccessCheckFunction = (authEngine : AuthEngine) => Promise<boolean>;
 
 export default class AuthAccessChecker
 {
     /**
-     * Returns a Closures for checking the token state access to a controller.
+     * Returns a closure for checking the token state access to a controller.
      * @param accessConfig
      * @param bag
      */
-    static createAuthAccessChecker(accessConfig : AuthAccessConfig<NormalAuthAccessFunction>, bag : Bag) : TokenStateAccessCheckFunction {
+    static createAuthAccessChecker(accessConfig : AuthAccessConfig<NormalAuthAccessCustomFunction>, bag : Bag) : TokenStateAccessCheckFunction {
 
         const info = AuthAccessChecker.processAuthAccessInfo(accessConfig);
 
         if(info){
             const {accessValue,accessProcess} = info;
-            return AccessUtils.createAccessChecker<TokenStateAccessCheckFunction,NormalAuthAccessFunction>
+            return AccessUtils.createAccessChecker<TokenStateAccessCheckFunction,NormalAuthAccessCustomFunction>
             (accessValue,accessProcess,(func) => {
                 return async (authEngine) => {
                     const token = authEngine.getSHBridge().getToken();
