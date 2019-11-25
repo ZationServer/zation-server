@@ -1,3 +1,9 @@
+/*
+Author: Luca Scaringella
+GitHub: LucaCode
+Copyright(c) Luca Scaringella
+ */
+
 import {ForintQuery}   from "forint";
 import {DbForintQuery, IfQuery} from "../../main/databox/dbDefinitions";
 
