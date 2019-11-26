@@ -26,7 +26,7 @@ export const AttachToRouter = (name : string, router : Router, apiLevel ?: numbe
             router.attach(name,target,apiLevel);
         }
         else {
-            throw new ConfigBuildError(`The attach to router decorator can only be used on classes that extend the Controller, Databox or DataIdBox class.`);
+            throw new ConfigBuildError(`The attach to router decorator can only be used on classes that extend the Controller, Databox or DataboxFamily class.`);
         }
     }
 };

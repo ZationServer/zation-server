@@ -851,7 +851,7 @@ export default class ConfigChecker
         }
         else {
             this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                `${target.getTarget()} is not extends the main Databox or DataIdBox class.`));
+                `${target.getTarget()} is not extends the main Databox or DataboxFamily class.`));
         }
     }
 

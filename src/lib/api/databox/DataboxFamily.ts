@@ -6,8 +6,8 @@ Copyright(c) Luca Scaringella
 
 // noinspection TypeScriptPreferShortImport
 import {DataboxConfig}               from "../../main/config/definitions/databoxConfig";
-import Bag                           from "../Bag";
 import DataboxCore, {DbPreparedData} from "./DataboxCore";
+import Bag                           from "../Bag";
 import UpSocket, {RespondFunction}   from "../../main/sc/socket";
 import {IdValidChecker}              from "../../main/id/idValidCheckerUtils";
 import {ScExchange}                  from "../../main/sc/scServer";

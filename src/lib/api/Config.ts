@@ -361,7 +361,7 @@ export default class Config
             container = this.tmpDataboxes;
         }
         else {
-            throw new ConfigBuildError(`Register component can only register classes that extend the Databox, DataIdBox, or Controller class.`);
+            throw new ConfigBuildError(`Register component can only register classes that extend the Databox, DataboxFamily, or Controller class.`);
         }
 
         if(typeof apiLevel === 'number'){

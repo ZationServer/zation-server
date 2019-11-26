@@ -9,6 +9,8 @@ import RequestBag         from './RequestBag';
 import {ControllerConfig} from "../main/config/definitions/controllerConfig";
 import Bag                from "./Bag";
 import BackErrorBag       from "./BackErrorBag";
+import {Component}        from '../main/config/definitions/component';
+import ConfigBuildError   from '../main/config/manager/configBuildError';
 
 /**
  * The controller is one of the main concepts of zation.
@@ -103,6 +105,25 @@ export default class Controller {
      * All other errors or objects will be converted to an unknown BackError.
      */
     invalidInput(reqBag: RequestBag, input: any, backErrorBag : BackErrorBag): Promise<void> | void {
+    }
+
+    /**
+     * Decorator for set the Controller config.
+     * But notice that when you use the decorator
+     * that you cannot set the config property by yourself.
+     * @param controllerConfig
+     * @example
+     * @Controller.Config({});
+     */
+    public static Config(controllerConfig : ControllerConfig) {
+        return (target : Component) => {
+            if(target.prototype instanceof Controller) {
+                target.config = controllerConfig;
+            }
+            else {
+                throw new ConfigBuildError(`The ControllerConfig decorator can only be used on a class that extends the Controller class.`);
+            }
+        }
     }
 }
 

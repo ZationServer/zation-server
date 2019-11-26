@@ -34,7 +34,7 @@ export const Register = (name : string, apiLevel ?: number) : RegisterDecorator 
             Config.registerComponent(name,target,apiLevel);
         }
         else {
-            throw new ConfigBuildError(`The register decorator can only be used on classes that extend the Controller, Databox or DataIdBox class.`);
+            throw new ConfigBuildError(`The register decorator can only be used on classes that extend the Controller, Databox or DataboxFamily class.`);
         }
     };
     func.asAuthController = () => {

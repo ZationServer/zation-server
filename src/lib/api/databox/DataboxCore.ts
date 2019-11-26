@@ -19,6 +19,8 @@ import {InputConsumeFunction}             from "../../main/input/inputClosureCre
 import ErrorUtils                         from "../../main/utils/errorUtils";
 import {DbAccessCheckFunction}            from "../../main/databox/databoxAccessHelper";
 import NoDataAvailableError               from "../../main/databox/noDataAvailable";
+import {Component}                        from "../../main/config/definitions/component";
+import ConfigBuildError                   from "../../main/config/manager/configBuildError";
 
 /**
  * If you always want to present the most recent data on the client,
@@ -272,6 +274,25 @@ export default abstract class DataboxCore {
      */
     public getName() {
         return this.name;
+    }
+
+    /**
+     * Decorator for set the Databox config.
+     * But notice that when you use the decorator
+     * that you cannot set the config property by yourself.
+     * @param databoxConfig
+     * @example
+     * @Databox.Config({});
+     */
+    public static Config(databoxConfig : DataboxConfig) {
+        return (target : Component) => {
+            if(target.prototype instanceof DataboxCore) {
+                target.config = databoxConfig;
+            }
+            else {
+                throw new ConfigBuildError(`The DataboxConfig decorator can only be used on a class that extends the DataboxCore (Databox or DataboxFamily class).`);
+            }
+        }
     }
 }
 
