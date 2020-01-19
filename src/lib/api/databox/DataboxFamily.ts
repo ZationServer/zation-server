@@ -241,9 +241,14 @@ export default class DataboxFamily extends DataboxCore {
     private async _fetch(id : string,dbToken : DbToken,fetchInput : any,initData : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
         const session = DataboxUtils.getSession(dbToken.sessions,target);
         const currentCounter = session.c;
-        session.c++;
+        const clonedSessionData = CloneUtils.deepClone(session.d);
         try {
-            const data = await this.fetch(id,currentCounter,session.d,fetchInput,initData,zSocket);
+            const data = await this.fetch(id,currentCounter,clonedSessionData,fetchInput,initData,zSocket);
+
+            //success fetch
+            session.c++;
+            session.d = clonedSessionData;
+
             return {
                 c : currentCounter,
                 d : data,
@@ -889,11 +894,13 @@ export default class DataboxFamily extends DataboxCore {
      * If no data is available, for example the profile with the id ten is not found,
      * you can throw a NoDataAvailableError or call the internal noDataAvailable method.
      * The counter parameter indicates the number of the current call, it starts counting at zero.
+     * Notice that the counter only increases when the fetch was successful (means no error was thrown).
      * The client can send additional data when calling the fetch process (fetchInput),
      * this data is available as the input parameter.
      * Also, you extra get a session object, this object you can use to save variables that are
      * important to get more data in the future, for example, the last id of the item that the client had received.
      * The session object is only available on the server-side and can not be modified on the client-side.
+     * If the fetch was not successful and you modified the session object in the fetch, all changes will be reverted.
      * Notice that you only can store JSON convertible data in the session.
      *
      * If you design the Databox in such a way that the next fetch is not depending on the previous one,
