@@ -39,15 +39,15 @@ export default class Router {
     }
 
     /**
-     * Attach a component (Controller or Databox) to this route.
+     * Registers a component (Controller or Databox) with this route.
      * It will automatically register the component in the app config with the specific route.
      * You only have to import the file in the app config.
-     * You can attach multiple components with the same name but different API levels.
+     * You can register multiple components with the same name but different API levels.
      * @param name
      * @param componentClass
      * @param apiLevel
      */
-    attach(name : string,componentClass : Component,apiLevel ?: number) {
+    register(name : string, componentClass : Component, apiLevel ?: number) {
         Config.registerComponent(this.route+name,componentClass,apiLevel);
     }
 }
