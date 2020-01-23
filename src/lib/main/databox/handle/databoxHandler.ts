@@ -60,7 +60,7 @@ export default class DataboxHandler
         const reqApiLevel = typeof input.al === 'number' ? Math.floor(input.al) : undefined;
         const apiLevel = reqApiLevel || socket.apiLevel || this.defaultApiLevel;
 
-        //throws if not exists or api level is not compatible
+        //throws if not exists or api level is incompatible
         const db : DataboxCore = this.dbPrepare.getDatabox((input.d as string),apiLevel);
 
         if(this.debug){

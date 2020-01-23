@@ -242,8 +242,8 @@ export default class StateServerEngine
                     switch (code) {
                         case 4010:
                             //BadZationClusterVersion
-                            error = new Error(`This zation cluster version of this zation server version is not compatible with the state server version.`);
-                            (error as any).code = 'VERSION_NOT_COMPATIBLE';
+                            error = new Error(`This zation cluster version of this zation server version is incompatible with the state server version.`);
+                            (error as any).code = 'VERSION_INCOMPATIBLE';
                             reject(error);
                             break;
                         case 4011:

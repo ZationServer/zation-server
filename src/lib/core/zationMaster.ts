@@ -162,9 +162,9 @@ export default class ZationMaster {
                 return this.rejectStart(StartErrorName.INVALID_LICENSE,msg);
             }
             if(!LicenseManager.licenseVersionValid(this.license)){
-                const msg = 'The version of the provided license is not compatible.';
+                const msg = 'The version of the provided license is incompatible.';
                 this.printStartFail(msg);
-                return this.rejectStart(StartErrorName.LICENSE_VERSION_NOT_COMPATIBLE,msg);
+                return this.rejectStart(StartErrorName.LICENSE_VERSION_INCOMPATIBLE,msg);
             }
             Logger.printStartDebugInfo('The Master has checked the license.', true);
         }

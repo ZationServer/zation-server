@@ -14,8 +14,8 @@ import Config, {single,eventInit}   from './lib/api/Config';
 import BackErrorBuilder             from "./lib/main/builder/backErrorBuilder";
 import ServiceNotFoundError         from './lib/main/services/serviceNotFoundError';
 import AuthenticationError          from './lib/main/error/authenticationError';
-import MethodIsNotCompatibleError   from './lib/main/error/methodIsNotCompatibleError';
-import InputIsNotCompatibleError    from './lib/main/error/inputIsNotCompatibleError';
+import MethodIsIncompatibleError    from './lib/main/error/methodIsIncompatibleError';
+import InputIsIncompatibleError     from './lib/main/error/inputIsIncompatibleError';
 import CodeError                    from './lib/main/error/codeError';
 import {ErrorType}                  from "./lib/main/constants/errorType";
 import {ValidationType}             from './lib/main/constants/validationType';
@@ -116,8 +116,8 @@ export {
         ValidationType,
         AuthenticationError,
         CodeError,
-        MethodIsNotCompatibleError,
-        InputIsNotCompatibleError,
+        MethodIsIncompatibleError,
+        InputIsIncompatibleError,
         single,
         eventInit,
         buildKeyArray,

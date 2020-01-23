@@ -43,7 +43,7 @@ export default class DataboxPrepare
     /**
      * It will return the Databox instance.
      * If no DatBox with the API level is found,
-     * it will throw an API level not compatible error,
+     * it will throw an API level incompatible error,
      * and when the Databox does not exist, it also throws an error.
      * @param name
      * @param apiLevel
@@ -58,8 +58,8 @@ export default class DataboxPrepare
             return databox;
         }
         else {
-            const err : any = new Error('The client API level is not compatible with databox API levels.');
-            err.name = ClientErrorName.API_LEVEL_NOT_COMPATIBLE;
+            const err : any = new Error('The client API level is incompatible with databox API levels.');
+            err.name = ClientErrorName.API_LEVEL_INCOMPATIBLE;
             throw err;
         }
     }

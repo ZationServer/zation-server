@@ -51,7 +51,7 @@ export default class ControllerPrepare
 
     /**
      * It will return the controller prepared data.
-     * If no controller with the API level is found, it will thrown an API level not compatible back error.
+     * If no controller with the API level is found, it will thrown an API level incompatible back error.
      * @param name
      * @param apiLevel
      * @param isSystemController

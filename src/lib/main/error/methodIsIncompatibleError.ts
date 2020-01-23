@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import CodeError        from "./codeError";
 import {MainBackErrors} from "../zationBackErrors/mainBackErrors";
 
-export default class MethodIsNotCompatibleError extends CodeError
+export default class MethodIsIncompatibleError extends CodeError
 {
     private readonly reqType : string;
     private readonly requiredReqType : string;
@@ -37,7 +37,7 @@ export default class MethodIsNotCompatibleError extends CodeError
     }
 
     toString(): string {
-        return `MethodIsNotCompatibleError: Type is: ${this.reqType} but method requires: ${this.requiredReqType} to: ${this.actionDescription}`;
+        return `MethodIsIncompatibleError: Type is: ${this.reqType} but method requires: ${this.requiredReqType} to: ${this.actionDescription}`;
     }
 
 }
