@@ -15,7 +15,7 @@ export default class MethodIsNotCompatibleError extends CodeError
 
     constructor(reqType : string,requiredReqType : string,actionDescription : string = '')
     {
-        super(MainBackErrors.methodIsNotCompatible,{reqType,requiredReqType});
+        super(MainBackErrors.methodIsIncompatible,{reqType,requiredReqType});
         this.reqType = reqType;
         this.requiredReqType = requiredReqType;
         this.actionDescription = actionDescription;

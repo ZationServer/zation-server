@@ -10,6 +10,6 @@ import {MainBackErrors} from "../zationBackErrors/mainBackErrors";
 export default class InputIsNotCompatibleError extends CodeError
 {
     constructor() {
-        super(MainBackErrors.inputIsNotCompatible);
+        super(MainBackErrors.inputIsIncompatible);
     }
 }

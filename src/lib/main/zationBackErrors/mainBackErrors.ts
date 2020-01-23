@@ -28,9 +28,9 @@ export const MainBackErrors = {
         fromZationSystem : true
     },
 
-    apiLevelNotCompatible : {
-        name          : 'apiLevelNotCompatible',
-        description   : 'The API level of the client is not compatible with the request.',
+    apiLevelIncompatible : {
+        name          : 'apiLevelIncompatible',
+        description   : 'The API level of the client is incompatible with the request.',
         type          : ErrorType.INPUT_ERROR,
         sendInfo      : true,
         //INFO
@@ -90,9 +90,9 @@ export const MainBackErrors = {
         fromZationSystem : true
     },
 
-    methodIsNotCompatible  : {
-        name          : 'methodIsNotCompatible',
-        description   : 'Method is not compatible with request protocol.',
+    methodIsIncompatible  : {
+        name          : 'methodIsIncompatible',
+        description   : 'Method is incompatible with request protocol.',
         type          : ErrorType.CODE_ERROR,
         sendInfo      : false,
         private       : true,
@@ -102,9 +102,9 @@ export const MainBackErrors = {
         fromZationSystem : true
     },
 
-    inputIsNotCompatible  : {
-        name          : 'inputIsNotCompatible',
-        description   : 'The input is not compatible with this operation.',
+    inputIsIncompatible  : {
+        name          : 'inputIsIncompatible',
+        description   : 'The input is incompatible with this operation.',
         type          : ErrorType.CODE_ERROR,
         sendInfo      : false,
         private       : true,

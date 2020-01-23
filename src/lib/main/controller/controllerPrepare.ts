@@ -64,7 +64,7 @@ export default class ControllerPrepare
                 return controller;
             }
             else {
-                throw new BackError(MainBackErrors.apiLevelNotCompatible,
+                throw new BackError(MainBackErrors.apiLevelIncompatible,
                     {controller: name, apiLevel : apiLevel});
             }
         }
