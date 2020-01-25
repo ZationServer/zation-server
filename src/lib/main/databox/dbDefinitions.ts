@@ -430,8 +430,29 @@ export interface TimestampOption {
     timestamp ?: number
 }
 
-export interface IfQuery extends DbForintQuery {
-    not ?: boolean;
+export const enum IfQueryType {
+    search,
+    full
+}
+
+export type IfQuery = IfFullQuery | IfSearchQuery;
+
+export interface IfFullQuery {
+    //not
+    n?: boolean;
+    //type
+    t: IfQueryType.full,
+    //query
+    q: ForintQuery<any>;
+}
+
+export interface IfSearchQuery {
+    //not
+    n?: boolean;
+    //type
+    t: IfQueryType.search,
+    //query
+    q: ForintSearchQuery;
 }
 
 export type IfOptionValue = IfQuery | (IfQuery[]);
@@ -447,22 +468,32 @@ export interface IfOption {
      * You can define multiple conditions with an array or only one condition.
      * If you have an operation that has a selector that has multiple key targets,
      * the if conditions will only be evaluated once for every component.
-     * There are two helper functions to build a condition
-     * the $contains and $notContains helper.
-     * In both helper functions, you pass in a forint query.
-     * With the queries, you can check that a specific key or value must exist or not.
-     * Or you can check with the $any constant, which refers to an empty query ({})
-     * if any element exists.
-     * In the case of a head selector (with selector [] or ''),
-     * the key always is: '' and the value references to the complete
-     * data structure (if the value is not undefined).)
+     * There are four helper functions to build a condition the $contains,
+     * $notContains, $matches, and $notMatches helper.
+     * In all helper functions, you pass in forint queries.
+     * The contains helper functions will execute the queries multiple times
+     * for each key or value.
+     * If at least one pair, key, or value matches, the condition is evaluated to true.
+     * The notContains function behaves like the contains but will invert the result.
+     * That gives you the possibility to check that a specific key, value,
+     * or pair must exist or not.
+     * In the case of a head selector (with selector [] or ''), the key always is: '' and
+     * the value references to the complete data structure (if the value is not undefined).)
+     * With the $any constant, which refers to an empty query ({}),
+     * you can check if any pair exists or not.
      * Some useful example would be to reinsert old data,
      * but only to the clients that are already loaded this old data section.
      * Or to build a set where each element value should be unique.
+     * The matches helper function will execute the query once for the
+     * complete object (all key-value pairs).
+     * The notMatches function behaves like the matches but will invert the result.
+     * It helps to check multiple pairs in one query and makes it more readable.
      * @example
      * if : $notContains($any)
      * if : $contains($key('20'))
-     * if : [$contains($value({name : 'luca'})),$notContains($key('30'))]
+     * if : [$contains($value({name: 'luca'})),$notContains($key('30'))]
+     * if : $contains($pair('name','luca'))
+     * if : $matches({name: 'luca', age: {gte: 18}, email: 'test1@test.de'})
      */
     if ?: IfOptionValue;
 }
@@ -516,14 +547,19 @@ export interface DataboxInfo {
 }
 
 /**
- * Forint queries with the databox.
+ * Forint search query.
  */
-export type DbForintQuery<TK = any,TV = any> = {key ?: ForintQuery<TK>,value ?: ForintQuery<TV>};
+export type ForintSearchQuery<TK = any,TV = any> = {
+    //key
+    k ?: ForintQuery<TK>,
+    //value
+    v ?: ForintQuery<TV>
+};
 
 /**
  * Selector types.
  */
-export type DbProcessedSelector = (string | DbForintQuery)[];
+export type DbProcessedSelector = (string | ForintSearchQuery)[];
 
-type DbSelectorItem = string | number | DbForintQuery;
+type DbSelectorItem = string | number | ForintSearchQuery;
 export type DbSelector = DbSelectorItem | DbSelectorItem[];

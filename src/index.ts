@@ -26,7 +26,7 @@ import ZationMaster                 from "./lib/core/zationMaster";
 import Router                       from "./lib/api/Router";
 import {Register}                   from "./lib/api/decorator/component/Register";
 import {ModelConfigTranslatable,InputConfigTranslatable}          from "./lib/api/ConfigTranslatable";
-import {$value, $key, $pair, $all, $any, $contains, $notContains} from "./lib/api/databox/DbApiUtils";
+import {$value, $key, $pair, $all, $any, $contains, $notContains, $matches, $notMatches} from './lib/api/databox/DbApiUtils';
 import {$tokenHasVariables, $tokenVariablesMatch, $userId}        from "./lib/api/AccessApiUtils";
 import {Model}                      from "./lib/api/decorator/input/Model";
 import {ObjectModel}                from "./lib/api/decorator/input/ObjectModel";
@@ -99,6 +99,8 @@ export {
         $contains,
         $notContains,
         $any,
+        $matches,
+        $notMatches,
         $userId,
         $tokenHasVariables,
         $tokenVariablesMatch,

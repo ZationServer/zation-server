@@ -4,8 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ForintQuery}   from "forint";
-import {DbForintQuery, IfQuery} from "../../main/databox/dbDefinitions";
+import {ForintQuery} from 'forint';
+import {ForintSearchQuery, IfQuery, IfQueryType} from '../../main/databox/dbDefinitions';
 
 /**
  * @description
@@ -14,8 +14,8 @@ import {DbForintQuery, IfQuery} from "../../main/databox/dbDefinitions";
  * await db.update([$value({name : 'Luca'}),'name'],'luca');
  * @param query
  */
-export function $value<T>(query : ForintQuery<T>) : DbForintQuery {
-    return {value : query};
+export function $value<T>(query : ForintQuery<T>) : ForintSearchQuery {
+    return {v : query};
 }
 
 /**
@@ -25,8 +25,8 @@ export function $value<T>(query : ForintQuery<T>) : DbForintQuery {
  * await db.update([$key({$gt : 45453}),'name'],'luca');
  * @param query
  */
-export function $key<T>(query : ForintQuery<T>) : DbForintQuery {
-    return {key : query};
+export function $key<T>(query : ForintQuery<T>) : ForintSearchQuery {
+    return {k : query};
 }
 
 /**
@@ -37,8 +37,8 @@ export function $key<T>(query : ForintQuery<T>) : DbForintQuery {
  * @param keyQuery
  * @param valueQuery
  */
-export function $pair<TK,TV>(keyQuery : ForintQuery<TK>,valueQuery : ForintQuery<TV>) : DbForintQuery {
-    return {key : keyQuery,value : valueQuery};
+export function $pair<TK,TV>(keyQuery : ForintQuery<TK>,valueQuery : ForintQuery<TV>) : ForintSearchQuery {
+    return {k : keyQuery,v : valueQuery};
 }
 
 /**
@@ -57,8 +57,8 @@ export const $all = Object.freeze({});
  * await db.update(['34','name'],'luca',{if : $contains($key('35'))});
  * @param query
  */
-export function $contains<TK,TV>(query : DbForintQuery<TK,TV>) : IfQuery {
-    return query;
+export function $contains<TK,TV>(query : ForintSearchQuery<TK,TV>) : IfQuery {
+    return {q : query,t : IfQueryType.search};
 }
 
 /**
@@ -69,8 +69,8 @@ export function $contains<TK,TV>(query : DbForintQuery<TK,TV>) : IfQuery {
  * await db.update(['34','name'],'luca',{if : $notContains($key('39'))});
  * @param query
  */
-export function $notContains<TK,TV>(query : DbForintQuery<TK,TV>) : IfQuery {
-    return {...query,not : true};
+export function $notContains<TK,TV>(query : ForintSearchQuery<TK,TV>) : IfQuery {
+    return {q : query,n : true,t : IfQueryType.search};
 }
 
 /**
@@ -81,3 +81,29 @@ export function $notContains<TK,TV>(query : DbForintQuery<TK,TV>) : IfQuery {
  * await db.insert(['41'],{name : 'Max',age : 10},{if : $notContains($any)});
  */
 export const $any = Object.freeze({});
+
+/**
+ * @description
+ * Util function for creating an if condition for cud operations of databoxes.
+ * It creates a condition that the complete object (all key-value pairs)
+ * must match with the provided query.
+ * @example
+ * await db.update(['34','name'],'luca',{if: $matches({email: 'test1@test.de', age: {gte: 18}})});
+ * @param query
+ */
+export function $matches<T>(query : ForintQuery<T>) : IfQuery {
+    return {q : query,t : IfQueryType.full};
+}
+
+/**
+ * @description
+ * Util function for creating an if condition for cud operations of databoxes.
+ * It creates a condition that the complete object (all key-value pairs)
+ * must not match with the provided query.
+ * @example
+ * await db.update(['34','name'],'luca',{if: $notMatches({email: 'test1@test.de', age: {gte: 18}})});
+ * @param query
+ */
+export function $notMatches<T>(query : ForintQuery<T>) : IfQuery {
+    return {q : query,n : true,t : IfQueryType.full};
+}
