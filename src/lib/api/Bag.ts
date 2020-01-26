@@ -2649,56 +2649,110 @@ export default class Bag {
     //Part Databoxes
 
     /**
-     * This function helps to access your Databoxes.
-     * You only need to call the method with the classes of the Databoxes.
-     * It returns a DataboxContainer or DataboxFamilyContainer.
-     * With these containers, you can interact with one or more boxes.
+     * This function helps to access your Databox/es.
+     * You only need to call this method with the class/es of the Databox/es.
+     * It returns the specific databox instance.
+     * If you want to access multiple databoxes, the method returns a
+     * DataboxContainer or DataboxFamilyContainer.
+     * With these containers, you can interact with multiple databoxes.
      * So, for example, if you have two Databoxes with different API levels from the same type,
      * you can communicate directly with both.
-     * It is recommended if you use this method in a controller
-     * that you prepare the creation of the Container in the initialize method.
-     * If you use this method in an event function, use an initEvent to prepare the container.
+     * But notice that the containers only provides a limited scope of methods.
+     * It is recommended if you use this method in a controller that you prepare
+     * the access to the databox/es in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the access.
+     * @example
+     * databox(ProfileDataboxFamilyV1,ProfileDataboxFamilyV2);
+     * databox(PublicChatDatabox);
+     */
+    databox() : undefined;
+    /**
+     * This function helps to access your Databox/es.
+     * You only need to call this method with the class/es of the Databox/es.
+     * It returns the specific databox instance.
+     * If you want to access multiple databoxes, the method returns a
+     * DataboxContainer or DataboxFamilyContainer.
+     * With these containers, you can interact with multiple databoxes.
+     * So, for example, if you have two Databoxes with different API levels from the same type,
+     * you can communicate directly with both.
+     * But notice that the containers only provides a limited scope of methods.
+     * It is recommended if you use this method in a controller that you prepare
+     * the access to the databox/es in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the access.
+     * @example
+     * databox(ProfileDataboxFamilyV1,ProfileDataboxFamilyV2);
+     * databox(PublicChatDatabox);
+     * @param databox
+     * The class of the Databox.
+     */
+    databox<T extends DataboxClass | DataboxFamilyClass>(databox : T) : T['prototype'];
+    /**
+     * This function helps to access your Databox/es.
+     * You only need to call this method with the class/es of the Databox/es.
+     * It returns the specific databox instance.
+     * If you want to access multiple databoxes, the method returns a
+     * DataboxContainer or DataboxFamilyContainer.
+     * With these containers, you can interact with multiple databoxes.
+     * So, for example, if you have two Databoxes with different API levels from the same type,
+     * you can communicate directly with both.
+     * But notice that the containers only provides a limited scope of methods.
+     * It is recommended if you use this method in a controller that you prepare
+     * the access to the databox/es in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the access.
      * @example
      * databox(ProfileDataboxFamilyV1,ProfileDataboxFamilyV2);
      * databox(PublicChatDatabox);
      * @param databoxes
-     * The classes of the Databoxes.
+     * The class/es of the Databox/es.
      */
     databox(...databoxes : DataboxFamilyClass[]) : DataboxFamilyContainer;
     /**
-     * This function helps to access your Databoxes.
-     * You only need to call the method with the classes of the Databoxes.
-     * It returns a DataboxContainer or DataboxFamilyContainer.
-     * With these containers, you can interact with one or more boxes.
+     * This function helps to access your Databox/es.
+     * You only need to call this method with the class/es of the Databox/es.
+     * It returns the specific databox instance.
+     * If you want to access multiple databoxes, the method returns a
+     * DataboxContainer or DataboxFamilyContainer.
+     * With these containers, you can interact with multiple databoxes.
      * So, for example, if you have two Databoxes with different API levels from the same type,
      * you can communicate directly with both.
-     * It is recommended if you use this method in a controller
-     * that you prepare the creation of the Container in the initialize method.
-     * If you use this method in an event function, use an initEvent to prepare the container.
+     * But notice that the containers only provides a limited scope of methods.
+     * It is recommended if you use this method in a controller that you prepare
+     * the access to the databox/es in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the access.
      * @example
      * databox(ProfileDataboxFamilyV1,ProfileDataboxFamilyV2);
      * databox(PublicChatDatabox);
      * @param databoxes
-     * The classes of the Databoxes.
+     * The class/es of the Databox/es.
      */
     databox(...databoxes : DataboxClass[]) : DataboxContainer;
     /**
-     * This function helps to access your Databoxes.
-     * You only need to call the method with the classes of the Databoxes.
-     * It returns a DataboxContainer or DataboxFamilyContainer.
-     * With these containers, you can interact with one or more boxes.
+     * This function helps to access your Databox/es.
+     * You only need to call this method with the class/es of the Databox/es.
+     * It returns the specific databox instance.
+     * If you want to access multiple databoxes, the method returns a
+     * DataboxContainer or DataboxFamilyContainer.
+     * With these containers, you can interact with multiple databoxes.
      * So, for example, if you have two Databoxes with different API levels from the same type,
      * you can communicate directly with both.
-     * It is recommended if you use this method in a controller
-     * that you prepare the creation of the Container in the initialize method.
-     * If you use this method in an event function, use an initEvent to prepare the container.
+     * But notice that the containers only provides a limited scope of methods.
+     * It is recommended if you use this method in a controller that you prepare
+     * the access to the databox/es in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the access.
      * @example
      * databox(ProfileDataboxFamilyV1,ProfileDataboxFamilyV2);
      * databox(PublicChatDatabox);
      * @param databoxes
-     * The classes of the Databoxes.
+     * The class/es of the Databox/es.
      */
-    databox(...databoxes : DataboxFamilyClass[] | DataboxClass[]) : DataboxFamilyContainer | DataboxContainer {
-       return DataboxUtils.getDbContainer(databoxes);
+    databox<T extends DataboxClass | DataboxFamilyClass>(...databoxes : DataboxFamilyClass[] | DataboxClass[] | [T]) : DataboxFamilyContainer | DataboxContainer | T | undefined {
+        switch (databoxes.length) {
+            case 0:
+                return undefined;
+            case 1:
+                return DataboxUtils.getDbInstance(databoxes[0]);
+            default:
+                return DataboxUtils.getDbContainer(databoxes as DataboxFamilyClass[] | DataboxClass[]);
+        }
     }
 }

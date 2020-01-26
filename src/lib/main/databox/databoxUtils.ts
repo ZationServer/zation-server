@@ -125,6 +125,19 @@ export default class DataboxUtils {
     }
 
     /**
+     * This method loads the instance of the databox and returns it.
+     * If the instance is not found, the method throws an error.
+     * @param databox
+     */
+    static getDbInstance<T extends DataboxClass | DataboxFamilyClass>(databox : T) : T['prototype'] {
+         const instance = databox[databoxInstanceSymbol];
+         if(instance === undefined) {
+             throw new DataboxNotFound(databox.name);
+         }
+         return instance;
+    }
+
+    /**
      * A method that will load the instances from Databox classes
      * and will return the correct container for it.
      * @param databoxes
