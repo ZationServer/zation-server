@@ -72,6 +72,7 @@ export default class BackError extends Error
 
     // noinspection JSUnusedGlobalSymbols
     /**
+     * @internal
      * @description
      * This method is used internal!
      * @param withDesc

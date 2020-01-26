@@ -4,6 +4,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "strictPropertyInitialization" : false,
+    "stripInternal": true,
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,

@@ -73,6 +73,7 @@ export default class BackErrorBag
 
     // noinspection JSUnusedGlobalSymbols
     /**
+     * @internal
      * @description
      * This method is used internal!
      * @param withDesc
