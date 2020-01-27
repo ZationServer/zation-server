@@ -23,7 +23,7 @@ export interface ControllerConfig extends InputConfig, VersionAccessConfig, Syst
      * @example
      * middleware : [(bag) => {...}]
      * @throws
-     * You can also throw TaskErrors, which are sent to the client with a not success response.
+     * You can also throw BackErrors, which are sent to the client with a not success response.
      */
     middleware ?: ControllerMiddlewareFunction[] | ControllerMiddlewareFunction;
     /**

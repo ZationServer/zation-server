@@ -49,17 +49,17 @@ export default class InputClosureCreator
 
         return async (input) => {
             const taskList : ProcessTask[] = [];
-            const taskErrorBag : BackErrorBag = new BackErrorBag();
+            const backErrorBag : BackErrorBag = new BackErrorBag();
             const wrapper = {i : input};
 
             await processable._process(bag,wrapper,'i','',{
                 processTaskList : taskList,
-                errorBag : taskErrorBag,
+                errorBag : backErrorBag,
                 createProcessTaskList :  true
             });
 
             //throw validation/structure errors if any there
-            taskErrorBag.throwIfHasError();
+            backErrorBag.throwIfHasError();
 
             //wait for process tasks
             await ProcessTaskEngine.processTasks(taskList);

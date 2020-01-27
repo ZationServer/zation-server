@@ -143,13 +143,13 @@ export default class InputProcessorCreator
 
         return async (bag, srcObj, srcKey, currentInputPath, processInfo) => {
             let found = false;
-            const tmpTaskErrorBags : Record<string|number,BackErrorBag> = {};
+            const tmpBackErrorBags : Record<string|number,BackErrorBag> = {};
             await breakIterator(async (key, value : ModelPreparationMem) =>
             {
-                tmpTaskErrorBags[key] = new BackErrorBag();
+                tmpBackErrorBags[key] = new BackErrorBag();
                 const tmpProcessInfo : ProcessInfo =
                     {
-                        errorBag : tmpTaskErrorBags[key],
+                        errorBag : tmpBackErrorBags[key],
                         processTaskList : [],
                         createProcessTaskList : processInfo.createProcessTaskList
                     };
@@ -165,9 +165,9 @@ export default class InputProcessorCreator
             });
 
             if(!found) {
-                for(let key in tmpTaskErrorBags) {
-                    if(tmpTaskErrorBags.hasOwnProperty(key)) {
-                        processInfo.errorBag.addFromBackErrorBag(tmpTaskErrorBags[key]);
+                for(let key in tmpBackErrorBags) {
+                    if(tmpBackErrorBags.hasOwnProperty(key)) {
+                        processInfo.errorBag.addFromBackErrorBag(tmpBackErrorBags[key]);
                     }
                 }
                 processInfo.errorBag.addBackError(new BackError
