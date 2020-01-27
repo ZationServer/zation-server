@@ -491,6 +491,8 @@ export interface IfOption {
      * The matches helper function will execute the query once for the
      * complete object (all key-value pairs).
      * The notMatches function behaves like the matches but will invert the result.
+     * In the case of a head selector (with selector [] or ''), the value
+     * of the head (complete data structure) will be used.
      * It helps to check multiple pairs in one query and makes it more readable.
      * @example
      * if : $notContains($any)
