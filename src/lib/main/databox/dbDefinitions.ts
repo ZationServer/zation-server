@@ -458,6 +458,10 @@ export interface IfSearchQuery {
 export type IfOptionValue = IfQuery | (IfQuery[]);
 export type IfOptionProcessedValue = IfQuery[];
 
+export interface IfOptionProcessed {
+    if?: IfOptionProcessedValue
+}
+
 export interface IfOption {
     /**
      * @description

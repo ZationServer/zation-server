@@ -27,9 +27,9 @@ export default class DataboxContainer {
 
     /**
      * Insert a new value in the Databox.
-     * Notice that this method will only update the Databox and invoke the before-event.
+     * Notice that this method will only update the Databox.
      * It will not automatically update the database,
-     * so you have to do it in the before-event or before calling this method.
+     * so you have to do it before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * Insert behavior:
      * Notice that in every case, the insert only happens when the key
@@ -70,9 +70,9 @@ export default class DataboxContainer {
 
     /**
      * Update a value in the Databox.
-     * Notice that this method will only update the Databox and invoke the before-event.
+     * Notice that this method will only update the Databox.
      * It will not automatically update the database,
-     * so you have to do it in the before-event or before calling this method.
+     * so you have to do it before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * Update behavior:
      * Notice that in every case, the update only happens when the key
@@ -112,9 +112,9 @@ export default class DataboxContainer {
 
     /**
      * Delete a value in the Databox.
-     * Notice that this method will only update the Databox and invoke the before-event.
+     * Notice that this method will only update the Databox.
      * It will not automatically update the database,
-     * so you have to do it in the before-event or before calling this method.
+     * so you have to do it before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * Delete behavior:
      * Notice that in every case, the delete only happens when the key
@@ -154,11 +154,11 @@ export default class DataboxContainer {
     // noinspection JSUnusedGlobalSymbols
     /**
      * Sequence edit the Databox.
-     * Notice that this method will only update the Databox and invoke the before-events.
      * This method is ideal for doing multiple changes on a Databox
      * because it will pack them all together and send them all in ones.
+     * Notice that this method will only update the Databox.
      * It will not automatically update the database,
-     * so you have to do it in the before-events or before calling this method.
+     * so you have to do it before calling this method.
      * @param timestamp
      * With the timestamp option, you can change the sequence of data.
      * The client, for example, will only update data that is older as incoming data.

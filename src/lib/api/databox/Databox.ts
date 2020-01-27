@@ -40,8 +40,8 @@ import {
     DbSelector,
     DbProcessedSelector,
     PotentialUpdateOption,
-    PotentialInsertOption
-} from "../../main/databox/dbDefinitions";
+    PotentialInsertOption, IfOptionProcessed
+} from '../../main/databox/dbDefinitions';
 import DataboxAccessHelper from "../../main/databox/databoxAccessHelper";
 import {ScExchange}        from "../../main/sc/scServer";
 import DataboxUtils        from "../../main/databox/databoxUtils";
@@ -68,7 +68,9 @@ const defaultSymbol                              = Symbol();
  *
  * You can override these methods:
  * - initialize
- * - fetchData
+ * - fetch
+ *
+ * events:
  * - beforeInsert
  * - beforeUpdate
  * - beforeDelete
@@ -91,6 +93,7 @@ export default class Databox extends DataboxCore {
 
     private readonly _buildFetchManager : FetchManagerBuilder<typeof Databox.prototype._fetch>;
     private readonly _sendCudToSockets : (dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void;
+    private readonly _hasBeforeEventsListener : boolean;
 
     static [databoxInstanceSymbol] : Databox;
 
@@ -104,6 +107,9 @@ export default class Databox extends DataboxCore {
         this._buildFetchManager = DataboxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
         this._sendCudToSockets = this._getSendCudToSocketsHandler();
+
+        this._hasBeforeEventsListener = !this.beforeInsert[defaultSymbol] ||
+            !this.beforeUpdate[defaultSymbol] || !this.beforeDelete[defaultSymbol];
 
         this._reg();
     }
@@ -404,22 +410,25 @@ export default class Databox extends DataboxCore {
     }
 
     /**
-     * Fire before events.
+     * Emit before events.
      * @param cudOperations
      */
-    private async _fireBeforeEvents(cudOperations : CudOperation[]){
+    private async _emitBeforeEvents(cudOperations : CudOperation[]){
         let promises : (Promise<void> | void)[] = [];
         for(let i = 0; i < cudOperations.length;i++) {
             const operation = cudOperations[i];
             switch (operation.t) {
                 case CudType.insert:
-                    promises.push(this.beforeInsert(operation.s,operation.v,operation.c,operation.d));
+                    promises.push(this.beforeInsert(operation.s,operation.v,
+                        {code: operation.c,data: operation.d,if: operation.i,potentialUpdate: !!operation.p,timestamp: operation.t}));
                     break;
                 case CudType.update:
-                    promises.push(this.beforeUpdate(operation.s,operation.v,operation.c,operation.d));
+                    promises.push(this.beforeUpdate(operation.s,operation.v,
+                        {code: operation.c,data: operation.d,if: operation.i,potentialInsert: !!operation.p,timestamp: operation.t}));
                     break;
                 case CudType.delete:
-                    promises.push(this.beforeDelete(operation.s,operation.c,operation.d));
+                    promises.push(this.beforeDelete(operation.s,
+                        {code: operation.c,data: operation.d,if: operation.i,timestamp: operation.t}));
                     break;
             }
         }
@@ -434,7 +443,9 @@ export default class Databox extends DataboxCore {
      * @param timestamp
      */
     async _emitCudPackage(preCudPackage : PreCudPackage,timestamp ?: number) {
-        await this._fireBeforeEvents(preCudPackage.o);
+        if(this._hasBeforeEventsListener){
+            await this._emitBeforeEvents(preCudPackage.o);
+        }
         const cudPackage = DataboxUtils.buildCudPackage(preCudPackage,timestamp);
         this._sendToWorker({
             a : DbWorkerAction.cud,
@@ -471,9 +482,9 @@ export default class Databox extends DataboxCore {
     /**
      * **Not override this method.**
      * Insert a new value in the Databox.
-     * Notice that this method will only update the Databox and invoke the before-event.
+     * Notice that this method will only update the Databox.
      * It will not automatically update the database,
-     * so you have to do it in the before-event or before calling this method.
+     * so you have to do it before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * Insert behavior:
      * Notice that in every case, the insert only happens when the key
@@ -517,9 +528,9 @@ export default class Databox extends DataboxCore {
     /**
      * **Not override this method.**
      * Update a value in the Databox.
-     * Notice that this method will only update the Databox and invoke the before-event.
+     * Notice that this method will only update the Databox.
      * It will not automatically update the database,
-     * so you have to do it in the before-event or before calling this method.
+     * so you have to do it before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * Update behavior:
      * Notice that in every case, the update only happens when the key
@@ -562,9 +573,9 @@ export default class Databox extends DataboxCore {
     /**
      * **Not override this method.**
      * Delete a value in the Databox.
-     * Notice that this method will only update the Databox and invoke the before-event.
+     * Notice that this method will only update the Databox.
      * It will not automatically update the database,
-     * so you have to do it in the before-event or before calling this method.
+     * so you have to do it before calling this method.
      * If you want to do more changes, you should look at the seqEdit method.
      * Delete behavior:
      * Notice that in every case, the delete only happens when the key
@@ -606,11 +617,11 @@ export default class Databox extends DataboxCore {
     /**
      * **Not override this method.**
      * Sequence edit the Databox.
-     * Notice that this method will only update the Databox and invoke the before-events.
      * This method is ideal for doing multiple changes on a Databox
      * because it will pack them all together and send them all in ones.
+     * Notice that this method will only update the Databox.
      * It will not automatically update the database,
-     * so you have to do it in the before-events or before calling this method.
+     * so you have to do it before calling this method.
      * @param timestamp
      * With the timestamp option, you can change the sequence of data.
      * The client, for example, will only update data that is older as incoming data.
@@ -763,39 +774,36 @@ export default class Databox extends DataboxCore {
     /**
      * **Can be overridden.**
      * A function that gets triggered before an insert into the Databox.
-     * Can be used to insert the data in the database.
+     * The databox will only emit before events when you overwrite at least one of them.
      * @param selector
      * @param value
-     * @param code
-     * @param data
+     * @param options
      */
     protected beforeInsert(selector : DbProcessedSelector, value : any,
-                           code : string | number | undefined, data : any) : Promise<void> | void {
+                           options : IfOptionProcessed & PotentialUpdateOption & InfoOption & TimestampOption) : Promise<void> | void {
     }
 
     /**
      * **Can be overridden.**
      * A function that gets triggered before an update of data in the Databox.
-     * Can be used to update the data in the database.
+     * The databox will only emit before events when you overwrite at least one of them.
      * @param selector
      * @param value
-     * @param code
-     * @param data
+     * @param options
      */
     protected beforeUpdate(selector : DbProcessedSelector, value : any,
-                           code : string | number | undefined, data : any) : Promise<void> | void {
+                           options : IfOptionProcessed & PotentialInsertOption & InfoOption & TimestampOption) : Promise<void> | void {
     }
 
     /**
      * **Can be overridden.**
      * A function that gets triggered before a delete of data in the Databox.
-     * Can be used to delete the data in the database.
+     * The databox will only emit before events when you overwrite at least one of them.
      * @param selector
-     * @param code
-     * @param data
+     * @param options
      */
     protected beforeDelete(selector : DbProcessedSelector,
-                           code : string | number | undefined, data : any) : Promise<void> | void {
+                           options : IfOptionProcessed & InfoOption & TimestampOption) : Promise<void> | void {
     }
 
     // noinspection JSUnusedLocalSymbols
@@ -889,6 +897,10 @@ export default class Databox extends DataboxCore {
 Databox.prototype['insertMiddleware'][defaultSymbol] = true;
 Databox.prototype['updateMiddleware'][defaultSymbol] = true;
 Databox.prototype['deleteMiddleware'][defaultSymbol] = true;
+
+Databox.prototype['beforeInsert'][defaultSymbol] = true;
+Databox.prototype['beforeUpdate'][defaultSymbol] = true;
+Databox.prototype['beforeDelete'][defaultSymbol] = true;
 
 export interface DataboxClass {
     config: DataboxConfig;
