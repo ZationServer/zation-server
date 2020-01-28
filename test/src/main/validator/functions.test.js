@@ -349,7 +349,7 @@ describe('Function Validation',() => {
         */
         let config={charClass : 'a-z'};
         // @ts-ignore
-        new ConfigPreCompiler(ZationConfigStub).preCompileValidationFunctions(config);
+        new ConfigPreCompiler(ZationConfigStub).precompileValidationFunctions(config);
 
         it('Not matching input should produce an error',() => {
             const eb = new BackErrorBag;
