@@ -10,6 +10,7 @@ import PubData              from "../../internalApi/pubData";
 import CChFamilyInfo        from "../../internalApi/cChFamilyInfo";
 import CChInfo              from "../../internalApi/cChInfo";
 import {IdValidConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
+import {AccessConfigValue}                                      from '../../access/accessOptions';
 
 type AnyFunction = (...args : any[]) => Promise<any> | any
 
@@ -148,7 +149,7 @@ export interface ChannelSettings {
     socketGetOwnPublish  ?: boolean;
 }
 
-export interface ZationChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub = AnyFunction,Unsub = AnyFunction,PubAccess = AnyFunction> extends ChannelSettings{
+export interface ZationChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub = AnyFunction,Unsub = AnyFunction,PubAccess extends Function = AnyFunction> extends ChannelSettings{
     /**
      * @description
      * Set event listener that gets triggered when the client is publishing in this channel.
@@ -202,7 +203,7 @@ export interface ZationChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub 
      * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //Only clients with user group: admin or
      * clients with user group: user and the token variable: age witch a value that's greater than 17, are allowed.
      */
-    clientPublishAccess  ?: PubAccess | boolean | string | number | (string|number)[];
+    clientPublishAccess ?: AccessConfigValue<PubAccess>;
     /**
      * @description
      * Set the access rule which clients are not allowed to publish in this channel.
@@ -236,7 +237,7 @@ export interface ZationChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub 
      * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //All clients with user group: admin or
      * clients with user group: user and the token variable: age witch a value that's greater than 17, are not allowed.
      */
-    clientPublishNotAccess  ?: PubAccess | boolean | string | number | (string|number)[];
+    clientPublishNotAccess ?: AccessConfigValue<PubAccess>;
 }
 
 export type UserChannel = ZationChannelConfig<
@@ -263,7 +264,7 @@ export type NormalChannel = ZationChannelConfig<
     NormalChClientPubAccessFunction
     >;
 
-export interface BaseCustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub = AnyFunction,Unsub = AnyFunction,PubAccess = AnyFunction,SubAccess = AnyFunction>
+export interface BaseCustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub = AnyFunction,Unsub = AnyFunction,PubAccess extends Function = AnyFunction,SubAccess extends Function = AnyFunction>
     extends ZationChannelConfig<Pub,BagPub,Sub,Unsub,PubAccess>, VersionAccessConfig, SystemAccessConfig {
     /**
      * @description
@@ -298,7 +299,7 @@ export interface BaseCustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,
      * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //Only clients with user group: admin or
      * clients with user group: user and the token variable: age witch a value that's greater than 17, are allowed.
      */
-    subscribeAccess  ?: SubAccess | boolean | string | number | (string|number)[];
+    subscribeAccess ?: AccessConfigValue<SubAccess>;
     /**
      * @description
      * Set the access rule which clients are not allowed to subscribe this channel.
@@ -332,7 +333,7 @@ export interface BaseCustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,
      * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //All clients with user group: admin or
      * clients with user group: user and the token variable: age witch a value that's greater than 17, are not allowed.
      */
-    subscribeNotAccess  ?: SubAccess | boolean | string | number | (string|number)[];
+    subscribeNotAccess ?: AccessConfigValue<SubAccess>;
 }
 
 export type CustomChFamily = (BaseCustomChannelConfig<
