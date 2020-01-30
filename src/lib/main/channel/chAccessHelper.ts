@@ -12,7 +12,7 @@ import CChInfo              from "../internalApi/cChInfo";
 import ChUtils              from "./chUtils";
 import PubData              from "../internalApi/pubData";
 import AuthEngine           from "../auth/authEngine";
-import AccessUtils, {AccessProcess} from "../access/accessUtils";
+import AccessUtils          from "../access/accessUtils";
 import {
     CChannelClientPubAccessFunction,
     CChannelSubAccessFunction,
@@ -40,16 +40,15 @@ export default class ChAccessHelper
     static createPubChAccessChecker
     (
         accessValue : any,
-        invertResult : boolean | undefined,
+        invertResult : boolean,
         bag : Bag)
         : ChPubAccessChecker
     {
         if(accessValue !== undefined) {
-            const accessProcess : AccessProcess = invertResult ? (b) => !b : (b) => b;
             return AccessUtils.createAccessChecker<ChPubAccessChecker,CChannelClientPubAccessFunction>
-            (accessValue,accessProcess,(f) => {
+            (accessValue,invertResult,(f) => {
                 return async (_a,pubData,socketInfo,chInfo) => {
-                    return accessProcess((await f(bag,pubData,socketInfo,chInfo)));
+                    return f(bag,pubData,socketInfo,chInfo);
                 };
             });
         }
@@ -67,16 +66,15 @@ export default class ChAccessHelper
     static createSubChAccessChecker
     (
         accessValue : any,
-        invertResult : boolean | undefined,
+        invertResult : boolean,
         bag : Bag)
         : ChSubAccessChecker
     {
         if(accessValue !== undefined) {
-            const accessProcess : AccessProcess = invertResult ? (b) => !b : (b) => b;
             return AccessUtils.createAccessChecker<ChSubAccessChecker,CChannelSubAccessFunction>
-            (accessValue,accessProcess,(f) => {
+            (accessValue,invertResult,(f) => {
                 return async (_a,socketInfo,chInfo) => {
-                    return accessProcess((await f(bag,socketInfo,chInfo)));
+                    return f(bag,socketInfo,chInfo);
                 };
             });
         }

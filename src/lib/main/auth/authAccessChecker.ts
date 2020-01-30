@@ -25,12 +25,12 @@ export default class AuthAccessChecker
         const info = AuthAccessChecker.processAuthAccessInfo(accessConfig);
 
         if(info){
-            const {accessValue,accessProcess} = info;
+            const {value,invertResult} = info;
             return AccessUtils.createAccessChecker<TokenStateAccessCheckFunction,NormalAuthAccessCustomFunction>
-            (accessValue,accessProcess,(func) => {
+            (value,invertResult,(func) => {
                 return async (authEngine) => {
                     const token = authEngine.getSHBridge().getToken();
-                    return accessProcess((await func(bag,token !== null ? new ZationTokenWrapper(token) : null)));
+                    return func(bag,token !== null ? new ZationTokenWrapper(token) : null);
                 };
             });
         }
@@ -41,23 +41,23 @@ export default class AuthAccessChecker
     }
 
     static processAuthAccessInfo(accessConfig : AuthAccessConfig<any>) :
-        {accessValue : any, accessProcess : (bool : boolean) => boolean} | undefined
+        {value: any, invertResult: boolean} | undefined
     {
         const notAccess = accessConfig.notAccess;
         const access    = accessConfig.access;
 
         //double keyword is checked in the starter checkConfig
         //search One
-        if(notAccess !== undefined) {
+        if(access !== undefined) {
             return {
-                accessProcess : (b) => !b,
-                accessValue : accessConfig.notAccess
+                invertResult: false,
+                value : accessConfig.access
             };
         }
-        else if(access !== undefined) {
+        else if(notAccess !== undefined) {
             return {
-                accessProcess : (b) => b,
-                accessValue : accessConfig.access
+                invertResult: true,
+                value : accessConfig.notAccess
             };
         }
         else {

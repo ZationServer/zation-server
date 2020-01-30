@@ -33,11 +33,11 @@ export default class DataboxAccessHelper
         const info = AuthAccessChecker.processAuthAccessInfo(accessConfig);
 
         if(info){
-            const {accessValue,accessProcess} = info;
+            const {value,invertResult} = info;
             return AccessUtils.createAccessChecker<DbAccessCheckFunction,DbAccessFunction>
-            (accessValue,accessProcess,(func) => {
+            (value,invertResult,(func) => {
                 return async (_a,socket,dbInfo) => {
-                    return accessProcess((await func(bag,socket,dbInfo)));
+                    return func(bag,socket,dbInfo);
                 };
             });
         }
