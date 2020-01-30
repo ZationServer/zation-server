@@ -453,14 +453,15 @@ export default class Config
             Config.configAdd(Config.tmpCustomChs,config.customChannels as object,'custom channel');
             Config.merge(config.zationChannels,...Config.tmpZationChannels);
 
-            if(this.tmpAuthController !== undefined && config.authController !== undefined){
-                throw new ConfigBuildError(
-                    `Conflict with the auth controller, the authController is defined in the app config and the config utils.`);
+            if(this.tmpAuthController !== undefined){
+                if(config.authController !== undefined){
+                    throw new ConfigBuildError(
+                        `Conflict with the auth controller, the authController is defined in the app config and the config utils.`);
+                }
+                else {
+                    config.authController = this.tmpAuthController;
+                }
             }
-            else {
-                config.authController = this.tmpAuthController;
-            }
-
         }
         return config;
     }
