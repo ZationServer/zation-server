@@ -183,8 +183,8 @@ export interface ZationChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub 
      * false           // No client is allowed
      * //Special-Keywords
      * 'all'           // All clients are allowed
-     * 'allAuth'       // Only all authenticated clients are allowed
-     * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed)
+     * 'allAuth'       // Only all authenticated clients are allowed (constant $allAuth is available)
+     * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed) (constant $allNotAuth is available)
      * //UserGroups
      * 'admin'         // Only all admins are allowed
      * 'guest'         // Only all clients with default user group are allowed
@@ -247,8 +247,8 @@ export interface BaseCustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,
      * false           // No client is allowed
      * //Special-Keywords
      * 'all'           // All clients are allowed
-     * 'allAuth'       // Only all authenticated clients are allowed
-     * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed)
+     * 'allAuth'       // Only all authenticated clients are allowed (constant $allAuth is available)
+     * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed) (constant $allNotAuth is available)
      * //UserGroups
      * 'admin'         // Only all admins are allowed
      * 'guest'         // Only all clients with default user group are allowed

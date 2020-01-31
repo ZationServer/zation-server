@@ -6,7 +6,19 @@ Copyright(c) Luca Scaringella
 
 import {createTokenCheckFunction, createUserIdCheck} from "../main/access/accessOptions";
 import forint, {ForintQuery}                         from "forint";
-import {ZationToken}                                 from "../main/constants/internal";
+import {ZationAccess, ZationToken}                   from '../main/constants/internal';
+
+/**
+ * Constant for zation access special keyword allAuth.
+ * Targets all authenticated clients.
+ */
+export const $allAuth = ZationAccess.ALL_AUTH;
+
+/**
+ * Constant for zation access special keyword allNotAuth.
+ * Targets all unauthenticated clients.
+ */
+export const $allNotAuth = ZationAccess.ALL_NOT_AUTH;
 
 /**
  * This function can be used to check the access with the token of a client.

@@ -27,7 +27,7 @@ import Router                       from "./lib/api/Router";
 import {Register}                   from "./lib/api/decorator/component/Register";
 import {ModelConfigTranslatable,InputConfigTranslatable}          from "./lib/api/ConfigTranslatable";
 import {$value, $key, $pair, $all, $any, $contains, $matches}     from './lib/api/databox/DbApiUtils';
-import {$tokenHasVariables, $tokenVariablesMatch, $userId}        from "./lib/api/AccessApiUtils";
+import {$allAuth, $allNotAuth, $tokenHasVariables, $tokenVariablesMatch, $userId} from './lib/api/AccessApiUtils';
 import {Model}                      from "./lib/api/decorator/input/Model";
 import {ObjectModel}                from "./lib/api/decorator/input/ObjectModel";
 import {ParamInput}                 from "./lib/api/decorator/input/ParamInput";
@@ -101,6 +101,8 @@ export {
         $contains,
         $any,
         $matches,
+        $allAuth,
+        $allNotAuth,
         $userId,
         $tokenHasVariables,
         $tokenVariablesMatch,
