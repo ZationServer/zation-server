@@ -11,6 +11,7 @@ import CChFamilyInfo        from "../../internalApi/cChFamilyInfo";
 import CChInfo              from "../../internalApi/cChInfo";
 import {IdValidConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
 import {AccessConfigValue}                                      from '../../access/accessOptions';
+import {Notable}                                                from '../../../api/Notable';
 
 type AnyFunction = (...args : any[]) => Promise<any> | any
 
@@ -173,7 +174,7 @@ export interface ZationChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub 
     /**
      * @description
      * Set the access rule which clients are allowed to publish in this channel.
-     * Notice that only one of the options 'clientPublishNotAccess' or 'clientPublishAccess' is allowed.
+     * It's possible to invert the result using the $not function.
      * Look in the examples to see what possibilities you have.
      * @default false
      * @example
@@ -191,6 +192,8 @@ export interface ZationChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub 
      * $userId(10)        // Only all clients with user id 10 are allowed
      * $userId(10,false)  // Only all clients with user id 10 or '10' are allowed
      * $userId('lmc')     // Only all clients with user id 'lmc' are allowed
+     * //Invert
+     * $not(['user','guest',$userId(23)]) // All clients with user group: user, default user group or user id 23 are not allowed.
      * //Custom-Function
      * (bag,...) => {} // If returns true the client is allowed, false will not allow.
      * To see all arguments of the function, check out the current generic function type.
@@ -203,41 +206,7 @@ export interface ZationChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub 
      * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //Only clients with user group: admin or
      * clients with user group: user and the token variable: age witch a value that's greater than 17, are allowed.
      */
-    clientPublishAccess ?: AccessConfigValue<PubAccess>;
-    /**
-     * @description
-     * Set the access rule which clients are not allowed to publish in this channel.
-     * Notice that only one of the options 'clientPublishNotAccess' or 'clientPublishAccess' is allowed.
-     * Look in the examples to see what possibilities you have.
-     * @default (use clientPublishAccess)
-     * @example
-     * //Boolean
-     * true            // No client is allowed
-     * false           // All clients are allowed
-     * //Special-Keywords
-     * 'all'           // No client is allowed
-     * 'allAuth'       // All authenticated clients are not allowed
-     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
-     * //UserGroups
-     * 'admin'         // All admins are not allowed
-     * 'guest'         // All clients with default user group are not allowed
-     * //UserId
-     * $userId(10)        // All clients with user id 10 are not allowed
-     * $userId(10,false)  // All clients with user id 10 or '10' are not allowed
-     * $userId('lmc')     // All clients with user id 'lmc' are not allowed
-     * //Custom-Function
-     * (bag,...) => {} // If returns true the client is not allowed, false will allow.
-     * To see all arguments of the function, check out the current generic function type.
-     * //Or-Conditions
-     * ['user','guest',$userId(23)] // All clients with user group: user, default user group or user id 23 are not allowed.
-     * //And-Conditions (Array in Or-Condition-Array)
-     * [['user',$tokenHasVariables({canEdit : true})]] //All clients with user group: user and token variable
-     * canEdit with the value true are not allowed.
-     * //Complex
-     * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //All clients with user group: admin or
-     * clients with user group: user and the token variable: age witch a value that's greater than 17, are not allowed.
-     */
-    clientPublishNotAccess ?: AccessConfigValue<PubAccess>;
+    clientPublishAccess ?: Notable<AccessConfigValue<PubAccess>>;
 }
 
 export type UserChannel = ZationChannelConfig<
@@ -269,7 +238,7 @@ export interface BaseCustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,
     /**
      * @description
      * Set the access rule which clients are allowed to subscribe this channel.
-     * Notice that only one of the options 'subscribeNotAccess' or 'subscribeAccess' is allowed.
+     * It's possible to invert the result using the $not function.
      * Look in the examples to see what possibilities you have.
      * @default false
      * @example
@@ -287,6 +256,8 @@ export interface BaseCustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,
      * $userId(10)        // Only all clients with user id 10 are allowed
      * $userId(10,false)  // Only all clients with user id 10 or '10' are allowed
      * $userId('lmc')     // Only all clients with user id 'lmc' are allowed
+     * //Invert
+     * $not(['user','guest',$userId(23)]) // All clients with user group: user, default user group or user id 23 are not allowed.
      * //Custom-Function
      * (bag,...) => {} // If returns true the client is allowed, false will not allow.
      * To see all arguments of the function, check out the current generic function type.
@@ -299,41 +270,7 @@ export interface BaseCustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,
      * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //Only clients with user group: admin or
      * clients with user group: user and the token variable: age witch a value that's greater than 17, are allowed.
      */
-    subscribeAccess ?: AccessConfigValue<SubAccess>;
-    /**
-     * @description
-     * Set the access rule which clients are not allowed to subscribe this channel.
-     * Notice that only one of the options 'subscribeNotAccess' or 'subscribeAccess' is allowed.
-     * Look in the examples to see what possibilities you have.
-     * @default (use subscribeAccess)
-     * @example
-     * //Boolean
-     * true            // No client is allowed
-     * false           // All clients are allowed
-     * //Special-Keywords
-     * 'all'           // No client is allowed
-     * 'allAuth'       // All authenticated clients are not allowed
-     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
-     * //UserGroups
-     * 'admin'         // All admins are not allowed
-     * 'guest'         // All clients with default user group are not allowed
-     * //UserId
-     * $userId(10)        // All clients with user id 10 are not allowed
-     * $userId(10,false)  // All clients with user id 10 or '10' are not allowed
-     * $userId('lmc')     // All clients with user id 'lmc' are not allowed
-     * //Custom-Function
-     * (bag,...) => {} // If returns true the client is not allowed, false will allow.
-     * To see all arguments of the function, check out the current generic function type.
-     * //Or-Conditions
-     * ['user','guest',$userId(23)] // All clients with user group: user, default user group or user id 23 are not allowed.
-     * //And-Conditions (Array in Or-Condition-Array)
-     * [['user',$tokenHasVariables({canEdit : true})]] //All clients with user group: user and token variable
-     * canEdit with the value true are not allowed.
-     * //Complex
-     * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //All clients with user group: admin or
-     * clients with user group: user and the token variable: age witch a value that's greater than 17, are not allowed.
-     */
-    subscribeNotAccess ?: AccessConfigValue<SubAccess>;
+    subscribeAccess ?: Notable<AccessConfigValue<SubAccess>>;
 }
 
 export type CustomChFamily = (BaseCustomChannelConfig<

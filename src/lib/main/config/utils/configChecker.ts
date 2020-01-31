@@ -53,6 +53,7 @@ import DataboxFamily                           from "../../../api/databox/Databo
 import Databox                                 from "../../../api/databox/Databox";
 import {AuthAccessConfig, VersionAccessConfig} from "../definitions/configComponents";
 import DbConfigUtils                           from "../../databox/dbConfigUtils";
+import {getNotableValue, isNotableNot}         from '../../../api/Notable';
 
 export interface ModelCheckedMem {
     _checked : boolean
@@ -334,32 +335,17 @@ export default class ConfigChecker
     }
 
     private checkClientPubAccess(channel : ZationChannelConfig,target : Target) {
-        if (channel.clientPublishAccess !== undefined && channel.clientPublishNotAccess !== undefined) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                `${target.getTarget()} only 'publishAccess' or 'publishNotAccess' keyword is allow.`));
-        }
-
         //check protocolAccess dependency to userGroups
-        this.checkAccessKeyDependency
-        (channel.clientPublishAccess, nameof<ZationChannelConfig>(s => s.clientPublishAccess), target);
-        this.checkAccessKeyDependency
-        (channel.clientPublishNotAccess, nameof<ZationChannelConfig>(s => s.clientPublishNotAccess), target);
+        this.checkAccessKeyDependency(getNotableValue(channel.clientPublishAccess),
+            target.addPath(nameof<ZationChannelConfig>(s => s.clientPublishAccess)));
 
         this.warningForPublish(channel.clientPublishAccess, target);
-        this.warningForPublish(channel.clientPublishNotAccess, target, true);
     }
 
     private checkSubAccess(channel : BaseCustomChannelConfig, target : Target) {
-        if (channel.subscribeAccess !== undefined && channel.subscribeNotAccess !== undefined) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                `${target.getTarget()} only 'subscribeAccess' or 'subscribeNotAccess' keyword is allow.`));
-        }
-
         //check protocolAccess dependency to userGroups
-        this.checkAccessKeyDependency
-        (channel.subscribeAccess, nameof<BaseCustomChannelConfig>(s => s.subscribeAccess), target);
-        this.checkAccessKeyDependency
-        (channel.subscribeNotAccess, nameof<BaseCustomChannelConfig>(s => s.subscribeNotAccess), target);
+        this.checkAccessKeyDependency(getNotableValue(channel.subscribeAccess),
+            target.addPath(nameof<BaseCustomChannelConfig>(s => s.subscribeAccess)));
     }
 
 
@@ -383,7 +369,7 @@ export default class ConfigChecker
 
     // noinspection JSMethodCanBeStatic
     private warningForPublish(value: any, target: Target, convert: boolean = false): void {
-        if (value !== undefined && (typeof value !== "boolean" || (convert ? !value : value))) {
+        if (getNotableValue(value) === !isNotableNot(value)) {
             Logger.printConfigWarning
             (ConfigNames.APP,
                 `${target.getTarget()} please notice that 'clientPubAccess' is used when a client publishes from outside in a channel! ` +
@@ -393,13 +379,9 @@ export default class ConfigChecker
 
 
     private checkAccessControllerDefaultIsSet() {
-        let access = ObjectPath.get(this.zcLoader.appConfig,
-            [nameof<AppConfig>(s => s.controllerDefaults), nameof<ControllerConfig>(s => s.access)]);
-
-        let notAccess = ObjectPath.get(this.zcLoader.appConfig,
-            [nameof<AppConfig>(s => s.controllerDefaults), nameof<ControllerConfig>(s => s.notAccess)]);
-
-        if (access === undefined && notAccess === undefined) {
+        const accessValue = getNotableValue(ObjectPath.get(this.zcLoader.appConfig,
+            [nameof<AppConfig>(s => s.controllerDefaults), nameof<ControllerConfig>(s => s.access)]));
+        if (accessValue === undefined) {
             Logger.printConfigWarning(ConfigNames.APP, 'It is recommended to set a controller default value for access or notAccess.');
         }
     }
@@ -1399,51 +1381,25 @@ export default class ConfigChecker
         }
     }
 
-    private static getAccessKeyWord(access: any, notAccess: any): string {
-        let keyWord = '';
-        //search One
-        if (notAccess !== undefined && access === undefined) {
-            keyWord = nameof<ControllerConfig>(s => s.notAccess);
-        } else if (notAccess === undefined && access !== undefined) {
-            keyWord = nameof<ControllerConfig>(s => s.access)
-        }
-        return keyWord;
+    private checkAuthAccessConfig(config: AuthAccessConfig<any>, target) {
+        this.checkAccessKeyDependency(getNotableValue(config.access),target.addPath(nameof<ControllerConfig>(s => s.access)));
     }
 
-    private checkAuthAccessConfig(cc: AuthAccessConfig<any>, target) {
-        const notAccess = cc.notAccess;
-        const access = cc.access;
-
-        if (notAccess !== undefined && access !== undefined) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
-                `${target.getTarget()} has a access and notAccess keyword only one is allowed!`));
-        } else {
-            const keyWord = ConfigChecker.getAccessKeyWord(access, notAccess);
-            this.checkAccessKeyDependency(cc[keyWord], keyWord, target);
-        }
-    }
-
-    private checkAccessKeyDependency(value, keyword, target) {
-        const checkDependency = (string) => {
+    private checkAccessKeyDependency(value, target) {
+        if (typeof value === 'string') {
             ConfigCheckerTools.assertEqualsOne
             (
                 this.validAccessValues,
-                string,
+                value,
                 ConfigNames.APP,
                 this.ceb,
-                `user group '${string}' is not found in auth groups or is default group.`,
-                target.addPath(keyword)
+                `user group '${value}' is not found in auth groups or is default group.`,
+                target
             );
-        };
-
-        if (typeof value === 'string') {
-            checkDependency(value);
         } else if (Array.isArray(value)) {
-            value.forEach((e) => {
-                if (typeof e === 'string') {
-                    checkDependency(e);
-                }
-            })
+            for(let i = 0; i < value.length; i++){
+                this.checkAccessKeyDependency(value[i],target.addPath(`${i}`));
+            }
         }
     }
 

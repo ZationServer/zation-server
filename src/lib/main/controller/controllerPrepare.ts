@@ -175,7 +175,7 @@ export default class ControllerPrepare
             controllerInstance: cInstance,
             versionAccessCheck : SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
-            tokenStateCheck : AuthAccessChecker.createAuthAccessChecker(config,this.bag),
+            tokenStateCheck : AuthAccessChecker.createAuthAccessChecker(config.access,this.bag),
             middlewareInvoke : ControllerUtils.createMiddlewareInvoker(config),
             inputConsume : InputClosureCreator.createInputConsumer(config,this.bag),
             inputValidationCheck : InputClosureCreator.createValidationChecker(config,this.bag)

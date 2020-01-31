@@ -5,7 +5,6 @@ Copyright(c) Luca Scaringella
  */
 
 import {
-    ChannelSettings,
     BaseCustomChannelConfig
 } from "../definitions/channelsConfig";
 import {
@@ -139,41 +138,10 @@ export default class ConfigPrecompiler
 
                     //defaults
                     if(typeof customChannelDefaults === 'object'){
-                        if(channel.subscribeAccess === undefined && channel.subscribeNotAccess === undefined) {
-                            if(customChannelDefaults.subscribeAccess !== undefined) {
-                                channel.subscribeAccess = customChannelDefaults.subscribeAccess;
-                            }
-                            if(customChannelDefaults.subscribeNotAccess !== undefined) {
-                                channel.subscribeNotAccess = customChannelDefaults.subscribeNotAccess
-                            }
-                        }
-
-                        if(channel.clientPublishAccess !== undefined && channel.clientPublishNotAccess !== undefined) {
-                            if(customChannelDefaults.clientPublishAccess !== undefined) {
-                                channel.clientPublishAccess = customChannelDefaults.clientPublishAccess;
-                            }
-                            if(customChannelDefaults.clientPublishNotAccess !== undefined) {
-                                channel.clientPublishNotAccess = customChannelDefaults.clientPublishNotAccess
-                            }
-                        }
-
-                        this.processDefaultValue(channel,customChannelDefaults,nameof<BaseCustomChannelConfig>(s => s.onClientPublish));
-                        this.processDefaultValue(channel,customChannelDefaults,nameof<BaseCustomChannelConfig>(s => s.onSubscription));
-                        this.processDefaultValue(channel,customChannelDefaults,nameof<BaseCustomChannelConfig>(s => s.onUnsubscription));
-                        this.processDefaultValue(channel,customChannelDefaults,nameof<ChannelSettings>(s => s.socketGetOwnPublish));
+                        ObjectUtils.addObToOb(channel,customChannelDefaults,false);
                     }
                 }
             }
-        }
-    }
-
-    // noinspection JSMethodCanBeStatic
-    private processDefaultValue(obj : object,defaultObj : object,key : string) : void
-    {
-        if((!obj.hasOwnProperty(key))&&
-            defaultObj.hasOwnProperty(key))
-        {
-            obj[key] = defaultObj[key];
         }
     }
 

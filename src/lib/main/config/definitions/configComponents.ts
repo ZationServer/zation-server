@@ -10,6 +10,7 @@ import {AccessConfigValue}                                 from "../../access/ac
 import {IdValid}                                           from "../../id/idValidCheckerUtils";
 import Bag                                                 from "../../../api/Bag";
 import ZationTokenWrapper                                  from "../../internalApi/zationTokenWrapper";
+import {Notable}                                           from '../../../api/Notable';
 
 export type NormalAuthAccessCustomFunction = (bag : Bag, token : ZationTokenWrapper | null) => Promise<boolean> | boolean;
 
@@ -17,7 +18,7 @@ export interface AuthAccessConfig<T extends Function = NormalAuthAccessCustomFun
     /**
      * @description
      * Set the (Client Token State) access rule which clients are allowed to access this component.
-     * Notice that only one of the options 'access' or 'notAccess' is allowed.
+     * It's possible to invert the result using the $not function.
      * Look in the examples to see what possibilities you have.
      * @default default config otherwise false
      * @example
@@ -35,6 +36,8 @@ export interface AuthAccessConfig<T extends Function = NormalAuthAccessCustomFun
      * $userId(10)        // Only all clients with user id 10 are allowed
      * $userId(10,false)  // Only all clients with user id 10 or '10' are allowed
      * $userId('lmc')     // Only all clients with user id 'lmc' are allowed
+     * //Invert
+     * $not(['user','guest',$userId(23)]) // All clients with user group: user, default user group or user id 23 are not allowed.
      * //Custom-Function
      * (bag : Bag,token : ZationTokenInfo | null) => {} // If returns true the client is allowed, false will not allow.
      * //Or-Conditions
@@ -46,40 +49,7 @@ export interface AuthAccessConfig<T extends Function = NormalAuthAccessCustomFun
      * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //Only clients with user group: admin or
      * clients with user group: user and the token variable: age witch a value that's greater than 17, are allowed.
      */
-    access ?: AccessConfigValue<T>;
-    /**
-     * @description
-     * Set the (Client Token State) access rule which clients are not allowed to access this component.
-     * Notice that only one of the options 'access' or 'notAccess' is allowed.
-     * Look in the examples to see what possibilities you have.
-     * @default (use access)
-     * @example
-     * //Boolean
-     * true            // No client is allowed
-     * false           // All clients are allowed
-     * //Special-Keywords
-     * 'all'           // No client is allowed
-     * 'allAuth'       // All authenticated clients are not allowed
-     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
-     * //UserGroups
-     * 'admin'         // All admins are not allowed
-     * 'guest'         // All clients with default user group are not allowed
-     * //UserId
-     * $userId(10)        // All clients with user id 10 are not allowed
-     * $userId(10,false)  // All clients with user id 10 or '10' are not allowed
-     * $userId('lmc')     // All clients with user id 'lmc' are not allowed
-     * //Custom-Function
-     * (bag : Bag,token : ZationTokenInfo | null) => {} // If returns true the client is not allowed, false will allow.
-     * //Or-Conditions
-     * ['user','guest',$userId(23)] // All clients with user group: user, default user group or user id 23 are not allowed.
-     * //And-Conditions (Array in Or-Condition-Array)
-     * [['user',$tokenHasVariables({canEdit : true})]] //All clients with user group: user and token variable
-     * canEdit with the value true are not allowed.
-     * //Complex
-     * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //All clients with user group: admin or
-     * clients with user group: user and the token variable: age witch a value that's greater than 17, are not allowed.
-     */
-    notAccess ?: AccessConfigValue<T>;
+    access ?: Notable<AccessConfigValue<T>>;
 }
 
 export interface IdValidConfig {

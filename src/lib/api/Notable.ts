@@ -3,9 +3,11 @@ Author: Luca Scaringella
 GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
-export const not = Symbol();
+export const notableNot = Symbol();
+export const notableValue = Symbol();
 
-export type Notable<T> = T & {[not]: boolean};
+export type Notable<T> = (T extends object ? (T & {[notableNot]: boolean}) :
+    {[notableValue]: T,[notableNot]: boolean}) | T;
 
 /**
  * Inverts the value.
@@ -16,20 +18,28 @@ export function $not<T extends object>(value: T): Notable<T>;
  * Inverts the value.
  * @param value
  */
-export function $not<T>(value: T): Notable<{value: T}>;
+export function $not<T>(value: T): Notable<T>;
 /**
  * Inverts the value.
  * @param value
  */
 export function $not(value: any): Notable<any> {
     if(value && typeof value === 'object'){
-        value[not] = true;
+        value[notableNot] = true;
     }
     else {
-        return {[not]: true,value: value};
+        return {[notableNot]: true,[notableValue]: value};
     }
 }
 
-export function isNotable<T>(value: T) : value is Notable<T> {
-    return value && typeof value[not] === 'boolean';
+export function isNotableNot<T>(value : Notable<T>) : boolean {
+    return value && typeof value === 'object' &&
+        (value as object).hasOwnProperty(notableNot) && value[notableNot];
+}
+
+export function getNotableValue<T>(value : Notable<T>) : any {
+    if(value && typeof value === 'object' && (value as object).hasOwnProperty(notableValue)){
+        return value[notableValue];
+    }
+    return value as T;
 }

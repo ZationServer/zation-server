@@ -19,6 +19,8 @@ import {
 } from "../config/definitions/channelsConfig";
 import CChFamilyInfo   from "../internalApi/cChFamilyInfo";
 import {ZationChannel} from "./channelDefinitions";
+import {AccessConfigValue} from '../access/accessOptions';
+import {getNotableValue, isNotableNot} from '../../api/Notable';
 
 export type ChSubAccessChecker =
     (authEngine : AuthEngine, socketInfo : ZSocket, chInfo : CChInfo | CChFamilyInfo) => Promise<boolean>
@@ -34,19 +36,18 @@ export default class ChAccessHelper
     /**
      * Returns a Closures for checking the client publish access to a channel.
      * @param accessValue
-     * @param invertResult
      * @param bag
      */
     static createPubChAccessChecker
     (
-        accessValue : any,
-        invertResult : boolean,
+        accessValue : AccessConfigValue<any>,
         bag : Bag)
         : ChPubAccessChecker
     {
-        if(accessValue !== undefined) {
+        const rawValue = getNotableValue(accessValue);
+        if(rawValue !== undefined) {
             return AccessUtils.createAccessChecker<ChPubAccessChecker,CChannelClientPubAccessFunction>
-            (accessValue,invertResult,(f) => {
+            (rawValue,isNotableNot(accessValue),(f) => {
                 return async (_a,pubData,socketInfo,chInfo) => {
                     return f(bag,pubData,socketInfo,chInfo);
                 };
@@ -60,19 +61,18 @@ export default class ChAccessHelper
     /**
      * Returns a Closures for checking the subscribe access to a channel.
      * @param accessValue
-     * @param invertResult
      * @param bag
      */
     static createSubChAccessChecker
     (
-        accessValue : any,
-        invertResult : boolean,
+        accessValue : AccessConfigValue<any>,
         bag : Bag)
         : ChSubAccessChecker
     {
-        if(accessValue !== undefined) {
+        const rawValue = getNotableValue(accessValue);
+        if(rawValue !== undefined) {
             return AccessUtils.createAccessChecker<ChSubAccessChecker,CChannelSubAccessFunction>
-            (accessValue,invertResult,(f) => {
+            (rawValue,isNotableNot(accessValue),(f) => {
                 return async (_a,socketInfo,chInfo) => {
                     return f(bag,socketInfo,chInfo);
                 };

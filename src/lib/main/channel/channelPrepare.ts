@@ -114,29 +114,6 @@ export class ChannelPrepare {
     }
 
     /**
-     * Process the access/not access key and value.
-     * @param config
-     * @param accessKey
-     * @param notAccessKey
-     */
-    private static processAccessInvert(config : Record<string,any>, accessKey : string, notAccessKey : string) :
-        {value : any,inverted : boolean}
-    {
-        let value : any = undefined;
-        let inverted = false;
-
-        if (config[notAccessKey] !== undefined) {
-           value = config[notAccessKey];
-           inverted = true;
-        }
-        else  {
-            value = config[accessKey];
-        }
-
-        return {value, inverted};
-    }
-
-    /**
      * Prepare process for a custom id channels.
      * @param bag
      */
@@ -168,16 +145,9 @@ export class ChannelPrepare {
      */
     private processCustomChannel(chConfig : BaseCustomChannelConfig, bag : Bag): CustomChStorage {
         const cChStorage : ChStorage = this.processChannel(chConfig,bag);
-
-        const subAccessInfo = ChannelPrepare.processAccessInvert(chConfig,
-            nameof<BaseCustomChannelConfig>(s => s.subscribeAccess),
-            nameof<BaseCustomChannelConfig>(s => s.subscribeNotAccess)
-        );
-
         return {
             ...cChStorage,
-            subscribeAccessChecker : ChAccessHelper.createSubChAccessChecker
-            (subAccessInfo.value,subAccessInfo.inverted,bag),
+            subscribeAccessChecker : ChAccessHelper.createSubChAccessChecker(chConfig.subscribeAccess,bag),
             versionAccessCheck : SystemVersionChecker.createVersionChecker(chConfig),
             systemAccessCheck : SystemVersionChecker.createSystemChecker(chConfig)
         };
@@ -190,13 +160,8 @@ export class ChannelPrepare {
      * @param bag
      */
     private processChannel(channel : ZationChannelConfig,bag : Bag): ChStorage {
-        const pubAccessInfo = ChannelPrepare.processAccessInvert(channel,
-            nameof<ZationChannelConfig>(s => s.clientPublishAccess),
-            nameof<BaseCustomChannelConfig>(s => s.clientPublishNotAccess)
-        );
         return {
-            clientPublishAccessChecker : ChAccessHelper.createPubChAccessChecker
-            (pubAccessInfo.value,pubAccessInfo.inverted,bag),
+            clientPublishAccessChecker : ChAccessHelper.createPubChAccessChecker(channel.clientPublishAccess,bag),
             socketGetOwnPub : ChannelPrepare.processSocketGetOwnPub(channel.socketGetOwnPublish),
             onClientPub : channel.onBagPublish ? FuncUtils.createEventSyncInvoker(channel.onBagPublish) : () => {},
             onBagPub : channel.onBagPublish ? FuncUtils.createEventSyncInvoker(channel.onBagPublish) : () => {},

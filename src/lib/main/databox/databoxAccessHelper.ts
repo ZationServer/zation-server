@@ -8,13 +8,13 @@ import UpSocket             from "../sc/socket";
 import {Databox}            from "../../../index";
 import DataboxFamily        from "../../api/databox/DataboxFamily";
 import AccessUtils          from "../access/accessUtils";
-import {AuthAccessConfig}   from "../config/definitions/configComponents";
 import Bag                  from "../../api/Bag";
 import {DataboxInfo}        from "./dbDefinitions";
-import AuthAccessChecker    from "../auth/authAccessChecker";
 import {DbAccessFunction}   from "../config/definitions/databoxConfig";
 import ZSocket              from "../internalApi/zSocket";
 import AuthEngine           from "../auth/authEngine";
+import {AccessConfigValue}  from '../access/accessOptions';
+import {getNotableValue, isNotableNot, Notable} from '../../api/Notable';
 
 export type DbAccessCheckFunction = (authEngine : AuthEngine, socket : ZSocket, dbInfo : DataboxInfo) => Promise<boolean>
 
@@ -25,17 +25,15 @@ export default class DataboxAccessHelper
 {
     /**
      * Returns a closure for checking the access to the databox.
-     * @param accessConfig
+     * @param accessValue
      * @param bag
      */
-    static createAccessChecker(accessConfig : AuthAccessConfig<DbAccessFunction>, bag : Bag): DbAccessCheckFunction
+    static createAccessChecker(accessValue : Notable<AccessConfigValue<DbAccessFunction>> | undefined, bag : Bag): DbAccessCheckFunction
     {
-        const info = AuthAccessChecker.processAuthAccessInfo(accessConfig);
-
-        if(info){
-            const {value,invertResult} = info;
+        const rawValue = getNotableValue(accessValue);
+        if(rawValue !== undefined){
             return AccessUtils.createAccessChecker<DbAccessCheckFunction,DbAccessFunction>
-            (value,invertResult,(func) => {
+            (rawValue,isNotableNot(accessValue),(func) => {
                 return async (_a,socket,dbInfo) => {
                     return func(bag,socket,dbInfo);
                 };

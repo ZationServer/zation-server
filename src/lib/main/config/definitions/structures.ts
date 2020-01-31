@@ -90,7 +90,6 @@ ControllerConfig[nameof<ControllerConfig>(s => s.httpGetAllowed)]   = {types : [
 ControllerConfig[nameof<ControllerConfig>(s => s.httpPostAllowed)]  = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.allowAnyInput)]    = {types : ['boolean'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.access)]           = {types : ['string','function','object','array'],isOptional : true};
-ControllerConfig[nameof<ControllerConfig>(s => s.notAccess)]        = {types : ['string','function','object','array'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.versionAccess)]    = {types : ['string','object'],isOptional : true};
 ControllerConfig[nameof<ControllerConfig>(s => s.systemAccess)]     = {types : ['array'],arrayType : 'string',isOptional : true};
 
@@ -281,9 +280,7 @@ PanelUserConfig[nameof<PanelUserConfig>(s => s.password)]     = {types : ['strin
 
 const CustomChConfig = {};
 CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.clientPublishAccess)]      = {types : ['function','boolean','object','array','string'],isOptional : true};
-CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.clientPublishNotAccess)]   = {types : ['function','boolean','object','array','string'],isOptional : true};
 CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.subscribeAccess)]          = {types : ['function','boolean','object','array','string'],isOptional : true};
-CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.subscribeNotAccess)]       = {types : ['function','boolean','object','array','string'],isOptional : true};
 CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.onClientPublish)]          = {types : ['function','array'],isOptional : true};
 CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.onBagPublish)]             = {types : ['function','array'],isOptional : true};
 CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.onSubscription)]           = {types : ['function','array'],isOptional : true};
@@ -303,7 +300,6 @@ ZationChannelConfig[nameof<ZationChannelConfig>(s => s.onBagPublish)]       = {t
 ZationChannelConfig[nameof<ZationChannelConfig>(s => s.onSubscription)]     = {types : ['function','array'],isOptional : true};
 ZationChannelConfig[nameof<ZationChannelConfig>(s => s.onUnsubscription)]   = {types : ['function','array'],isOptional : true};
 ZationChannelConfig[nameof<BaseCustomChannelConfig>(s => s.clientPublishAccess)]      = {types : ['function','boolean','object','array','string'],isOptional : true};
-ZationChannelConfig[nameof<BaseCustomChannelConfig>(s => s.clientPublishNotAccess)]   = {types : ['function','boolean','object','array','string'],isOptional : true};
 
 const ArrayShortCutSpecify = {};
 ArrayShortCutSpecify[nameof<ArraySettings>(s => s.minLength)]         = {types : ['number'],isOptional : true};
