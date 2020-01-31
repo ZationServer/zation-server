@@ -368,7 +368,7 @@ export default class ConfigChecker
     }
 
     // noinspection JSMethodCanBeStatic
-    private warningForPublish(value: any, target: Target, convert: boolean = false): void {
+    private warningForPublish(value: any, target: Target): void {
         if (getNotableValue(value) === !isNotableNot(value)) {
             Logger.printConfigWarning
             (ConfigNames.APP,
