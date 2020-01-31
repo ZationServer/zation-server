@@ -6,8 +6,7 @@ Copyright(c) Luca Scaringella
 export const notableNot = Symbol();
 export const notableValue = Symbol();
 
-export type Notable<T> = (T extends object ? (T & {[notableNot]: boolean}) :
-    {[notableValue]: T,[notableNot]: boolean}) | T;
+export type Notable<T> = ({[notableValue]: T,[notableNot]: boolean}) | T;
 
 /**
  * Inverts the value.
@@ -24,20 +23,19 @@ export function $not<T>(value: T): Notable<T>;
  * @param value
  */
 export function $not(value: any): Notable<any> {
-    if(value && typeof value === 'object'){
-        value[notableNot] = true;
-    }
-    else {
+    const isObject = typeof value === 'object';
+    if(!isObject && (isObject && value && value[notableNot] === undefined)){
         return {[notableNot]: true,[notableValue]: value};
     }
+    return value;
 }
 
-export function isNotableNot<T>(value : Notable<T>) : boolean {
+export function isNotableNot<T>(value : Notable<T> | undefined) : boolean {
     return value && typeof value === 'object' &&
         (value as object).hasOwnProperty(notableNot) && value[notableNot];
 }
 
-export function getNotableValue<T>(value : Notable<T>) : any {
+export function getNotableValue<T>(value : Notable<T> | undefined) : any {
     if(value && typeof value === 'object' && (value as object).hasOwnProperty(notableValue)){
         return value[notableValue];
     }
