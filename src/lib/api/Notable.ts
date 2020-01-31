@@ -24,15 +24,14 @@ export function $not<T>(value: T): Notable<T>;
  */
 export function $not(value: any): Notable<any> {
     const isObject = typeof value === 'object';
-    if(!isObject && (isObject && value && value[notableNot] === undefined)){
+    if(!isObject || (value && value[notableNot] === undefined)){
         return {[notableNot]: true,[notableValue]: value};
     }
     return value;
 }
 
 export function isNotableNot<T>(value : Notable<T> | undefined) : boolean {
-    return value && typeof value === 'object' &&
-        (value as object).hasOwnProperty(notableNot) && value[notableNot];
+    return value && typeof value === 'object' && value[notableNot];
 }
 
 export function getNotableValue<T>(value : Notable<T> | undefined) : any {
