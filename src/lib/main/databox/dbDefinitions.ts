@@ -472,13 +472,12 @@ export interface IfOption {
      * You can define multiple conditions with an array or only one condition.
      * If you have an operation that has a selector that has multiple key targets,
      * the if conditions will only be evaluated once for every component.
-     * There are four helper functions to build a condition the $contains,
-     * $notContains, $matches, and $notMatches helper.
-     * In all helper functions, you pass in forint queries.
-     * The contains helper functions will execute the queries multiple times
+     * There are two helper functions to build a condition the $contains and $matches helper.
+     * In both helper functions, you pass in forint queries.
+     * The contains helper function will execute the queries multiple times
      * for each key or value.
      * If at least one pair, key, or value matches, the condition is evaluated to true.
-     * The notContains function behaves like the contains but will invert the result.
+     * It's possible to invert the result using the $not function.
      * That gives you the possibility to check that a specific key, value,
      * or pair must exist or not.
      * In the case of a head selector (with selector [] or ''), the key always is: '' and
@@ -486,20 +485,21 @@ export interface IfOption {
      * With the $any constant, which refers to an empty query ({}),
      * you can check if any pair exists or not.
      * Some useful example would be to reinsert old data,
-     * but only to the clients that are already loaded this old data section.
+     * but only to the clients that already loaded this old data section.
      * Or to build a set where each element value should be unique.
      * The matches helper function will execute the query once for the
      * complete object (all key-value pairs).
-     * The notMatches function behaves like the matches but will invert the result.
+     * It's also possible to invert the result using the $not function.
      * In the case of a head selector (with selector [] or ''), the value
      * of the head (complete data structure) will be used.
      * It helps to check multiple pairs in one query and makes it more readable.
      * @example
-     * if : $notContains($any)
+     * if : $not($contains($any))
      * if : $contains($key('20'))
-     * if : [$contains($value({name: 'luca'})),$notContains($key('30'))]
+     * if : [$contains($value({name: 'luca'})),$not(contains($key('30')))]
      * if : $contains($pair('name','luca'))
      * if : $matches({name: 'luca', age: {gte: 18}, email: 'test1@test.de'})
+     * if : $not($matches({email: 'test1@test.de'}))
      */
     if ?: IfOptionValue;
 }

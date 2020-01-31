@@ -26,7 +26,7 @@ import ZationMaster                 from "./lib/core/zationMaster";
 import Router                       from "./lib/api/Router";
 import {Register}                   from "./lib/api/decorator/component/Register";
 import {ModelConfigTranslatable,InputConfigTranslatable}          from "./lib/api/ConfigTranslatable";
-import {$value, $key, $pair, $all, $any, $contains, $notContains, $matches, $notMatches} from './lib/api/databox/DbApiUtils';
+import {$value, $key, $pair, $all, $any, $contains, $matches}     from './lib/api/databox/DbApiUtils';
 import {$tokenHasVariables, $tokenVariablesMatch, $userId}        from "./lib/api/AccessApiUtils";
 import {Model}                      from "./lib/api/decorator/input/Model";
 import {ObjectModel}                from "./lib/api/decorator/input/ObjectModel";
@@ -51,6 +51,7 @@ import DbCudOperationSequence       from "./lib/main/databox/dbCudOperationSeque
 import {ObjectPathSequence}         from "./lib/main/internalApi/objectPathSequence/objectPathSequence";
 import {StartErrorName}             from "./lib/main/constants/startErrorName";
 import NoDataAvailableError         from "./lib/main/databox/noDataAvailable";
+import {$not} from './lib/api/Notable';
 
 //starter
 
@@ -80,6 +81,7 @@ export {
         Bag,
         Router,
         Register,
+        $not,
         Model,
         Extends,
         Constructor,
@@ -97,10 +99,8 @@ export {
         $pair,
         $all,
         $contains,
-        $notContains,
         $any,
         $matches,
-        $notMatches,
         $userId,
         $tokenHasVariables,
         $tokenVariablesMatch,
