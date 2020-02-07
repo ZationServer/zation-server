@@ -48,9 +48,18 @@ export const Register = (name ?: string) : RegisterDecorator => {
     let targetRouter : Router | undefined = undefined;
 
     const func = (target : Component) => {
-        let targetName = name != undefined ? name :
-            target.name.slice(0,target.name.indexOf("$"))
-                .replace(/Controller|Databox/g, '');
+        let targetName;
+        if(name === undefined) {
+            let className = target.name;
+            const indexOfDollar = className.indexOf("$");
+            if(indexOfDollar !== -1){
+                className = className.slice(0,indexOfDollar);
+            }
+            targetName = className.replace(/Controller|Databox/g, '');
+        }
+        else {
+            targetName = name;
+        }
 
         if(regAuthController) {
             if(target.prototype instanceof Controller){
