@@ -121,7 +121,7 @@ export default class ZationMaster {
 
     private async start() {
         Logger.printBusy('Launching Zation');
-        Logger.printDebugInfo('Zation is launching in debug Mode.');
+        Logger.printDebugInfo('Zation is launching with debug mode on.');
 
         Logger.startStopWatch();
 
