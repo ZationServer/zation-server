@@ -246,7 +246,7 @@ export default class ZationMaster {
         if(this.zcLoader.loadedConfigs.length > 0) {
             const moreConfigs = this.zcLoader.loadedConfigs.length>1;
             Logger.printDebugInfo
-            (`The configuration${moreConfigs ? 's' : ''}: ${this.zcLoader.loadedConfigs.toString()} ${moreConfigs ? 'are' : 'is'} loaded.`);
+            (`The configuration${moreConfigs ? 's' : ''}: ${this.zcLoader.loadedConfigs.join(', ')} ${moreConfigs ? 'are' : 'is'} loaded.`);
         }
         else {
             Logger.printDebugInfo(`No config file with root path: '${this.zc.rootPath}' was found.`)
