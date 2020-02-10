@@ -19,8 +19,8 @@ import {AppConfig}        from "../definitions/appConfig";
 import {ServiceConfig}    from "../definitions/serviceConfig";
 import {Structures}       from "../definitions/structures";
 import {OtherLoadedConfigSet} from "./configSets";
-import RequireUtils           from "../../utils/requireUtils";
-import ConfigBuildError        from "./configBuildError";
+import ConfigBuildError       from "./configBuildError";
+import FuncUtils              from '../../utils/funcUtils';
 
 export default class ConfigLoader {
 
@@ -164,11 +164,15 @@ export default class ConfigLoader {
         return cPath + this._starterConfig[key];
     }
 
-    static loadOtherConfigs(configLocations : ConfigLocations) : OtherLoadedConfigSet {
+    /**
+     * Function for loading other configs on a worker.
+     * @param configLocations
+     */
+    static loadOtherConfigsSafe(configLocations : ConfigLocations) : OtherLoadedConfigSet {
         return {
-            eventConfig : RequireUtils.safeRequire(configLocations.eventConfig),
-            appConfig : RequireUtils.safeRequire(configLocations.appConfig),
-            serviceConfig : RequireUtils.safeRequire(configLocations.serviceConfig)
+            appConfig: FuncUtils.callSafe(ConfigLoader.loadConfig,[configLocations.appConfig],{}),
+            eventConfig: FuncUtils.callSafe(ConfigLoader.loadConfig,[configLocations.eventConfig],{}),
+            serviceConfig: FuncUtils.callSafe(ConfigLoader.loadConfig,[configLocations.serviceConfig],{})
         };
     }
 
@@ -204,22 +208,38 @@ export default class ConfigLoader {
         }
     }
 
+    /**
+     * Function for loading other configs on the master.
+     */
     async loadOtherConfigs() {
         try {
-            this._appConfig = require(this._configLocations.appConfig);
+            this._appConfig = ConfigLoader.loadConfig(this._configLocations.appConfig);
             this._loadedConfigs.push(nameof<StarterConfig>(s => s.appConfig));
         }
         catch (e) {ConfigLoader.throwErrIfConfigFail(e)}
         try {
-            this._eventConfig = require(this._configLocations.eventConfig);
+            this._eventConfig = ConfigLoader.loadConfig(this._configLocations.eventConfig);
             this._loadedConfigs.push(nameof<StarterConfig>(s => s.eventConfig));
         }
         catch (e) {ConfigLoader.throwErrIfConfigFail(e)}
         try {
-            this._serviceConfig = require(this._configLocations.serviceConfig);
+            this._serviceConfig = ConfigLoader.loadConfig(this._configLocations.serviceConfig);
             this._loadedConfigs.push(nameof<StarterConfig>(s => s.serviceConfig));
         }
         catch (e) {ConfigLoader.throwErrIfConfigFail(e)}
+    }
+
+    /**
+     * This function is used to load a configuration.
+     * It will consider the export style and undefined export.
+     * @param path
+     */
+    private static loadConfig(path: string): any {
+        const value = require(path);
+        if(typeof value === 'object') {
+            return typeof value['default'] === 'object' ? value['default'] : value;
+        }
+        throw new Error(`The configuration: ${path} does not export an object.`);
     }
 
     static throwErrIfConfigFail(err) {

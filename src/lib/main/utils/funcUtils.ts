@@ -94,5 +94,22 @@ export default class FuncUtils
             return FuncUtils.createFuncArraySyncInvoker(func);
         }
     }
+
+    /**
+     * Calls a function safe.
+     * It means that all thrown errors will be caught.
+     * In this case, the failureReturnValue will be returned.
+     * @param func
+     * @param args
+     * @param failureReturnValue
+     */
+    static callSafe<T extends (...args: any[]) => any>(func: T,args: Parameters<T>,failureReturnValue: any): any {
+        try {
+            return func(...args);
+        }
+        catch (e) {
+            return failureReturnValue;
+        }
+    }
 }
 
