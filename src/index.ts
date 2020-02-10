@@ -51,7 +51,8 @@ import DbCudOperationSequence       from "./lib/main/databox/dbCudOperationSeque
 import {ObjectPathSequence}         from "./lib/main/internalApi/objectPathSequence/objectPathSequence";
 import {StartErrorName}             from "./lib/main/constants/startErrorName";
 import NoDataAvailableError         from "./lib/main/databox/noDataAvailable";
-import {$not} from './lib/api/Notable';
+import {$not}                       from './lib/api/Notable';
+import {Server}                     from './lib/api/Server';
 
 //starter
 
@@ -113,6 +114,7 @@ export {
         BackErrorBuilder,
         BackErrorBag,
         ErrorType,
+        Server,
         Config,
         InputConfigTranslatable,
         ModelConfigTranslatable,

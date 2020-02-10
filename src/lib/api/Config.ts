@@ -91,8 +91,6 @@ import CChFamilyInfo    from "../main/internalApi/cChFamilyInfo";
 import PubData          from "../main/internalApi/pubData";
 import ZationInfo       from "../main/internalApi/zationInfo";
 import {ApiLevelSwitch} from "../main/apiLevel/apiLevelUtils";
-// noinspection TypeScriptPreferShortImport
-import {StartMode}       from "../main/constants/startMode";
 import ConfigBuildError  from "../main/config/manager/configBuildError";
 import {
     ArrayModelConfig, ArrayModelShortSyntax,
@@ -128,33 +126,6 @@ export default class Config
     private static tmpAuthController : string | undefined;
 
     //Part main helper methods
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Returns if the server runs in test mode.
-     */
-    static inTestMode() : boolean {
-        return global['_ZATION_START_MODE'] === StartMode.TEST;
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Returns if the server runs in normal mode.
-     */
-    static inNormalMode(): boolean {
-        return global['_ZATION_START_MODE'] === StartMode.NORMAL;
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Returns the start mode of the server.
-     */
-    static getStartMode(): StartMode {
-        return global['_ZATION_START_MODE'];
-    }
 
     // noinspection JSUnusedGlobalSymbols
     /**
