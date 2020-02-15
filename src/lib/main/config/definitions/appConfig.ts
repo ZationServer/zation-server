@@ -28,7 +28,7 @@ export interface AppConfig
      * default : 'guest'
      * },
      */
-    userGroups  ?: UserGroupsConfig;
+    userGroups?: UserGroupsConfig;
 
     /**
      * The name of the authController.
@@ -37,7 +37,7 @@ export interface AppConfig
      * @example
      * authController : 'login',
      */
-    authController  ?: string;
+    authController?: string;
 
     /**
     * In this property, you can define all your controllers.
@@ -50,7 +50,7 @@ export interface AppConfig
         *    login : LogInController,
         * }
     */
-    controllers  ?: Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>>;
+    controllers?: Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>>;
 
     /**
      * With this property, you can define a default controller configuration
@@ -64,7 +64,7 @@ export interface AppConfig
      *    access : 'all',
      * },
      */
-    controllerDefaults  ?: ControllerConfig;
+    controllerDefaults?: ControllerConfig;
 
     /**
      * In this property, you can define all your Databoxes.
@@ -77,7 +77,7 @@ export interface AppConfig
      *    chat : ChatDatabox,
      * }
      */
-    databoxes ?: Record<string,DataboxClassDef | ApiLevelSwitch<DataboxClassDef>>;
+    databoxes?: Record<string,DataboxClassDef | ApiLevelSwitch<DataboxClassDef>>;
 
     /**
      * With this property, you can define a default Databox configuration
@@ -87,7 +87,7 @@ export interface AppConfig
      *    access : 'all',
      * },
      */
-    databoxDefaults ?: DataboxConfig;
+    databoxDefaults?: DataboxConfig;
 
     /**
      * In this property, you can define all your models.
@@ -110,7 +110,7 @@ export interface AppConfig
      *   names : ['v.name',{maxLength : 20}]
      * }
      */
-    models ?: Record<string,Model>;
+    models?: Record<string,Model>;
 
     /**
      * In this property, you can configure all predefined zation channels.
@@ -121,7 +121,7 @@ export interface AppConfig
      *    }
      * }
      */
-    zationChannels ?: ZationChannelsConfig;
+    zationChannels?: ZationChannelsConfig;
 
     /**
      * Define your custom channels. There are two different variants:
@@ -146,7 +146,7 @@ export interface AppConfig
      *     }
      * }
      */
-    customChannels ?: Record<string,CustomChannelConfig>
+    customChannels?: Record<string,CustomChannelConfig>
 
     /**
      * With this property, you can define a default custom channel configuration
@@ -156,7 +156,7 @@ export interface AppConfig
      *     clientPublishAccess : false
      * }
      */
-    customChannelDefaults ?: CustomCh
+    customChannelDefaults?: CustomCh
 
     /**
      * In this property, you can define background tasks.
@@ -170,7 +170,7 @@ export interface AppConfig
      *      }
      * },
      */
-    backgroundTasks  ?: Record<string,BackgroundTask>,
+    backgroundTasks?: Record<string,BackgroundTask>,
 }
 
 export interface UserGroupsConfig
@@ -181,7 +181,7 @@ export interface UserGroupsConfig
      * @example
      * default : 'guest'
      */
-    default  ?: string;
+    default?: string;
     /**
      * The auth object contains all user groups that can only be reached
      * if the socket is authenticated.
@@ -192,7 +192,7 @@ export interface UserGroupsConfig
      *      },
      * },
      */
-    auth  ?: Record<string,AuthUserGroupConfig>;
+    auth?: Record<string,AuthUserGroupConfig>;
 }
 
 export interface AuthUserGroupConfig
@@ -201,14 +201,14 @@ export interface AuthUserGroupConfig
      * This property is only for advanced use cases.
      * Here you can set if this user group has panel access automatically.
      */
-    panelAccess  ?: boolean;
+    panelAccess?: boolean;
     /**
      * Here you can define the name of the user group
      * that will be displayed in the zation panel.
      */
-    panelDisplayName  ?: string;
+    panelDisplayName?: string;
 }
 
 export interface PrecompiledAppConfig extends AppConfig{
-    customChannels ?: Record<string,PreCompiledCustomChannelConfig>
+    customChannels?: Record<string,PreCompiledCustomChannelConfig>
 }
