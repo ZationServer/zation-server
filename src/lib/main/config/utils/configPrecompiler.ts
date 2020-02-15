@@ -87,14 +87,7 @@ export default class ConfigPrecompiler
         this.prepareControllerDefaults();
         this.prepareDataboxDefaults();
         this.prepareModelsConfig();
-        this.prepareBagExtensions();
         this.modelImportEngine = new ModelResolveEngine(this.modelsConfig);
-    }
-
-    private prepareBagExtensions() {
-        if(!Array.isArray(this.configs.appConfig.bagExtensions)) {
-            this.configs.appConfig.bagExtensions = [];
-        }
     }
 
     private prepareControllerDefaults() : void

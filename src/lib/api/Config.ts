@@ -44,10 +44,7 @@ import
     MainService, ServiceConfig
 } from "../main/config/definitions/serviceConfig";
 
-import
-{
-    AppConfig,
-} from "../main/config/definitions/appConfig";
+import {AppConfig} from "../main/config/definitions/appConfig";
 import BackErrorConstruct from "../main/constants/backErrorConstruct";
 import {
     AuthUserGroupChannel,
@@ -91,7 +88,7 @@ import CChFamilyInfo    from "../main/internalApi/cChFamilyInfo";
 import PubData          from "../main/internalApi/pubData";
 import ZationInfo       from "../main/internalApi/zationInfo";
 import {ApiLevelSwitch} from "../main/apiLevel/apiLevelUtils";
-import ConfigBuildError  from "../main/config/manager/configBuildError";
+import ConfigBuildError from "../main/config/manager/configBuildError";
 import {
     ArrayModelConfig, ArrayModelShortSyntax,
     ConstructObjectFunction, ConvertArrayFunction, ConvertObjectFunction, ConvertValueFunction, GetDateFunction, Input,
@@ -112,6 +109,7 @@ import Databox                              from "./databox/Databox";
 import {Component}                          from "../main/config/definitions/component";
 import {NormalAuthAccessCustomFunction}     from "../main/config/definitions/configComponents";
 import {ZationToken}                        from "../main/constants/internal";
+import {registerBagExtension,BagExtension}  from 'zation-bag-extension';
 
 export const eventInitSymbol              = Symbol();
 
@@ -362,6 +360,15 @@ export default class Config
                 container[name] = componentClass;
             }
         }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Registers a BagExtension.
+     * @param extension
+     */
+    static registerBagExtension(extension: BagExtension) {
+        registerBagExtension(extension);
     }
 
     static single(model : Model) : SingleModelInput {

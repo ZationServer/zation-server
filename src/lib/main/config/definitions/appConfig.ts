@@ -171,25 +171,6 @@ export interface AppConfig
      * },
      */
     backgroundTasks  ?: Record<string,BackgroundTask>,
-
-    /**
-     * In this property, you can import bag extensions.
-     * @example
-     * bagExtensions : [MyBagExtension1,MyBagExtension2],
-     */
-    bagExtensions ?: BagExtension[];
-}
-
-export default interface BagExtension {
-    /**
-     * All extensions for the Bag.
-     * Notice that the ReqBag extends the Bag.
-     */
-    bag ?: Record<string,any>,
-    /**
-     * All extensions for the RequestBag.
-     */
-    requestBag ?: Record<string,any>
 }
 
 export interface UserGroupsConfig

@@ -4,11 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import RequestBag                                            from '../../../api/RequestBag';
 import {ConfigNames, DefaultUserGroupFallBack, ZationAccess} from "../../constants/internal";
-import BagExtension, {
-    AppConfig,
-} from "../definitions/appConfig";
+import {AppConfig}            from "../definitions/appConfig";
 import {PanelUserConfig}      from "../definitions/mainConfig";
 import {MainService, Service} from "../definitions/serviceConfig";
 import {
@@ -25,13 +22,11 @@ import {
     TypeTypes
 } from "../../constants/validation";
 import ModelResolveEngine    from "./modelResolveEngine";
-import ConfigErrorBag       from "./configErrorBag";
 import ConfigCheckerTools   from "./configCheckerTools";
 import {Structures}         from "../definitions/structures";
-import ConfigError          from "./configError";
+import ConfigError          from "../../error/configError";
 import Target               from "./target";
 import Logger               from "../../logger/logger";
-import Bag                  from "../../../api/Bag";
 import ObjectPath           from "../../utils/objectPath";
 import Controller, {ControllerClass} from "../../../api/Controller";
 import Iterator             from "../../utils/iterator";
@@ -54,6 +49,7 @@ import Databox                                 from "../../../api/databox/Databo
 import {AuthAccessConfig, VersionAccessConfig} from "../definitions/configComponents";
 import DbConfigUtils                           from "../../databox/dbConfigUtils";
 import {getNotableValue, isNotableNot}         from '../../../api/Notable';
+import ErrorBag                                from '../../error/errorBag';
 
 export interface ModelCheckedMem {
     _checked : boolean
@@ -62,29 +58,31 @@ export interface ModelCheckedMem {
 export default class ConfigChecker
 {
     private readonly zcLoader: ConfigLoader;
-    private readonly ceb: ConfigErrorBag;
+    private ceb: ErrorBag<ConfigError>;
 
     private modelsConfig: Record<string, Model>;
     private validAccessValues: any[];
-    private bagExPropNames : string[] = [];
     private serviceNames : string[] = [];
 
     private modelImportEngine : ModelResolveEngine;
 
-    constructor(zationConfigLoader, configErrorBag) {
+    constructor(zationConfigLoader) {
         this.zcLoader = zationConfigLoader;
-        this.ceb = configErrorBag;
     }
 
-    public checkStarterConfig() {
+    public checkStarterConfig(): ErrorBag<ConfigError> {
+        this.ceb = new ErrorBag<ConfigError>();
         ConfigCheckerTools.assertStructure
         (Structures.StarterConfig, this.zcLoader.starterConfig,
             ConfigNames.STARTER, this.ceb);
+        return this.ceb;
     }
 
-    public checkAllConfigs() {
+    public checkAllConfigs(): ErrorBag<ConfigError> {
+        this.ceb = new ErrorBag<ConfigError>();
         this.prepare();
         this.checkConfig();
+        return this.ceb;
     }
 
     private prepare() {
@@ -93,93 +91,13 @@ export default class ConfigChecker
         this.modelImportEngine = new ModelResolveEngine(this.modelsConfig);
     }
 
-    private checkAppBagExtensions()
-    {
-        const appBagExtensions = this.zcLoader.appConfig.bagExtensions;
-        if(Array.isArray(appBagExtensions)){
-            for(let i = 0; i < appBagExtensions.length; i++) {
-                this.checkBagExtension(
-                    appBagExtensions[i],
-                    new Target('BagExtensions').addPath('index ' + i.toString()),
-                    ConfigNames.APP
-                );
-            }
-        }
-    }
-
-    private checkBagExtension(extension : BagExtension,target : Target,configName : ConfigNames)
-    {
-        ConfigCheckerTools.assertStructure
-        (Structures.BagExtension, extension, configName, this.ceb, target);
-
-        const moduleBagExProps : string[] = [];
-
-        if(typeof extension === 'object'){
-            const reqBagExProps = extension.requestBag;
-            if(typeof reqBagExProps === 'object') {
-                for(let k in reqBagExProps){
-                    if(reqBagExProps.hasOwnProperty(k)){
-                        this.checkBagExtensionProp(k,reqBagExProps,false,configName,target);
-
-                        if(!moduleBagExProps.includes(k)){moduleBagExProps.push(k);}
-                    }
-                }
-            }
-            const bagExProps = extension.bag;
-            if(typeof bagExProps === 'object') {
-                for(let k in bagExProps){
-                    if(bagExProps.hasOwnProperty(k)){
-                        this.checkBagExtensionProp(k,bagExProps,true,configName,target);
-
-                        if(!moduleBagExProps.includes(k)){moduleBagExProps.push(k);}
-                    }
-                }
-            }
-            for(let i = 0; i < moduleBagExProps.length; i++) {
-                if(this.bagExPropNames.includes(moduleBagExProps[i])){
-                    this.ceb.addConfigError(new ConfigError(configName,
-                        `${target.getTarget()} conflict with other bag extension, property name: ${moduleBagExProps[i]}.`));
-                }
-                this.bagExPropNames.push(moduleBagExProps[i]);
-            }
-        }
-    }
-
-    private checkBagExtensionProp
-    (
-        propName : string,
-        exProps,
-        isBag : boolean,
-        configName : ConfigNames,
-        target : Target
-    )
-    {
-        if(isBag) {
-            if(Bag.prototype.hasOwnProperty(propName)){
-                this.ceb.addConfigError(new ConfigError(configName,
-                    `${target.getTarget()} conflict with Bag property name: ${propName}.`));
-            }
-        }
-        else {
-            if(RequestBag.prototype.hasOwnProperty(propName)){
-                this.ceb.addConfigError(new ConfigError(configName,
-                    `${target.getTarget()} conflict with RequestBag property name: ${propName}.`));
-            }
-
-        }
-        if(exProps[propName] === undefined){
-            this.ceb.addConfigError(new ConfigError(configName,
-                `${target.getTarget()} extension property '${propName}' is undefined.`));
-        }
-    }
-
     private checkUserGroupName(name: string, notAllowed: string[], isAuth: boolean) {
         if (name.indexOf('.') !== -1) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${name} is not a valid ${isAuth ? 'auth' : 'default'} user group! Dot/s in name are not allowed.`));
         }
         if (notAllowed.includes(name)) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${isAuth ? 'auth' : 'default'} user group with name ${name} is not allowed use an other name!`));
         }
     }
@@ -238,7 +156,6 @@ export default class ConfigChecker
         this.checkDataboxConfigs();
         this.checkAuthController();
         this.checkBackgroundTasks();
-        this.checkAppBagExtensions();
         this.checkCustomChannelsDefaults();
         this.checkCustomChannels();
         this.checkZationChannels();
@@ -262,7 +179,7 @@ export default class ConfigChecker
         if (typeof authControllerId === "string") {
             const controller = this.zcLoader.appConfig.controllers || {};
             if (!controller.hasOwnProperty(authControllerId)) {
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                this.ceb.addError(new ConfigError(ConfigNames.APP,
                     `AuthController: '${authControllerId}' is not found.`));
             } else {
                 //checkAuthControllerAccess value
@@ -303,7 +220,7 @@ export default class ConfigChecker
 
                     if(Array.isArray(value)){
                         if(value.length > 1){
-                            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                            this.ceb.addError(new ConfigError(ConfigNames.APP,
                                 `${secTarget.getTarget()} to define a custom channel family, the array should only contain one or zero elements.`));
                         }
                         value = value[0] || {};
@@ -400,7 +317,7 @@ export default class ConfigChecker
                     this.circularCheck(model,target,{name : name,model,isObj : ConfigChecker.isObjModel(model)});
                 }
                 else {
-                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    this.ceb.addError(new ConfigError(ConfigNames.APP,
                         `Models: '${name}' value must be an object, array or string!`));
                 }
             }
@@ -474,7 +391,7 @@ export default class ConfigChecker
             }
             else {
                 if(processInfo.baseModelLevel){
-                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    this.ceb.addError(new ConfigError(ConfigNames.APP,
                         `${target.getTarget()} the inheritance dependency to object model: '${value}' can not be resolved, Object model not found.`));
                 }
                 return;
@@ -492,7 +409,7 @@ export default class ConfigChecker
 
                 if(!ConfigChecker.isObjModel(res)){
                     if(processInfo.baseModelLevel){
-                        this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                        this.ceb.addError(new ConfigError(ConfigNames.APP,
                             `${target.getTarget()} an object model can only extend an object model.`));
                     }
                     return;
@@ -501,7 +418,7 @@ export default class ConfigChecker
                     const sameModelBase = res === srcObjModel;
                     if(processInfo.otherSrc.includes(res) || sameModelBase){
                         if(processInfo.baseModelLevel || sameModelBase){
-                            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                            this.ceb.addError(new ConfigError(ConfigNames.APP,
                                 `${target.getTarget()} creates a circular inheritance.`));
                         }
                     }
@@ -556,11 +473,11 @@ export default class ConfigChecker
     {
         if(this.zcLoader.mainConfig.defaultClientApiLevel) {
             if(!Number.isInteger(this.zcLoader.mainConfig.defaultClientApiLevel)){
-                this.ceb.addConfigError(new ConfigError(ConfigNames.MAIN,
+                this.ceb.addError(new ConfigError(ConfigNames.MAIN,
                     `The defaultClientApiLevel must be an integer.`));
             }
             if(this.zcLoader.mainConfig.defaultClientApiLevel < 1){
-                this.ceb.addConfigError(new ConfigError(ConfigNames.MAIN,
+                this.ceb.addError(new ConfigError(ConfigNames.MAIN,
                     `The defaultClientApiLevel cannot be lesser than one..`));
             }
         }
@@ -573,7 +490,7 @@ export default class ConfigChecker
                 // for javascript version
                 // noinspection SuspiciousTypeOfGuard
                 if(typeof o !== 'string'){
-                    this.ceb.addConfigError(new ConfigError(ConfigNames.MAIN,
+                    this.ceb.addError(new ConfigError(ConfigNames.MAIN,
                         `Origin: '${i}' must be a string.`));
                 }
             }));
@@ -610,14 +527,14 @@ export default class ConfigChecker
         // for javascript version
         // noinspection SuspiciousTypeOfGuard
         if(typeof config.password === 'string' && config.password.length < 4) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} panel user password must be at least 4 characters long.`));
         }
 
         // for javascript version
         // noinspection SuspiciousTypeOfGuard
         if(typeof config.username === 'string' && config.username.length < 1) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} panel username must be at least 1 character long.`));
         }
 
@@ -661,12 +578,6 @@ export default class ConfigChecker
                // noinspection SuspiciousTypeOfGuard
                 if(typeof c.serviceName === 'string') {
                    this.checkService(c.serviceName,c.service,'Service Module');
-
-                   this.checkBagExtension(
-                       c.bagExtensions,
-                       new Target(`Service Module: '${c.serviceName}' bag extension ->`),
-                       ConfigNames.SERVICE
-                   );
                }
             });
         }
@@ -675,7 +586,7 @@ export default class ConfigChecker
     private checkService(serviceName : string,config : MainService<any,any,any>,targetName : string = 'Service')
     {
         if(this.serviceNames.includes(serviceName)) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `Service key: '${serviceName}' is duplicated.`));
         }
 
@@ -730,7 +641,7 @@ export default class ConfigChecker
             }
         }
         else{
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${targetName}: '${serviceName}' must to be an object.`));
         }
     }
@@ -755,7 +666,7 @@ export default class ConfigChecker
                 if (controller.hasOwnProperty(cId)) {
                     Iterator.iterateCompDefinition<ControllerClass>(controller[cId],(controllerClass,apiLevel) =>{
                         if(apiLevel !== undefined && isNaN(parseInt(apiLevel))) {
-                            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                            this.ceb.addError(new ConfigError(ConfigNames.APP,
                                 `Controller: '${cId}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
                         }
                         this.checkController(controllerClass, new Target(`Controller: '${cId}' ${apiLevel ? `(API Level: ${apiLevel}) ` : ''}`));
@@ -780,7 +691,7 @@ export default class ConfigChecker
                 if (databoxes.hasOwnProperty(cId)) {
                     Iterator.iterateCompDefinition<DataboxClassDef>(databoxes[cId],(databoxClass, apiLevel) =>{
                         if(apiLevel !== undefined && isNaN(parseInt(apiLevel))) {
-                            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                            this.ceb.addError(new ConfigError(ConfigNames.APP,
                                 `Databox: '${cId}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
                         }
                         this.checkDatabox(databoxClass, new Target(`Databox: '${cId}' ${apiLevel ? `(API Level: ${apiLevel}) ` : ''}`));
@@ -814,7 +725,7 @@ export default class ConfigChecker
             this.checkControllerConfig(cv.config,target);
         }
         else {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} is not extends the main Controller class.`));
         }
     }
@@ -832,7 +743,7 @@ export default class ConfigChecker
             this.checkDataboxConfig(cdb.config,target);
         }
         else {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} is not extends the main Databox or DataboxFamily class.`));
         }
     }
@@ -842,7 +753,7 @@ export default class ConfigChecker
         ConfigCheckerTools.assertStructure(Structures.DataboxConfig, config, ConfigNames.APP, this.ceb, target);
 
         if(typeof config.maxSocketInputChannels === 'number' && config.maxSocketInputChannels <= 0){
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} the maximum socket input channels must be greater than 0.`));
         }
 
@@ -891,7 +802,7 @@ export default class ConfigChecker
                     this.checkSingleInput(input[0],target);
                 }
                 else {
-                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    this.ceb.addError(new ConfigError(ConfigNames.APP,
                         `${target.getTarget()} to define a single input model the array must have exactly one item.`));
                 }
             }
@@ -909,7 +820,7 @@ export default class ConfigChecker
             for (let k in paramInput) {
                 if (paramInput.hasOwnProperty(k)) {
                     if(!isNaN(parseInt(k))){
-                        this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                        this.ceb.addError(new ConfigError(ConfigNames.APP,
                             `${target.getTarget()} numeric key ${k} is not allowed in a param based input config because it changes the key order in a for in loop.`));
                     }
                     keys.push(k);
@@ -950,7 +861,7 @@ export default class ConfigChecker
         if(ModelResolveEngine.correctSyntax(link)) {
             let {exist,name,linkedValue,isOp} = this.modelImportEngine.peakCheck(link);
             if(!exist) {
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                this.ceb.addError(new ConfigError(ConfigNames.APP,
                     `${target.getTarget()} the link dependency to model: '${name}' can not be resolved, model not found.`));
             }
             else {
@@ -969,7 +880,7 @@ export default class ConfigChecker
             }
         }
         else {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} the link dependency definition '${link}' has syntax errors.`))
         }
     }
@@ -978,14 +889,14 @@ export default class ConfigChecker
 
     private checkArrayShortCut(value, target: Target) {
         if (value.length === 0) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} you have to specify an model link (string) or an anonymous model (object) or an new array shortcut.`));
         } else if (value.length === 1) {
             this.checkModel(value[0], target.addPath('ArrayItem'));
         } else if (value.length === 2) {
             let newTarget = target.setExtraInfo('Array Shortcut Element 2');
             if (typeof value[1] !== 'object') {
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                this.ceb.addError(new ConfigError(ConfigNames.APP,
                     `${newTarget.getTarget()} the second shortCut item should be from typ object and can specify the array. Given typ is: '${typeof value[1]}'`));
             } else {
                 this.checkOptionalArrayWarning(value,target);
@@ -994,7 +905,7 @@ export default class ConfigChecker
 
             this.checkModel(value[0], target.addPath('ArrayItem'));
         } else {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} invalid shortCut length: '${value.length}', 2 values are valid. First specify content and second to specify array.`));
         }
     }
@@ -1032,7 +943,7 @@ export default class ConfigChecker
                  * 'A' -> 'A'
                  */
                 if(name === mainSrc.name || linkedValue === mainSrc.model){
-                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    this.ceb.addError(new ConfigError(ConfigNames.APP,
                         `${target.getTarget()} creates a circular import.`));
                 }
                 else if(exist && !processInfo.models.includes(name)) {
@@ -1047,7 +958,7 @@ export default class ConfigChecker
             }
         } else if (typeof value === "object") {
             if(processInfo.inBaseModel && processInfo.models.includes(value)){
-                this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                this.ceb.addError(new ConfigError(ConfigNames.APP,
                     `${target.getTarget()} creates a circular import.`));
                 return;
             }
@@ -1168,7 +1079,7 @@ export default class ConfigChecker
                 }
 
                 if (count < 2) {
-                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    this.ceb.addError(new ConfigError(ConfigNames.APP,
                         `${target.getTarget()} anyOf model modifier must have at least two properties.`));
                 }
             }
@@ -1179,7 +1090,7 @@ export default class ConfigChecker
 
             (value as ModelCheckedMem)._checked = true;
         } else {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} wrong value type. Use a string to link to a model or an object to define an anonymous model or an array shortcut.`));
         }
     }
@@ -1290,7 +1201,7 @@ export default class ConfigChecker
             }
             else {
                 if(processInfo.baseModelLevel){
-                    this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                    this.ceb.addError(new ConfigError(ConfigNames.APP,
                         `${target.getTarget()} the inheritance dependency to value model: '${value}' can not be resolved, Value model not found.`));
                 }
                 return;
@@ -1308,7 +1219,7 @@ export default class ConfigChecker
 
                 if(!ConfigChecker.isValueModel(res)){
                     if(processInfo.baseModelLevel){
-                        this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                        this.ceb.addError(new ConfigError(ConfigNames.APP,
                             `${target.getTarget()} a value model can only extend a value model.`));
                     }
                     return;
@@ -1317,7 +1228,7 @@ export default class ConfigChecker
                     const sameModelBase = res === srcValueModel;
                     if(processInfo.otherSrc.includes(res) || sameModelBase){
                         if(processInfo.baseModelLevel || sameModelBase){
-                            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+                            this.ceb.addError(new ConfigError(ConfigNames.APP,
                                 `${target.getTarget()} creates a circular inheritance.`));
                         }
                     }
@@ -1364,7 +1275,7 @@ export default class ConfigChecker
 
     private checkRegex(value, target) {
         if (!(typeof value === 'string' || value instanceof RegExp)) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} is not a string or an ReqExp object.`));
         }
         else if(typeof value === 'string') {
@@ -1376,7 +1287,7 @@ export default class ConfigChecker
         try {
             new RegExp(value);
         } catch(e) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} ${error}`));
         }
     }
@@ -1406,7 +1317,7 @@ export default class ConfigChecker
     private checkCustomName(name : string,type : string,preString : string = '') : void
     {
         if (!name.match(/^[a-zA-Z0-9-/_]+$/)) {
-            this.ceb.addConfigError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${preString}'${name}' is not a valid ${type} name! Only letters, numbers and the minus symbol are allowed.`));
         }
     }

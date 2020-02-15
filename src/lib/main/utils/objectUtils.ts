@@ -149,4 +149,18 @@ export default class ObjectUtils
         });
         return obj;
     }
+
+    /**
+     * Adds props to the prototype of the class.
+     * @param classValue
+     * @param props
+     * @param skipUndefined
+     */
+    static addPropsToClass(classValue,props: Record<string,any>,skipUndefined: boolean) {
+        for(let k in props) {
+            if(props.hasOwnProperty(k) && (!skipUndefined || props[k] !== undefined)) {
+                classValue.prototype[k] = props[k];
+            }
+        }
+    }
 }

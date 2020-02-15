@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import * as cluster     from "cluster";
 import ZationConfig     from "../config/manager/zationConfig";
-import ConfigErrorBag   from "../config/utils/configErrorBag";
+import ErrorBag         from '../error/errorBag';
 const SimpleNodeLogger  = require('simple-node-logger');
 
 export default class Logger
@@ -143,21 +143,20 @@ export default class Logger
         }
     }
 
-    static printConfigErrorBag(configErrorBag : ConfigErrorBag) : void
+    static printErrorBag(errorBag: ErrorBag<any>,errorType: string = 'configuration') : void
     {
         Logger.log('\x1b[31m%s\x1b[0m','   [FAILED]');
 
-        let configErrors = configErrorBag.getConfigErrors();
-        let errorCount = configErrorBag.getConfigErrors().length;
+        const errors = errorBag.getErrors();
+        const errorCount = errorBag.getErrors().length;
 
         Logger.log('\x1b[31m%s\x1b[0m'
             ,'   [CONFIG]',
-            `${errorCount} configuration error${errorCount === 0 || errorCount > 1 ? 's' : ''}:`);
+            `${errorCount} ${errorType} error${errorCount === 0 || errorCount > 1 ? 's' : ''}:`);
 
 
-        for(let i = 0; i < configErrors.length; i++)
-        {
-            Logger.log('\x1b[31m%s\x1b[0m','   [ERROR]',configErrors[i].toString());
+        for(let i = 0; i < errors.length; i++) {
+            Logger.log('\x1b[31m%s\x1b[0m','   [ERROR]',errors[i].toString());
         }
 
         Logger.log('\x1b[34m%s\x1b[0m','   [INFO]',

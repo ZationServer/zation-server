@@ -10,7 +10,6 @@ import {StarterConfig}         from "../main/config/definitions/starterConfig";
 import StringSet               from "../main/utils/stringSet";
 import StateServerEngine       from "../main/cluster/stateServerEngine";
 import Logger                  from "../main/logger/logger";
-import ConfigErrorBag          from "../main/config/utils/configErrorBag";
 import ConfigChecker           from "../main/config/utils/configChecker";
 import ClientPrepare           from "../main/client/clientPrepare";
 import PortChecker             from "../main/utils/portChecker";
@@ -26,6 +25,7 @@ import {StartMode}             from "../main/constants/startMode";
 import FuncUtils               from "../main/utils/funcUtils";
 import ConfigBuildError        from "../main/config/manager/configBuildError";
 import ConfigLoader            from "../main/config/manager/configLoader";
+import BagExtensionConflictChecker from '../main/bagExtension/bagExtensionConflictChecker';
 
 export default class ZationMaster {
     private static instance: ZationMaster | null = null;
@@ -125,14 +125,14 @@ export default class ZationMaster {
 
         Logger.startStopWatch();
 
-        const configErrorBag = new ConfigErrorBag();
-        const configChecker = new ConfigChecker(this.zcLoader, configErrorBag);
+        let errorBag;
 
+        const configChecker = new ConfigChecker(this.zcLoader);
         if(this.zc.starterConfig.checkConfigs) {
-            configChecker.checkStarterConfig();
-            if (configErrorBag.hasConfigError()) {
-                Logger.printConfigErrorBag(configErrorBag);
-                return this.rejectStart(StartErrorName.CONFIG_ERRORS,'The starter config has errors.');
+            errorBag = configChecker.checkStarterConfig();
+            if (errorBag.hasError()) {
+                Logger.printErrorBag(errorBag);
+                return this.rejectStart(StartErrorName.ConfigErrors,'The starter config has errors.');
             }
             Logger.printStartDebugInfo(`The Master has checked the starter config.`, true);
         }
@@ -143,13 +143,23 @@ export default class ZationMaster {
 
         if(this.zc.starterConfig.checkConfigs) {
             Logger.startStopWatch();
-            configChecker.checkAllConfigs();
-            if (configErrorBag.hasConfigError()) {
-                Logger.printConfigErrorBag(configErrorBag);
-                return this.rejectStart(StartErrorName.CONFIG_ERRORS,'The configs have errors.');
+            errorBag = configChecker.checkAllConfigs();
+            if (errorBag.hasError()) {
+                Logger.printErrorBag(errorBag);
+                return this.rejectStart(StartErrorName.ConfigErrors,'The configs have errors.');
             }
             Logger.printStartDebugInfo(`The Master has checked the config files.`, true);
         }
+
+        Logger.startStopWatch();
+        const bagExtensionChecker = new BagExtensionConflictChecker();
+        errorBag = bagExtensionChecker.checkBagExtensionsConflicts();
+        if (errorBag.hasError()) {
+            Logger.printErrorBag(errorBag,'BagExtension conflict');
+            return this.rejectStart(StartErrorName.BagExtensionsConflicts,'The BagExtensions have conflicts.');
+        }
+        Logger.printStartDebugInfo(`The Master has checked the bag extensions.`, true);
+
 
         if(this.zc.mainConfig.license !== undefined){
             Logger.startStopWatch();
@@ -159,12 +169,12 @@ export default class ZationMaster {
             catch (e) {
                 const msg = 'The provided license is invalid.';
                 this.printStartFail(msg);
-                return this.rejectStart(StartErrorName.INVALID_LICENSE,msg);
+                return this.rejectStart(StartErrorName.InvalidLicense,msg);
             }
             if(!LicenseManager.licenseVersionValid(this.license)){
                 const msg = 'The version of the provided license is incompatible.';
                 this.printStartFail(msg);
-                return this.rejectStart(StartErrorName.LICENSE_VERSION_INCOMPATIBLE,msg);
+                return this.rejectStart(StartErrorName.LicenseVersionIncompatible,msg);
             }
             Logger.printStartDebugInfo('The Master has checked the license.', true);
         }
@@ -174,7 +184,7 @@ export default class ZationMaster {
         if(!portIsAvailable) {
             const msg = `The port: ${this.zc.mainConfig.port} is in use. Try with a different port.`;
             this.printStartFail(msg);
-            return this.rejectStart(StartErrorName.PORT_IN_USE,msg);
+            return this.rejectStart(StartErrorName.PortInUse,msg);
         }
         Logger.printStartDebugInfo('The Master has checked that the port is available.', true);
 
@@ -202,7 +212,7 @@ export default class ZationMaster {
             }
             catch (e) {
                 this.printStartFail(e.message);
-                return this.rejectStart(StartErrorName.REGISTER_TO_STATE_SERVER_FAILED,e.message,e.code);
+                return this.rejectStart(StartErrorName.RegisterToStateServerFailed,e.message,e.code);
             }
         }
 
@@ -217,13 +227,14 @@ export default class ZationMaster {
 
     private async check() {
         Logger.startStopWatch();
-        const configErrorBag = new ConfigErrorBag();
-        const configChecker = new ConfigChecker(this.zcLoader, configErrorBag);
 
-        configChecker.checkStarterConfig();
-        if (configErrorBag.hasConfigError()) {
-            Logger.printConfigErrorBag(configErrorBag);
-            return this.rejectStart(StartErrorName.CONFIG_ERRORS,'The starter config has errors.');
+        let configErrorBag;
+
+        const configChecker = new ConfigChecker(this.zcLoader);
+        configErrorBag = configChecker.checkStarterConfig();
+        if (configErrorBag.hasError()) {
+            Logger.printErrorBag(configErrorBag);
+            return this.rejectStart(StartErrorName.ConfigErrors,'The starter config has errors.');
         }
         Logger.printStartDebugInfo(`Checked starter config.`, true);
 
@@ -232,10 +243,10 @@ export default class ZationMaster {
         Logger.printStartDebugInfo(`Loaded the other config files.`, true);
 
         Logger.startStopWatch();
-        configChecker.checkAllConfigs();
-        if (configErrorBag.hasConfigError()) {
-            Logger.printConfigErrorBag(configErrorBag);
-            return this.rejectStart(StartErrorName.CONFIG_ERRORS,'The configs have errors.');
+        configErrorBag = configChecker.checkAllConfigs();
+        if (configErrorBag.hasError()) {
+            Logger.printErrorBag(configErrorBag);
+            return this.rejectStart(StartErrorName.ConfigErrors,'The configs have errors.');
         }
         Logger.log('\x1b[32m%s\x1b[0m', '   [CHECKED]','✅ No configuration errors found.');
     }
@@ -267,7 +278,7 @@ export default class ZationMaster {
         catch (e) {
             Logger.printStartFail
             (`Failed to load the wsEngine: ${this.zc.mainConfig.wsEngine}. Error -> ${e.toString()}.`);
-            return this.rejectStart(StartErrorName.LOAD_WS_ENGINE_FAILED,'Failed to load wsEngine.');
+            return this.rejectStart(StartErrorName.LoadWsEngineFailed,'Failed to load wsEngine.');
         }
 
         const scLogLevel = this.zc.mainConfig.scConsoleLog ?
@@ -545,7 +556,7 @@ export default class ZationMaster {
      * @param errCode
      */
     public rejectStart(name : StartErrorName,errMsg : string,errCode ?: string) : void {
-        if(!this.zc.mainConfig.killOnStartFailure  && this.rejectStart){
+        if(!this.zc.mainConfig.killOnStartFailure && this.startReject){
             ZationMaster.instance = null;
             const err = new Error(errMsg);
             err.name = name;

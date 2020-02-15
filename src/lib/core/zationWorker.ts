@@ -17,7 +17,6 @@ import UpSocket               from "../main/sc/socket";
 import {ZationToken}          from "../main/constants/internal";
 import {WorkerMessageAction}  from "../main/constants/workerMessageAction";
 import {ChannelPrepare}       from "../main/channel/channelPrepare";
-import BagExtensionEngine     from "../main/bagExtension/bagExtensionEngine";
 import NodeInfo               from "../main/utils/nodeInfo";
 import SocketSet              from "../main/utils/socketSet";
 import OriginsUtils, {OriginChecker} from "../main/origins/originsUtils";
@@ -73,6 +72,7 @@ import DataboxPrepare             from "../main/databox/databoxPrepare";
 import EventPreprocessor          from "../main/event/eventPreprocessor";
 import LicenseManager, {License}  from "../main/utils/licenseManager";
 import ConfigPrecompiler          from "../main/config/utils/configPrecompiler";
+import BagExtensionProcessor      from '../main/bagExtension/bagExtensionProcessor';
 
 const  SCWorker : any        = require('socketcluster/scworker');
 
@@ -90,7 +90,6 @@ class ZationWorker extends SCWorker
 
     public readonly scServer : ScServer;
     private serviceEngine : ServiceEngine;
-    private bagExtensionEngine : BagExtensionEngine;
     private preparedBag : Bag;
     private controllerPrepare : ControllerPrepare;
     private databoxPrepare : DataboxPrepare;
@@ -179,7 +178,7 @@ class ZationWorker extends SCWorker
         startPromises.push(this.loadClientJsData());
 
         Logger.startStopWatch();
-        let precompiler = new ConfigPrecompiler(otherConfigsLoadedSet);
+        const precompiler = new ConfigPrecompiler(otherConfigsLoadedSet);
         this.zc.setOtherConfigs(precompiler.precompile(this.zc,this.zc.mainConfig.showPrecompiledConfigs && this.isLeader));
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has pre compiled configurations.`, true);
 
@@ -201,8 +200,8 @@ class ZationWorker extends SCWorker
 
         //BagExtensions (!Before Bag)
         Logger.startStopWatch();
-        this.bagExtensionEngine = new BagExtensionEngine(this.zc);
-        this.bagExtensionEngine.extendBag();
+        const bagExtensionProcessor = new BagExtensionProcessor();
+        await bagExtensionProcessor.process();
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has processed the bag extensions.`,true);
 
         Logger.startStopWatch();

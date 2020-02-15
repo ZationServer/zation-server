@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {EventConfig} from "./eventConfig";
-import BagExtension, {
+import {
     AppConfig,
     AuthUserGroupConfig,
 } from "./appConfig";
@@ -53,17 +53,12 @@ App[nameof<AppConfig>(s => s.zationChannels)]     = {types : ['object'],isOption
 App[nameof<AppConfig>(s => s.customChannels)]     = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.customChannelDefaults)] = {types : ['object'],isOptional : true};
 App[nameof<AppConfig>(s => s.backgroundTasks)]    = {types : ['object'],isOptional : true};
-App[nameof<AppConfig>(s => s.bagExtensions)]      = {types : ['array'],isOptional : true};
 
 const BackgroundTask = {};
 BackgroundTask[nameof<BackgroundTask>(s => s.every)] = {types : ['number','array','object'],isOptional : true};
 BackgroundTask[nameof<BackgroundTask>(s => s.at)]    = {types : ['number','array','object'],isOptional : true};
 BackgroundTask[nameof<BackgroundTask>(s => s.task)]  = {types : ['function','array'],arrayType : 'function',isOptional : true};
 BackgroundTask[nameof<BackgroundTask>(s => s.clusterSafe)] = {types : ['boolean'],isOptional : true};
-
-const BagExtension = {};
-BagExtension[nameof<BagExtension>(s => s.requestBag)]   = {types : ['object'],isOptional : true};
-BagExtension[nameof<BagExtension>(s => s.bag)]          = {types : ['object'],isOptional : true};
 
 type ServiceModuleDefault = ServiceModule<any,any,any>;
 const ServiceModule = {};
@@ -375,6 +370,5 @@ export const Structures = {
     PanelUserConfig : PanelUserConfig,
     AuthUserGroup : AuthUserGroup,
     AnyOf : AnyOf,
-    BagExtension : BagExtension,
     serviceModule : ServiceModule
 };

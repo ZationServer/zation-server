@@ -4,9 +4,9 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import ConfigErrorBag from "./configErrorBag";
 import Target         from "./target";
-import ConfigError    from "./configError";
+import ConfigError    from "../../error/configError";
+import ErrorBag       from '../../error/errorBag';
 
 export default class ConfigCheckerTools
 {
@@ -21,19 +21,19 @@ export default class ConfigCheckerTools
      * @param configErrorBag
      * @param target
      */
-    static assertProperty(key : string,obj : object,types : string[] | string,isOptional : boolean,configName : string,configErrorBag : ConfigErrorBag,target : Target = new Target()) : boolean
+    static assertProperty(key : string,obj : object,types : string[] | string,isOptional : boolean,configName : string,configErrorBag : ErrorBag<ConfigError>,target : Target = new Target()) : boolean
     {
         const targetText = `${target.getTarget()} property '${key}'`;
         if(obj[key] === undefined) {
             if(!isOptional) {
-                configErrorBag.addConfigError(new ConfigError(configName,`${targetText} need to be set.`));
+                configErrorBag.addError(new ConfigError(configName,`${targetText} need to be set.`));
                 return false;
             }
         }
         else {
             if(!ConfigCheckerTools.isCorrectTypes(obj[key],types)) {
                 const type = ConfigCheckerTools.getTypeOf(obj[key]);
-                configErrorBag.addConfigError(new ConfigError(configName,
+                configErrorBag.addError(new ConfigError(configName,
                     `${targetText} has a not allowed type '${type}'! This types are allowed: ${types.toString()}.`));
                 return false;
             }
@@ -49,10 +49,10 @@ export default class ConfigCheckerTools
      * @param configErrorBag
      * @param target
      */
-    static assertStructure(structure : object,obj : object | undefined,configName : string,configErrorBag : ConfigErrorBag,target : Target = new Target())
+    static assertStructure(structure : object,obj : object | undefined,configName : string,configErrorBag : ErrorBag<ConfigError>,target : Target = new Target())
     {
         if(typeof obj !== 'object') {
-            configErrorBag.addConfigError(new ConfigError(configName,
+            configErrorBag.addError(new ConfigError(configName,
                 `${target.getTarget()} needs to be from type object!`));
             return;
         }
@@ -79,7 +79,7 @@ export default class ConfigCheckerTools
                             let array = obj[k];
                             for(let i = 0; i < array.length; i++) {
                                 if(allowedType && !ConfigCheckerTools.isCorrectType(array[i],allowedType)) {
-                                    configErrorBag.addConfigError(new ConfigError(configName,
+                                    configErrorBag.addError(new ConfigError(configName,
                                         `${target.getTarget()} value: '${array[i]}' in property array: '${k}' is not allowed. Allowed type is: ${allowedType}.`));
                                 }
                             }
@@ -97,7 +97,7 @@ export default class ConfigCheckerTools
                             for(let i = 0; i < array.length; i++)
                             {
                                 if(!allowedEnum.includes(array[i])) {
-                                    configErrorBag.addConfigError(new ConfigError(configName,
+                                    configErrorBag.addError(new ConfigError(configName,
                                         `${target.getTarget()} value: '${array[i]}' in property array: '${k}' is not allowed. Allowed values are: ${allowedEnum.toString()}.`));
                                 }
                             }
@@ -106,7 +106,7 @@ export default class ConfigCheckerTools
                         {
                             if(!allowedEnum.includes(obj[k]))
                             {
-                                configErrorBag.addConfigError(new ConfigError(configName,
+                                configErrorBag.addError(new ConfigError(configName,
                                     `${target.getTarget()} value: '${obj[k]}' in property: '${k}' is not allowed. Allowed values are: ${allowedEnum.toString()}.`));
                             }
                         }
@@ -116,7 +116,7 @@ export default class ConfigCheckerTools
                         let allowedStrings = structure[k]['stringOnlyEnum'];
                         if(!allowedStrings.includes(obj[k]))
                         {
-                            configErrorBag.addConfigError(new ConfigError(configName,
+                            configErrorBag.addError(new ConfigError(configName,
                                 `${target.getTarget()} string value: '${obj[k]}' is not allowed. Allowed string values are: ${allowedStrings.toString()}.`));
                         }
                     }
@@ -127,7 +127,7 @@ export default class ConfigCheckerTools
         //check only allowed keys in
         for(let k in obj) {
             if(obj.hasOwnProperty(k) && !allowedKeys.includes(k)) {
-                configErrorBag.addConfigError(new ConfigError(configName,
+                configErrorBag.addError(new ConfigError(configName,
                     `${target.getTarget()} property: '${k}' is not allowed. Allowed keys are: ${allowedKeys.toString()}.`));
             }
         }
@@ -142,7 +142,7 @@ export default class ConfigCheckerTools
      * @param message
      * @param target
      */
-    static assertEqualsOne(values : any[],searchValue,configName : string,configErrorBag : ConfigErrorBag,message : string,target : Target = new Target()) : boolean
+    static assertEqualsOne(values : any[],searchValue,configName : string,configErrorBag : ErrorBag<ConfigError>,message : string,target : Target = new Target()) : boolean
     {
         let found = false;
         for(let i = 0; i < values.length; i++) {
@@ -152,7 +152,7 @@ export default class ConfigCheckerTools
             }
         }
         if(!found) {
-            configErrorBag.addConfigError(new ConfigError(configName,
+            configErrorBag.addError(new ConfigError(configName,
                 `${target.getTarget()} ${message}`));
             return false;
         }
