@@ -11,11 +11,11 @@ import BackError            from "../../api/BackError";
 
 export default class BackErrorBuilder
 {
-    private errorSettings : BackErrorConstruct = {};
-    private errorInfo : object = {};
+    private _construct: BackErrorConstruct = {};
+    private _info: object = {};
 
     constructor() {
-        this.errorSettings.type = ErrorType.NORMAL_ERROR;
+        this._construct.type = ErrorType.NORMAL_ERROR;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -26,7 +26,7 @@ export default class BackErrorBuilder
      * @param name
      */
     name(name : string) : BackErrorBuilder {
-        this.errorSettings.name = name;
+        this._construct.name = name;
         return this;
     }
 
@@ -40,7 +40,7 @@ export default class BackErrorBuilder
      * @param group
      */
     group(group : string | undefined) : BackErrorBuilder {
-        this.errorSettings.group = group;
+        this._construct.group = group;
         return this;
     }
 
@@ -53,7 +53,7 @@ export default class BackErrorBuilder
      * @param type
      */
     typ(type : string) : BackErrorBuilder {
-        this.errorSettings.type = type;
+        this._construct.type = type;
         return this;
     }
 
@@ -63,7 +63,7 @@ export default class BackErrorBuilder
      * Set the BackError type to system error.
      */
     typeSystemError() : BackErrorBuilder {
-        this.errorSettings.type = ErrorType.SYSTEM_ERROR;
+        this._construct.type = ErrorType.SYSTEM_ERROR;
         return this;
     }
 
@@ -73,7 +73,7 @@ export default class BackErrorBuilder
      * Set the BackError type to input error.
      */
     typeInputError() : BackErrorBuilder {
-        this.errorSettings.type = ErrorType.INPUT_ERROR;
+        this._construct.type = ErrorType.INPUT_ERROR;
         return this;
     }
 
@@ -83,7 +83,7 @@ export default class BackErrorBuilder
      * Set the BackError type to validation error.
      */
     typeValidationError() : BackErrorBuilder {
-        this.errorSettings.type = ErrorType.VALIDATION_ERROR;
+        this._construct.type = ErrorType.VALIDATION_ERROR;
         return this;
     }
 
@@ -93,7 +93,7 @@ export default class BackErrorBuilder
      * Set the BackError type to auth error.
      */
     typeAuthError() : BackErrorBuilder {
-        this.errorSettings.type = ErrorType.AUTH_ERROR;
+        this._construct.type = ErrorType.AUTH_ERROR;
         return this;
     }
 
@@ -103,7 +103,7 @@ export default class BackErrorBuilder
      * Set the BackError type to protocol error.
      */
     typeProtocolError() : BackErrorBuilder {
-        this.errorSettings.type = ErrorType.PROTOCOL_ERROR;
+        this._construct.type = ErrorType.PROTOCOL_ERROR;
         return this;
     }
 
@@ -113,7 +113,7 @@ export default class BackErrorBuilder
      * Set the BackError type to token error.
      */
     typeTokenError() : BackErrorBuilder {
-        this.errorSettings.type = ErrorType.TOKEN_ERROR;
+        this._construct.type = ErrorType.TOKEN_ERROR;
         return this;
     }
 
@@ -123,7 +123,7 @@ export default class BackErrorBuilder
      * Set the BackError type to database error.
      */
     typeDatabaseError() : BackErrorBuilder {
-        this.errorSettings.type = ErrorType.DATABASE_ERROR;
+        this._construct.type = ErrorType.DATABASE_ERROR;
         return this;
     }
 
@@ -133,7 +133,7 @@ export default class BackErrorBuilder
      * Set the BackError type to compatibility error.
      */
     typeCompatibilityError() : BackErrorBuilder {
-        this.errorSettings.type = ErrorType.NO_ACCESS_ERROR;
+        this._construct.type = ErrorType.NO_ACCESS_ERROR;
         return this;
     }
 
@@ -143,7 +143,7 @@ export default class BackErrorBuilder
      * Set the BackError type to time error.
      */
     typeTimeError() : BackErrorBuilder {
-        this.errorSettings.type = ErrorType.TIME_ERROR;
+        this._construct.type = ErrorType.TIME_ERROR;
         return this;
     }
 
@@ -153,7 +153,7 @@ export default class BackErrorBuilder
      * Set the BackError type to normal error.
      */
     typeNormalError() : BackErrorBuilder {
-        this.errorSettings.type = ErrorType.NORMAL_ERROR;
+        this._construct.type = ErrorType.NORMAL_ERROR;
         return this;
     }
 
@@ -163,7 +163,7 @@ export default class BackErrorBuilder
      * Set the BackError description.
      */
     description(description : string) : BackErrorBuilder {
-        this.errorSettings.description = description;
+        this._construct.description = description;
         return this;
     }
 
@@ -173,7 +173,7 @@ export default class BackErrorBuilder
      * Set if the BackError sends the info.
      */
     sendInfo(sendInfo : boolean) : BackErrorBuilder {
-        this.errorSettings.sendInfo = sendInfo;
+        this._construct.sendInfo = sendInfo;
         return this;
     }
 
@@ -183,7 +183,7 @@ export default class BackErrorBuilder
      * Set if the BackError is private.
      */
     private(isPrivate : boolean) : BackErrorBuilder {
-        this.errorSettings.private = isPrivate;
+        this._construct.private = isPrivate;
         return this;
     }
 
@@ -193,7 +193,7 @@ export default class BackErrorBuilder
      * Set if the BackError is from zation system.
      */
     fromZationSystem(fromZationSystem : boolean) : BackErrorBuilder {
-        this.errorSettings.fromZationSystem = fromZationSystem;
+        this._construct.fromZationSystem = fromZationSystem;
         return this;
     }
 
@@ -208,7 +208,7 @@ export default class BackErrorBuilder
      * Notice that you override the info property.
      */
     setInfo(info : object) : BackErrorBuilder {
-        this.errorInfo = info;
+        this._info = info;
         return this;
     }
 
@@ -223,8 +223,8 @@ export default class BackErrorBuilder
      */
     addInfo(key : string, value : any, override : boolean = true) : BackErrorBuilder
     {
-        if(override || !this.errorInfo.hasOwnProperty(key)) {
-            this.errorInfo[key] = value;
+        if(override || !this._info.hasOwnProperty(key)) {
+            this._info[key] = value;
         }
         return this;
     }
@@ -235,7 +235,25 @@ export default class BackErrorBuilder
      * Returns the created BackError.
      */
     create() : BackError {
-        return new BackError(this.errorSettings,this.errorInfo);
+        return new BackError(this._construct,this._info);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the back error construct.
+     */
+    get backErrorConstruct(): BackErrorConstruct {
+        return this._construct;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the info.
+     */
+    get info(): Record<string,any> {
+        return this._info;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -244,8 +262,7 @@ export default class BackErrorBuilder
      * Returns an BackError builder.
      * For easy build an BackError.
      */
-    static build() : BackErrorBuilder
-    {
+    static build() : BackErrorBuilder {
         return new BackErrorBuilder();
     }
 }

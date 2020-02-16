@@ -53,6 +53,7 @@ import {StartErrorName}             from "./lib/main/constants/startErrorName";
 import NoDataAvailableError         from "./lib/main/databox/noDataAvailable";
 import {$not}                       from './lib/api/Notable';
 import {Server}                     from './lib/api/Server';
+import BackErrorConstruct           from './lib/main/constants/backErrorConstruct';
 
 //starter
 
@@ -113,6 +114,7 @@ export {
         BackError,
         BackErrorBuilder,
         BackErrorBag,
+        BackErrorConstruct,
         ErrorType,
         Server,
         Config,
