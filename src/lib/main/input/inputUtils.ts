@@ -14,7 +14,7 @@ export default class InputUtils
      * @param input
      * @param paramBased
      */
-    static getModelAtPath(path : string[], input : object, paramBased : boolean) : object | undefined
+    static getModelAtPath(path: string[], input: object, paramBased: boolean): object | undefined
     {
         let tempConfig = input;
         let i = 0;
@@ -47,9 +47,9 @@ export default class InputUtils
      * returns the keyPath (string array) and path (string).
      * @param path
      */
-    static processPathInfo(path : string | string[]) : {path : string,keyPath : string[]}
+    static processPathInfo(path: string | string[]): {path: string,keyPath: string[]}
     {
-        let keyPath : string[];
+        let keyPath: string[];
         //convert path to an array
         // noinspection SuspiciousTypeOfGuard
         if(typeof path === 'string') {

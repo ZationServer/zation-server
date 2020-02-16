@@ -41,8 +41,8 @@ export default class OsUtils {
         })
     }
 
-    static getMemoryUsage(): Promise<{totalMemMb : number,usedMemMb : number}> {
-        return OsUtils.processMemoryInfo().then( (res : any) => {
+    static getMemoryUsage(): Promise<{totalMemMb: number,usedMemMb: number}> {
+        return OsUtils.processMemoryInfo().then( (res: any) => {
             return Promise.resolve({
                 totalMemMb: res.totalMemMb,
                 usedMemMb: res.usedMemMb
@@ -53,8 +53,8 @@ export default class OsUtils {
     private static processMemoryInfo()
     {
         return new Promise(function (resolve) {
-            let totalMem : any = null;
-            let freeMem : any = null;
+            let totalMem: any = null;
+            let freeMem: any = null;
             cp.exec('cat /proc/meminfo | head -5', co.wrap(function* (err, out) {
                 if (err || !out) {
                     totalMem = os.totalmem() / 1024;
@@ -112,7 +112,7 @@ export default class OsUtils {
 
     private static parseDfStdout(stdout) {
         let dfInfo: any = [];
-        let headline : any[] = [];
+        let headline: any[] = [];
 
         stdout.replace(DISK_PATTERN, function () {
             let args = Array.prototype.slice.call(arguments, 1, 7);

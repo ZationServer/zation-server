@@ -13,7 +13,7 @@ import {NormalAuthAccessCustomFunction} from "../config/definitions/configCompon
 import {AccessConfigValue}              from '../access/accessOptions';
 import {getNotableValue, isNotableNot, Notable} from '../../api/Notable';
 
-export type TokenStateAccessCheckFunction = (authEngine : AuthEngine) => Promise<boolean>;
+export type TokenStateAccessCheckFunction = (authEngine: AuthEngine) => Promise<boolean>;
 
 export default class AuthAccessChecker
 {
@@ -22,14 +22,14 @@ export default class AuthAccessChecker
      * @param accessValue
      * @param bag
      */
-    static createAuthAccessChecker(accessValue : Notable<AccessConfigValue<NormalAuthAccessCustomFunction>> | undefined, bag : Bag) : TokenStateAccessCheckFunction {
+    static createAuthAccessChecker(accessValue: Notable<AccessConfigValue<NormalAuthAccessCustomFunction>> | undefined, bag: Bag): TokenStateAccessCheckFunction {
         const rawValue = getNotableValue(accessValue);
         if(rawValue !== undefined){
             return AccessUtils.createAccessChecker<TokenStateAccessCheckFunction,NormalAuthAccessCustomFunction>
             (rawValue,isNotableNot(accessValue),(func) => {
                 return async (authEngine) => {
                     const token = authEngine.getSHBridge().getToken();
-                    return func(bag,token !== null ? new ZationTokenWrapper(token) : null);
+                    return func(bag,token !== null ? new ZationTokenWrapper(token): null);
                 };
             });
         }

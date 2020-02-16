@@ -8,9 +8,9 @@ export type ProcessTask = () => Promise<void>;
 
 export default class ProcessTaskEngine
 {
-    static async processTasks(processTaskList : ProcessTask[])
+    static async processTasks(processTaskList: ProcessTask[])
     {
-        const promises : Promise<void>[] = [];
+        const promises: Promise<void>[] = [];
         for(let i = 0; i < processTaskList.length; i++) {
             promises.push(processTaskList[i]());
         }

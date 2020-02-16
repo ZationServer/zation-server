@@ -17,22 +17,22 @@ import ZationConfigFull      from "../config/manager/zationConfigFull";
 export default class PanelEngine
 {
 
-    private panelInUse : boolean = false;
-    private panelInUseTimeout : Timer;
+    private panelInUse: boolean = false;
+    private panelInUseTimeout: Timer;
 
-    private zw : ZationWorker;
-    private zc : ZationConfigFull;
-    private preparedBag : Bag;
+    private zw: ZationWorker;
+    private zc: ZationConfigFull;
+    private preparedBag: Bag;
 
-    private readonly panelUserMap : Record<string,string>;
+    private readonly panelUserMap: Record<string,string>;
 
-    private readonly panelAccessData : {p : string,u : string}[] = [];
+    private readonly panelAccessData: {p: string,u: string}[] = [];
 
-    private alreadyFirstPong : boolean = false;
+    private alreadyFirstPong: boolean = false;
 
     private readonly idData;
 
-    constructor(zw : ZationWorker,preparedBag : Bag,authUserGroups : Record<string,AuthUserGroupConfig>)
+    constructor(zw: ZationWorker,preparedBag: Bag,authUserGroups: Record<string,AuthUserGroupConfig>)
     {
         this.zw = zw;
         this.zc = this.zw.getZationConfig();
@@ -42,15 +42,15 @@ export default class PanelEngine
             this.loadPanelAccessData();
             this.registerPanelInEvent();
             this.idData = {
-                instanceId  : this.zw.options.instanceId,
+                instanceId : this.zw.options.instanceId,
                 workerFullId: this.zw.getFullWorkerId(),
-                workerId    : this.zw.id
+                workerId   : this.zw.id
             }
         }
     }
 
     // noinspection JSMethodCanBeStatic
-    private initPanelUserMap(authUserGroups : Record<string,AuthUserGroupConfig>) : Record<string,string>
+    private initPanelUserMap(authUserGroups: Record<string,AuthUserGroupConfig>): Record<string,string>
     {
         let map = {};
         for(let k in authUserGroups) {
@@ -75,10 +75,10 @@ export default class PanelEngine
         }
     }
 
-    private addUser(config : PanelUserConfig) : void {
+    private addUser(config: PanelUserConfig): void {
         this.panelAccessData.push({
-            p : this.zw.getPreparedBag().hashSha512(config.password),
-            u : config.username
+            p: this.zw.getPreparedBag().hashSha512(config.password),
+            u: config.username
         });
     }
 
@@ -101,7 +101,7 @@ export default class PanelEngine
         });
     }
 
-    private renewPanelInUse() : void
+    private renewPanelInUse(): void
     {
         //clear old timeout
         if(!!this.panelInUseTimeout) {
@@ -115,39 +115,39 @@ export default class PanelEngine
         },5000);
     }
 
-    private async sendFirstPong() : Promise<void> {
+    private async sendFirstPong(): Promise<void> {
         try {
             this.pubInPanel('firstPong',(await this.zw.getFirstPanelInfo()));
         }
         catch (e) {console.log(e);}
     }
 
-    updateLeaderInfo(data : object) {
+    updateLeaderInfo(data: object) {
         this.pubInPanel('up-l',data);
     }
 
-    update(data : object) {
+    update(data: object) {
         this.pubInPanel('up',data);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    private pubInPanel(eventName : string,data : object = {})
+    private pubInPanel(eventName: string,data: object = {})
     {
         if(this.isPanelInUse()) {
             // noinspection TypeScriptValidateJSTypes
             this.zw.scServer.exchange.publish(ZationChannel.PANEL_OUT,ChUtils.buildData(eventName,
                 {
-                id : this.idData,
-                info : data
+                id: this.idData,
+                info: data
             }));
         }
     }
 
-    isPanelInUse() : boolean {
+    isPanelInUse(): boolean {
         return this.panelInUse;
     }
 
-    async isPanelLoginDataValid(username : string,password : string) : Promise<boolean>
+    async isPanelLoginDataValid(username: string,password: string): Promise<boolean>
     {
         const passwordHash =
             this.zw.getPreparedBag().hashSha512(password);
@@ -168,7 +168,7 @@ export default class PanelEngine
         return foundUser;
     }
 
-    getPanelUserMap() : Record<string,string> {
+    getPanelUserMap(): Record<string,string> {
         return this.panelUserMap;
     }
 

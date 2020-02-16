@@ -6,8 +6,8 @@ Copyright(c) Luca Scaringella
 
 export default class ConfigError extends Error
 {
-    message : string;
-    private readonly configName : string;
+    message: string;
+    private readonly configName: string;
 
     constructor(configName,message)
     {
@@ -16,19 +16,19 @@ export default class ConfigError extends Error
         this.configName = configName;
     }
 
-    toString() : string
+    toString(): string
     {
         return `Config: ${this.configName}  Error: ${this.message}`;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getConfigName() : string
+    getConfigName(): string
     {
         return this.configName;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getMessage() : string
+    getMessage(): string
     {
         return super.message;
     }

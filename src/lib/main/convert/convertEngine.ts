@@ -8,7 +8,7 @@ import {ConverterLibrary} from "./convertLibrary";
 
 export default class ConvertEngine
 {
-    static convert(input : any,type : string | undefined,strictType : boolean) : any
+    static convert(input: any,type: string | undefined,strictType: boolean): any
     {
         if(type !== undefined && ConverterLibrary.hasOwnProperty(type)) {
             return ConverterLibrary[type](input,strictType);

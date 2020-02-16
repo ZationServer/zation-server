@@ -16,7 +16,7 @@ import AuthEngine           from "../auth/authEngine";
 import {AccessConfigValue}  from '../access/accessOptions';
 import {getNotableValue, isNotableNot, Notable} from '../../api/Notable';
 
-export type DbAccessCheckFunction = (authEngine : AuthEngine, socket : ZSocket, dbInfo : DataboxInfo) => Promise<boolean>
+export type DbAccessCheckFunction = (authEngine: AuthEngine, socket: ZSocket, dbInfo: DataboxInfo) => Promise<boolean>
 
 /**
  * Helper class for databox access.
@@ -28,7 +28,7 @@ export default class DataboxAccessHelper
      * @param accessValue
      * @param bag
      */
-    static createAccessChecker(accessValue : Notable<AccessConfigValue<DbAccessFunction>> | undefined, bag : Bag): DbAccessCheckFunction
+    static createAccessChecker(accessValue: Notable<AccessConfigValue<DbAccessFunction>> | undefined, bag: Bag): DbAccessCheckFunction
     {
         const rawValue = getNotableValue(accessValue);
         if(rawValue !== undefined){
@@ -49,10 +49,10 @@ export default class DataboxAccessHelper
      * Checks the socket Databox access.
      * @param socket
      */
-    static async checkSocketDataboxAccess(socket : UpSocket) : Promise<void>
+    static async checkSocketDataboxAccess(socket: UpSocket): Promise<void>
     {
         const databoxes = socket.databoxes;
-        const promises : Promise<void>[] = [];
+        const promises: Promise<void>[] = [];
         for(let i = 0;i < databoxes.length; i++) {
             promises.push((async () => {
                 const databox = databoxes[i];
@@ -61,13 +61,13 @@ export default class DataboxAccessHelper
                 if(databox instanceof DataboxFamily){
                     const memberIds = databox.getSocketRegIds(socket);
                     for(let i = 0; i < memberIds.length; i++){
-                        if(!(await databox._accessCheck(socket,{id : memberIds[i],name}))) {
+                        if(!(await databox._accessCheck(socket,{id: memberIds[i],name}))) {
                             databox.kickOut(memberIds[i],socket);
                         }
                     }
                 }
                 else {
-                    if(!(await databox._accessCheck(socket,{name,id : undefined}))) {
+                    if(!(await databox._accessCheck(socket,{name,id: undefined}))) {
                         databox.kickOut(socket);
                     }
                 }
@@ -81,7 +81,7 @@ export default class DataboxAccessHelper
      * @param db
      * @param socket
      */
-    static addDb(db : Databox | DataboxFamily, socket : UpSocket) {
+    static addDb(db: Databox | DataboxFamily, socket: UpSocket) {
         socket.databoxes.push(db);
     }
 
@@ -90,7 +90,7 @@ export default class DataboxAccessHelper
      * @param db
      * @param socket
      */
-    static rmDb(db : Databox | DataboxFamily, socket : UpSocket){
+    static rmDb(db: Databox | DataboxFamily, socket: UpSocket){
         const index = socket.databoxes.indexOf(db);
         if (index > -1) {
             socket.databoxes.splice(index, 1);

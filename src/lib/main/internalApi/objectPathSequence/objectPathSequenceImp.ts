@@ -7,27 +7,27 @@ Copyright(c) Luca Scaringella
 import ObjectPath           from "../../utils/objectPath";
 import {ObjectPathSequence} from "./objectPathSequence";
 
-type CommitFunction = (object : object) => Promise<void>;
+type CommitFunction = (object: object) => Promise<void>;
 
 /**
  * Edit an object directly with object paths.
  */
 export default class ObjectPathSequenceImp implements ObjectPathSequence
 {
-    private object : object;
-    private readonly commitFunction : CommitFunction;
+    private object: object;
+    private readonly commitFunction: CommitFunction;
 
-    constructor(object : object, commitFunc : CommitFunction) {
+    constructor(object: object, commitFunc: CommitFunction) {
         this.object = object;
         this.commitFunction = commitFunc;
     }
 
-    set(path : string | string[],value : any) : ObjectPathSequenceImp {
+    set(path: string | string[],value: any): ObjectPathSequenceImp {
         ObjectPath.set(this.object,path,value);
         return this;
     }
 
-    delete(path ?: string | string[]) : ObjectPathSequenceImp {
+    delete(path?: string | string[]): ObjectPathSequenceImp {
         if(!!path) {
             ObjectPath.del(this.object,path);
         }

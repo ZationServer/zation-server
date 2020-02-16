@@ -96,32 +96,32 @@ export default class DataboxFamily extends DataboxCore {
     /**
      * Maps the member id to the sockets and remove socket function.
      */
-    private readonly _regMember : Map<string,Map<UpSocket,DbSocketMemory>> = new Map();
+    private readonly _regMember: Map<string,Map<UpSocket,DbSocketMemory>> = new Map();
     /**
      * Maps the sockets to the member ids.
      */
-    private readonly _socketMembers : Map<UpSocket,Set<string>> = new Map<UpSocket, Set<string>>();
-    private readonly _lastCudData : Map<string,{timestamp : number,id : string}> = new Map();
-    private readonly _unregisterMemberTimeoutMap : Map<string,Timeout> = new Map();
-    private readonly _idValidCheck : IdValidChecker;
-    private readonly _dbEventPreFix : string;
-    private readonly _scExchange : ScExchange;
-    private readonly _workerFullId : string;
-    private readonly _maxSocketInputChannels : number;
+    private readonly _socketMembers: Map<UpSocket,Set<string>> = new Map<UpSocket, Set<string>>();
+    private readonly _lastCudData: Map<string,{timestamp: number,id: string}> = new Map();
+    private readonly _unregisterMemberTimeoutMap: Map<string,Timeout> = new Map();
+    private readonly _idValidCheck: IdValidChecker;
+    private readonly _dbEventPreFix: string;
+    private readonly _scExchange: ScExchange;
+    private readonly _workerFullId: string;
+    private readonly _maxSocketInputChannels: number;
 
-    private readonly _buildFetchManager : FetchManagerBuilder<typeof DataboxFamily.prototype._fetch>;
-    private readonly _sendCudToSockets : (id : string,dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void;
-    private readonly _hasBeforeEventsListener : boolean;
+    private readonly _buildFetchManager: FetchManagerBuilder<typeof DataboxFamily.prototype._fetch>;
+    private readonly _sendCudToSockets: (id: string,dbClientCudPackage: DbClientOutputCudPackage) => Promise<void> | void;
+    private readonly _hasBeforeEventsListener: boolean;
 
-    static [databoxInstanceSymbol] : DataboxFamily;
+    static [databoxInstanceSymbol]: DataboxFamily;
 
-    constructor(id : string, bag: Bag, dbPreparedData : DbPreparedData, idValidCheck : IdValidChecker, apiLevel : number | undefined) {
+    constructor(id: string, bag: Bag, dbPreparedData: DbPreparedData, idValidCheck: IdValidChecker, apiLevel: number | undefined) {
         super(id,bag,dbPreparedData,apiLevel);
         this._idValidCheck = idValidCheck;
         this._scExchange = bag.getWorker().scServer.exchange;
         this._workerFullId = bag.getWorker().getFullWorkerId();
         this._maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
-        this._dbEventPreFix = `${DATABOX_START_INDICATOR}-${this.name}-${apiLevel !== undefined ? apiLevel : ''}-`;
+        this._dbEventPreFix = `${DATABOX_START_INDICATOR}-${this.name}-${apiLevel !== undefined ? apiLevel: ''}-`;
 
         this._buildFetchManager = DataboxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
@@ -136,7 +136,7 @@ export default class DataboxFamily extends DataboxCore {
      * Uses only the complex send to socket cud (with middleware)
      * if at least one of the middleware function was overwritten.
      */
-    private _getSendCudToSocketsHandler() : (id : string,dbClientCudPackage : DbClientOutputCudPackage) => Promise<void> | void {
+    private _getSendCudToSocketsHandler(): (id: string,dbClientCudPackage: DbClientOutputCudPackage) => Promise<void> | void {
         if(!this.insertMiddleware[defaultSymbol] ||
             !this.updateMiddleware[defaultSymbol] ||
             !this.deleteMiddleware[defaultSymbol])
@@ -157,7 +157,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param initData
      * @private
      */
-    async _registerSocket(socket : UpSocket,id : string,dbToken : DbToken,initData : any) : Promise<DbRegisterResult> {
+    async _registerSocket(socket: UpSocket,id: string,dbToken: DbToken,initData: any): Promise<DbRegisterResult> {
 
         const {inputChIds,unregisterSocket} = this._connectSocket(socket,id);
 
@@ -172,7 +172,7 @@ export default class DataboxFamily extends DataboxCore {
 
         const fetchManager = this._buildFetchManager();
 
-        socket.on(inputCh,async (senderPackage : DbClientInputPackage, respond : RespondFunction) => {
+        socket.on(inputCh,async (senderPackage: DbClientInputPackage, respond: RespondFunction) => {
             try {
                 switch (senderPackage.a) {
                     case DbClientInputAction.fetch:
@@ -206,7 +206,7 @@ export default class DataboxFamily extends DataboxCore {
                         respond(null,this._getLastCudId(id));
                         break;
                     default :
-                        const err : any = new Error('Unknown action');
+                        const err: any = new Error('Unknown action');
                         err.name = ClientErrorName.UNKNOWN_ACTION;
                         respond(err);
                 }
@@ -224,7 +224,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param id
      * @private
      */
-    private _disconnectSocket(socket : UpSocket,disconnectHandler : () => void,id : string) {
+    private _disconnectSocket(socket: UpSocket,disconnectHandler: () => void,id: string) {
         socket.off('disconnect',disconnectHandler);
         DataboxAccessHelper.rmDb(this,socket);
         this._rmSocket(socket,id);
@@ -236,7 +236,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param id
      * @private
      */
-    _getLastCudId(id : string) : string {
+    _getLastCudId(id: string): string {
         const lastCudId = this._lastCudData.get(id);
         if(lastCudId){
             return lastCudId.id;
@@ -244,7 +244,7 @@ export default class DataboxFamily extends DataboxCore {
         return DataboxUtils.generateStartCudId();
     }
 
-    private async _fetch(id : string,dbToken : DbToken,fetchInput : any,initData : any,zSocket : ZSocket,target ?: DBClientInputSessionTarget) : Promise<DbClientInputFetchResponse> {
+    private async _fetch(id: string,dbToken: DbToken,fetchInput: any,initData: any,zSocket: ZSocket,target?: DBClientInputSessionTarget): Promise<DbClientInputFetchResponse> {
         const session = DataboxUtils.getSession(dbToken.sessions,target);
         const currentCounter = session.c;
         const clonedSessionData = CloneUtils.deepClone(session.d);
@@ -256,9 +256,9 @@ export default class DataboxFamily extends DataboxCore {
             session.d = clonedSessionData;
 
             return {
-                c : currentCounter,
-                d : data,
-                t : await this._signDbToken(dbToken,id)
+                c: currentCounter,
+                d: data,
+                t: await this._signDbToken(dbToken,id)
             };
         }
         catch (e) {
@@ -267,12 +267,12 @@ export default class DataboxFamily extends DataboxCore {
         }
     }
 
-    private async _resetSession(id : string,dbToken : DbToken,target ?: DBClientInputSessionTarget) : Promise<string> {
+    private async _resetSession(id: string,dbToken: DbToken,target?: DBClientInputSessionTarget): Promise<string> {
         DataboxUtils.resetSession(dbToken.sessions,target);
         return this._signDbToken(dbToken,id);
     }
 
-    private async _copySession(id : string,dbToken : DbToken,target ?: DBClientInputSessionTarget) : Promise<string> {
+    private async _copySession(id: string,dbToken: DbToken,target?: DBClientInputSessionTarget): Promise<string> {
         DataboxUtils.copySession(dbToken.sessions,target);
         return this._signDbToken(dbToken,id);
     }
@@ -283,7 +283,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param id
      * @private
      */
-    async _checkIdIsValid(id : string) : Promise<void> {
+    async _checkIdIsValid(id: string): Promise<void> {
         await this._idValidCheck(id);
     }
 
@@ -292,7 +292,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param id
      * @private
      */
-    private _buildSocketFamilyMemberMap(id : string) : Map<UpSocket,DbSocketMemory> {
+    private _buildSocketFamilyMemberMap(id: string): Map<UpSocket,DbSocketMemory> {
         let memberMap = this._regMember.get(id);
         if(!memberMap){
             memberMap = this._registerMember(id);
@@ -310,7 +310,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param id
      * @private
      */
-    private _connectSocket(socket : UpSocket,id : string) : DbSocketMemory {
+    private _connectSocket(socket: UpSocket,id: string): DbSocketMemory {
         const memberMap = this._buildSocketFamilyMemberMap(id);
 
         let socketMemoryData = memberMap.get(socket);
@@ -319,7 +319,7 @@ export default class DataboxFamily extends DataboxCore {
             const inputChPrefix = `${this._dbEventPreFix}${id}-`;
             const inputChIds = new Set<string>();
 
-            const unregisterSocketFunction = (inputChannelId ?: string) => {
+            const unregisterSocketFunction = (inputChannelId?: string) => {
                 if(inputChannelId === undefined){
                     for(let inChId of inputChIds.values()) {
                        socket.off(inputChPrefix+inChId);
@@ -341,7 +341,7 @@ export default class DataboxFamily extends DataboxCore {
 
             socketMemoryData = {
                 inputChIds: inputChIds,
-                unregisterSocket : unregisterSocketFunction
+                unregisterSocket: unregisterSocketFunction
             };
 
             memberMap.set(socket,socketMemoryData);
@@ -367,7 +367,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param id
      * @private
      */
-    private _rmSocket(socket : UpSocket,id : string){
+    private _rmSocket(socket: UpSocket,id: string){
         //main member socket map
         const memberMap = this._regMember.get(id);
         if(memberMap){
@@ -392,7 +392,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param id
      * @private
      */
-    private _clearUnregisterMemberTimeout(id : string) : void {
+    private _clearUnregisterMemberTimeout(id: string): void {
         const timeout = this._unregisterMemberTimeoutMap.get(id);
         if(timeout !== undefined){clearTimeout(timeout);}
         this._unregisterMemberTimeoutMap.delete(id);
@@ -403,7 +403,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param id
      * @private
      */
-    private _createUnregisterMemberTimeout(id : string) : void {
+    private _createUnregisterMemberTimeout(id: string): void {
         const timeout = this._unregisterMemberTimeoutMap.get(id);
         if(timeout !== undefined){clearTimeout(timeout);}
         this._unregisterMemberTimeoutMap.set(id,setTimeout(() => {
@@ -417,10 +417,10 @@ export default class DataboxFamily extends DataboxCore {
      * @param id
      * @private
      */
-    private _registerMember(id : string) : Map<UpSocket,DbSocketMemory> {
+    private _registerMember(id: string): Map<UpSocket,DbSocketMemory> {
         const memberMap = new Map<UpSocket,DbSocketMemory>();
         this._regMember.set(id,memberMap);
-        this._lastCudData.set(id,{timestamp : Date.now(),id : DataboxUtils.generateStartCudId()});
+        this._lastCudData.set(id,{timestamp: Date.now(),id: DataboxUtils.generateStartCudId()});
         this._scExchange.subscribe(this._dbEventPreFix+id)
             .watch(async (data) => {
                 if((data as DbWorkerCudPackage).w !== this._workerFullId) {
@@ -446,7 +446,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param id
      * @private
      */
-    private _unregisterMember(id : string) {
+    private _unregisterMember(id: string) {
         this._regMember.delete(id);
         const channel = this._scExchange.channel(this._dbEventPreFix+id);
         channel.unwatch();
@@ -459,7 +459,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param id
      * @param dbClientPackage
      */
-    private _sendToSockets(id : string,dbClientPackage : DbClientOutputPackage) {
+    private _sendToSockets(id: string,dbClientPackage: DbClientOutputPackage) {
         const socketSet = this._regMember.get(id);
         if(socketSet){
             const outputCh = this._dbEventPreFix+id;
@@ -475,19 +475,19 @@ export default class DataboxFamily extends DataboxCore {
      * @param dbClientPackage
      * @private
      */
-    private async _sendCudToSocketsWithMiddleware(id : string,dbClientPackage : DbClientOutputCudPackage) {
+    private async _sendCudToSocketsWithMiddleware(id: string,dbClientPackage: DbClientOutputCudPackage) {
 
         const socketSet = this._regMember.get(id);
 
         if(socketSet){
             const outputCh = this._dbEventPreFix+id;
             const operations = dbClientPackage.d.o;
-            const socketPromises : Promise<void>[] = [];
+            const socketPromises: Promise<void>[] = [];
 
             for(let socket of socketSet.keys()) {
 
-                const filteredOperations : CudOperation[] = [];
-                const promises : Promise<void>[] = [];
+                const filteredOperations: CudOperation[] = [];
+                const promises: Promise<void>[] = [];
 
                 for(let i = 0; i < operations.length; i++){
                     const operation = CloneUtils.deepClone(operations[i]);
@@ -543,12 +543,12 @@ export default class DataboxFamily extends DataboxCore {
      * @param id
      * @param cudPackage
      */
-    private async _processCudPackage(id : string,cudPackage : CudPackage){
-        this._sendCudToSockets(id,{a : DbClientOutputEvent.cud,d : cudPackage} as DbClientOutputCudPackage);
+    private async _processCudPackage(id: string,cudPackage: CudPackage){
+        this._sendCudToSockets(id,{a: DbClientOutputEvent.cud,d: cudPackage} as DbClientOutputCudPackage);
         //updated last cud id.
         const lastCudId = this._lastCudData.get(id);
         if((lastCudId && lastCudId.timestamp <= cudPackage.t) || !lastCudId){
-            this._lastCudData.set(id,{id : cudPackage.ci, timestamp : cudPackage.t});
+            this._lastCudData.set(id,{id: cudPackage.ci, timestamp: cudPackage.t});
         }
     }
 
@@ -557,8 +557,8 @@ export default class DataboxFamily extends DataboxCore {
      * @param id
      * @param cudOperations
      */
-    private async _emitBeforeEvents(id : string,cudOperations : CudOperation[]){
-        let promises : (Promise<void> | void)[] = [];
+    private async _emitBeforeEvents(id: string,cudOperations: CudOperation[]){
+        let promises: (Promise<void> | void)[] = [];
         for(let i = 0; i < cudOperations.length;i++) {
             const operation = cudOperations[i];
             switch (operation.t) {
@@ -587,28 +587,28 @@ export default class DataboxFamily extends DataboxCore {
      * @param id
      * @param timestamp
      */
-    async _emitCudPackage(preCudPackage : PreCudPackage,id : string,timestamp ?: number) {
+    async _emitCudPackage(preCudPackage: PreCudPackage,id: string,timestamp?: number) {
         if(this._hasBeforeEventsListener) {
             await this._emitBeforeEvents(id,preCudPackage.o);
         }
         const cudPackage = DataboxUtils.buildCudPackage(preCudPackage,timestamp);
         this._sendToWorker(id,{
-            a : DbWorkerAction.cud,
-            d : cudPackage,
-            w : this._workerFullId
+            a: DbWorkerAction.cud,
+            d: cudPackage,
+            w: this._workerFullId
         } as DbWorkerCudPackage);
         await this._processCudPackage(id,cudPackage);
     }
 
-    private _broadcastToOtherSockets(id : string,clientPackage : DbClientOutputPackage) {
+    private _broadcastToOtherSockets(id: string,clientPackage: DbClientOutputPackage) {
         this._sendToWorker(id,{
-            a : DbWorkerAction.broadcast,
-            d : clientPackage,
-            w : this._workerFullId
+            a: DbWorkerAction.broadcast,
+            d: clientPackage,
+            w: this._workerFullId
         } as DbWorkerBroadcastPackage);
     }
 
-    private _sendToWorker(id : string,workerPackage : DbWorkerPackage) {
+    private _sendToWorker(id: string,workerPackage: DbWorkerPackage) {
         this._scExchange.publish(this._dbEventPreFix+id,workerPackage);
     }
 
@@ -618,7 +618,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param closePackage
      * @private
      */
-    private _close(id : string,closePackage : DbClientOutputClosePackage) {
+    private _close(id: string,closePackage: DbClientOutputClosePackage) {
         const memberMap = this._regMember.get(id);
         if(memberMap){
             const outputCh = this._dbEventPreFix+id;
@@ -671,11 +671,11 @@ export default class DataboxFamily extends DataboxCore {
      * @param code
      * @param data
      */
-    async insert(id : string | number, selector : DbSelector, value : any, {if : ifOption,potentialUpdate,timestamp,code,data} : IfOption & PotentialUpdateOption & InfoOption & TimestampOption = {}) {
+    async insert(id: string | number, selector: DbSelector, value: any, {if: ifOption,potentialUpdate,timestamp,code,data}: IfOption & PotentialUpdateOption & InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataboxUtils.buildPreCudPackage(
                 DataboxUtils.buildInsert(selector,value,ifOption,potentialUpdate,code,data)),
-            typeof id === "string" ? id : id.toString(),timestamp);
+            typeof id === "string" ? id: id.toString(),timestamp);
     }
 
     /**
@@ -719,11 +719,11 @@ export default class DataboxFamily extends DataboxCore {
      * @param code
      * @param data
      */
-    async update(id : string | number, selector : DbSelector, value : any, {if : ifOption,potentialInsert,timestamp,code,data} : IfOption & PotentialInsertOption & InfoOption & TimestampOption = {}) {
+    async update(id: string | number, selector: DbSelector, value: any, {if: ifOption,potentialInsert,timestamp,code,data}: IfOption & PotentialInsertOption & InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataboxUtils.buildPreCudPackage(
                 DataboxUtils.buildUpdate(selector,value,ifOption,potentialInsert,code,data)),
-            typeof id === "string" ? id : id.toString(),timestamp);
+            typeof id === "string" ? id: id.toString(),timestamp);
     }
 
     /**
@@ -765,11 +765,11 @@ export default class DataboxFamily extends DataboxCore {
      * @param code
      * @param data
      */
-    async delete(id : string | number, selector : DbSelector, {if : ifOption,timestamp,code,data} : IfOption & InfoOption & TimestampOption = {}) {
+    async delete(id: string | number, selector: DbSelector, {if: ifOption,timestamp,code,data}: IfOption & InfoOption & TimestampOption = {}) {
         await this._emitCudPackage(
             DataboxUtils.buildPreCudPackage(
                 DataboxUtils.buildDelete(selector,ifOption,code,data)),
-            typeof id === "string" ? id : id.toString(),timestamp);
+            typeof id === "string" ? id: id.toString(),timestamp);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -788,11 +788,11 @@ export default class DataboxFamily extends DataboxCore {
      * The client, for example, will only update data that is older as incoming data.
      * Use this option only if you know what you are doing.
      */
-    seqEdit(id : string | number,timestamp ?: number) : DbCudOperationSequence {
+    seqEdit(id: string | number,timestamp?: number): DbCudOperationSequence {
         return new DbCudOperationSequence(async (operations) => {
             await this._emitCudPackage(
                 DataboxUtils.buildPreCudPackage(...operations),
-                typeof id === "string" ? id : id.toString(),timestamp);
+                typeof id === "string" ? id: id.toString(),timestamp);
         });
     }
 
@@ -808,15 +808,15 @@ export default class DataboxFamily extends DataboxCore {
      * @param data
      * @param forEveryWorker
      */
-    close(id : string | number,code ?: number | string,data ?: any,forEveryWorker : boolean = true){
-        id = typeof id === "string" ? id : id.toString();
+    close(id: string | number,code?: number | string,data?: any,forEveryWorker: boolean = true){
+        id = typeof id === "string" ? id: id.toString();
         const clientPackage = DataboxUtils.buildClientClosePackage(code,data);
         if(forEveryWorker){
             this._sendToWorker(id,
                 {
-                    a : DbWorkerAction.close,
-                    d : clientPackage,
-                    w : this._workerFullId
+                    a: DbWorkerAction.close,
+                    d: clientPackage,
+                    w: this._workerFullId
                 } as DbWorkerClosePackage);
         }
         this._close(id,clientPackage);
@@ -833,8 +833,8 @@ export default class DataboxFamily extends DataboxCore {
      * @param code
      * @param data
      */
-    doReload(id : string | number,forEveryWorker : boolean = false,code ?: number | string,data ?: any){
-        id = typeof id === "string" ? id : id.toString();
+    doReload(id: string | number,forEveryWorker: boolean = false,code?: number | string,data?: any){
+        id = typeof id === "string" ? id: id.toString();
         const clientPackage = DataboxUtils.buildClientReloadPackage(code,data);
         if(forEveryWorker){
             this._broadcastToOtherSockets(id,clientPackage);
@@ -851,13 +851,13 @@ export default class DataboxFamily extends DataboxCore {
      * @param code
      * @param data
      */
-    kickOut(id : string,socket : UpSocket,code ?: number | string,data ?: any) : void {
+    kickOut(id: string,socket: UpSocket,code?: number | string,data?: any): void {
         const socketMap = this._regMember.get(id);
         if(socketMap){
             const socketMemory = socketMap.get(socket);
             if(socketMemory){
                 socket.emit(this._dbEventPreFix+id,
-                    {a : DbClientOutputEvent.kickOut,c : code,d : data} as DbClientOutputKickOutPackage);
+                    {a: DbClientOutputEvent.kickOut,c: code,d: data} as DbClientOutputKickOutPackage);
                 socketMemory.unregisterSocket();
             }
         }
@@ -875,8 +875,8 @@ export default class DataboxFamily extends DataboxCore {
      * @param data
      * @param forEveryWorker
      */
-    sendSignal(id : string | number,signal : string,data ?: any,forEveryWorker : boolean = true) {
-        id = typeof id === "string" ? id : id.toString();
+    sendSignal(id: string | number,signal: string,data?: any,forEveryWorker: boolean = true) {
+        id = typeof id === "string" ? id: id.toString();
         const clientPackage = DataboxUtils.buildClientSignalPackage(signal,data);
         if(forEveryWorker){
             this._broadcastToOtherSockets(id,clientPackage);
@@ -891,9 +891,9 @@ export default class DataboxFamily extends DataboxCore {
      * This method is used internally.
      * @param socket
      */
-    getSocketRegIds(socket : UpSocket) : string[] {
+    getSocketRegIds(socket: UpSocket): string[] {
         const memberIds = this._socketMembers.get(socket);
-        return memberIds ? Array.from(memberIds) : [];
+        return memberIds ? Array.from(memberIds): [];
     }
 
     /**
@@ -955,7 +955,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param initData
      * @param socket
      */
-    protected fetch(id : string, counter : number, session : any, input : any, initData : any, socket : ZSocket) : Promise<any> | any {
+    protected fetch(id: string, counter: number, session: any, input: any, initData: any, socket: ZSocket): Promise<any> | any {
         this.noDataAvailable();
     }
 
@@ -969,7 +969,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param id
      * @param bag
      */
-    public isIdValid(id : string,bag : Bag) : Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void {
+    public isIdValid(id: string,bag: Bag): Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void {
     }
 
     /**
@@ -981,8 +981,8 @@ export default class DataboxFamily extends DataboxCore {
      * @param value
      * @param options
      */
-    protected beforeInsert(id : string, selector : DbProcessedSelector, value : any,
-                           options : IfOptionProcessed & PotentialUpdateOption & InfoOption & TimestampOption) : Promise<void> | void {
+    protected beforeInsert(id: string, selector: DbProcessedSelector, value: any,
+                           options: IfOptionProcessed & PotentialUpdateOption & InfoOption & TimestampOption): Promise<void> | void {
     }
 
     /**
@@ -994,8 +994,8 @@ export default class DataboxFamily extends DataboxCore {
      * @param value
      * @param options
      */
-    protected beforeUpdate(id : string, selector : DbProcessedSelector, value : any,
-                           options : IfOptionProcessed & PotentialInsertOption & InfoOption & TimestampOption) : Promise<void> | void {
+    protected beforeUpdate(id: string, selector: DbProcessedSelector, value: any,
+                           options: IfOptionProcessed & PotentialInsertOption & InfoOption & TimestampOption): Promise<void> | void {
     }
 
     /**
@@ -1006,8 +1006,8 @@ export default class DataboxFamily extends DataboxCore {
      * @param selector
      * @param options
      */
-    protected beforeDelete(id : string,selector : DbProcessedSelector,
-                           options : IfOptionProcessed & InfoOption & TimestampOption) : Promise<void> | void {
+    protected beforeDelete(id: string,selector: DbProcessedSelector,
+                           options: IfOptionProcessed & InfoOption & TimestampOption): Promise<void> | void {
     }
 
     // noinspection JSUnusedLocalSymbols
@@ -1015,7 +1015,7 @@ export default class DataboxFamily extends DataboxCore {
      * **Can be overridden.**
      * A function that gets triggered whenever a new socket is connected to the Databox.
      */
-    protected onConnection(id : string,socket : ZSocket) : Promise<void> | void {
+    protected onConnection(id: string,socket: ZSocket): Promise<void> | void {
     }
 
     // noinspection JSUnusedLocalSymbols
@@ -1024,7 +1024,7 @@ export default class DataboxFamily extends DataboxCore {
      * A function that gets triggered whenever a socket is disconnected from the Databox.
      * Notice that means all input channels are closed.
      */
-    protected onDisconnection(id : string,socket : ZSocket) : Promise<void> | void {
+    protected onDisconnection(id: string,socket: ZSocket): Promise<void> | void {
     }
 
     /**
@@ -1049,8 +1049,8 @@ export default class DataboxFamily extends DataboxCore {
      * @param code
      * @param data
      */
-    protected insertMiddleware(id : string, socket : ZSocket, selector : DbProcessedSelector, value : any, changeValue : ChangeValue,
-                               code : string | number | undefined, data : any) : Promise<void> | void {
+    protected insertMiddleware(id: string, socket: ZSocket, selector: DbProcessedSelector, value: any, changeValue: ChangeValue,
+                               code: string | number | undefined, data: any): Promise<void> | void {
     }
 
     /**
@@ -1075,8 +1075,8 @@ export default class DataboxFamily extends DataboxCore {
      * @param code
      * @param data
      */
-    protected updateMiddleware(id : string, socket : ZSocket, selector : DbProcessedSelector, value : any, changeValue : ChangeValue,
-                               code : string | number | undefined, data : any) : Promise<void> | void {
+    protected updateMiddleware(id: string, socket: ZSocket, selector: DbProcessedSelector, value: any, changeValue: ChangeValue,
+                               code: string | number | undefined, data: any): Promise<void> | void {
     }
 
     /**
@@ -1096,8 +1096,8 @@ export default class DataboxFamily extends DataboxCore {
      * @param code
      * @param data
      */
-    protected deleteMiddleware(id : string,socket : ZSocket,selector : DbProcessedSelector,
-                                     code : string | number | undefined,data : any) : Promise<void> | void {
+    protected deleteMiddleware(id: string,socket: ZSocket,selector: DbProcessedSelector,
+                                     code: string | number | undefined,data: any): Promise<void> | void {
     }
 }
 
@@ -1112,10 +1112,10 @@ DataboxFamily.prototype['beforeDelete'][defaultSymbol] = true;
 export interface DataboxFamilyClass {
     config: DataboxConfig;
 
-    new(name : string, bag: Bag, dbPreparedData : DbPreparedData, idValidCheck : IdValidChecker, apiLevel : number | undefined): DataboxFamily;
+    new(name: string, bag: Bag, dbPreparedData: DbPreparedData, idValidCheck: IdValidChecker, apiLevel: number | undefined): DataboxFamily;
 
     prototype: any;
-    name : string;
+    name: string;
 
-    readonly [databoxInstanceSymbol] : DataboxFamily | undefined;
+    readonly [databoxInstanceSymbol]: DataboxFamily | undefined;
 }

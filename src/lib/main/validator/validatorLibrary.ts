@@ -25,15 +25,15 @@ import BackErrorBag          from "../../api/BackErrorBag";
 import {PreparedErrorData}   from "./validatorEngine";
 import Bag                   from "../../api/Bag";
 
-const functionLibrary : Record<string,FunctionValidator> = {};
-const typeLibrary : Record<string,TypeValidator> = {};
+const functionLibrary: Record<string,FunctionValidator> = {};
+const typeLibrary: Record<string,TypeValidator> = {};
 
 
 export type FunctionValidator =
-    (input : any, settings : any, backErrorBag  : BackErrorBag, prepareErrorData : PreparedErrorData, preparedBag : Bag, type : string | undefined) => void | Promise<void>
+    (input: any, settings: any, backErrorBag : BackErrorBag, prepareErrorData: PreparedErrorData, preparedBag: Bag, type: string | undefined) => void | Promise<void>
 
 export type TypeValidator =
-    (input : any,backErrorBag : BackErrorBag,prepareErrorData : PreparedErrorData,strictType : boolean) => Promise<void> | void;
+    (input: any,backErrorBag: BackErrorBag,prepareErrorData: PreparedErrorData,strictType: boolean) => Promise<void> | void;
 
 
 typeLibrary[ValidationType.OBJECT] = (input, backErrorBag, prepareErrorData) =>
@@ -298,10 +298,10 @@ functionLibrary[nameof<ValueModelConfig>(s => s.regex)] = (input, settings, back
                     if(!input.match(settings[name])) {
                         backErrorBag.addNewBackError(ValidatorBackErrors.inputIsNotMatchWithRegex,
                             {
-                                inputValue : prepareErrorData.inputValue,
-                                inputPath : prepareErrorData.inputPath,
-                                regexName : name,
-                                regex : settings[name].toString()
+                                inputValue: prepareErrorData.inputValue,
+                                inputPath: prepareErrorData.inputPath,
+                                regexName: name,
+                                regex: settings[name].toString()
                             });
                     }
                 }
@@ -311,9 +311,9 @@ functionLibrary[nameof<ValueModelConfig>(s => s.regex)] = (input, settings, back
             if(!input.match(settings)) {
                 backErrorBag.addNewBackError(ValidatorBackErrors.inputIsNotMatchWithRegex,
                     {
-                        inputValue : prepareErrorData.inputValue,
-                        inputPath : prepareErrorData.inputPath,
-                        regex : settings.toString()
+                        inputValue: prepareErrorData.inputValue,
+                        inputPath: prepareErrorData.inputPath,
+                        regex: settings.toString()
                     });
             }
         }
@@ -325,9 +325,9 @@ functionLibrary[nameof<ValueModelConfig>(s => s.enum)] = (input, settings, backE
     if(!EasyValidator.validEnum(settings,input)) {
         backErrorBag.addNewBackError(ValidatorBackErrors.inputIsNotMatchWithEnum,
             {
-                inputValue : prepareErrorData.inputValue,
-                inputPath : prepareErrorData.inputPath,
-                enum : settings
+                inputValue: prepareErrorData.inputValue,
+                inputPath: prepareErrorData.inputPath,
+                enum: settings
             });
     }
 };
@@ -344,9 +344,9 @@ functionLibrary[nameof<ValueModelConfig>(s => s.minLength)] = (input, settings, 
     if(typeof input === 'string' && input.length < settings) {
         backErrorBag.addNewBackError(ValidatorBackErrors.inputNotMatchWithMinLength,
         {
-            inputValue : prepareErrorData.inputValue,
-            inputPath : prepareErrorData.inputPath,
-            minLength : settings
+            inputValue: prepareErrorData.inputValue,
+            inputPath: prepareErrorData.inputPath,
+            minLength: settings
         });
     }
 };
@@ -356,9 +356,9 @@ functionLibrary[nameof<ValueModelConfig>(s => s.maxLength)] = (input, settings, 
     if(typeof input === 'string' && input.length > settings) {
         backErrorBag.addNewBackError(ValidatorBackErrors.inputNotMatchWithMaxLength,
             {
-                inputValue : prepareErrorData.inputValue,
-                inputPath : prepareErrorData.inputPath,
-                maxLength : settings
+                inputValue: prepareErrorData.inputValue,
+                inputPath: prepareErrorData.inputPath,
+                maxLength: settings
 
             });
     }
@@ -369,9 +369,9 @@ functionLibrary[nameof<ValueModelConfig>(s => s.length)] = (input, settings, bac
     if(typeof input === 'string' && input.length !== settings) {
         backErrorBag.addNewBackError(ValidatorBackErrors.inputNotMatchWithLength,
             {
-                inputValue : prepareErrorData.inputValue,
-                inputPath : prepareErrorData.inputPath,
-                length : settings
+                inputValue: prepareErrorData.inputValue,
+                inputPath: prepareErrorData.inputPath,
+                length: settings
 
             });
     }
@@ -384,10 +384,10 @@ functionLibrary[nameof<ValueModelConfig>(s => s.contains)] = (input, settings, b
         if(missingContains.length > 0) {
             backErrorBag.addNewBackError(ValidatorBackErrors.inputIsNotContains,
                 {
-                    inputValue : prepareErrorData.inputValue,
-                    inputPath : prepareErrorData.inputPath,
-                    shouldContain : settings,
-                    missing : missingContains
+                    inputValue: prepareErrorData.inputValue,
+                    inputPath: prepareErrorData.inputPath,
+                    shouldContain: settings,
+                    missing: missingContains
                 });
         }
     }
@@ -398,9 +398,9 @@ functionLibrary[nameof<ValueModelConfig>(s => s.equals)] = (input, settings, bac
     if(!EasyValidator.equals(input,settings)) {
         backErrorBag.addNewBackError(ValidatorBackErrors.inputIsNotEquals,
             {
-                inputValue : prepareErrorData.inputValue,
-                inputPath : prepareErrorData.inputPath,
-                shouldEquals : settings
+                inputValue: prepareErrorData.inputValue,
+                inputPath: prepareErrorData.inputPath,
+                shouldEquals: settings
 
             });
     }
@@ -411,9 +411,9 @@ functionLibrary[nameof<ValueModelConfig>(s => s.minValue)] = (input, settings, b
     if(typeof input === 'number' && input < settings) {
         backErrorBag.addNewBackError(ValidatorBackErrors.inputNotMatchWithMinValue,
             {
-                inputValue : prepareErrorData.inputValue,
-                inputPath : prepareErrorData.inputPath,
-                minValue : settings
+                inputValue: prepareErrorData.inputValue,
+                inputPath: prepareErrorData.inputPath,
+                minValue: settings
 
             });
     }
@@ -424,9 +424,9 @@ functionLibrary[nameof<ValueModelConfig>(s => s.maxValue)] = (input, settings, b
     if(typeof input === 'number' && input > settings) {
         backErrorBag.addNewBackError(ValidatorBackErrors.inputNotMatchWithMaxValue,
             {
-                inputValue : prepareErrorData.inputValue,
-                inputPath : prepareErrorData.inputPath,
-                maxValue : settings
+                inputValue: prepareErrorData.inputValue,
+                inputPath: prepareErrorData.inputPath,
+                maxValue: settings
             });
     }
 };
@@ -436,9 +436,9 @@ functionLibrary[nameof<ValueModelConfig>(s => s.startsWith)] = (input, settings,
     if(typeof input === 'string' && !input.startsWith(settings)) {
         backErrorBag.addNewBackError(ValidatorBackErrors.inputIsNotStartsWith,
             {
-                inputValue : prepareErrorData.inputValue,
-                inputPath : prepareErrorData.inputPath,
-                shouldStartsWith : settings
+                inputValue: prepareErrorData.inputValue,
+                inputPath: prepareErrorData.inputPath,
+                shouldStartsWith: settings
 
             });
     }
@@ -449,9 +449,9 @@ functionLibrary[nameof<ValueModelConfig>(s => s.endsWith)] = (input, settings, b
     if(typeof input === 'string' && !input.endsWith(settings)) {
         backErrorBag.addNewBackError(ValidatorBackErrors.inputIsNotEndsWith,
             {
-                inputValue : prepareErrorData.inputValue,
-                inputPath : prepareErrorData.inputPath,
-                shouldEndsWith : settings
+                inputValue: prepareErrorData.inputValue,
+                inputPath: prepareErrorData.inputPath,
+                shouldEndsWith: settings
 
             });
     }
@@ -475,9 +475,9 @@ functionLibrary[nameof<ValueModelConfig>(s => s.charClass)] = (input, settings, 
         if(!input.match(settings)) {
             backErrorBag.addNewBackError(ValidatorBackErrors.inputIsNotMatchWithCharClass,
                 {
-                    inputValue : prepareErrorData.inputValue,
-                    inputPath : prepareErrorData.inputPath,
-                    regex : settings.toString()
+                    inputValue: prepareErrorData.inputValue,
+                    inputPath: prepareErrorData.inputPath,
+                    regex: settings.toString()
                 });
         }
     }
@@ -487,14 +487,14 @@ functionLibrary[nameof<ValueModelConfig>(s => s.before)] = async (input, setting
 {
     if((typeof input === "string" && EasyValidator.isDate(input)) || input instanceof Date)
     {
-        const inputDate : Date = typeof input === 'string' ? new Date(input) : input;
-        const checkDate : Date = typeof settings === 'function' ? await settings(preparedBag) : settings;
+        const inputDate: Date = typeof input === 'string' ? new Date(input): input;
+        const checkDate: Date = typeof settings === 'function' ? await settings(preparedBag): settings;
         if(inputDate > checkDate) {
             backErrorBag.addNewBackError(ValidatorBackErrors.inputDateIsNotBefore,
                 {
-                    inputValue : prepareErrorData.inputValue,
-                    inputPath : prepareErrorData.inputPath,
-                    shouldBefore : checkDate
+                    inputValue: prepareErrorData.inputValue,
+                    inputPath: prepareErrorData.inputPath,
+                    shouldBefore: checkDate
                 });
         }
     }
@@ -504,14 +504,14 @@ functionLibrary[nameof<ValueModelConfig>(s => s.after)] = async (input, settings
 {
     if((typeof input === "string" && EasyValidator.isDate(input)) || input instanceof Date)
     {
-        const inputDate : Date = typeof input === 'string' ? new Date(input) : input;
-        const checkDate : Date = typeof settings === 'function' ? await settings(preparedBag) : settings;
+        const inputDate: Date = typeof input === 'string' ? new Date(input): input;
+        const checkDate: Date = typeof settings === 'function' ? await settings(preparedBag): settings;
         if(inputDate < checkDate) {
             backErrorBag.addNewBackError(ValidatorBackErrors.inputDateIsNotAfter,
                 {
-                    inputValue : prepareErrorData.inputValue,
-                    inputPath : prepareErrorData.inputPath,
-                    shouldAfter : checkDate
+                    inputValue: prepareErrorData.inputValue,
+                    inputPath: prepareErrorData.inputPath,
+                    shouldAfter: checkDate
                 });
         }
     }
@@ -523,9 +523,9 @@ functionLibrary[nameof<ValueModelConfig>(s => s.minByteSize)] = async (input, se
     {
         backErrorBag.addNewBackError(ValidatorBackErrors.inputNotMatchWithMinByteSize,
             {
-                inputValue : prepareErrorData.inputValue,
-                inputPath : prepareErrorData.inputPath,
-                minByteSize : settings
+                inputValue: prepareErrorData.inputValue,
+                inputPath: prepareErrorData.inputPath,
+                minByteSize: settings
             });
     }
 };
@@ -536,9 +536,9 @@ functionLibrary[nameof<ValueModelConfig>(s => s.maxByteSize)] = async (input, se
     {
         backErrorBag.addNewBackError(ValidatorBackErrors.inputNotMatchWithMaxByteSize,
             {
-                inputValue : prepareErrorData.inputValue,
-                inputPath : prepareErrorData.inputPath,
-                maxByteSize : settings
+                inputValue: prepareErrorData.inputValue,
+                inputPath: prepareErrorData.inputPath,
+                maxByteSize: settings
             });
     }
 };
@@ -552,7 +552,7 @@ functionLibrary[nameof<ValueModelConfig>(s => s.mimeType)] = async (input, setti
         }
 
         const mime = Base64Utils.getMimeType(input);
-        const fails : string[] = [];
+        const fails: string[] = [];
 
         for(let i = 0; i < settings.length; i++)
         {
@@ -567,9 +567,9 @@ functionLibrary[nameof<ValueModelConfig>(s => s.mimeType)] = async (input, setti
         //if found a mime than it already exists with return.
         backErrorBag.addNewBackError(ValidatorBackErrors.inputNotMatchWithMimeType,
             {
-                inputValue : prepareErrorData.inputValue,
-                inputPath : prepareErrorData.inputPath,
-                mimeType : fails
+                inputValue: prepareErrorData.inputValue,
+                inputPath: prepareErrorData.inputPath,
+                mimeType: fails
             });
     }
 };
@@ -583,7 +583,7 @@ functionLibrary[nameof<ValueModelConfig>(s => s.mimeSubType)] = async (input, se
         }
 
         const sub = Base64Utils.getMimeSubType(input);
-        const fails : string[] = [];
+        const fails: string[] = [];
 
         for(let i = 0; i < settings.length; i++)
         {
@@ -598,9 +598,9 @@ functionLibrary[nameof<ValueModelConfig>(s => s.mimeSubType)] = async (input, se
         //if found a sub than it already exists with return.
         backErrorBag.addNewBackError(ValidatorBackErrors.inputNotMatchWithMimeSubType,
             {
-                inputValue : prepareErrorData.inputValue,
-                inputPath : prepareErrorData.inputPath,
-                mimeSubType : fails
+                inputValue: prepareErrorData.inputValue,
+                inputPath: prepareErrorData.inputPath,
+                mimeSubType: fails
             });
     }
 };

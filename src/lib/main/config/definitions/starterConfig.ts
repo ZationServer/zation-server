@@ -15,42 +15,42 @@ export interface StarterConfigMain
      * This path is used for loading the configs.
      * @default Try to find the root path automatically.
      */
-    rootPath ?: string;
+    rootPath?: string;
 
     /**
      * The path to the configs.
      * This path is relative to the root path.
      * @default 'configs'
      */
-    configs  ?: string;
+    configs ?: string;
 
     /**
      * The path to the app config.
      * This path is relative to the root and configs path.
      * @default 'app.config'
      */
-    appConfig  ?: string;
+    appConfig ?: string;
 
     /**
      * The path to the main config.
      * This path is relative to the root and configs path.
      * @default 'main.config'
      */
-    mainConfig  ?: string;
+    mainConfig ?: string;
 
     /**
      * The path to the event config.
      * This path is relative to the root and configs path.
      * @default 'event.config'
      */
-    eventConfig  ?: string;
+    eventConfig ?: string;
 
     /**
      * The path to the service config.
      * This path is relative to the root and configs path.
      * @default 'service.config'
      */
-    serviceConfig  ?: string;
+    serviceConfig ?: string;
 
     /**
      * With this option, you can deactivate the check of the configurations on server start.
@@ -58,6 +58,6 @@ export interface StarterConfigMain
      * Notice that you check the configurations with the npm check command after every change.
      * @default true
      */
-    checkConfigs  ?: boolean;
+    checkConfigs ?: boolean;
 }
 

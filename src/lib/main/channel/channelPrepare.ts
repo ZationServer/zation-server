@@ -20,41 +20,41 @@ import ChAccessHelper, {ChPubAccessChecker, ChSubAccessChecker} from "./chAccess
 import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
 
 export interface Events {
-    onClientPub : EventInvokerSync,
-    onBagPub : EventInvokerSync,
-    onSub : EventInvokerSync,
-    onUnsub : EventInvokerSync
+    onClientPub: EventInvokerSync,
+    onBagPub: EventInvokerSync,
+    onSub: EventInvokerSync,
+    onUnsub: EventInvokerSync
 }
 
 export interface CustomChStorage extends Events, ChStorage {
-    subscribeAccessChecker : ChSubAccessChecker,
-    versionAccessCheck : VersionSystemAccessCheckFunction,
-    systemAccessCheck : VersionSystemAccessCheckFunction
+    subscribeAccessChecker: ChSubAccessChecker,
+    versionAccessCheck: VersionSystemAccessCheckFunction,
+    systemAccessCheck: VersionSystemAccessCheckFunction
 }
 
 export interface CustomChFamilyStorage extends CustomChStorage {
-    idValidChecker : IdValidChecker
+    idValidChecker: IdValidChecker
 }
 
 export interface ChStorage extends Events {
-    clientPublishAccessChecker : ChPubAccessChecker,
-    socketGetOwnPub : boolean,
+    clientPublishAccessChecker: ChPubAccessChecker,
+    socketGetOwnPub: boolean,
 }
 
 export class ChannelPrepare {
     private zc: ZationConfigFull;
     private readonly zationChConfig: ZationChannelsConfig;
-    private readonly customChannels : Record<string,PreCompiledCustomChannelConfig>;
+    private readonly customChannels: Record<string,PreCompiledCustomChannelConfig>;
 
     private infoUserCh: ChStorage;
     private infoAuthUserGroupCh: ChStorage;
     private infoDefaultUserGroupCh: ChStorage;
     private infoAllCh: ChStorage;
 
-    private readonly defaultChStorage : ChStorage
+    private readonly defaultChStorage: ChStorage
         = ChannelPrepare.getChStorageDefaults();
 
-    private readonly defaultCustomChStorage : CustomChStorage
+    private readonly defaultCustomChStorage: CustomChStorage
         = ChannelPrepare.getCustomChStorageDefaults();
 
     private infoCustomCh: Record<string,CustomChStorage> = {};
@@ -69,26 +69,26 @@ export class ChannelPrepare {
     /**
      * Create defaults for an channel storage.
      */
-    static getChStorageDefaults() : ChStorage {
+    static getChStorageDefaults(): ChStorage {
         return {
-            socketGetOwnPub : true,
-            clientPublishAccessChecker : async () => {return false},
-            onBagPub : () => {},
-            onUnsub : () => {},
-            onSub : () => {},
-            onClientPub : () => {}
+            socketGetOwnPub: true,
+            clientPublishAccessChecker: async () => {return false},
+            onBagPub: () => {},
+            onUnsub: () => {},
+            onSub: () => {},
+            onClientPub: () => {}
         };
     }
 
     /**
      * Create defaults an for custom channel storage.
      */
-    static getCustomChStorageDefaults() : CustomChStorage  {
+    static getCustomChStorageDefaults(): CustomChStorage  {
         return {
             ...ChannelPrepare.getChStorageDefaults(),
-            subscribeAccessChecker : async () => {return  false},
-            versionAccessCheck : () => true,
-            systemAccessCheck : () => true
+            subscribeAccessChecker: async () => {return  false},
+            versionAccessCheck: () => true,
+            systemAccessCheck: () => true
         };
     }
 
@@ -97,7 +97,7 @@ export class ChannelPrepare {
      * @param name
      * @param bag
      */
-    private prepareZationChannel(name : string,bag : Bag) : ChStorage {
+    private prepareZationChannel(name: string,bag: Bag): ChStorage {
         return this.zationChConfig.hasOwnProperty(name) ? this.processChannel(this.zationChConfig[name],bag) :
             this.defaultChStorage;
     }
@@ -105,7 +105,7 @@ export class ChannelPrepare {
     /**
      * Prepare all channels.
      */
-    prepare(bag : Bag) {
+    prepare(bag: Bag) {
         this.infoUserCh = this.prepareZationChannel(nameof<ZationChannelsConfig>(s => s.userCh),bag);
         this.infoAuthUserGroupCh = this.prepareZationChannel(nameof<ZationChannelsConfig>(s => s.authUserGroupCh),bag);
         this.infoDefaultUserGroupCh = this.prepareZationChannel(nameof<ZationChannelsConfig>(s => s.defaultUserGroupCh),bag);
@@ -117,16 +117,16 @@ export class ChannelPrepare {
      * Prepare process for a custom id channels.
      * @param bag
      */
-    private processCustomChannels(bag : Bag) {
+    private processCustomChannels(bag: Bag) {
         if (typeof this.customChannels === 'object') {
             for (let chName in this.customChannels) {
                 if(this.customChannels.hasOwnProperty(chName)) {
-                    let config : CustomChFamily | CustomCh;
+                    let config: CustomChFamily | CustomCh;
                     if(Array.isArray(this.customChannels[chName])){
                         config = this.customChannels[chName][0];
                         this.infoCustomChFamilies[chName] = {
                             ...this.processCustomChannel(config,bag),
-                            idValidChecker : IdValidCheckerUtils.createIdValidChecker((config as CustomChFamily).idValid,bag)
+                            idValidChecker: IdValidCheckerUtils.createIdValidChecker((config as CustomChFamily).idValid,bag)
                         }
                     }
                     else {
@@ -143,13 +143,13 @@ export class ChannelPrepare {
      * @param chConfig
      * @param bag
      */
-    private processCustomChannel(chConfig : BaseCustomChannelConfig, bag : Bag): CustomChStorage {
-        const cChStorage : ChStorage = this.processChannel(chConfig,bag);
+    private processCustomChannel(chConfig: BaseCustomChannelConfig, bag: Bag): CustomChStorage {
+        const cChStorage: ChStorage = this.processChannel(chConfig,bag);
         return {
             ...cChStorage,
-            subscribeAccessChecker : ChAccessHelper.createSubChAccessChecker(chConfig.subscribeAccess,bag),
-            versionAccessCheck : SystemVersionChecker.createVersionChecker(chConfig),
-            systemAccessCheck : SystemVersionChecker.createSystemChecker(chConfig)
+            subscribeAccessChecker: ChAccessHelper.createSubChAccessChecker(chConfig.subscribeAccess,bag),
+            versionAccessCheck: SystemVersionChecker.createVersionChecker(chConfig),
+            systemAccessCheck: SystemVersionChecker.createSystemChecker(chConfig)
         };
     }
 
@@ -159,14 +159,14 @@ export class ChannelPrepare {
      * @param channel
      * @param bag
      */
-    private processChannel(channel : ZationChannelConfig,bag : Bag): ChStorage {
+    private processChannel(channel: ZationChannelConfig,bag: Bag): ChStorage {
         return {
-            clientPublishAccessChecker : ChAccessHelper.createPubChAccessChecker(channel.clientPublishAccess,bag),
-            socketGetOwnPub : ChannelPrepare.processSocketGetOwnPub(channel.socketGetOwnPublish),
-            onClientPub : channel.onBagPublish ? FuncUtils.createEventSyncInvoker(channel.onBagPublish) : () => {},
-            onBagPub : channel.onBagPublish ? FuncUtils.createEventSyncInvoker(channel.onBagPublish) : () => {},
-            onSub : channel.onSubscription ? FuncUtils.createEventSyncInvoker(channel.onSubscription) : () => {},
-            onUnsub : channel.onUnsubscription ? FuncUtils.createEventSyncInvoker(channel.onUnsubscription) : () => {},
+            clientPublishAccessChecker: ChAccessHelper.createPubChAccessChecker(channel.clientPublishAccess,bag),
+            socketGetOwnPub: ChannelPrepare.processSocketGetOwnPub(channel.socketGetOwnPublish),
+            onClientPub: channel.onBagPublish ? FuncUtils.createEventSyncInvoker(channel.onBagPublish): () => {},
+            onBagPub: channel.onBagPublish ? FuncUtils.createEventSyncInvoker(channel.onBagPublish): () => {},
+            onSub: channel.onSubscription ? FuncUtils.createEventSyncInvoker(channel.onSubscription): () => {},
+            onUnsub: channel.onUnsubscription ? FuncUtils.createEventSyncInvoker(channel.onUnsubscription): () => {},
         };
     }
 
@@ -175,35 +175,35 @@ export class ChannelPrepare {
      * @param value
      */
     private static processSocketGetOwnPub(value) {
-        return typeof value === 'boolean' ? value : true;
+        return typeof value === 'boolean' ? value: true;
     }
 
-    getUserChInfo() : ChStorage {
+    getUserChInfo(): ChStorage {
         return this.infoUserCh;
     }
 
-    getAuthUserGroupChInfo() : ChStorage {
+    getAuthUserGroupChInfo(): ChStorage {
         return this.infoAuthUserGroupCh;
     }
 
-    getDefaultUserGroupChInfo() : ChStorage {
+    getDefaultUserGroupChInfo(): ChStorage {
         return this.infoDefaultUserGroupCh;
     }
 
-    getAllChInfo() : ChStorage {
+    getAllChInfo(): ChStorage {
         return this.infoAllCh;
     }
 
-    existCustomCh(chName : string) : boolean {
+    existCustomCh(chName: string): boolean {
         return this.infoCustomCh.hasOwnProperty(chName) ||
             this.infoCustomChFamilies.hasOwnProperty(chName);
     }
 
-    isCustomChFamily(chName : string) : boolean {
+    isCustomChFamily(chName: string): boolean {
         return this.infoCustomChFamilies.hasOwnProperty(chName);
     }
 
-    getCustomChPreInfo(chName : string) : CustomChStorage | CustomChFamilyStorage {
+    getCustomChPreInfo(chName: string): CustomChStorage | CustomChFamilyStorage {
         return this.infoCustomCh[chName] || this.infoCustomChFamilies[chName] || this.defaultCustomChStorage;
     }
 }

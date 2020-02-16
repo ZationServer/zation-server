@@ -19,9 +19,9 @@ import {
 
 export default class DataboxFamilyContainer {
 
-    private readonly databoxFamilies : DataboxFamily[];
+    private readonly databoxFamilies: DataboxFamily[];
 
-    constructor(databoxFamilies : DataboxFamily[]) {
+    constructor(databoxFamilies: DataboxFamily[]) {
         this.databoxFamilies = databoxFamilies;
     }
 
@@ -62,8 +62,8 @@ export default class DataboxFamilyContainer {
      * @param value
      * @param options
      */
-    async insert(id : string | number, selector: DbSelector, value: any, options : IfOption & PotentialUpdateOption & InfoOption & TimestampOption = {}): Promise<void> {
-        const promises : Promise<void>[] = [];
+    async insert(id: string | number, selector: DbSelector, value: any, options: IfOption & PotentialUpdateOption & InfoOption & TimestampOption = {}): Promise<void> {
+        const promises: Promise<void>[] = [];
         for(let i = 0; i < this.databoxFamilies.length;i++) {
             promises.push(this.databoxFamilies[i].insert(id,selector,value,options));
         }
@@ -106,8 +106,8 @@ export default class DataboxFamilyContainer {
      * @param value
      * @param options
      */
-    async update(id : string | number, selector: DbSelector, value: any, options : IfOption & PotentialInsertOption & InfoOption & TimestampOption = {}): Promise<void> {
-        const promises : Promise<void>[] = [];
+    async update(id: string | number, selector: DbSelector, value: any, options: IfOption & PotentialInsertOption & InfoOption & TimestampOption = {}): Promise<void> {
+        const promises: Promise<void>[] = [];
         for(let i = 0; i < this.databoxFamilies.length;i++) {
             promises.push(this.databoxFamilies[i].update(id,selector,value,options));
         }
@@ -149,8 +149,8 @@ export default class DataboxFamilyContainer {
      * split by dots to create a string array.
      * @param options
      */
-    async delete(id : string | number, selector: DbSelector, options : IfOption & InfoOption & TimestampOption = {}): Promise<void> {
-        const promises : Promise<void>[] = [];
+    async delete(id: string | number, selector: DbSelector, options: IfOption & InfoOption & TimestampOption = {}): Promise<void> {
+        const promises: Promise<void>[] = [];
         for(let i = 0; i < this.databoxFamilies.length;i++) {
             promises.push(this.databoxFamilies[i].delete(id,selector,options));
         }
@@ -172,13 +172,13 @@ export default class DataboxFamilyContainer {
      * The client, for example, will only update data that is older as incoming data.
      * Use this option only if you know what you are doing.
      */
-    seqEdit(id : string | number,timestamp ?: number): DbCudOperationSequence {
+    seqEdit(id: string | number,timestamp?: number): DbCudOperationSequence {
         return new DbCudOperationSequence(async (operations) => {
-            const promises : Promise<void>[] = [];
+            const promises: Promise<void>[] = [];
             for(let i = 0; i < this.databoxFamilies.length;i++) {
                 promises.push(this.databoxFamilies[i]._emitCudPackage(
                     DataboxUtils.buildPreCudPackage(...operations),
-                    typeof id === "string" ? id : id.toString(),timestamp));
+                    typeof id === "string" ? id: id.toString(),timestamp));
             }
             await Promise.all(promises);
         })
@@ -195,7 +195,7 @@ export default class DataboxFamilyContainer {
      * @param data
      * @param forEveryWorker
      */
-    close(id : string | number,code ?: number | string, data ?: any,forEveryWorker : boolean = true): void {
+    close(id: string | number,code?: number | string, data?: any,forEveryWorker: boolean = true): void {
         for(let i = 0; i < this.databoxFamilies.length;i++) {
             this.databoxFamilies[i].close(id,code,data,forEveryWorker);
         }
@@ -212,7 +212,7 @@ export default class DataboxFamilyContainer {
      * @param code
      * @param data
      */
-    doReload(id : string | number,forEveryWorker: boolean = false,code ?: number | string,data ?: any): void {
+    doReload(id: string | number,forEveryWorker: boolean = false,code?: number | string,data?: any): void {
         for(let i = 0; i < this.databoxFamilies.length;i++) {
             this.databoxFamilies[i].doReload(id,forEveryWorker,code,data);
         }
@@ -226,7 +226,7 @@ export default class DataboxFamilyContainer {
      * @param code
      * @param data
      */
-    kickOut(id : string,socket: UpSocket,code ?: number | string,data ?: any): void {
+    kickOut(id: string,socket: UpSocket,code?: number | string,data?: any): void {
         for(let i = 0; i < this.databoxFamilies.length;i++) {
             this.databoxFamilies[i].kickOut(id,socket,code,data);
         }
@@ -244,7 +244,7 @@ export default class DataboxFamilyContainer {
      * @param data
      * @param forEveryWorker
      */
-    sendSignal(id : string | number,signal : string,data ?: any,forEveryWorker : boolean = true) {
+    sendSignal(id: string | number,signal: string,data?: any,forEveryWorker: boolean = true) {
         for(let i = 0; i < this.databoxFamilies.length;i++) {
             this.databoxFamilies[i].sendSignal(id,signal,data,forEveryWorker);
         }

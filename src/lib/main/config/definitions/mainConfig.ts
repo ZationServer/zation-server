@@ -18,22 +18,22 @@ export interface MainConfig
      * If you don't provide an instanceId,zation will generate a random one (UUID v4).
      * @default random UUID v4
      */
-    instanceId  ?: string;
+    instanceId ?: string;
     /**
      * The port of the server.
      * @default 3000
      */
-    port  ?: number;
+    port ?: number;
     /**
      * The hostname of the server.
      * @default 'localhost'
      */
-    hostname  ?: string;
+    hostname ?: string;
     /**
      * The url path to the server.
      * @default '/zation'
      */
-    path  ?: string;
+    path ?: string;
     /**
      * In this property, you can set your license
      * (Notice that you only can use one unique license for a single running server instance).
@@ -43,57 +43,57 @@ export interface MainConfig
      * https://github.com/ZationServer/zation/wiki/Zation-End-User-License-Agreement
      * @default Free Trial
      */
-    license ?: string;
+    license?: string;
     /**
      * With this property, you can specify what origins are allowed to communicate to the server.
      * You can specify the port and hostname.
      * Also, a star can be used as a wild card for any port or any hostname.
      * @example
      * //allow all origins
-     * origins : null, or
-     * origins : '*:*',
+     * origins: null, or
+     * origins: '*:*',
      *
      * //allow all with hostname example.de
-     * origins : 'example.de:*', or
-     * origins : 'example.de'
+     * origins: 'example.de:*', or
+     * origins: 'example.de'
      *
      * //allow all with port 80
-     * origins : '*:80'
+     * origins: '*:80'
      *
      * //allow only hostname example.de on port 80
-     * origins : 'example.de:80'
+     * origins: 'example.de:80'
      *
      * //allow all with hostname example.de or example2.de
-     * origins : ['example.de:*','example2.de']
+     * origins: ['example.de:*','example2.de']
      *
      * @default null (all allowed)
      */
-    origins  ?: string | null | string[];
+    origins ?: string | null | string[];
     /**
      * Boolean that indicates if the debug mode is active.
      * In debug mode the server will console log information about the current status and actions of connected clients.
      * @default false
      */
-    debug  ?: boolean;
+    debug ?: boolean;
     /**
      * Boolean that indicates if the start debug mode is active.
      * In start debug mode the server will console log all steps
      * for starting the server and how much time each step takes to process.
      * @default false
      */
-    startDebug  ?: boolean;
+    startDebug ?: boolean;
     /**
      * Indicates if the server should be killed in case
      * of start failure instead of throwing an error.
      * @default true
      */
-    killOnStartFailure  ?: boolean;
+    killOnStartFailure ?: boolean;
     /**
      * Boolean that indicates if the server should console log
      * config warnings after checking the configurations.
      * @default true
      */
-    showConfigWarnings  ?: boolean;
+    showConfigWarnings ?: boolean;
     /**
      * Should be either 'dev' or 'prod' -
      * This affects the shutdown procedure
@@ -101,13 +101,13 @@ export interface MainConfig
      * In 'prod' workers will be terminated progressively in accordance with processTermTimeout.
      * @default 'prod'
      */
-    environment  ?: 'dev' | 'prod';
+    environment ?: 'dev' | 'prod';
     /**
      * The timezone of the server,
      * it affects the calculation of the background task time.
      * @default Zation will guess the timezone if it fails the default is 'Europe/Berlin'.
      */
-    timeZone  ?: string;
+    timeZone ?: string;
     /**
      * This property indicates how many workers should be run.
      * It can be a number, the options 'auto' or 'half-auto'.
@@ -115,7 +115,7 @@ export interface MainConfig
      * Half auto is the count of CPU cores divided by two.
      * @default 'auto'
      */
-    workers  ?: 'auto' | 'half-auto' | number;
+    workers ?: 'auto' | 'half-auto' | number;
     /**
      * This property indicates how many brokers should be run.
      * It can be a number, the options 'auto' or 'half-auto'.
@@ -123,54 +123,54 @@ export interface MainConfig
      * Half auto is the count of CPU cores divided by two.
      * @default 'half-auto'
      */
-    brokers  ?: 'auto' | 'half-auto' | number;
+    brokers ?: 'auto' | 'half-auto' | number;
     /**
      * The name of the app.
      * @default 'AppWithoutName'
      */
-    appName  ?: string;
+    appName ?: string;
     /**
      * Indicates if the server should run with SSL if you activated
      * this property don't forget to provide a httpsConfig.
      * @default false
      */
-    secure  ?: boolean;
+    secure ?: boolean;
     /**
      * The https config, this configuration is used when the secure option is activated.
      * Its the same as the object provided to Node.js's https server.
      */
-    httpsConfig  ?: ServerOptions;
+    httpsConfig ?: ServerOptions;
     /**
      * Indicates if the server should use the token state check.
      * @default true
      */
-    useTokenStateCheck  ?: boolean;
+    useTokenStateCheck ?: boolean;
     /**
      * Indicates if the server should use the protocol check.
      * @default true
      */
-    useProtocolCheck  ?: boolean;
+    useProtocolCheck ?: boolean;
     /**
      * Indicates if the server should use the HTTP method check.
      * @default true
      */
-    useHttpMethodCheck  ?: boolean;
+    useHttpMethodCheck ?: boolean;
     /**
      * Indicates if the server should send error descriptions back to the client.
      * @default false
      */
-    sendErrorDescription  ?: boolean;
+    sendErrorDescription ?: boolean;
     /**
      * This property activates or deactivates the zation log to the console.
      * It will also affect the logging with the small bag.
      * @default true
      */
-    zationConsoleLog  ?: boolean;
+    zationConsoleLog ?: boolean;
     /**
      * This property indicates if socketCluster should console log information.
      * @default false
      */
-    scConsoleLog  ?: boolean;
+    scConsoleLog ?: boolean;
     /**
      * Specifies the wsEngine that the server should use.
      * You can use 'z-uws' it is a modified version of uWebsockets v0.14
@@ -178,30 +178,30 @@ export interface MainConfig
      * Or you can use 'ws', which is a pure javascript solution and slower.
      * @default 'z-uws'
      */
-    wsEngine  ?: string;
+    wsEngine ?: string;
     /**
      * The default API level a client will get when there is no API level provided in the request or connection.
      * Notice that the value cant be lesser than 1 and needs to be an integer.
      * @default 1
      */
-    defaultClientApiLevel  ?: number;
+    defaultClientApiLevel ?: number;
     /**
      * Specifies if the zation panel is activated.
      * @default false
      */
-    usePanel  ?: boolean;
+    usePanel ?: boolean;
     /**
      * Specifies the panel user, you can define one or more users.
      * @example
-     * panelUser : {username: 'admin', password: 'admin'}
-     * panelUser : [{username: 'admin', password: 'admin'},{username : 'user',password : '12345'}]
+     * panelUser: {username: 'admin', password: 'admin'}
+     * panelUser: [{username: 'admin', password: 'admin'},{username: 'user',password: '12345'}]
      */
-    panelUser  ?: PanelUserConfig | PanelUserConfig[];
+    panelUser ?: PanelUserConfig | PanelUserConfig[];
     /**
      * Defines if the server should provide a full minified javascript client driver file via HTTP.
      * @default true
      */
-    provideClientJs  ?: boolean;
+    provideClientJs ?: boolean;
     /**
      * Defines if the server should start in auth start mode.
      * The auth start mode will allow clients only to send an authentication request.
@@ -210,71 +210,71 @@ export interface MainConfig
      * before the server changes to the normal mode.
      * @default false
      */
-    authStart  ?: boolean;
+    authStart ?: boolean;
     /**
      * Defines how long the authStart should be active (in milliseconds)
      * before the server changes in the normal mode.
      * @default 20000
      */
-    authStartDuration  ?: number;
+    authStartDuration ?: number;
     /**
      * Specifies in what key the zation data is located in an HTTP post request.
      * @default 'zation'
      */
-    postKey  ?: string;
+    postKey ?: string;
     /**
      * The secret key which zation will use to encrypt/decrypt authTokens.
      * The key can be automatically shared between more server instances.
      * If you want to use RSA or ECDSA, you should provide a authPrivateKey and authPublicKey instead of authKey.
      * @default 256 bits cryptographically random hex string.
      */
-    authSecretKey  ?: string;
+    authSecretKey ?: string;
     /**
      * The default expiry of tokens in seconds.
      * @default 86400
      */
-    authDefaultExpiry  ?: number;
+    authDefaultExpiry ?: number;
     /**
      * The algorithm that will be used to sign and verify jwt tokens.
      * @default 'HS256'
      */
-    authAlgorithm  ?: string;
+    authAlgorithm ?: string;
     /**
      * The private secret key to signing the jwt tokens.
      * For using asymmetric encryption, you also need to define the
      * public key and change the algorithm to a proper one, e.g. RSA or ECDSA.
      * @default null
      */
-    authPrivateKey  ?: string | null;
+    authPrivateKey ?: string | null;
     /**
      * The public secret key to verify the jwt tokens.
      * For using asymmetric encryption, you also need to define the
      * private key and change the algorithm to a proper one, e.g. RSA or ECDSA.
      * @default null
      */
-    authPublicKey  ?: string | null;
+    authPublicKey ?: string | null;
     /**
      * The limit of how many checks can be made in one validation request.
      * @default 50
      */
-    validationCheckLimit ?: number;
+    validationCheckLimit?: number;
     /**
      * The limit of how many data boxes a socket can have.
      * @default 30
      */
-    socketDataboxLimit ?: number;
+    socketDataboxLimit?: number;
     /**
      * This property gives you the possibility to pass extra variables in the main config.
      * You can access them with the small bag.
      * @example
      * //define
-     * variables : {
-     *    myVar : 'someValue'
+     * variables: {
+     *    myVar: 'someValue'
      * }
      * //access
      * bag.getMainConfigVariable('myVar');
      */
-    variables ?: object,
+    variables?: object,
 
     //service
     /**
@@ -282,7 +282,7 @@ export interface MainConfig
      * e.g. the MySQL connection could not be established.
      * @default false
      */
-    killServerOnServicesCreateError ?: boolean;
+    killServerOnServicesCreateError?: boolean;
 
     //log
     /**
@@ -292,18 +292,18 @@ export interface MainConfig
      * You also can use the small bag to log own information in the file.
      * @default false
      */
-    logFile ?: boolean;
+    logFile?: boolean;
     /**
      * Specifies the log file path but notice that the path is relative to the running directory.
      * @default ''
      */
-    logFilePath ?: string;
+    logFilePath?: string;
     /**
      * Defines if the log file should be downloadable via Http.
      * You can use the property logAccessKey to set a secret password for access the download.
      * @default true
      */
-    logFileDownloadable ?: boolean;
+    logFileDownloadable?: boolean;
     /**
      * Defines if a key to access the log file download.
      * The secret key will appear in the URL for access the log file via HTTP.
@@ -311,40 +311,40 @@ export interface MainConfig
      * @example
      * Log: http://localhost:3001/zation/log/theKey
      */
-    logFileAccessKey ?: string;
+    logFileAccessKey?: string;
     /**
      * Specifies if the server should log every controller request to the log file.
      * @default false
      */
-    logFileControllerRequests ?: boolean;
+    logFileControllerRequests?: boolean;
     /**
      * Specifies if the server should log every databox connection request to the log file.
      * @default false
      */
-    logFileDataboxRequests ?: boolean;
+    logFileDataboxRequests?: boolean;
     /**
      * Specifies if the server should log every unknown error that was thrown on the server to the log file.
      * @default true
      */
-    logFileServerErrors ?: boolean;
+    logFileServerErrors?: boolean;
     /**
      * Specifies if the server should log code errors to the log file.
      * Code errors can happen for example when you try to
      * access the HTTP request object with the bag by a web socket request.
      * @default true
      */
-    logFileCodeErrors ?: boolean;
+    logFileCodeErrors?: boolean;
     /**
      * Specifies if the server should log when the server is started to the log file.
      * @default true
      */
-    logFileStarted ?: boolean;
+    logFileStarted?: boolean;
 
     /**
      * Specifies if the worker leader should console log the precompiled configs.
      * @default false
      */
-    showPrecompiledConfigs ?: boolean;
+    showPrecompiledConfigs?: boolean;
 
     //Cluster
     /**
@@ -355,7 +355,7 @@ export interface MainConfig
      * @default null
      * @notice Every server component in a cluster must have the same setting.
      */
-    clusterAuthKey  ?: string | null;
+    clusterAuthKey ?: string | null;
     /**
      * The cluster secret key is a key that will be used by all
      * zation server components. The primary usage is for symmetric encryption of
@@ -365,19 +365,19 @@ export interface MainConfig
      * @default null
      * @notice Every server component in a cluster must have the same setting.
      */
-    clusterSecretKey  ?: string | null;
+    clusterSecretKey ?: string | null;
     /**
      * The state sever host, e.g. IP-address of the state server.
      * If you provide a state server host,
      * the server will automatically start in cluster mode (Machine scaling active).
      * @default null
      */
-    stateServerHost  ?: string | null;
+    stateServerHost ?: string | null;
     /**
      * The port of the state server.
      * @default null (means 80)
      */
-    stateServerPort  ?: number | null;
+    stateServerPort ?: number | null;
     /**
      * This property indicates if the server should check the token cluster key.
      * This key is stored in every token that will be created.
@@ -390,7 +390,7 @@ export interface MainConfig
      * if the auth public key and algorithm or auth secret key is the same.
      * @default true
      */
-    useTokenClusterKeyCheck ?: boolean;
+    useTokenClusterKeyCheck?: boolean;
     /**
      * This property indicates that the server should share the auth options
      * for verifying and sign tokens with all other zation servers in the cluster.
@@ -400,49 +400,49 @@ export interface MainConfig
      * in that cluster even if the other servers had a different key before joining the cluster.
      * @default true
      */
-    clusterShareTokenAuth  ?: boolean;
+    clusterShareTokenAuth ?: boolean;
     /**
      * The option for setting the cluster mapping engine.
      * Only for advanced use cases.
      * @default null
      */
-    clusterMappingEngine  ?: string | null;
+    clusterMappingEngine ?: string | null;
     /**
      * The option for setting the cluster client pool size.
      * Only for advanced use cases.
      * @default null
      */
-    clusterClientPoolSize  ?: number | null;
+    clusterClientPoolSize ?: number | null;
     /**
      * The option for setting the cluster instance ip.
      * Only for advanced use cases.
      * @default null
      */
-    clusterInstanceIp  ?: string | null;
+    clusterInstanceIp ?: string | null;
     /**
      * The option for setting the cluster instance ip family.
      * Only for advanced use cases.
      * @default null
      */
-    clusterInstanceIpFamily  ?: string | null;
+    clusterInstanceIpFamily ?: string | null;
     /**
      * The option for setting the cluster state server connect timeout.
      * Only for advanced use cases.
      * @default null
      */
-    clusterStateServerConnectTimeout  ?: number | null;
+    clusterStateServerConnectTimeout ?: number | null;
     /**
      * The option for setting the cluster state server ack timeout.
      * Only for advanced use cases.
      * @default null
      */
-    clusterStateServerAckTimeout  ?: number | null;
+    clusterStateServerAckTimeout ?: number | null;
     /**
      * The option for setting the cluster state server reconnect randomness.
      * Only for advanced use cases.
      * @default null
      */
-    clusterStateServerReconnectRandomness  ?: number | null;
+    clusterStateServerReconnectRandomness ?: number | null;
 
     //Sc
     /**
@@ -450,149 +450,149 @@ export interface MainConfig
      * 1 will only log errors, 0 will log nothing.
      * @default 2
      */
-    scLogLevel  ?: number;
+    scLogLevel ?: number;
     /**
      * Origins which are allowed to connect to the real-time scServer.
      * Notice that you also can use the origins option that is provided by the zation framework.
      * This option is more powerful and is used by HTTP and WebSocket.
      * @default null
      */
-    scOrigins ?: string | null;
+    scOrigins?: string | null;
     /**
      * The maximum number of individual channels which a single socket can subscribe to.
      * @default 1000
      */
-    socketChannelLimit  ?: number;
+    socketChannelLimit ?: number;
     /**
      * Crash workers when an error happens.
      * This is the most sensible default.
      * @default true
      */
-    crashWorkerOnError  ?: boolean;
+    crashWorkerOnError ?: boolean;
     /**
      * Reboot workers when they crash.
      * That is a necessity in production but can be turned off for debugging.
      * @default true
      */
-    rebootWorkerOnCrash  ?: boolean;
+    rebootWorkerOnCrash ?: boolean;
     /**
      * Setting this to true will cause the master process
      * to shut down when it receives a SIGUSR2 signal (instead of just the workers).
      * If you're using nodemon, set this to true.
      * @default false
      */
-    killMasterOnSignal  ?: boolean;
+    killMasterOnSignal ?: boolean;
     /**
      * Kill/respawn a worker process if its memory consumption exceeds this threshold (in bytes).
      * If this is null (default), this behavior will be switched off.
      * @default null
      */
-    killWorkerMemoryThreshold  ?: number | null;
+    killWorkerMemoryThreshold ?: number | null;
     /**
      * In milliseconds, how long a client has to connect to the server before timing out.
      * @default 10000
      */
-    connectTimeout  ?: number;
+    connectTimeout ?: number;
     /**
      * In milliseconds.
      * If the socket handshake hasn't been completed before this timeout is reached,
      * the new connection attempt will be terminated.
      * @default 10000
      */
-    handshakeTimeout  ?: number;
+    handshakeTimeout ?: number;
     /**
      * In milliseconds, the timeout for calling res(err, data) when your emit()
      * call expects an ACK response from the other side (when a callback is provided to emit).
      * @default 10000
      */
-    ackTimeout  ?: number;
+    ackTimeout ?: number;
     /**
      * In milliseconds, the timeout for calling res(err, data) when your sendToWorker,
      * sendToBroker or sendToMaster (IPC) call expects an ACK response from the other process
      * (when a callback is provided).
      * @default 10000
      */
-    ipcAckTimeout  ?: number;
+    ipcAckTimeout ?: number;
     /**
      * In milliseconds. If a socket cannot upgrade transport within this period,
      * it will stop trying.
      * @default 1000
      */
-    socketUpgradeTimeout  ?: number;
+    socketUpgradeTimeout ?: number;
     /**
      * The interval in milliseconds on which to
      * send a ping to the client to check that it is still alive.
      * @default 8000
      */
-    pingInterval  ?: number;
+    pingInterval ?: number;
     /**
      * How many milliseconds to wait without receiving a ping before closing the socket.
      * @default 20000
      */
-    pingTimeout  ?: number;
+    pingTimeout ?: number;
     /**
      * The maximum amount of milliseconds to wait before force-killing a
      * process after it was passed a 'SIGTERM' or 'SIGUSR2' signal.
      * @default 10000
      */
-    processTermTimeout  ?: number;
+    processTermTimeout ?: number;
     /**
      * Whether or not errors from child processes (workers and brokers)
      * should be passed to the current master process.
      * @default true
      */
-    propagateErrors  ?: boolean;
+    propagateErrors ?: boolean;
     /**
      * Whether or not warnings from child processes (workers and brokers)
      * should be passed to the current master process.
      * @default true
      */
-    propagateWarnings  ?: boolean;
+    propagateWarnings ?: boolean;
     /**
      * Whether or not a 'warning' event should be emitted (and logged to console)
      * whenever a middleware function blocks an action.
      * @default false
      */
-    middlewareEmitWarnings  ?: boolean;
+    middlewareEmitWarnings ?: boolean;
     /**
      * By default, SC will reboot all workers when it receives a 'SIGUSR2' signal.
      * @default true
      */
-    rebootOnSignal  ?: boolean;
+    rebootOnSignal ?: boolean;
     /**
      * If you run your master process as superuser,
      * this option lets you downgrade worker and broker processes to run under the specified user
      * (with fewer permissions than master). You can provide a Linux UID or username.
      * @default false
      */
-    downgradeToUser  ?: boolean | string;
+    downgradeToUser ?: boolean | string;
     /**
      * The root directory in which to store your socket files in Linux.
      * @default null
      */
-    socketRoot  ?: string | null;
+    socketRoot ?: string | null;
     /**
      * Defaults to "rr", but can be set to "none".
      * Read more: https://nodejs.org/dist/latest-v5.x/docs/api/cluster.html#cluster_cluster_schedulingpolicy.
      * @default "rr"
      */
-    schedulingPolicy  ?: string | null;
+    schedulingPolicy ?: string | null;
     /**
      * Whether or not clients are allowed to publish messages to channels.
      * @default true
      */
-    allowClientPublish  ?: boolean;
+    allowClientPublish ?: boolean;
     /**
      * This option is passed to the Node.js HTTP server if it is provided.
      * @default null
      */
-    tcpSynBacklog  ?: any | null;
+    tcpSynBacklog ?: any | null;
     /**
      * Zation keeps track of request per minutes internally.
      * That allows you to change how often this gets updated.
      * @default 10000
      */
-    workerStatusInterval  ?: number;
+    workerStatusInterval ?: number;
     /**
      * This option allows you to batch multiple messages together
      * when passing them across message brokers. That may improve the efficiency
@@ -600,84 +600,84 @@ export interface MainConfig
      * The value unit is in milliseconds, 5 is generally a safe value to set this to.
      * @default null
      */
-    pubSubBatchDuration  ?: number | null;
+    pubSubBatchDuration ?: number | null;
 }
 
 //These settings are always set
 export interface InternalMainConfig extends MainConfig {
-    instanceId  : string;
-    port  : number;
-    hostname  : string;
-    path  : string;
-    origins  : string | null | string[];
-    scOrigins ?: string | null;
-    debug  : boolean;
-    startDebug  : boolean;
-    killOnStartFailure  : boolean;
-    showConfigWarnings : boolean;
-    environment  : 'dev' | 'prod';
-    timeZone  : string;
-    workers  : 'auto' | number;
-    appName  : string;
-    secure  : boolean;
-    useTokenStateCheck  : boolean;
-    useProtocolCheck  : boolean;
-    useHttpMethodCheck  : boolean;
-    sendErrorDescription  : boolean;
-    zationConsoleLog  : boolean;
-    scConsoleLog  : boolean;
-    wsEngine  : string;
-    defaultClientApiLevel : number;
-    usePanel  : boolean;
-    provideClientJs  : boolean;
-    authStart  : boolean;
-    authStartDuration  : number;
-    postKey  : string;
-    authSecretKey  : string;
-    authDefaultExpiry  : number;
-    authPrivateKey  : string | null;
-    authPublicKey  : string | null;
-    validationCheckLimit : number;
-    socketDataboxLimit : number;
-    useTokenClusterKeyCheck : boolean;
-    clusterShareTokenAuth  : boolean;
-    scLogLevel  : number;
-    socketChannelLimit  : number;
-    crashWorkerOnError  : boolean;
-    rebootWorkerOnCrash  : boolean;
-    killMasterOnSignal  : boolean;
-    connectTimeout  : number;
-    handshakeTimeout : number;
-    ackTimeout  : number;
-    ipcAckTimeout  : number;
-    socketUpgradeTimeout  : number;
-    pingInterval  : number;
-    pingTimeout  : number;
-    processTermTimeout  : number;
-    propagateErrors  : boolean;
-    propagateWarnings  : boolean;
-    middlewareEmitWarnings  : boolean;
-    rebootOnSignal  : boolean;
-    downgradeToUser  : boolean;
-    allowClientPublish  : boolean;
-    workerStatusInterval  : number;
-    killServerOnServicesCreateError : boolean;
-    logFile : boolean;
-    logFilePath : string;
-    logFileDownloadable : boolean;
-    logFileAccessKey : string;
-    logFileControllerRequests : boolean;
-    logFileDataboxRequests : boolean;
-    logFileServerErrors : boolean;
-    logFileCodeErrors : boolean;
-    logFileStarted : boolean;
-    showPrecompiledConfigs : boolean;
-    variables : any;
+    instanceId : string;
+    port : number;
+    hostname : string;
+    path : string;
+    origins : string | null | string[];
+    scOrigins?: string | null;
+    debug : boolean;
+    startDebug : boolean;
+    killOnStartFailure : boolean;
+    showConfigWarnings: boolean;
+    environment : 'dev' | 'prod';
+    timeZone : string;
+    workers : 'auto' | number;
+    appName : string;
+    secure : boolean;
+    useTokenStateCheck : boolean;
+    useProtocolCheck : boolean;
+    useHttpMethodCheck : boolean;
+    sendErrorDescription : boolean;
+    zationConsoleLog : boolean;
+    scConsoleLog : boolean;
+    wsEngine : string;
+    defaultClientApiLevel: number;
+    usePanel : boolean;
+    provideClientJs : boolean;
+    authStart : boolean;
+    authStartDuration : number;
+    postKey : string;
+    authSecretKey : string;
+    authDefaultExpiry : number;
+    authPrivateKey : string | null;
+    authPublicKey : string | null;
+    validationCheckLimit: number;
+    socketDataboxLimit: number;
+    useTokenClusterKeyCheck: boolean;
+    clusterShareTokenAuth : boolean;
+    scLogLevel : number;
+    socketChannelLimit : number;
+    crashWorkerOnError : boolean;
+    rebootWorkerOnCrash : boolean;
+    killMasterOnSignal : boolean;
+    connectTimeout : number;
+    handshakeTimeout: number;
+    ackTimeout : number;
+    ipcAckTimeout : number;
+    socketUpgradeTimeout : number;
+    pingInterval : number;
+    pingTimeout : number;
+    processTermTimeout : number;
+    propagateErrors : boolean;
+    propagateWarnings : boolean;
+    middlewareEmitWarnings : boolean;
+    rebootOnSignal : boolean;
+    downgradeToUser : boolean;
+    allowClientPublish : boolean;
+    workerStatusInterval : number;
+    killServerOnServicesCreateError: boolean;
+    logFile: boolean;
+    logFilePath: string;
+    logFileDownloadable: boolean;
+    logFileAccessKey: string;
+    logFileControllerRequests: boolean;
+    logFileDataboxRequests: boolean;
+    logFileServerErrors: boolean;
+    logFileCodeErrors: boolean;
+    logFileStarted: boolean;
+    showPrecompiledConfigs: boolean;
+    variables: any;
 }
 
 export interface PanelUserConfig {
-    username  : string;
-    password  : string;
+    username : string;
+    password : string;
 }
 
 

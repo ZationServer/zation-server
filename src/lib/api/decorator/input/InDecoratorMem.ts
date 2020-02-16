@@ -12,7 +12,7 @@ export const InDM_Extends            = Symbol();
 export const InDM_Models             = Symbol();
 
 export interface InDecoratorMem {
-    [InDM_ConstructorMethods] ?: Function[];
-    [InDM_Extends] ?: string | ObjectModelConfig | AnyClass | AnyModelConfigTranslatable;
-    [InDM_Models] ?: Record<string,any>;
+    [InDM_ConstructorMethods]?: Function[];
+    [InDM_Extends]?: string | ObjectModelConfig | AnyClass | AnyModelConfigTranslatable;
+    [InDM_Models]?: Record<string,any>;
 }

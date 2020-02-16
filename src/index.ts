@@ -69,7 +69,7 @@ import BackErrorConstruct           from './lib/main/constants/backErrorConstruc
  * 2 => onlyCheck
  * @throws Error with the property: name of type StartErrorName.
  */
-const start = (options : StarterConfig,startMode : number | string | StartMode = 0) => {
+const start = (options: StarterConfig,startMode: number | string | StartMode = 0) => {
     return new Promise((resolve,reject) => {
         new ZationMaster(options,resolve,reject,startMode);
     });

@@ -13,18 +13,18 @@ import PrettyStringifyUtils  from "../../../utils/prettyStringifyUtils";
 
 export default class SocketCRequestProcessor
 {
-    private readonly zc : ZationConfig;
-    private readonly defaultApiLevel : number;
-    private readonly debug : boolean;
+    private readonly zc: ZationConfig;
+    private readonly defaultApiLevel: number;
+    private readonly debug: boolean;
 
-    constructor(zc : ZationConfig) {
+    constructor(zc: ZationConfig) {
         this.zc = zc;
         this.defaultApiLevel = zc.mainConfig.defaultClientApiLevel;
         this.debug = this.zc.isDebug();
     }
 
     //SOCKET Extra Layer
-    async prepareReq(socket : UpSocket, input, respond, reqId : string) : Promise<SHBridgeSocket>
+    async prepareReq(socket: UpSocket, input, respond, reqId: string): Promise<SHBridgeSocket>
     {
         if(this.debug){
             Logger.printDebugInfo(`Socket Controller Request id: ${reqId} -> `,PrettyStringifyUtils.object(input));

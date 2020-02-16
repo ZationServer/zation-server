@@ -11,12 +11,12 @@ const SimpleNodeLogger  = require('simple-node-logger');
 
 export default class Logger
 {
-    private static zc : ZationConfig;
+    private static zc: ZationConfig;
     private static sl;
 
-    private static stopWatchStartTime : any = Date.now();
+    private static stopWatchStartTime: any = Date.now();
 
-    static initLogFile() : void
+    static initLogFile(): void
     {
         if(Logger.zc.mainConfig.logFile) {
 
@@ -37,25 +37,25 @@ export default class Logger
         }
     }
 
-    static getSimpleLogger() : any {
+    static getSimpleLogger(): any {
         return Logger.sl;
     }
 
-    static logFileInfo(...args : any[]) : void
+    static logFileInfo(...args: any[]): void
     {
         if(Logger.sl){
             Logger.sl.info(...args);
         }
     }
 
-    static logFileError(string : string) : void
+    static logFileError(string: string): void
     {
         if(Logger.sl){
             Logger.sl.error(string);
         }
     }
 
-    static setZationConfig(zc : ZationConfig) : void {
+    static setZationConfig(zc: ZationConfig): void {
         Logger.zc = zc;
     }
 
@@ -65,7 +65,7 @@ export default class Logger
         }
     }
 
-    static printStartDebugInfo(txt : string,time : boolean = false,isBusy : boolean = false) : void
+    static printStartDebugInfo(txt: string,time: boolean = false,isBusy: boolean = false): void
     {
         if (Logger.zc.isStartDebug()) {
             if(time) {
@@ -82,25 +82,25 @@ export default class Logger
     }
 
     // noinspection JSUnusedGlobalSymbols
-    static printStartFail(...args : any[]) : void {
+    static printStartFail(...args: any[]): void {
         Logger.log('\x1b[31m%s\x1b[0m','   [FAIL]',...args);
     }
 
-    static printConfigWarning(configName : string,message : string) : void {
+    static printConfigWarning(configName: string,message: string): void {
         if (Logger.zc.isShowConfigWarning()) {
             Logger.log('\x1b[31m%s\x1b[0m','   [WARNING IN CONFIG]',`Config: ${configName} -> ${message}`);
         }
     }
 
-    static printWarning(...args : any[]) : void {
+    static printWarning(...args: any[]): void {
         Logger.log('\x1b[31m%s\x1b[0m','   [WARNING]',...args);
     }
 
-    static printInfo(...args : any[]) : void {
+    static printInfo(...args: any[]): void {
         Logger.log('\x1b[34m%s\x1b[0m','   [INFO]',...args);
     }
 
-    static printError(error : any, beforeMessage : string, endMessage ?: string) : void
+    static printError(error: any, beforeMessage: string, endMessage?: string): void
     {
         if (Logger.zc.isDebug()) {
             Logger.log
@@ -109,12 +109,12 @@ export default class Logger
                 '   [ERROR]',
                 beforeMessage,
                 error.stack,
-                !!endMessage ? `\n    ${endMessage}` : ''
+                !!endMessage ? `\n    ${endMessage}`: ''
             );
         }
     }
 
-    static printBusy(...args : any[]) : void {
+    static printBusy(...args: any[]): void {
         Logger.log('\x1b[33m%s\x1b[0m','   [BUSY]',...args);
     }
 
@@ -124,26 +124,26 @@ export default class Logger
         }
     }
 
-    static printDebugInfo(...args : any[]) : void {
+    static printDebugInfo(...args: any[]): void {
         if (Logger.zc.isDebug()) {
            Logger.printInfo(...args);
         }
     }
 
-    static printDebugWarning(...args : any) : void
+    static printDebugWarning(...args: any): void
     {
         if (Logger.zc.isDebug()) {
             Logger.printWarning(...args);
         }
     }
 
-    static printDebugBusy(...args : any[]) : void {
+    static printDebugBusy(...args: any[]): void {
         if (Logger.zc.isDebug()) {
             Logger.printBusy(...args);
         }
     }
 
-    static printErrorBag(errorBag: ErrorBag<any>,errorType: string = 'configuration') : void
+    static printErrorBag(errorBag: ErrorBag<any>,errorType: string = 'configuration'): void
     {
         Logger.log('\x1b[31m%s\x1b[0m','   [FAILED]');
 
@@ -152,7 +152,7 @@ export default class Logger
 
         Logger.log('\x1b[31m%s\x1b[0m'
             ,'   [CONFIG]',
-            `${errorCount} ${errorType} error${errorCount === 0 || errorCount > 1 ? 's' : ''}:`);
+            `${errorCount} ${errorType} error${errorCount === 0 || errorCount > 1 ? 's': ''}:`);
 
 
         for(let i = 0; i < errors.length; i++) {
@@ -160,7 +160,7 @@ export default class Logger
         }
 
         Logger.log('\x1b[34m%s\x1b[0m','   [INFO]',
-            `Please fix the error${errorCount > 1 ? 's' : ''} to start Zation`);
+            `Please fix the error${errorCount > 1 ? 's': ''} to start Zation`);
     }
 
 }

@@ -9,15 +9,15 @@ import ResolveUtils    from "./resolveUtils";
 
 export default class ModelResolveEngine
 {
-    private _tmpCreatedModels : object = {req : {},op : {}};
+    private _tmpCreatedModels: object = {req: {},op: {}};
 
-    private readonly models : object;
+    private readonly models: object;
 
-    constructor(models : object = {}) {
+    constructor(models: object = {}) {
         this.models = models;
     }
 
-    static correctSyntax(importDefinition : string) : boolean {
+    static correctSyntax(importDefinition: string): boolean {
         return !!importDefinition.match(/^([or].)?[a-zA-Z0-9-/_]*$/);
     }
 
@@ -25,10 +25,10 @@ export default class ModelResolveEngine
      * Try to get the is op info of resolved import of final level.
      * @param importDefinition
      */
-    fullCheckIsOp(importDefinition : string) : boolean
+    fullCheckIsOp(importDefinition: string): boolean
     {
         let {exist,linkedValue,isOp} = this.peakCheck(importDefinition);
-        const keys : string[] = [];
+        const keys: string[] = [];
         while(exist && isOp === null && typeof linkedValue === 'string' && !keys.includes(linkedValue)) {
             keys.push(linkedValue);
             const newRes = this.peakCheck(linkedValue);
@@ -47,9 +47,9 @@ export default class ModelResolveEngine
      * Only returns info for resolved import to first level.
      * @param importDefinition
      */
-    peakCheck(importDefinition : string) : {exist : boolean,name : string,isOp : boolean | null,linkedValue : object | string | any[] | undefined}
+    peakCheck(importDefinition: string): {exist: boolean,name: string,isOp: boolean | null,linkedValue: object | string | any[] | undefined}
     {
-        let isOp : boolean | null = null;
+        let isOp: boolean | null = null;
 
         if(importDefinition.indexOf('o.') !== -1) {
             isOp = true;
@@ -60,15 +60,15 @@ export default class ModelResolveEngine
             importDefinition = importDefinition.replace('r.','');
         }
         return {
-            exist : this.models.hasOwnProperty(importDefinition),
-            linkedValue : this.models[importDefinition],
-            name : importDefinition,
-            isOp : this.tryCheckOptional(isOp,this.models,importDefinition)
+            exist: this.models.hasOwnProperty(importDefinition),
+            linkedValue: this.models[importDefinition],
+            name: importDefinition,
+            isOp: this.tryCheckOptional(isOp,this.models,importDefinition)
         };
     }
 
     // noinspection JSMethodCanBeStatic
-    private tryCheckOptional(isOp : boolean | null,mainConfig : object,name : string) : boolean | null
+    private tryCheckOptional(isOp: boolean | null,mainConfig: object,name: string): boolean | null
     {
         if(isOp === null) {
             //is not working if value is another link.
@@ -84,8 +84,8 @@ export default class ModelResolveEngine
      * Throws in error if circle loop.
      * @param extendValue
      */
-    tryExtendsResolveCheck(extendValue : object | string) : {value : any,keyPath : string[]} {
-        const keys : string[] = [name];
+    tryExtendsResolveCheck(extendValue: object | string): {value: any,keyPath: string[]} {
+        const keys: string[] = [name];
         let v = extendValue;
         while (true) {
             const typeV = typeof v;
@@ -113,7 +113,7 @@ export default class ModelResolveEngine
                 throw new Error('Unknown type');
             }
         }
-        return {value : v,keyPath : keys};
+        return {value: v,keyPath: keys};
     }
 
     /**
@@ -121,14 +121,14 @@ export default class ModelResolveEngine
      * Only use after config circle check with no errors.
      * @param value
      */
-    extendsResolve(value : string | object) : any {
+    extendsResolve(value: string | object): any {
         if(typeof value !== "string"){
             value = ResolveUtils.modelResolveCheck(value);
         }
         else {
             value = this.models[value];
         }
-        return typeof value === 'string' ? this.extendsResolve(value) : value;
+        return typeof value === 'string' ? this.extendsResolve(value): value;
     }
 
     /**
@@ -136,9 +136,9 @@ export default class ModelResolveEngine
      * Only use after config circle check with no errors.
      * @param importDefinition
      */
-    resolve(importDefinition : string) : object
+    resolve(importDefinition: string): object
     {
-        let isReq : boolean | null = null;
+        let isReq: boolean | null = null;
 
         if(importDefinition.indexOf('o.') !== -1) {
             isReq = false;
@@ -156,7 +156,7 @@ export default class ModelResolveEngine
     }
 
     // noinspection JSMethodCanBeStatic
-    private mainResolve(isReq : boolean | null,name : string) : object
+    private mainResolve(isReq: boolean | null,name: string): object
     {
         const obj = this.models[name];
 
@@ -175,7 +175,7 @@ export default class ModelResolveEngine
             return this.models[name];
         }
         else {
-            const key = isReq ? 'req' : 'op';
+            const key = isReq ? 'req': 'op';
             const tmp = this._tmpCreatedModels[key][name];
             if(tmp){
                 return tmp;

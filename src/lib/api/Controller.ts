@@ -44,7 +44,7 @@ export default class Controller {
      */
     protected readonly apiLevel: number | undefined;
 
-    constructor(name : string, bag: Bag, apiLevel : number | undefined) {
+    constructor(name: string, bag: Bag, apiLevel: number | undefined) {
         this.name = name;
         this.apiLevel = apiLevel;
         this.bag = bag;
@@ -104,7 +104,7 @@ export default class Controller {
      * Notice that only the BackError or BackErrorBag sends back to the client.
      * All other errors or objects will be converted to an unknown BackError.
      */
-    invalidInput(reqBag: RequestBag, input: any, backErrorBag : BackErrorBag): Promise<void> | void {
+    invalidInput(reqBag: RequestBag, input: any, backErrorBag: BackErrorBag): Promise<void> | void {
     }
 
     /**
@@ -115,8 +115,8 @@ export default class Controller {
      * @example
      * @Controller.Config({});
      */
-    public static Config(controllerConfig : ControllerConfig) {
-        return (target : Component) => {
+    public static Config(controllerConfig: ControllerConfig) {
+        return (target: Component) => {
             if(target.prototype instanceof Controller) {
                 target.config = controllerConfig;
             }
@@ -130,7 +130,7 @@ export default class Controller {
 export interface ControllerClass {
     config: ControllerConfig;
 
-    new(name : string, bag: Bag, apiLevel : number | undefined): Controller;
+    new(name: string, bag: Bag, apiLevel: number | undefined): Controller;
 
     prototype: any;
 }

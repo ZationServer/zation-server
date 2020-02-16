@@ -16,9 +16,9 @@ import {AnyClass, AnyModelConfigTranslatable} from "../../../main/config/definit
  * by using the normal javascript inheritance.
  * @param extension
  */
-export const Extends = (extension : ObjectModelConfig | string | AnyClass | AnyModelConfigTranslatable) => {
-    return (target : any) => {
-        const prototype : InDecoratorMem = target.prototype;
+export const Extends = (extension: ObjectModelConfig | string | AnyClass | AnyModelConfigTranslatable) => {
+    return (target: any) => {
+        const prototype: InDecoratorMem = target.prototype;
 
         if(prototype[InDM_Extends] === undefined){
             prototype[InDM_Extends] = extension;

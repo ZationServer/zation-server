@@ -15,7 +15,7 @@ import {MainBackErrors}    from "../zationBackErrors/mainBackErrors";
 import ZationConfigFull    from "../config/manager/zationConfigFull";
 import ObjectUtils         from "../utils/objectUtils";
 import ZationConfig        from "../config/manager/zationConfig";
-const  Jwt : any         = require('jsonwebtoken');
+const  Jwt: any         = require('jsonwebtoken');
 const uniqid             = require('uniqid');
 
 export default class TokenUtils
@@ -25,7 +25,7 @@ export default class TokenUtils
      * @param customVar
      * @param shBridge
      */
-    static async setCustomVar(customVar : object,shBridge : BaseSHBridge) : Promise<void>
+    static async setCustomVar(customVar: object,shBridge: BaseSHBridge): Promise<void>
     {
         let token = shBridge.getToken();
         if(token !== null) {
@@ -43,7 +43,7 @@ export default class TokenUtils
      * @param customVar
      * @param socket
      */
-    static async setSocketCustomVar(customVar : object, socket : UpSocket) : Promise<void>
+    static async setSocketCustomVar(customVar: object, socket: UpSocket): Promise<void>
     {
         let token = socket.authToken;
         if(token !== null) {
@@ -62,7 +62,7 @@ export default class TokenUtils
      * @param data
      * @param jwtOptions
      */
-    static async setSocketTokenAsync(socket : UpSocket, data : object, jwtOptions : JwtSignOptions = {}) {
+    static async setSocketTokenAsync(socket: UpSocket, data: object, jwtOptions: JwtSignOptions = {}) {
         return new Promise<void>((resolve, reject) => {
             socket.setAuthToken(data,jwtOptions,(err) => {
                 if(err){
@@ -81,7 +81,7 @@ export default class TokenUtils
      * @param token
      * @param newData
      */
-    static combineTokens(token : PrepareZationToken | null,newData : PrepareZationToken) : object {
+    static combineTokens(token: PrepareZationToken | null,newData: PrepareZationToken): object {
         if(token === null) {
             return newData;
         }
@@ -96,10 +96,10 @@ export default class TokenUtils
         }
     }
 
-    static generateToken(tokenCheckKey : string) : PrepareZationToken {
+    static generateToken(tokenCheckKey: string): PrepareZationToken {
         return {
-            tid : uniqid(),
-            clusterKey : tokenCheckKey
+            tid: uniqid(),
+            clusterKey: tokenCheckKey
         };
     }
 
@@ -107,7 +107,7 @@ export default class TokenUtils
      * Get the token variables.
      * @param token
      */
-    static getTokenVariables(token : ZationToken | null) : object {
+    static getTokenVariables(token: ZationToken | null): object {
         return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.variables),token)
             || {};
     }
@@ -117,7 +117,7 @@ export default class TokenUtils
      * @param key
      * @param token
      */
-    static getTokenVariable(key : string,token : ZationToken | null) : any {
+    static getTokenVariable(key: string,token: ZationToken | null): any {
         if(token !== null) {
             return token[key]
         }
@@ -132,20 +132,20 @@ export default class TokenUtils
      * @param zc
      * @param jwtOptions
      */
-    static async verifyToken(signedToken,zc : ZationConfigFull,jwtOptions : JwtVerifyOptions = {}) : Promise<Record<string,any>>
+    static async verifyToken(signedToken,zc: ZationConfigFull,jwtOptions: JwtVerifyOptions = {}): Promise<Record<string,any>>
     {
         return new Promise((resolve, reject) =>
         {
             (Jwt.verify as JwtVerifyFunction)(signedToken,zc.getVerifyKey(),jwtOptions,(err, decoded) => {
                 if(err) {
                     if(err.name === 'TokenExpiredError') {
-                        reject(new BackError(MainBackErrors.tokenExpiredError,{expiredAt : err.expiredAt}));
+                        reject(new BackError(MainBackErrors.tokenExpiredError,{expiredAt: err.expiredAt}));
                     }
                     else if(err.name === 'JsonWebTokenError') {
                         reject(new BackError(MainBackErrors.jsonWebTokenError,err));
                     }
                     else {
-                        reject(new BackError(MainBackErrors.unknownTokenVerifyError,{err : err.toString()}));
+                        reject(new BackError(MainBackErrors.unknownTokenVerifyError,{err: err.toString()}));
                     }
                 }
                 else {
@@ -161,7 +161,7 @@ export default class TokenUtils
      * @param zc
      * @param jwtOptions
      */
-    static async signToken(data : object,zc : ZationConfig,jwtOptions : JwtSignOptions) : Promise<string>
+    static async signToken(data: object,zc: ZationConfig,jwtOptions: JwtSignOptions): Promise<string>
     {
         return new Promise((resolve, reject) =>
         {
@@ -170,7 +170,7 @@ export default class TokenUtils
 
             (Jwt.sign as JwtSignFunction)(data,zc.getSignKey(),options,(err,signedToken) => {
                 if(err) {
-                    reject(new BackError(MainBackErrors.unknownTokenSignError,{err : err.toString()}));
+                    reject(new BackError(MainBackErrors.unknownTokenSignError,{err: err.toString()}));
                 }
                 else {
                     resolve(signedToken);
@@ -184,7 +184,7 @@ export default class TokenUtils
      * @param token
      * @param ae
      */
-    static checkToken(token : ZationToken | null, ae : AEPreparedPart) {
+    static checkToken(token: ZationToken | null, ae: AEPreparedPart) {
         if(token !== null)
         {
             const authUserGroup = token.authUserGroup;
@@ -214,7 +214,7 @@ export default class TokenUtils
     /**
      * Creates a closure for checking the token cluster key.
      */
-    static createTokenClusterKeyChecker(zc : ZationConfig) : TokenClusterKeyCheckFunction {
+    static createTokenClusterKeyChecker(zc: ZationConfig): TokenClusterKeyCheckFunction {
         if(zc.mainConfig.useTokenClusterKeyCheck){
             return (token) => {
                 if(token.clusterKey !== zc.internalData.tokenClusterKey) {
@@ -229,4 +229,4 @@ export default class TokenUtils
 
 }
 
-export type TokenClusterKeyCheckFunction = (token : ZationToken) => void;
+export type TokenClusterKeyCheckFunction = (token: ZationToken) => void;

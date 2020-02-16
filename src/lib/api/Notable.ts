@@ -30,11 +30,11 @@ export function $not(value: any): Notable<any> {
     return value;
 }
 
-export function isNotableNot<T>(value : Notable<T> | undefined) : boolean {
+export function isNotableNot<T>(value: Notable<T> | undefined): boolean {
     return value && typeof value === 'object' && value[notableNot];
 }
 
-export function getNotableValue<T>(value : Notable<T> | undefined) : any {
+export function getNotableValue<T>(value: Notable<T> | undefined): any {
     if(value && typeof value === 'object' && (value as object).hasOwnProperty(notableValue)){
         return value[notableValue];
     }

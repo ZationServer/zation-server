@@ -14,15 +14,15 @@ import {ZationRequest}      from "../controller/request/controllerDefinitions";
  */
 export default class SHBridgeSocket extends BaseSHBridgeSocket implements SHBridge {
 
-    protected readonly reqId : string;
-    protected readonly data : ZationRequest;
-    protected readonly validationCheckReq : boolean;
+    protected readonly reqId: string;
+    protected readonly data: ZationRequest;
+    protected readonly validationCheckReq: boolean;
 
-    protected readonly defaultApiLevel : number;
-    protected readonly connectionApiLevel : number | undefined;
-    protected readonly requestApiLevel : number | undefined;
+    protected readonly defaultApiLevel: number;
+    protected readonly connectionApiLevel: number | undefined;
+    protected readonly requestApiLevel: number | undefined;
 
-    constructor(socket : UpSocket, reqId : string, data : ZationRequest, validationCheckReq : boolean,defaultApiLevel : number) {
+    constructor(socket: UpSocket, reqId: string, data: ZationRequest, validationCheckReq: boolean,defaultApiLevel: number) {
         super(socket);
         this.reqId = reqId;
         this.data = data;
@@ -31,7 +31,7 @@ export default class SHBridgeSocket extends BaseSHBridgeSocket implements SHBrid
         this.defaultApiLevel = defaultApiLevel;
         this.connectionApiLevel = socket.apiLevel;
         this.requestApiLevel = typeof data.al === 'number' ?
-            Math.floor(data.al) : undefined;
+            Math.floor(data.al): undefined;
     }
 
     getReqId(): string {

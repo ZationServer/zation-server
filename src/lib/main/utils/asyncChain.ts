@@ -16,7 +16,7 @@ export default class AsyncChain {
      * and returns the promise of the task.
      * @param task
      */
-    runInChain(task : (...args : any[]) => Promise<void>) : Promise<void> {
+    runInChain(task: (...args: any[]) => Promise<void>): Promise<void> {
         this.pressure++;
         const promise = afterPromise(this.lastPromise,async () => {
             await task();
@@ -30,7 +30,7 @@ export default class AsyncChain {
      * Returns the backpressure of the chain
      * (how many promises are still not resolved).
      */
-    getBackpressure() : number {
+    getBackpressure(): number {
         return this.pressure;
     }
 }

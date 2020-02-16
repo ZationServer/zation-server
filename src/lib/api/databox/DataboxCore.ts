@@ -55,11 +55,11 @@ export default abstract class DataboxCore {
      * Than this prevent you for old tokens with old structures.
      * @default 0
      */
-    protected readonly dbTokenVersion : number = 0;
+    protected readonly dbTokenVersion: number = 0;
 
-    private readonly _dbPreparedData : DbPreparedData;
-    private readonly _sendErrorDescription : boolean;
-    private readonly _preparedTokenSessionKey : string;
+    private readonly _dbPreparedData: DbPreparedData;
+    private readonly _sendErrorDescription: boolean;
+    private readonly _preparedTokenSessionKey: string;
 
     /**
      * @description
@@ -68,11 +68,11 @@ export default abstract class DataboxCore {
      */
     protected readonly apiLevel: number | undefined;
 
-    private readonly _parallelFetch : boolean;
-    private readonly _initInputConsumer : InputConsumeFunction;
-    private readonly _fetchInputConsumer : InputConsumeFunction;
+    private readonly _parallelFetch: boolean;
+    private readonly _initInputConsumer: InputConsumeFunction;
+    private readonly _fetchInputConsumer: InputConsumeFunction;
 
-    protected constructor(name : string, bag: Bag, dbPreparedData : DbPreparedData, apiLevel : number | undefined) {
+    protected constructor(name: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
         this.name = name;
         this.apiLevel = apiLevel;
         this.bag = bag;
@@ -84,13 +84,13 @@ export default abstract class DataboxCore {
         this._fetchInputConsumer = dbPreparedData.fetchInputConsumer;
 
         this._preparedTokenSessionKey =
-            `${bag.getZationConfig().getDataboxKey()}.${this.dbTokenVersion}.${this.name}${apiLevel !== undefined ? apiLevel : ''}`;
+            `${bag.getZationConfig().getDataboxKey()}.${this.dbTokenVersion}.${this.name}${apiLevel !== undefined ? apiLevel: ''}`;
     }
 
     /**
      * **Not override this method.**
      */
-    isParallelFetch() : boolean {
+    isParallelFetch(): boolean {
         return this._parallelFetch;
     }
 
@@ -100,13 +100,13 @@ export default abstract class DataboxCore {
      * @param input
      * @private
      */
-    async _consumeFetchInput(input : any) : Promise<any>
+    async _consumeFetchInput(input: any): Promise<any>
     {
         try {
             return await this._fetchInputConsumer(input);
         }
         catch (inputError) {
-            const err : any = new Error('Invalid input to fetch data.');
+            const err: any = new Error('Invalid input to fetch data.');
             err.name = ClientErrorName.INVALID_INPUT;
             err.backErrors = ErrorUtils.convertErrorToResponseErrors(inputError,this._sendErrorDescription);
             throw err;
@@ -119,13 +119,13 @@ export default abstract class DataboxCore {
      * @param input
      * @private
      */
-    async _consumeInitInput(input : any) : Promise<any>
+    async _consumeInitInput(input: any): Promise<any>
     {
         try {
             return await this._initInputConsumer(input);
         }
         catch (inputError) {
-            const err : any = new Error('Invalid init input.');
+            const err: any = new Error('Invalid init input.');
             err.name = ClientErrorName.INVALID_INPUT;
             err.backErrors = ErrorUtils.convertErrorToResponseErrors(inputError,this._sendErrorDescription);
             throw err;
@@ -139,23 +139,23 @@ export default abstract class DataboxCore {
      * @param socket
      * @param dbInfo
      */
-    async _checkAccess(socket : UpSocket,dbInfo : DataboxInfo){
+    async _checkAccess(socket: UpSocket,dbInfo: DataboxInfo){
         const {systemAccessCheck,versionAccessCheck} = this._dbPreparedData;
 
         if(!systemAccessCheck(socket.baseSHBridge)){
-            const err : any = new Error('Access to this Databox with client system denied.');
+            const err: any = new Error('Access to this Databox with client system denied.');
             err.name = ClientErrorName.NO_ACCESS_WITH_SYSTEM;
             throw err;
         }
 
         if(!versionAccessCheck(socket.baseSHBridge)){
-            const err : any = new Error('Access to this Databox with client version denied.');
+            const err: any = new Error('Access to this Databox with client version denied.');
             err.name = ClientErrorName.NO_ACCESS_WITH_VERSION;
             throw err;
         }
 
         if(!(await this._accessCheck(socket,dbInfo))){
-            const err : any = new Error('Access to this Databox denied.');
+            const err: any = new Error('Access to this Databox denied.');
             err.name = ClientErrorName.ACCESS_DENIED;
             throw err;
         }
@@ -168,12 +168,12 @@ export default abstract class DataboxCore {
      * @param token
      * @param keyAppend
      */
-    async _verifyDbToken(token : string, keyAppend : string = '') : Promise<DbToken | undefined> {
+    async _verifyDbToken(token: string, keyAppend: string = ''): Promise<DbToken | undefined> {
         return new Promise<DbToken | undefined>((resolve) => {(Jwt.verify as JwtVerifyFunction)
             (token,this._preparedTokenSessionKey+keyAppend,{
-                ignoreExpiration : true
-            } as JwtVerifyOptions,(err, token : DbToken) => {
-                resolve(err ? undefined : token);
+                ignoreExpiration: true
+            } as JwtVerifyOptions,(err, token: DbToken) => {
+                resolve(err ? undefined: token);
             });
         });
     }
@@ -185,10 +185,10 @@ export default abstract class DataboxCore {
      * @param dbToken
      * @param keyAppend
      */
-    async _signDbToken(dbToken : DbToken, keyAppend : string = '') : Promise<string> {
+    async _signDbToken(dbToken: DbToken, keyAppend: string = ''): Promise<string> {
         return new Promise<string>((resolve,reject) => {
             (Jwt.sign as JwtSignFunction)(dbToken,this._preparedTokenSessionKey+keyAppend,{},(err,signedToken) => {
-                err ? reject(new Error('Sign token failed')) : resolve(signedToken);
+                err ? reject(new Error('Sign token failed')): resolve(signedToken);
             });
         });
     }
@@ -199,7 +199,7 @@ export default abstract class DataboxCore {
      * @param socket
      * @param dbInfo
      */
-    async _accessCheck(socket : UpSocket, dbInfo : DataboxInfo) : Promise<boolean> {
+    async _accessCheck(socket: UpSocket, dbInfo: DataboxInfo): Promise<boolean> {
         return await this._dbPreparedData.accessCheck(socket.authEngine,socket.zSocket,dbInfo);
     }
 
@@ -236,7 +236,7 @@ export default abstract class DataboxCore {
      * @code Can be optionally provided for the client.
      * @data Can be optionally provided for the client.
      */
-    protected noDataAvailable(code ?: string | number,data ?: any){
+    protected noDataAvailable(code?: string | number,data?: any){
         throw new NoDataAvailableError(code,data);
     }
 
@@ -264,7 +264,7 @@ export default abstract class DataboxCore {
      * then you not able to change one specific item.
      * (Because you would change  on each client a different item.)
      */
-    protected buildKeyArray<T>(array : T[],key : keyof T) {
+    protected buildKeyArray<T>(array: T[],key: keyof T) {
         return DbKeyArrayUtils.buildKeyArray(array,key);
     }
 
@@ -284,8 +284,8 @@ export default abstract class DataboxCore {
      * @example
      * @Databox.Config({});
      */
-    public static Config(databoxConfig : DataboxConfig) {
-        return (target : Component) => {
+    public static Config(databoxConfig: DataboxConfig) {
+        return (target: Component) => {
             if(target.prototype instanceof DataboxCore) {
                 target.config = databoxConfig;
             }
@@ -297,12 +297,12 @@ export default abstract class DataboxCore {
 }
 
 export interface DbPreparedData {
-    versionAccessCheck : VersionSystemAccessCheckFunction,
-    systemAccessCheck : VersionSystemAccessCheckFunction,
-    accessCheck : DbAccessCheckFunction,
-    initInputConsumer : InputConsumeFunction,
-    fetchInputConsumer : InputConsumeFunction,
-    parallelFetch : boolean,
-    maxBackpressure : number,
-    maxSocketInputChannels : number
+    versionAccessCheck: VersionSystemAccessCheckFunction,
+    systemAccessCheck: VersionSystemAccessCheckFunction,
+    accessCheck: DbAccessCheckFunction,
+    initInputConsumer: InputConsumeFunction,
+    fetchInputConsumer: InputConsumeFunction,
+    parallelFetch: boolean,
+    maxBackpressure: number,
+    maxSocketInputChannels: number
 }

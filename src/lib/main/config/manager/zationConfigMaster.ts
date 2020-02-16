@@ -13,7 +13,7 @@ import InternalData         from "../../constants/internalData";
 
 export default class ZationConfigMaster extends ZationConfig {
 
-    constructor(starterConfig : StarterConfig,mainConfig : InternalMainConfig,configLocations : ConfigLocations,rootPath : string,startMode : number) {
+    constructor(starterConfig: StarterConfig,mainConfig: InternalMainConfig,configLocations: ConfigLocations,rootPath: string,startMode: number) {
         super();
 
         this._starterConfig = starterConfig;
@@ -27,29 +27,29 @@ export default class ZationConfigMaster extends ZationConfig {
         this._loadJwtOptions();
     }
 
-    private createInternalData() : InternalData {
+    private createInternalData(): InternalData {
 
         const privateAndPublicSet = typeof this.mainConfig.authPublicKey === 'string' &&
             typeof this.mainConfig.authPrivateKey === 'string';
 
         return {
-            tokenClusterKey : crypto.randomBytes(32).toString('hex'),
+            tokenClusterKey: crypto.randomBytes(32).toString('hex'),
             // @ts-ignore
-            verifyKey : privateAndPublicSet ? this.mainConfig.authPublicKey : this.mainConfig.authSecretKey,
+            verifyKey: privateAndPublicSet ? this.mainConfig.authPublicKey: this.mainConfig.authSecretKey,
             // @ts-ignore
-            signKey : privateAndPublicSet ? this.mainConfig.authPrivateKey : this.mainConfig.authSecretKey,
-            databoxKey : crypto.randomBytes(32).toString('hex')
+            signKey: privateAndPublicSet ? this.mainConfig.authPrivateKey: this.mainConfig.authSecretKey,
+            databoxKey: crypto.randomBytes(32).toString('hex')
         }
     }
 
     protected _loadJwtOptions() {
         this._preLoadJwtSignOptions = this.mainConfig.authAlgorithm ?
             {
-                algorithm : this._mainConfig.authAlgorithm,
-                expiresIn : this._mainConfig.authDefaultExpiry
+                algorithm: this._mainConfig.authAlgorithm,
+                expiresIn: this._mainConfig.authDefaultExpiry
             } :
             {
-                expiresIn : this._mainConfig.authDefaultExpiry
+                expiresIn: this._mainConfig.authDefaultExpiry
             };
     }
 

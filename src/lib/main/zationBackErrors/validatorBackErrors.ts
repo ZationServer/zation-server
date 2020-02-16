@@ -9,752 +9,752 @@ import {ErrorGroup}       from "../constants/errorGroup";
 import {ErrorType}        from "./../constants/errorType";
 import BackErrorConstruct from "../constants/backErrorConstruct";
 
-export const ValidatorBackErrors : Record<string,BackErrorConstruct> = {
-    inputIsNotTypeObject : {
-        name          : 'inputIsNotTypeObject',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Object!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
+    inputIsNotTypeObject: {
+        name         : 'inputIsNotTypeObject',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Object!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeArray : {
-        name          : 'inputIsNotTypeArray',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Array!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeArray: {
+        name         : 'inputIsNotTypeArray',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Array!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeString : {
-        name          : 'inputIsNotTypeString',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type String!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeString: {
+        name         : 'inputIsNotTypeString',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type String!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeChar : {
-        name          : 'inputIsNotTypeChar',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Char!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeChar: {
+        name         : 'inputIsNotTypeChar',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Char!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeNull : {
-        name          : 'inputIsNotTypeNull',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Null!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeNull: {
+        name         : 'inputIsNotTypeNull',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Null!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeInt : {
-        name          : 'inputIsNotTypeInt',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Int!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeInt: {
+        name         : 'inputIsNotTypeInt',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Int!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeFloat : {
-        name          : 'inputIsNotTypeFloat',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Float!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeFloat: {
+        name         : 'inputIsNotTypeFloat',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Float!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeNumber : {
-        name          : 'inputIsNotTypeNumber',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type number!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeNumber: {
+        name         : 'inputIsNotTypeNumber',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type number!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeDate : {
-        name          : 'inputIsNotTypeDate',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Date!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeDate: {
+        name         : 'inputIsNotTypeDate',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Date!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeEmail : {
-        name          : 'inputIsNotTypeEmail',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Email!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeEmail: {
+        name         : 'inputIsNotTypeEmail',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Email!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeBoolean : {
-        name          : 'inputIsNotTypeBoolean',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Boolean!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeBoolean: {
+        name         : 'inputIsNotTypeBoolean',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Boolean!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeSha512 : {
-        name          : 'inputIsNotTypeSha512',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Sha512!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeSha512: {
+        name         : 'inputIsNotTypeSha512',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Sha512!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeSha256 : {
-        name          : 'inputIsNotTypeSha256',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Sha256!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeSha256: {
+        name         : 'inputIsNotTypeSha256',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Sha256!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeSha384 : {
-        name          : 'inputIsNotTypeSha384',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Sha384!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeSha384: {
+        name         : 'inputIsNotTypeSha384',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Sha384!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeSha1 : {
-        name          : 'inputIsNotTypeSha1',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Sha1!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeSha1: {
+        name         : 'inputIsNotTypeSha1',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Sha1!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeMd5 : {
-        name          : 'inputIsNotTypeMd5',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Md5!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeMd5: {
+        name         : 'inputIsNotTypeMd5',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Md5!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeHexColor : {
-        name          : 'inputIsNotTypeHexColor',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type HexColor!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeHexColor: {
+        name         : 'inputIsNotTypeHexColor',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type HexColor!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeHexadecimal : {
-        name          : 'inputIsNotTypeHexadecimal',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type hexadecimal!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeHexadecimal: {
+        name         : 'inputIsNotTypeHexadecimal',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type hexadecimal!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeIp4 : {
-        name          : 'inputIsNotTypeIp4',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Ip Version 4!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeIp4: {
+        name         : 'inputIsNotTypeIp4',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Ip Version 4!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeIp6 : {
-        name          : 'inputIsNotTypeIp6',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Ip Version 6!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeIp6: {
+        name         : 'inputIsNotTypeIp6',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Ip Version 6!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeIsbn10 : {
-        name          : 'inputIsNotTypeIsbn10',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Isbn Version 10!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeIsbn10: {
+        name         : 'inputIsNotTypeIsbn10',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Isbn Version 10!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeIsbn13 : {
-        name          : 'inputIsNotTypeIsbn13',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Isbn Version 13!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeIsbn13: {
+        name         : 'inputIsNotTypeIsbn13',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Isbn Version 13!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeJson : {
-        name          : 'inputIsNotTypeJson',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type JsonConverter!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeJson: {
+        name         : 'inputIsNotTypeJson',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type JsonConverter!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeUrl : {
-        name          : 'inputIsNotTypeUrl',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Url!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeUrl: {
+        name         : 'inputIsNotTypeUrl',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Url!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeMimeType : {
-        name          : 'inputIsNotTypeMimeType',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Mime Type!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeMimeType: {
+        name         : 'inputIsNotTypeMimeType',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Mime Type!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeMacAddress : {
-        name          : 'inputIsNotTypeMacAddress',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Max Address!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeMacAddress: {
+        name         : 'inputIsNotTypeMacAddress',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Max Address!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeMobileNumber : {
-        name          : 'inputIsNotTypeMobileNumber',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Mobile Number!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeMobileNumber: {
+        name         : 'inputIsNotTypeMobileNumber',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Mobile Number!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeUuid3 : {
-        name          : 'inputIsNotTypeUuid3',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type UUID Version 3!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeUuid3: {
+        name         : 'inputIsNotTypeUuid3',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type UUID Version 3!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeUuid4 : {
-        name          : 'inputIsNotTypeUuid4',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type UUID Version 4!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeUuid4: {
+        name         : 'inputIsNotTypeUuid4',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type UUID Version 4!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeUuid5 : {
-        name          : 'inputIsNotTypeUuid5',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type UUID Version 5!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeUuid5: {
+        name         : 'inputIsNotTypeUuid5',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type UUID Version 5!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeBase64 : {
-        name          : 'inputIsNotTypeBase64',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Base64!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeBase64: {
+        name         : 'inputIsNotTypeBase64',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Base64!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeAscii : {
-        name          : 'inputIsNotTypeAscii',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type Ascii!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeAscii: {
+        name         : 'inputIsNotTypeAscii',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type Ascii!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeUserId : {
-        name          : 'inputIsNotTypeUserId',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type user id!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeUserId: {
+        name         : 'inputIsNotTypeUserId',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type user id!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeMongoId : {
-        name          : 'inputIsNotTypeMongoId',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type mongo id!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeMongoId: {
+        name         : 'inputIsNotTypeMongoId',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type mongo id!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotTypeLatLong : {
-        name          : 'inputIsNotTypeLatLong',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'Input is not from type lat long!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotTypeLatLong: {
+        name         : 'inputIsNotTypeLatLong',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'Input is not from type lat long!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputNotMatchWithMinLength : {
-        name          : 'inputNotMatchWithMinLength',
-        group         : ErrorGroup.VALUE_LENGTH_ERROR,
-        description   : 'Input not match with min length!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputNotMatchWithMinLength: {
+        name         : 'inputNotMatchWithMinLength',
+        group        : ErrorGroup.VALUE_LENGTH_ERROR,
+        description  : 'Input not match with min length!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // minLength (minLength)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputNotMatchWithMaxLength : {
-        name          : 'inputNotMatchWithMaxLength',
-        group         : ErrorGroup.VALUE_LENGTH_ERROR,
-        description   : 'Input not match with max length!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputNotMatchWithMaxLength: {
+        name         : 'inputNotMatchWithMaxLength',
+        group        : ErrorGroup.VALUE_LENGTH_ERROR,
+        description  : 'Input not match with max length!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // maxLength (maxLength)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputNotMatchWithLength : {
-        name          : 'inputNotMatchWithLength',
-        group         : ErrorGroup.VALUE_LENGTH_ERROR,
-        description   : 'Input not match with length!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputNotMatchWithLength: {
+        name         : 'inputNotMatchWithLength',
+        group        : ErrorGroup.VALUE_LENGTH_ERROR,
+        description  : 'Input not match with length!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // length (length)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotUppercase : {
-        name          : 'inputIsNotUpperCase',
-        group         : ErrorGroup.LETTERS_FORMAT_ERROR,
-        description   : 'Input is not uppercase!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotUppercase: {
+        name         : 'inputIsNotUpperCase',
+        group        : ErrorGroup.LETTERS_FORMAT_ERROR,
+        description  : 'Input is not uppercase!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotLowercase : {
-        name          : 'inputIsNotLowercase',
-        group         : ErrorGroup.LETTERS_FORMAT_ERROR,
-        description   : 'Input is not lowercase!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotLowercase: {
+        name         : 'inputIsNotLowercase',
+        group        : ErrorGroup.LETTERS_FORMAT_ERROR,
+        description  : 'Input is not lowercase!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotMatchWithCharClass : {
-        name          : 'inputIsNotMatchWithCharClass',
-        description   : 'Input is not match with char class!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotMatchWithCharClass: {
+        name         : 'inputIsNotMatchWithCharClass',
+        description  : 'Input is not match with char class!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // regex
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputDateIsNotBefore : {
-        name          : 'inputDateIsNotBefore',
-        group         : ErrorGroup.DATE_ERROR,
-        description   : 'Input date is not before date!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputDateIsNotBefore: {
+        name         : 'inputDateIsNotBefore',
+        group        : ErrorGroup.DATE_ERROR,
+        description  : 'Input date is not before date!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // shouldBefore
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputDateIsNotAfter : {
-        name          : 'inputDateIsNotAfter',
-        group         : ErrorGroup.DATE_ERROR,
-        description   : 'Input date is not after date!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputDateIsNotAfter: {
+        name         : 'inputDateIsNotAfter',
+        group        : ErrorGroup.DATE_ERROR,
+        description  : 'Input date is not after date!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // shouldAfter
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotContains : {
-        name          : 'inputIsNotContains',
-        description   : 'Input is not contains!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotContains: {
+        name         : 'inputIsNotContains',
+        description  : 'Input is not contains!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // shouldContain (shouldContain)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotEquals : {
-        name          : 'inputIsNotEquals',
-        description   : 'Input is not equals!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotEquals: {
+        name         : 'inputIsNotEquals',
+        description  : 'Input is not equals!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // shouldEqual (shouldEqual)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputNotMatchWithMinValue : {
-        name          : 'inputNotMatchWithMinValue',
-        group         : ErrorGroup.NUMBER_SIZE_ERROR,
-        description   : 'Input is not match with min value!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputNotMatchWithMinValue: {
+        name         : 'inputNotMatchWithMinValue',
+        group        : ErrorGroup.NUMBER_SIZE_ERROR,
+        description  : 'Input is not match with min value!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // minValue (min value)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputNotMatchWithMaxValue : {
-        name          : 'inputNotMatchWithMaxValue',
-        group         : ErrorGroup.NUMBER_SIZE_ERROR,
-        description   : 'Input is not match with max value!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputNotMatchWithMaxValue: {
+        name         : 'inputNotMatchWithMaxValue',
+        group        : ErrorGroup.NUMBER_SIZE_ERROR,
+        description  : 'Input is not match with max value!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // maxValue (max value)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotMatchWithRegex : {
-        name          : 'inputIsNotMatchWithRegex',
-        description   : 'Input is not match with regex!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotMatchWithRegex: {
+        name         : 'inputIsNotMatchWithRegex',
+        description  : 'Input is not match with regex!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // regexName
         // regex
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotStartsWith : {
-        name          : 'inputIsNotStartsWith',
-        description   : 'Input is not starts with!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotStartsWith: {
+        name         : 'inputIsNotStartsWith',
+        description  : 'Input is not starts with!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // shouldStartsWith (shouldStartsWith)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotEndsWith : {
-        name          : 'inputIsNotEndsWith',
-        description   : 'Input is not ends with!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotEndsWith: {
+        name         : 'inputIsNotEndsWith',
+        description  : 'Input is not ends with!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // shouldEndsWith (shouldEndsWith)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotMatchWithEnum : {
-        name          : 'inputIsNotMatchWithEnum',
-        group         : ErrorGroup.ENUM_ERROR,
-        description   : 'Input is not match with enum!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotMatchWithEnum: {
+        name         : 'inputIsNotMatchWithEnum',
+        group        : ErrorGroup.ENUM_ERROR,
+        description  : 'Input is not match with enum!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // enum (Enum Array)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputIsNotMatchWithPrivateEnum : {
-        name          : 'inputIsNotMatchWithPrivateEnum',
-        group         : ErrorGroup.ENUM_ERROR,
-        description   : 'Input is not match with private enum!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputIsNotMatchWithPrivateEnum: {
+        name         : 'inputIsNotMatchWithPrivateEnum',
+        group        : ErrorGroup.ENUM_ERROR,
+        description  : 'Input is not match with private enum!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputArrayNotMatchWithMaxLength : {
-        name          : 'inputArrayNotMatchWithMaxLength',
-        group         : ErrorGroup.ARRAY_LENGTH_ERROR,
-        description   : 'Input array not match with max length!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputArrayNotMatchWithMaxLength: {
+        name         : 'inputArrayNotMatchWithMaxLength',
+        group        : ErrorGroup.ARRAY_LENGTH_ERROR,
+        description  : 'Input array not match with max length!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // maxLength (maxLength)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputArrayNotMatchWithMinLength : {
-        name          : 'inputArrayNotMatchWithMinLength',
-        group         : ErrorGroup.ARRAY_LENGTH_ERROR,
-        description   : 'Input array not match with min length!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputArrayNotMatchWithMinLength: {
+        name         : 'inputArrayNotMatchWithMinLength',
+        group        : ErrorGroup.ARRAY_LENGTH_ERROR,
+        description  : 'Input array not match with min length!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // minLength (minLength)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputArrayNotMatchWithLength : {
-        name          : 'inputArrayNotMatchWithLength',
-        group         : ErrorGroup.ARRAY_LENGTH_ERROR,
-        description   : 'Input array not match with length!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputArrayNotMatchWithLength: {
+        name         : 'inputArrayNotMatchWithLength',
+        group        : ErrorGroup.ARRAY_LENGTH_ERROR,
+        description  : 'Input array not match with length!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // length (length)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputNotMatchWithMinByteSize : {
-        name          : 'inputNotMatchWithMinByteSize',
-        group         : ErrorGroup.BYTE_SIZE_ERROR,
-        description   : 'Input is not match with min byte size!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputNotMatchWithMinByteSize: {
+        name         : 'inputNotMatchWithMinByteSize',
+        group        : ErrorGroup.BYTE_SIZE_ERROR,
+        description  : 'Input is not match with min byte size!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // minByteSize (min byte size)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputNotMatchWithMaxByteSize : {
-        name          : 'inputNotMatchWithMaxByteSize',
-        group         : ErrorGroup.BYTE_SIZE_ERROR,
-        description   : 'Input is not match with max byte size!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputNotMatchWithMaxByteSize: {
+        name         : 'inputNotMatchWithMaxByteSize',
+        group        : ErrorGroup.BYTE_SIZE_ERROR,
+        description  : 'Input is not match with max byte size!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // maxByteSize (max byte size)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputNotMatchWithMimeType : {
-        name          : 'inputNotMatchWithMimeType',
-        group         : ErrorGroup.CONTENT_TYPE_ERROR,
-        description   : 'Input is not match with mime type!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputNotMatchWithMimeType: {
+        name         : 'inputNotMatchWithMimeType',
+        group        : ErrorGroup.CONTENT_TYPE_ERROR,
+        description  : 'Input is not match with mime type!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // mimeType (mime type that is allow)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    inputNotMatchWithMimeSubType : {
-        name          : 'inputNotMatchWithMimeSubType',
-        group         : ErrorGroup.CONTENT_TYPE_ERROR,
-        description   : 'Input is not match with mime sub type!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    inputNotMatchWithMimeSubType: {
+        name         : 'inputNotMatchWithMimeSubType',
+        group        : ErrorGroup.CONTENT_TYPE_ERROR,
+        description  : 'Input is not match with mime sub type!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // mimeSubType (mime sub type that is allow)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    noValidTypeWasFound : {
-        name          : 'noValidTypeWasFound',
-        group         : ErrorGroup.TYPE_ERROR,
-        description   : 'No valid type was found!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    noValidTypeWasFound: {
+        name         : 'noValidTypeWasFound',
+        group        : ErrorGroup.TYPE_ERROR,
+        description  : 'No valid type was found!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
         // types (types was checked on value)
-        fromZationSystem : true
+        fromZationSystem: true
     },
 
-    noAnyOfMatch : {
-        name          : 'noAnyOfMatch',
-        description   : 'No anyOf match!',
-        type          : ErrorType.VALIDATION_ERROR,
-        sendInfo      : true,
+    noAnyOfMatch: {
+        name         : 'noAnyOfMatch',
+        description  : 'No anyOf match!',
+        type         : ErrorType.VALIDATION_ERROR,
+        sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        fromZationSystem : true
+        fromZationSystem: true
     }
 };

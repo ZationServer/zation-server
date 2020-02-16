@@ -8,14 +8,14 @@ import {ZationToken}                    from "../constants/internal";
 
 //TokenCheckFunction
 export const tokenCheckFunctionSymbol = Symbol();
-export type TokenCheckFunction = {(token : ZationToken | null) : boolean,[tokenCheckFunctionSymbol] : boolean};
+export type TokenCheckFunction = {(token: ZationToken | null): boolean,[tokenCheckFunctionSymbol]: boolean};
 
 /**
  * Creates a token check function.
  * It can be used for more advanced use cases.
  * @param checkFunction
  */
-export function createTokenCheckFunction(checkFunction : (token : ZationToken | null) => boolean) : TokenCheckFunction {
+export function createTokenCheckFunction(checkFunction: (token: ZationToken | null) => boolean): TokenCheckFunction {
     checkFunction[tokenCheckFunctionSymbol] = true;
     return checkFunction as TokenCheckFunction;
 }
@@ -24,19 +24,19 @@ export function createTokenCheckFunction(checkFunction : (token : ZationToken | 
  * Returns if the function is a token check function.
  * @param func
  */
-export function isTokenCheckFunction(func : Function) : func is TokenCheckFunction {
+export function isTokenCheckFunction(func: Function): func is TokenCheckFunction {
     return func[tokenCheckFunctionSymbol];
 }
 
 //UserIdCheck
-export type UserIdCheck = {id : number | string,strictTypeCheck : boolean};
+export type UserIdCheck = {id: number | string,strictTypeCheck: boolean};
 
 /**
  * Creates a user id check.
  * @param id
  * @param strictTypeCheck
  */
-export function createUserIdCheck(id : number | string,strictTypeCheck : boolean) : UserIdCheck {
+export function createUserIdCheck(id: number | string,strictTypeCheck: boolean): UserIdCheck {
     return {id,strictTypeCheck};
 }
 

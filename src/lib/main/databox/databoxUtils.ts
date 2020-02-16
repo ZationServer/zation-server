@@ -36,91 +36,91 @@ export default class DataboxUtils {
     /**
      * Creates a the PreCudPackage.
      */
-     static buildPreCudPackage(...operations : CudOperation[]) : PreCudPackage {
+     static buildPreCudPackage(...operations: CudOperation[]): PreCudPackage {
         return {
-            ci : uniqid(),
-            o : operations
+            ci: uniqid(),
+            o: operations
         };
      }
 
-     static buildCudPackage(preCudPackage : PreCudPackage,timestamp ?: number) : CudPackage {
+     static buildCudPackage(preCudPackage: PreCudPackage,timestamp?: number): CudPackage {
          return {
              ...preCudPackage,
-             t : timestamp !== undefined ? timestamp : Date.now()
+             t: timestamp !== undefined ? timestamp: Date.now()
          };
      }
 
      /**
       * Generates the start cudId.
       */
-     static generateStartCudId() : string {
+     static generateStartCudId(): string {
          return 'S-' + uniqid();
      }
 
-     static processSelector(selector : DbSelector) : DbProcessedSelector {
-         if(Array.isArray(selector)) return selector.map((v) => typeof v === 'number' ? v.toString() : v);
-         else if (typeof selector === 'string') return (selector === '' ? [] : selector.split('.'));
-         return [typeof selector === 'number' ? selector.toString() : selector];
+     static processSelector(selector: DbSelector): DbProcessedSelector {
+         if(Array.isArray(selector)) return selector.map((v) => typeof v === 'number' ? v.toString(): v);
+         else if (typeof selector === 'string') return (selector === '' ? []: selector.split('.'));
+         return [typeof selector === 'number' ? selector.toString(): selector];
      }
 
-     static buildInsert(selector : DbSelector, value : any, ifOption ?: IfOptionValue, potentialUpdate ?: boolean,
-                        code ?: number | string, data ?: any) : CudOperation {
+     static buildInsert(selector: DbSelector, value: any, ifOption?: IfOptionValue, potentialUpdate?: boolean,
+                        code?: number | string, data?: any): CudOperation {
          return {
-             t : CudType.insert,
-             s : DataboxUtils.processSelector(selector),
-             v : value,
-             ...(ifOption !== undefined ? {i : Array.isArray(ifOption) ? ifOption : [ifOption]} : {}),
-             ...(potentialUpdate !== undefined ? {p : potentialUpdate ? 1 : 0} : {}),
-             ...(code !== undefined ? {c : code} : {}),
-             ...(data !== undefined ? {d : data} : {})
+             t: CudType.insert,
+             s: DataboxUtils.processSelector(selector),
+             v: value,
+             ...(ifOption !== undefined ? {i: Array.isArray(ifOption) ? ifOption: [ifOption]}: {}),
+             ...(potentialUpdate !== undefined ? {p: potentialUpdate ? 1: 0}: {}),
+             ...(code !== undefined ? {c: code}: {}),
+             ...(data !== undefined ? {d: data}: {})
          };
      }
 
-    static buildUpdate(selector : DbSelector, value : any, ifOption ?: IfOptionValue, potentialInsert ?: boolean,
-                       code ?: number | string, data ?: any) : CudOperation {
+    static buildUpdate(selector: DbSelector, value: any, ifOption?: IfOptionValue, potentialInsert?: boolean,
+                       code?: number | string, data?: any): CudOperation {
         return {
-            t : CudType.update,
-            s : DataboxUtils.processSelector(selector),
-            v : value,
-            ...(ifOption !== undefined ? {i : Array.isArray(ifOption) ? ifOption : [ifOption]} : {}),
-            ...(potentialInsert !== undefined ? {p : potentialInsert ? 1 : 0} : {}),
-            ...(code !== undefined ? {c : code} : {}),
-            ...(data !== undefined ? {d : data} : {})
+            t: CudType.update,
+            s: DataboxUtils.processSelector(selector),
+            v: value,
+            ...(ifOption !== undefined ? {i: Array.isArray(ifOption) ? ifOption: [ifOption]}: {}),
+            ...(potentialInsert !== undefined ? {p: potentialInsert ? 1: 0}: {}),
+            ...(code !== undefined ? {c: code}: {}),
+            ...(data !== undefined ? {d: data}: {})
         };
     }
 
-    static buildDelete(selector : DbSelector, ifOption ?: IfOptionValue,
-                       code ?: number | string, data ?: any) : CudOperation {
+    static buildDelete(selector: DbSelector, ifOption?: IfOptionValue,
+                       code?: number | string, data?: any): CudOperation {
         return {
-            t : CudType.delete,
-            s : DataboxUtils.processSelector(selector),
-            ...(ifOption !== undefined ? {i : Array.isArray(ifOption) ? ifOption : [ifOption]} : {}),
-            ...(code !== undefined ? {c : code} : {}),
-            ...(data !== undefined ? {d : data} : {})
+            t: CudType.delete,
+            s: DataboxUtils.processSelector(selector),
+            ...(ifOption !== undefined ? {i: Array.isArray(ifOption) ? ifOption: [ifOption]}: {}),
+            ...(code !== undefined ? {c: code}: {}),
+            ...(data !== undefined ? {d: data}: {})
         };
     }
 
-    static buildClientReloadPackage(code ?: number | string, data ?: any) : DbClientOutputReloadPackage {
+    static buildClientReloadPackage(code?: number | string, data?: any): DbClientOutputReloadPackage {
         return {
-            a : DbClientOutputEvent.reload,
-            ...(code !== undefined ? {c : code} : {}),
-            ...(data !== undefined ? {d : data} : {})
+            a: DbClientOutputEvent.reload,
+            ...(code !== undefined ? {c: code}: {}),
+            ...(data !== undefined ? {d: data}: {})
         };
     }
 
-    static buildClientClosePackage(code ?: number | string, data ?: any) : DbClientOutputClosePackage {
+    static buildClientClosePackage(code?: number | string, data?: any): DbClientOutputClosePackage {
         return {
-            a : DbClientOutputEvent.close,
-            ...(code !== undefined ? {c : code} : {}),
-            ...(data !== undefined ? {d : data} : {})
+            a: DbClientOutputEvent.close,
+            ...(code !== undefined ? {c: code}: {}),
+            ...(data !== undefined ? {d: data}: {})
         };
     }
 
-    static buildClientSignalPackage(signal : string, data ?: any) : DbClientOutputSignalPackage {
+    static buildClientSignalPackage(signal: string, data?: any): DbClientOutputSignalPackage {
         return {
-            a : DbClientOutputEvent.signal,
-            s : signal,
-            ...(data !== undefined ? {d : data} : {})
+            a: DbClientOutputEvent.signal,
+            s: signal,
+            ...(data !== undefined ? {d: data}: {})
         };
     }
 
@@ -129,7 +129,7 @@ export default class DataboxUtils {
      * If the instance is not found, the method throws an error.
      * @param databox
      */
-    static getDbInstance<T extends DataboxClass | DataboxFamilyClass>(databox : T) : T['prototype'] {
+    static getDbInstance<T extends DataboxClass | DataboxFamilyClass>(databox: T): T['prototype'] {
          const instance = databox[databoxInstanceSymbol];
          if(instance === undefined) {
              throw new DataboxNotFound(databox.name);
@@ -142,10 +142,10 @@ export default class DataboxUtils {
      * and will return the correct container for it.
      * @param databoxes
      */
-    static getDbContainer(databoxes : DataboxClass[] | DataboxFamilyClass[]) :  DataboxFamilyContainer | DataboxContainer {
+    static getDbContainer(databoxes: DataboxClass[] | DataboxFamilyClass[]):  DataboxFamilyContainer | DataboxContainer {
 
-        const databoxInstances : Databox[] = [];
-        const databoxFamilyInstances : DataboxFamily[] = [];
+        const databoxInstances: Databox[] = [];
+        const databoxFamilyInstances: DataboxFamily[] = [];
 
         for(let i = 0; i < databoxes.length; i++){
             const instance = databoxes[i][databoxInstanceSymbol];
@@ -174,21 +174,21 @@ export default class DataboxUtils {
      * Creates a new Databox token.
      * @param rawInitData
      */
-    static createDbToken(rawInitData : any) : DbToken {
+    static createDbToken(rawInitData: any): DbToken {
         return {
             rawInitData: rawInitData,
-            sessions : DataboxUtils.createDbSessionData()
+            sessions: DataboxUtils.createDbSessionData()
         };
     }
 
     /**
      * Create db session data.
      */
-    static createDbSessionData() : DbSessionData
+    static createDbSessionData(): DbSessionData
     {
         return {
-            main : {d:{},c:0},
-            reload : {d:{},c:0}
+            main: {d:{},c:0},
+            reload: {d:{},c:0}
         };
     }
 
@@ -198,7 +198,7 @@ export default class DataboxUtils {
      * @param dbSessionData
      * @param target
      */
-    static getSession(dbSessionData : DbSessionData,target ?: DBClientInputSessionTarget) : DbSession
+    static getSession(dbSessionData: DbSessionData,target?: DBClientInputSessionTarget): DbSession
     {
         if(target === undefined){
             return dbSessionData.main;
@@ -209,7 +209,7 @@ export default class DataboxUtils {
             case DBClientInputSessionTarget.reloadSession:
                 return dbSessionData.reload;
             default:
-                const err : any = new Error(`Unknown session target.`);
+                const err: any = new Error(`Unknown session target.`);
                 err.name = ClientErrorName.UNKNOWN_SESSION_TARGET;
                 throw err;
         }
@@ -219,7 +219,7 @@ export default class DataboxUtils {
      * Returns if the session target is the reload session.
      * @param target
      */
-    static isReloadTarget(target ?: DBClientInputSessionTarget) : boolean {
+    static isReloadTarget(target?: DBClientInputSessionTarget): boolean {
         return target === DBClientInputSessionTarget.reloadSession;
     }
 
@@ -228,7 +228,7 @@ export default class DataboxUtils {
      * @param dbSessionData
      * @param target
      */
-    static copySession(dbSessionData : DbSessionData,target ?: DBClientInputSessionTarget) : void
+    static copySession(dbSessionData: DbSessionData,target?: DBClientInputSessionTarget): void
     {
         const selectedSession = DataboxUtils.getSession(dbSessionData,target);
         if(dbSessionData.main !== selectedSession){
@@ -244,7 +244,7 @@ export default class DataboxUtils {
      * @param dbSessionData
      * @param target
      */
-    static resetSession(dbSessionData : DbSessionData,target ?: DBClientInputSessionTarget) : void
+    static resetSession(dbSessionData: DbSessionData,target?: DBClientInputSessionTarget): void
     {
         const selectedSession = DataboxUtils.getSession(dbSessionData,target);
         if(dbSessionData.main === selectedSession){
@@ -259,9 +259,9 @@ export default class DataboxUtils {
      * Generates a unique channel input id.
      * @param inputChIds
      */
-    static generateInputChId(inputChIds : Set<string>) : string {
+    static generateInputChId(inputChIds: Set<string>): string {
         const id = uniqid.time();
-        return inputChIds.has(id) ? DataboxUtils.generateInputChId(inputChIds) : id;
+        return inputChIds.has(id) ? DataboxUtils.generateInputChId(inputChIds): id;
     }
 
     /**
@@ -270,9 +270,9 @@ export default class DataboxUtils {
      * @param current
      * @param max
      */
-    static maxInputChannelsCheck(current : number,max : number) : void {
+    static maxInputChannelsCheck(current: number,max: number): void {
         if(current >= max){
-            const err : any = new Error('Maximum socket input channels reached.');
+            const err: any = new Error('Maximum socket input channels reached.');
             err.name = ClientErrorName.MAX_INPUT_CHANNELS_REACHED;
             throw err;
         }

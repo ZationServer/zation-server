@@ -13,22 +13,22 @@ import ConfigBuildError from "../../../main/config/manager/configBuildError";
 import Router           from '../../Router';
 
 type RegisterDecorator = {
-    (target : Component) : void,
+    (target: Component): void,
     /**
      * Registers the component as an auth controller.
      * Notice that it only works with controllers.
      */
-    asAuthController() : RegisterDecorator;
+    asAuthController(): RegisterDecorator;
     /**
      * Specifies the API level of the component.
      * @param apiLevel
      */
-    withApiLevel(apiLevel ?: number) : RegisterDecorator;
+    withApiLevel(apiLevel?: number): RegisterDecorator;
     /**
      * Registers the component with a specific router.
      * @param router
      */
-    withRouter(router ?: Router) : RegisterDecorator;
+    withRouter(router?: Router): RegisterDecorator;
 };
 /**
  * Register a component (Controller or Databox).
@@ -42,12 +42,12 @@ type RegisterDecorator = {
  * To specify more classes with different versions but the same name, you can use the '$' sign.
  * All characters behind the $ sign will be removed.
  */
-export const Register = (name ?: string) : RegisterDecorator => {
-    let targetApiLevel : number | undefined = undefined;
-    let regAuthController : boolean = false;
-    let targetRouter : Router | undefined = undefined;
+export const Register = (name?: string): RegisterDecorator => {
+    let targetApiLevel: number | undefined = undefined;
+    let regAuthController: boolean = false;
+    let targetRouter: Router | undefined = undefined;
 
-    const func = (target : Component) => {
+    const func = (target: Component) => {
         let targetName;
         if(name === undefined) {
             let className = target.name;
@@ -82,15 +82,15 @@ export const Register = (name ?: string) : RegisterDecorator => {
             }
         }
     };
-    func.asAuthController = (value : boolean = true) => {
+    func.asAuthController = (value: boolean = true) => {
         regAuthController = value;
         return func;
     };
-    func.withApiLevel = (apiLevel ?: number) => {
+    func.withApiLevel = (apiLevel?: number) => {
         targetApiLevel = apiLevel;
         return func;
     };
-    func.withRouter = (router ?: Router) => {
+    func.withRouter = (router?: Router) => {
         targetRouter = router;
         return func;
     };

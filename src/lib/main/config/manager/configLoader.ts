@@ -26,14 +26,14 @@ export default class ConfigLoader {
 
     //defaults...
     private readonly _starterConfig: StarterConfig = {
-        checkConfigs : true,
-        mainConfig : 'main.config',
-        appConfig : 'app.config',
-        eventConfig : 'event.config',
-        serviceConfig : 'service.config'
+        checkConfigs: true,
+        mainConfig: 'main.config',
+        appConfig: 'app.config',
+        eventConfig: 'event.config',
+        serviceConfig: 'service.config'
     };
 
-    private _mainConfig : InternalMainConfig = {
+    private _mainConfig: InternalMainConfig = {
         debug: false,
         startDebug: false,
         killOnStartFailure: true,
@@ -53,8 +53,8 @@ export default class ConfigLoader {
         authPublicKey: null,
         authPrivateKey: null,
         authDefaultExpiry: 86400,
-        validationCheckLimit : 50,
-        socketDataboxLimit : 30,
+        validationCheckLimit: 50,
+        socketDataboxLimit: 30,
         timeZone: moment.tz.guess() || 'Europe/Berlin',
         authStart: false,
         authStartDuration: 20000,
@@ -63,7 +63,7 @@ export default class ConfigLoader {
         zationConsoleLog: true,
         scConsoleLog: false,
         wsEngine: 'z-uws',
-        defaultClientApiLevel : 1,
+        defaultClientApiLevel: 1,
         clusterAuthKey: null,
         stateServerHost: null,
         stateServerPort: null,
@@ -78,7 +78,7 @@ export default class ConfigLoader {
         ipcAckTimeout: 3000,
         socketUpgradeTimeout: 1000,
         origins: null,
-        scOrigins : null,
+        scOrigins: null,
         pingInterval: 8000,
         pingTimeout: 20000,
         processTermTimeout: 10000,
@@ -94,37 +94,37 @@ export default class ConfigLoader {
         useTokenClusterKeyCheck: true,
         provideClientJs: true,
         usePanel: false,
-        killServerOnServicesCreateError : false,
+        killServerOnServicesCreateError: false,
         logFile: false,
-        logFilePath : '',
-        logFileDownloadable : true,
-        logFileAccessKey : '',
-        logFileControllerRequests : false,
-        logFileDataboxRequests : false,
-        logFileServerErrors : true,
-        logFileCodeErrors : true,
-        logFileStarted : true,
-        showPrecompiledConfigs : false,
-        variables : {}
+        logFilePath: '',
+        logFileDownloadable: true,
+        logFileAccessKey: '',
+        logFileControllerRequests: false,
+        logFileDataboxRequests: false,
+        logFileServerErrors: true,
+        logFileCodeErrors: true,
+        logFileStarted: true,
+        showPrecompiledConfigs: false,
+        variables: {}
     };
 
     private _eventConfig: EventConfig = {};
     private _appConfig: AppConfig = {};
     private _serviceConfig: ServiceConfig = {};
 
-    private readonly rootPath : string;
-    private readonly _configLocations : ConfigLocations;
+    private readonly rootPath: string;
+    private readonly _configLocations: ConfigLocations;
 
-    private readonly _loadedConfigs : string[] = [];
+    private readonly _loadedConfigs: string[] = [];
 
-    constructor(starterConfig : StarterConfig) {
+    constructor(starterConfig: StarterConfig) {
         ObjectUtils.addObToOb(this._starterConfig,starterConfig,true);
         this.rootPath = ConfigLoader._getRootPath(this._starterConfig);
 
         this._configLocations = this.loadUserDataLocations();
     }
 
-    private static _getRootPath(starterConfig : StarterConfig) : any
+    private static _getRootPath(starterConfig: StarterConfig): any
     {
         if(starterConfig.rootPath){
             return starterConfig.rootPath;
@@ -149,18 +149,18 @@ export default class ConfigLoader {
         return tmpPath;
     }
 
-    private loadUserDataLocations() : ConfigLocations {
+    private loadUserDataLocations(): ConfigLocations {
         return {
-            mainConfig : this.loadZationConfigLocation(nameof<StarterConfig>(s => s.mainConfig)),
-            appConfig : this.loadZationConfigLocation(nameof<StarterConfig>(s => s.appConfig)),
-            eventConfig : this.loadZationConfigLocation(nameof<StarterConfig>(s => s.eventConfig)),
-            serviceConfig : this.loadZationConfigLocation(nameof<StarterConfig>(s => s.serviceConfig))
+            mainConfig: this.loadZationConfigLocation(nameof<StarterConfig>(s => s.mainConfig)),
+            appConfig: this.loadZationConfigLocation(nameof<StarterConfig>(s => s.appConfig)),
+            eventConfig: this.loadZationConfigLocation(nameof<StarterConfig>(s => s.eventConfig)),
+            serviceConfig: this.loadZationConfigLocation(nameof<StarterConfig>(s => s.serviceConfig))
         };
     }
 
-    private loadZationConfigLocation(key : string) : string {
+    private loadZationConfigLocation(key: string): string {
         const cPath = this.rootPath + path.sep +
-            (this._starterConfig.configs ? this._starterConfig.configs : 'configs') + path.sep;
+            (this._starterConfig.configs ? this._starterConfig.configs: 'configs') + path.sep;
         return cPath + this._starterConfig[key];
     }
 
@@ -168,7 +168,7 @@ export default class ConfigLoader {
      * Function for loading other configs on a worker.
      * @param configLocations
      */
-    static loadOtherConfigsSafe(configLocations : ConfigLocations) : OtherLoadedConfigSet {
+    static loadOtherConfigsSafe(configLocations: ConfigLocations): OtherLoadedConfigSet {
         return {
             appConfig: FuncUtils.callSafe(ConfigLoader.loadConfig,[configLocations.appConfig],{}),
             eventConfig: FuncUtils.callSafe(ConfigLoader.loadConfig,[configLocations.eventConfig],{}),
@@ -176,7 +176,7 @@ export default class ConfigLoader {
         };
     }
 
-    async loadMainConfig() : Promise<void>
+    async loadMainConfig(): Promise<void>
     {
         try {
             const mainConfig = require(this._configLocations.mainConfig);
@@ -237,7 +237,7 @@ export default class ConfigLoader {
     private static loadConfig(path: string): any {
         const value = require(path);
         if(typeof value === 'object') {
-            return typeof value['default'] === 'object' ? value['default'] : value;
+            return typeof value['default'] === 'object' ? value['default']: value;
         }
         throw new Error(`The configuration: ${path} does not export an object.`);
     }
@@ -248,11 +248,11 @@ export default class ConfigLoader {
         }
     }
 
-    getRootPath() : string {
+    getRootPath(): string {
         return this.rootPath;
     }
 
-    private processMainConfig() : void
+    private processMainConfig(): void
     {
         //Workers Default
         this._mainConfig.workers =
@@ -263,13 +263,13 @@ export default class ConfigLoader {
             ConfigLoader.createValueWithOsAuto(this._mainConfig.brokers);
 
         //path slash check
-        const pathTmp : any = this._mainConfig.path;
+        const pathTmp: any = this._mainConfig.path;
         if(typeof pathTmp === 'string' && (pathTmp.charAt(0) !== '/' && pathTmp.charAt(0) !== '\\')) {
             this._mainConfig.path = path.sep + pathTmp;
         }
     }
 
-    private static createValueWithOsAuto(checkValue : any) {
+    private static createValueWithOsAuto(checkValue: any) {
         let result = 1;
         if(checkValue === OPTION_AUTO || checkValue === OPTION_HALF_AUTO) {
             result = os.cpus().length;

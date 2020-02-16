@@ -10,14 +10,14 @@ import ZationConfigFull                        from "../config/manager/zationCon
 
 export default class AEPreparedPart
 {
-    private readonly zc : ZationConfigFull;
-    private readonly useTokenStateCheck : boolean;
-    private readonly groupsConfig : UserGroupsConfig = {};
-    private readonly authGroups : Record<string,AuthUserGroupConfig>;
-    private readonly defaultGroup : string;
+    private readonly zc: ZationConfigFull;
+    private readonly useTokenStateCheck: boolean;
+    private readonly groupsConfig: UserGroupsConfig = {};
+    private readonly authGroups: Record<string,AuthUserGroupConfig>;
+    private readonly defaultGroup: string;
 
     //prepares and check the config
-    constructor(zc : ZationConfigFull)
+    constructor(zc: ZationConfigFull)
     {
         this.zc = zc;
         this.useTokenStateCheck = this.zc.mainConfig.useTokenStateCheck;
@@ -37,7 +37,7 @@ export default class AEPreparedPart
     /**
      * Returns all auth user groups.
      */
-    getAuthGroups() : Record<string,AuthUserGroupConfig> {
+    getAuthGroups(): Record<string,AuthUserGroupConfig> {
         return this.authGroups;
     }
 
@@ -45,11 +45,11 @@ export default class AEPreparedPart
      * Returns if the auth user group has panel access.
      * @param authUserGroup
      */
-    authUserGroupPanelAccess(authUserGroup : string) : boolean {
+    authUserGroupPanelAccess(authUserGroup: string): boolean {
         const tempGroup = this.getAuthGroups()[authUserGroup];
         if(tempGroup){
             return typeof tempGroup.panelAccess === 'boolean' ?
-                tempGroup.panelAccess : false;
+                tempGroup.panelAccess: false;
         }
         else{
             return false;
@@ -59,14 +59,14 @@ export default class AEPreparedPart
     /**
      * Returns the name of the default user group.
      */
-    getDefaultGroup() : string {
+    getDefaultGroup(): string {
         return this.defaultGroup;
     }
 
     /**
      * Returns if the server uses the token state check.
      */
-    isUseTokenStateCheck() : boolean {
+    isUseTokenStateCheck(): boolean {
         return this.useTokenStateCheck;
     }
 
@@ -74,7 +74,7 @@ export default class AEPreparedPart
      * Returns if the name is an auth user group.
      * @param authGroup
      */
-    isAuthGroup(authGroup : string) : boolean {
+    isAuthGroup(authGroup: string): boolean {
         return this.authGroups.hasOwnProperty(authGroup);
     }
 

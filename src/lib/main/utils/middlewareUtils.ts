@@ -14,7 +14,7 @@ export default class MiddlewareUtils
      * @param defaultValue
      * @param params
      */
-    static async checkMiddleware<M extends (...args : any[]) => any>(func : M | undefined, defaultValue : boolean, ...params : Parameters<M>) : Promise<boolean | object> {
+    static async checkMiddleware<M extends (...args: any[]) => any>(func: M | undefined, defaultValue: boolean, ...params: Parameters<M>): Promise<boolean | object> {
         if(func) {
             const res  = await func(...params);
             if(typeof res === "boolean") {
@@ -22,7 +22,7 @@ export default class MiddlewareUtils
                     return true;
                 }
                 else {
-                    const err : any = new Error('Access is in middleware from zation event blocked!');
+                    const err: any = new Error('Access is in middleware from zation event blocked!');
                     err.code = 4650;
                     return err;
                 }
@@ -43,8 +43,8 @@ export default class MiddlewareUtils
      * Process the result in case of middleware block.
      * @param res
      */
-    static processBlockedResult(res : false | object) : true | object {
-        return !res ? true : res;
+    static processBlockedResult(res: false | object): true | object {
+        return !res ? true: res;
     }
 }
 

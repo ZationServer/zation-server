@@ -19,10 +19,10 @@ import BaseSHBridge         from "../bridges/baseSHBridge";
  */
 export default class ChMiddlewareHelper
 {
-    private readonly channelPrepare : ChannelPrepare;
-    private readonly bag : Bag;
+    private readonly channelPrepare: ChannelPrepare;
+    private readonly bag: Bag;
 
-    constructor(chConfigManager : ChannelPrepare, bag : Bag) {
+    constructor(chConfigManager: ChannelPrepare, bag: Bag) {
         this.channelPrepare = chConfigManager;
         this.bag = bag;
     }
@@ -33,15 +33,15 @@ export default class ChMiddlewareHelper
      * @param shBridge
      * @param preChInfo
      */
-    static checkVersionSystemAccess(shBridge : BaseSHBridge, preChInfo : CustomChStorage) : void
+    static checkVersionSystemAccess(shBridge: BaseSHBridge, preChInfo: CustomChStorage): void
     {
         if(!preChInfo.systemAccessCheck(shBridge)){
-            const err : any = new Error(`Access to this channel with client system denied.`);
+            const err: any = new Error(`Access to this channel with client system denied.`);
             err.name = ClientErrorName.NO_ACCESS_WITH_SYSTEM;
             throw err;
         }
         if(!preChInfo.versionAccessCheck(shBridge)){
-            const err : any = new Error(`Access to this channel with client version denied.`);
+            const err: any = new Error(`Access to this channel with client version denied.`);
             err.name = ClientErrorName.NO_ACCESS_WITH_VERSION;
             throw err;
         }
@@ -52,18 +52,18 @@ export default class ChMiddlewareHelper
      * @param socket
      * @param trySubName
      */
-    async checkAccessSubCustomCh(socket : UpSocket, trySubName : string) : Promise<any>
+    async checkAccessSubCustomCh(socket: UpSocket, trySubName: string): Promise<any>
     {
         const {name,id} = ChUtils.getCustomChannelInfo(trySubName);
 
         if(name === undefined){
-            const err : any = new Error('The custom channel name is required to subscribe to a custom channel.');
+            const err: any = new Error('The custom channel name is required to subscribe to a custom channel.');
             err.name = ClientErrorName.NAME_MISSING;
             return Error;
         }
 
         if(!this.channelPrepare.existCustomCh(name)){
-            const err : any = new Error('Unknown custom channel.');
+            const err: any = new Error('Unknown custom channel.');
             err.name = ClientErrorName.UNKNOWN_CHANNEL;
             Logger.printDebugInfo
             (`The socket with id: ${socket.id} cannot subscribe to an unknown custom channel name: '${name}'.`);
@@ -76,12 +76,12 @@ export default class ChMiddlewareHelper
 
 
         if(isCustomChFamily && !idProvided){
-            const err : any = new Error('The family member id is required to subscribe to a custom channel family.');
+            const err: any = new Error('The family member id is required to subscribe to a custom channel family.');
             err.name = ClientErrorName.ID_MISSING;
             return Error;
         }
         if(!isCustomChFamily && idProvided){
-            const err : any = new Error('Unknown member id provided to subscribe to a normal custom channel.');
+            const err: any = new Error('Unknown member id provided to subscribe to a normal custom channel.');
             err.name = ClientErrorName.UNKNOWN_ID;
             return Error;
         }
@@ -108,7 +108,7 @@ export default class ChMiddlewareHelper
             return undefined;
         }
         else {
-            const err : any = new Error(`Subscribe to this custom channel denied.`);
+            const err: any = new Error(`Subscribe to this custom channel denied.`);
             err.name = ClientErrorName.ACCESS_DENIED;
             return err;
         }
@@ -120,18 +120,18 @@ export default class ChMiddlewareHelper
      * @param tryPubName
      * @param pubData
      */
-    async checkAccessClientPubCustomCh(socket : UpSocket, tryPubName : string, pubData : PubData) : Promise<any>
+    async checkAccessClientPubCustomCh(socket: UpSocket, tryPubName: string, pubData: PubData): Promise<any>
     {
         const {name,id} = ChUtils.getCustomChannelInfo(tryPubName);
 
         if(name === undefined){
-            const err : any = new Error('The custom channel name is required to publish in a custom channel.');
+            const err: any = new Error('The custom channel name is required to publish in a custom channel.');
             err.name = ClientErrorName.NAME_MISSING;
             return Error;
         }
 
         if(!this.channelPrepare.existCustomCh(name)){
-            const err : any = new Error('Unknown custom channel.');
+            const err: any = new Error('Unknown custom channel.');
             err.name = ClientErrorName.UNKNOWN_CHANNEL;
             Logger.printDebugInfo
             (`The socket with id: ${socket.id} cannot publish in an unknown custom channel name: '${name}'.`);
@@ -144,12 +144,12 @@ export default class ChMiddlewareHelper
 
 
         if(isCustomChFamily && !idProvided){
-            const err : any = new Error('The family member id is required to publish in a custom channel family.');
+            const err: any = new Error('The family member id is required to publish in a custom channel family.');
             err.name = ClientErrorName.ID_MISSING;
             return Error;
         }
         if(!isCustomChFamily && idProvided){
-            const err : any = new Error('Unknown member id provided to publish in a normal custom channel.');
+            const err: any = new Error('Unknown member id provided to publish in a normal custom channel.');
             err.name = ClientErrorName.UNKNOWN_ID;
             return Error;
         }
@@ -186,7 +186,7 @@ export default class ChMiddlewareHelper
             return undefined;
         }
         else {
-            const err : any = new Error(`Publish in this custom channel denied.`);
+            const err: any = new Error(`Publish in this custom channel denied.`);
             err.name = ClientErrorName.ACCESS_DENIED;
             return err;
         }

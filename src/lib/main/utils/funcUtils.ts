@@ -4,10 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-type AnyFunction = (...args : any[]) => any
+type AnyFunction = (...args: any[]) => any
 
-export type EventInvokerAsync<P extends AnyFunction = any> = (...args : Parameters<P>) => Promise<void>;
-export type EventInvokerSync<P extends AnyFunction = any> = (...args : Parameters<P>) => void;
+export type EventInvokerAsync<P extends AnyFunction = any> = (...args: Parameters<P>) => Promise<void>;
+export type EventInvokerSync<P extends AnyFunction = any> = (...args: Parameters<P>) => void;
 
 export default class FuncUtils
 {
@@ -15,10 +15,10 @@ export default class FuncUtils
      * Creates an async closure for invoking functions.
      * @param functions
      */
-    static createFuncArrayAsyncInvoker<T extends AnyFunction>(functions : T[]) : EventInvokerAsync<T> {
+    static createFuncArrayAsyncInvoker<T extends AnyFunction>(functions: T[]): EventInvokerAsync<T> {
         const length = functions.length;
         return async (...args) => {
-            const promises : Promise<any>[] = [];
+            const promises: Promise<any>[] = [];
             for(let i = 0; i < length; i++) {
                 promises.push(functions[i](...args));
             }
@@ -31,7 +31,7 @@ export default class FuncUtils
      * Will stop the middleware chain when a function returns some value.
      * @param functions
      */
-    static createFuncMiddlewareAsyncInvoker<T extends AnyFunction>(functions : T[]) : EventInvokerAsync<T> {
+    static createFuncMiddlewareAsyncInvoker<T extends AnyFunction>(functions: T[]): EventInvokerAsync<T> {
         const length = functions.length;
         return async (...args) => {
             let res;
@@ -46,7 +46,7 @@ export default class FuncUtils
      * Creates an async closure for invoke a function or functions.
      * @param func
      */
-    static createFuncAsyncInvoker<T extends AnyFunction>(func : T[] | T) : EventInvokerAsync<T> {
+    static createFuncAsyncInvoker<T extends AnyFunction>(func: T[] | T): EventInvokerAsync<T> {
         if(typeof func === 'function') {
             return func;
         }
@@ -60,7 +60,7 @@ export default class FuncUtils
      * Will return a default function if the event is not a function or a function array.
      * @param func
      */
-    static createFuncAsyncInvokeSafe<T extends AnyFunction>(func : T[] | T | undefined) : EventInvokerAsync<T> {
+    static createFuncAsyncInvokeSafe<T extends AnyFunction>(func: T[] | T | undefined): EventInvokerAsync<T> {
         if(func === undefined){
             return async () => {};
         }
@@ -73,7 +73,7 @@ export default class FuncUtils
      * Creates an sync closure for invoke a function.
      * @param functions
      */
-    static createFuncArraySyncInvoker<T extends AnyFunction>(functions : T[]) : EventInvokerSync<T> {
+    static createFuncArraySyncInvoker<T extends AnyFunction>(functions: T[]): EventInvokerSync<T> {
         const length = functions.length;
         return async (...args) => {
             for(let i = 0; i < length; i++) {
@@ -86,7 +86,7 @@ export default class FuncUtils
      * Creates an sync closure for invoke a event.
      * @param func
      */
-    static createEventSyncInvoker<T extends AnyFunction>(func : T[] | T) : EventInvokerSync<T> {
+    static createEventSyncInvoker<T extends AnyFunction>(func: T[] | T): EventInvokerSync<T> {
         if(typeof func === 'function') {
             return func;
         }

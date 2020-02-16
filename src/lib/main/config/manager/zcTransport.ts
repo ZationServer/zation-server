@@ -13,11 +13,11 @@ import {StartMode}           from "../../constants/startMode";
 import {JwtSignOptions}      from "../../constants/jwt";
 
 export default interface ZcTransport {
-    starterConfig : StarterConfig,
-    mainConfig : InternalMainConfig,
-    internalData : InternalData,
-    rootPath : string,
-    startMode : StartMode,
-    configLocations : ConfigLocations,
-    preLoadJwtSignOptions : JwtSignOptions
+    starterConfig: StarterConfig,
+    mainConfig: InternalMainConfig,
+    internalData: InternalData,
+    rootPath: string,
+    startMode: StartMode,
+    configLocations: ConfigLocations,
+    preLoadJwtSignOptions: JwtSignOptions
 }

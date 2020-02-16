@@ -9,11 +9,11 @@ import {MainBackErrors} from "../zationBackErrors/mainBackErrors";
 
 export default class UnknownCustomCh extends CodeError
 {
-    private readonly chName : string;
+    private readonly chName: string;
 
-    constructor(chName : string)
+    constructor(chName: string)
     {
-        super(MainBackErrors.unknownCustomCh,{name : chName});
+        super(MainBackErrors.unknownCustomCh,{name: chName});
         this.chName = chName;
     }
 

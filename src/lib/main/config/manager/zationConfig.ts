@@ -106,7 +106,7 @@ export default abstract class ZationConfig {
         return this._configLocations;
     }
 
-    getJwtSignOptions() : JwtSignOptions {
+    getJwtSignOptions(): JwtSignOptions {
         //return cloned options
         return {...this._preLoadJwtSignOptions};
     }

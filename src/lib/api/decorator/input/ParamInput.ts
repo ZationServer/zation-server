@@ -13,11 +13,11 @@ import {InDecoratorMem, InDM_Models}    from "./InDecoratorMem";
  * That means you can use the class as an input config.
  */
 export const ParamInput = () => {
-    return (target : any) => {
-        const prototype : InDecoratorMem = target.prototype;
+    return (target: any) => {
+        const prototype: InDecoratorMem = target.prototype;
 
-        const paramInput : ParamInputConfig =
-            typeof prototype[InDM_Models] === 'object' ? prototype[InDM_Models]! : {};
+        const paramInput: ParamInputConfig =
+            typeof prototype[InDM_Models] === 'object' ? prototype[InDM_Models]!: {};
 
         (target as InputConfigTranslatable).__toInputConfig = () => {
             return paramInput;

@@ -14,9 +14,9 @@ const scClusterBrokerClient = require('scc-broker-client');
 
 class ZationBroker extends SCBroker
 {
-    private brokerStartedTimeStamp : number;
-    private zc : ZationConfig;
-    private clusterClient : any;
+    private brokerStartedTimeStamp: number;
+    private zc: ZationConfig;
+    private clusterClient: any;
 
     constructor() {
         super();
@@ -40,7 +40,7 @@ class ZationBroker extends SCBroker
                 stateServerConnectTimeout: this.options.clusterStateServerConnectTimeout,
                 stateServerAckTimeout: this.options.clusterStateServerAckTimeout,
                 stateServerReconnectRandomness: this.options.clusterStateServerReconnectRandomness,
-                noErrorLogging : !this.zc.mainConfig.scConsoleLog
+                noErrorLogging: !this.zc.mainConfig.scConsoleLog
             });
         }
 
@@ -67,13 +67,13 @@ class ZationBroker extends SCBroker
         this.on('message', async (data, respond) => {
             if(data.action === BrokerMessageAction.INFO){
                 respond(null,{
-                    id : this.id,
-                    broker : {
-                        pid    : process.pid,
-                        system : (await SystemInfo.getPidInfo()),
-                        brokerStartedTimestamp  : this.brokerStartedTimeStamp
+                    id: this.id,
+                    broker: {
+                        pid   : process.pid,
+                        system: (await SystemInfo.getPidInfo()),
+                        brokerStartedTimestamp : this.brokerStartedTimeStamp
                     },
-                    cBrokers : this.clusterClient ? this.clusterClient.sccBrokerURIList : []
+                    cBrokers: this.clusterClient ? this.clusterClient.sccBrokerURIList: []
                 });
             }
             else{

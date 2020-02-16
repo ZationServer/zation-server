@@ -14,15 +14,15 @@ import TokenUtils         from "../../token/tokenUtils";
 
 export default class ZationSPC_Auth extends Controller
 {
-    static config : ControllerConfig = {
-        access : 'all',
-        versionAccess : 'all',
-        input : {
-            username : {
-                type : 'string'
+    static config: ControllerConfig = {
+        access: 'all',
+        versionAccess: 'all',
+        input: {
+            username: {
+                type: 'string'
             },
-            password : {
-                type : 'string'
+            password: {
+                type: 'string'
             }
         }
     };

@@ -26,10 +26,10 @@ export const $allNotAuth = ZationAccess.ALL_NOT_AUTH;
  * for example, in the controller, databox, or custom channel config.
  * You can check if some specific key-value pairs exist in the token variables.
  * @example
- * access: $tokenHasVariables({canCreateItems : true})
+ * access: $tokenHasVariables({canCreateItems: true})
  * @param checkProps
  */
-export function $tokenHasVariables(checkProps : Record<string,any>) {
+export function $tokenHasVariables(checkProps: Record<string,any>) {
     const checkKeys = Object.keys(checkProps);
     const checkKeysLength = checkKeys.length;
     return createTokenCheckFunction((token) => {
@@ -55,11 +55,11 @@ export function $tokenHasVariables(checkProps : Record<string,any>) {
  * You can check if the token variables are matching with a query
  * (it works with the forint library).
  * @example
- * access: $tokenVariablesMatch({age : {$gt : 18}})
+ * access: $tokenVariablesMatch({age: {$gt: 18}})
  * @param query
  */
-export function $tokenVariablesMatch<T>(query : ForintQuery<T>) {
-    const checker = forint({[nameof<ZationToken>(s => s.variables)] : query});
+export function $tokenVariablesMatch<T>(query: ForintQuery<T>) {
+    const checker = forint({[nameof<ZationToken>(s => s.variables)]: query});
     return createTokenCheckFunction((token) => checker(token));
 }
 
@@ -74,6 +74,6 @@ export function $tokenVariablesMatch<T>(query : ForintQuery<T>) {
  * @param strictTypeCheck
  * indicates if the type should also be checked (number and string).
  */
-export function $userId(id : number | string, strictTypeCheck : boolean = true) {
+export function $userId(id: number | string, strictTypeCheck: boolean = true) {
     return createUserIdCheck(id,strictTypeCheck);
 }

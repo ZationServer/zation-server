@@ -10,7 +10,7 @@ export default class ObjectUtils
      * Merge all objects.
      * @param objects
      */
-    static mergeObjects(objects : object[]) : object
+    static mergeObjects(objects: object[]): object
     {
         if(objects.length > 1) {
             let mainObj = objects[0];
@@ -33,7 +33,7 @@ export default class ObjectUtils
      * @param toMergeObj
      * @param override
      */
-    static mergeObjToObj(mainObj : object, toMergeObj : object, override : boolean = false)
+    static mergeObjToObj(mainObj: object, toMergeObj: object, override: boolean = false)
     {
         if(typeof mainObj === "object" && typeof toMergeObj === "object") {
             for(let k in toMergeObj) {
@@ -56,7 +56,7 @@ export default class ObjectUtils
      * @param addOb
      * @param overwrite
      */
-    static addObToOb(mainOb : object,addOb : object,overwrite : boolean = false) : void
+    static addObToOb(mainOb: object,addOb: object,overwrite: boolean = false): void
     {
         for(let key in addOb) {
             if(addOb.hasOwnProperty(key)) {
@@ -74,7 +74,7 @@ export default class ObjectUtils
      * @param overwrite
      * @param onlyAddKeys
      */
-    static onlyAddObToOb(mainOb : object,addOb : object,overwrite : boolean = false, onlyAddKeys : object) : void
+    static onlyAddObToOb(mainOb: object,addOb: object,overwrite: boolean = false, onlyAddKeys: object): void
     {
         for(let key in addOb) {
             if(addOb.hasOwnProperty(key)) {
@@ -89,9 +89,9 @@ export default class ObjectUtils
      * Returns an array with the values of the object.
      * @param obj
      */
-    static getObjValues(obj : object) : any[]
+    static getObjValues(obj: object): any[]
     {
-        let values : any[] = [];
+        let values: any[] = [];
         for(let k in obj) {
             if(obj.hasOwnProperty(k)) {
                 values.push(obj[k]);
@@ -105,7 +105,7 @@ export default class ObjectUtils
      * @param obj
      * @param keys
      */
-    static hasOneOf(obj : object,keys : any[]) : boolean
+    static hasOneOf(obj: object,keys: any[]): boolean
     {
         for(let i = 0; i < keys.length; i++) {
             if(obj.hasOwnProperty(keys[i])) {
@@ -120,9 +120,9 @@ export default class ObjectUtils
      * @param obj
      * @param keys
      */
-    static getFoundKeys(obj : object,keys : any[]) : any[]
+    static getFoundKeys(obj: object,keys: any[]): any[]
     {
-        const found : any[] = [];
+        const found: any[] = [];
 
         for(let i = 0; i < keys.length; i++) {
             if(obj.hasOwnProperty(keys[i])) {
@@ -136,7 +136,7 @@ export default class ObjectUtils
      * Freeze the object deep.
      * @param obj
      */
-    static deepFreeze(obj : object) : object
+    static deepFreeze(obj: object): object
     {
         Object.freeze(obj);
         Object.getOwnPropertyNames(obj).forEach(function (prop) {

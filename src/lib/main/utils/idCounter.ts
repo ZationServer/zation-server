@@ -6,9 +6,9 @@ Copyright(c) Luca Scaringella
 
 export default class IdCounter
 {
-    private counter1 : number;
-    private counter2 : number;
-    private lastTimeStamp : number;
+    private counter1: number;
+    private counter2: number;
+    private lastTimeStamp: number;
 
     constructor()
     {
@@ -17,7 +17,7 @@ export default class IdCounter
         this.lastTimeStamp = Date.now();
     }
 
-    increase() : void
+    increase(): void
     {
         const newTimeStamp = Date.now();
 
@@ -30,7 +30,7 @@ export default class IdCounter
         }
     }
 
-    getId() : string {
+    getId(): string {
         return `${this.lastTimeStamp}.${this.counter1}.${this.counter2}`;
     }
 

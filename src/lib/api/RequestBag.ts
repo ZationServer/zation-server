@@ -31,12 +31,12 @@ import {ObjectPathSequence}       from "../main/internalApi/objectPathSequence/o
 
 export default class RequestBag extends Bag
 {
-    private reqVariables : object;
-    private readonly shBridge : SHBridge;
-    private readonly authEngine : AuthEngine;
-    private readonly input : any;
+    private reqVariables: object;
+    private readonly shBridge: SHBridge;
+    private readonly authEngine: AuthEngine;
+    private readonly input: any;
 
-    constructor(shBridge : SHBridge, worker : ZationWorker, authEngine : AuthEngine, input : object)
+    constructor(shBridge: SHBridge, worker: ZationWorker, authEngine: AuthEngine, input: object)
     {
         super(worker,worker.getChannelBagEngine());
         this.reqVariables = {};
@@ -57,7 +57,7 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
      */
-    setReqVariable(path : string | string[], value : any) : void {
+    setReqVariable(path: string | string[], value: any): void {
         ObjectPath.set(this.reqVariables,path,value);
     }
 
@@ -70,7 +70,7 @@ export default class RequestBag extends Bag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    hasReqVariable(path ?: string | string[]) : boolean {
+    hasReqVariable(path?: string | string[]): boolean {
         return ObjectPath.has(this.reqVariables,path);
     }
 
@@ -83,7 +83,7 @@ export default class RequestBag extends Bag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getReqVariable<R = any>(path ?: string | string[]) : R {
+    getReqVariable<R = any>(path?: string | string[]): R {
         return ObjectPath.get(this.reqVariables,path);
     }
 
@@ -97,7 +97,7 @@ export default class RequestBag extends Bag
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    deleteReqVariable(path ?: string | string[]) : void {
+    deleteReqVariable(path?: string | string[]): void {
         if(!!path) {
             ObjectPath.del(this.reqVariables,path);
         }
@@ -120,7 +120,7 @@ export default class RequestBag extends Bag
      * Can happen if you provided a path, inputAllAllow is activated,
      * and input is not from type object.
      */
-    getInput<R = any>(path ?: string | string[]) : R {
+    getInput<R = any>(path?: string | string[]): R {
         if(path !== undefined){
             if(typeof this.input === 'object'){
                 return ObjectPath.get(this.input,path);
@@ -146,7 +146,7 @@ export default class RequestBag extends Bag
      * Can happen if you provided a path, inputAllAllow is activated,
      * and input is not from type object.
      */
-    hasInput(path: string | string[]) : boolean {
+    hasInput(path: string | string[]): boolean {
         if(path !== undefined){
             if(typeof this.input === 'object'){
                 return ObjectPath.has(this.input,path);
@@ -167,7 +167,7 @@ export default class RequestBag extends Bag
      * @example
      * inputIsObject();
      */
-    inputIsObject() : boolean {
+    inputIsObject(): boolean {
         return typeof this.input === 'object';
     }
 
@@ -178,7 +178,7 @@ export default class RequestBag extends Bag
      * @example
      * getInputType();
      */
-    getInputType() : string {
+    getInputType(): string {
        return typeof this.input;
     }
 
@@ -196,7 +196,7 @@ export default class RequestBag extends Bag
      * @param value
      * @throws MethodIsIncompatibleError
      */
-    setSocketVariable(path : string | string[],value : any) : void {
+    setSocketVariable(path: string | string[],value: any): void {
         this.socket.setSocketVariable(path,value);
     }
 
@@ -211,7 +211,7 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws MethodIsIncompatibleError
      */
-    hasSocketVariable(path ?: string | string[]) : boolean {
+    hasSocketVariable(path?: string | string[]): boolean {
         return this.socket.hasSocketVariable(path);
     }
 
@@ -226,7 +226,7 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws MethodIsIncompatibleError
      */
-    getSocketVariable<R = any>(path ?: string | string[]) : R {
+    getSocketVariable<R = any>(path?: string | string[]): R {
         return this.socket.getSocketVariable(path);
     }
 
@@ -241,7 +241,7 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws MethodIsIncompatibleError
      */
-    deleteSocketVariable(path ?: string | string[]) : void {
+    deleteSocketVariable(path?: string | string[]): void {
         this.socket.deleteSocketVariable(path);
     }
 
@@ -252,7 +252,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns if current socket is authenticated.
      */
-    isAuth() : boolean {
+    isAuth(): boolean {
         return this.authEngine.isAuth();
     }
 
@@ -261,7 +261,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns if current socket is authenticated.
      */
-    isAuthenticated() : boolean {
+    isAuthenticated(): boolean {
         return this.isAuth();
     }
 
@@ -271,7 +271,7 @@ export default class RequestBag extends Bag
      * Returns the authentication user group of current socket.
      * If the socket is not authenticated, it will return undefined.
      */
-    getAuthUserGroup() : string | undefined {
+    getAuthUserGroup(): string | undefined {
         return this.authEngine.getAuthUserGroup();
     }
 
@@ -281,7 +281,7 @@ export default class RequestBag extends Bag
      * Returns the user group of current socket.
      * The user group can be the default group or one of the auth groups.
      */
-    getUserGroup() : string | undefined {
+    getUserGroup(): string | undefined {
         return this.authEngine.getUserGroup();
     }
 
@@ -291,7 +291,7 @@ export default class RequestBag extends Bag
      * Authenticate an socket.
      * This method will throw errors if the process fails.
      * @example
-     * await authenticate('user','tom12',{email : 'example@gmail.com'});
+     * await authenticate('user','tom12',{email: 'example@gmail.com'});
      * @param authUserGroup The authUserGroup must exist in the appConfig. Otherwise an error will be thrown.
      * @param userId
      * @param tokenVariables
@@ -302,7 +302,7 @@ export default class RequestBag extends Bag
      * For example, you can change the default expire of the token or add a time before the token gets valid.
      * @throws AuthenticationError
      */
-    async authenticate(authUserGroup : string,userId ?: string | number,tokenVariables : object = {},jwtOptions : JwtSignOptions = {}) : Promise<void> {
+    async authenticate(authUserGroup: string,userId?: string | number,tokenVariables: object = {},jwtOptions: JwtSignOptions = {}): Promise<void> {
         await this.authEngine.authenticate(authUserGroup,userId,tokenVariables);
     }
 
@@ -313,7 +313,7 @@ export default class RequestBag extends Bag
      * @example
      * await deauthenticate();
      */
-    async deauthenticate() : Promise<void> {
+    async deauthenticate(): Promise<void> {
         await this.authEngine.deauthenticate();
     }
 
@@ -326,7 +326,7 @@ export default class RequestBag extends Bag
      * @param id
      * @throws AuthenticationError
      */
-    async setUserId(id : string | number) : Promise<void> {
+    async setUserId(id: string | number): Promise<void> {
         await this.authEngine.setUserId(id);
     }
 
@@ -338,7 +338,7 @@ export default class RequestBag extends Bag
      * await removeUserId();
      * @throws AuthenticationError
      */
-    async removeUserId() : Promise<void> {
+    async removeUserId(): Promise<void> {
         await this.authEngine.removeUserId();
     }
 
@@ -347,7 +347,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns the user id of token from the current socket.
      */
-    getUserId() : number | string | undefined {
+    getUserId(): number | string | undefined {
         return this.authEngine.getUserId();
     }
 
@@ -356,7 +356,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns if token has a user id of the current socket.
      */
-    hasUserId() : boolean {
+    hasUserId(): boolean {
         return this.authEngine.getUserId() !== undefined;
     }
 
@@ -365,7 +365,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns if token has panel access.
      */
-    hasPanelAccess() : boolean {
+    hasPanelAccess(): boolean {
         return this.authEngine.hasPanelAccess();
     }
 
@@ -378,12 +378,12 @@ export default class RequestBag extends Bag
      * @throws AuthenticationError
      * @param access
      */
-    async setPanelAccess(access : boolean) : Promise<void> {
+    async setPanelAccess(access: boolean): Promise<void> {
         await this.authEngine.setPanelAccess(access);
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getAuthEngine() : AuthEngine {
+    getAuthEngine(): AuthEngine {
         return this.authEngine;
     }
 
@@ -392,7 +392,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns true if the current socket is not authenticated (default user group).
      */
-    isDefault() : boolean {
+    isDefault(): boolean {
         return this.authEngine.isDefault();
     }
 
@@ -406,7 +406,7 @@ export default class RequestBag extends Bag
      * @throws MethodIsIncompatibleError
      * @param key
      */
-    getCookieVariable<R = any>(key : string) : R
+    getCookieVariable<R = any>(key: string): R
     {
         if(this.shBridge.isWebSocket()) {
             throw new MethodIsIncompatibleError(this.getProtocol(),'http','Get a cookie variable.');
@@ -426,7 +426,7 @@ export default class RequestBag extends Bag
      * @param value
      * @param settings
      */
-    setCookieVariable(key : string,value : any,settings  : object= { maxAge: 900000}) : void
+    setCookieVariable(key: string,value: any,settings : object= { maxAge: 900000}): void
     {
         if(this.shBridge.isWebSocket()) {
             throw new MethodIsIncompatibleError(this.getProtocol(),'http','Set a cookie variable.');
@@ -444,7 +444,7 @@ export default class RequestBag extends Bag
      * @throws MethodIsIncompatibleError
      * @param key
      */
-    clearCookie(key : string) : void
+    clearCookie(key: string): void
     {
         if(this.shBridge.isWebSocket()) {
             throw new MethodIsIncompatibleError(this.getProtocol(),'http','Clear a cookie.');
@@ -463,7 +463,7 @@ export default class RequestBag extends Bag
      * Requires http request!
      * @throws MethodIsIncompatibleError
      */
-    getHttpResponse() : core.Response {
+    getHttpResponse(): core.Response {
         if(this.shBridge.isWebSocket()) {
             throw new MethodIsIncompatibleError(this.getProtocol(),'http','Get http response.');
         }
@@ -479,7 +479,7 @@ export default class RequestBag extends Bag
      * Requires http request!
      * @throws MethodIsIncompatibleError
      */
-    getHttpRequest() : core.Request {
+    getHttpRequest(): core.Request {
         if(this.shBridge.isWebSocket()) {
             throw new MethodIsIncompatibleError(this.getProtocol(),'http','Get http request.');
         }
@@ -495,7 +495,7 @@ export default class RequestBag extends Bag
      * Requires http request!
      * @throws MethodIsIncompatibleError
      */
-    getHttpMethod() : string {
+    getHttpMethod(): string {
         if(this.shBridge.isWebSocket()) {
             throw new MethodIsIncompatibleError(this.getProtocol(),'http','Get http method.');
         }
@@ -514,7 +514,7 @@ export default class RequestBag extends Bag
      * Requires http request!
      * @throws MethodIsIncompatibleError
      */
-    getHttpFiles() : Record<string,UploadedFile> {
+    getHttpFiles(): Record<string,UploadedFile> {
         if(this.shBridge.isWebSocket()) {
             throw new MethodIsIncompatibleError(this.getProtocol(),'http','Get http files.');
         }
@@ -532,7 +532,7 @@ export default class RequestBag extends Bag
      * Requires http request!
      * @throws MethodIsIncompatibleError
      */
-    getHttpBody() : Record<string,any>
+    getHttpBody(): Record<string,any>
     {
         if(this.shBridge.isWebSocket()) {
             throw new MethodIsIncompatibleError(this.getProtocol(),'http','Get http body.');
@@ -548,7 +548,7 @@ export default class RequestBag extends Bag
      * If it is an http request it returns the request.
      * Otherwise (webSocket request) it returns the handshake request.
      */
-    getHandshakeRequest() : IncomingMessage
+    getHandshakeRequest(): IncomingMessage
     {
        return this.shBridge.getHandshakeRequest();
     }
@@ -559,7 +559,7 @@ export default class RequestBag extends Bag
      * If it is an http request it returns the request header.
      * Otherwise (webSocket request) it returns the handshake request header.
      */
-    getHandshakeHeader() : IncomingHttpHeaders
+    getHandshakeHeader(): IncomingHttpHeaders
     {
        return this.shBridge.getHandshakeRequest().headers;
     }
@@ -575,7 +575,7 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws MethodIsIncompatibleError
      */
-    getSocketHandshakeVariable<R = any>(path ?: string | string[]) : R {
+    getSocketHandshakeVariable<R = any>(path?: string | string[]): R {
         return this.socket.getSocketHandshakeVariable(path);
     }
 
@@ -590,7 +590,7 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws MethodIsIncompatibleError
      */
-    hasSocketHandshakeVariable(path ?: string | string[]) : boolean {
+    hasSocketHandshakeVariable(path?: string | string[]): boolean {
         return this.socket.hasSocketHandshakeVariable(path);
     }
 
@@ -613,7 +613,7 @@ export default class RequestBag extends Bag
      * @param value
      * @throws AuthenticationError if the client is not authenticated.
      */
-    async setTokenVariable(path : string | string[],value : any) : Promise<void> {
+    async setTokenVariable(path: string | string[],value: any): Promise<void> {
         const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this.shBridge.getToken()));
         ObjectPath.set(ctv,path,value);
         await TokenUtils.setCustomVar(ctv,this.shBridge);
@@ -634,7 +634,7 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the client is not authenticated.
      */
-    async deleteTokenVariable(path ?: string | string[]) : Promise<void> {
+    async deleteTokenVariable(path?: string | string[]): Promise<void> {
         if(!!path) {
             const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this.shBridge.getToken()));
             ObjectPath.del(ctv,path);
@@ -665,7 +665,7 @@ export default class RequestBag extends Bag
      *       .commit();
      * @throws AuthenticationError if the client is not authenticated.
      */
-    seqEditTokenVariables() : ObjectPathSequence
+    seqEditTokenVariables(): ObjectPathSequence
     {
         return new ObjectPathSequenceImp(CloneUtils.deepClone(
             TokenUtils.getTokenVariables(this.shBridge.getToken())),
@@ -692,7 +692,7 @@ export default class RequestBag extends Bag
      * @param value
      * @throws AuthenticationError if the client is not authenticated.
      */
-    async setTokenVariableIdSync(path : string | string[],value : any) : Promise<void> {
+    async setTokenVariableIdSync(path: string | string[],value: any): Promise<void> {
         await this.setTokenVariable(path,value);
         const id = this.getUserId();
         if(id !== undefined)
@@ -715,7 +715,7 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the client is not authenticated.
      */
-    async deleteTokenVariableIdSync(path ?: string | string[]) : Promise<void> {
+    async deleteTokenVariableIdSync(path?: string | string[]): Promise<void> {
         await this.deleteTokenVariable(path);
         const id = this.getUserId();
         if(id !== undefined)
@@ -743,11 +743,11 @@ export default class RequestBag extends Bag
      *       .commit();
      * @throws AuthenticationError if the client is not authenticated.
      */
-    seqEditTokenVariablesIdSync() : ObjectPathSequence {
+    seqEditTokenVariablesIdSync(): ObjectPathSequence {
         const id = this.getUserId();
         return new ObjectPathSequenceBoxImp(
             this.seqEditTokenVariables(),
-            ...(id !== undefined ? [this.seqEditTokenVariablesOnUserId(id,this.getSocketSid())] : [])
+            ...(id !== undefined ? [this.seqEditTokenVariablesOnUserId(id,this.getSocketSid())]: [])
         );
     }
 
@@ -769,7 +769,7 @@ export default class RequestBag extends Bag
      * @param value
      * @throws AuthenticationError if the client is not authenticated.
      */
-    async setTokenVariableGroupSync(path : string | string[],value : any) : Promise<void> {
+    async setTokenVariableGroupSync(path: string | string[],value: any): Promise<void> {
         await this.setTokenVariable(path,value);
         await this.setTokenVariableOnGroup(this.getAuthUserGroup() as string,path,value,this.getSocketSid());
     }
@@ -790,7 +790,7 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the client is not authenticated.
      */
-    async deleteTokenVariableGroupSync(path ?: string | string[]) : Promise<void> {
+    async deleteTokenVariableGroupSync(path?: string | string[]): Promise<void> {
         await this.deleteTokenVariable(path);
         await this.deleteTokenVariableOnGroup(this.getAuthUserGroup() as string,path,this.getSocketSid());
     }
@@ -816,7 +816,7 @@ export default class RequestBag extends Bag
      *       .commit();
      * @throws AuthenticationError if the client is not authenticated.
      */
-    seqEditTokenVariablesGroupSync() : ObjectPathSequence {
+    seqEditTokenVariablesGroupSync(): ObjectPathSequence {
         return new ObjectPathSequenceBoxImp(
             this.seqEditTokenVariables(),
             this.seqEditTokenVariablesOnGroup(this.getAuthUserGroup() as string,this.getSocketSid())
@@ -837,7 +837,7 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the client is not authenticated.
      */
-    hasTokenVariable(path ?: string | string[]) : boolean {
+    hasTokenVariable(path?: string | string[]): boolean {
         return ObjectPath.has(TokenUtils.getTokenVariables(this.shBridge.getToken()),path);
     }
 
@@ -855,7 +855,7 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the client is not authenticated.
      */
-    getTokenVariable<R = any>(path ?: string | string[]) : R {
+    getTokenVariable<R = any>(path?: string | string[]): R {
         return ObjectPath.get(TokenUtils.getTokenVariables(this.shBridge.getToken()),path);
     }
 
@@ -867,7 +867,7 @@ export default class RequestBag extends Bag
      * Returns token id of the token form the socket.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    getTokenId() : string {
+    getTokenId(): string {
         return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.tid),this.shBridge.getToken());
     }
 
@@ -877,7 +877,7 @@ export default class RequestBag extends Bag
      * Returns the expire of the token from the socket.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    getTokenExpire() : number {
+    getTokenExpire(): number {
         return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.exp),this.shBridge.getToken());
     }
 
@@ -887,7 +887,7 @@ export default class RequestBag extends Bag
      * Returns the panel access of the token from the socket.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    getPanelAccess() : boolean {
+    getPanelAccess(): boolean {
         return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.panelAccess),this.shBridge.getToken());
     }
 
@@ -899,7 +899,7 @@ export default class RequestBag extends Bag
      * Requires ws request!
      * @throws MethodIsIncompatibleError
      */
-    getSocketId() : string {
+    getSocketId(): string {
         return this.socket.id;
     }
 
@@ -911,7 +911,7 @@ export default class RequestBag extends Bag
      * Requires ws request!
      * @throws MethodIsIncompatibleError
      */
-    getSocketSid() : string {
+    getSocketSid(): string {
         return this.socket.sid;
     }
 
@@ -922,7 +922,7 @@ export default class RequestBag extends Bag
      * Requires ws request!
      * @throws MethodIsIncompatibleError
      */
-    getRawSocket() : UpSocket {
+    getRawSocket(): UpSocket {
         return this.socket.rawSocket;
     }
 
@@ -933,7 +933,7 @@ export default class RequestBag extends Bag
      * Requires ws request!
      * @throws MethodIsIncompatibleError
      */
-    get socket() : ZSocket {
+    get socket(): ZSocket {
         if(this.shBridge.isWebSocket) {
             return this.shBridge.getSocket().zSocket;
         }
@@ -950,7 +950,7 @@ export default class RequestBag extends Bag
      * Returns the current protocol of this request.
      * It can be 'ws' or 'http'.
      */
-    getProtocol() : string {
+    getProtocol(): string {
         return ProtocolAccessChecker.getProtocol(this.shBridge);
     }
 
@@ -959,7 +959,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns the current request protocol is web socket.
      */
-    isWebSocketProtocol() : boolean {
+    isWebSocketProtocol(): boolean {
         return this.shBridge.isWebSocket();
     }
 
@@ -968,7 +968,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns the current request protocol is web socket.
      */
-    isWs() : boolean {
+    isWs(): boolean {
         return this.isWebSocketProtocol();
     }
 
@@ -977,7 +977,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns the current request protocol is http.
      */
-    isHttpProtocol() : boolean {
+    isHttpProtocol(): boolean {
         return !this.shBridge.isWebSocket();
     }
 
@@ -986,7 +986,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns the current request protocol is http.
      */
-    isHttp() : boolean {
+    isHttp(): boolean {
         return this.isHttpProtocol();
     }
 
@@ -998,7 +998,7 @@ export default class RequestBag extends Bag
      * @Example
      * 7dd60337-bdeb-494a-ae5d-a92188b0c535-2.90-1543143397178.0.0
      */
-    getRequestId() : string {
+    getRequestId(): string {
         return this.shBridge.getReqId();
     }
 
@@ -1020,9 +1020,9 @@ export default class RequestBag extends Bag
      * Indicates if you only want to transmit data.
      * If not than the promise will be resolved with the result when the client responded on the emit.
      */
-    async socketEmit<T extends boolean>(event : string, data : any, onlyTransmit : T) : Promise<T extends true ? void : any>
+    async socketEmit<T extends boolean>(event: string, data: any, onlyTransmit: T): Promise<T extends true ? void: any>
     // noinspection JSUnusedGlobalSymbols
-    async socketEmit(event : string, data : any, onlyTransmit : boolean = true) : Promise<object | void> {
+    async socketEmit(event: string, data: any, onlyTransmit: boolean = true): Promise<object | void> {
         return this.socket.emit(event,data,onlyTransmit);
     }
 
@@ -1038,7 +1038,7 @@ export default class RequestBag extends Bag
      * The function that gets called when the event occurs,
      * parameters are the data and a response function that you can call to respond on the event back.
      */
-    socketOn(event : string,handler : OnHandlerFunction){
+    socketOn(event: string,handler: OnHandlerFunction){
         this.socket.on(event,handler);
     }
 
@@ -1052,7 +1052,7 @@ export default class RequestBag extends Bag
      * The function that gets called when the event occurs,
      * parameters are the data and a response function that you can call to respond on the event back.
      */
-    socketOnce(event : string,handler : OnHandlerFunction) : void {
+    socketOnce(event: string,handler: OnHandlerFunction): void {
         this.socket.once(event,handler);
     }
 
@@ -1063,7 +1063,7 @@ export default class RequestBag extends Bag
      * Requires ws request!
      * @throws MethodIsIncompatibleError
      */
-    getSubscriptions() : string[] {
+    getSubscriptions(): string[] {
         return this.socket.getSubscriptions();
     }
 
@@ -1074,7 +1074,7 @@ export default class RequestBag extends Bag
      * Requires ws request!
      * @throws MethodIsIncompatibleError
      */
-    getCustomChSubscriptions(name ?: string) : string[] {
+    getCustomChSubscriptions(name?: string): string[] {
         return this.socket.getCustomChSubscriptions(name);
     }
 
@@ -1084,7 +1084,7 @@ export default class RequestBag extends Bag
      * Requires ws request!
      * @throws MethodIsIncompatibleError
      */
-    hasSubUserCh() : boolean {
+    hasSubUserCh(): boolean {
         return this.socket.hasSubUserCh();
     }
 
@@ -1094,7 +1094,7 @@ export default class RequestBag extends Bag
      * Requires ws request!
      * @throws MethodIsIncompatibleError
      */
-    hasSubAuthUserGroupCh() : boolean {
+    hasSubAuthUserGroupCh(): boolean {
         return this.socket.hasSubAuthUserGroupCh();
     }
 
@@ -1104,7 +1104,7 @@ export default class RequestBag extends Bag
      * Requires ws request!
      * @throws MethodIsIncompatibleError
      */
-    hasSubDefaultUserGroupCh() : boolean {
+    hasSubDefaultUserGroupCh(): boolean {
         return this.socket.hasSubDefaultUserGroupCh();
     }
 
@@ -1114,7 +1114,7 @@ export default class RequestBag extends Bag
      * Requires ws request!
      * @throws MethodIsIncompatibleError
      */
-    hasSubAllCh() : boolean {
+    hasSubAllCh(): boolean {
         return this.socket.hasSubAllCh();
     }
 
@@ -1130,7 +1130,7 @@ export default class RequestBag extends Bag
      * if it is not provided,
      * it returns if the socket has subscribed any custom channel with the provided name.
      */
-    hasSubCustomCh(name ?: string, id ?: string) : boolean {
+    hasSubCustomCh(name?: string, id?: string): boolean {
         return this.socket.hasSubCustomCh(name,id);
     }
 
@@ -1140,7 +1140,7 @@ export default class RequestBag extends Bag
      * Requires ws request!
      * @throws MethodIsIncompatibleError
      */
-    hasSubPanelOutCh() : boolean {
+    hasSubPanelOutCh(): boolean {
         return this.socket.hasSubPanelOutCh();
     }
 
@@ -1156,7 +1156,7 @@ export default class RequestBag extends Bag
      * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      * @throws MethodIsIncompatibleError
      */
-    kickFromCustomCh(name ?: string,id ?: string) : void {
+    kickFromCustomCh(name?: string,id?: string): void {
         this.socket.kickFromCustomCh(name,id);
     }
 
@@ -1167,7 +1167,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns the remote ip address (can be a private address) from the current request.
      */
-    getRemoteAddress() : string {
+    getRemoteAddress(): string {
         return this.shBridge.getRemoteAddress();
     }
 
@@ -1176,7 +1176,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns the only public remote ip address from the current request.
      */
-    getPublicRemoteAddress() : string {
+    getPublicRemoteAddress(): string {
         return this.shBridge.getPublicRemoteAddress();
     }
 
@@ -1185,7 +1185,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns if the user agent of the client is set.
      */
-    hasUserAgent() : boolean {
+    hasUserAgent(): boolean {
         return this.getHandshakeHeader()["user-agent"] !== undefined;
     }
 
@@ -1198,7 +1198,7 @@ export default class RequestBag extends Bag
      * @example
      * Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.107 Safari/537.36
      */
-    getRawUserAgent() : string | undefined {
+    getRawUserAgent(): string | undefined {
         return this.getHandshakeHeader()["user-agent"];
     }
 
@@ -1216,7 +1216,7 @@ export default class RequestBag extends Bag
      * //get device
      * getUserAgent().device.toString(); // 'Asus A100'
      */
-    getUserAgent() : Agent {
+    getUserAgent(): Agent {
         return useragent.parse(this.getRawUserAgent());
     }
 
@@ -1229,7 +1229,7 @@ export default class RequestBag extends Bag
      * @example
      * en-US,en;q=0.8,et;q=0.6"
      */
-    getAcceptLanguage() : undefined | string | string[]{
+    getAcceptLanguage(): undefined | string | string[]{
         return this.getHandshakeHeader()["accept-language"];
     }
 
@@ -1238,7 +1238,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns if the accept language of the client is set.
      */
-    hasAcceptLanguage() : boolean {
+    hasAcceptLanguage(): boolean {
         return this.getHandshakeHeader()["accept-language"] !== undefined;
     }
 
@@ -1247,7 +1247,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns the system from the client that requests.
      */
-    getClientSystem() : string {
+    getClientSystem(): string {
         return this.shBridge.getSystem();
     }
 
@@ -1256,7 +1256,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns the system version from the client that requests.
      */
-    getClientVersion() : number {
+    getClientVersion(): number {
         return this.shBridge.getVersion();
     }
 
@@ -1267,7 +1267,7 @@ export default class RequestBag extends Bag
      * Returns the API level of the client.
      * This API level can be the request, connection, or default API level.
      */
-    getApiLevel() : number {
+    getApiLevel(): number {
         return this.shBridge.getApiLevel();
     }
 
@@ -1276,7 +1276,7 @@ export default class RequestBag extends Bag
      * Returns the API level of the request,
      * can be undefined if the client did not provide it.
      */
-    getRequestApiLevel() : number | undefined {
+    getRequestApiLevel(): number | undefined {
         return this.shBridge.getRequestApiLevel();
     }
 
@@ -1285,7 +1285,7 @@ export default class RequestBag extends Bag
      * Returns the API level of the connection,
      * can be undefined if the client did not provide it or it is an HTTP request.
      */
-    getConnectionApiLevel() : number | undefined {
+    getConnectionApiLevel(): number | undefined {
         return this.shBridge.getConnectionApiLevel();
     }
 
@@ -1294,7 +1294,7 @@ export default class RequestBag extends Bag
      * Checks if the API level of the client is compatible with the API level.
      * @param reqApiLevel
      */
-    isCompatibleApiLevel(reqApiLevel : number) : boolean {
+    isCompatibleApiLevel(reqApiLevel: number): boolean {
         return ApiLevelUtils.apiLevelIsCompatible(this.getApiLevel(),reqApiLevel);
     }
 
@@ -1305,8 +1305,8 @@ export default class RequestBag extends Bag
      * @description
      * Publish in an user channel or channels.
      * @example
-     * publishInUserCh('paul10','message',{message : 'hello',fromUserId : 'luca34'});
-     * publishInUserCh(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
+     * publishInUserCh('paul10','message',{message: 'hello',fromUserId: 'luca34'});
+     * publishInUserCh(['paul10','lea1'],'message',{message: 'hello',fromUserId: 'luca34'});
      * @param userId or more userIds in array.
      * @param eventName
      * @param data
@@ -1314,9 +1314,9 @@ export default class RequestBag extends Bag
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishInUserCh(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async publishInUserCh(userId: string | number | (number|string)[],eventName :string,data: object = {},srcSocketSid?: string | null): Promise<void>
     {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket : undefined;
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket: undefined;
         return this.exchangeEngine.publishInUserCh
         (userId,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
@@ -1326,8 +1326,8 @@ export default class RequestBag extends Bag
      * @description
      * Publish in an user channel or channels.
      * @example
-     * pubUserCh('paul10','message',{message : 'hello',fromUserId : 'luca34'});
-     * pubUserCh(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
+     * pubUserCh('paul10','message',{message: 'hello',fromUserId: 'luca34'});
+     * pubUserCh(['paul10','lea1'],'message',{message: 'hello',fromUserId: 'luca34'});
      * @param userId or more userIds in array.
      * @param eventName
      * @param data
@@ -1335,7 +1335,7 @@ export default class RequestBag extends Bag
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async pubUserCh(userId : string | number | (number|string)[],eventName :string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async pubUserCh(userId: string | number | (number|string)[],eventName :string,data: object = {},srcSocketSid?: string | null): Promise<void>
     {
         return this.publishInUserCh(userId,eventName,data,srcSocketSid);
     }
@@ -1345,16 +1345,16 @@ export default class RequestBag extends Bag
      * @description
      * Publish in all channel.
      * @example
-     * publishInAllCh('message',{message : 'hello'});
+     * publishInAllCh('message',{message: 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishInAllCh(eventName : string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async publishInAllCh(eventName: string,data: object = {},srcSocketSid?: string | null): Promise<void>
     {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket : undefined;
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket: undefined;
         return this.exchangeEngine.publishInAllCh
         (eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
@@ -1364,14 +1364,14 @@ export default class RequestBag extends Bag
      * @description
      * Publish in all channel.
      * @example
-     * pubAllCh('message',{message : 'hello'});
+     * pubAllCh('message',{message: 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async pubAllCh(eventName : string,data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async pubAllCh(eventName: string,data: object = {},srcSocketSid?: string | null): Promise<void>
     {
         return this.publishInAllCh(eventName,data,srcSocketSid);
     }
@@ -1381,8 +1381,8 @@ export default class RequestBag extends Bag
      * @description
      * Publish in auth user group channel/s.
      * @example
-     * publishInAuthUserGroupCh('admin','userRegistered',{userId : '1'});
-     * publishInAuthUserGroupCh(['admin','superAdmin'],'userRegistered',{userId : '1'});
+     * publishInAuthUserGroupCh('admin','userRegistered',{userId: '1'});
+     * publishInAuthUserGroupCh(['admin','superAdmin'],'userRegistered',{userId: '1'});
      * @param authUserGroup or an array of auth user groups.
      * @param eventName
      * @param data
@@ -1390,9 +1390,9 @@ export default class RequestBag extends Bag
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishInAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async publishInAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void>
     {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket : undefined;
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket: undefined;
         return this.exchangeEngine.publishInAuthUserGroupCh
         (authUserGroup,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
@@ -1402,8 +1402,8 @@ export default class RequestBag extends Bag
      * @description
      * Publish in auth user group channel/s.
      * @example
-     * pubAuthUserGroupCh('admin','userRegistered',{userId : '1'});
-     * pubAuthUserGroupCh(['admin','superAdmin'],'userRegistered',{userId : '1'});
+     * pubAuthUserGroupCh('admin','userRegistered',{userId: '1'});
+     * pubAuthUserGroupCh(['admin','superAdmin'],'userRegistered',{userId: '1'});
      * @param authUserGroup or an array of auth user groups.
      * @param eventName
      * @param data
@@ -1411,7 +1411,7 @@ export default class RequestBag extends Bag
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async pubAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async pubAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void>
     {
         return this.publishInAuthUserGroupCh(authUserGroup,eventName,data,srcSocketSid);
     }
@@ -1421,16 +1421,16 @@ export default class RequestBag extends Bag
      * @description
      * Publish in default user group channel.
      * @example
-     * publishInDefaultUserGroupCh('message',{message : 'hello'});
+     * publishInDefaultUserGroupCh('message',{message: 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishInDefaultUserGroupCh(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async publishInDefaultUserGroupCh(eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void>
     {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket : undefined;
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket: undefined;
         return this.exchangeEngine.publishInDefaultUserGroupCh
         (eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
@@ -1440,14 +1440,14 @@ export default class RequestBag extends Bag
      * @description
      * Publish in default user group channel.
      * @example
-     * pubDefaultUserGroupCh('message',{message : 'hello'});
+     * pubDefaultUserGroupCh('message',{message: 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async pubDefaultUserGroupCh(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async pubDefaultUserGroupCh(eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void>
     {
         return this.publishInDefaultUserGroupCh(eventName,data,srcSocketSid);
     }
@@ -1457,16 +1457,16 @@ export default class RequestBag extends Bag
      * @description
      * Publish in all auth user groups channels.
      * @example
-     * publishInAllAuthUserGroupsCh('message',{fromUserId : '1',message : 'hello'});
+     * publishInAllAuthUserGroupsCh('message',{fromUserId: '1',message: 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishInAllAuthUserGroupsCh(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async publishInAllAuthUserGroupsCh(eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void>
     {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket : undefined;
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket: undefined;
         return this.exchangeEngine.publishInAllAuthUserGroupCh
         (eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
@@ -1476,14 +1476,14 @@ export default class RequestBag extends Bag
      * @description
      * Publish in all auth user groups channels.
      * @example
-     * pubAllAuthUserGroupsCh('message',{fromUserId : '1',message : 'hello'});
+     * pubAllAuthUserGroupsCh('message',{fromUserId: '1',message: 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined and request is webSocket, the id of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async pubAllAuthUserGroupsCh(eventName : string, data : object = {},srcSocketSid ?: string | null) : Promise<void>
+    async pubAllAuthUserGroupsCh(eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void>
     {
         return this.publishInAllAuthUserGroupsCh(eventName,data,srcSocketSid);
     }
@@ -1493,8 +1493,8 @@ export default class RequestBag extends Bag
      * @description
      * Publish in an custom channel.
      * @example
-     * publishInCustomCh({name : 'imageChannel', id : 'image2'},'like',{fromUserId : '1'});
-     * publishInCustomCh({name : 'publicChat'},'msg',{msg : 'Hello',fromUserId : '1'});
+     * publishInCustomCh({name: 'imageChannel', id: 'image2'},'like',{fromUserId: '1'});
+     * publishInCustomCh({name: 'publicChat'},'msg',{msg: 'Hello',fromUserId: '1'});
      * @param target
      * @param eventName
      * @param data
@@ -1503,8 +1503,8 @@ export default class RequestBag extends Bag
      * If it is null, will be published anonymously.
      * @throws UnknownCustomCh
      */
-    async publishInCustomCh(target : {name : string,id ?: string}, eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket : undefined;
+    async publishInCustomCh(target: {name: string,id?: string}, eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
+        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket: undefined;
         return this.exchangeEngine.publishInCustomCh(target,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
 
@@ -1513,8 +1513,8 @@ export default class RequestBag extends Bag
      * @description
      * Publish in an custom channel.
      * @example
-     * publishInCustomCh({name : 'imageChannel', id : 'image2'},'like',{fromUserId : '1'});
-     * publishInCustomCh({name : 'publicChat'},'msg',{msg : 'Hello',fromUserId : '1'});
+     * publishInCustomCh({name: 'imageChannel', id: 'image2'},'like',{fromUserId: '1'});
+     * publishInCustomCh({name: 'publicChat'},'msg',{msg: 'Hello',fromUserId: '1'});
      * @param target
      * @param eventName
      * @param data
@@ -1523,11 +1523,11 @@ export default class RequestBag extends Bag
      * If it is null, will be published anonymously.
      * @throws UnknownCustomCh
      */
-    async pubCustomCh(target : {name : string,id ?: string}, eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+    async pubCustomCh(target: {name: string,id?: string}, eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
         return this.publishInCustomCh(target,eventName,data,srcSocketSid);
     }
 
-    private _processSrcSocketSid(srcSocketSid : string | null | undefined) : undefined | string {
-        return !!srcSocketSid ? srcSocketSid : (srcSocketSid === null || !this.isWs() ? undefined : this.getSocketSid());
+    private _processSrcSocketSid(srcSocketSid: string | null | undefined): undefined | string {
+        return !!srcSocketSid ? srcSocketSid: (srcSocketSid === null || !this.isWs() ? undefined: this.getSocketSid());
     }
 }

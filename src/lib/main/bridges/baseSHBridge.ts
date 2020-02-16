@@ -16,24 +16,24 @@ import AuthEngine        from "../auth/authEngine";
  */
 export default interface BaseSHBridge
 {
-    getHandshakeRequest() : IncomingMessage;
-    getVersion() : number;
-    getSystem() : string;
+    getHandshakeRequest(): IncomingMessage;
+    getVersion(): number;
+    getSystem(): string;
 
-    isWebSocket() : boolean;
+    isWebSocket(): boolean;
     /**
      * Is undefined if isWebSocket() is false!
      */
-    getSocket() : UpSocket;
-    deauthenticate() : void;
-    hasToken() : boolean;
-    getToken() : ZationToken | null;
-    setToken(data : object,jwtOptions ?: JwtSignOptions) : Promise<void>;
-    isNewToken() : boolean;
+    getSocket(): UpSocket;
+    deauthenticate(): void;
+    hasToken(): boolean;
+    getToken(): ZationToken | null;
+    setToken(data: object,jwtOptions?: JwtSignOptions): Promise<void>;
+    isNewToken(): boolean;
 
-    deauthenticate() : void;
-    getRemoteAddress() : string;
-    getPublicRemoteAddress() : string;
+    deauthenticate(): void;
+    getRemoteAddress(): string;
+    getPublicRemoteAddress(): string;
 
-    getAuthEngine() : AuthEngine;
+    getAuthEngine(): AuthEngine;
 }

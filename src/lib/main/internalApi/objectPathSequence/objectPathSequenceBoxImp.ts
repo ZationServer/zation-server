@@ -8,20 +8,20 @@ import {ObjectPathSequence}        from "./objectPathSequence";
 
 export default class ObjectPathSequenceBoxImp implements ObjectPathSequence
 {
-    private objPathSeq : ObjectPathSequence[];
+    private objPathSeq: ObjectPathSequence[];
 
-    constructor(...objectPathSequence : ObjectPathSequence[]){
+    constructor(...objectPathSequence: ObjectPathSequence[]){
         this.objPathSeq = objectPathSequence;
     }
 
-    set(path : string | string[],value : any) : ObjectPathSequenceBoxImp {
+    set(path: string | string[],value: any): ObjectPathSequenceBoxImp {
         for(let i = 0; i < this.objPathSeq.length; i++){
             this.objPathSeq[i].set(path,value);
         }
         return this;
     }
 
-    delete(path ?: string | string[]) : ObjectPathSequenceBoxImp {
+    delete(path?: string | string[]): ObjectPathSequenceBoxImp {
         for(let i = 0; i < this.objPathSeq.length; i++){
             this.objPathSeq[i].delete(path);
         }

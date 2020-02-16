@@ -11,10 +11,10 @@ import {ControllerConfig} from "../../config/definitions/controllerConfig";
 
 export default class ZationSC_Ping extends Controller
 {
-    static config : ControllerConfig = {
-        access : 'all',
-        versionAccess : 'all',
-        input : {}
+    static config: ControllerConfig = {
+        access: 'all',
+        versionAccess: 'all',
+        input: {}
     };
 
     async handle(bag) {

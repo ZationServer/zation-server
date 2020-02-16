@@ -14,16 +14,16 @@ import {JwtSignOptions}     from "../constants/jwt";
 
 export default class AuthEngine
 {
-    protected readonly aePreparedPart : AEPreparedPart;
-    protected readonly shBridge : BaseSHBridge;
-    protected readonly worker : ZationWorker;
-    protected readonly tokenClusterKey : string;
+    protected readonly aePreparedPart: AEPreparedPart;
+    protected readonly shBridge: BaseSHBridge;
+    protected readonly worker: ZationWorker;
+    protected readonly tokenClusterKey: string;
 
-    protected currentDefault : boolean;
-    protected currentUserGroup : string | undefined;
-    protected currentUserId : string | number | undefined;
+    protected currentDefault: boolean;
+    protected currentUserGroup: string | undefined;
+    protected currentUserId: string | number | undefined;
 
-    constructor(shBridge : BaseSHBridge,worker : ZationWorker)
+    constructor(shBridge: BaseSHBridge,worker: ZationWorker)
     {
         this.aePreparedPart = worker.getAEPreparedPart();
         this.shBridge       = shBridge;
@@ -38,7 +38,7 @@ export default class AuthEngine
     /**
      * Load the information from token in the memory of the auth engine.
      */
-    refresh(token : null | ZationToken) : void {
+    refresh(token: null | ZationToken): void {
         if(token !== null) {
             this.currentUserId = token.userId;
             this.currentUserGroup = token.authUserGroup;
@@ -50,33 +50,33 @@ export default class AuthEngine
         }
     }
 
-    isAuth() : boolean {
+    isAuth(): boolean {
         return !(this.isDefault());
     }
 
-    isDefault() : boolean {
+    isDefault(): boolean {
         return this.currentDefault;
     }
 
-    getUserGroup() : string | undefined {
+    getUserGroup(): string | undefined {
         return this.currentUserGroup;
     }
 
-    getAuthUserGroup() : string | undefined {
-        return this.isDefault() ? undefined : this.currentUserGroup;
+    getAuthUserGroup(): string | undefined {
+        return this.isDefault() ? undefined: this.currentUserGroup;
     }
 
-    getUserId() : number | string | undefined {
+    getUserId(): number | string | undefined {
         return this.currentUserId;
     }
 
-    async authenticate(authUserGroup : string, userId ?: string | number,tokenVariables : object = {},jwtOptions : JwtSignOptions = {}) : Promise<void>
+    async authenticate(authUserGroup: string, userId?: string | number,tokenVariables: object = {},jwtOptions: JwtSignOptions = {}): Promise<void>
     {
         if(this.checkIsIn(authUserGroup)) {
 
-            const token : PrepareZationToken =
+            const token: PrepareZationToken =
                 this.shBridge.hasToken() ?
-                {} : TokenUtils.generateToken(this.tokenClusterKey);
+                {}: TokenUtils.generateToken(this.tokenClusterKey);
 
             token.authUserGroup = authUserGroup;
             token.variables = tokenVariables;
@@ -96,7 +96,7 @@ export default class AuthEngine
         }
     }
 
-    async setPanelAccess(access : boolean) : Promise<void>
+    async setPanelAccess(access: boolean): Promise<void>
     {
         let token = this.shBridge.getToken();
         if(token !== null) {
@@ -109,7 +109,7 @@ export default class AuthEngine
         }
     }
 
-    hasPanelAccess() : boolean {
+    hasPanelAccess(): boolean {
         const token = this.shBridge.getToken();
         if(token !== null && typeof token.panelAccess === 'boolean'){
             return token.panelAccess;
@@ -117,7 +117,7 @@ export default class AuthEngine
         return false;
     }
 
-    async setUserId(userId : number | string | undefined) : Promise<void> {
+    async setUserId(userId: number | string | undefined): Promise<void> {
         let token = this.shBridge.getToken();
         if(token !== null) {
             token = {...token};
@@ -129,34 +129,34 @@ export default class AuthEngine
         }
     }
 
-    async removeUserId() : Promise<void> {
+    async removeUserId(): Promise<void> {
        await this.setUserId(undefined);
     }
 
-    async deauthenticate() : Promise <void> {
+    async deauthenticate(): Promise <void> {
         if(this.isAuth()) {
             this.shBridge.deauthenticate();
         }
     }
 
-    isUseTokenStateCheck() : boolean {
+    isUseTokenStateCheck(): boolean {
         return this.aePreparedPart.isUseTokenStateCheck();
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getDefaultGroup() : string {
+    getDefaultGroup(): string {
         return this.aePreparedPart.getDefaultGroup();
     }
 
-    checkIsIn(authGroup : string) : boolean {
+    checkIsIn(authGroup: string): boolean {
         return this.aePreparedPart.isAuthGroup(authGroup);
     }
 
-    getSHBridge() : BaseSHBridge {
+    getSHBridge(): BaseSHBridge {
         return this.shBridge;
     }
 
-    getWorker() : ZationWorker {
+    getWorker(): ZationWorker {
         return this.worker;
     }
 }

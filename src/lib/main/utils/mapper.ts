@@ -9,13 +9,13 @@ import SocketSet   from "./socketSet";
 
 export default class Mapper<T extends UpSocket>
 {
-    private readonly data : Record<string,undefined |SocketSet> = {};
+    private readonly data: Record<string,undefined |SocketSet> = {};
 
     constructor() {
         this.data = {};
     }
 
-    map(k : string,v : T) : void
+    map(k: string,v: T): void
     {
         if(this.data[k] instanceof SocketSet) {
             // @ts-ignore
@@ -28,7 +28,7 @@ export default class Mapper<T extends UpSocket>
         }
     }
 
-    getValues(k : string) : UpSocket[]
+    getValues(k: string): UpSocket[]
     {
         if(this.data[k] instanceof SocketSet) {
             // @ts-ignore
@@ -39,7 +39,7 @@ export default class Mapper<T extends UpSocket>
         }
     }
 
-    forEach(k : string,func : (socket : UpSocket) => void)
+    forEach(k: string,func: (socket: UpSocket) => void)
     {
         if(this.data[k] instanceof SocketSet) {
             // @ts-ignore
@@ -47,7 +47,7 @@ export default class Mapper<T extends UpSocket>
         }
     }
 
-    forAllEach(func : (socket : UpSocket) => void)
+    forAllEach(func: (socket: UpSocket) => void)
     {
         for(let k in this.data){
             if(this.data.hasOwnProperty(k) &&
@@ -59,11 +59,11 @@ export default class Mapper<T extends UpSocket>
     }
 
     // noinspection JSUnusedGlobalSymbols
-    removeKey(k : string) {
+    removeKey(k: string) {
        this.data[k] = undefined;
     }
 
-    unMap(k : string | undefined, v : T)
+    unMap(k: string | undefined, v: T)
     {
         if(k !== undefined && this.data[k] instanceof SocketSet) {
             // @ts-ignore
@@ -71,7 +71,7 @@ export default class Mapper<T extends UpSocket>
         }
     }
 
-    getLengthFromKey(k : string) : number {
+    getLengthFromKey(k: string): number {
         if(this.data[k] instanceof SocketSet){
             // @ts-ignore
             return this.data[k].getLength();
@@ -82,7 +82,7 @@ export default class Mapper<T extends UpSocket>
     }
 
     // noinspection JSUnusedGlobalSymbols
-    removeAllValues(v : T)
+    removeAllValues(v: T)
     {
         for(let k in this.data) {
             if(this.data.hasOwnProperty(k) && this.data[k] instanceof SocketSet) {
@@ -92,11 +92,11 @@ export default class Mapper<T extends UpSocket>
         }
     }
 
-    isKeyExist(k : string) : boolean {
+    isKeyExist(k: string): boolean {
         return this.data[k] instanceof SocketSet;
     }
 
-    getData() : Record<string,undefined |SocketSet> {
+    getData(): Record<string,undefined |SocketSet> {
         return this.data;
     }
 }

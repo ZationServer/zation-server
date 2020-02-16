@@ -33,37 +33,37 @@ export const enum WorkerChMapTarget
 }
 
 export interface WorkerChAbstractMapTask {
-    taskType : WorkerChTaskType.MAP_TASK,
-    ids : (string | number)[],
-    action : WorkerChMapTaskAction,
-    target : WorkerChMapTarget,
-    exceptSocketSids : string[],
-    data : Record<string,any>
+    taskType: WorkerChTaskType.MAP_TASK,
+    ids: (string | number)[],
+    action: WorkerChMapTaskAction,
+    target: WorkerChMapTarget,
+    exceptSocketSids: string[],
+    data: Record<string,any>
 }
 
 export interface WorkerChMapTaskKickOut extends WorkerChAbstractMapTask {
-    action : WorkerChMapTaskAction.KICK_OUT,
-    data : {
-        ch : string,
-        all ?: boolean,
+    action: WorkerChMapTaskAction.KICK_OUT,
+    data: {
+        ch: string,
+        all?: boolean,
     }
 }
 
 export interface WorkerChMapTaskEmit extends WorkerChAbstractMapTask {
-    action : WorkerChMapTaskAction.EMIT,
-    data : {
-        event : string,
-        data : any,
-        all ?: boolean,
+    action: WorkerChMapTaskAction.EMIT,
+    data: {
+        event: string,
+        data: any,
+        all?: boolean,
     }
 }
 
 export interface WorkerChMapTaskDisconnect extends WorkerChAbstractMapTask {
-    action : WorkerChMapTaskAction.DISCONNECT
+    action: WorkerChMapTaskAction.DISCONNECT
 }
 
 export interface WorkerChMapTaskDeauthenticate extends WorkerChAbstractMapTask{
-    action : WorkerChMapTaskAction.DEAUTHENTICATE
+    action: WorkerChMapTaskAction.DEAUTHENTICATE
 }
 
 export type WorkerChMapTask = WorkerChMapTaskKickOut | WorkerChMapTaskEmit |
@@ -80,17 +80,17 @@ export const enum WorkerChSpecialTaskAction
 }
 
 interface WorkerChSpecialTaskMark {
-    taskType : WorkerChTaskType.SPECIAL_TASK
+    taskType: WorkerChTaskType.SPECIAL_TASK
 }
 
 export interface WorkerChSpecialTaskToken extends WorkerChSpecialTaskMark {
-    action : WorkerChSpecialTaskAction.UPDATE_USER_TOKENS | WorkerChSpecialTaskAction.UPDATE_GROUP_TOKENS,
-    data : UpdateTokenMainData
+    action: WorkerChSpecialTaskAction.UPDATE_USER_TOKENS | WorkerChSpecialTaskAction.UPDATE_GROUP_TOKENS,
+    data: UpdateTokenMainData
 }
 
 export interface WorkerChSpecialTaskMessage extends WorkerChSpecialTaskMark {
-    action : WorkerChSpecialTaskAction.MESSAGE,
-    data : any
+    action: WorkerChSpecialTaskAction.MESSAGE,
+    data: any
 }
 
 export type WorkerChSpecialTask = WorkerChSpecialTaskToken | WorkerChSpecialTaskMessage;

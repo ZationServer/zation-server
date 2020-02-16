@@ -12,7 +12,7 @@ const options = {
 
 export default class PrettyStringifyUtils
 {
-    public static object(obj : any) : string {
+    public static object(obj: any): string {
         return stringifyObject(obj,options);
     }
 }

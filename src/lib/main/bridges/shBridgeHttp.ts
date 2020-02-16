@@ -20,27 +20,27 @@ import {ZationHttpInfo, ZationRequest} from "../controller/request/controllerDef
  */
 export default class SHBridgeHttp extends BaseSHBridgeDefault implements SHBridge {
 
-    protected readonly httpRes : core.Response;
-    protected readonly httpReq : core.Request & {zationToken ?: ZationToken};
-    protected readonly data : ZationRequest;
-    protected readonly reqId : string;
-    protected readonly validationCheckReq : boolean;
+    protected readonly httpRes: core.Response;
+    protected readonly httpReq: core.Request & {zationToken?: ZationToken};
+    protected readonly data: ZationRequest;
+    protected readonly reqId: string;
+    protected readonly validationCheckReq: boolean;
 
-    protected readonly requestApiLevel : number | undefined;
-    protected readonly defaultApiLevel : number;
+    protected readonly requestApiLevel: number | undefined;
+    protected readonly defaultApiLevel: number;
 
-    protected readonly authEngine : AuthEngine;
+    protected readonly authEngine: AuthEngine;
 
-    private newToken : boolean;
-    private currentToken : ZationToken | null;
-    protected currentJwtSignOptions : JwtSignOptions = {};
+    private newToken: boolean;
+    private currentToken: ZationToken | null;
+    protected currentJwtSignOptions: JwtSignOptions = {};
 
-    constructor(httpRes : core.Response,
-                httpReq : core.Request,
-                reqId : string,data : ZationRequest,
-                validationCheckReq : boolean,
-                defaultApiLevel : number,
-                worker : ZationWorker)
+    constructor(httpRes: core.Response,
+                httpReq: core.Request,
+                reqId: string,data: ZationRequest,
+                validationCheckReq: boolean,
+                defaultApiLevel: number,
+                worker: ZationWorker)
     {
 
         super();
@@ -56,7 +56,7 @@ export default class SHBridgeHttp extends BaseSHBridgeDefault implements SHBridg
 
         this.defaultApiLevel = defaultApiLevel;
         this.requestApiLevel = typeof data.al === 'number' ?
-            Math.floor(data.al) : undefined;
+            Math.floor(data.al): undefined;
 
         this.authEngine = new AuthEngine(this,worker);
 
@@ -101,8 +101,8 @@ export default class SHBridgeHttp extends BaseSHBridgeDefault implements SHBridg
     }
 
     getRemoteAddress(): any {
-        const forwarded : any = this.httpReq.headers['x-forwarded-for'];
-        return (forwarded ? forwarded.split(',')[0] : this.httpReq.connection.remoteAddress);
+        const forwarded: any = this.httpReq.headers['x-forwarded-for'];
+        return (forwarded ? forwarded.split(',')[0]: this.httpReq.connection.remoteAddress);
     }
 
 
@@ -119,7 +119,7 @@ export default class SHBridgeHttp extends BaseSHBridgeDefault implements SHBridg
             return this.currentToken;
         }
         else {
-            return this.httpReq.zationToken !== undefined ? this.httpReq.zationToken : null;
+            return this.httpReq.zationToken !== undefined ? this.httpReq.zationToken: null;
         }
     }
 
@@ -137,7 +137,7 @@ export default class SHBridgeHttp extends BaseSHBridgeDefault implements SHBridg
         return false;
     }
 
-    async setToken(data : ZationToken,jwtOptions : JwtSignOptions = {}): Promise<void> {
+    async setToken(data: ZationToken,jwtOptions: JwtSignOptions = {}): Promise<void> {
         this.newToken = true;
         this.currentToken = data;
         this.currentJwtSignOptions = jwtOptions;
@@ -154,7 +154,7 @@ export default class SHBridgeHttp extends BaseSHBridgeDefault implements SHBridg
         return undefined;
     }
 
-    getJwtSignOptions() : JwtSignOptions {
+    getJwtSignOptions(): JwtSignOptions {
         return this.currentJwtSignOptions;
     }
 

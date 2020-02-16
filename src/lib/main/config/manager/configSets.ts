@@ -9,13 +9,13 @@ import {EventConfig, PrecompiledEventConfig}     from "../definitions/eventConfi
 import {PrecompiledServiceConfig, ServiceConfig} from "../definitions/serviceConfig";
 
 export interface OtherPrecompiledConfigSet {
-    appConfig : PrecompiledAppConfig,
-    eventConfig : PrecompiledEventConfig,
-    serviceConfig : PrecompiledServiceConfig
+    appConfig: PrecompiledAppConfig,
+    eventConfig: PrecompiledEventConfig,
+    serviceConfig: PrecompiledServiceConfig
 }
 
 export interface OtherLoadedConfigSet {
-    appConfig : AppConfig,
-    eventConfig : EventConfig,
-    serviceConfig : ServiceConfig
+    appConfig: AppConfig,
+    eventConfig: EventConfig,
+    serviceConfig: ServiceConfig
 }

@@ -5,5 +5,5 @@ Copyright(c) Luca Scaringella
  */
 
 export default interface CChInfo {
-    name : string
+    name: string
 }

@@ -10,17 +10,17 @@ import {cpus,platform}  from 'os';
 
 export default class SystemInfo {
 
-    static async getGeneralInfo() : Promise<object> {
+    static async getGeneralInfo(): Promise<object> {
         const cpusInfo = cpus();
         return {
-            cpuModel : cpusInfo[0].model,
-            cpuCount : cpusInfo.length,
-            platform : platform(),
-            oos : (await OsUtils.getOs())
+            cpuModel: cpusInfo[0].model,
+            cpuCount: cpusInfo.length,
+            platform: platform(),
+            oos: (await OsUtils.getOs())
         };
     }
 
-    private static async getPidUsage() : Promise<any>
+    private static async getPidUsage(): Promise<any>
     {
         return new Promise<object>((resolve, reject) => {
             pidUsage(process.pid, (err, stats) => {
@@ -30,14 +30,14 @@ export default class SystemInfo {
         });
     }
 
-    static async getUpdatedInfo() : Promise<object>
+    static async getUpdatedInfo(): Promise<object>
     {
         let pidUsage;
         let drive;
         let cpuUsage;
         let memMb;
 
-        let promises : Promise<any>[] = [];
+        let promises: Promise<any>[] = [];
         promises.push(SystemInfo.getPidInfo().then((r) => pidUsage = r));
         promises.push(OsUtils.getDriveUsed().then((r) => drive = r));
         promises.push(OsUtils.getAverageCpuUsage().then((r) => cpuUsage = r));
@@ -46,15 +46,15 @@ export default class SystemInfo {
 
         // noinspection JSUnusedAssignment
         return {
-            instance : {
-                drive : drive,
-                memory : {
-                    totalMemMb : memMb.totalMemMb,
-                    usedMemMb : memMb.usedMemMb
+            instance: {
+                drive: drive,
+                memory: {
+                    totalMemMb: memMb.totalMemMb,
+                    usedMemMb: memMb.usedMemMb
                 },
-                cpu : cpuUsage
+                cpu: cpuUsage
             },
-            pid : pidUsage
+            pid: pidUsage
         }
     }
 
@@ -63,12 +63,12 @@ export default class SystemInfo {
      * The CPU usage in percentage.
      * The memory usage in MB.
      */
-    static async getPidInfo() : Promise<{cpu : number,memory : number}>
+    static async getPidInfo(): Promise<{cpu: number,memory: number}>
     {
         const pidUsage = await SystemInfo.getPidUsage();
         return {
-            cpu : pidUsage.cpu,
-            memory : pidUsage.memory / 1e+6
+            cpu: pidUsage.cpu,
+            memory: pidUsage.memory / 1e+6
         }
     }
 

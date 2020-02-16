@@ -8,33 +8,33 @@ export default class SidBuilder
 {
     static sidSeparator = '-|-';
 
-    private readonly preSid : string;
+    private readonly preSid: string;
 
-    constructor(instanceId : string, workerId : string) {
+    constructor(instanceId: string, workerId: string) {
         this.preSid = instanceId+SidBuilder.sidSeparator+workerId+SidBuilder.sidSeparator;
     }
 
-    buildSid(socketId : string) : string {
+    buildSid(socketId: string): string {
         return this.preSid + socketId;
     }
 
-    static splitSid(socketSid : string) : string[] {
+    static splitSid(socketSid: string): string[] {
         return socketSid.split(SidBuilder.sidSeparator);
     }
 
-    static buildSid(instanceId : string, workerId : string,socketId : string) : string {
+    static buildSid(instanceId: string, workerId: string,socketId: string): string {
         return instanceId+SidBuilder.sidSeparator+workerId+SidBuilder.sidSeparator+socketId;
     }
 
-    static socketSidToServerInstanceId(socketSid : string) {
+    static socketSidToServerInstanceId(socketSid: string) {
         return this.splitSid(socketSid)[0];
     }
 
-    static socketSidToWorkerId(socketSid : string) {
+    static socketSidToWorkerId(socketSid: string) {
         return this.splitSid(socketSid)[1];
     }
 
-    static socketSidToSocketId(socketSid : string) {
+    static socketSidToSocketId(socketSid: string) {
         return this.splitSid(socketSid)[2];
     }
 }

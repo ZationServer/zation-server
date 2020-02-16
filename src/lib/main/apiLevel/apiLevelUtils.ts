@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 export type ApiLevelSwitch<T> = Record<number,T>;
 
-export type ApiLevelSwitchFunction<T> = (apiLevel : number) => T | undefined;
+export type ApiLevelSwitchFunction<T> = (apiLevel: number) => T | undefined;
 
 export default class ApiLevelUtils
 {
@@ -15,7 +15,7 @@ export default class ApiLevelUtils
      * @param apiLevel
      * @param reqApiLevel
      */
-    static apiLevelIsCompatible(apiLevel : number, reqApiLevel : number) : boolean {
+    static apiLevelIsCompatible(apiLevel: number, reqApiLevel: number): boolean {
         return apiLevel >= reqApiLevel;
     }
 
@@ -26,7 +26,7 @@ export default class ApiLevelUtils
      * Notice if you always have a 1 in the mapped values as an API level the closure will always return a value.
      * @param apiLevelSwitch
      */
-    static createApiLevelSwitcher<T>(apiLevelSwitch : ApiLevelSwitch<T>) : ApiLevelSwitchFunction<T> {
+    static createApiLevelSwitcher<T>(apiLevelSwitch: ApiLevelSwitch<T>): ApiLevelSwitchFunction<T> {
 
         const optionsLevels =
             Object.keys(apiLevelSwitch)

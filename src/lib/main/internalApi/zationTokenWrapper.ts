@@ -9,14 +9,14 @@ import ObjectPath     from "../utils/objectPath";
 
 export default class ZationTokenWrapper
 {
-    private readonly _token : ZationToken;
+    private readonly _token: ZationToken;
 
-    constructor(token : ZationToken) {
+    constructor(token: ZationToken) {
         this._token = token;
     }
 
     // noinspection JSUnusedGlobalSymbols
-    isAuthIn() : boolean {
+    isAuthIn(): boolean {
         return this._token.authUserGroup !== undefined;
     }
 
@@ -62,7 +62,7 @@ export default class ZationTokenWrapper
      * hasTokenVariable('person.email');
      * @param path
      */
-    hasTokenVariable(path ?: string | string[]) : boolean {
+    hasTokenVariable(path?: string | string[]): boolean {
         return ObjectPath.has(this._token.variables || {},path);
     }
 
@@ -78,7 +78,7 @@ export default class ZationTokenWrapper
      * getTokenVariable('person.email');
      * @param path
      */
-    getTokenVariable<R = any>(path ?: string | string[]) : R {
+    getTokenVariable<R = any>(path?: string | string[]): R {
         return ObjectPath.get(this._token.variables || {},path);
     }
 }

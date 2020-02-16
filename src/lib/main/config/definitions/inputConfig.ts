@@ -22,15 +22,15 @@ export interface AnyOfModelConfig extends ModelOptional
      * @example
      * ```
      * // any of with array
-     * anyOf : ['v.email','v.userName'],
+     * anyOf: ['v.email','v.userName'],
      * // any of with object (Will help to get a better input path)
-     * anyOf : {
-     *   email : 'v.email',
-     *   userName : 'v.userName'
+     * anyOf: {
+     *   email: 'v.email',
+     *   userName: 'v.userName'
      * }
      * ```
      */
-    anyOf : Record<string,Model> | Model[]
+    anyOf: Record<string,Model> | Model[]
 }
 
 export interface InputConfig {
@@ -54,40 +54,40 @@ export interface InputConfig {
      * for making it more clear that this is a single model input.
      * @example
      * //Parameter-based input
-     * input : {
-     *     name : {
-     *         type : 'string'
+     * input: {
+     *     name: {
+     *         type: 'string'
      *     },
-     *     age : {
-     *         type : 'int',
-     *         minValue : 14
+     *     age: {
+     *         type: 'int',
+     *         minValue: 14
      *     }
      * }
      * //Client can send  ->
-     * {name : 'Luca', age : 20}
+     * {name: 'Luca', age: 20}
      * //or
      * ['Luca',20]
      *
      * //-Single model input-
-     * input : [{
-     *     type : 'string',
-     *     minLength : 4
+     * input: [{
+     *     type: 'string',
+     *     minLength: 4
      * }]
      * //or
-     * input : Config.single({
-     *     type : 'string',
-     *     minLength : 4
+     * input: Config.single({
+     *     type: 'string',
+     *     minLength: 4
      * })
      * //Client can send ->
      * "ThisIsAnyString"
      */
-    input ?: Input;
+    input?: Input;
     /**
      * Specifies if any input is allowed
      * that means the input validation and converter are disabled.
      * @default false.
      */
-    allowAnyInput  ?: boolean;
+    allowAnyInput ?: boolean;
 }
 
 export type Input = ParamInput | SingleModelInput | AnyClass | AnyInputConfigTranslatable;
@@ -100,9 +100,9 @@ export interface ParamInput {
     [key: string]: Model;
 }
 
-export type ValidateFunction = (value : any, backErrorBag : BackErrorBag, inputPath : string, bag : Bag, type : string | undefined) => Promise<void> | void;
-export type ConvertValueFunction = (value : any, bag : Bag) => Promise<any> | any;
-export type GetDateFunction = (bag : Bag) => Promise<Date> | Date;
+export type ValidateFunction = (value: any, backErrorBag: BackErrorBag, inputPath: string, bag: Bag, type: string | undefined) => Promise<void> | void;
+export type ConvertValueFunction = (value: any, bag: Bag) => Promise<any> | any;
+export type GetDateFunction = (bag: Bag) => Promise<Date> | Date;
 
 export interface ValueModelConfig extends ModelOptional
 {
@@ -149,7 +149,7 @@ export interface ValueModelConfig extends ModelOptional
      * 'mongoId'
      * 'latLong'
      */
-    type  ?: ValidationType | string | (ValidationType | string)[];
+    type ?: ValidationType | string | (ValidationType | string)[];
     /**
      * Specify if the value model should use strict type mode.
      * In this mode, types are checked strictly. For example, in strict mode,
@@ -160,198 +160,198 @@ export interface ValueModelConfig extends ModelOptional
      * e.g., a 1 or '1' is interpreted as a true boolean.
      * @default true
      */
-    strictType  ?: boolean;
+    strictType ?: boolean;
     /**
      * With this property, you can define that the input should exactly match
      * with at least one of the array items.
      * @example
-     * enum : ['Red','Blue','Black']
+     * enum: ['Red','Blue','Black']
      */
-    enum  ?: any [];
+    enum ?: any [];
     /**
      * With this property, you can define that the input should exactly match
      * with at least one of the array items.
      * The difference between the property enum is that in error case,
      * all options of the enum are not sent to the client.
      * @example
-     * enum : ['CODE-1','CODE-2']
+     * enum: ['CODE-1','CODE-2']
      */
-    privateEnum  ?: any [];
+    privateEnum ?: any [];
     /**
      * MinLength specifies the minimum length of a string.
      * @example
-     * minLength : 20
+     * minLength: 20
      */
-    minLength  ?: number;
+    minLength ?: number;
     /**
      * MaxLength specifies the maximum length of a string.
      * @example
-     * maxLength : 40
+     * maxLength: 40
      */
-    maxLength  ?: number;
+    maxLength ?: number;
     /**
      * Length specifies the exact length of a string.
      * @example
-     * length : 10
+     * length: 10
      */
-    length  ?: number;
+    length ?: number;
     /**
      * With contains, you can describe that a string should contain a string.
      * You also can define more strings that should be included with an array.
      * @example
-     * contains : 'name'
-     * contains : ['code','Code']
+     * contains: 'name'
+     * contains: ['code','Code']
      */
-    contains  ?: string | string[];
+    contains ?: string | string[];
     /**
      * With equals, you can describe that the input should be exactly equal.
      * @example
-     * equals : 'something'
+     * equals: 'something'
      */
-    equals  ?: any;
+    equals ?: any;
     /**
      * With minValue, you can define the minimum value of a number.
      * @example
-     * minValue : 2
+     * minValue: 2
      */
-    minValue  ?: number;
+    minValue ?: number;
     /**
      * With maxValue, you can define the maximum value of a number.
      * @example
-     * maxValue : 2
+     * maxValue: 2
      */
-    maxValue  ?: number;
+    maxValue ?: number;
     /**
      * This property can be used to define regular expressions.
      * You can define one regular expression or multiple by structure them in keys.
      * Later on the client side, you can find out which regular expression was failed with the key.
      * @example
-     * regex : '([A-Za-z]{1,5})'
-     * regex : /\w+/
-     * regex : {
-     *     'length' : 'REGEX-1',
-     *     'pattern' : 'REGEX-2'
+     * regex: '([A-Za-z]{1,5})'
+     * regex: /\w+/
+     * regex: {
+     *     'length': 'REGEX-1',
+     *     'pattern': 'REGEX-2'
      * }
      */
-    regex  ?: string | RegExp | Record<string,RegExp | string>;
+    regex ?: string | RegExp | Record<string,RegExp | string>;
     /**
      * With endWith, you can describe with what string the input string should end.
      * @example
-     * endWith : 'a'
+     * endWith: 'a'
      */
-    endsWith  ?: string;
+    endsWith ?: string;
     /**
      * With startWith, you can describe with what string the input string should start.
      * @example
-     * startWith : 'Hello'
+     * startWith: 'Hello'
      */
-    startsWith  ?: string;
+    startsWith ?: string;
     /**
      * With letters, it is possible to define if the string letters
      * should be all in uppercase or lowercase.
      * @example
-     * letters : 'lowercase'
-     * letters : 'uppercase'
+     * letters: 'lowercase'
+     * letters: 'uppercase'
      */
-    letters  ?: FormatLetters.LOWER_CASE | FormatLetters.UPPER_CASE | string;
+    letters ?: FormatLetters.LOWER_CASE | FormatLetters.UPPER_CASE | string;
     /**
      * CharClass defines a regular expression char class to check the input string.
      * @example
-     * charClass : 'a-zA-Z._0-9'
-     * charClass : 'a-z'
+     * charClass: 'a-zA-Z._0-9'
+     * charClass: 'a-z'
      */
-    charClass ?: string;
+    charClass?: string;
     /**
      * MaxByteSize defines the maximum byte size of a string or base64 input.
      * @example
-     * maxByteSize : 50
+     * maxByteSize: 50
      */
-    maxByteSize ?: number;
+    maxByteSize?: number;
     /**
      * MinByteSize defines the minimum byte size of a string or base64 input.
      * @example
-     * minByteSize : 20
+     * minByteSize: 20
      */
-    minByteSize ?: number;
+    minByteSize?: number;
     /**
      * Validate if a base64 input is from a specific mime type.
      * You also can define more valid mime types in an array.
      * The value null means that unknown mime type is allowed
      * that can happen if the base64 string did not specify a mime type.
      * @example
-     * mimeType : 'image'
+     * mimeType: 'image'
      */
-    mimeType ?: string | null | (string | null)[];
+    mimeType?: string | null | (string | null)[];
     /**
      * Validate if a base64 input is from a specific sub mime type.
      * You also can define more valid sub mime types in an array.
      * The value null means that unknown sub mime type is allowed
      * that can happen if the base64 string did not specify a sub mime type.
      * @example
-     * mimeSubType : ['jpeg','png','jpg']
+     * mimeSubType: ['jpeg','png','jpg']
      */
-    mimeSubType ?: string | null | (string | null)[];
+    mimeSubType?: string | null | (string | null)[];
     /**
      * Validate if a date is before another date.
      * You can provide the other date as a Date object or as a function that returns a date object.
      * @example
-     * before : () => {
+     * before: () => {
      *      return new Date();
      * }
-     * before : someDate
+     * before: someDate
      */
-    before ?: Date | GetDateFunction;
+    before?: Date | GetDateFunction;
     /**
      * Validate if a date is after another date.
      * You can provide the other date as a Date object or as a function that returns a date object.
      * @example
-     * after : () => {
+     * after: () => {
      *      return new Date();
      * }
-     * after : someDate
+     * after: someDate
      */
-    after ?: Date | GetDateFunction;
+    after?: Date | GetDateFunction;
     /**
      * Validate the value model with your validation checks.
      * It can be one Validation check function or more functions in an array.
      * This is useful to do advance checks; for example,
      * you want to check if the email is already registered in the database.
      * @example
-     * validate : [async (value,backErrorBag,inputPath,bag,type) => {
+     * validate: [async (value,backErrorBag,inputPath,bag,type) => {
      *   if(....){
      *       //error
      *       bagErrorBag.addBackError(bag.newBackError({
-     *          reason : ...
+     *          reason: ...
      *      }));
      *   }
      * }]
      */
-    validate  ?: ValidateFunction | ValidateFunction[];
+    validate ?: ValidateFunction | ValidateFunction[];
     /**
      * Convert the input value in a specific value; for example,
      * you want to add something to the end of a string.
      * The converting process will only be invoked if the value model has no validation errors.
      * @example
-     * convert : async (value,bag) => {
+     * convert: async (value,bag) => {
      *     return value+'end';
      * }
      */
-    convert  ?: ConvertValueFunction;
+    convert ?: ConvertValueFunction;
     /**
      * Set if zation should convert the type correctly.
      * That for example, can be used to convert non-strict type value to the correct type
      * or convert a Date type to real date instance.
      * @default true
      */
-    convertType  ?: boolean;
+    convertType ?: boolean;
     /**
      * This property will allow you to extend from another value model.
      * Then this value model will get all properties that
      * it doesn't define by himself from the extended model.
      * @example
-     * extends : 'personName'
+     * extends: 'personName'
      */
-    extends ?: string | ValueModelConfig | AnyModelConfigTranslatable | AnyClass;
+    extends?: string | ValueModelConfig | AnyModelConfigTranslatable | AnyClass;
 }
 
 export interface ModelOptional {
@@ -360,17 +360,17 @@ export interface ModelOptional {
      * so the input doesn't need to provide the data for it.
      * @default false
      */
-    isOptional  ?: boolean;
+    isOptional ?: boolean;
     /**
      * Define a default value that will be used
      * if the input had not provided the value.
      */
-    default ?: any
+    default?: any
 }
 
 export type ObjectProperties = Record<string,Model>;
-export type ConvertObjectFunction = (obj: Record<string,any>, bag : Bag) => Promise<any> | any;
-export type ConstructObjectFunction = (this : Record<string,any>, bag : Bag) => Promise<void> | void;
+export type ConvertObjectFunction = (obj: Record<string,any>, bag: Bag) => Promise<any> | any;
+export type ConstructObjectFunction = (this: Record<string,any>, bag: Bag) => Promise<void> | void;
 
 export interface ObjectModelConfig extends ModelOptional
 {
@@ -378,13 +378,13 @@ export interface ObjectModelConfig extends ModelOptional
      * Specifies the properties of the object.
      * This property is required to define an object model.
      * @example
-     * properties : {
-     *     name : {},
-     *     age : {},
-     *     email : {}
+     * properties: {
+     *     name: {},
+     *     age: {},
+     *     email: {}
      * }
      */
-    properties : ObjectProperties;
+    properties: ObjectProperties;
     /**
      * Inheritance from another object model.
      * Then this object model will get all properties that it doesn't define by himself
@@ -394,45 +394,45 @@ export interface ObjectModelConfig extends ModelOptional
      * Also, the super constructor will be called before the constructor of this object model.
      * The convert function will also be called with the result of the super convert function.
      * @example
-     * extends : 'person'
+     * extends: 'person'
      */
-    extends  ?: string | ObjectModelConfig | AnyModelConfigTranslatable | AnyClass;
+    extends ?: string | ObjectModelConfig | AnyModelConfigTranslatable | AnyClass;
     /**
      * Set the prototype of the input object to a specific prototype.
      * @example
-     * prototype : {
-     *     getName : function() {
+     * prototype: {
+     *     getName: function() {
      *         return this.name;
      *     }
      * }
      */
-    prototype  ?: object;
+    prototype ?: object;
     /**
      * Set the construct function of the object model,
      * that function can be as a constructor on the input object.
      * It will be called with the input object as this and the small bag
      * that allows you to add properties to the object.
      * @example
-     * construct : function(bag) {
+     * construct: function(bag) {
      *    this.fullName = `${this.firstName} ${this.lastName}`;
      * }
      */
-    construct  ?: ConstructObjectFunction;
+    construct ?: ConstructObjectFunction;
     /**
      * Convert the input object in a specific value;
      * for example, you only want the name value of the object.
      * The converting process will only be invoked if the object model has no validation errors.
      * @example
-     * convert : (obj,bag) => {
+     * convert: (obj,bag) => {
      *    return obj['name'];
      * }
      */
-    convert  ?: ConvertObjectFunction;
+    convert ?: ConvertObjectFunction;
     /**
      * Set if the input can have more properties as there defined in the model.
      * @default false
      */
-    morePropsAllowed ?: boolean;
+    morePropsAllowed?: boolean;
 }
 
 export interface ArrayModelConfig extends ArraySettings
@@ -441,43 +441,43 @@ export interface ArrayModelConfig extends ArraySettings
      * Define the model of the items that the array can contain.
      * This property is required to define an array model.
      * @example
-     * array : 'name'
+     * array: 'name'
      */
-    array : Model
+    array: Model
 }
 
-export type ConvertArrayFunction = (array: any[], bag : Bag) => Promise<any> | any;
+export type ConvertArrayFunction = (array: any[], bag: Bag) => Promise<any> | any;
 
 export interface ArraySettings extends ModelOptional
 {
     /**
      * MinLength defines the minimum length of the input array.
      * @example
-     * minLength : 3
+     * minLength: 3
      */
-    minLength  ?: number;
+    minLength ?: number;
     /**
      * MaxLength defines the maximum length of the input array.
      * @example
-     * maxLength : 10
+     * maxLength: 10
      */
-    maxLength  ?: number;
+    maxLength ?: number;
     /**
      * Length defines the exact length of the input array.
      * @example
-     * length : 5
+     * length: 5
      */
-    length  ?: number;
+    length ?: number;
     /**
      * Convert the input array in a specific value; for example,
      * you want only to have the first item.
      * The converting process will only be invoked if the array model has no validation errors.
      * @example
-     * convert : (array,bag) => {
+     * convert: (array,bag) => {
      *    return array[0];
      * }
      */
-    convert  ?: ConvertArrayFunction
+    convert ?: ConvertArrayFunction
 }
 
 export interface ArrayModelShortSyntax extends Array<Model | ArraySettings | undefined>
@@ -485,10 +485,10 @@ export interface ArrayModelShortSyntax extends Array<Model | ArraySettings | und
     /**
      * Specifies the model of the items that the array can contain.
      */
-    0 : Model
+    0: Model
     /**
      * Define settings of the array model.
      * @default {}
      */
-    1 ?: ArraySettings
+    1?: ArraySettings
 }

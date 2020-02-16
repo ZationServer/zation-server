@@ -13,92 +13,92 @@ import {IdValidConfig, SystemAccessConfig, VersionAccessConfig} from "./configCo
 import {AccessConfigValue}                                      from '../../access/accessOptions';
 import {Notable}                                                from '../../../api/Notable';
 
-type AnyFunction = (...args : any[]) => Promise<any> | any
+type AnyFunction = (...args: any[]) => Promise<any> | any
 
 export type CChannelFamilyOnClientPubFunction =
-    (bag : Bag, pubData : PubData, socketInfo : ZSocket, chInfo : CChFamilyInfo) => Promise<void> | void;
+    (bag: Bag, pubData: PubData, socketInfo: ZSocket, chInfo: CChFamilyInfo) => Promise<void> | void;
 
 export type CChannelFamilyOnBagPubFunction =
-    (bag : Bag, pubData : PubData, socketInfo : ZSocket | undefined, chInfo : CChFamilyInfo) => Promise<void> | void;
+    (bag: Bag, pubData: PubData, socketInfo: ZSocket | undefined, chInfo: CChFamilyInfo) => Promise<void> | void;
 
 export type CChannelFamilyOnSubFunction =
-    (bag : Bag, socketInfo : ZSocket, chInfo : CChFamilyInfo) => Promise<void> | void;
+    (bag: Bag, socketInfo: ZSocket, chInfo: CChFamilyInfo) => Promise<void> | void;
 
 export type CChannelFamilyOnUnsubFunction =
-    (bag : Bag, socketInfo : ZSocket, chInfo : CChFamilyInfo) => Promise<void> | void;
+    (bag: Bag, socketInfo: ZSocket, chInfo: CChFamilyInfo) => Promise<void> | void;
 
 export type CChannelFamilyClientPubAccessFunction =
-    (bag : Bag, pubData : PubData, socketInfo : ZSocket, chInfo : CChFamilyInfo) => Promise<boolean> | boolean;
+    (bag: Bag, pubData: PubData, socketInfo: ZSocket, chInfo: CChFamilyInfo) => Promise<boolean> | boolean;
 
 export type CChannelFamilySubAccessFunction =
-    (bag : Bag, socketInfo : ZSocket, chInfo : CChFamilyInfo) => Promise<boolean> | boolean;
+    (bag: Bag, socketInfo: ZSocket, chInfo: CChFamilyInfo) => Promise<boolean> | boolean;
 
 
 export type CChannelOnClientPubFunction =
-    (bag : Bag, pubData : PubData, socketInfo : ZSocket, chInfo : CChInfo) => Promise<void> | void;
+    (bag: Bag, pubData: PubData, socketInfo: ZSocket, chInfo: CChInfo) => Promise<void> | void;
 
 export type CChannelOnBagPubFunction =
-    (bag : Bag, pubData : PubData, socketInfo : ZSocket | undefined, chInfo : CChInfo) => Promise<void> | void;
+    (bag: Bag, pubData: PubData, socketInfo: ZSocket | undefined, chInfo: CChInfo) => Promise<void> | void;
 
 export type CChannelOnSubFunction =
-    (bag : Bag, socketInfo : ZSocket, chInfo : CChInfo) => Promise<void> | void;
+    (bag: Bag, socketInfo: ZSocket, chInfo: CChInfo) => Promise<void> | void;
 
 export type CChannelOnUnsubFunction =
-    (bag : Bag, socketInfo : ZSocket, chInfo : CChInfo) => Promise<void> | void;
+    (bag: Bag, socketInfo: ZSocket, chInfo: CChInfo) => Promise<void> | void;
 
 export type CChannelClientPubAccessFunction =
-    (bag : Bag, pubData : PubData, socketInfo : ZSocket, chInfo : CChInfo) => Promise<boolean> | boolean;
+    (bag: Bag, pubData: PubData, socketInfo: ZSocket, chInfo: CChInfo) => Promise<boolean> | boolean;
 
 export type CChannelSubAccessFunction =
-    (bag : Bag, socketInfo : ZSocket, chInfo : CChInfo) => Promise<boolean> | boolean;
+    (bag: Bag, socketInfo: ZSocket, chInfo: CChInfo) => Promise<boolean> | boolean;
 
 
 export type UserChOnClientPubFunction =
-    (bag : Bag, pubData : PubData, socketInfo : ZSocket, userId : string) => Promise<void> | void;
+    (bag: Bag, pubData: PubData, socketInfo: ZSocket, userId: string) => Promise<void> | void;
 
 export type UserChOnBagPubFunction =
-    (bag : Bag, pubData : PubData, socketInfo : ZSocket | undefined, userId : string) => Promise<void> | void;
+    (bag: Bag, pubData: PubData, socketInfo: ZSocket | undefined, userId: string) => Promise<void> | void;
 
 export type UserChOnSubFunction =
-    (bag : Bag, socketInfo : ZSocket, userId : string) => Promise<void> | void;
+    (bag: Bag, socketInfo: ZSocket, userId: string) => Promise<void> | void;
 
 export type UserChOnUnsubFunction =
-    (bag : Bag, socketInfo : ZSocket, userId : string) => Promise<void> | void;
+    (bag: Bag, socketInfo: ZSocket, userId: string) => Promise<void> | void;
 
 export type UserChClientPubAccessFunction =
-    (bag : Bag, pubData : PubData, socketInfo : ZSocket, userId : string) => Promise<boolean> | boolean;
+    (bag: Bag, pubData: PubData, socketInfo: ZSocket, userId: string) => Promise<boolean> | boolean;
 
 
 export type AuthUserGroupChOnClientPubFunction =
-    (bag : Bag, pubData : PubData, socketInfo : ZSocket, authUserGroup  : string,) => Promise<void> | void;
+    (bag: Bag, pubData: PubData, socketInfo: ZSocket, authUserGroup : string,) => Promise<void> | void;
 
 export type AuthUserGroupChOnBagPubFunction =
-    (bag : Bag, pubData : PubData, socketInfo : ZSocket | undefined, authUserGroup  : string) => Promise<void> | void;
+    (bag: Bag, pubData: PubData, socketInfo: ZSocket | undefined, authUserGroup : string) => Promise<void> | void;
 
 export type AuthUserGroupChOnSubFunction =
-    (bag : Bag, socketInfo : ZSocket, authUserGroup : string) => Promise<void> | void;
+    (bag: Bag, socketInfo: ZSocket, authUserGroup: string) => Promise<void> | void;
 
 export type AuthUserGroupChOnUnsubFunction =
-    (bag : Bag, socketInfo : ZSocket, authUserGroup  : string) => Promise<void> | void;
+    (bag: Bag, socketInfo: ZSocket, authUserGroup : string) => Promise<void> | void;
 
 export type AuthUserGroupChClientPubAccessFunction =
-    (bag : Bag, pubData : PubData, socketInfo : ZSocket, authUserGroup : string) => Promise<boolean> | boolean;
+    (bag: Bag, pubData: PubData, socketInfo: ZSocket, authUserGroup: string) => Promise<boolean> | boolean;
 
 
 export type NormalChOnClientPubFunction =
-    (bag : Bag, pubData : PubData, socketInfo : ZSocket) => Promise<void> | void;
+    (bag: Bag, pubData: PubData, socketInfo: ZSocket) => Promise<void> | void;
 
 export type NormalChOnBagPubFunction =
-    (bag : Bag, pubData : PubData, socketInfo : ZSocket | undefined) => Promise<void> | void;
+    (bag: Bag, pubData: PubData, socketInfo: ZSocket | undefined) => Promise<void> | void;
 
 export type NormalChOnSubFunction =
-    (bag : Bag, socketInfo : ZSocket) => Promise<void> | void;
+    (bag: Bag, socketInfo: ZSocket) => Promise<void> | void;
 
 export type NormalChOnUnsubFunction =
-    (bag : Bag, socketInfo : ZSocket) => Promise<void> | void;
+    (bag: Bag, socketInfo: ZSocket) => Promise<void> | void;
 
 export type NormalChClientPubAccessFunction =
-    (bag : Bag, pubData : PubData, socketInfo : ZSocket) => Promise<boolean> | boolean;
+    (bag: Bag, pubData: PubData, socketInfo: ZSocket) => Promise<boolean> | boolean;
 
 export interface ZationChannelsConfig
 {
@@ -106,36 +106,36 @@ export interface ZationChannelsConfig
      * Add options or register event listeners to the user channels of zation.
      * Every user id has its own channel.
      * @example
-     * userCh : {
-     *     onSubscription : () => {}
+     * userCh: {
+     *     onSubscription: () => {}
      * }
      */
-    userCh   ?: UserChannel;
+    userCh  ?: UserChannel;
     /**
      * Add options or register event listeners to the auth user group channels of zation.
      * Every auth user group has its own channel.
      * @example
-     * authUserGroupCh : {
-     *     onSubscription : () => {}
+     * authUserGroupCh: {
+     *     onSubscription: () => {}
      * }
      */
-    authUserGroupCh  ?: AuthUserGroupChannel;
+    authUserGroupCh ?: AuthUserGroupChannel;
     /**
      * Add options or register event listeners to the default user group channel of zation.
      * @example
-     * defaultUserGroupCh : {
-     *     onSubscription : () => {}
+     * defaultUserGroupCh: {
+     *     onSubscription: () => {}
      * }
      */
-    defaultUserGroupCh  ?: NormalChannel;
+    defaultUserGroupCh ?: NormalChannel;
     /**
      * Add options or register event listeners to the all channel of zation.
      * @example
-     * allCh : {
-     *     onSubscription : () => {}
+     * allCh: {
+     *     onSubscription: () => {}
      * }
      */
-    allCh  ?: NormalChannel;
+    allCh ?: NormalChannel;
 }
 
 export type CustomChannelConfig = [CustomChFamily] | [] | CustomCh
@@ -147,7 +147,7 @@ export interface ChannelSettings {
      * Indicates if the client that publish should get his own publish.
      * @default true
      */
-    socketGetOwnPublish  ?: boolean;
+    socketGetOwnPublish ?: boolean;
 }
 
 export interface ZationChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub = AnyFunction,Unsub = AnyFunction,PubAccess extends Function = AnyFunction> extends ChannelSettings{
@@ -155,22 +155,22 @@ export interface ZationChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub 
      * @description
      * Set event listener that gets triggered when the client is publishing in this channel.
      */
-    onClientPublish  ?: Pub | Pub[];
+    onClientPublish ?: Pub | Pub[];
     /**
      * @description
      * Set event listener that gets triggered when the bag is publishing in this channel.
      */
-    onBagPublish  ?: BagPub | BagPub[];
+    onBagPublish ?: BagPub | BagPub[];
     /**
      * @description
      * Set event listener that gets triggered when the client is subscribing that channel.
      */
-    onSubscription  ?: Sub | Sub[];
+    onSubscription ?: Sub | Sub[];
     /**
      * @description
      * Set event listener that gets triggered when the client is unsubscribing that channel.
      */
-    onUnsubscription  ?: Unsub | Unsub[];
+    onUnsubscription ?: Unsub | Unsub[];
     /**
      * @description
      * Set the access rule which clients are allowed to publish in this channel.
@@ -200,13 +200,13 @@ export interface ZationChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,Sub 
      * //Or-Conditions
      * ['user','guest',$userId(23)] // Only all clients with user group: user, default user group or user id 23 are allowed.
      * //And-Conditions (Array in Or-Condition-Array)
-     * [['user',$tokenHasVariables({canEdit : true})]] //Only clients with user group: user and token variable
+     * [['user',$tokenHasVariables({canEdit: true})]] //Only clients with user group: user and token variable
      * canEdit with the value true are allowed.
      * //Complex
-     * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //Only clients with user group: admin or
+     * ['admin',['user',$tokenVariablesMatch({age: {$gt: 17}})]] //Only clients with user group: admin or
      * clients with user group: user and the token variable: age witch a value that's greater than 17, are allowed.
      */
-    clientPublishAccess ?: Notable<AccessConfigValue<PubAccess>>;
+    clientPublishAccess?: Notable<AccessConfigValue<PubAccess>>;
 }
 
 export type UserChannel = ZationChannelConfig<
@@ -264,13 +264,13 @@ export interface BaseCustomChannelConfig<Pub = AnyFunction,BagPub = AnyFunction,
      * //Or-Conditions
      * ['user','guest',$userId(23)] // Only all clients with user group: user, default user group or user id 23 are allowed.
      * //And-Conditions (Array in Or-Condition-Array)
-     * [['user',$tokenHasVariables({canEdit : true})]] //Only clients with user group: user and token variable
+     * [['user',$tokenHasVariables({canEdit: true})]] //Only clients with user group: user and token variable
      * canEdit with the value true are allowed.
      * //Complex
-     * ['admin',['user',$tokenVariablesMatch({age : {$gt : 17}})]] //Only clients with user group: admin or
+     * ['admin',['user',$tokenVariablesMatch({age: {$gt: 17}})]] //Only clients with user group: admin or
      * clients with user group: user and the token variable: age witch a value that's greater than 17, are allowed.
      */
-    subscribeAccess ?: Notable<AccessConfigValue<SubAccess>>;
+    subscribeAccess?: Notable<AccessConfigValue<SubAccess>>;
 }
 
 export type CustomChFamily = (BaseCustomChannelConfig<

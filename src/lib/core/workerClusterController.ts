@@ -9,18 +9,18 @@ const workerInitOptions = JSON.parse((process.env.workerInitOptions as string));
 
 class WorkerClusterController
 {
-    private static instance : WorkerClusterController;
+    private static instance: WorkerClusterController;
 
-    private workers : ChildProcess[];
-    private hasExited : boolean = false;
-    private terminatedCount : number = 0;
+    private workers: ChildProcess[];
+    private hasExited: boolean = false;
+    private terminatedCount: number = 0;
     private childExitLookup = {};
-    private isTerminating : boolean = false;
-    private isForceKillingWorkers : boolean = false;
+    private isTerminating: boolean = false;
+    private isForceKillingWorkers: boolean = false;
 
-    private processTermTimeout : number = 10000;
-    private forceKillTimeout : number = 15000;
-    private forceKillSignal : string = 'SIGHUP';
+    private processTermTimeout: number = 10000;
+    private forceKillTimeout: number = 15000;
+    private forceKillSignal: string = 'SIGHUP';
 
     constructor() {
         if (WorkerClusterController.instance) {
@@ -150,7 +150,7 @@ class WorkerClusterController
         }, this.processTermTimeout);
     }
 
-    init(options : any)
+    init(options: any)
     {
         if (options.schedulingPolicy != null) {
             cluster.schedulingPolicy = options.schedulingPolicy;

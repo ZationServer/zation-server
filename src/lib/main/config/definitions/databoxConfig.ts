@@ -13,7 +13,7 @@ import ZSocket                                                     from "../../i
 import {Input}                                                     from "./inputConfig";
 import {AccessConfigValue}                                         from "../../access/accessOptions";
 
-export type DbAccessFunction = (bag : Bag, socket : ZSocket, dbInfo : DataboxInfo) => Promise<boolean> | boolean;
+export type DbAccessFunction = (bag: Bag, socket: ZSocket, dbInfo: DataboxInfo) => Promise<boolean> | boolean;
 
 export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, AuthAccessConfig<DbAccessFunction>
 {
@@ -39,40 +39,40 @@ export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, 
      * for making it more clear that this is a single model input.
      * @example
      * //Parameter-based input
-     * input : {
-     *     name : {
-     *         type : 'string'
+     * input: {
+     *     name: {
+     *         type: 'string'
      *     },
-     *     age : {
-     *         type : 'int',
-     *         minValue : 14
+     *     age: {
+     *         type: 'int',
+     *         minValue: 14
      *     }
      * }
      * //Client can send  ->
-     * {name : 'Luca', age : 20}
+     * {name: 'Luca', age: 20}
      * //or
      * ['Luca',20]
      *
      * //-Single model input-
-     * input : [{
-     *     type : 'string',
-     *     minLength : 4
+     * input: [{
+     *     type: 'string',
+     *     minLength: 4
      * }]
      * //or
-     * input : Config.single({
-     *     type : 'string',
-     *     minLength : 4
+     * input: Config.single({
+     *     type: 'string',
+     *     minLength: 4
      * })
      * //Client can send ->
      * "ThisIsAnyString"
      */
-    fetchInput ?: Input;
+    fetchInput?: Input;
     /**
      * Specifies if any fetch input is allowed
      * that means the fetch input validation and converter are disabled.
      * @default false.
      */
-    allowAnyFetchInput  ?: boolean;
+    allowAnyFetchInput ?: boolean;
 
     /**
      * This property defines the init input.
@@ -97,40 +97,40 @@ export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, 
      * for making it more clear that this is a single model input.
      * @example
      * //Parameter-based input
-     * input : {
-     *     name : {
-     *         type : 'string'
+     * input: {
+     *     name: {
+     *         type: 'string'
      *     },
-     *     age : {
-     *         type : 'int',
-     *         minValue : 14
+     *     age: {
+     *         type: 'int',
+     *         minValue: 14
      *     }
      * }
      * //Client can send  ->
-     * {name : 'Luca', age : 20}
+     * {name: 'Luca', age: 20}
      * //or
      * ['Luca',20]
      *
      * //-Single model input-
-     * input : [{
-     *     type : 'string',
-     *     minLength : 4
+     * input: [{
+     *     type: 'string',
+     *     minLength: 4
      * }]
      * //or
-     * input : Config.single({
-     *     type : 'string',
-     *     minLength : 4
+     * input: Config.single({
+     *     type: 'string',
+     *     minLength: 4
      * })
      * //Client can send ->
      * "ThisIsAnyString"
      */
-    initInput ?: Input;
+    initInput?: Input;
     /**
      * Specifies if any init input is allowed
      * that means the init input validation and converter are disabled.
      * @default false.
      */
-    allowAnyInitInput  ?: boolean;
+    allowAnyInitInput ?: boolean;
 
     /**
      * @description
@@ -153,9 +153,9 @@ export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, 
      * //array
      * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
      * //function
-     * (bag : Bag,socket : ZSocket,dbInfo : DataboxInfo) => {} // If returns true the client is allowed, false will not allow.
+     * (bag: Bag,socket: ZSocket,dbInfo: DataboxInfo) => {} // If returns true the client is allowed, false will not allow.
      */
-    access ?: AccessConfigValue<DbAccessFunction>;
+    access?: AccessConfigValue<DbAccessFunction>;
     /**
      * @description
      * Set the access rule which clients are not allowed to access this Databox.
@@ -177,9 +177,9 @@ export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, 
      * //array
      * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
      * //function
-     * (bag : Bag,socket : ZSocket,dbInfo : DataboxInfo) => {}  // If returns true the client is not allowed, false will allow.
+     * (bag: Bag,socket: ZSocket,dbInfo: DataboxInfo) => {}  // If returns true the client is not allowed, false will allow.
      */
-    notAccess ?: AccessConfigValue<DbAccessFunction>;
+    notAccess?: AccessConfigValue<DbAccessFunction>;
 
     /**
      * This option can be activated when you have designed
@@ -189,7 +189,7 @@ export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, 
      * parallel that will increase the performance in some cases.
      * @default false
      */
-    parallelFetch ?: boolean;
+    parallelFetch?: boolean;
 
     /**
      * The maximal backpressure that a client can build up by calling fetch data.
@@ -197,7 +197,7 @@ export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, 
      * This option is unnecessary if the parallel fetch option is activated.
      * @default 30
      */
-    maxBackpressure ?: number;
+    maxBackpressure?: number;
 
     /**
      * The maximal amount of input channels that a socket can create.
@@ -210,7 +210,7 @@ export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, 
      * The minimum value is 1.
      * @default 20
      */
-    maxSocketInputChannels ?: number;
+    maxSocketInputChannels?: number;
 }
 
 export type DataboxClassDef = DataboxClass | DataboxFamilyClass

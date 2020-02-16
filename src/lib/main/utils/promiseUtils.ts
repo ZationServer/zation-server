@@ -11,6 +11,6 @@ Copyright(c) Luca Scaringella
  * @param promise
  * @param func
  */
-export default function afterPromise(promise : Promise<any>,func : () => Promise<void> | void) : Promise<void> {
+export default function afterPromise(promise: Promise<any>,func: () => Promise<void> | void): Promise<void> {
     return promise.then(func,func);
 }

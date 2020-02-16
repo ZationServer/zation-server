@@ -15,7 +15,7 @@ export interface ObjectPathSequence {
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
      */
-    set(path : string | string[],value : any) : ObjectPathSequence
+    set(path: string | string[],value: any): ObjectPathSequence
 
     /**
      * @description
@@ -25,12 +25,12 @@ export interface ObjectPathSequence {
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    delete(path ?: string | string[]) : ObjectPathSequence
+    delete(path?: string | string[]): ObjectPathSequence
 
     /**
      * @description
      * Commit your changes.
      */
-    commit() : Promise<void>
+    commit(): Promise<void>
 
 }

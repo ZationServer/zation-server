@@ -22,21 +22,21 @@ import {InDecoratorMem, InDM_ConstructorMethods, InDM_Extends, InDM_Models} from
  * @param register Indicates if the object model should be registered automatically.
  * @param name The name of the object model; if it is not provided, it will use the class name.
  */
-export const ObjectModel = (register : boolean = true, name ?: string) => {
-    return (target : any) => {
+export const ObjectModel = (register: boolean = true, name?: string) => {
+    return (target: any) => {
 
-        const prototype : InDecoratorMem = target.prototype;
+        const prototype: InDecoratorMem = target.prototype;
 
         //constructorMethods
         const constructorMethods = Array.isArray(prototype[InDM_ConstructorMethods]) ?
-            CloneUtils.deepClone(prototype[InDM_ConstructorMethods]!) : [];
+            CloneUtils.deepClone(prototype[InDM_ConstructorMethods]!): [];
 
-        const models = typeof prototype[InDM_Models] === 'object' ? prototype[InDM_Models]! : {};
+        const models = typeof prototype[InDM_Models] === 'object' ? prototype[InDM_Models]!: {};
 
-        const objectModel : ObjectModelConfig = {
-            properties : models,
-            ...(prototype[InDM_Extends] !== undefined ? {extends : prototype[InDM_Extends]} : {}),
-            construct : async function(bag)
+        const objectModel: ObjectModelConfig = {
+            properties: models,
+            ...(prototype[InDM_Extends] !== undefined ? {extends: prototype[InDM_Extends]}: {}),
+            construct: async function(bag)
             {
                 let proto = this;
                 let nextProto = Object.getPrototypeOf(proto);
@@ -46,7 +46,7 @@ export const ObjectModel = (register : boolean = true, name ?: string) => {
                 }
                 Object.setPrototypeOf(proto,Reflect.construct(target,[bag]));
 
-                const promises : Promise<void>[] = [];
+                const promises: Promise<void>[] = [];
                 for(let i = 0; i < constructorMethods.length; i++){
                     promises.push(constructorMethods[i].call(this,bag));
                 }
@@ -55,7 +55,7 @@ export const ObjectModel = (register : boolean = true, name ?: string) => {
         };
 
         if(register) {
-            const regName = typeof name === 'string' ? name : target.name;
+            const regName = typeof name === 'string' ? name: target.name;
             Config.defineModel(regName,objectModel);
 
             (target as ModelConfigTranslatable).__toModelConfig = () => {

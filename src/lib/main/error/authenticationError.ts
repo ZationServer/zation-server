@@ -9,9 +9,9 @@ import {MainBackErrors} from "../zationBackErrors/mainBackErrors";
 
 export default class AuthenticationError extends CodeError
 {
-    private readonly reason : string;
+    private readonly reason: string;
 
-    constructor(reason : string)
+    constructor(reason: string)
     {
         super(MainBackErrors.authenticationError,{reason});
         this.reason = reason;

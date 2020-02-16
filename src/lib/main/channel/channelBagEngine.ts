@@ -31,12 +31,12 @@ import UnknownCustomCh      from "../error/unknownCustomCh";
 export default class ChannelBagEngine
 {
     private readonly scServer: ScServer;
-    private readonly chPrepare : ChannelPrepare;
-    private readonly aePreparedPart : AEPreparedPart;
+    private readonly chPrepare: ChannelPrepare;
+    private readonly aePreparedPart: AEPreparedPart;
 
-    private _bag : Bag;
+    private _bag: Bag;
 
-    constructor(worker: ZationWorker,aePreparedPart : AEPreparedPart,chPrepare : ChannelPrepare) {
+    constructor(worker: ZationWorker,aePreparedPart: AEPreparedPart,chPrepare: ChannelPrepare) {
         this.scServer = worker.scServer;
         this.aePreparedPart = aePreparedPart;
         this.chPrepare = chPrepare;
@@ -93,26 +93,26 @@ export default class ChannelBagEngine
                                  data: WorkerChMapTask['data'] = {}): Promise<void>
     {
         await this.publishToWorker<WorkerChAbstractMapTask>({
-            taskType : WorkerChTaskType.MAP_TASK,
-            ids: Array.isArray(ids) ? ids : [ids],
+            taskType: WorkerChTaskType.MAP_TASK,
+            ids: Array.isArray(ids) ? ids: [ids],
             action: action,
             target: target,
             data: data,
-            exceptSocketSids: Array.isArray(exceptSocketSids) ? exceptSocketSids : [exceptSocketSids]
+            exceptSocketSids: Array.isArray(exceptSocketSids) ? exceptSocketSids: [exceptSocketSids]
         });
     }
 
-    async publishSpecialTaskToWorker(action : WorkerChSpecialTaskAction.UPDATE_GROUP_TOKENS, data : UpdateTokenMainData): Promise<void>
-    async publishSpecialTaskToWorker(action : WorkerChSpecialTaskAction.UPDATE_USER_TOKENS, data : UpdateTokenMainData): Promise<void>
-    async publishSpecialTaskToWorker(action : WorkerChSpecialTaskAction.MESSAGE, data : any): Promise<void>
+    async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction.UPDATE_GROUP_TOKENS, data: UpdateTokenMainData): Promise<void>
+    async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction.UPDATE_USER_TOKENS, data: UpdateTokenMainData): Promise<void>
+    async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction.MESSAGE, data: any): Promise<void>
     /**
      * Publish special task to worker.
      * @param action
      * @param data
      */
-    async publishSpecialTaskToWorker(action : WorkerChSpecialTaskAction, data : UpdateTokenMainData | any): Promise<void> {
+    async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction, data: UpdateTokenMainData | any): Promise<void> {
         await this.publishToWorker<WorkerChSpecialTask>({
-            taskType : WorkerChTaskType.SPECIAL_TASK,
+            taskType: WorkerChTaskType.SPECIAL_TASK,
             action: action,
             data: data
         });
@@ -131,9 +131,9 @@ export default class ChannelBagEngine
     {
         await this.publishSpecialTaskToWorker(
             WorkerChSpecialTaskAction.UPDATE_USER_TOKENS, {
-                operations : operations,
-                target : userId,
-                exceptSocketSids : Array.isArray(exceptSocketSids) ? exceptSocketSids : [exceptSocketSids]
+                operations: operations,
+                target: userId,
+                exceptSocketSids: Array.isArray(exceptSocketSids) ? exceptSocketSids: [exceptSocketSids]
             }
         );
     }
@@ -151,9 +151,9 @@ export default class ChannelBagEngine
     {
         await this.publishSpecialTaskToWorker(
             WorkerChSpecialTaskAction.UPDATE_GROUP_TOKENS, {
-                operations : operations,
-                target : authUserGroup,
-                exceptSocketSids : Array.isArray(exceptSocketSids) ? exceptSocketSids : [exceptSocketSids]
+                operations: operations,
+                target: authUserGroup,
+                exceptSocketSids: Array.isArray(exceptSocketSids) ? exceptSocketSids: [exceptSocketSids]
             }
         );
     }
@@ -167,17 +167,17 @@ export default class ChannelBagEngine
      * @param srcSocketSid
      * @param socketInfo
      */
-    async publishInUserCh(id : number | string | (string | number)[],eventName : string,data : any,srcSocketSid ?: string,socketInfo ?: ZSocket) : Promise<void>
+    async publishInUserCh(id: number | string | (string | number)[],eventName: string,data: any,srcSocketSid?: string,socketInfo?: ZSocket): Promise<void>
     {
         const onBagPub = this.chPrepare.getUserChInfo().onBagPub;
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
 
-        const eventTrigger = (selectedId : number | string) => {
+        const eventTrigger = (selectedId: number | string) => {
             onBagPub(this._bag,pubData,socketInfo,selectedId.toString());
         };
 
         if(Array.isArray(id)) {
-            const promises : Promise<void>[] = [];
+            const promises: Promise<void>[] = [];
             for(let i = 0; i < id.length; i++) {
                 promises.push(this.pubAsync(ChUtils.buildUserChName(id[i]),pubData));
                 eventTrigger(id[i]);
@@ -197,7 +197,7 @@ export default class ChannelBagEngine
      * @param srcSocketSid
      * @param socketInfo
      */
-    async publishInDefaultUserGroupCh(eventName : string, data : any,srcSocketSid ?: string,socketInfo ?: ZSocket) : Promise<void>
+    async publishInDefaultUserGroupCh(eventName: string, data: any,srcSocketSid?: string,socketInfo?: ZSocket): Promise<void>
     {
         const onBagPub = this.chPrepare.getDefaultUserGroupChInfo().onBagPub;
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
@@ -213,7 +213,7 @@ export default class ChannelBagEngine
      * @param srcSocketSid
      * @param socketInfo
      */
-    async publishInAllCh(eventName : string,data : any,srcSocketSid ?: string,socketInfo ?: ZSocket) : Promise<void>
+    async publishInAllCh(eventName: string,data: any,srcSocketSid?: string,socketInfo?: ZSocket): Promise<void>
     {
         const onBagPub = this.chPrepare.getAllChInfo().onBagPub;
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
@@ -230,17 +230,17 @@ export default class ChannelBagEngine
      * @param srcSocketSid
      * @param socketInfo
      */
-    async publishInAuthUserGroupCh(authUserGroup : string | string[], eventName : string, data : any,srcSocketSid ?: string,socketInfo ?: ZSocket) : Promise<void>
+    async publishInAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: any,srcSocketSid?: string,socketInfo?: ZSocket): Promise<void>
     {
         const onBagPub = this.chPrepare.getAuthUserGroupChInfo().onBagPub;
         const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
 
-        const eventTrigger = (selectedAuthUserGroup : string) => {
+        const eventTrigger = (selectedAuthUserGroup: string) => {
             onBagPub(this._bag,pubData,socketInfo,selectedAuthUserGroup);
         };
 
         if(Array.isArray(authUserGroup)) {
-            const promises : Promise<void>[] = [];
+            const promises: Promise<void>[] = [];
             for(let i = 0; i < authUserGroup.length; i++) {
                 promises.push(this.pubAsync(ChUtils.buildAuthUserGroupChName(authUserGroup[i]),pubData));
                 eventTrigger(authUserGroup[i]);
@@ -260,10 +260,10 @@ export default class ChannelBagEngine
      * @param srcSocketSid
      * @param socketInfo
      */
-    async publishInAllAuthUserGroupCh(eventName : string,
-                                      data : any,
-                                      srcSocketSid ?: string,
-                                      socketInfo ?: ZSocket) : Promise<void>
+    async publishInAllAuthUserGroupCh(eventName: string,
+                                      data: any,
+                                      srcSocketSid?: string,
+                                      socketInfo?: ZSocket): Promise<void>
     {
         await this.publishInAuthUserGroupCh
         (Object.keys(this.aePreparedPart.getAuthGroups()),eventName,data,srcSocketSid,socketInfo);
@@ -278,7 +278,7 @@ export default class ChannelBagEngine
      * @param socketInfo
      * @throws UnknownCustomCh
      */
-    async publishInCustomCh({name,id} : {name : string,id ?: string}, eventName : string, data : any, srcSocketSid ?: string, socketInfo ?: ZSocket) : Promise<void>
+    async publishInCustomCh({name,id}: {name: string,id?: string}, eventName: string, data: any, srcSocketSid?: string, socketInfo?: ZSocket): Promise<void>
     {
         if(this.chPrepare.existCustomCh(name)){
             const onBagPub = this.chPrepare.getCustomChPreInfo(name).onBagPub;

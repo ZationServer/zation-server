@@ -9,11 +9,11 @@ import {MainBackErrors} from "../zationBackErrors/mainBackErrors";
 
 export default class MethodIsIncompatibleError extends CodeError
 {
-    private readonly reqType : string;
-    private readonly requiredReqType : string;
-    private readonly actionDescription : string;
+    private readonly reqType: string;
+    private readonly requiredReqType: string;
+    private readonly actionDescription: string;
 
-    constructor(reqType : string,requiredReqType : string,actionDescription : string = '')
+    constructor(reqType: string,requiredReqType: string,actionDescription: string = '')
     {
         super(MainBackErrors.methodIsIncompatible,{reqType,requiredReqType});
         this.reqType = reqType;

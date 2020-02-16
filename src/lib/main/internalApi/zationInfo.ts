@@ -8,9 +8,9 @@ import ZationConfig from "../config/manager/zationConfig";
 
 export default class ZationInfo
 {
-    private readonly _zationConfig : ZationConfig;
+    private readonly _zationConfig: ZationConfig;
 
-    constructor(zc : ZationConfig)
+    constructor(zc: ZationConfig)
     {
         this._zationConfig = zc;
     }

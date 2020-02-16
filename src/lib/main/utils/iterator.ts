@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import {ApiLevelSwitch} from "../apiLevel/apiLevelUtils";
 
 export type BreakIterator =
-    (func : (key : string,value : any,src : object | any []) => Promise<boolean | void>) => Promise<void>;
+    (func: (key: string,value: any,src: object | any []) => Promise<boolean | void>) => Promise<void>;
 
 export default class Iterator
 {
@@ -17,7 +17,7 @@ export default class Iterator
      * Notice that the array or object should not change after creating the closure.
      * @param value
      */
-    static createBreakIterator(value : object | any[]) : BreakIterator
+    static createBreakIterator(value: object | any[]): BreakIterator
     {
         if(Array.isArray(value)){
             return async (func) => {
@@ -45,7 +45,7 @@ export default class Iterator
      * @param func
      * @param value
      */
-    static iterateSync(func : (key : string,value : any,src : object | any []) => void,value : object | any[])
+    static iterateSync(func: (key: string,value: any,src: object | any []) => void,value: object | any[])
     {
         if(Array.isArray(value)){
             for(let k = 0; k < value.length; k++) {
@@ -67,8 +67,8 @@ export default class Iterator
      * @param definition
      * @param iterator
      */
-    static iterateCompDefinition<T extends object>(definition : T | ApiLevelSwitch<T>,
-                                                   iterator : (tClass : T,key : string | undefined) => void)
+    static iterateCompDefinition<T extends object>(definition: T | ApiLevelSwitch<T>,
+                                                   iterator: (tClass: T,key: string | undefined) => void)
     {
         if(typeof definition === 'function'){
             iterator(definition,undefined);

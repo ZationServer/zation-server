@@ -14,10 +14,10 @@ export default class DbConfigUtils {
      * Converts the Databox fetch input config to an input config.
      * @param config
      */
-    static convertDbFetchInput(config : DataboxConfig) : InputConfig {
+    static convertDbFetchInput(config: DataboxConfig): InputConfig {
         return {
-            input : config.fetchInput,
-            allowAnyInput : config.allowAnyFetchInput
+            input: config.fetchInput,
+            allowAnyInput: config.allowAnyFetchInput
         };
     }
 
@@ -25,10 +25,10 @@ export default class DbConfigUtils {
      * Converts the Databox init input config to an input config.
      * @param config
      */
-    static convertDbInitInput(config : DataboxConfig) : InputConfig {
+    static convertDbInitInput(config: DataboxConfig): InputConfig {
         return {
-            input : config.initInput,
-            allowAnyInput : config.allowAnyFetchInput
+            input: config.initInput,
+            allowAnyInput: config.allowAnyFetchInput
         };
     }
 }

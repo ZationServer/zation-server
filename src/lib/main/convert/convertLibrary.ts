@@ -12,7 +12,7 @@ import Converter         from "./converter";
 Converter Library from Zation
 */
 
-const converterLibrary :  Record<string,(input : any,strictType ?: boolean) => any> = {};
+const converterLibrary:  Record<string,(input: any,strictType?: boolean) => any> = {};
 
 converterLibrary[ValidationType.INT] = (input, strictType) =>
 {
@@ -56,4 +56,4 @@ converterLibrary[ValidationType.BOOLEAN] = (input, strictType) =>
     return input;
 };
 
-export const ConverterLibrary : Record<string,(input : any,strictType ?: boolean) => any> = converterLibrary;
+export const ConverterLibrary: Record<string,(input: any,strictType?: boolean) => any> = converterLibrary;

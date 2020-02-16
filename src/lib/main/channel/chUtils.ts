@@ -17,7 +17,7 @@ export default class ChUtils
      * @param name
      * @param id
      */
-    static buildCustomChannelName(name ?: string,id ?: string) : string {
+    static buildCustomChannelName(name?: string,id?: string): string {
         if(name !== undefined) {
             if(id !== undefined){
                 return ZationChannel.CUSTOM_CHANNEL_PREFIX + name +
@@ -36,11 +36,11 @@ export default class ChUtils
      * Get custom channel info from a built string.
      * @param ch
      */
-    static getCustomChannelInfo(ch : string) : {name : string,id : string | undefined} {
+    static getCustomChannelInfo(ch: string): {name: string,id: string | undefined} {
         const nameAndId = ch.split('.');
         return {
-            name : nameAndId[1],
-            id : nameAndId[2]
+            name: nameAndId[1],
+            id: nameAndId[2]
         };
     }
 
@@ -48,7 +48,7 @@ export default class ChUtils
      * Get custom channel name from a built string.
      * @param ch
      */
-    static getCustomChannelName(ch : string) : string {
+    static getCustomChannelName(ch: string): string {
         return ch.split('.')[1];
     }
 
@@ -56,7 +56,7 @@ export default class ChUtils
      * Build auth user group channel name.
      * @param authUserGroup
      */
-    static buildAuthUserGroupChName(authUserGroup : string = '') : string {
+    static buildAuthUserGroupChName(authUserGroup: string = ''): string {
         return ZationChannel.AUTH_USER_GROUP_PREFIX + authUserGroup;
     }
 
@@ -64,7 +64,7 @@ export default class ChUtils
      * Get auth user group from a built channel string.
      * @param ch
      */
-    static getUserAuthGroupFromCh(ch : string) : string {
+    static getUserAuthGroupFromCh(ch: string): string {
         return ch.split('.')[1];
     }
 
@@ -72,7 +72,7 @@ export default class ChUtils
      * Build user channel name.
      * @param id
      */
-    static buildUserChName(id : number | string) : string {
+    static buildUserChName(id: number | string): string {
         return ZationChannel.USER_CHANNEL_PREFIX+id;
     }
 
@@ -80,7 +80,7 @@ export default class ChUtils
      * Get user id from a built channel string.
      * @param ch
      */
-    static getUserIdFromCh(ch : string) : string {
+    static getUserIdFromCh(ch: string): string {
         return ch.split('.')[1];
     }
 
@@ -90,10 +90,10 @@ export default class ChUtils
      * @param channel
      * @param target
      */
-    static kickOut(socket : UpSocket, channel : string,target ?: string) : void {
+    static kickOut(socket: UpSocket, channel: string,target?: string): void {
         // noinspection JSUnresolvedFunction,JSValidateTypes,TypeScriptValidateJSTypes
         socket.kickOut(channel);
-        Logger.printDebugInfo(`Socket with id: ${socket.id} is kicked from ${target !== undefined ? target : `channel ${channel}`}.`);
+        Logger.printDebugInfo(`Socket with id: ${socket.id} is kicked from ${target !== undefined ? target: `channel ${channel}`}.`);
     }
 
     /**
@@ -101,8 +101,8 @@ export default class ChUtils
      * @param socket
      * @param search
      */
-    static kickOutSearch(socket : UpSocket, search : string) : void {
-        const subs : string[] = socket.subscriptions();
+    static kickOutSearch(socket: UpSocket, search: string): void {
+        const subs: string[] = socket.subscriptions();
         for(let i = 0; i < subs.length; i++) {
             if(subs[i].indexOf(search) !== -1) {
                 ChUtils.kickOut(socket,subs[i]);
@@ -115,7 +115,7 @@ export default class ChUtils
      * @param socket
      * @param search
      */
-    static subscriptionSearch(socket : UpSocket, search : string) : string[] {
+    static subscriptionSearch(socket: UpSocket, search: string): string[] {
         return socket.subscriptions().filter((s) => {
             return s.indexOf(search) !== -1;
         });
@@ -126,8 +126,8 @@ export default class ChUtils
      * @param socket
      * @param search
      */
-    static subscriptionFindSearch(socket : UpSocket, search : string) : boolean {
-        const subs : string[] = socket.subscriptions();
+    static subscriptionFindSearch(socket: UpSocket, search: string): boolean {
+        const subs: string[] = socket.subscriptions();
         for(let i = 0; i < subs.length; i++) {
             if(subs[i].indexOf(search) !== -1) {return true;}
         }
@@ -139,7 +139,7 @@ export default class ChUtils
      * @param socket
      * @param name (optional filter for a specific name)
      */
-    static getCustomChannelSubscriptions(socket : UpSocket,name ?: string) : string[] {
+    static getCustomChannelSubscriptions(socket: UpSocket,name?: string): string[] {
         return ChUtils.subscriptionSearch(socket,ChUtils.buildCustomChannelName(name));
     }
 
@@ -147,7 +147,7 @@ export default class ChUtils
      * Returns if the socket has subscribed the user channel.
      * @param socket
      */
-    static hasSubUserCh(socket : UpSocket) : boolean {
+    static hasSubUserCh(socket: UpSocket): boolean {
         return ChUtils.subscriptionFindSearch(socket,ZationChannel.USER_CHANNEL_PREFIX);
     }
 
@@ -155,7 +155,7 @@ export default class ChUtils
      * Returns if the socket has subscribed the auth user group channel.
      * @param socket
      */
-    static hasSubAuthUserGroupCh(socket : UpSocket) : boolean {
+    static hasSubAuthUserGroupCh(socket: UpSocket): boolean {
         return ChUtils.subscriptionFindSearch(socket,ZationChannel.AUTH_USER_GROUP_PREFIX);
     }
 
@@ -163,7 +163,7 @@ export default class ChUtils
      * Returns if the socket has subscribed the default user group channel.
      * @param socket
      */
-    static hasSubDefaultUserGroupCh(socket : UpSocket) : boolean {
+    static hasSubDefaultUserGroupCh(socket: UpSocket): boolean {
         return socket.subscriptions().includes(ZationChannel.DEFAULT_USER_GROUP);
     }
 
@@ -171,7 +171,7 @@ export default class ChUtils
      * Returns if the socket has subscribed the all channel.
      * @param socket
      */
-    static hasSubAllCh(socket : UpSocket) : boolean {
+    static hasSubAllCh(socket: UpSocket): boolean {
         return socket.subscriptions().includes(ZationChannel.ALL);
     }
 
@@ -181,7 +181,7 @@ export default class ChUtils
      * @param name
      * @param id
      */
-    static hasSubCustomCh(socket : UpSocket,name ?: string, id ?: string) : boolean {
+    static hasSubCustomCh(socket: UpSocket,name?: string, id?: string): boolean {
         return ChUtils.subscriptionFindSearch(socket,ChUtils.buildCustomChannelName(name,id));
     }
 
@@ -189,7 +189,7 @@ export default class ChUtils
      * Returns if the socket has subscribed the panel out channel.
      * @param socket
      */
-    static hasSubPanelOutCh(socket : UpSocket) : boolean {
+    static hasSubPanelOutCh(socket: UpSocket): boolean {
         return socket.subscriptions().includes(ZationChannel.PANEL_OUT);
     }
 
@@ -199,7 +199,7 @@ export default class ChUtils
      * @param name
      * @param id
      */
-    static kickCustomChannel(socket : UpSocket, name ?: string, id ?: string) : void {
+    static kickCustomChannel(socket: UpSocket, name?: string, id?: string): void {
         ChUtils.kickOutSearch(socket,ChUtils.buildCustomChannelName(name,id));
     }
 
@@ -208,7 +208,7 @@ export default class ChUtils
      * @param req
      * @param socket
      */
-    static pubDataAddSocketSrcSid(req : any,socket : UpSocket) {
+    static pubDataAddSocketSrcSid(req: any,socket: UpSocket) {
         if(typeof req.data === "object") {
             req.data['ssi'] = socket.sid;
         }
@@ -220,12 +220,12 @@ export default class ChUtils
      * @param data
      * @param srcSocketSid
      */
-    static buildData(eventName : string,data : any,srcSocketSid ?: string) : PubData
+    static buildData(eventName: string,data: any,srcSocketSid?: string): PubData
     {
         return {
-            e : eventName,
-            d : data,
-            sSid : srcSocketSid
+            e: eventName,
+            d: data,
+            sSid: srcSocketSid
         };
     }
 }

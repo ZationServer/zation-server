@@ -23,10 +23,10 @@ import {AccessConfigValue} from '../access/accessOptions';
 import {getNotableValue, isNotableNot} from '../../api/Notable';
 
 export type ChSubAccessChecker =
-    (authEngine : AuthEngine, socketInfo : ZSocket, chInfo : CChInfo | CChFamilyInfo) => Promise<boolean>
+    (authEngine: AuthEngine, socketInfo: ZSocket, chInfo: CChInfo | CChFamilyInfo) => Promise<boolean>
 
 export type ChPubAccessChecker =
-    (authEngine : AuthEngine, pubData : PubData, socketInfo : ZSocket, chInfo : CChInfo | CChFamilyInfo | string | undefined) => Promise<boolean>
+    (authEngine: AuthEngine, pubData: PubData, socketInfo: ZSocket, chInfo: CChInfo | CChFamilyInfo | string | undefined) => Promise<boolean>
 
 /**
  * Helper class for channel access.
@@ -40,9 +40,9 @@ export default class ChAccessHelper
      */
     static createPubChAccessChecker
     (
-        accessValue : AccessConfigValue<any>,
-        bag : Bag)
-        : ChPubAccessChecker
+        accessValue: AccessConfigValue<any>,
+        bag: Bag)
+       : ChPubAccessChecker
     {
         const rawValue = getNotableValue(accessValue);
         if(rawValue !== undefined) {
@@ -65,9 +65,9 @@ export default class ChAccessHelper
      */
     static createSubChAccessChecker
     (
-        accessValue : AccessConfigValue<any>,
-        bag : Bag)
-        : ChSubAccessChecker
+        accessValue: AccessConfigValue<any>,
+        bag: Bag)
+       : ChSubAccessChecker
     {
         const rawValue = getNotableValue(accessValue);
         if(rawValue !== undefined) {
@@ -91,7 +91,7 @@ export default class ChAccessHelper
      * @param socket
      * @param channelPrepare
      */
-    static async checkSocketCustomChAccess(socket : UpSocket, channelPrepare : ChannelPrepare) : Promise<void>
+    static async checkSocketCustomChAccess(socket: UpSocket, channelPrepare: ChannelPrepare): Promise<void>
     {
         const subs = socket.subscriptions();
         const authEngine = socket.authEngine;
@@ -107,7 +107,7 @@ export default class ChAccessHelper
                         chInfo
                     ))) {
                         ChUtils.kickOut(socket,subs[i],`custom channel: '${chInfo.name}'${chInfo.id !== undefined ?
-                        ` with id: '${chInfo.id}'` : ''}`);
+                        ` with id: '${chInfo.id}'`: ''}`);
                     }
                 }
             }
@@ -119,7 +119,7 @@ export default class ChAccessHelper
      * Checks the socket subscribe access to the main zation channels.
      * @param socket
      */
-    static checkSocketZationChAccess(socket : UpSocket) : void
+    static checkSocketZationChAccess(socket: UpSocket): void
     {
         const subs = socket.subscriptions();
         const authEngine = socket.authEngine;

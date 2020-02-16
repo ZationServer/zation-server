@@ -33,14 +33,14 @@ AUTH                         = 'a',
 TOKEN                        = 'to',
  */
 export interface ZationRequest {
-    s ?: string,
-    to ?: string,
-    al ?: number,
-    t ?: ZationTask
-    a ?: {
-        i : any,
+    s?: string,
+    to?: string,
+    al?: number,
+    t?: ZationTask
+    a?: {
+        i: any,
     },
-    v ?: ZationValidationCheck | number
+    v?: ZationValidationCheck | number
 }
 
 //legend
@@ -50,9 +50,9 @@ c = controller
 sc = systemController
  */
 export interface ZationTask {
-    i : any,
-    c ?: string,
-    sc ?: string
+    i: any,
+    c?: string,
+    sc?: string
 }
 
 //legend
@@ -62,14 +62,14 @@ c = controller
 sc = systemController
  */
 export interface ZationValidationCheck {
-    i : ValidationCheckPair[]
-    c ?: string,
-    sc ?: string
+    i: ValidationCheckPair[]
+    c?: string,
+    sc?: string
 }
 
 export interface ValidationCheckPair {
-    ip : string | string[],
-    v : any
+    ip: string | string[],
+    v: any
 }
 
 //legend
@@ -82,12 +82,12 @@ zs = from zation system
 i = info
  */
 export interface ResponseError {
-    n : string,
-    g ?: string,
-    t : string
-    d ?: string,
-    zs : boolean,
-    i ?: object | BackErrorInfo
+    n: string,
+    g?: string,
+    t: string
+    d?: string,
+    zs: boolean,
+    i?: object | BackErrorInfo
 }
 
 //legend
@@ -99,13 +99,13 @@ t = token (st = signedToken,pt = plainToken)
 zhi = zation http info
  */
 export interface ZationResponse {
-    e : ResponseError[],
-    r : ResponseResult
-    t ?: {
-        st : string,
-        pt : object
+    e: ResponseError[],
+    r: ResponseResult
+    t?: {
+        st: string,
+        pt: object
     },
-    zhi ?: string[]
+    zhi?: string[]
 }
 
 //legend
@@ -114,6 +114,6 @@ r = main result
 s = result status code
  */
 export interface ResponseResult {
-    r ?: any,
-    s ?: string | number
+    r?: any,
+    s?: string | number
 }

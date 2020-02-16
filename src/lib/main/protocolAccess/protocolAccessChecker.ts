@@ -11,7 +11,7 @@ import SHBridge           from "../bridges/shBridge";
 
 export default class ProtocolAccessChecker
 {
-    static hasProtocolAccess(shBridge : BaseSHBridge,controller : ControllerConfig) : boolean
+    static hasProtocolAccess(shBridge: BaseSHBridge,controller: ControllerConfig): boolean
     {
         let hasAccess = true;
         if(shBridge.isWebSocket()) {
@@ -27,7 +27,7 @@ export default class ProtocolAccessChecker
         return hasAccess;
     }
 
-    static hasHttpMethodAccess(shBridge : SHBridge,controller : ControllerConfig) : boolean
+    static hasHttpMethodAccess(shBridge: SHBridge,controller: ControllerConfig): boolean
     {
         let hasAccess = true;
         const method = shBridge.getRequest().method;
@@ -40,8 +40,8 @@ export default class ProtocolAccessChecker
         return hasAccess;
     }
 
-    static getProtocol(shBridge : BaseSHBridge) : string {
-        return shBridge.isWebSocket() ? 'ws' : 'http';
+    static getProtocol(shBridge: BaseSHBridge): string {
+        return shBridge.isWebSocket() ? 'ws': 'http';
     }
 }
 

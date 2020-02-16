@@ -12,7 +12,7 @@ import {Component}       from "../main/config/definitions/component";
  */
 export default class Router {
 
-    private readonly route : string = '';
+    private readonly route: string = '';
 
     /**
      * Create a controller router for a specific route.
@@ -21,7 +21,7 @@ export default class Router {
      * @param route
      * @param router
      */
-    constructor(route : string, router ?: Router){
+    constructor(route: string, router?: Router){
         if(router){
             this.route += router.getRoute();
         }
@@ -34,7 +34,7 @@ export default class Router {
     /**
      * Returns the full route of this router.
      */
-    getRoute() : string {
+    getRoute(): string {
         return this.route;
     }
 
@@ -47,7 +47,7 @@ export default class Router {
      * @param componentClass
      * @param apiLevel
      */
-    register(name : string, componentClass : Component, apiLevel ?: number) {
+    register(name: string, componentClass: Component, apiLevel?: number) {
         Config.registerComponent(this.route+name,componentClass,apiLevel);
     }
 }

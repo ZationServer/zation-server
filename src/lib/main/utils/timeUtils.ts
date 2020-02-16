@@ -13,7 +13,7 @@ export default class TimeUtils {
         return momentTz().tz(timeZone);
     }
 
-    static processTaskTriggerTime({hour, minute, second, millisecond}, startMoment: MomentType) : {tillMs : number,tillFormat : string} {
+    static processTaskTriggerTime({hour, minute, second, millisecond}, startMoment: MomentType): {tillMs: number,tillFormat: string} {
         let now: MomentType = startMoment;
         let fireMoment: MomentType = now.clone();
 
@@ -62,8 +62,8 @@ export default class TimeUtils {
 
         const process = (fireMoment) => {
             return {
-                tillMs : momentTz.duration(fireMoment.diff(now)).asMilliseconds(),
-                tillFormat : fireMoment.format('dddd, MMMM Do YYYY, k:mm:ss:SSSS ')
+                tillMs: momentTz.duration(fireMoment.diff(now)).asMilliseconds(),
+                tillFormat: fireMoment.format('dddd, MMMM Do YYYY, k:mm:ss:SSSS ')
             };
         };
 

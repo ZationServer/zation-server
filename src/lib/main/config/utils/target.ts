@@ -6,13 +6,13 @@ Copyright(c) Luca Scaringella
 
 export default class Target
 {
-    private readonly splitSign : string;
-    private readonly mainTarget : string;
-    private readonly pathName : string;
-    private extraInfo : string | undefined;
-    private path : string | undefined;
+    private readonly splitSign: string;
+    private readonly mainTarget: string;
+    private readonly pathName: string;
+    private extraInfo: string | undefined;
+    private path: string | undefined;
 
-    constructor(mainTarget : string = '',pathName : string = 'InputPath',splitSign : string = '.',extraInfo ?: string,path ?: string)
+    constructor(mainTarget: string = '',pathName: string = 'InputPath',splitSign: string = '.',extraInfo?: string,path?: string)
     {
         this.splitSign = splitSign;
         this.mainTarget = mainTarget;
@@ -21,15 +21,15 @@ export default class Target
         this.path = path;
     }
 
-    private clone() : Target {
+    private clone(): Target {
         return new Target(this.mainTarget,this.pathName,this.splitSign,this.extraInfo,this.path);
     }
 
-    getMainTarget() : string {
+    getMainTarget(): string {
         return this.mainTarget;
     }
 
-    getLastPath() : string | undefined {
+    getLastPath(): string | undefined {
         if(this.path !== undefined) {
             const ar = this.path.split(this.splitSign);
             return ar[ar.length-1];
@@ -39,34 +39,34 @@ export default class Target
         }
     }
 
-    addPath(path : string) : Target
+    addPath(path: string): Target
     {
         const clone = this.clone();
         clone._addPath(path);
         return clone;
     }
 
-    setExtraInfo(info : string) : Target
+    setExtraInfo(info: string): Target
     {
         const clone = this.clone();
         clone._setExtraInfo(info);
         return clone;
     }
 
-    private _addPath(path : string) {
-        this.path = this.path === undefined ? path : `${this.path}${this.splitSign}${path}`;
+    private _addPath(path: string) {
+        this.path = this.path === undefined ? path: `${this.path}${this.splitSign}${path}`;
     }
 
-    private _setExtraInfo(info : string) {
+    private _setExtraInfo(info: string) {
         this.extraInfo = info;
     }
 
-    getPath() : string | undefined {
+    getPath(): string | undefined {
         return this.path;
     }
 
-    getTarget() : string {
-        const extraInfo = this.extraInfo !== undefined ? `(${this.extraInfo}) ` : '';
+    getTarget(): string {
+        const extraInfo = this.extraInfo !== undefined ? `(${this.extraInfo}) `: '';
 
         if(this.path === undefined)
         {

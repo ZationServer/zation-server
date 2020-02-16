@@ -21,16 +21,16 @@ import {Request,Response}            from "express";
 
 export default class ControllerReqHandler
 {
-    private readonly zc : ZationConfigFull;
-    private readonly worker : ZationWorker;
-    private reqIdCounter : IdCounter;
+    private readonly zc: ZationConfigFull;
+    private readonly worker: ZationWorker;
+    private reqIdCounter: IdCounter;
 
-    private readonly reqIdPreFix : string;
+    private readonly reqIdPreFix: string;
 
-    private readonly mainRequestProcessor : MainCRequestProcessor;
-    private readonly socketProcessor : SocketCRequestProcessor;
-    private readonly httpProcessor : HttpCRequestProcessor;
-    private readonly requestResponder : ControllerRequestResponder;
+    private readonly mainRequestProcessor: MainCRequestProcessor;
+    private readonly socketProcessor: SocketCRequestProcessor;
+    private readonly httpProcessor: HttpCRequestProcessor;
+    private readonly requestResponder: ControllerRequestResponder;
 
 
     constructor(worker)
@@ -49,7 +49,7 @@ export default class ControllerReqHandler
         this.reqIdPreFix = `${this.worker.options.instanceId}-${this.worker.getFullWorkerId()}-`;
     }
 
-    async processSocketReq(input : any, socket : UpSocket, respond : RespondFunction)
+    async processSocketReq(input: any, socket: UpSocket, respond: RespondFunction)
     {
         const reqId = this.createReqId();
         let shBridge;
@@ -63,7 +63,7 @@ export default class ControllerReqHandler
         }
     }
 
-    async processHttpReq(req : Request,res : Response)
+    async processHttpReq(req: Request,res: Response)
     {
         const reqId = this.createReqId();
         let shBridge;
@@ -86,7 +86,7 @@ export default class ControllerReqHandler
 
     private async handleReqError(err)
     {
-        const promises : (Promise<void> | void)[] = [];
+        const promises: (Promise<void> | void)[] = [];
         promises.push(this.zc.event.beforeError(this.worker.getPreparedBag(),err));
         if(err instanceof BackError)
         {

@@ -15,14 +15,14 @@ import ControllerReqUtils                     from "../controllerReqUtils";
 
 export default class ValidCheckCRequestProcessor
 {
-    private readonly zc : ZationConfig;
-    private readonly worker : ZationWorker;
+    private readonly zc: ZationConfig;
+    private readonly worker: ZationWorker;
 
-    private readonly controllerPrepare : ControllerPrepare;
+    private readonly controllerPrepare: ControllerPrepare;
 
-    private readonly validationCheckLimit : number;
+    private readonly validationCheckLimit: number;
 
-    constructor(zc : ZationConfig,worker : ZationWorker) {
+    constructor(zc: ZationConfig,worker: ZationWorker) {
         this.zc = zc;
         this.worker = worker;
         this.controllerPrepare = this.worker.getControllerPrepare();
@@ -30,12 +30,12 @@ export default class ValidCheckCRequestProcessor
         this.validationCheckLimit = this.zc.mainConfig.validationCheckLimit;
     }
 
-    async process(reqData : ZationRequest,shBridge : SHBridge)
+    async process(reqData: ZationRequest,shBridge: SHBridge)
     {
         if(ControllerReqUtils.isValidValidationStructure(reqData))
         {
             //is checked in isValidValidationStructure
-            const validReq : ZationValidationCheck = (reqData.v as ZationValidationCheck);
+            const validReq: ZationValidationCheck = (reqData.v as ZationValidationCheck);
 
             const isSystemController = ControllerReqUtils.isSystemControllerReq(validReq);
             const cId = ControllerReqUtils.getControllerId(validReq,isSystemController);
@@ -46,8 +46,8 @@ export default class ValidCheckCRequestProcessor
             //check is over validation check limit
             if(validReq.i.length > this.validationCheckLimit){
                 throw new BackError(MainBackErrors.validationCheckLimitReached,{
-                   limit : this.validationCheckLimit,
-                   checksCount : validReq.i.length
+                   limit: this.validationCheckLimit,
+                   checksCount: validReq.i.length
                 });
             }
 

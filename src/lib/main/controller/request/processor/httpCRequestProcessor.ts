@@ -23,15 +23,15 @@ import SHBridge                     from "../../../bridges/shBridge";
 
 export default class HttpCRequestProcessor
 {
-    private readonly zc : ZationConfigFull;
-    private readonly debug : boolean;
-    private readonly worker : ZationWorker;
-    private readonly tokenClusterKeyCheck : TokenClusterKeyCheckFunction;
-    private readonly aePreparedPart : AEPreparedPart;
-    private readonly defaultApiLevel : number;
-    private readonly postKey : string;
+    private readonly zc: ZationConfigFull;
+    private readonly debug: boolean;
+    private readonly worker: ZationWorker;
+    private readonly tokenClusterKeyCheck: TokenClusterKeyCheckFunction;
+    private readonly aePreparedPart: AEPreparedPart;
+    private readonly defaultApiLevel: number;
+    private readonly postKey: string;
 
-    constructor(zc : ZationConfigFull, worker : ZationWorker,tokenClusterKeyCheck : TokenClusterKeyCheckFunction) {
+    constructor(zc: ZationConfigFull, worker: ZationWorker,tokenClusterKeyCheck: TokenClusterKeyCheckFunction) {
         this.zc = zc;
         this.defaultApiLevel = zc.mainConfig.defaultClientApiLevel;
         this.debug = zc.isDebug();
@@ -42,7 +42,7 @@ export default class HttpCRequestProcessor
     }
 
     //HTTP Extra Layer
-    async prepareReq(req,res,reqId : string) : Promise<SHBridge | undefined>
+    async prepareReq(req,res,reqId: string): Promise<SHBridge | undefined>
     {
         if (req.method === 'POST' && req.body[this.postKey]) {
             if(this.debug){
@@ -85,9 +85,9 @@ export default class HttpCRequestProcessor
             else {
                 throw new BackError(MainBackErrors.wrongInputDataStructure,
                     {
-                        type : 'http',
+                        type: 'http',
                         reqMethod :req.method,
-                        input : {head : req.headers, body : req.body}
+                        input: {head: req.headers, body: req.body}
                     });
             }
         }
@@ -97,7 +97,7 @@ export default class HttpCRequestProcessor
         }
     }
 
-    private logGetRequest(reqId : string, zationData : any) {
+    private logGetRequest(reqId: string, zationData: any) {
         if(this.debug){
             Logger.printDebugInfo(`Http Get Request id: ${reqId} -> `,PrettyStringifyUtils.object(zationData));
         }
@@ -106,7 +106,7 @@ export default class HttpCRequestProcessor
         }
     }
 
-    private async mainProcess(req,res,zationData : ZationRequest,reqId : string) : Promise<SHBridge>
+    private async mainProcess(req,res,zationData: ZationRequest,reqId: string): Promise<SHBridge>
     {
         //check for validationCheckRequest
         if(ControllerReqUtils.isValidationCheckReq(zationData)) {
@@ -117,7 +117,7 @@ export default class HttpCRequestProcessor
             //normal Req
             if(!!zationData.to) {
 
-                const token : ZationToken = (await TokenUtils.verifyToken(zationData.to,this.zc) as ZationToken);
+                const token: ZationToken = (await TokenUtils.verifyToken(zationData.to,this.zc) as ZationToken);
                 req.zationToken = token;
 
                 //throws back error if token is not valid.
@@ -136,20 +136,20 @@ export default class HttpCRequestProcessor
 
                 if((authMiddlewareRes !== true)){
                     throw new BackError(MainBackErrors.authenticateMiddlewareBlock,
-                        typeof authMiddlewareRes === 'object' ? {err : authMiddlewareRes} : {});
+                        typeof authMiddlewareRes === 'object' ? {err: authMiddlewareRes}: {});
                 }
             }
             return new SHBridgeHttp(res,req,reqId,zationData,false,this.defaultApiLevel,this.worker);
         }
     }
 
-    private static printDefaultHtmlSite(resp, worker : ZationWorker) : void {
+    private static printDefaultHtmlSite(resp, worker: ZationWorker): void {
         resp.setHeader('content-type', 'text/html');
         resp.write(worker.getViewEngine().getZationDefaultView());
         resp.end();
     }
 
-    private static setHeader(resp) : void {
+    private static setHeader(resp): void {
         resp.setHeader('Content-Type', 'application/json');
     }
 }

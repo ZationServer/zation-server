@@ -12,13 +12,13 @@ import {ResponseError}      from "../main/controller/request/controllerDefinitio
 
 export default class BackError extends Error
 {
-    private group : string | undefined;
-    private description : string;
-    private type : string;
-    private sendInfo : boolean;
-    private info : object;
-    private privateE : boolean;
-    private fromZationSystem : boolean;
+    private group: string | undefined;
+    private description: string;
+    private type: string;
+    private sendInfo: boolean;
+    private info: object;
+    private privateE: boolean;
+    private fromZationSystem: boolean;
 
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -28,7 +28,7 @@ export default class BackError extends Error
      * You also can collect more BackErrors in a BackErrorBag.
      * And throw them together.
      * @example
-     * new BackError({name : 'inputNotMatchWithMinLength'},{minLength : 5, inputLength : 3}).throw();
+     * new BackError({name: 'inputNotMatchWithMinLength'},{minLength: 5, inputLength: 3}).throw();
      * @param backErrorConstruct
      * Create a new back error construct.
      * @param info
@@ -37,7 +37,7 @@ export default class BackError extends Error
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    constructor(backErrorConstruct : BackErrorConstruct = {}, info ?: object | string)
+    constructor(backErrorConstruct: BackErrorConstruct = {}, info?: object | string)
     {
         super();
         //defaultValues
@@ -65,7 +65,7 @@ export default class BackError extends Error
      * @description
      * Returns the complete information as a string.
      */
-    toString() : string
+    toString(): string
     {
         return `BackError  Name: ${this.name} Group: ${this.group}  Description: ${this.description}  Type: ${this.type}  Info: ${JSON.stringify(this.info)}  isPrivate:${this.privateE}  isFromZationSystem:${this.fromZationSystem}`;
     }
@@ -77,23 +77,23 @@ export default class BackError extends Error
      * This method is used internal!
      * @param withDesc
      */
-    _toResponseError(withDesc : boolean = false) : ResponseError
+    _toResponseError(withDesc: boolean = false): ResponseError
     {
         if(this.privateE){
             return {
-                n : 'BackError',
-                t : this.type,
-                zs : this.fromZationSystem
+                n: 'BackError',
+                t: this.type,
+                zs: this.fromZationSystem
             }
         }
         else{
             return {
-                n : this.name,
-                g : this.group,
-                t : this.type,
-                zs : this.fromZationSystem,
-                i : this.sendInfo ? this.info : {},
-                ...(withDesc ? {d : this.description} : {})
+                n: this.name,
+                g: this.group,
+                t: this.type,
+                zs: this.fromZationSystem,
+                i: this.sendInfo ? this.info: {},
+                ...(withDesc ? {d: this.description}: {})
             };
         }
     }
@@ -104,7 +104,7 @@ export default class BackError extends Error
      * Returns the name of the BackError.
      * The name is a specific identifier.
      */
-    getName() : string
+    getName(): string
     {
         return this.name;
     }
@@ -116,7 +116,7 @@ export default class BackError extends Error
      * The name is a specific identifier.
      * @param name
      */
-    setName(name : string) : void
+    setName(name: string): void
     {
         this.name = name;
     }
@@ -129,7 +129,7 @@ export default class BackError extends Error
      * As an example, the validation errors for a type would belong to the group typeErrors.
      * But for each error, the name is unique, for example, inputIsNotTypeString or inputIsNotTypeEmail.
      */
-    getGroup() : string | undefined
+    getGroup(): string | undefined
     {
         return this.group;
     }
@@ -143,7 +143,7 @@ export default class BackError extends Error
      * But for each error, the name is unique, for example, inputIsNotTypeString or inputIsNotTypeEmail.
      * @param group
      */
-    setGroup(group : string | undefined) : void
+    setGroup(group: string | undefined): void
     {
         this.group = group;
     }
@@ -153,7 +153,7 @@ export default class BackError extends Error
      * @description
      * Returns the BackError description.
      */
-    getDescription() : string
+    getDescription(): string
     {
         return this.description;
     }
@@ -164,7 +164,7 @@ export default class BackError extends Error
      * Set the BackError description.
      * @param description
      */
-    setDescription(description : string) : void
+    setDescription(description: string): void
     {
         this.description = description;
     }
@@ -178,7 +178,7 @@ export default class BackError extends Error
      * There some default types,
      * you can see them in the BackErrorBuilder.
      */
-    getType() : string
+    getType(): string
     {
         return this.type;
     }
@@ -193,7 +193,7 @@ export default class BackError extends Error
      * you can see them in the BackErrorBuilder.
      * @param type
      */
-    setType(type : string) : void
+    setType(type: string): void
     {
         this.type = type;
     }
@@ -205,7 +205,7 @@ export default class BackError extends Error
      * A private BackError only sends its type and
      * whether it is from the zation system.
      */
-    isPrivate() : boolean
+    isPrivate(): boolean
     {
         return this.privateE;
     }
@@ -218,7 +218,7 @@ export default class BackError extends Error
      * whether it is from the zation system.
      * @param privateError
      */
-    setPrivate(privateError : boolean) : void
+    setPrivate(privateError: boolean): void
     {
         this.privateE = privateError;
     }
@@ -232,7 +232,7 @@ export default class BackError extends Error
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    isSendInfo() : boolean
+    isSendInfo(): boolean
     {
         return this.sendInfo;
     }
@@ -247,7 +247,7 @@ export default class BackError extends Error
      * what the minimum length is.
      * @param sendInfo
      */
-    setSendInfo(sendInfo : boolean) : void
+    setSendInfo(sendInfo: boolean): void
     {
         this.sendInfo = sendInfo;
     }
@@ -261,7 +261,7 @@ export default class BackError extends Error
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    getInfo() : Record<string,any>
+    getInfo(): Record<string,any>
     {
         return this.info;
     }
@@ -276,7 +276,7 @@ export default class BackError extends Error
      * what the minimum length is.
      * @param info
      */
-    setInfo(info : Record<string,any>) : void
+    setInfo(info: Record<string,any>): void
     {
         this.info = info;
     }
@@ -288,7 +288,7 @@ export default class BackError extends Error
      * This indicates if this BackError is from the main zation system.
      * This is used in the system internal.
      */
-    isFromZationSystem() : boolean
+    isFromZationSystem(): boolean
     {
         return this.fromZationSystem;
     }
@@ -301,7 +301,7 @@ export default class BackError extends Error
      * This is used in the system internal.
      * @param fromZationSystem
      */
-    setFromZationSystem(fromZationSystem : boolean) : void
+    setFromZationSystem(fromZationSystem: boolean): void
     {
         this.fromZationSystem = fromZationSystem;
     }
@@ -312,7 +312,7 @@ export default class BackError extends Error
      * Throws this BackError.
      * Alternative for throwing the BackError directly in a controller method.
      */
-    throw() : void {
+    throw(): void {
        throw this;
     }
 }

@@ -8,17 +8,17 @@ import {BackgroundTask}   from "../config/definitions/backgroundTaskConfig";
 import ZationConfigFull   from "../config/manager/zationConfigFull";
 import FuncUtils          from "../utils/funcUtils";
 
-type SaveTask = (name : string, task : ((...any : any[])=> void)) => void;
+type SaveTask = (name: string, task: ((...any: any[])=> void)) => void;
 
 export default class BackgroundTasksWorkerSaver
 {
-    private readonly saveTask : SaveTask;
+    private readonly saveTask: SaveTask;
 
-    constructor(saveTask : SaveTask) {
+    constructor(saveTask: SaveTask) {
         this.saveTask = saveTask;
     }
 
-    saveUserBackgroundTasks (zc : ZationConfigFull)
+    saveUserBackgroundTasks (zc: ZationConfigFull)
     {
         const bkt = zc.appConfig.backgroundTasks;
         if(typeof bkt === 'object') {
@@ -30,7 +30,7 @@ export default class BackgroundTasksWorkerSaver
         }
     }
 
-    private setTask(name : string,bkTask : BackgroundTask)
+    private setTask(name: string,bkTask: BackgroundTask)
     {
         const task = bkTask.task;
         if(task !== undefined) {

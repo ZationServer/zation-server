@@ -15,26 +15,26 @@ Copyright(c) Luca Scaringella
  */
 export default class ErrorBag<T extends Error = Error>
 {
-    private readonly errors : T[] = [];
+    private readonly errors: T[] = [];
 
-    toString() : string
+    toString(): string
     {
-        let output : string = '';
+        let output: string = '';
         for(let i = 0; i < this.errors.length; i++) {
             output += this.errors[i].toString();
         }
         return output;
     }
 
-    addError(error: T) : void {
+    addError(error: T): void {
         this.errors.push(error);
     }
 
-    getErrors() : T[] {
+    getErrors(): T[] {
         return this.errors;
     }
 
-    hasError() : boolean {
+    hasError(): boolean {
         return this.errors.length !== 0;
     }
 }

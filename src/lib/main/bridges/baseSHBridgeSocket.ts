@@ -18,44 +18,44 @@ import AuthEngine          from "../auth/authEngine";
  */
 export default class BaseSHBridgeSocket extends BaseSHBridgeDefault implements BaseSHBridge
 {
-    protected readonly socket : UpSocket;
+    protected readonly socket: UpSocket;
 
-    private newToken : boolean;
+    private newToken: boolean;
 
-    constructor(socket : UpSocket) {
+    constructor(socket: UpSocket) {
         super();
         this.socket = socket;
     }
 
-    getAuthEngine() : AuthEngine {
+    getAuthEngine(): AuthEngine {
         return this.socket.authEngine;
     }
 
-    getHandshakeRequest() : IncomingMessage {
+    getHandshakeRequest(): IncomingMessage {
         return this.socket.request;
     }
 
-    getVersion() : number {
+    getVersion(): number {
         return this.socket.zationClient.version;
     }
 
-    getSystem() : string {
+    getSystem(): string {
         return this.socket.zationClient.system;
     }
 
-    deauthenticate() : void {
+    deauthenticate(): void {
         this.socket.deauthenticate();
     }
 
-    getSocket() : UpSocket {
+    getSocket(): UpSocket {
         return this.socket;
     }
 
-    getRemoteAddress() : any {
+    getRemoteAddress(): any {
         return this.socket.remoteAddress;
     }
 
-    isWebSocket() : boolean {
+    isWebSocket(): boolean {
         return true;
     }
 
@@ -67,7 +67,7 @@ export default class BaseSHBridgeSocket extends BaseSHBridgeDefault implements B
         return this.newToken;
     }
 
-    async setToken(data : object,jwtOptions : JwtSignOptions = {}) : Promise<void> {
+    async setToken(data: object,jwtOptions: JwtSignOptions = {}): Promise<void> {
         await TokenUtils.setSocketTokenAsync(this.socket,data,jwtOptions);
         this.newToken = true;
     }

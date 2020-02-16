@@ -35,7 +35,7 @@ export default class ConfigCheckerTools
      * @param configErrorBag
      * @param target
      */
-    static assertProperty(key : string,obj : object,types: Type[],optional : boolean,configName : string,configErrorBag : ErrorBag<ConfigError>,target : Target = new Target()) : boolean
+    static assertProperty(key: string,obj: object,types: Type[],optional: boolean,configName: string,configErrorBag: ErrorBag<ConfigError>,target: Target = new Target()): boolean
     {
         const targetText = `${target.getTarget()} property '${key}'`;
         if(obj[key] === undefined) {
@@ -63,7 +63,7 @@ export default class ConfigCheckerTools
      * @param configErrorBag
      * @param target
      */
-    static assertStructure(structure : Structure,obj : object | undefined,configName : string,configErrorBag : ErrorBag<ConfigError>,target : Target = new Target())
+    static assertStructure(structure: Structure,obj: object | undefined,configName: string,configErrorBag: ErrorBag<ConfigError>,target: Target = new Target())
     {
         if(typeof obj !== 'object') {
             configErrorBag.addError(new ConfigError(configName,
@@ -71,7 +71,7 @@ export default class ConfigCheckerTools
             return;
         }
 
-        const allowedKeys : any = [];
+        const allowedKeys: any = [];
         for(let k in structure)
         {
             if(structure.hasOwnProperty(k))
@@ -155,7 +155,7 @@ export default class ConfigCheckerTools
      * @param message
      * @param target
      */
-    static assertEqualsOne(values : any[],searchValue,configName : string,configErrorBag : ErrorBag<ConfigError>,message : string,target : Target = new Target()) : boolean
+    static assertEqualsOne(values: any[],searchValue,configName: string,configErrorBag: ErrorBag<ConfigError>,message: string,target: Target = new Target()): boolean
     {
         let found = false;
         for(let i = 0; i < values.length; i++) {
@@ -194,7 +194,7 @@ export default class ConfigCheckerTools
      * @param value
      * @param type ['array','null','object','boolean','number','string']
      */
-    private static isCorrectType(value: any,type: Type) : boolean {
+    private static isCorrectType(value: any,type: Type): boolean {
         if(type === 'array') {
             return Array.isArray(value);
         }
@@ -214,7 +214,7 @@ export default class ConfigCheckerTools
      * @param value
      * @param types ['array','null','object','boolean','number','string']
      */
-    private static isCorrectTypes(value: any,types: Type[]) : boolean
+    private static isCorrectTypes(value: any,types: Type[]): boolean
     {
         for(let i = 0; i < types.length; i++) {
             if(ConfigCheckerTools.isCorrectType(value,types[i])) {

@@ -52,7 +52,7 @@ import ErrorBag                                from '../../error/errorBag';
 import {Service}                               from 'zation-service';
 
 export interface ModelCheckedMem {
-    _checked : boolean
+    _checked: boolean
 }
 
 export default class ConfigChecker
@@ -63,7 +63,7 @@ export default class ConfigChecker
     private modelsConfig: Record<string, Model>;
     private validAccessValues: any[];
 
-    private modelImportEngine : ModelResolveEngine;
+    private modelImportEngine: ModelResolveEngine;
 
     constructor(zationConfigLoader) {
         this.zcLoader = zationConfigLoader;
@@ -86,18 +86,18 @@ export default class ConfigChecker
 
     private prepare() {
         this.prepareAllValidUserGroupsAndCheck();
-        this.modelsConfig = typeof this.zcLoader.appConfig.models === 'object' ? this.zcLoader.appConfig.models : {};
+        this.modelsConfig = typeof this.zcLoader.appConfig.models === 'object' ? this.zcLoader.appConfig.models: {};
         this.modelImportEngine = new ModelResolveEngine(this.modelsConfig);
     }
 
     private checkUserGroupName(name: string, notAllowed: string[], isAuth: boolean) {
         if (name.indexOf('.') !== -1) {
             this.ceb.addError(new ConfigError(ConfigNames.APP,
-                `${name} is not a valid ${isAuth ? 'auth' : 'default'} user group! Dot/s in name are not allowed.`));
+                `${name} is not a valid ${isAuth ? 'auth': 'default'} user group! Dot/s in name are not allowed.`));
         }
         if (notAllowed.includes(name)) {
             this.ceb.addError(new ConfigError(ConfigNames.APP,
-                `${isAuth ? 'auth' : 'default'} user group with name ${name} is not allowed use an other name!`));
+                `${isAuth ? 'auth': 'default'} user group with name ${name} is not allowed use an other name!`));
         }
     }
 
@@ -185,7 +185,7 @@ export default class ConfigChecker
                 Iterator.iterateCompDefinition<ControllerClass>(controller[authControllerId],(controllerClass, apiLevel) => {
                     if (controllerClass.config.access !== ZationAccess.ALL) {
                         Logger.printConfigWarning
-                        (ConfigNames.APP, `It is recommended to set the access of the authController ${apiLevel ? `(API Level: ${apiLevel}) ` : ''}directly to 'all'.`);
+                        (ConfigNames.APP, `It is recommended to set the access of the authController ${apiLevel ? `(API Level: ${apiLevel}) `: ''}directly to 'all'.`);
                     }
                 });
             }
@@ -214,7 +214,7 @@ export default class ConfigChecker
 
                     const secTarget = target.addPath(key);
 
-                    let value : any = customChannels[key];
+                    let value: any = customChannels[key];
                     let isFamily = false;
 
                     if(Array.isArray(value)){
@@ -250,7 +250,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkClientPubAccess(channel : ZationChannelConfig,target : Target) {
+    private checkClientPubAccess(channel: ZationChannelConfig,target: Target) {
         //check protocolAccess dependency to userGroups
         this.checkAccessKeyDependency(getNotableValue(channel.clientPublishAccess),
             target.addPath(nameof<ZationChannelConfig>(s => s.clientPublishAccess)));
@@ -258,14 +258,14 @@ export default class ConfigChecker
         this.warningForPublish(channel.clientPublishAccess, target);
     }
 
-    private checkSubAccess(channel : BaseCustomChannelConfig, target : Target) {
+    private checkSubAccess(channel: BaseCustomChannelConfig, target: Target) {
         //check protocolAccess dependency to userGroups
         this.checkAccessKeyDependency(getNotableValue(channel.subscribeAccess),
             target.addPath(nameof<BaseCustomChannelConfig>(s => s.subscribeAccess)));
     }
 
 
-    private checkZationChannelConfig(channel : ZationChannelConfig,target : Target) {
+    private checkZationChannelConfig(channel: ZationChannelConfig,target: Target) {
         ConfigCheckerTools.assertStructure
         (Structures.ZationChannelConfig,channel, ConfigNames.APP, this.ceb, target);
         if(typeof channel === 'object'){
@@ -273,9 +273,9 @@ export default class ConfigChecker
         }
     }
 
-    private checkCustomChannelConfig(channel: BaseCustomChannelConfig, target: Target, isCustomChFamily : boolean): void {
+    private checkCustomChannelConfig(channel: BaseCustomChannelConfig, target: Target, isCustomChFamily: boolean): void {
         ConfigCheckerTools.assertStructure
-        (isCustomChFamily ? Structures.CustomChFamilyConfig : Structures.CustomChConfig, channel, ConfigNames.APP, this.ceb, target);
+        (isCustomChFamily ? Structures.CustomChFamilyConfig: Structures.CustomChConfig, channel, ConfigNames.APP, this.ceb, target);
 
         if (typeof channel === 'object') {
             this.checkClientPubAccess(channel,target);
@@ -313,7 +313,7 @@ export default class ConfigChecker
                 if(Array.isArray(model) || typeof model === 'object' || typeof model === 'string') {
                     const target = new Target(`Models: ${name}`);
                     this.checkModel(model,target,true);
-                    this.circularCheck(model,target,{name : name,model,isObj : ConfigChecker.isObjModel(model)});
+                    this.circularCheck(model,target,{name: name,model,isObj: ConfigChecker.isObjModel(model)});
                 }
                 else {
                     this.ceb.addError(new ConfigError(ConfigNames.APP,
@@ -323,9 +323,9 @@ export default class ConfigChecker
         }
     }
 
-    private checkObject(obj: ObjectModelConfig, target: Target,mainModel : boolean,inheritanceCheck : boolean = true) {
+    private checkObject(obj: ObjectModelConfig, target: Target,mainModel: boolean,inheritanceCheck: boolean = true) {
         ConfigCheckerTools.assertStructure(Structures.ObjectModel, obj, ConfigNames.APP, this.ceb, target);
-        const prototype = typeof obj.prototype === 'object' ? obj.prototype : {};
+        const prototype = typeof obj.prototype === 'object' ? obj.prototype: {};
         //check property body and prototype property name problem
         if (typeof obj.properties === 'object') {
             let props = obj.properties;
@@ -344,15 +344,15 @@ export default class ConfigChecker
         //check for extend
         if (obj.extends !== undefined && inheritanceCheck) {
             this.checkObjExtendResolve
-            (target,target,obj.extends,obj,{otherSrc : [], regModel : mainModel,baseModelLevel : true});
+            (target,target,obj.extends,obj,{otherSrc: [], regModel: mainModel,baseModelLevel: true});
         }
     }
 
-    private static isObjModel(obj : any) : boolean {
+    private static isObjModel(obj: any): boolean {
         return typeof obj === 'object' && typeof obj[nameof<ObjectModelConfig>(s => s.properties)] === 'object';
     }
 
-    private static isValueModel(obj : any) : obj is ValueModelConfig {
+    private static isValueModel(obj: any): obj is ValueModelConfig {
         return typeof obj === 'object' &&
             obj[nameof<ObjectModelConfig>(s => s.properties)] === undefined &&
             obj[nameof<ArrayModelConfig>(s => s.array)] === undefined &&
@@ -361,7 +361,7 @@ export default class ConfigChecker
 
     // @ts-ignore
     // noinspection JSUnusedLocalSymbols
-    private static isArrayModel(arr : any) : boolean {
+    private static isArrayModel(arr: any): boolean {
         return Array.isArray(arr) || (
             typeof arr === 'object' &&
             typeof arr[nameof<ArrayModelConfig>(s => s.array)] === 'object'
@@ -378,8 +378,8 @@ export default class ConfigChecker
      * @param processInfo
      * @param beforeReqModel
      */
-    private checkObjExtendResolve(target : Target,srcTarget : Target,value : any,srcObjModel : ObjectModelConfig,
-                                         processInfo : {otherSrc : any[], baseModelLevel : boolean,regModel : boolean},beforeReqModel : boolean = false) : void
+    private checkObjExtendResolve(target: Target,srcTarget: Target,value: any,srcObjModel: ObjectModelConfig,
+                                         processInfo: {otherSrc: any[], baseModelLevel: boolean,regModel: boolean},beforeReqModel: boolean = false): void
     {
         const valueType = typeof value;
         if(valueType === 'string'){
@@ -441,7 +441,7 @@ export default class ConfigChecker
     }
 
     // noinspection JSMethodCanBeStatic
-    private checkOverrideProp(props,superObj,target : Target,srcTarget : Target) {
+    private checkOverrideProp(props,superObj,target: Target,srcTarget: Target) {
         if (typeof props === 'object' && typeof superObj.prototype === 'object') {
             const superPrototype = superObj.prototype;
             for (let prop in props) {
@@ -519,7 +519,7 @@ export default class ConfigChecker
 
     }
 
-    private checkPanelUserConfig(config: PanelUserConfig, target : Target) {
+    private checkPanelUserConfig(config: PanelUserConfig, target: Target) {
         //checkStructure
         ConfigCheckerTools.assertStructure(Structures.PanelUserConfig, config, ConfigNames.MAIN, this.ceb, target);
 
@@ -564,7 +564,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkService(serviceName : string,service : Service<any,any>,targetName : string = 'Service')
+    private checkService(serviceName: string,service: Service<any,any>,targetName: string = 'Service')
     {
         this.checkCustomName(serviceName,targetName);
         if (typeof service === 'object') {
@@ -588,7 +588,7 @@ export default class ConfigChecker
                             this.ceb.addError(new ConfigError(ConfigNames.APP,
                                 `Controller: '${cId}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
                         }
-                        this.checkController(controllerClass, new Target(`Controller: '${cId}' ${apiLevel ? `(API Level: ${apiLevel}) ` : ''}`));
+                        this.checkController(controllerClass, new Target(`Controller: '${cId}' ${apiLevel ? `(API Level: ${apiLevel}) `: ''}`));
                     });
                 }
             }
@@ -613,7 +613,7 @@ export default class ConfigChecker
                             this.ceb.addError(new ConfigError(ConfigNames.APP,
                                 `Databox: '${cId}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
                         }
-                        this.checkDatabox(databoxClass, new Target(`Databox: '${cId}' ${apiLevel ? `(API Level: ${apiLevel}) ` : ''}`));
+                        this.checkDatabox(databoxClass, new Target(`Databox: '${cId}' ${apiLevel ? `(API Level: ${apiLevel}) `: ''}`));
                     });
                 }
             }
@@ -649,7 +649,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkControllerConfig(config : ControllerConfig,target : Target)
+    private checkControllerConfig(config: ControllerConfig,target: Target)
     {
         ConfigCheckerTools.assertStructure(Structures.ControllerConfig, config, ConfigNames.APP, this.ceb, target);
         this.checkAuthAccessConfig(config, target);
@@ -667,7 +667,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkDataboxConfig(config : DataboxConfig, target : Target)
+    private checkDataboxConfig(config: DataboxConfig, target: Target)
     {
         ConfigCheckerTools.assertStructure(Structures.DataboxConfig, config, ConfigNames.APP, this.ceb, target);
 
@@ -688,7 +688,7 @@ export default class ConfigChecker
     }
 
     // noinspection JSMethodCanBeStatic
-    private checkInputAllAllow(inputConfig: InputConfig, target: Target,inputTypeName : string = '') {
+    private checkInputAllAllow(inputConfig: InputConfig, target: Target,inputTypeName: string = '') {
         if (typeof inputConfig.allowAnyInput === 'boolean' &&
             inputConfig.allowAnyInput &&
             (typeof inputConfig.input === 'object')) {
@@ -706,7 +706,7 @@ export default class ConfigChecker
      * @param inputTypeName
      * The input type starting with upper case letter.
      */
-    private checkInputConfig(inputConfig : InputConfig, target : Target,inputTypeName : string = '') {
+    private checkInputConfig(inputConfig: InputConfig, target: Target,inputTypeName: string = '') {
         /**
          * Check main structure with structure of controller or stream.
          */
@@ -733,7 +733,7 @@ export default class ConfigChecker
         this.checkInputAllAllow(inputConfig, target,inputTypeName);
     }
 
-    private checkParamInput(paramInput : ParamInput, target : Target) {
+    private checkParamInput(paramInput: ParamInput, target: Target) {
         const keys: any[] = [];
         if (typeof paramInput === 'object') {
             for (let k in paramInput) {
@@ -751,7 +751,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkSingleInput(singleInput : Model,target : Target) {
+    private checkSingleInput(singleInput: Model,target: Target) {
         this.checkModel(singleInput,target);
     }
 
@@ -775,7 +775,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkLink(link : string,target : Target)
+    private checkLink(link: string,target: Target)
     {
         if(ModelResolveEngine.correctSyntax(link)) {
             let {exist,name,linkedValue,isOp} = this.modelImportEngine.peakCheck(link);
@@ -840,8 +840,8 @@ export default class ConfigChecker
      * isObj -> true indicates model is an object model and false indicates unknown type.
      * @param processInfo
      */
-    private circularCheck(value,target,mainSrc : {name : string,model : Model,isObj : boolean},
-                          processInfo : {inBaseModel : boolean,models : any[],ex : any[]} = {inBaseModel : true,models : [],ex:[]})
+    private circularCheck(value,target,mainSrc: {name: string,model: Model,isObj: boolean},
+                          processInfo: {inBaseModel: boolean,models: any[],ex: any[]} = {inBaseModel: true,models: [],ex:[]})
     {
         value = ResolveUtils.modelResolveCheck(value);
 
@@ -903,8 +903,8 @@ export default class ConfigChecker
         }
     }
 
-    circularObjectCheck(value,target,excludeProps : string[],mainSrc : {name : string,model,isObj : boolean},
-                        processInfo : {models : any[],inBaseModel : boolean,ex : any[]})
+    circularObjectCheck(value,target,excludeProps: string[],mainSrc: {name: string,model,isObj: boolean},
+                        processInfo: {models: any[],inBaseModel: boolean,ex: any[]})
     {
         const props = value[nameof<ObjectModelConfig>(s => s.properties)];
 
@@ -957,7 +957,7 @@ export default class ConfigChecker
      * @param target
      * @param mainModel
      */
-    private checkModel(value, target,mainModel : boolean = false) {
+    private checkModel(value, target,mainModel: boolean = false) {
 
         value = ResolveUtils.modelResolveCheck(value);
 
@@ -1015,7 +1015,7 @@ export default class ConfigChecker
     }
 
     // noinspection JSMethodCanBeStatic
-    checkOptionalArrayWarning(value : object | boolean,target : Target)
+    checkOptionalArrayWarning(value: object | boolean,target: Target)
     {
         if (
             target.getLastPath() === 'ArrayItem' && (
@@ -1038,8 +1038,8 @@ export default class ConfigChecker
     // noinspection JSMethodCanBeStatic
     private checkOnlyValidationFunction(value: ValueModelConfig, target) {
         if(value.type !== undefined) {
-            const type = Array.isArray(value.type) ? value.type : [value.type];
-            const types : TypeTypes[] = [];
+            const type = Array.isArray(value.type) ? value.type: [value.type];
+            const types: TypeTypes[] = [];
             for(let i = 0; i < type.length; i++) {
                 if (type[i] === ValidationType.INT || type[i] === ValidationType.FLOAT || type[i] === ValidationType.NUMBER) {
                     types.push(TypeTypes.NUMBER);
@@ -1088,7 +1088,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkValueProperty(config : ValueModelConfig,target : Target,mainModel : boolean,inheritanceCheck : boolean = true)
+    private checkValueProperty(config: ValueModelConfig,target: Target,mainModel: boolean,inheritanceCheck: boolean = true)
     {
         //isNormalInputBody
         ConfigCheckerTools.assertStructure(Structures.ValueModel, config, ConfigNames.APP, this.ceb, target);
@@ -1100,7 +1100,7 @@ export default class ConfigChecker
         const ex = config.extends;
         if(ex !== undefined && inheritanceCheck){
             //check no self inheritance
-            this.checkProcessValueInheritance(target,ex,config,{baseModelLevel : true,otherSrc : [],regModel : mainModel});
+            this.checkProcessValueInheritance(target,ex,config,{baseModelLevel: true,otherSrc: [],regModel: mainModel});
             target = target.setExtraInfo('Compiled with inheritance');
         }
         //check for only number/string functions
@@ -1108,8 +1108,8 @@ export default class ConfigChecker
     }
 
 
-    private checkProcessValueInheritance(target : Target,value : any,srcValueModel : ValueModelConfig,
-                                         processInfo : {otherSrc : any[], baseModelLevel : boolean,regModel : boolean},beforeRegModel : boolean = false) : void
+    private checkProcessValueInheritance(target: Target,value: any,srcValueModel: ValueModelConfig,
+                                         processInfo: {otherSrc: any[], baseModelLevel: boolean,regModel: boolean},beforeRegModel: boolean = false): void
     {
         const valueType = typeof value;
         if(valueType === 'string'){
@@ -1170,7 +1170,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkCharClassFunction(value : ValueModelConfig,target) {
+    private checkCharClassFunction(value: ValueModelConfig,target) {
        if(typeof value.charClass === 'string'){
            this.checkValidStringRegex
            (value.charClass,target.addPath(nameof<ValueModelConfig>(s => s.charClass)),'is not a valid regex char class. Do not forget to escape special characters.');
@@ -1202,7 +1202,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkValidStringRegex(value,target,error : string = 'is not a valid regex.') {
+    private checkValidStringRegex(value,target,error: string = 'is not a valid regex.') {
         try {
             new RegExp(value);
         } catch(e) {
@@ -1233,7 +1233,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkCustomName(name : string,type : string,preString : string = '') : void
+    private checkCustomName(name: string,type: string,preString: string = ''): void
     {
         if (!name.match(/^[a-zA-Z0-9-/_]+$/)) {
             this.ceb.addError(new ConfigError(ConfigNames.APP,

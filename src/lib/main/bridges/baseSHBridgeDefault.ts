@@ -9,7 +9,7 @@ import {IncomingMessage}    from "http";
 import {ZationToken}        from "../constants/internal";
 import UpSocket             from "../sc/socket";
 import AuthEngine           from "../auth/authEngine";
-const  IP : any           = require('ip');
+const  IP: any           = require('ip');
 
 /**
  * This class adds method they are same on both sides. (http/socket)
@@ -28,7 +28,7 @@ export default abstract class BaseSHBridgeDefault implements BaseSHBridge {
     abstract setToken(data: object): Promise<void>;
 
     // noinspection JSUnusedGlobalSymbols
-    getPublicRemoteAddress() : any {
+    getPublicRemoteAddress(): any {
         let remId = this.getRemoteAddress();
         // noinspection TypeScriptValidateJSTypes
         if(IP.isPrivate(remId)) {

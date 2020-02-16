@@ -6,20 +6,20 @@ Copyright(c) Luca Scaringella
 
 import {BackgroundTask}   from "../config/definitions/backgroundTaskConfig";
 
-type SetTask = (name : string,time : any,clusterSafe : boolean,task : any) => void;
+type SetTask = (name: string,time: any,clusterSafe: boolean,task: any) => void;
 
 export default class BackgroundTasksLoader
 {
-   private readonly setEvery : SetTask;
-   private readonly setAt : SetTask;
+   private readonly setEvery: SetTask;
+   private readonly setAt: SetTask;
 
-   constructor(setEvery : SetTask, setAt : SetTask) {
+   constructor(setEvery: SetTask, setAt: SetTask) {
        this.setAt = setAt;
        this.setEvery = setEvery;
    }
 
 
-   setUserBackgroundTasks (backgroundTasks : Record<string,BackgroundTask> | undefined)
+   setUserBackgroundTasks (backgroundTasks: Record<string,BackgroundTask> | undefined)
    {
        if(typeof backgroundTasks === 'object') {
            for(let name in backgroundTasks) {
@@ -30,7 +30,7 @@ export default class BackgroundTasksLoader
        }
    }
 
-   private setTask(name : string,bkTask : BackgroundTask)
+   private setTask(name: string,bkTask: BackgroundTask)
    {
        const task = bkTask.task;
        if(task !== undefined) {
@@ -42,9 +42,9 @@ export default class BackgroundTasksLoader
        }
    }
 
-   private static timeSetter(func : SetTask,key : string,task,name : string,bkt : BackgroundTask)
+   private static timeSetter(func: SetTask,key: string,task,name: string,bkt: BackgroundTask)
    {
-       const clusterSafe = typeof bkt.clusterSafe === 'boolean' ? bkt.clusterSafe : true;
+       const clusterSafe = typeof bkt.clusterSafe === 'boolean' ? bkt.clusterSafe: true;
        if(Array.isArray(bkt[key])) {
            for(let i = 0; i < bkt[key].length; i ++) {
                func(name,bkt[key][i],clusterSafe,task);

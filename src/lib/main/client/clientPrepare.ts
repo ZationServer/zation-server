@@ -9,7 +9,7 @@ import ZationConfig           from "../config/manager/zationConfig";
 
 export default class ClientPrepare
 {
-    static buildClientJs(serverSettingsFile : string) : string
+    static buildClientJs(serverSettingsFile: string): string
     {
         let res = '';
         // noinspection JSUnresolvedVariable,JSUnresolvedFunction
@@ -18,21 +18,21 @@ export default class ClientPrepare
         return res;
     }
 
-    static loadZationMinifyClient() : string
+    static loadZationMinifyClient(): string
     {
         const filePath = require.resolve('zation-client/dist/zation.min.js');
         return fs.readFileSync(filePath, 'utf8');
     }
 
-    static createServerSettingsFile(zc : ZationConfig) : string
+    static createServerSettingsFile(zc: ZationConfig): string
     {
         let res = '';
         res += 'const ZATION_SERVER_SETTINGS = {';
-        res += `HOSTNAME : '${zc.mainConfig.hostname}',`;
-        res += `PORT : ${zc.mainConfig.port},`;
-        res += `SECURE : ${zc.mainConfig.secure},`;
-        res += `POST_KEY : '${zc.mainConfig.postKey}',`;
-        res += `PATH : '${zc.mainConfig.path}'`;
+        res += `HOSTNAME: '${zc.mainConfig.hostname}',`;
+        res += `PORT: ${zc.mainConfig.port},`;
+        res += `SECURE: ${zc.mainConfig.secure},`;
+        res += `POST_KEY: '${zc.mainConfig.postKey}',`;
+        res += `PATH: '${zc.mainConfig.path}'`;
         res += '}; \n';
         return res;
     }

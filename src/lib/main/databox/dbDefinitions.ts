@@ -10,49 +10,49 @@ export interface DataboxConnectReq {
     /**
      * databox (name)
      */
-    d ?: string,
+    d?: string,
     /**
      * id
      */
-    i ?: string,
+    i?: string,
     /**
      * apiLevel
      */
-    al ?: number,
+    al?: number,
     /**
      * token
      */
-    t ?: string,
+    t?: string,
     /**
      * initInput
      */
-    ii ?: any
+    ii?: any
 }
 
 export interface DataboxConnectRes {
     /**
      * Last cud id
      */
-    ci : string,
+    ci: string,
     /**
      * Used the token
      */
-    ut : boolean,
+    ut: boolean,
     /**
      * Input key
      */
-    i : string,
+    i: string,
     /**
      * Output key
      */
-    o : string,
+    o: string,
     /**
      * Parallel fetching
      */
-    pf : boolean
+    pf: boolean
 }
 
-export type UnregisterSocketFunction = (inputChannelId ?: string) => void;
+export type UnregisterSocketFunction = (inputChannelId?: string) => void;
 
 export const DATABOX_START_INDICATOR = '>D';
 
@@ -69,7 +69,7 @@ export interface CudPackage extends PreCudPackage{
     /**
      * timestamp
      */
-    t : number,
+    t: number,
 }
 
 /**
@@ -79,15 +79,15 @@ export interface PreCudPackage {
     /**
      * cudId
      */
-    ci : string,
+    ci: string,
     /**
      * timestamp
      */
-    t ?: number,
+    t?: number,
     /**
      * operations
      */
-    o : CudOperation[]
+    o: CudOperation[]
 }
 
 /**
@@ -97,31 +97,31 @@ export interface CudOperation {
     /**
      * type
      */
-    t : CudType,
+    t: CudType,
     /**
      * selector
      */
-    s : DbProcessedSelector,
+    s: DbProcessedSelector,
     /**
      * value
      */
-    v ?: any;
+    v?: any;
     /**
      * code
      */
-    c ?: any;
+    c?: any;
     /**
      * data
      */
-    d ?: any;
+    d?: any;
     /**
      * if conditions
      */
-    i ?: IfOptionProcessedValue;
+    i?: IfOptionProcessedValue;
     /**
      * potential Insert/Update
      */
-    p ?: 0 | 1;
+    p?: 0 | 1;
 }
 
 /**
@@ -131,37 +131,37 @@ export interface DbClientInputPackage {
     /**
      * Action
      */
-    a : DbClientInputAction,
+    a: DbClientInputAction,
     /**
      * Session Target
      */
-    t ?: DBClientInputSessionTarget
+    t?: DBClientInputSessionTarget
 }
 
 /**
  * The package that the client can send to the server to fetch data.
  */
 export interface DbClientInputFetchPackage extends DbClientInputPackage{
-    a : DbClientInputAction.fetch,
+    a: DbClientInputAction.fetch,
     /**
      * input
      */
-    i : any
+    i: any
 }
 
 export interface DbClientInputFetchResponse {
     /**
      * counter
      */
-    c : number,
+    c: number,
     /**
      * token
      */
-    t : string,
+    t: string,
     /**
      * data
      */
-    d : any
+    d: any
 }
 
 /**
@@ -182,15 +182,15 @@ export interface DbClientOutputPackage {
     /**
      * action
      */
-    a : DbClientOutputEvent,
+    a: DbClientOutputEvent,
     /**
      * data
      */
-    d ?: any,
+    d?: any,
     /**
      * code
      */
-    c ?: number | string,
+    c?: number | string,
 }
 
 /**
@@ -201,11 +201,11 @@ export interface DbClientOutputCudPackage extends DbClientOutputPackage{
     /**
      * action
      */
-    a : DbClientOutputEvent.cud,
+    a: DbClientOutputEvent.cud,
     /**
      * data
      */
-    d : CudPackage
+    d: CudPackage
 }
 
 /**
@@ -215,11 +215,11 @@ export interface DbClientOutputReloadPackage extends DbClientOutputPackage{
     /**
      * action
      */
-    a : DbClientOutputEvent.reload,
+    a: DbClientOutputEvent.reload,
     /**
      * data
      */
-    d ?: any
+    d?: any
 }
 
 /**
@@ -229,11 +229,11 @@ export interface DbClientOutputClosePackage extends DbClientOutputPackage{
     /**
      * action
      */
-    a : DbClientOutputEvent.close,
+    a: DbClientOutputEvent.close,
     /**
      * data
      */
-    d ?: any
+    d?: any
 }
 
 /**
@@ -243,11 +243,11 @@ export interface DbClientOutputKickOutPackage extends DbClientOutputPackage{
     /**
      * action
      */
-    a : DbClientOutputEvent.kickOut,
+    a: DbClientOutputEvent.kickOut,
     /**
      * data
      */
-    d ?: any
+    d?: any
 }
 
 /**
@@ -257,15 +257,15 @@ export interface DbClientOutputSignalPackage extends DbClientOutputPackage{
     /**
      * action
      */
-    a : DbClientOutputEvent.signal,
+    a: DbClientOutputEvent.signal,
     /**
      * signal
      */
-    s : string
+    s: string
     /**
      * data
      */
-    d ?: any
+    d?: any
 }
 
 /**
@@ -312,15 +312,15 @@ export interface DbWorkerPackage {
     /**
      * action
      */
-    a : DbWorkerAction,
+    a: DbWorkerAction,
     /**
      * data
      */
-    d ?: any
+    d?: any
     /**
      * workerFullId
      */
-    w : string
+    w: string
 }
 
 /**
@@ -331,11 +331,11 @@ export interface DbWorkerCudPackage extends DbWorkerPackage{
     /**
      * action
      */
-    a : DbWorkerAction.cud,
+    a: DbWorkerAction.cud,
     /**
      * data
      */
-    d : CudPackage,
+    d: CudPackage,
 }
 
 /**
@@ -345,11 +345,11 @@ export interface DbWorkerClosePackage extends DbWorkerPackage{
     /**
      * action
      */
-    a : DbWorkerAction.close,
+    a: DbWorkerAction.close,
     /**
      * The client close package.
      */
-    d : DbClientOutputClosePackage
+    d: DbClientOutputClosePackage
 }
 
 /**
@@ -359,11 +359,11 @@ export interface DbWorkerBroadcastPackage extends DbWorkerPackage{
     /**
      * action
      */
-    a : DbWorkerAction.broadcast,
+    a: DbWorkerAction.broadcast,
     /**
      * data
      */
-    d : DbClientOutputPackage
+    d: DbClientOutputPackage
 }
 
 /**
@@ -373,11 +373,11 @@ export interface DbToken {
     /**
      * The raw init data.
      */
-    rawInitData : any;
+    rawInitData: any;
     /**
      * The Databox sessions.
      */
-    sessions : DbSessionData,
+    sessions: DbSessionData,
 }
 
 /**
@@ -387,7 +387,7 @@ export interface DbSessionData {
     /**
      * mainSession
      */
-    main : DbSession,
+    main: DbSession,
     /**
      * reloadSession
      */
@@ -401,11 +401,11 @@ export interface DbSession {
     /**
      * counter
      */
-    c : number,
+    c: number,
     /**
      * data
      */
-    d : object
+    d: object
 }
 
 export interface InfoOption {
@@ -413,12 +413,12 @@ export interface InfoOption {
      * With the code, you can pass information about the reason of this cud operation.
      * That can be a string (e.g. 'NewMessage') or a number (e.g. 200,304).
      */
-    code ?: string | number;
+    code?: string | number;
     /**
      * With the data option, you can pass extra data to the
      * cud event that gets triggered on the client.
      */
-    data ?: any,
+    data?: any,
 }
 
 export interface TimestampOption {
@@ -427,7 +427,7 @@ export interface TimestampOption {
      * The client, for example, will only update data that is older as incoming data.
      * Use this option only if you know what you are doing.
      */
-    timestamp ?: number
+    timestamp?: number
 }
 
 export const enum IfQueryType {
@@ -494,14 +494,14 @@ export interface IfOption {
      * of the head (complete data structure) will be used.
      * It helps to check multiple pairs in one query and makes it more readable.
      * @example
-     * if : $not($contains($any))
-     * if : $contains($key('20'))
-     * if : [$contains($value({name: 'luca'})),$not(contains($key('30')))]
-     * if : $contains($pair('name','luca'))
-     * if : $matches({name: 'luca', age: {gte: 18}, email: 'test1@test.de'})
-     * if : $not($matches({email: 'test1@test.de'}))
+     * if: $not($contains($any))
+     * if: $contains($key('20'))
+     * if: [$contains($value({name: 'luca'})),$not(contains($key('30')))]
+     * if: $contains($pair('name','luca'))
+     * if: $matches({name: 'luca', age: {gte: 18}, email: 'test1@test.de'})
+     * if: $not($matches({email: 'test1@test.de'}))
      */
-    if ?: IfOptionValue;
+    if?: IfOptionValue;
 }
 
 export interface PotentialUpdateOption {
@@ -510,7 +510,7 @@ export interface PotentialUpdateOption {
      * For example, when the key already exists,
      * the client will update the value instead of insert.
      */
-    potentialUpdate ?: boolean
+    potentialUpdate?: boolean
 }
 
 export interface PotentialInsertOption {
@@ -520,36 +520,36 @@ export interface PotentialInsertOption {
      * the client will insert the value instead of update.
      * Notice that the potentialInsert only works when the path selector ends on a specific key.
      */
-    potentialInsert ?: boolean
+    potentialInsert?: boolean
 }
 
 /**
  * The memory that Databoxes stores internally for each socket.
  */
 export interface DbSocketMemory {
-    unregisterSocket : UnregisterSocketFunction,
-    inputChIds : Set<string>
+    unregisterSocket: UnregisterSocketFunction,
+    inputChIds: Set<string>
 }
 
 /**
  * The Databox register result.
  */
 export interface DbRegisterResult {
-    inputCh : string,
-    outputCh : string
+    inputCh: string,
+    outputCh: string
 }
 
 /**
  * Function for the cud middleware to change the value.
  */
-export type ChangeValue = (newData : any) => void;
+export type ChangeValue = (newData: any) => void;
 
 /**
  * The Databox info object.
  */
 export interface DataboxInfo {
-    name : string,
-    id : any
+    name: string,
+    id: any
 }
 
 /**
@@ -557,9 +557,9 @@ export interface DataboxInfo {
  */
 export type ForintSearchQuery<TK = any,TV = any> = {
     //key
-    k ?: ForintQuery<TK>,
+    k?: ForintQuery<TK>,
     //value
-    v ?: ForintQuery<TV>
+    v?: ForintQuery<TV>
 };
 
 /**

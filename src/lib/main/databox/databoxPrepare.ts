@@ -24,14 +24,14 @@ export const databoxInstanceSymbol                            = Symbol();
 
 export default class DataboxPrepare
 {
-    private readonly zc : ZationConfigFull;
-    private readonly worker : ZationWorker;
-    private readonly bag : Bag;
+    private readonly zc: ZationConfigFull;
+    private readonly worker: ZationWorker;
+    private readonly bag: Bag;
 
-    private readonly databoxes : Record<string,ApiLevelSwitchFunction<DataboxCore>>;
-    private readonly databoxInits : ((bag : Bag) => Promise<void> | void)[] = [];
+    private readonly databoxes: Record<string,ApiLevelSwitchFunction<DataboxCore>>;
+    private readonly databoxInits: ((bag: Bag) => Promise<void> | void)[] = [];
 
-    constructor(zc : ZationConfigFull,worker : ZationWorker,bag : Bag)
+    constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag)
     {
         this.zc = zc;
         this.worker = worker;
@@ -48,7 +48,7 @@ export default class DataboxPrepare
      * @param name
      * @param apiLevel
      */
-    getDatabox(name : string,apiLevel : number) : DataboxCore
+    getDatabox(name: string,apiLevel: number): DataboxCore
     {
         //throws if not exists
         this.checkDataboxExist(name);
@@ -58,7 +58,7 @@ export default class DataboxPrepare
             return databox;
         }
         else {
-            const err : any = new Error('The client API level is incompatible with databox API levels.');
+            const err: any = new Error('The client API level is incompatible with databox API levels.');
             err.name = ClientErrorName.API_LEVEL_INCOMPATIBLE;
             throw err;
         }
@@ -68,7 +68,7 @@ export default class DataboxPrepare
      * Returns a boolean that indicates if the Databox exists.
      * @param name
      */
-    isDataboxExist(name : string) : boolean {
+    isDataboxExist(name: string): boolean {
         return this.databoxes.hasOwnProperty(name);
     }
 
@@ -77,7 +77,7 @@ export default class DataboxPrepare
      * Works only with instances from the preparer.
      * @param db
      */
-    static isDataBoxFamily(db : DataboxCore) : boolean {
+    static isDataBoxFamily(db: DataboxCore): boolean {
         return db[databoxIsFamilySymbol];
     }
 
@@ -86,10 +86,10 @@ export default class DataboxPrepare
      * It will throw a error if the Databox is not found.
      * @param name
      */
-    checkDataboxExist(name : string) : void
+    checkDataboxExist(name: string): void
     {
         if(!this.isDataboxExist(name)) {
-            const err : any = new Error(`The Databox: '${name}' not exists.`);
+            const err: any = new Error(`The Databox: '${name}' not exists.`);
             err.name = ClientErrorName.UNKNOWN_DATABOX;
             throw err;
         }
@@ -98,7 +98,7 @@ export default class DataboxPrepare
     /**
      * Prepare all Databoxes.
      */
-    async prepare() : Promise<void> {
+    async prepare(): Promise<void> {
         const uDataboxes = this.zc.appConfig.databoxes || {};
         for(let name in uDataboxes) {
             if(uDataboxes.hasOwnProperty(name)) {
@@ -113,7 +113,7 @@ export default class DataboxPrepare
      * @param name
      * @param definition
      */
-    private addDatabox(name : string,definition : DataboxClassDef | ApiLevelSwitch<DataboxClassDef>) : void
+    private addDatabox(name: string,definition: DataboxClassDef | ApiLevelSwitch<DataboxClassDef>): void
     {
         if(typeof definition === 'function') {
             const preparedDataboxData = this.processDatabox(definition,name);
@@ -122,7 +122,7 @@ export default class DataboxPrepare
             };
         }
         else {
-            const preparedDataMapper : Record<any,DataboxCore> = {};
+            const preparedDataMapper: Record<any,DataboxCore> = {};
             for(let k in definition){
                 if(definition.hasOwnProperty(k)) {
                     preparedDataMapper[k] = this.processDatabox(definition[k],name,parseInt(k));
@@ -138,20 +138,20 @@ export default class DataboxPrepare
      * @param name
      * @param apiLevel
      */
-    private processDatabox(databox : DataboxClassDef, name : string, apiLevel ?: number) : DataboxCore
+    private processDatabox(databox: DataboxClassDef, name: string, apiLevel?: number): DataboxCore
     {
-        const config : DataboxConfig = databox.config;
+        const config: DataboxConfig = databox.config;
 
-        const dbPreparedData : DbPreparedData = {
-            versionAccessCheck : SystemVersionChecker.createVersionChecker(config),
-            systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
-            accessCheck : DataboxAccessHelper.createAccessChecker(config.access,this.bag),
-            initInputConsumer : InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbInitInput(config),this.bag),
-            fetchInputConsumer : InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbFetchInput(config),this.bag),
-            parallelFetch : config.parallelFetch !== undefined ? config.parallelFetch : false,
-            maxBackpressure : config.maxBackpressure !== undefined ? config.maxBackpressure : 30,
-            maxSocketInputChannels : config.maxSocketInputChannels !== undefined ?
-                config.maxSocketInputChannels : 20
+        const dbPreparedData: DbPreparedData = {
+            versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
+            systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
+            accessCheck: DataboxAccessHelper.createAccessChecker(config.access,this.bag),
+            initInputConsumer: InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbInitInput(config),this.bag),
+            fetchInputConsumer: InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbFetchInput(config),this.bag),
+            parallelFetch: config.parallelFetch !== undefined ? config.parallelFetch: false,
+            maxBackpressure: config.maxBackpressure !== undefined ? config.maxBackpressure: 30,
+            maxSocketInputChannels: config.maxSocketInputChannels !== undefined ?
+                config.maxSocketInputChannels: 20
         };
 
         let dbInstance;
@@ -172,10 +172,10 @@ export default class DataboxPrepare
         }
 
         Object.defineProperty(databox,databoxInstanceSymbol,{
-            value : dbInstance,
-            configurable : false,
-            enumerable : false,
-            writable : false
+            value: dbInstance,
+            configurable: false,
+            enumerable: false,
+            writable: false
         });
 
         this.databoxInits.push(dbInstance.initialize);
@@ -188,7 +188,7 @@ export default class DataboxPrepare
      */
     private async initDataboxes() {
         const length = this.databoxInits.length;
-        const promises : (Promise<void> | void)[] = [];
+        const promises: (Promise<void> | void)[] = [];
         for(let i = 0; i < length; i++){
             promises.push(this.databoxInits[i](this.bag));
         }

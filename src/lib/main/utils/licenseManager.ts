@@ -12,38 +12,38 @@ export interface License {
     /**
      * holder
      */
-    h : string,
+    h: string,
     /**
      * email
      */
-    e : string,
+    e: string,
     /**
      * level
      */
-    l : LicenseLevel,
+    l: LicenseLevel,
     /**
      * type
      */
-    t : LicenseType
+    t: LicenseType
     /**
      * Max instances
      * The maximal amount of instances which are allowed.
      * -1 = unlimited amount.
      * number > 0 = specific max amount.
      */
-    mi : number,
+    mi: number,
     /**
      * version
      */
-    v : number,
+    v: number,
     /**
      * id
      */
-    i : string,
+    i: string,
     /**
      * created timestamp
      */
-    c : number
+    c: number
 }
 
 export enum LicenseLevel {
@@ -61,7 +61,7 @@ const publicKey = 'EOS5pidaAL8uLjm6cdU1cskegUe2ovbPKPbsYRF2Rmm6aUCu8u3A2';
 export default class LicenseManager {
     private constructor(){}
 
-    static processLicense(license : string) : License {
+    static processLicense(license: string): License {
         try {
             const decodedBase64 = base64url.decode(license);
             const splitSignIndex = decodedBase64.indexOf('#');
@@ -79,25 +79,25 @@ export default class LicenseManager {
         throw new Error('Invalid License');
     }
 
-    static licenseVersionValid(license : License) : boolean {
+    static licenseVersionValid(license: License): boolean {
         return license.v >= ZationMaster.minLicenseVersionRequired;
     }
 
-    static licenseTypeToString(license : License) : string {
+    static licenseTypeToString(license: License): string {
         const maxInstance =
-            `(${license.mi === -1 ? 'Unlimited instances' : `Max ${license.mi} instance${license.mi > 1 ? 's' : ''}`})`;
+            `(${license.mi === -1 ? 'Unlimited instances': `Max ${license.mi} instance${license.mi > 1 ? 's': ''}`})`;
         return `${LicenseType[license.t]} License ${maxInstance}`;
     }
 
-    static licenseToMeta(license : License) : string {
+    static licenseToMeta(license: License): string {
         return `${license.i}#${license.l}.${license.t}.${license.mi}`;
     }
 
-    static licenseToPanelLicense(license : License) {
+    static licenseToPanelLicense(license: License) {
         return {
             ...license,
-            l : LicenseLevel[license.l],
-            t : LicenseType[license.t]
+            l: LicenseLevel[license.l],
+            t: LicenseType[license.t]
         };
     }
 }

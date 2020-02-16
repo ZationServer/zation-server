@@ -14,19 +14,19 @@ export interface SyncTokenDefinitions {
     /**
      * Type
      */
-    t : SyncTokenOperationType,
+    t: SyncTokenOperationType,
     /**
      * Path
      */
-    p ?: string | string[],
+    p?: string | string[],
     /**
      * Value
      */
-    v ?: any
+    v?: any
 }
 
 export interface UpdateTokenMainData {
-    operations : SyncTokenDefinitions[],
-    target : string | number,
-    exceptSocketSids : string[]
+    operations: SyncTokenDefinitions[],
+    target: string | number,
+    exceptSocketSids: string[]
 }

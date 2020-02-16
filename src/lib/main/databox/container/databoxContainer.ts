@@ -19,9 +19,9 @@ import {
 
 export default class DataboxContainer {
 
-    private readonly databoxes : Databox[];
+    private readonly databoxes: Databox[];
 
-    constructor(databoxes : Databox[]) {
+    constructor(databoxes: Databox[]) {
         this.databoxes = databoxes;
     }
 
@@ -60,8 +60,8 @@ export default class DataboxContainer {
      * @param value
      * @param options
      */
-    async insert(selector: DbSelector, value: any, options : IfOption & PotentialUpdateOption & InfoOption & TimestampOption = {}): Promise<void> {
-        const promises : Promise<void>[] = [];
+    async insert(selector: DbSelector, value: any, options: IfOption & PotentialUpdateOption & InfoOption & TimestampOption = {}): Promise<void> {
+        const promises: Promise<void>[] = [];
         for(let i = 0; i < this.databoxes.length;i++) {
             promises.push(this.databoxes[i].insert(selector,value,options));
         }
@@ -102,8 +102,8 @@ export default class DataboxContainer {
      * @param value
      * @param options
      */
-    async update(selector: DbSelector, value: any, options : IfOption & PotentialInsertOption & InfoOption & TimestampOption = {}): Promise<void> {
-        const promises : Promise<void>[] = [];
+    async update(selector: DbSelector, value: any, options: IfOption & PotentialInsertOption & InfoOption & TimestampOption = {}): Promise<void> {
+        const promises: Promise<void>[] = [];
         for(let i = 0; i < this.databoxes.length;i++) {
             promises.push(this.databoxes[i].update(selector,value,options));
         }
@@ -143,8 +143,8 @@ export default class DataboxContainer {
      * split by dots to create a string array.
      * @param options
      */
-    async delete(selector: DbSelector, options : IfOption & InfoOption & TimestampOption = {}): Promise<void> {
-        const promises : Promise<void>[] = [];
+    async delete(selector: DbSelector, options: IfOption & InfoOption & TimestampOption = {}): Promise<void> {
+        const promises: Promise<void>[] = [];
         for(let i = 0; i < this.databoxes.length;i++) {
             promises.push(this.databoxes[i].delete(selector,options));
         }
@@ -164,9 +164,9 @@ export default class DataboxContainer {
      * The client, for example, will only update data that is older as incoming data.
      * Use this option only if you know what you are doing.
      */
-    seqEdit(timestamp ?: number): DbCudOperationSequence {
+    seqEdit(timestamp?: number): DbCudOperationSequence {
         return new DbCudOperationSequence(async (operations) => {
-            const promises : Promise<void>[] = [];
+            const promises: Promise<void>[] = [];
             for(let i = 0; i < this.databoxes.length;i++) {
                 promises.push(this.databoxes[i]._emitCudPackage(
                     DataboxUtils.buildPreCudPackage(...operations),timestamp));
@@ -184,7 +184,7 @@ export default class DataboxContainer {
      * @param data
      * @param forEveryWorker
      */
-    close(code ?: number | string, data ?: any,forEveryWorker : boolean = true): void {
+    close(code?: number | string, data?: any,forEveryWorker: boolean = true): void {
         for(let i = 0; i < this.databoxes.length;i++) {
             this.databoxes[i].close(code,data,forEveryWorker);
         }
@@ -199,7 +199,7 @@ export default class DataboxContainer {
      * @param code
      * @param data
      */
-    doReload(forEveryWorker: boolean = false,code ?: number | string,data ?: any): void {
+    doReload(forEveryWorker: boolean = false,code?: number | string,data?: any): void {
         for(let i = 0; i < this.databoxes.length;i++) {
             this.databoxes[i].doReload(forEveryWorker,code,data);
         }
@@ -212,7 +212,7 @@ export default class DataboxContainer {
      * @param code
      * @param data
      */
-    kickOut(socket: UpSocket,code ?: number | string,data ?: any): void {
+    kickOut(socket: UpSocket,code?: number | string,data?: any): void {
         for(let i = 0; i < this.databoxes.length;i++) {
             this.databoxes[i].kickOut(socket,code,data);
         }
@@ -228,7 +228,7 @@ export default class DataboxContainer {
      * @param data
      * @param forEveryWorker
      */
-    sendSignal(signal : string,data ?: any,forEveryWorker : boolean = true) {
+    sendSignal(signal: string,data?: any,forEveryWorker: boolean = true) {
         for(let i = 0; i < this.databoxes.length;i++) {
             this.databoxes[i].sendSignal(signal,data,forEveryWorker);
         }

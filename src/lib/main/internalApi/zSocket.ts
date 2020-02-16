@@ -18,9 +18,9 @@ import {ObjectPathSequence}  from "./objectPathSequence/objectPathSequence";
 
 export default class ZSocket
 {
-    private readonly _socket : UpSocket;
+    private readonly _socket: UpSocket;
 
-    constructor(socket : UpSocket) {
+    constructor(socket: UpSocket) {
         this._socket = socket;
     }
 
@@ -54,7 +54,7 @@ export default class ZSocket
     /**
      * Returns the base sh bridge of the socket.
      */
-    get shBridge() : BaseSHBridge {
+    get shBridge(): BaseSHBridge {
         return this._socket.baseSHBridge;
     }
 
@@ -126,7 +126,7 @@ export default class ZSocket
      * @param value
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    async setTokenVariable(path : string | string[],value : any) : Promise<void> {
+    async setTokenVariable(path: string | string[],value: any): Promise<void> {
         const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this._socket.authToken));
         ObjectPath.set(ctv,path,value);
         await TokenUtils.setCustomVar(ctv,this._socket.baseSHBridge);
@@ -147,7 +147,7 @@ export default class ZSocket
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    async deleteTokenVariable(path ?: string | string[]) : Promise<void> {
+    async deleteTokenVariable(path?: string | string[]): Promise<void> {
         if(!!path) {
             const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this._socket.authToken));
             ObjectPath.del(ctv,path);
@@ -178,7 +178,7 @@ export default class ZSocket
      *       .commit();
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    seqEditTokenVariables() : ObjectPathSequence
+    seqEditTokenVariables(): ObjectPathSequence
     {
         return new ObjectPathSequenceImp(CloneUtils.deepClone(
             TokenUtils.getTokenVariables(this._socket.authToken)),
@@ -200,7 +200,7 @@ export default class ZSocket
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    hasTokenVariable(path ?: string | string[]) : boolean {
+    hasTokenVariable(path?: string | string[]): boolean {
         return ObjectPath.has(TokenUtils.getTokenVariables(this._socket.authToken),path);
     }
 
@@ -217,7 +217,7 @@ export default class ZSocket
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    getTokenVariable<R = any>(path ?: string | string[]) : R {
+    getTokenVariable<R = any>(path?: string | string[]): R {
         return ObjectPath.get(TokenUtils.getTokenVariables(this._socket.authToken),path);
     }
 
@@ -226,7 +226,7 @@ export default class ZSocket
      * @description
      * Returns all socket subscriptions as a string array.
      */
-    getSubscriptions() : string[] {
+    getSubscriptions(): string[] {
         return this._socket.subscriptions();
     }
 
@@ -235,7 +235,7 @@ export default class ZSocket
      * Returns all custom channel subscriptions of the socket.
      * @param name (optional filter for a specific name)
      */
-    getCustomChSubscriptions(name ?: string) : string[] {
+    getCustomChSubscriptions(name?: string): string[] {
         return ChUtils.getCustomChannelSubscriptions(this._socket,name);
     }
 
@@ -243,7 +243,7 @@ export default class ZSocket
     /**
      * Returns if the socket has subscribed the user channel.
      */
-    hasSubUserCh() : boolean {
+    hasSubUserCh(): boolean {
         return ChUtils.hasSubUserCh(this._socket);
     }
 
@@ -251,7 +251,7 @@ export default class ZSocket
     /**
      * Returns if the socket has subscribed the auth user group channel.
      */
-    hasSubAuthUserGroupCh() : boolean {
+    hasSubAuthUserGroupCh(): boolean {
         return ChUtils.hasSubAuthUserGroupCh(this._socket);
     }
 
@@ -259,7 +259,7 @@ export default class ZSocket
     /**
      * Returns if the socket has subscribed the default user group channel.
      */
-    hasSubDefaultUserGroupCh() : boolean {
+    hasSubDefaultUserGroupCh(): boolean {
         return ChUtils.hasSubDefaultUserGroupCh(this._socket);
     }
 
@@ -267,7 +267,7 @@ export default class ZSocket
     /**
      * Returns if the socket has subscribed the all channel.
      */
-    hasSubAllCh() : boolean {
+    hasSubAllCh(): boolean {
         return ChUtils.hasSubAllCh(this._socket);
     }
 
@@ -281,7 +281,7 @@ export default class ZSocket
      * if it is not provided,
      * it returns if the socket has subscribed any custom channel with the provided name.
      */
-    hasSubCustomCh(name ?: string, id ?: string) : boolean {
+    hasSubCustomCh(name?: string, id?: string): boolean {
         return ChUtils.hasSubCustomCh(this._socket,name);
     }
 
@@ -289,7 +289,7 @@ export default class ZSocket
     /**
      * Returns if the socket has subscribed the panel out channel.
      */
-    hasSubPanelOutCh() : boolean {
+    hasSubPanelOutCh(): boolean {
         return ChUtils.hasSubPanelOutCh(this._socket);
     }
 
@@ -303,7 +303,7 @@ export default class ZSocket
      * @param name is optional, if it is not given the users will be kicked out from all custom channels.
      * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      */
-    kickFromCustomCh(name ?: string,id ?: string) : void {
+    kickFromCustomCh(name?: string,id?: string): void {
         ChUtils.kickCustomChannel(this._socket,name,id);
     }
 
@@ -311,7 +311,7 @@ export default class ZSocket
     /**
      * Returns the Databoxes where the socket is connected to.
      */
-    getDataboxes() : (DataboxFamily | Databox)[] {
+    getDataboxes(): (DataboxFamily | Databox)[] {
         return this._socket.databoxes;
     }
 
@@ -329,9 +329,9 @@ export default class ZSocket
      * Indicates if you only want to transmit data.
      * If not than the promise will be resolved with the result when the client responded on the emit.
      */
-    async emit<T extends boolean>(event : string,data : any,onlyTransmit : T) : Promise<T extends true ? void : any>
+    async emit<T extends boolean>(event: string,data: any,onlyTransmit: T): Promise<T extends true ? void: any>
     // noinspection JSUnusedGlobalSymbols
-    async emit(event : string,data : any,onlyTransmit : boolean = true) : Promise<object | void>
+    async emit(event: string,data: any,onlyTransmit: boolean = true): Promise<object | void>
     {
         return new Promise<object>((resolve, reject) => {
             // noinspection DuplicatedCode
@@ -341,7 +341,7 @@ export default class ZSocket
             }
             else {
                 this.shBridge.getSocket().emit(ZationCustomEventNamespace+event,data,(err, data) => {
-                    err ? reject(err) : resolve(data);
+                    err ? reject(err): resolve(data);
                 });
             }
         });
@@ -356,7 +356,7 @@ export default class ZSocket
      * The function that gets called when the event occurs,
      * parameters are the data and a response function that you can call to respond on the event back.
      */
-    on(event : string,handler : OnHandlerFunction){
+    on(event: string,handler: OnHandlerFunction){
         this._socket.on(ZationCustomEventNamespace+event,handler);
     }
 
@@ -369,8 +369,8 @@ export default class ZSocket
      * The function that gets called when the event occurs,
      * parameters are the data and a response function that you can call to respond on the event back.
      */
-    once(event : string,handler : OnHandlerFunction) : void {
-        const tmpHandler : OnHandlerFunction = (data, response) => {
+    once(event: string,handler: OnHandlerFunction): void {
+        const tmpHandler: OnHandlerFunction = (data, response) => {
             tmpHandler(data,response);
             this._socket.off(event,tmpHandler);
         };
@@ -389,7 +389,7 @@ export default class ZSocket
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
      */
-    setSocketVariable(path : string | string[],value : any) : void {
+    setSocketVariable(path: string | string[],value: any): void {
         ObjectPath.set(this._socket.zationSocketVariables,path,value);
     }
 
@@ -402,7 +402,7 @@ export default class ZSocket
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    hasSocketVariable(path ?: string | string[]) : boolean {
+    hasSocketVariable(path?: string | string[]): boolean {
         return ObjectPath.has(this._socket.zationSocketVariables,path);
     }
 
@@ -415,7 +415,7 @@ export default class ZSocket
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getSocketVariable<R = any>(path ?: string | string[]) : R {
+    getSocketVariable<R = any>(path?: string | string[]): R {
         return ObjectPath.get(this._socket.zationSocketVariables,path);
     }
 
@@ -428,7 +428,7 @@ export default class ZSocket
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    deleteSocketVariable(path ?: string | string[]) : void
+    deleteSocketVariable(path?: string | string[]): void
     {
         if(!!path) {
             ObjectPath.del(this._socket.zationSocketVariables,path);
@@ -449,7 +449,7 @@ export default class ZSocket
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getSocketHandshakeVariable<R = any>(path ?: string | string[]) : R {
+    getSocketHandshakeVariable<R = any>(path?: string | string[]): R {
         return ObjectPath.get(this._socket.handshakeVariables,path);
     }
 
@@ -462,7 +462,7 @@ export default class ZSocket
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    hasSocketHandshakeVariable(path ?: string | string[]) : boolean {
+    hasSocketHandshakeVariable(path?: string | string[]): boolean {
         return ObjectPath.has(this._socket.handshakeVariables,path);
     }
 }

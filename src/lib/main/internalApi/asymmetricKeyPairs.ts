@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 export default interface AsymmetricKeyPairs
 {
-    publicKey : string;
-    privateKey : string;
+    publicKey: string;
+    privateKey: string;
 }
 

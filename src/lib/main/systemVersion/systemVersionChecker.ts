@@ -8,9 +8,9 @@ import BaseSHBridge       from "../bridges/baseSHBridge";
 // noinspection TypeScriptPreferShortImport
 import {SystemAccessConfig, VersionAccessConfig} from "../config/definitions/configComponents";
 
-export type VersionSystemAccessCheckFunction = (shBridge : BaseSHBridge) => boolean;
+export type VersionSystemAccessCheckFunction = (shBridge: BaseSHBridge) => boolean;
 
-type VersionCheckFunction = (version : number) => boolean;
+type VersionCheckFunction = (version: number) => boolean;
 
 export default class SystemVersionChecker
 {
@@ -18,10 +18,10 @@ export default class SystemVersionChecker
      * Returns a Closures for checking the version.
      * @param versionAccessConfig
      */
-    static createVersionChecker(versionAccessConfig : VersionAccessConfig) : VersionSystemAccessCheckFunction {
+    static createVersionChecker(versionAccessConfig: VersionAccessConfig): VersionSystemAccessCheckFunction {
         const versionAccess = versionAccessConfig.versionAccess;
         if(typeof versionAccess === 'object') {
-            const preparedVersionChecker : Record<string,VersionCheckFunction> = {};
+            const preparedVersionChecker: Record<string,VersionCheckFunction> = {};
             for(let system in versionAccess){
                 if(versionAccess.hasOwnProperty(system)){
                     const setting = versionAccess[system];
@@ -50,7 +50,7 @@ export default class SystemVersionChecker
      * Returns a Closures for checking the system.
      * @param systemAccessConfig
      */
-    static createSystemChecker(systemAccessConfig : SystemAccessConfig) : VersionSystemAccessCheckFunction {
+    static createSystemChecker(systemAccessConfig: SystemAccessConfig): VersionSystemAccessCheckFunction {
         const systemAccess = systemAccessConfig.systemAccess;
         if(Array.isArray(systemAccess)) {
             return (shBridge) =>  {

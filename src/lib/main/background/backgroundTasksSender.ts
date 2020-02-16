@@ -11,16 +11,16 @@ import Logger       from "../logger/logger";
 
 export default class BackgroundTasksSender
 {
-    private readonly master : ZationMaster;
-    private readonly zc : ZationConfig;
+    private readonly master: ZationMaster;
+    private readonly zc: ZationConfig;
 
-    constructor(master : ZationMaster, zc : ZationConfig)
+    constructor(master: ZationMaster, zc: ZationConfig)
     {
         this.zc = zc;
         this.master = master;
     }
 
-    public setEveryBackgroundTask(name : string,time : any,clusterSafe : boolean)
+    public setEveryBackgroundTask(name: string,time: any,clusterSafe: boolean)
     {
         if(Number.isInteger(time))
         {
@@ -49,13 +49,13 @@ export default class BackgroundTasksSender
         }
     }
 
-    private runUserBackgroundTask(name : string,clusterSafe : boolean) {
+    private runUserBackgroundTask(name: string,clusterSafe: boolean) {
         if(!clusterSafe || (clusterSafe && this.master.isClusterLeader())){
-            this.master.sendToRandomWorker({userBackgroundTask : name});
+            this.master.sendToRandomWorker({userBackgroundTask: name});
         }
     }
 
-    public setAtBackgroundTask(name : string,time : any,clusterSafe : boolean)
+    public setAtBackgroundTask(name: string,time: any,clusterSafe: boolean)
     {
         if(Number.isInteger(time))
         {

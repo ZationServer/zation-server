@@ -14,11 +14,11 @@ import InputUtils                       from "./inputUtils";
 import Bag                              from "../../api/Bag";
 import {ValidationCheckPair}            from "../controller/request/controllerDefinitions";
 
-export type InputConsumeFunction = (input : any) => Promise<any>;
-export type InputValidationCheckFunction = (checkData : ValidationCheckPair[]) => Promise<void>;
+export type InputConsumeFunction = (input: any) => Promise<any>;
+export type InputValidationCheckFunction = (checkData: ValidationCheckPair[]) => Promise<void>;
 
-const DefaultParamProcessable : Processable = {
-    _process : InputProcessor.createParamInputProcessor({})
+const DefaultParamProcessable: Processable = {
+    _process: InputProcessor.createParamInputProcessor({})
 };
 
 /**
@@ -31,31 +31,31 @@ export default class InputClosureCreator
      * @param inputConfig
      * @param bag
      */
-    static createInputConsumer(inputConfig : InputConfig, bag : Bag) : InputConsumeFunction {
+    static createInputConsumer(inputConfig: InputConfig, bag: Bag): InputConsumeFunction {
         if(inputConfig.allowAnyInput) {
             return (input) => input;
         }
 
         // @ts-ignore
-        const inputDefinition : (ParamInput | SingleModelInput) & Processable = inputConfig.input;
+        const inputDefinition: (ParamInput | SingleModelInput) & Processable = inputConfig.input;
 
-        let processable : Processable;
+        let processable: Processable;
         if(Array.isArray(inputDefinition)) {
             processable = inputDefinition[0];
         }
         else {
-            processable = typeof inputDefinition === 'object' ? (inputDefinition as Processable) : DefaultParamProcessable;
+            processable = typeof inputDefinition === 'object' ? (inputDefinition as Processable): DefaultParamProcessable;
         }
 
         return async (input) => {
-            const taskList : ProcessTask[] = [];
-            const backErrorBag : BackErrorBag = new BackErrorBag();
-            const wrapper = {i : input};
+            const taskList: ProcessTask[] = [];
+            const backErrorBag: BackErrorBag = new BackErrorBag();
+            const wrapper = {i: input};
 
             await processable._process(bag,wrapper,'i','',{
-                processTaskList : taskList,
-                errorBag : backErrorBag,
-                createProcessTaskList :  true
+                processTaskList: taskList,
+                errorBag: backErrorBag,
+                createProcessTaskList:  true
             });
 
             //throw validation/structure errors if any there
@@ -73,7 +73,7 @@ export default class InputClosureCreator
      * @param inputConfig
      * @param bag
      */
-    static createValidationChecker(inputConfig : InputConfig,bag : Bag) : InputValidationCheckFunction
+    static createValidationChecker(inputConfig: InputConfig,bag: Bag): InputValidationCheckFunction
     {
         if(inputConfig.allowAnyInput) {
             return async () => {}
@@ -86,12 +86,12 @@ export default class InputClosureCreator
             inputDefinition = inputConfig.input[0];
         }
         else {
-            inputDefinition = typeof inputConfig.input === 'object' ? inputConfig.input : {};
+            inputDefinition = typeof inputConfig.input === 'object' ? inputConfig.input: {};
         }
 
         return async (checkData) => {
 
-            const promises : Promise<void>[] = [];
+            const promises: Promise<void>[] = [];
             const errorBag = new BackErrorBag();
             for(let i = 0; i < checkData.length; i++)
             {
@@ -108,23 +108,23 @@ export default class InputClosureCreator
                             if(specificConfig === undefined){
                                 errorBag.addBackError(new BackError(MainBackErrors.inputPathNotResolvable,
                                     {
-                                        inputPath : keyPath,
-                                        checkIndex : i
+                                        inputPath: keyPath,
+                                        checkIndex: i
                                     }));
                                 return;
                             }
                         }
 
                         await (specificConfig as Processable)._process(bag,iCheckData,nameof<ValidationCheckPair>(s => s.v),path,{
-                            errorBag : errorBag,
-                            createProcessTaskList : false,
-                            processTaskList : [],
+                            errorBag: errorBag,
+                            createProcessTaskList: false,
+                            processTaskList: [],
                         });
                     }
                     else {
                         errorBag.addBackError(new BackError(MainBackErrors.wrongValidationCheckStructure,
                             {
-                                checkIndex : i
+                                checkIndex: i
                             }));
                     }
                 })());

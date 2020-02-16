@@ -17,7 +17,7 @@ export class Server {
      * @description
      * Returns if the server runs in test mode.
      */
-    static inTestMode() : boolean {
+    static inTestMode(): boolean {
         return global['_ZATION_START_MODE'] === StartMode.TEST;
     }
 

@@ -14,22 +14,22 @@ import {ZationRequest}     from "../controller/request/controllerDefinitions";
  */
 export default interface SHBridge extends BaseSHBridge
 {
-    getZationData() : ZationRequest;
-    getReqId() : string;
+    getZationData(): ZationRequest;
+    getReqId(): string;
     /**
      * Is undefined if isWebSocket() is true!
      */
-    getResponse() : core.Response;
+    getResponse(): core.Response;
     /**
      * Is undefined if isWebSocket() is true!
      */
-    getRequest() : core.Request;
+    getRequest(): core.Request;
 
-    isValidationCheckReq() : boolean;
+    isValidationCheckReq(): boolean;
 
-    getApiLevel() : number;
+    getApiLevel(): number;
 
-    getConnectionApiLevel() : number | undefined;
+    getConnectionApiLevel(): number | undefined;
 
-    getRequestApiLevel() : number | undefined;
+    getRequestApiLevel(): number | undefined;
 }

@@ -26,13 +26,13 @@ import zationConfig                from "../../config/manager/zationConfig";
 
 export default class DataboxHandler
 {
-    private readonly dbPrepare : DataboxPrepare;
-    private readonly defaultApiLevel : number;
-    private readonly socketDataboxLimit : number;
-    private readonly zc : zationConfig;
-    private readonly debug : boolean;
+    private readonly dbPrepare: DataboxPrepare;
+    private readonly defaultApiLevel: number;
+    private readonly socketDataboxLimit: number;
+    private readonly zc: zationConfig;
+    private readonly debug: boolean;
 
-    constructor(dbPrepare : DataboxPrepare, zc : ZationConfig) {
+    constructor(dbPrepare: DataboxPrepare, zc: ZationConfig) {
         this.dbPrepare = dbPrepare;
         this.defaultApiLevel = zc.mainConfig.defaultClientApiLevel;
         this.socketDataboxLimit = zc.mainConfig.socketDataboxLimit;
@@ -40,28 +40,28 @@ export default class DataboxHandler
         this.debug = zc.isDebug();
     }
 
-    async processConnectReq(input : DataboxConnectReq, socket : UpSocket,respond : RespondFunction) : Promise<void> {
+    async processConnectReq(input: DataboxConnectReq, socket: UpSocket,respond: RespondFunction): Promise<void> {
         try {
             respond(null,(await this._processConnectReq(input,socket)));
         }
         catch (err) {respond(err);}
     }
 
-    private async _processConnectReq(input : DataboxConnectReq, socket : UpSocket) : Promise<DataboxConnectRes>
+    private async _processConnectReq(input: DataboxConnectReq, socket: UpSocket): Promise<DataboxConnectRes>
     {
         //check request valid
         if(!DataboxReqUtils.isValidReqStructure(input)) {
-            const err : any = new Error(`Not valid req structure.`);
+            const err: any = new Error(`Not valid req structure.`);
             err.name = ClientErrorName.INVALID_REQUEST;
             throw err;
         }
 
         //exists?
-        const reqApiLevel = typeof input.al === 'number' ? Math.floor(input.al) : undefined;
+        const reqApiLevel = typeof input.al === 'number' ? Math.floor(input.al): undefined;
         const apiLevel = reqApiLevel || socket.apiLevel || this.defaultApiLevel;
 
         //throws if not exists or api level is incompatible
-        const db : DataboxCore = this.dbPrepare.getDatabox((input.d as string),apiLevel);
+        const db: DataboxCore = this.dbPrepare.getDatabox((input.d as string),apiLevel);
 
         if(this.debug){
             Logger.printDebugInfo(`Databox Connection Request -> `,input);
@@ -74,25 +74,25 @@ export default class DataboxHandler
         const idProvided = input.i !== undefined;
 
         if(isFamily && !idProvided){
-            const err : any = new Error(`The id is missing to request a DataboxFamily.`);
+            const err: any = new Error(`The id is missing to request a DataboxFamily.`);
             err.name = ClientErrorName.ID_MISSING;
             throw err;
         }
         if(!isFamily && idProvided){
-            const err : any = new Error(`Unknown id provided to request a Databox.`);
+            const err: any = new Error(`Unknown id provided to request a Databox.`);
             err.name = ClientErrorName.UNKNOWN_ID;
             throw err;
         }
 
         if(socket.databoxes.length > this.socketDataboxLimit){
-            const err : any = new Error(`Socket limit of Databoxes is reached.`);
+            const err: any = new Error(`Socket limit of Databoxes is reached.`);
             err.name = ClientErrorName.DATABOX_LIMIT_REACHED;
             throw err;
         }
 
-        const dbInfo : DataboxInfo = {
-            name : (input.d as string),
-            id : undefined
+        const dbInfo: DataboxInfo = {
+            name: (input.d as string),
+            id: undefined
         };
 
         //access and id check
@@ -103,12 +103,12 @@ export default class DataboxHandler
         await db._checkAccess(socket,dbInfo);
 
         //token check and init data
-        let dbToken : undefined | DbToken = undefined;
+        let dbToken: undefined | DbToken = undefined;
         let usedToken = false;
-        let processedInitData : any;
+        let processedInitData: any;
         try {
             if(typeof input.t === 'string'){
-                const tmpDbToken = await db._verifyDbToken(input.t,isFamily ? input.i : undefined);
+                const tmpDbToken = await db._verifyDbToken(input.t,isFamily ? input.i: undefined);
                 if(tmpDbToken){
                     processedInitData = await db._consumeInitInput(tmpDbToken.rawInitData);
                     usedToken = true;
@@ -127,7 +127,7 @@ export default class DataboxHandler
         }
 
         //register
-        let keys : DbRegisterResult;
+        let keys: DbRegisterResult;
         let lastCudId;
         if(isFamily){
             keys = await (db as DataboxFamily)._registerSocket(socket,(input.i as string),dbToken,processedInitData);
@@ -139,11 +139,11 @@ export default class DataboxHandler
         }
 
         return {
-            ut : usedToken,
-            ci : lastCudId,
-            pf : db.isParallelFetch(),
-            i : keys.inputCh,
-            o : keys.outputCh
+            ut: usedToken,
+            ci: lastCudId,
+            pf: db.isParallelFetch(),
+            i: keys.inputCh,
+            o: keys.outputCh
         };
     }
 

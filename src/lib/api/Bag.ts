@@ -24,9 +24,9 @@ import {
     WorkerChMapTarget
 } from "../main/constants/workerChTaskDefinitions";
 
-const crypto : any                                          = require('crypto');
-const IP : any                                              = require('ip');
-const crypto2 : any                                         = require("crypto2");
+const crypto: any                                          = require('crypto');
+const IP: any                                              = require('ip');
+const crypto2: any                                         = require("crypto2");
 const uuidV4                                                = require('uuid/v4');
 const uniqid                                                = require('uniqid');
 import ZationWorker                                         = require("../core/zationWorker");
@@ -70,9 +70,9 @@ export default class Bag {
     protected readonly zc: ZationConfigFull;
     protected readonly worker: ZationWorker;
 
-    private static readyPromise : Promise<Bag> = new Promise<Bag>(resolve => {Bag.readyResolve = resolve});
-    private static readyResolve : (bag : Bag) => void;
-    private static _instance : Bag;
+    private static readyPromise: Promise<Bag> = new Promise<Bag>(resolve => {Bag.readyResolve = resolve});
+    private static readyResolve: (bag: Bag) => void;
+    private static _instance: Bag;
 
     constructor(worker: ZationWorker, exchangeEngine: ChannelBagEngine) {
         this.exchangeEngine = exchangeEngine;
@@ -90,7 +90,7 @@ export default class Bag {
      * It only works in a worker process, and when it is resolved,
      * you are also able to access that bag any time with the static getter: instance.
      */
-    static get ready() : Promise<Bag> {
+    static get ready(): Promise<Bag> {
         return Bag.readyPromise;
     }
 
@@ -104,7 +104,7 @@ export default class Bag {
      * that will be used in multiple components,
      * and you need access to a bag instance.
      */
-    static get instance() : Bag | undefined {
+    static get instance(): Bag | undefined {
         return Bag._instance;
     }
 
@@ -116,7 +116,7 @@ export default class Bag {
      * @private
      */
     // @ts-ignore
-    private static _isReady(instance : Bag) {
+    private static _isReady(instance: Bag) {
         this._instance = instance;
         this.readyResolve(instance);
     }
@@ -221,7 +221,7 @@ export default class Bag {
      * Which you can define in the variables property in the main config.
      * @param path
      */
-    getMainConfigVariable<V = any>(path ?: string | string[]): V {
+    getMainConfigVariable<V = any>(path?: string | string[]): V {
         return ObjectPath.get(this.zc.mainConfig.variables, path);
     }
 
@@ -262,7 +262,7 @@ export default class Bag {
      * @description
      * Returns true if the server is using the token state check.
      */
-    isUseTokenStateCheck() : boolean {
+    isUseTokenStateCheck(): boolean {
         return this.worker.getAEPreparedPart().isUseTokenStateCheck();
     }
 
@@ -464,7 +464,7 @@ export default class Bag {
      * https://myhost:3000
      */
     getServerUrl(): string {
-        return `${this.zc.mainConfig.secure ? 'https' : 'http'}://${this.zc.mainConfig.hostname}:${this.zc.mainConfig.port}`;
+        return `${this.zc.mainConfig.secure ? 'https': 'http'}://${this.zc.mainConfig.hostname}:${this.zc.mainConfig.port}`;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -475,7 +475,7 @@ export default class Bag {
      * https://myhost:3000/path
      */
     getZationServerUrl(): string {
-        return `${this.zc.mainConfig.secure ? 'https' : 'http'}://${this.zc.mainConfig.hostname}:${this.zc.mainConfig.port}${this.zc.mainConfig.path}`;
+        return `${this.zc.mainConfig.secure ? 'https': 'http'}://${this.zc.mainConfig.hostname}:${this.zc.mainConfig.port}${this.zc.mainConfig.path}`;
     }
 
     //Part Os
@@ -485,7 +485,7 @@ export default class Bag {
      * Returns the average Cpu usage in percentage from the server.
      * Notice that the measurement will take at least 1 second.
      */
-    async getCpuUsage() : Promise<number> {
+    async getCpuUsage(): Promise<number> {
         return OsUtils.getAverageCpuUsage();
     }
 
@@ -493,7 +493,7 @@ export default class Bag {
      * @description
      * Returns the total and used memory in MB of the server.
      */
-    async getMemoryUsage() : Promise<{totalMemMb : number,usedMemMb : number}> {
+    async getMemoryUsage(): Promise<{totalMemMb: number,usedMemMb: number}> {
         return OsUtils.getMemoryUsage();
     }
 
@@ -501,7 +501,7 @@ export default class Bag {
     /**
      * Returns the CPU usage in percentage and the memory usage in MB.
      */
-    async getPidUsage() : Promise<{cpu : number, memory : number}> {
+    async getPidUsage(): Promise<{cpu: number, memory: number}> {
         return SystemInfo.getPidInfo();
     }
 
@@ -512,7 +512,7 @@ export default class Bag {
      * @example
      * 'Mac OS X 10.15', 'Microsoft Windows 7 Enterprise', 'Linux 4.4.0-112-generic'
      */
-    async getOsName() : Promise<string> {
+    async getOsName(): Promise<string> {
         return OsUtils.getOs();
     }
 
@@ -566,7 +566,7 @@ export default class Bag {
      * @param string
      * @param salt
      */
-    hashSha512(string: string, salt ?: string): string {
+    hashSha512(string: string, salt?: string): string {
         return this.hashIn('sha512', string, salt);
     }
 
@@ -578,7 +578,7 @@ export default class Bag {
      * @param string
      * @param salt
      */
-    hashIn(hash: string, string: string, salt ?: string): string {
+    hashIn(hash: string, string: string, salt?: string): string {
         if (salt !== undefined) {
             return crypto.createHmac(hash, salt).update(string).digest('hex');
         } else {
@@ -607,7 +607,7 @@ export default class Bag {
     async generateEccAsymmetricKeyPair(): Promise<AsymmetricKeyPairs> {
         await ecc.initialize();
         const wif = await ecc.randomKey();
-        return {privateKey : wif,publicKey : ecc.privateToPublic(wif)};
+        return {privateKey: wif,publicKey: ecc.privateToPublic(wif)};
     }
 
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
@@ -787,7 +787,7 @@ export default class Bag {
      * but you can override some options by providing jwt sign options as a second argument.
      * The return value is the signed token as a string.
      * @example
-     * await signToken({someVariable : 'Hello'},{expiresIn : 200});
+     * await signToken({someVariable: 'Hello'},{expiresIn: 200});
      * @param data
      * @param jwtOptions
      */
@@ -819,7 +819,7 @@ export default class Bag {
      * @param port
      * @param host
      */
-    async isPortAvailable(port: number, host: string = '127.0.0.1') : Promise<boolean> {
+    async isPortAvailable(port: number, host: string = '127.0.0.1'): Promise<boolean> {
         return PortChecker.isPortAvailable(port,host)
     }
 
@@ -828,7 +828,7 @@ export default class Bag {
      * @param ports
      * @param host
      */
-    async findAPortNotInUse(ports: number[], host: string = '127.0.0.1') : Promise<number> {
+    async findAPortNotInUse(ports: number[], host: string = '127.0.0.1'): Promise<number> {
         return PortChecker.findAPortNotInUse(ports,host);
     }
 
@@ -837,7 +837,7 @@ export default class Bag {
      * @param ports
      * @param host
      */
-    async findAPortInUse(ports: number[], host: string = '127.0.0.1') : Promise<number> {
+    async findAPortInUse(ports: number[], host: string = '127.0.0.1'): Promise<number> {
         return PortChecker.findAPortInUse(ports,host);
     }
 
@@ -848,15 +848,15 @@ export default class Bag {
      * @description
      * Publish in an user channel or channels.
      * @example
-     * publishInUserCh('paul10','message',{message : 'hello',fromUserId : 'luca34'});
-     * publishInUserCh(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
+     * publishInUserCh('paul10','message',{message: 'hello',fromUserId: 'luca34'});
+     * publishInUserCh(['paul10','lea1'],'message',{message: 'hello',fromUserId: 'luca34'});
      * @param userId or more userIds in array.
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishInUserCh(userId: string | number | (number | string)[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+    async publishInUserCh(userId: string | number | (number | string)[], eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
         return this.exchangeEngine.publishInUserCh(userId, eventName, data, srcSocketSid);
     }
 
@@ -865,15 +865,15 @@ export default class Bag {
      * @description
      * Publish in an user channel or channels.
      * @example
-     * pubUserCh('paul10','message',{message : 'hello',fromUserId : 'luca34'});
-     * pubUserCh(['paul10','lea1'],'message',{message : 'hello',fromUserId : 'luca34'});
+     * pubUserCh('paul10','message',{message: 'hello',fromUserId: 'luca34'});
+     * pubUserCh(['paul10','lea1'],'message',{message: 'hello',fromUserId: 'luca34'});
      * @param userId or more userIds in array.
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubUserCh(userId: string | number | (number | string)[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+    async pubUserCh(userId: string | number | (number | string)[], eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
         return this.publishInUserCh(userId, eventName, data, srcSocketSid)
     }
 
@@ -882,13 +882,13 @@ export default class Bag {
      * @description
      * Publish in all channel.
      * @example
-     * publishInAllCh('message',{message : 'hello'});
+     * publishInAllCh('message',{message: 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishInAllCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+    async publishInAllCh(eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
         return this.exchangeEngine.publishInAllCh(eventName, data, srcSocketSid);
     }
 
@@ -897,13 +897,13 @@ export default class Bag {
      * @description
      * Publish in all channel.
      * @example
-     * pubAllCh('message',{message : 'hello'});
+     * pubAllCh('message',{message: 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubAllCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+    async pubAllCh(eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
         return this.publishInAllCh(eventName, data, srcSocketSid);
     }
 
@@ -912,15 +912,15 @@ export default class Bag {
      * @description
      * Publish in auth user group channel/s.
      * @example
-     * publishInAuthUserGroupCh('admin','userRegistered',{userId : '1'});
-     * publishInAuthUserGroupCh(['admin','superAdmin'],'userRegistered',{userId : '1'});
+     * publishInAuthUserGroupCh('admin','userRegistered',{userId: '1'});
+     * publishInAuthUserGroupCh(['admin','superAdmin'],'userRegistered',{userId: '1'});
      * @param authUserGroup or an array of auth user groups
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishInAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+    async publishInAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
         return this.exchangeEngine.publishInAuthUserGroupCh(authUserGroup, eventName, data, srcSocketSid);
     }
 
@@ -929,15 +929,15 @@ export default class Bag {
      * @description
      * Publish in auth user group channel/s.
      * @example
-     * pubAuthUserGroupCh('admin','userRegistered',{userId : '1'});
-     * pubAuthUserGroupCh(['admin','superAdmin'],'userRegistered',{userId : '1'});
+     * pubAuthUserGroupCh('admin','userRegistered',{userId: '1'});
+     * pubAuthUserGroupCh(['admin','superAdmin'],'userRegistered',{userId: '1'});
      * @param authUserGroup or an array of auth user groups.
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+    async pubAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
         return this.publishInAuthUserGroupCh(authUserGroup, eventName, data, srcSocketSid);
     }
 
@@ -946,13 +946,13 @@ export default class Bag {
      * @description
      * Publish in default user group channel.
      * @example
-     * publishInDefaultUserGroupCh('message',{message : 'hello'});
+     * publishInDefaultUserGroupCh('message',{message: 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishInDefaultUserGroupCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+    async publishInDefaultUserGroupCh(eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
         return this.exchangeEngine.publishInDefaultUserGroupCh(eventName, data, srcSocketSid);
     }
 
@@ -961,13 +961,13 @@ export default class Bag {
      * @description
      * Publish in default user group channel.
      * @example
-     * pubDefaultUserGroupCh('message',{message : 'hello'});
+     * pubDefaultUserGroupCh('message',{message: 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubDefaultUserGroupCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+    async pubDefaultUserGroupCh(eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
         return this.publishInDefaultUserGroupCh(eventName, data, srcSocketSid);
     }
 
@@ -976,13 +976,13 @@ export default class Bag {
      * @description
      * Publish in all auth user groups channels.
      * @example
-     * publishInAllAuthUserGroupsCh('message',{fromUserId : '1',message : 'hello'});
+     * publishInAllAuthUserGroupsCh('message',{fromUserId: '1',message: 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async publishInAllAuthUserGroupsCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+    async publishInAllAuthUserGroupsCh(eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
         return this.exchangeEngine.publishInAllAuthUserGroupCh(eventName, data, srcSocketSid);
     }
 
@@ -991,13 +991,13 @@ export default class Bag {
      * @description
      * Publish in all auth user groups channels.
      * @example
-     * pubAllAuthUserGroupsCh('message',{fromUserId : '1',message : 'hello'});
+     * pubAllAuthUserGroupsCh('message',{fromUserId: '1',message: 'hello'});
      * @param eventName
      * @param data
      * @param srcSocketSid
      * If this param is undefined, will be published anonymously.
      */
-    async pubAllAuthUserGroupsCh(eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+    async pubAllAuthUserGroupsCh(eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
         return this.publishInAllAuthUserGroupsCh(eventName, data, srcSocketSid);
     }
 
@@ -1006,8 +1006,8 @@ export default class Bag {
      * @description
      * Publish in an custom channel.
      * @example
-     * publishInCustomCh({name : 'imageChannel', id : 'image2'},'like',{fromUserId : '1'});
-     * publishInCustomCh({name : 'publicChat'},'msg',{msg : 'Hello',fromUserId : '1'});
+     * publishInCustomCh({name: 'imageChannel', id: 'image2'},'like',{fromUserId: '1'});
+     * publishInCustomCh({name: 'publicChat'},'msg',{msg: 'Hello',fromUserId: '1'});
      * @param target
      * @param eventName
      * @param data
@@ -1015,7 +1015,7 @@ export default class Bag {
      * If this param is undefined, will be published anonymously.
      * @throws UnknownCustomCh
      */
-    async publishInCustomCh(target : {name : string,id ?: string}, eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+    async publishInCustomCh(target: {name: string,id?: string}, eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
         return this.exchangeEngine.publishInCustomCh(target, eventName, data, srcSocketSid);
     }
 
@@ -1024,8 +1024,8 @@ export default class Bag {
      * @description
      * Publish in an custom channel.
      * @example
-     * publishInCustomCh({name : 'imageChannel', id : 'image2'},'like',{fromUserId : '1'});
-     * publishInCustomCh({name : 'publicChat'},'msg',{msg : 'Hello',fromUserId : '1'});
+     * publishInCustomCh({name: 'imageChannel', id: 'image2'},'like',{fromUserId: '1'});
+     * publishInCustomCh({name: 'publicChat'},'msg',{msg: 'Hello',fromUserId: '1'});
      * @param target
      * @param eventName
      * @param data
@@ -1033,7 +1033,7 @@ export default class Bag {
      * If this param is undefined, will be published anonymously.
      * @throws UnknownCustomCh
      */
-    async pubCustomCh(target : {name : string,id ?: string}, eventName: string, data: object = {}, srcSocketSid ?: string): Promise<void> {
+    async pubCustomCh(target: {name: string,id?: string}, eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
         return this.publishInCustomCh(target,eventName,data,srcSocketSid);
     }
 
@@ -1086,7 +1086,7 @@ export default class Bag {
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    newBackError(backErrorConstruct: BackErrorConstruct = {}, info ?: object | string): BackError {
+    newBackError(backErrorConstruct: BackErrorConstruct = {}, info?: object | string): BackError {
         return new BackError(backErrorConstruct, info);
     }
 
@@ -1112,7 +1112,7 @@ export default class Bag {
      * @param errorConstruct
      * @param info
      */
-    throwNewBackError(errorConstruct: BackErrorConstruct = {}, info ?: object | string): void {
+    throwNewBackError(errorConstruct: BackErrorConstruct = {}, info?: object | string): void {
         throw this.newBackError(errorConstruct, info);
     }
 
@@ -1127,7 +1127,7 @@ export default class Bag {
      * @param result
      * @param statusCode
      */
-    newResult(result ?: any, statusCode ?: string | number): Result {
+    newResult(result?: any, statusCode?: string | number): Result {
         return new Result(result, statusCode);
     }
 
@@ -1282,7 +1282,7 @@ export default class Bag {
      * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      * @param exceptSocketSids
      */
-    async kickUserCustomCh(userId: number | string | (number | string)[], name ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+    async kickUserCustomCh(userId: number | string | (number | string)[], name?: string, id?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildCustomChannelName(name, id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChMapTarget.USER_IDS, WorkerChMapTaskAction.KICK_OUT, userId, exceptSocketSids, {ch});
@@ -1316,7 +1316,7 @@ export default class Bag {
      * @param authUserGroup is optional, if it is not given the users will be kicked out from all auth user group channels.
      * @param exceptSocketSids
      */
-    async kickUserAuthUserGroupCh(userId: number | string | (number | string)[], authUserGroup ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+    async kickUserAuthUserGroupCh(userId: number | string | (number | string)[], authUserGroup?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildAuthUserGroupChName(authUserGroup);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChMapTarget.USER_IDS, WorkerChMapTaskAction.KICK_OUT, userId, exceptSocketSids, {ch: ch});
@@ -1351,7 +1351,7 @@ export default class Bag {
      * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      * @param exceptSocketSids
      */
-    async kickTokensCustomCh(tokenId: string | string[], name ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+    async kickTokensCustomCh(tokenId: string | string[], name?: string, id?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildCustomChannelName(name, id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChMapTarget.TOKEN_IDS, WorkerChMapTaskAction.KICK_OUT, tokenId, exceptSocketSids, {ch});
@@ -1383,7 +1383,7 @@ export default class Bag {
      * @param authUserGroup is optional, if it is not given the socket with token id will be kicked out from all auth user group channels.
      * @param exceptSocketSids
      */
-    async kickTokensAuthUserGroupCh(tokenId: string | string[], authUserGroup ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+    async kickTokensAuthUserGroupCh(tokenId: string | string[], authUserGroup?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildAuthUserGroupChName(authUserGroup);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChMapTarget.TOKEN_IDS, WorkerChMapTaskAction.KICK_OUT, tokenId, exceptSocketSids, {ch: ch});
@@ -1415,7 +1415,7 @@ export default class Bag {
      * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      * @param exceptSocketSids
      */
-    async kickAllSocketsCustomCh(name ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+    async kickAllSocketsCustomCh(name?: string, id?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildCustomChannelName(name, id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChMapTarget.ALL_SOCKETS, WorkerChMapTaskAction.KICK_OUT, [], exceptSocketSids, {ch: ch});
@@ -1443,7 +1443,7 @@ export default class Bag {
      * @param authUserGroup is optional, if it is not given all sockets will be kicked out from all auth user group channels.
      * @param exceptSocketSids
      */
-    async kickAllSocketsAuthUserGroupCh(authUserGroup ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+    async kickAllSocketsAuthUserGroupCh(authUserGroup?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildAuthUserGroupChName(authUserGroup);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChMapTarget.ALL_SOCKETS, WorkerChMapTaskAction.KICK_OUT, [], exceptSocketSids, {ch: ch});
@@ -1473,7 +1473,7 @@ export default class Bag {
      * @param name is optional, if it is not given the sockets will be kicked out from all custom channels.
      * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      */
-    async kickSocketsCustomCh(socketSid: string | string[], name ?: string, id ?: string): Promise<void> {
+    async kickSocketsCustomCh(socketSid: string | string[], name?: string, id?: string): Promise<void> {
         const ch = ChUtils.buildCustomChannelName(name, id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChMapTarget.SOCKETS_SIDS, WorkerChMapTaskAction.KICK_OUT, socketSid, [], {ch});
@@ -1503,7 +1503,7 @@ export default class Bag {
      * @param socketSid or more socketSids in an array.
      * @param authUserGroup is optional, if it is not given the sockets will be kicked out from all auth user group channels.
      */
-    async kickSocketsAuthUserGroupCh(socketSid: string | string[], authUserGroup ?: string): Promise<void> {
+    async kickSocketsAuthUserGroupCh(socketSid: string | string[], authUserGroup?: string): Promise<void> {
         const ch = ChUtils.buildAuthUserGroupChName(authUserGroup);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChMapTarget.SOCKETS_SIDS, WorkerChMapTaskAction.KICK_OUT, socketSid, [], {ch: ch});
@@ -1537,7 +1537,7 @@ export default class Bag {
      * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      * @param exceptSocketSids
      */
-    async kickAuthUserGroupsCustomCh(authUserGroup: string | null | (string)[], name ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+    async kickAuthUserGroupsCustomCh(authUserGroup: string | null | (string)[], name?: string, id?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildCustomChannelName(name, id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChMapTarget.AUTH_USER_GROUPS, WorkerChMapTaskAction.KICK_OUT,
@@ -1574,7 +1574,7 @@ export default class Bag {
      * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
      * @param exceptSocketSids
      */
-    async kickDefaultUserGroupCustomCh(name ?: string, id ?: string, exceptSocketSids: string[] | string = []): Promise<void> {
+    async kickDefaultUserGroupCustomCh(name?: string, id?: string, exceptSocketSids: string[] | string = []): Promise<void> {
         const ch = ChUtils.buildCustomChannelName(name, id);
         await this.exchangeEngine.publishMapTaskToWorker
         (WorkerChMapTarget.DEFAULT_USER_GROUP, WorkerChMapTaskAction.KICK_OUT, [], exceptSocketSids, {ch});
@@ -1602,8 +1602,8 @@ export default class Bag {
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
      * @example
-     * emitUser('joel2','myEvent',{myData : 'test'});
-     * emitUser('joel2','myEvent',{myData : 'test'},'EXCEPT-SOCKET-SID');
+     * emitUser('joel2','myEvent',{myData: 'test'});
+     * emitUser('joel2','myEvent',{myData: 'test'},'EXCEPT-SOCKET-SID');
      * @param userId or more userIds in an array.
      * @param event
      * @param data
@@ -1621,8 +1621,8 @@ export default class Bag {
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
      * @example
-     * emitToken('TOKEN-UUID1','myEvent',{myData : 'test'});
-     * emitToken('TOKEN-UUID2','myEvent',{myData : 'test'},'EXCEPT-SOCKET-SID');
+     * emitToken('TOKEN-UUID1','myEvent',{myData: 'test'});
+     * emitToken('TOKEN-UUID2','myEvent',{myData: 'test'},'EXCEPT-SOCKET-SID');
      * @param tokenId or more tokenIds in an array.
      * @param event
      * @param data
@@ -1640,8 +1640,8 @@ export default class Bag {
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
      * @example
-     * emitAllSockets('myEvent',{myData : 'test'});
-     * emitAllSockets('myEvent',{myData : 'test'},'EXCEPT-SOCKET-SID');
+     * emitAllSockets('myEvent',{myData: 'test'});
+     * emitAllSockets('myEvent',{myData: 'test'},'EXCEPT-SOCKET-SID');
      * @param event
      * @param data
      * @param exceptSocketSids
@@ -1658,8 +1658,8 @@ export default class Bag {
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
      * @example
-     * emitSockets('SOCKET-SID','myEvent',{myData : 'test'});
-     * emitSockets(['SOCKET-SID-1','SOCKET-SID-2'],'myEvent',{myData : 'test'});
+     * emitSockets('SOCKET-SID','myEvent',{myData: 'test'});
+     * emitSockets(['SOCKET-SID-1','SOCKET-SID-2'],'myEvent',{myData: 'test'});
      * @param socketSid or more socketSids in an array.
      * @param event
      * @param data
@@ -1676,8 +1676,8 @@ export default class Bag {
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
      * @example
-     * emitAuthUserGroups('admin','myEvent',{myData : 'test'});
-     * emitAuthUserGroups(['user','admin'],'myEvent',{myData : 'test'});
+     * emitAuthUserGroups('admin','myEvent',{myData: 'test'});
+     * emitAuthUserGroups(['user','admin'],'myEvent',{myData: 'test'});
      * @param authUserGroup or more authUserGroups in an array
      * or null witch stands for all auth user groups
      * @param event
@@ -1700,8 +1700,8 @@ export default class Bag {
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
      * @example
-     * emitDefaultUserGroup('myEvent',{myData : 'test'});
-     * emitDefaultUserGroup('myEvent',{myData : 'test'},'EXCEPT-SOCKET-SID');
+     * emitDefaultUserGroup('myEvent',{myData: 'test'});
+     * emitDefaultUserGroup('myEvent',{myData: 'test'},'EXCEPT-SOCKET-SID');
      * @param event
      * @param data
      * @param exceptSocketSids
@@ -1972,7 +1972,7 @@ export default class Bag {
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    hasSocketVariableWithSocket(socket: UpSocket, path ?: string | string[]): boolean {
+    hasSocketVariableWithSocket(socket: UpSocket, path?: string | string[]): boolean {
         return ObjectPath.has(socket.zationSocketVariables, path);
     }
 
@@ -1986,7 +1986,7 @@ export default class Bag {
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getSocketVariableWithSocket<R = any>(socket: UpSocket, path ?: string | string[]): R {
+    getSocketVariableWithSocket<R = any>(socket: UpSocket, path?: string | string[]): R {
         return ObjectPath.get(socket.zationSocketVariables, path);
     }
 
@@ -2000,7 +2000,7 @@ export default class Bag {
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    deleteSocketVariableWithSocket(socket: UpSocket, path ?: string | string[]): void {
+    deleteSocketVariableWithSocket(socket: UpSocket, path?: string | string[]): void {
         if (!!path) {
             ObjectPath.del(socket.zationSocketVariables, path);
         } else {
@@ -2050,7 +2050,7 @@ export default class Bag {
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    async deleteTokenVariableWithSocket(socket: UpSocket, path ?: string | string[]): Promise<void> {
+    async deleteTokenVariableWithSocket(socket: UpSocket, path?: string | string[]): Promise<void> {
         if (!!path) {
             const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(socket.authToken));
             ObjectPath.del(ctv, path);
@@ -2103,7 +2103,7 @@ export default class Bag {
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    hasTokenVariableWithSocket(socket: UpSocket, path ?: string | string[]): boolean {
+    hasTokenVariableWithSocket(socket: UpSocket, path?: string | string[]): boolean {
         return ObjectPath.has(TokenUtils.getTokenVariables(socket.authToken), path);
     }
 
@@ -2122,7 +2122,7 @@ export default class Bag {
      * The path to the variable, you can split the keys with a dot or an string array.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    getTokenVariableWithSocket<R = any>(socket: UpSocket, path ?: string | string[]): R {
+    getTokenVariableWithSocket<R = any>(socket: UpSocket, path?: string | string[]): R {
         return ObjectPath.get(TokenUtils.getTokenVariables(socket.authToken), path);
     }
 
@@ -2145,7 +2145,7 @@ export default class Bag {
      */
     async setTokenVariableOnUserId(userId: string | number, path: string | string[], value: any, exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishUpdateUserTokenWorkerTask
-        ([{t : SyncTokenOperationType.SET,p : path,v : value}], userId, exceptSocketSids);
+        ([{t: SyncTokenOperationType.SET,p: path,v: value}], userId, exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -2163,9 +2163,9 @@ export default class Bag {
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param exceptSocketSids
      */
-    async deleteTokenVariableOnUserId(userId: string | number, path ?: string | string[], exceptSocketSids: string[] | string = []): Promise<void> {
+    async deleteTokenVariableOnUserId(userId: string | number, path?: string | string[], exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishUpdateUserTokenWorkerTask
-        ([{t : SyncTokenOperationType.DELETE,p : path}], userId, exceptSocketSids);
+        ([{t: SyncTokenOperationType.DELETE,p: path}], userId, exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -2216,7 +2216,7 @@ export default class Bag {
      */
     async setTokenVariableOnGroup(authUserGroup: string, path: string | string[], value: any, exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishUpdateGroupTokenWorkerTask
-        ([{t : SyncTokenOperationType.SET,p : path,v : value}], authUserGroup, exceptSocketSids);
+        ([{t: SyncTokenOperationType.SET,p: path,v: value}], authUserGroup, exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -2234,9 +2234,9 @@ export default class Bag {
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param exceptSocketSids
      */
-    async deleteTokenVariableOnGroup(authUserGroup: string, path ?: string | string[], exceptSocketSids: string[] | string = []): Promise<void> {
+    async deleteTokenVariableOnGroup(authUserGroup: string, path?: string | string[], exceptSocketSids: string[] | string = []): Promise<void> {
         await this.exchangeEngine.publishUpdateGroupTokenWorkerTask
-        ([{t : SyncTokenOperationType.DELETE,p : path}], authUserGroup, exceptSocketSids);
+        ([{t: SyncTokenOperationType.DELETE,p: path}], authUserGroup, exceptSocketSids);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -2292,7 +2292,7 @@ export default class Bag {
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    hasWorkerVariable(path ?: string | string[]): boolean {
+    hasWorkerVariable(path?: string | string[]): boolean {
         return ObjectPath.has(this.worker.getWorkerVariableStorage(), path);
     }
 
@@ -2305,7 +2305,7 @@ export default class Bag {
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    getWorkerVariable<R = any>(path ?: string | string[]): R {
+    getWorkerVariable<R = any>(path?: string | string[]): R {
         return ObjectPath.get(this.worker.getWorkerVariableStorage(), path);
     }
 
@@ -2318,7 +2318,7 @@ export default class Bag {
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      */
-    deleteWorkerVariable(path ?: string | string[]): void {
+    deleteWorkerVariable(path?: string | string[]): void {
         if (!!path) {
             ObjectPath.del(this.worker.getWorkerVariableStorage(), path);
         } else {
@@ -2337,16 +2337,16 @@ export default class Bag {
      * @param apiLevelSwitch
      * @example
      * const switch = createApiLevelSwitcher<string>({
-     *     1 : 'apiLevel1',
-     *     5 : 'apiLevel5',
-     *     8 : 'apiLevel8',
-     *     2 : 'apiLevel2'
+     *     1: 'apiLevel1',
+     *     5: 'apiLevel5',
+     *     8: 'apiLevel8',
+     *     2: 'apiLevel2'
      * });
      * console.log(switch(7)); // apiLevel5
      * console.log(switch(20)); // apiLevel8
      * console.log(switch(1)); // apiLevel1
      */
-    createApiLevelSwitcher<T>(apiLevelSwitch : ApiLevelSwitch<T>) : ApiLevelSwitchFunction<T> {
+    createApiLevelSwitcher<T>(apiLevelSwitch: ApiLevelSwitch<T>): ApiLevelSwitchFunction<T> {
         return ApiLevelUtils.createApiLevelSwitcher<T>(apiLevelSwitch);
     }
 
@@ -2390,10 +2390,10 @@ export default class Bag {
      * @param encoding
      * The encoding of the provided input. Default to utf8.
      */
-    base64Encode(input: string | Buffer, urlSafe: boolean = true, encoding: BufferEncoding = "utf8") : string {
+    base64Encode(input: string | Buffer, urlSafe: boolean = true, encoding: BufferEncoding = "utf8"): string {
         const base64 = Buffer.isBuffer(input) ? input.toString('base64') :
             Buffer.from(input,encoding).toString('base64');
-        return (urlSafe ? base64url.fromBase64(base64) : base64);
+        return (urlSafe ? base64url.fromBase64(base64): base64);
     }
 
     // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
@@ -2405,8 +2405,8 @@ export default class Bag {
      * @param encoding
      * The expected encoding of the decoded result. Default to utf8.
      */
-    base64Decode(base64: string, urlSafe: boolean = true, encoding: BufferEncoding = "utf8") : string {
-        return Buffer.from((urlSafe ? base64url.toBase64(base64) : base64), "base64").toString(encoding);
+    base64Decode(base64: string, urlSafe: boolean = true, encoding: BufferEncoding = "utf8"): string {
+        return Buffer.from((urlSafe ? base64url.toBase64(base64): base64), "base64").toString(encoding);
     }
 
     // ByteTools
@@ -2457,7 +2457,7 @@ export default class Bag {
      * @description
      * Returns the sc server from worker.
      */
-    getScServer() : ScServer {
+    getScServer(): ScServer {
         return this.worker.scServer;
     }
 
@@ -2519,7 +2519,7 @@ export default class Bag {
      * getSocketIdsWithTokenId('TOKEN-ID');
      * @param tokenId
      */
-    getSocketsWithTokenId(tokenId : string) : UpSocket[]
+    getSocketsWithTokenId(tokenId: string): UpSocket[]
     {
         return this.worker.getTokenIdToScMapper().getValues(tokenId);
     }
@@ -2533,7 +2533,7 @@ export default class Bag {
      * getSocketIdsWithUserId('tom1554');
      * @param userId
      */
-    getSocketsWithUserId(userId : string) : UpSocket[]
+    getSocketsWithUserId(userId: string): UpSocket[]
     {
         return this.worker.getUserIdToScMapper().getValues(userId);
     }
@@ -2543,7 +2543,7 @@ export default class Bag {
      * @description
      * Returns object with authUserGroups as key and value with count of connected clients (only this worker).
      */
-    getWorkerAuthUserGroupsCount() : object {
+    getWorkerAuthUserGroupsCount(): object {
        const res = {};
        const authGroups = this.worker.getAEPreparedPart().getAuthGroups();
        for(let group in authGroups) {
@@ -2559,7 +2559,7 @@ export default class Bag {
      * @description
      * Returns count of connected default user groups sockets (only this worker).
      */
-    getWorkerDefaultUserGroupCount() : number {
+    getWorkerDefaultUserGroupCount(): number {
         return this.worker.getDefaultUserGroupSet().getLength();
     }
 
@@ -2568,7 +2568,7 @@ export default class Bag {
      * @description
      * Returns count of connected only panel sockets (only this worker).
      */
-    getWorkerOnlyPanelSocketsCount() : number {
+    getWorkerOnlyPanelSocketsCount(): number {
         return this.worker.getDefaultUserGroupSet().getLength();
     }
 
@@ -2577,7 +2577,7 @@ export default class Bag {
      * @description
      * Returns count of auth user group sockets (only this worker).
      */
-    getWorkerAuthUserGroupCount(authUserGroup : string) : number {
+    getWorkerAuthUserGroupCount(authUserGroup: string): number {
         return this.worker.getAuthUserGroupToScMapper().getLengthFromKey(authUserGroup);
     }
 
@@ -2586,7 +2586,7 @@ export default class Bag {
      * @description
      * Returns object with authUserGroups as key and value with array of sockets (only this worker).
      */
-    getWorkerAuthUserGroupsSockets() : object {
+    getWorkerAuthUserGroupsSockets(): object {
         const res = {};
         const authGroups = this.worker.getAEPreparedPart().getAuthGroups();
         for(let group in authGroups) {
@@ -2602,7 +2602,7 @@ export default class Bag {
      * @description
      * Returns array of default user group sockets (only this worker).
      */
-    getWorkerDefaultUserGroupSockets() : UpSocket[] {
+    getWorkerDefaultUserGroupSockets(): UpSocket[] {
         return this.worker.getDefaultUserGroupSet().toArray();
     }
 
@@ -2611,7 +2611,7 @@ export default class Bag {
      * @description
      * Returns array of only panel sockets (only this worker).
      */
-    getWorkerOnlyPanelSockets() : UpSocket[] {
+    getWorkerOnlyPanelSockets(): UpSocket[] {
         return this.worker.getPanelUserSet().toArray();
     }
 
@@ -2620,7 +2620,7 @@ export default class Bag {
      * @description
      * Returns array of auth user group sockets (only this worker).
      */
-    getWorkerAuthUserGroupSockets(authUserGroup : string) : UpSocket[] {
+    getWorkerAuthUserGroupSockets(authUserGroup: string): UpSocket[] {
         return this.worker.getAuthUserGroupToScMapper().getValues(authUserGroup);
     }
 
@@ -2630,7 +2630,7 @@ export default class Bag {
      * Send a message to all workers on the complete system.
      * You can react to the message with the worker message event in the event config.
      */
-    async sendWorkerMessage(data : any) : Promise<void> {
+    async sendWorkerMessage(data: any): Promise<void> {
         await this.exchangeEngine.publishSpecialTaskToWorker
         (WorkerChSpecialTaskAction.MESSAGE, data);
     }
@@ -2643,7 +2643,7 @@ export default class Bag {
      * Notice that it only clones enumerable properties of an object.
      * @param v
      */
-    deepClone<T extends any = any>(v : T) : T {
+    deepClone<T extends any = any>(v: T): T {
         return CloneUtils.deepClone(v);
     }
 
@@ -2666,7 +2666,7 @@ export default class Bag {
      * databox(ProfileDataboxFamilyV1,ProfileDataboxFamilyV2);
      * databox(PublicChatDatabox);
      */
-    databox() : undefined;
+    databox(): undefined;
     /**
      * This function helps to access your Databox/es.
      * You only need to call this method with the class/es of the Databox/es.
@@ -2686,7 +2686,7 @@ export default class Bag {
      * @param databox
      * The class of the Databox.
      */
-    databox<T extends DataboxClass | DataboxFamilyClass>(databox : T) : T['prototype'];
+    databox<T extends DataboxClass | DataboxFamilyClass>(databox: T): T['prototype'];
     /**
      * This function helps to access your Databox/es.
      * You only need to call this method with the class/es of the Databox/es.
@@ -2706,7 +2706,7 @@ export default class Bag {
      * @param databoxes
      * The class/es of the Databox/es.
      */
-    databox(...databoxes : DataboxFamilyClass[]) : DataboxFamilyContainer;
+    databox(...databoxes: DataboxFamilyClass[]): DataboxFamilyContainer;
     /**
      * This function helps to access your Databox/es.
      * You only need to call this method with the class/es of the Databox/es.
@@ -2726,7 +2726,7 @@ export default class Bag {
      * @param databoxes
      * The class/es of the Databox/es.
      */
-    databox(...databoxes : DataboxClass[]) : DataboxContainer;
+    databox(...databoxes: DataboxClass[]): DataboxContainer;
     /**
      * This function helps to access your Databox/es.
      * You only need to call this method with the class/es of the Databox/es.
@@ -2746,7 +2746,7 @@ export default class Bag {
      * @param databoxes
      * The class/es of the Databox/es.
      */
-    databox<T extends DataboxClass | DataboxFamilyClass>(...databoxes : DataboxFamilyClass[] | DataboxClass[] | [T]) : DataboxFamilyContainer | DataboxContainer | T | undefined {
+    databox<T extends DataboxClass | DataboxFamilyClass>(...databoxes: DataboxFamilyClass[] | DataboxClass[] | [T]): DataboxFamilyContainer | DataboxContainer | T | undefined {
         switch (databoxes.length) {
             case 0:
                 return undefined;

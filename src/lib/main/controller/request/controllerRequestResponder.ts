@@ -18,17 +18,17 @@ import {jsonStringify}                  from "../../utils/jsonConverter";
 
 export default class ControllerRequestResponder
 {
-    private readonly zc : ZationConfig;
-    private readonly sendErrorDesc : boolean;
-    private readonly debugMode : boolean;
+    private readonly zc: ZationConfig;
+    private readonly sendErrorDesc: boolean;
+    private readonly debugMode: boolean;
 
-    constructor(zc : ZationConfig) {
+    constructor(zc: ZationConfig) {
         this.zc = zc;
         this.sendErrorDesc = this.zc.mainConfig.sendErrorDescription || this.zc.isDebug();
         this.debugMode = this.zc.isDebug();
     }
 
-    respSuccessWs(data : any, respond : RespondFunction, reqId : string) : void
+    respSuccessWs(data: any, respond: RespondFunction, reqId: string): void
     {
         if(data !== undefined) {
             const resp = this.createWsResp(data,undefined);
@@ -40,7 +40,7 @@ export default class ControllerRequestResponder
         }
     }
 
-    async respSuccessHttp(data : any,response : Response,reqId : string,shBridge : SHBridge | undefined) : Promise<void>
+    async respSuccessHttp(data: any,response: Response,reqId: string,shBridge: SHBridge | undefined): Promise<void>
     {
         const resp = await this.createHttpResp
         (data,undefined,shBridge,response['zationInfo']);
@@ -49,7 +49,7 @@ export default class ControllerRequestResponder
         this.printHttpResp(resp,reqId);
     }
 
-    respErrorWs(err : any, respond : RespondFunction, reqId : string) : void {
+    respErrorWs(err: any, respond: RespondFunction, reqId: string): void {
         const resp = this.createWsResp
         (
             undefined,
@@ -60,7 +60,7 @@ export default class ControllerRequestResponder
         this.printWsResp(resp,reqId);
     }
 
-    async respErrorHttp(err : any,response : Response,reqId : string,shBridge : SHBridge | undefined) : Promise<void> {
+    async respErrorHttp(err: any,response: Response,reqId: string,shBridge: SHBridge | undefined): Promise<void> {
         const resp = await this.createHttpResp
         (
             undefined,
@@ -73,7 +73,7 @@ export default class ControllerRequestResponder
         this.printHttpResp(resp,reqId);
     }
 
-    private printWsResp(resp : ResponseResult,reqId : string) {
+    private printWsResp(resp: ResponseResult,reqId: string) {
         if(this.debugMode){
             Logger.printDebugInfo(`Socket Controller Response id: ${reqId} ->`,PrettyStringifyUtils.object(resp));
         }
@@ -82,7 +82,7 @@ export default class ControllerRequestResponder
         }
     }
 
-    private printHttpResp(resp : ResponseResult,reqId : string) {
+    private printHttpResp(resp: ResponseResult,reqId: string) {
         if(this.debugMode){
             Logger.printDebugInfo(`Http Controller Response id: ${reqId} ->`,PrettyStringifyUtils.object(resp));
         }
@@ -92,28 +92,28 @@ export default class ControllerRequestResponder
     }
 
     // noinspection JSMethodCanBeStatic
-    private createWsResp(res : ResponseResult | undefined,errors : any[] | undefined) : ZationResponse {
+    private createWsResp(res: ResponseResult | undefined,errors: any[] | undefined): ZationResponse {
         return {
-            r : res ? res : {},
-            e : errors ? errors : []
+            r: res ? res: {},
+            e: errors ? errors: []
         }
     }
 
-    private async createHttpResp(res : ResponseResult | undefined,errors : any[] | undefined,shBridge : SHBridge | undefined,info) : Promise<ZationResponse> {
-        const obj : ZationResponse = {
-            r : res ? res : {},
-            e : errors ? errors : []
+    private async createHttpResp(res: ResponseResult | undefined,errors: any[] | undefined,shBridge: SHBridge | undefined,info): Promise<ZationResponse> {
+        const obj: ZationResponse = {
+            r: res ? res: {},
+            e: errors ? errors: []
         };
 
         //token
         if(shBridge !== undefined && shBridge.isNewToken()) {
-            const token : ZationToken | null = shBridge.getToken();
+            const token: ZationToken | null = shBridge.getToken();
             //can be null! if http deauthenticated
             if(token !== null){
                 obj.t = {
-                    st : (await TokenUtils.signToken
-                    (token,this.zc,shBridge instanceof SHBridgeHttp ? shBridge.getJwtSignOptions() : {})),
-                    pt : token
+                    st: (await TokenUtils.signToken
+                    (token,this.zc,shBridge instanceof SHBridgeHttp ? shBridge.getJwtSignOptions(): {})),
+                    pt: token
                 } ;
             }
         }

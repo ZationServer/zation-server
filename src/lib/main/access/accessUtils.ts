@@ -8,8 +8,8 @@ import AuthEngine                                from "../auth/authEngine";
 import {ZationAccess}                            from "../constants/internal";
 import {AccessConfigValue, isTokenCheckFunction} from "./accessOptions";
 
-type AccessFunctionCallCreate<T extends MinAccessChecker,F> = (func : Function) => T;
-type MinAccessChecker = (authEngine : AuthEngine,...otherArgs : any[]) => Promise<boolean>;
+type AccessFunctionCallCreate<T extends MinAccessChecker,F> = (func: Function) => T;
+type MinAccessChecker = (authEngine: AuthEngine,...otherArgs: any[]) => Promise<boolean>;
 
 export default class AccessUtils
 {
@@ -20,13 +20,13 @@ export default class AccessUtils
      * @param accessFunctionCallCreate
      * @param useArrayOrConditions
      */
-    static createAccessChecker<T extends MinAccessChecker,F extends (...args : any[]) => any>
+    static createAccessChecker<T extends MinAccessChecker,F extends (...args: any[]) => any>
     (
-        value : AccessConfigValue<F> | undefined,
-        invertResult : boolean = false,
-        accessFunctionCallCreate : AccessFunctionCallCreate<T,F>,
-        useArrayOrConditions : boolean = true
-        ) : MinAccessChecker
+        value: AccessConfigValue<F> | undefined,
+        invertResult: boolean = false,
+        accessFunctionCallCreate: AccessFunctionCallCreate<T,F>,
+        useArrayOrConditions: boolean = true
+        ): MinAccessChecker
     {
         if(!invertResult){
             return AccessUtils.createAccessCheckerCore(value,accessFunctionCallCreate,true);
@@ -43,12 +43,12 @@ export default class AccessUtils
      * @param accessFunctionCallCreate
      * @param useArrayOrConditions
      */
-    private static createAccessCheckerCore<T extends MinAccessChecker,F extends (...args : any[]) => any>
+    private static createAccessCheckerCore<T extends MinAccessChecker,F extends (...args: any[]) => any>
     (
-        value : AccessConfigValue<F> | undefined,
-        accessFunctionCallCreate : AccessFunctionCallCreate<T,F>,
-        useArrayOrConditions : boolean = true
-    ) : MinAccessChecker
+        value: AccessConfigValue<F> | undefined,
+        accessFunctionCallCreate: AccessFunctionCallCreate<T,F>,
+        useArrayOrConditions: boolean = true
+    ): MinAccessChecker
     {
         if(typeof value === 'boolean') {
             return async () => value;
@@ -66,7 +66,7 @@ export default class AccessUtils
             }
         }
         else if(Array.isArray(value)) {
-            const preparedChecks : MinAccessChecker[] = [];
+            const preparedChecks: MinAccessChecker[] = [];
             const preparedChecksLength = value.length;
             for(let i = 0; i < value.length; i++){
                 preparedChecks[i] = AccessUtils.createAccessCheckerCore(value[i],accessFunctionCallCreate,false);

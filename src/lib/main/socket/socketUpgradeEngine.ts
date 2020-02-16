@@ -20,17 +20,17 @@ import DataboxAccessHelper from "../databox/databoxAccessHelper";
 export default class SocketUpgradeEngine
 {
 
-    private readonly worker : ZationWorker;
-    private readonly sidBuilder : SidBuilder;
-    private readonly channelPrepare : ChannelPrepare;
+    private readonly worker: ZationWorker;
+    private readonly sidBuilder: SidBuilder;
+    private readonly channelPrepare: ChannelPrepare;
 
-    private mapUserIdToSc : Mapper<UpSocket>;
-    private mapTokenIdToSc : Mapper<UpSocket>;
-    private mapAuthUserGroupToSc : Mapper<UpSocket>;
-    private defaultUserGroupSet : SocketSet;
-    private panelUserSet : SocketSet;
+    private mapUserIdToSc: Mapper<UpSocket>;
+    private mapTokenIdToSc: Mapper<UpSocket>;
+    private mapAuthUserGroupToSc: Mapper<UpSocket>;
+    private defaultUserGroupSet: SocketSet;
+    private panelUserSet: SocketSet;
 
-    constructor(worker : ZationWorker,channelPrepare : ChannelPrepare) {
+    constructor(worker: ZationWorker,channelPrepare: ChannelPrepare) {
         this.worker = worker;
         this.sidBuilder = new SidBuilder(worker.options.instanceId,worker.id);
         this.channelPrepare = channelPrepare;
@@ -46,7 +46,7 @@ export default class SocketUpgradeEngine
      * Upgrades the sc socket with zation functionality.
      * @param socket
      */
-    upgradeSocket(socket : UpSocket) {
+    upgradeSocket(socket: UpSocket) {
         //id build
         // @ts-ignore
         socket.sid = this.sidBuilder.buildSid(socket.id);
@@ -75,7 +75,7 @@ export default class SocketUpgradeEngine
         //token observer
         //for update the authEngine and worker socket mapper
         const initToken = socket.authToken;
-        let currentToken : ZationToken | null = null;
+        let currentToken: ZationToken | null = null;
         Object.defineProperty(socket, 'authToken', {
             get: () => {
                 return currentToken;
@@ -86,11 +86,11 @@ export default class SocketUpgradeEngine
              * Notice that the token expire can be undefined of the new token.
              * (SC sets the token and then sign the token)
              */
-            set: (newToken : ZationToken) => {
+            set: (newToken: ZationToken) => {
                 authEngine.refresh(newToken);
 
                 (async () => {
-                    const p : Promise<void>[] = [];
+                    const p: Promise<void>[] = [];
                     p.push(ChAccessHelper.checkSocketCustomChAccess(socket,this.channelPrepare));
                     p.push(DataboxAccessHelper.checkSocketDataboxAccess(socket));
                     ChAccessHelper.checkSocketZationChAccess(socket);

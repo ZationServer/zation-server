@@ -9,8 +9,8 @@ import {ResponseResult} from "../main/controller/request/controllerDefinitions";
 export default class Result
 {
 
-    private result : any = undefined;
-    private statusCode : number | string | undefined = undefined;
+    private result: any = undefined;
+    private statusCode: number | string | undefined = undefined;
 
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -20,11 +20,11 @@ export default class Result
      * With the result object you have the possibility to add a status code.
      * Rather than just a result.
      * @example
-     * return new Result({msg : 'hallo'},2000);
+     * return new Result({msg: 'hallo'},2000);
      * @param result
      * @param statusCode
      */
-    constructor(result ?: any,statusCode ?: string | number)
+    constructor(result?: any,statusCode?: string | number)
     {
         this.result = result;
         this.statusCode = statusCode;
@@ -36,11 +36,11 @@ export default class Result
      * @description
      * This method is used internal!
      */
-    _getJsonObj() : ResponseResult
+    _getJsonObj(): ResponseResult
     {
         return {
-            r : this.result,
-            s : this.statusCode
+            r: this.result,
+            s: this.statusCode
         };
     }
 
@@ -50,7 +50,7 @@ export default class Result
      * Set the result.
      * @param result
      */
-    setResult(result : any) : void
+    setResult(result: any): void
     {
         this.result = result;
     }
@@ -60,7 +60,7 @@ export default class Result
      * @description
      * Returns the current result.
      */
-    getResult() : any
+    getResult(): any
     {
         return this.result;
     }
@@ -70,7 +70,7 @@ export default class Result
      * @description
      * Removes the result.
      */
-    removeResult() : void
+    removeResult(): void
     {
         this.result = undefined;
     }
@@ -80,7 +80,7 @@ export default class Result
      * @description
      * Returns if a result is set.
      */
-    hasResult() : boolean
+    hasResult(): boolean
     {
         return this.result !== undefined;
     }
@@ -91,7 +91,7 @@ export default class Result
      * Set a status code.
      * @param statusCode
      */
-    setStatusCode(statusCode : string | number) : void
+    setStatusCode(statusCode: string | number): void
     {
         this.statusCode = statusCode;
     }
@@ -101,7 +101,7 @@ export default class Result
      * @description
      * Returns the current status code.
      */
-    getStatusCode() : string | number | undefined
+    getStatusCode(): string | number | undefined
     {
         return this.statusCode;
     }
@@ -111,7 +111,7 @@ export default class Result
      * @description
      * Removes the status code.
      */
-    removeStatusCode() : void
+    removeStatusCode(): void
     {
         this.statusCode = undefined;
     }
@@ -121,7 +121,7 @@ export default class Result
      * @description
      * Returns if a status code is set.
      */
-    hasStatusCode() : boolean
+    hasStatusCode(): boolean
     {
         return this.statusCode !== undefined;
     }
@@ -131,7 +131,7 @@ export default class Result
      * @description
      * Returns the type of the result.
      */
-    getTypeOfResult() : string
+    getTypeOfResult(): string
     {
         return typeof this.result;
     }
@@ -141,7 +141,7 @@ export default class Result
      * @description
      * Returns the complete information as a string.
      */
-    toString() : string
+    toString(): string
     {
         return `Result: ${this.result} StatusCode: ${this.statusCode}`;
     }

@@ -10,7 +10,7 @@ import {ResponseError}      from "../main/controller/request/controllerDefinitio
 
 export default class BackErrorBag
 {
-    private backErrors : BackError[];
+    private backErrors: BackError[];
 
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -23,7 +23,7 @@ export default class BackErrorBag
      * new BackErrorBag(myError,myError2).throw();
      * @param backError
      */
-    constructor(...backError : BackError[])
+    constructor(...backError: BackError[])
     {
         this.backErrors = backError;
     }
@@ -34,7 +34,7 @@ export default class BackErrorBag
      * Adds a new BackError to the bag.
      * By using the constructor of the BackError class.
      * @example
-     * addNewBackError({name : 'inputNotMatchWithMinLength'},{minLength : 5, inputLength : 3});
+     * addNewBackError({name: 'inputNotMatchWithMinLength'},{minLength: 5, inputLength: 3});
      * @param backErrorConstruct
      * Create a new BackError construct.
      * @param info
@@ -43,7 +43,7 @@ export default class BackErrorBag
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    addNewBackError(backErrorConstruct : BackErrorConstruct = {}, info ?: object | string) : void
+    addNewBackError(backErrorConstruct: BackErrorConstruct = {}, info?: object | string): void
     {
         this.addBackError(new BackError(backErrorConstruct,info));
     }
@@ -53,7 +53,7 @@ export default class BackErrorBag
      * @description
      * Returns all BackErrors from the bag as an BackError array.
      */
-    getBackErrors() : BackError[]
+    getBackErrors(): BackError[]
     {
         return this.backErrors;
     }
@@ -64,7 +64,7 @@ export default class BackErrorBag
      * Add all BackErrors of an other BackErrorBag to this bag.
      * @param backErrorBag
      */
-    addFromBackErrorBag(...backErrorBag : BackErrorBag[]) : void
+    addFromBackErrorBag(...backErrorBag: BackErrorBag[]): void
     {
         for(let j = 0;  j < backErrorBag.length; j++) {
             this.addBackError(...backErrorBag[j].getBackErrors());
@@ -78,7 +78,7 @@ export default class BackErrorBag
      * This method is used internal!
      * @param withDesc
      */
-    _toResponseErrorArray(withDesc : boolean) : ResponseError[]
+    _toResponseErrorArray(withDesc: boolean): ResponseError[]
     {
         const obj: ResponseError[] = [];
         for(let i = 0; i < this.backErrors.length; i++) {
@@ -93,7 +93,7 @@ export default class BackErrorBag
      * Add BackError/s to this bag.
      * @param backError
      */
-    addBackError(...backError : BackError[]) : void
+    addBackError(...backError: BackError[]): void
     {
         this.backErrors.push(...backError);
     }
@@ -104,7 +104,7 @@ export default class BackErrorBag
      * Empty the bag.
      * So all BackErrors in this bag will be removed.
      */
-    emptyBag() : void
+    emptyBag(): void
     {
         this.backErrors = [];
     }
@@ -114,7 +114,7 @@ export default class BackErrorBag
      * @description
      * Throw this bag if it has at least one BackError.
      */
-    throwIfHasError() : void
+    throwIfHasError(): void
     {
         if(this.isNotEmpty()) {
             throw this;
@@ -127,7 +127,7 @@ export default class BackErrorBag
      * Throw this bag.
      * Does not matter if the bag is empty or not.
      */
-    throw() : void
+    throw(): void
     {
         throw this;
     }
@@ -137,7 +137,7 @@ export default class BackErrorBag
      * @description
      * Returns the count of BackErrors there are in the bag.
      */
-    getBackErrorCount() : number
+    getBackErrorCount(): number
     {
         return this.backErrors.length;
     }
@@ -148,7 +148,7 @@ export default class BackErrorBag
      * Returns if the BackErrorBag is not empty.
      * It means that the bag hast at least one BackError.
      */
-    isNotEmpty() : boolean
+    isNotEmpty(): boolean
     {
         return this.backErrors.length > 0;
     }
@@ -158,7 +158,7 @@ export default class BackErrorBag
      * @description
      * Returns if the BackErrorBag is empty.
      */
-    isEmpty() : boolean
+    isEmpty(): boolean
     {
         return this.backErrors.length === 0;
     }
@@ -168,7 +168,7 @@ export default class BackErrorBag
      * @description
      * Returns the complete information as a string.
      */
-    toString() : string
+    toString(): string
     {
         let text = `BackErrorBag-> ${this.backErrors.length} BackErrors  ->\n`;
         for(let i = 0; i < this.backErrors.length; i++)

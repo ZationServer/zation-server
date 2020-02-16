@@ -8,19 +8,19 @@ const  encrypter         = require("object-encrypter");
 
 export default class Encoder
 {
-    private engine : any;
+    private engine: any;
 
-    constructor(secretKey : string)
+    constructor(secretKey: string)
     {
         this.engine = encrypter(secretKey);
     }
 
-    encrypt(obj : object) : string
+    encrypt(obj: object): string
     {
         return this.engine.encrypt(obj);
     }
 
-    decrypt(code : string) : object
+    decrypt(code: string): object
     {
         return this.engine.decrypt(code);
     }

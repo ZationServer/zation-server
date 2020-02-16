@@ -23,18 +23,18 @@ import {ResponseResult, ZationTask}      from "../controllerDefinitions";
 
 export default class MainCRequestProcessor
 {
-    private readonly zc : ZationConfigFull;
-    private readonly worker : ZationWorker;
-    private readonly validCheckProcessor : ValidCheckCRequestProcessor;
+    private readonly zc: ZationConfigFull;
+    private readonly worker: ZationWorker;
+    private readonly validCheckProcessor: ValidCheckCRequestProcessor;
 
     //tmp variables for faster access
-    private readonly authController : string | undefined;
-    private readonly useProtocolCheck : boolean;
-    private readonly useHttpMethodCheck : boolean;
-    private readonly useTokenStateCheck : boolean;
-    private readonly controllerPrepare : ControllerPrepare;
+    private readonly authController: string | undefined;
+    private readonly useProtocolCheck: boolean;
+    private readonly useHttpMethodCheck: boolean;
+    private readonly useTokenStateCheck: boolean;
+    private readonly controllerPrepare: ControllerPrepare;
 
-    constructor(zc : ZationConfigFull,worker : ZationWorker,validCheckProcessor : ValidCheckCRequestProcessor) {
+    constructor(zc: ZationConfigFull,worker: ZationWorker,validCheckProcessor: ValidCheckCRequestProcessor) {
         this.zc = zc;
         this.worker = worker;
         this.validCheckProcessor = validCheckProcessor;
@@ -46,7 +46,7 @@ export default class MainCRequestProcessor
         this.controllerPrepare = this.worker.getControllerPrepare();
     }
 
-    async process(shBridge : SHBridge)
+    async process(shBridge: SHBridge)
     {
         //is validation check request?
         if(shBridge.isValidationCheckReq()) {
@@ -70,7 +70,7 @@ export default class MainCRequestProcessor
             }
 
             //is checked by isValidReqStructure!
-            const task : ZationTask = (reqData.t as ZationTask);
+            const task: ZationTask = (reqData.t as ZationTask);
 
             const isSystemController = ControllerReqUtils.isSystemControllerReq(task);
             const controllerId = ControllerReqUtils.getControllerId(task,isSystemController);
@@ -91,14 +91,14 @@ export default class MainCRequestProcessor
 
 
             if(!systemAccessCheck(shBridge)){
-                throw new BackError(MainBackErrors.noAccessWithSystem,{system : shBridge.getSystem()});
+                throw new BackError(MainBackErrors.noAccessWithSystem,{system: shBridge.getSystem()});
             }
 
             if(!versionAccessCheck(shBridge)){
-                throw new BackError(MainBackErrors.noAccessWithVersion,{version : shBridge.getVersion()});
+                throw new BackError(MainBackErrors.noAccessWithVersion,{version: shBridge.getVersion()});
             }
 
-            const authEngine : AuthEngine = shBridge.getAuthEngine();
+            const authEngine: AuthEngine = shBridge.getAuthEngine();
 
             //check protocol
             if(!this.useProtocolCheck || ProtocolAccessChecker.hasProtocolAccess(shBridge,controllerConfig)) {
@@ -112,7 +112,7 @@ export default class MainCRequestProcessor
                     //check access to controller
                     if(!this.useTokenStateCheck || (await tokenStateCheck(authEngine))) {
 
-                        let input : object;
+                        let input: object;
                         //check input
                         try {
                             input = await inputConsume(task.i);
@@ -171,7 +171,7 @@ export default class MainCRequestProcessor
                             {
                                 authUserGroup: authEngine.getAuthUserGroup(),
                                 authIn: authEngine.isAuth(),
-                                userId : authEngine.getUserId()
+                                userId: authEngine.getUserId()
                             });
                     }
                 }
@@ -192,21 +192,21 @@ export default class MainCRequestProcessor
             }
         }
         else {
-            throw new BackError(MainBackErrors.wrongInputDataStructure, {type : shBridge.isWebSocket() ? 'ws' : 'http',input : reqData});
+            throw new BackError(MainBackErrors.wrongInputDataStructure, {type: shBridge.isWebSocket() ? 'ws': 'http',input: reqData});
         }
     }
 
     // noinspection JSMethodCanBeStatic
-    private async processController(controllerInstance : Controller, reqBag : RequestBag, input : any, middlewareInvoke : MiddlewareInvokeFunction) : Promise<ResponseResult>
+    private async processController(controllerInstance: Controller, reqBag: RequestBag, input: any, middlewareInvoke: MiddlewareInvokeFunction): Promise<ResponseResult>
     {
         //process the controller handle, before handle events and finally handle.
         try {
             await middlewareInvoke(controllerInstance,reqBag);
 
-            const result : Result | any = await controllerInstance.handle(reqBag,input);
+            const result: Result | any = await controllerInstance.handle(reqBag,input);
 
             if (!(result instanceof Result)) {
-                return {r : result};
+                return {r: result};
             }
 
             await controllerInstance.finallyHandle(reqBag,input);

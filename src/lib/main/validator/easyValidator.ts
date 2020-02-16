@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-const Validator : any        = require('validator');
+const Validator: any        = require('validator');
 
 export default class EasyValidator
 {
@@ -307,12 +307,12 @@ export default class EasyValidator
         return typeof data === 'boolean';
     }
 
-    static isUpperCase(data : string)
+    static isUpperCase(data: string)
     {
         return data === data.toUpperCase();
     }
 
-    static isLowerCase(data : string)
+    static isLowerCase(data: string)
     {
         return data === data.toLowerCase();
     }
@@ -329,8 +329,8 @@ export default class EasyValidator
         return found;
     }
 
-    static missingContains(input : string,contain : any | any[]) : string[]{
-        const missing : any[] = [];
+    static missingContains(input: string,contain: any | any[]): string[]{
+        const missing: any[] = [];
         if (Array.isArray(contain)) {
             for(let i = 0; i < contain.length; i++) {
                 if(input.indexOf(contain[i]) === -1){

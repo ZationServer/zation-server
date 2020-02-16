@@ -18,7 +18,7 @@ import {InDecoratorMem, InDM_ConstructorMethods} from "./InDecoratorMem";
  * and the input data is assigned to the object.
  */
 export const Constructor = () => {
-    return (target : any,propertyName : string) => {
+    return (target: any,propertyName: string) => {
         target = (target as InDecoratorMem);
         if(!Array.isArray(target[InDM_ConstructorMethods])){
             target[InDM_ConstructorMethods] = [];

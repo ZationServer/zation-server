@@ -19,13 +19,13 @@ export interface AppConfig
     /**
      * In this property, you can define all your user groups.
      * @example
-     * userGroups : {
-     *   auth : {
-     *       user : {
-     *            panelDisplayName : 'User'
+     * userGroups: {
+     *   auth: {
+     *       user: {
+     *            panelDisplayName: 'User'
      *       },
      *   },
-     * default : 'guest'
+     * default: 'guest'
      * },
      */
     userGroups?: UserGroupsConfig;
@@ -35,7 +35,7 @@ export interface AppConfig
      * This property makes it possible to send an authentication request to the server.
      * Then the server will automatically use the linked controller.
      * @example
-     * authController : 'login',
+     * authController: 'login',
      */
     authController?: string;
 
@@ -45,9 +45,9 @@ export interface AppConfig
     * The key of each property is the name of the controller.
     * The value of each property is the imported controller class.
     * @example
-    * controllers : {
-        *    register : RegisterController,
-        *    login : LogInController,
+    * controllers: {
+        *    register: RegisterController,
+        *    login: LogInController,
         * }
     */
     controllers?: Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>>;
@@ -56,12 +56,12 @@ export interface AppConfig
      * With this property, you can define a default controller configuration
      * that will be used in each controller as a fallback.
      * @example
-     * controllerDefaults : {
-     *    wsAccess : true,
-     *    httpAccess : true,
-     *    httpPostAllowed : true,
-     *    httpGetAllowed : true,
-     *    access : 'all',
+     * controllerDefaults: {
+     *    wsAccess: true,
+     *    httpAccess: true,
+     *    httpPostAllowed: true,
+     *    httpGetAllowed: true,
+     *    access: 'all',
      * },
      */
     controllerDefaults?: ControllerConfig;
@@ -72,9 +72,9 @@ export interface AppConfig
      * The key of each property is the name of the Databox.
      * The value of each property is the imported Databox class.
      * @example
-     * databoxes : {
-     *    profile : ProfileDatabox,
-     *    chat : ChatDatabox,
+     * databoxes: {
+     *    profile: ProfileDatabox,
+     *    chat: ChatDatabox,
      * }
      */
     databoxes?: Record<string,DataboxClassDef | ApiLevelSwitch<DataboxClassDef>>;
@@ -83,8 +83,8 @@ export interface AppConfig
      * With this property, you can define a default Databox configuration
      * that will be used in each Databox as a fallback.
      * @example
-     * databoxDefaults : {
-     *    access : 'all',
+     * databoxDefaults: {
+     *    access: 'all',
      * },
      */
     databoxDefaults?: DataboxConfig;
@@ -92,7 +92,7 @@ export interface AppConfig
     /**
      * In this property, you can define all your models.
      * @example
-     * models : {
+     * models: {
      *   //example of model for an value.
      *   userName: {
      *      type: 'string',
@@ -100,14 +100,14 @@ export interface AppConfig
      *      charClass: 'a-zA-Z._0-9'
      *   },
      *   //example of model for an object.
-     *   chatMessage : {
-     *          properties : {
-     *              text : {},
-     *              fromId : {}
+     *   chatMessage: {
+     *          properties: {
+     *              text: {},
+     *              fromId: {}
      *          }
      *     },
      *   //example of model for an array.
-     *   names : ['v.name',{maxLength : 20}]
+     *   names: ['v.name',{maxLength: 20}]
      * }
      */
     models?: Record<string,Model>;
@@ -115,9 +115,9 @@ export interface AppConfig
     /**
      * In this property, you can configure all predefined zation channels.
      * @example
-     * zationChannels : {
-     *    userCh : {
-     *        socketGetOwnPublish : false
+     * zationChannels: {
+     *    userCh: {
+     *        socketGetOwnPublish: false
      *    }
      * }
      */
@@ -134,15 +134,15 @@ export interface AppConfig
      * Now I can have more channels from type user chat with different identifiers.
      * Look in the example below to see how you actually can define custom channels.
      * @example
-     * customChannels : {
+     * customChannels: {
      *     // Definition of a custom channel family.
      *     // Notice the array brackets around the object!
-     *     privateChats : [{
-     *          subscribeAccess : 'allAuth',
+     *     privateChats: [{
+     *          subscribeAccess: 'allAuth',
      *     }],
      *     // Definition of a usual custom channel.
-     *     publicStream : {
-     *         subscribeAccess : 'allAuth',
+     *     publicStream: {
+     *         subscribeAccess: 'allAuth',
      *     }
      * }
      */
@@ -152,8 +152,8 @@ export interface AppConfig
      * With this property, you can define a default custom channel configuration
      * that will be used in each custom channel as a fallback.
      * @example
-     * customChannelDefaults : {
-     *     clientPublishAccess : false
+     * customChannelDefaults: {
+     *     clientPublishAccess: false
      * }
      */
     customChannelDefaults?: CustomCh
@@ -161,12 +161,12 @@ export interface AppConfig
     /**
      * In this property, you can define background tasks.
      * @example
-     * backgroundTasks : {
-     *      myTask : {
-     *          task : (sb) => {
+     * backgroundTasks: {
+     *      myTask: {
+     *          task: (sb) => {
      *              console.log(`TaskRunning on worker -> ${sb.getWorkerId()}`)
      *          },
-     *          every : 1000
+     *          every: 1000
      *      }
      * },
      */
@@ -179,16 +179,16 @@ export interface UserGroupsConfig
      * A socket that is not authenticated belongs to the default user group.
      * In this property, you can define the name of these user group.
      * @example
-     * default : 'guest'
+     * default: 'guest'
      */
     default?: string;
     /**
      * The auth object contains all user groups that can only be reached
      * if the socket is authenticated.
      * @example
-     * auth : {
-     *      user : {
-     *           panelDisplayName : 'User'
+     * auth: {
+     *      user: {
+     *           panelDisplayName: 'User'
      *      },
      * },
      */

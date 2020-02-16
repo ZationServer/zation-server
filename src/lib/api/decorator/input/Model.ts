@@ -14,8 +14,8 @@ import {InDecoratorMem, InDM_Models} from "./InDecoratorMem";
  * or as a param of a param based input config.
  * @param model
  */
-export const Model = (model : ModelConfig) => {
-    return (target : any,propertyName : string) => {
+export const Model = (model: ModelConfig) => {
+    return (target: any,propertyName: string) => {
         target = (target as InDecoratorMem);
         if(typeof target[InDM_Models] !== 'object'){
             target[InDM_Models] = {};

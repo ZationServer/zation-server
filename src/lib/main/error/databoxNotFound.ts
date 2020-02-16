@@ -9,11 +9,11 @@ import {MainBackErrors} from "../zationBackErrors/mainBackErrors";
 
 export default class DataboxNotFound extends CodeError
 {
-    private readonly className : string;
+    private readonly className: string;
 
-    constructor(className : string)
+    constructor(className: string)
     {
-        super(MainBackErrors.databoxNotFound,{className : className});
+        super(MainBackErrors.databoxNotFound,{className: className});
         this.className = className;
     }
 

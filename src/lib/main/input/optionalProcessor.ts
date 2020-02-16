@@ -14,7 +14,7 @@ export default class OptionalProcessor
      * Works also with the anyOf model modifier.
      * @param config
      */
-    static process(config : AnyOfModelConfig | Model) : {isOptional : boolean,defaultValue : any}
+    static process(config: AnyOfModelConfig | Model): {isOptional: boolean,defaultValue: any}
     {
         //fallback
         let isOptional = false;
@@ -36,8 +36,8 @@ export default class OptionalProcessor
         }
 
         return {
-            isOptional : isOptional,
-            defaultValue : defaultValue
+            isOptional: isOptional,
+            defaultValue: defaultValue
         }
     }
 }

@@ -18,17 +18,17 @@ const ValidatorFunctions   = ValidatorLibrary.Functions;
 const ValidatorTypes       = ValidatorLibrary.Types;
 
 export type ValueTypeValidateFunction =
-    (input : any,errorBag : BackErrorBag,preparedErrorData : PreparedErrorData) => string | undefined;
+    (input: any,errorBag: BackErrorBag,preparedErrorData: PreparedErrorData) => string | undefined;
 export type ValueValidateFunction =
-    (input : any, errorBag : BackErrorBag, preparedErrorData : PreparedErrorData, bag : Bag, type : string | undefined) => Promise<any>;
+    (input: any, errorBag: BackErrorBag, preparedErrorData: PreparedErrorData, bag: Bag, type: string | undefined) => Promise<any>;
 
 export interface PreparedErrorData {
-    inputPath : string,
-    inputValue : any
+    inputPath: string,
+    inputValue: any
 }
 
 type PreparedFunctionValidator =
-    (input : any, backErrorBag  : BackErrorBag, prepareErrorData : PreparedErrorData, preparedBag : Bag, type : string | undefined) => Promise<void> | void
+    (input: any, backErrorBag : BackErrorBag, prepareErrorData: PreparedErrorData, preparedBag: Bag, type: string | undefined) => Promise<void> | void
 
 export default class ValidatorEngine
 {
@@ -36,10 +36,10 @@ export default class ValidatorEngine
      * Creates a closure to validate the type of the input data.
      * @param config
      */
-    static createValueValidator(config : ValueModelConfig) : ValueValidateFunction
+    static createValueValidator(config: ValueModelConfig): ValueValidateFunction
     {
-        const validatorFunctions : PreparedFunctionValidator[] = [];
-        let validateFunction : ValidateFunction = () => {};
+        const validatorFunctions: PreparedFunctionValidator[] = [];
+        let validateFunction: ValidateFunction = () => {};
 
         for(let cKey in config) {
             if(config.hasOwnProperty(cKey)) {
@@ -56,7 +56,7 @@ export default class ValidatorEngine
         }
 
         return async (input, errorBag, preparedErrorData, bag, type) => {
-            const promises : (Promise<void> | void)[] = [];
+            const promises: (Promise<void> | void)[] = [];
             for(let i = 0; i < validatorFunctions.length; i++){
                 promises.push(validatorFunctions[i](input,errorBag,preparedErrorData,bag,type));
             }
@@ -70,7 +70,7 @@ export default class ValidatorEngine
      * @param type
      * @param strictType
      */
-    static createValueTypeValidator(type : string | string[] | undefined,strictType : boolean) : ValueTypeValidateFunction {
+    static createValueTypeValidator(type: string | string[] | undefined,strictType: boolean): ValueTypeValidateFunction {
         if(type !== undefined && type !== ValidationType.ALL) {
             if(Array.isArray(type)){
                 return (input, errorBag, preparedErrorData) => {
@@ -89,9 +89,9 @@ export default class ValidatorEngine
                     if(!foundAValidTyp) {
                         errorBag.addBackError(new BackError(ValidatorBackErrors.noValidTypeWasFound,
                             {
-                                inputPath : preparedErrorData.inputPath,
-                                inputValue : preparedErrorData.inputValue,
-                                types : type
+                                inputPath: preparedErrorData.inputPath,
+                                inputValue: preparedErrorData.inputValue,
+                                types: type
                             }));
                     }
                     return typeTmp;
@@ -116,7 +116,7 @@ export default class ValidatorEngine
      * @param currentPath
      * @param errorBag
      */
-    static validateArray(array,arrayConfig : ArraySettings,currentPath,errorBag)
+    static validateArray(array,arrayConfig: ArraySettings,currentPath,errorBag)
     {
         let isOk = true;
         if(arrayConfig.length !== undefined)
@@ -127,9 +127,9 @@ export default class ValidatorEngine
                 isOk = false;
                 errorBag.addBackError(new BackError(ValidatorBackErrors.inputArrayNotMatchWithLength,
                     {
-                        inputValue : array,
-                        inputPath : currentPath,
-                        length : length
+                        inputValue: array,
+                        inputPath: currentPath,
+                        length: length
                     }));
             }
         }
@@ -141,9 +141,9 @@ export default class ValidatorEngine
                 isOk = false;
                 errorBag.addBackError(new BackError(ValidatorBackErrors.inputArrayNotMatchWithMinLength,
                     {
-                        inputValue : array,
-                        inputPath : currentPath,
-                        minLength : minLength
+                        inputValue: array,
+                        inputPath: currentPath,
+                        minLength: minLength
                     }));
             }
         }
@@ -155,9 +155,9 @@ export default class ValidatorEngine
                 isOk = false;
                 errorBag.addBackError(new BackError(ValidatorBackErrors.inputArrayNotMatchWithMaxLength,
                     {
-                        inputValue : array,
-                        inputPath : currentPath,
-                        maxLength : maxLength
+                        inputValue: array,
+                        inputPath: currentPath,
+                        maxLength: maxLength
                     }));
             }
         }

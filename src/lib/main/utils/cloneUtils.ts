@@ -11,7 +11,7 @@ export default class CloneUtils
      * Notice that it only clones enumerable properties of an object.
      * @param v
      */
-    static deepClone<T extends any = any>(v : T) : T {
+    static deepClone<T extends any = any>(v: T): T {
         // if not array or object or is null return self
         if (typeof v !== 'object'||v === null) return v;
         let newO, i;

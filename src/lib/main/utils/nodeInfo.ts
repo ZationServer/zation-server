@@ -10,7 +10,7 @@ import {BrokerMessageAction}  from "../constants/brokerMessageAction";
 
 export default class NodeInfo {
 
-    static async getBrokerInfo(worker : ZationWorker) : Promise<{brokers : object,cBrokers : object}> {
+    static async getBrokerInfo(worker: ZationWorker): Promise<{brokers: object,cBrokers: object}> {
         let brokerInfo = {};
         let cBrokerInfo = {};
         let firstBroker = true;
@@ -30,10 +30,10 @@ export default class NodeInfo {
                 }
             });
         }));
-        return {brokers : brokerInfo, cBrokers : cBrokerInfo};
+        return {brokers: brokerInfo, cBrokers: cBrokerInfo};
     }
 
-    static async getMasterInfo(worker : ZationWorker) : Promise<object> {
+    static async getMasterInfo(worker: ZationWorker): Promise<object> {
         let info = {};
         await (new Promise((resolve) => {
             worker.sendToMaster({action: WorkerMessageAction.INFO},(err, data) => {

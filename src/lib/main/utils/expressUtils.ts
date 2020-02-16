@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import ExpressCore                   = require("express-serve-static-core");
 import ZationConfig                    from "../config/manager/zationConfig";
 
-export type LogFileDownloader = (req :  ExpressCore.Request,res :  ExpressCore.Response) => void
+export type LogFileDownloader = (req:  ExpressCore.Request,res:  ExpressCore.Response) => void
 
 export default class ExpressUtils
 {
@@ -15,7 +15,7 @@ export default class ExpressUtils
      * Create closure for download the log file.
      * @param zc
      */
-    static createLogFileDownloader(zc : ZationConfig) : LogFileDownloader {
+    static createLogFileDownloader(zc: ZationConfig): LogFileDownloader {
         if(zc.mainConfig.logFile) {
             if(zc.mainConfig.logFileDownloadable)
             {
@@ -23,7 +23,7 @@ export default class ExpressUtils
                 const logFile = zc.mainConfig.logFilePath + 'ZATION_LOG_FILE.log';
 
                 return (req, res) => {
-                    const key = req.params.key !== undefined ? req.params.key : '';
+                    const key = req.params.key !== undefined ? req.params.key: '';
                     if(key === accessKey) {
                         res.download(logFile);
                     }

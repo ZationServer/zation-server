@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-export type OriginChecker = (hostname ?: string,protocol ?: string,port ?: string) => boolean;
+export type OriginChecker = (hostname?: string,protocol?: string,port?: string) => boolean;
 
 export default class OriginsUtils
 {
@@ -12,11 +12,11 @@ export default class OriginsUtils
      * Create a closure to check origin and process origins.
      * @param validOrigins
      */
-    static createOriginChecker(validOrigins : string[] | string | null) : OriginChecker
+    static createOriginChecker(validOrigins: string[] | string | null): OriginChecker
     {
-        let origins : string[];
+        let origins: string[];
         if(validOrigins !== null){
-            origins = Array.isArray(validOrigins) ? validOrigins : [validOrigins];
+            origins = Array.isArray(validOrigins) ? validOrigins: [validOrigins];
         }
         else {
             return () => true;
@@ -32,8 +32,8 @@ export default class OriginsUtils
         }
 
         return (hostname,protocol,port) => {
-            port = port || (protocol === 'https:' ? '443' : '80');
-            let isOk : boolean = false;
+            port = port || (protocol === 'https:' ? '443': '80');
+            let isOk: boolean = false;
             for(let i = 0; i < origins.length; i++) {
                 try {
                     // @ts-ignore

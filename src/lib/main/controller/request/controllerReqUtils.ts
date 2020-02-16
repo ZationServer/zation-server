@@ -10,7 +10,7 @@ import {HttpGetRequest, ZationRequest, ZationTask, ZationValidationCheck} from "
 
 export default class ControllerReqUtils
 {
-    static isValidReqStructure(zationReq : ZationRequest,isWsReq : boolean) : boolean
+    static isValidReqStructure(zationReq: ZationRequest,isWsReq: boolean): boolean
     {
         return (isWsReq || (
             typeof zationReq.v === 'number' && typeof zationReq.s === 'string'
@@ -26,18 +26,18 @@ export default class ControllerReqUtils
                 ));
     }
 
-    static isSystemControllerReq(task : ZationTask) : boolean {
+    static isSystemControllerReq(task: ZationTask): boolean {
         return typeof task.sc === 'string' && typeof task.c !== 'string';
     }
 
-    public static async convertGetRequest(query : object) : Promise<object>
+    public static async convertGetRequest(query: object): Promise<object>
     {
-        const res : ZationRequest =
-            typeof query[HttpGetRequest.API_LEVEL] === 'number' ? {al : query[HttpGetRequest.API_LEVEL]} : {};
+        const res: ZationRequest =
+            typeof query[HttpGetRequest.API_LEVEL] === 'number' ? {al: query[HttpGetRequest.API_LEVEL]}: {};
 
         //input convert
         const input = typeof query[HttpGetRequest.INPUT] === 'string' ?
-            jsonParse(decodeURIComponent(query[HttpGetRequest.INPUT])) : undefined;
+            jsonParse(decodeURIComponent(query[HttpGetRequest.INPUT])): undefined;
 
         //version,system,token
         res.s = query[HttpGetRequest.SYSTEM];
@@ -48,7 +48,7 @@ export default class ControllerReqUtils
         //task
         if(query.hasOwnProperty(HttpGetRequest.CONTROLLER) || query.hasOwnProperty(HttpGetRequest.SYSTEM_CONTROLLER)) {
             res.t = {
-                i : input,
+                i: input,
             };
             if(query.hasOwnProperty(HttpGetRequest.CONTROLLER)) {
                 res.t.c = query[HttpGetRequest.CONTROLLER];
@@ -59,22 +59,22 @@ export default class ControllerReqUtils
         }
         else if(query.hasOwnProperty(HttpGetRequest.AUTH_REQ)) {
             res.a = {
-                i : input
+                i: input
             };
         }
         return res;
     }
 
-    public static async convertValidationGetRequest(query : object) : Promise<object>
+    public static async convertValidationGetRequest(query: object): Promise<object>
     {
-        const res : ZationRequest =
-            typeof query[HttpGetRequest.API_LEVEL] === 'number' ? {al : query[HttpGetRequest.API_LEVEL]} : {};
+        const res: ZationRequest =
+            typeof query[HttpGetRequest.API_LEVEL] === 'number' ? {al: query[HttpGetRequest.API_LEVEL]}: {};
 
         //input convert
-        const input : any = jsonParse(decodeURIComponent(query[HttpGetRequest.INPUT]));
+        const input: any = jsonParse(decodeURIComponent(query[HttpGetRequest.INPUT]));
 
-        const main : ZationValidationCheck = {
-            i : input
+        const main: ZationValidationCheck = {
+            i: input
         };
         if(query.hasOwnProperty(HttpGetRequest.CONTROLLER)) {
             main.c = query[HttpGetRequest.CONTROLLER];
@@ -86,7 +86,7 @@ export default class ControllerReqUtils
         return res;
     }
 
-    public static isValidGetReq(query : object) : boolean
+    public static isValidGetReq(query: object): boolean
     {
         return((
             query.hasOwnProperty(HttpGetRequest.SYSTEM) &&
@@ -99,7 +99,7 @@ export default class ControllerReqUtils
             ));
     }
 
-    public static isValidValidationGetReq(query : object) : boolean
+    public static isValidValidationGetReq(query: object): boolean
     {
         return (
             //validationReq
@@ -112,17 +112,17 @@ export default class ControllerReqUtils
         );
     }
 
-    static getControllerId(task : object, isSystemController : boolean) : string
+    static getControllerId(task: object, isSystemController: boolean): string
     {
         return !isSystemController ? task[nameof<ZationTask>(s => s.c)] :
             task[nameof<ZationTask>(s => s.sc)];
     }
 
-    static isValidationCheckReq(zationReq : ZationRequest) : boolean {
+    static isValidationCheckReq(zationReq: ZationRequest): boolean {
         return typeof zationReq.v === 'object' && zationReq.t === undefined && zationReq.a === undefined;
     }
 
-    static isValidValidationStructure(zationReq : ZationRequest) : boolean
+    static isValidValidationStructure(zationReq: ZationRequest): boolean
     {
         return typeof zationReq.v === 'object' &&
             ((
@@ -131,11 +131,11 @@ export default class ControllerReqUtils
             );
     }
 
-    static isZationAuthReq(zationReq : ZationRequest) : boolean {
+    static isZationAuthReq(zationReq: ZationRequest): boolean {
         return zationReq.a !== undefined;
     }
 
-    static dissolveZationAuthReq(zc : ZationConfig,zationReq : ZationRequest) : object
+    static dissolveZationAuthReq(zc: ZationConfig,zationReq: ZationRequest): object
     {
         zationReq.t = zationReq.a;
         delete zationReq.a;

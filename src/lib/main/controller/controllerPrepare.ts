@@ -20,26 +20,26 @@ import InputClosureCreator, {InputConsumeFunction, InputValidationCheckFunction}
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction}                   from "../apiLevel/apiLevelUtils";
 
 interface ControllerPrepareData {
-    controllerConfig : ControllerConfig,
-    controllerInstance : Controller,
-    versionAccessCheck : VersionSystemAccessCheckFunction,
-    systemAccessCheck : VersionSystemAccessCheckFunction,
-    tokenStateCheck : TokenStateAccessCheckFunction,
-    middlewareInvoke : MiddlewareInvokeFunction,
-    inputConsume : InputConsumeFunction,
-    inputValidationCheck : InputValidationCheckFunction
+    controllerConfig: ControllerConfig,
+    controllerInstance: Controller,
+    versionAccessCheck: VersionSystemAccessCheckFunction,
+    systemAccessCheck: VersionSystemAccessCheckFunction,
+    tokenStateCheck: TokenStateAccessCheckFunction,
+    middlewareInvoke: MiddlewareInvokeFunction,
+    inputConsume: InputConsumeFunction,
+    inputValidationCheck: InputValidationCheckFunction
 }
 
 export default class ControllerPrepare
 {
-    private readonly zc : ZationConfigFull;
-    private readonly worker : ZationWorker;
-    private readonly bag : Bag;
+    private readonly zc: ZationConfigFull;
+    private readonly worker: ZationWorker;
+    private readonly bag: Bag;
 
-    private readonly systemController : Record<string,ControllerPrepareData>;
-    private readonly appController : Record<string,ApiLevelSwitchFunction<ControllerPrepareData>>;
+    private readonly systemController: Record<string,ControllerPrepareData>;
+    private readonly appController: Record<string,ApiLevelSwitchFunction<ControllerPrepareData>>;
 
-    constructor(zc : ZationConfigFull,worker : ZationWorker,bag : Bag)
+    constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag)
     {
         this.zc = zc;
         this.worker = worker;
@@ -56,7 +56,7 @@ export default class ControllerPrepare
      * @param apiLevel
      * @param isSystemController
      */
-    getControllerPrepareData(name : string,apiLevel : number,isSystemController : boolean) : ControllerPrepareData
+    getControllerPrepareData(name: string,apiLevel: number,isSystemController: boolean): ControllerPrepareData
     {
         if(!isSystemController) {
             const controller = this.appController[name](apiLevel);
@@ -65,7 +65,7 @@ export default class ControllerPrepare
             }
             else {
                 throw new BackError(MainBackErrors.apiLevelIncompatible,
-                    {controller: name, apiLevel : apiLevel});
+                    {controller: name, apiLevel: apiLevel});
             }
         }
         else {
@@ -78,7 +78,7 @@ export default class ControllerPrepare
      * @param name
      * @param isSystemController
      */
-    isControllerExist(name : string,isSystemController : boolean) : boolean {
+    isControllerExist(name: string,isSystemController: boolean): boolean {
         return !isSystemController ? this.appController.hasOwnProperty(name) :
             this.systemController.hasOwnProperty(name);
     }
@@ -89,7 +89,7 @@ export default class ControllerPrepare
      * @param name
      * @param isSystemController
      */
-    checkControllerExist(name : string,isSystemController : boolean) : void
+    checkControllerExist(name: string,isSystemController: boolean): void
     {
         if(!this.isControllerExist(name,isSystemController)) {
             if(isSystemController) {
@@ -104,10 +104,10 @@ export default class ControllerPrepare
     /**
      * Prepare all system and user controllers.
      */
-    async prepare() : Promise<void> {
+    async prepare(): Promise<void> {
         const uController = this.zc.appConfig.controllers || {};
 
-        const promises : Promise<void>[] = [];
+        const promises: Promise<void>[] = [];
 
         for(let cName in uController) {
             if(uController.hasOwnProperty(cName)) {
@@ -130,7 +130,7 @@ export default class ControllerPrepare
      * @param systemController
      * @param definition
      */
-    private async addController(name : string,systemController : boolean,definition : ControllerClass | ApiLevelSwitch<ControllerClass>) : Promise<void>
+    private async addController(name: string,systemController: boolean,definition: ControllerClass | ApiLevelSwitch<ControllerClass>): Promise<void>
     {
         if(typeof definition === 'function') {
             const preparedControllerData = await this.processController(definition,name);
@@ -144,8 +144,8 @@ export default class ControllerPrepare
             }
         }
         else {
-            const promises : Promise<void>[] = [];
-            const preparedDataMapper : Record<any,ControllerPrepareData> = {};
+            const promises: Promise<void>[] = [];
+            const preparedDataMapper: Record<any,ControllerPrepareData> = {};
             for(let k in definition){
                 if(definition.hasOwnProperty(k)) {
                     promises.push((async () => {
@@ -164,21 +164,21 @@ export default class ControllerPrepare
      * @param name
      * @param apiLevel
      */
-    private async processController(controller : ControllerClass,name : string,apiLevel ?: number) : Promise<ControllerPrepareData>
+    private async processController(controller: ControllerClass,name: string,apiLevel?: number): Promise<ControllerPrepareData>
     {
-        const config : ControllerConfig = controller.config;
-        const cInstance : Controller = new controller(name,this.worker.getPreparedBag(),apiLevel);
+        const config: ControllerConfig = controller.config;
+        const cInstance: Controller = new controller(name,this.worker.getPreparedBag(),apiLevel);
         await cInstance.initialize(this.worker.getPreparedBag());
 
         return  {
-            controllerConfig : config,
+            controllerConfig: config,
             controllerInstance: cInstance,
-            versionAccessCheck : SystemVersionChecker.createVersionChecker(config),
-            systemAccessCheck : SystemVersionChecker.createSystemChecker(config),
-            tokenStateCheck : AuthAccessChecker.createAuthAccessChecker(config.access,this.bag),
-            middlewareInvoke : ControllerUtils.createMiddlewareInvoker(config),
-            inputConsume : InputClosureCreator.createInputConsumer(config,this.bag),
-            inputValidationCheck : InputClosureCreator.createValidationChecker(config,this.bag)
+            versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
+            systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
+            tokenStateCheck: AuthAccessChecker.createAuthAccessChecker(config.access,this.bag),
+            middlewareInvoke: ControllerUtils.createMiddlewareInvoker(config),
+            inputConsume: InputClosureCreator.createInputConsumer(config,this.bag),
+            inputValidationCheck: InputClosureCreator.createValidationChecker(config,this.bag)
         };
     }
 }

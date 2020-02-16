@@ -33,27 +33,27 @@ import {DataboxClassDef, DataboxConfig} from "../definitions/databoxConfig";
 import DbConfigUtils from "../../databox/dbConfigUtils";
 
 export interface ModelPreparationMem extends Processable{
-    _optionalInfo : {isOptional : boolean,defaultValue : any}
-    _pcStep1 : boolean,
-    _pcStep2 : boolean
+    _optionalInfo: {isOptional: boolean,defaultValue: any}
+    _pcStep1: boolean,
+    _pcStep2: boolean
 }
 
 export default class ConfigPrecompiler
 {
-    private readonly configs : OtherLoadedConfigSet;
+    private readonly configs: OtherLoadedConfigSet;
 
-    private controllerDefaults : object;
-    private databoxDefaults : object;
-    private modelsConfig : object;
-    private modelImportEngine : ModelResolveEngine;
+    private controllerDefaults: object;
+    private databoxDefaults: object;
+    private modelsConfig: object;
+    private modelImportEngine: ModelResolveEngine;
 
-    constructor(configs : OtherLoadedConfigSet)
+    constructor(configs: OtherLoadedConfigSet)
     {
         this.configs = configs;
         this.prepare();
     }
 
-    precompile(zc : ZationConfig, showPrecompiledConfigs : boolean) : OtherPrecompiledConfigSet
+    precompile(zc: ZationConfig, showPrecompiledConfigs: boolean): OtherPrecompiledConfigSet
     {
         this.precompileModels(this.modelsConfig);
         this.precompileTmpBuilds();
@@ -81,7 +81,7 @@ export default class ConfigPrecompiler
         return this.configs;
     }
 
-    private prepare() : void
+    private prepare(): void
     {
         this.prepareControllerDefaults();
         this.prepareDataboxDefaults();
@@ -89,7 +89,7 @@ export default class ConfigPrecompiler
         this.modelImportEngine = new ModelResolveEngine(this.modelsConfig);
     }
 
-    private prepareControllerDefaults() : void
+    private prepareControllerDefaults(): void
     {
         this.controllerDefaults = {};
         let cd = this.configs.appConfig.controllerDefaults;
@@ -99,7 +99,7 @@ export default class ConfigPrecompiler
         }
     }
 
-    private prepareDataboxDefaults() : void
+    private prepareDataboxDefaults(): void
     {
         this.databoxDefaults = {};
         let dbDefaults = this.configs.appConfig.databoxDefaults;
@@ -109,7 +109,7 @@ export default class ConfigPrecompiler
         }
     }
 
-    private precompileCustomChannels() : void {
+    private precompileCustomChannels(): void {
         const customChannels = this.configs.appConfig.customChannels;
         const customChannelDefaults = this.configs.appConfig.customChannelDefaults;
 
@@ -117,7 +117,7 @@ export default class ConfigPrecompiler
             for(let chName in customChannels){
                 if(customChannels.hasOwnProperty(chName)){
 
-                    let channel : BaseCustomChannelConfig;
+                    let channel: BaseCustomChannelConfig;
                     if(Array.isArray(customChannels[chName])){
                         if(typeof customChannels[chName][0] !== 'object'){
                             customChannels[chName][0] = {};
@@ -137,12 +137,12 @@ export default class ConfigPrecompiler
         }
     }
 
-    private prepareModelsConfig() : void {
+    private prepareModelsConfig(): void {
         this.modelsConfig = typeof this.configs.appConfig.models === 'object' ?
-            this.configs.appConfig.models : {};
+            this.configs.appConfig.models: {};
     }
 
-    private precompileModels(models : Record<string,Model | any>) {
+    private precompileModels(models: Record<string,Model | any>) {
 
         //first pre compile the array short syntax on main level
         //to get references for fix import issues array
@@ -166,11 +166,11 @@ export default class ConfigPrecompiler
 
     }
 
-    private precompileTmpBuilds() : void {
+    private precompileTmpBuilds(): void {
         this.precompileModels(this.modelImportEngine.tmpCreatedModels);
     }
 
-    private precompileObjectProperties(obj : ObjectModelConfig) : void
+    private precompileObjectProperties(obj: ObjectModelConfig): void
     {
         const properties = obj.properties;
         for(let propName in properties) {
@@ -181,7 +181,7 @@ export default class ConfigPrecompiler
     }
 
     // noinspection JSMethodCanBeStatic
-    private precompileArrayShortSyntax(key : string,obj : object) : void
+    private precompileArrayShortSyntax(key: string,obj: object): void
     {
         const nowValue = obj[key];
         if(Array.isArray(nowValue)) {
@@ -201,7 +201,7 @@ export default class ConfigPrecompiler
      * @param key
      * @param obj
      */
-    private modelPrecompileStep1(key : string, obj : object) : void
+    private modelPrecompileStep1(key: string, obj: object): void
     {
         const nowValue = obj[key];
 
@@ -272,10 +272,10 @@ export default class ConfigPrecompiler
             }
 
             Object.defineProperty(nowValue,nameof<ModelPreparationMem>(s => s._pcStep1),{
-                value : true,
-                enumerable : false,
-                writable : false,
-                configurable : false
+                value: true,
+                enumerable: false,
+                writable: false,
+                configurable: false
             });
         }
     }
@@ -287,7 +287,7 @@ export default class ConfigPrecompiler
      * Also, this step will create the underscore process closure for the runtime.
      * @param value
      */
-    private modelPrecompileStep2(value : any) : void
+    private modelPrecompileStep2(value: any): void
     {
         if(typeof value === "object")
         {
@@ -373,10 +373,10 @@ export default class ConfigPrecompiler
 
                 if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
                     Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._process),{
-                        value : InputProcessorCreator.createObjectModelProcessor(value),
-                        enumerable : false,
-                        writable : false,
-                        configurable : false
+                        value: InputProcessorCreator.createObjectModelProcessor(value),
+                        enumerable: false,
+                        writable: false,
+                        configurable: false
                     });
                 }
             }
@@ -388,10 +388,10 @@ export default class ConfigPrecompiler
 
                 if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
                     Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._process),{
-                        value : InputProcessorCreator.createArrayModelProcessor(value),
-                        enumerable : false,
-                        writable : false,
-                        configurable : false
+                        value: InputProcessorCreator.createArrayModelProcessor(value),
+                        enumerable: false,
+                        writable: false,
+                        configurable: false
                     });
                 }
             }
@@ -404,10 +404,10 @@ export default class ConfigPrecompiler
 
                 if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
                     Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._process),{
-                        value : InputProcessorCreator.createAnyOfModelProcessor(value),
-                        enumerable : false,
-                        writable : false,
-                        configurable : false
+                        value: InputProcessorCreator.createAnyOfModelProcessor(value),
+                        enumerable: false,
+                        writable: false,
+                        configurable: false
                     });
                 }
             }
@@ -417,27 +417,27 @@ export default class ConfigPrecompiler
 
                 if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
                     Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._process),{
-                        value : InputProcessorCreator.createValueModelProcessor(value),
-                        enumerable : false,
-                        writable : false,
-                        configurable : false
+                        value: InputProcessorCreator.createValueModelProcessor(value),
+                        enumerable: false,
+                        writable: false,
+                        configurable: false
                     });
                 }
             }
             if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._optionalInfo))){
                 Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._optionalInfo),{
-                    value : OptionalProcessor.process(value),
-                    enumerable : false,
-                    writable : false,
-                    configurable : false
+                    value: OptionalProcessor.process(value),
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
                 });
             }
 
             Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._pcStep2),{
-                value : true,
-                enumerable : false,
-                writable : false,
-                configurable : false
+                value: true,
+                enumerable: false,
+                writable: false,
+                configurable: false
             });
         }
     }
@@ -447,7 +447,7 @@ export default class ConfigPrecompiler
      * @param mainValue
      * @param exValueConfig
      */
-    private precompileValueExtend(mainValue : ValueModelConfig,exValueConfig : ValueModelConfig) {
+    private precompileValueExtend(mainValue: ValueModelConfig,exValueConfig: ValueModelConfig) {
         if(exValueConfig.extends !== undefined){
             const nextExValueConfig = this.modelImportEngine.extendsResolve(exValueConfig.extends);
             ObjectUtils.addObToOb(mainValue,nextExValueConfig);
@@ -460,7 +460,7 @@ export default class ConfigPrecompiler
      * A function that will precompile validation functions of a value model.
      * @param value
      */
-    private precompileValidationFunctions(value : ValueModelConfig) : void
+    private precompileValidationFunctions(value: ValueModelConfig): void
     {
         //charClass function
         if(typeof value.charClass === "string") {
@@ -482,13 +482,13 @@ export default class ConfigPrecompiler
         }
     }
 
-    private precompileControllerDefaults() : void {
+    private precompileControllerDefaults(): void {
         if(this.configs.appConfig.controllerDefaults) {
             this.precompileInputConfig(this.configs.appConfig.controllerDefaults);
         }
     }
 
-    private precompileControllers() : void
+    private precompileControllers(): void
     {
         //set if controller property is not found
         if(!this.configs.appConfig.controllers) {
@@ -500,7 +500,7 @@ export default class ConfigPrecompiler
         for(let k in controller) {
             if(controller.hasOwnProperty(k)) {
                 Iterator.iterateCompDefinition<ControllerClass>(controller[k],(controllerClass) => {
-                    const config : ControllerConfig = controllerClass.config;
+                    const config: ControllerConfig = controllerClass.config;
                     //set the defaults
                     ObjectUtils.addObToOb(config,this.controllerDefaults,false);
                     this.precompileInputConfig(config);
@@ -509,7 +509,7 @@ export default class ConfigPrecompiler
         }
     }
 
-    private precompileSystemController() : void
+    private precompileSystemController(): void
     {
         for(let k in SystemController){
             if(SystemController.hasOwnProperty(k)){
@@ -518,7 +518,7 @@ export default class ConfigPrecompiler
         }
     }
 
-    private precompileDataboxes() : void
+    private precompileDataboxes(): void
     {
         //set if databox property is not found
         if(!this.configs.appConfig.databoxes) {
@@ -530,7 +530,7 @@ export default class ConfigPrecompiler
         for(let k in databoxes) {
             if(databoxes.hasOwnProperty(k)) {
                 Iterator.iterateCompDefinition<DataboxClassDef>(databoxes[k],(databoxClass) => {
-                    const config : DataboxConfig = databoxClass.config;
+                    const config: DataboxConfig = databoxClass.config;
                     //set the defaults
                     ObjectUtils.addObToOb(config,this.databoxDefaults,false);
                     this.precompileInputConfig(DbConfigUtils.convertDbInitInput(config));
@@ -540,7 +540,7 @@ export default class ConfigPrecompiler
         }
     }
 
-    private precompileInputConfig(inputConfig : InputConfig) : void {
+    private precompileInputConfig(inputConfig: InputConfig): void {
         if(inputConfig.input) {
             let input = inputConfig.input;
             if(isInputConfigTranslatable(input)){
@@ -560,7 +560,7 @@ export default class ConfigPrecompiler
         }
     }
 
-    private precompileParamInput(paramInput : ParamInput | Processable) : void {
+    private precompileParamInput(paramInput: ParamInput | Processable): void {
         for(let inputName in paramInput) {
             if(paramInput.hasOwnProperty(inputName)) {
                 //resolve values,object,array links and resolve inheritance
@@ -570,15 +570,15 @@ export default class ConfigPrecompiler
         }
         if(!paramInput.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
             Object.defineProperty(paramInput,nameof<ModelPreparationMem>(s => s._process),{
-                value : InputProcessorCreator.createParamInputProcessor((paramInput as ParamInput)),
-                enumerable : false,
-                writable : false,
-                configurable : false
+                value: InputProcessorCreator.createParamInputProcessor((paramInput as ParamInput)),
+                enumerable: false,
+                writable: false,
+                configurable: false
             });
         }
     }
 
-    private precompileSingleInput(singleModelInput : SingleModelInput) : void {
+    private precompileSingleInput(singleModelInput: SingleModelInput): void {
         this.modelPrecompileStep1('0',singleModelInput);
         this.modelPrecompileStep2(singleModelInput[0]);
     }

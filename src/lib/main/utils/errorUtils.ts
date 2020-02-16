@@ -18,7 +18,7 @@ export default class ErrorUtils {
      * @param error
      * @param withErrorDescription
      */
-    static convertErrorToResponseErrors(error : BackError | BackErrorBag | any, withErrorDescription : boolean = false) : ResponseError[]
+    static convertErrorToResponseErrors(error: BackError | BackErrorBag | any, withErrorDescription: boolean = false): ResponseError[]
     {
         if(error instanceof BackError) {
             return [error._toResponseError(withErrorDescription)];

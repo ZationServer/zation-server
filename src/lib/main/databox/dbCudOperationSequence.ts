@@ -14,17 +14,17 @@ import {
 } from "./dbDefinitions";
 import DataboxUtils                              from "./databoxUtils";
 
-type CommitFunction = (operations : CudOperation[]) => Promise<void>;
+type CommitFunction = (operations: CudOperation[]) => Promise<void>;
 
 /**
  * Saves all commands for execute later.
  */
 export default class DbCudOperationSequence
 {
-    private operations : CudOperation[] = [];
-    private readonly commitFunction : CommitFunction;
+    private operations: CudOperation[] = [];
+    private readonly commitFunction: CommitFunction;
 
-    constructor(commitFunc : CommitFunction) {
+    constructor(commitFunc: CommitFunction) {
         this.commitFunction = commitFunc;
     }
 
@@ -62,7 +62,7 @@ export default class DbCudOperationSequence
      * @param code
      * @param data
      */
-    insert(selector : DbSelector, value : any, {if : ifOption,potentialUpdate,code,data} : IfOption & PotentialUpdateOption & InfoOption = {}) : DbCudOperationSequence {
+    insert(selector: DbSelector, value: any, {if: ifOption,potentialUpdate,code,data}: IfOption & PotentialUpdateOption & InfoOption = {}): DbCudOperationSequence {
         this.operations.push(DataboxUtils.buildInsert(selector,value,ifOption,potentialUpdate,code,data));
         return this;
     }
@@ -100,7 +100,7 @@ export default class DbCudOperationSequence
      * @param code
      * @param data
      */
-    update(selector : DbSelector, value : any, {if : ifOption,potentialInsert,code,data} : IfOption & PotentialInsertOption & InfoOption = {}) : DbCudOperationSequence {
+    update(selector: DbSelector, value: any, {if: ifOption,potentialInsert,code,data}: IfOption & PotentialInsertOption & InfoOption = {}): DbCudOperationSequence {
         this.operations.push(DataboxUtils.buildUpdate(selector,value,ifOption,potentialInsert,code,data));
         return this;
     }
@@ -136,7 +136,7 @@ export default class DbCudOperationSequence
      * @param code
      * @param data
      */
-    delete(selector : DbSelector, {if : ifOption,code,data} : IfOption & InfoOption = {}) : DbCudOperationSequence {
+    delete(selector: DbSelector, {if: ifOption,code,data}: IfOption & InfoOption = {}): DbCudOperationSequence {
         this.operations.push(DataboxUtils.buildDelete(selector,ifOption,code,data));
         return this;
     }

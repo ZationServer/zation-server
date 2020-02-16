@@ -10,42 +10,42 @@ import Encoder      from "../utils/encoder";
 import Logger       from "../logger/logger";
 import {License, LicenseLevel, LicenseType} from "../utils/licenseManager";
 
-const  ScClient : any        = require('socketcluster-client');
+const  ScClient: any        = require('socketcluster-client');
 const  uuidV4                = require('uuid/v4');
 
 export const ZATION_CLUSTER_VERSION = 1;
 
 export default class StateServerEngine
 {
-    private zc : ZationConfig;
-    private zm : ZationMaster;
-    private stateSocket : any;
-    private readonly useClusterSecretKey : boolean;
-    private encoder : Encoder;
+    private zc: ZationConfig;
+    private zm: ZationMaster;
+    private stateSocket: any;
+    private readonly useClusterSecretKey: boolean;
+    private encoder: Encoder;
 
-    private inRegisterProcess : boolean = true;
-    private firstConnection : boolean = true;
-    private isClusterLeader : boolean = false;
+    private inRegisterProcess: boolean = true;
+    private firstConnection: boolean = true;
+    private isClusterLeader: boolean = false;
 
-    private reconnectUUID : string;
+    private reconnectUUID: string;
 
-    private connectSettings : object;
-    private serverSettings : object;
-    private licenseData : {id : string,l : LicenseLevel,t : LicenseType,mi : number} | undefined = undefined;
-    private serverSharedData : SharedData | string;
+    private connectSettings: object;
+    private serverSettings: object;
+    private licenseData: {id: string,l: LicenseLevel,t: LicenseType,mi: number} | undefined = undefined;
+    private serverSharedData: SharedData | string;
 
-    private readonly useSharedTokenAuth : boolean;
+    private readonly useSharedTokenAuth: boolean;
 
-    constructor(zc : ZationConfig,zm : ZationMaster,license ?: License)
+    constructor(zc: ZationConfig,zm: ZationMaster,license?: License)
     {
         this.zc = zc;
         this.zm = zm;
         if(license){
             this.licenseData = {
-                id : license.i,
-                l : license.l,
-                t : license.t,
-                mi : license.mi
+                id: license.i,
+                l: license.l,
+                t: license.t,
+                mi: license.mi
             };
         }
 
@@ -69,8 +69,8 @@ export default class StateServerEngine
     private buildServerSettings()
     {
         this.serverSettings = {
-            useShareTokenAuth : this.useSharedTokenAuth,
-            useClusterSecretKey : this.useClusterSecretKey
+            useShareTokenAuth: this.useSharedTokenAuth,
+            useClusterSecretKey: this.useClusterSecretKey
         };
     }
 
@@ -79,9 +79,9 @@ export default class StateServerEngine
      */
     private buildServerSharedData()
     {
-        const sharedData : SharedData = {
-                tokenClusterKey : this.zc.internalData.tokenClusterKey,
-                databoxKey : this.zc.internalData.databoxKey
+        const sharedData: SharedData = {
+                tokenClusterKey: this.zc.internalData.tokenClusterKey,
+                databoxKey: this.zc.internalData.databoxKey
             };
 
         if(this.useSharedTokenAuth) {
@@ -103,7 +103,7 @@ export default class StateServerEngine
      * This method will also try to decrypt them by using a cluster key.
      * @param sharedData
      */
-    private loadSharedData(sharedData : string | SharedData)
+    private loadSharedData(sharedData: string | SharedData)
     {
         if(this.useClusterSecretKey && typeof sharedData === 'string') {
             try {
@@ -174,10 +174,10 @@ export default class StateServerEngine
                 authKey,
                 instancePort: this.zc.mainConfig.port,
                 instanceType: 'zation-master',
-                zationClusterVersion : ZATION_CLUSTER_VERSION
+                zationClusterVersion: ZATION_CLUSTER_VERSION
             },
 
-            autoConnect : false
+            autoConnect: false
         };
     }
 
@@ -200,7 +200,7 @@ export default class StateServerEngine
     /**
      * Destroy the state server socket.
      */
-    destroy() : void {
+    destroy(): void {
         if(this.stateSocket){
             this.stateSocket.destroy();
         }
@@ -210,7 +210,7 @@ export default class StateServerEngine
      * Start to connect and register to the state server.
      * Promise will be resolved after the connection is established, and the master has registered at the state server.
      */
-    public registerStateServer() : Promise<void>
+    public registerStateServer(): Promise<void>
     {
         this.stateSocket = ScClient.connect(this.connectSettings);
         const promise = new Promise<void>((resolve,reject) =>
@@ -303,10 +303,10 @@ export default class StateServerEngine
         {
             this.stateSocket.emit
             ('zMasterRegister', {
-                    settings : this.serverSettings,
-                    sharedData : this.serverSharedData,
-                    instanceId : this.zc.mainConfig.instanceId,
-                    license : this.licenseData
+                    settings: this.serverSettings,
+                    sharedData: this.serverSharedData,
+                    instanceId: this.zc.mainConfig.instanceId,
+                    license: this.licenseData
                 },
                 async (err,data) => {
                     if(!err) {
@@ -328,7 +328,7 @@ export default class StateServerEngine
      * Reaction on the register responds from the state server.
      * @param data
      */
-    private async reactOnRegisterRespond(data : any)
+    private async reactOnRegisterRespond(data: any)
     {
         const info = data.info;
         const reconnectUUID = data.reconnectUUID;
@@ -437,25 +437,25 @@ export default class StateServerEngine
     /**
      * Returns if the engine is connected to the state server.
      */
-    public isConnected() : boolean {
-        return this.stateSocket ? this.stateSocket.state === this.stateSocket.OPEN : false;
+    public isConnected(): boolean {
+        return this.stateSocket ? this.stateSocket.state === this.stateSocket.OPEN: false;
     }
 
     /**
      * Reconnect to the state server.
      */
-    private reconnect() : Promise<boolean>
+    private reconnect(): Promise<boolean>
     {
         return new Promise(((resolve) =>
         {
             this.stateSocket.emit('zMasterReconnect',
                 {
-                    reconnectUUID : this.reconnectUUID,
-                    settings : this.serverSettings,
-                    sharedData : this.serverSharedData,
-                    instanceId : this.zc.mainConfig.instanceId,
-                    license : this.licenseData,
-                    wasLeader : this.isClusterLeader
+                    reconnectUUID: this.reconnectUUID,
+                    settings: this.serverSettings,
+                    sharedData: this.serverSharedData,
+                    instanceId: this.zc.mainConfig.instanceId,
+                    license: this.licenseData,
+                    wasLeader: this.isClusterLeader
                 }
                 ,
                 async (err,data) =>
@@ -493,9 +493,9 @@ export default class StateServerEngine
 }
 
 interface SharedData {
-    tokenClusterKey : string,
-    databoxKey : string,
-    verifyKey ?: any,
-    signKey ?: any,
-    authAlgorithm ?: string
+    tokenClusterKey: string,
+    databoxKey: string,
+    verifyKey?: any,
+    signKey?: any,
+    authAlgorithm?: string
 }

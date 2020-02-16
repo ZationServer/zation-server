@@ -8,9 +8,9 @@ import {ClientErrorName} from "../constants/clientErrorName";
 
 export default class NoDataAvailableError extends Error
 {
-    private readonly info : {code ?: string |number,data ?: any} = {};
+    private readonly info: {code?: string |number,data?: any} = {};
 
-    constructor(code ?: string | number,data ?: any) {
+    constructor(code?: string | number,data?: any) {
         super();
         this.name = ClientErrorName.NO_DATA_AVAILABLE;
         this.info.code = code;

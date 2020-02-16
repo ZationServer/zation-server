@@ -8,13 +8,13 @@ export default interface PubData {
     /**
      * The event name.
      */
-    e : string,
+    e: string,
     /**
      * Published data.
      */
-    d : any,
+    d: any,
     /**
      * Source socket sid.
      */
-    sSid ?: string
+    sSid?: string
 }
