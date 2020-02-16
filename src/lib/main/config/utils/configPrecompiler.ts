@@ -61,7 +61,6 @@ export default class ConfigPrecompiler
         this.precompileControllers();
         this.precompileDataboxes();
         this.precompileSystemController();
-        this.precompileServiceModules();
         this.precompileCustomChannels();
 
         //view precompiled configs
@@ -136,22 +135,6 @@ export default class ConfigPrecompiler
                 }
             }
         }
-    }
-
-    private precompileServiceModules()
-    {
-        const sm = this.configs.serviceConfig.serviceModules ? this.configs.serviceConfig.serviceModules : [];
-
-        if(typeof this.configs.serviceConfig.services !== 'object'){
-            this.configs.serviceConfig.services = {};
-        }
-
-        sm.forEach((sm) => {
-            // @ts-ignore
-            this.configs.serviceConfig.services[sm.serviceName] = sm.service;
-            // @ts-ignore
-            this.configs.appConfig.bagExtensions.push(sm.bagExtensions);
-        });
     }
 
     private prepareModelsConfig() : void {

@@ -7,7 +7,6 @@ Copyright(c) Luca Scaringella
 import {ConfigNames, DefaultUserGroupFallBack, ZationAccess} from "../../constants/internal";
 import {AppConfig}            from "../definitions/appConfig";
 import {PanelUserConfig}      from "../definitions/mainConfig";
-import {MainService, Service} from "../definitions/serviceConfig";
 import {
     BaseCustomChannelConfig,
     ZationChannelConfig
@@ -50,6 +49,7 @@ import {AuthAccessConfig, VersionAccessConfig} from "../definitions/configCompon
 import DbConfigUtils                           from "../../databox/dbConfigUtils";
 import {getNotableValue, isNotableNot}         from '../../../api/Notable';
 import ErrorBag                                from '../../error/errorBag';
+import {Service}                               from 'zation-service';
 
 export interface ModelCheckedMem {
     _checked : boolean
@@ -62,7 +62,6 @@ export default class ConfigChecker
 
     private modelsConfig: Record<string, Model>;
     private validAccessValues: any[];
-    private serviceNames : string[] = [];
 
     private modelImportEngine : ModelResolveEngine;
 
@@ -555,106 +554,26 @@ export default class ConfigChecker
     }
 
     private checkServiceConfig() {
-        //checkStructure
-        ConfigCheckerTools.assertStructure
-        (Structures.ServiceConfig, this.zcLoader.serviceConfig, ConfigNames.SERVICE, this.ceb);
-        //check Services
-        this.checkServices();
-        //check load Services
-        this.checkServiceModules();
-    }
-
-    private checkServiceModules()
-    {
-        const ls = this.zcLoader.serviceConfig.serviceModules;
-        //check custom services
-        if (Array.isArray(ls)) {
-            ls.forEach((c,i) => {
-
-                ConfigCheckerTools.assertStructure
-                (Structures.serviceModule, c, ConfigNames.SERVICE, this.ceb, new Target('Service Module index: ' + i));
-
-               // for javascript version
-               // noinspection SuspiciousTypeOfGuard
-                if(typeof c.serviceName === 'string') {
-                   this.checkService(c.serviceName,c.service,'Service Module');
-               }
-            });
-        }
-    }
-
-    private checkService(serviceName : string,config : MainService<any,any,any>,targetName : string = 'Service')
-    {
-        if(this.serviceNames.includes(serviceName)) {
-            this.ceb.addError(new ConfigError(ConfigNames.APP,
-                `Service key: '${serviceName}' is duplicated.`));
-        }
-
-        this.serviceNames.push(serviceName);
-        this.checkCustomName(serviceName,targetName);
-
-
-        if (typeof config === 'object') {
-            //check custom services structure
-            let service = config;
-            let target = new Target(`${targetName}: '${serviceName}'`);
-
-            //check create and get
-            ConfigCheckerTools.assertProperty
-            (
-                nameof<Service>(s => s.get),
-                service,
-                'function',
-                true,
-                ConfigNames.SERVICE,
-                this.ceb,
-                target
-            );
-            ConfigCheckerTools.assertProperty
-            (
-                nameof<Service>(s => s.create),
-                service,
-                'function',
-                false,
-                ConfigNames.SERVICE,
-                this.ceb,
-                target
-            );
-
-            for (let k in service) {
-                if (service.hasOwnProperty(k)) {
-                    if (k === nameof<Service>(s => s.get) ||
-                        k === nameof<Service>(s => s.create)) {
-                        continue;
-                    }
-                    ConfigCheckerTools.assertProperty
-                    (
-                        k,
-                        service,
-                        'object',
-                        true,
-                        ConfigNames.SERVICE,
-                        this.ceb,
-                        target
-                    );
+        const serviceConfig = this.zcLoader.serviceConfig;
+        if (typeof serviceConfig === 'object') {
+            for (let serviceName in serviceConfig) {
+                if (serviceConfig.hasOwnProperty(serviceName)) {
+                    this.checkService(serviceName,serviceConfig[serviceName]);
                 }
             }
+        }
+    }
+
+    private checkService(serviceName : string,service : Service<any,any>,targetName : string = 'Service')
+    {
+        this.checkCustomName(serviceName,targetName);
+        if (typeof service === 'object') {
+            ConfigCheckerTools.assertStructure(Structures.Service, service,
+                ConfigNames.SERVICE, this.ceb, new Target(`${targetName}: '${serviceName}'`));
         }
         else{
             this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${targetName}: '${serviceName}' must to be an object.`));
-        }
-    }
-
-    private checkServices() {
-        const cs = this.zcLoader.serviceConfig.services;
-        //check custom services
-        if (typeof cs === 'object') {
-            for (let serviceName in cs) {
-                if (cs.hasOwnProperty(serviceName)) {
-                    this.checkService(serviceName,cs[serviceName]);
-                }
-            }
         }
     }
 

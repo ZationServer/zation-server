@@ -8,6 +8,20 @@ import Target         from "./target";
 import ConfigError    from "../../error/configError";
 import ErrorBag       from '../../error/errorBag';
 
+export interface Structure {
+    [prop: string]: StructureProperty
+}
+
+export interface StructureProperty {
+    types: Type[],
+    optional: boolean,
+    arrayType?: Type,
+    stringOnlyEnum?: string[],
+    enum?: any[],
+}
+
+export type Type = 'array' | 'null' | 'object' | 'boolean' | 'number' | 'string' | 'symbol' | 'bigint' | 'function';
+
 export default class ConfigCheckerTools
 {
 
@@ -16,16 +30,16 @@ export default class ConfigCheckerTools
      * @param key
      * @param obj
      * @param types
-     * @param isOptional
+     * @param optional
      * @param configName
      * @param configErrorBag
      * @param target
      */
-    static assertProperty(key : string,obj : object,types : string[] | string,isOptional : boolean,configName : string,configErrorBag : ErrorBag<ConfigError>,target : Target = new Target()) : boolean
+    static assertProperty(key : string,obj : object,types: Type[],optional : boolean,configName : string,configErrorBag : ErrorBag<ConfigError>,target : Target = new Target()) : boolean
     {
         const targetText = `${target.getTarget()} property '${key}'`;
         if(obj[key] === undefined) {
-            if(!isOptional) {
+            if(!optional) {
                 configErrorBag.addError(new ConfigError(configName,`${targetText} need to be set.`));
                 return false;
             }
@@ -49,7 +63,7 @@ export default class ConfigCheckerTools
      * @param configErrorBag
      * @param target
      */
-    static assertStructure(structure : object,obj : object | undefined,configName : string,configErrorBag : ErrorBag<ConfigError>,target : Target = new Target())
+    static assertStructure(structure : Structure,obj : object | undefined,configName : string,configErrorBag : ErrorBag<ConfigError>,target : Target = new Target())
     {
         if(typeof obj !== 'object') {
             configErrorBag.addError(new ConfigError(configName,
@@ -66,14 +80,14 @@ export default class ConfigCheckerTools
 
                 //check type
                 ConfigCheckerTools.assertProperty
-                (k,obj,structure[k]['types'],structure[k]['isOptional'],configName,configErrorBag,target);
+                (k,obj,structure[k].types,structure[k].optional,configName,configErrorBag,target);
 
                 if(obj[k] !== undefined)
                 {
                     //check array only types
-                    if(structure[k]['arrayType'] !== undefined)
+                    if(structure[k].arrayType !== undefined)
                     {
-                        const allowedType = structure[k]['arrayType'];
+                        const allowedType = structure[k].arrayType;
 
                         if(Array.isArray(obj[k])) {
                             let array = obj[k];
@@ -87,10 +101,9 @@ export default class ConfigCheckerTools
                     }
 
                     //check enum
-                    if(structure[k]['enum'] !== undefined)
+                    const allowedEnum = structure[k].enum;
+                    if(allowedEnum !== undefined)
                     {
-                        const allowedEnum = structure[k]['enum'];
-
                         if(Array.isArray(obj[k]))
                         {
                             let array = obj[k];
@@ -111,13 +124,13 @@ export default class ConfigCheckerTools
                             }
                         }
                     }
-                    if(structure[k]['stringOnlyEnum'] !== undefined && typeof obj[k] === 'string')
+
+                    const stringOnlyEnum = structure[k].stringOnlyEnum
+                    if(stringOnlyEnum !== undefined && typeof obj[k] === 'string')
                     {
-                        let allowedStrings = structure[k]['stringOnlyEnum'];
-                        if(!allowedStrings.includes(obj[k]))
-                        {
+                        if(!stringOnlyEnum.includes(obj[k])) {
                             configErrorBag.addError(new ConfigError(configName,
-                                `${target.getTarget()} string value: '${obj[k]}' is not allowed. Allowed string values are: ${allowedStrings.toString()}.`));
+                                `${target.getTarget()} string value: '${obj[k]}' is not allowed. Allowed string values are: ${stringOnlyEnum.toString()}.`));
                         }
                     }
                 }
@@ -163,7 +176,7 @@ export default class ConfigCheckerTools
      * Returns the type of the value in deep.
      * @param value
      */
-    static getTypeOf(value)
+    static getTypeOf(value): string
     {
         if(Array.isArray(value)) {
             return 'array';
@@ -181,7 +194,7 @@ export default class ConfigCheckerTools
      * @param value
      * @param type ['array','null','object','boolean','number','string']
      */
-    private static isCorrectType(value : any,type : string) : boolean {
+    private static isCorrectType(value: any,type: Type) : boolean {
         if(type === 'array') {
             return Array.isArray(value);
         }
@@ -201,19 +214,14 @@ export default class ConfigCheckerTools
      * @param value
      * @param types ['array','null','object','boolean','number','string']
      */
-    private static isCorrectTypes(value : any,types : any[] | any) : boolean
+    private static isCorrectTypes(value: any,types: Type[]) : boolean
     {
-        if(Array.isArray(types)) {
-            for(let i = 0; i < types.length; i++) {
-                if(ConfigCheckerTools.isCorrectType(value,types[i])) {
-                    return true;
-                }
+        for(let i = 0; i < types.length; i++) {
+            if(ConfigCheckerTools.isCorrectType(value,types[i])) {
+                return true;
             }
-            return false;
         }
-        else {
-            return ConfigCheckerTools.isCorrectType(value,types);
-        }
+        return false;
     }
 
 }

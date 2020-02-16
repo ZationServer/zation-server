@@ -4,58 +4,56 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import ServiceNotFoundError from "./serviceNotFoundError";
+import ServiceInstanceNotFoundError from "./serviceInstanceNotFoundError";
+import {ServiceCreateFunction, ServiceGetFunction} from 'zation-service';
 
 export default class ServiceBox
 {
-    private readonly services : object;
-    private readonly serviceName : string;
-    private readonly config : object;
-    private readonly howToCreate : Function;
-    private readonly howToGet : Function;
+    private readonly serviceName: string;
+    private readonly instances: Record<string,any>;
+    private readonly instancesConfig: Record<string,any>;
+    private readonly create: ServiceCreateFunction<any,any>;
+    private readonly get: ServiceGetFunction<any,any>;
 
-    constructor(serviceName : string,config : object,howToCreate: Function,howToGet : Function = (s) =>{return s;})
-    {
-        this.services = {};
+    constructor(serviceName: string,
+                instances: Record<string,any> | undefined,
+                create: ServiceCreateFunction<any,any>,
+                get: ServiceGetFunction<any,any> = (instance) => instance
+    ) {
         this.serviceName = serviceName;
-        this.config = config;
-        this.howToCreate = howToCreate;
-        this.howToGet = howToGet;
+        this.instances = {};
+        this.instancesConfig = instances || {};
+        this.create = create;
+        this.get = get;
     }
 
-    async init(errorBox : string[]) : Promise<void> {
-        await this.initService(this.config,this.howToCreate,errorBox);
+    async init(errorBox: string[]): Promise<void> {
+        await this.initInstances(errorBox);
     }
 
-    private async initService(config,howToCreate,errorBox : string[]) : Promise<void>
-    {
-        if(config !== undefined && typeof config === 'object')
-        {
-            for(let k in config)
-            {
-                if(config.hasOwnProperty(k)) {
-                    try {
-                        this.services[k] = await howToCreate(config[k],k);
-                    }
-                    catch (e) {
-                        errorBox.push(`Service: Name:'${this.serviceName}', ConfigName:'${k}', Error:'${e.toString()}'`);
-                    }
+    private async initInstances(errorBox: string[]): Promise<void> {
+        for(let instanceName in this.instancesConfig) {
+            if(this.instancesConfig.hasOwnProperty(instanceName)) {
+                try {
+                    this.instances[instanceName] = await this.create(this.instancesConfig[instanceName],instanceName);
+                }
+                catch (e) {
+                    errorBox.push(`Service: Name:'${this.serviceName}', Instance:'${instanceName}', Error:'${e.toString()}'`);
                 }
             }
         }
     }
 
-    async getService(configName : string = 'default') : Promise<any>
-    {
-        if(this.services.hasOwnProperty(configName)) {
-            return await this.howToGet(this.services[configName]);
+    async getService(instance: string = 'default'): Promise<any> {
+        if(this.instances.hasOwnProperty(instance)) {
+            return await this.get(this.instances[instance]);
         }
         else {
-            throw new ServiceNotFoundError(this.serviceName,configName);
+            throw new ServiceInstanceNotFoundError(this.serviceName,instance);
         }
     }
 
-    isServiceExists(configName : string = 'default') : boolean {
-        return this.services.hasOwnProperty(configName);
+    existsInstance(instance: string = 'default'): boolean {
+        return this.instances.hasOwnProperty(instance);
     }
 }

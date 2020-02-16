@@ -39,13 +39,9 @@ import
     EventInitFunction,
 } from "../main/config/definitions/eventConfig";
 
-import
-{
-    MainService, ServiceConfig
-} from "../main/config/definitions/serviceConfig";
+import {ServiceConfig} from "../main/config/definitions/serviceConfig";
 
 import {AppConfig} from "../main/config/definitions/appConfig";
-import BackErrorConstruct from "../main/constants/backErrorConstruct";
 import {
     AuthUserGroupChannel,
     AuthUserGroupChOnBagPubFunction,
@@ -610,16 +606,7 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     static allChOnUnsub(func : NormalChOnUnsubFunction) : NormalChOnUnsubFunction {return func;}
 
-    //Part Service Config
-    // noinspection JSUnusedGlobalSymbols
-    static service<Config,Created,Get>(c : MainService<Config,Created,Get>) : MainService<Config,Created,Get> {return c;}
-
-    //Part Error Config
-    // noinspection JSUnusedGlobalSymbols
-    static backErrorConstruct(c : BackErrorConstruct) : BackErrorConstruct {return c;}
-
     //Part Event Config events
-
     //Part Zation Events
     // noinspection JSUnusedGlobalSymbols
     static express(func : ExpressFunction) : ExpressFunction {return func;}

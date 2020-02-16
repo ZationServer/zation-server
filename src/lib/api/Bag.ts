@@ -1037,29 +1037,30 @@ export default class Bag {
         return this.publishInCustomCh(target,eventName,data,srcSocketSid);
     }
 
-    //Part Custom Services
+    //Part Services
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the service, if it exists otherwise, it will throw a ServiceNotFoundError error.
-     * @throws ServiceNotFoundError
-     * @param  serviceName
-     * @param  configName Default: 'default'
+     * Returns the service instance when it exists; otherwise,
+     * it will throw a ServiceInstanceNotFoundError error.
+     * @throws ServiceInstanceNotFoundError
+     * @param serviceName
+     * @param instanceName Default: 'default'
      */
-    async getService<S = any>(serviceName: string, configName: string = 'default'): Promise<S> {
-        return this.serviceEngine.getService<S>(serviceName, configName);
+    async getServiceInstance<S = any>(serviceName: string, instanceName: string = 'default'): Promise<S> {
+        return this.serviceEngine.getServiceInstance<S>(serviceName, instanceName);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * This function returns a boolean that indicates if the service with the given service and configuration name exists.
+     * This function returns a boolean that indicates if the service instance exists.
      * @param serviceName
-     * @param configName Default: 'default'
+     * @param instanceName Default: 'default'
      */
-    hasService(serviceName: string, configName: string = 'default'): boolean {
-        return this.serviceEngine.hasService(serviceName, configName);
+    hasServiceInstance(serviceName: string, instanceName: string = 'default'): boolean {
+        return this.serviceEngine.hasServiceInstance(serviceName, instanceName);
     }
 
     //Part Errors
