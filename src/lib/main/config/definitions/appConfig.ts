@@ -46,9 +46,9 @@ export interface AppConfig
     * The value of each property is the imported controller class.
     * @example
     * controllers: {
-        *    register: RegisterController,
-        *    login: LogInController,
-        * }
+    *    register: RegisterController,
+    *    login: LogInController,
+    * }
     */
     controllers?: Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>>;
 
@@ -73,8 +73,8 @@ export interface AppConfig
      * The value of each property is the imported Databox class.
      * @example
      * databoxes: {
-     *    profile: ProfileDatabox,
-     *    chat: ChatDatabox,
+     *     profile: ProfileDatabox,
+     *     chat: ChatDatabox,
      * }
      */
     databoxes?: Record<string,DataboxClassDef | ApiLevelSwitch<DataboxClassDef>>;
@@ -84,7 +84,7 @@ export interface AppConfig
      * that will be used in each Databox as a fallback.
      * @example
      * databoxDefaults: {
-     *    access: 'all',
+     *     access: 'all',
      * },
      */
     databoxDefaults?: DataboxConfig;

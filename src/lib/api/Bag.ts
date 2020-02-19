@@ -1052,7 +1052,7 @@ export default class Bag {
         return this.serviceEngine.getService<S>(serviceName, instanceName);
     }
 
-    // noinspection JSUnusedGxlobalSymbols
+    // noinspection JSUnusedGlobalSymbols
     /**
      * @description
      * This function returns a boolean that indicates if the service exists.
