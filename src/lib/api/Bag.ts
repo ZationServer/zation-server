@@ -1042,25 +1042,25 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the service instance when it exists; otherwise,
-     * it will throw a ServiceInstanceNotFoundError error.
-     * @throws ServiceInstanceNotFoundError
+     * Returns the service when it exists; otherwise,
+     * it will throw a ServiceNotFoundError error.
+     * @throws ServiceNotFoundError
      * @param serviceName
      * @param instanceName Default: 'default'
      */
-    async getServiceInstance<S = any>(serviceName: string, instanceName: string = 'default'): Promise<S> {
-        return this.serviceEngine.getServiceInstance<S>(serviceName, instanceName);
+    async getService<S = any>(serviceName: string, instanceName: string = 'default'): Promise<S> {
+        return this.serviceEngine.getService<S>(serviceName, instanceName);
     }
 
-    // noinspection JSUnusedGlobalSymbols
+    // noinspection JSUnusedGxlobalSymbols
     /**
      * @description
-     * This function returns a boolean that indicates if the service instance exists.
+     * This function returns a boolean that indicates if the service exists.
      * @param serviceName
      * @param instanceName Default: 'default'
      */
-    hasServiceInstance(serviceName: string, instanceName: string = 'default'): boolean {
-        return this.serviceEngine.hasServiceInstance(serviceName, instanceName);
+    hasService(serviceName: string, instanceName: string = 'default'): boolean {
+        return this.serviceEngine.hasService(serviceName, instanceName);
     }
 
     //Part Errors

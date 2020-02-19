@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import ServiceInstanceNotFoundError from "./serviceInstanceNotFoundError";
+import ServiceNotFoundError                        from "./serviceNotFoundError";
 import {ServiceCreateFunction, ServiceGetFunction} from 'zation-service';
 
 export default class ServiceBox
@@ -49,7 +49,7 @@ export default class ServiceBox
             return await this.get(this.instances[instance]);
         }
         else {
-            throw new ServiceInstanceNotFoundError(this.serviceName,instance);
+            throw new ServiceNotFoundError(this.serviceName,instance);
         }
     }
 

@@ -12,7 +12,7 @@ import Result                       from './lib/api/Result';
 import Controller                   from './lib/api/Controller';
 import Config, {single,eventInit}   from './lib/api/Config';
 import BackErrorBuilder             from "./lib/main/builder/backErrorBuilder";
-import ServiceInstanceNotFoundError from './lib/main/services/serviceInstanceNotFoundError';
+import ServiceNotFoundError         from './lib/main/services/serviceNotFoundError';
 import AuthenticationError          from './lib/main/error/authenticationError';
 import MethodIsIncompatibleError    from './lib/main/error/methodIsIncompatibleError';
 import InputIsIncompatibleError     from './lib/main/error/inputIsIncompatibleError';
@@ -120,7 +120,7 @@ export {
         Config,
         InputConfigTranslatable,
         ModelConfigTranslatable,
-        ServiceInstanceNotFoundError,
+        ServiceNotFoundError,
         ValidationType,
         AuthenticationError,
         CodeError,

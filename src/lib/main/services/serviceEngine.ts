@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import ZationWorker         = require("../../core/zationWorker");
 import ServiceBox             from "./serviceBox";
 import ZationConfig           from "../config/manager/zationConfig";
-import ServiceInstanceNotFoundError from "./serviceInstanceNotFoundError";
+import ServiceNotFoundError   from "./serviceNotFoundError";
 import Logger                 from "../logger/logger";
 import ZationConfigFull       from '../config/manager/zationConfigFull';
 import {ServiceConfig}        from '../config/definitions/serviceConfig';
@@ -59,18 +59,18 @@ export default class ServiceEngine
         }
     }
 
-    hasServiceInstance(serviceName: string, instanceName: string = 'default'): boolean {
+    hasService(serviceName: string, instanceName: string = 'default'): boolean {
         if(this.services[serviceName]) {
             return this.services[serviceName].existsInstance(instanceName);
         }
         return false;
     }
 
-    async getServiceInstance<S>(serviceName: string, instanceName: string = 'default'): Promise<S> {
+    async getService<S>(serviceName: string, instanceName: string = 'default'): Promise<S> {
         if(this.services[serviceName]) {
             return this.services[serviceName].getService(instanceName);
         }
-        throw new ServiceInstanceNotFoundError(serviceName,instanceName);
+        throw new ServiceNotFoundError(serviceName,instanceName);
     }
 
 }

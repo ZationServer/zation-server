@@ -67,9 +67,9 @@ export const MainBackErrors = {
         fromZationSystem: true
     },
 
-    serviceInstanceNotFound : {
-        name         : 'serviceInstanceNotFound',
-        description  : 'Service instance not found.',
+    serviceNotFound : {
+        name         : 'serviceNotFound',
+        description  : 'Service not found.',
         type         : ErrorType.CODE_ERROR,
         sendInfo     : false,
         private      : true,
