@@ -16,7 +16,7 @@ import ZationInfo                      from "../../internalApi/zationInfo";
 import ZSocket                         from "../../internalApi/zSocket";
 import CodeError                       from "../../error/codeError";
 import ZationTokenWrapper              from "../../internalApi/zationTokenWrapper";
-import {eventInitSymbol}               from "../../../api/Config";
+import {InitFunction}                  from '../../functionInit/functionInitEngine';
 
 export type ExpressFunction = (bag: Bag, express: ExpressCore.Express) => Promise<void> | void;
 export type SocketServerFunction = (bag: Bag, scServer: ScServer) => Promise<void> | void;
@@ -49,9 +49,7 @@ export type MiddlewareAuthenticationFunction = (bag: Bag, token: ZationTokenWrap
 export type MiddlewareSocketFunction = (bag: Bag, socket: HandshakeSocket) => Promise<boolean | object | any> | boolean | object | any;
 export type MiddlewarePanelAuthFunction = (bag: Bag, username: string, password: string) => Promise<boolean | void> | boolean | void;
 
-export type EventInitFunction<T>  = (bag: Bag) => T | Promise<T>;
-export type EventInit<T>          = {(bag: Bag): T | Promise<T>, [eventInitSymbol]: true};
-export type Event<T>              = (EventInit<T> | T)[] | T | EventInit<T>;
+export type Event<T>              = (InitFunction<T> | T)[] | T | InitFunction<T>;
 export type SimpleEvent<T>        = T | T[];
 
 export interface EventConfig
@@ -262,10 +260,7 @@ export const middlewareEvents =
         nameof<EventConfig>(s => s.middlewarePanelAuth)
     ];
 
-export interface PrecompiledEventConfig extends EventConfig {}
-
-export interface PreprocessedEvents extends EventConfig
-{
+export interface PrecompiledEventConfig extends EventConfig {
     express : ExpressFunction;
     socketServer : SocketServerFunction;
     workerInit: WorkerInitFunction;

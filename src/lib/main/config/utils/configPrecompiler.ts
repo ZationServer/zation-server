@@ -31,6 +31,8 @@ import {ControllerConfig} from "../definitions/controllerConfig";
 import {ControllerClass}  from "../../../api/Controller";
 import {DataboxClassDef, DataboxConfig} from "../definitions/databoxConfig";
 import DbConfigUtils from "../../databox/dbConfigUtils";
+import {middlewareEvents, PrecompiledEventConfig} from '../definitions/eventConfig';
+import FuncUtils from '../../utils/funcUtils';
 
 export interface ModelPreparationMem extends Processable{
     _optionalInfo: {isOptional: boolean,defaultValue: any}
@@ -55,6 +57,7 @@ export default class ConfigPrecompiler
 
     precompile(zc: ZationConfig, showPrecompiledConfigs: boolean): OtherPrecompiledConfigSet
     {
+        this.preCompileEvents();
         this.precompileModels(this.modelsConfig);
         this.precompileTmpBuilds();
         this.precompileControllerDefaults();
@@ -140,6 +143,46 @@ export default class ConfigPrecompiler
     private prepareModelsConfig(): void {
         this.modelsConfig = typeof this.configs.appConfig.models === 'object' ?
             this.configs.appConfig.models: {};
+    }
+
+    private preCompileEvents() {
+        const defaultFunc = () => {};
+        const res: PrecompiledEventConfig = {
+            express: defaultFunc,
+            socketServer: defaultFunc,
+            workerInit: defaultFunc,
+            masterInit: defaultFunc,
+            workerStarted: defaultFunc,
+            workerLeaderStarted: defaultFunc,
+            httpServerStarted: defaultFunc,
+            wsServerStarted: defaultFunc,
+            started: defaultFunc,
+            beforeError: defaultFunc,
+            beforeBackError: defaultFunc,
+            beforeCodeError: defaultFunc,
+            beforeBackErrorBag: defaultFunc,
+            workerMessage: defaultFunc,
+            socketInit: defaultFunc,
+            socketConnection: defaultFunc,
+            socketDisconnection: defaultFunc,
+            socketAuthentication: defaultFunc,
+            socketDeauthentication: defaultFunc,
+            socketAuthStateChange: defaultFunc,
+            socketSubscription: defaultFunc,
+            socketUnsubscription: defaultFunc,
+            socketError: defaultFunc,
+            socketRaw: defaultFunc,
+            socketConnectionAbort: defaultFunc,
+            socketBadAuthToken: defaultFunc
+        };
+        const eventConfig = this.configs.eventConfig;
+        for(let k in eventConfig) {
+            if (eventConfig.hasOwnProperty(k)) {
+                res[k] = middlewareEvents.includes(k) ?
+                    FuncUtils.createFuncMiddlewareAsyncInvoker(eventConfig[k]) :
+                    FuncUtils.createFuncArrayAsyncInvoker(eventConfig[k])
+            }
+        }
     }
 
     private precompileModels(models: Record<string,Model | any>) {

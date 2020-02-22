@@ -69,10 +69,10 @@ import {DATABOX_START_INDICATOR}  from "../main/databox/dbDefinitions";
 import {ZationChannel}            from "../main/channel/channelDefinitions";
 import DataboxHandler             from "../main/databox/handle/databoxHandler";
 import DataboxPrepare             from "../main/databox/databoxPrepare";
-import EventPreprocessor          from "../main/event/eventPreprocessor";
 import LicenseManager, {License}  from "../main/utils/licenseManager";
 import ConfigPrecompiler          from "../main/config/utils/configPrecompiler";
 import BagExtensionProcessor      from '../main/bagExtension/bagExtensionProcessor';
+import FunctionInitEngine         from '../main/functionInit/functionInitEngine';
 
 const  SCWorker: any        = require('socketcluster/scworker');
 
@@ -247,9 +247,8 @@ class ZationWorker extends SCWorker
 
         //After databoxes prepare (To access databoxes using the bag).
         Logger.startStopWatch();
-        const eventPreprocessor = new EventPreprocessor(this.preparedBag);
-        this.zc.setPreprocessedEvents(await eventPreprocessor.preprocessEventConfig(this.zc.eventConfig));
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has preprocessed the events.`,true);
+        await FunctionInitEngine.initFunctions(this.preparedBag);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has initialized the init functions.`,true);
 
         Logger.startStopWatch();
         this.panelEngine = new PanelEngine(this,this.preparedBag,this.aePreparedPart.getAuthGroups());

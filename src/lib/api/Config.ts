@@ -34,9 +34,7 @@ import
     SocketDeauthenticationFunction,
     SocketConnectionAbortFunction,
     MiddlewareSocketFunction,
-    SocketInitFunction,
-    EventInit,
-    EventInitFunction,
+    SocketInitFunction
 } from "../main/config/definitions/eventConfig";
 
 import {ServiceConfig} from "../main/config/definitions/serviceConfig";
@@ -106,8 +104,6 @@ import {Component}                          from "../main/config/definitions/com
 import {NormalAuthAccessCustomFunction}     from "../main/config/definitions/configComponents";
 import {ZationToken}                        from "../main/constants/internal";
 import {registerBagExtension,BagExtension}  from 'zation-bag-extension';
-
-export const eventInitSymbol              = Symbol();
 
 export default class Config
 {
@@ -383,24 +379,6 @@ export default class Config
         else {
             this.tmpAuthController = name;
         }
-    }
-
-    /**
-     * With this function,
-     * you can initialize and prepare variables for an event.
-     * @example
-     * eventInit((bag) => {
-     *    //prepare stuff
-     *    const db = bag.databox(ProfileDataboxFamilyV1);
-     *    return (bag,socket) => {
-     *        //the real event
-     *    }
-     * })
-     * @param init
-     */
-    static eventInit<T>(init: EventInitFunction<T>): EventInit<T> {
-        init[eventInitSymbol] = true;
-        return init as EventInit<T>;
     }
 
     //Part main configs
@@ -719,4 +697,3 @@ export default class Config
 }
 
 export const single = Config.single;
-export const eventInit = Config.eventInit;
