@@ -10,7 +10,7 @@ import Bag                          from './lib/api/Bag';
 import RequestBag                   from './lib/api/RequestBag';
 import Result                       from './lib/api/Result';
 import Controller                   from './lib/api/Controller';
-import Config, {single}             from './lib/api/Config';
+import Config, {$single}            from './lib/api/Config';
 import BackErrorBuilder             from "./lib/main/builder/backErrorBuilder";
 import ServiceNotFoundError         from './lib/main/services/serviceNotFoundError';
 import AuthenticationError          from './lib/main/error/authenticationError';
@@ -128,7 +128,7 @@ export {
         CodeError,
         MethodIsIncompatibleError,
         InputIsIncompatibleError,
-        single,
+        $single,
         buildKeyArray,
         ZSocket,
         ZationTokenWrapper,

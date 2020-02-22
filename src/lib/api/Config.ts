@@ -696,4 +696,4 @@ export default class Config
 
 }
 
-export const single = Config.single;
+export const $single = Config.single;
