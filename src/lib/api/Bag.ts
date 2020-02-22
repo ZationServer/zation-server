@@ -112,11 +112,11 @@ export default class Bag {
     /**
      * Tells the Bag class that a specific prepared Bag is ready to use.
      * This method is used internally.
+     * @internal
      * @param instance
      * @private
      */
-    // @ts-ignore
-    private static _isReady(instance: Bag) {
+    static _isReady(instance: Bag) {
         this._instance = instance;
         this.readyResolve(instance);
     }
