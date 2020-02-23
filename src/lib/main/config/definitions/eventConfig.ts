@@ -249,6 +249,7 @@ export interface EventConfig
      * and the authentication request is successful without
      * invoking the remaining functions.
      * To deny the authentication request, you can return false.
+     * @example (bag, username, password) => {}
      */
     middlewarePanelAuth?: Event<MiddlewarePanelAuthFunction>;
 }
