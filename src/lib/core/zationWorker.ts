@@ -218,10 +218,10 @@ class ZationWorker extends SCWorker
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has initialized the channel bag engine.`,true);
 
         Logger.startStopWatch();
-        this.preparedBag = new Bag(this,this.channelBagEngine);
+        this.preparedBag = Bag._create(this,this.channelBagEngine);
         //set Bag for events on channels or access check
         this.channelBagEngine.bag = this.preparedBag;
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared an bag.`,true);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the bag instance.`,true);
 
         //Socket update engine
         Logger.startStopWatch();

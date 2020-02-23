@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import BackError                    from "./lib/api/BackError";
 import BackErrorBag                 from "./lib/api/BackErrorBag";
-import Bag                          from './lib/api/Bag';
+import Bag, {bag}                   from './lib/api/Bag';
 import RequestBag                   from './lib/api/RequestBag';
 import Result                       from './lib/api/Result';
 import Controller                   from './lib/api/Controller';
@@ -57,7 +57,6 @@ import BackErrorConstruct           from './lib/main/constants/backErrorConstruc
 import {$init}                      from './lib/api/InitApiUtils';
 
 //starter
-
 /**
  * @description
  * This method is for starting the server.
@@ -82,6 +81,7 @@ export {
         StartErrorName,
         RequestBag,
         Bag,
+        bag,
         Router,
         Register,
         $not,

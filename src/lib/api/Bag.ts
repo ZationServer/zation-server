@@ -64,61 +64,78 @@ import ScServer                                                from "../main/sc/
 // noinspection TypeScriptPreferShortImport
 import {ObjectPathSequence}                                    from "../main/internalApi/objectPathSequence/objectPathSequence";
 
+/**
+ * The bag instance of this process.
+ * It only works if the process is a worker process,
+ * and the bag instance is created.
+ * Otherwise, it will throw an error when using this
+ * instance in an uncreated state or in a wrong context.
+ * You can use this variable in some zation events to access the bag.
+ * But be careful not every event runs on a worker process.
+ * But you can find information in the documentation of an event.
+ * You can be sure that the bag is already created when
+ * using this variable in a zation event that runs on a worker.
+ * But if you need to wait for the creation of the bag,
+ * you should look at the static Bag.instance getter function,
+ * that returns a promise.
+ * @readonly
+ */
+export let bag: Bag = new Proxy({},{
+    get: () => {
+        throw new Error('The instance of the bag is not accessible in this context or not created.');
+    },
+    set: () => {
+        throw new Error('The instance of the bag is not accessible in this context or not created.');
+    }
+}) as Bag;
+
 export default class Bag {
     protected readonly exchangeEngine: ChannelBagEngine;
     protected readonly serviceEngine: ServiceEngine;
     protected readonly zc: ZationConfigFull;
     protected readonly worker: ZationWorker;
 
+    private static _instance: Bag;
     private static readyPromise: Promise<Bag> = new Promise<Bag>(resolve => {Bag.readyResolve = resolve});
     private static readyResolve: (bag: Bag) => void;
-    private static _instance: Bag;
 
-    constructor(worker: ZationWorker, exchangeEngine: ChannelBagEngine) {
+    protected constructor(worker: ZationWorker, exchangeEngine: ChannelBagEngine) {
         this.exchangeEngine = exchangeEngine;
         this.serviceEngine = worker.getServiceEngine();
         this.zc = worker.getZationConfig();
         this.worker = worker;
     }
 
-    //PART static access
+    //PART singleton
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * This function returns a promise that will be resolved with a Bag
-     * when a specific Bag is ready.
-     * It only works in a worker process, and when it is resolved,
-     * you are also able to access that bag any time with the static getter: instance.
+     * With this getter, you can access the instance of the bag.
+     * It returns a promise that will be resolved when the instance is created.
+     * Notice that the promise will only be resolved on a worker process.
+     * If you be sure that the bag is already created you should use
+     * the bag variable because it gives you direct access without a promise.
      */
-    static get ready(): Promise<Bag> {
+    static get instance(): Promise<Bag> {
         return Bag.readyPromise;
     }
 
     /**
-     * Returns the prepared Bag of this process.
-     * It only works if the process is a worker process,
-     * and the ready promise is resolved.
-     * Otherwise, the returned value is undefined.
-     *
-     * This method is really helpful if you want to build a helper function or class
-     * that will be used in multiple components,
-     * and you need access to a bag instance.
-     */
-    static get instance(): Bag | undefined {
-        return Bag._instance;
-    }
-
-    // noinspection JSUnusedLocalSymbols
-    /**
-     * Tells the Bag class that a specific prepared Bag is ready to use.
      * This method is used internally.
+     * It creates the bag instance when it is not already created.
      * @internal
-     * @param instance
-     * @private
+     * @param worker
+     * @param exchangeEngine
      */
-    static _isReady(instance: Bag) {
-        this._instance = instance;
+    static _create(worker: ZationWorker, exchangeEngine: ChannelBagEngine): Bag {
+        if(Bag._instance !== undefined) return Bag._instance;
+
+        const instance = new Bag(worker,exchangeEngine);
+        Bag._instance = instance;
+        bag = instance;
         this.readyResolve(instance);
+
+        return bag;
     }
 
     //PART CONFIG ACCESS
