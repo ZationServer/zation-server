@@ -153,7 +153,6 @@ export default class ConfigPrecompiler
             workerInit: defaultFunc,
             masterInit: defaultFunc,
             workerStarted: defaultFunc,
-            workerLeaderStarted: defaultFunc,
             httpServerStarted: defaultFunc,
             wsServerStarted: defaultFunc,
             started: defaultFunc,

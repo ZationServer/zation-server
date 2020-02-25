@@ -318,7 +318,6 @@ EventConfig[nameof<EventConfig>(s => s.socketServer)]           = {types: ['func
 EventConfig[nameof<EventConfig>(s => s.workerInit)]             = {types: ['function','array'],arrayType: 'function',optional: true};
 EventConfig[nameof<EventConfig>(s => s.masterInit)]             = {types: ['function','array'],arrayType: 'function',optional: true};
 EventConfig[nameof<EventConfig>(s => s.workerStarted)]          = {types: ['function','array'],arrayType: 'function',optional: true};
-EventConfig[nameof<EventConfig>(s => s.workerLeaderStarted)]    = {types: ['function','array'],arrayType: 'function',optional: true};
 EventConfig[nameof<EventConfig>(s => s.httpServerStarted)]      = {types: ['function','array'],arrayType: 'function',optional: true};
 EventConfig[nameof<EventConfig>(s => s.wsServerStarted)]        = {types: ['function','array'],arrayType: 'function',optional: true};
 EventConfig[nameof<EventConfig>(s => s.started)]                = {types: ['function','array'],arrayType: 'function',optional: true};

@@ -132,7 +132,7 @@ export default class HttpCRequestProcessor
 
                 //will throw if auth is blocked
                 const authMiddlewareRes = await MiddlewareUtils.checkMiddleware
-                (this.zc.event.middlewareAuthenticate,true,this.worker.getPreparedBag(),new ZationTokenWrapper(token));
+                (this.zc.event.middlewareAuthenticate,true,new ZationTokenWrapper(token));
 
                 if((authMiddlewareRes !== true)){
                     throw new BackError(MainBackErrors.authenticateMiddlewareBlock,

@@ -10,7 +10,6 @@ import {PanelUserConfig}     from "../config/definitions/mainConfig";
 import {AuthUserGroupConfig} from "../config/definitions/appConfig";
 import ChUtils               from "../channel/chUtils";
 import {ZationChannel}       from "../channel/channelDefinitions";
-import Bag                   from "../../api/Bag";
 import MiddlewareUtils       from "../utils/middlewareUtils";
 import ZationConfigFull      from "../config/manager/zationConfigFull";
 
@@ -22,7 +21,6 @@ export default class PanelEngine
 
     private zw: ZationWorker;
     private zc: ZationConfigFull;
-    private preparedBag: Bag;
 
     private readonly panelUserMap: Record<string,string>;
 
@@ -32,11 +30,10 @@ export default class PanelEngine
 
     private readonly idData;
 
-    constructor(zw: ZationWorker,preparedBag: Bag,authUserGroups: Record<string,AuthUserGroupConfig>)
+    constructor(zw: ZationWorker,authUserGroups: Record<string,AuthUserGroupConfig>)
     {
         this.zw = zw;
         this.zc = this.zw.getZationConfig();
-        this.preparedBag = preparedBag;
         this.panelUserMap = this.initPanelUserMap(authUserGroups);
         if(this.zc.mainConfig.usePanel) {
             this.loadPanelAccessData();
@@ -163,7 +160,7 @@ export default class PanelEngine
         }
         if(!foundUser){
             return !!(await MiddlewareUtils.checkMiddleware
-            (this.zc.event.middlewarePanelAuth,false,this.preparedBag,username,password));
+            (this.zc.event.middlewarePanelAuth,false,username,password));
         }
         return foundUser;
     }
