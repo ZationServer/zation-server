@@ -288,7 +288,7 @@ class ZationWorker extends SCWorker
         this.checkAuthStart();
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has checked for authStart.`,true);
 
-        Bag._isReady(this.preparedBag);
+        Bag._isReady();
 
         //wait for start process promises
         await Promise.all(startPromises);

@@ -67,25 +67,24 @@ import {ObjectPathSequence}                                    from "../main/int
 /**
  * The bag instance of this process.
  * It only works if the process is a worker process,
- * and the bag instance is created.
+ * and the bag instance is ready for use.
  * Otherwise, it will throw an error when using this
- * instance in an uncreated state or in a wrong context.
+ * instance in an unready state or in a wrong context.
  * You can use this variable in some zation events to access the bag.
  * But be careful not every event runs on a worker process.
  * But you can find information in the documentation of an event.
- * You can be sure that the bag is already created when
+ * You can be sure that the bag is already ready for use when
  * using this variable in a zation event that runs on a worker.
- * But if you need to wait for the creation of the bag,
- * you should look at the static Bag.instance getter function,
- * that returns a promise.
+ * But if you need to wait until the bag instance is ready for use,
+ * you should look at the static method Bag.ready, that returns a promise.
  * @readonly
  */
 export let bag: Bag = new Proxy({},{
     get: () => {
-        throw new Error('The instance of the bag is not accessible in this context or not created.');
+        throw new Error('The instance of the bag is not accessible in this context or not ready for use.');
     },
     set: () => {
-        throw new Error('The instance of the bag is not accessible in this context or not created.');
+        throw new Error('The instance of the bag is not accessible in this context or not ready for use.');
     }
 }) as Bag;
 
@@ -96,8 +95,8 @@ export default class Bag {
     protected readonly worker: ZationWorker;
 
     private static _instance: Bag;
-    private static readyPromise: Promise<Bag> = new Promise<Bag>(resolve => {Bag.readyResolve = resolve});
-    private static readyResolve: (bag: Bag) => void;
+    private static readyPromise: Promise<void> = new Promise<void>(resolve => {Bag.readyResolve = resolve});
+    private static readyResolve: () => void;
 
     protected constructor(worker: ZationWorker, exchangeEngine: ChannelBagEngine) {
         this.exchangeEngine = exchangeEngine;
@@ -106,17 +105,17 @@ export default class Bag {
         this.worker = worker;
     }
 
-    //PART singleton
+    //PART singleton access
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * With this getter, you can access the instance of the bag.
-     * It returns a promise that will be resolved when the instance is created.
+     * With this method, you can wait with the returned promise
+     * until the instance of the bag is ready for use.
      * Notice that the promise will only be resolved on a worker process.
-     * If you be sure that the bag is already created you should use
-     * the bag variable because it gives you direct access without a promise.
+     * If the promise is resolved or you be sure that the bag is already
+     * ready for use, you can use the variable 'bag' to access the instance of the bag.
      */
-    static get instance(): Promise<Bag> {
+    static ready(): Promise<void> {
         return Bag.readyPromise;
     }
 
@@ -132,10 +131,18 @@ export default class Bag {
 
         const instance = new Bag(worker,exchangeEngine);
         Bag._instance = instance;
-        bag = instance;
-        this.readyResolve(instance);
+        return instance;
+    }
 
-        return bag;
+    /**
+     * This method is used internally.
+     * Tells the Bag class that the Bag instance is ready to use.
+     * @internal
+     * @private
+     */
+    static _isReady() {
+        bag = Bag._instance;
+        this.readyResolve();
     }
 
     //PART CONFIG ACCESS
