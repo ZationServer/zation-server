@@ -103,7 +103,7 @@ export default class FuncUtils
      * @param args
      * @param failureReturnValue
      */
-    static callSafe<T extends (...args: any[]) => any>(func: T,args: Parameters<T>,failureReturnValue: any): any {
+    static callSafe<T extends (...args: any[]) => any,FR>(func: T,args: Parameters<T>,failureReturnValue: FR): ReturnType<T> | FR {
         try {
             return func(...args);
         }
