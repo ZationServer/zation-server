@@ -245,11 +245,6 @@ class ZationWorker extends SCWorker
         await this.controllerPrepare.prepare();
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the controllers.`,true);
 
-        //After databoxes prepare (To access databoxes using the bag).
-        Logger.startStopWatch();
-        await FunctionInitEngine.initFunctions(this.preparedBag);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has initialized the init functions.`,true);
-
         Logger.startStopWatch();
         this.panelEngine = new PanelEngine(this,this.preparedBag,this.aePreparedPart.getAuthGroups());
         if(this.zc.mainConfig.usePanel) {
@@ -289,6 +284,11 @@ class ZationWorker extends SCWorker
         Logger.printStartDebugInfo(`The Worker with id ${this.id} has checked for authStart.`,true);
 
         Bag._isReady();
+
+        //After databoxes prepare (To access databoxes using the bag) and after bag ready.
+        Logger.startStopWatch();
+        await FunctionInitEngine.initFunctions(this.preparedBag);
+        Logger.printStartDebugInfo(`The Worker with id ${this.id} has initialized the init functions.`,true);
 
         //wait for start process promises
         await Promise.all(startPromises);
