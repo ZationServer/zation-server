@@ -97,6 +97,7 @@ export default class Bag {
     private static _instance: Bag;
     private static readyPromise: Promise<void> = new Promise<void>(resolve => {Bag.readyResolve = resolve});
     private static readyResolve: () => void;
+    private static readyRefresher: ((bag: Bag) => void)[] = [];
 
     protected constructor(worker: ZationWorker, exchangeEngine: ChannelBagEngine) {
         this.exchangeEngine = exchangeEngine;
@@ -142,7 +143,20 @@ export default class Bag {
      */
     static _isReady() {
         bag = Bag._instance;
-        this.readyResolve();
+        for(let i = 0; i < Bag.readyRefresher.length; i++){
+            Bag.readyRefresher[i](bag);
+        }
+        Bag.readyResolve();
+    }
+
+    /**
+     * This method is used internally.
+     * Adds a refresher for the variable 'bag' when the bag is ready for use.
+     * @internal
+     * @private
+     */
+    static _addReadyRefresher(refresher: (bag: Bag) => void) {
+       Bag.readyRefresher.push(refresher);
     }
 
     //PART CONFIG ACCESS
