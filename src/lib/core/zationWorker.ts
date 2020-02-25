@@ -333,7 +333,7 @@ class ZationWorker extends SCWorker
         this.on('error',(e) => {
            Logger.printError(
                e,
-               `Worker: '${this.getFullWorkerId()}' has an error!`,
+               `Worker: '${this.getFullWorkerId()}' error thrown.`,
                `Worker will be restarted!`
            );
         });
