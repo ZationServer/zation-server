@@ -23,7 +23,13 @@ export default class IdValidCheckerUtils {
         }
         else {
             return async (id) => {
-                const res = await idValidFunc(id,bag);
+                let res;
+                try {
+                    res = await idValidFunc(id,bag);
+                }
+                catch (e) {
+                    res = false;
+                }
                 const isObject = typeof res === 'object';
                 if((typeof res === 'boolean' && !res) || isObject) {
                     const err: any = new Error(`The id: '${id}' is not valid.`);

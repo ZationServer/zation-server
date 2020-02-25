@@ -57,6 +57,7 @@ export interface IdValidConfig {
     /**
      * Check if the id is valid or not.
      * To block the id, you only need to return an object (that can be error information) or false.
+     * Also if you throw an error, the id is blocked.
      * If you want to allow the id, you have to return nothing or a true.
      */
     idValid?: IdValid
