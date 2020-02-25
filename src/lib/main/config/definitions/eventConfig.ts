@@ -11,43 +11,42 @@ import {HandshakeSocket, RawSocket}    from "../../sc/socket";
 import {ZationToken}                   from "../../constants/internal";
 import BackError                       from "../../../api/BackError";
 import BackErrorBag                    from "../../../api/BackErrorBag";
-import Bag                             from "../../../api/Bag";
 import ZationInfo                      from "../../internalApi/zationInfo";
 import ZSocket                         from "../../internalApi/zSocket";
 import CodeError                       from "../../error/codeError";
 import ZationTokenWrapper              from "../../internalApi/zationTokenWrapper";
 import {InitFunction}                  from '../../functionInit/functionInitEngine';
 
-export type ExpressFunction = (bag: Bag, express: ExpressCore.Express) => Promise<void> | void;
-export type SocketServerFunction = (bag: Bag, scServer: ScServer) => Promise<void> | void;
-export type WorkerInitFunction = (bag: Bag, isLeader: boolean, isRespawn: boolean) => Promise<void> | void;
+export type ExpressFunction = (express: ExpressCore.Express) => Promise<void> | void;
+export type SocketServerFunction = (scServer: ScServer) => Promise<void> | void;
+export type WorkerInitFunction = (leader: boolean, respawn: boolean) => Promise<void> | void;
 export type MasterInitFunction = (info: ZationInfo) => Promise<void> | void;
-export type WorkerStartedFunction = (bag: Bag, info: ZationInfo, isRespawn: boolean, worker: ZationWorker) => Promise<void> | void;
+export type WorkerStartedFunction = (info: ZationInfo,leader: boolean, respawn: boolean, worker: ZationWorker) => Promise<void> | void;
 export type HttpServerStartedFunction = (info: ZationInfo) => Promise<void> | void;
 export type WsServerStartedFunction = (info: ZationInfo) => Promise<void> | void;
 export type StartedFunction = (info: ZationInfo) => Promise<void> | void;
-export type BeforeErrorFunction = (bag: Bag, error: object) => Promise<void> | void;
-export type BeforeBackErrorFunction = (bag: Bag, backError: BackError) => Promise<void> | void;
-export type BeforeCodeErrorFunction = (bag: Bag, codeError: CodeError) => Promise<void> | void;
-export type BeforeBackErrorBagFunction = (bag: Bag, backErrorBag: BackErrorBag) => Promise<void> | void;
-export type WorkerMessageFunction = (bag: Bag, data: any) => Promise<void> | void;
+export type BeforeErrorFunction = (error: object) => Promise<void> | void;
+export type BeforeBackErrorFunction = (backError: BackError) => Promise<void> | void;
+export type BeforeBackErrorBagFunction = (backErrorBag: BackErrorBag) => Promise<void> | void;
+export type BeforeCodeErrorFunction = (codeError: CodeError) => Promise<void> | void;
+export type WorkerMessageFunction = (data: any) => Promise<void> | void;
 
-export type SocketInitFunction = (bag: Bag, socket: ZSocket) => Promise<void> | void;
-export type SocketConnectionFunction = (bag: Bag, socket: ZSocket) => Promise<void> | void;
-export type SocketDisconnectionFunction = (bag: Bag, socket: ZSocket, code: any, data: any) => Promise<void> | void;
-export type SocketAuthenticationFunction = (bag: Bag, socket: ZSocket) => Promise<void> | void;
-export type SocketDeauthenticationFunction = (bag: Bag, socket: ZSocket) => Promise<void> | void;
-export type SocketAuthStateChangeFunction = (bag: Bag, socket: ZSocket, stateChangeData: {oldState: string,newState: string,signedAuthToken?: string,authToken?: ZationToken}) => Promise<void> | void;
-export type SocketSubscriptionFunction = (bag: Bag, socket: ZSocket, channelName: string, channelOptions: object) => Promise<void> | void;
-export type SocketUnsubscriptionFunction = (bag: Bag, socket: ZSocket, channelName: string) => Promise<void> | void;
-export type SocketErrorFunction = (bag: Bag, socket: RawSocket, error: object) => Promise<void> | void;
-export type SocketRawFunction = (bag: Bag, socket: RawSocket, data: any) => Promise<void> | void;
-export type SocketConnectionAbortFunction = (bag: Bag, socket: RawSocket, code: any, data: any) => Promise<void> | void;
-export type SocketBadAuthTokenFunction = (bag: Bag, socket: RawSocket, badAuthStatus: {authError: object,signedAuthToken: string}) => Promise<void> | void
+export type SocketInitFunction = (socket: ZSocket) => Promise<void> | void;
+export type SocketConnectionFunction = (socket: ZSocket) => Promise<void> | void;
+export type SocketDisconnectionFunction = (socket: ZSocket, code: any, data: any) => Promise<void> | void;
+export type SocketAuthenticationFunction = (socket: ZSocket) => Promise<void> | void;
+export type SocketDeauthenticationFunction = (socket: ZSocket) => Promise<void> | void;
+export type SocketAuthStateChangeFunction = (socket: ZSocket, stateChangeData: {oldState: string,newState: string,signedAuthToken?: string,authToken?: ZationToken}) => Promise<void> | void;
+export type SocketSubscriptionFunction = (socket: ZSocket, channelName: string, channelOptions: object) => Promise<void> | void;
+export type SocketUnsubscriptionFunction = (socket: ZSocket, channelName: string) => Promise<void> | void;
+export type SocketErrorFunction = (socket: RawSocket, error: object) => Promise<void> | void;
+export type SocketRawFunction = (socket: RawSocket, data: any) => Promise<void> | void;
+export type SocketConnectionAbortFunction = (socket: RawSocket, code: any, data: any) => Promise<void> | void;
+export type SocketBadAuthTokenFunction = (socket: RawSocket, badAuthStatus: {authError: object,signedAuthToken: string}) => Promise<void> | void
 
-export type MiddlewareAuthenticationFunction = (bag: Bag, token: ZationTokenWrapper) => Promise<boolean | object | any> | boolean | object | any;
-export type MiddlewareSocketFunction = (bag: Bag, socket: HandshakeSocket) => Promise<boolean | object | any> | boolean | object | any;
-export type MiddlewarePanelAuthFunction = (bag: Bag, username: string, password: string) => Promise<boolean | void> | boolean | void;
+export type MiddlewareAuthenticationFunction = (token: ZationTokenWrapper) => Promise<boolean | object | any> | boolean | object | any;
+export type MiddlewareSocketFunction = (socket: HandshakeSocket) => Promise<boolean | object | any> | boolean | object | any;
+export type MiddlewarePanelAuthFunction = (username: string, password: string) => Promise<boolean | void> | boolean | void;
 
 export type Event<T>              = (InitFunction<T> | T)[] | T | InitFunction<T>;
 export type SimpleEvent<T>        = T | T[];
@@ -55,152 +54,195 @@ export type SimpleEvent<T>        = T | T[];
 export interface EventConfig
 {
     /**
-     * An event which that you can initialize an additional HTTP rest API using express and the bag.
-     * @example (bag,express) => {}
+     * An event which that you can initialize an additional HTTP rest API using express.
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (express) => {}
      */
     express?: Event<ExpressFunction>;
     /**
      * Socket server event that will be invoked on server start to initialize something with the sc server.
      * Use it only for advanced use cases.
-     * @example (bag,scServer) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (scServer) => {}
      */
     socketServer?: Event<SocketServerFunction>;
     /**
      * An event that can be used to do extra things in the startup of a worker.
      * The worker startup process will wait for the promise of this event to be resolved.
-     * @example async (bag,isLeader) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example async (leader,respawn) => {}
      */
     workerInit?: Event<WorkerInitFunction>;
     /**
      * An event that can be used to do extra things in the startup of the master.
      * The master startup process will wait for the promise of this event to be resolved.
-     * Notice that this event can not be initialized because it is triggered in the master process.
+     * Notice that this event can not be initialized with the $init function because it is triggered in the master process.
      * Also, it is not necessary to prepare data because this event is triggered only once.
+     * Runs on the master process.
      * @example async (zationInfo) => {}
      */
     masterInit?: SimpleEvent<MasterInitFunction>;
     /**
      * An event that gets invoked when a worker is started.
-     * @example (bag,zationInfo,worker) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (zationInfo,leader,respawn,worker) => {}
      */
     workerStarted?: Event<WorkerStartedFunction>;
     /**
-     * An event that gets invoked when the leader worker is started.
-     * @example (bag,zationInfo,worker) => {}
-     */
-    workerLeaderStarted?: Event<WorkerStartedFunction>;
-    /**
      * An event that gets invoked when the HTTP server is started.
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (zationInfo) => {}
      */
     httpServerStarted?: Event<HttpServerStartedFunction>;
     /**
      * An event that gets invoked when the web socket server is started.
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (zationInfo) => {}
      */
     wsServerStarted?: Event<WsServerStartedFunction>;
     /**
      * An event that gets invoked when the zation server is started.
-     * Notice that this event can not be initialized because it is triggered in the master process.
+     * Notice that this event can not be initialized with the $init function because it is triggered in the master process.
      * Also, it is not necessary to prepare data because this event is triggered only once.
+     * Runs on the master process.
      * @example (zationInfo) => {}
      */
     started?: SimpleEvent<StartedFunction>;
     /**
      * An event that gets invoked when a error is thrown on the server
      * while processing a request or background task.
-     * @example (bag,error) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (error) => {}
      */
     beforeError?: Event<BeforeErrorFunction>;
     /**
      * An event that gets invoked when a BackError is thrown on the server while processing a request.
-     * @example (bag,backError) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (backError) => {}
      */
     beforeBackError?: Event<BeforeBackErrorFunction>;
     /**
      * An event that gets invoked when a BackErrorBag is thrown on the server while processing a request.
-     * @example (bag,backErrorBag) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (backErrorBag) => {}
      */
     beforeBackErrorBag?: Event<BeforeBackErrorBagFunction>;
     /**
      * An event that gets invoked when a CodeError is thrown on the server while processing a request.
-     * @example (bag,codeError) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (codeError) => {}
      */
     beforeCodeError?: Event<BeforeCodeErrorFunction>;
     /**
      * An event that gets invoked when the worker receives a worker message
      * that was sent from the bag.
-     * @example (bag,data) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (data) => {}
      */
     workerMessage?: Event<WorkerMessageFunction>;
 
     /**
      * An event that can be used to do extra things in the creation process of a socket.
-     * @example (bag,zSocket) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (zSocket) => {}
      */
     socketInit?: Event<SocketInitFunction>;
     /**
      * An event that gets invoked when a new socket is connected to the server.
-     * @example (bag,zSocket) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (zSocket) => {}
      */
     socketConnection?: Event<SocketConnectionFunction>;
     /**
-     * An event that gets invoked when a socket is disconnected.
-     * @example (bag,zSocket,code,data) => {}
+     * An event that gets invoked when a socket gets disconnected.
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (zSocket,code,data) => {}
      */
     socketDisconnection?: Event<SocketDisconnectionFunction>;
     /**
      * An event that gets invoked when a socket gets authenticated or the auth token is changed.
-     * @example (bag,zSocket) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (zSocket) => {}
      */
     socketAuthentication?: Event<SocketAuthenticationFunction>;
     /**
      * An event that gets invoked when a socket gets deauthenticated.
-     * @example (bag,zSocket) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (zSocket) => {}
      */
     socketDeauthentication?: Event<SocketDeauthenticationFunction>;
     /**
      * Triggers whenever a socket's authState changes
      * (e.g., transitions between authenticated and unauthenticated states).
      * Use it only for advanced use cases.
-     * @example (bag,socket,stateChangeData) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (socket,stateChangeData) => {}
      */
     socketAuthStateChange?: Event<SocketAuthStateChangeFunction>;
     /**
      * Emitted when a matching client socket successfully subscribes to a channel.
      * Use it only for advanced use cases.
-     * @example (bag,socket,channelName,channelOptions) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (socket,channelName,channelOptions) => {}
      */
     socketSubscription?: Event<SocketSubscriptionFunction>;
     /**
      * Occurs whenever a matching client socket unsubscribes from a channel.
      * This includes automatic unsubscriptions triggered by disconnects.
      * Use it only for advanced use cases.
-     * @example (bag,socket,channelName) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (socket,channelName) => {}
      */
     socketUnsubscription?: Event<SocketUnsubscriptionFunction>;
     /**
      * This gets triggered when an error occurs on a socket.
      * Use it only for advanced use cases.
-     * @example (bag,socket,error) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (socket,error) => {}
      */
     socketError?: Event<SocketErrorFunction>;
     /**
      * This gets triggered whenever a client socket on the other side calls socket.send(...).
      * Use it only for advanced use cases.
-     * @example (bag,socket,data) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (socket,data) => {}
      */
     socketRaw?: Event<SocketRawFunction>;
     /**
      * Happens when a client disconnects from the server before the handshake has completed.
      * Use it only for advanced use cases.
-     * @example (bag,socket,code,data) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (socket,code,data) => {}
      */
     socketConnectionAbort?: Event<SocketConnectionAbortFunction>;
     /**
      * Emitted when a client tries to authenticate itself with an invalid (or expired) token.
      * Use it only for advanced use cases.
-     * @example (bag,socket,badAuthStatus,signedAuthToken) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (socket,badAuthStatus,signedAuthToken) => {}
      */
     socketBadAuthToken?: Event<SocketBadAuthTokenFunction>;
 
@@ -215,7 +257,9 @@ export interface EventConfig
      * If one function returns true, the chain is broken,
      * and the token is allowed without invoking the remaining functions.
      * To block the token, you can return an object (that can be an error) or false.
-     * @example (bag,zationToken) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (zationToken) => {}
      */
     middlewareAuthenticate?: Event<MiddlewareAuthenticationFunction>;
     /**
@@ -229,7 +273,9 @@ export interface EventConfig
      * If one function returns true, the chain is broken,
      * and the socket is allowed without invoking the remaining functions.
      * To block the socket, you can return an object (that can be an error) or false.
-     * @example (bag,socket) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (socket) => {}
      */
     middlewareSocket?: Event<MiddlewareSocketFunction>;
     /**
@@ -249,7 +295,9 @@ export interface EventConfig
      * and the authentication request is successful without
      * invoking the remaining functions.
      * To deny the authentication request, you can return false.
-     * @example (bag, username, password) => {}
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example (username, password) => {}
      */
     middlewarePanelAuth?: Event<MiddlewarePanelAuthFunction>;
 }
@@ -267,7 +315,6 @@ export interface PrecompiledEventConfig extends EventConfig {
     workerInit: WorkerInitFunction;
     masterInit: MasterInitFunction;
     workerStarted : WorkerStartedFunction;
-    workerLeaderStarted: WorkerStartedFunction;
     httpServerStarted : HttpServerStartedFunction;
     wsServerStarted : WsServerStartedFunction;
     started : StartedFunction;
