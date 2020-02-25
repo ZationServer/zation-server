@@ -176,13 +176,21 @@ export default class ConfigPrecompiler
             socketBadAuthToken: defaultFunc
         };
         const eventConfig = this.configs.eventConfig;
+        let eventValue;
         for(let k in eventConfig) {
             if (eventConfig.hasOwnProperty(k)) {
-                res[k] = middlewareEvents.includes(k) ?
-                    FuncUtils.createFuncMiddlewareAsyncInvoker(eventConfig[k]) :
-                    FuncUtils.createFuncArrayAsyncInvoker(eventConfig[k])
+                eventValue = eventConfig[k];
+                if(typeof eventValue !== 'function') {
+                    res[k] = middlewareEvents.includes(k) ?
+                        FuncUtils.createFuncMiddlewareAsyncInvoker(eventValue) :
+                        FuncUtils.createFuncArrayAsyncInvoker(eventValue)
+                }
+                else {
+                    res[k] = eventValue;
+                }
             }
         }
+        this.configs.eventConfig = res as PrecompiledEventConfig;
     }
 
     private precompileModels(models: Record<string,Model | any>) {
