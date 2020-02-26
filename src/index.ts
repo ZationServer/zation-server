@@ -20,9 +20,7 @@ import CodeError                    from './lib/main/error/codeError';
 import {ErrorType}                  from "./lib/main/constants/errorType";
 import {ValidationType}             from './lib/main/constants/validationType';
 import {ControllerConfig}           from "./lib/main/config/definitions/parts/controllerConfig";
-import {StarterConfig}              from "./lib/main/config/definitions/main/starterConfig";
 import {StartMode}                  from "./lib/core/startMode";
-import ZationMaster                 from "./lib/core/zationMaster";
 import Router                       from "./lib/api/Router";
 import {Register}                   from "./lib/api/decorator/component/Register";
 import {ModelConfigTranslatable,InputConfigTranslatable}          from "./lib/api/ConfigTranslatable";
@@ -55,25 +53,7 @@ import {$not}                       from './lib/api/Notable';
 import {Server}                     from './lib/api/Server';
 import BackErrorConstruct           from './lib/main/constants/backErrorConstruct';
 import {$init}                      from './lib/api/InitApiUtils';
-
-//starter
-/**
- * @description
- * This method is for starting the server.
- * It returns a promise that will be resolved when the server is started.
- * @param options the starter config
- * @param startMode
- * The mode for starting
- * 0 => normal
- * 1 => test
- * 2 => onlyCheck
- * @throws Error with the property: name of type StartErrorName.
- */
-const start = (options: StarterConfig,startMode: number | string | StartMode = 0) => {
-    return new Promise((resolve,reject) => {
-        new ZationMaster(options,resolve,reject,startMode);
-    });
-};
+import {start}                      from './lib/api/Start';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
