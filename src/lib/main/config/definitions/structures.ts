@@ -323,10 +323,9 @@ EventsConfig[nameof<Events>(s => s.workerStarted)]          = {types: ['function
 EventsConfig[nameof<Events>(s => s.httpServerStarted)]      = {types: ['function','array'],arrayType: 'function',optional: true};
 EventsConfig[nameof<Events>(s => s.wsServerStarted)]        = {types: ['function','array'],arrayType: 'function',optional: true};
 EventsConfig[nameof<Events>(s => s.started)]                = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.beforeError)]            = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.beforeBackError)]        = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.beforeBackErrorBag)]     = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.beforeCodeError)]        = {types: ['function','array'],arrayType: 'function',optional: true};
+EventsConfig[nameof<Events>(s => s.error)]                  = {types: ['function','array'],arrayType: 'function',optional: true};
+EventsConfig[nameof<Events>(s => s.backErrors)]             = {types: ['function','array'],arrayType: 'function',optional: true};
+EventsConfig[nameof<Events>(s => s.codeError)]              = {types: ['function','array'],arrayType: 'function',optional: true};
 EventsConfig[nameof<Events>(s => s.workerMessage)]          = {types: ['function','array'],arrayType: 'function',optional: true};
 
 EventsConfig[nameof<Events>(s => s.socketInit)]              = {types: ['function','array'],arrayType: 'function',optional: true};

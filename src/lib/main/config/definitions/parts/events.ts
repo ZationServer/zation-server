@@ -10,7 +10,6 @@ import ScServer                        from "../../../sc/scServer";
 import {RawSocket}                     from "../../../sc/socket";
 import {ZationToken}                   from "../../../constants/internal";
 import BackError                       from "../../../../api/BackError";
-import BackErrorBag                    from "../../../../api/BackErrorBag";
 import ZationInfo                      from "../../../internalApi/zationInfo";
 import ZSocket                         from "../../../internalApi/zSocket";
 import CodeError                       from "../../../error/codeError";
@@ -23,10 +22,9 @@ export type WorkerStartedFunction = (info: ZationInfo,leader: boolean, respawn: 
 export type HttpServerStartedFunction = (info: ZationInfo) => Promise<void> | void;
 export type WsServerStartedFunction = (info: ZationInfo) => Promise<void> | void;
 export type StartedFunction = (info: ZationInfo) => Promise<void> | void;
-export type BeforeErrorFunction = (error: object) => Promise<void> | void;
-export type BeforeBackErrorFunction = (backError: BackError) => Promise<void> | void;
-export type BeforeBackErrorBagFunction = (backErrorBag: BackErrorBag) => Promise<void> | void;
-export type BeforeCodeErrorFunction = (codeError: CodeError) => Promise<void> | void;
+export type ErrorFunction = (error: object) => Promise<void> | void;
+export type BackErrorsFunction = (backErrors: BackError[]) => Promise<void> | void;
+export type CodeErrorFunction = (codeError: CodeError) => Promise<void> | void;
 export type WorkerMessageFunction = (data: any) => Promise<void> | void;
 
 export type SocketInitFunction = (socket: ZSocket) => Promise<void> | void;
@@ -108,34 +106,27 @@ export interface Events
      */
     started?: Event<StartedFunction>;
     /**
-     * An event that gets invoked when a error is thrown on the server
+     * An event that gets invoked when an unknown error is thrown on the server
      * while processing a request or background task.
      * Runs on a worker process.
      * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (error) => {}
      */
-    beforeError?: Event<BeforeErrorFunction>;
+    error?: Event<ErrorFunction>;
     /**
-     * An event that gets invoked when a BackError is thrown on the server while processing a request.
+     * An event that gets invoked when at least one BackError is thrown on the server while processing a request.
      * Runs on a worker process.
      * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (backError) => {}
      */
-    beforeBackError?: Event<BeforeBackErrorFunction>;
-    /**
-     * An event that gets invoked when a BackErrorBag is thrown on the server while processing a request.
-     * Runs on a worker process.
-     * The Bag instance can be securely accessed with the variable 'bag'.
-     * @example (backErrorBag) => {}
-     */
-    beforeBackErrorBag?: Event<BeforeBackErrorBagFunction>;
+    backErrors?: Event<BackErrorsFunction>;
     /**
      * An event that gets invoked when a CodeError is thrown on the server while processing a request.
      * Runs on a worker process.
      * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (codeError) => {}
      */
-    beforeCodeError?: Event<BeforeCodeErrorFunction>;
+    codeError?: Event<CodeErrorFunction>;
     /**
      * An event that gets invoked when the worker receives a worker message
      * that was sent from the bag.
@@ -241,30 +232,29 @@ export interface Events
 }
 
 export interface PrecompiledEvents extends Events {
-    express : ExpressFunction;
-    socketServer : SocketServerFunction;
+    express: ExpressFunction;
+    socketServer: SocketServerFunction;
     workerInit: WorkerInitFunction;
     masterInit: MasterInitFunction;
-    workerStarted : WorkerStartedFunction;
-    httpServerStarted : HttpServerStartedFunction;
-    wsServerStarted : WsServerStartedFunction;
-    started : StartedFunction;
-    beforeError : BeforeErrorFunction;
-    beforeBackError : BeforeBackErrorFunction;
-    beforeBackErrorBag : BeforeBackErrorBagFunction;
-    beforeCodeError : BeforeCodeErrorFunction;
-    workerMessage : WorkerMessageFunction;
+    workerStarted: WorkerStartedFunction;
+    httpServerStarted: HttpServerStartedFunction;
+    wsServerStarted: WsServerStartedFunction;
+    started: StartedFunction;
+    error: ErrorFunction;
+    backErrors: BackErrorsFunction;
+    codeError: CodeErrorFunction;
+    workerMessage: WorkerMessageFunction;
 
     socketInit: SocketInitFunction;
-    socketConnection : SocketConnectionFunction;
-    socketDisconnection : SocketDisconnectionFunction;
-    socketAuthentication : SocketAuthenticationFunction;
-    socketDeauthentication : SocketDeauthenticationFunction;
-    socketAuthStateChange : SocketAuthStateChangeFunction;
-    socketSubscription : SocketSubscriptionFunction;
-    socketUnsubscription : SocketUnsubscriptionFunction;
+    socketConnection: SocketConnectionFunction;
+    socketDisconnection: SocketDisconnectionFunction;
+    socketAuthentication: SocketAuthenticationFunction;
+    socketDeauthentication: SocketDeauthenticationFunction;
+    socketAuthStateChange: SocketAuthStateChangeFunction;
+    socketSubscription: SocketSubscriptionFunction;
+    socketUnsubscription: SocketUnsubscriptionFunction;
     socketError: SocketErrorFunction;
-    socketRaw : SocketRawFunction;
-    socketConnectionAbort : SocketConnectionAbortFunction;
-    socketBadAuthToken : SocketBadAuthTokenFunction;
+    socketRaw: SocketRawFunction;
+    socketConnectionAbort: SocketConnectionAbortFunction;
+    socketBadAuthToken: SocketBadAuthTokenFunction;
 }

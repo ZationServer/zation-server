@@ -87,23 +87,23 @@ export default class ControllerReqHandler
     private async handleReqError(err)
     {
         const promises: (Promise<void> | void)[] = [];
-        promises.push(this.zc.event.beforeError(err));
         if(err instanceof BackError)
         {
             if(err instanceof CodeError) {
                 Logger.printDebugWarning(`Code error -> ${err.toString()}/n stack-> ${err.stack}`);
-                promises.push(this.zc.event.beforeCodeError(err));
+                promises.push(this.zc.event.codeError(err));
                 if(this.zc.mainConfig.logFileCodeErrors){
                     Logger.logFileError(`Code error -> ${err.toString()}/n stack-> ${err.stack}`);
                 }
             }
-            promises.push(this.zc.event.beforeBackError(err));
+            promises.push(this.zc.event.backErrors([err]));
         }
         else { // noinspection SuspiciousInstanceOfGuard
             if(err instanceof BackErrorBag) {
-                promises.push(this.zc.event.beforeBackErrorBag(err));
+                promises.push(this.zc.event.backErrors(err.getBackErrors()));
             }
             else {
+                promises.push(this.zc.event.error(err));
                 Logger.printDebugWarning('UNKNOWN ERROR ON SERVER ->',err);
                 if(this.zc.mainConfig.logFileServerErrors){
                     Logger.logFileError(`Unknown error on server -> ${err.stack}`);

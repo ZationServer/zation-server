@@ -1291,7 +1291,7 @@ class ZationWorker extends SCWorker
             catch (e) {
                 Logger.printDebugInfo
                 (`The Worker with id: ${this.id}, error while invoking the background task: '${id}'`);
-                await this.zc.event.beforeError(e);
+                await this.zc.event.error(e);
             }
         }
     }
