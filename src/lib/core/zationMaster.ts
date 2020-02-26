@@ -17,16 +17,17 @@ import TimeUtils               from "../main/utils/timeUtils";
 import BackgroundTasksSender   from "../main/background/backgroundTasksSender";
 import BackgroundTasksLoader   from "../main/background/backgroundTasksLoader";
 import ZationConfigMaster      from "../main/config/manager/zationConfigMaster";
+import ConfigPrecompiler       from '../main/config/utils/configPrecompiler';
 import LicenseManager, {License, LicenseLevel} from "../main/utils/licenseManager";
 // noinspection TypeScriptPreferShortImport
 import {StartErrorName}        from "../main/constants/startErrorName";
 // noinspection TypeScriptPreferShortImport
 import {processRawStartMode, StartMode, startModeSymbol} from './startMode';
-import FuncUtils               from "../main/utils/funcUtils";
 import ConfigBuildError        from "../main/config/manager/configBuildError";
 import ConfigLoader            from "../main/config/manager/configLoader";
 import BagExtensionConflictChecker from '../main/bagExtension/bagExtensionConflictChecker';
 import {ProcessType, processTypeSymbol} from '../main/constants/processType';
+import {Events}                         from '../main/config/definitions/parts/events';
 
 global[processTypeSymbol] = ProcessType.Master;
 
@@ -220,8 +221,11 @@ export default class ZationMaster {
 
         //init event
         Logger.startStopWatch();
-        await FuncUtils.createFuncAsyncInvokeSafe(this.zcLoader.eventConfig.masterInit)
-        (this.zc.getZationInfo());
+        const masterInitEvent = this.zcLoader.eventConfig.masterInit;
+        if(masterInitEvent){
+            await ConfigPrecompiler.preCompileEvent
+            (masterInitEvent,nameof<Events>(s => s.masterInit))(this.zc.getZationInfo())
+        }
         Logger.printStartDebugInfo('Master invoked init event.',true);
 
         this.startSocketClusterWithLog();
@@ -353,20 +357,23 @@ export default class ZationMaster {
         // noinspection JSUnresolvedFunction
         this.master.on('ready',async () =>
         {
-           if(!this.stateServerActive) {
-               //not in cluster mode
-               this.clusterLeader = true;
-           }
-           else {
-               await this.stateServerEngine.start();
-           }
+            if(!this.stateServerActive) {
+                //not in cluster mode
+                this.clusterLeader = true;
+            }
+            else {
+                await this.stateServerEngine.start();
+            }
 
-           this.logStartedInformation();
+            this.logStartedInformation();
 
-           if(this.startResolve){this.startResolve();}
+            if(this.startResolve){this.startResolve();}
 
-            await FuncUtils.createFuncAsyncInvokeSafe(this.zcLoader.eventConfig.started)
-            (this.zc.getZationInfo());
+            const startedEvent = this.zcLoader.eventConfig.started;
+            if(startedEvent){
+                await ConfigPrecompiler.preCompileEvent
+                (startedEvent,nameof<Events>(s => s.started))(this.zc.getZationInfo())
+            }
         });
 
         // noinspection JSUnresolvedFunction

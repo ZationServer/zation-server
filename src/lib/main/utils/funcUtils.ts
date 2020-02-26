@@ -4,6 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
+import Logger from '../logger/logger';
+
 type AnyFunction = (...args: any[]) => any
 
 export type EventInvokerAsync<P extends AnyFunction = any> = (...args: Parameters<P>) => Promise<void>;
@@ -55,6 +57,7 @@ export default class FuncUtils
         }
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Creates an async closure for invoke a function or functions.
      * Will return a default function if the event is not a function or a function array.
@@ -92,6 +95,22 @@ export default class FuncUtils
         }
         else {
             return FuncUtils.createFuncArraySyncInvoker(func);
+        }
+    }
+
+    /**
+     * Creates an event safe caller which catch thrown errors and log them.
+     * @param func
+     * @param beforeErrorMsg
+     */
+    static createSafeCaller<T extends AnyFunction>(func: T,beforeErrorMsg: string = ''): EventInvokerAsync<T> {
+        return async (...args) => {
+            try {
+                return await func(...args);
+            }
+            catch (e) {
+                Logger.printError(e,beforeErrorMsg);
+            }
         }
     }
 

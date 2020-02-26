@@ -27,13 +27,13 @@ import OptionalProcessor           from "../../input/optionalProcessor";
 import ZationConfig                from "../manager/zationConfig";
 import {isInputConfigTranslatable, isModelConfigTranslatable} from "../../../api/ConfigTranslatable";
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../definitions/parts/controllerConfig";
-import {ControllerClass}  from "../../../api/Controller";
-import {DataboxClassDef, DataboxConfig} from "../definitions/parts/databoxConfig";
-import DbConfigUtils from "../../databox/dbConfigUtils";
-import {PrecompiledEvents} from '../definitions/parts/events';
-import FuncUtils from '../../utils/funcUtils';
-import {PrecompiledMiddleware} from '../definitions/parts/middleware';
+import {ControllerConfig}                                     from "../definitions/parts/controllerConfig";
+import {ControllerClass}                                      from "../../../api/Controller";
+import {DataboxClassDef, DataboxConfig}                       from "../definitions/parts/databoxConfig";
+import DbConfigUtils                                          from "../../databox/dbConfigUtils";
+import {PrecompiledEvents, Event}                             from '../definitions/parts/events';
+import FuncUtils                                              from '../../utils/funcUtils';
+import {PrecompiledMiddleware}                                from '../definitions/parts/middleware';
 
 export interface ModelPreparationMem extends Processable{
     _optionalInfo: {isOptional: boolean,defaultValue: any}
@@ -174,14 +174,18 @@ export default class ConfigPrecompiler
             socketBadAuthToken: defaultFunc
         };
         const eventsConfig = this.configs.appConfig.events || {};
-        let value;
         for(let k in eventsConfig) {
             if (eventsConfig.hasOwnProperty(k)) {
-                value = eventsConfig[k];
-                res[k] = typeof value !== 'function' ? FuncUtils.createFuncArrayAsyncInvoker(value) : value;
+                res[k] = ConfigPrecompiler.preCompileEvent(eventsConfig[k],k);
             }
         }
         this.configs.appConfig.events = res as PrecompiledEvents;
+    }
+
+    static preCompileEvent<T extends (...args) => any>(event: Event<T>,name: string): (...args: Parameters<T>) => Promise<void> {
+        return FuncUtils.createSafeCaller(
+            typeof event !== 'function' ? FuncUtils.createFuncArrayAsyncInvoker(event) : event,
+            `An error was thrown in the event: '${name}' :`);
     }
 
     private preCompileMiddleware() {
@@ -189,7 +193,8 @@ export default class ConfigPrecompiler
         const middlewareConfig = this.configs.appConfig.middleware || {};
         let value;
         for(let k in middlewareConfig) {
-            res[k] = typeof value !== 'function' ?  FuncUtils.createFuncMiddlewareAsyncInvoker(value) : value;
+            value = middlewareConfig[k];
+            res[k] = typeof value !== 'function' ? FuncUtils.createFuncMiddlewareAsyncInvoker(value) : value;
         }
         this.configs.appConfig.middleware = res;
     }
