@@ -35,12 +35,27 @@ export interface AppConfig
     userGroups?: UserGroupsConfig;
 
     /**
-     *
+     * In this property, you can react to specific events.
+     * @example
+     * events: {
+     *     socketConnection : (socket) => {
+     *     },
+     *     socketDisconnection : (socket) => {
+     *     }
+     * }
      */
     events?: Events,
 
     /**
-     *
+     * In this property, you can define some middleware functions.
+     * @example
+     * middleware: {
+     *     socket: (socket) => {
+     *         if(socket.handshakeVariables['oldClient']){
+     *             return false;
+     *         }
+     *     }
+     * }
      */
     middleware?: Middleware,
 
