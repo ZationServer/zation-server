@@ -221,7 +221,7 @@ export default class ZationMaster {
 
         //init event
         Logger.startStopWatch();
-        const masterInitEvent = this.zcLoader.eventConfig.masterInit;
+        const masterInitEvent = (this.zcLoader.appConfig.events || {}).masterInit;
         if(masterInitEvent){
             await ConfigPrecompiler.preCompileEvent
             (masterInitEvent,nameof<Events>(s => s.masterInit))(this.zc.getZationInfo())
@@ -369,7 +369,7 @@ export default class ZationMaster {
 
             if(this.startResolve){this.startResolve();}
 
-            const startedEvent = this.zcLoader.eventConfig.started;
+            const startedEvent = (this.zcLoader.appConfig.events || {}).started;
             if(startedEvent){
                 await ConfigPrecompiler.preCompileEvent
                 (startedEvent,nameof<Events>(s => s.started))(this.zc.getZationInfo())
