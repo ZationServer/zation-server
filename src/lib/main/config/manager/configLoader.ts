@@ -14,7 +14,6 @@ import crypto            = require('crypto');
 const  uuidV4            = require('uuid/v4');
 const  os                = require('os');
 import moment            = require('moment-timezone');
-import {Events}      from "../definitions/parts/events";
 import {AppConfig}        from "../definitions/main/appConfig";
 import {ServiceConfig}    from "../definitions/main/serviceConfig";
 import {Structures}       from "../definitions/structures";
@@ -107,7 +106,6 @@ export default class ConfigLoader {
         variables: {}
     };
 
-    private _eventConfig: Events = {};
     private _appConfig: AppConfig = {};
     private _serviceConfig: ServiceConfig = {};
 
@@ -281,10 +279,6 @@ export default class ConfigLoader {
 
     get serviceConfig(): ServiceConfig {
         return this._serviceConfig;
-    }
-
-    get eventConfig(): Events {
-        return this._eventConfig;
     }
 
     get appConfig(): AppConfig {

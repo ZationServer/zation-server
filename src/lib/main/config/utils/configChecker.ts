@@ -144,10 +144,11 @@ export default class ConfigChecker
         this.checkMainConfig();
         this.checkAppConfig();
         this.checkServiceConfig();
-        this.checkEventConfig();
     }
 
     private checkAppConfig() {
+        this.checkEvents();
+        this.checkMiddleware();
         this.checkAccessControllerDefaultIsSet();
         this.checkAppConfigMain();
         this.checkModelsConfig();
@@ -192,9 +193,14 @@ export default class ConfigChecker
         }
     }
 
-    private checkEventConfig() {
+    private checkEvents() {
         ConfigCheckerTools.assertStructure
-        (Structures.EventConfig, this.zcLoader.eventConfig, ConfigNames.EVENT, this.ceb);
+        (Structures.Events, this.zcLoader.appConfig.events || {}, ConfigNames.APP, this.ceb, new Target('Events: '));
+    }
+
+    private checkMiddleware() {
+        ConfigCheckerTools.assertStructure
+        (Structures.Middleware, this.zcLoader.appConfig.middleware || {}, ConfigNames.APP, this.ceb, new Target('Middleware: '));
     }
 
     private checkCustomChannelsDefaults(){

@@ -44,8 +44,6 @@ export enum ConfigNames
 {
     APP             = 'App     :',
     MAIN            = 'Main    :',
-    ERROR           = 'Error   :',
-    EVENT           = 'Event   :',
     SERVICE         = 'Service :',
     STARTER         = 'Starter :'
 }

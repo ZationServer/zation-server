@@ -20,8 +20,8 @@ export default class ZationConfigFull extends ZationConfig {
     protected _appConfig: PrecompiledAppConfig;
     protected _serviceConfig: PrecompiledServiceConfig;
 
-    protected _eventsConfig: PrecompiledEvents;
-    protected _middlewareConfig: PrecompiledMiddleware;
+    protected _events: PrecompiledEvents;
+    protected _middleware: PrecompiledMiddleware;
 
     constructor(zcTransport: ZcTransport) {
         super();
@@ -39,8 +39,8 @@ export default class ZationConfigFull extends ZationConfig {
         this._appConfig = precompiledOtherConfigSet.appConfig;
         this._serviceConfig = precompiledOtherConfigSet.serviceConfig;
 
-        this._eventsConfig = this.appConfig.events;
-        this._middlewareConfig = this.appConfig.middleware;
+        this._events = this.appConfig.events;
+        this._middleware = this.appConfig.middleware;
     }
 
     get appConfig(): PrecompiledAppConfig {
@@ -55,13 +55,13 @@ export default class ZationConfigFull extends ZationConfig {
      * This getter is used to access an event.
      */
     get event(): PrecompiledEvents {
-        return this._eventsConfig;
+        return this._events;
     }
 
     /**
      * This getter is used to access an middleware.
      */
     get middleware(): PrecompiledMiddleware {
-        return this._middlewareConfig;
+        return this._middleware;
     }
 }

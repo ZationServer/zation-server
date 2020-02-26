@@ -314,38 +314,38 @@ const AuthUserGroup: Structure = {};
 AuthUserGroup[nameof<AuthUserGroupConfig>(s => s.panelAccess)]      = {types: ['boolean'],optional: true};
 AuthUserGroup[nameof<AuthUserGroupConfig>(s => s.panelDisplayName)] = {types: ['string'],optional: true};
 
-const EventsConfig: Structure = {};
-EventsConfig[nameof<Events>(s => s.express)]                = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.socketServer)]           = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.workerInit)]             = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.masterInit)]             = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.workerStarted)]          = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.httpServerStarted)]      = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.wsServerStarted)]        = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.started)]                = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.error)]                  = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.backErrors)]             = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.codeError)]              = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.workerMessage)]          = {types: ['function','array'],arrayType: 'function',optional: true};
+const Events: Structure = {};
+Events[nameof<Events>(s => s.express)]                = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.socketServer)]           = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.workerInit)]             = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.masterInit)]             = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.workerStarted)]          = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.httpServerStarted)]      = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.wsServerStarted)]        = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.started)]                = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.error)]                  = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.backErrors)]             = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.codeError)]              = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.workerMessage)]          = {types: ['function','array'],arrayType: 'function',optional: true};
 
-EventsConfig[nameof<Events>(s => s.socketInit)]              = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.socketConnection)]        = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.socketDisconnection)]     = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.socketAuthentication)]    = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.socketDeauthentication)]  = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.socketAuthStateChange)]   = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.socketSubscription)]      = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.socketUnsubscription)]    = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.socketError)]             = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.socketRaw)]               = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.socketConnectionAbort)]   = {types: ['function','array'],arrayType: 'function',optional: true};
-EventsConfig[nameof<Events>(s => s.socketBadAuthToken)]      = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.socketInit)]              = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.socketConnection)]        = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.socketDisconnection)]     = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.socketAuthentication)]    = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.socketDeauthentication)]  = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.socketAuthStateChange)]   = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.socketSubscription)]      = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.socketUnsubscription)]    = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.socketError)]             = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.socketRaw)]               = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.socketConnectionAbort)]   = {types: ['function','array'],arrayType: 'function',optional: true};
+Events[nameof<Events>(s => s.socketBadAuthToken)]      = {types: ['function','array'],arrayType: 'function',optional: true};
 
 
-const MiddlewareConfig: Structure = {};
-MiddlewareConfig[nameof<Middleware>(s => s.authenticate)] = {types: ['function','array'],optional: true};
-MiddlewareConfig[nameof<Middleware>(s => s.socket)]       = {types: ['function','array'],optional: true};
-MiddlewareConfig[nameof<Middleware>(s => s.panelAuth)]    = {types: ['function','array'],optional: true};
+const Middleware: Structure = {};
+Middleware[nameof<Middleware>(s => s.authenticate)] = {types: ['function','array'],optional: true};
+Middleware[nameof<Middleware>(s => s.socket)]       = {types: ['function','array'],optional: true};
+Middleware[nameof<Middleware>(s => s.panelAuth)]    = {types: ['function','array'],optional: true};
 
 export const Structures = {
     App: App,
@@ -363,8 +363,8 @@ export const Structures = {
     ZationChannelConfig: ZationChannelConfig,
     ArrayModel: ArrayModel,
     ArrayShortCutSpecify: ArrayShortCutSpecify,
-    EventConfig: EventsConfig,
-    MiddlewareConfig: MiddlewareConfig,
+    Events: Events,
+    Middleware: Middleware,
     PanelUserConfig: PanelUserConfig,
     AuthUserGroup: AuthUserGroup,
     AnyOf: AnyOf
