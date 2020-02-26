@@ -4,14 +4,14 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import ZSocket              from "../../internalApi/zSocket";
-import Bag                  from "../../../api/Bag";
-import PubData              from "../../internalApi/pubData";
-import CChFamilyInfo        from "../../internalApi/cChFamilyInfo";
-import CChInfo              from "../../internalApi/cChInfo";
+import ZSocket              from "../../../internalApi/zSocket";
+import Bag                  from "../../../../api/Bag";
+import PubData              from "../../../internalApi/pubData";
+import CChFamilyInfo        from "../../../internalApi/cChFamilyInfo";
+import CChInfo              from "../../../internalApi/cChInfo";
 import {IdValidConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
-import {AccessConfigValue}                                      from '../../access/accessOptions';
-import {Notable}                                                from '../../../api/Notable';
+import {AccessConfigValue}                                      from '../../../access/accessOptions';
+import {Notable}                                                from '../../../../api/Notable';
 
 type AnyFunction = (...args: any[]) => Promise<any> | any
 

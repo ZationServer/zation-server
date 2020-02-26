@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {InputConfigTranslatable}        from "../../ConfigTranslatable";
-import {ParamInput as ParamInputConfig} from "../../../main/config/definitions/inputConfig";
+import {ParamInput as ParamInputConfig} from "../../../main/config/definitions/parts/inputConfig";
 import {InDecoratorMem, InDM_Models}    from "./InDecoratorMem";
 
 /**

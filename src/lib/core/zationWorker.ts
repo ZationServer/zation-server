@@ -63,7 +63,7 @@ import {
 } from "../main/sc/scMiddlewareReq";
 import ExpressUtils   from "../main/utils/expressUtils";
 import {SocketAction} from "../main/constants/socketAction";
-import {TaskFunction} from "../main/config/definitions/backgroundTaskConfig";
+import {TaskFunction} from "../main/config/definitions/parts/backgroundTask";
 import {ClientErrorName}          from "../main/constants/clientErrorName";
 import {DATABOX_START_INDICATOR}  from "../main/databox/dbDefinitions";
 import {ZationChannel}            from "../main/channel/channelDefinitions";
@@ -73,8 +73,12 @@ import LicenseManager, {License}  from "../main/utils/licenseManager";
 import ConfigPrecompiler          from "../main/config/utils/configPrecompiler";
 import BagExtensionProcessor      from '../main/bagExtension/bagExtensionProcessor';
 import FunctionInitEngine         from '../main/functionInit/functionInitEngine';
+import {ProcessType, processTypeSymbol} from '../main/constants/processType';
+import {startModeSymbol} from './startMode';
 
 const  SCWorker: any        = require('socketcluster/scworker');
+
+global[processTypeSymbol] = ProcessType.Worker;
 
 class ZationWorker extends SCWorker
 {
@@ -143,7 +147,7 @@ class ZationWorker extends SCWorker
         this.workerFullId = this.id + '.' + process.pid;
 
         this.zc = new ZationConfigFull(this.options.zationConfigWorkerTransport);
-        global['_ZATION_START_MODE'] = this.zc.getStartMode();
+        global[startModeSymbol] = this.zc.getStartMode();
 
         this.license = this.options.license;
 
@@ -456,7 +460,7 @@ class ZationWorker extends SCWorker
      */
     private initSocketMiddleware()
     {
-        const event = this.zc.event;
+        const middleware = this.zc.middleware;
 
         const userChInfo = this.channelPrepare.getUserChInfo();
         const authUserGroupChInfo = this.channelPrepare.getAuthUserGroupChInfo();
@@ -775,7 +779,7 @@ class ZationWorker extends SCWorker
                 }
 
                 const zationMidRes = await MiddlewareUtils.checkMiddleware
-                    (event.middlewareSocket,true,socket);
+                    (middleware.middlewareSocket,true,socket);
 
                 zationMidRes === true ? next(): next(MiddlewareUtils.processBlockedResult(zationMidRes));
             }
@@ -823,7 +827,7 @@ class ZationWorker extends SCWorker
             }
 
             const zationAuthMid = await MiddlewareUtils.checkMiddleware
-            (event.middlewareAuthenticate,true,new ZationTokenWrapper(token));
+            (middleware.middlewareAuthenticate,true,new ZationTokenWrapper(token));
 
             zationAuthMid === true ? next(): next(MiddlewareUtils.processBlockedResult(zationAuthMid));
         });

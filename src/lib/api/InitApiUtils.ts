@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import FunctionInitEngine, {FunctionInitFunction} from '../main/functionInit/functionInitEngine';
-import ConfigBuildError from '../main/config/manager/configBuildError';
+import ConfigBuildError                           from '../main/config/manager/configBuildError';
 
 /**
  * With this function, you can prepare and initialize a function.
@@ -13,6 +13,7 @@ import ConfigBuildError from '../main/config/manager/configBuildError';
  * callback functions in the zation configs.
  * Notice that not every property that accepts a function
  * in the zation configs is compatible with the $init function.
+ * Only functions that run on a worker process are compatible.
  * @example
  * $init((bag) => {
  *    //prepare stuff
@@ -23,7 +24,7 @@ import ConfigBuildError from '../main/config/manager/configBuildError';
  * })
  * @param initFunction
  */
-export function $init<T>(initFunction: FunctionInitFunction<T>): (...args: any) => Promise<any>
+export function $init<T>(initFunction: FunctionInitFunction<T>): T
 export function $init(initValue: any): any {
     if (typeof initValue === 'function') {
         return FunctionInitEngine.initFunction(initValue);

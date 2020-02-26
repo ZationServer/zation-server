@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {Model, ParamInput, SingleModelInput} from "../main/config/definitions/inputConfig";
+import {Model, ParamInput, SingleModelInput} from "../main/config/definitions/parts/inputConfig";
 
 /**
  * Interface for define that the object can be translated to a input config.

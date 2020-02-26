@@ -6,10 +6,11 @@ Copyright(c) Luca Scaringella
 
 import ZationConfig                from "./zationConfig";
 import ZcTransport                 from "./zcTransport";
-import {PrecompiledEventConfig}    from "../definitions/eventConfig";
-import {PrecompiledAppConfig}      from "../definitions/appConfig";
-import {PrecompiledServiceConfig}  from "../definitions/serviceConfig";
+import {PrecompiledEvents}    from "../definitions/parts/events";
+import {PrecompiledAppConfig}      from "../definitions/main/appConfig";
+import {PrecompiledServiceConfig}  from "../definitions/main/serviceConfig";
 import {OtherPrecompiledConfigSet} from "./configSets";
+import {PrecompiledMiddleware} from '../definitions/parts/middleware';
 
 /**
  * Zation config for active process (worker,broker).
@@ -17,8 +18,10 @@ import {OtherPrecompiledConfigSet} from "./configSets";
 export default class ZationConfigFull extends ZationConfig {
 
     protected _appConfig: PrecompiledAppConfig;
-    protected _eventConfig: PrecompiledEventConfig;
     protected _serviceConfig: PrecompiledServiceConfig;
+
+    protected _eventsConfig: PrecompiledEvents;
+    protected _middlewareConfig: PrecompiledMiddleware;
 
     constructor(zcTransport: ZcTransport) {
         super();
@@ -34,12 +37,10 @@ export default class ZationConfigFull extends ZationConfig {
 
     setOtherConfigs(precompiledOtherConfigSet: OtherPrecompiledConfigSet) {
         this._appConfig = precompiledOtherConfigSet.appConfig;
-        this._eventConfig = precompiledOtherConfigSet.eventConfig;
         this._serviceConfig = precompiledOtherConfigSet.serviceConfig;
-    }
 
-    get eventConfig(): PrecompiledEventConfig {
-        return this._eventConfig;
+        this._eventsConfig = this.appConfig.events;
+        this._middlewareConfig = this.appConfig.middleware;
     }
 
     get appConfig(): PrecompiledAppConfig {
@@ -53,7 +54,14 @@ export default class ZationConfigFull extends ZationConfig {
     /**
      * This getter is used to access an event.
      */
-    get event(): PrecompiledEventConfig {
-        return this._eventConfig;
+    get event(): PrecompiledEvents {
+        return this._eventsConfig;
+    }
+
+    /**
+     * This getter is used to access an middleware.
+     */
+    get middleware(): PrecompiledMiddleware {
+        return this._middlewareConfig;
     }
 }

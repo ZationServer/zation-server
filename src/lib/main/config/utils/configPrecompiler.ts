@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import {
     BaseCustomChannelConfig
-} from "../definitions/channelsConfig";
+} from "../definitions/parts/channelsConfig";
 import {
     AnyOfModelConfig,
     ArrayModelConfig,
@@ -16,7 +16,7 @@ import {
     ObjectModelConfig,
     ValueModelConfig,
     SingleModelInput,
-} from "../definitions/inputConfig";
+} from "../definitions/parts/inputConfig";
 import ModelResolveEngine from "./modelResolveEngine";
 import ObjectUtils        from "../../utils/objectUtils";
 import Iterator           from "../../utils/iterator";
@@ -27,12 +27,13 @@ import OptionalProcessor           from "../../input/optionalProcessor";
 import ZationConfig                from "../manager/zationConfig";
 import {isInputConfigTranslatable, isModelConfigTranslatable} from "../../../api/ConfigTranslatable";
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../definitions/controllerConfig";
+import {ControllerConfig} from "../definitions/parts/controllerConfig";
 import {ControllerClass}  from "../../../api/Controller";
-import {DataboxClassDef, DataboxConfig} from "../definitions/databoxConfig";
+import {DataboxClassDef, DataboxConfig} from "../definitions/parts/databoxConfig";
 import DbConfigUtils from "../../databox/dbConfigUtils";
-import {middlewareEvents, PrecompiledEventConfig} from '../definitions/eventConfig';
+import {PrecompiledEvents} from '../definitions/parts/events';
 import FuncUtils from '../../utils/funcUtils';
+import {PrecompiledMiddleware} from '../definitions/parts/middleware';
 
 export interface ModelPreparationMem extends Processable{
     _optionalInfo: {isOptional: boolean,defaultValue: any}
@@ -58,6 +59,7 @@ export default class ConfigPrecompiler
     precompile(zc: ZationConfig, showPrecompiledConfigs: boolean): OtherPrecompiledConfigSet
     {
         this.preCompileEvents();
+        this.preCompileMiddleware();
         this.precompileModels(this.modelsConfig);
         this.precompileTmpBuilds();
         this.precompileControllerDefaults();
@@ -74,8 +76,6 @@ export default class ConfigPrecompiler
             console.dir(zc.mainConfig,{depth:null});
             console.log('AppConfig');
             console.dir(this.configs.appConfig,{depth:null});
-            console.log('EventConfig');
-            console.dir(this.configs.eventConfig,{depth:null});
             console.log('ServiceConfig');
             console.dir(this.configs.serviceConfig,{depth:null});
         }
@@ -147,7 +147,7 @@ export default class ConfigPrecompiler
 
     private preCompileEvents() {
         const defaultFunc = () => {};
-        const res: PrecompiledEventConfig = {
+        const res: PrecompiledEvents = {
             express: defaultFunc,
             socketServer: defaultFunc,
             workerInit: defaultFunc,
@@ -174,22 +174,25 @@ export default class ConfigPrecompiler
             socketConnectionAbort: defaultFunc,
             socketBadAuthToken: defaultFunc
         };
-        const eventConfig = this.configs.eventConfig;
-        let eventValue;
-        for(let k in eventConfig) {
-            if (eventConfig.hasOwnProperty(k)) {
-                eventValue = eventConfig[k];
-                if(typeof eventValue !== 'function') {
-                    res[k] = middlewareEvents.includes(k) ?
-                        FuncUtils.createFuncMiddlewareAsyncInvoker(eventValue) :
-                        FuncUtils.createFuncArrayAsyncInvoker(eventValue)
-                }
-                else {
-                    res[k] = eventValue;
-                }
+        const eventsConfig = this.configs.appConfig.events || {};
+        let value;
+        for(let k in eventsConfig) {
+            if (eventsConfig.hasOwnProperty(k)) {
+                value = eventsConfig[k];
+                res[k] = typeof value !== 'function' ? FuncUtils.createFuncArrayAsyncInvoker(value) : value;
             }
         }
-        this.configs.eventConfig = res as PrecompiledEventConfig;
+        this.configs.appConfig.events = res as PrecompiledEvents;
+    }
+
+    private preCompileMiddleware() {
+        const res: PrecompiledMiddleware = {};
+        const middlewareConfig = this.configs.appConfig.middleware || {};
+        let value;
+        for(let k in middlewareConfig) {
+            res[k] = typeof value !== 'function' ?  FuncUtils.createFuncMiddlewareAsyncInvoker(value) : value;
+        }
+        this.configs.appConfig.middleware = res;
     }
 
     private precompileModels(models: Record<string,Model | any>) {

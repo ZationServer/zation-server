@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ValueModelConfig} from "../config/definitions/inputConfig";
+import {ValueModelConfig} from "../config/definitions/parts/inputConfig";
 
 export enum FormatLetters {
     UPPER_CASE              = 'uppercase',

@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import BaseSHBridge       from "../bridges/baseSHBridge";
 // noinspection TypeScriptPreferShortImport
-import {SystemAccessConfig, VersionAccessConfig} from "../config/definitions/configComponents";
+import {SystemAccessConfig, VersionAccessConfig} from "../config/definitions/parts/configComponents";
 
 export type VersionSystemAccessCheckFunction = (shBridge: BaseSHBridge) => boolean;
 

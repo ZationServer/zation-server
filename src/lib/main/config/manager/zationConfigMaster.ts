@@ -4,8 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {StarterConfig}      from "../definitions/starterConfig";
-import {InternalMainConfig} from "../definitions/mainConfig";
+import {StarterConfig}      from "../definitions/main/starterConfig";
+import {InternalMainConfig} from "../definitions/main/mainConfig";
 import ZationConfig         from "./zationConfig";
 import crypto             = require('crypto');
 import ConfigLocations      from "./configLocations";

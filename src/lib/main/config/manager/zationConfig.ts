@@ -4,11 +4,11 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {InternalMainConfig}                         from "../definitions/mainConfig";
-import {StarterConfig}                              from "../definitions/starterConfig";
+import {InternalMainConfig}                         from "../definitions/main/mainConfig";
+import {StarterConfig}                              from "../definitions/main/starterConfig";
 import InternalData        from "../../constants/internalData";
 // noinspection TypeScriptPreferShortImport
-import {StartMode}         from "../../constants/startMode";
+import {StartMode}         from "../../../core/startMode";
 import ZationInfo          from "../../internalApi/zationInfo";
 import ZcTransport         from "./zcTransport";
 import ConfigLocations     from "./configLocations";
@@ -30,11 +30,11 @@ export default abstract class ZationConfig {
     private readonly _preparedZationInfo: ZationInfo = new ZationInfo(this);
 
     inTestMode(): boolean {
-        return this._startMode == StartMode.TEST;
+        return this._startMode == StartMode.Test;
     }
 
     inNormalMode(): boolean {
-        return this._startMode == StartMode.NORMAL;
+        return this._startMode == StartMode.Normal;
     }
 
     getStartMode(): StartMode {

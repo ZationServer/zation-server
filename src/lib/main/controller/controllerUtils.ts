@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 // noinspection TypeScriptPreferShortImport
 import RequestBag                    from '../../api/RequestBag';
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig}            from "../config/definitions/controllerConfig";
+import {ControllerConfig}            from "../config/definitions/parts/controllerConfig";
 import Controller                    from "../../api/Controller";
 
 export type MiddlewareInvokeFunction = (controllerInstance: Controller, reqBag: RequestBag) => Promise<void >;

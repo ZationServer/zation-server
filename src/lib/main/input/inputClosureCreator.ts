@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {InputConfig, ParamInput, SingleModelInput} from "../config/definitions/inputConfig";
+import {InputConfig, ParamInput, SingleModelInput} from "../config/definitions/parts/inputConfig";
 import BackErrorBag                     from "../../api/BackErrorBag";
 import ProcessTaskEngine, {ProcessTask} from "./processTaskEngine";
 import InputProcessor, {Processable}    from "./inputProcessorCreator";

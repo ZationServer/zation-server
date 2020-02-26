@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 // noinspection TypeScriptPreferShortImport
 import Controller         from "../../../api/Controller";
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../../config/definitions/controllerConfig";
+import {ControllerConfig} from "../../config/definitions/parts/controllerConfig";
 
 export default class ZationSC_Ping extends Controller
 {

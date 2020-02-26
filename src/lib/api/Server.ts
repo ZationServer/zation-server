@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import {StartMode} from "../main/constants/startMode";
+import {StartMode, startModeSymbol} from '../core/startMode';
 
 /**
  * A simple class for getting the state of the server.
@@ -18,7 +18,7 @@ export class Server {
      * Returns if the server runs in test mode.
      */
     static inTestMode(): boolean {
-        return global['_ZATION_START_MODE'] === StartMode.TEST;
+        return global[startModeSymbol] === StartMode.Test;
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
@@ -27,7 +27,7 @@ export class Server {
      * Returns if the server runs in normal mode.
      */
     static inNormalMode(): boolean {
-        return global['_ZATION_START_MODE'] === StartMode.NORMAL;
+        return global[startModeSymbol] === StartMode.Normal;
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
@@ -36,7 +36,7 @@ export class Server {
      * Returns the start mode of the server.
      */
     static getStartMode(): StartMode {
-        return global['_ZATION_START_MODE'];
+        return global[startModeSymbol];
     }
 
 }

@@ -10,7 +10,7 @@ import ZationConfig           from "../config/manager/zationConfig";
 import ServiceNotFoundError   from "./serviceNotFoundError";
 import Logger                 from "../logger/logger";
 import ZationConfigFull       from '../config/manager/zationConfigFull';
-import {ServiceConfig}        from '../config/definitions/serviceConfig';
+import {ServiceConfig}        from '../config/definitions/main/serviceConfig';
 
 export default class ServiceEngine
 {

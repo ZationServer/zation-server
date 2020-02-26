@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {AuthUserGroupConfig, UserGroupsConfig} from "../config/definitions/appConfig";
+import {AuthUserGroupConfig, UserGroupsConfig} from "../config/definitions/parts/userGroupsConfig";
 import {DefaultUserGroupFallBack}              from "../constants/internal";
 import ZationConfigFull                        from "../config/manager/zationConfigFull";
 

@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import RequestBag                                                  from "../../../api/RequestBag";
+import RequestBag                                                  from "../../../../api/RequestBag";
 import {AuthAccessConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
 import {InputConfig}                                               from "./inputConfig";
 

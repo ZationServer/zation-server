@@ -4,9 +4,9 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {InputConfig}   from "../config/definitions/inputConfig";
+import {InputConfig}   from "../config/definitions/parts/inputConfig";
 // noinspection TypeScriptPreferShortImport
-import {DataboxConfig} from "../config/definitions/databoxConfig";
+import {DataboxConfig} from "../config/definitions/parts/databoxConfig";
 
 export default class DbConfigUtils {
 

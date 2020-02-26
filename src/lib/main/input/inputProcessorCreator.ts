@@ -10,7 +10,7 @@ import {
     ConvertValueFunction,
     Model,
     ObjectModelConfig, ParamInput, ValueModelConfig,
-} from "../config/definitions/inputConfig";
+} from "../config/definitions/parts/inputConfig";
 import BackErrorBag          from "../../api/BackErrorBag";
 import ValidatorEngine       from "../validator/validatorEngine";
 import ConvertEngine         from "../convert/convertEngine";

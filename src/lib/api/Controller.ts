@@ -6,10 +6,10 @@ Copyright(c) Luca Scaringella
 
 import RequestBag         from './RequestBag';
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../main/config/definitions/controllerConfig";
+import {ControllerConfig} from "../main/config/definitions/parts/controllerConfig";
 import Bag                from "./Bag";
 import BackErrorBag       from "./BackErrorBag";
-import {Component}        from '../main/config/definitions/component';
+import {Component}        from '../main/config/definitions/parts/component';
 import ConfigBuildError   from '../main/config/manager/configBuildError';
 
 /**

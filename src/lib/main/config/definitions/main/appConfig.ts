@@ -4,15 +4,19 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ControllerClass}      from "../../../api/Controller";
-import {ApiLevelSwitch}       from "../../apiLevel/apiLevelUtils";
-import {ControllerConfig}     from "./controllerConfig";
-import {Model}                from "./inputConfig";
-import {BackgroundTask}       from "./backgroundTaskConfig";
-import {DataboxClassDef, DataboxConfig} from "./databoxConfig";
+import {ControllerClass}      from "../../../../api/Controller";
+import {ApiLevelSwitch}       from "../../../apiLevel/apiLevelUtils";
+// noinspection TypeScriptPreferShortImport
+import {ControllerConfig}     from "../parts/controllerConfig";
+import {Model}                from "../parts/inputConfig";
+import {BackgroundTask}       from "../parts/backgroundTask";
+import {DataboxClassDef, DataboxConfig} from "../parts/databoxConfig";
 import {
     CustomChannelConfig, CustomCh, ZationChannelsConfig, PreCompiledCustomChannelConfig
-} from "./channelsConfig";
+} from "../parts/channelsConfig";
+import {Events, PrecompiledEvents}         from '../parts/events';
+import {Middleware, PrecompiledMiddleware} from '../parts/middleware';
+import {UserGroupsConfig}                              from '../parts/userGroupsConfig';
 
 export interface AppConfig
 {
@@ -29,6 +33,16 @@ export interface AppConfig
      * },
      */
     userGroups?: UserGroupsConfig;
+
+    /**
+     *
+     */
+    events?: Events,
+
+    /**
+     *
+     */
+    middleware?: Middleware,
 
     /**
      * The name of the authController.
@@ -173,42 +187,8 @@ export interface AppConfig
     backgroundTasks?: Record<string,BackgroundTask>,
 }
 
-export interface UserGroupsConfig
-{
-    /**
-     * A socket that is not authenticated belongs to the default user group.
-     * In this property, you can define the name of these user group.
-     * @example
-     * default: 'guest'
-     */
-    default?: string;
-    /**
-     * The auth object contains all user groups that can only be reached
-     * if the socket is authenticated.
-     * @example
-     * auth: {
-     *      user: {
-     *           panelDisplayName: 'User'
-     *      },
-     * },
-     */
-    auth?: Record<string,AuthUserGroupConfig>;
-}
-
-export interface AuthUserGroupConfig
-{
-    /**
-     * This property is only for advanced use cases.
-     * Here you can set if this user group has panel access automatically.
-     */
-    panelAccess?: boolean;
-    /**
-     * Here you can define the name of the user group
-     * that will be displayed in the zation panel.
-     */
-    panelDisplayName?: string;
-}
-
 export interface PrecompiledAppConfig extends AppConfig{
+    events: PrecompiledEvents,
+    middleware: PrecompiledMiddleware,
     customChannels?: Record<string,PreCompiledCustomChannelConfig>
 }

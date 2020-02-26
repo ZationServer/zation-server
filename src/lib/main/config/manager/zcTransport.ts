@@ -4,12 +4,12 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {StarterConfig}       from "../definitions/starterConfig";
-import {InternalMainConfig}  from "../definitions/mainConfig";
+import {StarterConfig}       from "../definitions/main/starterConfig";
+import {InternalMainConfig}  from "../definitions/main/mainConfig";
 import InternalData          from "../../constants/internalData";
 import ConfigLocations       from "./configLocations";
 // noinspection TypeScriptPreferShortImport
-import {StartMode}           from "../../constants/startMode";
+import {StartMode}           from "../../../core/startMode";
 import {JwtSignOptions}      from "../../constants/jwt";
 
 export default interface ZcTransport {

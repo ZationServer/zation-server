@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../config/definitions/controllerConfig";
+import {ControllerConfig} from "../config/definitions/parts/controllerConfig";
 import BaseSHBridge       from "../bridges/baseSHBridge";
 import SHBridge           from "../bridges/shBridge";
 

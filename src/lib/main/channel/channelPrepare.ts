@@ -11,7 +11,7 @@ For performance speed in publish in channels, sub channels..
 import {
     BaseCustomChannelConfig, CustomCh, CustomChFamily, PreCompiledCustomChannelConfig,
     ZationChannelConfig, ZationChannelsConfig
-} from "../config/definitions/channelsConfig";
+} from "../config/definitions/parts/channelsConfig";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
 import FuncUtils, {EventInvokerSync} from "../utils/funcUtils";
 import Bag                           from "../../api/Bag";

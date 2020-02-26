@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ModelOptional} from "../definitions/inputConfig";
+import {ModelOptional} from "../definitions/parts/inputConfig";
 import ResolveUtils    from "./resolveUtils";
 
 export default class ModelResolveEngine

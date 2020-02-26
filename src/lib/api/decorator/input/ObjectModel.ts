@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {InputConfigTranslatable, ModelConfigTranslatable} from "../../ConfigTranslatable";
-import {ObjectModelConfig}       from "../../../main/config/definitions/inputConfig";
+import {ObjectModelConfig}       from "../../../main/config/definitions/parts/inputConfig";
 import CloneUtils                from "../../../main/utils/cloneUtils";
 import Config                    from "../../Config";
 import {InDecoratorMem, InDM_ConstructorMethods, InDM_Extends, InDM_Models} from "./InDecoratorMem";

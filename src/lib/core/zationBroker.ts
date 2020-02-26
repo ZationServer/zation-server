@@ -11,6 +11,10 @@ import Logger                 from "../main/logger/logger";
 import ZationConfigFull       from "../main/config/manager/zationConfigFull";
 const SCBroker              = require('socketcluster/scbroker');
 const scClusterBrokerClient = require('scc-broker-client');
+import {ProcessType, processTypeSymbol} from '../main/constants/processType';
+import {startModeSymbol} from './startMode';
+
+global[processTypeSymbol] = ProcessType.Broker;
 
 class ZationBroker extends SCBroker
 {
@@ -26,7 +30,7 @@ class ZationBroker extends SCBroker
     async run()
     {
         this.zc = new ZationConfigFull(this.options.zationConfigWorkerTransport);
-        global['_ZATION_START_MODE'] = this.zc.getStartMode();
+        global[startModeSymbol] = this.zc.getStartMode();
 
         process.title = `Zation Server: ${this.zc.mainConfig.instanceId} -> Broker - ${this.id}`;
 

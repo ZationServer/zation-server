@@ -4,19 +4,19 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {StarterConfig}     from "../definitions/starterConfig";
+import {StarterConfig}     from "../definitions/main/starterConfig";
 import ObjectUtils         from "../../utils/objectUtils";
 import fs                = require('fs');
 import path              = require('path');
-import {InternalMainConfig, OPTION_AUTO, OPTION_HALF_AUTO} from "../definitions/mainConfig";
+import {InternalMainConfig, OPTION_AUTO, OPTION_HALF_AUTO} from "../definitions/main/mainConfig";
 import ConfigLocations     from "./configLocations";
 import crypto            = require('crypto');
 const  uuidV4            = require('uuid/v4');
 const  os                = require('os');
 import moment            = require('moment-timezone');
-import {EventConfig}      from "../definitions/eventConfig";
-import {AppConfig}        from "../definitions/appConfig";
-import {ServiceConfig}    from "../definitions/serviceConfig";
+import {Events}      from "../definitions/parts/events";
+import {AppConfig}        from "../definitions/main/appConfig";
+import {ServiceConfig}    from "../definitions/main/serviceConfig";
 import {Structures}       from "../definitions/structures";
 import {OtherLoadedConfigSet} from "./configSets";
 import ConfigBuildError       from "./configBuildError";
@@ -29,7 +29,6 @@ export default class ConfigLoader {
         checkConfigs: true,
         mainConfig: 'main.config',
         appConfig: 'app.config',
-        eventConfig: 'event.config',
         serviceConfig: 'service.config'
     };
 
@@ -108,7 +107,7 @@ export default class ConfigLoader {
         variables: {}
     };
 
-    private _eventConfig: EventConfig = {};
+    private _eventConfig: Events = {};
     private _appConfig: AppConfig = {};
     private _serviceConfig: ServiceConfig = {};
 
@@ -153,7 +152,6 @@ export default class ConfigLoader {
         return {
             mainConfig: this.loadZationConfigLocation(nameof<StarterConfig>(s => s.mainConfig)),
             appConfig: this.loadZationConfigLocation(nameof<StarterConfig>(s => s.appConfig)),
-            eventConfig: this.loadZationConfigLocation(nameof<StarterConfig>(s => s.eventConfig)),
             serviceConfig: this.loadZationConfigLocation(nameof<StarterConfig>(s => s.serviceConfig))
         };
     }
@@ -171,7 +169,6 @@ export default class ConfigLoader {
     static loadOtherConfigsSafe(configLocations: ConfigLocations): OtherLoadedConfigSet {
         return {
             appConfig: FuncUtils.callSafe(ConfigLoader.loadConfig,[configLocations.appConfig],{}),
-            eventConfig: FuncUtils.callSafe(ConfigLoader.loadConfig,[configLocations.eventConfig],{}),
             serviceConfig: FuncUtils.callSafe(ConfigLoader.loadConfig,[configLocations.serviceConfig],{})
         };
     }
@@ -215,11 +212,6 @@ export default class ConfigLoader {
         try {
             this._appConfig = ConfigLoader.loadConfig(this._configLocations.appConfig);
             this._loadedConfigs.push(nameof<StarterConfig>(s => s.appConfig));
-        }
-        catch (e) {ConfigLoader.throwErrIfConfigFail(e)}
-        try {
-            this._eventConfig = ConfigLoader.loadConfig(this._configLocations.eventConfig);
-            this._loadedConfigs.push(nameof<StarterConfig>(s => s.eventConfig));
         }
         catch (e) {ConfigLoader.throwErrIfConfigFail(e)}
         try {
@@ -291,7 +283,7 @@ export default class ConfigLoader {
         return this._serviceConfig;
     }
 
-    get eventConfig(): EventConfig {
+    get eventConfig(): Events {
         return this._eventConfig;
     }
 

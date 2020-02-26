@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 const  SocketCluster: any   = require('socketcluster');
 import {WorkerMessageAction}   from "../main/constants/workerMessageAction";
-import {StarterConfig}         from "../main/config/definitions/starterConfig";
+import {StarterConfig}         from "../main/config/definitions/main/starterConfig";
 import StringSet               from "../main/utils/stringSet";
 import StateServerEngine       from "../main/cluster/stateServerEngine";
 import Logger                  from "../main/logger/logger";
@@ -21,11 +21,14 @@ import LicenseManager, {License, LicenseLevel} from "../main/utils/licenseManage
 // noinspection TypeScriptPreferShortImport
 import {StartErrorName}        from "../main/constants/startErrorName";
 // noinspection TypeScriptPreferShortImport
-import {StartMode}             from "../main/constants/startMode";
+import {processRawStartMode, StartMode, startModeSymbol} from './startMode';
 import FuncUtils               from "../main/utils/funcUtils";
 import ConfigBuildError        from "../main/config/manager/configBuildError";
 import ConfigLoader            from "../main/config/manager/configLoader";
 import BagExtensionConflictChecker from '../main/bagExtension/bagExtensionConflictChecker';
+import {ProcessType, processTypeSymbol} from '../main/constants/processType';
+
+global[processTypeSymbol] = ProcessType.Master;
 
 export default class ZationMaster {
     private static instance: ZationMaster | null = null;
@@ -59,9 +62,8 @@ export default class ZationMaster {
 
     constructor(options: StarterConfig,startResolve: () => void,startReject: (err: any) => void,startMode: number | string = 0) {
 
-        if(typeof startMode === 'string'){startMode = parseInt(startMode);}
-        startMode = startMode !== 0 && startMode !== 1 && startMode !== 2 ? 0: startMode;
-        global['_ZATION_START_MODE'] = startMode;
+        startMode = processRawStartMode(startMode);
+        global[startModeSymbol] = startMode;
 
         this.startResolve = startResolve;
         this.startReject = startReject;
@@ -94,7 +96,7 @@ export default class ZationMaster {
                     Logger.setZationConfig(this.zc);
 
 
-                    if(startMode !== StartMode.ONLY_CHECK) {
+                    if(startMode !== StartMode.Check) {
                         Logger.initLogFile();
 
                         await this.start();

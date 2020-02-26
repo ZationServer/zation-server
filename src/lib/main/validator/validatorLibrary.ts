@@ -15,7 +15,7 @@ It not contains the type check.
 // noinspection TypeScriptPreferShortImport
 import {ValidationType}   from "../constants/validationType";
 import {FormatLetters}    from "../constants/validation";
-import {ValueModelConfig} from "../config/definitions/inputConfig";
+import {ValueModelConfig} from "../config/definitions/parts/inputConfig";
 import BackError          from "../../api/BackError";
 import EasyValidator      from "./easyValidator";
 import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";

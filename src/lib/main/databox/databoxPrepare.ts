@@ -11,7 +11,7 @@ import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction}  from "../apiLeve
 import DataboxCore, {DbPreparedData}                            from "../../api/databox/DataboxCore";
 import ZationWorker                                           = require("../../core/zationWorker");
 import {ClientErrorName}                                        from "../constants/clientErrorName";
-import {DataboxClassDef, DataboxConfig}                         from "../config/definitions/databoxConfig";
+import {DataboxClassDef, DataboxConfig}                         from "../config/definitions/parts/databoxConfig";
 import DataboxFamily, {DataboxFamilyClass}                      from "../../api/databox/DataboxFamily";
 import IdValidCheckerUtils                                      from "../id/idValidCheckerUtils";
 import Databox, {DataboxClass}                                  from "../../api/databox/Databox";

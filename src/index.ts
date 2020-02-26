@@ -19,9 +19,9 @@ import InputIsIncompatibleError     from './lib/main/error/inputIsIncompatibleEr
 import CodeError                    from './lib/main/error/codeError';
 import {ErrorType}                  from "./lib/main/constants/errorType";
 import {ValidationType}             from './lib/main/constants/validationType';
-import {ControllerConfig}           from "./lib/main/config/definitions/controllerConfig";
-import {StarterConfig}              from "./lib/main/config/definitions/starterConfig";
-import {StartMode}                  from "./lib/main/constants/startMode";
+import {ControllerConfig}           from "./lib/main/config/definitions/parts/controllerConfig";
+import {StarterConfig}              from "./lib/main/config/definitions/main/starterConfig";
+import {StartMode}                  from "./lib/core/startMode";
 import ZationMaster                 from "./lib/core/zationMaster";
 import Router                       from "./lib/api/Router";
 import {Register}                   from "./lib/api/decorator/component/Register";
@@ -36,7 +36,7 @@ import {Constructor}                from "./lib/api/decorator/input/Constructor"
 import NoMoreDataAvailableError     from "./lib/main/databox/noMoreDataAvailable";
 import DataboxFamily                from "./lib/api/databox/DataboxFamily";
 import Databox                      from "./lib/api/databox/Databox";
-import {DataboxConfig}              from "./lib/main/config/definitions/databoxConfig";
+import {DataboxConfig}              from "./lib/main/config/definitions/parts/databoxConfig";
 import DataboxContainer             from "./lib/main/databox/container/databoxContainer";
 import DataboxFamilyContainer       from "./lib/main/databox/container/databoxFamilyContainer";
 import {buildKeyArray}              from "./lib/main/databox/dbKeyArrayUtils";

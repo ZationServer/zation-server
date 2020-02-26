@@ -6,8 +6,8 @@ Copyright(c) Luca Scaringella
 
 import ConfigBuildError                       from "../../../main/config/manager/configBuildError";
 import {InDecoratorMem, InDM_Extends}         from "./InDecoratorMem";
-import {ObjectModelConfig}                    from "../../../main/config/definitions/inputConfig";
-import {AnyClass, AnyModelConfigTranslatable} from "../../../main/config/definitions/configComponents";
+import {ObjectModelConfig}                    from "../../../main/config/definitions/parts/inputConfig";
+import {AnyClass, AnyModelConfigTranslatable} from "../../../main/config/definitions/parts/configComponents";
 
 /**
  * A class decorator that can be used to add a

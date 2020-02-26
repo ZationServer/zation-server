@@ -12,10 +12,9 @@ import AsymmetricKeyPairs                                   from "../main/intern
 import {WorkerMessageAction}                                from "../main/constants/workerMessageAction";
 import BackErrorConstruct                                   from "../main/constants/backErrorConstruct";
 import {ZationCustomEventNamespace, ZationToken}            from "../main/constants/internal";
-import {InternalMainConfig}                                 from "../main/config/definitions/mainConfig";
-import {PrecompiledAppConfig}                               from "../main/config/definitions/appConfig";
-import {PrecompiledEventConfig}                             from "../main/config/definitions/eventConfig";
-import {PrecompiledServiceConfig}                           from "../main/config/definitions/serviceConfig";
+import {InternalMainConfig}                                 from "../main/config/definitions/main/mainConfig";
+import {PrecompiledAppConfig}                               from "../main/config/definitions/main/appConfig";
+import {PrecompiledServiceConfig}                           from "../main/config/definitions/main/serviceConfig";
 import {byteLength}                                         from "byte-length";
 import * as ecc                                             from 'eosjs-ecc';
 import {
@@ -32,7 +31,7 @@ const uniqid                                                = require('uniqid');
 import ZationWorker                                         = require("../core/zationWorker");
 import {SyncTokenOperationType}                             from "../main/constants/syncTokenDefinitions";
 // noinspection TypeScriptPreferShortImport
-import {StartMode}                                          from "../main/constants/startMode";
+import {StartMode}                                          from "../core/startMode";
 import OsUtils                                              from "../main/utils/osUtils";
 import SystemInfo                                           from "../main/utils/systemInfo";
 import BackErrorBuilder                                     from "../main/builder/backErrorBuilder";
@@ -215,31 +214,21 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Returns the precompiled app config.
-     */
-    getAppConfig(): PrecompiledAppConfig {
-        // noinspection TypeScriptValidateJSTypes
-        return this.zc.appConfig;
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Returns the precompiled event config.
-     */
-    getEventConfig(): PrecompiledEventConfig {
-        // noinspection TypeScriptValidateJSTypes
-        return this.zc.eventConfig;
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
      * Returns the main config.
      */
     getMainConfig(): InternalMainConfig {
         // noinspection TypeScriptValidateJSTypes
         return this.zc.mainConfig;
+    }
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * @description
+     * Returns the precompiled app config.
+     */
+    getAppConfig(): PrecompiledAppConfig {
+        // noinspection TypeScriptValidateJSTypes
+        return this.zc.appConfig;
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic

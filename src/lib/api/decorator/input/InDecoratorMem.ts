@@ -4,8 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ObjectModelConfig}                    from "../../../main/config/definitions/inputConfig";
-import {AnyClass, AnyModelConfigTranslatable} from "../../../main/config/definitions/configComponents";
+import {ObjectModelConfig}                    from "../../../main/config/definitions/parts/inputConfig";
+import {AnyClass, AnyModelConfigTranslatable} from "../../../main/config/definitions/parts/configComponents";
 
 export const InDM_ConstructorMethods = Symbol();
 export const InDM_Extends            = Symbol();

@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import ZationWorker     = require("../../core/zationWorker");
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../config/definitions/controllerConfig";
+import {ControllerConfig} from "../config/definitions/parts/controllerConfig";
 import BackError          from "../../api/BackError";
 import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
 import AuthAccessChecker, {TokenStateAccessCheckFunction} from "../auth/authAccessChecker";

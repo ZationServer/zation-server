@@ -10,7 +10,7 @@ import DataboxFamily        from "../../api/databox/DataboxFamily";
 import AccessUtils          from "../access/accessUtils";
 import Bag                  from "../../api/Bag";
 import {DataboxInfo}        from "./dbDefinitions";
-import {DbAccessFunction}   from "../config/definitions/databoxConfig";
+import {DbAccessFunction}   from "../config/definitions/parts/databoxConfig";
 import ZSocket              from "../internalApi/zSocket";
 import AuthEngine           from "../auth/authEngine";
 import {AccessConfigValue}  from '../access/accessOptions';

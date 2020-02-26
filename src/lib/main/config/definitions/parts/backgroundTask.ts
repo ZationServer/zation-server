@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import Bag from "../../../api/Bag";
+import Bag from "../../../../api/Bag";
 
 export type TaskFunction = (bag: Bag) => Promise<void> | void;
 

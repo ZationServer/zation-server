@@ -6,11 +6,9 @@ Copyright(c) Luca Scaringella
 
 import Bag from '../../api/Bag';
 
-export const initFunctionSymbol = Symbol();
 export const replaceValueSymbol = Symbol();
 
 export type FunctionInitFunction<T> = (bag: Bag) => Promise<T> | T;
-export type InitFunction<T> = {(bag: Bag): T | Promise<T>, [initFunctionSymbol]: true};
 
 export default class FunctionInitEngine {
 
@@ -21,11 +19,11 @@ export default class FunctionInitEngine {
      * add it to the initialize process.
      * @param initFunction
      */
-    static initFunction<T>(initFunction: FunctionInitFunction<T>): InitFunction<T> {
+    static initFunction<T extends (...args: any) => any>(initFunction: FunctionInitFunction<T>): T {
         let notInitialized = true;
         let realFunction;
         const placeholderFunc = async (...args) => {
-            if(notInitialized) throw new Error("Called uninitialized function.");
+            if(notInitialized) throw new Error("Called uninitialized function. Notice that init functions only work on worker processes.");
             return await realFunction(...args);
         };
         this.initTask.push(async (bag) => {
@@ -35,8 +33,7 @@ export default class FunctionInitEngine {
                 placeholderFunc[replaceValueSymbol](realFunction);
             }
         });
-        placeholderFunc[initFunctionSymbol] = true;
-        return placeholderFunc as InitFunction<T>;
+        return placeholderFunc as T;
     }
 
     /**

@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import {DataboxConfig}                    from "../../main/config/definitions/databoxConfig";
+import {DataboxConfig}                    from "../../main/config/definitions/parts/databoxConfig";
 import Bag                                from "../Bag";
 import NoMoreDataAvailableError           from "../../main/databox/noMoreDataAvailable";
 import {VersionSystemAccessCheckFunction} from "../../main/systemVersion/systemVersionChecker";
@@ -19,7 +19,7 @@ import {InputConsumeFunction}             from "../../main/input/inputClosureCre
 import ErrorUtils                         from "../../main/utils/errorUtils";
 import {DbAccessCheckFunction}            from "../../main/databox/databoxAccessHelper";
 import NoDataAvailableError               from "../../main/databox/noDataAvailable";
-import {Component}                        from "../../main/config/definitions/component";
+import {Component}                        from "../../main/config/definitions/parts/component";
 import ConfigBuildError                   from "../../main/config/manager/configBuildError";
 
 /**

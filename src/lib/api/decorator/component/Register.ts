@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import Config           from "../../Config";
-import {Component}      from "../../../main/config/definitions/component";
+import {Component}      from "../../../main/config/definitions/parts/component";
 import Controller       from "../../Controller";
 import Databox          from "../../databox/Databox";
 import DataboxFamily    from "../../databox/DataboxFamily";

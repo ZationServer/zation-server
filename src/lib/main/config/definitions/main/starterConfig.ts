@@ -25,13 +25,6 @@ export interface StarterConfigMain
     configs ?: string;
 
     /**
-     * The path to the app config.
-     * This path is relative to the root and configs path.
-     * @default 'app.config'
-     */
-    appConfig ?: string;
-
-    /**
      * The path to the main config.
      * This path is relative to the root and configs path.
      * @default 'main.config'
@@ -39,11 +32,11 @@ export interface StarterConfigMain
     mainConfig ?: string;
 
     /**
-     * The path to the event config.
+     * The path to the app config.
      * This path is relative to the root and configs path.
-     * @default 'event.config'
+     * @default 'app.config'
      */
-    eventConfig ?: string;
+    appConfig ?: string;
 
     /**
      * The path to the service config.

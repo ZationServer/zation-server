@@ -5,13 +5,13 @@ Copyright(c) Luca Scaringella
  */
 
 import {AuthAccessConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
-import {DataboxClass}                                              from "../../../api/databox/Databox";
-import {DataboxFamilyClass}                                        from "../../../api/databox/DataboxFamily";
-import Bag                                                         from "../../../api/Bag";
-import {DataboxInfo}                                               from "../../databox/dbDefinitions";
-import ZSocket                                                     from "../../internalApi/zSocket";
+import {DataboxClass}                                              from "../../../../api/databox/Databox";
+import {DataboxFamilyClass}                                        from "../../../../api/databox/DataboxFamily";
+import Bag                                                         from "../../../../api/Bag";
+import {DataboxInfo}                                               from "../../../databox/dbDefinitions";
+import ZSocket                                                     from "../../../internalApi/zSocket";
 import {Input}                                                     from "./inputConfig";
-import {AccessConfigValue}                                         from "../../access/accessOptions";
+import {AccessConfigValue}                                         from "../../../access/accessOptions";
 
 export type DbAccessFunction = (bag: Bag, socket: ZSocket, dbInfo: DataboxInfo) => Promise<boolean> | boolean;
 

@@ -5,11 +5,11 @@ Copyright(c) Luca Scaringella
  */
 
 import {AnyClass, AnyInputConfigTranslatable, AnyModelConfigTranslatable} from "./configComponents";
-import BackErrorBag                                                       from "../../../api/BackErrorBag";
-import Bag                                                                from "../../../api/Bag";
+import BackErrorBag                                                       from "../../../../api/BackErrorBag";
+import Bag                                                                from "../../../../api/Bag";
 // noinspection TypeScriptPreferShortImport
-import {ValidationType}                                                   from "../../constants/validationType.js";
-import {FormatLetters}                                                    from "../../constants/validation";
+import {ValidationType}                                                   from "../../../constants/validationType.js";
+import {FormatLetters}                                                    from "../../../constants/validation";
 
 export type Model =
     ValueModelConfig | ObjectModelConfig | ArrayModelConfig | ArrayModelShortSyntax | string | AnyOfModelConfig | AnyClass | AnyModelConfigTranslatable;

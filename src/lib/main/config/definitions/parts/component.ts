@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ControllerClass} from "../../../api/Controller";
+import {ControllerClass} from "../../../../api/Controller";
 import {DataboxClassDef} from "./databoxConfig";
 
 export type Component = ControllerClass | DataboxClassDef;

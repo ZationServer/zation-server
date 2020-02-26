@@ -9,7 +9,7 @@ import AuthEngine         from "./authEngine";
 import ZationTokenWrapper from "../internalApi/zationTokenWrapper";
 import Bag                from "../../api/Bag";
 import AccessUtils        from "../access/accessUtils";
-import {NormalAuthAccessCustomFunction} from "../config/definitions/configComponents";
+import {NormalAuthAccessCustomFunction} from "../config/definitions/parts/configComponents";
 import {AccessConfigValue}              from '../access/accessOptions';
 import {getNotableValue, isNotableNot, Notable} from '../../api/Notable';
 

@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {BackgroundTask}   from "../config/definitions/backgroundTaskConfig";
+import {BackgroundTask}   from "../config/definitions/parts/backgroundTask";
 import ZationConfigFull   from "../config/manager/zationConfigFull";
 import FuncUtils          from "../utils/funcUtils";
 

@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import {DataboxConfig}               from "../../main/config/definitions/databoxConfig";
+import {DataboxConfig}               from "../../main/config/definitions/parts/databoxConfig";
 import DataboxCore, {DbPreparedData} from "./DataboxCore";
 import Bag                           from "../Bag";
 import UpSocket, {RespondFunction}   from "../../main/sc/socket";

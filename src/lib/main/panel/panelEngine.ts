@@ -6,8 +6,8 @@ Copyright(c) Luca Scaringella
 
 import Timer               = NodeJS.Timer;
 import ZationWorker        = require("../../core/zationWorker");
-import {PanelUserConfig}     from "../config/definitions/mainConfig";
-import {AuthUserGroupConfig} from "../config/definitions/appConfig";
+import {PanelUserConfig}     from "../config/definitions/main/mainConfig";
+import {AuthUserGroupConfig} from "../config/definitions/parts/userGroupsConfig";
 import ChUtils               from "../channel/chUtils";
 import {ZationChannel}       from "../channel/channelDefinitions";
 import MiddlewareUtils       from "../utils/middlewareUtils";
@@ -160,7 +160,7 @@ export default class PanelEngine
         }
         if(!foundUser){
             return !!(await MiddlewareUtils.checkMiddleware
-            (this.zc.event.middlewarePanelAuth,false,username,password));
+            (this.zc.middleware.middlewarePanelAuth,false,username,password));
         }
         return foundUser;
     }

@@ -16,7 +16,7 @@ import AccessUtils          from "../access/accessUtils";
 import {
     CChannelClientPubAccessFunction,
     CChannelSubAccessFunction,
-} from "../config/definitions/channelsConfig";
+} from "../config/definitions/parts/channelsConfig";
 import CChFamilyInfo   from "../internalApi/cChFamilyInfo";
 import {ZationChannel} from "./channelDefinitions";
 import {AccessConfigValue} from '../access/accessOptions';

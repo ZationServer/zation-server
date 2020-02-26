@@ -5,12 +5,12 @@ Copyright(c) Luca Scaringella
  */
 
 import {ConfigNames, DefaultUserGroupFallBack, ZationAccess} from "../../constants/internal";
-import {AppConfig}            from "../definitions/appConfig";
-import {PanelUserConfig}      from "../definitions/mainConfig";
+import {AppConfig}            from "../definitions/main/appConfig";
+import {PanelUserConfig}      from "../definitions/main/mainConfig";
 import {
     BaseCustomChannelConfig,
     ZationChannelConfig
-} from "../definitions/channelsConfig";
+} from "../definitions/parts/channelsConfig";
 // noinspection TypeScriptPreferShortImport
 import {ValidationType} from "../../constants/validationType";
 import {
@@ -39,13 +39,13 @@ import {
     InputConfig,
     Model, ModelOptional,
     ObjectModelConfig, ParamInput, ValueModelConfig
-} from "../definitions/inputConfig";
+} from "../definitions/parts/inputConfig";
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig}                      from "../definitions/controllerConfig";
-import {DataboxClassDef, DataboxConfig}        from "../definitions/databoxConfig";
+import {ControllerConfig}                      from "../definitions/parts/controllerConfig";
+import {DataboxClassDef, DataboxConfig}        from "../definitions/parts/databoxConfig";
 import DataboxFamily                           from "../../../api/databox/DataboxFamily";
 import Databox                                 from "../../../api/databox/Databox";
-import {AuthAccessConfig, VersionAccessConfig} from "../definitions/configComponents";
+import {AuthAccessConfig, VersionAccessConfig} from "../definitions/parts/configComponents";
 import DbConfigUtils                           from "../../databox/dbConfigUtils";
 import {getNotableValue, isNotableNot}         from '../../../api/Notable';
 import ErrorBag                                from '../../error/errorBag';

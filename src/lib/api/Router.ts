@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import Config            from "./Config";
-import {Component}       from "../main/config/definitions/component";
+import {Component}       from "../main/config/definitions/parts/component";
 
 /**
  * A simple router class where you can create routes for controllers.
