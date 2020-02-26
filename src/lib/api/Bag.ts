@@ -802,6 +802,20 @@ export default class Bag {
         return uniqid();
     }
 
+    //Part wait
+
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    /**
+     * Returns a promise that will be resolved in the defined time (milliseconds).
+     * Can be used to let the server wait a specific amount of time.
+     * @param ms
+     * @example
+     * await wait(2000);
+     */
+    wait(ms: number): Promise<void> {
+        return new Promise<void>(resolve => setTimeout(resolve,ms));
+    }
+
     //Part sign and verify token
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
