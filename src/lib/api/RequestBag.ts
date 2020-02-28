@@ -934,7 +934,7 @@ export default class RequestBag extends Bag
      * @throws MethodIsIncompatibleError
      */
     get socket(): ZSocket {
-        if(this.shBridge.isWebSocket) {
+        if(this.shBridge.isWebSocket()) {
             return this.shBridge.getSocket().zSocket;
         }
         else {
