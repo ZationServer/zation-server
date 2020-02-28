@@ -12,15 +12,13 @@ import moment         = require('moment');
 
 export interface LogWriter {
     write(msg: string[],category: LogCategory): void;
-    close(): void;
 }
 
 export function createConsoleLogWriter(logLevel): LogWriter {
     return {
         write: (msg, {level,color,name}) => {
             if(logLevel >= level) console.log(`\x1b[3${color}m   [${name}]\x1b[0m`,msg.join('\n'));
-        },
-        close(): void {}
+        }
     }
 }
 
@@ -45,9 +43,6 @@ export function createFileLogWriter(fileLogOptions: Required<FileLogOptions>,roo
                 process.nextTick(() =>
                     writer.write(`${moment(timestamp).format('YYYY-MM-DD HH:mm:ss.SSS')} [${name}] ${msg.join(' ')}\n`))
             }
-        },
-        close(): void {
-            writer.close();
         }
     }
 }
