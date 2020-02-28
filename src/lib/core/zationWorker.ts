@@ -41,7 +41,7 @@ import ServiceEngine        from "../main/services/serviceEngine";
 import Bag                  from "../api/Bag";
 import Mapper               from "../main/utils/mapper";
 import ViewEngine           from "../main/views/viewEngine";
-import Logger               from "../main/logger/logger";
+import Logger               from "../main/log/logger";
 import PanelEngine          from "../main/panel/panelEngine";
 import SidBuilder           from "../main/utils/sidBuilder";
 import ChUtils              from "../main/channel/chUtils";
@@ -61,9 +61,8 @@ import {
     PubOutMiddlewareReq,
     SubMiddlewareReq
 } from "../main/sc/scMiddlewareReq";
-import ExpressUtils   from "../main/utils/expressUtils";
-import {SocketAction} from "../main/constants/socketAction";
-import {TaskFunction} from "../main/config/definitions/parts/backgroundTask";
+import {SocketAction}             from "../main/constants/socketAction";
+import {TaskFunction}             from "../main/config/definitions/parts/backgroundTask";
 import {ClientErrorName}          from "../main/constants/clientErrorName";
 import {DATABOX_START_INDICATOR}  from "../main/databox/dbDefinitions";
 import {ZationChannel}            from "../main/channel/channelDefinitions";
@@ -74,7 +73,9 @@ import ConfigPrecompiler          from "../main/config/utils/configPrecompiler";
 import BagExtensionProcessor      from '../main/bagExtension/bagExtensionProcessor';
 import FunctionInitEngine         from '../main/functionInit/functionInitEngine';
 import {ProcessType, processTypeSymbol} from '../main/constants/processType';
-import {startModeSymbol} from './startMode';
+import {startModeSymbol}                from './startMode';
+import createLogFileDownloader          from '../main/log/logFileHttpEndpoint';
+import StartDebugStopwatch              from '../main/utils/startDebugStopwatch';
 
 const  SCWorker: any        = require('socketcluster/scworker');
 
@@ -154,175 +155,174 @@ class ZationWorker extends SCWorker
         this.viewEngine = new ViewEngine(this.license,this.zc.mainConfig.instanceId,this.id.toString());
 
         //setLogger
-        Logger.setZationConfig(this.zc);
+        Logger.init(this.zc);
 
         await this.setUpLogInfo();
 
         process.title = `Zation Server: ${this.zc.mainConfig.instanceId} -> Worker - ${this.id}`;
-
-        Logger.initLogFile();
 
         await this.startZWorker();
     }
 
     private async startZWorker()
     {
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} begins the start process.`,false,true);
+        Logger.log.startDebug(`The Worker with id ${this.id} begins the start process.`);
 
+        const debugStopwatch = new StartDebugStopwatch(this.zc.isStartDebug());
         const startPromises: Promise<void>[] = [];
 
         //load html views
         startPromises.push(this.viewEngine.loadViews());
 
-        Logger.startStopWatch();
+        debugStopwatch.start();
         const otherConfigsLoadedSet = ConfigLoader.loadOtherConfigsSafe(this.zc.configLocations);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has loaded other zation configuration files.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has loaded other zation configuration files.`);
 
         //start loading client js
         startPromises.push(this.loadClientJsData());
 
-        Logger.startStopWatch();
+        debugStopwatch.start();
         const precompiler = new ConfigPrecompiler(otherConfigsLoadedSet);
         this.zc.setOtherConfigs(precompiler.precompile(this.zc,this.zc.mainConfig.showPrecompiledConfigs && this.isLeader));
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has pre compiled configurations.`, true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has pre compiled configurations.`);
 
         //Origins checker
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.originCheck = OriginsUtils.createOriginChecker(this.zc.mainConfig.origins);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the origin checker.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has created the origin checker.`);
 
         //Token cluster key checker
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.tokenClusterKeyCheck = TokenUtils.createTokenClusterKeyChecker(this.zc);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the token cluster key checker.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has created the token cluster key checker.`);
 
         //Services (!Before Bag)
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.serviceEngine = new ServiceEngine(this.zc,this);
         await this.serviceEngine.init();
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created service engine.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has created service engine.`);
 
         //BagExtensions (!Before Bag)
-        Logger.startStopWatch();
+        debugStopwatch.start();
         const bagExtensionProcessor = new BagExtensionProcessor();
         await bagExtensionProcessor.process();
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has processed the bag extensions.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has processed the bag extensions.`);
 
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.aePreparedPart = new AEPreparedPart(this.zc);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared an auth engine part.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has prepared an auth engine part.`);
 
         //ChannelPrepare (!Before ChannelBagEngine)
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.channelPrepare = new ChannelPrepare(this.zc);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the channel prepare engine.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has created the channel prepare engine.`);
 
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.channelBagEngine = new ChannelBagEngine(this,this.aePreparedPart,this.channelPrepare);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has initialized the channel bag engine.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has initialized the channel bag engine.`);
 
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.preparedBag = Bag._create(this,this.channelBagEngine);
         //set Bag for events on channels or access check
         this.channelBagEngine.bag = this.preparedBag;
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the bag instance.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has created the bag instance.`);
 
         //Socket update engine
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.socketUpdateEngine = new SocketUpgradeEngine(this,this.channelPrepare);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the socket update engine.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has created the socket update engine.`);
 
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.databoxPrepare = new DataboxPrepare(this.zc,this,this.preparedBag);
         await this.databoxPrepare.prepare();
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the Databoxes.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has prepared the Databoxes.`);
 
         //PrepareChannels after Bag!
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.channelPrepare.prepare(this.preparedBag);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the channels.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has prepared the channels.`);
 
         //PrepareController after Bag!
         //After databoxes prepare (To access databoxes using the bag).
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.controllerPrepare = new ControllerPrepare(this.zc,this,this.preparedBag);
         await this.controllerPrepare.prepare();
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has prepared the controllers.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has prepared the controllers.`);
 
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.panelEngine = new PanelEngine(this,this.aePreparedPart.getAuthGroups());
         if(this.zc.mainConfig.usePanel) {
             await this.initPanelUpdates();
-            Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the panel engine.`,true);
+            debugStopwatch.stop(`The Worker with id ${this.id} has created the panel engine.`);
         }
         else {
-            Logger.printStartDebugInfo(`The Worker with id ${this.id} has checked for the panel engine.`,true);
+            debugStopwatch.stop(`The Worker with id ${this.id} has checked for the panel engine.`);
         }
 
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.chMiddlewareHelper = new ChMiddlewareHelper(this.channelPrepare,this.preparedBag);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has initialized the channel middleware helper.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has initialized the channel middleware helper.`);
 
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.loadUserBackgroundTasks();
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has loaded the user background tasks.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has loaded the user background tasks.`);
 
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.registerMasterEvent();
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has registered by the master event.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has registered by the master event.`);
 
-        Logger.startStopWatch();
+        debugStopwatch.start();
         await this.registerWorkerChannel();
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has registered to the worker channel.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has registered to the worker channel.`);
 
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.zationCReqHandler = new ControllerReqHandler(this);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the zation request handler.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has created the zation request handler.`);
 
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.zationDbHandler = new DataboxHandler(this.databoxPrepare,this.zc);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has created the zation Databox handler.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has created the zation Databox handler.`);
 
-        Logger.startStopWatch();
+        debugStopwatch.start();
         this.checkAuthStart();
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has checked for authStart.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has checked for authStart.`);
 
         Bag._isReady();
 
         //After databoxes prepare (To access databoxes using the bag) and after bag ready.
-        Logger.startStopWatch();
+        debugStopwatch.start();
         await FunctionInitEngine.initFunctions(this.preparedBag);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has initialized the init functions.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has initialized the init functions.`);
 
         //wait for start process promises
         await Promise.all(startPromises);
 
         //Server
-        Logger.startStopWatch();
+        debugStopwatch.start();
         await this.startHttpServer();
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has started the http server.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has started the http server.`);
 
         //After events preprocessed
-        Logger.startStopWatch();
+        debugStopwatch.start();
         await this.startWebSocketServer();
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has started the web socket server.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has started the web socket server.`);
 
         //Fire ExpressEvent
-        Logger.startStopWatch();
+        debugStopwatch.start();
         await this.zc.event.express(this.app);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has processed the express event.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has processed the express event.`);
 
         //Fire ScServerEvent
-        Logger.startStopWatch();
+        debugStopwatch.start();
         await this.zc.event.socketServer(this.scServer);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has processed the scServer event.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} has processed the scServer event.`);
 
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} is started.`,false);
+        Logger.log.startDebug(`The Worker with id ${this.id} is started.`);
 
         //init event
-        Logger.startStopWatch();
+        debugStopwatch.start();
         await this.zc.event.workerInit(this.isLeader,this._isRespawn);
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} invoked init event.`,true);
+        debugStopwatch.stop(`The Worker with id ${this.id} invoked init event.`);
 
         //Fire event is started
         this.zc.event.workerStarted(this.zc.getZationInfo(),this.isLeader,this._isRespawn,this);
@@ -330,12 +330,9 @@ class ZationWorker extends SCWorker
 
     private async setUpLogInfo()
     {
-        this.on('error',(e) => {
-           Logger.printError(
-               e,
-               `Worker: '${this.getFullWorkerId()}' error thrown.`,
-               `Worker will be restarted!`
-           );
+        this.on('error',(err) => {
+           Logger.log.error
+           (`Worker: '${this.getFullWorkerId()}' error thrown.`, err, `Worker will be restarted!`);
         });
     }
 
@@ -362,7 +359,7 @@ class ZationWorker extends SCWorker
 
             const initPromise = this.zc.event.socketInit(socket.zSocket);
 
-            Logger.printDebugInfo(`Socket with id: ${socket.id} is connected!`);
+            Logger.log.debug(`Socket with id: ${socket.id} is connected!`);
 
             socket.on('>', async (data, respond) => {
                 await this.zationCReqHandler.processSocketReq(data,socket,respond);
@@ -433,7 +430,7 @@ class ZationWorker extends SCWorker
         });
 
         //Log file download
-        this.app.get([`${serverPath}/log/:key`,`${serverPath}/log`],ExpressUtils.createLogFileDownloader(this.zc));
+        this.app.get([`${serverPath}/log/:key`,`${serverPath}/log`],createLogFileDownloader(this.zc.mainConfig.log.file));
 
         if(this.zc.mainConfig.provideClientJs) {
             this.app.get(`${serverPath}/client.js`,(req,res) => {
@@ -479,7 +476,7 @@ class ZationWorker extends SCWorker
                     const id = authToken.userId;
                     if(id !== undefined) {
                         if (ZationChannel.USER_CHANNEL_PREFIX + id === channel) {
-                            Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes to the user channel: '${id}'.`);
+                            Logger.log.debug(`Socket with id: ${req.socket.id} subscribes to the user channel: '${id}'.`);
                             next();
                         }
                         else {
@@ -505,7 +502,7 @@ class ZationWorker extends SCWorker
                     const authUserGroup = authToken.authUserGroup;
                     if(authUserGroup !== undefined) {
                         if (ZationChannel.AUTH_USER_GROUP_PREFIX + authUserGroup === channel) {
-                            Logger.printDebugInfo
+                            Logger.log.debug
                             (`Socket with id: ${req.socket.id} subscribes to the auth user group channel: '${authUserGroup}'.`);
                             next();
                         }
@@ -534,14 +531,14 @@ class ZationWorker extends SCWorker
                     next(err); //Block!
                 }
                 else {
-                    Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes to the default user group channel.`);
+                    Logger.log.debug(`Socket with id: ${req.socket.id} subscribes to the default user group channel.`);
                     next();
                 }
             }
             else if (channel === ZationChannel.PANEL_OUT) {
                 if(authToken !== null){
                     if (typeof authToken.panelAccess === 'boolean' && authToken.panelAccess) {
-                        Logger.printDebugInfo
+                        Logger.log.debug
                         (`Socket with id: ${req.socket.id} subscribes to the panel out channel.`);
                         next();
                     }
@@ -573,7 +570,7 @@ class ZationWorker extends SCWorker
                 next(err); //Block!
             }
             else {
-                Logger.printDebugInfo(`Socket with id: ${req.socket.id} subscribes the '${channel}' channel.`);
+                Logger.log.debug(`Socket with id: ${req.socket.id} subscribes the '${channel}' channel.`);
                 next();
             }
         });
@@ -1284,13 +1281,12 @@ class ZationWorker extends SCWorker
     private async processBackgroundTask(id) {
         if(this.userBackgroundTasks.hasOwnProperty(id)) {
             try {
-                Logger.printDebugInfo
+                Logger.log.debug
                 (`The Worker with id: ${this.id}, starts to invoke background task: '${id}'`);
                 await this.userBackgroundTasks[id](this.preparedBag);
             }
             catch (e) {
-                Logger.printDebugInfo
-                (`The Worker with id: ${this.id}, error while invoking the background task: '${id}'`);
+                Logger.log.error(`The Worker with id: ${this.id}, error while invoking the background task: '${id}': ${e.stack}`);
                 await this.zc.event.error(e);
             }
         }

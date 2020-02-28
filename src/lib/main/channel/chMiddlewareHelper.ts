@@ -8,7 +8,7 @@ import UpSocket             from "../sc/socket";
 import {ChannelPrepare, CustomChFamilyStorage, CustomChStorage} from "./channelPrepare";
 import Bag                  from "../../api/Bag";
 import ChUtils              from "./chUtils";
-import Logger               from "../logger/logger";
+import Logger               from "../log/logger";
 import PubData              from "../internalApi/pubData";
 import {ClientErrorName}    from "../constants/clientErrorName";
 import BaseSHBridge         from "../bridges/baseSHBridge";
@@ -65,7 +65,7 @@ export default class ChMiddlewareHelper
         if(!this.channelPrepare.existCustomCh(name)){
             const err: any = new Error('Unknown custom channel.');
             err.name = ClientErrorName.UNKNOWN_CHANNEL;
-            Logger.printDebugInfo
+            Logger.log.debug
             (`The socket with id: ${socket.id} cannot subscribe to an unknown custom channel name: '${name}'.`);
             return Error;
         }
@@ -103,7 +103,7 @@ export default class ChMiddlewareHelper
             socket.zSocket,
             {name,id}
         ))) {
-            Logger.printDebugInfo
+            Logger.log.debug
             (`The socket with id: ${socket.id} subscribes the custom channel: '${name}'${idProvided ? ` with member id: '${id}'`:''}.`);
             return undefined;
         }
@@ -133,7 +133,7 @@ export default class ChMiddlewareHelper
         if(!this.channelPrepare.existCustomCh(name)){
             const err: any = new Error('Unknown custom channel.');
             err.name = ClientErrorName.UNKNOWN_CHANNEL;
-            Logger.printDebugInfo
+            Logger.log.debug
             (`The socket with id: ${socket.id} cannot publish in an unknown custom channel name: '${name}'.`);
             return Error;
         }
@@ -173,7 +173,7 @@ export default class ChMiddlewareHelper
             socket.zSocket,
              chInfo
         ))) {
-            Logger.printDebugInfo
+            Logger.log.debug
             (`The socket with id: ${socket.id} publishes in the custom channel: '${name}'${idProvided ? ` with member id: '${id}'`:''}.`);
 
             preChInfo.onClientPub(

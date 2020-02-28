@@ -52,5 +52,4 @@ export default class ZationConfigMaster extends ZationConfig {
                 expiresIn: this._mainConfig.authDefaultExpiry
             };
     }
-
 }

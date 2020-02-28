@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import ZationMaster from "../../core/zationMaster";
 import ZationConfig from "../config/manager/zationConfig";
 import TimeUtils    from "../utils/timeUtils";
-import Logger       from "../logger/logger";
+import Logger       from "../log/logger";
 
 export default class BackgroundTasksSender
 {
@@ -35,7 +35,7 @@ export default class BackgroundTasksSender
                 processTaskTriggerTime(time,TimeUtils.getMoment(this.zc.mainConfig.timeZone));
 
                 if(tillMs && tillMs > 0) {
-                    Logger.printDebugInfo(`Every Background Task: ${name} is planed to -> ${tillFormat}`);
+                    Logger.log.debug(`Every Background Task: ${name} is planed to -> ${tillFormat}`);
                     setTimeout(() => {
                         this.runUserBackgroundTask(name,clusterSafe);
                         set();
@@ -69,7 +69,7 @@ export default class BackgroundTasksSender
             processTaskTriggerTime(time,TimeUtils.getMoment(this.zc.mainConfig.timeZone));
 
             if(tillMs && tillMs > 0) {
-                Logger.printDebugInfo(`At Background Task: ${name} is planed to -> ${tillFormat}`);
+                Logger.log.debug(`At Background Task: ${name} is planed to -> ${tillFormat}`);
                 setTimeout(() => {
                     this.runUserBackgroundTask(name,clusterSafe);
                 },tillMs);

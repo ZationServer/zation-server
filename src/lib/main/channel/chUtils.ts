@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import UpSocket          from "../sc/socket";
-import Logger            from "../logger/logger";
+import Logger            from "../log/logger";
 import PubData           from "../internalApi/pubData";
 import {ZationChannel}   from "./channelDefinitions";
 
@@ -93,7 +93,7 @@ export default class ChUtils
     static kickOut(socket: UpSocket, channel: string,target?: string): void {
         // noinspection JSUnresolvedFunction,JSValidateTypes,TypeScriptValidateJSTypes
         socket.kickOut(channel);
-        Logger.printDebugInfo(`Socket with id: ${socket.id} is kicked from ${target !== undefined ? target: `channel ${channel}`}.`);
+        Logger.log.debug(`Socket with id: ${socket.id} is kicked from ${target !== undefined ? target: `channel ${channel}`}.`);
     }
 
     /**

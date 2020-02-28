@@ -106,8 +106,9 @@ export interface Events
      */
     started?: Event<StartedFunction>;
     /**
-     * An event that gets invoked when an unknown error is thrown on the server
-     * while processing a request or background task.
+     * An event that gets invoked when an unknown error is thrown on a worker while:
+     * processing a request, run a background task or
+     * processing another event (only events that runs on a worker).
      * Runs on a worker process.
      * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (error) => {}

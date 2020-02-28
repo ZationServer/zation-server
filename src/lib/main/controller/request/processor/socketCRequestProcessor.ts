@@ -7,9 +7,8 @@ Copyright(c) Luca Scaringella
 import SHBridgeSocket        from "../../../bridges/shBridgeSocket";
 import UpSocket              from "../../../sc/socket";
 import ZationConfig          from "../../../config/manager/zationConfig";
-import Logger                from "../../../logger/logger";
+import Logger                from "../../../log/logger";
 import ControllerReqUtils    from "../controllerReqUtils";
-import PrettyStringifyUtils  from "../../../utils/prettyStringifyUtils";
 
 export default class SocketCRequestProcessor
 {
@@ -26,12 +25,9 @@ export default class SocketCRequestProcessor
     //SOCKET Extra Layer
     async prepareReq(socket: UpSocket, input, respond, reqId: string): Promise<SHBridgeSocket>
     {
-        if(this.debug){
-            Logger.printDebugInfo(`Socket Controller Request id: ${reqId} -> `,PrettyStringifyUtils.object(input));
-        }
-        if(this.zc.mainConfig.logFileControllerRequests){
-            Logger.logFileInfo(`Socket Controller Request id: ${reqId} -> `,input);
-        }
+        //performance boost
+        if(this.debug)
+            Logger.log.debug(`Socket Controller Request id: ${reqId} -> `,input);
 
         //check for validationCheckRequest
         return new SHBridgeSocket(socket,reqId,input,ControllerReqUtils.isValidationCheckReq(input),this.defaultApiLevel);

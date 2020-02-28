@@ -25,7 +25,7 @@ import ConfigCheckerTools   from "./configCheckerTools";
 import {Structures}         from "../definitions/structures";
 import ConfigError          from "../../error/configError";
 import Target               from "./target";
-import Logger               from "../../logger/logger";
+import Logger               from "../../log/logger";
 import ObjectPath           from "../../utils/objectPath";
 import Controller, {ControllerClass} from "../../../api/Controller";
 import Iterator             from "../../utils/iterator";
@@ -127,12 +127,12 @@ export default class ConfigChecker
                 this.checkUserGroupName(defaultGroup, extraKeys, false);
                 groups.push(defaultGroup);
             } else {
-                Logger.printConfigWarning
+                Logger.consoleLogConfigWarning
                 (ConfigNames.APP, `No settings for the default user group found! Default user group will be set to ${DefaultUserGroupFallBack}`);
                 groups.push(DefaultUserGroupFallBack);
             }
         } else {
-            Logger.printConfigWarning
+            Logger.consoleLogConfigWarning
             (ConfigNames.APP, `No settings for the user groups are found! DefaultUserGroup will be set to 'default'`);
         }
 
@@ -185,7 +185,7 @@ export default class ConfigChecker
                 //checkAuthControllerAccess value
                 Iterator.iterateCompDefinition<ControllerClass>(controller[authControllerId],(controllerClass, apiLevel) => {
                     if (controllerClass.config.access !== ZationAccess.ALL) {
-                        Logger.printConfigWarning
+                        Logger.consoleLogConfigWarning
                         (ConfigNames.APP, `It is recommended to set the access of the authController ${apiLevel ? `(API Level: ${apiLevel}) `: ''}directly to 'all'.`);
                     }
                 });
@@ -292,7 +292,7 @@ export default class ConfigChecker
     // noinspection JSMethodCanBeStatic
     private warningForPublish(value: any, target: Target): void {
         if (getNotableValue(value) === !isNotableNot(value)) {
-            Logger.printConfigWarning
+            Logger.consoleLogConfigWarning
             (ConfigNames.APP,
                 `${target.getTarget()} please notice that 'clientPubAccess' is used when a client publishes from outside in a channel! ` +
                 `That is only useful for advanced use cases otherwise its recommended to use a controller (with validation) and publish from the server side.`);
@@ -304,7 +304,7 @@ export default class ConfigChecker
         const accessValue = getNotableValue(ObjectPath.get(this.zcLoader.appConfig,
             [nameof<AppConfig>(s => s.controllerDefaults), nameof<ControllerConfig>(s => s.access)]));
         if (accessValue === undefined) {
-            Logger.printConfigWarning(ConfigNames.APP, 'It is recommended to set a controller default value for access or notAccess.');
+            Logger.consoleLogConfigWarning(ConfigNames.APP, 'It is recommended to set a controller default value for access or notAccess.');
         }
     }
 
@@ -340,7 +340,7 @@ export default class ConfigChecker
                     this.checkCustomName(k,'property',target.getTarget()+' ');
                     this.checkModel(props[k], target.addPath(k));
                     if (prototype.hasOwnProperty(k)) {
-                        Logger.printConfigWarning(
+                        Logger.consoleLogConfigWarning(
                             ConfigNames.APP,
                             `${target.getTarget()} Property '${k}' will shadowing the prototype property '${k}'.`);
                     }
@@ -453,7 +453,7 @@ export default class ConfigChecker
             for (let prop in props) {
                 if (props.hasOwnProperty(prop)) {
                     if (superPrototype.hasOwnProperty(prop)) {
-                        Logger.printConfigWarning(
+                        Logger.consoleLogConfigWarning(
                             ConfigNames.APP,
                             `${srcTarget.getTarget()} Property '${prop}' is shadowing an inherited prototype property '${prop}' from ${target.getPath()}.`);
                     }
@@ -516,7 +516,7 @@ export default class ConfigChecker
         }
 
         if (this.zcLoader.mainConfig.usePanel && !hasOneUser) {
-            Logger.printConfigWarning
+            Logger.consoleLogConfigWarning
             (
                 ConfigNames.MAIN,
                 `The zation panel is activated but no panelUser is defined in the main config.`
@@ -546,7 +546,7 @@ export default class ConfigChecker
         if (config.password === 'admin' &&
             config.username === 'admin' &&
             this.zcLoader.mainConfig.usePanel) {
-            Logger.printConfigWarning
+            Logger.consoleLogConfigWarning
             (ConfigNames.MAIN, `Don't forget to change the panel access credentials in the main configuration.`);
         }
 
@@ -554,7 +554,7 @@ export default class ConfigChecker
         // noinspection SuspiciousTypeOfGuard
         if(typeof config.username === 'string' && config.username !== 'admin' &&
         config.password.toLocaleUpperCase().indexOf(config.username.toLocaleLowerCase()) !== -1) {
-            Logger.printConfigWarning
+            Logger.consoleLogConfigWarning
             (ConfigNames.MAIN, `Please choose a more secure password (that not contains the username).`);
         }
     }
@@ -637,7 +637,7 @@ export default class ConfigChecker
     private checkVersionAccessConfig(cc: VersionAccessConfig, target: Target) {
         if (typeof cc.versionAccess === 'object' &&
             Object.keys(cc.versionAccess).length === 0) {
-            Logger.printConfigWarning(
+            Logger.consoleLogConfigWarning(
                 ConfigNames.APP,
                 target.getTarget() + ' It is recommended that versionAccess has at least one system!'
             );
@@ -698,7 +698,7 @@ export default class ConfigChecker
         if (typeof inputConfig.allowAnyInput === 'boolean' &&
             inputConfig.allowAnyInput &&
             (typeof inputConfig.input === 'object')) {
-            Logger.printConfigWarning(
+            Logger.consoleLogConfigWarning(
                 ConfigNames.APP,
                 `${target.getTarget()} is ignored with allowAny${inputTypeName}Input true.`
             );
@@ -768,7 +768,7 @@ export default class ConfigChecker
             if (input[keys[i]][nameof<ValueModelConfig>(s => s.isOptional)] !== undefined &&
                 input[keys[i]][nameof<ValueModelConfig>(s => s.isOptional)]) {
                 if ((keys.length - 1) !== i && !wasLastOptional) {
-                    Logger.printConfigWarning(
+                    Logger.consoleLogConfigWarning(
                         ConfigNames.APP,
                         `${target.getTarget()} input: '${keys[i]}', It is recommended to set the optional parameters at the first input level at the end.`
                     );
@@ -1034,7 +1034,7 @@ export default class ConfigChecker
             )
         )
         {
-            Logger.printConfigWarning(
+            Logger.consoleLogConfigWarning(
                 ConfigNames.APP,
                 `${target.getTarget()} Optional param in an array is useless.`
             );
@@ -1068,27 +1068,27 @@ export default class ConfigChecker
             }
 
             if(ObjectUtils.hasOneOf(value, OnlyStringFunctions) && (!types.includes(TypeTypes.STRING) && !types.includes(TypeTypes.BASE64))) {
-                Logger.printConfigWarning(
+                Logger.consoleLogConfigWarning(
                     ConfigNames.APP,
-                    `${target.getTarget()} unused validation functions (no type string or base64) -> ${ObjectUtils.getFoundKeys(value,OnlyStringFunctions).toString()}.`
+                    `${target.getTarget()} unused validation functions (no type string or base64) -> ${ObjectUtils.findKeysOfScope(value,OnlyStringFunctions).toString()}.`
                 );
             }
             if(ObjectUtils.hasOneOf(value, OnlyNumberFunctions) && !types.includes(TypeTypes.NUMBER)) {
-                Logger.printConfigWarning(
+                Logger.consoleLogConfigWarning(
                     ConfigNames.APP,
-                    `${target.getTarget()} unused validation functions (no type number) -> ${ObjectUtils.getFoundKeys(value,OnlyNumberFunctions).toString()}.`
+                    `${target.getTarget()} unused validation functions (no type number) -> ${ObjectUtils.findKeysOfScope(value,OnlyNumberFunctions).toString()}.`
                 );
             }
             if(ObjectUtils.hasOneOf(value, OnlyDateFunctions) && !types.includes(TypeTypes.DATE)) {
-                Logger.printConfigWarning(
+                Logger.consoleLogConfigWarning(
                     ConfigNames.APP,
-                    `${target.getTarget()} unused validation functions (no type date) -> ${ObjectUtils.getFoundKeys(value,OnlyDateFunctions).toString()}.`
+                    `${target.getTarget()} unused validation functions (no type date) -> ${ObjectUtils.findKeysOfScope(value,OnlyDateFunctions).toString()}.`
                 );
             }
             if(ObjectUtils.hasOneOf(value, OnlyBase64Functions) && !types.includes(TypeTypes.BASE64)) {
-                Logger.printConfigWarning(
+                Logger.consoleLogConfigWarning(
                     ConfigNames.APP,
-                    `${target.getTarget()} unused validation functions (no type base64) -> ${ObjectUtils.getFoundKeys(value,OnlyBase64Functions).toString()}.`
+                    `${target.getTarget()} unused validation functions (no type base64) -> ${ObjectUtils.findKeysOfScope(value,OnlyBase64Functions).toString()}.`
                 );
             }
         }
@@ -1159,7 +1159,7 @@ export default class ConfigChecker
                     }
                     else {
                         processInfo.otherSrc.push(res);
-                        ObjectUtils.addObToOb(srcValueModel,res);
+                        ObjectUtils.mergeTwoObjects(srcValueModel,res);
 
                         //Check only new anonymous value models.
                         if(processInfo.baseModelLevel && !(res as ModelCheckedMem)._checked){

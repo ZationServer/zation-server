@@ -9,7 +9,7 @@ import {WorkerMessageAction}   from "../main/constants/workerMessageAction";
 import {StarterConfig}         from "../main/config/definitions/main/starterConfig";
 import StringSet               from "../main/utils/stringSet";
 import StateServerEngine       from "../main/cluster/stateServerEngine";
-import Logger                  from "../main/logger/logger";
+import Logger                  from "../main/log/logger";
 import ConfigChecker           from "../main/config/utils/configChecker";
 import ClientPrepare           from "../main/client/clientPrepare";
 import PortChecker             from "../main/utils/portChecker";
@@ -28,6 +28,7 @@ import ConfigLoader            from "../main/config/manager/configLoader";
 import BagExtensionConflictChecker from '../main/bagExtension/bagExtensionConflictChecker';
 import {ProcessType, processTypeSymbol} from '../main/constants/processType';
 import {Events}                         from '../main/config/definitions/parts/events';
+import StartDebugStopwatch              from '../main/utils/startDebugStopwatch';
 
 global[processTypeSymbol] = ProcessType.Master;
 
@@ -48,6 +49,8 @@ export default class ZationMaster {
     private readonly startResolve: () => void;
     private readonly startReject: (err: any) => void;
     private readonly startMode: number;
+
+    private debugStopwatch: StartDebugStopwatch;
 
     //cluster
     private clusterStateServerHost: any;
@@ -93,13 +96,11 @@ export default class ZationMaster {
 
                     process.title = `Zation Server: ${this.zc.mainConfig.instanceId} -> Master`;
 
-                    //setLogger
-                    Logger.setZationConfig(this.zc);
-
+                    //init logger
+                    Logger.init(this.zc,startMode === StartMode.Check);
+                    this.debugStopwatch = new StartDebugStopwatch(this.zc.isStartDebug());
 
                     if(startMode !== StartMode.Check) {
-                        Logger.initLogFile();
-
                         await this.start();
                     }
                     else {
@@ -108,64 +109,65 @@ export default class ZationMaster {
                 }
                 catch (e) {
                     if(e instanceof ConfigBuildError){
-                        Logger.printStartFail(`An error was thrown by try to build a configuration -> ${e.stack}`);
+                        Logger.logStartFail(`An error was thrown by try to build a configuration -> ${e.stack}`);
                     }
                     else {
-                        Logger.printStartFail(`An error was thrown on server start -> ${e.stack}`);
+                        Logger.logStartFail(`An error was thrown on server start -> ${e.stack}`);
                     }
 
                 }
             })();
         }
         else {
-            Logger.printWarning('You can only start zation once.');
+            console.log('\x1b[31m%s\x1b[0m\',\'   [WARNING]','You can only start zation once.');
         }
     }
 
     private async start() {
-        Logger.printBusy('Launching Zation');
-        Logger.printDebugInfo('Zation is launching with debug mode on.');
+        Logger.log.busy('Launching Zation');
 
-        Logger.startStopWatch();
+        if(this.zc.isDebug()){
+            Logger.log.info('Zation is launching with debug mode on.');
+        }
 
         let errorBag;
 
         const configChecker = new ConfigChecker(this.zcLoader);
         if(this.zc.starterConfig.checkConfigs) {
+            this.debugStopwatch.start();
             errorBag = configChecker.checkStarterConfig();
             if (errorBag.hasError()) {
-                Logger.printErrorBag(errorBag);
+                Logger.consoleLogErrorBag(errorBag);
                 return this.rejectStart(StartErrorName.ConfigErrors,'The starter config has errors.');
             }
-            Logger.printStartDebugInfo(`The Master has checked the starter config.`, true);
+            this.debugStopwatch.stop(`The Master has checked the starter config.`);
         }
 
-        Logger.startStopWatch();
+        this.debugStopwatch.start();
         await this.configFileLoad();
-        Logger.printStartDebugInfo(`The Master has loaded the other config files.`, true);
+        this.debugStopwatch.stop(`The Master has loaded the other config files.`);
 
         if(this.zc.starterConfig.checkConfigs) {
-            Logger.startStopWatch();
+            this.debugStopwatch.start();
             errorBag = configChecker.checkAllConfigs();
             if (errorBag.hasError()) {
-                Logger.printErrorBag(errorBag);
+                Logger.consoleLogErrorBag(errorBag);
                 return this.rejectStart(StartErrorName.ConfigErrors,'The configs have errors.');
             }
-            Logger.printStartDebugInfo(`The Master has checked the config files.`, true);
+            this.debugStopwatch.stop(`The Master has checked the config files.`);
         }
 
-        Logger.startStopWatch();
+        this.debugStopwatch.start();
         const bagExtensionChecker = new BagExtensionConflictChecker();
         errorBag = bagExtensionChecker.checkBagExtensionsConflicts();
         if (errorBag.hasError()) {
-            Logger.printErrorBag(errorBag,'BagExtension conflict');
+            Logger.consoleLogErrorBag(errorBag,'BagExtension conflict');
             return this.rejectStart(StartErrorName.BagExtensionsConflicts,'The BagExtensions have conflicts.');
         }
-        Logger.printStartDebugInfo(`The Master has checked the bag extensions.`, true);
-
+        this.debugStopwatch.stop(`The Master has checked the bag extensions.`);
 
         if(this.zc.mainConfig.license !== undefined){
-            Logger.startStopWatch();
+            this.debugStopwatch.start();
             try {
                 this.license = LicenseManager.processLicense(this.zc.mainConfig.license);
             }
@@ -179,38 +181,38 @@ export default class ZationMaster {
                 this.printStartFail(msg);
                 return this.rejectStart(StartErrorName.LicenseVersionIncompatible,msg);
             }
-            Logger.printStartDebugInfo('The Master has checked the license.', true);
+            this.debugStopwatch.stop(`The Master has checked the license.`);
         }
 
-        Logger.startStopWatch();
+        this.debugStopwatch.start();
         const portIsAvailable = await PortChecker.isPortAvailable(this.zc.mainConfig.port);
         if(!portIsAvailable) {
             const msg = `The port: ${this.zc.mainConfig.port} is in use. Try with a different port.`;
             this.printStartFail(msg);
             return this.rejectStart(StartErrorName.PortInUse,msg);
         }
-        Logger.printStartDebugInfo('The Master has checked that the port is available.', true);
+        this.debugStopwatch.stop(`The Master has checked that the port is available.`);
 
-        Logger.startStopWatch();
+        this.debugStopwatch.start();
         this.serverSettingsJs = ClientPrepare.createServerSettingsFile(this.zc);
-        Logger.printStartDebugInfo(`The Master has prepared the server settings js file.`, true);
+        this.debugStopwatch.stop(`The Master has prepared the server settings js file.`);
 
         if(this.zc.mainConfig.provideClientJs) {
-            Logger.startStopWatch();
+            this.debugStopwatch.start();
             this.fullClientJs = ClientPrepare.buildClientJs(this.serverSettingsJs);
-            Logger.printStartDebugInfo(`The Master has prepared the client js file.`, true);
+            this.debugStopwatch.stop(`The Master has prepared the client js file.`);
         }
 
-        Logger.startStopWatch();
+        this.debugStopwatch.start();
         this.startBackgroundTasks();
-        Logger.printStartDebugInfo('Master init the background tasks.',true);
+        this.debugStopwatch.stop(`The Master init the background tasks.`);
 
         this.checkClusterMode();
         if (this.stateServerActive) {
             //cluster active
             this.stateServerEngine = new StateServerEngine(this.zc, this, this.license);
             try {
-                Logger.printStartDebugInfo('Master wait for connection to zation-cluster-state server...');
+                Logger.log.startDebug('Master wait for connection to zation-cluster-state server...');
                 await this.stateServerEngine.registerStateServer();
             }
             catch (e) {
@@ -220,41 +222,39 @@ export default class ZationMaster {
         }
 
         //init event
-        Logger.startStopWatch();
+        this.debugStopwatch.start();
         const masterInitEvent = (this.zcLoader.appConfig.events || {}).masterInit;
         if(masterInitEvent){
             await ConfigPrecompiler.preCompileEvent
             (masterInitEvent,nameof<Events>(s => s.masterInit))(this.zc.getZationInfo())
         }
-        Logger.printStartDebugInfo('Master invoked init event.',true);
+        this.debugStopwatch.stop(`The Master invoked init event.`);
 
         this.startSocketClusterWithLog();
     }
 
     private async check() {
-        Logger.startStopWatch();
-
         let configErrorBag;
 
+        this.debugStopwatch.start();
         const configChecker = new ConfigChecker(this.zcLoader);
         configErrorBag = configChecker.checkStarterConfig();
         if (configErrorBag.hasError()) {
-            Logger.printErrorBag(configErrorBag);
+            Logger.consoleLogErrorBag(configErrorBag);
             return this.rejectStart(StartErrorName.ConfigErrors,'The starter config has errors.');
         }
-        Logger.printStartDebugInfo(`Checked starter config.`, true);
+        this.debugStopwatch.stop(`Checked starter config.`);
 
-        Logger.startStopWatch();
+        this.debugStopwatch.start();
         await this.configFileLoad();
-        Logger.printStartDebugInfo(`Loaded the other config files.`, true);
+        this.debugStopwatch.stop(`Loaded the other config files.`);
 
-        Logger.startStopWatch();
         configErrorBag = configChecker.checkAllConfigs();
         if (configErrorBag.hasError()) {
-            Logger.printErrorBag(configErrorBag);
+            Logger.consoleLogErrorBag(configErrorBag);
             return this.rejectStart(StartErrorName.ConfigErrors,'The configs have errors.');
         }
-        Logger.log('\x1b[32m%s\x1b[0m', '   [CHECKED]','✅ No configuration errors found.');
+        console.log('\x1b[32m%s\x1b[0m', '   [CHECKED]','✅ No configuration errors found.');
     }
 
     public async configFileLoad() {
@@ -262,18 +262,19 @@ export default class ZationMaster {
 
         if(this.zcLoader.loadedConfigs.length > 0) {
             const moreConfigs = this.zcLoader.loadedConfigs.length>1;
-            Logger.printDebugInfo
+            Logger.log.debug
             (`The configuration${moreConfigs ? 's': ''}: ${this.zcLoader.loadedConfigs.join(', ')} ${moreConfigs ? 'are': 'is'} loaded.`);
         }
         else {
-            Logger.printDebugInfo(`No config file with root path: '${this.zc.rootPath}' was found.`)
+            Logger.log.debug(`No config file with root path: '${this.zc.rootPath}' was found.`)
         }
     }
 
     public startSocketClusterWithLog() {
-        Logger.startStopWatch();
+        this.debugStopwatch.start();
         this.startSocketCluster();
-        Logger.printStartDebugInfo('The Master has started sc-cluster.', true);
+        if(this.zc.isStartDebug())
+            this.debugStopwatch.stop(`The Master has started sc-cluster.`);
     }
 
     private startSocketCluster()
@@ -282,13 +283,10 @@ export default class ZationMaster {
             require(this.zc.mainConfig.wsEngine);
         }
         catch (e) {
-            Logger.printStartFail
+            Logger.logStartFail
             (`Failed to load the wsEngine: ${this.zc.mainConfig.wsEngine}. Error -> ${e.toString()}.`);
             return this.rejectStart(StartErrorName.LoadWsEngineFailed,'Failed to load wsEngine.');
         }
-
-        const scLogLevel = this.zc.mainConfig.scConsoleLog ?
-            this.zc.mainConfig.scLogLevel || null: 0;
 
         const scOptions = {
             workers: this.zc.mainConfig.workers,
@@ -312,7 +310,7 @@ export default class ZationMaster {
             zationConfigWorkerTransport: this.zc.getZcTransport(),
             zationServerVersion: ZationMaster.version,
             zationServerStartedTimeStamp: this.serverStartedTimeStamp,
-            logLevel: scLogLevel,
+            logLevel: this.zc.mainConfig.log.core.active ? this.zc.mainConfig.log.core.logLevel: 0,
             license: this.license,
             clusterAuthKey: this.zc.mainConfig.clusterAuthKey || null,
             clusterStateServerHost: this.clusterStateServerHost,
@@ -453,44 +451,42 @@ export default class ZationMaster {
             `Licensed to ${this.license.h} (${LicenseLevel[this.license.l]})` :
             'No license (only for testing)';
 
-        Logger.log('\x1b[32m%s\x1b[0m','   [ACTIVE]',`Zation${this.license ? '': ' (Unlicensed)'} started 🚀`
+        const msg: string[] = [];
+        msg.push(`Zation${this.license ? '': ' (Unlicensed)'} started 🚀`
             + (this.zc.inTestMode() ? ' in TestMode 🛠': ''));
-        Logger.log(`            Version: ${ZationMaster.version}`);
-        Logger.log(`            Your app: ${this.zc.mainConfig.appName}`);
-        Logger.log(`            Hostname: ${hostName}`);
-        Logger.log(`            Port: ${port}`);
-        Logger.log(` ️          Time️: ${TimeUtils.getMoment(this.zc.mainConfig.timeZone)}`);
-        Logger.log(`            Time zone: ${this.zc.mainConfig.timeZone}`);
-        Logger.log(`            Instance id: ${this.master.options.instanceId}`);
-        Logger.log(`            Node.js version: ${process.version}`);
-        Logger.log(`            WsEngine: ${this.master.options.wsEngine}`);
-        Logger.log(`            Machine scaling active: ${this.stateServerActive}`);
-        Logger.log(`            Worker count: ${this.master.options.workers}`);
-        Logger.log(`            Broker count: ${this.master.options.brokers}`);
-        Logger.log(`            License: ${license}`);
+        msg.push(`            Version: ${ZationMaster.version}`);
+        msg.push(`            Your app: ${this.zc.mainConfig.appName}`);
+        msg.push(`            Hostname: ${hostName}`);
+        msg.push(`            Port: ${port}`);
+        msg.push(` ️          Time️: ${TimeUtils.getMoment(this.zc.mainConfig.timeZone)}`);
+        msg.push(`            Time zone: ${this.zc.mainConfig.timeZone}`);
+        msg.push(`            Instance id: ${this.master.options.instanceId}`);
+        msg.push(`            Node.js version: ${process.version}`);
+        msg.push(`            WsEngine: ${this.master.options.wsEngine}`);
+        msg.push(`            Machine scaling active: ${this.stateServerActive}`);
+        msg.push(`            Worker count: ${this.master.options.workers}`);
+        msg.push(`            Broker count: ${this.master.options.brokers}`);
+        msg.push(`            License: ${license}`);
         if(this.license){
-            Logger.log(`            LicenseType: ${LicenseManager.licenseTypeToString(this.license)}`);
-            Logger.log(`            LicenseId: ${this.license.i}`);
+            msg.push(`            LicenseType: ${LicenseManager.licenseTypeToString(this.license)}`);
+            msg.push(`            LicenseId: ${this.license.i}`);
         }
-        Logger.log(`            Server: ${server}`);
+        msg.push(`            Server: ${server}`);
         if(this.zc.mainConfig.usePanel) {
-            Logger.log(`            Panel: ${server}/panel`);
+            msg.push(`            Panel: ${server}/panel`);
         }
-        if(this.zc.mainConfig.logFileDownloadable && this.zc.mainConfig.logFile) {
-            Logger.log(`            Log: ${server}/log/${this.zc.mainConfig.logFileAccessKey}`);
+        const logFileOptions = this.zc.mainConfig.log.file;
+        if(logFileOptions.active && logFileOptions.download.active) {
+            msg.push(`            Log: ${server}/log/${logFileOptions.download.accessKey}`);
         }
         if(this.zc.mainConfig.provideClientJs) {
-            Logger.log(`            ClientJs: ${server}/client.js`);
+            msg.push(`            ClientJs: ${server}/client.js`);
         }
-        Logger.log('            GitHub: https://github.com/ZationServer');
-        Logger.log(`            StartTime: ${Date.now()-this.serverStartedTimeStamp} ms`);
-        Logger.log('            Copyright(c) Luca Scaringella');
+        msg.push('            GitHub: https://github.com/ZationServer');
+        msg.push(`            StartTime: ${Date.now()-this.serverStartedTimeStamp} ms`);
+        msg.push('            Copyright(c) Luca Scaringella');
 
-        if(this.zc.mainConfig.logFileStarted){
-            Logger.logFileInfo
-            (`Zation started 🚀 with Version ${ZationMaster.version} on Server Url ${server}`+
-                ` with options -> Machine scaling: ${this.stateServerActive}, WebSocket Engine: ${this.master.options.wsEngine}.`);
-        }
+        Logger.log.active(msg.join('\n'));
     }
 
     private getRandomWorkerId() {
@@ -511,7 +507,7 @@ export default class ZationMaster {
      * @param instanceId
      */
     public changeInstanceId(instanceId: string) {
-        Logger.printInfo(`The master changes the instance id: '${this.zc.mainConfig.instanceId}' to '${instanceId}'.`);
+        Logger.log.info(`The master changes the instance id: '${this.zc.mainConfig.instanceId}' to '${instanceId}'.`);
         this.zc.mainConfig.instanceId = instanceId;
     }
 
@@ -519,7 +515,7 @@ export default class ZationMaster {
      * Activate this master to the cluster leader.
      */
     public activateClusterLeader(): void {
-        Logger.printDebugInfo(`This Instance '${this.master.options.instanceId}' becomes the cluster leader.`);
+        Logger.log.info(`This Instance '${this.master.options.instanceId}' becomes the cluster leader.`);
         this.clusterLeader = true;
     }
 
@@ -527,7 +523,7 @@ export default class ZationMaster {
      * Deactivate this master cluster leadership.
      */
     public deactivateClusterLeader(): void {
-        Logger.printDebugInfo(`This Instance '${this.master.options.instanceId}' gets leadership taken off.`);
+        Logger.log.info(`This Instance '${this.master.options.instanceId}' gets leadership taken off.`);
         this.clusterLeader = false;
     }
 
@@ -555,7 +551,7 @@ export default class ZationMaster {
     private printStartFail(error: Error | string) {
         const txt = typeof error === 'object' ?
             error.message: error;
-        Logger.printStartFail(txt);
+        Logger.logStartFail(txt);
     }
 
     /**

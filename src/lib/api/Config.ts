@@ -53,7 +53,7 @@ export default class Config
      * @param configs
      */
     static merge(...configs: object[]): object {
-        return ObjectUtils.mergeObjects(configs);
+        return ObjectUtils.deepMergeObjects(...configs);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -72,7 +72,7 @@ export default class Config
      * Default value is false.
      */
     static buildController(controller: ControllerClass,config: ControllerConfig,overrideControllerConfig: boolean = false): ControllerClass {
-        ObjectUtils.addObToOb(controller.config,config,overrideControllerConfig);
+        ObjectUtils.mergeTwoObjects(controller.config,config,overrideControllerConfig);
         return controller;
     }
 

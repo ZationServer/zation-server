@@ -21,22 +21,19 @@ import {ClientErrorName}           from "../../constants/clientErrorName";
 import Databox                     from "../../../api/databox/Databox";
 import DataboxUtils                from "../databoxUtils";
 import ObjectUtils                 from "../../utils/objectUtils";
-import Logger                      from "../../logger/logger";
-import zationConfig                from "../../config/manager/zationConfig";
+import Logger                      from "../../log/logger";
 
 export default class DataboxHandler
 {
     private readonly dbPrepare: DataboxPrepare;
     private readonly defaultApiLevel: number;
     private readonly socketDataboxLimit: number;
-    private readonly zc: zationConfig;
     private readonly debug: boolean;
 
     constructor(dbPrepare: DataboxPrepare, zc: ZationConfig) {
         this.dbPrepare = dbPrepare;
         this.defaultApiLevel = zc.mainConfig.defaultClientApiLevel;
         this.socketDataboxLimit = zc.mainConfig.socketDataboxLimit;
-        this.zc = zc;
         this.debug = zc.isDebug();
     }
 
@@ -64,10 +61,7 @@ export default class DataboxHandler
         const db: DataboxCore = this.dbPrepare.getDatabox((input.d as string),apiLevel);
 
         if(this.debug){
-            Logger.printDebugInfo(`Databox Connection Request -> `,input);
-        }
-        if(this.zc.mainConfig.logFileDataboxRequests){
-            Logger.logFileInfo(`Databox Connection Request -> `,input);
+            Logger.log.debug(`Databox Connection Request -> `,input);
         }
 
         const isFamily = DataboxPrepare.isDataBoxFamily(db);

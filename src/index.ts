@@ -54,6 +54,7 @@ import {Server}                     from './lib/api/Server';
 import BackErrorConstruct           from './lib/main/constants/backErrorConstruct';
 import {$init}                      from './lib/api/InitApiUtils';
 import {start}                      from './lib/api/Start';
+import {ConsoleColor}               from './lib/main/log/logCategories';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -120,5 +121,6 @@ export {
     CChFamilyInfo,
     AsymmetricKeyPairs,
     DbCudOperationSequence,
-    ObjectPathSequence
+    ObjectPathSequence,
+    ConsoleColor
 };

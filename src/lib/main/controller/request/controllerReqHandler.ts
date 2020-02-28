@@ -14,7 +14,7 @@ import UpSocket, {RespondFunction}   from "../../sc/socket";
 import BackError                     from "../../../api/BackError";
 import BackErrorBag                  from "../../../api/BackErrorBag";
 import IdCounter                     from "../../utils/idCounter";
-import Logger                        from "../../logger/logger";
+import Logger                        from "../../log/logger";
 import CodeError                     from "../../error/codeError";
 import ZationConfigFull              from "../../config/manager/zationConfigFull";
 import {Request,Response}            from "express";
@@ -90,11 +90,8 @@ export default class ControllerReqHandler
         if(err instanceof BackError)
         {
             if(err instanceof CodeError) {
-                Logger.printDebugWarning(`Code error -> ${err.toString()}/n stack-> ${err.stack}`);
+                Logger.log.error(`Code error -> ${err.toString()}/n stack-> ${err.stack}`);
                 promises.push(this.zc.event.codeError(err));
-                if(this.zc.mainConfig.logFileCodeErrors){
-                    Logger.logFileError(`Code error -> ${err.toString()}/n stack-> ${err.stack}`);
-                }
             }
             promises.push(this.zc.event.backErrors([err]));
         }
@@ -103,11 +100,8 @@ export default class ControllerReqHandler
                 promises.push(this.zc.event.backErrors(err.getBackErrors()));
             }
             else {
+                Logger.log.error('Unknown error while processing a request:',err);
                 promises.push(this.zc.event.error(err));
-                Logger.printDebugWarning('UNKNOWN ERROR ON SERVER ->',err);
-                if(this.zc.mainConfig.logFileServerErrors){
-                    Logger.logFileError(`Unknown error on server -> ${err.stack}`);
-                }
             }
         }
         await Promise.all(promises);

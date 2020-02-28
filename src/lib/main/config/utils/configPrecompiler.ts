@@ -133,7 +133,7 @@ export default class ConfigPrecompiler
 
                     //defaults
                     if(typeof customChannelDefaults === 'object'){
-                        ObjectUtils.addObToOb(channel,customChannelDefaults,false);
+                        ObjectUtils.mergeTwoObjects(channel,customChannelDefaults,false);
                     }
                 }
             }
@@ -378,7 +378,7 @@ export default class ConfigPrecompiler
 
                     //extend Props
                     const superProps = superObj[nameof<ObjectModelConfig>(s => s.properties)];
-                    ObjectUtils.addObToOb(value[nameof<ObjectModelConfig>(s => s.properties)],superProps,false);
+                    ObjectUtils.mergeTwoObjects(value[nameof<ObjectModelConfig>(s => s.properties)],superProps,false);
 
                     //check for prototype
                     const superPrototype = superObj[nameof<ObjectModelConfig>(s => s.prototype)];
@@ -507,7 +507,7 @@ export default class ConfigPrecompiler
     private precompileValueExtend(mainValue: ValueModelConfig,exValueConfig: ValueModelConfig) {
         if(exValueConfig.extends !== undefined){
             const nextExValueConfig = this.modelImportEngine.extendsResolve(exValueConfig.extends);
-            ObjectUtils.addObToOb(mainValue,nextExValueConfig);
+            ObjectUtils.mergeTwoObjects(mainValue,nextExValueConfig);
             return this.precompileValueExtend(mainValue,nextExValueConfig);
         }
     }
@@ -559,7 +559,7 @@ export default class ConfigPrecompiler
                 Iterator.iterateCompDefinition<ControllerClass>(controller[k],(controllerClass) => {
                     const config: ControllerConfig = controllerClass.config;
                     //set the defaults
-                    ObjectUtils.addObToOb(config,this.controllerDefaults,false);
+                    ObjectUtils.mergeTwoObjects(config,this.controllerDefaults,false);
                     this.precompileInputConfig(config);
                 });
             }
@@ -589,7 +589,7 @@ export default class ConfigPrecompiler
                 Iterator.iterateCompDefinition<DataboxClassDef>(databoxes[k],(databoxClass) => {
                     const config: DataboxConfig = databoxClass.config;
                     //set the defaults
-                    ObjectUtils.addObToOb(config,this.databoxDefaults,false);
+                    ObjectUtils.mergeTwoObjects(config,this.databoxDefaults,false);
                     this.precompileInputConfig(DbConfigUtils.convertDbInitInput(config));
                     this.precompileInputConfig(DbConfigUtils.convertDbFetchInput(config));
                 });

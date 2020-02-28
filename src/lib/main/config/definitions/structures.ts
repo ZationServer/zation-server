@@ -113,8 +113,6 @@ Main[nameof<MainConfig>(s => s.killOnStartFailure)] = {types: ['boolean'],option
 Main[nameof<MainConfig>(s => s.showConfigWarnings)] = {types: ['boolean'],optional: true};
 Main[nameof<MainConfig>(s => s.environment)]        = {types: ['string'],optional: true};
 Main[nameof<MainConfig>(s => s.timeZone)]           = {types: ['string'],optional: true};
-Main[nameof<MainConfig>(s => s.zationConsoleLog)]   = {types: ['boolean'],optional: true};
-Main[nameof<MainConfig>(s => s.scConsoleLog)]       = {types: ['boolean'],optional: true};
 Main[nameof<MainConfig>(s => s.wsEngine)]           = {types: ['string'],optional: true};
 Main[nameof<MainConfig>(s => s.defaultClientApiLevel)]   = {types: ['number'],optional: true};
 Main[nameof<MainConfig>(s => s.useTokenClusterKeyCheck)] = {types: ['boolean'],optional: true};
@@ -156,18 +154,6 @@ Main[nameof<MainConfig>(s => s.variables)]          = {types: ['object'],optiona
 //service
 Main[nameof<MainConfig>(s => s.killServerOnServicesCreateError)] = {types: ['boolean'],optional: true};
 
-//log
-Main[nameof<MainConfig>(s => s.logFile)]              = {types: ['boolean'],optional: true};
-Main[nameof<MainConfig>(s => s.logFilePath)]          = {types: ['string'],optional: true};
-Main[nameof<MainConfig>(s => s.logFileDownloadable)]  = {types: ['boolean'],optional: true};
-Main[nameof<MainConfig>(s => s.logFileAccessKey)]     = {types: ['string'],optional: true};
-
-Main[nameof<MainConfig>(s => s.logFileControllerRequests)]  = {types: ['boolean'],optional: true};
-Main[nameof<MainConfig>(s => s.logFileDataboxRequests)]     = {types: ['boolean'],optional: true};
-Main[nameof<MainConfig>(s => s.logFileServerErrors)]        = {types: ['boolean'],optional: true};
-Main[nameof<MainConfig>(s => s.logFileCodeErrors)]          = {types: ['boolean'],optional: true};
-Main[nameof<MainConfig>(s => s.logFileStarted)]             = {types: ['boolean'],optional: true};
-
 Main[nameof<MainConfig>(s => s.showPrecompiledConfigs)] = {types: ['boolean'],optional: true};
 
 //Cluster
@@ -186,7 +172,6 @@ Main[nameof<MainConfig>(s => s.clusterStateServerAckTimeout)]          = {types:
 Main[nameof<MainConfig>(s => s.clusterStateServerReconnectRandomness)] = {types: ['number','null'],optional: true};
 
 //Sc
-Main[nameof<MainConfig>(s => s.scLogLevel)]                 = {types: ['number'],optional: true};
 Main[nameof<MainConfig>(s => s.scOrigins)]                  = {types: ['string','null'],optional: true};
 Main[nameof<MainConfig>(s => s.socketChannelLimit)]         = {types: ['number'],optional: true};
 Main[nameof<MainConfig>(s => s.crashWorkerOnError)]         = {types: ['boolean'],optional: true};
@@ -214,7 +199,7 @@ Main[nameof<MainConfig>(s => s.workerStatusInterval)]       = {types: ['number']
 Main[nameof<MainConfig>(s => s.pubSubBatchDuration)]        = {types: ['number','null'],optional: true};
 
 const StarterConfig: Structure = {};
-ObjectUtils.addObToOb(StarterConfig,Main);
+ObjectUtils.mergeTwoObjects(StarterConfig,Main);
 StarterConfig[nameof<StarterConfig>(s => s.rootPath)]      = {types: ['string'],optional: true};
 StarterConfig[nameof<StarterConfig>(s => s.configs)]       = {types: ['string'],optional: true};
 StarterConfig[nameof<StarterConfig>(s => s.mainConfig)]    = {types: ['string'],optional: true};
@@ -279,10 +264,10 @@ CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.onSubscription)]          
 CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.onUnsubscription)]         = {types: ['function','array'],optional: true};
 CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.versionAccess)]            = {types: ['string','object'],optional: true};
 CustomChConfig[nameof<BaseCustomChannelConfig>(s => s.systemAccess)]             = {types: ['array'],arrayType: 'string',optional: true};
-CustomChConfig[nameof<ChannelSettings>(s => s.socketGetOwnPublish)]          = {types: ['boolean','array'],optional: true};
+CustomChConfig[nameof<ChannelSettings>(s => s.socketGetOwnPublish)]              = {types: ['boolean','array'],optional: true};
 
 const CustomChFamilyConfig: Structure = {};
-ObjectUtils.addObToOb(CustomChFamilyConfig,CustomChConfig);
+ObjectUtils.mergeTwoObjects(CustomChFamilyConfig,CustomChConfig);
 CustomChFamilyConfig[nameof<CustomChFamily>(s => s.idValid)]          = {types: ['function'],optional: true};
 
 const ZationChannelConfig: Structure = {};

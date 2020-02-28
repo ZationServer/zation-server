@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import Logger from '../logger/logger';
+import Logger from '../log/logger';
 
 type AnyFunction = (...args: any[]) => any
 
@@ -109,7 +109,7 @@ export default class FuncUtils
                 return await func(...args);
             }
             catch (e) {
-                Logger.printError(e,beforeErrorMsg);
+                Logger.log.error(beforeErrorMsg,e);
             }
         }
     }

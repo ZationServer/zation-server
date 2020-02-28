@@ -166,7 +166,7 @@ export default class TokenUtils
         return new Promise((resolve, reject) =>
         {
             const options = zc.getJwtSignOptions();
-            ObjectUtils.addObToOb(options,jwtOptions);
+            ObjectUtils.mergeTwoObjects(options,jwtOptions);
 
             (Jwt.sign as JwtSignFunction)(data,zc.getSignKey(),options,(err,signedToken) => {
                 if(err) {

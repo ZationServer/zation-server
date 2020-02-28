@@ -25,6 +25,7 @@ export default abstract class ZationConfig {
     protected _internalData: InternalData;
 
     protected _rootPath: string;
+
     protected _startMode: number;
 
     private readonly _preparedZationInfo: ZationInfo = new ZationInfo(this);

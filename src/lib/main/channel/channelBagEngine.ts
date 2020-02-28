@@ -20,7 +20,7 @@ import {
 import ScServer             from "../sc/scServer";
 import {SyncTokenDefinitions, UpdateTokenMainData} from "../constants/syncTokenDefinitions";
 import ZSocket              from "../internalApi/zSocket";
-import Logger               from "../logger/logger";
+import Logger               from "../log/logger";
 import ChUtils              from "./chUtils";
 import {ChannelPrepare}     from "./channelPrepare";
 import AEPreparedPart       from "../auth/aePreparedPart";
@@ -73,7 +73,7 @@ export default class ChannelBagEngine
         try {
             await this.pubAsync(ZationChannel.ALL_WORKER, data);
         } catch (e) {
-            Logger.printDebugWarning(`Failed to publish data: '${data.toString()}' in worker channel!`);
+            Logger.log.warn(`Failed to publish data: '${data.toString()}' in worker channel!`);
             throw e;
         }
     }

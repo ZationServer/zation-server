@@ -17,6 +17,7 @@ import {PrecompiledAppConfig}                               from "../main/config
 import {PrecompiledServiceConfig}                           from "../main/config/definitions/main/serviceConfig";
 import {byteLength}                                         from "byte-length";
 import * as ecc                                             from 'eosjs-ecc';
+import SimpleLogger                                         from '../main/log/simpleLogger';
 import {
     WorkerChMapTaskAction,
     WorkerChSpecialTaskAction,
@@ -42,7 +43,7 @@ import ServiceEngine                                        from "../main/servic
 import ZationConfig                                         from "../main/config/manager/zationConfig";
 import ObjectPath                                           from "../main/utils/objectPath";
 import Result                                               from "./Result";
-import Logger                                               from "../main/logger/logger";
+import Logger                                               from "../main/log/logger";
 import ChUtils                                              from "../main/channel/chUtils";
 import SidBuilder                                           from "../main/utils/sidBuilder";
 import TokenUtils                                           from "../main/token/tokenUtils";
@@ -1177,121 +1178,14 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @description
-     * Log info into the log file,
-     * notice that it only works when the log to file is activated in the main config.
-     * @param args
+     * Returns the logger.
+     * This gives you the possibility to log information into the console and log file.
+     * Notice that the main config settings are considered.
+     * @example
+     * log.debug('Some debug message');
      */
-    logInfoToFile(...args: any[]): void {
-        const sl = Logger.getSimpleLogger();
-        if (sl) {
-            sl.info(...args);
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Log error into the log file,
-     * notice that it only works when the log to file is activated in the main config.
-     * @param args
-     */
-    logErrorToFile(...args: any[]): void {
-        const sl = Logger.getSimpleLogger();
-        if (sl) {
-            sl.error(...args);
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Log fatal into the log file,
-     * notice that it only works when the log to file is activated in the main config.
-     * @param args
-     */
-    logFatalToFile(...args: any[]): void {
-        const sl = Logger.getSimpleLogger();
-        if (sl) {
-            // noinspection TypeScriptValidateJSTypes
-            sl.fatal(...args);
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Log warn into the log file,
-     * notice that it only works when the log to file is activated in the main config.
-     * @param args
-     */
-    logWarnToFile(...args: any[]): void {
-        const sl = Logger.getSimpleLogger();
-        if (sl) {
-            sl.warn(...args);
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Log warn into the console,
-     * notice that it only appears when the debug mode is active.
-     * @param args
-     */
-    logDebugWarn(...args: any[]): void {
-        Logger.printDebugWarning(...args);
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Log info into the console,
-     * notice that it only appears when the debug mode is active.
-     * @param args
-     */
-    logDebugInfo(...args: any[]): void {
-        Logger.printDebugInfo(...args);
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Log info into the console,
-     * notice that it only appears when the debug mode is active.
-     * @param args
-     */
-    logDebugBusy(...args: any[]): void {
-        Logger.printDebugBusy(...args);
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Log warn into the console.
-     * @param args
-     */
-    logWarn(...args: any[]): void {
-        Logger.printWarning(...args);
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Log info into the console.
-     * @param args
-     */
-    logInfo(...args: any[]): void {
-        Logger.printInfo(...args);
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Log busy into the console.
-     * @param args
-     */
-    logBusy(...args: any[]): void {
-        Logger.printBusy(...args);
+    get log(): SimpleLogger {
+        return Logger.log;
     }
 
     //Part Http

@@ -7,12 +7,11 @@ import {ZationToken}     from "../../constants/internal";
 import SHBridge          from "../../bridges/shBridge";
 import ZationConfig      from "../../config/manager/zationConfig";
 import TokenUtils        from "../../token/tokenUtils";
-import Logger            from "../../logger/logger";
+import Logger            from "../../log/logger";
 import SHBridgeHttp      from "../../bridges/shBridgeHttp";
 import {Response}        from "express";
 import {RespondFunction} from "../../sc/socket";
 import ErrorUtils        from "../../utils/errorUtils";
-import PrettyStringifyUtils             from "../../utils/prettyStringifyUtils";
 import {ResponseResult, ZationResponse} from "./controllerDefinitions";
 import {jsonStringify}                  from "../../utils/jsonConverter";
 
@@ -20,12 +19,10 @@ export default class ControllerRequestResponder
 {
     private readonly zc: ZationConfig;
     private readonly sendErrorDesc: boolean;
-    private readonly debugMode: boolean;
 
     constructor(zc: ZationConfig) {
         this.zc = zc;
         this.sendErrorDesc = this.zc.mainConfig.sendErrorDescription || this.zc.isDebug();
-        this.debugMode = this.zc.isDebug();
     }
 
     respSuccessWs(data: any, respond: RespondFunction, reqId: string): void
@@ -73,22 +70,14 @@ export default class ControllerRequestResponder
         this.printHttpResp(resp,reqId);
     }
 
+    // noinspection JSMethodCanBeStatic
     private printWsResp(resp: ResponseResult,reqId: string) {
-        if(this.debugMode){
-            Logger.printDebugInfo(`Socket Controller Response id: ${reqId} ->`,PrettyStringifyUtils.object(resp));
-        }
-        if(this.zc.mainConfig.logFileControllerRequests){
-            Logger.logFileInfo(`Socket Controller Response id: ${reqId} ->`,resp);
-        }
+        Logger.log.debug(`Socket Controller Response id: ${reqId} ->`,resp);
     }
 
+    // noinspection JSMethodCanBeStatic
     private printHttpResp(resp: ResponseResult,reqId: string) {
-        if(this.debugMode){
-            Logger.printDebugInfo(`Http Controller Response id: ${reqId} ->`,PrettyStringifyUtils.object(resp));
-        }
-        if(this.zc.mainConfig.logFileControllerRequests){
-            Logger.logFileInfo(`Http Controller Response id: ${reqId} ->`,resp);
-        }
+        Logger.log.debug(`Http Controller Response id: ${reqId} ->`,resp);
     }
 
     // noinspection JSMethodCanBeStatic

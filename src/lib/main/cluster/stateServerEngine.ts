@@ -7,11 +7,11 @@ Copyright(c) Luca Scaringella
 import ZationConfig from "../config/manager/zationConfig";
 import ZationMaster from "../../core/zationMaster";
 import Encoder      from "../utils/encoder";
-import Logger       from "../logger/logger";
+import Logger       from "../log/logger";
 import {License, LicenseLevel, LicenseType} from "../utils/licenseManager";
 
 const  ScClient: any        = require('socketcluster-client');
-const  uuidV4                = require('uuid/v4');
+const  uuidV4               = require('uuid/v4');
 
 export const ZATION_CLUSTER_VERSION = 1;
 
@@ -217,7 +217,7 @@ export default class StateServerEngine
         {
             this.stateSocket.on('error',async (e) => {
                 if(!this.inRegisterProcess){
-                    Logger.printDebugWarning(`Error on state server connection socket: ${e}`);
+                    Logger.log.warn(`Error on state server connection socket: ${e}`);
                 }
             });
 
@@ -230,7 +230,7 @@ export default class StateServerEngine
                 }
                 else {
                     //lost connection by running server
-                    Logger.printDebugWarning
+                    Logger.log.warn
                     (`Connection to zation-cluster-state server is lost. To scale up or down, the state server must be reachable!`);
                 }
             });
@@ -260,7 +260,7 @@ export default class StateServerEngine
                     }
                 }
                 else {
-                    Logger.printDebugWarning
+                    Logger.log.debug
                     (`Reconnection to the zation-cluster-state server is failed. Reason: ${data}. The master will try again to reconnect.`);
                 }
             });
@@ -274,7 +274,7 @@ export default class StateServerEngine
             {
                 if(this.firstConnection) {
                     this.firstConnection = false;
-                    Logger.printStartDebugInfo('Master is connected to zation-cluster-state server');
+                    Logger.log.startDebug('Master is connected to zation-cluster-state server');
                     try {
                         await this.registerMaster();
                         resolve();
@@ -343,7 +343,7 @@ export default class StateServerEngine
                 break;
             case 'reconnectMode' :
                 const ms = data['tryIn'];
-                Logger.printStartDebugInfo
+                Logger.log.startDebug
                 (`Zation-cluster-state server is in ${data['mode']} reconnectMode! Master is try again to connect in ${ms} ms.`);
 
                 await new Promise((resolve,reject) => {
@@ -362,7 +362,7 @@ export default class StateServerEngine
                 (error as any).code = 'DIFFERENT_SETTINGS';
                 throw error;
             case 'instanceIdAlreadyReg':
-                Logger.printStartDebugInfo
+                Logger.log.startDebug
                 (`InstanceId: ${this.zc.mainConfig.instanceId} is already registered.` +
                     `Master tries to generate a new instanceID and to register to the state server again.`);
                 this.zm.changeInstanceId(uuidV4());
@@ -416,10 +416,10 @@ export default class StateServerEngine
         {
             await new Promise(async (resolve) => {
                 if(this.stateSocket.getState() === this.stateSocket.OPEN) {
-                    Logger.printDebugInfo('Try to reconnect to the state server.');
+                    Logger.log.debug('Try to reconnect to the state server.');
 
                     if(!(await this.reconnect())) {
-                        Logger.printDebugWarning(`Reconnection to state server failed.`);
+                        Logger.log.debug(`Reconnection to state server failed.`);
                         setTimeout(async () => {
                             await tryRec();
                             resolve();
@@ -472,7 +472,7 @@ export default class StateServerEngine
                                 resolve((await this.reconnect()));
                                 break;
                             case 'ok':
-                                Logger.printDebugInfo('Reconnected to state server!');
+                                Logger.log.debug('Reconnected to state server!');
                                 resolve(true);
                                 break;
                             case 'alreadyJoined':
@@ -484,7 +484,7 @@ export default class StateServerEngine
                         }
                     }
                     else {
-                        Logger.printDebugInfo(`Reconnection to state server failed. Error -> ${err.toString()}`);
+                        Logger.log.debug(`Reconnection to state server failed. Error -> ${err.toString()}`);
                         resolve(false);
                     }
                 });

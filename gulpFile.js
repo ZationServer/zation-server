@@ -1,15 +1,19 @@
 const gulp              = require('gulp');
-const gulpReplace       = require('gulp-replace');
 const typescript        = require('gulp-typescript');
 const tscConfig         = require('./tsconfig.json');
 const OptimizeJs        = require('gulp-optimize-js');
 const terser            = require('gulp-terser');
 const clean             = require('gulp-clean');
 const tsNameof          = require('ts-nameof');
+const keysTransformer   = require('ts-transformer-keys/transformer').default;
 
 const tsConfig = tscConfig.compilerOptions;
-tsConfig.getCustomTransformers = () => ({ before: [tsNameof]});
-
+tsConfig.getCustomTransformers = (program) => ({
+    before: [
+        tsNameof,
+        keysTransformer(program)
+    ]
+});
 
 gulp.task('cof', function() {
     return gulp

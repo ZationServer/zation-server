@@ -10,9 +10,6 @@ const options = {
     indent: '  '
 };
 
-export default class PrettyStringifyUtils
-{
-    public static object(obj: any): string {
-        return stringifyObject(obj,options);
-    }
+export function prettyStringifyObject(obj: object): string {
+    return stringifyObject(obj,options);
 }

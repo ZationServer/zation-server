@@ -7,12 +7,13 @@ Copyright(c) Luca Scaringella
 import {BrokerMessageAction}  from "../main/constants/brokerMessageAction";
 import SystemInfo             from "../main/utils/systemInfo";
 import ZationConfig           from "../main/config/manager/zationConfig";
-import Logger                 from "../main/logger/logger";
+import Logger                 from "../main/log/logger";
 import ZationConfigFull       from "../main/config/manager/zationConfigFull";
 const SCBroker              = require('socketcluster/scbroker');
 const scClusterBrokerClient = require('scc-broker-client');
 import {ProcessType, processTypeSymbol} from '../main/constants/processType';
-import {startModeSymbol} from './startMode';
+import {startModeSymbol}                from './startMode';
+import StartDebugStopwatch              from '../main/utils/startDebugStopwatch';
 
 global[processTypeSymbol] = ProcessType.Broker;
 
@@ -44,7 +45,7 @@ class ZationBroker extends SCBroker
                 stateServerConnectTimeout: this.options.clusterStateServerConnectTimeout,
                 stateServerAckTimeout: this.options.clusterStateServerAckTimeout,
                 stateServerReconnectRandomness: this.options.clusterStateServerReconnectRandomness,
-                noErrorLogging: !this.zc.mainConfig.scConsoleLog
+                noErrorLogging: !this.zc.mainConfig.log.core.active
             });
         }
 
@@ -56,14 +57,16 @@ class ZationBroker extends SCBroker
         this.brokerStartedTimeStamp = Date.now();
 
         //setLogger
-        Logger.setZationConfig(this.zc);
-        Logger.printStartDebugInfo(`The Broker with id ${this.id} begins the start process.`,false,true);
+        Logger.init(this.zc);
+        Logger.log.startDebug(`The Broker with id ${this.id} begins the start process.`);
 
-        Logger.startStopWatch();
+        const debugStopwatch = new StartDebugStopwatch(this.zc.isStartDebug());
+
+        debugStopwatch.start();
         this.initBrokerEvents();
-        Logger.printStartDebugInfo(`The Worker with id ${this.id} has init broker events.`,true);
+        debugStopwatch.stop(`The Broker with id ${this.id} has init broker events.`);
 
-        Logger.printStartDebugInfo(`The Broker with id ${this.id} is started.`,false);
+        Logger.log.startDebug(`The Broker with id ${this.id} is started.`);
     }
 
     private initBrokerEvents()

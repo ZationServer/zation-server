@@ -7,43 +7,44 @@ Copyright(c) Luca Scaringella
 export default class ObjectUtils
 {
     /**
-     * Merge all objects.
+     * Merges multiples objects with each other deep.
      * @param objects
      */
-    static mergeObjects(objects: object[]): object
+    static deepMergeObjects(...objects: object[]): object
     {
         if(objects.length > 1) {
             let mainObj = objects[0];
             for(let i = 1; i < objects.length; i++) {
-                mainObj = ObjectUtils.mergeObjToObj(mainObj,objects[i]);
+                mainObj = ObjectUtils.deepMergeTwoObjects(mainObj,objects[i],false);
             }
             return mainObj;
         }
-        else if(objects.length === 1){
-            return objects[0];
-        }
         else {
-            return {};
+            return objects.length === 1 ? objects[0] : {};
         }
     }
 
     /**
-     * Merge objects on all layers (needs more performance)
+     * Merges an object with another object deep.
      * @param mainObj
      * @param toMergeObj
      * @param override
      */
-    static mergeObjToObj(mainObj: object, toMergeObj: object, override: boolean = false)
-    {
-        if(typeof mainObj === "object" && typeof toMergeObj === "object") {
-            for(let k in toMergeObj) {
-                if(toMergeObj.hasOwnProperty(k)) {
-                    if(!mainObj.hasOwnProperty(k) || (typeof mainObj[k] !== 'object' && override)) {
-                        mainObj[k] = toMergeObj[k];
+    static deepMergeTwoObjects(mainObj: object, toMergeObj: object, override: boolean = false) {
+        let tmpMergeValue;
+        for(let k in toMergeObj) {
+            if(toMergeObj.hasOwnProperty(k)) {
+                tmpMergeValue = toMergeObj[k];
+                if(mainObj.hasOwnProperty(k)) {
+                    if(typeof mainObj[k] === 'object' && typeof tmpMergeValue === 'object'){
+                        mainObj[k] = this.deepMergeTwoObjects(mainObj[k],tmpMergeValue,override);
                     }
-                    else if(typeof mainObj[k] === 'object'){
-                        mainObj[k] = ObjectUtils.mergeObjToObj(mainObj[k],toMergeObj[k],override);
+                    else if(override){
+                        mainObj[k] = tmpMergeValue;
                     }
+                }
+                else {
+                    mainObj[k] = tmpMergeValue;
                 }
             }
         }
@@ -51,42 +52,24 @@ export default class ObjectUtils
     }
 
     /**
-     * Only adds obj to obj on the first Layer.
-     * @param mainOb
-     * @param addOb
+     * Merges the root layer of an object with another.
+     * @param mainObj
+     * @param addObj
      * @param overwrite
      */
-    static addObToOb(mainOb: object,addOb: object,overwrite: boolean = false): void
+    static mergeTwoObjects(mainObj: object, addObj: object, overwrite: boolean = false): void
     {
-        for(let key in addOb) {
-            if(addOb.hasOwnProperty(key)) {
-                if(overwrite || !mainOb.hasOwnProperty(key)) {
-                    mainOb[key] = addOb[key];
+        for(let key in addObj) {
+            if(addObj.hasOwnProperty(key)) {
+                if(overwrite || !mainObj.hasOwnProperty(key)) {
+                    mainObj[key] = addObj[key];
                 }
             }
         }
     }
 
     /**
-     * Add specific objects values with keys to an object.
-     * @param mainOb
-     * @param addOb
-     * @param overwrite
-     * @param onlyAddKeys
-     */
-    static onlyAddObToOb(mainOb: object,addOb: object,overwrite: boolean = false, onlyAddKeys: object): void
-    {
-        for(let key in addOb) {
-            if(addOb.hasOwnProperty(key)) {
-                if(onlyAddKeys.hasOwnProperty(key) && (overwrite || !mainOb.hasOwnProperty(key))) {
-                    mainOb[key] = addOb[key];
-                }
-            }
-        }
-    }
-
-    /**
-     * Returns an array with the values of the object.
+     * Returns all values of an object in an array.
      * @param obj
      */
     static getObjValues(obj: object): any[]
@@ -101,11 +84,11 @@ export default class ObjectUtils
     }
 
     /**
-     * Checks if the object has one of these keys.
+     * Returns if the object owns one of the property keys.
      * @param obj
      * @param keys
      */
-    static hasOneOf(obj: object,keys: any[]): boolean
+    static hasOneOf(obj: object,keys: string[]): boolean
     {
         for(let i = 0; i < keys.length; i++) {
             if(obj.hasOwnProperty(keys[i])) {
@@ -116,20 +99,38 @@ export default class ObjectUtils
     }
 
     /**
-     * Get all the keys of the search keys that the object owns.
+     * Finds all keys in a specific scope of keys in an object.
      * @param obj
-     * @param keys
+     * @param scope
      */
-    static getFoundKeys(obj: object,keys: any[]): any[]
+    static findKeysOfScope(obj: object, scope: string[]): string[]
     {
-        const found: any[] = [];
-
-        for(let i = 0; i < keys.length; i++) {
-            if(obj.hasOwnProperty(keys[i])) {
-                found.push(keys[i]);
+        const found: string[] = [];
+        for(let i = 0; i < scope.length; i++) {
+            if(obj.hasOwnProperty(scope[i])) {
+                found.push(scope[i]);
             }
         }
         return found;
+    }
+
+    /**
+     * Filters specific scope of properties from an object
+     * and returns the filtered properties in a new object.
+     * @param obj
+     * @param keys
+     */
+    static filterObjectProps(obj: object, keys: string[]): object {
+        const keyLength = keys.length;
+        const result = {};
+        let tmpKey;
+        for(let i = 0; i < keyLength; i++){
+            tmpKey = keys[i];
+            if(obj.hasOwnProperty(tmpKey)){
+                result[tmpKey] = obj[tmpKey];
+            }
+        }
+        return result;
     }
 
     /**

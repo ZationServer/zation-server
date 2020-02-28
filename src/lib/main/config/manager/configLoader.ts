@@ -16,10 +16,10 @@ const  os                = require('os');
 import moment            = require('moment-timezone');
 import {AppConfig}        from "../definitions/main/appConfig";
 import {ServiceConfig}    from "../definitions/main/serviceConfig";
-import {Structures}       from "../definitions/structures";
 import {OtherLoadedConfigSet} from "./configSets";
 import ConfigBuildError       from "./configBuildError";
 import FuncUtils              from '../../utils/funcUtils';
+import { keys }               from 'ts-transformer-keys';
 
 export default class ConfigLoader {
 
@@ -58,14 +58,11 @@ export default class ConfigLoader {
         authStartDuration: 20000,
         workers: OPTION_AUTO,
         brokers: OPTION_HALF_AUTO,
-        zationConsoleLog: true,
-        scConsoleLog: false,
         wsEngine: 'z-uws',
         defaultClientApiLevel: 1,
         clusterAuthKey: null,
         stateServerHost: null,
         stateServerPort: null,
-        scLogLevel: 2,
         socketChannelLimit: 1000,
         crashWorkerOnError: true,
         rebootWorkerOnCrash: true,
@@ -93,15 +90,25 @@ export default class ConfigLoader {
         provideClientJs: true,
         usePanel: false,
         killServerOnServicesCreateError: false,
-        logFile: false,
-        logFilePath: '',
-        logFileDownloadable: true,
-        logFileAccessKey: '',
-        logFileControllerRequests: false,
-        logFileDataboxRequests: false,
-        logFileServerErrors: true,
-        logFileCodeErrors: true,
-        logFileStarted: true,
+        log: {
+            console: {
+                active: true,
+                logLevel: 6,
+            },
+            file: {
+                active: false,
+                logLevel: 5,
+                filePath: '',
+                download: {
+                    active: true,
+                    accessKey: ''
+                }
+            },
+            core: {
+                active: false,
+                logLevel: 2
+            }
+        },
         showPrecompiledConfigs: false,
         variables: {}
     };
@@ -115,7 +122,7 @@ export default class ConfigLoader {
     private readonly _loadedConfigs: string[] = [];
 
     constructor(starterConfig: StarterConfig) {
-        ObjectUtils.addObToOb(this._starterConfig,starterConfig,true);
+        ObjectUtils.deepMergeTwoObjects(this._starterConfig,starterConfig,true);
         this.rootPath = ConfigLoader._getRootPath(this._starterConfig);
 
         this._configLocations = this.loadUserDataLocations();
@@ -175,13 +182,14 @@ export default class ConfigLoader {
     {
         try {
             const mainConfig = require(this._configLocations.mainConfig);
-            ObjectUtils.addObToOb(this._mainConfig,mainConfig,true);
+            ObjectUtils.deepMergeTwoObjects(this._mainConfig,mainConfig,true);
             this._loadedConfigs.push(nameof<StarterConfig>(s => s.mainConfig));
         }
         catch (e) {}
 
         //load starter config to main.
-        ObjectUtils.onlyAddObToOb(this._mainConfig,this._starterConfig,true,Structures.Main);
+        ObjectUtils.deepMergeTwoObjects(this._mainConfig,
+            ObjectUtils.filterObjectProps(this._starterConfig,keys<InternalMainConfig>()),true);
 
         this.readMainConfigEnvVariables();
 
