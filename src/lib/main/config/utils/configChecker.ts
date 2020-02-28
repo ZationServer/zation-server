@@ -20,9 +20,8 @@ import {
     OnlyStringFunctions,
     TypeTypes
 } from "../../constants/validation";
-import ModelResolveEngine    from "./modelResolveEngine";
+import ModelResolveEngine   from "./modelResolveEngine";
 import ConfigCheckerTools   from "./configCheckerTools";
-import {Structures}         from "../definitions/structures";
 import ConfigError          from "../../error/configError";
 import Target               from "./target";
 import Logger               from "../../log/logger";
@@ -49,7 +48,6 @@ import {AuthAccessConfig, VersionAccessConfig} from "../definitions/parts/config
 import DbConfigUtils                           from "../../databox/dbConfigUtils";
 import {getNotableValue, isNotableNot}         from '../../../api/Notable';
 import ErrorBag                                from '../../error/errorBag';
-import {Service}                               from 'zation-service';
 
 export interface ModelCheckedMem {
     _checked: boolean
@@ -67,14 +65,6 @@ export default class ConfigChecker
 
     constructor(zationConfigLoader) {
         this.zcLoader = zationConfigLoader;
-    }
-
-    public checkStarterConfig(): ErrorBag<ConfigError> {
-        this.ceb = new ErrorBag<ConfigError>();
-        ConfigCheckerTools.assertStructure
-        (Structures.StarterConfig, this.zcLoader.starterConfig,
-            ConfigNames.STARTER, this.ceb);
-        return this.ceb;
     }
 
     public checkAllConfigs(): ErrorBag<ConfigError> {
@@ -116,9 +106,6 @@ export default class ConfigChecker
                 for (let aug in authUserGroups) {
                     if (authUserGroups.hasOwnProperty(aug)) {
                         this.checkUserGroupName(aug, extraKeys, true);
-                        ConfigCheckerTools.assertStructure
-                        (Structures.AuthUserGroup, authUserGroups[aug],
-                            ConfigNames.APP, this.ceb, new Target(`Auth User Group: '${aug}'`));
                     }
                 }
             }
@@ -147,31 +134,14 @@ export default class ConfigChecker
     }
 
     private checkAppConfig() {
-        this.checkEvents();
-        this.checkMiddleware();
         this.checkAccessControllerDefaultIsSet();
-        this.checkAppConfigMain();
         this.checkModelsConfig();
         this.checkControllersConfigs();
         this.checkDataboxConfigs();
         this.checkAuthController();
-        this.checkBackgroundTasks();
         this.checkCustomChannelsDefaults();
         this.checkCustomChannels();
         this.checkZationChannels();
-    }
-
-    private checkBackgroundTasks() {
-        const bkt = this.zcLoader.appConfig.backgroundTasks;
-        if (typeof bkt === 'object') {
-            for (let name in bkt) {
-                if (bkt.hasOwnProperty(name)) {
-                    ConfigCheckerTools.assertStructure
-                    (Structures.BackgroundTask, bkt[name],
-                        ConfigNames.APP, this.ceb, new Target(`BackgroundTask: '${name}'`));
-                }
-            }
-        }
     }
 
     private checkAuthController() {
@@ -193,20 +163,10 @@ export default class ConfigChecker
         }
     }
 
-    private checkEvents() {
-        ConfigCheckerTools.assertStructure
-        (Structures.Events, this.zcLoader.appConfig.events || {}, ConfigNames.APP, this.ceb, new Target('Events: '));
-    }
-
-    private checkMiddleware() {
-        ConfigCheckerTools.assertStructure
-        (Structures.Middleware, this.zcLoader.appConfig.middleware || {}, ConfigNames.APP, this.ceb, new Target('Middleware: '));
-    }
-
     private checkCustomChannelsDefaults(){
         const customChannelsDefaults = this.zcLoader.appConfig.customChannelDefaults;
         if(typeof customChannelsDefaults === 'object'){
-            this.checkCustomChannelConfig(customChannelsDefaults, new Target('Custom channel defaults: ') , false);
+            this.checkCustomChannelConfig(customChannelsDefaults, new Target('Custom channel defaults: '));
         }
     }
 
@@ -221,7 +181,6 @@ export default class ConfigChecker
                     const secTarget = target.addPath(key);
 
                     let value: any = customChannels[key];
-                    let isFamily = false;
 
                     if(Array.isArray(value)){
                         if(value.length > 1){
@@ -229,11 +188,10 @@ export default class ConfigChecker
                                 `${secTarget.getTarget()} to define a custom channel family, the array should only contain one or zero elements.`));
                         }
                         value = value[0] || {};
-                        isFamily = true;
                     }
 
                     this.checkCustomName(key,'Custom channel name',target.getTarget() + ' ');
-                    this.checkCustomChannelConfig(value, secTarget, isFamily);
+                    this.checkCustomChannelConfig(value, secTarget);
                 }
             }
         }
@@ -244,9 +202,6 @@ export default class ConfigChecker
 
         if(typeof zationChannels === 'object'){
             const target = new Target('Zation Channels: ');
-
-            ConfigCheckerTools.assertStructure
-            (Structures.ZationChannelsConfig, zationChannels, ConfigNames.APP, this.ceb,target);
 
             for(let key in zationChannels){
                 if(zationChannels.hasOwnProperty(key)){
@@ -272,17 +227,12 @@ export default class ConfigChecker
 
 
     private checkZationChannelConfig(channel: ZationChannelConfig,target: Target) {
-        ConfigCheckerTools.assertStructure
-        (Structures.ZationChannelConfig,channel, ConfigNames.APP, this.ceb, target);
         if(typeof channel === 'object'){
             this.checkClientPubAccess(channel,target);
         }
     }
 
-    private checkCustomChannelConfig(channel: BaseCustomChannelConfig, target: Target, isCustomChFamily: boolean): void {
-        ConfigCheckerTools.assertStructure
-        (isCustomChFamily ? Structures.CustomChFamilyConfig: Structures.CustomChConfig, channel, ConfigNames.APP, this.ceb, target);
-
+    private checkCustomChannelConfig(channel: BaseCustomChannelConfig, target: Target): void {
         if (typeof channel === 'object') {
             this.checkClientPubAccess(channel,target);
             this.checkSubAccess(channel,target);
@@ -330,7 +280,6 @@ export default class ConfigChecker
     }
 
     private checkObject(obj: ObjectModelConfig, target: Target,mainModel: boolean,inheritanceCheck: boolean = true) {
-        ConfigCheckerTools.assertStructure(Structures.ObjectModel, obj, ConfigNames.APP, this.ceb, target);
         const prototype = typeof obj.prototype === 'object' ? obj.prototype: {};
         //check property body and prototype property name problem
         if (typeof obj.properties === 'object') {
@@ -462,13 +411,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkAppConfigMain() {
-        ConfigCheckerTools.assertStructure(Structures.App, this.zcLoader.appConfig, ConfigNames.APP, this.ceb);
-    }
-
     private checkMainConfig() {
-        //checkStructure
-        ConfigCheckerTools.assertStructure(Structures.Main, this.zcLoader.mainConfig, ConfigNames.MAIN, this.ceb);
         this.checkPanelUserMainConfig();
         this.checkOrigins();
         this.checkDefaultClientApiLevel();
@@ -526,9 +469,6 @@ export default class ConfigChecker
     }
 
     private checkPanelUserConfig(config: PanelUserConfig, target: Target) {
-        //checkStructure
-        ConfigCheckerTools.assertStructure(Structures.PanelUserConfig, config, ConfigNames.MAIN, this.ceb, target);
-
         // for javascript version
         // noinspection SuspiciousTypeOfGuard
         if(typeof config.password === 'string' && config.password.length < 4) {
@@ -564,22 +504,9 @@ export default class ConfigChecker
         if (typeof serviceConfig === 'object') {
             for (let serviceName in serviceConfig) {
                 if (serviceConfig.hasOwnProperty(serviceName)) {
-                    this.checkService(serviceName,serviceConfig[serviceName]);
+                    this.checkCustomName(serviceName,'Service');
                 }
             }
-        }
-    }
-
-    private checkService(serviceName: string,service: Service<any,any>,targetName: string = 'Service')
-    {
-        this.checkCustomName(serviceName,targetName);
-        if (typeof service === 'object') {
-            ConfigCheckerTools.assertStructure(Structures.Service, service,
-                ConfigNames.SERVICE, this.ceb, new Target(`${targetName}: '${serviceName}'`));
-        }
-        else{
-            this.ceb.addError(new ConfigError(ConfigNames.APP,
-                `${targetName}: '${serviceName}' must to be an object.`));
         }
     }
 
@@ -655,9 +582,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkControllerConfig(config: ControllerConfig,target: Target)
-    {
-        ConfigCheckerTools.assertStructure(Structures.ControllerConfig, config, ConfigNames.APP, this.ceb, target);
+    private checkControllerConfig(config: ControllerConfig,target: Target) {
         this.checkAuthAccessConfig(config, target);
         this.checkInputConfig(config,target.addPath('input'));
         this.checkVersionAccessConfig(config, target);
@@ -673,10 +598,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkDataboxConfig(config: DataboxConfig, target: Target)
-    {
-        ConfigCheckerTools.assertStructure(Structures.DataboxConfig, config, ConfigNames.APP, this.ceb, target);
-
+    private checkDataboxConfig(config: DataboxConfig, target: Target) {
         if(typeof config.maxSocketInputChannels === 'number' && config.maxSocketInputChannels <= 0){
             this.ceb.addError(new ConfigError(ConfigNames.APP,
                 `${target.getTarget()} the maximum socket input channels must be greater than 0.`));
@@ -825,7 +747,6 @@ export default class ConfigChecker
                     `${newTarget.getTarget()} the second shortCut item should be from typ object and can specify the array. Given typ is: '${typeof value[1]}'`));
             } else {
                 this.checkOptionalArrayWarning(value,target);
-                ConfigCheckerTools.assertStructure(Structures.ArrayShortCutSpecify, value[1], ConfigNames.APP, this.ceb, newTarget);
             }
 
             this.checkModel(value[0], target.addPath('ArrayItem'));
@@ -986,14 +907,12 @@ export default class ConfigChecker
                 this.checkObject(value, target, mainModel);
             } else if (value.hasOwnProperty(nameof<ArrayModelConfig>(s => s.array))) {
                 //is array model
-                ConfigCheckerTools.assertStructure(Structures.ArrayModel, value, ConfigNames.APP, this.ceb, target);
                 if (typeof value[nameof<ArrayModelConfig>(s => s.array)] === 'object') {
                     const inArray = value[nameof<ArrayModelConfig>(s => s.array)];
                     this.checkModel(inArray,target.addPath('ArrayItem'));
                 }
             } else if(value.hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf))) {
                 //is any of model modifier
-                ConfigCheckerTools.assertStructure(Structures.AnyOf, value, ConfigNames.APP, this.ceb, target);
                 const anyOf = value[nameof<AnyOfModelConfig>(s => s.anyOf)];
                 let count = 0;
                 if (typeof anyOf === 'object' || Array.isArray(anyOf)) {
@@ -1097,7 +1016,6 @@ export default class ConfigChecker
     private checkValueProperty(config: ValueModelConfig,target: Target,mainModel: boolean,inheritanceCheck: boolean = true)
     {
         //isNormalInputBody
-        ConfigCheckerTools.assertStructure(Structures.ValueModel, config, ConfigNames.APP, this.ceb, target);
         //check all that is not depend on full config
         this.checkRegexFunction(config, target);
         this.checkCharClassFunction(config,target);

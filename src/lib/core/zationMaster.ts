@@ -131,17 +131,7 @@ export default class ZationMaster {
         }
 
         let errorBag;
-
         const configChecker = new ConfigChecker(this.zcLoader);
-        if(this.zc.starterConfig.checkConfigs) {
-            this.debugStopwatch.start();
-            errorBag = configChecker.checkStarterConfig();
-            if (errorBag.hasError()) {
-                Logger.consoleLogErrorBag(errorBag);
-                return this.rejectStart(StartErrorName.ConfigErrors,'The starter config has errors.');
-            }
-            this.debugStopwatch.stop(`The Master has checked the starter config.`);
-        }
 
         this.debugStopwatch.start();
         await this.configFileLoad();
@@ -235,15 +225,7 @@ export default class ZationMaster {
 
     private async check() {
         let configErrorBag;
-
-        this.debugStopwatch.start();
         const configChecker = new ConfigChecker(this.zcLoader);
-        configErrorBag = configChecker.checkStarterConfig();
-        if (configErrorBag.hasError()) {
-            Logger.consoleLogErrorBag(configErrorBag);
-            return this.rejectStart(StartErrorName.ConfigErrors,'The starter config has errors.');
-        }
-        this.debugStopwatch.stop(`Checked starter config.`);
 
         this.debugStopwatch.start();
         await this.configFileLoad();
