@@ -7,6 +7,7 @@ Copyright(c) Luca Scaringella
 import {LogWriter}                         from './logWriter';
 import {formatArgs}                        from './formatter';
 import {defaultLogCategories, LogCategory} from './logCategories';
+import {onProcessEnd}                      from '../utils/processEndEvent';
 
 export default interface SimpleLogger {
     /**
@@ -95,6 +96,14 @@ export const EmptySimpleLogger: SimpleLogger = {
 
 export function createSimpleLogger(writer: LogWriter[],startDebug: boolean,debug: boolean): SimpleLogger {
     const writerLength = writer.length;
+
+    //close writer on process end
+    onProcessEnd(() => {
+        for(let i = 0; i < writerLength; i++){
+            writer[i].close();
+        }
+    });
+
     const write = (args: any[],category: LogCategory) => {
         const msg = formatArgs(args);
         for(let i = 0; i < writerLength; i++){
