@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {LogWriter}                         from './logWriter';
-import {formatArgs}                        from './formater';
+import {formatArgs}                        from './formatter';
 import {defaultLogCategories, LogCategory} from './logCategories';
 
 export default interface SimpleLogger {

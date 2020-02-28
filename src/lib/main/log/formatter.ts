@@ -14,14 +14,23 @@ export function formatArgs(args: any[]): string[] {
         value = args[i];
         if(typeof value === 'object') {
             if(Object.prototype.toString.call(value) === '[object Date]') {
-                strings[i] = (value as Date).toJSON();
+                strings.push((value as Date).toJSON());
+            }
+            else if(value instanceof Error && value.stack !== undefined) {
+                if(strings.length > 0) {
+                    const lastItem = strings.length -1;
+                    strings[lastItem] = `${strings[lastItem]} ${value.stack}`;
+                }
+                else {
+                    strings.push(value.stack);
+                }
             }
             else {
-                strings[i] = prettyStringifyObject(value);
+                strings.push(prettyStringifyObject(value));
             }
         }
         else {
-            strings[i] = value.toString();
+            strings.push(value.toString());
         }
     }
     return strings;
