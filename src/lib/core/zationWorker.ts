@@ -4,6 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
+import 'source-map-support/register'
+
 import ScServer               from "../main/sc/scServer";
 import ChMiddlewareHelper     from '../main/channel/chMiddlewareHelper';
 import {

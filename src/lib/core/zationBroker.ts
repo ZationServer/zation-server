@@ -4,6 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
+import 'source-map-support/register'
+
 import {BrokerMessageAction}  from "../main/constants/brokerMessageAction";
 import SystemInfo             from "../main/utils/systemInfo";
 import ZationConfig           from "../main/config/manager/zationConfig";

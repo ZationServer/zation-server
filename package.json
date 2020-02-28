@@ -85,6 +85,7 @@
     "graceful-fs": "4.1.11",
     "gulp": "4.0.2",
     "del": "^5.1.0",
+    "source-map-support": "^0.5.16",
     "gulp-optimize-js": "1.1.0",
     "gulp-terser": "1.2.0",
     "gulp-typescript": "^5.0.1",

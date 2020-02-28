@@ -4,6 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
+import 'source-map-support/register'
+
 const  SocketCluster: any   = require('socketcluster');
 import {WorkerMessageAction}   from "../main/constants/workerMessageAction";
 import {StarterConfig}         from "../main/config/definitions/main/starterConfig";
