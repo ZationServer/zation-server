@@ -41,7 +41,7 @@ export function createFileLogWriter(fileLogOptions: Required<FileLogOptions>,roo
             if(logLevel >= level) {
                 const timestamp = Date.now();
                 process.nextTick(() =>
-                    writer.write(`\n ${moment(timestamp).format('YYYY-MM-DD HH:mm:ss.SSS')} [${name}] ${msg.join(' ')}`))
+                    writer.write(`${moment(timestamp).format('YYYY-MM-DD HH:mm:ss.SSS')} [${name}] ${msg.join(' ')}\n`))
             }
         }
     }
