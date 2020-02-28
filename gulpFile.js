@@ -1,53 +1,50 @@
-const gulp              = require('gulp');
+const {src,dest,series,parallel} = require('gulp');
+const del               = require('del');
 const typescript        = require('gulp-typescript');
-const tscConfig         = require('./tsconfig.json');
 const OptimizeJs        = require('gulp-optimize-js');
 const terser            = require('gulp-terser');
-const clean             = require('gulp-clean');
+
 const tsNameof          = require('ts-nameof');
 const keysTransformer   = require('ts-transformer-keys/transformer').default;
 
-const tsConfig = tscConfig.compilerOptions;
-tsConfig.getCustomTransformers = (program) => ({
+const outputFolder = 'dist';
+
+const tscConfig = require('./tsconfig.json');
+tscConfig.compilerOptions.getCustomTransformers = (program) => ({
     before: [
         tsNameof,
         keysTransformer(program)
     ]
 });
 
-gulp.task('cof', function() {
-    return gulp
-        .src(['src/**/*','!src/**/*.ts','!src/**/*.scss'])
-        .pipe(gulp.dest('dist'));
-});
+function clean() {
+    return del(outputFolder);
+}
 
-gulp.task('ts', function () {
-    return gulp
-        .src('src/**/*.ts')
-        .pipe(typescript(tsConfig))
-        .pipe(gulp.dest('dist'));
-});
+function compile() {
+    return src('src/**/*.ts')
+        .pipe(typescript(tscConfig.compilerOptions))
+        .pipe(dest(outputFolder));
+}
 
-gulp.task('optimize', function () {
-    return gulp
-        .src('dist/**/*.js')
+function copyAssets() {
+    return src(['src/**/*','!src/**/*.ts','!src/**/*.scss'])
+        .pipe(dest(outputFolder));
+}
+
+function optimize() {
+    return src(`${outputFolder}/**/*.js`)
         .pipe(OptimizeJs())
         .pipe(terser())
-        .pipe(gulp.dest('dist'));
-});
+        .pipe(dest(outputFolder));
+}
 
-gulp.task('cleanDist', function () {
-    return gulp.src('dist', {read: false,allowEmpty : true})
-        .pipe(clean());
-});
+const build = series(clean,parallel(compile,copyAssets),optimize);
 
-gulp.task('compile', gulp.series(gulp.parallel('cof','ts'),'optimize'));
-
-gulp.task('build', gulp.series('cleanDist','compile'));
-
-gulp.task('watch', () => {
-    gulp.watch('src/**/*.ts', gulp.parallel('ts'));
-    gulp.watch(['src/**/*','!src/**/*.ts'], gulp.parallel('cof'));
-});
-
-gulp.task('default', gulp.series('compile', 'watch'));
+module.exports = {
+    clean,
+    compile,
+    copyAssets,
+    build,
+    default: build
+};
