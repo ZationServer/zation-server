@@ -12,7 +12,6 @@ import {
     ZationChannelConfig
 } from "../definitions/parts/channelsConfig";
 // noinspection TypeScriptPreferShortImport
-import {ValidationType} from "../../constants/validationType";
 import {
     OnlyBase64Functions,
     OnlyDateFunctions,
@@ -27,6 +26,7 @@ import Target               from "./target";
 import Logger               from "../../log/logger";
 import ObjectPath           from "../../utils/objectPath";
 import Controller, {ControllerClass} from "../../../api/Controller";
+import {ValidationTypeRecord}        from '../../constants/validationType';
 import Iterator             from "../../utils/iterator";
 import ObjectUtils          from "../../utils/objectUtils";
 import ConfigLoader         from "../manager/configLoader";
@@ -966,19 +966,25 @@ export default class ConfigChecker
             const type = Array.isArray(value.type) ? value.type: [value.type];
             const types: TypeTypes[] = [];
             for(let i = 0; i < type.length; i++) {
-                if (type[i] === ValidationType.INT || type[i] === ValidationType.FLOAT || type[i] === ValidationType.NUMBER) {
+                if (type[i] === nameof<ValidationTypeRecord>(s => s.int) ||
+                    type[i] === nameof<ValidationTypeRecord>(s => s.float) ||
+                    type[i] === nameof<ValidationTypeRecord>(s => s.number))
+                {
                     types.push(TypeTypes.NUMBER);
                 }
-                else if(type[i] === ValidationType.DATE) {
+                else if(type[i] === nameof<ValidationTypeRecord>(s => s.date)) {
                     types.push(TypeTypes.DATE);
                 }
-                else if(type[i] === ValidationType.BASE64){
+                else if(type[i] === nameof<ValidationTypeRecord>(s => s.base64)){
                     types.push(TypeTypes.BASE64);
                 }
-                else if(type[i] === ValidationType.NULL || type[i] === ValidationType.ARRAY || type[i] === ValidationType.OBJECT){
+                else if(type[i] === nameof<ValidationTypeRecord>(s => s.null) ||
+                    type[i] === nameof<ValidationTypeRecord>(s => s.array) ||
+                    type[i] === nameof<ValidationTypeRecord>(s => s.object))
+                {
                     types.push(TypeTypes.OTHER);
                 }
-                else if(type[i] === ValidationType.ALL) {
+                else if(type[i] === nameof<ValidationTypeRecord>(s => s.all)) {
                     return;
                 }
                 else {

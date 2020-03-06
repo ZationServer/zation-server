@@ -5,55 +5,55 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import {ValidationType} from "../constants/validationType";
+import {ValidationType}  from "../constants/validationType";
 import Converter         from "./converter";
+import {PartialRecord}   from '../utils/typeUtils';
 
 /*
 Converter Library from Zation
 */
 
-const converterLibrary:  Record<string,(input: any,strictType?: boolean) => any> = {};
+export const converterLibrary: PartialRecord<ValidationType,(input: any, strictType?: boolean) => any> = {
 
-converterLibrary[ValidationType.INT] = (input, strictType) =>
-{
-    if(!strictType){
-        return parseInt(input);
-    }
-    return input;
-};
-
-converterLibrary[ValidationType.FLOAT] = (input, strictType) =>
-{
-    if(!strictType){
-        return parseFloat(input);
-    }
-    return input;
-};
-
-converterLibrary[ValidationType.NUMBER] = (input, strictType) =>
-{
-    if(!strictType){
-        return parseFloat(input);
-    }
-    return input;
-};
-
-converterLibrary[ValidationType.DATE] = (input) =>
-{
-    return new Date(input);
-};
-
-converterLibrary[ValidationType.BOOLEAN] = (input, strictType) =>
-{
-    if(!strictType){
-        if(typeof input === 'string'){
-            return Converter.stringToBool(input);
+    int: (input, strictType) =>
+    {
+        if(!strictType){
+            return parseInt(input);
         }
-        else if(typeof input === 'number'){
-            return Converter.numberToBool(input);
-        }
-    }
-    return input;
-};
+        return input;
+    },
 
-export const ConverterLibrary: Record<string,(input: any,strictType?: boolean) => any> = converterLibrary;
+    float: (input, strictType) =>
+    {
+        if(!strictType){
+            return parseFloat(input);
+        }
+        return input;
+    },
+
+    number: (input, strictType) =>
+    {
+        if(!strictType){
+            return parseFloat(input);
+        }
+        return input;
+    },
+
+    date: (input) =>
+    {
+        return new Date(input);
+    },
+
+    boolean: (input, strictType) =>
+    {
+        if(!strictType){
+            if(typeof input === 'string'){
+                return Converter.stringToBool(input);
+            }
+            else if(typeof input === 'number'){
+                return Converter.numberToBool(input);
+            }
+        }
+        return input;
+    }
+};

@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ValueModelConfig} from "../config/definitions/parts/inputConfig";
+import {ValidationFunctions} from '../config/definitions/parts/validationFunctions';
 
 export enum FormatLetters {
     UPPER_CASE              = 'uppercase',
@@ -21,32 +21,32 @@ export enum TypeTypes {
 }
 
 export const OnlyNumberFunctions = [
-    nameof<ValueModelConfig>(s => s.maxValue),
-    nameof<ValueModelConfig>(s => s.minValue)
+    nameof<ValidationFunctions>(s => s.maxValue),
+    nameof<ValidationFunctions>(s => s.minValue)
 ];
 
 export const OnlyStringFunctions = [
-    nameof<ValueModelConfig>(s => s.endsWith),
-    nameof<ValueModelConfig>(s => s.startsWith),
-    nameof<ValueModelConfig>(s => s.regex),
-    nameof<ValueModelConfig>(s => s.contains),
-    nameof<ValueModelConfig>(s => s.length),
-    nameof<ValueModelConfig>(s => s.minLength),
-    nameof<ValueModelConfig>(s => s.maxLength),
-    nameof<ValueModelConfig>(s => s.letters),
-    nameof<ValueModelConfig>(s => s.charClass),
+    nameof<ValidationFunctions>(s => s.endsWith),
+    nameof<ValidationFunctions>(s => s.startsWith),
+    nameof<ValidationFunctions>(s => s.regex),
+    nameof<ValidationFunctions>(s => s.contains),
+    nameof<ValidationFunctions>(s => s.length),
+    nameof<ValidationFunctions>(s => s.minLength),
+    nameof<ValidationFunctions>(s => s.maxLength),
+    nameof<ValidationFunctions>(s => s.letters),
+    nameof<ValidationFunctions>(s => s.charClass),
 
     //base64 is also a string
-    nameof<ValueModelConfig>(s => s.minByteSize),
-    nameof<ValueModelConfig>(s => s.maxByteSize)
+    nameof<ValidationFunctions>(s => s.minByteSize),
+    nameof<ValidationFunctions>(s => s.maxByteSize)
 ];
 
 export const OnlyDateFunctions = [
-    nameof<ValueModelConfig>(s => s.before),
-    nameof<ValueModelConfig>(s => s.after)
+    nameof<ValidationFunctions>(s => s.before),
+    nameof<ValidationFunctions>(s => s.after)
 ];
 
 export const OnlyBase64Functions = [
-    nameof<ValueModelConfig>(s => s.mimeType),
-    nameof<ValueModelConfig>(s => s.mimeSubType)
+    nameof<ValidationFunctions>(s => s.mimeType),
+    nameof<ValidationFunctions>(s => s.mimeSubType)
 ];

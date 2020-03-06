@@ -4,9 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
+// noinspection TypeScriptPreferShortImport
+import {ValidationTypeRecord}                              from '../constants/validationType';
 import {ArraySettings, ValidateFunction, ValueModelConfig} from "../config/definitions/parts/inputConfig";
 // noinspection TypeScriptPreferShortImport
-import {ValidationType}      from "../constants/validationType";
 import BackErrorBag          from "../../api/BackErrorBag";
 import BackError             from "../../api/BackError";
 import {ValidatorLibrary}    from "./validatorLibrary";
@@ -71,7 +72,7 @@ export default class ValidatorEngine
      * @param strictType
      */
     static createValueTypeValidator(type: string | string[] | undefined,strictType: boolean): ValueTypeValidateFunction {
-        if(type !== undefined && type !== ValidationType.ALL) {
+        if(type !== undefined && type !== nameof<ValidationTypeRecord>(s => s.all)) {
             if(Array.isArray(type)){
                 return (input, errorBag, preparedErrorData) => {
                     let foundAValidTyp = false;

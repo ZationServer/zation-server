@@ -4,12 +4,12 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {AnyClass, AnyInputConfigTranslatable, AnyModelConfigTranslatable} from "./configComponents";
-import BackErrorBag                                                       from "../../../../api/BackErrorBag";
-import Bag                                                                from "../../../../api/Bag";
+import {AnyClass, AnyInputConfigTranslatable, AnyModelConfigTranslatable} from './configComponents';
+import BackErrorBag from '../../../../api/BackErrorBag';
+import Bag from '../../../../api/Bag';
 // noinspection TypeScriptPreferShortImport
-import {ValidationType}                                                   from "../../../constants/validationType.js";
-import {FormatLetters}                                                    from "../../../constants/validation";
+import {ValidationType}      from '../../../constants/validationType.js';
+import {ValidationFunctions} from './validationFunctions';
 
 export type Model =
     ValueModelConfig | ObjectModelConfig | ArrayModelConfig | ArrayModelShortSyntax | string | AnyOfModelConfig | AnyClass | AnyModelConfigTranslatable;
@@ -104,7 +104,7 @@ export type ValidateFunction = (value: any, backErrorBag: BackErrorBag, inputPat
 export type ConvertValueFunction = (value: any, bag: Bag) => Promise<any> | any;
 export type GetDateFunction = (bag: Bag) => Promise<Date> | Date;
 
-export interface ValueModelConfig extends ModelOptional
+export interface ValueModelConfig extends ValidationFunctions, ModelOptional
 {
     /**
      * Set the allowed type of the value model.
@@ -149,7 +149,7 @@ export interface ValueModelConfig extends ModelOptional
      * 'mongoId'
      * 'latLong'
      */
-    type ?: ValidationType | string | (ValidationType | string)[];
+    type ?: ValidationType | (ValidationType)[];
     /**
      * Specify if the value model should use strict type mode.
      * In this mode, types are checked strictly. For example, in strict mode,
@@ -161,156 +161,6 @@ export interface ValueModelConfig extends ModelOptional
      * @default true
      */
     strictType ?: boolean;
-    /**
-     * With this property, you can define that the input should exactly match
-     * with at least one of the array items.
-     * @example
-     * enum: ['Red','Blue','Black']
-     */
-    enum ?: any [];
-    /**
-     * With this property, you can define that the input should exactly match
-     * with at least one of the array items.
-     * The difference between the property enum is that in error case,
-     * all options of the enum are not sent to the client.
-     * @example
-     * enum: ['CODE-1','CODE-2']
-     */
-    privateEnum ?: any [];
-    /**
-     * MinLength specifies the minimum length of a string.
-     * @example
-     * minLength: 20
-     */
-    minLength ?: number;
-    /**
-     * MaxLength specifies the maximum length of a string.
-     * @example
-     * maxLength: 40
-     */
-    maxLength ?: number;
-    /**
-     * Length specifies the exact length of a string.
-     * @example
-     * length: 10
-     */
-    length ?: number;
-    /**
-     * With contains, you can describe that a string should contain a string.
-     * You also can define more strings that should be included with an array.
-     * @example
-     * contains: 'name'
-     * contains: ['code','Code']
-     */
-    contains ?: string | string[];
-    /**
-     * With equals, you can describe that the input should be exactly equal.
-     * @example
-     * equals: 'something'
-     */
-    equals ?: any;
-    /**
-     * With minValue, you can define the minimum value of a number.
-     * @example
-     * minValue: 2
-     */
-    minValue ?: number;
-    /**
-     * With maxValue, you can define the maximum value of a number.
-     * @example
-     * maxValue: 2
-     */
-    maxValue ?: number;
-    /**
-     * This property can be used to define regular expressions.
-     * You can define one regular expression or multiple by structure them in keys.
-     * Later on the client side, you can find out which regular expression was failed with the key.
-     * @example
-     * regex: '([A-Za-z]{1,5})'
-     * regex: /\w+/
-     * regex: {
-     *     'length': 'REGEX-1',
-     *     'pattern': 'REGEX-2'
-     * }
-     */
-    regex ?: string | RegExp | Record<string,RegExp | string>;
-    /**
-     * With endWith, you can describe with what string the input string should end.
-     * @example
-     * endWith: 'a'
-     */
-    endsWith ?: string;
-    /**
-     * With startWith, you can describe with what string the input string should start.
-     * @example
-     * startWith: 'Hello'
-     */
-    startsWith ?: string;
-    /**
-     * With letters, it is possible to define if the string letters
-     * should be all in uppercase or lowercase.
-     * @example
-     * letters: 'lowercase'
-     * letters: 'uppercase'
-     */
-    letters ?: FormatLetters.LOWER_CASE | FormatLetters.UPPER_CASE | string;
-    /**
-     * CharClass defines a regular expression char class to check the input string.
-     * @example
-     * charClass: 'a-zA-Z._0-9'
-     * charClass: 'a-z'
-     */
-    charClass?: string;
-    /**
-     * MaxByteSize defines the maximum byte size of a string or base64 input.
-     * @example
-     * maxByteSize: 50
-     */
-    maxByteSize?: number;
-    /**
-     * MinByteSize defines the minimum byte size of a string or base64 input.
-     * @example
-     * minByteSize: 20
-     */
-    minByteSize?: number;
-    /**
-     * Validate if a base64 input is from a specific mime type.
-     * You also can define more valid mime types in an array.
-     * The value null means that unknown mime type is allowed
-     * that can happen if the base64 string did not specify a mime type.
-     * @example
-     * mimeType: 'image'
-     */
-    mimeType?: string | null | (string | null)[];
-    /**
-     * Validate if a base64 input is from a specific sub mime type.
-     * You also can define more valid sub mime types in an array.
-     * The value null means that unknown sub mime type is allowed
-     * that can happen if the base64 string did not specify a sub mime type.
-     * @example
-     * mimeSubType: ['jpeg','png','jpg']
-     */
-    mimeSubType?: string | null | (string | null)[];
-    /**
-     * Validate if a date is before another date.
-     * You can provide the other date as a Date object or as a function that returns a date object.
-     * @example
-     * before: () => {
-     *      return new Date();
-     * }
-     * before: someDate
-     */
-    before?: Date | GetDateFunction;
-    /**
-     * Validate if a date is after another date.
-     * You can provide the other date as a Date object or as a function that returns a date object.
-     * @example
-     * after: () => {
-     *      return new Date();
-     * }
-     * after: someDate
-     */
-    after?: Date | GetDateFunction;
     /**
      * Validate the value model with your validation checks.
      * It can be one Validation check function or more functions in an array.

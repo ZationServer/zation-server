@@ -4,14 +4,14 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ConverterLibrary} from "./convertLibrary";
+import {converterLibrary} from "./convertLibrary";
 
 export default class ConvertEngine
 {
     static convert(input: any,type: string | undefined,strictType: boolean): any
     {
-        if(type !== undefined && ConverterLibrary.hasOwnProperty(type)) {
-            return ConverterLibrary[type](input,strictType);
+        if(type !== undefined && converterLibrary.hasOwnProperty(type)) {
+            return converterLibrary[type](input,strictType);
         }
         return input;
     }
