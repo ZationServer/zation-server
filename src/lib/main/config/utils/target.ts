@@ -65,7 +65,7 @@ export default class Target
         return this.path;
     }
 
-    getTarget(): string {
+    toString(): string {
         const extraInfo = this.extraInfo !== undefined ? `(${this.extraInfo}) `: '';
 
         if(this.path === undefined)

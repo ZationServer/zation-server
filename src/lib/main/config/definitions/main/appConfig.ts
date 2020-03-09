@@ -8,7 +8,6 @@ import {ControllerClass}      from "../../../../api/Controller";
 import {ApiLevelSwitch}       from "../../../apiLevel/apiLevelUtils";
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig}     from "../parts/controllerConfig";
-import {Model}                from "../parts/inputConfig";
 import {BackgroundTask}       from "../parts/backgroundTask";
 import {DataboxClassDef, DataboxConfig} from "../parts/databoxConfig";
 import {
@@ -16,7 +15,7 @@ import {
 } from "../parts/channelsConfig";
 import {Events, PrecompiledEvents}         from '../parts/events';
 import {Middleware, PrecompiledMiddleware} from '../parts/middleware';
-import {UserGroupsConfig}                              from '../parts/userGroupsConfig';
+import {UserGroupsConfig}                  from '../parts/userGroupsConfig';
 
 export interface AppConfig
 {
@@ -117,29 +116,6 @@ export interface AppConfig
      * },
      */
     databoxDefaults?: DataboxConfig;
-
-    /**
-     * In this property, you can define all your models.
-     * @example
-     * models: {
-     *   //example of model for an value.
-     *   userName: {
-     *      type: 'string',
-     *      maxLength: 15,
-     *      charClass: 'a-zA-Z._0-9'
-     *   },
-     *   //example of model for an object.
-     *   chatMessage: {
-     *          properties: {
-     *              text: {},
-     *              fromId: {}
-     *          }
-     *     },
-     *   //example of model for an array.
-     *   names: ['v.name',{maxLength: 20}]
-     * }
-     */
-    models?: Record<string,Model>;
 
     /**
      * In this property, you can configure all predefined zation channels.

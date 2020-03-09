@@ -4,8 +4,9 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {AnyOfModelConfig, Model, ModelOptional} from "../config/definitions/parts/inputConfig";
-import Iterator                                 from "../utils/iterator";
+import {AnyOfModelConfig, Model}                 from "../config/definitions/parts/inputConfig";
+import Iterator                                  from "../utils/iterator";
+import {modelDefaultSymbol, modelOptionalSymbol} from '../constants/model';
 
 export default class OptionalProcessor
 {
@@ -20,15 +21,15 @@ export default class OptionalProcessor
         let isOptional = false;
         let defaultValue = undefined;
 
-        if(config.hasOwnProperty(nameof<ModelOptional>(s => s.isOptional))) {
-            isOptional = config[nameof<ModelOptional>(s => s.isOptional)];
-            defaultValue = config[nameof<ModelOptional>(s => s.default)];
+        if(config.hasOwnProperty(modelOptionalSymbol)) {
+            isOptional = config[modelOptionalSymbol];
+            defaultValue = config[modelDefaultSymbol];
         }
         else if(config.hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf))) {
             Iterator.iterateSync((key, value) => {
-                if(value.hasOwnProperty(nameof<ModelOptional>(s => s.isOptional))){
-                    isOptional = value[nameof<ModelOptional>(s => s.isOptional)];
-                    defaultValue = value[nameof<ModelOptional>(s => s.default)];
+                if(value.hasOwnProperty(modelOptionalSymbol)){
+                    isOptional = value[modelOptionalSymbol];
+                    defaultValue = value[modelDefaultSymbol];
                     //break;
                     return true;
                 }

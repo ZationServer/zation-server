@@ -6,10 +6,10 @@ Copyright(c) Luca Scaringella
 
 import {
     AnyOfModelConfig,
-    ArrayModelConfig, ConstructObjectFunction, ConvertArrayFunction, ConvertObjectFunction,
+    ArrayModel, ConstructObjectFunction, ConvertArrayFunction, ConvertObjectFunction,
     ConvertValueFunction,
     Model,
-    ObjectModelConfig, ParamInput, ValueModelConfig,
+    ObjectModel, ParamInput, ValueModel,
 } from "../config/definitions/parts/inputConfig";
 import BackErrorBag          from "../../api/BackErrorBag";
 import ValidatorEngine       from "../validator/validatorEngine";
@@ -42,7 +42,7 @@ export default class InputProcessorCreator
      * Creates a closure to process a value model.
      * @param valueModel
      */
-    static createValueModelProcessor(valueModel: ValueModelConfig): InputProcessFunction
+    static createValueModelProcessor(valueModel: ValueModel): InputProcessFunction
     {
         const type = valueModel.type;
         const strictType = typeof valueModel.strictType === 'boolean' ? valueModel.strictType: true;
@@ -85,7 +85,7 @@ export default class InputProcessorCreator
      * Creates a closure to process a array model.
      * @param arrayModel
      */
-    static createArrayModelProcessor(arrayModel: ArrayModelConfig & ModelPreparationMem): InputProcessFunction
+    static createArrayModelProcessor(arrayModel: ArrayModel & ModelPreparationMem): InputProcessFunction
     {
         const arrayInputConfig = (arrayModel.array as Model & ModelPreparationMem);
         const hasConvert = typeof arrayModel.convert === 'function';
@@ -186,11 +186,12 @@ export default class InputProcessorCreator
      * Creates a closure to process a object model.
      * @param objectModel
      */
-    static createObjectModelProcessor(objectModel: ObjectModelConfig): InputProcessFunction
+    static createObjectModelProcessor(objectModel: ObjectModel): InputProcessFunction
     {
         const props = objectModel.properties;
         const morePropsAllowed = objectModel.morePropsAllowed;
         const propKeys = Object.keys(props);
+        const propKeysLength = propKeys.length;
 
         const processConstruct = typeof objectModel.construct === 'function';
         const processConvert = typeof objectModel.convert === 'function';
@@ -224,7 +225,7 @@ export default class InputProcessorCreator
                 //check all expected props
                 const promises: Promise<any>[] = [];
 
-                for(let i = 0; i < propKeys.length; i++){
+                for(let i = 0; i < propKeysLength; i++){
                     const propName = propKeys[i];
 
                     const currentInputPathNew = currentInputPath === '' ?

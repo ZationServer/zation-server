@@ -164,4 +164,20 @@ export default class ObjectUtils
             }
         }
     }
+
+    /**
+     * Sets the prototype of an object at the
+     * end of the chain (But before the Object.prototype).
+     * @param object
+     * @param prototype
+     */
+    static setPrototypeAtTheEnd(object: object, prototype: object) {
+        let proto = object;
+        let nextProto = Object.getPrototypeOf(proto);
+        while (nextProto !== null && nextProto !== Object.prototype){
+            proto = nextProto;
+            nextProto = Object.getPrototypeOf(nextProto);
+        }
+        Object.setPrototypeOf(proto,prototype);
+    }
 }

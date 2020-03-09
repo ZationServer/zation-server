@@ -4,76 +4,67 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {InputConfigTranslatable, ModelConfigTranslatable} from "../../ConfigTranslatable";
-import {ObjectModelConfig}       from "../../../main/config/definitions/parts/inputConfig";
-import CloneUtils                from "../../../main/utils/cloneUtils";
-import Config                    from "../../Config";
-import {InDecoratorMem, InDM_ConstructorMethods, InDM_Extends, InDM_Models} from "./InDecoratorMem";
+import {InputConfigTranslatable, isModelConfigTranslatable, ModelConfigTranslatable} from '../../ConfigTranslatable';
+import {ObjectModel as ObjectModelConfig}                 from "../../../main/config/definitions/parts/inputConfig";
+import CloneUtils                                         from "../../../main/utils/cloneUtils";
+import {InDecoratorMem, inDM_ConstructorMethodsSymbol, inDM_ModelsSymbol} from "./InDecoratorMem";
+import {modelNameSymbol,modelPrototypeSymbol}                             from '../../../main/constants/model';
+import ObjectUtils                                                        from '../../../main/utils/objectUtils';
 
 /**
  * A class decorator that can be used to mark the class as an object model.
- * That means you can use the class in the input configuration directly,
- * and the object model will be registered to the models.
+ * That means you can use the class in the input configuration directly.
  * The constructor of the class will be called with the Bag but notice
  * that the input data is not available in the real class constructor.
  * But you can declare other methods and declare them as a constructor
  * with the constructor method decorator.
  * That will give you the possibility to use the input data and create async constructors.
- * @param register Indicates if the object model should be registered automatically.
  * @param name The name of the object model; if it is not provided, it will use the class name.
  */
-export const ObjectModel = (register: boolean = true, name?: string) => {
+export const ObjectModel = (name?: string) => {
     return (target: any) => {
-
         const prototype: InDecoratorMem = target.prototype;
 
         //constructorMethods
-        const constructorMethods = Array.isArray(prototype[InDM_ConstructorMethods]) ?
-            CloneUtils.deepClone(prototype[InDM_ConstructorMethods]!): [];
+        const constructorMethods = prototype.hasOwnProperty(inDM_ConstructorMethodsSymbol) &&
+        Array.isArray(prototype[inDM_ConstructorMethodsSymbol]) ?
+            CloneUtils.deepClone(prototype[inDM_ConstructorMethodsSymbol]!): [];
+        const constructorMethodsLength = constructorMethods.length;
 
-        const models = typeof prototype[InDM_Models] === 'object' ? prototype[InDM_Models]!: {};
+        const models = prototype.hasOwnProperty(inDM_ModelsSymbol) && typeof prototype[inDM_ModelsSymbol] === 'object' ?
+            prototype[inDM_ModelsSymbol]!: {};
 
         const objectModel: ObjectModelConfig = {
             properties: models,
-            ...(prototype[InDM_Extends] !== undefined ? {extends: prototype[InDM_Extends]}: {}),
-            construct: async function(bag)
-            {
-                let proto = this;
-                let nextProto = Object.getPrototypeOf(proto);
-                while (nextProto !== null && nextProto !== Object.prototype){
-                    proto = nextProto;
-                    nextProto = Object.getPrototypeOf(nextProto);
-                }
-                Object.setPrototypeOf(proto,Reflect.construct(target,[bag]));
+            construct: async function(bag) {
+                ObjectUtils.setPrototypeAtTheEnd(this,Reflect.construct(target,[bag]));
 
                 const promises: Promise<void>[] = [];
-                for(let i = 0; i < constructorMethods.length; i++){
+                for(let i = 0; i < constructorMethodsLength; i++){
                     promises.push(constructorMethods[i].call(this,bag));
                 }
                 await Promise.all(promises);
             }
         };
+        objectModel[modelNameSymbol] = typeof name === 'string' ? name: target.name;
 
-        if(register) {
-            const regName = typeof name === 'string' ? name: target.name;
-            Config.defineModel(regName,objectModel);
-
-            (target as ModelConfigTranslatable).__toModelConfig = () => {
-                return regName;
-            };
-
-            (target as InputConfigTranslatable).__toInputConfig = () => {
-                return [regName];
-            };
+        //extends
+        const proto = Object.getPrototypeOf(target);
+        if(isModelConfigTranslatable(proto) || typeof proto !== 'function') {
+            Object.defineProperty(objectModel,modelPrototypeSymbol,{
+                value: proto,
+                enumerable: false,
+                writable: true,
+                configurable: false
+            });
         }
-        else {
-            (target as ModelConfigTranslatable).__toModelConfig = () => {
-                return objectModel;
-            };
 
-            (target as InputConfigTranslatable).__toInputConfig = () => {
-                return [objectModel];
-            };
-        }
+        (target as ModelConfigTranslatable).__toModelConfig = () => {
+            return objectModel;
+        };
+
+        (target as InputConfigTranslatable).__toInputConfig = () => {
+            return [objectModel];
+        };
     }
 };

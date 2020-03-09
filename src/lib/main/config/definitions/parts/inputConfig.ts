@@ -10,9 +10,10 @@ import Bag from '../../../../api/Bag';
 // noinspection TypeScriptPreferShortImport
 import {ValidationType}      from '../../../constants/validationType.js';
 import {ValidationFunctions} from './validationFunctions';
+import {modelDefaultSymbol, modelOptionalSymbol} from '../../../constants/model';
 
-export type Model =
-    ValueModelConfig | ObjectModelConfig | ArrayModelConfig | ArrayModelShortSyntax | string | AnyOfModelConfig | AnyClass | AnyModelConfigTranslatable;
+export type ResolvedModel = ValueModel | ObjectModel | ArrayModel | ArrayModelShortSyntax | AnyOfModelConfig;
+export type Model = ResolvedModel | AnyClass | AnyModelConfigTranslatable;
 
 export interface AnyOfModelConfig extends ModelOptional
 {
@@ -87,7 +88,7 @@ export interface InputConfig {
      * that means the input validation and converter are disabled.
      * @default false.
      */
-    allowAnyInput ?: boolean;
+    allowAnyInput?: boolean;
 }
 
 export type Input = ParamInput | SingleModelInput | AnyClass | AnyInputConfigTranslatable;
@@ -104,7 +105,7 @@ export type ValidateFunction = (value: any, backErrorBag: BackErrorBag, inputPat
 export type ConvertValueFunction = (value: any, bag: Bag) => Promise<any> | any;
 export type GetDateFunction = (bag: Bag) => Promise<Date> | Date;
 
-export interface ValueModelConfig extends ValidationFunctions, ModelOptional
+export interface ValueModel extends ValidationFunctions, ModelOptional
 {
     /**
      * Set the allowed type of the value model.
@@ -149,7 +150,7 @@ export interface ValueModelConfig extends ValidationFunctions, ModelOptional
      * 'mongoId'
      * 'latLong'
      */
-    type ?: ValidationType | (ValidationType)[];
+    type?: ValidationType | (ValidationType)[];
     /**
      * Specify if the value model should use strict type mode.
      * In this mode, types are checked strictly. For example, in strict mode,
@@ -160,7 +161,7 @@ export interface ValueModelConfig extends ValidationFunctions, ModelOptional
      * e.g., a 1 or '1' is interpreted as a true boolean.
      * @default true
      */
-    strictType ?: boolean;
+    strictType?: boolean;
     /**
      * Validate the value model with your validation checks.
      * It can be one Validation check function or more functions in an array.
@@ -176,7 +177,7 @@ export interface ValueModelConfig extends ValidationFunctions, ModelOptional
      *   }
      * }]
      */
-    validate ?: ValidateFunction | ValidateFunction[];
+    validate?: ValidateFunction | ValidateFunction[];
     /**
      * Convert the input value in a specific value; for example,
      * you want to add something to the end of a string.
@@ -186,43 +187,38 @@ export interface ValueModelConfig extends ValidationFunctions, ModelOptional
      *     return value+'end';
      * }
      */
-    convert ?: ConvertValueFunction;
+    convert?: ConvertValueFunction;
     /**
      * Set if zation should convert the type correctly.
      * That for example, can be used to convert non-strict type value to the correct type
      * or convert a Date type to real date instance.
      * @default true
      */
-    convertType ?: boolean;
-    /**
-     * This property will allow you to extend from another value model.
-     * Then this value model will get all properties that
-     * it doesn't define by himself from the extended model.
-     * @example
-     * extends: 'personName'
-     */
-    extends?: string | ValueModelConfig | AnyModelConfigTranslatable | AnyClass;
+    convertType?: boolean;
 }
 
 export interface ModelOptional {
     /**
+     * @internal
      * Specifies if this model is optional,
      * so the input doesn't need to provide the data for it.
      * @default false
      */
-    isOptional ?: boolean;
+    [modelOptionalSymbol]?: boolean;
     /**
+     * @internal
      * Define a default value that will be used
      * if the input had not provided the value.
+     * Only works when the model is optional (with the $optional function).
      */
-    default?: any
+    [modelDefaultSymbol]?: any
 }
 
 export type ObjectProperties = Record<string,Model>;
 export type ConvertObjectFunction = (obj: Record<string,any>, bag: Bag) => Promise<any> | any;
 export type ConstructObjectFunction = (this: Record<string,any>, bag: Bag) => Promise<void> | void;
 
-export interface ObjectModelConfig extends ModelOptional
+export interface ObjectModel extends ModelOptional
 {
     /**
      * Specifies the properties of the object.
@@ -236,18 +232,6 @@ export interface ObjectModelConfig extends ModelOptional
      */
     properties: ObjectProperties;
     /**
-     * Inheritance from another object model.
-     * Then this object model will get all properties that it doesn't define by himself
-     * from the extended model.
-     * It also affects the prototype because the current object model prototype
-     * will get the super prototype as a prototype.
-     * Also, the super constructor will be called before the constructor of this object model.
-     * The convert function will also be called with the result of the super convert function.
-     * @example
-     * extends: 'person'
-     */
-    extends ?: string | ObjectModelConfig | AnyModelConfigTranslatable | AnyClass;
-    /**
      * Set the prototype of the input object to a specific prototype.
      * @example
      * prototype: {
@@ -256,7 +240,7 @@ export interface ObjectModelConfig extends ModelOptional
      *     }
      * }
      */
-    prototype ?: object;
+    prototype?: object;
     /**
      * Set the construct function of the object model,
      * that function can be as a constructor on the input object.
@@ -267,7 +251,7 @@ export interface ObjectModelConfig extends ModelOptional
      *    this.fullName = `${this.firstName} ${this.lastName}`;
      * }
      */
-    construct ?: ConstructObjectFunction;
+    construct?: ConstructObjectFunction;
     /**
      * Convert the input object in a specific value;
      * for example, you only want the name value of the object.
@@ -277,7 +261,7 @@ export interface ObjectModelConfig extends ModelOptional
      *    return obj['name'];
      * }
      */
-    convert ?: ConvertObjectFunction;
+    convert?: ConvertObjectFunction;
     /**
      * Set if the input can have more properties as there defined in the model.
      * @default false
@@ -285,7 +269,7 @@ export interface ObjectModelConfig extends ModelOptional
     morePropsAllowed?: boolean;
 }
 
-export interface ArrayModelConfig extends ArraySettings
+export interface ArrayModel extends ArraySettings
 {
     /**
      * Define the model of the items that the array can contain.
@@ -305,19 +289,19 @@ export interface ArraySettings extends ModelOptional
      * @example
      * minLength: 3
      */
-    minLength ?: number;
+    minLength?: number;
     /**
      * MaxLength defines the maximum length of the input array.
      * @example
      * maxLength: 10
      */
-    maxLength ?: number;
+    maxLength?: number;
     /**
      * Length defines the exact length of the input array.
      * @example
      * length: 5
      */
-    length ?: number;
+    length?: number;
     /**
      * Convert the input array in a specific value; for example,
      * you want only to have the first item.
@@ -327,7 +311,7 @@ export interface ArraySettings extends ModelOptional
      *    return array[0];
      * }
      */
-    convert ?: ConvertArrayFunction
+    convert?: ConvertArrayFunction
 }
 
 export interface ArrayModelShortSyntax extends Array<Model | ArraySettings | undefined>

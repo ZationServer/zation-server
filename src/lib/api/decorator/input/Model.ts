@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {Model as ModelConfig}        from "../../../main/config/definitions/parts/inputConfig";
-import {InDecoratorMem, InDM_Models} from "./InDecoratorMem";
+import {InDecoratorMem, inDM_ModelsSymbol} from "./InDecoratorMem";
 
 /**
  * A decorator that will mark the property with a model config and
@@ -17,9 +17,9 @@ import {InDecoratorMem, InDM_Models} from "./InDecoratorMem";
 export const Model = (model: ModelConfig) => {
     return (target: any,propertyName: string) => {
         target = (target as InDecoratorMem);
-        if(typeof target[InDM_Models] !== 'object'){
-            target[InDM_Models] = {};
+        if(!target.hasOwnProperty(inDM_ModelsSymbol)){
+            target[inDM_ModelsSymbol] = {};
         }
-        target[InDM_Models][propertyName] = model;
+        target[inDM_ModelsSymbol][propertyName] = model;
     }
 };

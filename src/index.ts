@@ -29,7 +29,6 @@ import {$allAuth, $allNotAuth, $tokenHasVariables, $tokenVariablesMatch, $userId
 import {Model}                      from "./lib/api/decorator/input/Model";
 import {ObjectModel}                from "./lib/api/decorator/input/ObjectModel";
 import {ParamInput}                 from "./lib/api/decorator/input/ParamInput";
-import {Extends}                    from "./lib/api/decorator/input/Extends";
 import {Constructor}                from "./lib/api/decorator/input/Constructor";
 import NoMoreDataAvailableError     from "./lib/main/databox/noMoreDataAvailable";
 import DataboxFamily                from "./lib/api/databox/DataboxFamily";
@@ -55,6 +54,11 @@ import BackErrorConstruct           from './lib/main/constants/backErrorConstruc
 import {$init}                      from './lib/api/InitApiUtils';
 import {start}                      from './lib/api/Start';
 import {ConsoleColor}               from './lib/main/log/logCategories';
+import {$optional, $required}       from './lib/api/model/Optional';
+import {$models}                    from './lib/api/model/Models';
+import {$model}                     from './lib/api/model/Model';
+import {$extends}                   from './lib/api/model/Extends';
+import {$array}                     from './lib/api/model/Array';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -68,8 +72,13 @@ export {
     Router,
     Register,
     $not,
+    $optional,
+    $required,
+    $models,
+    $model,
+    $extends,
+    $array,
     Model,
-    Extends,
     Constructor,
     ObjectModel,
     ParamInput,

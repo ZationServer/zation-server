@@ -31,7 +31,7 @@ export default class ConfigCheckerTools
         }
         if(!found) {
             configErrorBag.addError(new ConfigError(configName,
-                `${target.getTarget()} ${message}`));
+                `${target.toString()} ${message}`));
             return false;
         }
         return true;

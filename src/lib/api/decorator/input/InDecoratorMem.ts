@@ -4,15 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ObjectModelConfig}                    from "../../../main/config/definitions/parts/inputConfig";
-import {AnyClass, AnyModelConfigTranslatable} from "../../../main/config/definitions/parts/configComponents";
-
-export const InDM_ConstructorMethods = Symbol();
-export const InDM_Extends            = Symbol();
-export const InDM_Models             = Symbol();
+export const inDM_ConstructorMethodsSymbol = Symbol();
+export const inDM_ModelsSymbol             = Symbol();
 
 export interface InDecoratorMem {
-    [InDM_ConstructorMethods]?: Function[];
-    [InDM_Extends]?: string | ObjectModelConfig | AnyClass | AnyModelConfigTranslatable;
-    [InDM_Models]?: Record<string,any>;
+    [inDM_ConstructorMethodsSymbol]?: Function[];
+    [inDM_ModelsSymbol]?: Record<string,any>;
 }

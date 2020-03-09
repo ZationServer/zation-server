@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 // noinspection TypeScriptPreferShortImport
 import {ValidationTypeRecord}                              from '../constants/validationType';
-import {ArraySettings, ValidateFunction, ValueModelConfig} from "../config/definitions/parts/inputConfig";
+import {ArraySettings, ValidateFunction, ValueModel}       from "../config/definitions/parts/inputConfig";
 // noinspection TypeScriptPreferShortImport
 import BackErrorBag          from "../../api/BackErrorBag";
 import BackError             from "../../api/BackError";
@@ -37,7 +37,7 @@ export default class ValidatorEngine
      * Creates a closure to validate the type of the input data.
      * @param config
      */
-    static createValueValidator(config: ValueModelConfig): ValueValidateFunction
+    static createValueValidator(config: ValueModel): ValueValidateFunction
     {
         const validatorFunctions: PreparedFunctionValidator[] = [];
         let validateFunction: ValidateFunction = () => {};
@@ -50,7 +50,7 @@ export default class ValidatorEngine
                         return ValidatorFunctions[cKey](input,cValue,backErrorBag,prepareErrorData,preparedBag,type);
                     });
                 }
-                else if(cKey === nameof<ValueModelConfig>(s => s.validate)) {
+                else if(cKey === nameof<ValueModel>(s => s.validate)) {
                     validateFunction = FuncUtils.createFuncAsyncInvoker(cValue);
                 }
             }

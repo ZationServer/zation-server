@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import {InputConfigTranslatable}        from "../../ConfigTranslatable";
 import {ParamInput as ParamInputConfig} from "../../../main/config/definitions/parts/inputConfig";
-import {InDecoratorMem, InDM_Models}    from "./InDecoratorMem";
+import {InDecoratorMem, inDM_ModelsSymbol}    from "./InDecoratorMem";
 
 /**
  * A class decorator that will mark the class as a param based input config.
@@ -17,7 +17,7 @@ export const ParamInput = () => {
         const prototype: InDecoratorMem = target.prototype;
 
         const paramInput: ParamInputConfig =
-            typeof prototype[InDM_Models] === 'object' ? prototype[InDM_Models]!: {};
+            typeof prototype[inDM_ModelsSymbol] === 'object' ? prototype[inDM_ModelsSymbol]!: {};
 
         (target as InputConfigTranslatable).__toInputConfig = () => {
             return paramInput;

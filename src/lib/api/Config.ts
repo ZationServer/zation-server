@@ -33,8 +33,6 @@ import {registerBagExtension,BagExtension}  from 'zation-bag-extension';
 
 export default class Config
 {
-
-    private static tmpModels: Record<string,Model> = {};
     private static tmpControllers: Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>> = {};
     private static tmpDataboxes: Record<string,DataboxClassDef | ApiLevelSwitch<DataboxClassDef>> = {};
     private static tmpCustomChs: Record<string,CustomChannelConfig> = {};
@@ -78,31 +76,6 @@ export default class Config
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * This method defines a new model in the app config.
-     * Watch out that you don't use a name that is already defined in the models of the app config.
-     * If you use this method in another file as the app config,
-     * make sure that you import this file in app config.
-     * @example
-     * Config.defineModel('user',{
-     *     properties: {
-     *         name: {type: 'string'},
-     *         age: {type: 'number'}
-     *     }
-     * });
-     * @param name
-     * @param model
-     */
-    static defineModel(name: string, model: Model) {
-        if(!Config.tmpModels.hasOwnProperty(name)){
-            Config.tmpModels[name] = model;
-        }
-        else {
-            throw new ConfigBuildError(`The model name: ${name} is already defined.`);
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
      * This method defines a new custom channel in the app config.
      * Watch out that you don't use a name that is already defined in the custom channels of the app config.
      * If you use this method in another file as the app config,
@@ -138,35 +111,6 @@ export default class Config
      */
     static defineZationChannels(config: ZationChannelsConfig) {
         Config.tmpZationChannels.push(config);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * This method defines new models in the app config.
-     * Watch out that you don't use a name that is already defined in the models of the app config.
-     * If you use this method in another file as the app config,
-     * make sure that you import this file in app config.
-     * @example
-     * Config.defineModels({
-     *    user: {
-     *        properties: {
-     *          name: 'user_name',
-     *          age: {type: 'number'}
-     *        }
-     *    },
-     *    user_name: {
-     *        type: 'string',
-     *        maxLength: 10
-     *    }
-     * });
-     * @param models
-     */
-    static defineModels(models: Record<string,Model>) {
-        for(let name in models){
-            if(models.hasOwnProperty(name)){
-                Config.defineModel(name,models[name]);
-            }
-        }
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -319,13 +263,11 @@ export default class Config
      */
     static appConfig(config: AppConfig,isPrimaryAppConfig: boolean = true): AppConfig {
         if(isPrimaryAppConfig){
-            config.models = config.models || {};
             config.controllers = config.controllers || {};
             config.databoxes = config.databoxes || {};
             config.customChannels = config.customChannels || {};
             config.zationChannels = config.zationChannels || {};
 
-            Config.configAdd(Config.tmpModels,config.models,'model name');
             Config.configAdd(Config.tmpControllers,config.controllers,'controller name');
             Config.configAdd(Config.tmpDataboxes,config.databoxes,'databox name');
             Config.configAdd(Config.tmpCustomChs,config.customChannels as object,'custom channel');
