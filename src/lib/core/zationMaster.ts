@@ -15,7 +15,6 @@ import Logger                  from "../main/log/logger";
 import ConfigChecker           from "../main/config/utils/configChecker";
 import ClientPrepare           from "../main/client/clientPrepare";
 import PortChecker             from "../main/utils/portChecker";
-import TimeUtils               from "../main/utils/timeUtils";
 import BackgroundTasksSender   from "../main/background/backgroundTasksSender";
 import BackgroundTasksLoader   from "../main/background/backgroundTasksLoader";
 import ZationConfigMaster      from "../main/config/manager/zationConfigMaster";
@@ -31,6 +30,7 @@ import BagExtensionConflictChecker from '../main/bagExtension/bagExtensionConfli
 import {ProcessType, processTypeSymbol} from '../main/constants/processType';
 import {Events}                         from '../main/config/definitions/parts/events';
 import StartDebugStopwatch              from '../main/utils/startDebugStopwatch';
+import {getMoment}                      from '../main/utils/timeUtils';
 
 global[processTypeSymbol] = ProcessType.Master;
 
@@ -442,7 +442,7 @@ export default class ZationMaster {
         msg.push(`            Your app: ${this.zc.mainConfig.appName}`);
         msg.push(`            Hostname: ${hostName}`);
         msg.push(`            Port: ${port}`);
-        msg.push(` ️          Time️: ${TimeUtils.getMoment(this.zc.mainConfig.timeZone)}`);
+        msg.push(` ️          Time️: ${getMoment(this.zc.mainConfig.timeZone)}`);
         msg.push(`            Time zone: ${this.zc.mainConfig.timeZone}`);
         msg.push(`            Instance id: ${this.master.options.instanceId}`);
         msg.push(`            Node.js version: ${process.version}`);

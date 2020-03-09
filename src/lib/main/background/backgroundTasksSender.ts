@@ -6,8 +6,8 @@ Copyright(c) Luca Scaringella
 
 import ZationMaster from "../../core/zationMaster";
 import ZationConfig from "../config/manager/zationConfig";
-import TimeUtils    from "../utils/timeUtils";
 import Logger       from "../log/logger";
+import {getMoment, processTaskTriggerTime} from '../utils/timeUtils';
 
 export default class BackgroundTasksSender
 {
@@ -31,8 +31,7 @@ export default class BackgroundTasksSender
         else if(typeof time === 'object')
         {
             const set = () => {
-                let {tillMs,tillFormat} = TimeUtils.
-                processTaskTriggerTime(time,TimeUtils.getMoment(this.zc.mainConfig.timeZone));
+                let {tillMs,tillFormat} = processTaskTriggerTime(time,getMoment(this.zc.mainConfig.timeZone));
 
                 if(tillMs && tillMs > 0) {
                     Logger.log.debug(`Every Background Task: ${name} is planed to -> ${tillFormat}`);
@@ -65,8 +64,7 @@ export default class BackgroundTasksSender
         }
         else if(typeof time === 'object')
         {
-            const {tillFormat,tillMs} = TimeUtils.
-            processTaskTriggerTime(time,TimeUtils.getMoment(this.zc.mainConfig.timeZone));
+            const {tillFormat,tillMs} = processTaskTriggerTime(time,getMoment(this.zc.mainConfig.timeZone));
 
             if(tillMs && tillMs > 0) {
                 Logger.log.debug(`At Background Task: ${name} is planed to -> ${tillFormat}`);

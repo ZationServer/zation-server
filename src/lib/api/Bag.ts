@@ -63,6 +63,7 @@ import DataboxUtils                                            from "../main/dat
 import ScServer                                                from "../main/sc/scServer";
 // noinspection TypeScriptPreferShortImport
 import {ObjectPathSequence}                                    from "../main/internalApi/objectPathSequence/objectPathSequence";
+import {createAsyncTimeout, createIntervalAsyncIterator} from '../main/utils/timeUtils';
 
 /**
  * The bag instance of this process.
@@ -803,18 +804,34 @@ export default class Bag {
         return uniqid();
     }
 
-    //Part wait
+    //Part Time utils
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * Returns a promise that will be resolved in the defined time (milliseconds).
      * Can be used to let the server wait a specific amount of time.
-     * @param ms
+     * @param milliseconds
      * @example
      * await wait(2000);
      */
-    wait(ms: number): Promise<void> {
-        return new Promise<void>(resolve => setTimeout(resolve,ms));
+    wait(milliseconds: number): Promise<void> {
+        return createAsyncTimeout(milliseconds)
+    }
+
+    /**
+     * Creates an asynchronous interval iterator.
+     * @example
+     * let i = 0;
+     * for await (const clear of interval(2000)){
+     *     i++;
+     *     if(i > 10) {
+     *         clear();
+     *     }
+     * }
+     * @param milliseconds
+     */
+    interval(milliseconds: number) {
+        return createIntervalAsyncIterator(milliseconds);
     }
 
     //Part sign and verify token
