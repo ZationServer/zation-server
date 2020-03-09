@@ -12,8 +12,8 @@ import {ValidationType}      from '../../../constants/validationType.js';
 import {ValidationFunctions} from './validationFunctions';
 import {modelDefaultSymbol, modelOptionalSymbol} from '../../../constants/model';
 
-export type ResolvedModel = ValueModel | ObjectModel | ArrayModel | ArrayModelShortSyntax | AnyOfModelConfig;
-export type Model = ResolvedModel | AnyClass | AnyModelConfigTranslatable;
+export type ModelConfig = ValueModel | ObjectModel | ArrayModel | ArrayModelShortSyntax | AnyOfModelConfig;
+export type Model = ModelConfig | AnyClass | AnyModelConfigTranslatable;
 
 export interface AnyOfModelConfig extends ModelOptional
 {

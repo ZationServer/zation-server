@@ -8,8 +8,10 @@ import {InputConfigTranslatable, isModelConfigTranslatable, ModelConfigTranslata
 import {ObjectModel as ObjectModelConfig}                 from "../../../main/config/definitions/parts/inputConfig";
 import CloneUtils                                         from "../../../main/utils/cloneUtils";
 import {InDecoratorMem, inDM_ConstructorMethodsSymbol, inDM_ModelsSymbol} from "./InDecoratorMem";
-import {modelNameSymbol,modelPrototypeSymbol}                             from '../../../main/constants/model';
 import ObjectUtils                                                        from '../../../main/utils/objectUtils';
+import {createModel}                                                      from '../../../main/model/modelCreator';
+// noinspection TypeScriptPreferShortImport
+import {$extends}                                                         from '../../../api/model/Extends';
 
 /**
  * A class decorator that can be used to mark the class as an object model.
@@ -34,7 +36,7 @@ export const ObjectModel = (name?: string) => {
         const models = prototype.hasOwnProperty(inDM_ModelsSymbol) && typeof prototype[inDM_ModelsSymbol] === 'object' ?
             prototype[inDM_ModelsSymbol]!: {};
 
-        const objectModel: ObjectModelConfig = {
+        const objectModel: ObjectModelConfig = createModel({
             properties: models,
             construct: async function(bag) {
                 ObjectUtils.setPrototypeAtTheEnd(this,Reflect.construct(target,[bag]));
@@ -45,18 +47,12 @@ export const ObjectModel = (name?: string) => {
                 }
                 await Promise.all(promises);
             }
-        };
-        objectModel[modelNameSymbol] = typeof name === 'string' ? name: target.name;
+        },typeof name === 'string' ? name: target.name) as ObjectModelConfig;
 
         //extends
         const proto = Object.getPrototypeOf(target);
         if(isModelConfigTranslatable(proto) || typeof proto !== 'function') {
-            Object.defineProperty(objectModel,modelPrototypeSymbol,{
-                value: proto,
-                enumerable: false,
-                writable: true,
-                configurable: false
-            });
+            $extends(objectModel,proto);
         }
 
         (target as ModelConfigTranslatable).__toModelConfig = () => {

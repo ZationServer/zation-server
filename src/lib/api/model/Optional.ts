@@ -4,12 +4,20 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {Model, ResolvedModel}                                      from '../../main/config/definitions/parts/inputConfig';
+import {Model, ModelConfig}                                        from '../../main/config/definitions/parts/inputConfig';
 import {isModelConfigTranslatable, resolveModelConfigTranslatable} from '../ConfigTranslatable';
 import {modelDefaultSymbol, modelOptionalSymbol}                   from '../../main/constants/model';
+import {DeepReadonly}                                              from '../../main/utils/typeUtils';
 
-function changeOptionalOfResolvedModel(model: ResolvedModel,value: boolean,defaultValue?: any) {
-    const options = Array.isArray(model) ? (model[1] || {}) : model;
+function changeOptionalOfResolvedModel(model: ModelConfig, value: boolean, defaultValue?: any) {
+    let options;
+    if(Array.isArray(model)){
+        options = model[1] || {};
+        model[1] = options;
+    }
+    else {
+        options = model;
+    }
     options[modelOptionalSymbol] = value;
     options[modelDefaultSymbol] = defaultValue;
 }
@@ -26,7 +34,7 @@ function updateOptional(model: Model,value: boolean,defaultValue?: any): Model {
         };
     }
     else {
-        changeOptionalOfResolvedModel(modelFlatCopy as ResolvedModel,value,defaultValue);
+        changeOptionalOfResolvedModel(modelFlatCopy as ModelConfig,value,defaultValue);
     }
 
     return modelFlatCopy;
@@ -39,10 +47,10 @@ function updateOptional(model: Model,value: boolean,defaultValue?: any): Model {
  * Define a default value that will be used
  * if the input had not provided the value.
  */
-export function $optional(model: Model,defaultValue?: any): Model {
-    return updateOptional(model,true,defaultValue);
+export function $optional<T extends ModelConfig>(model: T | ModelConfig,defaultValue?: any): DeepReadonly<T> {
+    return updateOptional(model,true,defaultValue) as DeepReadonly<T>;
 }
 
-export function $required(model: Model): Model {
-    return updateOptional(model,false);
+export function $required<T extends ModelConfig>(model: T | ModelConfig): DeepReadonly<T> {
+    return updateOptional(model,false) as DeepReadonly<T>;
 }

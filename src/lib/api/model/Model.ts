@@ -4,14 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {Model}                          from '../../main/config/definitions/parts/inputConfig';
-import {modelNameSymbol}                from '../../main/constants/model';
-import {setUniqueModelId}               from '../../main/model/modelId';
+import {ModelConfig}        from '../../main/config/definitions/parts/inputConfig';
+import {createModel}        from '../../main/model/modelCreator';
+import {DeepReadonly}       from '../../main/utils/typeUtils';
 
-export function $model(model: Model,name?: string): Model {
-    if(name !== undefined) {
-        model[modelNameSymbol] = name;
-    }
-    setUniqueModelId(model);
-    return model;
+export function $model<T extends ModelConfig>(model: T | ModelConfig,name?: string): DeepReadonly<T> {
+    return createModel(model,name) as DeepReadonly<T>;
 }

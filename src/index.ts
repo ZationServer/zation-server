@@ -58,7 +58,6 @@ import {$optional, $required}       from './lib/api/model/Optional';
 import {$models}                    from './lib/api/model/Models';
 import {$model}                     from './lib/api/model/Model';
 import {$extends}                   from './lib/api/model/Extends';
-import {$array}                     from './lib/api/model/Array';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -77,7 +76,6 @@ export {
     $models,
     $model,
     $extends,
-    $array,
     Model,
     Constructor,
     ObjectModel,

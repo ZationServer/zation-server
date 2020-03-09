@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {Model, ParamInput, ResolvedModel, SingleModelInput} from '../main/config/definitions/parts/inputConfig';
+import {Model, ParamInput, ModelConfig, SingleModelInput} from '../main/config/definitions/parts/inputConfig';
 
 /**
  * Interface for define that the object can be translated to a input config.
@@ -42,7 +42,7 @@ export const isModelConfigTranslatable = (obj: any): obj is ModelConfigTranslata
 /**
  * Will resolve model config translatable object and returns the target object.
  */
-export function resolveModelConfigTranslatable(obj: object): ResolvedModel {
+export function resolveModelConfigTranslatable(obj: object): ModelConfig {
     const resolvedObjects: object[] = [];
     while (isModelConfigTranslatable(obj) && !resolvedObjects.includes(obj)){
         resolvedObjects.push(obj);

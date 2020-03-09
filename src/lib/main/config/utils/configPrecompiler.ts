@@ -19,7 +19,7 @@ import {
 import ObjectUtils        from "../../utils/objectUtils";
 import Iterator           from "../../utils/iterator";
 import {OtherLoadedConfigSet, OtherPrecompiledConfigSet} from "../manager/configSets";
-import InputProcessorCreator, {Processable} from "../../input/inputProcessorCreator";
+import InputProcessorCreator, {Processable}              from '../../input/inputProcessorCreator';
 import {SystemController}          from "../../systemController/systemControler.config";
 import OptionalProcessor           from "../../input/optionalProcessor";
 import ZationConfig                from "../manager/zationConfig";
@@ -286,6 +286,15 @@ export default class ConfigPrecompiler
     {
         if(typeof value === "object")
         {
+            if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._optionalInfo))){
+                Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._optionalInfo),{
+                    value: OptionalProcessor.process(value),
+                    enumerable: false,
+                    writable: false,
+                    configurable: false
+                });
+            }
+
             if((value as ModelPreparationMem)._pcStep2){
                 return;
             }
@@ -309,16 +318,16 @@ export default class ConfigPrecompiler
                     //extends there
                     //check super extends before this
                     //lastExtend
-                    const superObj = resolveModelConfigTranslatable(value[modelPrototypeSymbol]);
+                    const superObj: ObjectModel = resolveModelConfigTranslatable(value[modelPrototypeSymbol]) as ObjectModel;
 
                     this.modelPrecompileStep2(superObj);
 
                     //extend Props
-                    const superProps = superObj[nameof<ObjectModel>(s => s.properties)];
-                    ObjectUtils.mergeTwoObjects(value[nameof<ObjectModel>(s => s.properties)],superProps,false);
+                    const superProps = superObj.properties;
+                    ObjectUtils.mergeTwoObjects((value as ObjectModel).properties,superProps,false);
 
                     //check for prototype
-                    const superPrototype = superObj[nameof<ObjectModel>(s => s.prototype)];
+                    const superPrototype = superObj.prototype;
                     if(superPrototype){
                         if(!value[nameof<ObjectModel>(s => s.prototype)]){
                             value[nameof<ObjectModel>(s => s.prototype)] = superPrototype;
@@ -329,10 +338,7 @@ export default class ConfigPrecompiler
                     }
 
                     //extend construct
-                    const superConstruct =
-                        typeof superObj[nameof<ObjectModel>(s => s.construct)] === 'function' ?
-                        superObj[nameof<ObjectModel>(s => s.construct)] :
-                        async () => {};
+                    const superConstruct = typeof superObj.construct === 'function' ? superObj.construct : async () => {};
                     const currentConstruct = value[nameof<ObjectModel>(s => s.construct)];
                     if(typeof currentConstruct === 'function') {
                         value[nameof<ObjectModel>(s => s.construct)] = async function(bag){
@@ -348,9 +354,7 @@ export default class ConfigPrecompiler
 
                     //extend convert
                     const superConvert =
-                        typeof superObj[nameof<ObjectModel>(s => s.convert)] === 'function' ?
-                            superObj[nameof<ObjectModel>(s => s.convert)] :
-                            async (obj) => {return obj;};
+                        typeof superObj.convert === 'function' ? superObj.convert : async (obj) => {return obj;};
                     const currentConvert = value[nameof<ObjectModel>(s => s.convert)];
                     if(typeof currentConvert === 'function') {
                         value[nameof<ObjectModel>(s => s.convert)] = async (obj, bag) => {
@@ -419,14 +423,6 @@ export default class ConfigPrecompiler
                         configurable: false
                     });
                 }
-            }
-            if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._optionalInfo))){
-                Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._optionalInfo),{
-                    value: OptionalProcessor.process(value),
-                    enumerable: false,
-                    writable: false,
-                    configurable: false
-                });
             }
 
             Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._pcStep2),{

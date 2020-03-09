@@ -4,14 +4,16 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {Model}           from '../../main/config/definitions/parts/inputConfig';
-import {modelNameSymbol} from '../../main/constants/model';
+import {ModelConfig}     from '../../main/config/definitions/parts/inputConfig';
+import {createModel}     from '../../main/model/modelCreator';
+import {DeepReadonly}    from '../../main/utils/typeUtils';
 
-export function $models<T extends string>(models: Record<T,Model>): Record<T,Model> {
+export function $models<T extends Record<string,ModelConfig>>(models: T | Record<string,ModelConfig>): DeepReadonly<T> {
     for(let k in models){
         if(models.hasOwnProperty(k)){
-            models[k][modelNameSymbol] = k;
+            // @ts-ignore
+            models[k] = createModel(models[k],k) as any;
         }
     }
-    return models;
+    return models as DeepReadonly<T>;
 }

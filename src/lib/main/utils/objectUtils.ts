@@ -180,4 +180,24 @@ export default class ObjectUtils
         }
         Object.setPrototypeOf(proto,prototype);
     }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Sets unchangeable properties to an object.
+     * @param object
+     * @param props
+     */
+    static setConstProperties(object: object,props: object) {
+        for(let k in props){
+            if(props.hasOwnProperty(k)){
+                props[k] = {
+                    value: props[k],
+                    writable: false,
+                    configurable: false,
+                    enumerable: true
+                } as PropertyDescriptor;
+            }
+        }
+        Object.defineProperties(object,props as PropertyDescriptorMap);
+    }
 }
