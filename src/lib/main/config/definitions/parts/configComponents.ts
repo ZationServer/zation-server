@@ -5,12 +5,13 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import {InputConfigTranslatable, ModelConfigTranslatable}  from "../../../../api/ConfigTranslatable";
+import { ModelConfigTranslatable}                          from "../../../../api/configTranslatable/modelConfigTranslatable";
 import {AccessConfigValue}                                 from "../../../access/accessOptions";
 import {IdValid}                                           from "../../../id/idValidCheckerUtils";
 import Bag                                                 from "../../../../api/Bag";
 import ZationTokenWrapper                                  from "../../../internalApi/zationTokenWrapper";
 import {Notable}                                           from '../../../../api/Notable';
+import {InputConfigTranslatable}                           from '../../../../api/configTranslatable/inputConfigTranslatable';
 
 export type NormalAuthAccessCustomFunction = (bag: Bag, token: ZationTokenWrapper | null) => Promise<boolean> | boolean;
 

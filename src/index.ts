@@ -10,7 +10,7 @@ import Bag, {bag}                   from './lib/api/Bag';
 import RequestBag                   from './lib/api/RequestBag';
 import Result                       from './lib/api/Result';
 import Controller                   from './lib/api/Controller';
-import Config, {$single}            from './lib/api/Config';
+import Config                       from './lib/api/Config';
 import BackErrorBuilder             from "./lib/main/builder/backErrorBuilder";
 import ServiceNotFoundError         from './lib/main/services/serviceNotFoundError';
 import AuthenticationError          from './lib/main/error/authenticationError';
@@ -23,9 +23,10 @@ import {ControllerConfig}           from "./lib/main/config/definitions/parts/co
 import {StartMode}                  from "./lib/core/startMode";
 import Router                       from "./lib/api/Router";
 import {Register}                   from "./lib/api/decorator/component/Register";
-import {ModelConfigTranslatable,InputConfigTranslatable}          from "./lib/api/ConfigTranslatable";
-import {$value, $key, $pair, $all, $any, $contains, $matches}     from './lib/api/databox/DbApiUtils';
+import {$value, $key, $pair, $all, $any, $contains, $matches}                     from './lib/api/databox/DbApiUtils';
 import {$allAuth, $allNotAuth, $tokenHasVariables, $tokenVariablesMatch, $userId} from './lib/api/AccessApiUtils';
+import {resolveModelConfigTranslatable, updateModelConfigTranslatable}            from './lib/api/configTranslatable/modelConfigTranslatable';
+import {resolveInputConfigTranslatable, updateInputConfigTranslatable}            from './lib/api/configTranslatable/inputConfigTranslatable';
 import {Model}                      from "./lib/api/decorator/input/Model";
 import {ObjectModel}                from "./lib/api/decorator/input/ObjectModel";
 import {ParamInput}                 from "./lib/api/decorator/input/ParamInput";
@@ -54,10 +55,11 @@ import BackErrorConstruct           from './lib/main/constants/backErrorConstruc
 import {$init}                      from './lib/api/InitApiUtils';
 import {start}                      from './lib/api/Start';
 import {ConsoleColor}               from './lib/main/log/logCategories';
-import {$optional, $required}       from './lib/api/model/Optional';
-import {$models}                    from './lib/api/model/Models';
-import {$model}                     from './lib/api/model/Model';
-import {$extends}                   from './lib/api/model/Extends';
+import {$optional, $required}       from './lib/api/input/Optional';
+import {$models}                    from './lib/api/input/Models';
+import {$model}                     from './lib/api/input/Model';
+import {$extends}                   from './lib/api/input/Extends';
+import {$single}                    from './lib/api/input/Single';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -110,8 +112,6 @@ export {
     ErrorType,
     Server,
     Config,
-    InputConfigTranslatable,
-    ModelConfigTranslatable,
     ServiceNotFoundError,
     ValidationType,
     AuthenticationError,
@@ -129,5 +129,9 @@ export {
     AsymmetricKeyPairs,
     DbCudOperationSequence,
     ObjectPathSequence,
-    ConsoleColor
+    ConsoleColor,
+    resolveModelConfigTranslatable,
+    resolveInputConfigTranslatable,
+    updateModelConfigTranslatable,
+    updateInputConfigTranslatable
 };

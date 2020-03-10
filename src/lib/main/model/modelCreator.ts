@@ -4,10 +4,12 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ArrayModel, ModelConfig}              from '../config/definitions/parts/inputConfig';
+import {ArrayModel, Model, ModelConfig}       from '../config/definitions/parts/inputConfig';
 import {modelNameSymbol}                      from '../constants/model';
 import {setUniqueModelId}                     from './modelId';
 import {DeepReadonly}                         from '../utils/typeUtils';
+
+const modelCreatedSymbol = Symbol();
 
 export function createModel(model: ModelConfig, name?: string): DeepReadonly<ModelConfig> {
     let createdModel: ModelConfig = {};
@@ -31,5 +33,12 @@ export function createModel(model: ModelConfig, name?: string): DeepReadonly<Mod
         });
     }
     setUniqueModelId(createdModel);
+    
+    createdModel[modelCreatedSymbol] = true;
+
     return createdModel;
+}
+
+export function isCreatedModel(value: any): value is Model {
+    return value && value[modelCreatedSymbol];
 }

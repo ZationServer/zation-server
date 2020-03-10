@@ -4,14 +4,14 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {InputConfigTranslatable, isModelConfigTranslatable, ModelConfigTranslatable} from '../../ConfigTranslatable';
-import {ObjectModel as ObjectModelConfig}                 from "../../../main/config/definitions/parts/inputConfig";
-import CloneUtils                                         from "../../../main/utils/cloneUtils";
+import {isModelConfigTranslatable, updateModelConfigTranslatable} from '../../configTranslatable/modelConfigTranslatable';
+import {ObjectModel as ObjectModelConfig}                         from "../../../main/config/definitions/parts/inputConfig";
+import CloneUtils                                                 from "../../../main/utils/cloneUtils";
 import {InDecoratorMem, inDM_ConstructorMethodsSymbol, inDM_ModelsSymbol} from "./InDecoratorMem";
 import ObjectUtils                                                        from '../../../main/utils/objectUtils';
 import {createModel}                                                      from '../../../main/model/modelCreator';
 // noinspection TypeScriptPreferShortImport
-import {$extends}                                                         from '../../../api/model/Extends';
+import {$extends}                                                         from '../../input/Extends';
 
 /**
  * A class decorator that can be used to mark the class as an object model.
@@ -52,15 +52,9 @@ export const ObjectModel = (name?: string) => {
         //extends
         const proto = Object.getPrototypeOf(target);
         if(isModelConfigTranslatable(proto) || typeof proto !== 'function') {
-            $extends(objectModel,proto);
+            $extends(objectModel,proto,false);
         }
 
-        (target as ModelConfigTranslatable).__toModelConfig = () => {
-            return objectModel;
-        };
-
-        (target as InputConfigTranslatable).__toInputConfig = () => {
-            return [objectModel];
-        };
+        updateModelConfigTranslatable(target,() => objectModel);
     }
 };

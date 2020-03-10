@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {ServiceConfig} from "../main/config/definitions/main/serviceConfig";
-import {AppConfig} from "../main/config/definitions/main/appConfig";
+import {AppConfig}     from "../main/config/definitions/main/appConfig";
 import {
     ZationChannelsConfig, CustomChannelConfig
 } from "../main/config/definitions/parts/channelsConfig";
@@ -15,10 +15,6 @@ import ObjectUtils      from "../main/utils/objectUtils";
 import Controller, {ControllerClass} from "./Controller";
 import {ApiLevelSwitch} from "../main/apiLevel/apiLevelUtils";
 import ConfigBuildError from "../main/config/manager/configBuildError";
-import {
-    Model,
-    SingleModelInput
-} from "../main/config/definitions/parts/inputConfig";
 // noinspection TypeScriptPreferShortImport
 import {
     ControllerConfig
@@ -233,10 +229,6 @@ export default class Config
         registerBagExtension(extension);
     }
 
-    static single(model: Model): SingleModelInput {
-        return [model];
-    }
-
     /**
      * With this function, you can set the auth controller.
      * Notice that you can set only one auth controller.
@@ -326,5 +318,3 @@ export default class Config
     }
 
 }
-
-export const $single = Config.single;

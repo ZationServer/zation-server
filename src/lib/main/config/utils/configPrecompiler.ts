@@ -23,7 +23,6 @@ import InputProcessorCreator, {Processable}              from '../../input/input
 import {SystemController}          from "../../systemController/systemControler.config";
 import OptionalProcessor           from "../../input/optionalProcessor";
 import ZationConfig                from "../manager/zationConfig";
-import {isInputConfigTranslatable, isModelConfigTranslatable, resolveModelConfigTranslatable} from '../../../api/ConfigTranslatable';
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig}                                     from "../definitions/parts/controllerConfig";
 import {ControllerClass}                                      from "../../../api/Controller";
@@ -33,6 +32,9 @@ import {PrecompiledEvents, Event}                             from '../definitio
 import FuncUtils                                              from '../../utils/funcUtils';
 import {PrecompiledMiddleware}                                from '../definitions/parts/middleware';
 import {modelPrototypeSymbol}                                 from '../../constants/model';
+import {isCreatedModel}                                       from '../../model/modelCreator';
+import {inputConfigTranslateSymbol, isInputConfigTranslatable}                                 from '../../../api/configTranslatable/inputConfigTranslatable';
+import {isModelConfigTranslatable, modelConfigTranslateSymbol, resolveModelConfigTranslatable} from '../../../api/configTranslatable/modelConfigTranslatable';
 
 export interface ModelPreparationMem extends Processable{
     _optionalInfo: {isOptional: boolean,defaultValue: any}
@@ -208,13 +210,7 @@ export default class ConfigPrecompiler
      */
     private modelPrecompileStep1(key: string, obj: object): void
     {
-        const nowValue = obj[key];
-
-        if(isModelConfigTranslatable(nowValue)){
-            obj[key] = nowValue.__toModelConfig();
-            this.modelPrecompileStep1(key,obj);
-            return;
-        }
+        const nowValue = resolveModelConfigTranslatable(obj[key]) as ObjectModel;
 
         if(Array.isArray(nowValue))
         {
@@ -240,7 +236,7 @@ export default class ConfigPrecompiler
         }
         else if(typeof nowValue === "object")
         {
-            if((nowValue as ModelPreparationMem)._pcStep1){
+            if((nowValue as unknown as ModelPreparationMem)._pcStep1){
                 return;
             }
 
@@ -534,20 +530,22 @@ export default class ConfigPrecompiler
 
     private precompileInputConfig(inputConfig: InputConfig): void {
         if(inputConfig.input) {
-            let input = inputConfig.input;
+            let input: object = inputConfig.input;
             if(isInputConfigTranslatable(input)){
-                input = input.__toInputConfig();
-                inputConfig.input = input;
+                input = input[inputConfigTranslateSymbol]();
+            }
+            else if(isModelConfigTranslatable(input)){
+                input = input[modelConfigTranslateSymbol]();
             }
 
             if(Array.isArray(input)) {
-                //resolve single input shortcut
-                // @ts-ignore
-                this.precompileSingleInput(input);
+                this.precompileSingleInput(input as unknown as SingleModelInput);
+            }
+            else if(isCreatedModel(input)){
+                this.precompileSingleInput([input]);
             }
             else {
-                // @ts-ignore
-                this.precompileParamInput(input);
+                this.precompileParamInput(input as ParamInput);
             }
         }
     }

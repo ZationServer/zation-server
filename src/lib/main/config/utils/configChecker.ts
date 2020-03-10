@@ -4,50 +4,37 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ConfigNames, DefaultUserGroupFallBack, ZationAccess} from "../../constants/internal";
-import {AppConfig}            from "../definitions/main/appConfig";
-import {PanelUserConfig}      from "../definitions/main/mainConfig";
-import {
-    BaseCustomChannelConfig,
-    ZationChannelConfig
-} from "../definitions/parts/channelsConfig";
+import {ConfigNames, DefaultUserGroupFallBack, ZationAccess} from '../../constants/internal';
+import {AppConfig}                                    from '../definitions/main/appConfig';
+import {PanelUserConfig}                              from '../definitions/main/mainConfig';
+import {BaseCustomChannelConfig, ZationChannelConfig} from '../definitions/parts/channelsConfig';
 // noinspection TypeScriptPreferShortImport
-import {
-    OnlyBase64Functions,
-    OnlyDateFunctions,
-    OnlyNumberFunctions,
-    OnlyStringFunctions,
-    TypeTypes
-} from "../../constants/validation";
-import ConfigCheckerTools   from "./configCheckerTools";
-import ConfigError          from "../../error/configError";
-import Target               from "./target";
-import Logger               from "../../log/logger";
-import ObjectPath           from "../../utils/objectPath";
-import Controller, {ControllerClass} from "../../../api/Controller";
-import {ValidationTypeRecord}        from '../../constants/validationType';
-import Iterator             from "../../utils/iterator";
-import ObjectUtils          from "../../utils/objectUtils";
-import ConfigLoader         from "../manager/configLoader";
-import {isInputConfigTranslatable, resolveModelConfigTranslatable}  from '../../../api/ConfigTranslatable';
-import {modelNameSymbol, modelOptionalSymbol, modelPrototypeSymbol} from '../../constants/model';
-import {
-    AnyOfModelConfig,
-    ArrayModel,
-    InputConfig,
-    Model,
-    ObjectModel, ParamInput, ValueModel
-} from "../definitions/parts/inputConfig";
+import {OnlyBase64Functions, OnlyDateFunctions, OnlyNumberFunctions, OnlyStringFunctions, TypeTypes} from '../../constants/validation';
+import ConfigCheckerTools                    from './configCheckerTools';
+import ConfigError                           from '../../error/configError';
+import Target                                from './target';
+import Logger                                from '../../log/logger';
+import ObjectPath                            from '../../utils/objectPath';
+import Controller, {ControllerClass}         from '../../../api/Controller';
+import {ValidationTypeRecord}                from '../../constants/validationType';
+import Iterator                              from '../../utils/iterator';
+import ObjectUtils                           from '../../utils/objectUtils';
+import ConfigLoader                          from '../manager/configLoader';
+import {isModelConfigTranslatable, modelConfigTranslateSymbol, resolveModelConfigTranslatable} from '../../../api/configTranslatable/modelConfigTranslatable';
+import {modelNameSymbol, modelOptionalSymbol, modelPrototypeSymbol}                            from '../../constants/model';
+import {AnyOfModelConfig, ArrayModel, InputConfig, Model, ObjectModel, ParamInput, ValueModel} from '../definitions/parts/inputConfig';
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig}                      from "../definitions/parts/controllerConfig";
-import {DataboxClassDef, DataboxConfig}        from "../definitions/parts/databoxConfig";
-import DataboxFamily                           from "../../../api/databox/DataboxFamily";
-import Databox                                 from "../../../api/databox/Databox";
-import {AuthAccessConfig, VersionAccessConfig} from "../definitions/parts/configComponents";
-import DbConfigUtils                           from "../../databox/dbConfigUtils";
+import {ControllerConfig}               from '../definitions/parts/controllerConfig';
+import {DataboxClassDef, DataboxConfig} from '../definitions/parts/databoxConfig';
+import DataboxFamily                    from '../../../api/databox/DataboxFamily';
+import Databox                          from '../../../api/databox/Databox';
+import {AuthAccessConfig, VersionAccessConfig} from '../definitions/parts/configComponents';
+import DbConfigUtils                           from '../../databox/dbConfigUtils';
 import {getNotableValue, isNotableNot}         from '../../../api/Notable';
 import ErrorBag                                from '../../error/errorBag';
 import {modelIdSymbol}                         from '../../model/modelId';
+import {inputConfigTranslateSymbol, isInputConfigTranslatable} from '../../../api/configTranslatable/inputConfigTranslatable';
+import {isCreatedModel}                                        from '../../model/modelCreator';
 
 export interface ModelCheckedMem {
     _checked: boolean
@@ -600,9 +587,12 @@ export default class ConfigChecker
          * Check main structure with structure of controller or stream.
          */
         if(inputConfig.input){
-            let input = inputConfig.input;
+            let input: object = inputConfig.input;
             if(isInputConfigTranslatable(input)){
-                input = input.__toInputConfig();
+                input = input[inputConfigTranslateSymbol]();
+            }
+            else if(isModelConfigTranslatable(input)){
+                input = input[modelConfigTranslateSymbol]();
             }
 
             if(Array.isArray(input)){
@@ -613,6 +603,9 @@ export default class ConfigChecker
                     this.ceb.addError(new ConfigError(ConfigNames.APP,
                         `${target.toString()} to define a single input model the array must have exactly one item.`));
                 }
+            }
+            else if(isCreatedModel(input)){
+                this.checkSingleInput(input,target);
             }
             else {
                 this.checkParamInput(input as ParamInput,target);
