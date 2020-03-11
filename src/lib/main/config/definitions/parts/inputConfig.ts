@@ -276,7 +276,7 @@ export interface ObjectModel extends ModelOptional
     prototype?: object;
     /**
      * Set the construct function of the object model,
-     * that function can be as a constructor on the input object.
+     * that function can be used as a constructor of the input object.
      * It will be called with the input object as this and the small bag
      * that allows you to add properties to the object.
      * @example
