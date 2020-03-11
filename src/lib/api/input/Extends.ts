@@ -9,7 +9,7 @@ import {modelPrototypeSymbol}    from '../../main/constants/model';
 // noinspection TypeScriptPreferShortImport
 import {resolveModelConfigTranslatable} from '../configTranslatable/modelConfigTranslatable';
 import {DeepReadonly}                   from '../../main/utils/typeUtils';
-import {updateModel}                    from '../../main/model/modelUpdater';
+import {updateModel}                    from '../../main/models/modelUpdater';
 
 /**
  * This function can be used to let a value model extends another

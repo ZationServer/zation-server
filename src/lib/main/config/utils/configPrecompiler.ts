@@ -32,7 +32,7 @@ import {PrecompiledEvents, Event}                             from '../definitio
 import FuncUtils                                              from '../../utils/funcUtils';
 import {PrecompiledMiddleware}                                from '../definitions/parts/middleware';
 import {modelPrototypeSymbol}                                 from '../../constants/model';
-import {isReusableModel}                                       from '../../model/reusableModelCreator';
+import {isReusableModel}                                      from '../../models/reusableModelCreator';
 import {inputConfigTranslateSymbol, isInputConfigTranslatable}                                 from '../../../api/configTranslatable/inputConfigTranslatable';
 import {isModelConfigTranslatable, modelConfigTranslateSymbol, resolveModelConfigTranslatable} from '../../../api/configTranslatable/modelConfigTranslatable';
 

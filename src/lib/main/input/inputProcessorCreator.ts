@@ -22,6 +22,7 @@ import CloneUtils            from "../utils/cloneUtils";
 import {ProcessTask}         from "./processTaskEngine";
 import {ModelPreparationMem} from "../config/utils/configPrecompiler";
 import Bag                   from "../../api/Bag";
+import {processAnyOfKey}     from '../models/anyOfModelUtils';
 
 export interface ProcessInfo {
     errorBag: BackErrorBag,
@@ -141,15 +142,26 @@ export default class InputProcessorCreator
         const anyOf = anyOfModel.anyOf;
         const breakIterator = Iterator.createBreakIterator(anyOf);
 
+        const preparedNames: Record<string,string> = {};
+        const isArray = Array.isArray(anyOf);
+        Iterator.iterateSync((key,value) => {
+            preparedNames[key] = processAnyOfKey(key,value,isArray);
+        },anyOf);
+
         return async (bag, srcObj, srcKey, currentInputPath, processInfo) => {
             let found = false;
-            const tmpBackErrorBags: Record<string|number,BackErrorBag> = {};
+            let tmpBackErrorBag;
+            const tmpBackErrorBags: BackErrorBag[] = [];
             await breakIterator(async (key, value: ModelPreparationMem) =>
             {
-                tmpBackErrorBags[key] = new BackErrorBag();
+                key = preparedNames[key];
+
+                tmpBackErrorBag = new BackErrorBag();
+                tmpBackErrorBags.push(tmpBackErrorBag);
+
                 const tmpProcessInfo: ProcessInfo =
                     {
-                        errorBag: tmpBackErrorBags[key],
+                        errorBag: tmpBackErrorBag,
                         processTaskList: [],
                         createProcessTaskList: processInfo.createProcessTaskList
                     };
@@ -165,13 +177,8 @@ export default class InputProcessorCreator
             });
 
             if(!found) {
-                for(let key in tmpBackErrorBags) {
-                    if(tmpBackErrorBags.hasOwnProperty(key)) {
-                        processInfo.errorBag.addFromBackErrorBag(tmpBackErrorBags[key]);
-                    }
-                }
-                processInfo.errorBag.addBackError(new BackError
-                (
+                processInfo.errorBag.addFromBackErrorBag(...tmpBackErrorBags);
+                processInfo.errorBag.addBackError(new BackError(
                     ValidatorBackErrors.noAnyOfMatch,
                     {
                         inputPath: currentInputPath,

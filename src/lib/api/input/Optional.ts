@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import {Model, ModelConfig}                      from '../../main/config/definitions/parts/inputConfig';
 import {modelDefaultSymbol, modelOptionalSymbol} from '../../main/constants/model';
 import {DeepReadonly}                            from '../../main/utils/typeUtils';
-import {updateModel}                             from '../../main/model/modelUpdater';
+import {updateModel}                             from '../../main/models/modelUpdater';
 
 function changeOptionalOfResolvedModel(model: ModelConfig, value: boolean, defaultValue?: any) {
     let options;

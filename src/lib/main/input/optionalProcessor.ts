@@ -26,7 +26,7 @@ export default class OptionalProcessor
             defaultValue = config[modelDefaultSymbol];
         }
         else if(config.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf))) {
-            Iterator.iterateSync((key, value) => {
+            Iterator.iterateSync((_, value) => {
                 if(value.hasOwnProperty(modelOptionalSymbol)){
                     isOptional = value[modelOptionalSymbol];
                     defaultValue = value[modelDefaultSymbol];

@@ -14,14 +14,15 @@ export default class Iterator
     /**
      * Create an iterator (closure) that can be used later to iterator over an object or array.
      * The iterator is also breakable by returning a true.
-     * Notice that the array or object should not change after creating the closure.
+     * Notice that the array or object should not be changed after creating the closure.
      * @param value
      */
     static createBreakIterator(value: object | any[]): BreakIterator
     {
         if(Array.isArray(value)){
+            const length = value.length;
             return async (func) => {
-                for(let k = 0; k < value.length; k++) {
+                for(let k = 0; k < length; k++) {
                     if(await func(k.toString(),value[k],value)){
                         break;
                     }

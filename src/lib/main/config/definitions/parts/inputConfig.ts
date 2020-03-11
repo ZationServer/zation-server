@@ -20,16 +20,30 @@ export interface AnyOfModel extends ModelOptional
     /**
      * With the anyOf model, you can wrap different models together.
      * The input needs only to match with one of these models to be valid.
+     * You can wrap the models together with an array or object.
+     * It only influences the input path of each model.
+     * If you are using an array, the name of each model will be
+     * used as a key if it is a reusable model, in case of a disposable model,
+     * it uses the index as a key.
+     * When using an object, the key of each model
+     * is the key provided in the object.
      * @example
      * ```
-     * //todo user the name smybols of models?
-     * // any of with array
-     * anyOf: [email,userName],
-     * // any of with object (Will help to get a better input path)
+     * // AnyOf with array
+     * anyOf: [
+     *     $model({type: 'string'},'userName'),
+     *     {type: 'email'}
+     * ],
+     * //Input path to first would be: 'userName'
+     * //Input path to second would be: '1'
+     *
+     * // AnyOf with object
      * anyOf: {
      *   email: email,
      *   userName: userName
      * }
+     * //Input path to first would be: 'email'
+     * //Input path to second would be: 'userName'
      * ```
      */
     anyOf: Record<string,Model> | Model[]

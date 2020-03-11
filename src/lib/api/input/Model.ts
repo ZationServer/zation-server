@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {ModelConfig}         from '../../main/config/definitions/parts/inputConfig';
-import {createReusableModel} from '../../main/model/reusableModelCreator';
+import {createReusableModel} from '../../main/models/reusableModelCreator';
 import {DeepReadonly}        from '../../main/utils/typeUtils';
 
 /**
@@ -15,7 +15,7 @@ import {DeepReadonly}        from '../../main/utils/typeUtils';
  * These versions differ by the optionality and the default value.
  * Zation will check all versions of the models like one model.
  * In addition, reusable models can have a name that will help
- * you to debug easier in case of errors.
+ * you to identify models in case of errors.
  * Another advantage is that you can use reusable models
  * directly in the input config as single model input.
  * @param model

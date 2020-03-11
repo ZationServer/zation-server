@@ -32,9 +32,10 @@ import {AuthAccessConfig, VersionAccessConfig} from '../definitions/parts/config
 import DbConfigUtils                           from '../../databox/dbConfigUtils';
 import {getNotableValue, isNotableNot}         from '../../../api/Notable';
 import ErrorBag                                from '../../error/errorBag';
-import {modelIdSymbol}                         from '../../model/modelId';
+import {modelIdSymbol}                         from '../../models/modelId';
 import {inputConfigTranslateSymbol, isInputConfigTranslatable} from '../../../api/configTranslatable/inputConfigTranslatable';
-import {isReusableModel}                                        from '../../model/reusableModelCreator';
+import {isReusableModel}                                        from '../../models/reusableModelCreator';
+import {processAnyOfKey} from '../../models/anyOfModelUtils';
 
 export interface ModelCheckedMem {
     _checked: boolean
@@ -726,10 +727,12 @@ export default class ConfigChecker
                     rememberCache.push(value);
                     const anyOf = value[nameof<AnyOfModel>(s => s.anyOf)];
                     let count = 0;
-                    if (typeof anyOf === 'object' || Array.isArray(anyOf)) {
+
+                    const isArray = Array.isArray(anyOf);
+                    if (typeof anyOf === 'object' || isArray) {
                         Iterator.iterateSync((key, value) => {
                             count++;
-                            this.checkModel(value, target.addPath(key),[...rememberCache])
+                            this.checkModel(value, target.addPath(processAnyOfKey(key,value,isArray)),[...rememberCache])
                         }, anyOf);
                     }
 

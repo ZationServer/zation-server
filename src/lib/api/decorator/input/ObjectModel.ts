@@ -9,7 +9,7 @@ import {ObjectModel as ObjectModelConfig}                         from "../../..
 import CloneUtils                                                 from "../../../main/utils/cloneUtils";
 import {InDecoratorMem, inDM_ConstructorMethodsSymbol, inDM_ModelsSymbol} from "./InDecoratorMem";
 import ObjectUtils                                                        from '../../../main/utils/objectUtils';
-import {createReusableModel}                                              from '../../../main/model/reusableModelCreator';
+import {createReusableModel}                                              from '../../../main/models/reusableModelCreator';
 // noinspection TypeScriptPreferShortImport
 import {$extends}                                                         from '../../input/Extends';
 
