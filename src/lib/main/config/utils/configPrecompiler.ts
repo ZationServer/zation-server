@@ -8,7 +8,7 @@ import {
     BaseCustomChannelConfig
 } from "../definitions/parts/channelsConfig";
 import {
-    AnyOfModelConfig,
+    AnyOfModel,
     ArrayModel,
     InputConfig,
     ParamInput,
@@ -32,7 +32,7 @@ import {PrecompiledEvents, Event}                             from '../definitio
 import FuncUtils                                              from '../../utils/funcUtils';
 import {PrecompiledMiddleware}                                from '../definitions/parts/middleware';
 import {modelPrototypeSymbol}                                 from '../../constants/model';
-import {isCreatedModel}                                       from '../../model/modelCreator';
+import {isReusableModel}                                       from '../../model/reusableModelCreator';
 import {inputConfigTranslateSymbol, isInputConfigTranslatable}                                 from '../../../api/configTranslatable/inputConfigTranslatable';
 import {isModelConfigTranslatable, modelConfigTranslateSymbol, resolveModelConfigTranslatable} from '../../../api/configTranslatable/modelConfigTranslatable';
 
@@ -250,12 +250,12 @@ export default class ConfigPrecompiler
                 //Array, check body.
                 this.modelPrecompileStep1(nameof<ArrayModel>(s => s.array),nowValue);
             }
-            else if(nowValue.hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf)))
+            else if(nowValue.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf)))
             {
                 //anyOf
                 Iterator.iterateSync((key,value,src) => {
                     this.modelPrecompileStep1(key,src);
-                },nowValue[nameof<AnyOfModelConfig>(s => s.anyOf)]);
+                },nowValue[nameof<AnyOfModel>(s => s.anyOf)]);
             }
             else {
                 //value!
@@ -391,12 +391,12 @@ export default class ConfigPrecompiler
                     });
                 }
             }
-            else if(value.hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf)))
+            else if(value.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf)))
             {
                 //any of
                 Iterator.iterateSync((key,value) => {
                     this.modelPrecompileStep2(value);
-                },value[nameof<AnyOfModelConfig>(s => s.anyOf)]);
+                },value[nameof<AnyOfModel>(s => s.anyOf)]);
 
                 if(!value.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
                     Object.defineProperty(value,nameof<ModelPreparationMem>(s => s._process),{
@@ -541,7 +541,7 @@ export default class ConfigPrecompiler
             if(Array.isArray(input)) {
                 this.precompileSingleInput(input as unknown as SingleModelInput);
             }
-            else if(isCreatedModel(input)){
+            else if(isReusableModel(input)){
                 this.precompileSingleInput([input]);
             }
             else {

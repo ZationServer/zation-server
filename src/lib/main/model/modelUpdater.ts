@@ -4,27 +4,23 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {Model, ModelConfig} from '../config/definitions/parts/inputConfig';
-import {isModelConfigTranslatable, modelConfigTranslateSymbol, updateModelConfigTranslatable} from '../../api/configTranslatable/modelConfigTranslatable';
+import {Model, ModelConfig}             from '../config/definitions/parts/inputConfig';
+// noinspection TypeScriptPreferShortImport
+import {resolveModelConfigTranslatable} from '../../api/configTranslatable/modelConfigTranslatable';
 
-export function updateModel(model: Model,update: (modelConfig:  ModelConfig) => void, flatClone: boolean) {
-    if(isModelConfigTranslatable(model)) {
-        let resolvedModel = model[modelConfigTranslateSymbol]();
-        if(flatClone){
-            model = {...model};
-            resolvedModel = {...resolvedModel};
-        }
-        update(resolvedModel);
-
-        updateModelConfigTranslatable(model,() => resolvedModel);
-        return model;
+/**
+ * Use this function carefully.
+ * You only can change the optional and default
+ * value of reusable models when flatClone is true.
+ * @param model
+ * @param update
+ * @param flatClone
+ */
+export function updateModel(model: Model,update: (modelConfig:  ModelConfig) => void, flatClone: boolean): ModelConfig {
+    model = resolveModelConfigTranslatable(model);
+    if(flatClone){
+        model = {...model};
     }
-    else {
-        let resolvedModel: ModelConfig = model as ModelConfig;
-        if(flatClone){
-            resolvedModel = {...resolvedModel};
-        }
-        update(resolvedModel);
-        return resolvedModel;
-    }
+    update(model);
+    return model;
 }

@@ -55,7 +55,7 @@ import BackErrorConstruct           from './lib/main/constants/backErrorConstruc
 import {$init}                      from './lib/api/InitApiUtils';
 import {start}                      from './lib/api/Start';
 import {ConsoleColor}               from './lib/main/log/logCategories';
-import {$optional, $required}       from './lib/api/input/Optional';
+import {$optional}                  from './lib/api/input/Optional';
 import {$models}                    from './lib/api/input/Models';
 import {$model}                     from './lib/api/input/Model';
 import {$extends}                   from './lib/api/input/Extends';
@@ -74,7 +74,6 @@ export {
     Register,
     $not,
     $optional,
-    $required,
     $models,
     $model,
     $extends,

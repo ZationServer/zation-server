@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {
-    AnyOfModelConfig,
+    AnyOfModel,
     ArrayModel, ConstructObjectFunction, ConvertArrayFunction, ConvertObjectFunction,
     ConvertValueFunction,
     Model,
@@ -136,7 +136,7 @@ export default class InputProcessorCreator
      * Creates a closure to process a anyOf model.
      * @param anyOfModel
      */
-    static createAnyOfModelProcessor(anyOfModel: AnyOfModelConfig & ModelPreparationMem): InputProcessFunction
+    static createAnyOfModelProcessor(anyOfModel: AnyOfModel & ModelPreparationMem): InputProcessFunction
     {
         const anyOf = anyOfModel.anyOf;
         const breakIterator = Iterator.createBreakIterator(anyOf);

@@ -9,7 +9,7 @@ import {ObjectModel as ObjectModelConfig}                         from "../../..
 import CloneUtils                                                 from "../../../main/utils/cloneUtils";
 import {InDecoratorMem, inDM_ConstructorMethodsSymbol, inDM_ModelsSymbol} from "./InDecoratorMem";
 import ObjectUtils                                                        from '../../../main/utils/objectUtils';
-import {createModel}                                                      from '../../../main/model/modelCreator';
+import {createReusableModel}                                              from '../../../main/model/reusableModelCreator';
 // noinspection TypeScriptPreferShortImport
 import {$extends}                                                         from '../../input/Extends';
 
@@ -21,6 +21,16 @@ import {$extends}                                                         from '
  * But you can declare other methods and declare them as a constructor
  * with the constructor method decorator.
  * That will give you the possibility to use the input data and create async constructors.
+ * It's also possible to extend another class that is marked as another object model.
+ * Zation will handle it as an object model extension.
+ * That means the sub-model will inherit all properties,
+ * with the possibility to overwrite them.
+ * It also affects the prototype because the sub-object model prototype
+ * will get the super-model prototype as a prototype.
+ * Also, the super-model constructor-functions will be called before
+ * the constructor-functions of the sub-object model.
+ * In addition, the convert-function will also be
+ * called with the result of the super convert function.
  * @param name The name of the object model; if it is not provided, it will use the class name.
  */
 export const ObjectModel = (name?: string) => {
@@ -36,7 +46,7 @@ export const ObjectModel = (name?: string) => {
         const models = prototype.hasOwnProperty(inDM_ModelsSymbol) && typeof prototype[inDM_ModelsSymbol] === 'object' ?
             prototype[inDM_ModelsSymbol]!: {};
 
-        const objectModel: ObjectModelConfig = createModel({
+        const objectModel: ObjectModelConfig = createReusableModel({
             properties: models,
             construct: async function(bag) {
                 ObjectUtils.setPrototypeAtTheEnd(this,Reflect.construct(target,[bag]));
@@ -52,7 +62,7 @@ export const ObjectModel = (name?: string) => {
         //extends
         const proto = Object.getPrototypeOf(target);
         if(isModelConfigTranslatable(proto) || typeof proto !== 'function') {
-            $extends(objectModel,proto,false);
+            $extends(objectModel,proto);
         }
 
         updateModelConfigTranslatable(target,() => objectModel);

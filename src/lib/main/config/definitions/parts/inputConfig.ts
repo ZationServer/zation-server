@@ -6,28 +6,29 @@ Copyright(c) Luca Scaringella
 
 import {AnyClass, AnyInputConfigTranslatable, AnyModelConfigTranslatable} from './configComponents';
 import BackErrorBag from '../../../../api/BackErrorBag';
-import Bag from '../../../../api/Bag';
+import Bag          from '../../../../api/Bag';
 // noinspection TypeScriptPreferShortImport
 import {ValidationType}      from '../../../constants/validationType.js';
 import {ValidationFunctions} from './validationFunctions';
 import {modelDefaultSymbol, modelOptionalSymbol} from '../../../constants/model';
 
-export type ModelConfig = ValueModel | ObjectModel | ArrayModel | ArrayModelShortSyntax | AnyOfModelConfig;
+export type ModelConfig = ValueModel | ObjectModel | ArrayModel | ArrayModelShortSyntax | AnyOfModel;
 export type Model = ModelConfig | AnyClass | AnyModelConfigTranslatable;
 
-export interface AnyOfModelConfig extends ModelOptional
+export interface AnyOfModel extends ModelOptional
 {
     /**
-     * With the anyOf modifier, you can define different properties.
-     * The input needs only to match with one of the models to be valid.
+     * With the anyOf model, you can wrap different models together.
+     * The input needs only to match with one of these models to be valid.
      * @example
      * ```
+     * //todo user the name smybols of models?
      * // any of with array
-     * anyOf: ['v.email','v.userName'],
+     * anyOf: [email,userName],
      * // any of with object (Will help to get a better input path)
      * anyOf: {
-     *   email: 'v.email',
-     *   userName: 'v.userName'
+     *   email: email,
+     *   userName: userName
      * }
      * ```
      */
@@ -42,17 +43,19 @@ export interface InputConfig {
      * so that you can map models to a parameter name.
      * Or it can specify a single model as an input.
      * - Parameter-based input.
-     * To define a parameter based input use an object as a value.
-     * The keys of the object are the parameter names,
-     * and the value defines an anonymous model or link to a declared model.
+     * To define a parameter based input, use an object as a value.
+     * The keys of the object are the parameter names, and the values represent the models.
      * Notice that it is strongly recommended to only use string keys (with letters) in the object literal,
-     * to keep the same order in a for in loop.
-     * That is important for zation when you send your data as an array.
+     * to keep the same order in a for-in loop.
+     * That is important for Zation when you send your data as an array.
+     * A modern way to create a parameter based input would be to
+     * create a class and use the ParamInput decorator.
      * - Single model input
-     * To set a single model input, you have to use an array as a value with exactly one item.
-     * This item is an anonymous model or link to a declared model.
-     * Notice that you also can use the single method on the Config class
-     * for making it more clear that this is a single model input.
+     * To set a single model input, you have multiple options.
+     * When you have a reusable model, means it was created with the $model function or
+     * the $ObjectModel decorator, you can directly refer to this model.
+     * In case you have a disposable model,
+     * you can use the $single function or wrap the model with square brackets.
      * @example
      * //Parameter-based input
      * input: {
@@ -64,21 +67,37 @@ export interface InputConfig {
      *         minValue: 14
      *     }
      * }
+     * //or
+     * class Parameter {
+     *
+     *  @Model({type: 'string'})
+     *  name: string;
+     *
+     *  @Model({type: 'int', minValue: 14})
+     *  age: number;
+     *
+     * }
+     * input: Parameter
      * //Client can send  ->
      * {name: 'Luca', age: 20}
      * //or
      * ['Luca',20]
      *
      * //-Single model input-
+     * input: $model({
+     *     type: 'string',
+     *     minLength: 4
+     * })
+     * //or
+     * input: $single({
+     *     type: 'string',
+     *     minLength: 4
+     * })
+     * //or
      * input: [{
      *     type: 'string',
      *     minLength: 4
      * }]
-     * //or
-     * input: Config.single({
-     *     type: 'string',
-     *     minLength: 4
-     * })
      * //Client can send ->
      * "ThisIsAnyString"
      */

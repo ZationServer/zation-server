@@ -4,10 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {Model, ModelConfig} from '../../main/config/definitions/parts/inputConfig';
+import {Model, ModelConfig}                      from '../../main/config/definitions/parts/inputConfig';
 import {modelDefaultSymbol, modelOptionalSymbol} from '../../main/constants/model';
-import {DeepReadonly} from '../../main/utils/typeUtils';
-import {updateModel}  from '../../main/model/modelUpdater';
+import {DeepReadonly}                            from '../../main/utils/typeUtils';
+import {updateModel}                             from '../../main/model/modelUpdater';
 
 function changeOptionalOfResolvedModel(model: ModelConfig, value: boolean, defaultValue?: any) {
     let options;
@@ -22,22 +22,22 @@ function changeOptionalOfResolvedModel(model: ModelConfig, value: boolean, defau
     options[modelDefaultSymbol] = defaultValue;
 }
 
-function updateOptional(model: Model,value: boolean,defaultValue?: any): Model {
-    return updateModel(model,(resolvedModel) =>
-        changeOptionalOfResolvedModel(resolvedModel,value,defaultValue),true);
-}
-
 /**
- *
+ * Make this model optional so the client doesn't need to provide it.
+ * Notice that when you pass in a disposable model the model will be cloned,
+ * changed and Zation handles it as a totally different model.
+ * That is not a problem when only use the newly created model.
+ * But if you want to use the same model in different versions
+ * its recommended to use reusable models.
+ * Then you should look at the $model and $models functions.
+ * You optionally can pass in a default value that will be
+ * used when the client has not provided the data for this model.
  * @param model
  * @param defaultValue
  * Define a default value that will be used
  * if the input had not provided the value.
  */
 export function $optional<T extends Model>(model: T | ModelConfig,defaultValue?: any): DeepReadonly<T> {
-    return updateOptional(model,true,defaultValue) as DeepReadonly<T>;
-}
-
-export function $required<T extends Model>(model: T | ModelConfig): DeepReadonly<T> {
-    return updateOptional(model,false) as DeepReadonly<T>;
+    return updateModel(model,(resolvedModel) =>
+        changeOptionalOfResolvedModel(resolvedModel,true,defaultValue),true) as DeepReadonly<T>;
 }

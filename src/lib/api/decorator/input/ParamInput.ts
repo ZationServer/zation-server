@@ -12,6 +12,17 @@ import {updateInputConfigTranslatable}        from '../../../api/configTranslata
 /**
  * A class decorator that will mark the class as a param based input config.
  * That means you can use the class as an input config.
+ * @example
+ * @ParamInput()
+ * class SendMessageParameter {
+ *
+ *  @Model({type: 'string'})
+ *  content: string;
+ *
+ *  @Model(userId)
+ *  receiver: string;
+ *
+ * }
  */
 export const ParamInput = () => {
     return (target: any) => {

@@ -9,9 +9,9 @@ import {modelNameSymbol}                      from '../constants/model';
 import {setUniqueModelId}                     from './modelId';
 import {DeepReadonly}                         from '../utils/typeUtils';
 
-const modelCreatedSymbol = Symbol();
+const reusableModelSymbol = Symbol();
 
-export function createModel(model: ModelConfig, name?: string): DeepReadonly<ModelConfig> {
+export function createReusableModel(model: ModelConfig, name?: string): DeepReadonly<ModelConfig> {
     let createdModel: ModelConfig = {};
 
     if(Array.isArray(model)) {
@@ -34,11 +34,11 @@ export function createModel(model: ModelConfig, name?: string): DeepReadonly<Mod
     }
     setUniqueModelId(createdModel);
     
-    createdModel[modelCreatedSymbol] = true;
+    createdModel[reusableModelSymbol] = true;
 
     return createdModel;
 }
 
-export function isCreatedModel(value: any): value is Model {
-    return value && value[modelCreatedSymbol];
+export function isReusableModel(value: any): value is Model {
+    return value && value[reusableModelSymbol];
 }

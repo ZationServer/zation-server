@@ -22,7 +22,7 @@ import ObjectUtils                           from '../../utils/objectUtils';
 import ConfigLoader                          from '../manager/configLoader';
 import {isModelConfigTranslatable, modelConfigTranslateSymbol, resolveModelConfigTranslatable} from '../../../api/configTranslatable/modelConfigTranslatable';
 import {modelNameSymbol, modelOptionalSymbol, modelPrototypeSymbol}                            from '../../constants/model';
-import {AnyOfModelConfig, ArrayModel, InputConfig, Model, ObjectModel, ParamInput, ValueModel} from '../definitions/parts/inputConfig';
+import {AnyOfModel, ArrayModel, InputConfig, Model, ObjectModel, ParamInput, ValueModel} from '../definitions/parts/inputConfig';
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig}               from '../definitions/parts/controllerConfig';
 import {DataboxClassDef, DataboxConfig} from '../definitions/parts/databoxConfig';
@@ -34,7 +34,7 @@ import {getNotableValue, isNotableNot}         from '../../../api/Notable';
 import ErrorBag                                from '../../error/errorBag';
 import {modelIdSymbol}                         from '../../model/modelId';
 import {inputConfigTranslateSymbol, isInputConfigTranslatable} from '../../../api/configTranslatable/inputConfigTranslatable';
-import {isCreatedModel}                                        from '../../model/modelCreator';
+import {isReusableModel}                                        from '../../model/reusableModelCreator';
 
 export interface ModelCheckedMem {
     _checked: boolean
@@ -275,7 +275,7 @@ export default class ConfigChecker
         return typeof obj === 'object' &&
             obj[nameof<ObjectModel>(s => s.properties)] === undefined &&
             obj[nameof<ArrayModel>(s => s.array)] === undefined &&
-            obj[nameof<AnyOfModelConfig>(s => s.anyOf)] === undefined;
+            obj[nameof<AnyOfModel>(s => s.anyOf)] === undefined;
     }
 
     // @ts-ignore
@@ -604,7 +604,7 @@ export default class ConfigChecker
                         `${target.toString()} to define a single input model the array must have exactly one item.`));
                 }
             }
-            else if(isCreatedModel(input)){
+            else if(isReusableModel(input)){
                 this.checkSingleInput(input,target);
             }
             else {
@@ -721,10 +721,10 @@ export default class ConfigChecker
                         const inArray = value[nameof<ArrayModel>(s => s.array)];
                         this.checkModel(inArray,target.addPath('ArrayItem'),rememberCache);
                     }
-                } else if(value.hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf))) {
+                } else if(value.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf))) {
                     //is any of model modifier
                     rememberCache.push(value);
-                    const anyOf = value[nameof<AnyOfModelConfig>(s => s.anyOf)];
+                    const anyOf = value[nameof<AnyOfModel>(s => s.anyOf)];
                     let count = 0;
                     if (typeof anyOf === 'object' || Array.isArray(anyOf)) {
                         Iterator.iterateSync((key, value) => {

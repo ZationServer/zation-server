@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {AnyOfModelConfig, Model}                 from "../config/definitions/parts/inputConfig";
+import {AnyOfModel, Model}                 from "../config/definitions/parts/inputConfig";
 import Iterator                                  from "../utils/iterator";
 import {modelDefaultSymbol, modelOptionalSymbol} from '../constants/model';
 
@@ -15,7 +15,7 @@ export default class OptionalProcessor
      * Works also with the anyOf model modifier.
      * @param config
      */
-    static process(config: AnyOfModelConfig | Model): {isOptional: boolean,defaultValue: any}
+    static process(config: AnyOfModel | Model): {isOptional: boolean,defaultValue: any}
     {
         //fallback
         let isOptional = false;
@@ -25,7 +25,7 @@ export default class OptionalProcessor
             isOptional = config[modelOptionalSymbol];
             defaultValue = config[modelDefaultSymbol];
         }
-        else if(config.hasOwnProperty(nameof<AnyOfModelConfig>(s => s.anyOf))) {
+        else if(config.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf))) {
             Iterator.iterateSync((key, value) => {
                 if(value.hasOwnProperty(modelOptionalSymbol)){
                     isOptional = value[modelOptionalSymbol];
@@ -33,7 +33,7 @@ export default class OptionalProcessor
                     //break;
                     return true;
                 }
-            },config[nameof<AnyOfModelConfig>(s => s.anyOf)]);
+            },config[nameof<AnyOfModel>(s => s.anyOf)]);
         }
 
         return {
