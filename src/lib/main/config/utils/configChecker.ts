@@ -241,7 +241,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkObject(obj: ObjectModel, target: Target, rememberCache: Model[], inheritanceCheck: boolean = true, skipTargetPathAdd: boolean = false) {
+    private checkObject(obj: ObjectModel, target: Target, rememberCache: Model[], inheritanceCheck: boolean = true, skipTargetPathAdd: boolean = false, skipProps: string[] = []) {
         if(!skipTargetPathAdd && typeof obj[modelNameSymbol] === 'string'){
             target = target.addPath(`(${obj[modelNameSymbol]})`);
         }
@@ -251,7 +251,7 @@ export default class ConfigChecker
         if (typeof obj.properties === 'object') {
             let props = obj.properties;
             for (let k in props) {
-                if (props.hasOwnProperty(k)) {
+                if ((!skipProps.includes(k)) && props.hasOwnProperty(k)) {
                     this.checkCustomName(k,'property',target.toString()+' ');
                     this.checkModel(props[k], target.addPath(k), [...rememberCache]);
                     if (prototype.hasOwnProperty(k)) {
@@ -296,6 +296,7 @@ export default class ConfigChecker
      * @param baseModel
      * @param model
      * @param rememberCache
+     * @param inheritanceRemCache
      * @param propsOverwritten
      */
     private checkObjExtendsResolve(target: Target,
@@ -303,6 +304,7 @@ export default class ConfigChecker
                                    baseModel: ObjectModel,
                                    model: ObjectModel,
                                    rememberCache: Model[],
+                                   inheritanceRemCache: Model[] = [],
                                    propsOverwritten: string[] = []
     ): void
     {
@@ -314,6 +316,12 @@ export default class ConfigChecker
             target = target.addPath(`extends=>${typeof resModel[modelNameSymbol] === 'string' ? 
                 resModel[modelNameSymbol] : 'Anonymous'}`);
 
+            if(inheritanceRemCache.includes(resModel) || resModel === baseModel){
+                this.ceb.addError(new ConfigError(ConfigNames.APP,`${target.toString()} creates a circular object model inheritance.`));
+                return;
+            }
+            inheritanceRemCache.push(resModel);
+
             if(!ConfigChecker.isObjModel(resModel)){
                 this.ceb.addError(new ConfigError(ConfigNames.APP,
                     `${target.toString()} an object model can only extend an object model.`));
@@ -322,24 +330,20 @@ export default class ConfigChecker
             else {
                 this.checkOverrideProp(baseModel.properties,resModel,target,srcTarget);
 
-                //Check only new anonymous object models.
-                if(!(resModel as ModelCheckedMem)._checked){
-                    this.checkObject(resModel as ObjectModel,target,rememberCache,false,true);
-                }
-
-                const exProperties = (resModel as ObjectModel).properties;
-                let resolvedProp;
-                for(let k in exProperties) {
-                    if(exProperties.hasOwnProperty(k) && (!propsOverwritten.includes(k))){
+                const currentProperties = (model as ObjectModel).properties;
+                for(let k in currentProperties) {
+                    if(currentProperties.hasOwnProperty(k) && (!propsOverwritten.includes(k))){
                         propsOverwritten.push(k);
-                        resolvedProp = resolveModelConfigTranslatable(exProperties[k]);
-                        if(rememberCache.includes(resolvedProp)){
-                            this.ceb.addError(new ConfigError(ConfigNames.APP,`${target.toString()} creates a circular dependency.`));
-                        }
                     }
                 }
 
-                this.checkObjExtendsResolve(target,srcTarget,baseModel,resModel as ObjectModel,rememberCache,propsOverwritten);
+                //Check only new anonymous object models.
+                if(!(resModel as ModelCheckedMem)._checked){
+                    this.checkObject(resModel as ObjectModel,target,rememberCache,false,true,propsOverwritten);
+                }
+
+                this.checkObjExtendsResolve(target,srcTarget,baseModel,resModel as ObjectModel,
+                    rememberCache,inheritanceRemCache,propsOverwritten);
             }
         }
     }
@@ -845,7 +849,7 @@ export default class ConfigChecker
         //check extends
         if(inheritanceCheck){
             //check no self inheritance
-            this.checkProcessValueInheritance(target,model);
+            this.checkProcessValueInheritance(target,model,model);
             target = target.setExtraInfo('Compiled with inheritance');
         }
         //check for only number/string functions
@@ -853,7 +857,12 @@ export default class ConfigChecker
     }
 
 
-    private checkProcessValueInheritance(target: Target,model: ValueModel): void
+    private checkProcessValueInheritance(
+        target: Target,
+        baseModel: ValueModel,
+        model: ValueModel,
+        inheritanceRemCache: Model[] = []
+    ): void
     {
         const prototype = model[modelPrototypeSymbol];
         const prototypeType = typeof prototype;
@@ -862,6 +871,12 @@ export default class ConfigChecker
 
             target = target.addPath(`extends=>${typeof resModel[modelNameSymbol] === 'string' ?
                 resModel[modelNameSymbol] : 'Anonymous'}`);
+
+            if(inheritanceRemCache.includes(resModel) || resModel === baseModel){
+                this.ceb.addError(new ConfigError(ConfigNames.APP,`${target.toString()} creates a circular value model inheritance.`));
+                return;
+            }
+            inheritanceRemCache.push(resModel);
 
             if(!ConfigChecker.isValueModel(resModel)){
                 this.ceb.addError(new ConfigError(ConfigNames.APP,
@@ -875,7 +890,7 @@ export default class ConfigChecker
                     (resModel as ModelCheckedMem)._checked = true;
                 }
 
-                this.checkProcessValueInheritance(target,resModel);
+                this.checkProcessValueInheritance(target,baseModel,resModel,inheritanceRemCache);
             }
         }
     }
