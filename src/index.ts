@@ -60,6 +60,8 @@ import {$models}                    from './lib/api/input/Models';
 import {$model}                     from './lib/api/input/Model';
 import {$extends}                   from './lib/api/input/Extends';
 import {$single}                    from './lib/api/input/Single';
+import {Events}                     from './lib/main/config/definitions/parts/events';
+import {Middleware}                 from './lib/main/config/definitions/parts/middleware';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -129,6 +131,8 @@ export {
     DbCudOperationSequence,
     ObjectPathSequence,
     ConsoleColor,
+    Events,
+    Middleware,
     resolveModelConfigTranslatable,
     resolveInputConfigTranslatable,
     updateModelConfigTranslatable,
