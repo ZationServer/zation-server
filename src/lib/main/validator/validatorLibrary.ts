@@ -321,22 +321,22 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
         }
     },
 
-    enum: (input, settings, backErrorBag, prepareErrorData) =>
+    in: (input, settings, backErrorBag, prepareErrorData) =>
     {
-        if(!EasyValidator.validEnum(settings,input)) {
-            backErrorBag.addNewBackError(ValidatorBackErrors.inputIsNotMatchWithEnum,
+        if(!EasyValidator.validIn(settings,input)) {
+            backErrorBag.addNewBackError(ValidatorBackErrors.inputIsNotMatchWithIn,
                 {
                     inputValue: prepareErrorData.inputValue,
                     inputPath: prepareErrorData.inputPath,
-                    enum: settings
+                    values: settings
                 });
         }
     },
 
-    privateEnum: (input, settings, backErrorBag, prepareErrorData) =>
+    privateIn: (input, settings, backErrorBag, prepareErrorData) =>
     {
-        if(!EasyValidator.validEnum(settings,input)) {
-            backErrorBag.addNewBackError(ValidatorBackErrors.inputIsNotMatchWithPrivateEnum,prepareErrorData);
+        if(!EasyValidator.validIn(settings,input)) {
+            backErrorBag.addNewBackError(ValidatorBackErrors.inputIsNotMatchWithPrivateIn,prepareErrorData);
         }
     },
 

@@ -618,23 +618,23 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         fromZationSystem: true
     },
 
-    inputIsNotMatchWithEnum: {
-        name         : 'inputIsNotMatchWithEnum',
-        group        : ErrorGroup.ENUM_ERROR,
-        description  : 'Input is not match with enum!',
+    inputIsNotMatchWithIn: {
+        name         : 'inputIsNotMatchWithIn',
+        group        : ErrorGroup.IN_ERROR,
+        description  : 'Input is not match with any value!',
         type         : ErrorType.VALIDATION_ERROR,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
         // inputPath (inputPath)
-        // enum (Enum Array)
+        // values (In-Values Array)
         fromZationSystem: true
     },
 
-    inputIsNotMatchWithPrivateEnum: {
-        name         : 'inputIsNotMatchWithPrivateEnum',
-        group        : ErrorGroup.ENUM_ERROR,
-        description  : 'Input is not match with private enum!',
+    inputIsNotMatchWithPrivateIn: {
+        name         : 'inputIsNotMatchWithPrivateIn',
+        group        : ErrorGroup.IN_ERROR,
+        description  : 'Input is not match with any value!',
         type         : ErrorType.VALIDATION_ERROR,
         sendInfo     : true,
         //INFO

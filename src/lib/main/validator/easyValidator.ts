@@ -317,11 +317,11 @@ export default class EasyValidator
         return data === data.toLowerCase();
     }
 
-    static validEnum(enumValues,input)
+    static validIn(inValues, input)
     {
         let found = false;
-        for(let i = 0; i < enumValues.length; i++) {
-            if(enumValues[i] === input) {
+        for(let i = 0; i < inValues.length; i++) {
+            if(inValues[i] === input) {
                 found = true;
                 break;
             }
