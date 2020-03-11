@@ -12,9 +12,9 @@ import BackErrorConstruct from "../constants/backErrorConstruct";
 export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
     inputIsNotTypeObject: {
         name         : 'inputIsNotTypeObject',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Object!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -24,9 +24,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeArray: {
         name         : 'inputIsNotTypeArray',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Array!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -36,9 +36,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeString: {
         name         : 'inputIsNotTypeString',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type String!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -48,9 +48,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeChar: {
         name         : 'inputIsNotTypeChar',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Char!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -60,9 +60,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeNull: {
         name         : 'inputIsNotTypeNull',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Null!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -72,9 +72,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeInt: {
         name         : 'inputIsNotTypeInt',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Int!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -84,9 +84,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeFloat: {
         name         : 'inputIsNotTypeFloat',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Float!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -96,9 +96,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeNumber: {
         name         : 'inputIsNotTypeNumber',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type number!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -108,9 +108,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeDate: {
         name         : 'inputIsNotTypeDate',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Date!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -120,9 +120,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeEmail: {
         name         : 'inputIsNotTypeEmail',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Email!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -132,9 +132,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeBoolean: {
         name         : 'inputIsNotTypeBoolean',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Boolean!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -144,9 +144,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeSha512: {
         name         : 'inputIsNotTypeSha512',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Sha512!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -156,9 +156,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeSha256: {
         name         : 'inputIsNotTypeSha256',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Sha256!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -168,9 +168,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeSha384: {
         name         : 'inputIsNotTypeSha384',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Sha384!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -180,9 +180,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeSha1: {
         name         : 'inputIsNotTypeSha1',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Sha1!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -192,9 +192,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeMd5: {
         name         : 'inputIsNotTypeMd5',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Md5!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -204,9 +204,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeHexColor: {
         name         : 'inputIsNotTypeHexColor',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type HexColor!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -216,9 +216,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeHexadecimal: {
         name         : 'inputIsNotTypeHexadecimal',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type hexadecimal!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -228,9 +228,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeIp4: {
         name         : 'inputIsNotTypeIp4',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Ip Version 4!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -240,9 +240,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeIp6: {
         name         : 'inputIsNotTypeIp6',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Ip Version 6!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -252,9 +252,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeIsbn10: {
         name         : 'inputIsNotTypeIsbn10',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Isbn Version 10!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -264,9 +264,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeIsbn13: {
         name         : 'inputIsNotTypeIsbn13',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Isbn Version 13!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -276,9 +276,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeJson: {
         name         : 'inputIsNotTypeJson',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type JsonConverter!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -288,9 +288,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeUrl: {
         name         : 'inputIsNotTypeUrl',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Url!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -300,9 +300,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeMimeType: {
         name         : 'inputIsNotTypeMimeType',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Mime Type!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -312,9 +312,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeMacAddress: {
         name         : 'inputIsNotTypeMacAddress',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Max Address!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -324,9 +324,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeMobileNumber: {
         name         : 'inputIsNotTypeMobileNumber',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Mobile Number!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -336,9 +336,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeUuid3: {
         name         : 'inputIsNotTypeUuid3',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type UUID Version 3!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -348,9 +348,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeUuid4: {
         name         : 'inputIsNotTypeUuid4',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type UUID Version 4!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -360,9 +360,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeUuid5: {
         name         : 'inputIsNotTypeUuid5',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type UUID Version 5!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -372,9 +372,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeBase64: {
         name         : 'inputIsNotTypeBase64',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Base64!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -384,9 +384,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeAscii: {
         name         : 'inputIsNotTypeAscii',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type Ascii!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -396,9 +396,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeUserId: {
         name         : 'inputIsNotTypeUserId',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type user id!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -408,9 +408,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeMongoId: {
         name         : 'inputIsNotTypeMongoId',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type mongo id!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -420,9 +420,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotTypeLatLong: {
         name         : 'inputIsNotTypeLatLong',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'Input is not from type lat long!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -432,9 +432,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputNotMatchWithMinLength: {
         name         : 'inputNotMatchWithMinLength',
-        group        : ErrorGroup.VALUE_LENGTH_ERROR,
+        group        : ErrorGroup.ValueLengthError,
         description  : 'Input not match with min length!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -445,9 +445,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputNotMatchWithMaxLength: {
         name         : 'inputNotMatchWithMaxLength',
-        group        : ErrorGroup.VALUE_LENGTH_ERROR,
+        group        : ErrorGroup.ValueLengthError,
         description  : 'Input not match with max length!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -458,9 +458,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputNotMatchWithLength: {
         name         : 'inputNotMatchWithLength',
-        group        : ErrorGroup.VALUE_LENGTH_ERROR,
+        group        : ErrorGroup.ValueLengthError,
         description  : 'Input not match with length!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -471,9 +471,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotUppercase: {
         name         : 'inputIsNotUpperCase',
-        group        : ErrorGroup.LETTERS_FORMAT_ERROR,
+        group        : ErrorGroup.LettersFormatError,
         description  : 'Input is not uppercase!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -483,9 +483,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotLowercase: {
         name         : 'inputIsNotLowercase',
-        group        : ErrorGroup.LETTERS_FORMAT_ERROR,
+        group        : ErrorGroup.LettersFormatError,
         description  : 'Input is not lowercase!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -496,7 +496,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
     inputIsNotMatchWithCharClass: {
         name         : 'inputIsNotMatchWithCharClass',
         description  : 'Input is not match with char class!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -507,9 +507,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputDateIsNotBefore: {
         name         : 'inputDateIsNotBefore',
-        group        : ErrorGroup.DATE_ERROR,
+        group        : ErrorGroup.DateError,
         description  : 'Input date is not before date!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -520,9 +520,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputDateIsNotAfter: {
         name         : 'inputDateIsNotAfter',
-        group        : ErrorGroup.DATE_ERROR,
+        group        : ErrorGroup.DateError,
         description  : 'Input date is not after date!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -534,7 +534,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
     inputIsNotContains: {
         name         : 'inputIsNotContains',
         description  : 'Input is not contains!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -546,7 +546,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
     inputIsNotEquals: {
         name         : 'inputIsNotEquals',
         description  : 'Input is not equals!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -557,9 +557,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputNotMatchWithMinValue: {
         name         : 'inputNotMatchWithMinValue',
-        group        : ErrorGroup.NUMBER_SIZE_ERROR,
+        group        : ErrorGroup.NumberSizeError,
         description  : 'Input is not match with min value!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -570,9 +570,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputNotMatchWithMaxValue: {
         name         : 'inputNotMatchWithMaxValue',
-        group        : ErrorGroup.NUMBER_SIZE_ERROR,
+        group        : ErrorGroup.NumberSizeError,
         description  : 'Input is not match with max value!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -584,7 +584,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
     inputIsNotMatchWithRegex: {
         name         : 'inputIsNotMatchWithRegex',
         description  : 'Input is not match with regex!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -597,7 +597,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
     inputIsNotStartsWith: {
         name         : 'inputIsNotStartsWith',
         description  : 'Input is not starts with!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -609,7 +609,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
     inputIsNotEndsWith: {
         name         : 'inputIsNotEndsWith',
         description  : 'Input is not ends with!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -620,9 +620,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotMatchWithIn: {
         name         : 'inputIsNotMatchWithIn',
-        group        : ErrorGroup.IN_ERROR,
+        group        : ErrorGroup.InError,
         description  : 'Input is not match with any value!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -633,9 +633,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputIsNotMatchWithPrivateIn: {
         name         : 'inputIsNotMatchWithPrivateIn',
-        group        : ErrorGroup.IN_ERROR,
+        group        : ErrorGroup.InError,
         description  : 'Input is not match with any value!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -645,9 +645,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputArrayNotMatchWithMaxLength: {
         name         : 'inputArrayNotMatchWithMaxLength',
-        group        : ErrorGroup.ARRAY_LENGTH_ERROR,
+        group        : ErrorGroup.ArrayLengthError,
         description  : 'Input array not match with max length!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -658,9 +658,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputArrayNotMatchWithMinLength: {
         name         : 'inputArrayNotMatchWithMinLength',
-        group        : ErrorGroup.ARRAY_LENGTH_ERROR,
+        group        : ErrorGroup.ArrayLengthError,
         description  : 'Input array not match with min length!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -671,9 +671,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputArrayNotMatchWithLength: {
         name         : 'inputArrayNotMatchWithLength',
-        group        : ErrorGroup.ARRAY_LENGTH_ERROR,
+        group        : ErrorGroup.ArrayLengthError,
         description  : 'Input array not match with length!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -684,9 +684,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputNotMatchWithMinByteSize: {
         name         : 'inputNotMatchWithMinByteSize',
-        group        : ErrorGroup.BYTE_SIZE_ERROR,
+        group        : ErrorGroup.ByteSizeError,
         description  : 'Input is not match with min byte size!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -697,9 +697,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputNotMatchWithMaxByteSize: {
         name         : 'inputNotMatchWithMaxByteSize',
-        group        : ErrorGroup.BYTE_SIZE_ERROR,
+        group        : ErrorGroup.ByteSizeError,
         description  : 'Input is not match with max byte size!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -710,9 +710,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputNotMatchWithMimeType: {
         name         : 'inputNotMatchWithMimeType',
-        group        : ErrorGroup.CONTENT_TYPE_ERROR,
+        group        : ErrorGroup.ContentTypeError,
         description  : 'Input is not match with mime type!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -723,9 +723,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     inputNotMatchWithMimeSubType: {
         name         : 'inputNotMatchWithMimeSubType',
-        group        : ErrorGroup.CONTENT_TYPE_ERROR,
+        group        : ErrorGroup.ContentTypeError,
         description  : 'Input is not match with mime sub type!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -736,9 +736,9 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
 
     noValidTypeWasFound: {
         name         : 'noValidTypeWasFound',
-        group        : ErrorGroup.TYPE_ERROR,
+        group        : ErrorGroup.TypeError,
         description  : 'No valid type was found!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)
@@ -750,7 +750,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
     noAnyOfMatch: {
         name         : 'noAnyOfMatch',
         description  : 'No anyOf match!',
-        type         : ErrorType.VALIDATION_ERROR,
+        type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // inputValue (inputValue)

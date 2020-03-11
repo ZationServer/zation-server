@@ -11,7 +11,7 @@ export const MainBackErrors = {
     controllerNotFound: {
         name         : 'controllerNotFound',
         description  : 'The controller is not found.',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         sendInfo     : true,
         //INFO
         // controller
@@ -21,7 +21,7 @@ export const MainBackErrors = {
     systemControllerNotFound: {
         name         : 'systemControllerNotFound',
         description  : 'The system controller is not found.',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         sendInfo     : true,
         //INFO
         // controller
@@ -31,7 +31,7 @@ export const MainBackErrors = {
     apiLevelIncompatible: {
         name         : 'apiLevelIncompatible',
         description  : 'The API level of the client is incompatible with the request.',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         sendInfo     : true,
         //INFO
         // controller
@@ -42,7 +42,7 @@ export const MainBackErrors = {
     authControllerNotSet: {
         name         : 'authControllerNotSet',
         description  : 'Auth controller not set.',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         sendInfo     : false,
         fromZationSystem: true
     },
@@ -50,7 +50,7 @@ export const MainBackErrors = {
     noAccessWithSystem : {
         name         : 'noAccessWithSystem',
         description  : 'No access with the current system to the controller.',
-        type         : ErrorType.NO_ACCESS_ERROR,
+        type         : ErrorType.NoAccessError,
         sendInfo     : false,
         //INFO
         // system
@@ -60,7 +60,7 @@ export const MainBackErrors = {
     noAccessWithVersion   : {
         name         : 'noAccessWithVersion',
         description  : 'No access with the current version to the controller.',
-        type         : ErrorType.NO_ACCESS_ERROR,
+        type         : ErrorType.NoAccessError,
         sendInfo     : true,
         //INFO
         // version
@@ -70,7 +70,7 @@ export const MainBackErrors = {
     serviceNotFound : {
         name         : 'serviceNotFound',
         description  : 'Service not found.',
-        type         : ErrorType.CODE_ERROR,
+        type         : ErrorType.CodeError,
         sendInfo     : false,
         private      : true,
         //INFO
@@ -82,7 +82,7 @@ export const MainBackErrors = {
     errorNotFound : {
         name         : 'errorNotFound',
         description  : 'Error not found.',
-        type         : ErrorType.CODE_ERROR,
+        type         : ErrorType.CodeError,
         sendInfo     : false,
         private      : true,
         //INFO
@@ -93,7 +93,7 @@ export const MainBackErrors = {
     methodIsIncompatible : {
         name         : 'methodIsIncompatible',
         description  : 'Method is incompatible with request protocol.',
-        type         : ErrorType.CODE_ERROR,
+        type         : ErrorType.CodeError,
         sendInfo     : false,
         private      : true,
         //INFO
@@ -105,7 +105,7 @@ export const MainBackErrors = {
     inputIsIncompatible : {
         name         : 'inputIsIncompatible',
         description  : 'The input is incompatible with this operation.',
-        type         : ErrorType.CODE_ERROR,
+        type         : ErrorType.CodeError,
         sendInfo     : false,
         private      : true,
         fromZationSystem: true
@@ -114,7 +114,7 @@ export const MainBackErrors = {
     authenticationError : {
         name         : 'authenticationError',
         description  : 'Authenticate error by trying to authenticate an sc.',
-        type         : ErrorType.SYSTEM_ERROR,
+        type         : ErrorType.SystemError,
         sendInfo     : false,
         //INFO
         // reason
@@ -124,7 +124,7 @@ export const MainBackErrors = {
     unknownCustomCh : {
         name         : 'unknownCustomCh',
         description  : 'Unknown custom channel',
-        type         : ErrorType.SYSTEM_ERROR,
+        type         : ErrorType.SystemError,
         sendInfo     : false,
         private      : true,
         //INFO
@@ -135,7 +135,7 @@ export const MainBackErrors = {
     databoxNotFound : {
         name         : 'databoxNotFound',
         description  : 'The Databox is not found.',
-        type         : ErrorType.SYSTEM_ERROR,
+        type         : ErrorType.SystemError,
         sendInfo     : false,
         private      : true,
         //INFO
@@ -146,7 +146,7 @@ export const MainBackErrors = {
     inputParamIsMissing   : {
         name         : 'inputParamIsMissing',
         description  : 'Input param is missing.',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         sendInfo     : true,
         //INFO
         // paramName (the name of the missing param)
@@ -156,7 +156,7 @@ export const MainBackErrors = {
     unknownInputParam: {
         name         : 'unknownInputParam',
         description  : 'Unknown input param was in the input.',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         sendInfo     : true,
         //INFO
         // paramName (the unknown input param name)
@@ -166,7 +166,7 @@ export const MainBackErrors = {
     inputParamNotAssignable   : {
         name         : 'inputParamNotAssignable',
         description  : 'Input param is not assignable.',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         sendInfo     : true,
         //INFO
         // index (index of the input param that is not assignable)
@@ -177,7 +177,7 @@ export const MainBackErrors = {
     arrayWasExpected   : {
         name         : 'arrayWasExpected',
         description  : 'Array was expected.',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         sendInfo     : true,
         //INFO
         // inputPath (full path to the value where an array was expected)
@@ -188,7 +188,7 @@ export const MainBackErrors = {
     objectWasExpected   : {
         name         : 'objectWasExpected',
         description  : 'Object was expected.',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         sendInfo     : true,
         //INFO
         // inputValue (the input value that is not from type object)
@@ -199,7 +199,7 @@ export const MainBackErrors = {
     objectPropertyIsMissing : {
         name         : 'objectPropertyIsMissing',
         description  : 'Object property is missing (because its not optional).',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         sendInfo     : true,
         //INFO
         // object (the input object where the property is missing)
@@ -211,7 +211,7 @@ export const MainBackErrors = {
     unknownObjectProperty: {
         name         : 'unknownObjectProperty',
         description  : 'Unknown object property was in an object input.',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         sendInfo     : true,
         //INFO
         // propertyName (name of the unknown property)
@@ -222,7 +222,7 @@ export const MainBackErrors = {
     inTokenSavedAuthGroupIsNotFound   : {
         name         : 'inTokenSavedAuthGroupIsNotFound',
         description  : 'The auth group is saved in the token is not found on the zation Config.',
-        type         : ErrorType.TOKEN_ERROR,
+        type         : ErrorType.TokenError,
         private      : true,
         sendInfo     : false,
         //INFO
@@ -234,7 +234,7 @@ export const MainBackErrors = {
     tokenWithoutAuthGroup  : {
         name         : 'tokenWithoutAuthGroup',
         description  : 'Token without auth group!',
-        type         : ErrorType.TOKEN_ERROR,
+        type         : ErrorType.TokenError,
         private      : true,
         sendInfo     : false,
         fromZationSystem: true
@@ -243,7 +243,7 @@ export const MainBackErrors = {
     tokenWithAuthGroupAndOnlyPanel  : {
         name         : 'tokenWithAuthGroupAndOnlyPanel',
         description  : 'Token with auth group and only panel!',
-        type         : ErrorType.TOKEN_ERROR,
+        type         : ErrorType.TokenError,
         private      : true,
         sendInfo     : false,
         fromZationSystem: true
@@ -252,7 +252,7 @@ export const MainBackErrors = {
     wrongPanelAuthData  : {
         name         : 'wrongPanelAuthData',
         description  : 'Wrong panel auth data!',
-        type         : ErrorType.AUTH_ERROR,
+        type         : ErrorType.AuthError,
         private      : false,
         sendInfo     : false,
         fromZationSystem: true
@@ -261,7 +261,7 @@ export const MainBackErrors = {
     panelIsNotActivated : {
         name         : 'panelIsNotActivated',
         description  : 'Panel is not activated!',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         private      : false,
         sendInfo     : false,
         fromZationSystem: true
@@ -270,7 +270,7 @@ export const MainBackErrors = {
     authStartActive   : {
         name         : 'authStartActive',
         description  : 'Auth start is active, zation only accept auth request for a time!',
-        type         : ErrorType.TIME_ERROR,
+        type         : ErrorType.TimeError,
         private      : false,
         sendInfo     : false,
         fromZationSystem: true
@@ -279,7 +279,7 @@ export const MainBackErrors = {
     noAccessWithTokenState : {
         name         : 'noAccessWithTokenState',
         description  : 'You have no access with the token state, to this controller.',
-        type         : ErrorType.NO_ACCESS_ERROR,
+        type         : ErrorType.NoAccessError,
         sendInfo     : true,
         //INFO
         // authIn (show if you auth in system)
@@ -291,7 +291,7 @@ export const MainBackErrors = {
     wrongInputDataStructure: {
         name         : 'wrongInputDataStructure',
         description  : 'Wrong input data with wrong structure.',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         private      : false,
         sendInfo     : false,
         fromZationSystem: true
@@ -300,7 +300,7 @@ export const MainBackErrors = {
     wrongInputTypeInParamBasedInput: {
         name         : 'wrongInputTypeInParamBasedInput',
         description  : 'Wrong input type in param based input. The type has to be an array or object.',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         //INFO
         // inputType
         sendInfo     : true,
@@ -310,7 +310,7 @@ export const MainBackErrors = {
     JSONParseSyntaxError: {
         name         : 'JSONParseSyntaxError ',
         description  : 'Error by parse json.',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         private      : false,
         sendInfo     : false,
         fromZationSystem: true
@@ -319,7 +319,7 @@ export const MainBackErrors = {
     wrongValidationCheckStructure: {
         name         : 'wrongValidationCheckStructure',
         description  : 'Wrong validation check structure!',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         private      : false,
         sendInfo     : true,
         //INFO
@@ -330,7 +330,7 @@ export const MainBackErrors = {
     inputPathNotResolvable: {
         name         : 'inputPathNotResolvable',
         description  : 'Input path is not resolvable.',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         private      : false,
         sendInfo     : true,
         //INFO
@@ -342,7 +342,7 @@ export const MainBackErrors = {
     validationCheckLimitReached: {
         name         : 'validationCheckLimitReached',
         description  : 'Validation check limit is reached!',
-        type         : ErrorType.INPUT_ERROR,
+        type         : ErrorType.InputError,
         private      : false,
         sendInfo     : true,
         //INFO
@@ -354,7 +354,7 @@ export const MainBackErrors = {
     noAccessWithProtocol : {
         name         : 'noAccessWithProtocol',
         description  : 'You have no protocolAccess to this controller with this server protocol!',
-        type         : ErrorType.PROTOCOL_ERROR,
+        type         : ErrorType.ProtocolError,
         sendInfo     : true,
         //INFO
         // protocol   (The protocol you request with)
@@ -365,7 +365,7 @@ export const MainBackErrors = {
     noAccessWithHttpMethod : {
         name         : 'noAccessWithHttpMethod' ,
         description  : 'You have no methodAccess to this controller with this http method!',
-        type         : ErrorType.PROTOCOL_ERROR,
+        type         : ErrorType.ProtocolError,
         sendInfo     : true,
         //INFO
         // method   (The method you request with)
@@ -376,7 +376,7 @@ export const MainBackErrors = {
     unknownError: {
         name         : 'unknownError',
         description  : 'Look in info for more detail! To see run in debug!',
-        type         : ErrorType.SYSTEM_ERROR,
+        type         : ErrorType.SystemError,
         sendInfo     : true,
         //INFO
         // info (info from Exception only in Debug Mode!)
@@ -386,7 +386,7 @@ export const MainBackErrors = {
     unknownTokenVerifyError: {
         name         : 'unknownTokenVerifyError',
         description  : 'Look in info for more detail!',
-        type         : ErrorType.TOKEN_ERROR,
+        type         : ErrorType.TokenError,
         sendInfo     : false,
         //INFO
         fromZationSystem: true
@@ -395,7 +395,7 @@ export const MainBackErrors = {
     unknownTokenSignError: {
         name         : 'unknownTokenSignError',
         description  : 'Look in info for more detail!',
-        type         : ErrorType.TOKEN_ERROR,
+        type         : ErrorType.TokenError,
         sendInfo     : false,
         //INFO
         fromZationSystem: true
@@ -404,7 +404,7 @@ export const MainBackErrors = {
     tokenExpiredError: {
         name         : 'tokenExpiredError',
         description  : 'Jwt expired.',
-        type         : ErrorType.TOKEN_ERROR,
+        type         : ErrorType.TokenError,
         sendInfo     : true,
         //INFO
         // expiredAt
@@ -414,7 +414,7 @@ export const MainBackErrors = {
     jsonWebTokenError: {
         name         : 'jsonWebTokenError',
         description  : 'Json web token error.',
-        type         : ErrorType.TOKEN_ERROR,
+        type         : ErrorType.TokenError,
         sendInfo     : true,
         //INFO
         // message
@@ -424,7 +424,7 @@ export const MainBackErrors = {
     tokenClusterKeyIsInvalid: {
         name         : 'tokenClusterKeyIsInvalid',
         description  : 'The token cluster key is invalid.',
-        type         : ErrorType.TOKEN_ERROR,
+        type         : ErrorType.TokenError,
         sendInfo     : true,
         fromZationSystem: true
     },
@@ -432,7 +432,7 @@ export const MainBackErrors = {
     authenticateMiddlewareBlock: {
         name         : 'authenticateMiddlewareBlock',
         description  : 'Authenticate middleware block req.',
-        type         : ErrorType.TOKEN_ERROR,
+        type         : ErrorType.TokenError,
         sendInfo     : true,
         //INFO
         // err

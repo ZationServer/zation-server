@@ -44,7 +44,7 @@ export default class BackError extends Error
         this.name        = backErrorConstruct.name || 'BackError';
         this.group       = backErrorConstruct.group;
         this.description = backErrorConstruct.description || 'No Description define in Error';
-        this.type        = backErrorConstruct.type || ErrorType.NORMAL_ERROR;
+        this.type        = backErrorConstruct.type || ErrorType.NormalError;
         this.sendInfo    = backErrorConstruct.sendInfo || true;
         this.info        = {};
         this.privateE    = backErrorConstruct.private || false;
