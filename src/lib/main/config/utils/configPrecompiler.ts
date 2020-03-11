@@ -15,7 +15,7 @@ import {
     ObjectModel,
     ValueModel,
     SingleModelInput,
-} from "../definitions/parts/inputConfig";
+} from '../definitions/parts/inputConfig';
 import ObjectUtils        from "../../utils/objectUtils";
 import Iterator           from "../../utils/iterator";
 import {OtherLoadedConfigSet, OtherPrecompiledConfigSet} from "../manager/configSets";
@@ -210,7 +210,10 @@ export default class ConfigPrecompiler
      */
     private modelPrecompileStep1(key: string, obj: object): void
     {
-        const nowValue = resolveModelConfigTranslatable(obj[key]) as ObjectModel;
+        //set resolved model.
+        obj[key] = resolveModelConfigTranslatable(obj[key]) as ObjectModel;
+
+        const nowValue = obj[key];
 
         if(Array.isArray(nowValue))
         {
@@ -537,12 +540,13 @@ export default class ConfigPrecompiler
             else if(isModelConfigTranslatable(input)){
                 input = input[modelConfigTranslateSymbol]();
             }
+            if(isReusableModel(input)){
+                input = [input];
+            }
+            inputConfig.input = input as any;
 
             if(Array.isArray(input)) {
                 this.precompileSingleInput(input as unknown as SingleModelInput);
-            }
-            else if(isReusableModel(input)){
-                this.precompileSingleInput([input]);
             }
             else {
                 this.precompileParamInput(input as ParamInput);
