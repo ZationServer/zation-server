@@ -747,7 +747,7 @@ export default class ConfigChecker
                 }
                 else {
                     //is value model
-                    this.checkValueProperty(value,target);
+                    this.checkValueModel(value,target);
                 }
             }
         }
@@ -836,33 +836,31 @@ export default class ConfigChecker
         }
     }
 
-    private checkValueProperty(model: ValueModel, target: Target, inheritanceCheck: boolean = true)
+    private checkValueModel(model: ValueModel, target: Target, inheritanceCheck: boolean = true)
     {
         target = target.addPath(`(${typeof model[modelNameSymbol] === 'string' ? 
             model[modelNameSymbol] : 'Anonymous'})`);
 
-        //isNormalInputBody
+        if(inheritanceCheck){
+            if(this.checkAndProcessValueModelInheritance(target,model,model)){
+                target = target.setExtraInfo('Compiled with inheritance');
+            }
+        }
+
         //check all that is not depend on full config
         this.checkRegexFunction(model, target);
         this.checkCharClassFunction(model,target);
-
-        //check extends
-        if(inheritanceCheck){
-            //check no self inheritance
-            this.checkProcessValueInheritance(target,model,model);
-            target = target.setExtraInfo('Compiled with inheritance');
-        }
         //check for only number/string functions
         this.checkOnlyValidationFunction(model,target);
     }
 
 
-    private checkProcessValueInheritance(
+    private checkAndProcessValueModelInheritance(
         target: Target,
         baseModel: ValueModel,
         model: ValueModel,
         inheritanceRemCache: Model[] = []
-    ): void
+    ): boolean
     {
         const prototype = model[modelPrototypeSymbol];
         const prototypeType = typeof prototype;
@@ -874,25 +872,29 @@ export default class ConfigChecker
 
             if(inheritanceRemCache.includes(resModel) || resModel === baseModel){
                 this.ceb.addError(new ConfigError(ConfigNames.APP,`${target.toString()} creates a circular value model inheritance.`));
-                return;
+                return false;
             }
             inheritanceRemCache.push(resModel);
 
             if(!ConfigChecker.isValueModel(resModel)){
                 this.ceb.addError(new ConfigError(ConfigNames.APP,
                     `${target.toString()} a value model can only extend a value model.`));
-                return;
+                return false;
             }
             else {
                 //Check only new anonymous value models.
                 if(!(resModel as ModelCheckedMem)._checked){
-                    this.checkValueProperty(resModel,target,false);
+                    this.checkValueModel(resModel,target,false);
                     (resModel as ModelCheckedMem)._checked = true;
                 }
 
-                this.checkProcessValueInheritance(target,baseModel,resModel,inheritanceRemCache);
+                ObjectUtils.mergeTwoObjects(baseModel,resModel,false);
+
+                this.checkAndProcessValueModelInheritance(target,baseModel,resModel,inheritanceRemCache);
             }
+            return true;
         }
+        return false;
     }
 
     private checkCharClassFunction(value: ValueModel, target) {
