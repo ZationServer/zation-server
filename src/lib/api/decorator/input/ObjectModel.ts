@@ -49,7 +49,7 @@ export const ObjectModel = (name?: string) => {
         const objectModel: ObjectModelConfig = createReusableModel({
             properties: models,
             construct: async function(bag) {
-                ObjectUtils.setPrototypeAtTheEnd(this,Reflect.construct(target,[bag]));
+                ObjectUtils.setPrototypeAtTheEndSafe(this,Reflect.construct(target,[bag]));
 
                 const promises: Promise<void>[] = [];
                 for(let i = 0; i < constructorMethodsLength; i++){
