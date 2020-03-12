@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import ZationConfig  from "../../config/manager/zationConfig";
 import {jsonParse}   from "../../utils/jsonConverter";
-import {HttpGetRequest, ZationRequest, ZationTask, ZationValidationCheck} from "./controllerDefinitions";
+import {HttpGetReq, ZationRequest, ZationTask, ZationValidationCheck} from './controllerDefinitions';
 
 export default class ControllerReqUtils
 {
@@ -33,31 +33,31 @@ export default class ControllerReqUtils
     public static async convertGetRequest(query: object): Promise<object>
     {
         const res: ZationRequest =
-            typeof query[HttpGetRequest.API_LEVEL] === 'number' ? {al: query[HttpGetRequest.API_LEVEL]}: {};
+            typeof query[HttpGetReq.API_LEVEL] === 'number' ? {al: query[HttpGetReq.API_LEVEL]}: {};
 
         //input convert
-        const input = typeof query[HttpGetRequest.INPUT] === 'string' ?
-            jsonParse(decodeURIComponent(query[HttpGetRequest.INPUT])): undefined;
+        const input = typeof query[HttpGetReq.INPUT] === 'string' ?
+            jsonParse(decodeURIComponent(query[HttpGetReq.INPUT])): undefined;
 
         //version,system,token
-        res.s = query[HttpGetRequest.SYSTEM];
-        res.v = parseFloat(query[HttpGetRequest.VERSION]);
-        if(query[HttpGetRequest.TOKEN] !== undefined){
-            res.to = query[HttpGetRequest.TOKEN];
+        res.s = query[HttpGetReq.SYSTEM];
+        res.v = parseFloat(query[HttpGetReq.VERSION]);
+        if(query[HttpGetReq.TOKEN] !== undefined){
+            res.to = query[HttpGetReq.TOKEN];
         }
         //task
-        if(query.hasOwnProperty(HttpGetRequest.CONTROLLER) || query.hasOwnProperty(HttpGetRequest.SYSTEM_CONTROLLER)) {
+        if(query.hasOwnProperty(HttpGetReq.CONTROLLER) || query.hasOwnProperty(HttpGetReq.SYSTEM_CONTROLLER)) {
             res.t = {
                 i: input,
             };
-            if(query.hasOwnProperty(HttpGetRequest.CONTROLLER)) {
-                res.t.c = query[HttpGetRequest.CONTROLLER];
+            if(query.hasOwnProperty(HttpGetReq.CONTROLLER)) {
+                res.t.c = query[HttpGetReq.CONTROLLER];
             }
             else {
-                res.t.sc = query[HttpGetRequest.SYSTEM_CONTROLLER];
+                res.t.sc = query[HttpGetReq.SYSTEM_CONTROLLER];
             }
         }
-        else if(query.hasOwnProperty(HttpGetRequest.AUTH_REQ)) {
+        else if(query.hasOwnProperty(HttpGetReq.AUTH_REQ)) {
             res.a = {
                 i: input
             };
@@ -68,19 +68,19 @@ export default class ControllerReqUtils
     public static async convertValidationGetRequest(query: object): Promise<object>
     {
         const res: ZationRequest =
-            typeof query[HttpGetRequest.API_LEVEL] === 'number' ? {al: query[HttpGetRequest.API_LEVEL]}: {};
+            typeof query[HttpGetReq.API_LEVEL] === 'number' ? {al: query[HttpGetReq.API_LEVEL]}: {};
 
         //input convert
-        const input: any = jsonParse(decodeURIComponent(query[HttpGetRequest.INPUT]));
+        const input: any = jsonParse(decodeURIComponent(query[HttpGetReq.INPUT]));
 
         const main: ZationValidationCheck = {
             i: input
         };
-        if(query.hasOwnProperty(HttpGetRequest.CONTROLLER)) {
-            main.c = query[HttpGetRequest.CONTROLLER];
+        if(query.hasOwnProperty(HttpGetReq.CONTROLLER)) {
+            main.c = query[HttpGetReq.CONTROLLER];
         }
         else {
-            main.sc = query[HttpGetRequest.SYSTEM_CONTROLLER];
+            main.sc = query[HttpGetReq.SYSTEM_CONTROLLER];
         }
         res.v = main;
         return res;
@@ -89,13 +89,13 @@ export default class ControllerReqUtils
     public static isValidGetReq(query: object): boolean
     {
         return((
-            query.hasOwnProperty(HttpGetRequest.SYSTEM) &&
-            query.hasOwnProperty(HttpGetRequest.VERSION)
+            query.hasOwnProperty(HttpGetReq.SYSTEM) &&
+            query.hasOwnProperty(HttpGetReq.VERSION)
             )
             && (
-            query.hasOwnProperty(HttpGetRequest.AUTH_REQ) ||
-            query.hasOwnProperty(HttpGetRequest.CONTROLLER) ||
-            query.hasOwnProperty(HttpGetRequest.SYSTEM_CONTROLLER)
+            query.hasOwnProperty(HttpGetReq.AUTH_REQ) ||
+            query.hasOwnProperty(HttpGetReq.CONTROLLER) ||
+            query.hasOwnProperty(HttpGetReq.SYSTEM_CONTROLLER)
             ));
     }
 
@@ -103,11 +103,11 @@ export default class ControllerReqUtils
     {
         return (
             //validationReq
-            query.hasOwnProperty(HttpGetRequest.VALI_REQ) &&
-            typeof query[HttpGetRequest.INPUT] === 'string' &&
+            query.hasOwnProperty(HttpGetReq.VALI_REQ) &&
+            typeof query[HttpGetReq.INPUT] === 'string' &&
             (
-                query.hasOwnProperty(HttpGetRequest.CONTROLLER) ||
-                query.hasOwnProperty(HttpGetRequest.SYSTEM_CONTROLLER)
+                query.hasOwnProperty(HttpGetReq.CONTROLLER) ||
+                query.hasOwnProperty(HttpGetReq.SYSTEM_CONTROLLER)
             )
         );
     }
