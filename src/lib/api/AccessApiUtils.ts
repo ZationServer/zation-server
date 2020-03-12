@@ -12,13 +12,13 @@ import {ZationAccess, ZationToken}                   from '../main/constants/int
  * Constant for zation access special keyword allAuth.
  * Targets all authenticated clients.
  */
-export const $allAuth = ZationAccess.ALL_AUTH;
+export const $allAuth = ZationAccess.AllAuth;
 
 /**
  * Constant for zation access special keyword allNotAuth.
  * Targets all unauthenticated clients.
  */
-export const $allNotAuth = ZationAccess.ALL_NOT_AUTH;
+export const $allNotAuth = ZationAccess.AllNotAuth;
 
 /**
  * This function can be used to check the access with the token of a client.

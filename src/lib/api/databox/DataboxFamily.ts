@@ -207,7 +207,7 @@ export default class DataboxFamily extends DataboxCore {
                         break;
                     default :
                         const err: any = new Error('Unknown action');
-                        err.name = ClientErrorName.UNKNOWN_ACTION;
+                        err.name = ClientErrorName.UnknownAction;
                         respond(err);
                 }
             }

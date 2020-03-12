@@ -33,7 +33,7 @@ export default class IdValidCheckerUtils {
                 const isObject = typeof res === 'object';
                 if((typeof res === 'boolean' && !res) || isObject) {
                     const err: any = new Error(`The id: '${id}' is not valid.`);
-                    err.name = ClientErrorName.ID_IS_NOT_VALID;
+                    err.name = ClientErrorName.IdIsNotValid;
                     if(isObject){err.info = res;}
                     throw err;
                 }

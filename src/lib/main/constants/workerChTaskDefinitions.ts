@@ -8,32 +8,32 @@ import {UpdateTokenMainData} from "./syncTokenDefinitions";
 
 export const enum WorkerChTaskType
 {
-    MAP_TASK,
-    SPECIAL_TASK
+    MapTask,
+    SpecialTask
 }
 
 //MapTask
 
 export const enum WorkerChMapTaskAction
 {
-    DISCONNECT,
-    DEAUTHENTICATE,
-    KICK_OUT,
-    EMIT
+    Disconnect,
+    Deauthenticate,
+    KickOut,
+    Emit
 }
 
 export const enum WorkerChMapTarget
 {
-    USER_IDS,
-    TOKEN_IDS,
-    ALL_SOCKETS,
-    SOCKETS_SIDS,
-    AUTH_USER_GROUPS,
-    DEFAULT_USER_GROUP
+    UserIds,
+    TokenIds,
+    AllSockets,
+    SocketSids,
+    AuthUserGroups,
+    DefaultUserGroup
 }
 
 export interface WorkerChAbstractMapTask {
-    taskType: WorkerChTaskType.MAP_TASK,
+    taskType: WorkerChTaskType.MapTask,
     ids: (string | number)[],
     action: WorkerChMapTaskAction,
     target: WorkerChMapTarget,
@@ -42,7 +42,7 @@ export interface WorkerChAbstractMapTask {
 }
 
 export interface WorkerChMapTaskKickOut extends WorkerChAbstractMapTask {
-    action: WorkerChMapTaskAction.KICK_OUT,
+    action: WorkerChMapTaskAction.KickOut,
     data: {
         ch: string,
         all?: boolean,
@@ -50,7 +50,7 @@ export interface WorkerChMapTaskKickOut extends WorkerChAbstractMapTask {
 }
 
 export interface WorkerChMapTaskEmit extends WorkerChAbstractMapTask {
-    action: WorkerChMapTaskAction.EMIT,
+    action: WorkerChMapTaskAction.Emit,
     data: {
         event: string,
         data: any,
@@ -59,11 +59,11 @@ export interface WorkerChMapTaskEmit extends WorkerChAbstractMapTask {
 }
 
 export interface WorkerChMapTaskDisconnect extends WorkerChAbstractMapTask {
-    action: WorkerChMapTaskAction.DISCONNECT
+    action: WorkerChMapTaskAction.Disconnect
 }
 
 export interface WorkerChMapTaskDeauthenticate extends WorkerChAbstractMapTask{
-    action: WorkerChMapTaskAction.DEAUTHENTICATE
+    action: WorkerChMapTaskAction.Deauthenticate
 }
 
 export type WorkerChMapTask = WorkerChMapTaskKickOut | WorkerChMapTaskEmit |
@@ -74,22 +74,22 @@ export type WorkerChMapTask = WorkerChMapTaskKickOut | WorkerChMapTaskEmit |
 
 export const enum WorkerChSpecialTaskAction
 {
-    UPDATE_USER_TOKENS,
-    UPDATE_GROUP_TOKENS,
-    MESSAGE
+    UpdateUserTokens,
+    UpdateGroupTokens,
+    Message
 }
 
 interface WorkerChSpecialTaskMark {
-    taskType: WorkerChTaskType.SPECIAL_TASK
+    taskType: WorkerChTaskType.SpecialTask
 }
 
 export interface WorkerChSpecialTaskToken extends WorkerChSpecialTaskMark {
-    action: WorkerChSpecialTaskAction.UPDATE_USER_TOKENS | WorkerChSpecialTaskAction.UPDATE_GROUP_TOKENS,
+    action: WorkerChSpecialTaskAction.UpdateUserTokens | WorkerChSpecialTaskAction.UpdateGroupTokens,
     data: UpdateTokenMainData
 }
 
 export interface WorkerChSpecialTaskMessage extends WorkerChSpecialTaskMark {
-    action: WorkerChSpecialTaskAction.MESSAGE,
+    action: WorkerChSpecialTaskAction.Message,
     data: any
 }
 

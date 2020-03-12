@@ -55,11 +55,11 @@ export default class AccessUtils
         }
         else if(typeof value === 'string') {
             switch (value) {
-                case ZationAccess.ALL :
+                case ZationAccess.All :
                     return async () => true;
-                case ZationAccess.ALL_AUTH :
+                case ZationAccess.AllAuth :
                     return async (a) => a.isAuth();
-                case ZationAccess.ALL_NOT_AUTH :
+                case ZationAccess.AllNotAuth :
                     return async (a) => a.isDefault();
                 default :
                     return async (a) => a.getUserGroup() === value;

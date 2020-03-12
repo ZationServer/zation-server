@@ -461,10 +461,10 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
     letters: (input, settings, backErrorBag, prepareErrorData) =>
     {
         if(typeof input === 'string') {
-            if((settings === FormatLetters.UPPER_CASE) && (!EasyValidator.isUpperCase(input))) {
+            if((settings === FormatLetters.UpperCase) && (!EasyValidator.isUpperCase(input))) {
                 backErrorBag.addNewBackError(ValidatorBackErrors.inputIsNotUppercase,prepareErrorData);
             }
-            else if((settings === FormatLetters.LOWER_CASE) && (!EasyValidator.isLowerCase(input))) {
+            else if((settings === FormatLetters.LowerCase) && (!EasyValidator.isLowerCase(input))) {
                 backErrorBag.addNewBackError(ValidatorBackErrors.inputIsNotLowercase,prepareErrorData);
             }
         }

@@ -22,12 +22,12 @@ export default class ObjectPathTokenRemoteSequenceImp implements ObjectPathSeque
     }
 
     set(path: string | string[],value: any): ObjectPathTokenRemoteSequenceImp {
-        this.operations.push({t: SyncTokenOperationType.SET,p: path,v: value});
+        this.operations.push({t: SyncTokenOperationType.Set,p: path,v: value});
         return this;
     }
 
     delete(path?: string | string[]): ObjectPathTokenRemoteSequenceImp {
-        this.operations.push({t: SyncTokenOperationType.DELETE,p: path});
+        this.operations.push({t: SyncTokenOperationType.Delete,p: path});
         return this;
     }
 

@@ -40,7 +40,7 @@ export default class DataboxFetchManager {
                     }
                     else {
                         const err: any = new Error('Max backpressure limit reached.');
-                        err.name = ClientErrorName.MAX_BACKPRESSURE_REACHED;
+                        err.name = ClientErrorName.MaxBackpressureReached;
                         respond(err);
                     }
                 };

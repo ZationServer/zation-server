@@ -483,19 +483,19 @@ class ZationWorker extends SCWorker
                         }
                         else {
                             const err: any = new Error(`A client can only subscribe to the user channel where his user id belongs to.`);
-                            err.name = ClientErrorName.ACCESS_DENIED;
+                            err.name = ClientErrorName.AccessDenied;
                             next(err); //Block!
                         }
                     }
                     else {
                         const err: any = new Error(`A client with undefined user id cannot subscribe to this user channel.`);
-                        err.name = ClientErrorName.ACCESS_DENIED;
+                        err.name = ClientErrorName.AccessDenied;
                         next(err); //Block!
                     }
                 }
                 else {
                     const err: any = new Error('An anonymous client cannot subscribe to this user channel.');
-                    err.name = ClientErrorName.ACCESS_DENIED;
+                    err.name = ClientErrorName.AccessDenied;
                     next(err); //Block!
                 }
             }
@@ -510,26 +510,26 @@ class ZationWorker extends SCWorker
                         }
                         else {
                             const err: any = new Error('A client can only subscribe to the auth user group channel where his auth user group belongs to.');
-                            err.name = ClientErrorName.ACCESS_DENIED;
+                            err.name = ClientErrorName.AccessDenied;
                             next(err); //Block!
                         }
                     }
                     else {
                         const err: any = new Error(`A client with undefined auth user group cannot subscribe to this auth user group channel.`);
-                        err.name = ClientErrorName.ACCESS_DENIED;
+                        err.name = ClientErrorName.AccessDenied;
                         next(err); //Block!
                     }
                 }
                 else {
                     const err: any = new Error('An anonymous client cannot subscribe to this auth user group channel.');
-                    err.name = ClientErrorName.ACCESS_DENIED;
+                    err.name = ClientErrorName.AccessDenied;
                     next(err); //Block!
                 }
             }
             else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
                 if(authToken !== null){
                     const err: any = new Error('An authenticated client cannot subscribe to the default user group channel.');
-                    err.name = ClientErrorName.ACCESS_DENIED;
+                    err.name = ClientErrorName.AccessDenied;
                     next(err); //Block!
                 }
                 else {
@@ -546,29 +546,29 @@ class ZationWorker extends SCWorker
                     }
                     else {
                         const err: any = new Error('A client without panel access cannot subscribe to the panel out channel!');
-                        err.name = ClientErrorName.ACCESS_DENIED;
+                        err.name = ClientErrorName.AccessDenied;
                         next(err); //Block!
                     }
                 }
                 else {
                     const err: any = new Error('An anonymous client cannot subscribe to the panel out channel.');
-                    err.name = ClientErrorName.ACCESS_DENIED;
+                    err.name = ClientErrorName.AccessDenied;
                     next(err); //Block!
                 }
             }
             else if(channel === ZationChannel.PANEL_IN) {
                 const err: any = new Error('A client cannot subscribe to the panel in channel.');
-                err.name = ClientErrorName.ACCESS_DENIED;
+                err.name = ClientErrorName.AccessDenied;
                 next(err); //Block!
             }
             else if(channel.indexOf(DATABOX_START_INDICATOR) === 0) {
                 const err: any = new Error('A client cannot subscribe to an internally Databox channel.');
-                err.name = ClientErrorName.ACCESS_DENIED;
+                err.name = ClientErrorName.AccessDenied;
                 next(err); //Block!
             }
             else if(channel === ZationChannel.ALL_WORKER) {
                 const err: any = new Error('A client cannot subscribe to the all worker channel.');
-                err.name = ClientErrorName.ACCESS_DENIED;
+                err.name = ClientErrorName.AccessDenied;
                 next(err); //Block!
             }
             else {
@@ -600,7 +600,7 @@ class ZationWorker extends SCWorker
                 }
                 else{
                     const err: any = new Error('Publish in this user group channel denied.');
-                    err.name = ClientErrorName.ACCESS_DENIED;
+                    err.name = ClientErrorName.AccessDenied;
                     next(err); //Block!
                 }
             }
@@ -620,7 +620,7 @@ class ZationWorker extends SCWorker
                 }
                 else{
                     const err: any = new Error('Publish in this auth user group channel denied.');
-                    err.name = ClientErrorName.ACCESS_DENIED;
+                    err.name = ClientErrorName.AccessDenied;
                     next(err); //Block!
                 }
             }
@@ -635,7 +635,7 @@ class ZationWorker extends SCWorker
                 }
                 else {
                     const err: any = new Error('Publish in the all channel denied.');
-                    err.name = ClientErrorName.ACCESS_DENIED;
+                    err.name = ClientErrorName.AccessDenied;
                     next(err); //Block!
                 }
             }
@@ -650,13 +650,13 @@ class ZationWorker extends SCWorker
                 }
                 else{
                     const err: any = new Error('Publish in the default user group channel denied.');
-                    err.name = ClientErrorName.ACCESS_DENIED;
+                    err.name = ClientErrorName.AccessDenied;
                     next(err); //Block!
                 }
             }
             else if(channel === ZationChannel.PANEL_OUT) {
                 const err: any = new Error('A client cannot publish in the panel out channel.');
-                err.name = ClientErrorName.ACCESS_DENIED;
+                err.name = ClientErrorName.AccessDenied;
                 next(err); //Block!
             }
             else if(channel === ZationChannel.PANEL_IN) {
@@ -668,19 +668,19 @@ class ZationWorker extends SCWorker
                 }
                 else {
                     const err: any = new Error('A client without panel access cannot publish in the panel in channel.');
-                    err.name = ClientErrorName.ACCESS_DENIED;
+                    err.name = ClientErrorName.AccessDenied;
                     next(err); //Block!
                 }
             }
             else if(req.channel.indexOf(DATABOX_START_INDICATOR) === 0) {
                 const err: any = new Error('A client cannot publish in an internally Databox channel.');
-                err.name = ClientErrorName.ACCESS_DENIED;
+                err.name = ClientErrorName.AccessDenied;
                 next(err); //Block!
             }
             //Important! (Otherwise every socket can publish in worker channel and can modify the whole network.)
             else if(req.channel === ZationChannel.ALL_WORKER) {
                 const err: any = new Error('A client cannot publish in the all worker channel.');
-                err.name = ClientErrorName.ACCESS_DENIED;
+                err.name = ClientErrorName.AccessDenied;
                 next(err); //Block!
             }
             else {
@@ -1007,10 +1007,10 @@ class ZationWorker extends SCWorker
         channel.watch(async (data: WorkerTaskPackage) =>
         {
             switch (data.taskType) {
-                case WorkerChTaskType.MAP_TASK:
+                case WorkerChTaskType.MapTask:
                      await this.processMapTask(data);
                      break;
-                case WorkerChTaskType.SPECIAL_TASK:
+                case WorkerChTaskType.SpecialTask:
                     await this.processSpecialTask(data);
                     break;
             }
@@ -1025,15 +1025,15 @@ class ZationWorker extends SCWorker
     {
         const data = task.data;
         switch (task.action) {
-            case WorkerChSpecialTaskAction.UPDATE_USER_TOKENS:
+            case WorkerChSpecialTaskAction.UpdateUserTokens:
                 await this.updateTokens
                 (this.mapUserIdToSc,data.operations,data.target.toString(),data.exceptSocketSids);
                 break;
-            case WorkerChSpecialTaskAction.UPDATE_GROUP_TOKENS:
+            case WorkerChSpecialTaskAction.UpdateGroupTokens:
                 await this.updateTokens
                 (this.mapAuthUserGroupToSc,data.operations,data.target,data.exceptSocketSids);
                 break;
-            case WorkerChSpecialTaskAction.MESSAGE:
+            case WorkerChSpecialTaskAction.Message:
                 await this.zc.event.workerMessage(data);
                 break;
         }
@@ -1050,7 +1050,7 @@ class ZationWorker extends SCWorker
 
         let socketAction: SocketAction | undefined = undefined;
         switch (task.action) {
-            case WorkerChMapTaskAction.KICK_OUT:
+            case WorkerChMapTaskAction.KickOut:
                 const ch = task.data.ch;
                 if(ch !== undefined) {
                     socketAction = (s: UpSocket) => {
@@ -1058,18 +1058,18 @@ class ZationWorker extends SCWorker
                     };
                 }
                 break;
-            case WorkerChMapTaskAction.EMIT:
+            case WorkerChMapTaskAction.Emit:
                 const data = task.data;
                 socketAction = (s: UpSocket) => {
                     s.emit(data.event,data.data);
                 };
                 break;
-            case WorkerChMapTaskAction.DISCONNECT:
+            case WorkerChMapTaskAction.Disconnect:
                 socketAction = (s: UpSocket) => {
                     s.disconnect();
                 };
                 break;
-            case WorkerChMapTaskAction.DEAUTHENTICATE:
+            case WorkerChMapTaskAction.Deauthenticate:
                 socketAction = (s: UpSocket) => {
                     s.deauthenticate();
                 };
@@ -1078,22 +1078,22 @@ class ZationWorker extends SCWorker
 
         if(socketAction !== undefined){
             switch (task.target) {
-                case WorkerChMapTarget.USER_IDS:
+                case WorkerChMapTarget.UserIds:
                     this.forUserIds(ids,exceptSocketSids,socketAction);
                     break;
-                case WorkerChMapTarget.TOKEN_IDS:
+                case WorkerChMapTarget.TokenIds:
                     this.forTokenIds(ids,exceptSocketSids,socketAction);
                     break;
-                case WorkerChMapTarget.ALL_SOCKETS:
+                case WorkerChMapTarget.AllSockets:
                     this.forAllSockets(exceptSocketSids,socketAction);
                     break;
-                case WorkerChMapTarget.SOCKETS_SIDS:
+                case WorkerChMapTarget.SocketSids:
                     this.forAllSocketSids(ids,socketAction);
                     break;
-                case WorkerChMapTarget.AUTH_USER_GROUPS:
+                case WorkerChMapTarget.AuthUserGroups:
                     this.forAuthUserGroups(ids,task.data.all || false,exceptSocketSids,socketAction);
                     break;
-                case WorkerChMapTarget.DEFAULT_USER_GROUP:
+                case WorkerChMapTarget.DefaultUserGroup:
                     this.forDefaultUserGroup(exceptSocketSids,socketAction);
                     break;
             }
@@ -1115,10 +1115,10 @@ class ZationWorker extends SCWorker
                 const edit = this.preparedBag.seqEditTokenVariablesWithSocket(socket);
                 for(let i = 0; i < operations.length; i++) {
                     switch (operations[i].t) {
-                        case SyncTokenOperationType.SET :
+                        case SyncTokenOperationType.Set :
                             edit.set(operations[i].p as string | string[],operations[i].v);
                             break;
-                        case SyncTokenOperationType.DELETE :
+                        case SyncTokenOperationType.Delete :
                             edit.delete(operations[i].p);
                             break;
                     }
@@ -1327,11 +1327,11 @@ class ZationWorker extends SCWorker
         try {
             const promises: Promise<void>[] = [];
             promises.push(new Promise<void>(async (resolve) => {
-                this.serverSettingsJs = await this.sendToZationMaster({action: WorkerMessageAction.SERVER_SETTINGS_JS});
+                this.serverSettingsJs = await this.sendToZationMaster({action: WorkerMessageAction.ServerSettingsJs});
                 resolve();
             }));
             promises.push(new Promise<void>(async (resolve) => {
-                this.fullClientJs = await this.sendToZationMaster({action: WorkerMessageAction.FULL_CLIENT_JS});
+                this.fullClientJs = await this.sendToZationMaster({action: WorkerMessageAction.FullClientJs});
                 resolve();
             }));
             await Promise.all(promises);
@@ -1358,7 +1358,7 @@ class ZationWorker extends SCWorker
      * @param error
      */
     public async killServer(error: Error | string): Promise<void> {
-        await this.sendToZationMaster({action: WorkerMessageAction.KILL_SERVER, data: error});
+        await this.sendToZationMaster({action: WorkerMessageAction.KillServer, data: error});
     }
 
     //Part panel

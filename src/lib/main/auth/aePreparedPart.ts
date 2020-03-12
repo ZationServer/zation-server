@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {AuthUserGroupConfig, UserGroupsConfig} from "../config/definitions/parts/userGroupsConfig";
-import {DefaultUserGroupFallBack}              from "../constants/internal";
+import {DEFAULT_USER_GROUP_FALLBACK}              from "../constants/internal";
 import ZationConfigFull                        from "../config/manager/zationConfigFull";
 
 export default class AEPreparedPart
@@ -26,7 +26,7 @@ export default class AEPreparedPart
             this.groupsConfig = this.zc.appConfig.userGroups;
 
             this.authGroups = this.groupsConfig.auth || {};
-            this.defaultGroup = this.groupsConfig.default || DefaultUserGroupFallBack;
+            this.defaultGroup = this.groupsConfig.default || DEFAULT_USER_GROUP_FALLBACK;
         }
         else {
             this.defaultGroup = 'default';

@@ -381,7 +381,7 @@ export default class ZationMaster {
         {
             const action = data.action;
             switch (action) {
-                case WorkerMessageAction.INFO:
+                case WorkerMessageAction.Info:
                     respond(null,{
                         isLeader: this.clusterLeader,
                         pid: process.pid,
@@ -389,16 +389,16 @@ export default class ZationMaster {
                         stateServerConnected: this.stateServerActive ? this.stateServerEngine.isConnected(): false
                     });
                     break;
-                case WorkerMessageAction.IS_LEADER:
+                case WorkerMessageAction.IsLeader:
                     respond(null,{isLeader: this.clusterLeader});
                     break;
-                case WorkerMessageAction.FULL_CLIENT_JS:
+                case WorkerMessageAction.FullClientJs:
                     respond(null,this.fullClientJs);
                     break;
-                case WorkerMessageAction.SERVER_SETTINGS_JS:
+                case WorkerMessageAction.ServerSettingsJs:
                     respond(null,this.serverSettingsJs);
                     break;
-                case WorkerMessageAction.KILL_SERVER:
+                case WorkerMessageAction.KillServer:
                     this.killServer(data.data);
                     respond(null);
                     break;

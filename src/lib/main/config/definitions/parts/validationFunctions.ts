@@ -100,7 +100,7 @@ export interface ValidationFunctions {
      * letters: 'lowercase'
      * letters: 'uppercase'
      */
-    letters?: FormatLetters.LOWER_CASE | FormatLetters.UPPER_CASE | string;
+    letters?: FormatLetters.LowerCase | FormatLetters.UpperCase | string;
     /**
      * CharClass defines a regular expression char class to check the input string.
      * @example

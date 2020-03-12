@@ -59,7 +59,7 @@ export default class DataboxPrepare
         }
         else {
             const err: any = new Error('The client API level is incompatible with databox API levels.');
-            err.name = ClientErrorName.API_LEVEL_INCOMPATIBLE;
+            err.name = ClientErrorName.ApiLevelIncompatible;
             throw err;
         }
     }
@@ -90,7 +90,7 @@ export default class DataboxPrepare
     {
         if(!this.isDataboxExist(name)) {
             const err: any = new Error(`The Databox: '${name}' not exists.`);
-            err.name = ClientErrorName.UNKNOWN_DATABOX;
+            err.name = ClientErrorName.UnknownDatabox;
             throw err;
         }
     }

@@ -37,12 +37,12 @@ export default class ChMiddlewareHelper
     {
         if(!preChInfo.systemAccessCheck(shBridge)){
             const err: any = new Error(`Access to this channel with client system denied.`);
-            err.name = ClientErrorName.NO_ACCESS_WITH_SYSTEM;
+            err.name = ClientErrorName.NoAccessWithSystem;
             throw err;
         }
         if(!preChInfo.versionAccessCheck(shBridge)){
             const err: any = new Error(`Access to this channel with client version denied.`);
-            err.name = ClientErrorName.NO_ACCESS_WITH_VERSION;
+            err.name = ClientErrorName.NoAccessWithVersion;
             throw err;
         }
     }
@@ -58,13 +58,13 @@ export default class ChMiddlewareHelper
 
         if(name === undefined){
             const err: any = new Error('The custom channel name is required to subscribe to a custom channel.');
-            err.name = ClientErrorName.NAME_MISSING;
+            err.name = ClientErrorName.NameMissing;
             return Error;
         }
 
         if(!this.channelPrepare.existCustomCh(name)){
             const err: any = new Error('Unknown custom channel.');
-            err.name = ClientErrorName.UNKNOWN_CHANNEL;
+            err.name = ClientErrorName.UnknownChannel;
             Logger.log.debug
             (`The socket with id: ${socket.id} cannot subscribe to an unknown custom channel name: '${name}'.`);
             return Error;
@@ -77,12 +77,12 @@ export default class ChMiddlewareHelper
 
         if(isCustomChFamily && !idProvided){
             const err: any = new Error('The family member id is required to subscribe to a custom channel family.');
-            err.name = ClientErrorName.ID_MISSING;
+            err.name = ClientErrorName.IdMissing;
             return Error;
         }
         if(!isCustomChFamily && idProvided){
             const err: any = new Error('Unknown member id provided to subscribe to a normal custom channel.');
-            err.name = ClientErrorName.UNKNOWN_ID;
+            err.name = ClientErrorName.UnknownId;
             return Error;
         }
 
@@ -109,7 +109,7 @@ export default class ChMiddlewareHelper
         }
         else {
             const err: any = new Error(`Subscribe to this custom channel denied.`);
-            err.name = ClientErrorName.ACCESS_DENIED;
+            err.name = ClientErrorName.AccessDenied;
             return err;
         }
     }
@@ -126,13 +126,13 @@ export default class ChMiddlewareHelper
 
         if(name === undefined){
             const err: any = new Error('The custom channel name is required to publish in a custom channel.');
-            err.name = ClientErrorName.NAME_MISSING;
+            err.name = ClientErrorName.NameMissing;
             return Error;
         }
 
         if(!this.channelPrepare.existCustomCh(name)){
             const err: any = new Error('Unknown custom channel.');
-            err.name = ClientErrorName.UNKNOWN_CHANNEL;
+            err.name = ClientErrorName.UnknownChannel;
             Logger.log.debug
             (`The socket with id: ${socket.id} cannot publish in an unknown custom channel name: '${name}'.`);
             return Error;
@@ -145,12 +145,12 @@ export default class ChMiddlewareHelper
 
         if(isCustomChFamily && !idProvided){
             const err: any = new Error('The family member id is required to publish in a custom channel family.');
-            err.name = ClientErrorName.ID_MISSING;
+            err.name = ClientErrorName.IdMissing;
             return Error;
         }
         if(!isCustomChFamily && idProvided){
             const err: any = new Error('Unknown member id provided to publish in a normal custom channel.');
-            err.name = ClientErrorName.UNKNOWN_ID;
+            err.name = ClientErrorName.UnknownId;
             return Error;
         }
 
@@ -187,7 +187,7 @@ export default class ChMiddlewareHelper
         }
         else {
             const err: any = new Error(`Publish in this custom channel denied.`);
-            err.name = ClientErrorName.ACCESS_DENIED;
+            err.name = ClientErrorName.AccessDenied;
             return err;
         }
     }

@@ -5,13 +5,13 @@ Copyright(c) Luca Scaringella
  */
 
 export enum BackErrorInfo {
-    MAIN = 'main'
+    Main = 'main'
 }
 
 export enum ZationAccess {
-    ALL_AUTH                = 'allAuth',
-    ALL_NOT_AUTH            = 'allNotAuth',
-    ALL                     = 'all'
+    AllAuth               = 'allAuth',
+    AllNotAuth            = 'allNotAuth',
+    All                   = 'all'
 }
 
 export interface ZationToken extends PrepareZationToken{
@@ -35,15 +35,15 @@ export interface PrepareZationToken {
     variables?: object
 }
 
-export const DefaultUserGroupFallBack = 'default';
+export const DEFAULT_USER_GROUP_FALLBACK = 'default';
 
-export const ZationCustomEventNamespace = '>CE.';
+export const ZATION_CUSTOM_EVENT_NAMESPACE = '>CE.';
 
 //CN = CONFIG_NAMES
 export enum ConfigNames
 {
-    APP             = 'App     :',
-    MAIN            = 'Main    :',
-    SERVICE         = 'Service :',
-    STARTER         = 'Starter :'
+    App             = 'App     :',
+    Main            = 'Main    :',
+    Service         = 'Service :',
+    Starter         = 'Starter :'
 }

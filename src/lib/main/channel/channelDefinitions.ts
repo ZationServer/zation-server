@@ -4,17 +4,17 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-export enum ZationChannel {
+export class ZationChannel {
     //Zation Main Channels
-    USER_CHANNEL_PREFIX = 'Z_U.',
-    AUTH_USER_GROUP_PREFIX = 'Z_AUG.',
-    DEFAULT_USER_GROUP = 'Z_DUG',
-    ALL = 'Z_ALL',
-    PANEL_IN = 'Z_PI',
-    PANEL_OUT = 'Z_PO',
+    static readonly USER_CHANNEL_PREFIX = 'Z_U.';
+    static readonly AUTH_USER_GROUP_PREFIX = 'Z_AUG.';
+    static readonly DEFAULT_USER_GROUP = 'Z_DUG';
+    static readonly ALL = 'Z_ALL';
+    static readonly PANEL_IN = 'Z_PI';
+    static readonly PANEL_OUT = 'Z_PO';
     //Custom Channels
-    CUSTOM_CHANNEL_PREFIX = 'Z_C.',
-    CUSTOM_CHANNEL_ID_SEPARATOR = '.',
+    static readonly CUSTOM_CHANNEL_PREFIX = 'Z_C.';
+    static readonly CUSTOM_CHANNEL_ID_SEPARATOR = '.';
     //intern channels
-    ALL_WORKER = 'Z_AW'
+    static readonly ALL_WORKER = 'Z_AW';
 }

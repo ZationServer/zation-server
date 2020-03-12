@@ -74,7 +74,7 @@ class ZationBroker extends SCBroker
     private initBrokerEvents()
     {
         this.on('message', async (data, respond) => {
-            if(data.action === BrokerMessageAction.INFO){
+            if(data.action === BrokerMessageAction.Info){
                 respond(null,{
                     id: this.id,
                     broker: {

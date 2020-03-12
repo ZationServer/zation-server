@@ -7,17 +7,17 @@ Copyright(c) Luca Scaringella
 import {ValidationFunctions} from '../config/definitions/parts/validationFunctions';
 
 export enum FormatLetters {
-    UPPER_CASE              = 'uppercase',
-    LOWER_CASE              = 'lowercase'
+    UpperCase              = 'uppercase',
+    LowerCase              = 'lowercase'
 }
 
 export enum TypeTypes {
-    NUMBER,
-    STRING,
-    DATE,
-    BASE64,
-    ANY,
-    OTHER
+    Number,
+    String,
+    Date,
+    Base64,
+    Any,
+    Other
 }
 
 export const OnlyNumberFunctions = [

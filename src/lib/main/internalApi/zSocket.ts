@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ZationCustomEventNamespace, ZationToken} from "../constants/internal";
+import {ZATION_CUSTOM_EVENT_NAMESPACE, ZationToken} from "../constants/internal";
 import UpSocket, {OnHandlerFunction}             from "../sc/socket";
 import TokenUtils       from "../token/tokenUtils";
 import ObjectPath       from "../utils/objectPath";
@@ -336,11 +336,11 @@ export default class ZSocket
         return new Promise<object>((resolve, reject) => {
             // noinspection DuplicatedCode
             if(onlyTransmit){
-                this.shBridge.getSocket().emit(ZationCustomEventNamespace+event,data);
+                this.shBridge.getSocket().emit(ZATION_CUSTOM_EVENT_NAMESPACE+event,data);
                 resolve();
             }
             else {
-                this.shBridge.getSocket().emit(ZationCustomEventNamespace+event,data,(err, data) => {
+                this.shBridge.getSocket().emit(ZATION_CUSTOM_EVENT_NAMESPACE+event,data,(err, data) => {
                     err ? reject(err): resolve(data);
                 });
             }
@@ -357,7 +357,7 @@ export default class ZSocket
      * parameters are the data and a response function that you can call to respond on the event back.
      */
     on(event: string,handler: OnHandlerFunction){
-        this._socket.on(ZationCustomEventNamespace+event,handler);
+        this._socket.on(ZATION_CUSTOM_EVENT_NAMESPACE+event,handler);
     }
 
     /**

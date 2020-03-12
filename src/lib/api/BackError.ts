@@ -52,7 +52,7 @@ export default class BackError extends Error
 
         if(info) {
             if (typeof info === 'string') {
-                this.info[BackErrorInfo.MAIN] = info;
+                this.info[BackErrorInfo.Main] = info;
             }
             else {
                 this.info = info;

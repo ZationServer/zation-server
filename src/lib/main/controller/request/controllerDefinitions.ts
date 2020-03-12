@@ -6,17 +6,16 @@ Copyright(c) Luca Scaringella
 
 import {BackErrorInfo} from "../../constants/internal";
 
-export enum HttpGetRequest
-{
-    VERSION                      = 'v',
-    SYSTEM                       = 's',
-    AUTH_REQ                     = 'a',
-    VALI_REQ                     = 'vr',
-    CONTROLLER                   = 'c',
-    SYSTEM_CONTROLLER            = 'sc',
-    API_LEVEL                    = 'al',
-    INPUT                        = 'i',
-    TOKEN                        = 't'
+export class HttpGetReq {
+    static readonly VERSION = 'v';
+    static readonly SYSTEM = 's';
+    static readonly AUTH_REQ = 'a';
+    static readonly VALI_REQ = 'vr';
+    static readonly CONTROLLER = 'c';
+    static readonly SYSTEM_CONTROLLER = 'sc';
+    static readonly API_LEVEL = 'al';
+    static readonly INPUT = 'i';
+    static readonly TOKEN = 't';
 }
 
 export enum ZationHttpInfo {

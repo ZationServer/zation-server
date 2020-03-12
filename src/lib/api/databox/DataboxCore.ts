@@ -107,7 +107,7 @@ export default abstract class DataboxCore {
         }
         catch (inputError) {
             const err: any = new Error('Invalid input to fetch data.');
-            err.name = ClientErrorName.INVALID_INPUT;
+            err.name = ClientErrorName.InvalidInput;
             err.backErrors = ErrorUtils.convertErrorToResponseErrors(inputError,this._sendErrorDescription);
             throw err;
         }
@@ -126,7 +126,7 @@ export default abstract class DataboxCore {
         }
         catch (inputError) {
             const err: any = new Error('Invalid init input.');
-            err.name = ClientErrorName.INVALID_INPUT;
+            err.name = ClientErrorName.InvalidInput;
             err.backErrors = ErrorUtils.convertErrorToResponseErrors(inputError,this._sendErrorDescription);
             throw err;
         }
@@ -144,19 +144,19 @@ export default abstract class DataboxCore {
 
         if(!systemAccessCheck(socket.baseSHBridge)){
             const err: any = new Error('Access to this Databox with client system denied.');
-            err.name = ClientErrorName.NO_ACCESS_WITH_SYSTEM;
+            err.name = ClientErrorName.NoAccessWithSystem;
             throw err;
         }
 
         if(!versionAccessCheck(socket.baseSHBridge)){
             const err: any = new Error('Access to this Databox with client version denied.');
-            err.name = ClientErrorName.NO_ACCESS_WITH_VERSION;
+            err.name = ClientErrorName.NoAccessWithVersion;
             throw err;
         }
 
         if(!(await this._accessCheck(socket,dbInfo))){
             const err: any = new Error('Access to this Databox denied.');
-            err.name = ClientErrorName.ACCESS_DENIED;
+            err.name = ClientErrorName.AccessDenied;
             throw err;
         }
     }

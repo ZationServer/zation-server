@@ -12,7 +12,7 @@ export default class NoDataAvailableError extends Error
 
     constructor(code?: string | number,data?: any) {
         super();
-        this.name = ClientErrorName.NO_DATA_AVAILABLE;
+        this.name = ClientErrorName.NoDataAvailable;
         this.info.code = code;
         this.info.data = data;
     }

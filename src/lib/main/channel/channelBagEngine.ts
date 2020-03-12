@@ -93,7 +93,7 @@ export default class ChannelBagEngine
                                  data: WorkerChMapTask['data'] = {}): Promise<void>
     {
         await this.publishToWorker<WorkerChAbstractMapTask>({
-            taskType: WorkerChTaskType.MAP_TASK,
+            taskType: WorkerChTaskType.MapTask,
             ids: Array.isArray(ids) ? ids: [ids],
             action: action,
             target: target,
@@ -102,9 +102,9 @@ export default class ChannelBagEngine
         });
     }
 
-    async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction.UPDATE_GROUP_TOKENS, data: UpdateTokenMainData): Promise<void>
-    async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction.UPDATE_USER_TOKENS, data: UpdateTokenMainData): Promise<void>
-    async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction.MESSAGE, data: any): Promise<void>
+    async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction.UpdateGroupTokens, data: UpdateTokenMainData): Promise<void>
+    async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction.UpdateUserTokens, data: UpdateTokenMainData): Promise<void>
+    async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction.Message, data: any): Promise<void>
     /**
      * Publish special task to worker.
      * @param action
@@ -112,7 +112,7 @@ export default class ChannelBagEngine
      */
     async publishSpecialTaskToWorker(action: WorkerChSpecialTaskAction, data: UpdateTokenMainData | any): Promise<void> {
         await this.publishToWorker<WorkerChSpecialTask>({
-            taskType: WorkerChTaskType.SPECIAL_TASK,
+            taskType: WorkerChTaskType.SpecialTask,
             action: action,
             data: data
         });
@@ -130,7 +130,7 @@ export default class ChannelBagEngine
             exceptSocketSids: string[] | string): Promise<void>
     {
         await this.publishSpecialTaskToWorker(
-            WorkerChSpecialTaskAction.UPDATE_USER_TOKENS, {
+            WorkerChSpecialTaskAction.UpdateUserTokens, {
                 operations: operations,
                 target: userId,
                 exceptSocketSids: Array.isArray(exceptSocketSids) ? exceptSocketSids: [exceptSocketSids]
@@ -150,7 +150,7 @@ export default class ChannelBagEngine
             exceptSocketSids: string[] | string): Promise<void>
     {
         await this.publishSpecialTaskToWorker(
-            WorkerChSpecialTaskAction.UPDATE_GROUP_TOKENS, {
+            WorkerChSpecialTaskAction.UpdateGroupTokens, {
                 operations: operations,
                 target: authUserGroup,
                 exceptSocketSids: Array.isArray(exceptSocketSids) ? exceptSocketSids: [exceptSocketSids]

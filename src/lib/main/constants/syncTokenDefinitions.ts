@@ -6,8 +6,8 @@ Copyright(c) Luca Scaringella
 
 export const enum SyncTokenOperationType
 {
-    DELETE,
-    SET
+    Delete,
+    Set
 }
 
 export interface SyncTokenDefinitions {

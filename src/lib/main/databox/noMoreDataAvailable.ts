@@ -10,6 +10,6 @@ export default class NoMoreDataAvailableError extends Error
 {
     constructor() {
         super();
-        this.name = ClientErrorName.NO_MORE_DATA_AVAILABLE;
+        this.name = ClientErrorName.NoMoreDataAvailable;
     }
 }

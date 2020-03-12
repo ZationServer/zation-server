@@ -210,7 +210,7 @@ export default class DataboxUtils {
                 return dbSessionData.reload;
             default:
                 const err: any = new Error(`Unknown session target.`);
-                err.name = ClientErrorName.UNKNOWN_SESSION_TARGET;
+                err.name = ClientErrorName.UnknownSessionTarget;
                 throw err;
         }
     }
@@ -273,7 +273,7 @@ export default class DataboxUtils {
     static maxInputChannelsCheck(current: number,max: number): void {
         if(current >= max){
             const err: any = new Error('Maximum socket input channels reached.');
-            err.name = ClientErrorName.MAX_INPUT_CHANNELS_REACHED;
+            err.name = ClientErrorName.MaxInputChannelsReached;
             throw err;
         }
     }

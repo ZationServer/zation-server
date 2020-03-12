@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ConfigNames, DefaultUserGroupFallBack, ZationAccess} from '../../constants/internal';
+import {ConfigNames, DEFAULT_USER_GROUP_FALLBACK, ZationAccess} from '../../constants/internal';
 import {AppConfig}                                    from '../definitions/main/appConfig';
 import {PanelUserConfig}                              from '../definitions/main/mainConfig';
 import {BaseCustomChannelConfig, ZationChannelConfig} from '../definitions/parts/channelsConfig';
@@ -66,11 +66,11 @@ export default class ConfigChecker
 
     private checkUserGroupName(name: string, notAllowed: string[], isAuth: boolean) {
         if (name.indexOf('.') !== -1) {
-            this.ceb.addError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${name} is not a valid ${isAuth ? 'auth': 'default'} user group! Dot/s in name are not allowed.`));
         }
         if (notAllowed.includes(name)) {
-            this.ceb.addError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${isAuth ? 'auth': 'default'} user group with name ${name} is not allowed use an other name!`));
         }
     }
@@ -78,7 +78,7 @@ export default class ConfigChecker
     private prepareAllValidUserGroupsAndCheck() {
 
         let groups: any = [];
-        let extraKeys: any = [ZationAccess.ALL, ZationAccess.ALL_NOT_AUTH, ZationAccess.ALL_AUTH];
+        let extraKeys: any = [ZationAccess.All, ZationAccess.AllNotAuth, ZationAccess.AllAuth];
 
         if (typeof this.zcLoader.appConfig.userGroups === 'object') {
             if (typeof this.zcLoader.appConfig.userGroups.auth === 'object') {
@@ -99,12 +99,12 @@ export default class ConfigChecker
                 groups.push(defaultGroup);
             } else {
                 Logger.consoleLogConfigWarning
-                (ConfigNames.APP, `No settings for the default user group found! Default user group will be set to ${DefaultUserGroupFallBack}`);
-                groups.push(DefaultUserGroupFallBack);
+                (ConfigNames.App, `No settings for the default user group found! Default user group will be set to ${DEFAULT_USER_GROUP_FALLBACK}`);
+                groups.push(DEFAULT_USER_GROUP_FALLBACK);
             }
         } else {
             Logger.consoleLogConfigWarning
-            (ConfigNames.APP, `No settings for the user groups are found! DefaultUserGroup will be set to 'default'`);
+            (ConfigNames.App, `No settings for the user groups are found! DefaultUserGroup will be set to 'default'`);
         }
 
         this.validAccessValues = groups;
@@ -132,14 +132,14 @@ export default class ConfigChecker
         if (typeof authControllerId === "string") {
             const controller = this.zcLoader.appConfig.controllers || {};
             if (!controller.hasOwnProperty(authControllerId)) {
-                this.ceb.addError(new ConfigError(ConfigNames.APP,
+                this.ceb.addError(new ConfigError(ConfigNames.App,
                     `AuthController: '${authControllerId}' is not found.`));
             } else {
                 //checkAuthControllerAccess value
                 Iterator.iterateCompDefinition<ControllerClass>(controller[authControllerId],(controllerClass, apiLevel) => {
-                    if (controllerClass.config.access !== ZationAccess.ALL) {
+                    if (controllerClass.config.access !== ZationAccess.All) {
                         Logger.consoleLogConfigWarning
-                        (ConfigNames.APP, `It is recommended to set the access of the authController ${apiLevel ? `(API Level: ${apiLevel}) `: ''}directly to 'all'.`);
+                        (ConfigNames.App, `It is recommended to set the access of the authController ${apiLevel ? `(API Level: ${apiLevel}) `: ''}directly to 'all'.`);
                     }
                 });
             }
@@ -167,7 +167,7 @@ export default class ConfigChecker
 
                     if(Array.isArray(value)){
                         if(value.length > 1){
-                            this.ceb.addError(new ConfigError(ConfigNames.APP,
+                            this.ceb.addError(new ConfigError(ConfigNames.App,
                                 `${secTarget.toString()} to define a custom channel family, the array should only contain one or zero elements.`));
                         }
                         value = value[0] || {};
@@ -226,7 +226,7 @@ export default class ConfigChecker
     private warningForPublish(value: any, target: Target): void {
         if (getNotableValue(value) === !isNotableNot(value)) {
             Logger.consoleLogConfigWarning
-            (ConfigNames.APP,
+            (ConfigNames.App,
                 `${target.toString()} please notice that 'clientPubAccess' is used when a client publishes from outside in a channel! ` +
                 `That is only useful for advanced use cases otherwise its recommended to use a controller (with validation) and publish from the server side.`);
         }
@@ -237,7 +237,7 @@ export default class ConfigChecker
         const accessValue = getNotableValue(ObjectPath.get(this.zcLoader.appConfig,
             [nameof<AppConfig>(s => s.controllerDefaults), nameof<ControllerConfig>(s => s.access)]));
         if (accessValue === undefined) {
-            Logger.consoleLogConfigWarning(ConfigNames.APP, 'It is recommended to set a controller default value for access or notAccess.');
+            Logger.consoleLogConfigWarning(ConfigNames.App, 'It is recommended to set a controller default value for access or notAccess.');
         }
     }
 
@@ -256,7 +256,7 @@ export default class ConfigChecker
                     this.checkModel(props[k], target.addPath(k), [...rememberCache]);
                     if (prototype.hasOwnProperty(k)) {
                         Logger.consoleLogConfigWarning(
-                            ConfigNames.APP,
+                            ConfigNames.App,
                             `${target.toString()} Property '${k}' will shadowing the prototype property '${k}'.`);
                     }
                 }
@@ -317,13 +317,13 @@ export default class ConfigChecker
                 resModel[modelNameSymbol] : 'Anonymous'}`);
 
             if(inheritanceRemCache.includes(resModel) || resModel === baseModel){
-                this.ceb.addError(new ConfigError(ConfigNames.APP,`${target.toString()} creates a circular object model inheritance.`));
+                this.ceb.addError(new ConfigError(ConfigNames.App,`${target.toString()} creates a circular object model inheritance.`));
                 return;
             }
             inheritanceRemCache.push(resModel);
 
             if(!ConfigChecker.isObjModel(resModel)){
-                this.ceb.addError(new ConfigError(ConfigNames.APP,
+                this.ceb.addError(new ConfigError(ConfigNames.App,
                     `${target.toString()} an object model can only extend an object model.`));
                 return;
             }
@@ -356,7 +356,7 @@ export default class ConfigChecker
                 if (props.hasOwnProperty(prop)) {
                     if (superPrototype.hasOwnProperty(prop)) {
                         Logger.consoleLogConfigWarning(
-                            ConfigNames.APP,
+                            ConfigNames.App,
                             `${srcTarget.toString()} Property '${prop}' is shadowing an inherited prototype property '${prop}' from ${target.getPath()}.`);
                     }
                 }
@@ -374,11 +374,11 @@ export default class ConfigChecker
     {
         if(this.zcLoader.mainConfig.defaultClientApiLevel) {
             if(!Number.isInteger(this.zcLoader.mainConfig.defaultClientApiLevel)){
-                this.ceb.addError(new ConfigError(ConfigNames.MAIN,
+                this.ceb.addError(new ConfigError(ConfigNames.Main,
                     `The defaultClientApiLevel must be an integer.`));
             }
             if(this.zcLoader.mainConfig.defaultClientApiLevel < 1){
-                this.ceb.addError(new ConfigError(ConfigNames.MAIN,
+                this.ceb.addError(new ConfigError(ConfigNames.Main,
                     `The defaultClientApiLevel cannot be lesser than one..`));
             }
         }
@@ -391,7 +391,7 @@ export default class ConfigChecker
                 // for javascript version
                 // noinspection SuspiciousTypeOfGuard
                 if(typeof o !== 'string'){
-                    this.ceb.addError(new ConfigError(ConfigNames.MAIN,
+                    this.ceb.addError(new ConfigError(ConfigNames.Main,
                         `Origin: '${i}' must be a string.`));
                 }
             }));
@@ -414,7 +414,7 @@ export default class ConfigChecker
         if (this.zcLoader.mainConfig.usePanel && !hasOneUser) {
             Logger.consoleLogConfigWarning
             (
-                ConfigNames.MAIN,
+                ConfigNames.Main,
                 `The zation panel is activated but no panelUser is defined in the main config.`
             );
         }
@@ -425,14 +425,14 @@ export default class ConfigChecker
         // for javascript version
         // noinspection SuspiciousTypeOfGuard
         if(typeof config.password === 'string' && config.password.length < 4) {
-            this.ceb.addError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${target.toString()} panel user password must be at least 4 characters long.`));
         }
 
         // for javascript version
         // noinspection SuspiciousTypeOfGuard
         if(typeof config.username === 'string' && config.username.length < 1) {
-            this.ceb.addError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${target.toString()} panel username must be at least 1 character long.`));
         }
 
@@ -440,7 +440,7 @@ export default class ConfigChecker
             config.username === 'admin' &&
             this.zcLoader.mainConfig.usePanel) {
             Logger.consoleLogConfigWarning
-            (ConfigNames.MAIN, `Don't forget to change the panel access credentials in the main configuration.`);
+            (ConfigNames.Main, `Don't forget to change the panel access credentials in the main configuration.`);
         }
 
         // for javascript version
@@ -448,7 +448,7 @@ export default class ConfigChecker
         if(typeof config.username === 'string' && config.username !== 'admin' &&
         config.password.toLocaleUpperCase().indexOf(config.username.toLocaleLowerCase()) !== -1) {
             Logger.consoleLogConfigWarning
-            (ConfigNames.MAIN, `Please choose a more secure password (that not contains the username).`);
+            (ConfigNames.Main, `Please choose a more secure password (that not contains the username).`);
         }
     }
 
@@ -471,7 +471,7 @@ export default class ConfigChecker
                 if (controller.hasOwnProperty(cId)) {
                     Iterator.iterateCompDefinition<ControllerClass>(controller[cId],(controllerClass,apiLevel) =>{
                         if(apiLevel !== undefined && isNaN(parseInt(apiLevel))) {
-                            this.ceb.addError(new ConfigError(ConfigNames.APP,
+                            this.ceb.addError(new ConfigError(ConfigNames.App,
                                 `Controller: '${cId}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
                         }
                         this.checkController(controllerClass, new Target(`Controller: '${cId}' ${apiLevel ? `(API Level: ${apiLevel}) `: ''}`));
@@ -496,7 +496,7 @@ export default class ConfigChecker
                 if (databoxes.hasOwnProperty(cId)) {
                     Iterator.iterateCompDefinition<DataboxClassDef>(databoxes[cId],(databoxClass, apiLevel) =>{
                         if(apiLevel !== undefined && isNaN(parseInt(apiLevel))) {
-                            this.ceb.addError(new ConfigError(ConfigNames.APP,
+                            this.ceb.addError(new ConfigError(ConfigNames.App,
                                 `Databox: '${cId}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
                         }
                         this.checkDatabox(databoxClass, new Target(`Databox: '${cId}' ${apiLevel ? `(API Level: ${apiLevel}) `: ''}`));
@@ -518,7 +518,7 @@ export default class ConfigChecker
         if (typeof cc.versionAccess === 'object' &&
             Object.keys(cc.versionAccess).length === 0) {
             Logger.consoleLogConfigWarning(
-                ConfigNames.APP,
+                ConfigNames.App,
                 target.toString() + ' It is recommended that versionAccess has at least one system!'
             );
         }
@@ -530,7 +530,7 @@ export default class ConfigChecker
             this.checkControllerConfig(cv.config,target);
         }
         else {
-            this.ceb.addError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${target.toString()} is not extends the main Controller class.`));
         }
     }
@@ -546,14 +546,14 @@ export default class ConfigChecker
             this.checkDataboxConfig(cdb.config,target);
         }
         else {
-            this.ceb.addError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${target.toString()} is not extends the main Databox or DataboxFamily class.`));
         }
     }
 
     private checkDataboxConfig(config: DataboxConfig, target: Target) {
         if(typeof config.maxSocketInputChannels === 'number' && config.maxSocketInputChannels <= 0){
-            this.ceb.addError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${target.toString()} the maximum socket input channels must be greater than 0.`));
         }
 
@@ -574,7 +574,7 @@ export default class ConfigChecker
             inputConfig.allowAnyInput &&
             (typeof inputConfig.input === 'object')) {
             Logger.consoleLogConfigWarning(
-                ConfigNames.APP,
+                ConfigNames.App,
                 `${target.toString()} is ignored with allowAny${inputTypeName}Input true.`
             );
         }
@@ -605,7 +605,7 @@ export default class ConfigChecker
                     this.checkSingleInput(input[0],target);
                 }
                 else {
-                    this.ceb.addError(new ConfigError(ConfigNames.APP,
+                    this.ceb.addError(new ConfigError(ConfigNames.App,
                         `${target.toString()} to define a single input model the array must have exactly one item.`));
                 }
             }
@@ -625,7 +625,7 @@ export default class ConfigChecker
             for (let k in paramInput) {
                 if (paramInput.hasOwnProperty(k)) {
                     if(!isNaN(parseInt(k))){
-                        this.ceb.addError(new ConfigError(ConfigNames.APP,
+                        this.ceb.addError(new ConfigError(ConfigNames.App,
                             `${target.toString()} numeric key ${k} is not allowed in a param based input config because it changes the key order in a for in loop.`));
                     }
                     keys.push(k);
@@ -648,7 +648,7 @@ export default class ConfigChecker
             if (input[keys[i]][modelOptionalSymbol] !== undefined && input[keys[i]][modelOptionalSymbol]) {
                 if ((keys.length - 1) !== i && !wasLastOptional) {
                     Logger.consoleLogConfigWarning(
-                        ConfigNames.APP,
+                        ConfigNames.App,
                         `${target.toString()} input: '${keys[i]}', It is recommended to set the optional parameters at the first input level at the end.`
                     );
                     break;
@@ -662,21 +662,21 @@ export default class ConfigChecker
 
     private checkArrayShortCut(value, target: Target, rememberCache: Model[]) {
         if (value.length === 0) {
-            this.ceb.addError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${target.toString()} you have to specify an array body.`));
         } else if (value.length === 1) {
             this.checkModel(value[0], target.addPath('ArrayItem'), rememberCache);
         } else if (value.length === 2) {
             if (typeof value[1] !== 'object') {
                 const targetArrayElement2 = target.setExtraInfo('Array Shortcut Element 2');
-                this.ceb.addError(new ConfigError(ConfigNames.APP,
+                this.ceb.addError(new ConfigError(ConfigNames.App,
                     `${targetArrayElement2.toString()} the second shortcut item should be from type object and can specify rules for the array. Given typ is: '${typeof value[1]}'`));
             } else {
                 this.checkOptionalArrayWarning(value[1],target);
             }
             this.checkModel(value[0], target.addPath('ArrayItem'), rememberCache);
         } else {
-            this.ceb.addError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${target.toString()} invalid shortcut length: '${value.length}', 2 values are valid. First, specify the body and second to specify rules.`));
         }
     }
@@ -695,7 +695,7 @@ export default class ConfigChecker
         if(typeof value === 'object'){
             //check circle dependencies
             if(rememberCache.includes(value)){
-                this.ceb.addError(new ConfigError(ConfigNames.APP,`${target.toString()} creates a circular dependency.`));
+                this.ceb.addError(new ConfigError(ConfigNames.App,`${target.toString()} creates a circular dependency.`));
             }
 
             if((value as ModelCheckedMem)._checked){return;}
@@ -741,7 +741,7 @@ export default class ConfigChecker
                     }
 
                     if (count < 2) {
-                        this.ceb.addError(new ConfigError(ConfigNames.APP,
+                        this.ceb.addError(new ConfigError(ConfigNames.App,
                             `${target.toString()} anyOf model modifier must have at least two properties.`));
                     }
                 }
@@ -752,7 +752,7 @@ export default class ConfigChecker
             }
         }
         else {
-            this.ceb.addError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${target.toString()} wrong type. Use a variable which references to a model, an object to define an anonymous model or an array shortcut.`));
         }
     }
@@ -771,7 +771,7 @@ export default class ConfigChecker
         )
         {
             Logger.consoleLogConfigWarning(
-                ConfigNames.APP,
+                ConfigNames.App,
                 `${target.toString()} Optional param in an array is useless.`
             );
         }
@@ -787,49 +787,49 @@ export default class ConfigChecker
                     type[i] === nameof<ValidationTypeRecord>(s => s.float) ||
                     type[i] === nameof<ValidationTypeRecord>(s => s.number))
                 {
-                    types.push(TypeTypes.NUMBER);
+                    types.push(TypeTypes.Number);
                 }
                 else if(type[i] === nameof<ValidationTypeRecord>(s => s.date)) {
-                    types.push(TypeTypes.DATE);
+                    types.push(TypeTypes.Date);
                 }
                 else if(type[i] === nameof<ValidationTypeRecord>(s => s.base64)){
-                    types.push(TypeTypes.BASE64);
+                    types.push(TypeTypes.Base64);
                 }
                 else if(type[i] === nameof<ValidationTypeRecord>(s => s.null) ||
                     type[i] === nameof<ValidationTypeRecord>(s => s.array) ||
                     type[i] === nameof<ValidationTypeRecord>(s => s.object))
                 {
-                    types.push(TypeTypes.OTHER);
+                    types.push(TypeTypes.Other);
                 }
                 else if(type[i] === nameof<ValidationTypeRecord>(s => s.all)) {
                     return;
                 }
                 else {
-                    types.push(TypeTypes.STRING);
+                    types.push(TypeTypes.String);
                 }
             }
 
-            if(ObjectUtils.hasOneOf(value, OnlyStringFunctions) && (!types.includes(TypeTypes.STRING) && !types.includes(TypeTypes.BASE64))) {
+            if(ObjectUtils.hasOneOf(value, OnlyStringFunctions) && (!types.includes(TypeTypes.String) && !types.includes(TypeTypes.Base64))) {
                 Logger.consoleLogConfigWarning(
-                    ConfigNames.APP,
+                    ConfigNames.App,
                     `${target.toString()} unused validation functions (no type string or base64) -> ${ObjectUtils.findKeysOfScope(value,OnlyStringFunctions).toString()}.`
                 );
             }
-            if(ObjectUtils.hasOneOf(value, OnlyNumberFunctions) && !types.includes(TypeTypes.NUMBER)) {
+            if(ObjectUtils.hasOneOf(value, OnlyNumberFunctions) && !types.includes(TypeTypes.Number)) {
                 Logger.consoleLogConfigWarning(
-                    ConfigNames.APP,
+                    ConfigNames.App,
                     `${target.toString()} unused validation functions (no type number) -> ${ObjectUtils.findKeysOfScope(value,OnlyNumberFunctions).toString()}.`
                 );
             }
-            if(ObjectUtils.hasOneOf(value, OnlyDateFunctions) && !types.includes(TypeTypes.DATE)) {
+            if(ObjectUtils.hasOneOf(value, OnlyDateFunctions) && !types.includes(TypeTypes.Date)) {
                 Logger.consoleLogConfigWarning(
-                    ConfigNames.APP,
+                    ConfigNames.App,
                     `${target.toString()} unused validation functions (no type date) -> ${ObjectUtils.findKeysOfScope(value,OnlyDateFunctions).toString()}.`
                 );
             }
-            if(ObjectUtils.hasOneOf(value, OnlyBase64Functions) && !types.includes(TypeTypes.BASE64)) {
+            if(ObjectUtils.hasOneOf(value, OnlyBase64Functions) && !types.includes(TypeTypes.Base64)) {
                 Logger.consoleLogConfigWarning(
-                    ConfigNames.APP,
+                    ConfigNames.App,
                     `${target.toString()} unused validation functions (no type base64) -> ${ObjectUtils.findKeysOfScope(value,OnlyBase64Functions).toString()}.`
                 );
             }
@@ -871,13 +871,13 @@ export default class ConfigChecker
                 resModel[modelNameSymbol] : 'Anonymous'}`);
 
             if(inheritanceRemCache.includes(resModel) || resModel === baseModel){
-                this.ceb.addError(new ConfigError(ConfigNames.APP,`${target.toString()} creates a circular value model inheritance.`));
+                this.ceb.addError(new ConfigError(ConfigNames.App,`${target.toString()} creates a circular value model inheritance.`));
                 return false;
             }
             inheritanceRemCache.push(resModel);
 
             if(!ConfigChecker.isValueModel(resModel)){
-                this.ceb.addError(new ConfigError(ConfigNames.APP,
+                this.ceb.addError(new ConfigError(ConfigNames.App,
                     `${target.toString()} a value model can only extend a value model.`));
                 return false;
             }
@@ -921,7 +921,7 @@ export default class ConfigChecker
 
     private checkRegex(value: any, target: Target) {
         if (!(typeof value === 'string' || value instanceof RegExp)) {
-            this.ceb.addError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${target.toString()} is not a string or an ReqExp object.`));
         }
         else if(typeof value === 'string') {
@@ -933,7 +933,7 @@ export default class ConfigChecker
         try {
             new RegExp(value);
         } catch(e) {
-            this.ceb.addError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${target.toString()} ${error}`));
         }
     }
@@ -948,7 +948,7 @@ export default class ConfigChecker
             (
                 this.validAccessValues,
                 value,
-                ConfigNames.APP,
+                ConfigNames.App,
                 this.ceb,
                 `user group '${value}' is not found in auth groups or is default group.`,
                 target
@@ -963,7 +963,7 @@ export default class ConfigChecker
     private checkCustomName(name: string,type: string,preString: string = ''): void
     {
         if (!name.match(/^[a-zA-Z0-9-/_]+$/)) {
-            this.ceb.addError(new ConfigError(ConfigNames.APP,
+            this.ceb.addError(new ConfigError(ConfigNames.App,
                 `${preString}'${name}' is not a valid ${type} name! Only letters, numbers and the minus symbol are allowed.`));
         }
     }
