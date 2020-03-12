@@ -30,20 +30,20 @@ export interface ControllerConfig extends InputConfig, VersionAccessConfig, Syst
      * Define if web socket protocol requests have access to this controller.
      * @default From default controller config otherwise true.
      */
-    wsAccess ?: boolean;
+    wsAccess?: boolean;
     /**
      * Define if HTTP protocol requests have access to this controller.
      * @default From default controller config otherwise true.
      */
-    httpAccess ?: boolean;
+    httpAccess?: boolean;
     /**
      * Define if HTTP GET requests are allowed.
      * @default From default controller config otherwise true.
      */
-    httpGetAllowed ?: boolean;
+    httpGetAllowed?: boolean;
     /**
      * Define if HTTP POST requests are allowed.
      * @default From default controller config otherwise true.
      */
-    httpPostAllowed ?: boolean;
+    httpPostAllowed?: boolean;
 }

@@ -82,7 +82,7 @@ export interface VersionAccessConfig {
      *     'WEB': [1.3,1.8,2.2]   // one of the versions 1.3, 1.8 or 2.2.
      * }
      */
-    versionAccess ?: 'all' | Record<string,number | number[]>;
+    versionAccess?: 'all' | Record<string,number | number[]>;
 }
 
 export interface SystemAccessConfig {
