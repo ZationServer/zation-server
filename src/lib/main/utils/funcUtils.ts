@@ -5,6 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import Logger from '../log/logger';
+import {PrecompiledEvents} from '../config/definitions/parts/events';
 
 type AnyFunction = (...args: any[]) => any
 
@@ -98,18 +99,22 @@ export default class FuncUtils
         }
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
-     * Creates an event safe caller which catch thrown errors and log them.
+     * Creates a function safe caller which catch thrown errors,
+     * log them and triggers the error event.
      * @param func
+     * @param errorEvent
      * @param beforeErrorMsg
      */
-    static createSafeCaller<T extends AnyFunction>(func: T,beforeErrorMsg: string = ''): EventInvokerAsync<T> {
+    static createSafeCaller<T extends AnyFunction>(func: T,errorEvent: PrecompiledEvents['error'],beforeErrorMsg: string = ''): EventInvokerAsync<T> {
         return async (...args) => {
             try {
                 return await func(...args);
             }
             catch (e) {
                 Logger.log.error(beforeErrorMsg,e);
+                await errorEvent(e);
             }
         }
     }

@@ -28,7 +28,7 @@ import {ControllerConfig}                                     from "../definitio
 import {ControllerClass}                                      from "../../../api/Controller";
 import {DataboxClassDef, DataboxConfig}                       from "../definitions/parts/databoxConfig";
 import DbConfigUtils                                          from "../../databox/dbConfigUtils";
-import {PrecompiledEvents, Event}                             from '../definitions/parts/events';
+import {PrecompiledEvents, Event, Events}                     from '../definitions/parts/events';
 import FuncUtils                                              from '../../utils/funcUtils';
 import {PrecompiledMiddleware}                                from '../definitions/parts/middleware';
 import {modelPrototypeSymbol}                                 from '../../constants/model';
@@ -164,18 +164,25 @@ export default class ConfigPrecompiler
             socketBadAuthToken: defaultFunc
         };
         const eventsConfig = this.configs.appConfig.events || {};
+
+        //precompile error event first
+        const errorEvent = ConfigPrecompiler.preCompileEvent(eventsConfig[nameof<Events>(s => s.error)]) || defaultFunc;
+        res[nameof<Events>(s => s.error)] = errorEvent;
+
         for(let k in eventsConfig) {
-            if (eventsConfig.hasOwnProperty(k)) {
-                res[k] = ConfigPrecompiler.preCompileEvent(eventsConfig[k],k);
+            if (eventsConfig.hasOwnProperty(k) && k !== nameof<Events>(s => s.error)) {
+                res[k] = FuncUtils.createSafeCaller(
+                    ConfigPrecompiler.preCompileEvent(eventsConfig[k]),
+                    errorEvent,
+                    `An error was thrown in the event: '${k}' :`
+                );
             }
         }
         this.configs.appConfig.events = res as PrecompiledEvents;
     }
 
-    static preCompileEvent<T extends (...args) => any>(event: Event<T>,name: string): (...args: Parameters<T>) => Promise<void> {
-        return FuncUtils.createSafeCaller(
-            typeof event !== 'function' ? FuncUtils.createFuncArrayAsyncInvoker(event) : event,
-            `An error was thrown in the event: '${name}' :`);
+    static preCompileEvent<T extends (...args) => any>(event: Event<T>): (...args: Parameters<T>) => Promise<void> {
+        return typeof event !== 'function' ? FuncUtils.createFuncArrayAsyncInvoker(event) : event;
     }
 
     private preCompileMiddleware() {
