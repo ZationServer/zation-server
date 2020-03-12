@@ -205,12 +205,11 @@ export default class MainCRequestProcessor
 
             const result: Result | any = await controllerInstance.handle(reqBag,input);
 
-            if (!(result instanceof Result)) {
-                return {r: result};
-            }
-
             await controllerInstance.finallyHandle(reqBag,input);
 
+            if (!(result instanceof Result)) {
+                return result !== undefined ? {r: result} : {};
+            }
             return result._getJsonObj();
         }
         catch(e) {
