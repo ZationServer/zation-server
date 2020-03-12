@@ -295,12 +295,12 @@ export const enum DBClientInputSessionTarget {
  * Actions that a client can send to the server.
  */
 export const enum DbClientInputAction {
-    signal,
     fetch,
     resetSession,
     copySession,
     disconnect,
-    getLastCudId
+    getLastCudId,
+    signal
 }
 
 /**
