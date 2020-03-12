@@ -40,7 +40,7 @@ import {
     DbSelector,
     DbProcessedSelector,
     PotentialUpdateOption,
-    PotentialInsertOption, IfOptionProcessed
+    PotentialInsertOption, IfOptionProcessed, DbClientInputSignalPackage
 } from '../../main/databox/dbDefinitions';
 import DataboxAccessHelper from "../../main/databox/databoxAccessHelper";
 import {ScExchange}        from "../../main/sc/scServer";
@@ -76,6 +76,7 @@ const defaultSymbol                              = Symbol();
  * - beforeDelete
  * - onConnection
  * - onDisconnection
+ * - onSignal
  *
  * and the cud middleware methods:
  * - insertMiddleware
@@ -156,6 +157,10 @@ export default class Databox extends DataboxCore {
         socket.on(inputCh,async (senderPackage: DbClientInputPackage, respond: RespondFunction) => {
             try {
                 switch (senderPackage.a) {
+                    case DbClientInputAction.signal:
+                        this.onSignal(socket.zSocket,(senderPackage as DbClientInputSignalPackage).s,
+                            (senderPackage as DbClientInputSignalPackage).d);
+                        break;
                     case DbClientInputAction.fetch:
                         const processedFetchInput = await this._consumeFetchInput((senderPackage as DbClientInputFetchPackage).i);
                         await fetchManager(
@@ -821,6 +826,15 @@ export default class Databox extends DataboxCore {
      * Notice that means all input channels are closed.
      */
     protected onDisconnection(socket: ZSocket): Promise<void> | void {
+    }
+
+    // noinspection JSUnusedLocalSymbols
+    /**
+     * **Can be overridden.**
+     * A function that gets triggered
+     * whenever a socket receives a signal.
+     */
+    protected onSignal(socket: ZSocket,signal: string,data: any): Promise<void> | void {
     }
 
     /**

@@ -139,6 +139,21 @@ export interface DbClientInputPackage {
 }
 
 /**
+ * The package that the client can send to the server to send a signal.
+ */
+export interface DbClientInputSignalPackage extends DbClientInputPackage{
+    a: DbClientInputAction.signal,
+    /**
+     * signal
+     */
+    s: string,
+    /**
+     * data
+     */
+    d: any
+}
+
+/**
  * The package that the client can send to the server to fetch data.
  */
 export interface DbClientInputFetchPackage extends DbClientInputPackage{
@@ -280,6 +295,7 @@ export const enum DBClientInputSessionTarget {
  * Actions that a client can send to the server.
  */
 export const enum DbClientInputAction {
+    signal,
     fetch,
     resetSession,
     copySession,
