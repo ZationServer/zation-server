@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import AuthEngine         from "./authEngine";
+import AuthEngine         from "../auth/authEngine";
 import ZationTokenWrapper from "../internalApi/zationTokenWrapper";
 import Bag                from "../../api/Bag";
 import AccessUtils        from "../access/accessUtils";
@@ -15,14 +15,15 @@ import {getNotableValue, isNotableNot, Notable} from '../../api/Notable';
 
 export type TokenStateAccessCheckFunction = (authEngine: AuthEngine) => Promise<boolean>;
 
-export default class AuthAccessChecker
+export default class ControllerAccessHelper
 {
     /**
      * Returns a closure for checking the token state access to a controller.
      * @param accessValue
      * @param bag
+     * @param cName
      */
-    static createAuthAccessChecker(accessValue: Notable<AccessConfigValue<NormalAuthAccessCustomFunction>> | undefined, bag: Bag): TokenStateAccessCheckFunction {
+    static createAuthAccessChecker(accessValue: Notable<AccessConfigValue<NormalAuthAccessCustomFunction>> | undefined, bag: Bag,cName: string): TokenStateAccessCheckFunction {
         const rawValue = getNotableValue(accessValue);
         if(rawValue !== undefined){
             return AccessUtils.createAccessChecker<TokenStateAccessCheckFunction,NormalAuthAccessCustomFunction>
@@ -31,11 +32,9 @@ export default class AuthAccessChecker
                     const token = authEngine.getSHBridge().getToken();
                     return func(bag,token !== null ? new ZationTokenWrapper(token): null);
                 };
-            });
+            },`Controller: ${cName}`);
         }
         //access is not defined
-        return async () => {
-            return false;
-        };
+        return async () => false;
     }
 }

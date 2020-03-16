@@ -159,8 +159,9 @@ export default class PanelEngine
             }
         }
         if(!foundUser){
-            return !!(await MiddlewareUtils.checkMiddleware
+            const middlewareRes = (await MiddlewareUtils.checkMiddleware
             (this.zc.middleware.middlewarePanelAuth,false,username,password));
+            return typeof middlewareRes === 'boolean'? middlewareRes : false;
         }
         return foundUser;
     }

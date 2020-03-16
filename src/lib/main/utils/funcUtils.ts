@@ -9,26 +9,11 @@ import {PrecompiledEvents} from '../config/definitions/parts/events';
 
 type AnyFunction = (...args: any[]) => any
 
-export type EventInvokerAsync<P extends AnyFunction = any> = (...args: Parameters<P>) => Promise<void>;
-export type EventInvokerSync<P extends AnyFunction = any> = (...args: Parameters<P>) => void;
+export type EventInvokerAsync<P extends AnyFunction = any> = (...args: Parameters<P>) => Promise<any>;
+export type EventInvokerSync<P extends AnyFunction = any> = (...args: Parameters<P>) => any;
 
 export default class FuncUtils
 {
-    /**
-     * Creates an async closure for invoking functions.
-     * @param functions
-     */
-    static createFuncArrayAsyncInvoker<T extends AnyFunction>(functions: T[]): EventInvokerAsync<T> {
-        const length = functions.length;
-        return async (...args) => {
-            const promises: Promise<any>[] = [];
-            for(let i = 0; i < length; i++) {
-                promises.push(functions[i](...args));
-            }
-            await Promise.all(promises);
-        }
-    }
-
     /**
      * Creates an async closure for invoking a middleware.
      * Will stop the middleware chain when a function returns some value.
@@ -39,8 +24,14 @@ export default class FuncUtils
         return async (...args) => {
             let res;
             for(let i = 0; i < length; i++) {
-                res = await functions[i](...args);
-                if(res !== undefined) return res;
+                try {
+                    res = await functions[i](...args);
+                    if(res !== undefined) return res;
+                }
+                catch (err) {
+                    return typeof err === 'object' ? err
+                        : new Error(err.toString());
+                }
             }
         }
     }
@@ -58,18 +49,31 @@ export default class FuncUtils
         }
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
-     * Creates an async closure for invoke a function or functions.
-     * Will return a default function if the event is not a function or a function array.
+     * Creates an async closure for invoking functions.
+     * @param functions
+     */
+    static createFuncArrayAsyncInvoker<T extends AnyFunction>(functions: T[]): EventInvokerAsync<T> {
+        const length = functions.length;
+        return async (...args) => {
+            const promises: Promise<any>[] = [];
+            for(let i = 0; i < length; i++) {
+                promises.push(functions[i](...args));
+            }
+            await Promise.all(promises);
+        }
+    }
+
+    /**
+     * Creates an sync closure for invoke a function or functions.
      * @param func
      */
-    static createFuncAsyncInvokeSafe<T extends AnyFunction>(func: T[] | T | undefined): EventInvokerAsync<T> {
-        if(func === undefined){
-            return async () => {};
+    static createFuncSyncInvoker<T extends AnyFunction>(func: T[] | T): EventInvokerSync<T> {
+        if(typeof func === 'function') {
+            return func;
         }
         else {
-            return FuncUtils.createFuncAsyncInvoker(func);
+            return FuncUtils.createFuncArraySyncInvoker(func);
         }
     }
 
@@ -86,19 +90,6 @@ export default class FuncUtils
         }
     }
 
-    /**
-     * Creates an sync closure for invoke a event.
-     * @param func
-     */
-    static createEventSyncInvoker<T extends AnyFunction>(func: T[] | T): EventInvokerSync<T> {
-        if(typeof func === 'function') {
-            return func;
-        }
-        else {
-            return FuncUtils.createFuncArraySyncInvoker(func);
-        }
-    }
-
     // noinspection JSUnusedGlobalSymbols
     /**
      * Creates a function safe caller which catch thrown errors,
@@ -107,14 +98,26 @@ export default class FuncUtils
      * @param errorEvent
      * @param beforeErrorMsg
      */
-    static createSafeCaller<T extends AnyFunction>(func: T,errorEvent: PrecompiledEvents['error'],beforeErrorMsg: string = ''): EventInvokerAsync<T> {
-        return async (...args) => {
-            try {
-                return await func(...args);
+    static createSafeCaller<T extends AnyFunction>(func: T,beforeErrorMsg: string = '',errorEvent?: PrecompiledEvents['error']): EventInvokerAsync<T> {
+        if(errorEvent){
+            return async (...args) => {
+                try {
+                    return await func(...args);
+                }
+                catch (e) {
+                    Logger.log.error(beforeErrorMsg,e);
+                    await errorEvent(e);
+                }
             }
-            catch (e) {
-                Logger.log.error(beforeErrorMsg,e);
-                await errorEvent(e);
+        }
+        else {
+            return async (...args) => {
+                try {
+                    return await func(...args);
+                }
+                catch (e) {
+                    Logger.log.error(beforeErrorMsg,e);
+                }
             }
         }
     }

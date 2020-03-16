@@ -28,13 +28,14 @@ import {ControllerConfig}                                     from "../definitio
 import {ControllerClass}                                      from "../../../api/Controller";
 import {DataboxClassDef, DataboxConfig}                       from "../definitions/parts/databoxConfig";
 import DbConfigUtils                                          from "../../databox/dbConfigUtils";
-import {PrecompiledEvents, Event, Events}                     from '../definitions/parts/events';
+import {PrecompiledEvents, Events}                            from '../definitions/parts/events';
 import FuncUtils                                              from '../../utils/funcUtils';
 import {PrecompiledMiddleware}                                from '../definitions/parts/middleware';
 import {modelPrototypeSymbol}                                 from '../../constants/model';
 import {isReusableModel}                                      from '../../models/reusableModelCreator';
 import {inputConfigTranslateSymbol, isInputConfigTranslatable}                                 from '../../../api/configTranslatable/inputConfigTranslatable';
 import {isModelConfigTranslatable, modelConfigTranslateSymbol, resolveModelConfigTranslatable} from '../../../api/configTranslatable/modelConfigTranslatable';
+import {AnyFunction}                                                                           from '../../utils/typeUtils';
 
 export interface ModelPreparationMem extends Processable{
     _optionalInfo: {isOptional: boolean,defaultValue: any}
@@ -58,7 +59,7 @@ export default class ConfigPrecompiler
     precompile(zc: ZationConfig, showPrecompiledConfigs: boolean): OtherPrecompiledConfigSet
     {
         this.preCompileEvents();
-        this.preCompileMiddleware();
+        this.precompileMiddleware();
         this.precompileControllerDefaults();
         this.precompileControllers();
         this.precompileDataboxes();
@@ -166,26 +167,29 @@ export default class ConfigPrecompiler
         const eventsConfig = this.configs.appConfig.events || {};
 
         //precompile error event first
-        const errorEvent = ConfigPrecompiler.preCompileEvent(eventsConfig[nameof<Events>(s => s.error)]) || defaultFunc;
+        const errorEvent = ConfigPrecompiler.precompileEvent(nameof<Events>(s => s.error),
+            eventsConfig.error || defaultFunc);
         res[nameof<Events>(s => s.error)] = errorEvent;
 
         for(let k in eventsConfig) {
             if (eventsConfig.hasOwnProperty(k) && k !== nameof<Events>(s => s.error)) {
-                res[k] = FuncUtils.createSafeCaller(
-                    ConfigPrecompiler.preCompileEvent(eventsConfig[k]),
-                    errorEvent,
-                    `An error was thrown in the event: '${k}' :`
-                );
+                res[k] = ConfigPrecompiler.precompileEvent(k,eventsConfig[k],errorEvent);
             }
         }
         this.configs.appConfig.events = res as PrecompiledEvents;
     }
 
-    static preCompileEvent<T extends (...args) => any>(event: Event<T>): (...args: Parameters<T>) => Promise<void> {
-        return typeof event !== 'function' ? FuncUtils.createFuncArrayAsyncInvoker(event) : event;
+    static precompileEvent<T extends AnyFunction>(eventName: string,func: T | T[],
+                                                  errorEvent?: PrecompiledEvents['error']): (...args: Parameters<T>) => Promise<void>
+    {
+        return FuncUtils.createSafeCaller(
+            FuncUtils.createFuncAsyncInvoker(func),
+            `An error was thrown in the event: '${eventName}' :`,
+            errorEvent
+        );
     }
 
-    private preCompileMiddleware() {
+    private precompileMiddleware() {
         const res: PrecompiledMiddleware = {};
         const middlewareConfig = this.configs.appConfig.middleware || {};
         let value;

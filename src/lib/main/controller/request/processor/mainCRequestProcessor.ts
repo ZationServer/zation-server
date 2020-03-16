@@ -86,7 +86,8 @@ export default class MainCRequestProcessor
                 versionAccessCheck,
                 tokenStateCheck,
                 middlewareInvoke,
-                inputConsume
+                inputConsume,
+                finallyHandle
             } = this.controllerPrepare.getControllerPrepareData(controllerId,shBridge.getApiLevel(),isSystemController);
 
 
@@ -164,7 +165,7 @@ export default class MainCRequestProcessor
                             authEngine,
                             input
                         );
-                        return this.processController(controllerInstance,reqBag,input,middlewareInvoke);
+                        return this.processController(controllerInstance,reqBag,input,middlewareInvoke,finallyHandle);
                     }
                     else {
                         throw new BackError(MainBackErrors.noAccessWithTokenState,
@@ -197,26 +198,28 @@ export default class MainCRequestProcessor
     }
 
     // noinspection JSMethodCanBeStatic
-    private async processController(controllerInstance: Controller, reqBag: RequestBag, input: any, middlewareInvoke: MiddlewareInvokeFunction): Promise<ResponseResult>
+    private async processController(controllerInstance: Controller, reqBag: RequestBag,
+                                    input: any, middlewareInvoke: MiddlewareInvokeFunction,
+                                    preparedFinallyHandle: Controller['finallyHandle']
+    ): Promise<ResponseResult>
     {
         //process the controller handle, before handle events and finally handle.
+        let result: Result | any;
         try {
             await middlewareInvoke(controllerInstance,reqBag);
-
-            const result: Result | any = await controllerInstance.handle(reqBag,input);
-
-            await controllerInstance.finallyHandle(reqBag,input);
-
-            if (!(result instanceof Result)) {
-                return result !== undefined ? {r: result} : {};
-            }
-            return result._getJsonObj();
+            result = await controllerInstance.handle(reqBag,input);
         }
         catch(e) {
-            try {await controllerInstance.finallyHandle(reqBag,input);}
-            catch (e) {}
+            await preparedFinallyHandle(reqBag,input);
             throw e;
         }
+
+        await preparedFinallyHandle(reqBag,input);
+
+        if (!(result instanceof Result)) {
+            return result !== undefined ? {r: result} : {};
+        }
+        return result._getJsonObj();
     }
 
 }

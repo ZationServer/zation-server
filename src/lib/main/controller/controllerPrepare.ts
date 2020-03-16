@@ -9,7 +9,7 @@ import ZationWorker     = require("../../core/zationWorker");
 import {ControllerConfig} from "../config/definitions/parts/controllerConfig";
 import BackError          from "../../api/BackError";
 import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
-import AuthAccessChecker, {TokenStateAccessCheckFunction} from "../auth/authAccessChecker";
+import ControllerAccessHelper, {TokenStateAccessCheckFunction} from "./controllerAccessHelper";
 import Controller, {ControllerClass} from "../../api/Controller";
 import {MainBackErrors}              from "../zationBackErrors/mainBackErrors";
 import ControllerUtils, {MiddlewareInvokeFunction} from "./controllerUtils";
@@ -18,6 +18,8 @@ import Bag                           from "../../api/Bag";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
 import InputClosureCreator, {InputConsumeFunction, InputValidationCheckFunction} from "../input/inputClosureCreator";
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction}                   from "../apiLevel/apiLevelUtils";
+import FuncUtils                                                                 from '../utils/funcUtils';
+import {ErrorEventSingleton}                                                     from '../error/errorEventSingleton';
 
 interface ControllerPrepareData {
     controllerConfig: ControllerConfig,
@@ -27,7 +29,8 @@ interface ControllerPrepareData {
     tokenStateCheck: TokenStateAccessCheckFunction,
     middlewareInvoke: MiddlewareInvokeFunction,
     inputConsume: InputConsumeFunction,
-    inputValidationCheck: InputValidationCheckFunction
+    inputValidationCheck: InputValidationCheckFunction,
+    finallyHandle: Controller['finallyHandle'];
 }
 
 export default class ControllerPrepare
@@ -170,15 +173,18 @@ export default class ControllerPrepare
         const cInstance: Controller = new controller(name,this.worker.getPreparedBag(),apiLevel);
         await cInstance.initialize(this.worker.getPreparedBag());
 
-        return  {
+        return {
             controllerConfig: config,
             controllerInstance: cInstance,
             versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
-            tokenStateCheck: AuthAccessChecker.createAuthAccessChecker(config.access,this.bag),
+            tokenStateCheck: ControllerAccessHelper.createAuthAccessChecker(config.access,this.bag,name),
             middlewareInvoke: ControllerUtils.createMiddlewareInvoker(config),
             inputConsume: InputClosureCreator.createInputConsumer(config,this.bag),
-            inputValidationCheck: InputClosureCreator.createValidationChecker(config,this.bag)
+            inputValidationCheck: InputClosureCreator.createValidationChecker(config,this.bag),
+            finallyHandle: FuncUtils.createSafeCaller((reqBag,input) => cInstance.finallyHandle(reqBag,input),
+                `An error was thrown on the: 'Controller ${name}', ${nameof<Controller>(s => s.finallyHandle)}:`,
+                ErrorEventSingleton.get())
         };
     }
 }

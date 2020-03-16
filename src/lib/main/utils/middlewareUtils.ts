@@ -16,7 +16,7 @@ export default class MiddlewareUtils
      */
     static async checkMiddleware<M extends (...args: any[]) => any>(func: M | undefined, defaultValue: boolean, ...params: Parameters<M>): Promise<boolean | object> {
         if(func) {
-            const res  = await func(...params);
+            const res = await func(...params);
             if(typeof res === "boolean") {
                 if(res){
                     return true;

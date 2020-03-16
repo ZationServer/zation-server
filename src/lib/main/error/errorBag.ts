@@ -4,12 +4,6 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-/*
-Author: Luca Scaringella
-GitHub: LucaCode
-Copyright(c) Luca Scaringella
- */
-
 /**
  * Simple internally used error bag.
  */

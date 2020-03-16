@@ -26,8 +26,9 @@ import {StartErrorName}        from "../main/constants/startErrorName";
 import {processRawStartMode, StartMode, startModeSymbol} from './startMode';
 import ConfigBuildError        from "../main/config/manager/configBuildError";
 import ConfigLoader            from "../main/config/manager/configLoader";
-import BagExtensionConflictChecker from '../main/bagExtension/bagExtensionConflictChecker';
+import BagExtensionConflictChecker      from '../main/bagExtension/bagExtensionConflictChecker';
 import {ProcessType, processTypeSymbol} from '../main/constants/processType';
+// noinspection TypeScriptPreferShortImport
 import {Events}                         from '../main/config/definitions/parts/events';
 import StartDebugStopwatch              from '../main/utils/startDebugStopwatch';
 import {getMoment}                      from '../main/utils/timeUtils';
@@ -217,8 +218,8 @@ export default class ZationMaster {
         this.debugStopwatch.start();
         const masterInitEvent = (this.zcLoader.appConfig.events || {}).masterInit;
         if(masterInitEvent){
-            await ConfigPrecompiler.preCompileEvent
-            (masterInitEvent,nameof<Events>(s => s.masterInit))(this.zc.getZationInfo())
+            await ConfigPrecompiler.precompileEvent(nameof<Events>(s => s.masterInit),
+                masterInitEvent || (() => {}))(this.zc.getZationInfo());
         }
         this.debugStopwatch.stop(`The Master invoked init event.`);
 
@@ -353,8 +354,8 @@ export default class ZationMaster {
 
             const startedEvent = (this.zcLoader.appConfig.events || {}).started;
             if(startedEvent){
-                await ConfigPrecompiler.preCompileEvent
-                (startedEvent,nameof<Events>(s => s.started))(this.zc.getZationInfo())
+                await ConfigPrecompiler.precompileEvent(nameof<Events>(s => s.started),
+                    startedEvent || (() => {}))(this.zc.getZationInfo());
             }
         });
 

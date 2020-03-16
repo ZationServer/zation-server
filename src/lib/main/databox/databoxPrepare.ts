@@ -145,7 +145,7 @@ export default class DataboxPrepare
         const dbPreparedData: DbPreparedData = {
             versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
-            accessCheck: DataboxAccessHelper.createAccessChecker(config.access,this.bag),
+            accessCheck: DataboxAccessHelper.createAccessChecker(config.access,this.bag,name),
             initInputConsumer: InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbInitInput(config),this.bag),
             fetchInputConsumer: InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbFetchInput(config),this.bag),
             parallelFetch: config.parallelFetch !== undefined ? config.parallelFetch: false,

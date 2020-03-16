@@ -27,8 +27,9 @@ export default class DataboxAccessHelper
      * Returns a closure for checking the access to the databox.
      * @param accessValue
      * @param bag
+     * @param databoxName
      */
-    static createAccessChecker(accessValue: Notable<AccessConfigValue<DbAccessFunction>> | undefined, bag: Bag): DbAccessCheckFunction
+    static createAccessChecker(accessValue: Notable<AccessConfigValue<DbAccessFunction>> | undefined, bag: Bag,databoxName: string): DbAccessCheckFunction
     {
         const rawValue = getNotableValue(accessValue);
         if(rawValue !== undefined){
@@ -37,7 +38,7 @@ export default class DataboxAccessHelper
                 return async (_a,socket,dbInfo) => {
                     return func(bag,socket,dbInfo);
                 };
-            });
+            },`Databox: ${databoxName}`);
         }
         //access is not defined
         return async () => {

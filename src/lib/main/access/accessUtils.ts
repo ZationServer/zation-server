@@ -7,6 +7,8 @@ Copyright(c) Luca Scaringella
 import AuthEngine                                from "../auth/authEngine";
 import {ZationAccess}                            from "../constants/internal";
 import {AccessConfigValue, isTokenCheckFunction} from "./accessOptions";
+import Logger                                    from '../log/logger';
+import {ErrorEventSingleton}                     from '../error/errorEventSingleton';
 
 type AccessFunctionCallCreate<T extends MinAccessChecker,F> = (func: Function) => T;
 type MinAccessChecker = (authEngine: AuthEngine,...otherArgs: any[]) => Promise<boolean>;
@@ -18,22 +20,43 @@ export default class AccessUtils
      * @param value
      * @param invertResult
      * @param accessFunctionCallCreate
-     * @param useArrayOrConditions
+     * @param target
+     * A string that indicates on what target the created access checker is used.
      */
     static createAccessChecker<T extends MinAccessChecker,F extends (...args: any[]) => any>
     (
         value: AccessConfigValue<F> | undefined,
         invertResult: boolean = false,
         accessFunctionCallCreate: AccessFunctionCallCreate<T,F>,
-        useArrayOrConditions: boolean = true
+        target: string
         ): MinAccessChecker
     {
+        const errorEvent = ErrorEventSingleton.get();
+        const checker = AccessUtils.createAccessCheckerCore(value,accessFunctionCallCreate,true);
+        const errorLogMessage = `An error was thrown on the: '${target}', access check:`;
         if(!invertResult){
-            return AccessUtils.createAccessCheckerCore(value,accessFunctionCallCreate,true);
+            return async (...args) => {
+                try {
+                    return await checker(...args);
+                }
+                catch (e) {
+                    Logger.log.error(errorLogMessage,e);
+                    errorEvent(e);
+                    return false;
+                }
+            };
         }
         else {
-            const checker = AccessUtils.createAccessCheckerCore(value,accessFunctionCallCreate,true);
-            return async (...args) => !(await checker(...args));
+            return async (...args) => {
+                try {
+                    return !(await checker(...args));
+                }
+                catch (e) {
+                    Logger.log.error(errorLogMessage,e);
+                    errorEvent(e);
+                    return false;
+                }
+            };
         }
     }
 

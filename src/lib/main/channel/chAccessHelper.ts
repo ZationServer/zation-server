@@ -37,11 +37,14 @@ export default class ChAccessHelper
      * Returns a Closures for checking the client publish access to a channel.
      * @param accessValue
      * @param bag
+     * @param chName
      */
     static createPubChAccessChecker
     (
         accessValue: AccessConfigValue<any>,
-        bag: Bag)
+        bag: Bag,
+        chName: string
+    )
        : ChPubAccessChecker
     {
         const rawValue = getNotableValue(accessValue);
@@ -51,7 +54,7 @@ export default class ChAccessHelper
                 return async (_a,pubData,socketInfo,chInfo) => {
                     return f(bag,pubData,socketInfo,chInfo);
                 };
-            });
+            },`Custom Channel: ${chName} publish access check:`);
         }
         else {
             return async () => {return false;}
@@ -62,11 +65,13 @@ export default class ChAccessHelper
      * Returns a Closures for checking the subscribe access to a channel.
      * @param accessValue
      * @param bag
+     * @param chName
      */
     static createSubChAccessChecker
     (
         accessValue: AccessConfigValue<any>,
-        bag: Bag)
+        bag: Bag,
+        chName: string)
        : ChSubAccessChecker
     {
         const rawValue = getNotableValue(accessValue);
@@ -76,7 +81,7 @@ export default class ChAccessHelper
                 return async (_a,socketInfo,chInfo) => {
                     return f(bag,socketInfo,chInfo);
                 };
-            });
+            },`Custom Channel: ${chName} subscribe access check:`);
         }
         else {
             return async () => {return false;}

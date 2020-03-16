@@ -24,7 +24,8 @@ export interface Middleware {
      * If no more function is remaining, the action will be allowed.
      * If one function returns true, the chain is broken,
      * and the token is allowed without invoking the remaining functions.
-     * To block the token, you can return an object (that can be an error) or false.
+     * To block the token, you can return an object (that can be an error),
+     * return false or throw an error
      * Runs on a worker process.
      * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (zationToken) => {}
@@ -40,7 +41,8 @@ export interface Middleware {
      * If no more function is remaining, the action will be allowed.
      * If one function returns true, the chain is broken,
      * and the socket is allowed without invoking the remaining functions.
-     * To block the socket, you can return an object (that can be an error) or false.
+     * To block the socket, you can return an object (that can be an error),
+     * return false or throw an error.
      * Runs on a worker process.
      * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (socket) => {}
@@ -62,7 +64,8 @@ export interface Middleware {
      * If one function returns true, the chain is broken,
      * and the authentication request is successful without
      * invoking the remaining functions.
-     * To deny the authentication request, you can return false.
+     * To deny the authentication request,
+     * you can return false or throw an error.
      * Runs on a worker process.
      * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (username, password) => {}

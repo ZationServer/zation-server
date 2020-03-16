@@ -78,6 +78,7 @@ import {ProcessType, processTypeSymbol} from '../main/constants/processType';
 import {startModeSymbol}                from './startMode';
 import createLogFileDownloader          from '../main/log/logFileHttpEndpoint';
 import StartDebugStopwatch              from '../main/utils/startDebugStopwatch';
+import {ErrorEventSingleton}            from '../main/error/errorEventSingleton';
 
 const  SCWorker: any        = require('socketcluster/scworker');
 
@@ -187,6 +188,9 @@ class ZationWorker extends SCWorker
         const precompiler = new ConfigPrecompiler(otherConfigsLoadedSet);
         this.zc.setOtherConfigs(precompiler.precompile(this.zc,this.zc.mainConfig.showPrecompiledConfigs && this.isLeader));
         debugStopwatch.stop(`The Worker with id ${this.id} has pre compiled configurations.`);
+
+        //Set error event
+        ErrorEventSingleton.set(this.zc.event.error);
 
         //Origins checker
         debugStopwatch.start();

@@ -18,6 +18,7 @@ import Bag                           from "../../api/Bag";
 import IdValidCheckerUtils, {IdValidChecker}                    from "../id/idValidCheckerUtils";
 import ChAccessHelper, {ChPubAccessChecker, ChSubAccessChecker} from "./chAccessHelper";
 import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
+import {ErrorEventSingleton}                                    from '../error/errorEventSingleton';
 
 export interface Events {
     onClientPub: EventInvokerSync,
@@ -98,7 +99,7 @@ export class ChannelPrepare {
      * @param bag
      */
     private prepareZationChannel(name: string,bag: Bag): ChStorage {
-        return this.zationChConfig.hasOwnProperty(name) ? this.processChannel(this.zationChConfig[name],bag) :
+        return this.zationChConfig.hasOwnProperty(name) ? this.processChannel(name,this.zationChConfig[name],bag) :
             this.defaultChStorage;
     }
 
@@ -125,13 +126,13 @@ export class ChannelPrepare {
                     if(Array.isArray(this.customChannels[chName])){
                         config = this.customChannels[chName][0];
                         this.infoCustomChFamilies[chName] = {
-                            ...this.processCustomChannel(config,bag),
+                            ...this.processCustomChannel(chName,config,bag),
                             idValidChecker: IdValidCheckerUtils.createIdValidChecker((config as CustomChFamily).idValid,bag)
                         }
                     }
                     else {
                         config = (this.customChannels[chName] as CustomCh);
-                        this.infoCustomCh[chName] = this.processCustomChannel(config, bag);
+                        this.infoCustomCh[chName] = this.processCustomChannel(chName,config,bag);
                     }
                 }
             }
@@ -140,14 +141,15 @@ export class ChannelPrepare {
 
     /**
      * Prepare process for a custom channel.
+     * @param name
      * @param chConfig
      * @param bag
      */
-    private processCustomChannel(chConfig: BaseCustomChannelConfig, bag: Bag): CustomChStorage {
-        const cChStorage: ChStorage = this.processChannel(chConfig,bag);
+    private processCustomChannel(name: string,chConfig: BaseCustomChannelConfig, bag: Bag): CustomChStorage {
+        const cChStorage: ChStorage = this.processChannel(name,chConfig,bag);
         return {
             ...cChStorage,
-            subscribeAccessChecker: ChAccessHelper.createSubChAccessChecker(chConfig.subscribeAccess,bag),
+            subscribeAccessChecker: ChAccessHelper.createSubChAccessChecker(chConfig.subscribeAccess,bag,name),
             versionAccessCheck: SystemVersionChecker.createVersionChecker(chConfig),
             systemAccessCheck: SystemVersionChecker.createSystemChecker(chConfig)
         };
@@ -156,17 +158,32 @@ export class ChannelPrepare {
     // noinspection JSMethodCanBeStatic
     /**
      * Prepare process for a channel.
+     * @param name
      * @param channel
      * @param bag
      */
-    private processChannel(channel: ZationChannelConfig,bag: Bag): ChStorage {
+    private processChannel(name: string,channel: ZationChannelConfig,bag: Bag): ChStorage {
+        const errorEvent = ErrorEventSingleton.get();
+        const errLogMessagePrefix = `An error was thrown in the channel: '${name}', event:`;
         return {
-            clientPublishAccessChecker: ChAccessHelper.createPubChAccessChecker(channel.clientPublishAccess,bag),
+            clientPublishAccessChecker: ChAccessHelper.createPubChAccessChecker(channel.clientPublishAccess,bag,name),
             socketGetOwnPub: ChannelPrepare.processSocketGetOwnPub(channel.socketGetOwnPublish),
-            onClientPub: channel.onBagPublish ? FuncUtils.createEventSyncInvoker(channel.onBagPublish): () => {},
-            onBagPub: channel.onBagPublish ? FuncUtils.createEventSyncInvoker(channel.onBagPublish): () => {},
-            onSub: channel.onSubscription ? FuncUtils.createEventSyncInvoker(channel.onSubscription): () => {},
-            onUnsub: channel.onUnsubscription ? FuncUtils.createEventSyncInvoker(channel.onUnsubscription): () => {},
+            onClientPub: channel.onBagPublish ?
+                FuncUtils.createSafeCaller(FuncUtils.createFuncSyncInvoker(channel.onBagPublish),
+                    `${errLogMessagePrefix} '${nameof<ZationChannelConfig>(s => s.onClientPublish)}':`,errorEvent)
+                : () => {},
+            onBagPub: channel.onBagPublish ?
+                FuncUtils.createSafeCaller(FuncUtils.createFuncSyncInvoker(channel.onBagPublish),
+                    `${errLogMessagePrefix} '${nameof<ZationChannelConfig>(s => s.onBagPublish)}':`,errorEvent)
+                : () => {},
+            onSub: channel.onSubscription ?
+                FuncUtils.createSafeCaller(FuncUtils.createFuncSyncInvoker(channel.onSubscription),
+                    `${errLogMessagePrefix} '${nameof<ZationChannelConfig>(s => s.onSubscription)}':`,errorEvent)
+                : () => {},
+            onUnsub: channel.onUnsubscription ?
+                FuncUtils.createSafeCaller(FuncUtils.createFuncSyncInvoker(channel.onUnsubscription),
+                    `${errLogMessagePrefix} '${nameof<ZationChannelConfig>(s => s.onUnsubscription)}':`,errorEvent)
+                : () => {},
         };
     }
 
