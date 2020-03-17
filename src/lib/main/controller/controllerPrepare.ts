@@ -9,7 +9,7 @@ import ZationWorker     = require("../../core/zationWorker");
 import {ControllerConfig} from "../config/definitions/parts/controllerConfig";
 import BackError          from "../../api/BackError";
 import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
-import ControllerAccessHelper, {TokenStateAccessCheckFunction} from "./controllerAccessHelper";
+import ControllerAccessHelper, {TokenStateAccessCheckFunction}  from "./controllerAccessHelper";
 import Controller, {ControllerClass} from "../../api/Controller";
 import {MainBackErrors}              from "../zationBackErrors/mainBackErrors";
 import ControllerUtils, {MiddlewareInvokeFunction} from "./controllerUtils";

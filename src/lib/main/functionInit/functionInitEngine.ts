@@ -4,9 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import Bag from '../../api/Bag';
-
-export const replaceValueSymbol = Symbol();
+import Bag                   from '../../api/Bag';
+import {valueReplacerSymbol} from '../utils/valueReplacer';
 
 export type FunctionInitFunction<T> = (bag: Bag) => Promise<T> | T;
 
@@ -29,8 +28,8 @@ export default class FunctionInitEngine {
         this.initTask.push(async (bag) => {
             realFunction = await initFunction(bag);
             notInitialized = false;
-            if(typeof placeholderFunc[replaceValueSymbol] === 'function') {
-                placeholderFunc[replaceValueSymbol](realFunction);
+            if(typeof placeholderFunc[valueReplacerSymbol] === 'function') {
+                placeholderFunc[valueReplacerSymbol](realFunction);
             }
         });
         return placeholderFunc as T;

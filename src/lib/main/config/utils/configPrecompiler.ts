@@ -36,6 +36,7 @@ import {isReusableModel}                                      from '../../models
 import {inputConfigTranslateSymbol, isInputConfigTranslatable}                                 from '../../../api/configTranslatable/inputConfigTranslatable';
 import {isModelConfigTranslatable, modelConfigTranslateSymbol, resolveModelConfigTranslatable} from '../../../api/configTranslatable/modelConfigTranslatable';
 import {AnyFunction}                                                                           from '../../utils/typeUtils';
+import {setValueReplacer}                                                                      from '../../utils/valueReplacer';
 
 export interface ModelPreparationMem extends Processable{
     _optionalInfo: {isOptional: boolean,defaultValue: any}
@@ -197,6 +198,7 @@ export default class ConfigPrecompiler
             if(middlewareConfig.hasOwnProperty(k)){
                 value = middlewareConfig[k];
                 res[k] = typeof value !== 'function' ? FuncUtils.createFuncMiddlewareAsyncInvoker(value) : value;
+                setValueReplacer(res[k],v => res[k] = v);
             }
         }
         this.configs.appConfig.middleware = res;
