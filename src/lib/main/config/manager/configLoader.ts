@@ -181,7 +181,7 @@ export default class ConfigLoader {
     async loadMainConfig(): Promise<void>
     {
         try {
-            const mainConfig = require(this._configLocations.mainConfig);
+            const mainConfig = ConfigLoader.loadConfig(this._configLocations.mainConfig);
             ObjectUtils.deepMergeTwoObjects(this._mainConfig,mainConfig,true);
             this._loadedConfigs.push(nameof<StarterConfig>(s => s.mainConfig));
         }
