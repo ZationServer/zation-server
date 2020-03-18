@@ -143,6 +143,14 @@ export const MainBackErrors = {
         fromZationSystem: true
     },
 
+    inputIsMissing   : {
+        name         : 'inputIsMissing',
+        description  : 'Input is missing.',
+        type         : ErrorType.InputError,
+        sendInfo     : true,
+        fromZationSystem: true
+    },
+
     inputParamIsMissing   : {
         name         : 'inputParamIsMissing',
         description  : 'Input param is missing.',

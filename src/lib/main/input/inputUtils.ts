@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {AnyOfModel, ObjectModel} from "../config/definitions/parts/inputConfig";
+import {AnyOfModel, ArrayModel, ObjectModel, ParamInput, SingleModelInput} from '../config/definitions/parts/inputConfig';
 
 export default class InputUtils
 {
@@ -14,21 +14,41 @@ export default class InputUtils
      * @param input
      * @param paramBased
      */
-    static getModelAtPath(path: string[], input: object, paramBased: boolean): object | undefined
-    {
-        let tempConfig = input;
+    static getModelAtPath(path: string[], input: SingleModelInput | ParamInput, paramBased: boolean): object | undefined {
+        let tempConfig: any = input;
         let i = 0;
-        while (i < path.length) {
-            const k = path[i];
-            if(!paramBased && tempConfig.hasOwnProperty(nameof<ObjectModel>(s => s.properties))) {
-                //if not paramBase return the properties of the object
-                tempConfig = tempConfig[nameof<ObjectModel>(s => s.properties)];
+
+        if(path.length > 0){
+            if(!paramBased){
+                //resolve single input
+                tempConfig = tempConfig[0];
             }
-            else if(!paramBased && tempConfig.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf))) {
-                //if not paramBase return the anyOf of the object
-                tempConfig = tempConfig[nameof<AnyOfModel>(s => s.anyOf)];
-            }
-            else {
+            while (i < path.length) {
+                const k = path[i];
+                if(!paramBased){
+                    if(tempConfig.hasOwnProperty(nameof<ObjectModel>(s => s.properties))){
+                        //if not paramBase return the properties of the object
+                        tempConfig = tempConfig[nameof<ObjectModel>(s => s.properties)];
+                        continue;
+                    }
+                    else if(tempConfig.hasOwnProperty(nameof<AnyOfModel>(s => s.anyOf))){
+                        //if not paramBase return the anyOf of the object
+                        tempConfig = tempConfig[nameof<AnyOfModel>(s => s.anyOf)];
+                        continue;
+                    }
+                    else if(tempConfig.hasOwnProperty(nameof<ArrayModel>(s => s.array))){
+                        if(k === 'inner'){
+                            //resolve array
+                            tempConfig = tempConfig[nameof<ArrayModel>(s => s.array)];
+                            i++;
+                            //param based already false.
+                            continue;
+                        }
+                        else {
+                            return undefined;
+                        }
+                    }
+                }
                 if(tempConfig.hasOwnProperty(k) && typeof tempConfig[k] === 'object') {
                     tempConfig = tempConfig[k];
                 }
@@ -36,8 +56,8 @@ export default class InputUtils
                     return undefined;
                 }
                 i++;
+                paramBased = false;
             }
-            paramBased = false;
         }
         return tempConfig;
     }

@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {InputConfig, ParamInput, SingleModelInput} from "../config/definitions/parts/inputConfig";
+import {InputConfig}                    from "../config/definitions/parts/inputConfig";
 import BackErrorBag                     from "../../api/BackErrorBag";
 import ProcessTaskEngine, {ProcessTask} from "./processTaskEngine";
 import InputProcessor, {Processable}    from "./inputProcessorCreator";
@@ -36,16 +36,8 @@ export default class InputClosureCreator
             return (input) => input;
         }
 
-        // @ts-ignore
-        const inputDefinition: (ParamInput | SingleModelInput) & Processable = inputConfig.input;
-
-        let processable: Processable;
-        if(Array.isArray(inputDefinition)) {
-            processable = inputDefinition[0];
-        }
-        else {
-            processable = typeof inputDefinition === 'object' ? (inputDefinition as Processable): DefaultParamProcessable;
-        }
+        const processable: Processable = typeof inputConfig.input === 'object' ?
+            (inputConfig.input as unknown as Processable): DefaultParamProcessable;
 
         return async (input) => {
             const taskList: ProcessTask[] = [];
@@ -79,15 +71,9 @@ export default class InputClosureCreator
             return async () => {}
         }
 
-        let inputDefinition;
-        let singleInputModel = false;
-        if(Array.isArray(inputConfig.input)){
-            singleInputModel = true;
-            inputDefinition = inputConfig.input[0];
-        }
-        else {
-            inputDefinition = typeof inputConfig.input === 'object' ? inputConfig.input: {};
-        }
+        const inputDefinition: Processable = typeof inputConfig.input === 'object' ?
+            (inputConfig.input as unknown as Processable): DefaultParamProcessable;
+        const singleInputModel = Array.isArray(inputDefinition);
 
         return async (checkData) => {
 
@@ -102,9 +88,9 @@ export default class InputClosureCreator
 
                         const {path,keyPath} = InputUtils.processPathInfo(iCheckData.p);
 
-                        let specificConfig = inputDefinition;
+                        let specificConfig: any = inputDefinition;
                         if(keyPath.length > 0){
-                            specificConfig = InputUtils.getModelAtPath(keyPath,inputDefinition,(!singleInputModel));
+                            specificConfig = InputUtils.getModelAtPath(keyPath,inputDefinition as any,(!singleInputModel));
                             if(specificConfig === undefined){
                                 errorBag.addBackError(new BackError(MainBackErrors.pathNotResolvable,
                                     {

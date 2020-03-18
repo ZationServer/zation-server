@@ -9,8 +9,8 @@ import {
     ArrayModel, ConstructObjectFunction, ConvertArrayFunction, ConvertObjectFunction,
     ConvertValueFunction,
     Model,
-    ObjectModel, ParamInput, ValueModel,
-} from "../config/definitions/parts/inputConfig";
+    ObjectModel, ParamInput, SingleModelInput, ValueModel,
+} from '../config/definitions/parts/inputConfig';
 import BackErrorBag          from "../../api/BackErrorBag";
 import ValidatorEngine       from "../validator/validatorEngine";
 import ConvertEngine         from "../convert/convertEngine";
@@ -315,6 +315,7 @@ export default class InputProcessorCreator
     static createParamInputProcessor(paramInputConfig: ParamInput): InputProcessFunction {
 
         const paramKeys = Object.keys(paramInputConfig);
+        const paramKeysLength = paramKeys.length;
 
         return async (bag, srcObj, srcKey, currentpath, processInfo) =>
         {
@@ -333,7 +334,7 @@ export default class InputProcessorCreator
                     return;
                 }
 
-                for(let i = 0; i < paramKeys.length; i++) {
+                for(let i = 0; i < paramKeysLength; i++) {
                     paramName = paramKeys[i];
                     if(input[paramName] !== undefined){
                         promises.push((paramInputConfig[paramName] as ModelPreparationMem)
@@ -367,7 +368,7 @@ export default class InputProcessorCreator
             else {
                 //array input
                 const result = {};
-                for(let i = 0; i < paramKeys.length; i++)
+                for(let i = 0; i < paramKeysLength; i++)
                 {
                     paramName = paramKeys[i];
                     if(typeof input[i] !== 'undefined') {
@@ -393,7 +394,7 @@ export default class InputProcessorCreator
                     }
                 }
                 //check to much input
-                for(let i = paramKeys.length; i < input.length; i++) {
+                for(let i = paramKeysLength; i < input.length; i++) {
                     processInfo.errorBag.addBackError(new BackError(MainBackErrors.inputParamNotAssignable,
                         {
                             index: i,
@@ -403,6 +404,36 @@ export default class InputProcessorCreator
                 srcObj[srcKey] = result;
             }
             await Promise.all(promises);
+        }
+    }
+
+    /**
+     * Creates a closure for validating and format a single model input.
+     * @param singleModelInput
+     */
+    static createSingleInputProcessor(singleModelInput: SingleModelInput): InputProcessFunction {
+        const modelDefinition = singleModelInput[0];
+
+        return async (bag, srcObj, srcKey, currentpath, processInfo) =>
+        {
+            let promise: Promise<void> | undefined = undefined;
+
+            if(srcObj[srcKey] !== undefined){
+                promise = (modelDefinition as ModelPreparationMem)
+                    ._process(bag,srcObj,srcKey,currentpath,processInfo);
+            }
+            else {
+                const {defaultValue,isOptional} = (modelDefinition as ModelPreparationMem)._optionalInfo;
+                if(!isOptional){
+                    //ups missing
+                    processInfo.errorBag.addBackError(new BackError(MainBackErrors.inputIsMissing));
+                }
+                else {
+                    //set default value
+                    srcObj[srcKey] = CloneUtils.deepClone(defaultValue);
+                }
+            }
+            await promise;
         }
     }
 

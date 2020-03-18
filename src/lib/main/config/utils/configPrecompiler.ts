@@ -567,7 +567,7 @@ export default class ConfigPrecompiler
         }
     }
 
-    private precompileParamInput(paramInput: ParamInput | Processable): void {
+    private precompileParamInput(paramInput: ParamInput): void {
         for(let inputName in paramInput) {
             if(paramInput.hasOwnProperty(inputName)) {
                 //resolve values,object,array links and resolve inheritance
@@ -577,7 +577,7 @@ export default class ConfigPrecompiler
         }
         if(!paramInput.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
             Object.defineProperty(paramInput,nameof<ModelPreparationMem>(s => s._process),{
-                value: InputProcessorCreator.createParamInputProcessor((paramInput as ParamInput)),
+                value: InputProcessorCreator.createParamInputProcessor(paramInput),
                 enumerable: false,
                 writable: false,
                 configurable: false
@@ -588,6 +588,14 @@ export default class ConfigPrecompiler
     private precompileSingleInput(singleModelInput: SingleModelInput): void {
         this.modelPrecompileStep1('0',singleModelInput);
         this.modelPrecompileStep2(singleModelInput[0]);
+        if(!singleModelInput.hasOwnProperty(nameof<ModelPreparationMem>(s => s._process))){
+            Object.defineProperty(singleModelInput,nameof<ModelPreparationMem>(s => s._process),{
+                value: InputProcessorCreator.createSingleInputProcessor(singleModelInput),
+                enumerable: false,
+                writable: false,
+                configurable: false
+            });
+        }
     }
 
 }
