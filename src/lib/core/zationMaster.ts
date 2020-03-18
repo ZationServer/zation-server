@@ -100,7 +100,7 @@ export default class ZationMaster {
                     process.title = `Zation Server: ${this.zc.mainConfig.instanceId} -> Master`;
 
                     //init logger
-                    Logger.init(this.zc,startMode === StartMode.Check);
+                    Logger.init(this.zc);
                     this.debugStopwatch = new StartDebugStopwatch(this.zc.isStartDebug());
 
                     if(startMode !== StartMode.Check) {

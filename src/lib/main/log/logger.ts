@@ -15,7 +15,7 @@ export default class Logger
     private static _initialized = false;
     private static _showConfigWarnings = true;
 
-    static init(zc: ZationConfig,skipFileLog: boolean = false): void {
+    static init(zc: ZationConfig): void {
         Logger._showConfigWarnings = zc.isShowConfigWarning();
 
         const writer: LogWriter[] = [];
@@ -28,7 +28,7 @@ export default class Logger
         if(consoleLogOptions.active && consoleLogOptions.logLevel > 0) {
             writer.push(createConsoleLogWriter(consoleLogOptions.logLevel));
         }
-        if(!skipFileLog && fileLogOptions.active && fileLogOptions.logLevel > 0){
+        if(fileLogOptions.active && fileLogOptions.logLevel > 0){
             writer.push(createFileLogWriter(fileLogOptions,zc.rootPath));
         }
 

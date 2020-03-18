@@ -4,20 +4,21 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import ExpressCore       = require("express-serve-static-core");
-import {FileLogOptions}    from '../config/definitions/main/mainConfig';
-import {DeepRequired}      from 'utility-types';
-import {logFileFileName}   from './logWriter';
+import ExpressCore        = require("express-serve-static-core");
+import {FileLogOptions}     from '../config/definitions/main/mainConfig';
+import {DeepRequired}       from 'utility-types';
+import {processFileLogPath} from './logWriter';
 
 /**
  * Create closure for download the log file.
  * @param logFileOptions
+ * @param rootPath
  */
-export default function createLogFileDownloader(logFileOptions: DeepRequired<FileLogOptions>): (req: ExpressCore.Request, res: ExpressCore.Response) => void {
+export default function createLogFileDownloader(logFileOptions: DeepRequired<FileLogOptions>,rootPath: string): (req: ExpressCore.Request, res: ExpressCore.Response) => void {
     if(logFileOptions.active) {
         if(logFileOptions.download.active) {
             const accessKey = logFileOptions.download.accessKey;
-            const logFile = logFileOptions.filePath + logFileFileName;
+            const logFile = processFileLogPath(logFileOptions,rootPath);
 
             return (req, res) => {
                 const key = req.params.key !== undefined ? req.params.key: '';

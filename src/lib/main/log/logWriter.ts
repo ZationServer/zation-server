@@ -23,14 +23,14 @@ export function createConsoleLogWriter(logLevel): LogWriter {
 }
 
 export const logFileFileName = 'ZATION_LOG_FILE.log';
-export function createFileLogWriter(fileLogOptions: Required<FileLogOptions>,rootPath: string): LogWriter {
-
+export function processFileLogPath(fileLogOptions: Required<FileLogOptions>,rootPath: string): string {
     let filePath = rootPath + '/' + fileLogOptions.filePath;
     if(!filePath.endsWith('/')){filePath+='/'}
+    return path.normalize(filePath + logFileFileName);
+}
 
-    const file = path.normalize(filePath + logFileFileName);
-
-    const writer = fs.createWriteStream(file, {
+export function createFileLogWriter(fileLogOptions: Required<FileLogOptions>,rootPath: string): LogWriter {
+    const writer = fs.createWriteStream(processFileLogPath(fileLogOptions,rootPath), {
         flags:'a',
         encoding:'utf8'
     });

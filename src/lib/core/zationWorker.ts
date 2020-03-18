@@ -436,7 +436,7 @@ class ZationWorker extends SCWorker
         });
 
         //Log file download
-        this.app.get([`${serverPath}/log/:key`,`${serverPath}/log`],createLogFileDownloader(this.zc.mainConfig.log.file));
+        this.app.get([`${serverPath}/log/:key`,`${serverPath}/log`],createLogFileDownloader(this.zc.mainConfig.log.file,this.zc.rootPath));
 
         if(this.zc.mainConfig.provideClientJs) {
             this.app.get(`${serverPath}/client.js`,(req,res) => {
