@@ -8,6 +8,7 @@ export default class ObjectUtils
 {
     /**
      * Merges multiples objects with each other deep.
+     * Note that symbols and not enumerable properties are ignored.
      * @param objects
      */
     static deepMergeObjects(...objects: object[]): object
@@ -26,6 +27,7 @@ export default class ObjectUtils
 
     /**
      * Merges an object with another object deep.
+     * Note that symbols and not enumerable properties are ignored.
      * @param mainObj
      * @param toMergeObj
      * @param override
@@ -53,6 +55,7 @@ export default class ObjectUtils
 
     /**
      * Merges the root layer of an object with another.
+     * Note that symbols and not enumerable properties are ignored.
      * @param mainObj
      * @param addObj
      * @param overwrite
@@ -64,6 +67,27 @@ export default class ObjectUtils
                 if(overwrite || !mainObj.hasOwnProperty(key)) {
                     mainObj[key] = addObj[key];
                 }
+            }
+        }
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Merges the root layer of an object with another (also symbols).
+     * Note that not enumerable properties are ignored.
+     * @param mainObj
+     * @param addObj
+     * @param overwrite
+     */
+    static mergeTwoObjectsFull(mainObj: object, addObj: object, overwrite: boolean = false): void {
+        const keys = Reflect.ownKeys(addObj);
+        let key;
+        for (let i in keys) {
+            key = keys[i];
+            if(addObj.propertyIsEnumerable(key) &&
+                (overwrite || !mainObj.hasOwnProperty(key)))
+            {
+                mainObj[key] = addObj[key];
             }
         }
     }
@@ -153,6 +177,7 @@ export default class ObjectUtils
 
     /**
      * Adds props to the prototype of the class.
+     * Note that symbols and not enumerable properties are ignored.
      * @param classValue
      * @param props
      * @param skipUndefined

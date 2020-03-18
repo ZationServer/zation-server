@@ -699,7 +699,12 @@ export default class ConfigChecker
             }
 
             if((value as ModelCheckedMem)._checked){return;}
-            (value as ModelCheckedMem)._checked = true;
+            Object.defineProperty(value,nameof<ModelCheckedMem>(s => s._checked),{
+                value: true,
+                enumerable: false,
+                configurable: true,
+                writable: false
+            });
 
             const modelId = value[modelIdSymbol];
             if(modelId !== undefined){
@@ -885,7 +890,12 @@ export default class ConfigChecker
                 //Check only new anonymous value models.
                 if(!(resModel as ModelCheckedMem)._checked){
                     this.checkValueModel(resModel,target,false);
-                    (resModel as ModelCheckedMem)._checked = true;
+                    Object.defineProperty(resModel,nameof<ModelCheckedMem>(s => s._checked),{
+                        value: true,
+                        enumerable: false,
+                        configurable: true,
+                        writable: false
+                    });
                 }
 
                 ObjectUtils.mergeTwoObjects(baseModel,resModel,false);
