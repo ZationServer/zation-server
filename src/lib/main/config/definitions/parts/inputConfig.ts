@@ -134,7 +134,7 @@ export interface ParamInput {
     [key: string]: Model;
 }
 
-export type ValidateFunction = (value: any, backErrorBag: BackErrorBag, inputPath: string, bag: Bag, type: string | undefined) => Promise<void> | void;
+export type ValidateFunction = (value: any, backErrorBag: BackErrorBag, path: string, bag: Bag, type: string | undefined) => Promise<void> | void;
 export type ConvertValueFunction = (value: any, bag: Bag) => Promise<any> | any;
 export type GetDateFunction = (bag: Bag) => Promise<Date> | Date;
 
@@ -201,7 +201,7 @@ export interface ValueModel extends ValidationFunctions, ModelOptional
      * This is useful to do advance checks; for example,
      * you want to check if the email is already registered in the database.
      * @example
-     * validate: [async (value,backErrorBag,inputPath,bag,type) => {
+     * validate: [async (value,backErrorBag,path,bag,type) => {
      *   if(....){
      *       //error
      *       bagErrorBag.addBackError(bag.newBackError({

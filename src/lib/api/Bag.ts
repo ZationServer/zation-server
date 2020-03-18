@@ -1141,7 +1141,7 @@ export default class Bag {
      * @param backErrorConstruct
      * @param info
      * The BackError info is a dynamic object which contains more detailed information.
-     * For example, with an inputNotMatchWithMinLength error,
+     * For example, with an valueNotMatchesWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */

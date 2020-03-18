@@ -36,7 +36,7 @@ export default class BackErrorBuilder
      * Set the group of the BackError.
      * Multiple errors can belong to a group.
      * As an example, the validation errors for a type would belong to the group typeErrors.
-     * But for each error, the name is unique, for example, inputIsNotTypeString or inputIsNotTypeEmail.
+     * But for each error, the name is unique, for example, valueIsNotTypeString or valueIsNotTypeEmail.
      * @param group
      */
     group(group: string | undefined): BackErrorBuilder {
@@ -202,7 +202,7 @@ export default class BackErrorBuilder
      * @description
      * Set the BackError info.
      * The BackError info is a dynamic object which contains more detailed information.
-     * For example, with an inputNotMatchWithMinLength error,
+     * For example, with an valueNotMatchesWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
      * Notice that you override the info property.
@@ -217,7 +217,7 @@ export default class BackErrorBuilder
      * @description
      * Add a new info key value pair to info object.
      * The BackError info is a dynamic object which contains more detailed information.
-     * For example, with an inputNotMatchWithMinLength error,
+     * For example, with an valueNotMatchesWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */

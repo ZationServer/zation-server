@@ -34,12 +34,12 @@ export default class BackErrorBag
      * Adds a new BackError to the bag.
      * By using the constructor of the BackError class.
      * @example
-     * addNewBackError({name: 'inputNotMatchWithMinLength'},{minLength: 5, inputLength: 3});
+     * addNewBackError({name: 'valueNotMatchesWithMinLength'},{minLength: 5, inputLength: 3});
      * @param backErrorConstruct
      * Create a new BackError construct.
      * @param info
      * The BackError info is a dynamic object which contains more detailed information.
-     * For example, with an inputNotMatchWithMinLength error,
+     * For example, with an valueNotMatchesWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */

@@ -30,7 +30,7 @@ export interface ProcessInfo {
     createProcessTaskList: boolean
 }
 
-export type InputProcessFunction = (bag: Bag, srcObj: object, srcKey: string | number, currentInputPath: string,
+export type InputProcessFunction = (bag: Bag, srcObj: object, srcKey: string | number, currentpath: string,
                                     {errorBag,processTaskList,createProcessTaskList}: ProcessInfo) => Promise<void>;
 
 export interface Processable {
@@ -53,10 +53,10 @@ export default class InputProcessorCreator
         const typeValidate = ValidatorEngine.createValueTypeValidator(type,strictType);
         const valueValidate = ValidatorEngine.createValueValidator(valueModel);
 
-        return async (bag,srcObj,srcKey,currentInputPath,{errorBag,processTaskList,createProcessTaskList}) => {
+        return async (bag,srcObj,srcKey,currentpath,{errorBag,processTaskList,createProcessTaskList}) => {
             const preparedErrorData = {
-                inputValue: srcObj[srcKey],
-                inputPath: currentInputPath
+                value: srcObj[srcKey],
+                path: currentpath
             };
 
             const currentErrorCount = errorBag.getBackErrorCount();
@@ -91,18 +91,18 @@ export default class InputProcessorCreator
         const arrayInputConfig = (arrayModel.array as Model & ModelPreparationMem);
         const hasConvert = typeof arrayModel.convert === 'function';
 
-        return async (bag, srcObj, srcKey, currentInputPath, processInfo) => {
+        return async (bag, srcObj, srcKey, currentpath, processInfo) => {
             const input = srcObj[srcKey];
             const errorBag = processInfo.errorBag;
 
             if(Array.isArray(input)) {
 
-                if(ValidatorEngine.validateArray(input,arrayModel,currentInputPath,errorBag)) {
+                if(ValidatorEngine.validateArray(input,arrayModel,currentpath,errorBag)) {
                     const promises: Promise<any>[] = [];
                     //input reference so we can return it normal
                     for(let i = 0; i < input.length; i++) {
                         promises.push(arrayInputConfig._process
-                        (bag,input,i,(currentInputPath === '' ? `${i}`: `${currentInputPath}.${i}`),processInfo));
+                        (bag,input,i,(currentpath === '' ? `${i}`: `${currentpath}.${i}`),processInfo));
                     }
                     await Promise.all(promises);
 
@@ -124,8 +124,8 @@ export default class InputProcessorCreator
                     (
                         MainBackErrors.arrayWasExpected,
                         {
-                            inputPath: currentInputPath,
-                            inputValue: input
+                            path: currentpath,
+                            value: input
                         }
                     )
                 );
@@ -148,7 +148,7 @@ export default class InputProcessorCreator
             preparedNames[key] = processAnyOfKey(key,value,isArray);
         },anyOf);
 
-        return async (bag, srcObj, srcKey, currentInputPath, processInfo) => {
+        return async (bag, srcObj, srcKey, currentpath, processInfo) => {
             let found = false;
             let tmpBackErrorBag;
             const tmpBackErrorBags: BackErrorBag[] = [];
@@ -166,7 +166,7 @@ export default class InputProcessorCreator
                         createProcessTaskList: processInfo.createProcessTaskList
                     };
                 await value._process
-                (bag,srcObj,srcKey,(currentInputPath === '' ? key: `${currentInputPath}.${key}`),tmpProcessInfo);
+                (bag,srcObj,srcKey,(currentpath === '' ? key: `${currentpath}.${key}`),tmpProcessInfo);
 
                 if(tmpProcessInfo.errorBag.isEmpty()){
                     found = true;
@@ -181,8 +181,8 @@ export default class InputProcessorCreator
                 processInfo.errorBag.addBackError(new BackError(
                     ValidatorBackErrors.noAnyOfMatch,
                     {
-                        inputPath: currentInputPath,
-                        inputValue: srcObj[srcKey]
+                        path: currentpath,
+                        value: srcObj[srcKey]
                     }
                 ))
             }
@@ -204,7 +204,7 @@ export default class InputProcessorCreator
         const processConvert = typeof objectModel.convert === 'function';
         const processPrototype = typeof objectModel.prototype === 'object';
 
-        return async (bag, srcObj, srcKey, currentInputPath, processInfo) => {
+        return async (bag, srcObj, srcKey, currentpath, processInfo) => {
 
             const input = srcObj[srcKey];
             const errorBag = processInfo.errorBag;
@@ -219,7 +219,7 @@ export default class InputProcessorCreator
                             errorBag.addBackError(new BackError
                                 (
                                     MainBackErrors.unknownObjectProperty, {
-                                        inputPath: currentInputPath === '' ? k: `${currentInputPath}.${k}`,
+                                        path: currentpath === '' ? k: `${currentpath}.${k}`,
                                         propertyName: k
                                     }
                                 )
@@ -235,13 +235,13 @@ export default class InputProcessorCreator
                 for(let i = 0; i < propKeysLength; i++){
                     const propName = propKeys[i];
 
-                    const currentInputPathNew = currentInputPath === '' ?
-                        propName: `${currentInputPath}.${propName}`;
+                    const currentpathNew = currentpath === '' ?
+                        propName: `${currentpath}.${propName}`;
 
                     if(input.hasOwnProperty(propName)) {
                         //allOk lets check the props
                         promises.push((props[propName] as ModelPreparationMem)._process
-                        (bag,input,propName,currentInputPathNew,processInfo));
+                        (bag,input,propName,currentpathNew,processInfo));
                     }
                     else
                     {
@@ -256,7 +256,7 @@ export default class InputProcessorCreator
                                     {
                                         object: input,
                                         propertyName: propName,
-                                        inputPath: currentInputPathNew
+                                        path: currentpathNew
                                     }
                                 )
                             );
@@ -299,8 +299,8 @@ export default class InputProcessorCreator
                     (
                         MainBackErrors.objectWasExpected,
                         {
-                            inputPath: currentInputPath,
-                            inputValue: input
+                            path: currentpath,
+                            value: input
                         }
                     )
                 );
@@ -316,7 +316,7 @@ export default class InputProcessorCreator
 
         const paramKeys = Object.keys(paramInputConfig);
 
-        return async (bag, srcObj, srcKey, currentInputPath, processInfo) =>
+        return async (bag, srcObj, srcKey, currentpath, processInfo) =>
         {
             const promises: Promise<void>[] = [];
             let input = srcObj[srcKey];
@@ -337,7 +337,7 @@ export default class InputProcessorCreator
                     paramName = paramKeys[i];
                     if(input[paramName] !== undefined){
                         promises.push((paramInputConfig[paramName] as ModelPreparationMem)
-                            ._process(bag,input,paramName,(currentInputPath+paramName),processInfo));
+                            ._process(bag,input,paramName,(currentpath+paramName),processInfo));
                     }
                     else {
                         const {defaultValue,isOptional} = (paramInputConfig[paramName] as ModelPreparationMem)._optionalInfo;
@@ -374,7 +374,7 @@ export default class InputProcessorCreator
                         promises.push((async () => {
                             result[paramName] = input[i];
                             await (paramInputConfig[paramName] as ModelPreparationMem)
-                                ._process(bag,result,paramName,(currentInputPath+paramName),processInfo);
+                                ._process(bag,result,paramName,(currentpath+paramName),processInfo);
                         })());
                     }
                     else {

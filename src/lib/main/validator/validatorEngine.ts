@@ -24,8 +24,8 @@ export type ValueValidateFunction =
     (input: any, errorBag: BackErrorBag, preparedErrorData: PreparedErrorData, bag: Bag, type: string | undefined) => Promise<any>;
 
 export interface PreparedErrorData {
-    inputPath: string,
-    inputValue: any
+    path: string,
+    value: any
 }
 
 type PreparedFunctionValidator =
@@ -61,7 +61,7 @@ export default class ValidatorEngine
             for(let i = 0; i < validatorFunctions.length; i++){
                 promises.push(validatorFunctions[i](input,errorBag,preparedErrorData,bag,type));
             }
-            promises.push(validateFunction(input,errorBag,preparedErrorData.inputPath,bag,type));
+            promises.push(validateFunction(input,errorBag,preparedErrorData.path,bag,type));
             await Promise.all(promises);
         };
     }
@@ -90,8 +90,8 @@ export default class ValidatorEngine
                     if(!foundAValidTyp) {
                         errorBag.addBackError(new BackError(ValidatorBackErrors.noValidTypeWasFound,
                             {
-                                inputPath: preparedErrorData.inputPath,
-                                inputValue: preparedErrorData.inputValue,
+                                path: preparedErrorData.path,
+                                value: preparedErrorData.value,
                                 types: type
                             }));
                     }
@@ -126,10 +126,10 @@ export default class ValidatorEngine
             if(array.length !== length)
             {
                 isOk = false;
-                errorBag.addBackError(new BackError(ValidatorBackErrors.inputArrayNotMatchWithLength,
+                errorBag.addBackError(new BackError(ValidatorBackErrors.arrayNotMatchesWithLength,
                     {
-                        inputValue: array,
-                        inputPath: currentPath,
+                        value: array,
+                        path: currentPath,
                         length: length
                     }));
             }
@@ -140,10 +140,10 @@ export default class ValidatorEngine
             if(array.length < minLength)
             {
                 isOk = false;
-                errorBag.addBackError(new BackError(ValidatorBackErrors.inputArrayNotMatchWithMinLength,
+                errorBag.addBackError(new BackError(ValidatorBackErrors.arrayNotMatchesWithMinLength,
                     {
-                        inputValue: array,
-                        inputPath: currentPath,
+                        value: array,
+                        path: currentPath,
                         minLength: minLength
                     }));
             }
@@ -154,10 +154,10 @@ export default class ValidatorEngine
             if(array.length > maxLength)
             {
                 isOk = false;
-                errorBag.addBackError(new BackError(ValidatorBackErrors.inputArrayNotMatchWithMaxLength,
+                errorBag.addBackError(new BackError(ValidatorBackErrors.arrayNotMatchesWithMaxLength,
                     {
-                        inputValue: array,
-                        inputPath: currentPath,
+                        value: array,
+                        path: currentPath,
                         maxLength: maxLength
                     }));
             }

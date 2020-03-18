@@ -180,8 +180,8 @@ export const MainBackErrors = {
         type         : ErrorType.InputError,
         sendInfo     : true,
         //INFO
-        // inputPath (full path to the value where an array was expected)
-        // inputValue (the input value that is not from type array)
+        // path (full path to the value where an array was expected)
+        // value (the input value that is not from type array)
         fromZationSystem: true
     },
 
@@ -191,8 +191,8 @@ export const MainBackErrors = {
         type         : ErrorType.InputError,
         sendInfo     : true,
         //INFO
-        // inputValue (the input value that is not from type object)
-        // inputPath (full path to the value where an object was expected)
+        // value (the input value that is not from type object)
+        // path (full path to the value where an object was expected)
         fromZationSystem: true
     },
 
@@ -204,7 +204,7 @@ export const MainBackErrors = {
         //INFO
         // object (the input object where the property is missing)
         // propertyName (name of missing property)
-        // inputPath (the full input path to missing property)
+        // path (the full input path to missing property)
         fromZationSystem: true
     },
 
@@ -215,7 +215,7 @@ export const MainBackErrors = {
         sendInfo     : true,
         //INFO
         // propertyName (name of the unknown property)
-        // inputPath (full input path to unknown property)
+        // path (full input path to unknown property)
         fromZationSystem: true
     },
 
@@ -327,14 +327,14 @@ export const MainBackErrors = {
         fromZationSystem: true
     },
 
-    inputPathNotResolvable: {
-        name         : 'inputPathNotResolvable',
+    pathNotResolvable: {
+        name         : 'pathNotResolvable',
         description  : 'Input path is not resolvable.',
         type         : ErrorType.InputError,
         private      : false,
         sendInfo     : true,
         //INFO
-        // inputPath
+        // path
         // checkIndex
         fromZationSystem: true
     },

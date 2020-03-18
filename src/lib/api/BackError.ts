@@ -28,12 +28,12 @@ export default class BackError extends Error
      * You also can collect more BackErrors in a BackErrorBag.
      * And throw them together.
      * @example
-     * new BackError({name: 'inputNotMatchWithMinLength'},{minLength: 5, inputLength: 3}).throw();
+     * new BackError({name: 'valueNotMatchesWithMinLength'},{minLength: 5, inputLength: 3}).throw();
      * @param backErrorConstruct
      * Create a new back error construct.
      * @param info
      * The error info is a dynamic object which contains more detailed information.
-     * For example, with an inputNotMatchWithMinLength error,
+     * For example, with an valueNotMatchesWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
@@ -127,7 +127,7 @@ export default class BackError extends Error
      * Returns the group of the BackError.
      * Multiple errors can belong to a group.
      * As an example, the validation errors for a type would belong to the group typeErrors.
-     * But for each error, the name is unique, for example, inputIsNotTypeString or inputIsNotTypeEmail.
+     * But for each error, the name is unique, for example, valueIsNotTypeString or valueIsNotTypeEmail.
      */
     getGroup(): string | undefined
     {
@@ -140,7 +140,7 @@ export default class BackError extends Error
      * Set the group of the BackError.
      * Multiple errors can belong to a group.
      * As an example, the validation errors for a type would belong to the group typeErrors.
-     * But for each error, the name is unique, for example, inputIsNotTypeString or inputIsNotTypeEmail.
+     * But for each error, the name is unique, for example, valueIsNotTypeString or valueIsNotTypeEmail.
      * @param group
      */
     setGroup(group: string | undefined): void
@@ -228,7 +228,7 @@ export default class BackError extends Error
      * @description
      * Returns if the BackError should send the info.
      * The BackError info is a dynamic object which contains more detailed information.
-     * For example, with an inputNotMatchWithMinLength error,
+     * For example, with an valueNotMatchesWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
@@ -242,7 +242,7 @@ export default class BackError extends Error
      * @description
      * Set if the BackError should send the info.
      * The error info is a dynamic object which contains more detailed information.
-     * For example, with an inputNotMatchWithMinLength error,
+     * For example, with an valueNotMatchesWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
      * @param sendInfo
@@ -257,7 +257,7 @@ export default class BackError extends Error
      * @description
      * Returns the BackError info.
      * The BackError info is a dynamic object which contains more detailed information.
-     * For example, with an inputNotMatchWithMinLength error,
+     * For example, with an valueNotMatchesWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
@@ -271,7 +271,7 @@ export default class BackError extends Error
      * @description
      * Set the BackError info.
      * The BackError info is a dynamic object which contains more detailed information.
-     * For example, with an inputNotMatchWithMinLength error,
+     * For example, with an valueNotMatchesWithMinLength error,
      * the info object could include what the length of the input is and
      * what the minimum length is.
      * @param info

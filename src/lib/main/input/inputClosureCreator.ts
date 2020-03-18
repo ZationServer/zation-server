@@ -98,17 +98,17 @@ export default class InputClosureCreator
                 promises.push((async () => {
                     const iCheckData = checkData[i];
                     // noinspection SuspiciousTypeOfGuard
-                    if (typeof iCheckData === 'object' && (Array.isArray(iCheckData.ip) || typeof iCheckData.ip === 'string')) {
+                    if (typeof iCheckData === 'object' && (Array.isArray(iCheckData.p) || typeof iCheckData.p === 'string')) {
 
-                        const {path,keyPath} = InputUtils.processPathInfo(iCheckData.ip);
+                        const {path,keyPath} = InputUtils.processPathInfo(iCheckData.p);
 
                         let specificConfig = inputDefinition;
                         if(keyPath.length > 0){
                             specificConfig = InputUtils.getModelAtPath(keyPath,inputDefinition,(!singleInputModel));
                             if(specificConfig === undefined){
-                                errorBag.addBackError(new BackError(MainBackErrors.inputPathNotResolvable,
+                                errorBag.addBackError(new BackError(MainBackErrors.pathNotResolvable,
                                     {
-                                        inputPath: keyPath,
+                                        path: keyPath,
                                         checkIndex: i
                                     }));
                                 return;

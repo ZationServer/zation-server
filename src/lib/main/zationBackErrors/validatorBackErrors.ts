@@ -10,726 +10,726 @@ import {ErrorType}        from "./../constants/errorType";
 import BackErrorConstruct from "../constants/backErrorConstruct";
 
 export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
-    inputIsNotTypeObject: {
-        name         : 'inputIsNotTypeObject',
+    valueIsNotTypeObject: {
+        name         : 'valueIsNotTypeObject',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Object!',
+        description  : 'Value is not from type Object.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeArray: {
-        name         : 'inputIsNotTypeArray',
+    valueIsNotTypeArray: {
+        name         : 'valueIsNotTypeArray',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Array!',
+        description  : 'Value is not from type Array.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeString: {
-        name         : 'inputIsNotTypeString',
+    valueIsNotTypeString: {
+        name         : 'valueIsNotTypeString',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type String!',
+        description  : 'Value is not from type String.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeChar: {
-        name         : 'inputIsNotTypeChar',
+    valueIsNotTypeChar: {
+        name         : 'valueIsNotTypeChar',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Char!',
+        description  : 'Value is not from type Char.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeNull: {
-        name         : 'inputIsNotTypeNull',
+    valueIsNotTypeNull: {
+        name         : 'valueIsNotTypeNull',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Null!',
+        description  : 'Value is not from type Null.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeInt: {
-        name         : 'inputIsNotTypeInt',
+    valueIsNotTypeInt: {
+        name         : 'valueIsNotTypeInt',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Int!',
+        description  : 'Value is not from type Int.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeFloat: {
-        name         : 'inputIsNotTypeFloat',
+    valueIsNotTypeFloat: {
+        name         : 'valueIsNotTypeFloat',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Float!',
+        description  : 'Value is not from type Float.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeNumber: {
-        name         : 'inputIsNotTypeNumber',
+    valueIsNotTypeNumber: {
+        name         : 'valueIsNotTypeNumber',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type number!',
+        description  : 'Value is not from type number.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeDate: {
-        name         : 'inputIsNotTypeDate',
+    valueIsNotTypeDate: {
+        name         : 'valueIsNotTypeDate',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Date!',
+        description  : 'Value is not from type Date.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeEmail: {
-        name         : 'inputIsNotTypeEmail',
+    valueIsNotTypeEmail: {
+        name         : 'valueIsNotTypeEmail',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Email!',
+        description  : 'Value is not from type Email.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeBoolean: {
-        name         : 'inputIsNotTypeBoolean',
+    valueIsNotTypeBoolean: {
+        name         : 'valueIsNotTypeBoolean',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Boolean!',
+        description  : 'Value is not from type Boolean.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeSha512: {
-        name         : 'inputIsNotTypeSha512',
+    valueIsNotTypeSha512: {
+        name         : 'valueIsNotTypeSha512',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Sha512!',
+        description  : 'Value is not from type Sha512.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeSha256: {
-        name         : 'inputIsNotTypeSha256',
+    valueIsNotTypeSha256: {
+        name         : 'valueIsNotTypeSha256',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Sha256!',
+        description  : 'Value is not from type Sha256.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeSha384: {
-        name         : 'inputIsNotTypeSha384',
+    valueIsNotTypeSha384: {
+        name         : 'valueIsNotTypeSha384',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Sha384!',
+        description  : 'Value is not from type Sha384.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeSha1: {
-        name         : 'inputIsNotTypeSha1',
+    valueIsNotTypeSha1: {
+        name         : 'valueIsNotTypeSha1',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Sha1!',
+        description  : 'Value is not from type Sha1.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeMd5: {
-        name         : 'inputIsNotTypeMd5',
+    valueIsNotTypeMd5: {
+        name         : 'valueIsNotTypeMd5',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Md5!',
+        description  : 'Value is not from type Md5.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeHexColor: {
-        name         : 'inputIsNotTypeHexColor',
+    valueIsNotTypeHexColor: {
+        name         : 'valueIsNotTypeHexColor',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type HexColor!',
+        description  : 'Value is not from type HexColor.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeHexadecimal: {
-        name         : 'inputIsNotTypeHexadecimal',
+    valueIsNotTypeHexadecimal: {
+        name         : 'valueIsNotTypeHexadecimal',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type hexadecimal!',
+        description  : 'Value is not from type hexadecimal.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeIp4: {
-        name         : 'inputIsNotTypeIp4',
+    valueIsNotTypeIp4: {
+        name         : 'valueIsNotTypeIp4',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Ip Version 4!',
+        description  : 'Value is not from type Ip Version 4.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeIp6: {
-        name         : 'inputIsNotTypeIp6',
+    valueIsNotTypeIp6: {
+        name         : 'valueIsNotTypeIp6',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Ip Version 6!',
+        description  : 'Value is not from type Ip Version 6.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeIsbn10: {
-        name         : 'inputIsNotTypeIsbn10',
+    valueIsNotTypeIsbn10: {
+        name         : 'valueIsNotTypeIsbn10',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Isbn Version 10!',
+        description  : 'Value is not from type Isbn Version 10.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeIsbn13: {
-        name         : 'inputIsNotTypeIsbn13',
+    valueIsNotTypeIsbn13: {
+        name         : 'valueIsNotTypeIsbn13',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Isbn Version 13!',
+        description  : 'Value is not from type Isbn Version 13.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeJson: {
-        name         : 'inputIsNotTypeJson',
+    valueIsNotTypeJson: {
+        name         : 'valueIsNotTypeJson',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type JsonConverter!',
+        description  : 'Value is not from type JsonConverter.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeUrl: {
-        name         : 'inputIsNotTypeUrl',
+    valueIsNotTypeUrl: {
+        name         : 'valueIsNotTypeUrl',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Url!',
+        description  : 'Value is not from type Url.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeMimeType: {
-        name         : 'inputIsNotTypeMimeType',
+    valueIsNotTypeMimeType: {
+        name         : 'valueIsNotTypeMimeType',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Mime Type!',
+        description  : 'Value is not from type Mime Type.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeMacAddress: {
-        name         : 'inputIsNotTypeMacAddress',
+    valueIsNotTypeMacAddress: {
+        name         : 'valueIsNotTypeMacAddress',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Max Address!',
+        description  : 'Value is not from type Max Address.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeMobileNumber: {
-        name         : 'inputIsNotTypeMobileNumber',
+    valueIsNotTypeMobileNumber: {
+        name         : 'valueIsNotTypeMobileNumber',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Mobile Number!',
+        description  : 'Value is not from type Mobile Number.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeUuid3: {
-        name         : 'inputIsNotTypeUuid3',
+    valueIsNotTypeUuid3: {
+        name         : 'valueIsNotTypeUuid3',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type UUID Version 3!',
+        description  : 'Value is not from type UUID Version 3.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeUuid4: {
-        name         : 'inputIsNotTypeUuid4',
+    valueIsNotTypeUuid4: {
+        name         : 'valueIsNotTypeUuid4',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type UUID Version 4!',
+        description  : 'Value is not from type UUID Version 4.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeUuid5: {
-        name         : 'inputIsNotTypeUuid5',
+    valueIsNotTypeUuid5: {
+        name         : 'valueIsNotTypeUuid5',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type UUID Version 5!',
+        description  : 'Value is not from type UUID Version 5.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeBase64: {
-        name         : 'inputIsNotTypeBase64',
+    valueIsNotTypeBase64: {
+        name         : 'valueIsNotTypeBase64',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Base64!',
+        description  : 'Value is not from type Base64.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeAscii: {
-        name         : 'inputIsNotTypeAscii',
+    valueIsNotTypeAscii: {
+        name         : 'valueIsNotTypeAscii',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type Ascii!',
+        description  : 'Value is not from type Ascii.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeUserId: {
-        name         : 'inputIsNotTypeUserId',
+    valueIsNotTypeUserId: {
+        name         : 'valueIsNotTypeUserId',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type user id!',
+        description  : 'Value is not from type user id.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeMongoId: {
-        name         : 'inputIsNotTypeMongoId',
+    valueIsNotTypeMongoId: {
+        name         : 'valueIsNotTypeMongoId',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type mongo id!',
+        description  : 'Value is not from type mongo id.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotTypeLatLong: {
-        name         : 'inputIsNotTypeLatLong',
+    valueIsNotTypeLatLong: {
+        name         : 'valueIsNotTypeLatLong',
         group        : ErrorGroup.TypeError,
-        description  : 'Input is not from type lat long!',
+        description  : 'Value is not from type lat long.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputNotMatchWithMinLength: {
-        name         : 'inputNotMatchWithMinLength',
+    valueNotMatchesWithMinLength: {
+        name         : 'valueNotMatchesWithMinLength',
         group        : ErrorGroup.ValueLengthError,
-        description  : 'Input not match with min length!',
+        description  : 'Input not match with min length.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
-        // minLength (minLength)
+        // value
+        // path
+        // minLength
         fromZationSystem: true
     },
 
-    inputNotMatchWithMaxLength: {
-        name         : 'inputNotMatchWithMaxLength',
+    valueNotMatchesWithMaxLength: {
+        name         : 'valueNotMatchesWithMaxLength',
         group        : ErrorGroup.ValueLengthError,
-        description  : 'Input not match with max length!',
+        description  : 'Input not match with max length.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
-        // maxLength (maxLength)
+        // value
+        // path
+        // maxLength
         fromZationSystem: true
     },
 
-    inputNotMatchWithLength: {
-        name         : 'inputNotMatchWithLength',
+    valueNotMatchesWithLength: {
+        name         : 'valueNotMatchesWithLength',
         group        : ErrorGroup.ValueLengthError,
-        description  : 'Input not match with length!',
+        description  : 'Input not match with length.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
-        // length (length)
+        // value
+        // path
+        // length
         fromZationSystem: true
     },
 
-    inputIsNotUppercase: {
-        name         : 'inputIsNotUpperCase',
+    valueIsNotUppercase: {
+        name         : 'valueIsNotUpperCase',
         group        : ErrorGroup.LettersFormatError,
-        description  : 'Input is not uppercase!',
+        description  : 'Value is not uppercase.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotLowercase: {
-        name         : 'inputIsNotLowercase',
+    valueIsNotLowercase: {
+        name         : 'valueIsNotLowercase',
         group        : ErrorGroup.LettersFormatError,
-        description  : 'Input is not lowercase!',
+        description  : 'Value is not lowercase.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputIsNotMatchWithCharClass: {
-        name         : 'inputIsNotMatchWithCharClass',
-        description  : 'Input is not match with char class!',
+    valueNotMatchesWithCharClass: {
+        name         : 'valueNotMatchesWithCharClass',
+        description  : 'Value not matches with char class.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         // regex
         fromZationSystem: true
     },
 
-    inputDateIsNotBefore: {
-        name         : 'inputDateIsNotBefore',
+    dateIsNotBefore: {
+        name         : 'dateIsNotBefore',
         group        : ErrorGroup.DateError,
-        description  : 'Input date is not before date!',
+        description  : 'Input date is not before date.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         // shouldBefore
         fromZationSystem: true
     },
 
-    inputDateIsNotAfter: {
-        name         : 'inputDateIsNotAfter',
+    dateIsNotAfter: {
+        name         : 'dateIsNotAfter',
         group        : ErrorGroup.DateError,
-        description  : 'Input date is not after date!',
+        description  : 'Input date is not after date.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         // shouldAfter
         fromZationSystem: true
     },
 
-    inputIsNotContains: {
-        name         : 'inputIsNotContains',
-        description  : 'Input is not contains!',
+    valueNotMatchesWithContains: {
+        name         : 'valueNotMatchesWithContains',
+        description  : 'Value is not contains.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
-        // shouldContain (shouldContain)
+        // value
+        // path
+        // shouldContain
         fromZationSystem: true
     },
 
-    inputIsNotEquals: {
-        name         : 'inputIsNotEquals',
-        description  : 'Input is not equals!',
+    valueNotMatchesWithEquals: {
+        name         : 'valueNotMatchesWithEquals',
+        description  : 'Value is not equals.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
-        // shouldEqual (shouldEqual)
+        // value
+        // path
+        // shouldEqual
         fromZationSystem: true
     },
 
-    inputNotMatchWithMinValue: {
-        name         : 'inputNotMatchWithMinValue',
+    valueNotMatchesWithMinValue: {
+        name         : 'valueNotMatchesWithMinValue',
         group        : ErrorGroup.NumberSizeError,
-        description  : 'Input is not match with min value!',
+        description  : 'Value not matches with min value.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
-        // minValue (min value)
+        // value
+        // path
+        // minValue
         fromZationSystem: true
     },
 
-    inputNotMatchWithMaxValue: {
-        name         : 'inputNotMatchWithMaxValue',
+    valueNotMatchesWithMaxValue: {
+        name         : 'valueNotMatchesWithMaxValue',
         group        : ErrorGroup.NumberSizeError,
-        description  : 'Input is not match with max value!',
+        description  : 'Value not matches with max value.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
-        // maxValue (max value)
+        // value
+        // path
+        // maxValue
         fromZationSystem: true
     },
 
-    inputIsNotMatchWithRegex: {
-        name         : 'inputIsNotMatchWithRegex',
-        description  : 'Input is not match with regex!',
+    valueNotMatchesWithRegex: {
+        name         : 'valueNotMatchesWithRegex',
+        description  : 'Value not matches with regex.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         // regexName
         // regex
         fromZationSystem: true
     },
 
-    inputIsNotStartsWith: {
-        name         : 'inputIsNotStartsWith',
-        description  : 'Input is not starts with!',
+    valueNotMatchesWithStartsWith: {
+        name         : 'valueNotMatchesWithStartsWith',
+        description  : 'Value is not starts with.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
-        // shouldStartsWith (shouldStartsWith)
+        // value
+        // path
+        // shouldStartsWith
         fromZationSystem: true
     },
 
-    inputIsNotEndsWith: {
-        name         : 'inputIsNotEndsWith',
-        description  : 'Input is not ends with!',
+    valueIsNotEndsWith: {
+        name         : 'valueIsNotEndsWith',
+        description  : 'Value is not ends with.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
-        // shouldEndsWith (shouldEndsWith)
+        // value
+        // path
+        // shouldEndsWith
         fromZationSystem: true
     },
 
-    inputIsNotMatchWithIn: {
-        name         : 'inputIsNotMatchWithIn',
+    valueNotMatchesWithIn: {
+        name         : 'valueNotMatchesWithIn',
         group        : ErrorGroup.InError,
-        description  : 'Input is not match with any value!',
+        description  : 'Value not matches with any value.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         // values (In-Values Array)
         fromZationSystem: true
     },
 
-    inputIsNotMatchWithPrivateIn: {
-        name         : 'inputIsNotMatchWithPrivateIn',
+    valueNotMatchesWithPrivateIn: {
+        name         : 'valueNotMatchesWithPrivateIn',
         group        : ErrorGroup.InError,
-        description  : 'Input is not match with any value!',
+        description  : 'Value not matches with any value.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     },
 
-    inputArrayNotMatchWithMaxLength: {
-        name         : 'inputArrayNotMatchWithMaxLength',
+    arrayNotMatchesWithMaxLength: {
+        name         : 'arrayNotMatchesWithMaxLength',
         group        : ErrorGroup.ArrayLengthError,
-        description  : 'Input array not match with max length!',
+        description  : 'Array not matches with max length.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
-        // maxLength (maxLength)
+        // value
+        // path
+        // maxLength
         fromZationSystem: true
     },
 
-    inputArrayNotMatchWithMinLength: {
-        name         : 'inputArrayNotMatchWithMinLength',
+    arrayNotMatchesWithMinLength: {
+        name         : 'arrayNotMatchesWithMinLength',
         group        : ErrorGroup.ArrayLengthError,
-        description  : 'Input array not match with min length!',
+        description  : 'Array not matches with min length.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
-        // minLength (minLength)
+        // value
+        // path
+        // minLength
         fromZationSystem: true
     },
 
-    inputArrayNotMatchWithLength: {
-        name         : 'inputArrayNotMatchWithLength',
+    arrayNotMatchesWithLength: {
+        name         : 'arrayNotMatchesWithLength',
         group        : ErrorGroup.ArrayLengthError,
-        description  : 'Input array not match with length!',
+        description  : 'Array not matches with length.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
-        // length (length)
+        // value
+        // path
+        // length
         fromZationSystem: true
     },
 
-    inputNotMatchWithMinByteSize: {
-        name         : 'inputNotMatchWithMinByteSize',
+    valueNotMatchesWithMinByteSize: {
+        name         : 'valueNotMatchesWithMinByteSize',
         group        : ErrorGroup.ByteSizeError,
-        description  : 'Input is not match with min byte size!',
+        description  : 'Value not matches with min byte size.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
-        // minByteSize (min byte size)
+        // value
+        // path
+        // minByteSize
         fromZationSystem: true
     },
 
-    inputNotMatchWithMaxByteSize: {
-        name         : 'inputNotMatchWithMaxByteSize',
+    valueNotMatchesWithMaxByteSize: {
+        name         : 'valueNotMatchesWithMaxByteSize',
         group        : ErrorGroup.ByteSizeError,
-        description  : 'Input is not match with max byte size!',
+        description  : 'Value not matches with max byte size.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
-        // maxByteSize (max byte size)
+        // value
+        // path
+        // maxByteSize
         fromZationSystem: true
     },
 
-    inputNotMatchWithMimeType: {
-        name         : 'inputNotMatchWithMimeType',
+    valueNotMatchesWithMimeType: {
+        name         : 'valueNotMatchesWithMimeType',
         group        : ErrorGroup.ContentTypeError,
-        description  : 'Input is not match with mime type!',
+        description  : 'Value not matches with mime type.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         // mimeType (mime type that is allow)
         fromZationSystem: true
     },
 
-    inputNotMatchWithMimeSubType: {
-        name         : 'inputNotMatchWithMimeSubType',
+    valueNotMatchesWithMimeSubType: {
+        name         : 'valueNotMatchesWithMimeSubType',
         group        : ErrorGroup.ContentTypeError,
-        description  : 'Input is not match with mime sub type!',
+        description  : 'Value not matches with mime sub type.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         // mimeSubType (mime sub type that is allow)
         fromZationSystem: true
     },
@@ -737,24 +737,24 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
     noValidTypeWasFound: {
         name         : 'noValidTypeWasFound',
         group        : ErrorGroup.TypeError,
-        description  : 'No valid type was found!',
+        description  : 'No valid type was found.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         // types (types was checked on value)
         fromZationSystem: true
     },
 
     noAnyOfMatch: {
         name         : 'noAnyOfMatch',
-        description  : 'No anyOf match!',
+        description  : 'No anyOf match.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
-        // inputValue (inputValue)
-        // inputPath (inputPath)
+        // value
+        // path
         fromZationSystem: true
     }
 };

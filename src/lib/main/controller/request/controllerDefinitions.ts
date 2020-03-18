@@ -56,7 +56,7 @@ export interface ZationTask {
 
 //legend
 /*
-i = input with objects (inputPath,value) (to check)
+i = input with objects (path,value) (to check)
 c = controller
 sc = systemController
  */
@@ -67,7 +67,7 @@ export interface ZationValidationCheck {
 }
 
 export interface ValidationCheckPair {
-    ip: string | string[],
+    p: string | string[],
     v: any
 }
 
