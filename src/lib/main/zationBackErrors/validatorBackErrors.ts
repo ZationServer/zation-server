@@ -9,7 +9,7 @@ import {ErrorGroup}       from "../constants/errorGroup";
 import {ErrorType}        from "./../constants/errorType";
 import BackErrorConstruct from "../constants/backErrorConstruct";
 
-export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
+export const ValidatorBackErrors = {
     valueIsNotTypeObject: {
         name         : 'valueIsNotTypeObject',
         group        : ErrorGroup.TypeError,
@@ -20,7 +20,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeArray: {
         name         : 'valueIsNotTypeArray',
@@ -32,7 +32,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeString: {
         name         : 'valueIsNotTypeString',
@@ -44,7 +44,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeChar: {
         name         : 'valueIsNotTypeChar',
@@ -56,7 +56,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeNull: {
         name         : 'valueIsNotTypeNull',
@@ -68,7 +68,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeInt: {
         name         : 'valueIsNotTypeInt',
@@ -80,7 +80,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeFloat: {
         name         : 'valueIsNotTypeFloat',
@@ -92,7 +92,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeNumber: {
         name         : 'valueIsNotTypeNumber',
@@ -104,7 +104,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeDate: {
         name         : 'valueIsNotTypeDate',
@@ -116,7 +116,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeEmail: {
         name         : 'valueIsNotTypeEmail',
@@ -128,7 +128,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeBoolean: {
         name         : 'valueIsNotTypeBoolean',
@@ -140,7 +140,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeSha512: {
         name         : 'valueIsNotTypeSha512',
@@ -152,7 +152,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeSha256: {
         name         : 'valueIsNotTypeSha256',
@@ -164,7 +164,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeSha384: {
         name         : 'valueIsNotTypeSha384',
@@ -176,7 +176,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeSha1: {
         name         : 'valueIsNotTypeSha1',
@@ -188,7 +188,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeMd5: {
         name         : 'valueIsNotTypeMd5',
@@ -200,7 +200,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeHexColor: {
         name         : 'valueIsNotTypeHexColor',
@@ -212,7 +212,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeHexadecimal: {
         name         : 'valueIsNotTypeHexadecimal',
@@ -224,7 +224,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeIp4: {
         name         : 'valueIsNotTypeIp4',
@@ -236,7 +236,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeIp6: {
         name         : 'valueIsNotTypeIp6',
@@ -248,7 +248,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeIsbn10: {
         name         : 'valueIsNotTypeIsbn10',
@@ -260,7 +260,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeIsbn13: {
         name         : 'valueIsNotTypeIsbn13',
@@ -272,7 +272,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeJson: {
         name         : 'valueIsNotTypeJson',
@@ -284,7 +284,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeUrl: {
         name         : 'valueIsNotTypeUrl',
@@ -296,7 +296,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeMimeType: {
         name         : 'valueIsNotTypeMimeType',
@@ -308,7 +308,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeMacAddress: {
         name         : 'valueIsNotTypeMacAddress',
@@ -320,7 +320,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeMobileNumber: {
         name         : 'valueIsNotTypeMobileNumber',
@@ -332,7 +332,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeUuid3: {
         name         : 'valueIsNotTypeUuid3',
@@ -344,7 +344,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeUuid4: {
         name         : 'valueIsNotTypeUuid4',
@@ -356,7 +356,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeUuid5: {
         name         : 'valueIsNotTypeUuid5',
@@ -368,7 +368,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeBase64: {
         name         : 'valueIsNotTypeBase64',
@@ -380,7 +380,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeAscii: {
         name         : 'valueIsNotTypeAscii',
@@ -392,7 +392,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeUserId: {
         name         : 'valueIsNotTypeUserId',
@@ -404,7 +404,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeMongoId: {
         name         : 'valueIsNotTypeMongoId',
@@ -416,7 +416,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueIsNotTypeLatLong: {
         name         : 'valueIsNotTypeLatLong',
@@ -428,7 +428,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueNotMatchesWithMinLength: {
         name         : 'valueNotMatchesWithMinLength',
@@ -441,7 +441,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // minLength
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueNotMatchesWithMaxLength: {
         name         : 'valueNotMatchesWithMaxLength',
@@ -454,7 +454,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // maxLength
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueNotMatchesWithLength: {
         name         : 'valueNotMatchesWithLength',
@@ -467,31 +467,19 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // length
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
-    valueIsNotUppercase: {
-        name         : 'valueIsNotUpperCase',
-        group        : ErrorGroup.LettersFormatError,
-        description  : 'Value is not uppercase.',
+    valueNotMatchesWithLettersFormat: {
+        name         : 'valueNotMatchesWithLettersFormat',
+        description  : 'Value not matches with letters format.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
         // value
         // path
+        // format
         fromZationSystem: true
-    },
-
-    valueIsNotLowercase: {
-        name         : 'valueIsNotLowercase',
-        group        : ErrorGroup.LettersFormatError,
-        description  : 'Value is not lowercase.',
-        type         : ErrorType.ValidationError,
-        sendInfo     : true,
-        //INFO
-        // value
-        // path
-        fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueNotMatchesWithCharClass: {
         name         : 'valueNotMatchesWithCharClass',
@@ -503,7 +491,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // regex
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     dateIsNotBefore: {
         name         : 'dateIsNotBefore',
@@ -516,7 +504,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // shouldBefore
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     dateIsNotAfter: {
         name         : 'dateIsNotAfter',
@@ -529,7 +517,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // shouldAfter
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueNotMatchesWithContains: {
         name         : 'valueNotMatchesWithContains',
@@ -541,7 +529,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // shouldContain
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueNotMatchesWithEquals: {
         name         : 'valueNotMatchesWithEquals',
@@ -553,7 +541,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // shouldEqual
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueNotMatchesWithMinValue: {
         name         : 'valueNotMatchesWithMinValue',
@@ -566,7 +554,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // minValue
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueNotMatchesWithMaxValue: {
         name         : 'valueNotMatchesWithMaxValue',
@@ -579,7 +567,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // maxValue
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueNotMatchesWithRegex: {
         name         : 'valueNotMatchesWithRegex',
@@ -592,11 +580,11 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // regexName
         // regex
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueNotMatchesWithStartsWith: {
         name         : 'valueNotMatchesWithStartsWith',
-        description  : 'Value is not starts with.',
+        description  : 'Value not matches with starts with.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
@@ -604,11 +592,11 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // shouldStartsWith
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
-    valueIsNotEndsWith: {
-        name         : 'valueIsNotEndsWith',
-        description  : 'Value is not ends with.',
+    valueNotMatchesWithEndsWith: {
+        name         : 'valueNotMatchesWithEndsWith',
+        description  : 'Value not matches with ends with.',
         type         : ErrorType.ValidationError,
         sendInfo     : true,
         //INFO
@@ -616,7 +604,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // shouldEndsWith
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueNotMatchesWithIn: {
         name         : 'valueNotMatchesWithIn',
@@ -629,7 +617,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // values (In-Values Array)
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueNotMatchesWithPrivateIn: {
         name         : 'valueNotMatchesWithPrivateIn',
@@ -641,7 +629,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     arrayNotMatchesWithMaxLength: {
         name         : 'arrayNotMatchesWithMaxLength',
@@ -654,7 +642,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // maxLength
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     arrayNotMatchesWithMinLength: {
         name         : 'arrayNotMatchesWithMinLength',
@@ -667,7 +655,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // minLength
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     arrayNotMatchesWithLength: {
         name         : 'arrayNotMatchesWithLength',
@@ -680,7 +668,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // length
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueNotMatchesWithMinByteSize: {
         name         : 'valueNotMatchesWithMinByteSize',
@@ -693,7 +681,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // minByteSize
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueNotMatchesWithMaxByteSize: {
         name         : 'valueNotMatchesWithMaxByteSize',
@@ -706,7 +694,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // maxByteSize
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueNotMatchesWithMimeType: {
         name         : 'valueNotMatchesWithMimeType',
@@ -719,7 +707,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // mimeType (mime type that is allow)
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     valueNotMatchesWithMimeSubType: {
         name         : 'valueNotMatchesWithMimeSubType',
@@ -732,7 +720,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // mimeSubType (mime sub type that is allow)
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     noValidTypeWasFound: {
         name         : 'noValidTypeWasFound',
@@ -745,7 +733,7 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // path
         // types (types was checked on value)
         fromZationSystem: true
-    },
+    } as BackErrorConstruct,
 
     noAnyOfMatch: {
         name         : 'noAnyOfMatch',
@@ -756,5 +744,5 @@ export const ValidatorBackErrors: Record<string,BackErrorConstruct> = {
         // value
         // path
         fromZationSystem: true
-    }
+    } as BackErrorConstruct
 };

@@ -299,8 +299,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
                         if(!input.match(settings[name])) {
                             backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithRegex,
                                 {
-                                    value: prepareErrorData.value,
-                                    path: prepareErrorData.path,
+                                    ...prepareErrorData,
                                     regexName: name,
                                     regex: settings[name].toString()
                                 });
@@ -312,8 +311,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
                 if(!input.match(settings)) {
                     backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithRegex,
                         {
-                            value: prepareErrorData.value,
-                            path: prepareErrorData.path,
+                            ...prepareErrorData,
                             regex: settings.toString()
                         });
                 }
@@ -326,8 +324,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
         if(!EasyValidator.validIn(settings,input)) {
             backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithIn,
                 {
-                    value: prepareErrorData.value,
-                    path: prepareErrorData.path,
+                    ...prepareErrorData,
                     values: settings
                 });
         }
@@ -345,8 +342,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
         if(typeof input === 'string' && input.length < settings) {
             backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMinLength,
                 {
-                    value: prepareErrorData.value,
-                    path: prepareErrorData.path,
+                    ...prepareErrorData,
                     minLength: settings
                 });
         }
@@ -357,8 +353,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
         if(typeof input === 'string' && input.length > settings) {
             backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMaxLength,
                 {
-                    value: prepareErrorData.value,
-                    path: prepareErrorData.path,
+                    ...prepareErrorData,
                     maxLength: settings
 
                 });
@@ -370,8 +365,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
         if(typeof input === 'string' && input.length !== settings) {
             backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithLength,
                 {
-                    value: prepareErrorData.value,
-                    path: prepareErrorData.path,
+                    ...prepareErrorData,
                     length: settings
 
                 });
@@ -385,8 +379,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
             if(missingContains.length > 0) {
                 backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithContains,
                     {
-                        value: prepareErrorData.value,
-                        path: prepareErrorData.path,
+                        ...prepareErrorData,
                         shouldContain: settings,
                         missing: missingContains
                     });
@@ -399,10 +392,8 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
         if(!EasyValidator.equals(input,settings)) {
             backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithEquals,
                 {
-                    value: prepareErrorData.value,
-                    path: prepareErrorData.path,
+                    ...prepareErrorData,
                     shouldEquals: settings
-
                 });
         }
     },
@@ -412,8 +403,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
         if(typeof input === 'number' && input < settings) {
             backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMinValue,
                 {
-                    value: prepareErrorData.value,
-                    path: prepareErrorData.path,
+                    ...prepareErrorData,
                     minValue: settings
 
                 });
@@ -425,8 +415,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
         if(typeof input === 'number' && input > settings) {
             backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMaxValue,
                 {
-                    value: prepareErrorData.value,
-                    path: prepareErrorData.path,
+                    ...prepareErrorData,
                     maxValue: settings
                 });
         }
@@ -437,8 +426,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
         if(typeof input === 'string' && !input.startsWith(settings)) {
             backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithStartsWith,
                 {
-                    value: prepareErrorData.value,
-                    path: prepareErrorData.path,
+                    ...prepareErrorData,
                     shouldStartsWith: settings
 
                 });
@@ -448,12 +436,10 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
     endsWith: (input, settings, backErrorBag, prepareErrorData) =>
     {
         if(typeof input === 'string' && !input.endsWith(settings)) {
-            backErrorBag.addNewBackError(ValidatorBackErrors.valueIsNotEndsWith,
+            backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithEndsWith,
                 {
-                    value: prepareErrorData.value,
-                    path: prepareErrorData.path,
+                    ...prepareErrorData,
                     shouldEndsWith: settings
-
                 });
         }
     },
@@ -461,11 +447,11 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
     letters: (input, settings, backErrorBag, prepareErrorData) =>
     {
         if(typeof input === 'string') {
-            if((settings === FormatLetters.UpperCase) && (!EasyValidator.isUpperCase(input))) {
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueIsNotUppercase,prepareErrorData);
-            }
-            else if((settings === FormatLetters.LowerCase) && (!EasyValidator.isLowerCase(input))) {
-                backErrorBag.addNewBackError(ValidatorBackErrors.valueIsNotLowercase,prepareErrorData);
+            if(!(settings === FormatLetters.UpperCase ? EasyValidator.isUpperCase(input) : EasyValidator.isLowerCase(input))) {
+                backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithLettersFormat,{
+                    ...prepareErrorData,
+                    format: settings
+                });
             }
         }
     },
@@ -476,8 +462,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
             if(!input.match(settings)) {
                 backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithCharClass,
                     {
-                        value: prepareErrorData.value,
-                        path: prepareErrorData.path,
+                        ...prepareErrorData,
                         regex: settings.toString()
                     });
             }
@@ -493,8 +478,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
             if(inputDate > checkDate) {
                 backErrorBag.addNewBackError(ValidatorBackErrors.dateIsNotBefore,
                     {
-                        value: prepareErrorData.value,
-                        path: prepareErrorData.path,
+                        ...prepareErrorData,
                         shouldBefore: checkDate
                     });
             }
@@ -510,8 +494,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
             if(inputDate < checkDate) {
                 backErrorBag.addNewBackError(ValidatorBackErrors.dateIsNotAfter,
                     {
-                        value: prepareErrorData.value,
-                        path: prepareErrorData.path,
+                        ...prepareErrorData,
                         shouldAfter: checkDate
                     });
             }
@@ -524,8 +507,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
         {
             backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMinByteSize,
                 {
-                    value: prepareErrorData.value,
-                    path: prepareErrorData.path,
+                    ...prepareErrorData,
                     minByteSize: settings
                 });
         }
@@ -537,8 +519,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
         {
             backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMaxByteSize,
                 {
-                    value: prepareErrorData.value,
-                    path: prepareErrorData.path,
+                    ...prepareErrorData,
                     maxByteSize: settings
                 });
         }
@@ -568,8 +549,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
             //if found a mime than it already exists with return.
             backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMimeType,
                 {
-                    value: prepareErrorData.value,
-                    path: prepareErrorData.path,
+                    ...prepareErrorData,
                     mimeType: fails
                 });
         }
@@ -599,8 +579,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
             //if found a sub than it already exists with return.
             backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithMimeSubType,
                 {
-                    value: prepareErrorData.value,
-                    path: prepareErrorData.path,
+                    ...prepareErrorData,
                     mimeSubType: fails
                 });
         }
