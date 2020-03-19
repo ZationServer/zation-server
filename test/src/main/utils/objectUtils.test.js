@@ -11,7 +11,7 @@ describe('MAIN.UTILS.ObjectUtils',() => {
 
     describe('Methods',() => {
 
-        it('MergeObjects test-1',() => {
+        it('DeepMergeObjects test-1',() => {
 
             const obj1 = {
                 name : 'luca',
@@ -26,7 +26,7 @@ describe('MAIN.UTILS.ObjectUtils',() => {
                 name : 'peter'
             };
 
-            assert.deepEqual(ObjectUtils.mergeObjects([obj1,obj2,obj3]),{
+            assert.deepEqual(ObjectUtils.deepMergeObjects(obj1,obj2,obj3),{
                 name : 'luca',
                 age : 19,
                 hello : 'hello',
@@ -35,15 +35,15 @@ describe('MAIN.UTILS.ObjectUtils',() => {
 
         });
 
-        it('MergeObjects test-2',() => {
-            assert.deepEqual(ObjectUtils.mergeObjects([]),{});
+        it('DeepMergeObjects test-2',() => {
+            assert.deepEqual(ObjectUtils.deepMergeObjects(),{});
         });
 
-        it('MergeObjects test-3',() => {
-            assert.deepEqual(ObjectUtils.mergeObjects([{hello : 'hello'}]),{hello : 'hello'});
+        it('DeepMergeObjects test-3',() => {
+            assert.deepEqual(ObjectUtils.deepMergeObjects({hello : 'hello'}),{hello : 'hello'});
         });
 
-        it('MergeObjects test-4',() => {
+        it('DeepMergeObjects test-4',() => {
 
             const obj1 = {
                 name : 'luca',
@@ -64,7 +64,7 @@ describe('MAIN.UTILS.ObjectUtils',() => {
                 }
             };
 
-            assert.deepEqual(ObjectUtils.mergeObjects([obj1,obj2,obj3]),{
+            assert.deepEqual(ObjectUtils.deepMergeObjects(obj1,obj2,obj3),{
                 name : 'luca',
                 age : 19,
                 hello : 'hello',
@@ -77,7 +77,7 @@ describe('MAIN.UTILS.ObjectUtils',() => {
 
         });
 
-        it('AddObToOb',() => {
+        it('MergeTwoObjects',() => {
 
             const obj1 = {
                 name : 'luca',
@@ -88,30 +88,10 @@ describe('MAIN.UTILS.ObjectUtils',() => {
                 age : 10
             };
 
-            ObjectUtils.addObToOb(obj1,obj2,true);
+            ObjectUtils.mergeTwoObjects(obj1,obj2,true);
             assert.deepEqual(obj1,{
                 name : 'luca',
                 age : 10,
-                hello : 'hello'
-            });
-
-        });
-
-        it('OnlyAddObToOb',() => {
-
-            const obj1 = {
-                name : 'luca',
-                age : 19,
-            };
-            const obj2 = {
-                hello : 'hello',
-                hello2 : 'hello2'
-            };
-
-            ObjectUtils.onlyAddObToOb(obj1,obj2,true,{hello:''});
-            assert.deepEqual(obj1,{
-                name : 'luca',
-                age : 19,
                 hello : 'hello'
             });
 
@@ -137,14 +117,14 @@ describe('MAIN.UTILS.ObjectUtils',() => {
             assert.isFalse(ObjectUtils.hasOneOf(obj1,['hello']));
         });
 
-        it('GetFoundKeys',() => {
+        it('FindKeysOfScope',() => {
 
             const obj1 = {
                 name : 'luca',
                 age : 19,
             };
-            assert.deepEqual(ObjectUtils.getFoundKeys(obj1,['name']),['name']);
-            assert.deepEqual(ObjectUtils.getFoundKeys(obj1,['hello']),[]);
+            assert.deepEqual(ObjectUtils.findKeysOfScope(obj1,['name']),['name']);
+            assert.deepEqual(ObjectUtils.findKeysOfScope(obj1,['hello']),[]);
         });
 
     });

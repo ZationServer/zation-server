@@ -35,7 +35,7 @@ describe('MAIN.BackErrorBuilder',() => {
                 .create();
 
             assert.equal(te.getName(),'error1');
-            assert.equal(te.getType(),'DATABASE_ERROR');
+            assert.equal(te.getType(),'DatabaseError');
             assert.equal(te.getDescription(),'des');
             assert(te.isPrivate());
         });
@@ -53,7 +53,7 @@ describe('MAIN.BackErrorBuilder',() => {
                 .create();
 
             assert.equal(te.getName(),'error1');
-            assert.equal(te.getType(),'NORMAL_ERROR');
+            assert.equal(te.getType(),'NormalError');
             assert(te.isSendInfo());
             assert(te.isFromZationSystem());
         });
@@ -74,7 +74,7 @@ describe('MAIN.BackErrorBuilder',() => {
                 .create();
 
             assert.equal(te.getName(),'error1');
-            assert.equal(te.getType(),'NORMAL_ERROR');
+            assert.equal(te.getType(),'NormalError');
             assert.deepEqual(te.getInfo(),{length : 2});
         });
 

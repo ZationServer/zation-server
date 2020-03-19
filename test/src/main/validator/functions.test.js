@@ -54,35 +54,35 @@ describe('Function Validation',() => {
         });
     });
 
-    describe('Enum',() => {
+    describe('In',() => {
 
         it('Not matching input should produce an error with info',() => {
             const eb = new BackErrorBag;
-            ValidatorFunctions.enum('c',['m','w'],eb,{});
+            ValidatorFunctions.in('c',['m','w'],eb,{});
             assert(!eb.isEmpty());
-            assert(eb.getBackErrors()[0].getInfo().enum !== undefined);
+            assert(eb.getBackErrors()[0].getInfo().values !== undefined);
         });
 
         it('Matching should produce no error',() => {
             const eb = new BackErrorBag;
-            ValidatorFunctions.enum('m',['m','w'],eb,{});
+            ValidatorFunctions.in('m',['m','w'],eb,{});
             assert(eb.isEmpty());
         });
 
     });
 
-    describe('PrivateEnum',() => {
+    describe('PrivateIn',() => {
 
         it('Not matching input should produce an error with no info',() => {
             const eb = new BackErrorBag;
-            ValidatorFunctions.privateEnum('c',['m','w'],eb,{});
+            ValidatorFunctions.privateIn('c',['m','w'],eb,{});
             assert(!eb.isEmpty());
-            assert(eb.getBackErrors()[0].getInfo().enum === undefined);
+            assert(eb.getBackErrors()[0].getInfo().values === undefined);
         });
 
         it('Matching should produce no error',() => {
             const eb = new BackErrorBag;
-            ValidatorFunctions.privateEnum('m',['m','w'],eb,{});
+            ValidatorFunctions.privateIn('m',['m','w'],eb,{});
             assert(eb.isEmpty());
         });
 
@@ -309,13 +309,13 @@ describe('Function Validation',() => {
         describe('UpperCase',() => {
             it('Not matching input should produce an error',() => {
                 const eb = new BackErrorBag;
-                ValidatorFunctions.letters('aba',FormatLetters.UPPER_CASE,eb,{});
+                ValidatorFunctions.letters('aba',FormatLetters.UpperCase,eb,{});
                 assert(!eb.isEmpty());
             });
 
             it('Matching should produce no error',() => {
                 const eb = new BackErrorBag;
-                ValidatorFunctions.letters('ABA',FormatLetters.UPPER_CASE,eb,{});
+                ValidatorFunctions.letters('ABA',FormatLetters.UpperCase,eb,{});
                 assert(eb.isEmpty());
             });
         });
@@ -323,20 +323,20 @@ describe('Function Validation',() => {
         describe('LowerCase',() => {
             it('Not matching input should produce an error',() => {
                 const eb = new BackErrorBag;
-                ValidatorFunctions.letters('ABA',FormatLetters.LOWER_CASE,eb,{});
+                ValidatorFunctions.letters('ABA',FormatLetters.LowerCase,eb,{});
                 assert(!eb.isEmpty());
             });
 
             it('Matching should produce no error',() => {
                 const eb = new BackErrorBag;
-                ValidatorFunctions.letters('aba',FormatLetters.LOWER_CASE,eb,{});
+                ValidatorFunctions.letters('aba',FormatLetters.LowerCase,eb,{});
                 assert(eb.isEmpty());
             });
         });
 
         it('Not a string should produce no error',() => {
             const eb = new BackErrorBag;
-            ValidatorFunctions.letters(5,FormatLetters.UPPER_CASE,eb,{});
+            ValidatorFunctions.letters(5,FormatLetters.UpperCase,eb,{});
             assert(eb.isEmpty());
         });
 
@@ -432,13 +432,13 @@ describe('Function Validation',() => {
 
             it('Not matching input should produce an error',() => {
                 const eb = new BackErrorBag;
-                ValidatorFunctions.minByteSize(Base64TestData.d1.data,Base64TestData.d1.fileByte*2,eb,{},undefined,ValidationType.BASE64);
+                ValidatorFunctions.minByteSize(Base64TestData.d1.data,Base64TestData.d1.fileByte*2,eb,{},undefined,'base64');
                 assert(!eb.isEmpty());
             });
 
             it('Matching should produce no error',() => {
                 const eb = new BackErrorBag;
-                ValidatorFunctions.minByteSize(Base64TestData.d1.data,Base64TestData.d1.fileByte,eb,{},undefined,ValidationType.BASE64);
+                ValidatorFunctions.minByteSize(Base64TestData.d1.data,Base64TestData.d1.fileByte,eb,{},undefined,'base64');
                 assert(eb.isEmpty());
             });
         });
@@ -470,13 +470,13 @@ describe('Function Validation',() => {
 
             it('Not matching input should produce an error',() => {
                 const eb = new BackErrorBag;
-                ValidatorFunctions.maxByteSize(Base64TestData.d1.data,Base64TestData.d1.fileByte,eb,{},undefined,ValidationType.BASE64);
+                ValidatorFunctions.maxByteSize(Base64TestData.d1.data,Base64TestData.d1.fileByte,eb,{},undefined,'base64');
                 assert(!eb.isEmpty());
             });
 
             it('Matching should produce no error',() => {
                 const eb = new BackErrorBag;
-                ValidatorFunctions.maxByteSize(Base64TestData.d1.data,Base64TestData.d1.fileByte*2,eb,{},undefined,ValidationType.BASE64);
+                ValidatorFunctions.maxByteSize(Base64TestData.d1.data,Base64TestData.d1.fileByte*2,eb,{},undefined,'base64');
                 assert(eb.isEmpty());
             });
         });

@@ -4,9 +4,9 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-const TimeUtils       = require("../../../../dist/lib/main/utils/timeUtils").default;
-const moment          = require("moment");
-const assert          = require("chai").assert;
+const processTaskTriggerTime = require("../../../../dist/lib/main/utils/timeUtils").processTaskTriggerTime;
+const moment                 = require("moment");
+const assert                 = require("chai").assert;
 
 describe('MAIN.UTILS.TimeUtils',() => {
 
@@ -29,7 +29,7 @@ describe('MAIN.UTILS.TimeUtils',() => {
         {
             it('processTaskTriggerTime test-'+index,() => {
                 // @ts-ignore
-                assert.equal(TimeUtils.processTaskTriggerTime(option,time).tillMs,ms);
+                assert.equal(processTaskTriggerTime(option,time).tillMs,ms);
             });
         });
 

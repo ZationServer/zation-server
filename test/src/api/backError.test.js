@@ -50,14 +50,14 @@ describe('API.BackError',() => {
                 const te = new BackError({name: 'error1'});
                 assert.deepEqual(te._toResponseError(true),{ n: 'error1',
                     g: undefined,
-                    t: 'NORMAL_ERROR',
+                    t: 'NormalError',
                     zs: false,
                     i: {},
                     d: 'No Description define in Error' });
 
                 assert.deepEqual(te._toResponseError(),{ n: 'error1',
                     g: undefined,
-                    t: 'NORMAL_ERROR',
+                    t: 'NormalError',
                     zs: false,
                     i: {}});
             });
@@ -65,7 +65,7 @@ describe('API.BackError',() => {
             it('private',() => {
                 const te = new BackError({name: 'error1', private : true});
                 assert.deepEqual
-                (te._toResponseError(true),{ n: 'BackError', t: 'NORMAL_ERROR', zs: false });
+                (te._toResponseError(true),{ n: 'BackError', t: 'NormalError', zs: false });
             });
 
         });
@@ -127,7 +127,7 @@ describe('API.BackError',() => {
 
         it('toString',() => {
             const eb = new BackError({name : 'error1'});
-            assert.equal(eb.toString(),'BackError  Name: error1 Group: undefined  Description: No Description define in Error  Type: NORMAL_ERROR  Info: {}  isPrivate:false  isFromZationSystem:false');
+            assert.equal(eb.toString(),'BackError  Name: error1 Group: undefined  Description: No Description define in Error  Type: NormalError  Info: {}  isPrivate:false  isFromZationSystem:false');
         });
     });
 

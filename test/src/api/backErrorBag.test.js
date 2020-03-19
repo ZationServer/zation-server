@@ -59,7 +59,7 @@ describe('API.BackErrorBag',() => {
             // noinspection JSCheckFunctionSignatures
             assert.sameDeepMembers(json, [ { n: 'error1',
                 g: undefined,
-                t: 'NORMAL_ERROR',
+                t: 'NormalError',
                 zs: false,
                 i: {},
                 d: 'No Description define in Error' } ]
@@ -112,7 +112,7 @@ describe('API.BackErrorBag',() => {
 
         it('toString',() => {
             const eb = new BackErrorBag(new BackError({name : 'test1'}));
-            assert.equal(eb.toString(),'BackErrorBag-> 1 BackErrors  ->\n     0: BackError  Name: test1 Group: undefined  Description: No Description define in Error  Type: NORMAL_ERROR  Info: {}  isPrivate:false  isFromZationSystem:false \n');
+            assert.equal(eb.toString(),'BackErrorBag-> 1 BackErrors  ->\n     0: BackError  Name: test1 Group: undefined  Description: No Description define in Error  Type: NormalError  Info: {}  isPrivate:false  isFromZationSystem:false \n');
         });
 
     });
