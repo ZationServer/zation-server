@@ -12,6 +12,8 @@ import {updateInputConfigTranslatable}        from '../../../api/configTranslata
 /**
  * A class decorator that will mark the class as a param based input config.
  * That means you can use the class as an input config.
+ * Notice that the constructor or any other methods not be called.
+ * Only the properties marked with $Model will be transformed.
  * @example
  * @ParamInput()
  * class SendMessageParameter {

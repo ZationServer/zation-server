@@ -200,6 +200,7 @@ export default class InputProcessorCreator
         const propKeys = Object.keys(props);
         const propKeysLength = propKeys.length;
 
+        const processBaseConstruct = typeof objectModel.baseConstruct === 'function';
         const processConstruct = typeof objectModel.construct === 'function';
         const processConvert = typeof objectModel.convert === 'function';
         const processPrototype = typeof objectModel.prototype === 'object';
@@ -271,7 +272,7 @@ export default class InputProcessorCreator
 
                 //process prototype,construct,convert
                 if(processInfo.createProcessTaskList && errorBag.isEmpty() &&
-                    (processConstruct || processConvert || processPrototype)
+                    (processBaseConstruct || processConstruct || processConvert || processPrototype)
                 )
                 {
                     processInfo.processTaskList.push(async  () => {
@@ -280,12 +281,17 @@ export default class InputProcessorCreator
                             Object.setPrototypeOf(input,(objectModel.prototype as object));
                         }
 
-                        //2.construct
+                        //2.baseConstruct
+                        if(processConstruct) {
+                            await (objectModel.baseConstruct as ConstructObjectFunction).call(input,bag);
+                        }
+
+                        //3.construct
                         if(processConstruct) {
                             await (objectModel.construct as ConstructObjectFunction).call(input,bag);
                         }
 
-                        //3.convert
+                        //4.convert
                         if(processConvert) {
                             srcObj[srcKey] = await (objectModel.convert as ConvertObjectFunction)(input,bag);
                         }

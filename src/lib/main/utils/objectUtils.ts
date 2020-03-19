@@ -190,28 +190,6 @@ export default class ObjectUtils
         }
     }
 
-    /**
-     * Sets the prototype of an object at the end of
-     * the chain (But before the Object.prototype)
-     * when the prototype does not already exist in the proto chain.
-     * @param object
-     * @param prototype
-     */
-    static setPrototypeAtTheEndSafe(object: object, prototype: object) {
-        let proto = object;
-        let nextProto = Object.getPrototypeOf(proto);
-        while (nextProto !== null && nextProto !== Object.prototype){
-            proto = nextProto;
-            nextProto = Object.getPrototypeOf(nextProto);
-        }
-        try {
-            Object.setPrototypeOf(proto,prototype);
-        }
-        catch (e) {
-            //ignore (Cyclic __proto__ value)
-        }
-    }
-
     // noinspection JSUnusedGlobalSymbols
     /**
      * Sets unchangeable properties to an object.

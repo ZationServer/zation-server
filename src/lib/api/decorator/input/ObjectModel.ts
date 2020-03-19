@@ -4,14 +4,23 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {isModelConfigTranslatable, updateModelConfigTranslatable} from '../../configTranslatable/modelConfigTranslatable';
+import {isModelConfigTranslatable, resolveModelConfigTranslatable, updateModelConfigTranslatable} from '../../configTranslatable/modelConfigTranslatable';
 import {ObjectModel as ObjectModelConfig}                         from "../../../main/config/definitions/parts/inputConfig";
 import CloneUtils                                                 from "../../../main/utils/cloneUtils";
 import {InDecoratorMem, inDM_ConstructorMethodsSymbol, inDM_ModelsSymbol} from "./InDecoratorMem";
-import ObjectUtils                                                        from '../../../main/utils/objectUtils';
 import {createReusableModel}                                              from '../../../main/models/reusableModelCreator';
 // noinspection TypeScriptPreferShortImport
 import {$extends}                                                         from '../../input/Extends';
+
+export const classObjectModelSymbol = Symbol();
+
+/**
+ * Returns if a value is a class object model.
+ * @param value
+ */
+export function isClassObjectModel(value: any): boolean {
+    return typeof value === 'function' && value[classObjectModelSymbol];
+}
 
 /**
  * A class decorator that can be used to mark the class as an object model.
@@ -21,20 +30,24 @@ import {$extends}                                                         from '
  * But you can declare other methods and declare them as a constructor
  * with the constructor method decorator.
  * That will give you the possibility to use the input data and create async constructors.
+ * You also can add normal methods or properties to the class.
+ * You can use these later because the prototype of
+ * the input will be set to a new instance of this class.
  * It's also possible to extend another class that is marked as another object model.
- * Zation will handle it as an object model extension.
  * That means the sub-model will inherit all properties,
  * with the possibility to overwrite them.
- * It also affects the prototype because the sub-object model prototype
- * will get the super-model prototype as a prototype.
- * Also, the super-model constructor-functions will be called before
- * the constructor-functions of the sub-object model.
- * In addition, the convert-function will also be
- * called with the result of the super convert function.
+ * Also, the super-model constructor-decorator-functions will be called before
+ * the constructor-decorator-functions of the sub-object model.
+ * The rest behaves like the normal inheritance of es6 classes.
+ * Means the constructor on the superclass is
+ * called before the constructor on the subclass.
+ * Also, the prototypes of the classes will be chained.
  * @param name The name of the object model; if it is not provided, it will use the class name.
  */
 export const ObjectModel = (name?: string) => {
     return (target: any) => {
+        target[classObjectModelSymbol] = true;
+
         const prototype: InDecoratorMem = target.prototype;
 
         //constructorMethods
@@ -48,9 +61,10 @@ export const ObjectModel = (name?: string) => {
 
         const objectModel: ObjectModelConfig = createReusableModel({
             properties: models,
+            baseConstruct: async function(bag) {
+                Object.setPrototypeOf(this,Reflect.construct(target,[bag]));
+            },
             construct: async function(bag) {
-                ObjectUtils.setPrototypeAtTheEndSafe(this,Reflect.construct(target,[bag]));
-
                 const promises: Promise<void>[] = [];
                 for(let i = 0; i < constructorMethodsLength; i++){
                     promises.push(constructorMethods[i].call(this,bag));
@@ -62,7 +76,7 @@ export const ObjectModel = (name?: string) => {
         //extends
         const proto = Object.getPrototypeOf(target);
         if(isModelConfigTranslatable(proto) || typeof proto !== 'function') {
-            $extends(objectModel,proto);
+            $extends(objectModel,resolveModelConfigTranslatable(proto));
         }
 
         updateModelConfigTranslatable(target,() => objectModel);

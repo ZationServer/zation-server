@@ -256,6 +256,8 @@ export interface ObjectModel extends ModelOptional
     /**
      * Specifies the properties of the object.
      * This property is required to define an object model.
+     * If you inherit from another object model all properties will also be inherited.
+     * But you can override super inherited properties in the sub-model.
      * @example
      * properties: {
      *     name: {},
@@ -266,6 +268,7 @@ export interface ObjectModel extends ModelOptional
     properties: ObjectProperties;
     /**
      * Set the prototype of the input object to a specific prototype.
+     * If you inherit from another object model Zation will build a prototype chain.
      * @example
      * prototype: {
      *     getName: function() {
@@ -275,10 +278,25 @@ export interface ObjectModel extends ModelOptional
      */
     prototype?: object;
     /**
+     * Sets the baseConstruct function of the object model.
+     * It behaves like the construct function. The only difference
+     * is that in the case of inheritance the baseConstruct functions will not be chained.
+     * Means that only the baseConstruct function of the base sub-model
+     * is called but not from the other supermodels.
+     * Notice also that the baseConstruct is called before the construct functions.
+     * @example
+     * baseConstruct: function(bag) {
+     *    this.fullName = `${this.firstName} ${this.lastName}`;
+     * }
+     */
+    baseConstruct?: ConstructObjectFunction;
+    /**
      * Set the construct function of the object model,
      * that function can be used as a constructor of the input object.
      * It will be called with the input object as this and the small bag
      * that allows you to add properties to the object.
+     * If you inherit from another object model the constructor functions will be chained.
+     * Means that the super construct function is called before the sub construct function.
      * @example
      * construct: function(bag) {
      *    this.fullName = `${this.firstName} ${this.lastName}`;
@@ -289,6 +307,9 @@ export interface ObjectModel extends ModelOptional
      * Convert the input object in a specific value;
      * for example, you only want the name value of the object.
      * The converting process will only be invoked if the object model has no validation errors.
+     * If you inherit from another object model the convert functions will be chained.
+     * Means the convert function of the sub-model will be called with
+     * the result of the convert function from the supermodel.
      * @example
      * convert: (obj,bag) => {
      *    return obj['name'];

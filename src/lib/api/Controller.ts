@@ -96,7 +96,9 @@ export default class Controller {
      * @description
      * Gets invokes when the controller gets an request with invalid input.
      * @param reqBag
-     * @param input
+     * @param rawInput
+     * Notice that you will get the raw input means only
+     * the data the user has sent without processed by the models.
      * @param backErrorBag
      * @throws
      * You can throw BackError or BackErrorBag
@@ -104,7 +106,7 @@ export default class Controller {
      * Notice that only the BackError or BackErrorBag sends back to the client.
      * All other errors or objects will be converted to an unknown BackError.
      */
-    invalidInput(reqBag: RequestBag, input: any, backErrorBag: BackErrorBag): Promise<void> | void {
+    invalidInput(reqBag: RequestBag, rawInput: any, backErrorBag: BackErrorBag): Promise<void> | void {
     }
 
     /**

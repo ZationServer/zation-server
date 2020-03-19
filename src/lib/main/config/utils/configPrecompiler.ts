@@ -345,6 +345,8 @@ export default class ConfigPrecompiler
                             value[nameof<ObjectModel>(s => s.prototype)] = superPrototype;
                         }
                         else {
+                            // flat clone.
+                            (value as ObjectModel).prototype = {...(value as ObjectModel).prototype};
                             Object.setPrototypeOf(value[nameof<ObjectModel>(s => s.prototype)],superPrototype);
                         }
                     }
