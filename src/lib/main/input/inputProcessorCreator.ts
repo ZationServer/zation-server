@@ -282,7 +282,7 @@ export default class InputProcessorCreator
                         }
 
                         //2.baseConstruct
-                        if(processConstruct) {
+                        if(processBaseConstruct) {
                             await (objectModel.baseConstruct as ConstructObjectFunction).call(input,bag);
                         }
 
