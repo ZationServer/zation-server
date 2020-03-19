@@ -37,7 +37,7 @@ export default class InputUtils
                         continue;
                     }
                     else if(tempConfig.hasOwnProperty(nameof<ArrayModel>(s => s.array))){
-                        if(k === 'inner'){
+                        if(k === 'type'){
                             //resolve array
                             tempConfig = tempConfig[nameof<ArrayModel>(s => s.array)];
                             i++;
