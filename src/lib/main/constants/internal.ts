@@ -8,11 +8,8 @@ export enum BackErrorInfo {
     Main = 'main'
 }
 
-export enum ZationAccess {
-    AllAuth               = 'allAuth',
-    AllNotAuth            = 'allNotAuth',
-    All                   = 'all'
-}
+export type ZationAccessRecord = Record<ZationAccess,any>;
+export type ZationAccess = 'all' | 'allAuth' | 'allNotAuth';
 
 export interface ZationToken extends PrepareZationToken{
     tid: string,

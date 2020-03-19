@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import AuthEngine                                from "../auth/authEngine";
-import {ZationAccess}                            from "../constants/internal";
+import {ZationAccessRecord}                      from '../constants/internal';
 import {AccessConfigValue, isTokenCheckFunction} from "./accessOptions";
 import Logger                                    from '../log/logger';
 import {ErrorEventSingleton}                     from '../error/errorEventSingleton';
@@ -78,13 +78,13 @@ export default class AccessUtils
         }
         else if(typeof value === 'string') {
             switch (value) {
-                case ZationAccess.All :
+                case nameof<ZationAccessRecord>(s => s.all):
                     return async () => true;
-                case ZationAccess.AllAuth :
+                case nameof<ZationAccessRecord>(s => s.allAuth):
                     return async (a) => a.isAuth();
-                case ZationAccess.AllNotAuth :
+                case nameof<ZationAccessRecord>(s => s.allNotAuth):
                     return async (a) => a.isDefault();
-                default :
+                default:
                     return async (a) => a.getUserGroup() === value;
             }
         }

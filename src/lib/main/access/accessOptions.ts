@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ZationToken}                    from "../constants/internal";
+import {ZationAccess, ZationToken} from '../constants/internal';
 
 //TokenCheckFunction
 export const tokenCheckFunctionSymbol = Symbol();
@@ -40,5 +40,5 @@ export function createUserIdCheck(id: number | string,strictTypeCheck: boolean):
     return {id,strictTypeCheck};
 }
 
-export type AccessCheckItem<T extends Function> = string | UserIdCheck | T | TokenCheckFunction | boolean;
+export type AccessCheckItem<T extends Function> = ZationAccess | string | UserIdCheck | T | TokenCheckFunction | boolean;
 export type AccessConfigValue<T extends Function> = AccessCheckItem<T> | (AccessCheckItem<T> | AccessCheckItem<T>[])[];

@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ConfigNames, DEFAULT_USER_GROUP_FALLBACK, ZationAccess} from '../../constants/internal';
+import {ConfigNames, DEFAULT_USER_GROUP_FALLBACK, ZationAccessRecord} from '../../constants/internal';
 import {AppConfig}                                    from '../definitions/main/appConfig';
 import {PanelUserConfig}                              from '../definitions/main/mainConfig';
 import {BaseCustomChannelConfig, ZationChannelConfig} from '../definitions/parts/channelsConfig';
@@ -78,7 +78,11 @@ export default class ConfigChecker
     private prepareAllValidUserGroupsAndCheck() {
 
         let groups: any = [];
-        let extraKeys: any = [ZationAccess.All, ZationAccess.AllNotAuth, ZationAccess.AllAuth];
+        let extraKeys: any = [
+            nameof<ZationAccessRecord>(s => s.all),
+            nameof<ZationAccessRecord>(s => s.allNotAuth),
+            nameof<ZationAccessRecord>(s => s.allAuth)
+        ];
 
         if (typeof this.zcLoader.appConfig.userGroups === 'object') {
             if (typeof this.zcLoader.appConfig.userGroups.auth === 'object') {
@@ -137,7 +141,7 @@ export default class ConfigChecker
             } else {
                 //checkAuthControllerAccess value
                 Iterator.iterateCompDefinition<ControllerClass>(controller[authControllerId],(controllerClass, apiLevel) => {
-                    if (controllerClass.config.access !== ZationAccess.All) {
+                    if (controllerClass.config.access !== nameof<ZationAccessRecord>(s => s.all)) {
                         Logger.consoleLogConfigWarning
                         (ConfigNames.App, `It is recommended to set the access of the authController ${apiLevel ? `(API Level: ${apiLevel}) `: ''}directly to 'all'.`);
                     }
