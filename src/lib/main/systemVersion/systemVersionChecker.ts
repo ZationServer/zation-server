@@ -22,7 +22,7 @@ export default class SystemVersionChecker
         const versionAccess = versionAccessConfig.versionAccess;
         if(typeof versionAccess === 'object') {
             const preparedVersionChecker: Record<string,VersionCheckFunction> = {};
-            for(let system in versionAccess){
+            for(const system in versionAccess){
                 if(versionAccess.hasOwnProperty(system)){
                     const setting = versionAccess[system];
                     if(Array.isArray(setting)){

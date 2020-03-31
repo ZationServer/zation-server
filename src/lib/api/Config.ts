@@ -280,7 +280,7 @@ export default class Config
 
     private static configAdd(tmpConfig: object,config: object,target: string)
     {
-        for(let name in tmpConfig){
+        for(const name in tmpConfig){
             if(tmpConfig.hasOwnProperty(name)){
                 if(config.hasOwnProperty(name)){
                     throw new ConfigBuildError

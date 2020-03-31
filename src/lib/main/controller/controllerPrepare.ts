@@ -112,13 +112,13 @@ export default class ControllerPrepare
 
         const promises: Promise<void>[] = [];
 
-        for(let cName in uController) {
+        for(const cName in uController) {
             if(uController.hasOwnProperty(cName)) {
                 promises.push(this.addController(cName,false,uController[cName]));
             }
         }
 
-        for(let cName in SystemController) {
+        for(const cName in SystemController) {
             if(SystemController.hasOwnProperty(cName)) {
                 promises.push(this.addController(cName,true,SystemController[cName]));
             }
@@ -149,7 +149,7 @@ export default class ControllerPrepare
         else {
             const promises: Promise<void>[] = [];
             const preparedDataMapper: Record<any,ControllerPrepareData> = {};
-            for(let k in definition){
+            for(const k in definition){
                 if(definition.hasOwnProperty(k)) {
                     promises.push((async () => {
                         preparedDataMapper[k] = await this.processController(definition[k],name,parseInt(k));

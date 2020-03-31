@@ -162,7 +162,7 @@ export default class ConfigChecker
         if(typeof customChannels === 'object'){
             const target = new Target('Custom Channels: ');
 
-            for(let key in customChannels){
+            for(const key in customChannels){
                 if(customChannels.hasOwnProperty(key)){
 
                     const secTarget = target.addPath(key);
@@ -190,7 +190,7 @@ export default class ConfigChecker
         if(typeof zationChannels === 'object'){
             const target = new Target('Zation Channels: ');
 
-            for(let key in zationChannels){
+            for(const key in zationChannels){
                 if(zationChannels.hasOwnProperty(key)){
                     this.checkZationChannelConfig(zationChannels[key],target.addPath(key));
                 }
@@ -335,7 +335,7 @@ export default class ConfigChecker
                 this.checkOverrideProp(baseModel.properties,resModel,target,srcTarget);
 
                 const currentProperties = (model as ObjectModel).properties;
-                for(let k in currentProperties) {
+                for(const k in currentProperties) {
                     if(currentProperties.hasOwnProperty(k) && (!propsOverwritten.includes(k))){
                         propsOverwritten.push(k);
                     }

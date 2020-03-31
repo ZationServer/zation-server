@@ -54,7 +54,7 @@ export default class Iterator
             }
         }
         else {
-            for(let k in value) {
+            for(const k in value) {
                 if(value.hasOwnProperty(k)){
                     func(k,value[k],value);
                 }
@@ -75,7 +75,7 @@ export default class Iterator
             iterator(definition,undefined);
         }
         else {
-            for(let k in definition){
+            for(const k in definition){
                 if(definition.hasOwnProperty(k)){
                     iterator(definition[k],k);
                 }

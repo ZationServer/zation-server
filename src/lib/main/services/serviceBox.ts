@@ -32,7 +32,7 @@ export default class ServiceBox
     }
 
     private async initInstances(errorBox: string[]): Promise<void> {
-        for(let instanceName in this.instancesConfig) {
+        for(const instanceName in this.instancesConfig) {
             if(this.instancesConfig.hasOwnProperty(instanceName)) {
                 try {
                     this.instances[instanceName] = await this.create(this.instancesConfig[instanceName],instanceName);

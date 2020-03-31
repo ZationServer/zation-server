@@ -50,7 +50,7 @@ export default class PanelEngine
     private initPanelUserMap(authUserGroups: Record<string,AuthUserGroupConfig>): Record<string,string>
     {
         let map = {};
-        for(let k in authUserGroups) {
+        for(const k in authUserGroups) {
             if(authUserGroups.hasOwnProperty(k) &&
                 authUserGroups[k].panelDisplayName !== undefined) {
                 map[k] = authUserGroups[k].panelDisplayName;

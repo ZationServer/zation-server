@@ -22,7 +22,7 @@ export default class BackgroundTasksLoader
    setUserBackgroundTasks (backgroundTasks: Record<string,BackgroundTask> | undefined)
    {
        if(typeof backgroundTasks === 'object') {
-           for(let name in backgroundTasks) {
+           for(const name in backgroundTasks) {
                if(backgroundTasks.hasOwnProperty(name)) {
                    this.setTask(name,backgroundTasks[name]);
                }

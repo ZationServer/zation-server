@@ -294,7 +294,7 @@ const functionLibrary: Record<keyof ValidationFunctions,FunctionValidator> = {
     {
         if(typeof input === 'string') {
             if(typeof settings === 'object' && !(settings instanceof RegExp)) {
-                for(let name in settings) {
+                for(const name in settings) {
                     if(settings.hasOwnProperty(name)){
                         if(!input.match(settings[name])) {
                             backErrorBag.addNewBackError(ValidatorBackErrors.valueNotMatchesWithRegex,

@@ -76,7 +76,7 @@ export default class BagExtensionConflictChecker
 
     private checkExtensionOptionsConflicts(name: string = '',props: Record<string,any> | undefined,isBag: boolean,extensionProps: Set<string>) {
         if(!props) return;
-        for(let k in props){
+        for(const k in props){
             if(props.hasOwnProperty(k) && props[k] !== undefined){
                 if(isBag) {
                     if(Bag.prototype.hasOwnProperty(k)){

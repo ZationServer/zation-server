@@ -33,7 +33,7 @@ import {DeepReadonly}            from '../../main/utils/typeUtils';
  * });
  */
 export function $models<T extends Record<string,ModelConfig>>(models: T | Record<string,ModelConfig>): DeepReadonly<T> {
-    for(let k in models){
+    for(const k in models){
         if(models.hasOwnProperty(k)){
             // @ts-ignore
             models[k] = createReusableModel(models[k],k) as any;

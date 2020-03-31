@@ -22,7 +22,7 @@ export default class BackgroundTasksWorkerSaver
     {
         const bkt = zc.appConfig.backgroundTasks;
         if(typeof bkt === 'object') {
-            for(let name in bkt) {
+            for(const name in bkt) {
                 if(bkt.hasOwnProperty(name)) {
                     this.setTask(name,bkt[name]);
                 }

@@ -42,7 +42,7 @@ export default class ValidatorEngine
         const validatorFunctions: PreparedFunctionValidator[] = [];
         let validateFunction: ValidateFunction = () => {};
 
-        for(let cKey in config) {
+        for(const cKey in config) {
             if(config.hasOwnProperty(cKey)) {
                 const cValue = config[cKey];
                 if(ValidatorFunctions.hasOwnProperty(cKey)) {

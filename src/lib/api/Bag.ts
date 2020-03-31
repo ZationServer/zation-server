@@ -2498,7 +2498,7 @@ export default class Bag {
     getWorkerAuthUserGroupsCount(): object {
        const res = {};
        const authGroups = this.worker.getAEPreparedPart().getAuthGroups();
-       for(let group in authGroups) {
+       for(const group in authGroups) {
            if(authGroups.hasOwnProperty(group)) {
                res[group] = this.worker.getAuthUserGroupToScMapper().getLengthFromKey(group);
            }
@@ -2541,7 +2541,7 @@ export default class Bag {
     getWorkerAuthUserGroupsSockets(): object {
         const res = {};
         const authGroups = this.worker.getAEPreparedPart().getAuthGroups();
-        for(let group in authGroups) {
+        for(const group in authGroups) {
             if(authGroups.hasOwnProperty(group)) {
                 res[group] = this.worker.getAuthUserGroupToScMapper().getValues(group);
             }

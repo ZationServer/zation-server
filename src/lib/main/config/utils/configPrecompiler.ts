@@ -114,7 +114,7 @@ export default class ConfigPrecompiler
         const customChannelDefaults = this.configs.appConfig.customChannelDefaults;
 
         if(typeof customChannels === 'object'){
-            for(let chName in customChannels){
+            for(const chName in customChannels){
                 if(customChannels.hasOwnProperty(chName)){
 
                     let channel: BaseCustomChannelConfig;
@@ -172,7 +172,7 @@ export default class ConfigPrecompiler
             eventsConfig.error || defaultFunc);
         res[nameof<Events>(s => s.error)] = errorEvent;
 
-        for(let k in eventsConfig) {
+        for(const k in eventsConfig) {
             if (eventsConfig.hasOwnProperty(k) && k !== nameof<Events>(s => s.error)) {
                 res[k] = ConfigPrecompiler.precompileEvent(k,eventsConfig[k],errorEvent);
             }
@@ -194,7 +194,7 @@ export default class ConfigPrecompiler
         const res: PrecompiledMiddleware = {};
         const middlewareConfig = this.configs.appConfig.middleware || {};
         let value;
-        for(let k in middlewareConfig) {
+        for(const k in middlewareConfig) {
             if(middlewareConfig.hasOwnProperty(k)){
                 value = middlewareConfig[k];
                 res[k] = typeof value !== 'function' ? FuncUtils.createFuncMiddlewareAsyncInvoker(value) : value;
@@ -207,7 +207,7 @@ export default class ConfigPrecompiler
     private precompileObjectProperties(obj: ObjectModel): void
     {
         const properties = obj.properties;
-        for(let propName in properties) {
+        for(const propName in properties) {
             if (properties.hasOwnProperty(propName)) {
                 this.modelPrecompileStep1(propName,properties);
             }
@@ -317,7 +317,7 @@ export default class ConfigPrecompiler
                 //check props
                 const props = value[nameof<ObjectModel>(s => s.properties)];
                 if(typeof props === 'object'){
-                    for(let propName in props) {
+                    for(const propName in props) {
                         if(props.hasOwnProperty(propName)) {
                             this.modelPrecompileStep2(props[propName]);
                         }
@@ -480,7 +480,7 @@ export default class ConfigPrecompiler
             value.regex = new RegExp(value.regex);
         }
         else if(typeof value.regex === "object"){
-            for(let regexName in value.regex) {
+            for(const regexName in value.regex) {
                 if(value.regex.hasOwnProperty(regexName) && typeof value.regex[regexName] === 'string'){
                     value.regex[regexName] = new RegExp(value.regex[regexName]);
                 }
@@ -503,7 +503,7 @@ export default class ConfigPrecompiler
 
         //iterate over controller
         const controller = this.configs.appConfig.controllers;
-        for(let k in controller) {
+        for(const k in controller) {
             if(controller.hasOwnProperty(k)) {
                 Iterator.iterateCompDefinition<ControllerClass>(controller[k],(controllerClass) => {
                     const config: ControllerConfig = controllerClass.config;
@@ -517,7 +517,7 @@ export default class ConfigPrecompiler
 
     private precompileSystemController(): void
     {
-        for(let k in SystemController){
+        for(const k in SystemController){
             if(SystemController.hasOwnProperty(k)){
                 this.precompileInputConfig(SystemController[k].config);
             }
@@ -533,7 +533,7 @@ export default class ConfigPrecompiler
 
         //iterate over Databoxes
         const databoxes = this.configs.appConfig.databoxes;
-        for(let k in databoxes) {
+        for(const k in databoxes) {
             if(databoxes.hasOwnProperty(k)) {
                 Iterator.iterateCompDefinition<DataboxClassDef>(databoxes[k],(databoxClass) => {
                     const config: DataboxConfig = databoxClass.config;
@@ -570,7 +570,7 @@ export default class ConfigPrecompiler
     }
 
     private precompileParamInput(paramInput: ParamInput): void {
-        for(let inputName in paramInput) {
+        for(const inputName in paramInput) {
             if(paramInput.hasOwnProperty(inputName)) {
                 //resolve values,object,array links and resolve inheritance
                 this.modelPrecompileStep1(inputName,paramInput);

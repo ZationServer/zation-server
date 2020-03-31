@@ -34,7 +34,7 @@ export default class ObjectUtils
      */
     static deepMergeTwoObjects(mainObj: object, toMergeObj: object, override: boolean = false) {
         let tmpMergeValue;
-        for(let k in toMergeObj) {
+        for(const k in toMergeObj) {
             if(toMergeObj.hasOwnProperty(k)) {
                 tmpMergeValue = toMergeObj[k];
                 if(mainObj.hasOwnProperty(k)) {
@@ -62,7 +62,7 @@ export default class ObjectUtils
      */
     static mergeTwoObjects(mainObj: object, addObj: object, overwrite: boolean = false): void
     {
-        for(let key in addObj) {
+        for(const key in addObj) {
             if(addObj.hasOwnProperty(key)) {
                 if(overwrite || !mainObj.hasOwnProperty(key)) {
                     mainObj[key] = addObj[key];
@@ -99,7 +99,7 @@ export default class ObjectUtils
     static getObjValues(obj: object): any[]
     {
         let values: any[] = [];
-        for(let k in obj) {
+        for(const k in obj) {
             if(obj.hasOwnProperty(k)) {
                 values.push(obj[k]);
             }
@@ -183,7 +183,7 @@ export default class ObjectUtils
      * @param skipUndefined
      */
     static addPropsToClass(classValue,props: Record<string,any>,skipUndefined: boolean) {
-        for(let k in props) {
+        for(const k in props) {
             if(props.hasOwnProperty(k) && (!skipUndefined || props[k] !== undefined)) {
                 classValue.prototype[k] = props[k];
             }
@@ -197,7 +197,7 @@ export default class ObjectUtils
      * @param props
      */
     static setConstProperties(object: object,props: object) {
-        for(let k in props){
+        for(const k in props){
             if(props.hasOwnProperty(k)){
                 props[k] = {
                     value: props[k],

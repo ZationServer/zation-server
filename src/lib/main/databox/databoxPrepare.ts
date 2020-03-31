@@ -100,7 +100,7 @@ export default class DataboxPrepare
      */
     async prepare(): Promise<void> {
         const uDataboxes = this.zc.appConfig.databoxes || {};
-        for(let name in uDataboxes) {
+        for(const name in uDataboxes) {
             if(uDataboxes.hasOwnProperty(name)) {
                 this.addDatabox(name,uDataboxes[name]);
             }
@@ -123,7 +123,7 @@ export default class DataboxPrepare
         }
         else {
             const preparedDataMapper: Record<any,DataboxCore> = {};
-            for(let k in definition){
+            for(const k in definition){
                 if(definition.hasOwnProperty(k)) {
                     preparedDataMapper[k] = this.processDatabox(definition[k],name,parseInt(k));
                 }

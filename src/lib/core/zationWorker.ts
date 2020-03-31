@@ -1156,7 +1156,7 @@ class ZationWorker extends SCWorker
     private forAllSockets(exceptSocketSids: string[],action: SocketAction)
     {
         const filterExceptSocketIds: string[] = this.socketSidsFilter(exceptSocketSids);
-        for(let id in this.scServer.clients) {
+        for(const id in this.scServer.clients) {
             if(this.scServer.clients.hasOwnProperty(id)) {
                 if(!filterExceptSocketIds.includes(this.scServer.clients[id].id)) {
                     action(this.scServer.clients[id]);

@@ -87,7 +87,7 @@ export default class TokenUtils
         }
         else {
             const tokenClone = {...token};
-            for(let k in newData) {
+            for(const k in newData) {
                 if(newData.hasOwnProperty(k)) {
                     tokenClone[k] = newData[k];
                 }

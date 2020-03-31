@@ -37,7 +37,7 @@ export default class ServiceEngine
         const errorBox: string[] = [];
 
         //Services
-        for(let k in this.sc) {
+        for(const k in this.sc) {
             if(this.sc.hasOwnProperty(k)) {
                 const service = this.sc[k];
                 this.services[k] = new ServiceBox(k,service.instances,service.create,service.get);

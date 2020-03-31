@@ -49,7 +49,7 @@ export default class Mapper<T extends UpSocket>
 
     forAllEach(func: (socket: UpSocket) => void)
     {
-        for(let k in this.data){
+        for(const k in this.data){
             if(this.data.hasOwnProperty(k) &&
                 this.data[k] instanceof SocketSet) {
                 // @ts-ignore
@@ -84,7 +84,7 @@ export default class Mapper<T extends UpSocket>
     // noinspection JSUnusedGlobalSymbols
     removeAllValues(v: T)
     {
-        for(let k in this.data) {
+        for(const k in this.data) {
             if(this.data.hasOwnProperty(k) && this.data[k] instanceof SocketSet) {
                 // @ts-ignore
                 this.data[k].remove(v)

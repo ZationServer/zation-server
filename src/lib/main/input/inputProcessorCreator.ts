@@ -214,7 +214,7 @@ export default class InputProcessorCreator
             {
                 //check if the input has unknown property
                 if(!morePropsAllowed) {
-                    for(let k in input) {
+                    for(const k in input) {
                         if(input.hasOwnProperty(k) && !props.hasOwnProperty(k)) {
                             //ups unknown key
                             errorBag.addBackError(new BackError
@@ -362,7 +362,7 @@ export default class InputProcessorCreator
                     }
                 }
                 //check for unknown input properties
-                for(let inputName in input) {
+                for(const inputName in input) {
                     if(input.hasOwnProperty(inputName) && !paramInputConfig.hasOwnProperty(inputName)){
                         processInfo.errorBag.addBackError(new BackError(MainBackErrors.unknownInputParam,
                             {

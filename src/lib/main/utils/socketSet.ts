@@ -36,7 +36,7 @@ export default class SocketSet
 
     toArray(): UpSocket[] {
         const res: UpSocket[] = [];
-        for(let id in this.sockets){
+        for(const id in this.sockets){
             if(this.sockets.hasOwnProperty(id)){
                 res.push(this.sockets[id]);
             }
@@ -46,7 +46,7 @@ export default class SocketSet
 
     forEach(func: (socket: UpSocket) => void)
     {
-        for(let id in this.sockets){
+        for(const id in this.sockets){
             if(this.sockets.hasOwnProperty(id)){
                 func(this.sockets[id]);
             }
