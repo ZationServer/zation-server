@@ -235,8 +235,9 @@ export default class DataboxFamilyContainer {
     // noinspection JSUnusedGlobalSymbols
     /**
      * **Not override this method.**
-     * Send a signal to all clients of a specific member.
-     * The clients can listen to any signal.
+     * Transmit a signal to all client Databoxes that
+     * are connected with a specific member of this Databox.
+     * The clients can listen to any received signal.
      * You also can send additional data with the signal.
      * @param id
      * Numbers will be converted to a string.
@@ -244,9 +245,9 @@ export default class DataboxFamilyContainer {
      * @param data
      * @param forEveryWorker
      */
-    sendSignal(id: string | number,signal: string,data?: any,forEveryWorker: boolean = true) {
+    transmitSignal(id: string | number, signal: string, data?: any, forEveryWorker: boolean = true) {
         for(let i = 0; i < this.databoxFamilies.length;i++) {
-            this.databoxFamilies[i].sendSignal(id,signal,data,forEveryWorker);
+            this.databoxFamilies[i].transmitSignal(id,signal,data,forEveryWorker);
         }
     }
 }

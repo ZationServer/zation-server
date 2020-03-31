@@ -76,7 +76,7 @@ const defaultSymbol                              = Symbol();
  * - beforeDelete
  * - onConnection
  * - onDisconnection
- * - onSignal
+ * - onReceivedSignal
  *
  * and the cud middleware methods:
  * - insertMiddleware
@@ -158,7 +158,7 @@ export default class Databox extends DataboxCore {
             try {
                 switch (senderPackage.a) {
                     case DbClientInputAction.signal:
-                        this.onSignal(socket.zSocket,(senderPackage as DbClientInputSignalPackage).s,
+                        this.onReceivedSignal(socket.zSocket,(senderPackage as DbClientInputSignalPackage).s,
                             (senderPackage as DbClientInputSignalPackage).d);
                         break;
                     case DbClientInputAction.fetch:
@@ -699,14 +699,14 @@ export default class Databox extends DataboxCore {
     // noinspection JSUnusedGlobalSymbols
     /**
      * **Not override this method.**
-     * Send a signal to all clients.
-     * The clients can listen to any signal.
+     * Transmit a signal to all client Databoxes connected with this Databox.
+     * The clients can listen to any received signal.
      * You also can send additional data with the signal.
      * @param signal
      * @param data
      * @param forEveryWorker
      */
-    sendSignal(signal: string,data?: any,forEveryWorker: boolean = true) {
+    transmitSignal(signal: string, data?: any, forEveryWorker: boolean = true) {
         const clientPackage = DataboxUtils.buildClientSignalPackage(signal,data);
         if(forEveryWorker){
             this._broadcastToOtherSockets(clientPackage);
@@ -831,10 +831,10 @@ export default class Databox extends DataboxCore {
     // noinspection JSUnusedLocalSymbols
     /**
      * **Can be overridden.**
-     * A function that gets triggered
-     * whenever a socket receives a signal.
+     * A function that gets triggered whenever a
+     * socket from this Databox received a signal.
      */
-    protected onSignal(socket: ZSocket,signal: string,data: any): Promise<void> | void {
+    protected onReceivedSignal(socket: ZSocket, signal: string, data: any): Promise<void> | void {
     }
 
     /**

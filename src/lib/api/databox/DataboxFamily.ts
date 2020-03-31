@@ -85,7 +85,7 @@ const defaultSymbol                               = Symbol();
  * - beforeDelete
  * - onConnection
  * - onDisconnection
- * - onSignal
+ * - onReceivedSignal
  *
  * and the cud middleware methods:
  * - insertMiddleware
@@ -177,7 +177,7 @@ export default class DataboxFamily extends DataboxCore {
             try {
                 switch (senderPackage.a) {
                     case DbClientInputAction.signal:
-                        this.onSignal(id,socket.zSocket,(senderPackage as DbClientInputSignalPackage).s,
+                        this.onReceivedSignal(id,socket.zSocket,(senderPackage as DbClientInputSignalPackage).s,
                             (senderPackage as DbClientInputSignalPackage).d);
                         break;
                     case DbClientInputAction.fetch:
@@ -871,8 +871,9 @@ export default class DataboxFamily extends DataboxCore {
     // noinspection JSUnusedGlobalSymbols
     /**
      * **Not override this method.**
-     * Send a signal to all clients of a specific member.
-     * The clients can listen to any signal.
+     * Transmit a signal to all client Databoxes that
+     * are connected with a specific member of this Databox.
+     * The clients can listen to any received signal.
      * You also can send additional data with the signal.
      * @param id
      * Numbers will be converted to a string.
@@ -880,7 +881,7 @@ export default class DataboxFamily extends DataboxCore {
      * @param data
      * @param forEveryWorker
      */
-    sendSignal(id: string | number,signal: string,data?: any,forEveryWorker: boolean = true) {
+    transmitSignal(id: string | number, signal: string, data?: any, forEveryWorker: boolean = true) {
         id = typeof id === "string" ? id: id.toString();
         const clientPackage = DataboxUtils.buildClientSignalPackage(signal,data);
         if(forEveryWorker){
@@ -1036,10 +1037,10 @@ export default class DataboxFamily extends DataboxCore {
     // noinspection JSUnusedLocalSymbols
     /**
      * **Can be overridden.**
-     * A function that gets triggered
-     * whenever a socket receives a signal.
+     * A function that gets triggered whenever a
+     * socket from this Databox received a signal.
      */
-    protected onSignal(id: string,socket: ZSocket,signal: string,data: any): Promise<void> | void {
+    protected onReceivedSignal(id: string, socket: ZSocket, signal: string, data: any): Promise<void> | void {
     }
 
     /**
