@@ -5,6 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import ExpressCore                   = require("express-serve-static-core");
+import Express                       = require('express');
 import ZationWorker                  = require("../../../../core/zationWorker");
 import ScServer                        from "../../../sc/scServer";
 import {RawSocket}                     from "../../../sc/socket";
@@ -14,7 +15,7 @@ import ZationInfo                      from "../../../internalApi/zationInfo";
 import ZSocket                         from "../../../internalApi/zSocket";
 import CodeError                       from "../../../error/codeError";
 
-export type ExpressFunction = (express: ExpressCore.Express) => Promise<void> | void;
+export type ExpressFunction = (app: ExpressCore.Express,express: typeof Express) => Promise<void> | void;
 export type SocketServerFunction = (scServer: ScServer) => Promise<void> | void;
 export type WorkerInitFunction = (leader: boolean, respawn: boolean) => Promise<void> | void;
 export type MasterInitFunction = (info: ZationInfo) => Promise<void> | void;
@@ -48,7 +49,7 @@ export interface Events
      * An event which that you can initialize an additional HTTP rest API using express.
      * Runs on a worker process.
      * The Bag instance can be securely accessed with the variable 'bag'.
-     * @example (express) => {}
+     * @example (app,express) => {}
      */
     express?: Event<ExpressFunction>;
     /**

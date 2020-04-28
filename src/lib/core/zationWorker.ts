@@ -315,7 +315,7 @@ class ZationWorker extends SCWorker
 
         //Fire ExpressEvent
         debugStopwatch.start();
-        await this.zc.event.express(this.app);
+        await this.zc.event.express(this.app,express);
         debugStopwatch.stop(`The Worker with id ${this.id} has processed the express event.`);
 
         //Fire ScServerEvent
