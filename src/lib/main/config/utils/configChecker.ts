@@ -118,7 +118,6 @@ export default class ConfigChecker
     private checkConfig() {
         this.checkMainConfig();
         this.checkAppConfig();
-        this.checkServiceConfig();
     }
 
     private checkAppConfig() {
@@ -160,7 +159,7 @@ export default class ConfigChecker
     private checkCustomChannels() {
         const customChannels = this.zcLoader.appConfig.customChannels;
         if(typeof customChannels === 'object'){
-            const target = new Target('Custom Channels: ');
+            const target = new Target('Custom Channel: ');
 
             for(const key in customChannels){
                 if(customChannels.hasOwnProperty(key)){
@@ -177,7 +176,7 @@ export default class ConfigChecker
                         value = value[0] || {};
                     }
 
-                    this.checkCustomName(key,'Custom channel name',target.toString() + ' ');
+                    this.checkIdentifier(key,'Custom channel',target.toString() + ' ');
                     this.checkCustomChannelConfig(value, secTarget);
                 }
             }
@@ -256,7 +255,6 @@ export default class ConfigChecker
             let props = obj.properties;
             for (let k in props) {
                 if ((!skipProps.includes(k)) && props.hasOwnProperty(k)) {
-                    this.checkCustomName(k,'property',target.toString()+' ');
                     this.checkModel(props[k], target.addPath(k), [...rememberCache]);
                     if (prototype.hasOwnProperty(k)) {
                         Logger.consoleLogConfigWarning(
@@ -456,17 +454,6 @@ export default class ConfigChecker
         }
     }
 
-    private checkServiceConfig() {
-        const serviceConfig = this.zcLoader.serviceConfig;
-        if (typeof serviceConfig === 'object') {
-            for (let serviceName in serviceConfig) {
-                if (serviceConfig.hasOwnProperty(serviceName)) {
-                    this.checkCustomName(serviceName,'Service');
-                }
-            }
-        }
-    }
-
     private checkControllersConfigs() {
         //check Controllers
         if (typeof this.zcLoader.appConfig.controllers === 'object') {
@@ -633,7 +620,6 @@ export default class ConfigChecker
                             `${target.toString()} numeric key ${k} is not allowed in a param based input config because it changes the key order in a for in loop.`));
                     }
                     keys.push(k);
-                    this.checkCustomName(k,'input property',target.toString() + ' ');
                     this.checkModel(paramInput[k], target.addPath(k));
                 }
             }
@@ -974,11 +960,11 @@ export default class ConfigChecker
         }
     }
 
-    private checkCustomName(name: string,type: string,preString: string = ''): void
+    private checkIdentifier(identifier: string,type: string,preString: string = ''): void
     {
-        if (!name.match(/^[a-zA-Z0-9-/_]+$/)) {
+        if (!identifier.match(/^[a-zA-Z0-9-/_]+$/)) {
             this.ceb.addError(new ConfigError(ConfigNames.App,
-                `${preString}'${name}' is not a valid ${type} name! Only letters, numbers and the minus symbol are allowed.`));
+                `${preString}'${identifier}' is not a valid ${type} identifier. Only letters, numbers, minus, underscore or slash are allowed.`));
         }
     }
 }

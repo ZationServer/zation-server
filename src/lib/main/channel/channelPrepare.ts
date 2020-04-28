@@ -15,7 +15,7 @@ import {
 import ZationConfigFull              from "../config/manager/zationConfigFull";
 import FuncUtils, {EventInvokerSync} from "../utils/funcUtils";
 import Bag                           from "../../api/Bag";
-import IdValidCheckerUtils, {IdValidChecker}                    from "../id/idValidCheckerUtils";
+import MemberValidCheckerUtils, {MemberValidChecker}            from "../member/memberValidCheckerUtils";
 import ChAccessHelper, {ChPubAccessChecker, ChSubAccessChecker} from "./chAccessHelper";
 import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
 import {ErrorEventSingleton}                                    from '../error/errorEventSingleton';
@@ -34,7 +34,7 @@ export interface CustomChStorage extends Events, ChStorage {
 }
 
 export interface CustomChFamilyStorage extends CustomChStorage {
-    idValidChecker: IdValidChecker
+    memberValidChecker: MemberValidChecker
 }
 
 export interface ChStorage extends Events {
@@ -95,11 +95,11 @@ export class ChannelPrepare {
 
     /**
      * Prepare a zation channel with the configuration.
-     * @param name
+     * @param key
      * @param bag
      */
-    private prepareZationChannel(name: string,bag: Bag): ChStorage {
-        return this.zationChConfig.hasOwnProperty(name) ? this.processChannel(name,this.zationChConfig[name],bag) :
+    private prepareZationChannel(key: string,bag: Bag): ChStorage {
+        return this.zationChConfig.hasOwnProperty(key) ? this.processChannel(key,this.zationChConfig[key],bag) :
             this.defaultChStorage;
     }
 
@@ -115,24 +115,24 @@ export class ChannelPrepare {
     }
 
     /**
-     * Prepare process for a custom id channels.
+     * Prepare process for a custom channels.
      * @param bag
      */
     private processCustomChannels(bag: Bag) {
         if (typeof this.customChannels === 'object') {
-            for (let chName in this.customChannels) {
-                if(this.customChannels.hasOwnProperty(chName)) {
+            for (let identifier in this.customChannels) {
+                if(this.customChannels.hasOwnProperty(identifier)) {
                     let config: CustomChFamily | CustomCh;
-                    if(Array.isArray(this.customChannels[chName])){
-                        config = this.customChannels[chName][0];
-                        this.infoCustomChFamilies[chName] = {
-                            ...this.processCustomChannel(chName,config,bag),
-                            idValidChecker: IdValidCheckerUtils.createIdValidChecker((config as CustomChFamily).idValid,bag)
+                    if(Array.isArray(this.customChannels[identifier])){
+                        config = this.customChannels[identifier][0];
+                        this.infoCustomChFamilies[identifier] = {
+                            ...this.processCustomChannel(identifier,config,bag),
+                            memberValidChecker: MemberValidCheckerUtils.createMemberValidChecker((config as CustomChFamily).memberValid,bag)
                         }
                     }
                     else {
-                        config = (this.customChannels[chName] as CustomCh);
-                        this.infoCustomCh[chName] = this.processCustomChannel(chName,config,bag);
+                        config = (this.customChannels[identifier] as CustomCh);
+                        this.infoCustomCh[identifier] = this.processCustomChannel(identifier,config,bag);
                     }
                 }
             }
@@ -141,15 +141,15 @@ export class ChannelPrepare {
 
     /**
      * Prepare process for a custom channel.
-     * @param name
+     * @param identifier
      * @param chConfig
      * @param bag
      */
-    private processCustomChannel(name: string,chConfig: BaseCustomChannelConfig, bag: Bag): CustomChStorage {
-        const cChStorage: ChStorage = this.processChannel(name,chConfig,bag);
+    private processCustomChannel(identifier: string,chConfig: BaseCustomChannelConfig, bag: Bag): CustomChStorage {
+        const cChStorage: ChStorage = this.processChannel(identifier,chConfig,bag);
         return {
             ...cChStorage,
-            subscribeAccessChecker: ChAccessHelper.createSubChAccessChecker(chConfig.subscribeAccess,bag,name),
+            subscribeAccessChecker: ChAccessHelper.createSubChAccessChecker(chConfig.subscribeAccess,bag,identifier),
             versionAccessCheck: SystemVersionChecker.createVersionChecker(chConfig),
             systemAccessCheck: SystemVersionChecker.createSystemChecker(chConfig)
         };
@@ -158,15 +158,15 @@ export class ChannelPrepare {
     // noinspection JSMethodCanBeStatic
     /**
      * Prepare process for a channel.
-     * @param name
+     * @param key
      * @param channel
      * @param bag
      */
-    private processChannel(name: string,channel: ZationChannelConfig,bag: Bag): ChStorage {
+    private processChannel(key: string,channel: ZationChannelConfig,bag: Bag): ChStorage {
         const errorEvent = ErrorEventSingleton.get();
-        const errLogMessagePrefix = `An error was thrown in the channel: '${name}', event:`;
+        const errLogMessagePrefix = `An error was thrown in the channel: '${key}', event:`;
         return {
-            clientPublishAccessChecker: ChAccessHelper.createPubChAccessChecker(channel.clientPublishAccess,bag,name),
+            clientPublishAccessChecker: ChAccessHelper.createPubChAccessChecker(channel.clientPublishAccess,bag,key),
             socketGetOwnPub: ChannelPrepare.processSocketGetOwnPub(channel.socketGetOwnPublish),
             onClientPub: channel.onBagPublish ?
                 FuncUtils.createSafeCaller(FuncUtils.createFuncSyncInvoker(channel.onBagPublish),
@@ -211,17 +211,17 @@ export class ChannelPrepare {
         return this.infoAllCh;
     }
 
-    existCustomCh(chName: string): boolean {
-        return this.infoCustomCh.hasOwnProperty(chName) ||
-            this.infoCustomChFamilies.hasOwnProperty(chName);
+    existCustomCh(identifier: string): boolean {
+        return this.infoCustomCh.hasOwnProperty(identifier) ||
+            this.infoCustomChFamilies.hasOwnProperty(identifier);
     }
 
-    isCustomChFamily(chName: string): boolean {
-        return this.infoCustomChFamilies.hasOwnProperty(chName);
+    isCustomChFamily(identifier: string): boolean {
+        return this.infoCustomChFamilies.hasOwnProperty(identifier);
     }
 
-    getCustomChPreInfo(chName: string): CustomChStorage | CustomChFamilyStorage {
-        return this.infoCustomCh[chName] || this.infoCustomChFamilies[chName] || this.defaultCustomChStorage;
+    getCustomChPreInfo(identifier: string): CustomChStorage | CustomChFamilyStorage {
+        return this.infoCustomCh[identifier] || this.infoCustomChFamilies[identifier] || this.defaultCustomChStorage;
     }
 }
 

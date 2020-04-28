@@ -8,23 +8,24 @@ import UpSocket          from "../sc/socket";
 import Logger            from "../log/logger";
 import PubData           from "../internalApi/pubData";
 import {ZationChannel}   from "./channelDefinitions";
+import {PubOutMiddlewareReq} from '../sc/scMiddlewareReq';
 
 export default class ChUtils
 {
 
     /**
-     * Build a custom channel.
-     * @param name
-     * @param id
+     * Build a custom channel channel name.
+     * @param identifier
+     * @param member
      */
-    static buildCustomChannelName(name?: string,id?: string): string {
-        if(name !== undefined) {
-            if(id !== undefined){
-                return ZationChannel.CUSTOM_CHANNEL_PREFIX + name +
-                    ZationChannel.CUSTOM_CHANNEL_ID_SEPARATOR + id;
+    static buildCustomChannelChName(identifier?: string, member?: string): string {
+        if(identifier !== undefined) {
+            if(member !== undefined){
+                return ZationChannel.CUSTOM_CHANNEL_PREFIX + identifier +
+                    ZationChannel.CUSTOM_CHANNEL_MEMBER_SEPARATOR + member;
             }
             else {
-                return ZationChannel.CUSTOM_CHANNEL_PREFIX + name;
+                return ZationChannel.CUSTOM_CHANNEL_PREFIX + identifier;
             }
         }
         else {
@@ -33,22 +34,22 @@ export default class ChUtils
     }
 
     /**
-     * Get custom channel info from a built string.
+     * Get custom channel info from a built channel name string.
      * @param ch
      */
-    static getCustomChannelInfo(ch: string): {name: string,id: string | undefined} {
-        const nameAndId = ch.split('.');
+    static getCustomChannelInfo(ch: string): {identifier: string,member: string | undefined} {
+        const identifierAndMember = ch.split('.');
         return {
-            name: nameAndId[1],
-            id: nameAndId[2]
+            identifier: identifierAndMember[1],
+            member: identifierAndMember[2]
         };
     }
 
     /**
-     * Get custom channel name from a built string.
+     * Get custom channel identifier from a built channel name string.
      * @param ch
      */
-    static getCustomChannelName(ch: string): string {
+    static getCustomChannelIdentifier(ch: string): string {
         return ch.split('.')[1];
     }
 
@@ -70,10 +71,10 @@ export default class ChUtils
 
     /**
      * Build user channel name.
-     * @param id
+     * @param userId
      */
-    static buildUserChName(id: number | string): string {
-        return ZationChannel.USER_CHANNEL_PREFIX+id;
+    static buildUserChName(userId: number | string): string {
+        return ZationChannel.USER_CHANNEL_PREFIX+userId;
     }
 
     /**
@@ -91,7 +92,6 @@ export default class ChUtils
      * @param target
      */
     static kickOut(socket: UpSocket, channel: string,target?: string): void {
-        // noinspection JSUnresolvedFunction,JSValidateTypes,TypeScriptValidateJSTypes
         socket.kickOut(channel);
         Logger.log.debug(`Socket with id: ${socket.id} is kicked from ${target !== undefined ? target: `channel ${channel}`}.`);
     }
@@ -137,10 +137,10 @@ export default class ChUtils
     /**
      * Returns all custom channel subscriptions of a socket.
      * @param socket
-     * @param name (optional filter for a specific name)
+     * @param identifier (optional filter for a specific identifier)
      */
-    static getCustomChannelSubscriptions(socket: UpSocket,name?: string): string[] {
-        return ChUtils.subscriptionSearch(socket,ChUtils.buildCustomChannelName(name));
+    static getCustomChannelSubscriptions(socket: UpSocket,identifier?: string): string[] {
+        return ChUtils.subscriptionSearch(socket,ChUtils.buildCustomChannelChName(identifier));
     }
 
     /**
@@ -176,13 +176,13 @@ export default class ChUtils
     }
 
     /**
-     * Returns if the socket has subscribed the custom channel.
+     * Returns if the socket has subscribed a custom channel.
      * @param socket
-     * @param name
-     * @param id
+     * @param identifier
+     * @param member
      */
-    static hasSubCustomCh(socket: UpSocket,name?: string, id?: string): boolean {
-        return ChUtils.subscriptionFindSearch(socket,ChUtils.buildCustomChannelName(name,id));
+    static hasSubCustomCh(socket: UpSocket,identifier?: string, member?: string): boolean {
+        return ChUtils.subscriptionFindSearch(socket,ChUtils.buildCustomChannelChName(identifier,member));
     }
 
     /**
@@ -196,11 +196,11 @@ export default class ChUtils
     /**
      * Kick socket from custom channel/s.
      * @param socket
-     * @param name
-     * @param id
+     * @param identifier
+     * @param member
      */
-    static kickCustomChannel(socket: UpSocket, name?: string, id?: string): void {
-        ChUtils.kickOutSearch(socket,ChUtils.buildCustomChannelName(name,id));
+    static kickCustomChannel(socket: UpSocket, identifier?: string, member?: string): void {
+        ChUtils.kickOutSearch(socket,ChUtils.buildCustomChannelChName(identifier,member));
     }
 
     /**
@@ -208,9 +208,9 @@ export default class ChUtils
      * @param req
      * @param socket
      */
-    static pubDataAddSocketSrcSid(req: any,socket: UpSocket) {
+    static pubInRequestAddSocketSrcSid(req: PubOutMiddlewareReq, socket: UpSocket) {
         if(typeof req.data === "object") {
-            req.data['ssi'] = socket.sid;
+            req.data.sSid = socket.sid;
         }
     }
 

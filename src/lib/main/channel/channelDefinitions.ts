@@ -14,7 +14,7 @@ export class ZationChannel {
     static readonly PANEL_OUT = 'Z_PO';
     //Custom Channels
     static readonly CUSTOM_CHANNEL_PREFIX = 'Z_C.';
-    static readonly CUSTOM_CHANNEL_ID_SEPARATOR = '.';
+    static readonly CUSTOM_CHANNEL_MEMBER_SEPARATOR = '.';
     //intern channels
     static readonly ALL_WORKER = 'Z_AW';
 }

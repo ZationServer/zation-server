@@ -70,8 +70,9 @@ export interface AppConfig
     /**
     * In this property, you can define all your controllers.
     * The value must be an object.
-    * The key of each property is the name of the controller.
-    * The value of each property is the imported controller class.
+    * The key of each property is the identifier of the controller.
+    * The value of each property is the imported Controller class
+    * or an ApiLevelSwitch of Controller classes.
     * @example
     * controllers: {
     *    register: RegisterController,
@@ -81,8 +82,8 @@ export interface AppConfig
     controllers?: Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>>;
 
     /**
-     * With this property, you can define a default controller configuration
-     * that will be used in each controller as a fallback.
+     * With this property, you can define a default Controller configuration
+     * that will be used in each Controller as a fallback.
      * @example
      * controllerDefaults: {
      *    wsAccess: true,
@@ -97,8 +98,9 @@ export interface AppConfig
     /**
      * In this property, you can define all your Databoxes.
      * The value must be an object.
-     * The key of each property is the name of the Databox.
-     * The value of each property is the imported Databox class.
+     * The key of each property is the identifier of the Databox.
+     * The value of each property is the imported Databox class or
+     * an ApiLevelSwitch of Databox classes.
      * @example
      * databoxes: {
      *     profile: ProfileDatabox,
@@ -133,11 +135,13 @@ export interface AppConfig
      * The first variant is the usual custom channel,
      * that is useful if you only need one instance of that channel type.
      * The second variant is the custom channel family.
-     * You should use this variant if you need more than one channel
-     * of these type and they only differ by an name.
+     * You should use this variant if you need more than one channel instance
+     * of these type and they only differ by an instance of an entity.
      * For example, I have a private user chat where more chats can exist with a specific id.
-     * Now I can have more channels from type user chat with different identifiers.
+     * By using a custom channel family I can have more channel instances from
+     * type user chat with different members (id of the chat).
      * Look in the example below to see how you actually can define custom channels.
+     * The key of each property is the identifier of the custom channel.
      * @example
      * customChannels: {
      *     // Definition of a custom channel family.

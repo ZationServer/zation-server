@@ -44,9 +44,9 @@ export default abstract class DataboxCore {
 
     /**
      * @description
-     * The name of the DataCollection from the app config.
+     * The identifier of the Databox from the app config.
      */
-    protected readonly name: string;
+    protected readonly identifier: string;
 
     /**
      * @description
@@ -72,8 +72,8 @@ export default abstract class DataboxCore {
     private readonly _initInputConsumer: InputConsumeFunction;
     private readonly _fetchInputConsumer: InputConsumeFunction;
 
-    protected constructor(name: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
-        this.name = name;
+    protected constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
+        this.identifier = identifier;
         this.apiLevel = apiLevel;
         this.bag = bag;
         this._dbPreparedData = dbPreparedData;
@@ -84,7 +84,7 @@ export default abstract class DataboxCore {
         this._fetchInputConsumer = dbPreparedData.fetchInputConsumer;
 
         this._preparedTokenSessionKey =
-            `${bag.getZationConfig().getDataboxKey()}.${this.dbTokenVersion}.${this.name}${apiLevel !== undefined ? apiLevel: ''}`;
+            `${bag.getZationConfig().getDataboxKey()}.${this.dbTokenVersion}.${this.identifier}${apiLevel !== undefined ? apiLevel: ''}`;
     }
 
     /**
@@ -270,10 +270,10 @@ export default abstract class DataboxCore {
 
     /**
      * **Not override this method.**
-     * Returns the name of the DataCollection from the app config.
+     * Returns the identifier of the Databox from the app config.
      */
-    public getName() {
-        return this.name;
+    public getIdentifier() {
+        return this.identifier;
     }
 
     /**

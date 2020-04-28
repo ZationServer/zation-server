@@ -55,51 +55,51 @@ export default class ControllerPrepare
     /**
      * It will return the controller prepared data.
      * If no controller with the API level is found, it will thrown an API level incompatible back error.
-     * @param name
+     * @param identifier
      * @param apiLevel
      * @param isSystemController
      */
-    getControllerPrepareData(name: string,apiLevel: number,isSystemController: boolean): ControllerPrepareData
+    getControllerPrepareData(identifier: string,apiLevel: number,isSystemController: boolean): ControllerPrepareData
     {
         if(!isSystemController) {
-            const controller = this.appController[name](apiLevel);
+            const controller = this.appController[identifier](apiLevel);
             if(controller !== undefined){
                 return controller;
             }
             else {
                 throw new BackError(MainBackErrors.apiLevelIncompatible,
-                    {controller: name, apiLevel: apiLevel});
+                    {controller: identifier, apiLevel: apiLevel});
             }
         }
         else {
-            return this.systemController[name];
+            return this.systemController[identifier];
         }
     }
 
     /**
      * Returns a boolean that indicates if the controller exists.
-     * @param name
+     * @param identifier
      * @param isSystemController
      */
-    isControllerExist(name: string,isSystemController: boolean): boolean {
-        return !isSystemController ? this.appController.hasOwnProperty(name) :
-            this.systemController.hasOwnProperty(name);
+    isControllerExist(identifier: string,isSystemController: boolean): boolean {
+        return !isSystemController ? this.appController.hasOwnProperty(identifier) :
+            this.systemController.hasOwnProperty(identifier);
     }
 
     /**
      * Checks if the controller exists.
      * It will throw a back error if the controller is not found.
-     * @param name
+     * @param identifier
      * @param isSystemController
      */
-    checkControllerExist(name: string,isSystemController: boolean): void
+    checkControllerExist(identifier: string,isSystemController: boolean): void
     {
-        if(!this.isControllerExist(name,isSystemController)) {
+        if(!this.isControllerExist(identifier,isSystemController)) {
             if(isSystemController) {
-                throw new BackError(MainBackErrors.systemControllerNotFound, {controller: name});
+                throw new BackError(MainBackErrors.systemControllerNotFound, {controller: identifier});
             }
             else {
-                throw new BackError(MainBackErrors.controllerNotFound, {controller: name});
+                throw new BackError(MainBackErrors.controllerNotFound, {controller: identifier});
             }
         }
     }
@@ -112,15 +112,15 @@ export default class ControllerPrepare
 
         const promises: Promise<void>[] = [];
 
-        for(const cName in uController) {
-            if(uController.hasOwnProperty(cName)) {
-                promises.push(this.addController(cName,false,uController[cName]));
+        for(const cIdentifier in uController) {
+            if(uController.hasOwnProperty(cIdentifier)) {
+                promises.push(this.addController(cIdentifier,false,uController[cIdentifier]));
             }
         }
 
-        for(const cName in SystemController) {
-            if(SystemController.hasOwnProperty(cName)) {
-                promises.push(this.addController(cName,true,SystemController[cName]));
+        for(const cIdentifier in SystemController) {
+            if(SystemController.hasOwnProperty(cIdentifier)) {
+                promises.push(this.addController(cIdentifier,true,SystemController[cIdentifier]));
             }
         }
 
@@ -129,19 +129,19 @@ export default class ControllerPrepare
 
     /**
      * Add a controller to the prepare process.
-     * @param name
+     * @param identifier
      * @param systemController
      * @param definition
      */
-    private async addController(name: string,systemController: boolean,definition: ControllerClass | ApiLevelSwitch<ControllerClass>): Promise<void>
+    private async addController(identifier: string,systemController: boolean,definition: ControllerClass | ApiLevelSwitch<ControllerClass>): Promise<void>
     {
         if(typeof definition === 'function') {
-            const preparedControllerData = await this.processController(definition,name);
+            const preparedControllerData = await this.processController(definition,identifier);
             if(systemController){
-                this.systemController[name] = preparedControllerData;
+                this.systemController[identifier] = preparedControllerData;
             }
             else {
-                this.appController[name] = () => {
+                this.appController[identifier] = () => {
                     return preparedControllerData
                 };
             }
@@ -152,25 +152,25 @@ export default class ControllerPrepare
             for(const k in definition){
                 if(definition.hasOwnProperty(k)) {
                     promises.push((async () => {
-                        preparedDataMapper[k] = await this.processController(definition[k],name,parseInt(k));
+                        preparedDataMapper[k] = await this.processController(definition[k],identifier,parseInt(k));
                     })());
                 }
             }
             await Promise.all(promises);
-            this.appController[name] = ApiLevelUtils.createApiLevelSwitcher<ControllerPrepareData>(preparedDataMapper);
+            this.appController[identifier] = ApiLevelUtils.createApiLevelSwitcher<ControllerPrepareData>(preparedDataMapper);
         }
     }
 
     /**
      * Process a controller and create the prepared data.
      * @param controller
-     * @param name
+     * @param identifier
      * @param apiLevel
      */
-    private async processController(controller: ControllerClass,name: string,apiLevel?: number): Promise<ControllerPrepareData>
+    private async processController(controller: ControllerClass,identifier: string,apiLevel?: number): Promise<ControllerPrepareData>
     {
         const config: ControllerConfig = controller.config;
-        const cInstance: Controller = new controller(name,this.worker.getPreparedBag(),apiLevel);
+        const cInstance: Controller = new controller(identifier,this.worker.getPreparedBag(),apiLevel);
         await cInstance.initialize(this.worker.getPreparedBag());
 
         return {
@@ -178,12 +178,12 @@ export default class ControllerPrepare
             controllerInstance: cInstance,
             versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
-            tokenStateCheck: ControllerAccessHelper.createAuthAccessChecker(config.access,this.bag,name),
+            tokenStateCheck: ControllerAccessHelper.createAuthAccessChecker(config.access,this.bag,identifier),
             middlewareInvoke: ControllerUtils.createMiddlewareInvoker(config),
             inputConsume: InputClosureCreator.createInputConsumer(config,this.bag),
             inputValidationCheck: InputClosureCreator.createValidationChecker(config,this.bag),
             finallyHandle: FuncUtils.createSafeCaller((reqBag,input) => cInstance.finallyHandle(reqBag,input),
-                `An error was thrown on the: 'Controller ${name}', ${nameof<Controller>(s => s.finallyHandle)}:`,
+                `An error was thrown on the: 'Controller ${identifier}', ${nameof<Controller>(s => s.finallyHandle)}:`,
                 ErrorEventSingleton.get())
         };
     }

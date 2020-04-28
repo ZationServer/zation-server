@@ -233,10 +233,10 @@ export default class ZSocket
     // noinspection JSUnusedGlobalSymbols
     /**
      * Returns all custom channel subscriptions of the socket.
-     * @param name (optional filter for a specific name)
+     * @param identifier (optional filter for a specific identifier)
      */
-    getCustomChSubscriptions(name?: string): string[] {
-        return ChUtils.getCustomChannelSubscriptions(this._socket,name);
+    getCustomChSubscriptions(identifier?: string): string[] {
+        return ChUtils.getCustomChannelSubscriptions(this._socket,identifier);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -273,16 +273,16 @@ export default class ZSocket
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Returns if the socket has subscribed the custom channel.
-     * @param name
+     * Returns if the socket has subscribed a custom channel.
+     * @param identifier
      * if it is not provided,
      * it returns if the socket has subscribed any custom channel.
-     * @param id
+     * @param member
      * if it is not provided,
-     * it returns if the socket has subscribed any custom channel with the provided name.
+     * it returns if the socket has subscribed any custom channel with the provided identifier.
      */
-    hasSubCustomCh(name?: string, id?: string): boolean {
-        return ChUtils.hasSubCustomCh(this._socket,name);
+    hasSubCustomCh(identifier?: string, member?: string): boolean {
+        return ChUtils.hasSubCustomCh(this._socket,identifier);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -300,11 +300,11 @@ export default class ZSocket
      * @example
      * kickFromCustomCh('images','10');
      * kickFromCustomCh('publicChat');
-     * @param name is optional, if it is not given the users will be kicked out from all custom channels.
-     * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
+     * @param identifier is optional, if it is not given the users will be kicked out from all custom channels.
+     * @param member only provide an member if you want to kick the socket from a specific member of a custom channel family.
      */
-    kickFromCustomCh(name?: string,id?: string): void {
-        ChUtils.kickCustomChannel(this._socket,name,id);
+    kickFromCustomCh(identifier?: string,member?: string): void {
+        ChUtils.kickCustomChannel(this._socket,identifier,member);
     }
 
     // noinspection JSUnusedGlobalSymbols

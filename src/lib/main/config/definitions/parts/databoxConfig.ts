@@ -11,7 +11,6 @@ import Bag                                                         from "../../.
 import {DataboxInfo}                                               from "../../../databox/dbDefinitions";
 import ZSocket                                                     from "../../../internalApi/zSocket";
 import {Input}                                                     from "./inputConfig";
-import {AccessConfigValue}                                         from "../../../access/accessOptions";
 
 export type DbAccessFunction = (bag: Bag, socket: ZSocket, dbInfo: DataboxInfo) => Promise<boolean> | boolean;
 
@@ -73,7 +72,6 @@ export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, 
      * @default false.
      */
     allowAnyFetchInput ?: boolean;
-
     /**
      * This property defines the init input.
      * The client can send these init input when it builds the connection.
@@ -131,56 +129,6 @@ export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, 
      * @default false.
      */
     allowAnyInitInput ?: boolean;
-
-    /**
-     * @description
-     * Set the access rule which clients are allowed to access this Databox.
-     * Notice that in case of a DataboxFamily the id is checked before the access.
-     * Notice that only one of the options 'access' or 'notAccess' is allowed.
-     * Look in the examples to see what possibilities you have.
-     * @default default config otherwise false
-     * @example
-     * //boolean
-     * true            // All clients are allowed
-     * false           // No client is allowed
-     * //string
-     * 'all'           // All clients are allowed
-     * 'allAuth'       // Only all authenticated clients are allowed
-     * 'allNotAuth'    // Only all not authenticated clients are allowed (all authenticated are not allowed)
-     * 'admin'         // Only all admins are allowed
-     * //number
-     * 10              // Only all clients with user id 10 are allowed
-     * //array
-     * ['user','guest',23] // Only all clients with user group user, default user group or user id 23 are allowed.
-     * //function
-     * (bag: Bag,socket: ZSocket,dbInfo: DataboxInfo) => {} // If returns true the client is allowed, false will not allow.
-     */
-    access?: AccessConfigValue<DbAccessFunction>;
-    /**
-     * @description
-     * Set the access rule which clients are not allowed to access this Databox.
-     * Notice that in case of a DataboxFamily the id is checked before the access.
-     * Notice that only one of the options 'access' or 'notAccess' is allowed.
-     * Look in the examples to see what possibilities you have.
-     * @default default config otherwise false
-     * @example
-     * //boolean
-     * true            // No client is allowed
-     * false           // All clients are allowed
-     * //string
-     * 'all'           // No client is allowed
-     * 'allAuth'       // All authenticated clients are not allowed
-     * 'allNotAuth'    // All not authenticated clients are not allowed (all authenticated are allowed)
-     * 'admin'         // All admins are not allowed
-     * //number
-     * 10              // All clients with user id 10 are not allowed
-     * //array
-     * ['user','guest',23] // All clients with user group user, default user group or user id 23 are not allowed.
-     * //function
-     * (bag: Bag,socket: ZSocket,dbInfo: DataboxInfo) => {}  // If returns true the client is not allowed, false will allow.
-     */
-    notAccess?: AccessConfigValue<DbAccessFunction>;
-
     /**
      * This option can be activated when you have designed
      * this Databox in such a way that the fetching of data
@@ -190,7 +138,6 @@ export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, 
      * @default false
      */
     parallelFetch?: boolean;
-
     /**
      * The maximal backpressure that a client can build up by calling fetch data.
      * (Notice that the restore session has its own backpressure)
@@ -198,7 +145,6 @@ export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, 
      * @default 30
      */
     maxBackpressure?: number;
-
     /**
      * The maximal amount of input channels that a socket can create.
      * Whenever a socket wants to register to a Databox,

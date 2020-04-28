@@ -5,14 +5,14 @@ Copyright(c) Luca Scaringella
  */
 
 export enum ClientErrorName {
-    IdMissing                    = 'IdMissing',
-    UnknownId                    = 'UnknownId',
-    NameMissing                  = 'NameMissing',
+    MemberMissing                = 'MemberMissing',
+    UnnecessaryMember            = 'UnnecessaryMember',
+    IdentifierMissing            = 'IdentifierMissing',
     UnknownChannel               = 'UnknownChannel',
     NoAccessWithVersion          = 'NoAccessWithVersion',
     NoAccessWithSystem           = 'NoAccessWithSystem',
     AccessDenied                 = 'AccessDenied',
-    IdIsNotValid                 = 'IdIsNotValid',
+    MemberIsNotValid             = 'MemberIsNotValid',
 
     InvalidRequest               = 'InvalidRequest',
     ApiLevelIncompatible         = 'ApiLevelIncompatible',

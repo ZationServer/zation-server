@@ -11,6 +11,6 @@ export default class DataboxReqUtils
     static isValidReqStructure(databoxReq: DataboxConnectReq): boolean {
        // noinspection SuspiciousTypeOfGuard
         return typeof databoxReq === 'object' && typeof databoxReq.d === "string" &&
-           (databoxReq.i === undefined || typeof databoxReq.i === 'string');
+           (databoxReq.m === undefined || typeof databoxReq.m === 'string');
     }
 }

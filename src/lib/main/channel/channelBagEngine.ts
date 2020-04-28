@@ -270,7 +270,7 @@ export default class ChannelBagEngine
     }
 
     /**
-     * Publish in custom id channel.
+     * Publish in a custom family channel.
      * @param target
      * @param eventName
      * @param data
@@ -278,17 +278,17 @@ export default class ChannelBagEngine
      * @param socketInfo
      * @throws UnknownCustomCh
      */
-    async publishInCustomCh({name,id}: {name: string,id?: string}, eventName: string, data: any, srcSocketSid?: string, socketInfo?: ZSocket): Promise<void>
+    async publishInCustomCh({identifier,member}: {identifier: string,member?: string}, eventName: string, data: any, srcSocketSid?: string, socketInfo?: ZSocket): Promise<void>
     {
-        if(this.chPrepare.existCustomCh(name)){
-            const onBagPub = this.chPrepare.getCustomChPreInfo(name).onBagPub;
+        if(this.chPrepare.existCustomCh(identifier)){
+            const onBagPub = this.chPrepare.getCustomChPreInfo(identifier).onBagPub;
             const pubData = ChUtils.buildData(eventName, data, srcSocketSid);
 
-            await this.pubAsync(ChUtils.buildCustomChannelName(name,id),pubData);
-            onBagPub(this._bag,pubData,socketInfo,{name,id});
+            await this.pubAsync(ChUtils.buildCustomChannelChName(identifier,member),pubData);
+            onBagPub(this._bag,pubData,socketInfo,{identifier,member});
         }
         else {
-            throw new UnknownCustomCh(name);
+            throw new UnknownCustomCh(identifier);
         }
     }
 }

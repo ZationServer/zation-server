@@ -37,13 +37,13 @@ export default class ChAccessHelper
      * Returns a Closures for checking the client publish access to a channel.
      * @param accessValue
      * @param bag
-     * @param chName
+     * @param chIdentifier
      */
     static createPubChAccessChecker
     (
         accessValue: AccessConfigValue<any>,
         bag: Bag,
-        chName: string
+        chIdentifier: string
     )
        : ChPubAccessChecker
     {
@@ -54,7 +54,7 @@ export default class ChAccessHelper
                 return async (_a,pubData,socketInfo,chInfo) => {
                     return f(bag,pubData,socketInfo,chInfo);
                 };
-            },`Custom Channel: ${chName} publish access check:`);
+            },`Custom Channel: ${chIdentifier} publish access check:`);
         }
         else {
             return async () => {return false;}
@@ -105,14 +105,14 @@ export default class ChAccessHelper
             for(let i = 0; i < subs.length; i++) {
                 if(subs[i].indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0){
                     const chInfo = ChUtils.getCustomChannelInfo(subs[i]);
-                    const preChInfo = channelPrepare.getCustomChPreInfo(chInfo.name);
+                    const preChInfo = channelPrepare.getCustomChPreInfo(chInfo.identifier);
                     if(!(await preChInfo.subscribeAccessChecker(
                         authEngine,
                         socket.zSocket,
                         chInfo
                     ))) {
-                        ChUtils.kickOut(socket,subs[i],`custom channel: '${chInfo.name}'${chInfo.id !== undefined ?
-                        ` with id: '${chInfo.id}'`: ''}`);
+                        ChUtils.kickOut(socket,subs[i],`custom channel with identifier: '${chInfo.identifier}'${chInfo.member !== undefined ?
+                        ` and member: '${chInfo.member}'`: ''}`);
                     }
                 }
             }
@@ -131,7 +131,7 @@ export default class ChAccessHelper
 
         for(let i = 0; i < subs.length; i++) {
             if(subs[i] === ZationChannel.DEFAULT_USER_GROUP && authEngine.isAuth()) {
-                ChUtils.kickOut(socket,ZationChannel.DEFAULT_USER_GROUP,'default user group channel.');
+                ChUtils.kickOut(socket,ZationChannel.DEFAULT_USER_GROUP,'default user group channel');
             }
             else if(subs[i].indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
                 if(ZationChannel.AUTH_USER_GROUP_PREFIX + authEngine.getAuthUserGroup() !== subs[i]) {

@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 // noinspection TypeScriptPreferShortImport
 import { ModelConfigTranslatable}                          from "../../../../api/configTranslatable/modelConfigTranslatable";
 import {AccessConfigValue}                                 from "../../../access/accessOptions";
-import {IdValid}                                           from "../../../id/idValidCheckerUtils";
+import {MemberValid}                                       from "../../../member/memberValidCheckerUtils";
 import Bag                                                 from "../../../../api/Bag";
 import ZationTokenWrapper                                  from "../../../internalApi/zationTokenWrapper";
 import {Notable}                                           from '../../../../api/Notable';
@@ -53,15 +53,15 @@ export interface AuthAccessConfig<T extends Function = NormalAuthAccessCustomFun
     access?: Notable<AccessConfigValue<T>>;
 }
 
-export interface IdValidConfig {
-
+export interface MemberValidConfig {
     /**
-     * Check if the id is valid or not.
-     * To block the id, you only need to return an object (that can be error information) or false.
-     * Also if you throw an error, the id is blocked.
-     * If you want to allow the id, you have to return nothing or a true.
+     * Check if the member is valid.
+     * Use this check only for security reason, for example, checking the format of the member.
+     * To mark the member as invalid, you only need to return an object (that can be error information) or false.
+     * Also if you throw an error, the member is marked as invalid.
+     * If you want to mark the member as valid, you have to return nothing or a true.
      */
-    idValid?: IdValid
+    memberValid?: MemberValid
 }
 
 export interface VersionAccessConfig {

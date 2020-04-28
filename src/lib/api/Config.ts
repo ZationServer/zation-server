@@ -41,7 +41,7 @@ export default class Config
     /**
      * @description
      * Merge configs together.
-     * If config has name conflicts the first one will be taken.
+     * If config has key conflicts the first one will be taken.
      * @example
      * merge(appConfig1,appConfig2,appConfig3);
      * @param configs
@@ -73,22 +73,22 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     /**
      * This method defines a new custom channel in the app config.
-     * Watch out that you don't use a name that is already defined in the custom channels of the app config.
+     * Watch out that you don't use an identifier that is already defined in the custom channels of the app config.
      * If you use this method in another file as the app config,
      * make sure that you import this file in app config.
      * @example
      * Config.defineCustomCh('myCustomCh',{
      *    subscribeAccess: 'allAuth',
      * });
-     * @param name
+     * @param identifier
      * @param customCh
      */
-    static defineCustomCh(name: string,customCh: CustomChannelConfig) {
-        if(!Config.tmpCustomChs.hasOwnProperty(name)){
-            Config.tmpCustomChs[name] = customCh;
+    static defineCustomCh(identifier: string,customCh: CustomChannelConfig) {
+        if(!Config.tmpCustomChs.hasOwnProperty(identifier)){
+            Config.tmpCustomChs[identifier] = customCh;
         }
         else {
-            throw new ConfigBuildError(`The custom channel: ${name} is already defined.`);
+            throw new ConfigBuildError(`The custom channel: ${identifier} is already defined.`);
         }
     }
 
@@ -112,79 +112,79 @@ export default class Config
     // noinspection JSUnusedGlobalSymbols
     /**
      * This method registers a new controller in the app config.
-     * Watch out that you don't use a name that is already defined in the controllers of the app config.
+     * Watch out that you don't use an identifier that is already defined in the controllers of the app config.
      * If you use this method in another file as the app config,
      * make sure that you import this file in app config.
-     * Also, notice that if you want to register more controllers with the same name and different API levels,
-     * make sure that all register methods with that name provided an API level.
+     * Also, notice that if you want to register more controllers with the same identifier and different API levels,
+     * make sure that all register methods with that identifier provided an API level.
      * @example
      * //without API level
      * Config.registerController('myController',MyController);
      * //with API level
      * Config.registerController('myController2',MyController2Version1,1);
      * Config.registerController('myController2',MyController2Version2,2);
-     * @param name
+     * @param identifier
      * @param controllerClass
      * @param apiLevel
      */
-    static registerController(name: string, controllerClass: ControllerClass, apiLevel?: number) {
-        Config.registerComponent(name,controllerClass,apiLevel);
+    static registerController(identifier: string, controllerClass: ControllerClass, apiLevel?: number) {
+        Config.registerComponent(identifier,controllerClass,apiLevel);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * This method registers a new Databox or DataboxFamily in the app config.
-     * Watch out that you don't use a name that is already defined in the Databoxes of the app config.
+     * Watch out that you don't use an identifier that is already defined in the Databoxes of the app config.
      * If you use this method in another file as the app config,
      * make sure that you import this file in app config.
-     * Also, notice that if you want to register more Databoxes with the same name and different API levels,
-     * make sure that all register methods with that name provided an API level.
+     * Also, notice that if you want to register more Databoxes with the same identifier and different API levels,
+     * make sure that all register methods with that identifier provided an API level.
      * @example
      * //without API level
      * Config.registerDatabox('myDatabox',MyDatabox);
      * //with API level
      * Config.registerDatabox('myDatabox2',MyDatabox2Version1,1);
      * Config.registerDatabox('myDatabox2',MyDatabox2Version2,2);
-     * @param name
+     * @param identifier
      * @param databoxClass
      * @param apiLevel
      */
-    static registerDatabox(name: string, databoxClass: DataboxClassDef, apiLevel?: number) {
-        Config.registerComponent(name,databoxClass,apiLevel);
+    static registerDatabox(identifier: string, databoxClass: DataboxClassDef, apiLevel?: number) {
+        Config.registerComponent(identifier,databoxClass,apiLevel);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * This method registers a new component (Controller or Databox) in the app config.
-     * Watch out that you don't use a name that is already defined in the app config.
+     * Watch out that you don't use an identifier that is already defined in the app config.
      * If you use this method in another file as the app config,
      * make sure that you import this file in app config.
-     * Also, notice that if you want to register more components with the same name and different API levels,
-     * make sure that all register methods with that name provided an API level.
+     * Also, notice that if you want to register more components with the same identifier and different API levels,
+     * make sure that all register methods with that identifier provided an API level.
      * @example
      * //without API level
      * Config.registerComponent('myDatabox',MyDatabox);
      * //with API level
      * Config.registerComponent('myController',MyControllerVersion1,1);
      * Config.registerComponent('myController',MyControllerVersion2,2);
-     * @param name
+     * @param identifier
      * @param componentClass
      * @param apiLevel
      */
-    static registerComponent(name: string, componentClass: Component, apiLevel?: number)
+    static registerComponent(identifier: string, componentClass: Component, apiLevel?: number)
     {
         let type;
-        let pName;
+        let pType;
         let container;
 
         if(componentClass.prototype instanceof Controller){
             type = 'controller';
-            pName = 'controllers';
+            pType = 'controllers';
             container = this.tmpControllers;
         }
         else if(componentClass.prototype instanceof  DataboxFamily || componentClass.prototype instanceof Databox){
             type = 'databox';
-            pName = 'databoxes';
+            pType = 'databoxes';
             container = this.tmpDataboxes;
         }
         else {
@@ -192,30 +192,30 @@ export default class Config
         }
 
         if(typeof apiLevel === 'number'){
-            if(typeof container[name] === 'function'){
-                throw new ConfigBuildError(`The ${type} name: ${name} is already defined.`+
-                    ` To define more ${pName} with the same name every register should provide an API level.`);
+            if(typeof container[identifier] === 'function'){
+                throw new ConfigBuildError(`A ${type} with identifier: ${identifier} is already defined.`+
+                    ` To define more ${pType} with the same identifier every register should provide an API level.`);
             }
             else {
-                if(!container.hasOwnProperty(name)){
-                    container[name] = {};
+                if(!container.hasOwnProperty(identifier)){
+                    container[identifier] = {};
                 }
 
-                if(container[name].hasOwnProperty(apiLevel)){
-                    throw new ConfigBuildError(`The ${type} name: ${name} with the API level ${apiLevel} is already defined.`);
+                if(container[identifier].hasOwnProperty(apiLevel)){
+                    throw new ConfigBuildError(`A ${type} with identifier: ${identifier} with the API level ${apiLevel} is already defined.`);
                 }
                 else {
-                    container[name][apiLevel] = componentClass;
+                    container[identifier][apiLevel] = componentClass;
                 }
             }
         }
         else {
-            if(container.hasOwnProperty(name)){
-                throw new ConfigBuildError(`The ${type} name: ${name} is already defined.`+
-                    ` To define more ${pName} with the same name every register should provide an API level.`);
+            if(container.hasOwnProperty(identifier)){
+                throw new ConfigBuildError(`A ${type} with identifier: ${identifier} is already defined.`+
+                    ` To define more ${pType} with the same identifier every register should provide an API level.`);
             }
             else {
-                container[name] = componentClass;
+                container[identifier] = componentClass;
             }
         }
     }
@@ -232,14 +232,14 @@ export default class Config
     /**
      * With this function, you can set the auth controller.
      * Notice that you can set only one auth controller.
-     * @param name
+     * @param identifier
      */
-    static setAuthController(name: string) {
-        if(this.tmpAuthController !== undefined && name !== this.tmpAuthController){
+    static setAuthController(identifier: string) {
+        if(this.tmpAuthController !== undefined && identifier !== this.tmpAuthController){
             throw new ConfigBuildError(`The authController: '${this.tmpAuthController}' is already set, you can not override it.`);
         }
         else {
-            this.tmpAuthController = name;
+            this.tmpAuthController = identifier;
         }
     }
 
@@ -260,9 +260,9 @@ export default class Config
             config.customChannels = config.customChannels || {};
             config.zationChannels = config.zationChannels || {};
 
-            Config.configAdd(Config.tmpControllers,config.controllers,'controller name');
-            Config.configAdd(Config.tmpDataboxes,config.databoxes,'databox name');
-            Config.configAdd(Config.tmpCustomChs,config.customChannels as object,'custom channel');
+            Config.configAdd(Config.tmpControllers,config.controllers,'controller identifier');
+            Config.configAdd(Config.tmpDataboxes,config.databoxes,'databox identifier');
+            Config.configAdd(Config.tmpCustomChs,config.customChannels as object,'custom channel identifier');
             Config.merge(config.zationChannels,...Config.tmpZationChannels);
 
             if(this.tmpAuthController !== undefined){
@@ -280,14 +280,14 @@ export default class Config
 
     private static configAdd(tmpConfig: object,config: object,target: string)
     {
-        for(const name in tmpConfig){
-            if(tmpConfig.hasOwnProperty(name)){
-                if(config.hasOwnProperty(name)){
+        for(const key in tmpConfig){
+            if(tmpConfig.hasOwnProperty(key)){
+                if(config.hasOwnProperty(key)){
                     throw new ConfigBuildError
-                    (`Conflict with ${target}: ${name}, the ${target} is defined in the app config and with the config utils.`);
+                    (`Conflict with ${target}: ${key}, the ${target} is defined in the app config and with the config utils.`);
                 }
                 else {
-                    config[name] = tmpConfig[name];
+                    config[key] = tmpConfig[key];
                 }
             }
         }

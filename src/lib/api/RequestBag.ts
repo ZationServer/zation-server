@@ -1070,12 +1070,12 @@ export default class RequestBag extends Bag
     // noinspection JSUnusedGlobalSymbols
     /**
      * Returns all custom channel subscriptions of the socket.
-     * @param name (optional filter for a specific name)
+     * @param identifier (optional filter for a specific identifier)
      * Requires ws request!
      * @throws MethodIsIncompatibleError
      */
-    getCustomChSubscriptions(name?: string): string[] {
-        return this.socket.getCustomChSubscriptions(name);
+    getCustomChSubscriptions(identifier?: string): string[] {
+        return this.socket.getCustomChSubscriptions(identifier);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1123,15 +1123,15 @@ export default class RequestBag extends Bag
      * Returns if the socket has subscribed the custom channel.
      * Requires ws request!
      * @throws MethodIsIncompatibleError
-     * @param name
+     * @param identifier
      * if it is not provided,
      * it returns if the socket has subscribed any custom channel.
-     * @param id
+     * @param member
      * if it is not provided,
-     * it returns if the socket has subscribed any custom channel with the provided name.
+     * it returns if the socket has subscribed any custom channel with the provided identifier.
      */
-    hasSubCustomCh(name?: string, id?: string): boolean {
-        return this.socket.hasSubCustomCh(name,id);
+    hasSubCustomCh(identifier?: string, member?: string): boolean {
+        return this.socket.hasSubCustomCh(identifier,member);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1147,17 +1147,17 @@ export default class RequestBag extends Bag
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Kick the current socket from an custom channel.
+     * Kick the current socket from a custom channel.
      * Requires ws request!
      * @example
      * kickFromCustomCh('images','10');
      * kickFromCustomCh('publicChat');
-     * @param name is optional, if it is not given the users will be kicked out from all custom channels.
-     * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
+     * @param identifier is optional, if it is not given the users will be kicked out from all custom channels.
+     * @param member only provide an member if you want to kick the socket from a specific member of a custom channel family.
      * @throws MethodIsIncompatibleError
      */
-    kickFromCustomCh(name?: string,id?: string): void {
-        this.socket.kickFromCustomCh(name,id);
+    kickFromCustomCh(identifier?: string,member?: string): void {
+        this.socket.kickFromCustomCh(identifier,member);
     }
 
     //Part General req info
@@ -1311,7 +1311,7 @@ export default class RequestBag extends Bag
      * @param eventName
      * @param data
      * @param srcSocketSid
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      */
     async publishInUserCh(userId: string | number | (number|string)[],eventName :string,data: object = {},srcSocketSid?: string | null): Promise<void>
@@ -1332,7 +1332,7 @@ export default class RequestBag extends Bag
      * @param eventName
      * @param data
      * @param srcSocketSid
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      */
     async pubUserCh(userId: string | number | (number|string)[],eventName :string,data: object = {},srcSocketSid?: string | null): Promise<void>
@@ -1349,7 +1349,7 @@ export default class RequestBag extends Bag
      * @param eventName
      * @param data
      * @param srcSocketSid
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      */
     async publishInAllCh(eventName: string,data: object = {},srcSocketSid?: string | null): Promise<void>
@@ -1368,7 +1368,7 @@ export default class RequestBag extends Bag
      * @param eventName
      * @param data
      * @param srcSocketSid
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      */
     async pubAllCh(eventName: string,data: object = {},srcSocketSid?: string | null): Promise<void>
@@ -1387,7 +1387,7 @@ export default class RequestBag extends Bag
      * @param eventName
      * @param data
      * @param srcSocketSid
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      */
     async publishInAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void>
@@ -1408,7 +1408,7 @@ export default class RequestBag extends Bag
      * @param eventName
      * @param data
      * @param srcSocketSid
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      */
     async pubAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void>
@@ -1425,7 +1425,7 @@ export default class RequestBag extends Bag
      * @param eventName
      * @param data
      * @param srcSocketSid
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      */
     async publishInDefaultUserGroupCh(eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void>
@@ -1444,7 +1444,7 @@ export default class RequestBag extends Bag
      * @param eventName
      * @param data
      * @param srcSocketSid
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      */
     async pubDefaultUserGroupCh(eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void>
@@ -1461,7 +1461,7 @@ export default class RequestBag extends Bag
      * @param eventName
      * @param data
      * @param srcSocketSid
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      */
     async publishInAllAuthUserGroupsCh(eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void>
@@ -1480,7 +1480,7 @@ export default class RequestBag extends Bag
      * @param eventName
      * @param data
      * @param srcSocketSid
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      */
     async pubAllAuthUserGroupsCh(eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void>
@@ -1493,17 +1493,17 @@ export default class RequestBag extends Bag
      * @description
      * Publish in an custom channel.
      * @example
-     * publishInCustomCh({name: 'imageChannel', id: 'image2'},'like',{fromUserId: '1'});
-     * publishInCustomCh({name: 'publicChat'},'msg',{msg: 'Hello',fromUserId: '1'});
+     * publishInCustomCh({identifier: 'imageChannel', member: 'image2'},'like',{fromUserId: '1'});
+     * publishInCustomCh({identifier: 'publicChat'},'msg',{msg: 'Hello',fromUserId: '1'});
      * @param target
      * @param eventName
      * @param data
      * @param srcSocketSid
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      * @throws UnknownCustomCh
      */
-    async publishInCustomCh(target: {name: string,id?: string}, eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
+    async publishInCustomCh(target: {identifier: string,member?: string}, eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
         const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket: undefined;
         return this.exchangeEngine.publishInCustomCh(target,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
     }
@@ -1513,17 +1513,17 @@ export default class RequestBag extends Bag
      * @description
      * Publish in an custom channel.
      * @example
-     * publishInCustomCh({name: 'imageChannel', id: 'image2'},'like',{fromUserId: '1'});
-     * publishInCustomCh({name: 'publicChat'},'msg',{msg: 'Hello',fromUserId: '1'});
+     * publishInCustomCh({identifier: 'imageChannel', member: 'image2'},'like',{fromUserId: '1'});
+     * publishInCustomCh({identifier: 'publicChat'},'msg',{msg: 'Hello',fromUserId: '1'});
      * @param target
      * @param eventName
      * @param data
      * @param srcSocketSid
-     * If this param is undefined and request is webSocket, the id of the current socket is used.
+     * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      * @throws UnknownCustomCh
      */
-    async pubCustomCh(target: {name: string,id?: string}, eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
+    async pubCustomCh(target: {identifier: string,member?: string}, eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
         return this.publishInCustomCh(target,eventName,data,srcSocketSid);
     }
 

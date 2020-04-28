@@ -9,9 +9,9 @@ import Bag                  from "../../../../api/Bag";
 import PubData              from "../../../internalApi/pubData";
 import CChFamilyInfo        from "../../../internalApi/cChFamilyInfo";
 import CChInfo              from "../../../internalApi/cChInfo";
-import {IdValidConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
-import {AccessConfigValue}                                      from '../../../access/accessOptions';
-import {Notable}                                                from '../../../../api/Notable';
+import {MemberValidConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
+import {AccessConfigValue}                                          from '../../../access/accessOptions';
+import {Notable}                                                    from '../../../../api/Notable';
 
 type AnyFunction = (...args: any[]) => Promise<any> | any
 
@@ -280,7 +280,7 @@ export type CustomChFamily = (BaseCustomChannelConfig<
     CChannelFamilyOnUnsubFunction,
     CChannelFamilyClientPubAccessFunction,
     CChannelFamilySubAccessFunction
-    >) & IdValidConfig;
+    >) & MemberValidConfig;
 
 export type CustomCh = BaseCustomChannelConfig<
     CChannelOnClientPubFunction,

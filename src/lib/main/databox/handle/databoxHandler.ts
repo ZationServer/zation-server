@@ -65,34 +65,34 @@ export default class DataboxHandler
         }
 
         const isFamily = DataboxPrepare.isDataBoxFamily(db);
-        const idProvided = input.i !== undefined;
+        const memberProvided = input.m !== undefined;
 
-        if(isFamily && !idProvided){
-            const err: any = new Error(`The id is missing to request a DataboxFamily.`);
-            err.name = ClientErrorName.IdMissing;
+        if(isFamily && !memberProvided){
+            const err: any = new Error(`The family member is required to request a DataboxFamily.`);
+            err.name = ClientErrorName.MemberMissing;
             throw err;
         }
-        if(!isFamily && idProvided){
-            const err: any = new Error(`Unknown id provided to request a Databox.`);
-            err.name = ClientErrorName.UnknownId;
+        if(!isFamily && memberProvided){
+            const err: any = new Error(`Unnecessary member provided to request a Databox.`);
+            err.name = ClientErrorName.UnnecessaryMember;
             throw err;
         }
 
         if(socket.databoxes.length > this.socketDataboxLimit){
-            const err: any = new Error(`Socket limit of Databoxes is reached.`);
+            const err: any = new Error(`Limit of Databoxes for this socket is reached.`);
             err.name = ClientErrorName.DataboxLimitReached;
             throw err;
         }
 
         const dbInfo: DataboxInfo = {
-            name: (input.d as string),
-            id: undefined
+            identifier: (input.d as string),
+            member: undefined
         };
 
         //access and id check
         if(isFamily){
-            await (db as DataboxFamily)._checkIdIsValid(input.i as string);
-            dbInfo.id = (input.i as string);
+            await (db as DataboxFamily)._checkMemberIsValid(input.m as string);
+            dbInfo.member = (input.m as string);
         }
         await db._checkAccess(socket,dbInfo);
 
@@ -102,7 +102,7 @@ export default class DataboxHandler
         let processedInitData: any;
         try {
             if(typeof input.t === 'string'){
-                const tmpDbToken = await db._verifyDbToken(input.t,isFamily ? input.i: undefined);
+                const tmpDbToken = await db._verifyDbToken(input.t,isFamily ? input.m: undefined);
                 if(tmpDbToken){
                     processedInitData = await db._consumeInitInput(tmpDbToken.rawInitData);
                     usedToken = true;
@@ -124,8 +124,8 @@ export default class DataboxHandler
         let keys: DbRegisterResult;
         let lastCudId;
         if(isFamily){
-            keys = await (db as DataboxFamily)._registerSocket(socket,(input.i as string),dbToken,processedInitData);
-            lastCudId = (db as DataboxFamily)._getLastCudId(input.i as string);
+            keys = await (db as DataboxFamily)._registerSocket(socket,(input.m as string),dbToken,processedInitData);
+            lastCudId = (db as DataboxFamily)._getLastCudId(input.m as string);
         }
         else {
             keys = await (db as Databox)._registerSocket(socket,dbToken,processedInitData);

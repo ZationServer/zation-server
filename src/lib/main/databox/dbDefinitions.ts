@@ -8,13 +8,13 @@ import {ForintQuery} from "forint";
 
 export interface DataboxConnectReq {
     /**
-     * databox (name)
+     * databox (identifier)
      */
-    d?: string,
+    d: string,
     /**
-     * id
+     * member
      */
-    i?: string,
+    m?: string,
     /**
      * apiLevel
      */
@@ -564,8 +564,8 @@ export type ChangeValue = (newData: any) => void;
  * The Databox info object.
  */
 export interface DataboxInfo {
-    name: string,
-    id: any
+    identifier: string,
+    member: any
 }
 
 /**

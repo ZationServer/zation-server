@@ -57,18 +57,18 @@ export default class DataboxAccessHelper
         for(let i = 0;i < databoxes.length; i++) {
             promises.push((async () => {
                 const databox = databoxes[i];
-                const name = databox.getName();
+                const identifier = databox.getIdentifier();
 
                 if(databox instanceof DataboxFamily){
-                    const memberIds = databox.getSocketRegIds(socket);
-                    for(let i = 0; i < memberIds.length; i++){
-                        if(!(await databox._accessCheck(socket,{id: memberIds[i],name}))) {
-                            databox.kickOut(memberIds[i],socket);
+                    const members = databox.getSocketRegMembers(socket);
+                    for(let i = 0; i < members.length; i++){
+                        if(!(await databox._accessCheck(socket,{identifier,member: members[i]}))) {
+                            databox.kickOut(members[i],socket);
                         }
                     }
                 }
                 else {
-                    if(!(await databox._accessCheck(socket,{name,id: undefined}))) {
+                    if(!(await databox._accessCheck(socket,{identifier,member: undefined}))) {
                         databox.kickOut(socket);
                     }
                 }

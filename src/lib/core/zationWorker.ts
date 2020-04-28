@@ -589,7 +589,7 @@ class ZationWorker extends SCWorker
             const channel = req.channel;
             const socket = req.socket;
 
-            ChUtils.pubDataAddSocketSrcSid(req,socket);
+            ChUtils.pubInRequestAddSocketSrcSid(req,socket);
 
             if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
                 const userId = ChUtils.getUserIdFromCh(channel);
@@ -708,7 +708,7 @@ class ZationWorker extends SCWorker
                     ||
                     (
                         req.channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0 &&
-                        !this.channelPrepare.getCustomChPreInfo(ChUtils.getCustomChannelName(req.channel))
+                        !this.channelPrepare.getCustomChPreInfo(ChUtils.getCustomChannelIdentifier(req.channel))
                             .socketGetOwnPub
                     )
                     ||
@@ -871,13 +871,13 @@ class ZationWorker extends SCWorker
         this.scServer.on('subscription', async (socket: UpSocket, chName, chOptions) =>
         {
             if(chName.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
-                const {name,id} = ChUtils.getCustomChannelInfo(chName);
+                const {identifier,member} = ChUtils.getCustomChannelInfo(chName);
 
-                this.channelPrepare.getCustomChPreInfo(name)
+                this.channelPrepare.getCustomChPreInfo(identifier)
                 .onSub(
                     this.preparedBag,
                     socket.zSocket,
-                    {id,name}
+                    {member,identifier}
                 );
             }
             else if(chName.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
@@ -916,13 +916,13 @@ class ZationWorker extends SCWorker
         {
             //trigger sub customCh event and update mapper
             if(chName.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
-                const {name,id} = ChUtils.getCustomChannelInfo(chName);
+                const {identifier,member} = ChUtils.getCustomChannelInfo(chName);
 
-                this.channelPrepare.getCustomChPreInfo(name)
+                this.channelPrepare.getCustomChPreInfo(identifier)
                 .onUnsub(
                     this.preparedBag,
                     socket.zSocket,
-                    {name,id}
+                    {identifier,member}
                 );
             }
             else if(chName.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {

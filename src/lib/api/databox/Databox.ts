@@ -98,12 +98,12 @@ export default class Databox extends DataboxCore {
 
     static [databoxInstanceSymbol]: Databox;
 
-    constructor(id: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
-        super(id,bag,dbPreparedData,apiLevel);
+    constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
+        super(identifier,bag,dbPreparedData,apiLevel);
         this._scExchange = bag.getWorker().scServer.exchange;
         this._workerFullId = bag.getWorker().getFullWorkerId();
         this._maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
-        this._dbEvent = `${DATABOX_START_INDICATOR}-${this.name}-${apiLevel !== undefined ? apiLevel: ''}`;
+        this._dbEvent = `${DATABOX_START_INDICATOR}-${this.identifier}-${apiLevel !== undefined ? apiLevel: ''}`;
 
         this._buildFetchManager = DataboxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
@@ -919,10 +919,9 @@ Databox.prototype['beforeDelete'][defaultSymbol] = true;
 export interface DataboxClass {
     config: DataboxConfig;
 
-    new(name: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined): Databox;
+    new(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined): Databox;
 
     prototype: any;
-    name: string;
 
     readonly [databoxInstanceSymbol]: Databox | undefined;
 }

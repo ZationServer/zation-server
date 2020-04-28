@@ -35,7 +35,8 @@ type RegisterDecorator = {
  * You only have to import the file in the app config.
  * This decorator provides a fluent API to specify the API level, router,
  * or if it should register an auth controller.
- * You are able to register multiple components with the same name but different API levels.
+ * You are able to register multiple components with the same identifier but different API levels.
+ * The identifier of the component will be created with the routes and the provided name.
  * @param name
  * If not provided, it takes the class name.
  * Notice that "Controller" and "Databox" will be removed from the class name.

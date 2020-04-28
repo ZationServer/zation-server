@@ -13,7 +13,7 @@ import ZationWorker                                           = require("../../c
 import {ClientErrorName}                                        from "../constants/clientErrorName";
 import {DataboxClassDef, DataboxConfig}                         from "../config/definitions/parts/databoxConfig";
 import DataboxFamily, {DataboxFamilyClass}                      from "../../api/databox/DataboxFamily";
-import IdValidCheckerUtils                                      from "../id/idValidCheckerUtils";
+import MemberValidCheckerUtils                                  from "../member/memberValidCheckerUtils";
 import Databox, {DataboxClass}                                  from "../../api/databox/Databox";
 import InputClosureCreator                                      from "../input/inputClosureCreator";
 import DataboxAccessHelper                                      from "./databoxAccessHelper";
@@ -42,18 +42,18 @@ export default class DataboxPrepare
 
     /**
      * It will return the Databox instance.
-     * If no DatBox with the API level is found,
+     * If no Databox with the API level is found,
      * it will throw an API level incompatible error,
      * and when the Databox does not exist, it also throws an error.
-     * @param name
+     * @param identifier
      * @param apiLevel
      */
-    getDatabox(name: string,apiLevel: number): DataboxCore
+    getDatabox(identifier: string,apiLevel: number): DataboxCore
     {
         //throws if not exists
-        this.checkDataboxExist(name);
+        this.checkDataboxExist(identifier);
 
-        const databox = this.databoxes[name](apiLevel);
+        const databox = this.databoxes[identifier](apiLevel);
         if(databox !== undefined){
             return databox;
         }
@@ -66,10 +66,10 @@ export default class DataboxPrepare
 
     /**
      * Returns a boolean that indicates if the Databox exists.
-     * @param name
+     * @param identifier
      */
-    isDataboxExist(name: string): boolean {
-        return this.databoxes.hasOwnProperty(name);
+    isDataboxExist(identifier: string): boolean {
+        return this.databoxes.hasOwnProperty(identifier);
     }
 
     /**
@@ -84,12 +84,12 @@ export default class DataboxPrepare
     /**
      * Checks if the Databox exists.
      * It will throw a error if the Databox is not found.
-     * @param name
+     * @param identifier
      */
-    checkDataboxExist(name: string): void
+    checkDataboxExist(identifier: string): void
     {
-        if(!this.isDataboxExist(name)) {
-            const err: any = new Error(`The Databox: '${name}' not exists.`);
+        if(!this.isDataboxExist(identifier)) {
+            const err: any = new Error(`The Databox: '${identifier}' not exists.`);
             err.name = ClientErrorName.UnknownDatabox;
             throw err;
         }
@@ -100,9 +100,9 @@ export default class DataboxPrepare
      */
     async prepare(): Promise<void> {
         const uDataboxes = this.zc.appConfig.databoxes || {};
-        for(const name in uDataboxes) {
-            if(uDataboxes.hasOwnProperty(name)) {
-                this.addDatabox(name,uDataboxes[name]);
+        for(const identifier in uDataboxes) {
+            if(uDataboxes.hasOwnProperty(identifier)) {
+                this.addDatabox(identifier,uDataboxes[identifier]);
             }
         }
         await this.initDataboxes();
@@ -110,14 +110,14 @@ export default class DataboxPrepare
 
     /**
      * Add a Databox to the prepare process.
-     * @param name
+     * @param identifier
      * @param definition
      */
-    private addDatabox(name: string,definition: DataboxClassDef | ApiLevelSwitch<DataboxClassDef>): void
+    private addDatabox(identifier: string,definition: DataboxClassDef | ApiLevelSwitch<DataboxClassDef>): void
     {
         if(typeof definition === 'function') {
-            const preparedDataboxData = this.processDatabox(definition,name);
-            this.databoxes[name] = () => {
+            const preparedDataboxData = this.processDatabox(definition,identifier);
+            this.databoxes[identifier] = () => {
                 return preparedDataboxData
             };
         }
@@ -125,27 +125,27 @@ export default class DataboxPrepare
             const preparedDataMapper: Record<any,DataboxCore> = {};
             for(const k in definition){
                 if(definition.hasOwnProperty(k)) {
-                    preparedDataMapper[k] = this.processDatabox(definition[k],name,parseInt(k));
+                    preparedDataMapper[k] = this.processDatabox(definition[k],identifier,parseInt(k));
                 }
             }
-            this.databoxes[name] = ApiLevelUtils.createApiLevelSwitcher<DataboxCore>(preparedDataMapper);
+            this.databoxes[identifier] = ApiLevelUtils.createApiLevelSwitcher<DataboxCore>(preparedDataMapper);
         }
     }
 
     /**
      * Process a Databox and create the prepared data.
      * @param databox
-     * @param name
+     * @param identifier
      * @param apiLevel
      */
-    private processDatabox(databox: DataboxClassDef, name: string, apiLevel?: number): DataboxCore
+    private processDatabox(databox: DataboxClassDef, identifier: string, apiLevel?: number): DataboxCore
     {
         const config: DataboxConfig = databox.config;
 
         const dbPreparedData: DbPreparedData = {
             versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
-            accessCheck: DataboxAccessHelper.createAccessChecker(config.access,this.bag,name),
+            accessCheck: DataboxAccessHelper.createAccessChecker(config.access,this.bag,identifier),
             initInputConsumer: InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbInitInput(config),this.bag),
             fetchInputConsumer: InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbFetchInput(config),this.bag),
             parallelFetch: config.parallelFetch !== undefined ? config.parallelFetch: false,
@@ -157,13 +157,13 @@ export default class DataboxPrepare
         let dbInstance;
         if(databox.prototype instanceof Databox){
             dbInstance = new (databox as DataboxClass)
-            (name,this.worker.getPreparedBag(),dbPreparedData,apiLevel);
+            (identifier,this.worker.getPreparedBag(),dbPreparedData,apiLevel);
             dbInstance[databoxIsFamilySymbol] = false;
         }
         else if(databox.prototype instanceof DataboxFamily){
             dbInstance = new (databox as DataboxFamilyClass)
-            (name,this.worker.getPreparedBag(),dbPreparedData,
-                IdValidCheckerUtils.createIdValidChecker(databox.prototype.isIdValid,this.bag)
+            (identifier,this.worker.getPreparedBag(),dbPreparedData,
+                MemberValidCheckerUtils.createMemberValidChecker(databox.prototype.isMemberValid,this.bag)
                 ,apiLevel);
             dbInstance[databoxIsFamilySymbol] = true;
         }

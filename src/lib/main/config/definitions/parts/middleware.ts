@@ -25,7 +25,7 @@ export interface Middleware {
      * If one function returns true, the chain is broken,
      * and the token is allowed without invoking the remaining functions.
      * To block the token, you can return an object (that can be an error),
-     * return false or throw an error
+     * return false or throw an error.
      * Runs on a worker process.
      * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (zationToken) => {}
