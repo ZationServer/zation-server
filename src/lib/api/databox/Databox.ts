@@ -158,8 +158,10 @@ export default class Databox extends DataboxCore {
             try {
                 switch (senderPackage.a) {
                     case DbClientInputAction.signal:
-                        this.onReceivedSignal(socket.zSocket,(senderPackage as DbClientInputSignalPackage).s,
-                            (senderPackage as DbClientInputSignalPackage).d);
+                        if(typeof (senderPackage as DbClientInputSignalPackage).s as any === 'string'){
+                            this.onReceivedSignal(socket.zSocket,(senderPackage as DbClientInputSignalPackage).s,
+                                (senderPackage as DbClientInputSignalPackage).d);
+                        }
                         break;
                     case DbClientInputAction.fetch:
                         const processedFetchInput = await this._consumeFetchInput((senderPackage as DbClientInputFetchPackage).i);
