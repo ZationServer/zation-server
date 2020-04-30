@@ -4,10 +4,6 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-export enum BackErrorInfo {
-    Main = 'main'
-}
-
 export type ZationAccessRecord = Record<ZationAccess,any>;
 export type ZationAccess = 'all' | 'allAuth' | 'allNotAuth';
 

@@ -5,10 +5,37 @@ Copyright(c) Luca Scaringella
  */
 
 import BackErrorConstruct   from "../main/constants/backErrorConstruct";
-// noinspection TypeScriptPreferShortImport
+// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ErrorType}          from "../main/constants/errorType";
-import {BackErrorInfo}      from "../main/constants/internal";
-import {ResponseError}      from "../main/controller/request/controllerDefinitions";
+
+type BackErrorInfo = object & {main ?: any};
+
+export interface DryBackError {
+    /**
+     * Name
+     */
+    n: string,
+    /**
+     * Group
+     */
+    g?: string,
+    /**
+     * Type
+     */
+    t: string
+    /**
+     * Description
+     */
+    d?: string,
+    /**
+     * From Zation System
+     */
+    zs: boolean,
+    /**
+     * Info
+     */
+    i?: BackErrorInfo
+}
 
 export default class BackError extends Error
 {
@@ -16,7 +43,7 @@ export default class BackError extends Error
     private description: string;
     private type: string;
     private sendInfo: boolean;
-    private info: object;
+    private info: BackErrorInfo;
     private privateE: boolean;
     private fromZationSystem: boolean;
 
@@ -52,7 +79,7 @@ export default class BackError extends Error
 
         if(info) {
             if (typeof info === 'string') {
-                this.info[BackErrorInfo.Main] = info;
+                this.info.main = info;
             }
             else {
                 this.info = info;
@@ -77,8 +104,7 @@ export default class BackError extends Error
      * This method is used internal!
      * @param withDesc
      */
-    _toResponseError(withDesc: boolean = false): ResponseError
-    {
+    _dehydrate(withDesc: boolean = false): DryBackError {
         if(this.privateE){
             return {
                 n: 'BackError',

@@ -12,7 +12,7 @@ import IdCounter                                             from '../../utils/i
 import Logger                                                from '../../log/logger';
 import {isCodeError}                                         from '../../error/codeError';
 import ZationConfigFull                                      from '../../config/manager/zationConfigFull';
-import {ControllerReq, ControllerRequestType, ControllerRes} from './controllerDefinitions';
+import {ControllerReq, ControllerRequestType, ControllerRes} from '../controllerDefinitions';
 import ControllerReqUtils                                    from './controllerReqUtils';
 import {MainBackErrors}                                      from '../../zationBackErrors/mainBackErrors';
 import AuthEngine                                            from '../../auth/authEngine';
@@ -73,7 +73,7 @@ export default class ControllerReqHandler
         }
         catch (err) {
             const response: ControllerRes =
-                [ErrorUtils.convertErrorToResponseErrors(err,this.sendErrDescription)];
+                [ErrorUtils.dehydrate(err,this.sendErrDescription)];
             respond(null,response);
 
             if(this.debug)

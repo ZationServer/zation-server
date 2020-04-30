@@ -35,7 +35,7 @@ import fileUpload   = require('express-fileupload');
 import url          = require('url');
 
 import process          = require("process");
-import ControllerReqHandler from "../main/controller/request/controllerReqHandler";
+import ControllerReqHandler from "../main/controller/handle/controllerReqHandler";
 import AEPreparedPart       from "../main/auth/aePreparedPart";
 import ZationTokenWrapper   from "../main/internalApi/zationTokenWrapper";
 import ControllerPrepare    from "../main/controller/controllerPrepare";

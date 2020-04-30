@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ControllerReq, ControllerRequestType} from './controllerDefinitions';
+import {ControllerReq, ControllerRequestType} from '../controllerDefinitions';
 
 export default class ControllerReqUtils
 {

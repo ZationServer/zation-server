@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {BackErrorInfo} from "../../constants/internal";
+import {DryBackError} from '../../api/BackError';
 
 export const enum ControllerRequestType {
     Normal,
@@ -58,33 +58,6 @@ export interface ValidationCheckPair {
     v: any
 }
 
-export interface ResponseError {
-    /**
-     * Name
-     */
-    n: string,
-    /**
-     * Group
-     */
-    g?: string,
-    /**
-     * Type
-     */
-    t: string
-    /**
-     * Description
-     */
-    d?: string,
-    /**
-     * From Zation System
-     */
-    zs: boolean,
-    /**
-     * Info
-     */
-    i?: object | BackErrorInfo
-}
-
 /**
  * Successful = errors.length === 0
  */
@@ -92,7 +65,7 @@ export interface ControllerRes {
     /**
      * Errors
      */
-    0: ResponseError[],
+    0: DryBackError[],
     /**
      * Result
      */

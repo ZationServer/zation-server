@@ -5,8 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import BackErrorConstruct   from "../main/constants/backErrorConstruct";
-import BackError            from "./BackError";
-import {ResponseError}      from "../main/controller/request/controllerDefinitions";
+import BackError, {DryBackError} from './BackError';
 
 export default class BackErrorBag
 {
@@ -78,11 +77,11 @@ export default class BackErrorBag
      * This method is used internal!
      * @param withDesc
      */
-    _toResponseErrorArray(withDesc: boolean): ResponseError[]
+    _dehydrate(withDesc: boolean): DryBackError[]
     {
-        const obj: ResponseError[] = [];
+        const obj: DryBackError[] = [];
         for(let i = 0; i < this.backErrors.length; i++) {
-            obj.push(this.backErrors[i]._toResponseError(withDesc));
+            obj.push(this.backErrors[i]._dehydrate(withDesc));
         }
         return obj;
     }

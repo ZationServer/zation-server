@@ -12,7 +12,7 @@ import BackError                        from "../../api/BackError";
 import {MainBackErrors}                 from "../zationBackErrors/mainBackErrors";
 import InputUtils                       from "./inputUtils";
 import Bag                              from "../../api/Bag";
-import {ValidationCheckPair}            from "../controller/request/controllerDefinitions";
+import {ValidationCheckPair}            from "../controller/controllerDefinitions";
 
 export type InputConsumeFunction = (input: any) => Promise<any>;
 export type InputValidationCheckFunction = (checkData: ValidationCheckPair[]) => Promise<void>;

@@ -108,7 +108,7 @@ export default abstract class DataboxCore {
         catch (inputError) {
             const err: any = new Error('Invalid input to fetch data.');
             err.name = ClientErrorName.InvalidInput;
-            err.backErrors = ErrorUtils.convertErrorToResponseErrors(inputError,this._sendErrorDescription);
+            err.backErrors = ErrorUtils.dehydrate(inputError,this._sendErrorDescription);
             throw err;
         }
     }
@@ -127,7 +127,7 @@ export default abstract class DataboxCore {
         catch (inputError) {
             const err: any = new Error('Invalid init input.');
             err.name = ClientErrorName.InvalidInput;
-            err.backErrors = ErrorUtils.convertErrorToResponseErrors(inputError,this._sendErrorDescription);
+            err.backErrors = ErrorUtils.dehydrate(inputError,this._sendErrorDescription);
             throw err;
         }
     }
