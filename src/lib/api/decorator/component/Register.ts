@@ -37,7 +37,7 @@ import {parseComponentClassName} from '../../../main/utils/componentUtils';
  * @param override
  * The parameter to override the parsed name and API level from the class name.
  */
-export const Register = (override: {name?: string, apiLevel?: number} = {}): (target: Component) => void => {
+export const Register = (override: {name?: string, apiLevel?: number | null} = {}): (target: Component) => void => {
     return (target: Component) => {
         if(target.prototype instanceof Controller || target.prototype instanceof Databox
             || target.prototype instanceof DataboxFamily){
@@ -47,7 +47,7 @@ export const Register = (override: {name?: string, apiLevel?: number} = {}): (ta
                 name = override.name;
             }
             if(override.apiLevel !== undefined){
-                apiLevel = parseInt(override.apiLevel as any);
+                apiLevel = override.apiLevel === null ? undefined : parseInt(override.apiLevel as any);
             }
 
             Config.registerComponent(name,target,apiLevel);
