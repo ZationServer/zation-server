@@ -7,42 +7,41 @@ Copyright(c) Luca Scaringella
 import ZationWorker             = require("../core/zationWorker");
 import useragent                = require('useragent');
 import UpSocket, {OnHandlerFunction} from "../main/sc/socket";
-import * as core                  from "express-serve-static-core";
 import {IncomingHttpHeaders, IncomingMessage} from "http";
 import {Agent}                    from "useragent";
-import {UploadedFile}             from "express-fileupload";
-import SHBridge                   from "../main/controller/request/bridges/shBridge";
 import AuthEngine                 from "../main/auth/authEngine";
-import ProtocolAccessChecker      from "../main/protocolAccess/protocolAccessChecker";
 import ObjectPath                 from "../main/utils/objectPath";
 import ObjectPathSequenceImp      from "../main/internalApi/objectPathSequence/objectPathSequenceImp";
 import ObjectPathSequenceBoxImp   from "../main/internalApi/objectPathSequence/objectPathSequenceBoxImp";
 import Bag                        from "./Bag";
 import InputIsIncompatibleError   from "../main/error/inputIsIncompatibleError";
-import MethodIsIncompatibleError  from "../main/error/methodIsIncompatibleError";
 import TokenUtils                 from "../main/token/tokenUtils";
 import {ZationToken}              from "../main/constants/internal";
 import {JwtSignOptions}           from "../main/constants/jwt";
 import ZSocket                    from "../main/internalApi/zSocket";
 import ApiLevelUtils              from "../main/apiLevel/apiLevelUtils";
 import CloneUtils                 from "../main/utils/cloneUtils";
-// noinspection TypeScriptPreferShortImport
+// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ObjectPathSequence}       from "../main/internalApi/objectPathSequence/objectPathSequence";
 
 export default class RequestBag extends Bag
 {
-    private reqVariables: object;
-    private readonly shBridge: SHBridge;
+    private reqVariables: object = {};
+    private readonly _socket: UpSocket;
     private readonly authEngine: AuthEngine;
+    private readonly reqId: string;
     private readonly input: any;
+    private readonly reqApiLevel: number | undefined;
 
-    constructor(shBridge: SHBridge, worker: ZationWorker, authEngine: AuthEngine, input: object)
+    constructor(socket: UpSocket, worker: ZationWorker, reqId: string,
+                input: object, reqApiLevel: number | undefined)
     {
         super(worker,worker.getChannelBagEngine());
-        this.reqVariables = {};
-        this.shBridge = shBridge;
-        this.authEngine = authEngine;
+        this._socket = socket;
+        this.authEngine = socket.authEngine;
+        this.reqId = reqId;
         this.input = input;
+        this.reqApiLevel = reqApiLevel;
     }
 
     //Part Request Variables
@@ -98,7 +97,7 @@ export default class RequestBag extends Bag
      * The path to the variable, you can split the keys with a dot or an string array.
      */
     deleteReqVariable(path?: string | string[]): void {
-        if(!!path) {
+        if(path !== undefined) {
             ObjectPath.del(this.reqVariables,path);
         }
         else {
@@ -188,13 +187,11 @@ export default class RequestBag extends Bag
     /**
      * @description
      * Set socket variable (server side) with object path.
-     * Requires web socket request!
      * @example
      * setSocketVariable('email','example@gmail.com');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
      * @param value
-     * @throws MethodIsIncompatibleError
      */
     setSocketVariable(path: string | string[],value: any): void {
         this.socket.setSocketVariable(path,value);
@@ -204,12 +201,10 @@ export default class RequestBag extends Bag
     /**
      * @description
      * Has socket variable (server side) with object path.
-     * Requires web socket request!
      * @example
      * hasSocketVariable('email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws MethodIsIncompatibleError
      */
     hasSocketVariable(path?: string | string[]): boolean {
         return this.socket.hasSocketVariable(path);
@@ -219,12 +214,10 @@ export default class RequestBag extends Bag
     /**
      * @description
      * Get socket variable (server side) with object path.
-     * Requires web socket request!
      * @example
      * getSocketVariable('email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws MethodIsIncompatibleError
      */
     getSocketVariable<R = any>(path?: string | string[]): R {
         return this.socket.getSocketVariable(path);
@@ -234,12 +227,10 @@ export default class RequestBag extends Bag
     /**
      * @description
      * Delete socket variable (server side) with object path.
-     * Requires web socket request!
      * @example
      * deleteSocketVariable('email');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws MethodIsIncompatibleError
      */
     deleteSocketVariable(path?: string | string[]): void {
         this.socket.deleteSocketVariable(path);
@@ -396,184 +387,33 @@ export default class RequestBag extends Bag
         return this.authEngine.isDefault();
     }
 
-    //Part Cookie
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Get cookie variable.
-     * Requires http request!
-     * @throws MethodIsIncompatibleError
-     * @param key
-     */
-    getCookieVariable<R = any>(key: string): R
-    {
-        if(this.shBridge.isWebSocket()) {
-            throw new MethodIsIncompatibleError(this.getProtocol(),'http','Get a cookie variable.');
-        }
-        else {
-            return this.shBridge.getRequest().cookies[key];
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Set cookie variable.
-     * Requires http request!
-     * @throws MethodIsIncompatibleError
-     * @param key
-     * @param value
-     * @param settings
-     */
-    setCookieVariable(key: string,value: any,settings : object= { maxAge: 900000}): void
-    {
-        if(this.shBridge.isWebSocket()) {
-            throw new MethodIsIncompatibleError(this.getProtocol(),'http','Set a cookie variable.');
-        }
-        else {
-            this.shBridge.getResponse().cookie(key,value,settings);
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Clear cookie variable.
-     * Requires http request!
-     * @throws MethodIsIncompatibleError
-     * @param key
-     */
-    clearCookie(key: string): void
-    {
-        if(this.shBridge.isWebSocket()) {
-            throw new MethodIsIncompatibleError(this.getProtocol(),'http','Clear a cookie.');
-        }
-        else {
-            this.shBridge.getResponse().clearCookie(key);
-        }
-    }
-
     //Part Http
-
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Return the http response.
-     * Requires http request!
-     * @throws MethodIsIncompatibleError
+     * Returns the handshake request.
      */
-    getHttpResponse(): core.Response {
-        if(this.shBridge.isWebSocket()) {
-            throw new MethodIsIncompatibleError(this.getProtocol(),'http','Get http response.');
-        }
-        else {
-            return this.shBridge.getResponse();
-        }
+    getHandshakeRequest(): IncomingMessage {
+       return this._socket.request;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Return the http request.
-     * Requires http request!
-     * @throws MethodIsIncompatibleError
+     * Returns the handshake request header.
      */
-    getHttpRequest(): core.Request {
-        if(this.shBridge.isWebSocket()) {
-            throw new MethodIsIncompatibleError(this.getProtocol(),'http','Get http request.');
-        }
-        else {
-            return this.shBridge.getRequest();
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Return the http method.
-     * Requires http request!
-     * @throws MethodIsIncompatibleError
-     */
-    getHttpMethod(): string {
-        if(this.shBridge.isWebSocket()) {
-            throw new MethodIsIncompatibleError(this.getProtocol(),'http','Get http method.');
-        }
-        else {
-            return this.shBridge.getRequest().method;
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns the attached files from the http request.
-     * By using the npm package express-fileupload.
-     * You can attach files on the client side
-     * by using the method attachHttpContent.
-     * Requires http request!
-     * @throws MethodIsIncompatibleError
-     */
-    getHttpFiles(): Record<string,UploadedFile> {
-        if(this.shBridge.isWebSocket()) {
-            throw new MethodIsIncompatibleError(this.getProtocol(),'http','Get http files.');
-        }
-        else {
-            //using express-fileupload
-            return (this.shBridge.getRequest().files || {}) as Record<string,UploadedFile>;
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns the http request body.
-     * You can use it to access attached http content.
-     * Requires http request!
-     * @throws MethodIsIncompatibleError
-     */
-    getHttpBody(): Record<string,any>
-    {
-        if(this.shBridge.isWebSocket()) {
-            throw new MethodIsIncompatibleError(this.getProtocol(),'http','Get http body.');
-        }
-        else {
-            return this.shBridge.getRequest().body;
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * If it is an http request it returns the request.
-     * Otherwise (webSocket request) it returns the handshake request.
-     */
-    getHandshakeRequest(): IncomingMessage
-    {
-       return this.shBridge.getHandshakeRequest();
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * If it is an http request it returns the request header.
-     * Otherwise (webSocket request) it returns the handshake request header.
-     */
-    getHandshakeHeader(): IncomingHttpHeaders
-    {
-       return this.shBridge.getHandshakeRequest().headers;
+    getHandshakeHeader(): IncomingHttpHeaders {
+       return this._socket.request.headers;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
      * Get a socket handshake variable with object path.
-     * Requires ws request!
      * @example
      * getSocketHandshakeVariable('deviceCode');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws MethodIsIncompatibleError
      */
     getSocketHandshakeVariable<R = any>(path?: string | string[]): R {
         return this.socket.getSocketHandshakeVariable(path);
@@ -583,12 +423,10 @@ export default class RequestBag extends Bag
     /**
      * @description
      * Has a socket handshake variable with object path.
-     * Requires ws request!
      * @example
      * hasSocketHandshakeVariable('deviceCode');
      * @param path
      * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws MethodIsIncompatibleError
      */
     hasSocketHandshakeVariable(path?: string | string[]): boolean {
         return this.socket.hasSocketHandshakeVariable(path);
@@ -614,9 +452,9 @@ export default class RequestBag extends Bag
      * @throws AuthenticationError if the client is not authenticated.
      */
     async setTokenVariable(path: string | string[],value: any): Promise<void> {
-        const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this.shBridge.getToken()));
+        const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this._socket.authToken));
         ObjectPath.set(ctv,path,value);
-        await TokenUtils.setCustomVar(ctv,this.shBridge);
+        await TokenUtils.setCustomVar(ctv,this._socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -635,13 +473,13 @@ export default class RequestBag extends Bag
      * @throws AuthenticationError if the client is not authenticated.
      */
     async deleteTokenVariable(path?: string | string[]): Promise<void> {
-        if(!!path) {
-            const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this.shBridge.getToken()));
+        if(path !== undefined) {
+            const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this._socket.authToken));
             ObjectPath.del(ctv,path);
-            await TokenUtils.setCustomVar(ctv,this.shBridge);
+            await TokenUtils.setCustomVar(ctv,this._socket);
         }
         else {
-            await TokenUtils.setCustomVar({},this.shBridge);
+            await TokenUtils.setCustomVar({},this._socket);
         }
     }
 
@@ -668,9 +506,9 @@ export default class RequestBag extends Bag
     seqEditTokenVariables(): ObjectPathSequence
     {
         return new ObjectPathSequenceImp(CloneUtils.deepClone(
-            TokenUtils.getTokenVariables(this.shBridge.getToken())),
+            TokenUtils.getTokenVariables(this._socket.authToken)),
             async (obj)=> {
-                await TokenUtils.setCustomVar(obj,this.shBridge);
+                await TokenUtils.setCustomVar(obj,this._socket);
             });
     }
 
@@ -838,7 +676,7 @@ export default class RequestBag extends Bag
      * @throws AuthenticationError if the client is not authenticated.
      */
     hasTokenVariable(path?: string | string[]): boolean {
-        return ObjectPath.has(TokenUtils.getTokenVariables(this.shBridge.getToken()),path);
+        return ObjectPath.has(TokenUtils.getTokenVariables(this._socket.authToken),path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -856,7 +694,7 @@ export default class RequestBag extends Bag
      * @throws AuthenticationError if the client is not authenticated.
      */
     getTokenVariable<R = any>(path?: string | string[]): R {
-        return ObjectPath.get(TokenUtils.getTokenVariables(this.shBridge.getToken()),path);
+        return ObjectPath.get(TokenUtils.getTokenVariables(this._socket.authToken),path);
     }
 
     //Part Token
@@ -868,7 +706,7 @@ export default class RequestBag extends Bag
      * @throws AuthenticationError if the socket is not authenticated.
      */
     getTokenId(): string {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.tid),this.shBridge.getToken());
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.tid),this._socket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -878,7 +716,7 @@ export default class RequestBag extends Bag
      * @throws AuthenticationError if the socket is not authenticated.
      */
     getTokenExpire(): number {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.exp),this.shBridge.getToken());
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.exp),this._socket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -888,7 +726,7 @@ export default class RequestBag extends Bag
      * @throws AuthenticationError if the socket is not authenticated.
      */
     getPanelAccess(): boolean {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.panelAccess),this.shBridge.getToken());
+        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.panelAccess),this._socket.authToken);
     }
 
     //Part Socket
@@ -896,11 +734,9 @@ export default class RequestBag extends Bag
     /**
      * @description
      * Returns the socket id of the current socket.
-     * Requires ws request!
-     * @throws MethodIsIncompatibleError
      */
     getSocketId(): string {
-        return this.socket.id;
+        return this._socket.id;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -908,86 +744,27 @@ export default class RequestBag extends Bag
      * @description
      * Returns the socket sid of the current socket.
      * The sid is unique in scalable process.
-     * Requires ws request!
-     * @throws MethodIsIncompatibleError
      */
     getSocketSid(): string {
-        return this.socket.sid;
+        return this._socket.sid;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
      * Returns the raw socket.
-     * Requires ws request!
-     * @throws MethodIsIncompatibleError
      */
     getRawSocket(): UpSocket {
-        return this.socket.rawSocket;
+        return this._socket;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
      * Returns the zSocket.
-     * Requires ws request!
-     * @throws MethodIsIncompatibleError
      */
     get socket(): ZSocket {
-        if(this.shBridge.isWebSocket()) {
-            return this.shBridge.getSocket().zSocket;
-        }
-        else {
-            throw new MethodIsIncompatibleError(this.getProtocol(),'ws','Access the socket.');
-        }
-    }
-
-    //Part Protocol
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns the current protocol of this request.
-     * It can be 'ws' or 'http'.
-     */
-    getProtocol(): string {
-        return ProtocolAccessChecker.getProtocol(this.shBridge);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns the current request protocol is web socket.
-     */
-    isWebSocketProtocol(): boolean {
-        return this.shBridge.isWebSocket();
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns the current request protocol is web socket.
-     */
-    isWs(): boolean {
-        return this.isWebSocketProtocol();
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns the current request protocol is http.
-     */
-    isHttpProtocol(): boolean {
-        return !this.shBridge.isWebSocket();
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns the current request protocol is http.
-     */
-    isHttp(): boolean {
-        return this.isHttpProtocol();
+        return this._socket.zSocket;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -999,7 +776,7 @@ export default class RequestBag extends Bag
      * 7dd60337-bdeb-494a-ae5d-a92188b0c535-2.90-1543143397178.0.0
      */
     getRequestId(): string {
-        return this.shBridge.getReqId();
+        return this.reqId;
     }
 
     //Part Socket
@@ -1012,8 +789,6 @@ export default class RequestBag extends Bag
      * and if an error occurs while emitting to socket, this error is thrown.
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
-     * Requires ws request!
-     * @throws MethodIsIncompatibleError
      * @param event
      * @param data
      * @param onlyTransmit
@@ -1031,15 +806,13 @@ export default class RequestBag extends Bag
      * Respond on an emit-event of the socket.
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
-     * Requires ws request!
-     * @throws MethodIsIncompatibleError
      * @param event
      * @param handler
      * The function that gets called when the event occurs,
      * parameters are the data and a response function that you can call to respond on the event back.
      */
     socketOn(event: string,handler: OnHandlerFunction){
-        this.socket.on(event,handler);
+        this._socket.on(event,handler);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1060,8 +833,6 @@ export default class RequestBag extends Bag
     /**
      * @description
      * Returns the current channel subscriptions of the socket.
-     * Requires ws request!
-     * @throws MethodIsIncompatibleError
      */
     getSubscriptions(): string[] {
         return this.socket.getSubscriptions();
@@ -1071,8 +842,6 @@ export default class RequestBag extends Bag
     /**
      * Returns all custom channel subscriptions of the socket.
      * @param identifier (optional filter for a specific identifier)
-     * Requires ws request!
-     * @throws MethodIsIncompatibleError
      */
     getCustomChSubscriptions(identifier?: string): string[] {
         return this.socket.getCustomChSubscriptions(identifier);
@@ -1081,8 +850,6 @@ export default class RequestBag extends Bag
     // noinspection JSUnusedGlobalSymbols
     /**
      * Returns if the socket has subscribed the user channel.
-     * Requires ws request!
-     * @throws MethodIsIncompatibleError
      */
     hasSubUserCh(): boolean {
         return this.socket.hasSubUserCh();
@@ -1091,8 +858,6 @@ export default class RequestBag extends Bag
     // noinspection JSUnusedGlobalSymbols
     /**
      * Returns if the socket has subscribed the auth user group channel.
-     * Requires ws request!
-     * @throws MethodIsIncompatibleError
      */
     hasSubAuthUserGroupCh(): boolean {
         return this.socket.hasSubAuthUserGroupCh();
@@ -1101,8 +866,6 @@ export default class RequestBag extends Bag
     // noinspection JSUnusedGlobalSymbols
     /**
      * Returns if the socket has subscribed the default user group channel.
-     * Requires ws request!
-     * @throws MethodIsIncompatibleError
      */
     hasSubDefaultUserGroupCh(): boolean {
         return this.socket.hasSubDefaultUserGroupCh();
@@ -1111,8 +874,6 @@ export default class RequestBag extends Bag
     // noinspection JSUnusedGlobalSymbols
     /**
      * Returns if the socket has subscribed the all channel.
-     * Requires ws request!
-     * @throws MethodIsIncompatibleError
      */
     hasSubAllCh(): boolean {
         return this.socket.hasSubAllCh();
@@ -1121,8 +882,6 @@ export default class RequestBag extends Bag
     // noinspection JSUnusedGlobalSymbols
     /**
      * Returns if the socket has subscribed the custom channel.
-     * Requires ws request!
-     * @throws MethodIsIncompatibleError
      * @param identifier
      * if it is not provided,
      * it returns if the socket has subscribed any custom channel.
@@ -1137,8 +896,6 @@ export default class RequestBag extends Bag
     // noinspection JSUnusedGlobalSymbols
     /**
      * Returns if the socket has subscribed the panel out channel.
-     * Requires ws request!
-     * @throws MethodIsIncompatibleError
      */
     hasSubPanelOutCh(): boolean {
         return this.socket.hasSubPanelOutCh();
@@ -1148,13 +905,11 @@ export default class RequestBag extends Bag
     /**
      * @description
      * Kick the current socket from a custom channel.
-     * Requires ws request!
      * @example
      * kickFromCustomCh('images','10');
      * kickFromCustomCh('publicChat');
      * @param identifier is optional, if it is not given the users will be kicked out from all custom channels.
      * @param member only provide an member if you want to kick the socket from a specific member of a custom channel family.
-     * @throws MethodIsIncompatibleError
      */
     kickFromCustomCh(identifier?: string,member?: string): void {
         this.socket.kickFromCustomCh(identifier,member);
@@ -1168,7 +923,7 @@ export default class RequestBag extends Bag
      * Returns the remote ip address (can be a private address) from the current request.
      */
     getRemoteAddress(): string {
-        return this.shBridge.getRemoteAddress();
+        return this._socket.remoteAddress;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1177,7 +932,7 @@ export default class RequestBag extends Bag
      * Returns the only public remote ip address from the current request.
      */
     getPublicRemoteAddress(): string {
-        return this.shBridge.getPublicRemoteAddress();
+        return this.socket.getPublicRemoteAddress();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1248,7 +1003,7 @@ export default class RequestBag extends Bag
      * Returns the system from the client that requests.
      */
     getClientSystem(): string {
-        return this.shBridge.getSystem();
+        return this._socket.clientSystem;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1257,7 +1012,7 @@ export default class RequestBag extends Bag
      * Returns the system version from the client that requests.
      */
     getClientVersion(): number {
-        return this.shBridge.getVersion();
+        return this._socket.clientVersion;
     }
 
     //Part API Level
@@ -1268,7 +1023,7 @@ export default class RequestBag extends Bag
      * This API level can be the request, connection, or default API level.
      */
     getApiLevel(): number {
-        return this.shBridge.getApiLevel();
+        return this.reqApiLevel || this._socket.apiLevel || this.zc.mainConfig.defaultClientApiLevel;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1277,16 +1032,16 @@ export default class RequestBag extends Bag
      * can be undefined if the client did not provide it.
      */
     getRequestApiLevel(): number | undefined {
-        return this.shBridge.getRequestApiLevel();
+        return this.reqApiLevel;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * Returns the API level of the connection,
-     * can be undefined if the client did not provide it or it is an HTTP request.
+     * can be undefined if the client did not provide it.
      */
     getConnectionApiLevel(): number | undefined {
-        return this.shBridge.getConnectionApiLevel();
+        return this._socket.apiLevel;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1314,11 +1069,9 @@ export default class RequestBag extends Bag
      * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishInUserCh(userId: string | number | (number|string)[],eventName :string,data: object = {},srcSocketSid?: string | null): Promise<void>
-    {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket: undefined;
+    async publishInUserCh(userId: string | number | (number|string)[],eventName :string,data: object = {},srcSocketSid?: string | null): Promise<void> {
         return this.exchangeEngine.publishInUserCh
-        (userId,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
+        (userId,eventName,data,this._processSrcSocketSid(srcSocketSid),this.socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1352,11 +1105,9 @@ export default class RequestBag extends Bag
      * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishInAllCh(eventName: string,data: object = {},srcSocketSid?: string | null): Promise<void>
-    {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket: undefined;
+    async publishInAllCh(eventName: string,data: object = {},srcSocketSid?: string | null): Promise<void> {
         return this.exchangeEngine.publishInAllCh
-        (eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
+        (eventName,data,this._processSrcSocketSid(srcSocketSid),this.socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1390,11 +1141,9 @@ export default class RequestBag extends Bag
      * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishInAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void>
-    {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket: undefined;
+    async publishInAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void> {
         return this.exchangeEngine.publishInAuthUserGroupCh
-        (authUserGroup,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
+        (authUserGroup,eventName,data,this._processSrcSocketSid(srcSocketSid),this.socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1428,11 +1177,9 @@ export default class RequestBag extends Bag
      * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishInDefaultUserGroupCh(eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void>
-    {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket: undefined;
+    async publishInDefaultUserGroupCh(eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void> {
         return this.exchangeEngine.publishInDefaultUserGroupCh
-        (eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
+        (eventName,data,this._processSrcSocketSid(srcSocketSid),this.socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1464,11 +1211,9 @@ export default class RequestBag extends Bag
      * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async publishInAllAuthUserGroupsCh(eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void>
-    {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket: undefined;
+    async publishInAllAuthUserGroupsCh(eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void> {
         return this.exchangeEngine.publishInAllAuthUserGroupCh
-        (eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
+        (eventName,data,this._processSrcSocketSid(srcSocketSid),this.socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1483,8 +1228,7 @@ export default class RequestBag extends Bag
      * If this param is undefined and request is webSocket, the sid of the current socket is used.
      * If it is null, will be published anonymously.
      */
-    async pubAllAuthUserGroupsCh(eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void>
-    {
+    async pubAllAuthUserGroupsCh(eventName: string, data: object = {},srcSocketSid?: string | null): Promise<void> {
         return this.publishInAllAuthUserGroupsCh(eventName,data,srcSocketSid);
     }
 
@@ -1504,8 +1248,8 @@ export default class RequestBag extends Bag
      * @throws UnknownCustomCh
      */
     async publishInCustomCh(target: {identifier: string,member?: string}, eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
-        const socketInfo = this.shBridge.isWebSocket() ? this.shBridge.getSocket().zSocket: undefined;
-        return this.exchangeEngine.publishInCustomCh(target,eventName,data,this._processSrcSocketSid(srcSocketSid),socketInfo);
+        return this.exchangeEngine.publishInCustomCh
+        (target,eventName,data,this._processSrcSocketSid(srcSocketSid),this.socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1528,6 +1272,6 @@ export default class RequestBag extends Bag
     }
 
     private _processSrcSocketSid(srcSocketSid: string | null | undefined): undefined | string {
-        return !!srcSocketSid ? srcSocketSid: (srcSocketSid === null || !this.isWs() ? undefined: this.getSocketSid());
+        return srcSocketSid === null ? undefined : (srcSocketSid === undefined ? this.getSocketSid() : srcSocketSid);
     }
 }

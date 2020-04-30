@@ -6,29 +6,13 @@ Copyright(c) Luca Scaringella
 
 import {BackErrorInfo} from "../../constants/internal";
 
-export enum ZationHttpInfo {
-    Deauthenticate = 'deauthenticate'
-}
-
 export const enum ControllerRequestType {
     Normal,
     ValidationCheck,
     Auth
 }
 
-export interface ControllerRequest {
-    /**
-     * System
-     */
-    s?: string,
-    /**
-     * Version
-     */
-    v?: number,
-    /**
-     * Token
-     */
-    to?: string,
+export interface ControllerReq {
     /**
      * ApiLevel
      */
@@ -43,6 +27,7 @@ export interface ControllerRequest {
     sc?: string,
     /**
      * RequestType
+     * @default 0
      */
     t?: ControllerRequestType,
     /**
@@ -51,7 +36,7 @@ export interface ControllerRequest {
     i?: any
 }
 
-export interface ControllerValidationCheckRequest extends ControllerRequest {
+export interface ControllerValidationCheckReq extends ControllerReq {
     /**
      * RequestType
      */
@@ -103,21 +88,13 @@ export interface ResponseError {
 /**
  * Successful = errors.length === 0
  */
-export interface ControllerResponse {
+export interface ControllerRes {
     /**
      * Errors
      */
-    e: ResponseError[],
+    0: ResponseError[],
     /**
      * Result
      */
-    r?: any
-    /**
-     * Token [signedToken,plainToken]
-     */
-    t?: [string,object]
-    /**
-     * Http information codes
-     */
-    hi?: string[]
+    1?: any
 }

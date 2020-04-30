@@ -84,6 +84,7 @@ export default class Controller {
      * @description
      * This method will be every time invoked when the handle is finished.
      * Also if the handle method has thrown an error.
+     * Error thrown in this method will be logged but not sent back to the client.
      * You can use this method to clean up resources or close connections.
      * (Use the req variable storage to save the resources on the RequestBag because the RequestBag is unique for every request).
      * @param reqBag
@@ -104,7 +105,8 @@ export default class Controller {
      * You can throw BackError or BackErrorBag
      * than the errors will be merged with the previous errors and send back to the client.
      * Notice that only the BackError or BackErrorBag sends back to the client.
-     * All other errors or objects will be converted to an unknown BackError.
+     * All other errors or objects will be converted to an
+     * unknown BackError and overrides all previous BackErrors.
      */
     invalidInput(reqBag: RequestBag, rawInput: any, backErrorBag: BackErrorBag): Promise<void> | void {
     }

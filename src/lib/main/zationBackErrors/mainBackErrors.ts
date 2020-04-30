@@ -359,28 +359,6 @@ export const MainBackErrors = {
         fromZationSystem: true
     },
 
-    noAccessWithProtocol : {
-        name         : 'noAccessWithProtocol',
-        description  : 'You have no protocolAccess to this controller with this server protocol!',
-        type         : ErrorType.ProtocolError,
-        sendInfo     : true,
-        //INFO
-        // protocol   (The protocol you request with)
-        // controller (The controller you request)
-        fromZationSystem: true
-    },
-
-    noAccessWithHttpMethod : {
-        name         : 'noAccessWithHttpMethod' ,
-        description  : 'You have no methodAccess to this controller with this http method!',
-        type         : ErrorType.ProtocolError,
-        sendInfo     : true,
-        //INFO
-        // method   (The method you request with)
-        // controller (The controller you request)
-        fromZationSystem: true
-    },
-
     unknownError: {
         name         : 'unknownError',
         description  : 'Look in info for more detail! To see run in debug!',

@@ -6,7 +6,6 @@ Copyright(c) Luca Scaringella
 
 import {ZationToken}        from "../constants/internal";
 import {IncomingMessage}    from "http";
-import BaseSHBridgeSocket   from "../controller/request/bridges/baseSHBridgeSocket";
 import AuthEngine           from "../auth/authEngine";
 import ZSocket              from "../internalApi/zSocket";
 import Databox              from "../../api/databox/Databox";
@@ -59,10 +58,8 @@ export interface RawSocket {
  */
 export interface HandshakeSocket extends RawSocket {
     readonly handshakeVariables: Record<string,any>;
-    readonly zationClient: {
-        readonly version: number,
-        readonly system: string,
-    },
+    readonly clientVersion: number,
+    readonly clientSystem: string,
     readonly apiLevel: number | undefined
 }
 
@@ -75,7 +72,6 @@ export default interface UpSocket extends HandshakeSocket {
 
     zationSocketVariables: Record<string,any>;
     databoxes: (Databox | DataboxFamily)[];
-    readonly baseSHBridge: BaseSHBridgeSocket;
     readonly authEngine: AuthEngine;
     readonly zSocket: ZSocket;
 }

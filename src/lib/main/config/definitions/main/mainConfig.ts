@@ -147,16 +147,6 @@ export interface MainConfig
      */
     useTokenStateCheck?: boolean;
     /**
-     * Indicates if the server should use the protocol check.
-     * @default true
-     */
-    useProtocolCheck?: boolean;
-    /**
-     * Indicates if the server should use the HTTP method check.
-     * @default true
-     */
-    useHttpMethodCheck?: boolean;
-    /**
      * Indicates if the server should send error descriptions back to the client.
      * @default false
      */
@@ -207,11 +197,6 @@ export interface MainConfig
      * @default 20000
      */
     authStartDuration?: number;
-    /**
-     * Specifies in what key the zation data is located in an HTTP post request.
-     * @default 'zation'
-     */
-    postKey?: string;
     /**
      * The secret key which zation will use to encrypt/decrypt authTokens.
      * The key can be automatically shared between more server instances.
@@ -665,8 +650,6 @@ export interface InternalMainConfig extends MainConfig {
     appName: string;
     secure: boolean;
     useTokenStateCheck: boolean;
-    useProtocolCheck: boolean;
-    useHttpMethodCheck: boolean;
     sendErrorDescription: boolean;
     wsEngine: string;
     defaultClientApiLevel: number;
@@ -674,7 +657,6 @@ export interface InternalMainConfig extends MainConfig {
     provideClientJs: boolean;
     authStart: boolean;
     authStartDuration: number;
-    postKey: string;
     authSecretKey: string;
     authDefaultExpiry: number;
     authPrivateKey: string | null;

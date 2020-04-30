@@ -5,13 +5,13 @@ Copyright(c) Luca Scaringella
  */
 
 import {ZATION_CUSTOM_EVENT_NAMESPACE, ZationToken} from "../constants/internal";
-import UpSocket, {OnHandlerFunction}             from "../sc/socket";
+import UpSocket, {OnHandlerFunction}                from "../sc/socket";
 import TokenUtils       from "../token/tokenUtils";
 import ObjectPath       from "../utils/objectPath";
 import ChUtils          from "../channel/chUtils";
-import BaseSHBridge     from "../controller/request/bridges/baseSHBridge";
 import DataboxFamily    from "../../api/databox/DataboxFamily";
 import Databox          from "../../api/databox/Databox";
+const  IP                  = require('ip');
 import CloneUtils            from "../utils/cloneUtils";
 import ObjectPathSequenceImp from "./objectPathSequence/objectPathSequenceImp";
 import {ObjectPathSequence}  from "./objectPathSequence/objectPathSequence";
@@ -48,14 +48,6 @@ export default class ZSocket
      */
     get rawSocket(): UpSocket {
         return this._socket;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * Returns the base sh bridge of the socket.
-     */
-    get shBridge(): BaseSHBridge {
-        return this._socket.baseSHBridge;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -129,7 +121,7 @@ export default class ZSocket
     async setTokenVariable(path: string | string[],value: any): Promise<void> {
         const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this._socket.authToken));
         ObjectPath.set(ctv,path,value);
-        await TokenUtils.setCustomVar(ctv,this._socket.baseSHBridge);
+        await TokenUtils.setCustomVar(ctv,this._socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -148,13 +140,13 @@ export default class ZSocket
      * @throws AuthenticationError if the socket is not authenticated.
      */
     async deleteTokenVariable(path?: string | string[]): Promise<void> {
-        if(!!path) {
+        if(path !== undefined) {
             const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this._socket.authToken));
             ObjectPath.del(ctv,path);
-            await TokenUtils.setCustomVar(ctv,this._socket.baseSHBridge);
+            await TokenUtils.setCustomVar(ctv,this._socket);
         }
         else {
-            await TokenUtils.setCustomVar({},this._socket.baseSHBridge);
+            await TokenUtils.setCustomVar({},this._socket);
         }
     }
 
@@ -183,7 +175,7 @@ export default class ZSocket
         return new ObjectPathSequenceImp(CloneUtils.deepClone(
             TokenUtils.getTokenVariables(this._socket.authToken)),
             async (obj)=> {
-                await TokenUtils.setCustomVar(obj,this._socket.baseSHBridge);
+                await TokenUtils.setCustomVar(obj,this._socket);
             });
     }
 
@@ -336,11 +328,11 @@ export default class ZSocket
         return new Promise<object>((resolve, reject) => {
             // noinspection DuplicatedCode
             if(onlyTransmit){
-                this.shBridge.getSocket().emit(ZATION_CUSTOM_EVENT_NAMESPACE+event,data);
+                this._socket.emit(ZATION_CUSTOM_EVENT_NAMESPACE+event,data);
                 resolve();
             }
             else {
-                this.shBridge.getSocket().emit(ZATION_CUSTOM_EVENT_NAMESPACE+event,data,(err, data) => {
+                this._socket.emit(ZATION_CUSTOM_EVENT_NAMESPACE+event,data,(err, data) => {
                     err ? reject(err): resolve(data);
                 });
             }
@@ -464,5 +456,31 @@ export default class ZSocket
      */
     hasSocketHandshakeVariable(path?: string | string[]): boolean {
         return ObjectPath.has(this._socket.handshakeVariables,path);
+    }
+
+    //Part Address
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the remote ip address (can be a private address) from the current request.
+     */
+    getRemoteAddress(): string {
+        return this._socket.remoteAddress;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns the only public remote ip address from the current request.
+     */
+    getPublicRemoteAddress(): string {
+        const remId = this._socket.remoteAddress;
+        if(IP.isPrivate(remId)) {
+            return IP.address();
+        }
+        else {
+            return remId;
+        }
     }
 }

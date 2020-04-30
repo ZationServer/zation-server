@@ -6,16 +6,16 @@ Copyright(c) Luca Scaringella
 
 import ZationWorker        = require("../../core/zationWorker");
 import {PrepareZationToken, ZationToken} from "../constants/internal";
-import BaseSHBridge         from "../controller/request/bridges/baseSHBridge";
 import AEPreparedPart       from "./aePreparedPart";
 import AuthenticationError  from "../error/authenticationError";
 import TokenUtils           from "../token/tokenUtils";
 import {JwtSignOptions}     from "../constants/jwt";
+import UpSocket             from '../sc/socket';
 
 export default class AuthEngine
 {
     protected readonly aePreparedPart: AEPreparedPart;
-    protected readonly shBridge: BaseSHBridge;
+    public readonly socket: UpSocket;
     protected readonly worker: ZationWorker;
     protected readonly tokenClusterKey: string;
 
@@ -23,10 +23,10 @@ export default class AuthEngine
     protected currentUserGroup: string | undefined;
     protected currentUserId: string | number | undefined;
 
-    constructor(shBridge: BaseSHBridge,worker: ZationWorker)
+    constructor(socket: UpSocket,worker: ZationWorker)
     {
         this.aePreparedPart = worker.getAEPreparedPart();
-        this.shBridge       = shBridge;
+        this.socket         = socket;
         this.worker         = worker;
         this.tokenClusterKey  = worker.getZationConfig().internalData.tokenClusterKey;
 
@@ -75,7 +75,7 @@ export default class AuthEngine
         if(this.checkIsIn(authUserGroup)) {
 
             const token: PrepareZationToken =
-                this.shBridge.hasToken() ?
+                this.socket.authToken !== null ?
                 {}: TokenUtils.generateToken(this.tokenClusterKey);
 
             token.authUserGroup = authUserGroup;
@@ -89,7 +89,7 @@ export default class AuthEngine
                 token.panelAccess = true;
             }
 
-            await this.shBridge.setToken(TokenUtils.combineTokens(this.shBridge.getToken(),token),jwtOptions);
+            await TokenUtils.setTokenAsync(this.socket,TokenUtils.combineTokens(this.socket.authToken,token),jwtOptions);
         }
         else {
             throw new AuthenticationError(`Auth group '${authUserGroup}' is not found in the app.config.`);
@@ -98,11 +98,11 @@ export default class AuthEngine
 
     async setPanelAccess(access: boolean): Promise<void>
     {
-        let token = this.shBridge.getToken();
+        let token = this.socket.authToken;
         if(token !== null) {
             token = {...token};
             token.panelAccess = access;
-            await this.shBridge.setToken(token);
+            await TokenUtils.setTokenAsync(this.socket,token);
         }
         else {
             throw new AuthenticationError(`Panel access can not be updated if the socket is unauthenticated!`);
@@ -110,7 +110,7 @@ export default class AuthEngine
     }
 
     hasPanelAccess(): boolean {
-        const token = this.shBridge.getToken();
+        const token = this.socket.authToken;
         if(token !== null && typeof token.panelAccess === 'boolean'){
             return token.panelAccess;
         }
@@ -118,11 +118,11 @@ export default class AuthEngine
     }
 
     async setUserId(userId: number | string | undefined): Promise<void> {
-        let token = this.shBridge.getToken();
+        let token = this.socket.authToken;
         if(token !== null) {
             token = {...token};
             token.userId = userId;
-            await this.shBridge.setToken(token);
+            await TokenUtils.setTokenAsync(this.socket,token);
         }
         else {
             throw new AuthenticationError(`User id can not be updated if the socket is unauthenticated!`);
@@ -135,7 +135,7 @@ export default class AuthEngine
 
     async deauthenticate(): Promise <void> {
         if(this.isAuth()) {
-            this.shBridge.deauthenticate();
+            this.socket.deauthenticate();
         }
     }
 
@@ -150,10 +150,6 @@ export default class AuthEngine
 
     checkIsIn(authGroup: string): boolean {
         return this.aePreparedPart.isAuthGroup(authGroup);
-    }
-
-    getSHBridge(): BaseSHBridge {
-        return this.shBridge;
     }
 
     getWorker(): ZationWorker {

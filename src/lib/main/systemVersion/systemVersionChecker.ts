@@ -4,11 +4,11 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import BaseSHBridge       from "../controller/request/bridges/baseSHBridge";
 // noinspection TypeScriptPreferShortImport
 import {SystemAccessConfig, VersionAccessConfig} from "../config/definitions/parts/configComponents";
+import UpSocket from '../sc/socket';
 
-export type VersionSystemAccessCheckFunction = (shBridge: BaseSHBridge) => boolean;
+export type VersionSystemAccessCheckFunction = (socket: UpSocket) => boolean;
 
 type VersionCheckFunction = (version: number) => boolean;
 
@@ -33,10 +33,10 @@ export default class SystemVersionChecker
                     }
                 }
             }
-            return (shBridge) =>  {
-                const system = shBridge.getSystem();
+            return (socket) =>  {
+                const system = socket.clientSystem;
                 if(preparedVersionChecker.hasOwnProperty(system)) {
-                    return preparedVersionChecker[system](shBridge.getVersion());
+                    return preparedVersionChecker[system](socket.clientVersion);
                 }
                 return true;
             }
@@ -53,8 +53,8 @@ export default class SystemVersionChecker
     static createSystemChecker(systemAccessConfig: SystemAccessConfig): VersionSystemAccessCheckFunction {
         const systemAccess = systemAccessConfig.systemAccess;
         if(Array.isArray(systemAccess)) {
-            return (shBridge) =>  {
-                return systemAccess.includes(shBridge.getSystem());
+            return (socket) =>  {
+                return systemAccess.includes(socket.clientSystem);
             }
         }
         else {

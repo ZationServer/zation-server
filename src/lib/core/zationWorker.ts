@@ -15,7 +15,7 @@ import {
     WorkerChTaskType,
     WorkerChSpecialTask, WorkerTaskPackage, WorkerChMapTask
 } from "../main/constants/workerChTaskDefinitions";
-import UpSocket               from "../main/sc/socket";
+import UpSocket, {HandshakeSocket} from '../main/sc/socket';
 import {ZationToken}          from "../main/constants/internal";
 import {WorkerMessageAction}  from "../main/constants/workerMessageAction";
 import {ChannelPrepare}       from "../main/channel/channelPrepare";
@@ -367,12 +367,12 @@ class ZationWorker extends SCWorker
 
             Logger.log.debug(`Socket with id: ${socket.id} is connected!`);
 
-            socket.on('>', async (data, respond) => {
-                await this.zationCReqHandler.processSocketReq(data,socket,respond);
+            socket.on('>',(data, respond) => {
+                this.zationCReqHandler.processRequest(data,socket,respond);
             });
 
-            socket.on(DATABOX_START_INDICATOR, async (data, respond) => {
-                await this.zationDbHandler.processConnectReq(data,socket,respond);
+            socket.on(DATABOX_START_INDICATOR,(data, respond) => {
+                this.zationDbHandler.processConnectReq(data,socket,respond);
             });
 
             await initPromise;
@@ -445,10 +445,11 @@ class ZationWorker extends SCWorker
             });
         }
 
-        //Request
+        //Http request on server path.
         this.app.all(`${serverPath}`, async (req: Request, res: Response) => {
-            //Run Zation
-            await this.zationCReqHandler.processHttpReq(req,res);
+            res.setHeader('content-type', 'text/html');
+            res.write(this.getViewEngine().getZationDefaultView());
+            res.end();
         });
 
         await this.zc.event.httpServerStarted(this.zc.getZationInfo());
@@ -764,21 +765,11 @@ class ZationWorker extends SCWorker
                     }
                     catch (e) {}
                 }
-                // @ts-ignore
-                // noinspection JSConstantReassignment
-                socket.handshakeVariables = variables;
-
-                // @ts-ignore
-                // noinspection JSConstantReassignment
-                socket.zationClient = {
-                    version: parseFloat(query.version),
-                    system: query.system,
-                };
-
+                (socket as any)[nameof<HandshakeSocket>(s => s.handshakeVariables)] = variables;
+                (socket as any)[nameof<HandshakeSocket>(s => s.clientVersion)] = parseFloat(query.version);
+                (socket as any)[nameof<HandshakeSocket>(s => s.clientSystem)] = query.system;
                 if(typeof query.apiLevel === 'string') {
-                    // @ts-ignore
-                    // noinspection JSConstantReassignment
-                    socket.apiLevel = parseInt(query.apiLevel);
+                    (socket as any)[nameof<HandshakeSocket>(s => s.apiLevel)] = parseInt(query.apiLevel);
                 }
 
                 const zationMidRes = await MiddlewareUtils.checkMiddleware
@@ -1374,7 +1365,6 @@ class ZationWorker extends SCWorker
             hostname     : this.zc.mainConfig.hostname,
             port         : this.zc.mainConfig.port,
             path         : this.zc.mainConfig.path,
-            postKey      : this.zc.mainConfig.postKey,
             secure       : this.zc.mainConfig.secure,
             appName      : this.zc.mainConfig.appName,
             debug        : this.zc.mainConfig.debug,

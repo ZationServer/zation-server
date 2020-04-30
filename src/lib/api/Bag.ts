@@ -506,7 +506,7 @@ export default class Bag {
         return `${this.zc.mainConfig.secure ? 'https': 'http'}://${this.zc.mainConfig.hostname}:${this.zc.mainConfig.port}${this.zc.mainConfig.path}`;
     }
 
-    //Part Os
+    //Part OS
 
     /**
      * @description
@@ -1937,7 +1937,7 @@ export default class Bag {
      * The path to the variable, you can split the keys with a dot or an string array.
      */
     deleteSocketVariableWithSocket(socket: UpSocket, path?: string | string[]): void {
-        if (!!path) {
+        if (path !== undefined) {
             ObjectPath.del(socket.zationSocketVariables, path);
         } else {
             socket.zationSocketVariables = {};
@@ -1967,7 +1967,7 @@ export default class Bag {
     async setTokenVariableWithSocket(socket: UpSocket, path: string | string[], value: any): Promise<void> {
         const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(socket.authToken));
         ObjectPath.set(ctv, path, value);
-        await TokenUtils.setSocketCustomVar(ctv, socket);
+        await TokenUtils.setCustomVar(ctv, socket);
     }
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
@@ -1987,12 +1987,12 @@ export default class Bag {
      * @throws AuthenticationError if the socket is not authenticated.
      */
     async deleteTokenVariableWithSocket(socket: UpSocket, path?: string | string[]): Promise<void> {
-        if (!!path) {
+        if (path !== undefined) {
             const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(socket.authToken));
             ObjectPath.del(ctv, path);
-            await TokenUtils.setSocketCustomVar(ctv, socket);
+            await TokenUtils.setCustomVar(ctv, socket);
         } else {
-            await TokenUtils.setSocketCustomVar({}, socket);
+            await TokenUtils.setCustomVar({}, socket);
         }
     }
 
@@ -2020,7 +2020,7 @@ export default class Bag {
         return new ObjectPathSequenceImp(CloneUtils.deepClone(
             TokenUtils.getTokenVariables(socket.authToken)),
             async (obj) => {
-                await TokenUtils.setSocketCustomVar(obj, socket);
+                await TokenUtils.setCustomVar(obj, socket);
             });
     }
 
@@ -2255,7 +2255,7 @@ export default class Bag {
      * The path to the variable, you can split the keys with a dot or an string array.
      */
     deleteWorkerVariable(path?: string | string[]): void {
-        if (!!path) {
+        if (path !== undefined) {
             ObjectPath.del(this.worker.getWorkerVariableStorage(), path);
         } else {
             this.worker.setWorkerVariableStorage({});
@@ -2438,8 +2438,8 @@ export default class Bag {
     convertSocketIdToSid(...socketIds: string[]): string[] {
         const res: string[] = [];
         socketIds.forEach((id) => {
-            let socket: UpSocket | undefined = this.getWorkerSocket(id);
-            if (!!socket) {
+            const socket: UpSocket | undefined = this.getWorkerSocket(id);
+            if (socket) {
                 res.push(socket.sid);
             }
         });

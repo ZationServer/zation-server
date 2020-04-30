@@ -7,7 +7,6 @@ Copyright(c) Luca Scaringella
 import UpSocket              from "../sc/socket";
 import {PrepareZationToken, ZationToken} from "../constants/internal";
 import {JwtSignFunction, JwtSignOptions, JwtVerifyFunction, JwtVerifyOptions} from "../constants/jwt";
-import BaseSHBridge        from "../controller/request/bridges/baseSHBridge";
 import AEPreparedPart      from "../auth/aePreparedPart";
 import BackError           from "../../api/BackError";
 import AuthenticationError from "../error/authenticationError";
@@ -16,40 +15,22 @@ import ZationConfigFull    from "../config/manager/zationConfigFull";
 import ObjectUtils         from "../utils/objectUtils";
 import ZationConfig        from "../config/manager/zationConfig";
 const  Jwt: any         = require('jsonwebtoken');
-const uniqid             = require('uniqid');
+const uniqid            = require('uniqid');
 
 export default class TokenUtils
 {
-    /**
-     * Set custom token variables with BaseSHBridge.
-     * @param customVar
-     * @param shBridge
-     */
-    static async setCustomVar(customVar: object,shBridge: BaseSHBridge): Promise<void>
-    {
-        let token = shBridge.getToken();
-        if(token !== null) {
-            token = {...token};
-            token.variables = customVar;
-            await shBridge.setToken(token);
-        }
-        else {
-            throw new AuthenticationError(`Can't set token variable when the token is not available.`);
-        }
-    }
-
     /**
      * Set custom token variables on a socket.
      * @param customVar
      * @param socket
      */
-    static async setSocketCustomVar(customVar: object, socket: UpSocket): Promise<void>
+    static async setCustomVar(customVar: object, socket: UpSocket): Promise<void>
     {
         let token = socket.authToken;
         if(token !== null) {
             token = {...token};
             token.variables = customVar;
-            await TokenUtils.setSocketTokenAsync(socket,token);
+            await TokenUtils.setTokenAsync(socket,token);
         }
         else {
             throw new AuthenticationError(`Can't set token variable when socket is not authenticated.`);
@@ -62,7 +43,7 @@ export default class TokenUtils
      * @param data
      * @param jwtOptions
      */
-    static async setSocketTokenAsync(socket: UpSocket, data: object, jwtOptions: JwtSignOptions = {}) {
+    static async setTokenAsync(socket: UpSocket, data: object, jwtOptions: JwtSignOptions = {}) {
         return new Promise<void>((resolve, reject) => {
             socket.setAuthToken(data,jwtOptions,(err) => {
                 if(err){

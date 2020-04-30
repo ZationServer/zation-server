@@ -4,9 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import UpSocket           from "../sc/socket";
+import UpSocket, {RawSocket} from '../sc/socket';
 import SidBuilder         from "../utils/sidBuilder";
-import BaseSHBridgeSocket from "../controller/request/bridges/baseSHBridgeSocket";
 import AuthEngine         from "../auth/authEngine";
 import ZSocket            from "../internalApi/zSocket";
 import ZationWorker     = require("../../core/zationWorker");
@@ -46,31 +45,19 @@ export default class SocketUpgradeEngine
      * Upgrades the sc socket with zation functionality.
      * @param socket
      */
-    upgradeSocket(socket: UpSocket) {
-        //id build
-        // @ts-ignore
-        socket.sid = this.sidBuilder.buildSid(socket.id);
-        // @ts-ignore
-        socket.tid = Date.now() + socket.id;
+    upgradeSocket(socket: RawSocket): asserts socket is UpSocket {
+        //ids build
+        socket[nameof<UpSocket>(s => s.sid)] = this.sidBuilder.buildSid(socket.id);
+        socket[nameof<UpSocket>(s => s.tid)] = Date.now() + socket.id;
 
-        //engine build
-        const baseSHBridge = new BaseSHBridgeSocket(socket);
-        // @ts-ignore
-        socket.baseSHBridge = baseSHBridge;
+        socket[nameof<UpSocket>(s => s.zSocket)] = new ZSocket(socket as UpSocket);
 
-        const authEngine = new AuthEngine(baseSHBridge,this.worker);
-        // @ts-ignore
-        socket.authEngine = authEngine;
+        //init
+        socket[nameof<UpSocket>(s => s.zationSocketVariables)] = {};
+        socket[nameof<UpSocket>(s => s.databoxes)] = [];
 
-        // @ts-ignore
-        socket.zSocket = new ZSocket(socket);
-
-        //socket variables
-        // @ts-ignore
-        socket.zationSocketVariables = {};
-
-        //databoxes
-        socket.databoxes = [];
+        const authEngine = new AuthEngine(socket as UpSocket,this.worker);
+        socket[nameof<UpSocket>(s => s.authEngine)] = authEngine;
 
         //token observer
         //for update the authEngine and worker socket mapper
@@ -91,9 +78,9 @@ export default class SocketUpgradeEngine
 
                 (async () => {
                     const p: Promise<void>[] = [];
-                    p.push(ChAccessHelper.checkSocketCustomChAccess(socket,this.channelPrepare));
-                    p.push(DataboxAccessHelper.checkSocketDataboxAccess(socket));
-                    ChAccessHelper.checkSocketZationChAccess(socket);
+                    p.push(ChAccessHelper.checkSocketCustomChAccess(socket as UpSocket,this.channelPrepare));
+                    p.push(DataboxAccessHelper.checkSocketDataboxAccess(socket as UpSocket));
+                    ChAccessHelper.checkSocketZationChAccess(socket as UpSocket);
                     await Promise.all(p);
                 })();
 
@@ -102,29 +89,29 @@ export default class SocketUpgradeEngine
                     if(currentToken === null) {
                         //new authenticated remove from default and map to the other maps
                         //that requires a token.
-                        this.defaultUserGroupSet.remove(socket);
+                        this.defaultUserGroupSet.remove(socket as UpSocket);
 
                         if(newToken.authUserGroup !== undefined){
-                            this.mapAuthUserGroupToSc.map(newToken.authUserGroup,socket);
+                            this.mapAuthUserGroupToSc.map(newToken.authUserGroup,socket as UpSocket);
                         }
 
-                        this.mapTokenIdToSc.map(newToken.tid,socket);
+                        this.mapTokenIdToSc.map(newToken.tid,socket as UpSocket);
 
                         if(newToken.userId !== undefined){
-                            this.mapUserIdToSc.map(newToken.userId.toString(),socket);
+                            this.mapUserIdToSc.map(newToken.userId.toString(),socket as UpSocket);
                         }
 
                         if(typeof newToken.onlyPanelToken === 'boolean' && newToken.onlyPanelToken){
-                            this.panelUserSet.add(socket);
+                            this.panelUserSet.add(socket as UpSocket);
                         }
                     }
                     else {
                         //updated authentication
                         //check for changes and update map
                         if(newToken.authUserGroup !== currentToken.authUserGroup) {
-                            this.mapAuthUserGroupToSc.unMap(currentToken.authUserGroup,socket);
+                            this.mapAuthUserGroupToSc.unMap(currentToken.authUserGroup,socket as UpSocket);
                             if(newToken.authUserGroup !== undefined){
-                                this.mapAuthUserGroupToSc.map(newToken.authUserGroup,socket);
+                                this.mapAuthUserGroupToSc.map(newToken.authUserGroup,socket as UpSocket);
                             }
                         }
                         //token id can not be changed.
@@ -132,29 +119,29 @@ export default class SocketUpgradeEngine
                         //Only one '=' (userId can be a number or string)
                         if(newToken.userId != currentToken.userId){
                             if(currentToken.userId !== undefined){
-                                this.mapUserIdToSc.unMap(currentToken.userId.toString(),socket);
+                                this.mapUserIdToSc.unMap(currentToken.userId.toString(),socket as UpSocket);
                             }
                             if(newToken.userId !== undefined){
-                                this.mapUserIdToSc.map(newToken.userId.toString(),socket);
+                                this.mapUserIdToSc.map(newToken.userId.toString(),socket as UpSocket);
                             }
                         }
                         if(newToken.onlyPanelToken !== currentToken.onlyPanelToken) {
                             if(typeof newToken.onlyPanelToken === 'boolean' && newToken.onlyPanelToken){
-                                this.panelUserSet.add(socket);
+                                this.panelUserSet.add(socket as UpSocket);
                             }
                             else {
-                                this.panelUserSet.remove(socket);
+                                this.panelUserSet.remove(socket as UpSocket);
                             }
                         }
                     }
                 }
                 else {
                     //add to default group
-                    this.defaultUserGroupSet.add(socket);
+                    this.defaultUserGroupSet.add(socket as UpSocket);
                     if(currentToken !== null) {
                         //Deauthenticated remove from other mappings that requires a token
                         //if the old token was a token.
-                        this.worker.unmapSocketToken(currentToken,socket);
+                        this.worker.unmapSocketToken(currentToken,socket as UpSocket);
                     }
                 }
 

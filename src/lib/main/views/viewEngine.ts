@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import LicenseManager, {License} from "../utils/licenseManager";
-const path: any               = require('path');
+const path: any                = require('path');
 import fs                      = require('fs');
 
 export default class ViewEngine

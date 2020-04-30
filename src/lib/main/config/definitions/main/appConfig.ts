@@ -77,12 +77,8 @@ export interface AppConfig
      * that will be used in each Controller as a fallback.
      * @example
      * controllerDefaults: {
-     *    wsAccess: true,
-     *    httpAccess: true,
-     *    httpPostAllowed: true,
-     *    httpGetAllowed: true,
-     *    access: 'all',
-     * },
+     *    access: 'all'
+     * }
      */
     controllerDefaults?: ControllerConfig;
 

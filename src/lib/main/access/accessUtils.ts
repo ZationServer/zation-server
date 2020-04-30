@@ -119,7 +119,7 @@ export default class AccessUtils
         }
         else if(typeof value === 'function') {
             if(isTokenCheckFunction(value)){
-                return async (a) => value(a.getSHBridge().getToken());
+                return async (a) => value(a.socket.authToken);
             }
             else {
                 return accessFunctionCallCreate(value);

@@ -11,7 +11,6 @@ import ChUtils              from "./chUtils";
 import Logger               from "../log/logger";
 import PubData              from "../internalApi/pubData";
 import {ClientErrorName}    from "../constants/clientErrorName";
-import BaseSHBridge         from "../controller/request/bridges/baseSHBridge";
 
 /**
  * Class for help in channel middleware by checking the
@@ -30,17 +29,17 @@ export default class ChMiddlewareHelper
     /**
      * Util function to check the access to the channel
      * with the client system and version.
-     * @param shBridge
+     * @param socket
      * @param preChInfo
      */
-    static checkVersionSystemAccess(shBridge: BaseSHBridge, preChInfo: CustomChStorage): void
+    static checkVersionSystemAccess(socket: UpSocket, preChInfo: CustomChStorage): void
     {
-        if(!preChInfo.systemAccessCheck(shBridge)){
+        if(!preChInfo.systemAccessCheck(socket)){
             const err: any = new Error(`Access to this channel with client system denied.`);
             err.name = ClientErrorName.NoAccessWithSystem;
             throw err;
         }
-        if(!preChInfo.versionAccessCheck(shBridge)){
+        if(!preChInfo.versionAccessCheck(socket)){
             const err: any = new Error(`Access to this channel with client version denied.`);
             err.name = ClientErrorName.NoAccessWithVersion;
             throw err;
@@ -89,7 +88,7 @@ export default class ChMiddlewareHelper
         const preChInfo = this.channelPrepare.getCustomChPreInfo(identifier);
 
         try {
-            ChMiddlewareHelper.checkVersionSystemAccess(socket.baseSHBridge,preChInfo);
+            ChMiddlewareHelper.checkVersionSystemAccess(socket,preChInfo);
             if(isCustomChFamily){
                 await (preChInfo as CustomChFamilyStorage).memberValidChecker((member as string));
             }
@@ -158,7 +157,7 @@ export default class ChMiddlewareHelper
         const chInfo = {identifier,member};
 
         try {
-            ChMiddlewareHelper.checkVersionSystemAccess(socket.baseSHBridge,preChInfo);
+            ChMiddlewareHelper.checkVersionSystemAccess(socket,preChInfo);
             if(isCustomChFamily){
                 await (preChInfo as CustomChFamilyStorage).memberValidChecker((member as string));
             }

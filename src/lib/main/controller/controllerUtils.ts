@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 // noinspection TypeScriptPreferShortImport
 import RequestBag                    from '../../api/RequestBag';
-// noinspection TypeScriptPreferShortImport
+// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig}            from "../config/definitions/parts/controllerConfig";
 import Controller                    from "../../api/Controller";
 

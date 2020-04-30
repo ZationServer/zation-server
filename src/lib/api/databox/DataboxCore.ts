@@ -142,13 +142,13 @@ export default abstract class DataboxCore {
     async _checkAccess(socket: UpSocket,dbInfo: DataboxInfo){
         const {systemAccessCheck,versionAccessCheck} = this._dbPreparedData;
 
-        if(!systemAccessCheck(socket.baseSHBridge)){
+        if(!systemAccessCheck(socket)){
             const err: any = new Error('Access to this Databox with client system denied.');
             err.name = ClientErrorName.NoAccessWithSystem;
             throw err;
         }
 
-        if(!versionAccessCheck(socket.baseSHBridge)){
+        if(!versionAccessCheck(socket)){
             const err: any = new Error('Access to this Databox with client version denied.');
             err.name = ClientErrorName.NoAccessWithVersion;
             throw err;

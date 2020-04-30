@@ -31,7 +31,6 @@ export default class ClientPrepare
         res += `HOSTNAME: '${zc.mainConfig.hostname}',`;
         res += `PORT: ${zc.mainConfig.port},`;
         res += `SECURE: ${zc.mainConfig.secure},`;
-        res += `POST_KEY: '${zc.mainConfig.postKey}',`;
         res += `PATH: '${zc.mainConfig.path}'`;
         res += '}; \n';
         return res;

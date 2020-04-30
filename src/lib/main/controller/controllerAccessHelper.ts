@@ -29,7 +29,7 @@ export default class ControllerAccessHelper
             return AccessUtils.createAccessChecker<TokenStateAccessCheckFunction,NormalAuthAccessCustomFunction>
             (rawValue,isNotableNot(accessValue),(func) => {
                 return async (authEngine) => {
-                    const token = authEngine.getSHBridge().getToken();
+                    const token = authEngine.socket.authToken;
                     return func(bag,token !== null ? new ZationTokenWrapper(token): null);
                 };
             },`Controller: ${cName}`);

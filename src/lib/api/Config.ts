@@ -55,7 +55,7 @@ export default class Config
      * Changes the configuration of a controller.
      * Can be used for setting the configuration in the app config.
      * @example
-     * buildController(LoginController,{httpAccess: false});
+     * buildController(LoginController,{access: false});
      * @param controller
      * The controller that should be updated.
      * @param config
