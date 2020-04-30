@@ -15,11 +15,6 @@ import Router           from '../../Router';
 type RegisterDecorator = {
     (target: Component): void,
     /**
-     * Registers the component as an auth controller.
-     * Notice that it only works with controllers.
-     */
-    asAuthController(): RegisterDecorator;
-    /**
      * Specifies the API level of the component.
      * @param apiLevel
      */
@@ -45,7 +40,6 @@ type RegisterDecorator = {
  */
 export const Register = (name?: string): RegisterDecorator => {
     let targetApiLevel: number | undefined = undefined;
-    let regAuthController: boolean = false;
     let targetRouter: Router | undefined = undefined;
 
     const func = (target: Component) => {
@@ -61,31 +55,14 @@ export const Register = (name?: string): RegisterDecorator => {
         else {
             targetName = name;
         }
-
-        if(regAuthController) {
-            if(target.prototype instanceof Controller){
-                targetRouter ? targetRouter.register(targetName,target,targetApiLevel) :
-                    Config.registerComponent(targetName,target,targetApiLevel);
-                Config.setAuthController(targetName);
-            }
-            else {
-                throw new ConfigBuildError(`Only a class that extends the Controller class can be registered as an auth controller.`);
-            }
+        if(target.prototype instanceof Controller || target.prototype instanceof Databox
+            || target.prototype instanceof DataboxFamily){
+            targetRouter ? targetRouter.register(targetName,target,targetApiLevel) :
+                Config.registerComponent(targetName,target,targetApiLevel);
         }
         else {
-            if(target.prototype instanceof Controller || target.prototype instanceof Databox
-                || target.prototype instanceof DataboxFamily){
-                targetRouter ? targetRouter.register(targetName,target,targetApiLevel) :
-                    Config.registerComponent(targetName,target,targetApiLevel);
-            }
-            else {
-                throw new ConfigBuildError(`The register decorator can only be used on classes that extend the Controller, Databox or DataboxFamily class.`);
-            }
+            throw new ConfigBuildError(`The register decorator can only be used on classes that extend the Controller, Databox or DataboxFamily class.`);
         }
-    };
-    func.asAuthController = (value: boolean = true) => {
-        regAuthController = value;
-        return func;
     };
     func.withApiLevel = (apiLevel?: number) => {
         targetApiLevel = apiLevel;

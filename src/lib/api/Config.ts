@@ -33,7 +33,6 @@ export default class Config
     private static tmpDataboxes: Record<string,DataboxClassDef | ApiLevelSwitch<DataboxClassDef>> = {};
     private static tmpCustomChs: Record<string,CustomChannelConfig> = {};
     private static tmpZationChannels: ZationChannelsConfig[] = [];
-    private static tmpAuthController: string | undefined;
 
     //Part main helper methods
 
@@ -229,20 +228,6 @@ export default class Config
         registerBagExtension(extension);
     }
 
-    /**
-     * With this function, you can set the auth controller.
-     * Notice that you can set only one auth controller.
-     * @param identifier
-     */
-    static setAuthController(identifier: string) {
-        if(this.tmpAuthController !== undefined && identifier !== this.tmpAuthController){
-            throw new ConfigBuildError(`The authController: '${this.tmpAuthController}' is already set, you can not override it.`);
-        }
-        else {
-            this.tmpAuthController = identifier;
-        }
-    }
-
     //Part main configs
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -264,16 +249,6 @@ export default class Config
             Config.configAdd(Config.tmpDataboxes,config.databoxes,'databox identifier');
             Config.configAdd(Config.tmpCustomChs,config.customChannels as object,'custom channel identifier');
             Config.merge(config.zationChannels,...Config.tmpZationChannels);
-
-            if(this.tmpAuthController !== undefined){
-                if(config.authController !== undefined){
-                    throw new ConfigBuildError(
-                        `Conflict with the auth controller, the authController is defined in the app config and the config utils.`);
-                }
-                else {
-                    config.authController = this.tmpAuthController;
-                }
-            }
         }
         return config;
     }

@@ -4,11 +4,11 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ZationToken}     from "../constants/internal";
+import {ZationToken}     from "../../../constants/internal";
 import {IncomingMessage} from "http";
-import UpSocket          from "../sc/socket";
-import {JwtSignOptions}  from "../constants/jwt";
-import AuthEngine        from "../auth/authEngine";
+import UpSocket          from "../../../sc/socket";
+import {JwtSignOptions}  from "../../../constants/jwt";
+import AuthEngine        from "../../../auth/authEngine";
 
 /**
  * Minimal socket, http bridge interface

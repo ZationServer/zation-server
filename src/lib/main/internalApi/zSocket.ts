@@ -9,7 +9,7 @@ import UpSocket, {OnHandlerFunction}             from "../sc/socket";
 import TokenUtils       from "../token/tokenUtils";
 import ObjectPath       from "../utils/objectPath";
 import ChUtils          from "../channel/chUtils";
-import BaseSHBridge     from "../bridges/baseSHBridge";
+import BaseSHBridge     from "../controller/request/bridges/baseSHBridge";
 import DataboxFamily    from "../../api/databox/DataboxFamily";
 import Databox          from "../../api/databox/Databox";
 import CloneUtils            from "../utils/cloneUtils";

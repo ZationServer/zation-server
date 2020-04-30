@@ -783,7 +783,6 @@ class ZationWorker extends SCWorker
 
                 const zationMidRes = await MiddlewareUtils.checkMiddleware
                     (middleware.middlewareSocket,true,socket);
-
                 zationMidRes === true ? next(): next(MiddlewareUtils.processBlockedResult(zationMidRes));
             }
             else{
@@ -831,7 +830,6 @@ class ZationWorker extends SCWorker
 
             const zationAuthMid = await MiddlewareUtils.checkMiddleware
             (middleware.middlewareAuthenticate,true,new ZationTokenWrapper(token));
-
             zationAuthMid === true ? next(): next(MiddlewareUtils.processBlockedResult(zationAuthMid));
         });
     }

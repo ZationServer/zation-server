@@ -23,7 +23,7 @@ import ConfigLoader                          from '../manager/configLoader';
 import {isModelConfigTranslatable, modelConfigTranslateSymbol, resolveModelConfigTranslatable} from '../../../api/configTranslatable/modelConfigTranslatable';
 import {modelNameSymbol, modelOptionalSymbol, modelPrototypeSymbol}                            from '../../constants/model';
 import {AnyOfModel, ArrayModel, InputConfig, Model, ObjectModel, ParamInput, ValueModel} from '../definitions/parts/inputConfig';
-// noinspection TypeScriptPreferShortImport
+// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig}               from '../definitions/parts/controllerConfig';
 import {DataboxClassDef, DataboxConfig} from '../definitions/parts/databoxConfig';
 import DataboxFamily                    from '../../../api/databox/DataboxFamily';
@@ -34,8 +34,9 @@ import {getNotableValue, isNotableNot}         from '../../../api/Notable';
 import ErrorBag                                from '../../error/errorBag';
 import {modelIdSymbol}                         from '../../models/modelId';
 import {inputConfigTranslateSymbol, isInputConfigTranslatable} from '../../../api/configTranslatable/inputConfigTranslatable';
-import {isReusableModel}                                        from '../../models/reusableModelCreator';
-import {processAnyOfKey} from '../../models/anyOfModelUtils';
+import {isReusableModel}                                       from '../../models/reusableModelCreator';
+import {processAnyOfKey}                                       from '../../models/anyOfModelUtils';
+import AuthController                                          from '../../../api/AuthController';
 
 export interface ModelCheckedMem {
     _checked: boolean
@@ -46,6 +47,7 @@ export default class ConfigChecker
     private readonly zcLoader: ConfigLoader;
     private ceb: ErrorBag<ConfigError>;
 
+    private authControllerIdentifier: string;
     private validAccessValues: any[];
     private checkedModelIds: number[] = [];
 
@@ -122,31 +124,11 @@ export default class ConfigChecker
 
     private checkAppConfig() {
         this.checkAccessControllerDefaultIsSet();
-        this.checkControllersConfigs();
+        this.checkControllers();
         this.checkDataboxConfigs();
-        this.checkAuthController();
         this.checkCustomChannelsDefaults();
         this.checkCustomChannels();
         this.checkZationChannels();
-    }
-
-    private checkAuthController() {
-        const authControllerId = this.zcLoader.appConfig.authController;
-        if (typeof authControllerId === "string") {
-            const controller = this.zcLoader.appConfig.controllers || {};
-            if (!controller.hasOwnProperty(authControllerId)) {
-                this.ceb.addError(new ConfigError(ConfigNames.App,
-                    `AuthController: '${authControllerId}' is not found.`));
-            } else {
-                //checkAuthControllerAccess value
-                Iterator.iterateCompDefinition<ControllerClass>(controller[authControllerId],(controllerClass, apiLevel) => {
-                    if (controllerClass.config.access !== nameof<ZationAccessRecord>(s => s.all)) {
-                        Logger.consoleLogConfigWarning
-                        (ConfigNames.App, `It is recommended to set the access of the authController ${apiLevel ? `(API Level: ${apiLevel}) `: ''}directly to 'all'.`);
-                    }
-                });
-            }
-        }
     }
 
     private checkCustomChannelsDefaults(){
@@ -454,19 +436,40 @@ export default class ConfigChecker
         }
     }
 
-    private checkControllersConfigs() {
+    private checkControllers() {
         //check Controllers
         if (typeof this.zcLoader.appConfig.controllers === 'object') {
             const controller = this.zcLoader.appConfig.controllers;
-            for (let cId in controller) {
-                if (controller.hasOwnProperty(cId)) {
-                    Iterator.iterateCompDefinition<ControllerClass>(controller[cId],(controllerClass,apiLevel) =>{
+            for (let identifier in controller) {
+                if (controller.hasOwnProperty(identifier)) {
+                    let count = 0;
+                    let authControllerCount = 0;
+                    Iterator.iterateCompDefinition<ControllerClass>(controller[identifier],(controllerClass,apiLevel) =>{
                         if(apiLevel !== undefined && isNaN(parseInt(apiLevel))) {
                             this.ceb.addError(new ConfigError(ConfigNames.App,
-                                `Controller: '${cId}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
+                                `Controller: '${identifier}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
                         }
-                        this.checkController(controllerClass, new Target(`Controller: '${cId}' ${apiLevel ? `(API Level: ${apiLevel}) `: ''}`));
+                        const target = new Target(`Controller: '${identifier}' ${apiLevel ? `(API Level: ${apiLevel}) `: ''}`);
+                        if(controllerClass.prototype instanceof AuthController){
+                            this.checkAuthControllerAccess(controllerClass,target);
+                            authControllerCount++;
+                        }
+                        this.checkController(controllerClass,target);
+                        count++;
                     });
+                    if(authControllerCount > 0) {
+                        if(count !== authControllerCount){
+                            this.ceb.addError(new ConfigError(ConfigNames.App,
+                                `Controller: '${identifier}' API levels cannot have mixed controller types AuthController and Controller.`));
+                        }
+                        if(this.authControllerIdentifier === undefined){
+                            this.authControllerIdentifier = identifier;
+                        }
+                        if(this.authControllerIdentifier !== identifier){
+                            this.ceb.addError(new ConfigError(ConfigNames.App,
+                                `AuthController: '${identifier}' conflicts with other AuthController: '${this.authControllerIdentifier}'.`));
+                        }
+                    }
                 }
             }
         }
@@ -477,6 +480,14 @@ export default class ConfigChecker
             this.checkControllerConfig(controller, new Target(nameof<AppConfig>(s => s.controllerDefaults)));
         }
 
+    }
+
+    // noinspection JSMethodCanBeStatic
+    private checkAuthControllerAccess(controllerClass: ControllerClass,target: Target) {
+        if (controllerClass.config.access !== nameof<ZationAccessRecord>(s => s.all)) {
+            Logger.consoleLogConfigWarning
+            (ConfigNames.App, `${target.toString()} It is recommended to set the access of the authController directly to 'all'.`);
+        }
     }
 
     private checkDataboxConfigs() {

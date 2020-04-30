@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import BaseSHBridge       from "../bridges/baseSHBridge";
+import BaseSHBridge       from "../controller/request/bridges/baseSHBridge";
 // noinspection TypeScriptPreferShortImport
 import {SystemAccessConfig, VersionAccessConfig} from "../config/definitions/parts/configComponents";
 

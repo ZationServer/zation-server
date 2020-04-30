@@ -11,7 +11,7 @@ import ChUtils              from "./chUtils";
 import Logger               from "../log/logger";
 import PubData              from "../internalApi/pubData";
 import {ClientErrorName}    from "../constants/clientErrorName";
-import BaseSHBridge         from "../bridges/baseSHBridge";
+import BaseSHBridge         from "../controller/request/bridges/baseSHBridge";
 
 /**
  * Class for help in channel middleware by checking the

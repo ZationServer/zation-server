@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import {ControllerClass}      from "../../../../api/Controller";
 import {ApiLevelSwitch}       from "../../../apiLevel/apiLevelUtils";
-// noinspection TypeScriptPreferShortImport
+// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig}     from "../parts/controllerConfig";
 import {BackgroundTask}       from "../parts/backgroundTask";
 import {DataboxClassDef, DataboxConfig} from "../parts/databoxConfig";
@@ -57,15 +57,6 @@ export interface AppConfig
      * }
      */
     middleware?: Middleware,
-
-    /**
-     * The name of the authController.
-     * This property makes it possible to send an authentication request to the server.
-     * Then the server will automatically use the linked controller.
-     * @example
-     * authController: 'login',
-     */
-    authController?: string;
 
     /**
     * In this property, you can define all your controllers.

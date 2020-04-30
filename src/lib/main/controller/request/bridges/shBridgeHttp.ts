@@ -4,16 +4,16 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ZationToken}     from "../constants/internal";
+import {ZationToken}     from "../../../constants/internal";
 import * as core         from "express-serve-static-core";
 import {IncomingMessage} from "http";
 import SHBridge          from "./shBridge";
-import UpSocket          from "../sc/socket";
-import {JwtSignOptions}  from "../constants/jwt";
-import AuthEngine        from "../auth/authEngine";
-import ZationWorker    = require("../../core/zationWorker");
+import UpSocket          from "../../../sc/socket";
+import {JwtSignOptions}  from "../../../constants/jwt";
+import AuthEngine        from "../../../auth/authEngine";
+import ZationWorker    = require("../../../../core/zationWorker");
 import BaseSHBridgeDefault             from "./baseSHBridgeDefault";
-import {ZationHttpInfo, ZationRequest} from "../controller/request/controllerDefinitions";
+import {ZationHttpInfo, ControllerRequest} from "../controllerDefinitions";
 
 /**
  * BaseShBridge implementation for http.
@@ -22,7 +22,7 @@ export default class SHBridgeHttp extends BaseSHBridgeDefault implements SHBridg
 
     protected readonly httpRes: core.Response;
     protected readonly httpReq: core.Request & {zationToken?: ZationToken};
-    protected readonly data: ZationRequest;
+    protected readonly data: ControllerRequest;
     protected readonly reqId: string;
     protected readonly validationCheckReq: boolean;
 
@@ -37,7 +37,7 @@ export default class SHBridgeHttp extends BaseSHBridgeDefault implements SHBridg
 
     constructor(httpRes: core.Response,
                 httpReq: core.Request,
-                reqId: string,data: ZationRequest,
+                reqId: string,data: ControllerRequest,
                 validationCheckReq: boolean,
                 defaultApiLevel: number,
                 worker: ZationWorker)
@@ -76,7 +76,7 @@ export default class SHBridgeHttp extends BaseSHBridgeDefault implements SHBridg
         return this.reqId;
     }
 
-    getZationData(): ZationRequest {
+    getControllerRequest(): ControllerRequest {
         return this.data;
     }
 
@@ -91,7 +91,7 @@ export default class SHBridgeHttp extends BaseSHBridgeDefault implements SHBridg
     deauthenticate(): void {
         this.newToken = true;
         this.currentToken = null;
-        this.httpRes['zationInfo'].push(ZationHttpInfo.DEAUTHENTICATE);
+        this.httpRes['zationInfo'].push(ZationHttpInfo.Deauthenticate);
 
         this.authEngine.refresh(null);
     }
@@ -109,7 +109,7 @@ export default class SHBridgeHttp extends BaseSHBridgeDefault implements SHBridg
     getSystem(): string {
         //is checked before
         // @ts-ignore
-        return this.getZationData().s;
+        return this.getControllerRequest().s;
     }
 
     getToken(): ZationToken | null {
@@ -126,7 +126,7 @@ export default class SHBridgeHttp extends BaseSHBridgeDefault implements SHBridg
     getVersion(): number {
         //is checked before
         // @ts-ignore
-        return this.getZationData().v;
+        return this.getControllerRequest().v;
     }
 
     isNewToken(): boolean {

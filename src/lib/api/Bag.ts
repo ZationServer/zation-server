@@ -11,7 +11,7 @@ import PortChecker                                          from "../main/utils/
 import AsymmetricKeyPairs                                   from "../main/internalApi/asymmetricKeyPairs";
 import {WorkerMessageAction}                                from "../main/constants/workerMessageAction";
 import BackErrorConstruct                                   from "../main/constants/backErrorConstruct";
-import {ZATION_CUSTOM_EVENT_NAMESPACE, ZationToken}            from "../main/constants/internal";
+import {ZATION_CUSTOM_EVENT_NAMESPACE, ZationToken}         from "../main/constants/internal";
 import {InternalMainConfig}                                 from "../main/config/definitions/main/mainConfig";
 import {PrecompiledAppConfig}                               from "../main/config/definitions/main/appConfig";
 import {PrecompiledServiceConfig}                           from "../main/config/definitions/main/serviceConfig";
@@ -42,7 +42,6 @@ import ChannelBagEngine                                     from "../main/channe
 import ServiceEngine                                        from "../main/services/serviceEngine";
 import ZationConfig                                         from "../main/config/manager/zationConfig";
 import ObjectPath                                           from "../main/utils/objectPath";
-import Result                                               from "./Result";
 import Logger                                               from "../main/log/logger";
 import ChUtils                                              from "../main/channel/chUtils";
 import SidBuilder                                           from "../main/utils/sidBuilder";
@@ -1173,21 +1172,6 @@ export default class Bag {
      */
     throwNewBackError(errorConstruct: BackErrorConstruct = {}, info?: object | string): void {
         throw this.newBackError(errorConstruct, info);
-    }
-
-    //Part Result
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Returns a new result by using the constructor.
-     * That you can return to the client.
-     * With the result object you have the possibility to add a status code.
-     * Rather than just a result.
-     * @param result
-     * @param statusCode
-     */
-    newResult(result?: any, statusCode?: string | number): Result {
-        return new Result(result, statusCode);
     }
 
     //Part Logger

@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import * as core           from "express-serve-static-core";
 import BaseSHBridge        from "./baseSHBridge";
-import {ZationRequest}     from "../controller/request/controllerDefinitions";
+import {ControllerRequest} from "../controllerDefinitions";
 
 /**
  * Socket, http bridge interface
@@ -14,7 +14,7 @@ import {ZationRequest}     from "../controller/request/controllerDefinitions";
  */
 export default interface SHBridge extends BaseSHBridge
 {
-    getZationData(): ZationRequest;
+    getControllerRequest(): ControllerRequest;
     getReqId(): string;
     /**
      * Is undefined if isWebSocket() is true!

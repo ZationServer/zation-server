@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import UpSocket           from "../sc/socket";
 import SidBuilder         from "../utils/sidBuilder";
-import BaseSHBridgeSocket from "../bridges/baseSHBridgeSocket";
+import BaseSHBridgeSocket from "../controller/request/bridges/baseSHBridgeSocket";
 import AuthEngine         from "../auth/authEngine";
 import ZSocket            from "../internalApi/zSocket";
 import ZationWorker     = require("../../core/zationWorker");

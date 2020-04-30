@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import ZationWorker               = require("../../../../core/zationWorker");
 import {ZationToken}                from "../../../constants/internal";
-import SHBridgeHttp                 from "../../../bridges/shBridgeHttp";
+import SHBridgeHttp                 from "../bridges/shBridgeHttp";
 import ZationTokenWrapper           from "../../../internalApi/zationTokenWrapper";
 import AEPreparedPart               from "../../../auth/aePreparedPart";
 import BackError                    from "../../../../api/BackError";
@@ -17,8 +17,8 @@ import TokenUtils, {TokenClusterKeyCheckFunction} from "../../../token/tokenUtil
 import {jsonParse}                  from "../../../utils/jsonConverter";
 import ZationConfigFull             from "../../../config/manager/zationConfigFull";
 import MiddlewareUtils              from "../../../utils/middlewareUtils";
-import {ZationRequest}              from "../controllerDefinitions";
-import SHBridge                     from "../../../bridges/shBridge";
+import {ControllerRequest}              from "../controllerDefinitions";
+import SHBridge                     from "../bridges/shBridge";
 
 export default class HttpCRequestProcessor
 {
@@ -44,37 +44,20 @@ export default class HttpCRequestProcessor
         if (req.method === 'POST' && req.body[this.postKey]) {
             Logger.log.debug(`Http Post Request id: ${reqId}`);
             HttpCRequestProcessor.setHeader(res);
-            const zationData = jsonParse(req.body[this.postKey]);
+            const controllerRequest = jsonParse(req.body[this.postKey]);
 
-            Logger.log.debug(`Http Post Controller Request id: ${reqId} -> `,zationData);
-            return this.mainProcess(req,res,zationData,reqId);
+            Logger.log.debug(`Http Post Controller Request id: ${reqId} -> `,controllerRequest);
+            return this.mainProcess(req,res,controllerRequest,reqId);
         }
         else if(req.method === 'GET' && !(Object.keys(req.query).length === 0))
         {
             Logger.log.debug(`Http Get Controller Request id: ${reqId}`);
             const query = req.query;
 
-            if(ControllerReqUtils.isValidGetReq(query)) {
-                HttpCRequestProcessor.setHeader(res);
-                const zationData = await ControllerReqUtils.convertGetRequest(query);
-                Logger.log.debug(`Http Get Request id: ${reqId} -> `,zationData);
-                return this.mainProcess(req,res,zationData,reqId);
-            }
-            else if(ControllerReqUtils.isValidValidationGetReq(query))
-            {
-                HttpCRequestProcessor.setHeader(res);
-                const zationData = await ControllerReqUtils.convertValidationGetRequest(query);
-                Logger.log.debug(`Http Get Request id: ${reqId} -> `,zationData);
-                return this.mainProcess(req,res,zationData,reqId);
-            }
-            else {
-                throw new BackError(MainBackErrors.wrongInputDataStructure,
-                    {
-                        type: 'http',
-                        reqMethod :req.method,
-                        input: {head: req.headers, body: req.body}
-                    });
-            }
+            HttpCRequestProcessor.setHeader(res);
+            const controllerRequest = ControllerReqUtils.convertGetRequest(query);
+            Logger.log.debug(`Http Get Request id: ${reqId} -> `,controllerRequest);
+            return this.mainProcess(req,res,controllerRequest,reqId);
         }
         else {
             Logger.log.debug(`Http Request id: ${reqId} -> Empty request`);
@@ -82,7 +65,7 @@ export default class HttpCRequestProcessor
         }
     }
 
-    private async mainProcess(req,res,zationData: ZationRequest,reqId: string): Promise<SHBridge>
+    private async mainProcess(req, res, zationData: ControllerRequest, reqId: string): Promise<SHBridge>
     {
         //check for validationCheckRequest
         if(ControllerReqUtils.isValidationCheckReq(zationData)) {
@@ -92,7 +75,6 @@ export default class HttpCRequestProcessor
         {
             //normal Req
             if(!!zationData.to) {
-
                 const token: ZationToken = (await TokenUtils.verifyToken(zationData.to,this.zc) as ZationToken);
                 req.zationToken = token;
 
@@ -106,11 +88,9 @@ export default class HttpCRequestProcessor
                     throw new BackError(MainBackErrors.tokenClusterKeyIsInvalid);
                 }
 
-                //will throw if auth is blocked
                 const authMiddlewareRes = await MiddlewareUtils.checkMiddleware
                 (this.zc.middleware.middlewareAuthenticate,true,new ZationTokenWrapper(token));
-
-                if((authMiddlewareRes !== true)){
+                if(authMiddlewareRes !== true){
                     throw new BackError(MainBackErrors.authenticateMiddlewareBlock,
                         typeof authMiddlewareRes === 'object' ? {err: authMiddlewareRes}: {});
                 }

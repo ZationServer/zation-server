@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import ZationWorker        = require("../../core/zationWorker");
 import {PrepareZationToken, ZationToken} from "../constants/internal";
-import BaseSHBridge         from "../bridges/baseSHBridge";
+import BaseSHBridge         from "../controller/request/bridges/baseSHBridge";
 import AEPreparedPart       from "./aePreparedPart";
 import AuthenticationError  from "../error/authenticationError";
 import TokenUtils           from "../token/tokenUtils";

@@ -11,7 +11,7 @@ import * as core                  from "express-serve-static-core";
 import {IncomingHttpHeaders, IncomingMessage} from "http";
 import {Agent}                    from "useragent";
 import {UploadedFile}             from "express-fileupload";
-import SHBridge                   from "../main/bridges/shBridge";
+import SHBridge                   from "../main/controller/request/bridges/shBridge";
 import AuthEngine                 from "../main/auth/authEngine";
 import ProtocolAccessChecker      from "../main/protocolAccess/protocolAccessChecker";
 import ObjectPath                 from "../main/utils/objectPath";

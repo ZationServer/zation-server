@@ -6,8 +6,8 @@ Copyright(c) Luca Scaringella
 
 import SHBridge             from "./shBridge";
 import BaseSHBridgeSocket   from "./baseSHBridgeSocket";
-import UpSocket             from "../sc/socket";
-import {ZationRequest}      from "../controller/request/controllerDefinitions";
+import UpSocket             from "../../../sc/socket";
+import {ControllerRequest}      from "../controllerDefinitions";
 
 /**
  * ShBridge implementation for socket.
@@ -15,14 +15,14 @@ import {ZationRequest}      from "../controller/request/controllerDefinitions";
 export default class SHBridgeSocket extends BaseSHBridgeSocket implements SHBridge {
 
     protected readonly reqId: string;
-    protected readonly data: ZationRequest;
+    protected readonly data: ControllerRequest;
     protected readonly validationCheckReq: boolean;
 
     protected readonly defaultApiLevel: number;
     protected readonly connectionApiLevel: number | undefined;
     protected readonly requestApiLevel: number | undefined;
 
-    constructor(socket: UpSocket, reqId: string, data: ZationRequest, validationCheckReq: boolean,defaultApiLevel: number) {
+    constructor(socket: UpSocket, reqId: string, data: ControllerRequest, validationCheckReq: boolean, defaultApiLevel: number) {
         super(socket);
         this.reqId = reqId;
         this.data = data;
@@ -38,7 +38,7 @@ export default class SHBridgeSocket extends BaseSHBridgeSocket implements SHBrid
         return this.reqId;
     }
 
-    getZationData(): ZationRequest {
+    getControllerRequest(): ControllerRequest {
         return this.data;
     }
 

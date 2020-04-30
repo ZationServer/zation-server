@@ -6,9 +6,9 @@ Copyright(c) Luca Scaringella
 
 import BaseSHBridge         from "./baseSHBridge";
 import {IncomingMessage}    from "http";
-import {ZationToken}        from "../constants/internal";
-import UpSocket             from "../sc/socket";
-import AuthEngine           from "../auth/authEngine";
+import {ZationToken}        from "../../../constants/internal";
+import UpSocket             from "../../../sc/socket";
+import AuthEngine           from "../../../auth/authEngine";
 const  IP: any           = require('ip');
 
 /**

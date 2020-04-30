@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import SHBridgeSocket        from "../../../bridges/shBridgeSocket";
+import SHBridgeSocket        from "../bridges/shBridgeSocket";
 import UpSocket              from "../../../sc/socket";
 import ZationConfig          from "../../../config/manager/zationConfig";
 import Logger                from "../../../log/logger";

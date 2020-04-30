@@ -8,7 +8,7 @@ import BackError                    from "./lib/api/BackError";
 import BackErrorBag                 from "./lib/api/BackErrorBag";
 import Bag, {bag}                   from './lib/api/Bag';
 import RequestBag                   from './lib/api/RequestBag';
-import Result                       from './lib/api/Result';
+import AuthController               from './lib/api/AuthController';
 import Controller                   from './lib/api/Controller';
 import Config                       from './lib/api/Config';
 import BackErrorBuilder             from "./lib/main/builder/backErrorBuilder";
@@ -101,9 +101,9 @@ export {
     $userId,
     $tokenHasVariables,
     $tokenVariablesMatch,
+    AuthController,
     Controller,
     ControllerConfig,
-    Result,
     BackError,
     BackErrorBuilder,
     BackErrorBag,

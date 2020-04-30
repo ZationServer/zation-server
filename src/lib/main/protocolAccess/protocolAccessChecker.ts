@@ -6,8 +6,8 @@ Copyright(c) Luca Scaringella
 
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig} from "../config/definitions/parts/controllerConfig";
-import BaseSHBridge       from "../bridges/baseSHBridge";
-import SHBridge           from "../bridges/shBridge";
+import BaseSHBridge       from "../controller/request/bridges/baseSHBridge";
+import SHBridge           from "../controller/request/bridges/shBridge";
 
 export default class ProtocolAccessChecker
 {

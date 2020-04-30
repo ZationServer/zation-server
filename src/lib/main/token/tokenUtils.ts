@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import UpSocket              from "../sc/socket";
 import {PrepareZationToken, ZationToken} from "../constants/internal";
 import {JwtSignFunction, JwtSignOptions, JwtVerifyFunction, JwtVerifyOptions} from "../constants/jwt";
-import BaseSHBridge        from "../bridges/baseSHBridge";
+import BaseSHBridge        from "../controller/request/bridges/baseSHBridge";
 import AEPreparedPart      from "../auth/aePreparedPart";
 import BackError           from "../../api/BackError";
 import AuthenticationError from "../error/authenticationError";

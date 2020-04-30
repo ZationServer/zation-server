@@ -4,14 +4,14 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import UpSocket            from "../sc/socket";
-import {ZationToken}       from "../constants/internal";
+import UpSocket            from "../../../sc/socket";
+import {ZationToken}       from "../../../constants/internal";
 import {IncomingMessage}   from "http";
 import BaseSHBridge        from "./baseSHBridge";
 import BaseSHBridgeDefault from "./baseSHBridgeDefault";
-import TokenUtils          from "../token/tokenUtils";
-import {JwtSignOptions}    from "../constants/jwt";
-import AuthEngine          from "../auth/authEngine";
+import TokenUtils          from "../../../token/tokenUtils";
+import {JwtSignOptions}    from "../../../constants/jwt";
+import AuthEngine          from "../../../auth/authEngine";
 
 /**
  * BaseShBridge implementation for socket.

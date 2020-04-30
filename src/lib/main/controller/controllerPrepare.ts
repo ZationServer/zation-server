@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import ZationWorker     = require("../../core/zationWorker");
-// noinspection TypeScriptPreferShortImport
+// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig} from "../config/definitions/parts/controllerConfig";
 import BackError          from "../../api/BackError";
 import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
@@ -20,8 +20,9 @@ import InputClosureCreator, {InputConsumeFunction, InputValidationCheckFunction}
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction}                   from "../apiLevel/apiLevelUtils";
 import FuncUtils                                                                 from '../utils/funcUtils';
 import {ErrorEventSingleton}                                                     from '../error/errorEventSingleton';
+import AuthController                                                            from '../../api/AuthController';
 
-interface ControllerPrepareData {
+interface ControllerPreparedData {
     controllerConfig: ControllerConfig,
     controllerInstance: Controller,
     versionAccessCheck: VersionSystemAccessCheckFunction,
@@ -39,8 +40,9 @@ export default class ControllerPrepare
     private readonly worker: ZationWorker;
     private readonly bag: Bag;
 
-    private readonly systemController: Record<string,ControllerPrepareData>;
-    private readonly appController: Record<string,ApiLevelSwitchFunction<ControllerPrepareData>>;
+    private _authControllerIdentifier: string;
+    private readonly systemController: Record<string,ControllerPreparedData>;
+    private readonly appController: Record<string,ApiLevelSwitchFunction<ControllerPreparedData>>;
 
     constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag)
     {
@@ -53,13 +55,20 @@ export default class ControllerPrepare
     }
 
     /**
+     * Returns the AuthController identifier.
+     */
+    get authControllerIdentifier() {
+        return this._authControllerIdentifier;
+    }
+
+    /**
      * It will return the controller prepared data.
      * If no controller with the API level is found, it will thrown an API level incompatible back error.
      * @param identifier
      * @param apiLevel
      * @param isSystemController
      */
-    getControllerPrepareData(identifier: string,apiLevel: number,isSystemController: boolean): ControllerPrepareData
+    getControllerPreparedData(identifier: string, apiLevel: number, isSystemController: boolean): ControllerPreparedData
     {
         if(!isSystemController) {
             const controller = this.appController[identifier](apiLevel);
@@ -135,29 +144,33 @@ export default class ControllerPrepare
      */
     private async addController(identifier: string,systemController: boolean,definition: ControllerClass | ApiLevelSwitch<ControllerClass>): Promise<void>
     {
+        let authController = false;
         if(typeof definition === 'function') {
             const preparedControllerData = await this.processController(definition,identifier);
             if(systemController){
                 this.systemController[identifier] = preparedControllerData;
             }
             else {
-                this.appController[identifier] = () => {
-                    return preparedControllerData
-                };
+                this.appController[identifier] = () => preparedControllerData;
             }
+            authController = definition.prototype instanceof AuthController;
         }
         else {
             const promises: Promise<void>[] = [];
-            const preparedDataMapper: Record<any,ControllerPrepareData> = {};
+            const preparedDataMapper: Record<any,ControllerPreparedData> = {};
             for(const k in definition){
                 if(definition.hasOwnProperty(k)) {
+                    authController = authController || definition[k].prototype instanceof AuthController;
                     promises.push((async () => {
                         preparedDataMapper[k] = await this.processController(definition[k],identifier,parseInt(k));
                     })());
                 }
             }
             await Promise.all(promises);
-            this.appController[identifier] = ApiLevelUtils.createApiLevelSwitcher<ControllerPrepareData>(preparedDataMapper);
+            this.appController[identifier] = ApiLevelUtils.createApiLevelSwitcher<ControllerPreparedData>(preparedDataMapper);
+        }
+        if(authController){
+            this._authControllerIdentifier = identifier;
         }
     }
 
@@ -167,7 +180,7 @@ export default class ControllerPrepare
      * @param identifier
      * @param apiLevel
      */
-    private async processController(controller: ControllerClass,identifier: string,apiLevel?: number): Promise<ControllerPrepareData>
+    private async processController(controller: ControllerClass,identifier: string,apiLevel?: number): Promise<ControllerPreparedData>
     {
         const config: ControllerConfig = controller.config;
         const cInstance: Controller = new controller(identifier,this.worker.getPreparedBag(),apiLevel);

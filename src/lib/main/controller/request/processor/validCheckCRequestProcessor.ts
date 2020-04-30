@@ -9,9 +9,9 @@ import BackError                from "../../../../api/BackError";
 import ControllerPrepare        from "../../controllerPrepare";
 import ZationConfig             from "../../../config/manager/zationConfig";
 import {MainBackErrors}         from "../../../zationBackErrors/mainBackErrors";
-import SHBridge                 from "../../../bridges/shBridge";
-import {ZationRequest, ZationValidationCheck} from "../controllerDefinitions";
-import ControllerReqUtils                     from "../controllerReqUtils";
+import SHBridge                 from "../bridges/shBridge";
+import {ControllerRequest}      from "../controllerDefinitions";
+import ControllerReqUtils       from "../controllerReqUtils";
 
 export default class ValidCheckCRequestProcessor
 {
@@ -30,32 +30,29 @@ export default class ValidCheckCRequestProcessor
         this.validationCheckLimit = this.zc.mainConfig.validationCheckLimit;
     }
 
-    async process(reqData: ZationRequest,shBridge: SHBridge)
+    async process(request: ControllerRequest, shBridge: SHBridge)
     {
-        if(ControllerReqUtils.isValidValidationStructure(reqData))
+        if(ControllerReqUtils.isValidValidationStructure(request))
         {
-            //is checked in isValidValidationStructure
-            const validReq: ZationValidationCheck = (reqData.v as ZationValidationCheck);
-
-            const isSystemController = ControllerReqUtils.isSystemControllerReq(validReq);
-            const cId = ControllerReqUtils.getControllerId(validReq,isSystemController);
+            const isSystemController = ControllerReqUtils.isSystemControllerReq(request);
+            const cIdentifier = ControllerReqUtils.getControllerId(request,isSystemController);
 
             //Throws if not exists
-            this.controllerPrepare.checkControllerExist(cId,isSystemController);
+            this.controllerPrepare.checkControllerExist(cIdentifier,isSystemController);
 
             //check is over validation check limit
-            if(validReq.i.length > this.validationCheckLimit){
+            if(request.i.length > this.validationCheckLimit){
                 throw new BackError(MainBackErrors.validationCheckLimitReached,{
                    limit: this.validationCheckLimit,
-                   checksCount: validReq.i.length
+                   checksCount: request.i.length
                 });
             }
 
             //Throws if apiLevel not found
             const {inputValidationCheck} =
-                this.controllerPrepare.getControllerPrepareData(cId,shBridge.getApiLevel(),isSystemController);
+                this.controllerPrepare.getControllerPreparedData(cIdentifier,shBridge.getApiLevel(),isSystemController);
 
-            await inputValidationCheck(validReq.i);
+            await inputValidationCheck(request.i);
             return {};
         }
         else {
