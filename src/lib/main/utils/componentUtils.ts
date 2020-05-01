@@ -38,3 +38,12 @@ export function parseComponentClassName(name: string): {name: string,apiLevel?: 
         apiLevel: resApiLevel
     }
 }
+
+/**
+ * Checks the component class name.
+ * @param name
+ */
+export function checkComponentName(name: string) {
+    if(name.indexOf('/') !== -1)
+        throw new ConfigBuildError(`The component class name: ${name} can not contain slashes.`);
+}

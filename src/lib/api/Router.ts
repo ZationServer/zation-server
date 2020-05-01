@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {Component}               from "../main/config/definitions/parts/component";
-import {parseComponentClassName} from '../main/utils/componentUtils';
+import {checkComponentName, parseComponentClassName} from '../main/utils/componentUtils';
 import Config                    from './Config';
 import CustomChannel             from './CustomChannel';
 
@@ -135,6 +135,8 @@ export default class Router {
                 apiLevel = tmpComponent.override.apiLevel === null ?
                     undefined : parseInt(tmpComponent.override.apiLevel as any);
             }
+
+            checkComponentName(name);
             Config.registerComponent(tmpRoute + name,tmpComponent.component,apiLevel);
         }
 

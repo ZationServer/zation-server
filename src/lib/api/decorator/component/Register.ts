@@ -10,7 +10,7 @@ import Controller       from "../../Controller";
 import Databox          from "../../databox/Databox";
 import DataboxFamily    from "../../databox/DataboxFamily";
 import ConfigBuildError from "../../../main/config/manager/configBuildError";
-import {parseComponentClassName} from '../../../main/utils/componentUtils';
+import {checkComponentName, parseComponentClassName} from '../../../main/utils/componentUtils';
 
 /**
  * Register a component (Controller or Databox).
@@ -50,6 +50,7 @@ export const Register = (override: {name?: string, apiLevel?: number | null} = {
                 apiLevel = override.apiLevel === null ? undefined : parseInt(override.apiLevel as any);
             }
 
+            checkComponentName(name);
             Config.registerComponent(name,target,apiLevel);
         }
         else {
