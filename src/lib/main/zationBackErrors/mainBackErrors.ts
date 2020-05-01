@@ -405,23 +405,5 @@ export const MainBackErrors = {
         //INFO
         // message
         fromZationSystem: true
-    },
-
-    tokenClusterKeyIsInvalid: {
-        name         : 'tokenClusterKeyIsInvalid',
-        description  : 'The token cluster key is invalid.',
-        type         : ErrorType.TokenError,
-        sendInfo     : true,
-        fromZationSystem: true
-    },
-
-    authenticateMiddlewareBlock: {
-        name         : 'authenticateMiddlewareBlock',
-        description  : 'Authenticate middleware block req.',
-        type         : ErrorType.TokenError,
-        sendInfo     : true,
-        //INFO
-        // err
-        fromZationSystem: true
     }
 };

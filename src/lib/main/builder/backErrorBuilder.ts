@@ -100,16 +100,6 @@ export default class BackErrorBuilder
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Set the BackError type to protocol error.
-     */
-    typeProtocolError(): BackErrorBuilder {
-        this._construct.type = ErrorType.ProtocolError;
-        return this;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
      * Set the BackError type to token error.
      */
     typeTokenError(): BackErrorBuilder {

@@ -10,7 +10,6 @@ export enum ErrorType {
     InputError               = 'InputError',
     ValidationError          = 'ValidationError',
     AuthError                = 'AuthError',
-    ProtocolError            = 'ProtocolError',
     TokenError               = 'TokenError',
     DatabaseError            = 'DatabaseError',
     NoAccessError            = 'NoAccessError',
