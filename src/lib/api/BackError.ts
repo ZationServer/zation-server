@@ -8,7 +8,7 @@ import BackErrorConstruct   from "../main/constants/backErrorConstruct";
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ErrorType}          from "../main/constants/errorType";
 
-type BackErrorInfo = object & {main ?: any};
+type BackErrorInfo = Record<string,any> & {main ?: any};
 
 export interface DryBackError {
     /**
