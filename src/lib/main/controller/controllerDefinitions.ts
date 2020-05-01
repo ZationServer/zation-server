@@ -59,9 +59,9 @@ export interface ValidationCheckPair {
 }
 
 /**
- * Successful = errors.length === 0
+ * Successful = errors.length === 0 or undefined
  */
-export interface ControllerRes {
+export type ControllerRes = {
     /**
      * Errors
      */
@@ -70,4 +70,4 @@ export interface ControllerRes {
      * Result
      */
     1?: any
-}
+} | undefined;
