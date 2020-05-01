@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import {DryBackError} from '../../api/BackError';
 
 export const enum ControllerRequestType {
-    Normal,
+    Standard,
     ValidationCheck,
     Auth
 }
