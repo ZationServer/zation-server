@@ -352,6 +352,17 @@ export default class ConfigChecker
         this.checkPanelUserMainConfig();
         this.checkOrigins();
         this.checkDefaultClientApiLevel();
+        this.mainConfigWarnings();
+    }
+
+    private mainConfigWarnings() {
+        if(!this.zcLoader.mainConfig.useTokenStateCheck){
+            Logger.consoleLogConfigWarning
+            (
+                ConfigNames.Main,
+                `Notice that with deactivated TokenStateCheck everyone can access every component.`
+            );
+        }
     }
 
     private checkDefaultClientApiLevel()
