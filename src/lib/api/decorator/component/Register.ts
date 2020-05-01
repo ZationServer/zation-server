@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import Config           from "../../Config";
-import {Component}      from "../../../main/config/definitions/parts/component";
+import {ComponentClass} from "../../../main/config/definitions/parts/componentClass";
 import Controller       from "../../Controller";
 import Databox          from "../../databox/Databox";
 import DataboxFamily    from "../../databox/DataboxFamily";
@@ -37,8 +37,8 @@ import {checkComponentName, parseComponentClassName} from '../../../main/utils/c
  * @param override
  * The parameter to override the parsed name and API level from the class name.
  */
-export const Register = (override: {name?: string, apiLevel?: number | null} = {}): (target: Component) => void => {
-    return (target: Component) => {
+export const Register = (override: {name?: string, apiLevel?: number | null} = {}): (target: ComponentClass) => void => {
+    return (target: ComponentClass) => {
         if(target.prototype instanceof Controller || target.prototype instanceof Databox
             || target.prototype instanceof DataboxFamily){
 

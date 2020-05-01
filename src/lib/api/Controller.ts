@@ -5,13 +5,13 @@ Copyright(c) Luca Scaringella
  */
 
 import RequestBag         from './RequestBag';
-// noinspection TypeScriptPreferShortImport
+// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig} from "../main/config/definitions/parts/controllerConfig";
 import Bag                from "./Bag";
 import BackErrorBag       from "./BackErrorBag";
-import {Component}        from '../main/config/definitions/parts/component';
-import ConfigBuildError   from '../main/config/manager/configBuildError';
-import {extractComponentName} from '../main/utils/componentUtils';
+import {ComponentClass}        from '../main/config/definitions/parts/componentClass';
+import ConfigBuildError        from '../main/config/manager/configBuildError';
+import Component               from './Component';
 
 /**
  * The controller is one of the main concepts of zation.
@@ -25,36 +25,15 @@ import {extractComponentName} from '../main/utils/componentUtils';
  * controller because it is much easier to use and provides the
  * functionality to keep the data up to date in real time.
  */
-export default class Controller {
+export default class Controller extends Component {
     /**
      * @description
      * The prepared bag from the worker.
      */
     protected bag: Bag;
 
-    /**
-     * @description
-     * The identifier of the Controller from the app config.
-     */
-    protected readonly identifier: string;
-
-    /**
-     * @description
-     * The name of the Controller.
-     */
-    protected readonly name: string;
-
-    /**
-     * @description
-     * The API level of the controller from the app config.
-     * It can be undefined if no API level is defined.
-     */
-    protected readonly apiLevel: number | undefined;
-
     constructor(identifier: string, bag: Bag, apiLevel: number | undefined) {
-        this.identifier = identifier;
-        this.name = extractComponentName(identifier);
-        this.apiLevel = apiLevel;
+        super(identifier,apiLevel);
         this.bag = bag;
     }
 
@@ -128,7 +107,7 @@ export default class Controller {
      * @Controller.Config({});
      */
     public static Config(controllerConfig: ControllerConfig) {
-        return (target: Component) => {
+        return (target: ComponentClass) => {
             if(target.prototype instanceof Controller) {
                 target.config = controllerConfig;
             }

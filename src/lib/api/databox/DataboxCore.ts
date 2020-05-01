@@ -19,9 +19,9 @@ import {InputConsumeFunction}             from "../../main/input/inputClosureCre
 import ErrorUtils                         from "../../main/utils/errorUtils";
 import {DbAccessCheckFunction}            from "../../main/databox/databoxAccessHelper";
 import NoDataAvailableError               from "../../main/databox/noDataAvailable";
-import {Component}                        from "../../main/config/definitions/parts/component";
+import {ComponentClass}                   from "../../main/config/definitions/parts/componentClass";
 import ConfigBuildError                   from "../../main/config/manager/configBuildError";
-import {extractComponentName}             from '../../main/utils/componentUtils';
+import Component                          from '../Component';
 
 /**
  * If you always want to present the most recent data on the client,
@@ -36,24 +36,12 @@ import {extractComponentName}             from '../../main/utils/componentUtils'
  * Additionally, it keeps the network traffic low because it
  * only sends the changed data information, not the whole data again.
  */
-export default abstract class DataboxCore {
+export default abstract class DataboxCore extends Component {
     /**
      * @description
      * The prepared bag from the worker.
      */
     protected bag: Bag;
-
-    /**
-     * @description
-     * The identifier of the Databox from the app config.
-     */
-    protected readonly identifier: string;
-
-    /**
-     * @description
-     * The name of the Databox.
-     */
-    protected readonly name: string;
 
     /**
      * @description
@@ -68,21 +56,12 @@ export default abstract class DataboxCore {
     private readonly _sendErrorDescription: boolean;
     private readonly _preparedTokenSessionKey: string;
 
-    /**
-     * @description
-     * The API level of the DataCollection from the app config.
-     * It can be undefined if no API level is defined.
-     */
-    protected readonly apiLevel: number | undefined;
-
     private readonly _parallelFetch: boolean;
     private readonly _initInputConsumer: InputConsumeFunction;
     private readonly _fetchInputConsumer: InputConsumeFunction;
 
     protected constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
-        this.identifier = identifier;
-        this.name = extractComponentName(identifier);
-        this.apiLevel = apiLevel;
+        super(identifier,apiLevel);
         this.bag = bag;
         this._dbPreparedData = dbPreparedData;
         this._sendErrorDescription = this.bag.getMainConfig().sendErrorDescription;
@@ -293,7 +272,7 @@ export default abstract class DataboxCore {
      * @Databox.Config({});
      */
     public static Config(databoxConfig: DataboxConfig) {
-        return (target: Component) => {
+        return (target: ComponentClass) => {
             if(target.prototype instanceof DataboxCore) {
                 target.config = databoxConfig;
             }

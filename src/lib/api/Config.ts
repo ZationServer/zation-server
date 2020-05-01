@@ -23,7 +23,7 @@ import {DataboxClassDef}                                  from "../main/config/d
 import {createTokenCheckFunction, TokenCheckFunction}     from "../main/access/accessOptions";
 import DataboxFamily                        from "./databox/DataboxFamily";
 import Databox                              from "./databox/Databox";
-import {Component}                          from "../main/config/definitions/parts/component";
+import {ComponentClass}                     from "../main/config/definitions/parts/componentClass";
 import {ZationToken}                        from "../main/constants/internal";
 import {registerBagExtension,BagExtension}  from 'zation-bag-extension';
 
@@ -170,7 +170,7 @@ export default class Config
      * @param componentClass
      * @param apiLevel
      */
-    static registerComponent(identifier: string, componentClass: Component, apiLevel?: number)
+    static registerComponent(identifier: string, componentClass: ComponentClass, apiLevel?: number)
     {
         let type;
         let pType;

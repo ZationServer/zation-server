@@ -4,8 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {Component}               from "../main/config/definitions/parts/component";
 import {checkComponentName, parseComponentClassName} from '../main/utils/componentUtils';
+import {ComponentClass}          from "../main/config/definitions/parts/componentClass";
 import Config                    from './Config';
 import CustomChannel             from './CustomChannel';
 
@@ -31,7 +31,7 @@ export default class Router {
 
     private readonly _route: string;
 
-    private readonly _components: {component: Component,override:
+    private readonly _components: {component: ComponentClass,override:
             {name?: string, apiLevel?: number | null}}[] = [];
     private readonly _customChs: {ch: CustomChannel,override: {name?: string}}[] = [];
 
@@ -85,7 +85,7 @@ export default class Router {
      * @param override
      * The parameter to override the parsed name and API level from the class name.
      */
-    use(component: Component, override?: {name?: string, apiLevel?: number | null})
+    use(component: ComponentClass, override?: {name?: string, apiLevel?: number | null})
     /**
      * Attaches the custom channel to the Router.
      * Notice that each custom channel attached to this Router
@@ -95,7 +95,7 @@ export default class Router {
      * @param override
      */
     use(customChannel: CustomChannel, override?: {name?: string})
-    use(value: Component | Router | CustomChannel, override: {name?: string, apiLevel?: number | null} = {}) {
+    use(value: ComponentClass | Router | CustomChannel, override: {name?: string, apiLevel?: number | null} = {}) {
         if(value instanceof Router){
             this._innerRouters.push(value);
         }
