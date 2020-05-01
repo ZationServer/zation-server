@@ -7,6 +7,7 @@ Copyright(c) Luca Scaringella
 import {Component}               from "../main/config/definitions/parts/component";
 import {parseComponentClassName} from '../main/utils/componentUtils';
 import Config                    from './Config';
+import CustomChannel             from './CustomChannel';
 
 /**
  * @description
@@ -32,6 +33,7 @@ export default class Router {
 
     private readonly _components: {component: Component,override:
             {name?: string, apiLevel?: number | null}}[] = [];
+    private readonly _customChs: {ch: CustomChannel,override: {name?: string}}[] = [];
 
     private readonly _innerRouters: Router[] = [];
 
@@ -84,9 +86,21 @@ export default class Router {
      * The parameter to override the parsed name and API level from the class name.
      */
     use(component: Component, override?: {name?: string, apiLevel?: number | null})
-    use(value: Component | Router, override: {name?: string, apiLevel?: number | null} = {}) {
+    /**
+     * Attaches the custom channel to the Router.
+     * Notice that each custom channel attached to this Router
+     * needs to have a unique name.
+     * You optionally can override the name with the second parameter.
+     * @param customChannel
+     * @param override
+     */
+    use(customChannel: CustomChannel, override?: {name?: string})
+    use(value: Component | Router | CustomChannel, override: {name?: string, apiLevel?: number | null} = {}) {
         if(value instanceof Router){
             this._innerRouters.push(value);
+        }
+        else if(value instanceof CustomChannel){
+            this._customChs.push({ch: value,override});
         }
         else {
             this._components.push({component: value,override});
@@ -109,6 +123,7 @@ export default class Router {
      */
     _register(tmpRoute: string = '') {
         tmpRoute += this.route;
+
         const comLength = this._components.length;
         for(let i = 0; i < comLength; i++) {
             const tmpComponent = this._components[i];
@@ -122,6 +137,17 @@ export default class Router {
             }
             Config.registerComponent(tmpRoute + name,tmpComponent.component,apiLevel);
         }
+
+        const customChLength = this._customChs.length;
+        for(let i = 0; i < customChLength; i++){
+            const customChannel = this._customChs[i];
+            Config.registerCustomCh(
+                tmpRoute +
+                (customChannel.override.name !== undefined ? customChannel.override.name : customChannel.ch.name),
+                customChannel.ch.definition
+            );
+        }
+
         const routersLength = this._innerRouters.length;
         for(let i = 0; i < routersLength; i++) {
             this._innerRouters[i]._register(tmpRoute);

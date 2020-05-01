@@ -61,6 +61,7 @@ import {$extends}                   from './lib/api/input/Extends';
 import {$single}                    from './lib/api/input/Single';
 import {Events}                     from './lib/main/config/definitions/parts/events';
 import {Middleware}                 from './lib/main/config/definitions/parts/middleware';
+import CustomChannel                from './lib/api/CustomChannel';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -84,6 +85,7 @@ export {
     ParamInput,
     NoMoreDataAvailableError,
     NoDataAvailableError,
+    CustomChannel,
     DataboxFamily,
     DataboxFamilyContainer,
     Databox,

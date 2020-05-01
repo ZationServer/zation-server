@@ -71,28 +71,6 @@ export default class Config
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * This method defines a new custom channel in the app config.
-     * Watch out that you don't use an identifier that is already defined in the custom channels of the app config.
-     * If you use this method in another file as the app config,
-     * make sure that you import this file in app config.
-     * @example
-     * Config.defineCustomCh('myCustomCh',{
-     *    subscribeAccess: 'allAuth',
-     * });
-     * @param identifier
-     * @param customCh
-     */
-    static defineCustomCh(identifier: string,customCh: CustomChannelConfig) {
-        if(!Config.tmpCustomChs.hasOwnProperty(identifier)){
-            Config.tmpCustomChs[identifier] = customCh;
-        }
-        else {
-            throw new ConfigBuildError(`The custom channel: ${identifier} is already defined.`);
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
      * Merge zation channel configs to the app config.
      * If you use this method in another file as the app config,
      * make sure that you import this file in app config.
@@ -106,6 +84,28 @@ export default class Config
      */
     static defineZationChannels(config: ZationChannelsConfig) {
         Config.tmpZationChannels.push(config);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * This method registers a new custom channel in the app config.
+     * Watch out that you don't use an identifier that is already defined in the custom channels of the app config.
+     * If you use this method in another file as the app config,
+     * make sure that you import this file in app config.
+     * @example
+     * Config.registerCustomCh('myCustomCh',{
+     *    subscribeAccess: 'allAuth',
+     * });
+     * @param identifier
+     * @param customCh
+     */
+    static registerCustomCh(identifier: string, customCh: CustomChannelConfig) {
+        if(!Config.tmpCustomChs.hasOwnProperty(identifier)){
+            Config.tmpCustomChs[identifier] = customCh;
+        }
+        else {
+            throw new ConfigBuildError(`The custom channel: ${identifier} is already defined.`);
+        }
     }
 
     // noinspection JSUnusedGlobalSymbols
