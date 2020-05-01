@@ -11,6 +11,7 @@ import Bag                from "./Bag";
 import BackErrorBag       from "./BackErrorBag";
 import {Component}        from '../main/config/definitions/parts/component';
 import ConfigBuildError   from '../main/config/manager/configBuildError';
+import {extractComponentName} from '../main/utils/componentUtils';
 
 /**
  * The controller is one of the main concepts of zation.
@@ -33,9 +34,15 @@ export default class Controller {
 
     /**
      * @description
-     * The identifier of the controller from the app config.
+     * The identifier of the Controller from the app config.
      */
     protected readonly identifier: string;
+
+    /**
+     * @description
+     * The name of the Controller.
+     */
+    protected readonly name: string;
 
     /**
      * @description
@@ -46,6 +53,7 @@ export default class Controller {
 
     constructor(identifier: string, bag: Bag, apiLevel: number | undefined) {
         this.identifier = identifier;
+        this.name = extractComponentName(identifier);
         this.apiLevel = apiLevel;
         this.bag = bag;
     }

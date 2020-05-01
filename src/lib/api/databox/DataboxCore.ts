@@ -21,6 +21,7 @@ import {DbAccessCheckFunction}            from "../../main/databox/databoxAccess
 import NoDataAvailableError               from "../../main/databox/noDataAvailable";
 import {Component}                        from "../../main/config/definitions/parts/component";
 import ConfigBuildError                   from "../../main/config/manager/configBuildError";
+import {extractComponentName}             from '../../main/utils/componentUtils';
 
 /**
  * If you always want to present the most recent data on the client,
@@ -50,6 +51,12 @@ export default abstract class DataboxCore {
 
     /**
      * @description
+     * The name of the Databox.
+     */
+    protected readonly name: string;
+
+    /**
+     * @description
      * The Databox token version indicates the version of the data tokens.
      * You should change that version whenever you make a significant change in the session data structure.
      * Than this prevent you for old tokens with old structures.
@@ -74,6 +81,7 @@ export default abstract class DataboxCore {
 
     protected constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
         this.identifier = identifier;
+        this.name = extractComponentName(identifier);
         this.apiLevel = apiLevel;
         this.bag = bag;
         this._dbPreparedData = dbPreparedData;

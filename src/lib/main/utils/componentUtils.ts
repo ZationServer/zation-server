@@ -47,3 +47,12 @@ export function checkComponentName(name: string) {
     if(name.indexOf('/') !== -1)
         throw new ConfigBuildError(`The component class name: ${name} can not contain slashes.`);
 }
+
+/**
+ * Returns the component name from the identifier.
+ * @param identifier
+ */
+export function extractComponentName(identifier: string) {
+    const parts = identifier.split('/');
+    return parts[parts.length -1];
+}
