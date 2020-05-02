@@ -36,11 +36,6 @@ import Component, {ComponentClass}        from '../Component';
  * only sends the changed data information, not the whole data again.
  */
 export default abstract class DataboxCore extends Component {
-    /**
-     * @description
-     * The prepared bag from the worker.
-     */
-    protected bag: Bag;
 
     /**
      * @description
@@ -60,8 +55,7 @@ export default abstract class DataboxCore extends Component {
     private readonly _fetchInputConsumer: InputConsumeFunction;
 
     protected constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
-        super(identifier,apiLevel);
-        this.bag = bag;
+        super(identifier,apiLevel,bag);
         this._dbPreparedData = dbPreparedData;
         this._sendErrorDescription = this.bag.getMainConfig().sendErrorDescription;
 
@@ -191,18 +185,9 @@ export default abstract class DataboxCore extends Component {
 
     /**
      * @description
-     * This property is used for getting the configuration of this DataCollection.
+     * This property is used for getting the configuration of this Databox.
      */
     public static readonly config: DataboxConfig = {};
-
-    /**
-     * **Can be overridden.**
-     * @description
-     * Gets invokes when the zation system is creating instance of the DataCollection (in worker start).
-     * @param bag
-     */
-    initialize(bag: Bag): Promise<void> | void {
-    }
 
     // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
     /**

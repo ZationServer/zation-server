@@ -9,7 +9,7 @@ import RequestBag         from './RequestBag';
 import {ControllerConfig} from "../main/config/definitions/parts/controllerConfig";
 import Bag                from "./Bag";
 import BackErrorBag       from "./BackErrorBag";
-import ConfigBuildError        from '../main/config/manager/configBuildError';
+import ConfigBuildError   from '../main/config/manager/configBuildError';
 import Component, {ComponentClass} from './Component';
 
 /**
@@ -25,15 +25,9 @@ import Component, {ComponentClass} from './Component';
  * functionality to keep the data up to date in real time.
  */
 export default class Controller extends Component {
-    /**
-     * @description
-     * The prepared bag from the worker.
-     */
-    protected bag: Bag;
 
     constructor(identifier: string, bag: Bag, apiLevel: number | undefined) {
-        super(identifier,apiLevel);
-        this.bag = bag;
+        super(identifier,apiLevel,bag);
     }
 
     /**
@@ -41,14 +35,6 @@ export default class Controller extends Component {
      * This property is used for getting the configuration of this controller.
      */
     public static readonly config: ControllerConfig = {};
-
-    /**
-     * @description
-     * Gets invokes when the zation system is creating instance of the controller (in worker start).
-     * @param bag
-     */
-    initialize(bag: Bag): Promise<void> | void {
-    }
 
     /**
      * @description
