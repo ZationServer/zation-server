@@ -74,7 +74,7 @@ export interface Middleware {
 }
 
 export interface PrecompiledMiddleware extends Middleware{
-    middlewareAuthenticate ?: MiddlewareAuthenticationFunction;
-    middlewareSocket?: MiddlewareSocketFunction;
-    middlewarePanelAuth?: MiddlewarePanelAuthFunction;
+    authenticate ?: MiddlewareAuthenticationFunction;
+    socket?: MiddlewareSocketFunction;
+    panelAuth?: MiddlewarePanelAuthFunction;
 }

@@ -160,7 +160,7 @@ export default class PanelEngine
         }
         if(!foundUser){
             const middlewareRes = (await MiddlewareUtils.checkMiddleware
-            (this.zc.middleware.middlewarePanelAuth,false,username,password));
+            (this.zc.middleware.panelAuth,false,username,password));
             return typeof middlewareRes === 'boolean'? middlewareRes : false;
         }
         return foundUser;
