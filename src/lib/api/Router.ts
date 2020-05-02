@@ -5,9 +5,9 @@ Copyright(c) Luca Scaringella
  */
 
 import {checkComponentName, parseComponentClassName} from '../main/utils/componentUtils';
-import {ComponentClass}          from "../main/config/definitions/parts/componentClass";
 import Config                    from './Config';
 import CustomChannel             from './CustomChannel';
+import {ComponentClass}          from './Component';
 
 /**
  * @description

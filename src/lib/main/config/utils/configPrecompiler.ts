@@ -26,7 +26,7 @@ import ZationConfig                from "../manager/zationConfig";
 // noinspection TypeScriptPreferShortImport
 import {ControllerConfig}                                     from "../definitions/parts/controllerConfig";
 import {ControllerClass}                                      from "../../../api/Controller";
-import {DataboxClassDef, DataboxConfig}                       from "../definitions/parts/databoxConfig";
+import {DataboxConfig}                                        from "../definitions/parts/databoxConfig";
 import DbConfigUtils                                          from "../../databox/dbConfigUtils";
 import {PrecompiledEvents, Events}                            from '../definitions/parts/events';
 import FuncUtils                                              from '../../utils/funcUtils';
@@ -37,6 +37,7 @@ import {inputConfigTranslateSymbol, isInputConfigTranslatable}                  
 import {isModelConfigTranslatable, modelConfigTranslateSymbol, resolveModelConfigTranslatable} from '../../../api/configTranslatable/modelConfigTranslatable';
 import {AnyFunction}                                                                           from '../../utils/typeUtils';
 import {setValueReplacer}                                                                      from '../../utils/valueReplacer';
+import {AnyDataboxClass}                                                                       from '../../../api/databox/AnyDataboxClass';
 
 export interface ModelPreparationMem extends Processable{
     _optionalInfo: {isOptional: boolean,defaultValue: any}
@@ -535,7 +536,7 @@ export default class ConfigPrecompiler
         const databoxes = this.configs.appConfig.databoxes;
         for(const k in databoxes) {
             if(databoxes.hasOwnProperty(k)) {
-                Iterator.iterateCompDefinition<DataboxClassDef>(databoxes[k],(databoxClass) => {
+                Iterator.iterateCompDefinition<AnyDataboxClass>(databoxes[k],(databoxClass) => {
                     const config: DataboxConfig = databoxClass.config;
                     //set the defaults
                     ObjectUtils.mergeTwoObjects(config,this.databoxDefaults,false);

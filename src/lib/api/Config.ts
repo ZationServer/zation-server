@@ -19,18 +19,18 @@ import ConfigBuildError from "../main/config/manager/configBuildError";
 import {
     ControllerConfig
 } from "../main/config/definitions/parts/controllerConfig";
-import {DataboxClassDef}                                  from "../main/config/definitions/parts/databoxConfig";
 import {createTokenCheckFunction, TokenCheckFunction}     from "../main/access/accessOptions";
 import DataboxFamily                        from "./databox/DataboxFamily";
 import Databox                              from "./databox/Databox";
-import {ComponentClass}                     from "../main/config/definitions/parts/componentClass";
 import {ZationToken}                        from "../main/constants/internal";
 import {registerBagExtension,BagExtension}  from 'zation-bag-extension';
+import {ComponentClass}                     from './Component';
+import {AnyDataboxClass}                    from './databox/AnyDataboxClass';
 
 export default class Config
 {
     private static tmpControllers: Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>> = {};
-    private static tmpDataboxes: Record<string,DataboxClassDef | ApiLevelSwitch<DataboxClassDef>> = {};
+    private static tmpDataboxes: Record<string,AnyDataboxClass | ApiLevelSwitch<AnyDataboxClass>> = {};
     private static tmpCustomChs: Record<string,CustomChannelConfig> = {};
     private static tmpZationChannels: ZationChannelsConfig[] = [];
 
@@ -148,7 +148,7 @@ export default class Config
      * @param databoxClass
      * @param apiLevel
      */
-    static registerDatabox(identifier: string, databoxClass: DataboxClassDef, apiLevel?: number) {
+    static registerDatabox(identifier: string, databoxClass: AnyDataboxClass, apiLevel?: number) {
         Config.registerComponent(identifier,databoxClass,apiLevel);
     }
 

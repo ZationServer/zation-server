@@ -5,11 +5,11 @@ Copyright(c) Luca Scaringella
  */
 
 import Config           from "../../Config";
-import {ComponentClass} from "../../../main/config/definitions/parts/componentClass";
 import Controller       from "../../Controller";
 import Databox          from "../../databox/Databox";
 import DataboxFamily    from "../../databox/DataboxFamily";
 import ConfigBuildError from "../../../main/config/manager/configBuildError";
+import {ComponentClass} from '../../Component';
 import {checkComponentName, parseComponentClassName} from '../../../main/utils/componentUtils';
 
 /**

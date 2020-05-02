@@ -5,8 +5,6 @@ Copyright(c) Luca Scaringella
  */
 
 import {AuthAccessConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
-import {DataboxClass}                                              from "../../../../api/databox/Databox";
-import {DataboxFamilyClass}                                        from "../../../../api/databox/DataboxFamily";
 import Bag                                                         from "../../../../api/Bag";
 import {DataboxInfo}                                               from "../../../databox/dbDefinitions";
 import ZSocket                                                     from "../../../internalApi/zSocket";
@@ -158,5 +156,3 @@ export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, 
      */
     maxSocketInputChannels?: number;
 }
-
-export type DataboxClassDef = DataboxClass | DataboxFamilyClass

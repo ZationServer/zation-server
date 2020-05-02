@@ -5,6 +5,8 @@ Copyright(c) Luca Scaringella
  */
 
 import {extractComponentName} from '../main/utils/componentUtils';
+import {ControllerClass}      from './Controller';
+import {AnyDataboxClass}      from './databox/AnyDataboxClass';
 
 export default class Component {
 
@@ -33,3 +35,5 @@ export default class Component {
         this.apiLevel = apiLevel;
     }
 }
+
+export type ComponentClass = ControllerClass | AnyDataboxClass;

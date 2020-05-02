@@ -11,13 +11,14 @@ import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction}  from "../apiLeve
 import DataboxCore, {DbPreparedData}                            from "../../api/databox/DataboxCore";
 import ZationWorker                                           = require("../../core/zationWorker");
 import {ClientErrorName}                                        from "../constants/clientErrorName";
-import {DataboxClassDef, DataboxConfig}                         from "../config/definitions/parts/databoxConfig";
+import {DataboxConfig}                                          from "../config/definitions/parts/databoxConfig";
 import DataboxFamily, {DataboxFamilyClass}                      from "../../api/databox/DataboxFamily";
 import MemberCheckerUtils                                       from "../member/memberCheckerUtils";
 import Databox, {DataboxClass}                                  from "../../api/databox/Databox";
 import InputClosureCreator                                      from "../input/inputClosureCreator";
 import DataboxAccessHelper                                      from "./databoxAccessHelper";
 import DbConfigUtils                                            from "./dbConfigUtils";
+import {AnyDataboxClass}                                        from '../../api/databox/AnyDataboxClass';
 
 export const databoxIsFamilySymbol                            = Symbol();
 export const databoxInstanceSymbol                            = Symbol();
@@ -113,7 +114,7 @@ export default class DataboxPrepare
      * @param identifier
      * @param definition
      */
-    private addDatabox(identifier: string,definition: DataboxClassDef | ApiLevelSwitch<DataboxClassDef>): void
+    private addDatabox(identifier: string,definition: AnyDataboxClass | ApiLevelSwitch<AnyDataboxClass>): void
     {
         if(typeof definition === 'function') {
             const preparedDataboxData = this.processDatabox(definition,identifier);
@@ -138,7 +139,7 @@ export default class DataboxPrepare
      * @param identifier
      * @param apiLevel
      */
-    private processDatabox(databox: DataboxClassDef, identifier: string, apiLevel?: number): DataboxCore
+    private processDatabox(databox: AnyDataboxClass, identifier: string, apiLevel?: number): DataboxCore
     {
         const config: DataboxConfig = databox.config;
 

@@ -19,9 +19,8 @@ import {InputConsumeFunction}             from "../../main/input/inputClosureCre
 import ErrorUtils                         from "../../main/utils/errorUtils";
 import {DbAccessCheckFunction}            from "../../main/databox/databoxAccessHelper";
 import NoDataAvailableError               from "../../main/databox/noDataAvailable";
-import {ComponentClass}                   from "../../main/config/definitions/parts/componentClass";
 import ConfigBuildError                   from "../../main/config/manager/configBuildError";
-import Component                          from '../Component';
+import Component, {ComponentClass}        from '../Component';
 
 /**
  * If you always want to present the most recent data on the client,

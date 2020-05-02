@@ -9,9 +9,8 @@ import RequestBag         from './RequestBag';
 import {ControllerConfig} from "../main/config/definitions/parts/controllerConfig";
 import Bag                from "./Bag";
 import BackErrorBag       from "./BackErrorBag";
-import {ComponentClass}        from '../main/config/definitions/parts/componentClass';
 import ConfigBuildError        from '../main/config/manager/configBuildError';
-import Component               from './Component';
+import Component, {ComponentClass} from './Component';
 
 /**
  * The controller is one of the main concepts of zation.

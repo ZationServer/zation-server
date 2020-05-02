@@ -25,7 +25,7 @@ import {modelNameSymbol, modelOptionalSymbol, modelPrototypeSymbol}             
 import {AnyOfModel, ArrayModel, InputConfig, Model, ObjectModel, ParamInput, ValueModel} from '../definitions/parts/inputConfig';
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig}               from '../definitions/parts/controllerConfig';
-import {DataboxClassDef, DataboxConfig} from '../definitions/parts/databoxConfig';
+import {DataboxConfig}                  from '../definitions/parts/databoxConfig';
 import DataboxFamily                    from '../../../api/databox/DataboxFamily';
 import Databox                          from '../../../api/databox/Databox';
 import {AuthAccessConfig, VersionAccessConfig} from '../definitions/parts/configComponents';
@@ -37,6 +37,7 @@ import {inputConfigTranslateSymbol, isInputConfigTranslatable} from '../../../ap
 import {isReusableModel}                                       from '../../models/reusableModelCreator';
 import {processAnyOfKey}                                       from '../../models/anyOfModelUtils';
 import AuthController                                          from '../../../api/AuthController';
+import {AnyDataboxClass}                                       from '../../../api/databox/AnyDataboxClass';
 
 export interface ModelCheckedMem {
     _checked: boolean
@@ -507,7 +508,7 @@ export default class ConfigChecker
             const databoxes = this.zcLoader.appConfig.databoxes;
             for (let cId in databoxes) {
                 if (databoxes.hasOwnProperty(cId)) {
-                    Iterator.iterateCompDefinition<DataboxClassDef>(databoxes[cId],(databoxClass, apiLevel) =>{
+                    Iterator.iterateCompDefinition<AnyDataboxClass>(databoxes[cId],(databoxClass, apiLevel) =>{
                         if(apiLevel !== undefined && isNaN(parseInt(apiLevel))) {
                             this.ceb.addError(new ConfigError(ConfigNames.App,
                                 `Databox: '${cId}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
@@ -554,7 +555,7 @@ export default class ConfigChecker
         this.checkVersionAccessConfig(config, target);
     }
 
-    private checkDatabox(cdb: DataboxClassDef, target: Target) {
+    private checkDatabox(cdb: AnyDataboxClass, target: Target) {
         if(cdb.prototype instanceof DataboxFamily || cdb.prototype instanceof Databox) {
             this.checkDataboxConfig(cdb.config,target);
         }

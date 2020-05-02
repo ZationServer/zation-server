@@ -9,13 +9,14 @@ import {ApiLevelSwitch}       from "../../../apiLevel/apiLevelUtils";
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig}     from "../parts/controllerConfig";
 import {BackgroundTask}       from "../parts/backgroundTask";
-import {DataboxClassDef, DataboxConfig} from "../parts/databoxConfig";
+import {DataboxConfig}        from "../parts/databoxConfig";
 import {
     CustomChannelConfig, CustomCh, ZationChannelsConfig, PreCompiledCustomChannelConfig
 } from "../parts/channelsConfig";
 import {Events, PrecompiledEvents}         from '../parts/events';
 import {Middleware, PrecompiledMiddleware} from '../parts/middleware';
 import {UserGroupsConfig}                  from '../parts/userGroupsConfig';
+import {AnyDataboxClass} from '../../../../api/databox/AnyDataboxClass';
 
 export interface AppConfig
 {
@@ -94,7 +95,7 @@ export interface AppConfig
      *     chat: ChatDatabox,
      * }
      */
-    databoxes?: Record<string,DataboxClassDef | ApiLevelSwitch<DataboxClassDef>>;
+    databoxes?: Record<string,AnyDataboxClass | ApiLevelSwitch<AnyDataboxClass>>;
 
     /**
      * With this property, you can define a default Databox configuration
