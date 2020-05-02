@@ -91,7 +91,7 @@ export default class DataboxHandler
 
         //access and id check
         if(isFamily){
-            await (db as DataboxFamily)._checkMemberIsValid(input.m as string);
+            await (db as DataboxFamily)._isMember(input.m as string);
             dbInfo.member = (input.m as string);
         }
         await db._checkAccess(socket,dbInfo);

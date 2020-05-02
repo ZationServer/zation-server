@@ -9,7 +9,7 @@ import {DataboxConfig}               from "../../main/config/definitions/parts/d
 import DataboxCore, {DbPreparedData} from "./DataboxCore";
 import Bag                           from "../Bag";
 import UpSocket, {RespondFunction}   from "../../main/sc/socket";
-import {MemberValidChecker}          from "../../main/member/memberValidCheckerUtils";
+import {IsMemberChecker}             from "../../main/member/memberCheckerUtils";
 import {ScExchange}                  from "../../main/sc/scServer";
 import {
     CudOperation,
@@ -77,7 +77,7 @@ const defaultSymbol                               = Symbol();
  * You can override these methods:
  * - initialize
  * - fetch
- * - isMemberValid
+ * - isMember
  *
  * events:
  * - beforeInsert
@@ -104,7 +104,7 @@ export default class DataboxFamily extends DataboxCore {
     private readonly _socketMembers: Map<UpSocket,Set<string>> = new Map<UpSocket, Set<string>>();
     private readonly _lastCudData: Map<string,{timestamp: number,id: string}> = new Map();
     private readonly _unregisterMemberTimeoutMap: Map<string,Timeout> = new Map();
-    private readonly _memberValidCheck: MemberValidChecker;
+    private readonly _isMemberCheck: IsMemberChecker;
     private readonly _dbEventPreFix: string;
     private readonly _scExchange: ScExchange;
     private readonly _workerFullId: string;
@@ -116,9 +116,9 @@ export default class DataboxFamily extends DataboxCore {
 
     static [databoxInstanceSymbol]: DataboxFamily;
 
-    constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, memberValidCheck: MemberValidChecker, apiLevel: number | undefined) {
+    constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, isMemberCheck: IsMemberChecker, apiLevel: number | undefined) {
         super(identifier,bag,dbPreparedData,apiLevel);
-        this._memberValidCheck = memberValidCheck;
+        this._isMemberCheck = isMemberCheck;
         this._scExchange = bag.getWorker().scServer.exchange;
         this._workerFullId = bag.getWorker().getFullWorkerId();
         this._maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
@@ -286,12 +286,12 @@ export default class DataboxFamily extends DataboxCore {
 
     /**
      * **Not override this method.**
-     * Member valid check is used internally.
+     * Is member check is used internally.
      * @param member
      * @private
      */
-    async _checkMemberIsValid(member: string): Promise<void> {
-        await this._memberValidCheck(member);
+    _isMember(member: string): Promise<void> {
+        return this._isMemberCheck(member);
     }
 
     /**
@@ -970,15 +970,18 @@ export default class DataboxFamily extends DataboxCore {
     // noinspection JSUnusedGlobalSymbols
     /**
      * **Can be overridden.**
-     * Check if the member is valid for this DataboxFamily.
-     * Use this check only for security reason, for example, checking the format of the member.
-     * To mark the member as invalid, you only need to return an object (that can be error information) or false.
-     * Also if you throw an error, the member is marked as invalid.
-     * If you want to mark the member as valid, you have to return nothing or a true.
-     * @param member
+     * Check if it is a member of the DataboxFamily.
+     * Use this check only for security reason, for example,
+     * checking the format of the value.
+     * To mark the value as invalid,
+     * you only need to return an object (that can be error information) or false.
+     * Also if you throw an error, the value is marked as invalid.
+     * If you want to mark the value as a member,
+     * you have to return nothing or a true.
+     * @param value
      * @param bag
      */
-    public isMemberValid(member: string, bag: Bag): Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void {
+    public isMember(value: string, bag: Bag): Promise<boolean | Record<string,any> | void> | boolean | Record<string,any> | void {
     }
 
     /**
@@ -1130,7 +1133,7 @@ DataboxFamily.prototype['beforeDelete'][defaultSymbol] = true;
 export interface DataboxFamilyClass {
     config: DataboxConfig;
 
-    new(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, memberValidCheck: MemberValidChecker, apiLevel: number | undefined): DataboxFamily;
+    new(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, memberValidCheck: IsMemberChecker, apiLevel: number | undefined): DataboxFamily;
 
     prototype: any;
 

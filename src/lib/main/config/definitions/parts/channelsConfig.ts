@@ -9,7 +9,7 @@ import Bag                  from "../../../../api/Bag";
 import PubData              from "../../../internalApi/pubData";
 import CChFamilyInfo        from "../../../internalApi/cChFamilyInfo";
 import CChInfo              from "../../../internalApi/cChInfo";
-import {MemberValidConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
+import {IsMemberConfig, SystemAccessConfig, VersionAccessConfig}    from "./configComponents";
 import {AccessConfigValue}                                          from '../../../access/accessOptions';
 import {Notable}                                                    from '../../../../api/Notable';
 
@@ -280,7 +280,7 @@ export type CustomChFamily = (BaseCustomChannelConfig<
     CChannelFamilyOnUnsubFunction,
     CChannelFamilyClientPubAccessFunction,
     CChannelFamilySubAccessFunction
-    >) & MemberValidConfig;
+    >) & IsMemberConfig;
 
 export type CustomCh = BaseCustomChannelConfig<
     CChannelOnClientPubFunction,

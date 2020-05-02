@@ -13,7 +13,7 @@ import ZationWorker                                           = require("../../c
 import {ClientErrorName}                                        from "../constants/clientErrorName";
 import {DataboxClassDef, DataboxConfig}                         from "../config/definitions/parts/databoxConfig";
 import DataboxFamily, {DataboxFamilyClass}                      from "../../api/databox/DataboxFamily";
-import MemberValidCheckerUtils                                  from "../member/memberValidCheckerUtils";
+import MemberCheckerUtils                                       from "../member/memberCheckerUtils";
 import Databox, {DataboxClass}                                  from "../../api/databox/Databox";
 import InputClosureCreator                                      from "../input/inputClosureCreator";
 import DataboxAccessHelper                                      from "./databoxAccessHelper";
@@ -163,7 +163,7 @@ export default class DataboxPrepare
         else if(databox.prototype instanceof DataboxFamily){
             dbInstance = new (databox as DataboxFamilyClass)
             (identifier,this.worker.getPreparedBag(),dbPreparedData,
-                MemberValidCheckerUtils.createMemberValidChecker(databox.prototype.isMemberValid,this.bag)
+                MemberCheckerUtils.createIsMemberChecker(databox.prototype.isMember,this.bag)
                 ,apiLevel);
             dbInstance[databoxIsFamilySymbol] = true;
         }

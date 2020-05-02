@@ -15,7 +15,7 @@ import {
 import ZationConfigFull              from "../config/manager/zationConfigFull";
 import FuncUtils, {EventInvokerSync} from "../utils/funcUtils";
 import Bag                           from "../../api/Bag";
-import MemberValidCheckerUtils, {MemberValidChecker}            from "../member/memberValidCheckerUtils";
+import MemberCheckerUtils, {IsMemberChecker}                    from "../member/memberCheckerUtils";
 import ChAccessHelper, {ChPubAccessChecker, ChSubAccessChecker} from "./chAccessHelper";
 import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
 import {ErrorEventSingleton}                                    from '../error/errorEventSingleton';
@@ -34,7 +34,7 @@ export interface CustomChStorage extends Events, ChStorage {
 }
 
 export interface CustomChFamilyStorage extends CustomChStorage {
-    memberValidChecker: MemberValidChecker
+    isMemberChecker: IsMemberChecker
 }
 
 export interface ChStorage extends Events {
@@ -127,7 +127,7 @@ export class ChannelPrepare {
                         config = this.customChannels[identifier][0];
                         this.infoCustomChFamilies[identifier] = {
                             ...this.processCustomChannel(identifier,config,bag),
-                            memberValidChecker: MemberValidCheckerUtils.createMemberValidChecker((config as CustomChFamily).memberValid,bag)
+                            isMemberChecker: MemberCheckerUtils.createIsMemberChecker((config as CustomChFamily).isMember,bag)
                         }
                     }
                     else {

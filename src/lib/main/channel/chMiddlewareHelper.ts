@@ -90,7 +90,7 @@ export default class ChMiddlewareHelper
         try {
             ChMiddlewareHelper.checkVersionSystemAccess(socket,preChInfo);
             if(isCustomChFamily){
-                await (preChInfo as CustomChFamilyStorage).memberValidChecker((member as string));
+                await (preChInfo as CustomChFamilyStorage).isMemberChecker((member as string));
             }
         }
         catch (e) {
@@ -159,7 +159,7 @@ export default class ChMiddlewareHelper
         try {
             ChMiddlewareHelper.checkVersionSystemAccess(socket,preChInfo);
             if(isCustomChFamily){
-                await (preChInfo as CustomChFamilyStorage).memberValidChecker((member as string));
+                await (preChInfo as CustomChFamilyStorage).isMemberChecker((member as string));
             }
         }
         catch (e) {
