@@ -13,7 +13,7 @@ import ControllerAccessHelper, {TokenStateAccessCheckFunction}  from "./controll
 import Controller, {ControllerClass} from "../../api/Controller";
 import {MainBackErrors}              from "../zationBackErrors/mainBackErrors";
 import ControllerUtils, {MiddlewareInvokeFunction} from "./controllerUtils";
-import {SystemController}            from "../systemController/systemControler.config";
+import {SystemController}            from "./systemController/systemControler.config";
 import Bag                           from "../../api/Bag";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
 import InputClosureCreator, {InputConsumeFunction, InputValidationCheckFunction} from "../input/inputClosureCreator";

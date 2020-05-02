@@ -4,13 +4,13 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 // noinspection TypeScriptPreferShortImport
-import {ZationToken}      from "../../constants/internal";
+import {ZationToken}      from "../../../constants/internal";
 // noinspection TypeScriptPreferShortImport
-import {ControllerConfig} from "../../config/definitions/parts/controllerConfig";
-import BackError          from "../../../api/BackError";
-import Controller         from "../../../api/Controller";
-import {MainBackErrors}   from "../../zationBackErrors/mainBackErrors";
-import TokenUtils         from "../../token/tokenUtils";
+import {ControllerConfig} from "../../../config/definitions/parts/controllerConfig";
+import BackError          from "../../../../api/BackError";
+import Controller         from "../../../../api/Controller";
+import {MainBackErrors}   from "../../../zationBackErrors/mainBackErrors";
+import TokenUtils         from "../../../token/tokenUtils";
 
 export default class ZationSPC_Auth extends Controller
 {

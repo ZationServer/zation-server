@@ -20,7 +20,7 @@ import ObjectUtils        from "../../utils/objectUtils";
 import Iterator           from "../../utils/iterator";
 import {OtherLoadedConfigSet, OtherPrecompiledConfigSet} from "../manager/configSets";
 import InputProcessorCreator, {Processable}              from '../../input/inputProcessorCreator';
-import {SystemController}          from "../../systemController/systemControler.config";
+import {SystemController}          from "../../controller/systemController/systemControler.config";
 import OptionalProcessor           from "../../input/optionalProcessor";
 import ZationConfig                from "../manager/zationConfig";
 // noinspection TypeScriptPreferShortImport
