@@ -68,6 +68,12 @@ export default abstract class DataboxCore extends Component {
     }
 
     /**
+     * @description
+     * This property is used for getting the configuration of this Databox.
+     */
+    public static readonly config: DataboxConfig = {};
+
+    /**
      * **Not override this method.**
      */
     isParallelFetch(): boolean {
@@ -182,12 +188,6 @@ export default abstract class DataboxCore extends Component {
     async _accessCheck(socket: UpSocket, dbInfo: DataboxInfo): Promise<boolean> {
         return await this._dbPreparedData.accessCheck(socket.authEngine,socket.zSocket,dbInfo);
     }
-
-    /**
-     * @description
-     * This property is used for getting the configuration of this Databox.
-     */
-    public static readonly config: DataboxConfig = {};
 
     // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
     /**
