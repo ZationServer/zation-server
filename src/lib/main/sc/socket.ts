@@ -10,6 +10,8 @@ import AuthEngine           from "../auth/authEngine";
 import ZSocket              from "../internalApi/zSocket";
 import Databox              from "../../api/databox/Databox";
 import DataboxFamily        from "../../api/databox/DataboxFamily";
+import Channel              from '../../api/channel/Channel';
+import ChannelFamily        from '../../api/channel/ChannelFamily';
 
 export type OnHandlerFunction = (data: any, response: RespondFunction) => void
 export type RespondFunction = (err?: any | number, responseData?: any) => void
@@ -72,6 +74,7 @@ export default interface UpSocket extends HandshakeSocket {
 
     zationSocketVariables: Record<string,any>;
     databoxes: (Databox | DataboxFamily)[];
+    channels: (Channel | ChannelFamily)[];
     readonly authEngine: AuthEngine;
     readonly zSocket: ZSocket;
 }

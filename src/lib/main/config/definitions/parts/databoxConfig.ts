@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {AuthAccessConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
+import {AuthAccessConfig, SystemAccessConfig, VersionAccessConfig} from "./accessConfigs";
 import Bag                                                         from "../../../../api/Bag";
 import {DataboxInfo}                                               from "../../../databox/dbDefinitions";
 import ZSocket                                                     from "../../../internalApi/zSocket";

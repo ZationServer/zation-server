@@ -8,10 +8,10 @@ import Timer               = NodeJS.Timer;
 import ZationWorker        = require("../../core/zationWorker");
 import {PanelUserConfig}     from "../config/definitions/main/mainConfig";
 import {AuthUserGroupConfig} from "../config/definitions/parts/userGroupsConfig";
-import ChUtils               from "../channel/chUtils";
-import {ZationChannel}       from "../channel/channelDefinitions";
 import MiddlewareUtils       from "../utils/middlewareUtils";
 import ZationConfigFull      from "../config/manager/zationConfigFull";
+import {INTERNAL_PANEL_CH}   from '../internalChannels/internalChannelEngine';
+import PanelChannel          from '../channel/systemChannels/channels/PanelChannel';
 
 export default class PanelEngine
 {
@@ -20,6 +20,7 @@ export default class PanelEngine
     private panelInUseTimeout: Timer;
 
     private zw: ZationWorker;
+    private readonly panelChannel: PanelChannel;
     private zc: ZationConfigFull;
 
     private readonly panelUserMap: Record<string,string>;
@@ -30,9 +31,9 @@ export default class PanelEngine
 
     private readonly idData;
 
-    constructor(zw: ZationWorker,authUserGroups: Record<string,AuthUserGroupConfig>)
-    {
+    constructor(zw: ZationWorker,panelChannel: PanelChannel,authUserGroups: Record<string,AuthUserGroupConfig>) {
         this.zw = zw;
+        this.panelChannel = panelChannel;
         this.zc = this.zw.getZationConfig();
         this.panelUserMap = this.initPanelUserMap(authUserGroups);
         if(this.zc.mainConfig.usePanel) {
@@ -81,19 +82,16 @@ export default class PanelEngine
 
     private registerPanelInEvent()
     {
-        const channel = this.zw.exchange.subscribe(ZationChannel.PANEL_IN);
-        channel.watch(async (data) =>
-        {
-            if(data.e === 'ping') {
-                this.renewPanelInUse();
+        this.zw.exchange.subscribe(INTERNAL_PANEL_CH).watch(async (firstPing) => {
+            this.renewPanelInUse();
+            if(firstPing){
+                await this.sendFirstPong();
+            }
+            else {
                 //if the worker is new
                 if(!this.alreadyFirstPong) {
                     await this.sendFirstPong();
                 }
-            }
-            else if(data.e === 'firstPing') {
-                this.renewPanelInUse();
-                await this.sendFirstPong();
             }
         });
     }
@@ -127,16 +125,12 @@ export default class PanelEngine
         this.pubInPanel('up',data);
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    private pubInPanel(eventName: string,data: object = {})
-    {
+    private pubInPanel(event: string,data: object = {}) {
         if(this.isPanelInUse()) {
-            // noinspection TypeScriptValidateJSTypes
-            this.zw.scServer.exchange.publish(ZationChannel.PANEL_OUT,ChUtils.buildData(eventName,
-                {
-                id: this.idData,
-                info: data
-            }));
+            this.panelChannel.publish(event,[
+                this.idData,
+                data
+            ]);
         }
     }
 

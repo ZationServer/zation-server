@@ -34,15 +34,12 @@ import NoMoreDataAvailableError     from "./lib/main/databox/noMoreDataAvailable
 import DataboxFamily                from "./lib/api/databox/DataboxFamily";
 import Databox                      from "./lib/api/databox/Databox";
 import {DataboxConfig}              from "./lib/main/config/definitions/parts/databoxConfig";
-import DataboxContainer             from "./lib/main/databox/container/databoxContainer";
-import DataboxFamilyContainer       from "./lib/main/databox/container/databoxFamilyContainer";
+import DataboxContainer             from "./lib/api/databox/container/databoxContainer";
+import DataboxFamilyContainer       from "./lib/api/databox/container/databoxFamilyContainer";
 import {buildKeyArray}              from "./lib/main/databox/dbKeyArrayUtils";
 import ZSocket                      from "./lib/main/internalApi/zSocket";
 import ZationTokenWrapper           from "./lib/main/internalApi/zationTokenWrapper";
 import ZationInfo                   from "./lib/main/internalApi/zationInfo";
-import PubData                      from "./lib/main/internalApi/pubData";
-import CChInfo                      from "./lib/main/internalApi/cChInfo";
-import CChFamilyInfo                from "./lib/main/internalApi/cChFamilyInfo";
 import AsymmetricKeyPairs           from "./lib/main/internalApi/asymmetricKeyPairs";
 import DbCudOperationSequence       from "./lib/main/databox/dbCudOperationSequence";
 import {ObjectPathSequence}         from "./lib/main/internalApi/objectPathSequence/objectPathSequence";
@@ -61,7 +58,12 @@ import {$extends}                   from './lib/api/input/Extends';
 import {$single}                    from './lib/api/input/Single';
 import {Events}                     from './lib/main/config/definitions/parts/events';
 import {Middleware}                 from './lib/main/config/definitions/parts/middleware';
-import CustomChannel                from './lib/api/CustomChannel';
+import Channel                      from './lib/api/channel/Channel';
+import ChannelFamily                from './lib/api/channel/ChannelFamily';
+import {ChannelConfig}              from './lib/main/config/definitions/parts/channelConfig';
+import {ChannelInfo}                from './lib/main/channel/channelDefinitions';
+import ChannelContainer             from './lib/api/channel/container/channelContainer';
+import ChannelFamilyContainer       from './lib/api/channel/container/channelFamilyContainer';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -85,12 +87,16 @@ export {
     ParamInput,
     NoMoreDataAvailableError,
     NoDataAvailableError,
-    CustomChannel,
     DataboxFamily,
     DataboxFamilyContainer,
     Databox,
     DataboxContainer,
     DataboxConfig,
+    Channel,
+    ChannelContainer,
+    ChannelFamily,
+    ChannelFamilyContainer,
+    ChannelConfig,
     $init,
     $key,
     $value,
@@ -122,9 +128,7 @@ export {
     ZSocket,
     ZationTokenWrapper,
     ZationInfo,
-    PubData,
-    CChInfo,
-    CChFamilyInfo,
+    ChannelInfo,
     AsymmetricKeyPairs,
     DbCudOperationSequence,
     ObjectPathSequence,

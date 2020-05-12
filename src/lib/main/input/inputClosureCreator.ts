@@ -84,9 +84,9 @@ export default class InputClosureCreator
                 promises.push((async () => {
                     const iCheckData = checkData[i];
                     // noinspection SuspiciousTypeOfGuard
-                    if (typeof iCheckData === 'object' && (Array.isArray(iCheckData.p) || typeof iCheckData.p === 'string')) {
+                    if (typeof iCheckData === 'object' && (Array.isArray(iCheckData['0']) || typeof iCheckData['0'] === 'string')) {
 
-                        const {path,keyPath} = InputUtils.processPathInfo(iCheckData.p);
+                        const {path,keyPath} = InputUtils.processPathInfo(iCheckData['0']);
 
                         let specificConfig: any = inputDefinition;
                         if(keyPath.length > 0){
@@ -101,14 +101,14 @@ export default class InputClosureCreator
                             }
                         }
 
-                        await (specificConfig as Processable)._process(bag,iCheckData,nameof<ValidationCheckPair>(s => s.v),path,{
+                        await (specificConfig as Processable)._process(bag,iCheckData,'1',path,{
                             errorBag: errorBag,
                             createProcessTaskList: false,
                             processTaskList: [],
                         });
                     }
                     else {
-                        errorBag.addBackError(new BackError(MainBackErrors.wrongValidationCheckStructure,
+                        errorBag.addBackError(new BackError(MainBackErrors.invalidValidationCheckStructure,
                             {
                                 checkIndex: i
                             }));

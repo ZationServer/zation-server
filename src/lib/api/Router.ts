@@ -6,7 +6,6 @@ Copyright(c) Luca Scaringella
 
 import {checkComponentName, parseComponentClassName} from '../main/utils/componentUtils';
 import Config                    from './Config';
-import CustomChannel             from './CustomChannel';
 import {ComponentClass}          from './Component';
 
 /**
@@ -33,7 +32,6 @@ export default class Router {
 
     private readonly _components: {component: ComponentClass,override:
             {name?: string, apiLevel?: number | null}}[] = [];
-    private readonly _customChs: {ch: CustomChannel,override: {name?: string}}[] = [];
 
     private readonly _innerRouters: Router[] = [];
 
@@ -58,9 +56,9 @@ export default class Router {
      */
     use(router: Router)
     /**
-     * Attaches a Component (Databox, Controller, DataboxFamily) to a Router.
-     * You are able to register multiple components with the same name
-     * but different API levels.
+     * Attaches a Component (Controller, Channel or Databox) to a Router.
+     * You are able to register multiple components with the same
+     * type and identifier but different API levels.
      * The identifier of the component will be created with the name of
      * the component and the router chain.
      * The use method parses the name and API level from the class name.
@@ -81,26 +79,18 @@ export default class Router {
      * Example 3:
      * class ProfileDatabox_13 extends Controller {}
      * Parsed: name = profile, apiLevel = 13
+     *
+     * Example 4:
+     * class ProfileChannel_5 extends Controller {}
+     * Parsed: name = profile, apiLevel = 5
      * @param component
      * @param override
      * The parameter to override the parsed name and API level from the class name.
      */
     use(component: ComponentClass, override?: {name?: string, apiLevel?: number | null})
-    /**
-     * Attaches the custom channel to the Router.
-     * Notice that each custom channel attached to this Router
-     * needs to have a unique name.
-     * You optionally can override the name with the second parameter.
-     * @param customChannel
-     * @param override
-     */
-    use(customChannel: CustomChannel, override?: {name?: string})
-    use(value: ComponentClass | Router | CustomChannel, override: {name?: string, apiLevel?: number | null} = {}) {
+    use(value: ComponentClass | Router, override: {name?: string, apiLevel?: number | null} = {}) {
         if(value instanceof Router){
             this._innerRouters.push(value);
-        }
-        else if(value instanceof CustomChannel){
-            this._customChs.push({ch: value,override});
         }
         else {
             this._components.push({component: value,override});
@@ -138,16 +128,6 @@ export default class Router {
 
             checkComponentName(name);
             Config.registerComponent(tmpRoute + name,tmpComponent.component,apiLevel);
-        }
-
-        const customChLength = this._customChs.length;
-        for(let i = 0; i < customChLength; i++){
-            const customChannel = this._customChs[i];
-            Config.registerCustomCh(
-                tmpRoute +
-                (customChannel.override.name !== undefined ? customChannel.override.name : customChannel.ch.name),
-                customChannel.ch.definition
-            );
         }
 
         const routersLength = this._innerRouters.length;

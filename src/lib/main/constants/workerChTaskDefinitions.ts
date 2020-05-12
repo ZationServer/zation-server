@@ -18,7 +18,6 @@ export const enum WorkerChMapTaskAction
 {
     Disconnect,
     Deauthenticate,
-    KickOut,
     Emit
 }
 
@@ -41,14 +40,6 @@ export interface WorkerChAbstractMapTask {
     data: Record<string,any>
 }
 
-export interface WorkerChMapTaskKickOut extends WorkerChAbstractMapTask {
-    action: WorkerChMapTaskAction.KickOut,
-    data: {
-        ch: string,
-        all?: boolean,
-    }
-}
-
 export interface WorkerChMapTaskEmit extends WorkerChAbstractMapTask {
     action: WorkerChMapTaskAction.Emit,
     data: {
@@ -66,7 +57,7 @@ export interface WorkerChMapTaskDeauthenticate extends WorkerChAbstractMapTask{
     action: WorkerChMapTaskAction.Deauthenticate
 }
 
-export type WorkerChMapTask = WorkerChMapTaskKickOut | WorkerChMapTaskEmit |
+export type WorkerChMapTask = WorkerChMapTaskEmit |
     WorkerChMapTaskDisconnect | WorkerChMapTaskDeauthenticate;
 
 

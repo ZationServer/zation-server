@@ -18,38 +18,36 @@ export interface DataboxConnectReq {
     /**
      * apiLevel
      */
-    al?: number,
+    a?: number,
     /**
      * token
+     * If defined will be used instead of
+     * creating a new token with initData.
      */
     t?: string,
     /**
      * initInput
      */
-    ii?: any
+    i?: any
 }
 
 export interface DataboxConnectRes {
     /**
-     * Last cud id
-     */
-    ci: string,
-    /**
-     * Used the token
-     */
-    ut: boolean,
-    /**
      * Input key
      */
-    i: string,
+    0: string,
     /**
      * Output key
      */
-    o: string,
+    1: string,
+    /**
+     * Last cud id
+     */
+    2: string,
     /**
      * Parallel fetching
      */
-    pf: boolean
+    3: boolean
 }
 
 export type UnregisterSocketFunction = (inputChannelId?: string) => void;
@@ -304,7 +302,7 @@ export const enum DbClientInputAction {
 }
 
 /**
- * Actions that aa worker can send to another worker.
+ * Actions that a worker can send to another worker.
  */
 export const enum DbWorkerAction {
     /**
@@ -565,7 +563,7 @@ export type ChangeValue = (newData: any) => void;
  */
 export interface DataboxInfo {
     identifier: string,
-    member: any
+    member?: any
 }
 
 /**

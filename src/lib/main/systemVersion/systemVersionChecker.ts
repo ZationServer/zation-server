@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import {SystemAccessConfig, VersionAccessConfig} from "../config/definitions/parts/configComponents";
+import {SystemAccessConfig, VersionAccessConfig} from "../config/definitions/parts/accessConfigs";
 import UpSocket from '../sc/socket';
 
 export type VersionSystemAccessCheckFunction = (socket: UpSocket) => boolean;

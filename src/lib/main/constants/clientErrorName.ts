@@ -14,6 +14,8 @@ export enum ClientErrorName {
     AccessDenied                 = 'AccessDenied',
     InvalidMember                = 'InvalidMember',
 
+    InvalidToken                 = 'InvalidToken',
+    InvalidPackage               = 'InvalidPackage',
     InvalidRequest               = 'InvalidRequest',
     ApiLevelIncompatible         = 'ApiLevelIncompatible',
     UnknownDatabox               = 'UnknownDatabox',

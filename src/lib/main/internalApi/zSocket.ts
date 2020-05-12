@@ -8,13 +8,14 @@ import {ZATION_CUSTOM_EVENT_NAMESPACE, ZationToken} from "../constants/internal"
 import UpSocket, {OnHandlerFunction}                from "../sc/socket";
 import TokenUtils       from "../token/tokenUtils";
 import ObjectPath       from "../utils/objectPath";
-import ChUtils          from "../channel/chUtils";
 import DataboxFamily    from "../../api/databox/DataboxFamily";
 import Databox          from "../../api/databox/Databox";
 const  IP                  = require('ip');
 import CloneUtils            from "../utils/cloneUtils";
 import ObjectPathSequenceImp from "./objectPathSequence/objectPathSequenceImp";
 import {ObjectPathSequence}  from "./objectPathSequence/objectPathSequence";
+import ChannelFamily from '../../api/channel/ChannelFamily';
+import Channel from '../../api/channel/Channel';
 
 export default class ZSocket
 {
@@ -215,96 +216,18 @@ export default class ZSocket
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @description
-     * Returns all socket subscriptions as a string array.
-     */
-    getSubscriptions(): string[] {
-        return this._socket.subscriptions();
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * Returns all custom channel subscriptions of the socket.
-     * @param identifier (optional filter for a specific identifier)
-     */
-    getCustomChSubscriptions(identifier?: string): string[] {
-        return ChUtils.getCustomChannelSubscriptions(this._socket,identifier);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * Returns if the socket has subscribed the user channel.
-     */
-    hasSubUserCh(): boolean {
-        return ChUtils.hasSubUserCh(this._socket);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * Returns if the socket has subscribed the auth user group channel.
-     */
-    hasSubAuthUserGroupCh(): boolean {
-        return ChUtils.hasSubAuthUserGroupCh(this._socket);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * Returns if the socket has subscribed the default user group channel.
-     */
-    hasSubDefaultUserGroupCh(): boolean {
-        return ChUtils.hasSubDefaultUserGroupCh(this._socket);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * Returns if the socket has subscribed the all channel.
-     */
-    hasSubAllCh(): boolean {
-        return ChUtils.hasSubAllCh(this._socket);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * Returns if the socket has subscribed a custom channel.
-     * @param identifier
-     * if it is not provided,
-     * it returns if the socket has subscribed any custom channel.
-     * @param member
-     * if it is not provided,
-     * it returns if the socket has subscribed any custom channel with the provided identifier.
-     */
-    hasSubCustomCh(identifier?: string, member?: string): boolean {
-        return ChUtils.hasSubCustomCh(this._socket,identifier);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * Returns if the socket has subscribed the panel out channel.
-     */
-    hasSubPanelOutCh(): boolean {
-        return ChUtils.hasSubPanelOutCh(this._socket);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Kick the current socket from an custom channel.
-     * @example
-     * kickFromCustomCh('images','10');
-     * kickFromCustomCh('publicChat');
-     * @param identifier is optional, if it is not given the users will be kicked out from all custom channels.
-     * @param member only provide an member if you want to kick the socket from a specific member of a custom channel family.
-     */
-    kickFromCustomCh(identifier?: string,member?: string): void {
-        ChUtils.kickCustomChannel(this._socket,identifier,member);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
      * Returns the Databoxes where the socket is connected to.
      */
     getDataboxes(): (DataboxFamily | Databox)[] {
         return this._socket.databoxes;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns the Channels that the socket has subscribed.
+     */
+    getChannels(): (ChannelFamily | Channel)[] {
+        return this._socket.channels;
     }
 
     // noinspection JSUnusedGlobalSymbols

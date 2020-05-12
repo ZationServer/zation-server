@@ -4,13 +4,12 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import PubData                     from "../internalApi/pubData";
 import UpSocket, {HandshakeSocket} from "./socket";
 import {ZationToken}               from "../constants/internal";
 import {IncomingMessage}           from 'http';
 
 export interface PubOutMiddlewareReq  {
-    data: PubData,
+    data: any,
     channel: string,
     socket: UpSocket,
     authTokenExpiredError?: any

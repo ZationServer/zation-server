@@ -11,7 +11,6 @@ import ZationConfigFull                        from "../config/manager/zationCon
 export default class AEPreparedPart
 {
     private readonly zc: ZationConfigFull;
-    private readonly useTokenStateCheck: boolean;
     private readonly groupsConfig: UserGroupsConfig = {};
     private readonly authGroups: Record<string,AuthUserGroupConfig>;
     private readonly defaultGroup: string;
@@ -20,7 +19,6 @@ export default class AEPreparedPart
     constructor(zc: ZationConfigFull)
     {
         this.zc = zc;
-        this.useTokenStateCheck = this.zc.mainConfig.useTokenStateCheck;
 
         if(this.zc.appConfig.userGroups !== undefined) {
             this.groupsConfig = this.zc.appConfig.userGroups;
@@ -61,13 +59,6 @@ export default class AEPreparedPart
      */
     getDefaultGroup(): string {
         return this.defaultGroup;
-    }
-
-    /**
-     * Returns if the server uses the token state check.
-     */
-    isUseTokenStateCheck(): boolean {
-        return this.useTokenStateCheck;
     }
 
     /**

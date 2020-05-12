@@ -4,10 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import UpSocket                from "../../sc/socket";
-import DbCudOperationSequence  from "../dbCudOperationSequence";
-import DataboxFamily           from "../../../api/databox/DataboxFamily";
-import DataboxUtils            from "../databoxUtils";
+import Databox                 from "../Databox";
+import UpSocket                from "../../../main/sc/socket";
+import DbCudOperationSequence  from "../../../main/databox/dbCudOperationSequence";
+import DataboxUtils            from "../../../main/databox/databoxUtils";
 import {
     InfoOption,
     IfOption,
@@ -15,14 +15,20 @@ import {
     DbSelector,
     PotentialUpdateOption,
     PotentialInsertOption
-} from "../dbDefinitions";
+} from "../../../main/databox/dbDefinitions";
 
-export default class DataboxFamilyContainer {
+export default class DataboxContainer {
 
-    private readonly databoxFamilies: DataboxFamily[];
+    private readonly _databoxes: Databox[];
+    private readonly _count: number;
 
-    constructor(databoxFamilies: DataboxFamily[]) {
-        this.databoxFamilies = databoxFamilies;
+    constructor(databoxes: Databox[]) {
+        this._databoxes = databoxes;
+        this._count = databoxes.length;
+    }
+
+    get databoxes(): Databox[] {
+        return [...this._databoxes];
     }
 
     /**
@@ -44,8 +50,6 @@ export default class DataboxFamilyContainer {
      * Object -> Insert the value with the key.
      * Array -> Key will be parsed to int if it is a number, then it will be inserted at the index.
      * Otherwise, it will be inserted at the end.
-     * @param member The member of the family you want to update.
-     * Number will be converted to a string.
      * @param selector
      * The selector describes which key-value pairs should be
      * deleted updated or where a value should be inserted.
@@ -62,10 +66,10 @@ export default class DataboxFamilyContainer {
      * @param value
      * @param options
      */
-    async insert(member: string | number, selector: DbSelector, value: any, options: IfOption & PotentialUpdateOption & InfoOption & TimestampOption = {}): Promise<void> {
+    async insert(selector: DbSelector, value: any, options: IfOption & PotentialUpdateOption & InfoOption & TimestampOption = {}) : Promise<void> {
         const promises: Promise<void>[] = [];
-        for(let i = 0; i < this.databoxFamilies.length;i++) {
-            promises.push(this.databoxFamilies[i].insert(member,selector,value,options));
+        for(let i = 0; i < this._count; i++) {
+            promises.push(this._databoxes[i].insert(selector,value,options));
         }
         await Promise.all(promises);
     }
@@ -88,8 +92,6 @@ export default class DataboxFamilyContainer {
      * Object -> Updates the specific value.
      * Array -> Key will be parsed to int if it is a number
      * it will update the specific value.
-     * @param member The member of the family you want to update.
-     * Number will be converted to a string.
      * @param selector
      * The selector describes which key-value pairs should be
      * deleted updated or where a value should be inserted.
@@ -106,10 +108,10 @@ export default class DataboxFamilyContainer {
      * @param value
      * @param options
      */
-    async update(member: string | number, selector: DbSelector, value: any, options: IfOption & PotentialInsertOption & InfoOption & TimestampOption = {}): Promise<void> {
+    async update(selector: DbSelector, value: any, options: IfOption & PotentialInsertOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises: Promise<void>[] = [];
-        for(let i = 0; i < this.databoxFamilies.length;i++) {
-            promises.push(this.databoxFamilies[i].update(member,selector,value,options));
+        for(let i = 0; i < this._count; i++) {
+            promises.push(this._databoxes[i].update(selector,value,options));
         }
         await Promise.all(promises);
     }
@@ -132,8 +134,6 @@ export default class DataboxFamilyContainer {
      * Array -> Key will be parsed to int if it is a number it
      * will delete the specific value.
      * Otherwise, it will delete the last item.
-     * @param member The member of the family you want to update.
-     * Number will be converted to a string.
      * @param selector
      * The selector describes which key-value pairs should be
      * deleted updated or where a value should be inserted.
@@ -149,10 +149,10 @@ export default class DataboxFamilyContainer {
      * split by dots to create a string array.
      * @param options
      */
-    async delete(member: string | number, selector: DbSelector, options: IfOption & InfoOption & TimestampOption = {}): Promise<void> {
+    async delete(selector: DbSelector, options: IfOption & InfoOption & TimestampOption = {}): Promise<void> {
         const promises: Promise<void>[] = [];
-        for(let i = 0; i < this.databoxFamilies.length;i++) {
-            promises.push(this.databoxFamilies[i].delete(member,selector,options));
+        for(let i = 0; i < this._count; i++) {
+            promises.push(this._databoxes[i].delete(selector,options));
         }
         await Promise.all(promises);
     }
@@ -165,88 +165,78 @@ export default class DataboxFamilyContainer {
      * Notice that this method will only update the Databox.
      * It will not automatically update the database,
      * so you have to do it before calling this method.
-     * @param member The member of the family you want to edit.
-     * Numbers will be converted to a string.
      * @param timestamp
      * With the timestamp option, you can change the sequence of data.
      * The client, for example, will only update data that is older as incoming data.
      * Use this option only if you know what you are doing.
      */
-    seqEdit(member: string | number,timestamp?: number): DbCudOperationSequence {
+    seqEdit(timestamp?: number): DbCudOperationSequence {
         return new DbCudOperationSequence(async (operations) => {
             const promises: Promise<void>[] = [];
-            for(let i = 0; i < this.databoxFamilies.length;i++) {
-                promises.push(this.databoxFamilies[i]._emitCudPackage(
-                    DataboxUtils.buildPreCudPackage(...operations),
-                    typeof member === "string" ? member: member.toString(),timestamp));
+            for(let i = 0; i < this._count; i++) {
+                promises.push(this._databoxes[i]._emitCudPackage(
+                    DataboxUtils.buildPreCudPackage(...operations),timestamp));
             }
             await Promise.all(promises);
         })
     }
 
     /**
-     * The close function will close a Databox member for every client on every server.
+     * The close function will close the Databox for every client on every server.
      * You optionally can provide a code or any other information for the client.
      * Usually, the close function is used when the data is completely deleted from the system.
      * For example, a chat that doesn't exist anymore.
-     * @param member The member of the family you want to close.
-     * Numbers will be converted to a string.
      * @param code
      * @param data
      * @param forEveryWorker
      */
-    close(member: string | number,code?: number | string, data?: any,forEveryWorker: boolean = true): void {
-        for(let i = 0; i < this.databoxFamilies.length;i++) {
-            this.databoxFamilies[i].close(member,code,data,forEveryWorker);
+    close(code?: number | string, data?: any,forEveryWorker: boolean = true): void {
+        for(let i = 0; i < this._count; i++) {
+            this._databoxes[i].close(code,data,forEveryWorker);
         }
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * The reload function will force all clients of the Databox member to reload the data.
+     * The reload function will force all clients of the Databox to reload the data.
      * This method is used internally if it was detected that a worker had
      * missed a cud (create, update, or delete) operation.
-     * @param member
-     * Numbers will be converted to a string.
      * @param forEveryWorker
      * @param code
      * @param data
      */
-    doReload(member: string | number,forEveryWorker: boolean = false,code?: number | string,data?: any): void {
-        for(let i = 0; i < this.databoxFamilies.length;i++) {
-            this.databoxFamilies[i].doReload(member,forEveryWorker,code,data);
+    doReload(forEveryWorker: boolean = false,code?: number | string,data?: any): void {
+        for(let i = 0; i < this._count; i++) {
+            this._databoxes[i].doReload(forEveryWorker,code,data);
         }
     }
 
     /**
-     * With this function, you can kick out a socket from a family member of the Databox.
+     * With this function, you can kick out a socket from the Databox.
      * This method is used internally.
-     * @param member
      * @param socket
      * @param code
      * @param data
      */
-    kickOut(member: string,socket: UpSocket,code?: number | string,data?: any): void {
-        for(let i = 0; i < this.databoxFamilies.length;i++) {
-            this.databoxFamilies[i].kickOut(member,socket,code,data);
+    kickOut(socket: UpSocket,code?: number | string,data?: any): void {
+        for(let i = 0; i < this._count; i++) {
+            this._databoxes[i].kickOut(socket,code,data);
         }
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * Transmit a signal to all client Databoxes that
-     * are connected with a specific member of this Databox.
+     * **Not override this method.**
+     * Transmit a signal to all client Databoxes connected with this Databox.
      * The clients can listen to any received signal.
      * You also can send additional data with the signal.
-     * @param member
-     * Numbers will be converted to a string.
      * @param signal
      * @param data
      * @param forEveryWorker
      */
-    transmitSignal(member: string | number, signal: string, data?: any, forEveryWorker: boolean = true) {
-        for(let i = 0; i < this.databoxFamilies.length;i++) {
-            this.databoxFamilies[i].transmitSignal(member,signal,data,forEveryWorker);
+    transmitSignal(signal: string, data?: any, forEveryWorker: boolean = true) {
+        for(let i = 0; i < this._count; i++) {
+            this._databoxes[i].transmitSignal(signal,data,forEveryWorker);
         }
     }
 }

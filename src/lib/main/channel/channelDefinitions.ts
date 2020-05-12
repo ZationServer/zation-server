@@ -4,17 +4,115 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-export class ZationChannel {
-    //Zation Main Channels
-    static readonly USER_CHANNEL_PREFIX = 'Z_U.';
-    static readonly AUTH_USER_GROUP_PREFIX = 'Z_AUG.';
-    static readonly DEFAULT_USER_GROUP = 'Z_DUG';
-    static readonly ALL = 'Z_ALL';
-    static readonly PANEL_IN = 'Z_PI';
-    static readonly PANEL_OUT = 'Z_PO';
-    //Custom Channels
-    static readonly CUSTOM_CHANNEL_PREFIX = 'Z_C.';
-    static readonly CUSTOM_CHANNEL_MEMBER_SEPARATOR = '.';
-    //intern channels
-    static readonly ALL_WORKER = 'Z_AW';
+/**
+ * Channel subscribe request element.
+ */
+export interface ChannelSubscribeRequest {
+    /**
+     * channel identifier
+     */
+    c: string;
+    /**
+     * member
+     */
+    m?: string;
+    /**
+     * apiLevel
+     */
+    a?: number;
 }
+
+export interface PublishPackage {
+    /**
+     * The event name.
+     */
+    e: string,
+    /**
+     * Published data.
+     */
+    d?: any,
+    /**
+     * PublisherSid
+     */
+    p?: string | null,
+}
+
+/**
+ * A publish package that a worker can send to the other workers.
+ */
+export interface ChWorkerPublishPackage {
+    /**
+     * workerFullId
+     */
+    0: string,
+    /**
+     * Publish
+     */
+    1: PublishPackage
+}
+
+/**
+ * Actions that a client can send to the server.
+ */
+export const enum ChClientInputAction {
+    Unsubscribe
+}
+
+/**
+ * The package that the client can send to the server to invoke an action.
+ */
+export interface ChClientInputPackage {
+    /**
+     * Action
+     */
+    0: ChClientInputAction,
+}
+
+export const CH_CLIENT_OUTPUT_PUBLISH = 'C>P';
+
+export interface ChClientOutputPublishPackage {
+    /**
+     * Channel
+     */
+    0: string;
+    /**
+     * Event
+     */
+    1: string;
+    /**
+     * Data
+     */
+    2?: any;
+}
+
+export const CH_CLIENT_OUTPUT_KICK_OUT = 'C>K';
+
+export interface ChClientOutputKickOutPackage {
+    /**
+     * data
+     */
+    d?: any;
+    /**
+     * code
+     */
+    c?: number | string;
+}
+
+export type KickOutSocketFunction = () => void;
+
+export enum UnsubscribeTrigger {
+    Client,
+    Disconnect,
+    KickOut
+}
+
+/**
+ * The Channel info object.
+ */
+export interface ChannelInfo {
+    identifier: string,
+    member?: string
+}
+
+export const CHANNEL_START_INDICATOR = 'C>';
+export const CHANNEL_MEMBER_SPLIT = '.';

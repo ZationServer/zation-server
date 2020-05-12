@@ -4,13 +4,14 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {AnyClass, AnyInputConfigTranslatable, AnyModelConfigTranslatable} from './configComponents';
 import BackErrorBag from '../../../../api/BackErrorBag';
 import Bag          from '../../../../api/Bag';
 // noinspection TypeScriptPreferShortImport
 import {ValidationType}      from '../../../constants/validationType.js';
 import {ValidationFunctions} from './validationFunctions';
 import {modelDefaultSymbol, modelOptionalSymbol} from '../../../constants/model';
+import {InputConfigTranslatable} from '../../../../api/configTranslatable/inputConfigTranslatable';
+import {ModelConfigTranslatable} from '../../../../api/configTranslatable/modelConfigTranslatable';
 
 export type ModelConfig = ValueModel | ObjectModel | ArrayModel | ArrayModelShortSyntax | AnyOfModel;
 export type Model = ModelConfig | AnyClass | AnyModelConfigTranslatable;
@@ -379,4 +380,18 @@ export interface ArrayModelShortSyntax extends Array<Model | ArraySettings | und
      * @default {}
      */
     1?: ArraySettings
+}
+
+export interface AnyClass {
+    prototype: object,
+    new (): any
+    [key: string]: any;
+}
+
+export interface AnyInputConfigTranslatable extends InputConfigTranslatable {
+    [key: string]: any;
+}
+
+export interface AnyModelConfigTranslatable extends ModelConfigTranslatable {
+    [key: string]: any;
 }

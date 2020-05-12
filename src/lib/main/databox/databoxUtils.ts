@@ -22,12 +22,11 @@ import {
     PreCudPackage
 } from "./dbDefinitions";
 import DataboxFamily, {DataboxFamilyClass} from "../../api/databox/DataboxFamily";
-import DataboxFamilyContainer              from "./container/databoxFamilyContainer";
+import DataboxFamilyContainer              from "../../api/databox/container/databoxFamilyContainer";
 import Databox, {DataboxClass}             from "../../api/databox/Databox";
-import DataboxContainer                    from "./container/databoxContainer";
-import DataboxNotFound                     from "../error/databoxNotFound";
+import DataboxContainer                    from "../../api/databox/container/databoxContainer";
 import {ClientErrorName}                   from "../constants/clientErrorName";
-import {databoxInstanceSymbol}             from "./databoxPrepare";
+import ComponentUtils, {familyTypeSymbol}  from '../component/componentUtils';
 const uniqid                             = require('uniqid');
 
 export default class DataboxUtils {
@@ -125,49 +124,27 @@ export default class DataboxUtils {
     }
 
     /**
-     * This method loads the instance of the databox and returns it.
-     * If the instance is not found, the method throws an error.
-     * @param databox
-     */
-    static getDbInstance<T extends DataboxClass | DataboxFamilyClass>(databox: T): T['prototype'] {
-         const instance = databox[databoxInstanceSymbol];
-         if(instance === undefined) {
-             throw new DataboxNotFound(databox.name);
-         }
-         return instance;
-    }
-
-    /**
      * A method that will load the instances from Databox classes
      * and will return the correct container for it.
      * @param databoxes
      */
-    static getDbContainer(databoxes: DataboxClass[] | DataboxFamilyClass[]):  DataboxFamilyContainer | DataboxContainer {
+    static getDbContainer(databoxes: DataboxClass[] | DataboxFamilyClass[]): DataboxContainer | DataboxFamilyContainer {
 
         const databoxInstances: Databox[] = [];
         const databoxFamilyInstances: DataboxFamily[] = [];
 
         for(let i = 0; i < databoxes.length; i++){
-            const instance = databoxes[i][databoxInstanceSymbol];
-            if(instance !== undefined){
-                if(instance instanceof Databox){
-                    databoxInstances.push(instance);
-                }
-                else {
-                    databoxFamilyInstances.push(instance);
-                }
+            const instance = ComponentUtils.getInstanceSafe(databoxes[i]);
+            if(instance[familyTypeSymbol]){
+                databoxFamilyInstances.push(instance as DataboxFamily);
             }
             else {
-                throw new DataboxNotFound(databoxes[i].name);
+                databoxInstances.push(instance as Databox);
             }
         }
 
-        if(databoxInstances.length>0){
-            return new DataboxContainer(databoxInstances);
-        }
-        else {
-            return new DataboxFamilyContainer(databoxFamilyInstances);
-        }
+        return databoxInstances.length > 0 ? (new DataboxContainer(databoxInstances))
+            : (new DataboxFamilyContainer(databoxFamilyInstances));
     }
 
     /**

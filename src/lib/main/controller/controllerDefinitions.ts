@@ -6,56 +6,44 @@ Copyright(c) Luca Scaringella
 
 import {DryBackError} from '../../api/BackError';
 
-export const enum ControllerRequestType {
-    Standard,
-    ValidationCheck,
-    Auth
+export const enum SpecialController {
+    AuthController
 }
 
-export interface ControllerReq {
-    /**
-     * ApiLevel
-     */
-    al?: number,
+export interface ControllerBaseReq {
     /**
      * Controller
      */
-    c?: string,
+    c: string | SpecialController,
     /**
-     * SystemController
+     * ApiLevel
      */
-    sc?: string,
-    /**
-     * RequestType
-     * @default 0
-     */
-    t?: ControllerRequestType,
+    a?: number
+}
+
+export interface ControllerStandardReq extends ControllerBaseReq {
     /**
      * Input
      */
     i?: any
 }
 
-export interface ControllerValidationCheckReq extends ControllerReq {
+export interface ControllerValidationCheckReq extends ControllerBaseReq {
     /**
-     * RequestType
+     * Validation checks
      */
-    t: ControllerRequestType.ValidationCheck,
-    /**
-     * Input
-     */
-    i: ValidationCheckPair[]
+    v: ValidationCheckPair[]
 }
 
 export interface ValidationCheckPair {
     /**
      * Path
      */
-    p: string | string[],
+    0: string | string[],
     /**
      * Value
      */
-    v: any
+    1: any
 }
 
 /**

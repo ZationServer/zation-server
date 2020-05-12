@@ -4,14 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-// noinspection TypeScriptPreferShortImport
-import { ModelConfigTranslatable}                          from "../../../../api/configTranslatable/modelConfigTranslatable";
 import {AccessConfigValue}                                 from "../../../access/accessOptions";
-import {IsMember}                                          from "../../../member/memberCheckerUtils";
 import Bag                                                 from "../../../../api/Bag";
 import ZationTokenWrapper                                  from "../../../internalApi/zationTokenWrapper";
 import {Notable}                                           from '../../../../api/Notable';
-import {InputConfigTranslatable}                           from '../../../../api/configTranslatable/inputConfigTranslatable';
 
 export type NormalAuthAccessCustomFunction = (bag: Bag, token: ZationTokenWrapper | null) => Promise<boolean> | boolean;
 
@@ -53,20 +49,6 @@ export interface AuthAccessConfig<T extends Function = NormalAuthAccessCustomFun
     access?: Notable<AccessConfigValue<T>>;
 }
 
-export interface IsMemberConfig {
-    /**
-     * Check if a value is a member.
-     * Use this check only for security reason, for example,
-     * checking the format of the value.
-     * To mark the value as invalid,
-     * you only need to return an object (that can be error information) or false.
-     * Also if you throw an error, the value is marked as invalid.
-     * If you want to mark the value as a member,
-     * you have to return nothing or a true.
-     */
-    isMember?: IsMember
-}
-
 export interface VersionAccessConfig {
     /**
      * Version access defines access rules which depends on the client app version.
@@ -85,8 +67,10 @@ export interface VersionAccessConfig {
      *     'WEB': [1.3,1.8,2.2]   // one of the versions 1.3, 1.8 or 2.2.
      * }
      */
-    versionAccess?: 'all' | Record<string,number | number[]>;
+    versionAccess?: VersionAccessValue;
 }
+
+export type VersionAccessValue = 'all' | Record<string,number | number[]>;
 
 export interface SystemAccessConfig {
     /**
@@ -99,19 +83,7 @@ export interface SystemAccessConfig {
      * //array
      * systemAccess: ['IOS','WEB'] // Only clients with system 'IOS' or 'WEB' are allowed.
      */
-    systemAccess?: 'all' | string[];
+    systemAccess?: SystemAccessValue;
 }
 
-export interface AnyClass {
-    prototype: object,
-    new (): any
-    [key: string]: any;
-}
-
-export interface AnyInputConfigTranslatable extends InputConfigTranslatable {
-    [key: string]: any;
-}
-
-export interface AnyModelConfigTranslatable extends ModelConfigTranslatable {
-    [key: string]: any;
-}
+export type SystemAccessValue = 'all' | string[];

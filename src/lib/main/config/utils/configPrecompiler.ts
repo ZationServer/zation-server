@@ -5,9 +5,6 @@ Copyright(c) Luca Scaringella
  */
 
 import {
-    BaseCustomChannelConfig
-} from "../definitions/parts/channelsConfig";
-import {
     AnyOfModel,
     ArrayModel,
     InputConfig,
@@ -20,12 +17,12 @@ import ObjectUtils        from "../../utils/objectUtils";
 import Iterator           from "../../utils/iterator";
 import {OtherLoadedConfigSet, OtherPrecompiledConfigSet} from "../manager/configSets";
 import InputProcessorCreator, {Processable}              from '../../input/inputProcessorCreator';
-import {SystemController}          from "../../controller/systemController/systemControler.config";
 import OptionalProcessor           from "../../input/optionalProcessor";
 import ZationConfig                from "../manager/zationConfig";
-// noinspection TypeScriptPreferShortImport
+// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig}                                     from "../definitions/parts/controllerConfig";
 import {ControllerClass}                                      from "../../../api/Controller";
+// noinspection ES6PreferShortImport
 import {DataboxConfig}                                        from "../definitions/parts/databoxConfig";
 import DbConfigUtils                                          from "../../databox/dbConfigUtils";
 import {PrecompiledEvents, Events}                            from '../definitions/parts/events';
@@ -38,6 +35,10 @@ import {isModelConfigTranslatable, modelConfigTranslateSymbol, resolveModelConfi
 import {AnyFunction}                                                                           from '../../utils/typeUtils';
 import {setValueReplacer}                                                                      from '../../utils/valueReplacer';
 import {AnyDataboxClass}                                                                       from '../../../api/databox/AnyDataboxClass';
+import {ChannelConfig}                                                                         from '../../../..';
+import {AnyChannelClass}                                                                       from '../../../api/channel/AnyChannelClass';
+import {systemControllers}                                                                     from '../../controller/systemControllers/systemControllers.config';
+import {systemChannels}                                                                        from '../../channel/systemChannels/systemChannels.config';
 
 export interface ModelPreparationMem extends Processable{
     _optionalInfo: {isOptional: boolean,defaultValue: any}
@@ -49,24 +50,25 @@ export default class ConfigPrecompiler
 {
     private readonly configs: OtherLoadedConfigSet;
 
-    private controllerDefaults: ControllerConfig;
-    private databoxDefaults: DataboxConfig;
+    private readonly controllerDefaults: ControllerConfig;
+    private readonly databoxDefaults: DataboxConfig;
+    private readonly channelDefaults: ChannelConfig;
 
     constructor(configs: OtherLoadedConfigSet)
     {
         this.configs = configs;
-        this.prepare();
+        this.controllerDefaults = this.configs.appConfig.controllerDefaults || {};
+        this.databoxDefaults = this.configs.appConfig.databoxDefaults || {};
+        this.channelDefaults = this.configs.appConfig.channelDefaults || {};
     }
 
     precompile(zc: ZationConfig, showPrecompiledConfigs: boolean): OtherPrecompiledConfigSet
     {
         this.preCompileEvents();
         this.precompileMiddleware();
-        this.precompileControllerDefaults();
         this.precompileControllers();
         this.precompileDataboxes();
-        this.precompileSystemController();
-        this.precompileCustomChannels();
+        this.precompileChannels();
 
         //view precompiled configs
         if(showPrecompiledConfigs){
@@ -82,60 +84,6 @@ export default class ConfigPrecompiler
 
         // @ts-ignore
         return this.configs;
-    }
-
-    private prepare(): void
-    {
-        this.prepareControllerDefaults();
-        this.prepareDataboxDefaults();
-    }
-
-    private prepareControllerDefaults(): void
-    {
-        this.controllerDefaults = {};
-        let cd = this.configs.appConfig.controllerDefaults;
-        //setDefaults if not set!
-        if(cd !== undefined) {
-            this.controllerDefaults = cd;
-        }
-    }
-
-    private prepareDataboxDefaults(): void
-    {
-        this.databoxDefaults = {};
-        let dbDefaults = this.configs.appConfig.databoxDefaults;
-        //setDefaults if not set!
-        if(dbDefaults !== undefined) {
-            this.databoxDefaults = dbDefaults;
-        }
-    }
-
-    private precompileCustomChannels(): void {
-        const customChannels = this.configs.appConfig.customChannels;
-        const customChannelDefaults = this.configs.appConfig.customChannelDefaults;
-
-        if(typeof customChannels === 'object'){
-            for(const chName in customChannels){
-                if(customChannels.hasOwnProperty(chName)){
-
-                    let channel: BaseCustomChannelConfig;
-                    if(Array.isArray(customChannels[chName])){
-                        if(typeof customChannels[chName][0] !== 'object'){
-                            customChannels[chName][0] = {};
-                        }
-                        channel = customChannels[chName][0];
-                    }
-                    else {
-                        channel = (customChannels[chName] as BaseCustomChannelConfig)
-                    }
-
-                    //defaults
-                    if(typeof customChannelDefaults === 'object'){
-                        ObjectUtils.mergeTwoObjects(channel,customChannelDefaults,false);
-                    }
-                }
-            }
-        }
     }
 
     private preCompileEvents() {
@@ -159,8 +107,6 @@ export default class ConfigPrecompiler
             socketAuthentication: defaultFunc,
             socketDeauthentication: defaultFunc,
             socketAuthStateChange: defaultFunc,
-            socketSubscription: defaultFunc,
-            socketUnsubscription: defaultFunc,
             socketError: defaultFunc,
             socketRaw: defaultFunc,
             socketConnectionAbort: defaultFunc,
@@ -489,59 +435,57 @@ export default class ConfigPrecompiler
         }
     }
 
-    private precompileControllerDefaults(): void {
-        if(this.configs.appConfig.controllerDefaults) {
-            this.precompileInputConfig(this.configs.appConfig.controllerDefaults);
-        }
-    }
+    private precompileChannels(): void {
+        const channels = Object.assign(systemChannels,(this.configs.appConfig.channels || {}));
+        this.configs.appConfig.channels = channels;
 
-    private precompileControllers(): void
-    {
-        //set if controller property is not found
-        if(!this.configs.appConfig.controllers) {
-            this.configs.appConfig.controllers = {};
-        }
-
-        //iterate over controller
-        const controller = this.configs.appConfig.controllers;
-        for(const k in controller) {
-            if(controller.hasOwnProperty(k)) {
-                Iterator.iterateCompDefinition<ControllerClass>(controller[k],(controllerClass) => {
-                    const config: ControllerConfig = controllerClass.config;
+        for(const k in channels) {
+            if(channels.hasOwnProperty(k)) {
+                Iterator.iterateCompDefinition<AnyChannelClass>(channels[k],(channelClass) => {
+                    const config: ChannelConfig = channelClass.config || {};
                     //set the defaults
-                    ObjectUtils.mergeTwoObjects(config,this.controllerDefaults,false);
-                    this.precompileInputConfig(config);
+                    ObjectUtils.mergeTwoObjects(config,this.channelDefaults,false);
+
+                    (channelClass as any)[nameof<AnyChannelClass>(s => s.config)] = config;
                 });
             }
         }
     }
 
-    private precompileSystemController(): void
+    private precompileControllers(): void
     {
-        for(const k in SystemController){
-            if(SystemController.hasOwnProperty(k)){
-                this.precompileInputConfig(SystemController[k].config);
+        const controllers = Object.assign(systemControllers,(this.configs.appConfig.controllers || {}));
+        this.configs.appConfig.controllers = controllers;
+
+        for(const k in controllers) {
+            if(controllers.hasOwnProperty(k)) {
+                Iterator.iterateCompDefinition<ControllerClass>(controllers[k],(controllerClass) => {
+                    const config: ControllerConfig = controllerClass.config || {};
+                    //set the defaults
+                    ObjectUtils.mergeTwoObjects(config,this.controllerDefaults,false);
+                    this.precompileInputConfig(config);
+
+                    (controllerClass as any)[nameof<ControllerClass>(s => s.config)] = config;
+                });
             }
         }
     }
 
     private precompileDataboxes(): void
     {
-        //set if databox property is not found
-        if(!this.configs.appConfig.databoxes) {
-            this.configs.appConfig.databoxes = {};
-        }
+        const databoxes = this.configs.appConfig.databoxes || {};
+        this.configs.appConfig.databoxes = databoxes;
 
-        //iterate over Databoxes
-        const databoxes = this.configs.appConfig.databoxes;
         for(const k in databoxes) {
             if(databoxes.hasOwnProperty(k)) {
                 Iterator.iterateCompDefinition<AnyDataboxClass>(databoxes[k],(databoxClass) => {
-                    const config: DataboxConfig = databoxClass.config;
+                    const config: DataboxConfig = databoxClass.config || {}
                     //set the defaults
                     ObjectUtils.mergeTwoObjects(config,this.databoxDefaults,false);
                     this.precompileInputConfig(DbConfigUtils.convertDbInitInput(config));
                     this.precompileInputConfig(DbConfigUtils.convertDbFetchInput(config));
+
+                    (databoxClass as any)[nameof<AnyDataboxClass>(s => s.config)] = config;
                 });
             }
         }

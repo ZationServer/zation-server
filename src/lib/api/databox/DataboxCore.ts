@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-// noinspection TypeScriptPreferShortImport
+// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {DataboxConfig}                    from "../../main/config/definitions/parts/databoxConfig";
 import Bag                                from "../Bag";
 import NoMoreDataAvailableError           from "../../main/databox/noMoreDataAvailable";
@@ -14,13 +14,15 @@ import {ClientErrorName}                  from "../../main/constants/clientError
 const  Jwt                              = require('jsonwebtoken');
 import {JwtSignFunction, JwtVerifyFunction, JwtVerifyOptions} from "../../main/constants/jwt";
 import DbKeyArrayUtils                    from "../../main/databox/dbKeyArrayUtils";
-import {DataboxInfo, DbToken}             from "../../main/databox/dbDefinitions";
+import {DataboxConnectReq, DataboxConnectRes, DataboxInfo, DbToken} from '../../main/databox/dbDefinitions';
 import {InputConsumeFunction}             from "../../main/input/inputClosureCreator";
 import ErrorUtils                         from "../../main/utils/errorUtils";
 import {DbAccessCheckFunction}            from "../../main/databox/databoxAccessHelper";
 import NoDataAvailableError               from "../../main/databox/noDataAvailable";
 import ConfigBuildError                   from "../../main/config/manager/configBuildError";
 import Component, {ComponentClass}        from '../Component';
+import {AnyDataboxClass}                  from './AnyDataboxClass';
+import {componentTypeSymbol}              from '../../main/component/componentUtils';
 
 /**
  * If you always want to present the most recent data on the client,
@@ -46,7 +48,7 @@ export default abstract class DataboxCore extends Component {
      */
     protected readonly dbTokenVersion: number = 0;
 
-    private readonly _dbPreparedData: DbPreparedData;
+    protected readonly _preparedData: DbPreparedData;
     private readonly _sendErrorDescription: boolean;
     private readonly _preparedTokenSessionKey: string;
 
@@ -54,14 +56,14 @@ export default abstract class DataboxCore extends Component {
     private readonly _initInputConsumer: InputConsumeFunction;
     private readonly _fetchInputConsumer: InputConsumeFunction;
 
-    protected constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
+    protected constructor(identifier: string, bag: Bag, preparedData: DbPreparedData, apiLevel: number | undefined) {
         super(identifier,apiLevel,bag);
-        this._dbPreparedData = dbPreparedData;
+        this._preparedData = preparedData;
         this._sendErrorDescription = this.bag.getMainConfig().sendErrorDescription;
 
-        this._parallelFetch = dbPreparedData.parallelFetch;
-        this._initInputConsumer = dbPreparedData.initInputConsumer;
-        this._fetchInputConsumer = dbPreparedData.fetchInputConsumer;
+        this._parallelFetch = preparedData.parallelFetch;
+        this._initInputConsumer = preparedData.initInputConsumer;
+        this._fetchInputConsumer = preparedData.fetchInputConsumer;
 
         this._preparedTokenSessionKey =
             `${bag.getZationConfig().getDataboxKey()}.${this.dbTokenVersion}.${this.identifier}${apiLevel !== undefined ? apiLevel: ''}`;
@@ -81,6 +83,7 @@ export default abstract class DataboxCore extends Component {
     }
 
     /**
+     * @internal
      * **Not override this method.**
      * A function to consume the fetch input.
      * @param input
@@ -100,6 +103,7 @@ export default abstract class DataboxCore extends Component {
     }
 
     /**
+     * @internal
      * **Not override this method.**
      * A function to consume the init input.
      * @param input
@@ -119,6 +123,26 @@ export default abstract class DataboxCore extends Component {
     }
 
     /**
+     * @internal
+     * **Not override this method.**
+     * A function that is used internally to process a connection request to this databox.
+     * In case of failure or denied, it will throw an error.
+     * @param socket
+     * @param request
+     */
+    abstract async _processConRequest(socket: UpSocket, request: DataboxConnectReq): Promise<DataboxConnectRes>;
+
+    /**
+     * @internal
+     * **Not override this method.**
+     * A method that gets called to check if a socket still has access to this Databox.
+     * Otherwise, the socket will be kicked out.
+     * @private
+     */
+    abstract async _checkSocketHasStillAccess(socket: UpSocket): Promise<void>;
+
+    /**
+     * @internal
      * **Not override this method.**
      * A function that is used internally to check if a socket has access to a Databox.
      * If the access is denied, it will throw an error.
@@ -126,7 +150,7 @@ export default abstract class DataboxCore extends Component {
      * @param dbInfo
      */
     async _checkAccess(socket: UpSocket,dbInfo: DataboxInfo){
-        const {systemAccessCheck,versionAccessCheck} = this._dbPreparedData;
+        const {systemAccessCheck,versionAccessCheck,accessCheck} = this._preparedData;
 
         if(!systemAccessCheck(socket)){
             const err: any = new Error('Access to this Databox with client system denied.');
@@ -140,7 +164,7 @@ export default abstract class DataboxCore extends Component {
             throw err;
         }
 
-        if(!(await this._accessCheck(socket,dbInfo))){
+        if(!(await accessCheck(socket.authEngine,socket.zSocket,dbInfo))){
             const err: any = new Error('Access to this Databox denied.');
             err.name = ClientErrorName.AccessDenied;
             throw err;
@@ -148,6 +172,28 @@ export default abstract class DataboxCore extends Component {
     }
 
     /**
+     * @internal
+     * **Not override this method.**
+     * Processes the db token.
+     * @param signedToken
+     * @param tokenKeyAppend
+     * @private
+     */
+    async _processDbToken(signedToken: string, tokenKeyAppend?: string): Promise<DbToken> {
+        try {
+            const tmpDbToken = await this._verifyDbToken(signedToken,tokenKeyAppend);
+            if(tmpDbToken){
+                return tmpDbToken;
+            }
+        }
+        catch (e) {}
+        const err: any = new Error('Invalid Token');
+        err.name = ClientErrorName.InvalidToken;
+        throw err;
+    }
+
+    /**
+     * @internal
      * **Not override this method.**
      * Verify a session token of the Databox.
      * This method is used internally.
@@ -165,6 +211,7 @@ export default abstract class DataboxCore extends Component {
     }
 
     /**
+     * @internal
      * **Not override this method.**
      * Sign a session token of the Databox.
      * This method is used internally.
@@ -177,16 +224,6 @@ export default abstract class DataboxCore extends Component {
                 err ? reject(new Error('Sign token failed')): resolve(signedToken);
             });
         });
-    }
-
-    /**
-     * **Not override this method.**
-     * Checks if the client has access to the Databox.
-     * @param socket
-     * @param dbInfo
-     */
-    async _accessCheck(socket: UpSocket, dbInfo: DataboxInfo): Promise<boolean> {
-        return await this._dbPreparedData.accessCheck(socket.authEngine,socket.zSocket,dbInfo);
     }
 
     // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
@@ -258,7 +295,7 @@ export default abstract class DataboxCore extends Component {
     public static Config(databoxConfig: DataboxConfig) {
         return (target: ComponentClass) => {
             if(target.prototype instanceof DataboxCore) {
-                target.config = databoxConfig;
+                (target as any)[nameof<AnyDataboxClass>(s => s.config)] = databoxConfig;
             }
             else {
                 throw new ConfigBuildError(`The DataboxConfig decorator can only be used on a class that extends the DataboxCore (Databox or DataboxFamily class).`);
@@ -266,6 +303,8 @@ export default abstract class DataboxCore extends Component {
         }
     }
 }
+
+DataboxCore.prototype[componentTypeSymbol] = 'Databox';
 
 export interface DbPreparedData {
     versionAccessCheck: VersionSystemAccessCheckFunction,

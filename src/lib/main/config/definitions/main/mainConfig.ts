@@ -142,11 +142,6 @@ export interface MainConfig
      */
     httpsConfig?: ServerOptions;
     /**
-     * Indicates if the server should use the token state check.
-     * @default true
-     */
-    useTokenStateCheck?: boolean;
-    /**
      * Indicates if the server should send error descriptions back to the client.
      * @default false
      */
@@ -182,21 +177,6 @@ export interface MainConfig
      * @default true
      */
     provideClientJs?: boolean;
-    /**
-     * Defines if the server should start in auth start mode.
-     * The auth start mode will allow clients only to send an authentication request.
-     * All other requests will be denied.
-     * In the property authStartDuration, you can define how long the authStart should be active,
-     * before the server changes to the normal mode.
-     * @default false
-     */
-    authStart?: boolean;
-    /**
-     * Defines how long the authStart should be active (in milliseconds)
-     * before the server changes in the normal mode.
-     * @default 20000
-     */
-    authStartDuration?: number;
     /**
      * The secret key which zation will use to encrypt/decrypt authTokens.
      * The key can be automatically shared between more server instances.
@@ -649,14 +629,11 @@ export interface InternalMainConfig extends MainConfig {
     workers: 'auto' | number;
     appName: string;
     secure: boolean;
-    useTokenStateCheck: boolean;
     sendErrorDescription: boolean;
     wsEngine: string;
     defaultClientApiLevel: number;
     usePanel: boolean;
     provideClientJs: boolean;
-    authStart: boolean;
-    authStartDuration: number;
     authSecretKey: string;
     authDefaultExpiry: number;
     authPrivateKey: string | null;

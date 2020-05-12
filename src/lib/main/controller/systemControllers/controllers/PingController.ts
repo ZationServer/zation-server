@@ -6,10 +6,10 @@ Copyright(c) Luca Scaringella
 
 // noinspection TypeScriptPreferShortImport
 import Controller         from "../../../../api/Controller";
-// noinspection TypeScriptPreferShortImport
+// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig} from "../../../config/definitions/parts/controllerConfig";
 
-export default class ZationSC_Ping extends Controller
+export default class PingController extends Controller
 {
     static config: ControllerConfig = {
         access: 'all',

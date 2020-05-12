@@ -34,8 +34,6 @@ export type SocketDisconnectionFunction = (socket: ZSocket, code: any, data: any
 export type SocketAuthenticationFunction = (socket: ZSocket) => Promise<void> | void;
 export type SocketDeauthenticationFunction = (socket: ZSocket) => Promise<void> | void;
 export type SocketAuthStateChangeFunction = (socket: ZSocket, stateChangeData: {oldState: string,newState: string,signedAuthToken?: string,authToken?: ZationToken}) => Promise<void> | void;
-export type SocketSubscriptionFunction = (socket: ZSocket, channelName: string, channelOptions: object) => Promise<void> | void;
-export type SocketUnsubscriptionFunction = (socket: ZSocket, channelName: string) => Promise<void> | void;
 export type SocketErrorFunction = (socket: RawSocket, error: object) => Promise<void> | void;
 export type SocketRawFunction = (socket: RawSocket, data: any) => Promise<void> | void;
 export type SocketConnectionAbortFunction = (socket: RawSocket, code: any, data: any) => Promise<void> | void;
@@ -183,23 +181,6 @@ export interface Events
      */
     socketAuthStateChange?: Event<SocketAuthStateChangeFunction>;
     /**
-     * Emitted when a matching client socket successfully subscribes to a channel.
-     * Use it only for advanced use cases.
-     * Runs on a worker process.
-     * The Bag instance can be securely accessed with the variable 'bag'.
-     * @example (socket,channelName,channelOptions) => {}
-     */
-    socketSubscription?: Event<SocketSubscriptionFunction>;
-    /**
-     * Occurs whenever a matching client socket unsubscribes from a channel.
-     * This includes automatic unsubscriptions triggered by disconnects.
-     * Use it only for advanced use cases.
-     * Runs on a worker process.
-     * The Bag instance can be securely accessed with the variable 'bag'.
-     * @example (socket,channelName) => {}
-     */
-    socketUnsubscription?: Event<SocketUnsubscriptionFunction>;
-    /**
      * This gets triggered when an error occurs on a socket.
      * Use it only for advanced use cases.
      * Runs on a worker process.
@@ -253,8 +234,6 @@ export interface PrecompiledEvents extends Events {
     socketAuthentication: SocketAuthenticationFunction;
     socketDeauthentication: SocketDeauthenticationFunction;
     socketAuthStateChange: SocketAuthStateChangeFunction;
-    socketSubscription: SocketSubscriptionFunction;
-    socketUnsubscription: SocketUnsubscriptionFunction;
     socketError: SocketErrorFunction;
     socketRaw: SocketRawFunction;
     socketConnectionAbort: SocketConnectionAbortFunction;

@@ -10,7 +10,12 @@ import {ControllerConfig} from "../main/config/definitions/parts/controllerConfi
 import Bag                from "./Bag";
 import BackErrorBag       from "./BackErrorBag";
 import ConfigBuildError   from '../main/config/manager/configBuildError';
-import Component, {ComponentClass} from './Component';
+import Component, {ComponentClass}        from './Component';
+import {VersionSystemAccessCheckFunction} from '../main/systemVersion/systemVersionChecker';
+import {TokenStateAccessCheckFunction}    from '../main/controller/controllerAccessHelper';
+import {MiddlewareInvokeFunction}         from '../main/controller/controllerUtils';
+import {InputConsumeFunction, InputValidationCheckFunction} from '../main/input/inputClosureCreator';
+import {componentTypeSymbol}                                from '../main/component/componentUtils';
 
 /**
  * The controller is one of the main concepts of zation.
@@ -26,8 +31,15 @@ import Component, {ComponentClass} from './Component';
  */
 export default class Controller extends Component {
 
-    constructor(identifier: string, bag: Bag, apiLevel: number | undefined) {
+    /**
+     * **Not override this**
+     * Used internally.
+     */
+    readonly _preparedData: ControllerPreparedData;
+
+    constructor(identifier: string, bag: Bag, preparedData: ControllerPreparedData, apiLevel: number | undefined) {
         super(identifier,apiLevel,bag);
+        this._preparedData = preparedData;
     }
 
     /**
@@ -94,7 +106,7 @@ export default class Controller extends Component {
     public static Config(controllerConfig: ControllerConfig) {
         return (target: ComponentClass) => {
             if(target.prototype instanceof Controller) {
-                target.config = controllerConfig;
+                (target as any)[nameof<ControllerClass>(s => s.config)] = controllerConfig;
             }
             else {
                 throw new ConfigBuildError(`The ControllerConfig decorator can only be used on a class that extends the Controller class.`);
@@ -103,10 +115,17 @@ export default class Controller extends Component {
     }
 }
 
-export interface ControllerClass {
-    config: ControllerConfig;
+Controller.prototype[componentTypeSymbol] = 'Controller';
 
-    new(identifier: string, bag: Bag, apiLevel: number | undefined): Controller;
+export type ControllerClass = typeof Controller;
 
-    prototype: any;
+export interface ControllerPreparedData {
+    controllerConfig: ControllerConfig,
+    versionAccessCheck: VersionSystemAccessCheckFunction,
+    systemAccessCheck: VersionSystemAccessCheckFunction,
+    tokenStateCheck: TokenStateAccessCheckFunction,
+    middlewareInvoke: MiddlewareInvokeFunction,
+    inputConsume: InputConsumeFunction,
+    inputValidationCheck: InputValidationCheckFunction,
+    finallyHandle: Controller['finallyHandle'];
 }

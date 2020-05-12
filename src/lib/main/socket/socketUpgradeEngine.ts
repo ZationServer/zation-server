@@ -12,16 +12,12 @@ import ZationWorker     = require("../../core/zationWorker");
 import Mapper             from "../utils/mapper";
 import SocketSet          from "../utils/socketSet";
 import {ZationToken}      from "../constants/internal";
-import ChAccessHelper     from "../channel/chAccessHelper";
-import {ChannelPrepare}   from "../channel/channelPrepare";
-import DataboxAccessHelper from "../databox/databoxAccessHelper";
 
 export default class SocketUpgradeEngine
 {
 
     private readonly worker: ZationWorker;
     private readonly sidBuilder: SidBuilder;
-    private readonly channelPrepare: ChannelPrepare;
 
     private mapUserIdToSc: Mapper<UpSocket>;
     private mapTokenIdToSc: Mapper<UpSocket>;
@@ -29,10 +25,9 @@ export default class SocketUpgradeEngine
     private defaultUserGroupSet: SocketSet;
     private panelUserSet: SocketSet;
 
-    constructor(worker: ZationWorker,channelPrepare: ChannelPrepare) {
+    constructor(worker: ZationWorker) {
         this.worker = worker;
         this.sidBuilder = new SidBuilder(worker.options.instanceId,worker.id);
-        this.channelPrepare = channelPrepare;
 
         this.mapUserIdToSc = worker.getUserIdToScMapper();
         this.mapTokenIdToSc = worker.getTokenIdToScMapper();
@@ -55,6 +50,7 @@ export default class SocketUpgradeEngine
         //init
         socket[nameof<UpSocket>(s => s.zationSocketVariables)] = {};
         socket[nameof<UpSocket>(s => s.databoxes)] = [];
+        socket[nameof<UpSocket>(s => s.channels)] = [];
 
         const authEngine = new AuthEngine(socket as UpSocket,this.worker);
         socket[nameof<UpSocket>(s => s.authEngine)] = authEngine;
@@ -78,9 +74,10 @@ export default class SocketUpgradeEngine
 
                 (async () => {
                     const p: Promise<void>[] = [];
-                    p.push(ChAccessHelper.checkSocketCustomChAccess(socket as UpSocket,this.channelPrepare));
-                    p.push(DataboxAccessHelper.checkSocketDataboxAccess(socket as UpSocket));
-                    ChAccessHelper.checkSocketZationChAccess(socket as UpSocket);
+                    const checkObjectives = [...(socket as UpSocket).databoxes,...(socket as UpSocket).channels];
+                    for(let i = 0; i < checkObjectives.length; i++) {
+                        p.push(checkObjectives[i]._checkSocketHasStillAccess(socket as UpSocket));
+                    }
                     await Promise.all(p);
                 })();
 

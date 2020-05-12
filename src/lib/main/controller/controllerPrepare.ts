@@ -8,50 +8,27 @@ import ZationWorker     = require("../../core/zationWorker");
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig} from "../config/definitions/parts/controllerConfig";
 import BackError          from "../../api/BackError";
-import SystemVersionChecker, {VersionSystemAccessCheckFunction} from "../systemVersion/systemVersionChecker";
-import ControllerAccessHelper, {TokenStateAccessCheckFunction}  from "./controllerAccessHelper";
-import Controller, {ControllerClass} from "../../api/Controller";
+import SystemVersionChecker from "../systemVersion/systemVersionChecker";
+import ControllerAccessHelper from "./controllerAccessHelper";
+import Controller, {ControllerClass, ControllerPreparedData} from '../../api/Controller';
 import {MainBackErrors}              from "../zationBackErrors/mainBackErrors";
-import ControllerUtils, {MiddlewareInvokeFunction} from "./controllerUtils";
-import {SystemController}            from "./systemController/systemControler.config";
+import ControllerUtils               from "./controllerUtils";
 import Bag                           from "../../api/Bag";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
-import InputClosureCreator, {InputConsumeFunction, InputValidationCheckFunction} from "../input/inputClosureCreator";
-import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction}                   from "../apiLevel/apiLevelUtils";
+import InputClosureCreator           from "../input/inputClosureCreator";
+import ApiLevelUtils, {ApiLevelSwitch}                                           from "../apiLevel/apiLevelUtils";
 import FuncUtils                                                                 from '../utils/funcUtils';
 import {ErrorEventSingleton}                                                     from '../error/errorEventSingleton';
 import AuthController                                                            from '../../api/AuthController';
+import ComponentPrepare                                                          from '../component/componentPrepare';
+import DynamicSingleton from '../utils/dynamicSingleton';
 
-interface ControllerPreparedData {
-    controllerConfig: ControllerConfig,
-    controllerInstance: Controller,
-    versionAccessCheck: VersionSystemAccessCheckFunction,
-    systemAccessCheck: VersionSystemAccessCheckFunction,
-    tokenStateCheck: TokenStateAccessCheckFunction,
-    middlewareInvoke: MiddlewareInvokeFunction,
-    inputConsume: InputConsumeFunction,
-    inputValidationCheck: InputValidationCheckFunction,
-    finallyHandle: Controller['finallyHandle'];
-}
-
-export default class ControllerPrepare
+export default class ControllerPrepare extends ComponentPrepare<Controller>
 {
-    private readonly zc: ZationConfigFull;
-    private readonly worker: ZationWorker;
-    private readonly bag: Bag;
-
     private _authControllerIdentifier: string;
-    private readonly systemController: Record<string,ControllerPreparedData>;
-    private readonly appController: Record<string,ApiLevelSwitchFunction<ControllerPreparedData>>;
 
-    constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag)
-    {
-        this.zc = zc;
-        this.worker = worker;
-        this.bag = bag;
-
-        this.systemController = {};
-        this.appController = {};
+    constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag) {
+        super(zc,worker,bag);
     }
 
     /**
@@ -61,113 +38,46 @@ export default class ControllerPrepare
         return this._authControllerIdentifier;
     }
 
-    /**
-     * It will return the controller prepared data.
-     * If no controller with the API level is found, it will thrown an API level incompatible back error.
-     * @param identifier
-     * @param apiLevel
-     * @param isSystemController
-     */
-    getControllerPreparedData(identifier: string, apiLevel: number, isSystemController: boolean): ControllerPreparedData
-    {
-        if(!isSystemController) {
-            const controller = this.appController[identifier](apiLevel);
-            if(controller !== undefined){
-                return controller;
-            }
-            else {
-                throw new BackError(MainBackErrors.apiLevelIncompatible,
-                    {controller: identifier, apiLevel: apiLevel});
-            }
-        }
-        else {
-            return this.systemController[identifier];
-        }
+    protected createIncompatibleAPILevelError(identifier: string, apiLevel: number): Error {
+        return new BackError(MainBackErrors.apiLevelIncompatible,
+            {controller: identifier, apiLevel: apiLevel});
     }
 
-    /**
-     * Returns a boolean that indicates if the controller exists.
-     * @param identifier
-     * @param isSystemController
-     */
-    isControllerExist(identifier: string,isSystemController: boolean): boolean {
-        return !isSystemController ? this.appController.hasOwnProperty(identifier) :
-            this.systemController.hasOwnProperty(identifier);
+    protected createComponentNotExistsError(identifier: string): Error {
+        return new BackError(MainBackErrors.controllerNotFound, {controller: identifier});
     }
 
-    /**
-     * Checks if the controller exists.
-     * It will throw a back error if the controller is not found.
-     * @param identifier
-     * @param isSystemController
-     */
-    checkControllerExist(identifier: string,isSystemController: boolean): void
-    {
-        if(!this.isControllerExist(identifier,isSystemController)) {
-            if(isSystemController) {
-                throw new BackError(MainBackErrors.systemControllerNotFound, {controller: identifier});
-            }
-            else {
-                throw new BackError(MainBackErrors.controllerNotFound, {controller: identifier});
-            }
-        }
-    }
-
-    /**
-     * Prepare all system and user controllers.
-     */
-    async prepare(): Promise<void> {
+    prepare(): void {
         const uController = this.zc.appConfig.controllers || {};
-
-        const promises: Promise<void>[] = [];
-
         for(const cIdentifier in uController) {
             if(uController.hasOwnProperty(cIdentifier)) {
-                promises.push(this.addController(cIdentifier,false,uController[cIdentifier]));
+                this.addController(cIdentifier,uController[cIdentifier])
             }
         }
-
-        for(const cIdentifier in SystemController) {
-            if(SystemController.hasOwnProperty(cIdentifier)) {
-                promises.push(this.addController(cIdentifier,true,SystemController[cIdentifier]));
-            }
-        }
-
-        await Promise.all(promises);
     }
 
     /**
-     * Add a controller to the prepare process.
+     * Adds a controller.
      * @param identifier
-     * @param systemController
      * @param definition
      */
-    private async addController(identifier: string,systemController: boolean,definition: ControllerClass | ApiLevelSwitch<ControllerClass>): Promise<void>
+    private addController(identifier: string,definition: ControllerClass | ApiLevelSwitch<ControllerClass>): void
     {
         let authController = false;
         if(typeof definition === 'function') {
-            const preparedControllerData = await this.processController(definition,identifier);
-            if(systemController){
-                this.systemController[identifier] = preparedControllerData;
-            }
-            else {
-                this.appController[identifier] = () => preparedControllerData;
-            }
+            const controllerInstance = this.processController(definition,identifier);
+            this.components[identifier] = () => controllerInstance;
             authController = definition.prototype instanceof AuthController;
         }
         else {
-            const promises: Promise<void>[] = [];
-            const preparedDataMapper: Record<any,ControllerPreparedData> = {};
+            const controllerInstanceMapper: Record<any,Controller> = {};
             for(const k in definition){
                 if(definition.hasOwnProperty(k)) {
                     authController = authController || definition[k].prototype instanceof AuthController;
-                    promises.push((async () => {
-                        preparedDataMapper[k] = await this.processController(definition[k],identifier,parseInt(k));
-                    })());
+                    controllerInstanceMapper[k] = this.processController(definition[k],identifier,parseInt(k));
                 }
             }
-            await Promise.all(promises);
-            this.appController[identifier] = ApiLevelUtils.createApiLevelSwitcher<ControllerPreparedData>(preparedDataMapper);
+            this.components[identifier] = ApiLevelUtils.createApiLevelSwitcher<Controller>(controllerInstanceMapper);
         }
         if(authController){
             this._authControllerIdentifier = identifier;
@@ -180,15 +90,12 @@ export default class ControllerPrepare
      * @param identifier
      * @param apiLevel
      */
-    private async processController(controller: ControllerClass,identifier: string,apiLevel?: number): Promise<ControllerPreparedData>
+    private processController(controller: ControllerClass,identifier: string,apiLevel?: number): Controller
     {
-        const config: ControllerConfig = controller.config;
-        const cInstance: Controller = new controller(identifier,this.worker.getPreparedBag(),apiLevel);
-        await cInstance.initialize(this.worker.getPreparedBag());
+        const config: ControllerConfig = controller.config || {};
 
-        return {
+        const preparedData: ControllerPreparedData = {
             controllerConfig: config,
-            controllerInstance: cInstance,
             versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
             tokenStateCheck: ControllerAccessHelper.createAuthAccessChecker(config.access,this.bag,identifier),
@@ -199,5 +106,12 @@ export default class ControllerPrepare
                 `An error was thrown on the: 'Controller ${identifier}', ${nameof<Controller>(s => s.finallyHandle)}:`,
                 ErrorEventSingleton.get())
         };
+
+        const cInstance: Controller = DynamicSingleton.create<ControllerClass,Controller>
+            (controller,identifier,this.bag,preparedData,apiLevel);
+
+        this.addInit(cInstance);
+
+        return cInstance;
     }
 }

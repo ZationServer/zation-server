@@ -38,12 +38,11 @@ import SystemInfo                                           from "../main/utils/
 import BackErrorBuilder                                     from "../main/builder/backErrorBuilder";
 import BackError                                            from "./BackError";
 import BackErrorBag                                         from "./BackErrorBag";
-import ChannelBagEngine                                     from "../main/channel/channelBagEngine";
+import ChannelPublisher                                     from "../main/internalChannels/internalChannelEngine";
 import ServiceEngine                                        from "../main/services/serviceEngine";
 import ZationConfig                                         from "../main/config/manager/zationConfig";
 import ObjectPath                                           from "../main/utils/objectPath";
 import Logger                                               from "../main/log/logger";
-import ChUtils                                              from "../main/channel/chUtils";
 import SidBuilder                                           from "../main/utils/sidBuilder";
 import TokenUtils                                           from "../main/token/tokenUtils";
 import ObjectPathSequenceImp                                from "../main/internalApi/objectPathSequence/objectPathSequenceImp";
@@ -53,16 +52,23 @@ import ZationConfigFull                                     from "../main/config
 import CloneUtils                                           from "../main/utils/cloneUtils";
 import {JwtSignOptions,JwtVerifyOptions}                    from "../main/constants/jwt";
 import ApiLevelUtils, {ApiLevelSwitch, ApiLevelSwitchFunction} from "../main/apiLevel/apiLevelUtils";
-import {ZationChannel}                                         from "../main/channel/channelDefinitions";
 import {DataboxFamilyClass}                                    from "./databox/DataboxFamily";
-import DataboxFamilyContainer                                  from "../main/databox/container/databoxFamilyContainer";
-import DataboxContainer                                        from "../main/databox/container/databoxContainer";
+import DataboxFamilyContainer                                  from "./databox/container/databoxFamilyContainer";
+import DataboxContainer                                        from "./databox/container/databoxContainer";
 import {DataboxClass}                                          from "./databox/Databox";
 import DataboxUtils                                            from "../main/databox/databoxUtils";
 import ScServer                                                from "../main/sc/scServer";
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ObjectPathSequence}                                    from "../main/internalApi/objectPathSequence/objectPathSequence";
-import {createAsyncTimeout, createIntervalAsyncIterator} from '../main/utils/timeUtils';
+import {createAsyncTimeout, createIntervalAsyncIterator}       from '../main/utils/timeUtils';
+import ComponentUtils                                          from '../main/component/componentUtils';
+import {AnyChannelClass} from './channel/AnyChannelClass';
+import {AnyDataboxClass} from './databox/AnyDataboxClass';
+import {ChannelFamilyClass} from './channel/ChannelFamily';
+import ChannelFamilyContainer from './channel/container/channelFamilyContainer';
+import {ChannelClass} from './channel/Channel';
+import ChannelContainer from './channel/container/channelContainer';
+import ChannelUtils from '../main/channel/channelUtils';
 
 /**
  * The bag instance of this process.
@@ -89,7 +95,7 @@ export let bag: Bag = new Proxy({},{
 }) as Bag;
 
 export default class Bag {
-    protected readonly exchangeEngine: ChannelBagEngine;
+    protected readonly exchangeEngine: ChannelPublisher;
     protected readonly serviceEngine: ServiceEngine;
     protected readonly zc: ZationConfigFull;
     protected readonly worker: ZationWorker;
@@ -99,7 +105,7 @@ export default class Bag {
     private static readyResolve: () => void;
     private static readyRefresher: ((bag: Bag) => void)[] = [];
 
-    protected constructor(worker: ZationWorker, exchangeEngine: ChannelBagEngine) {
+    protected constructor(worker: ZationWorker, exchangeEngine: ChannelPublisher) {
         this.exchangeEngine = exchangeEngine;
         this.serviceEngine = worker.getServiceEngine();
         this.zc = worker.getZationConfig();
@@ -127,7 +133,7 @@ export default class Bag {
      * @param worker
      * @param exchangeEngine
      */
-    static _create(worker: ZationWorker, exchangeEngine: ChannelBagEngine): Bag {
+    static _create(worker: ZationWorker, exchangeEngine: ChannelPublisher): Bag {
         if(Bag._instance !== undefined) return Bag._instance;
 
         const instance = new Bag(worker,exchangeEngine);
@@ -283,15 +289,6 @@ export default class Bag {
     getAuthUserGroupNames(): string[] {
         // noinspection TypeScriptValidateJSTypes
         return Object.keys(this.worker.getAEPreparedPart().getAuthGroups());
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns true if the server is using the token state check.
-     */
-    isUseTokenStateCheck(): boolean {
-        return this.worker.getAEPreparedPart().isUseTokenStateCheck();
     }
 
     //PART Server
@@ -899,202 +896,6 @@ export default class Bag {
         return PortChecker.findAPortInUse(ports,host);
     }
 
-    //Part Socket Channel
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in an user channel or channels.
-     * @example
-     * publishInUserCh('paul10','message',{message: 'hello',fromUserId: 'luca34'});
-     * publishInUserCh(['paul10','lea1'],'message',{message: 'hello',fromUserId: 'luca34'});
-     * @param userId or more userIds in array.
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * If this param is undefined, it will be published anonymously.
-     */
-    async publishInUserCh(userId: string | number | (number | string)[], eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
-        return this.exchangeEngine.publishInUserCh(userId, eventName, data, srcSocketSid);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in an user channel or channels.
-     * @example
-     * pubUserCh('paul10','message',{message: 'hello',fromUserId: 'luca34'});
-     * pubUserCh(['paul10','lea1'],'message',{message: 'hello',fromUserId: 'luca34'});
-     * @param userId or more userIds in array.
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * If this param is undefined, it will be published anonymously.
-     */
-    async pubUserCh(userId: string | number | (number | string)[], eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
-        return this.publishInUserCh(userId, eventName, data, srcSocketSid)
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in all channel.
-     * @example
-     * publishInAllCh('message',{message: 'hello'});
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * If this param is undefined, it will be published anonymously.
-     */
-    async publishInAllCh(eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
-        return this.exchangeEngine.publishInAllCh(eventName, data, srcSocketSid);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in all channel.
-     * @example
-     * pubAllCh('message',{message: 'hello'});
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * If this param is undefined, it will be published anonymously.
-     */
-    async pubAllCh(eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
-        return this.publishInAllCh(eventName, data, srcSocketSid);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in auth user group channel/s.
-     * @example
-     * publishInAuthUserGroupCh('admin','userRegistered',{userId: '1'});
-     * publishInAuthUserGroupCh(['admin','superAdmin'],'userRegistered',{userId: '1'});
-     * @param authUserGroup or an array of auth user groups
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * If this param is undefined, it will be published anonymously.
-     */
-    async publishInAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
-        return this.exchangeEngine.publishInAuthUserGroupCh(authUserGroup, eventName, data, srcSocketSid);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in auth user group channel/s.
-     * @example
-     * pubAuthUserGroupCh('admin','userRegistered',{userId: '1'});
-     * pubAuthUserGroupCh(['admin','superAdmin'],'userRegistered',{userId: '1'});
-     * @param authUserGroup or an array of auth user groups.
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * If this param is undefined, it will be published anonymously.
-     */
-    async pubAuthUserGroupCh(authUserGroup: string | string[], eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
-        return this.publishInAuthUserGroupCh(authUserGroup, eventName, data, srcSocketSid);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in default user group channel.
-     * @example
-     * publishInDefaultUserGroupCh('message',{message: 'hello'});
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * If this param is undefined, it will be published anonymously.
-     */
-    async publishInDefaultUserGroupCh(eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
-        return this.exchangeEngine.publishInDefaultUserGroupCh(eventName, data, srcSocketSid);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in default user group channel.
-     * @example
-     * pubDefaultUserGroupCh('message',{message: 'hello'});
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * If this param is undefined, it will be published anonymously.
-     */
-    async pubDefaultUserGroupCh(eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
-        return this.publishInDefaultUserGroupCh(eventName, data, srcSocketSid);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in all auth user groups channels.
-     * @example
-     * publishInAllAuthUserGroupsCh('message',{fromUserId: '1',message: 'hello'});
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * If this param is undefined, it will be published anonymously.
-     */
-    async publishInAllAuthUserGroupsCh(eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
-        return this.exchangeEngine.publishInAllAuthUserGroupCh(eventName, data, srcSocketSid);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in all auth user groups channels.
-     * @example
-     * pubAllAuthUserGroupsCh('message',{fromUserId: '1',message: 'hello'});
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * If this param is undefined, it will be published anonymously.
-     */
-    async pubAllAuthUserGroupsCh(eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
-        return this.publishInAllAuthUserGroupsCh(eventName, data, srcSocketSid);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in an custom channel.
-     * @example
-     * publishInCustomCh({identifier: 'imageChannel', member: 'image2'},'like',{fromUserId: '1'});
-     * publishInCustomCh({identifier: 'publicChat'},'msg',{msg: 'Hello',fromUserId: '1'});
-     * @param target
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * If this param is undefined, it will be published anonymously.
-     * @throws UnknownCustomCh
-     */
-    async publishInCustomCh(target: {identifier: string,member?: string}, eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
-        return this.exchangeEngine.publishInCustomCh(target, eventName, data, srcSocketSid);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Publish in an custom channel.
-     * @example
-     * publishInCustomCh({identifier: 'imageChannel', member: 'image2'},'like',{fromUserId: '1'});
-     * publishInCustomCh({identifier: 'publicChat'},'msg',{msg: 'Hello',fromUserId: '1'});
-     * @param target
-     * @param eventName
-     * @param data
-     * @param srcSocketSid
-     * If this param is undefined, it will be published anonymously.
-     * @throws UnknownCustomCh
-     */
-    async pubCustomCh(target: {identifier: string,member?: string}, eventName: string, data: object = {}, srcSocketSid?: string): Promise<void> {
-        return this.publishInCustomCh(target,eventName,data,srcSocketSid);
-    }
-
     //Part Services
 
     // noinspection JSUnusedGlobalSymbols
@@ -1201,333 +1002,6 @@ export default class Bag {
      */
     async fetch(url: string | Request, init?: RequestInit): Promise<Response> {
         return fetch(url, init);
-    }
-
-    //Part Channel KickOut
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * KickOut all sockets on the complete system with userId from an custom channel (server side).
-     * @example
-     * kickUserCustomCh('user20','chatGroup');
-     * kickUserCustomCh(['tom39','lara23'],'image','2');
-     * kickUserCustomCh(['tom39','lara23'],'image',undefined,'EXCEPT-SOCKET-SID');
-     * @param userId or more user ids in an array.
-     * @param identifier is optional, if it is not given the users will be kicked out from all custom channels.
-     * @param member only provide an member if you want to kick the socket from a specific member of a custom channel family.
-     * @param exceptSocketSids
-     */
-    async kickUserCustomCh(userId: number | string | (number | string)[], identifier?: string, member?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildCustomChannelChName(identifier, member);
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.UserIds, WorkerChMapTaskAction.KickOut, userId, exceptSocketSids, {ch});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * KickOut all sockets on the complete system with userId from all channel (server side).
-     * @example
-     * kickUserAllCh('user20');
-     * kickUserAllCh(['tom39','lara23']);
-     * kickUserAllCh(['tom39','lara23'],'EXCEPT-SOCKET-SID');
-     * @param userId or more user ids in an array.
-     * @param exceptSocketSids
-     */
-    async kickUserAllCh(userId: number | string | (number | string)[], exceptSocketSids: string[] | string = []): Promise<void> {
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.UserIds, WorkerChMapTaskAction.KickOut, userId, exceptSocketSids, {ch: ZationChannel.ALL});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * KickOut all sockets on the complete system with userId from auth user group channel (server side).
-     * @example
-     * kickUserAuthUserGroupCh('user20','user');
-     * kickUserAuthUserGroupCh(['tom39','lara23'],'user');
-     * kickUserAuthUserGroupCh(['tom39','lara23'],'user','EXCEPT-SOCKET-SID');
-     * @param userId or more user ids in an array.
-     * @param authUserGroup is optional, if it is not given the users will be kicked out from all auth user group channels.
-     * @param exceptSocketSids
-     */
-    async kickUserAuthUserGroupCh(userId: number | string | (number | string)[], authUserGroup?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildAuthUserGroupChName(authUserGroup);
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.UserIds, WorkerChMapTaskAction.KickOut, userId, exceptSocketSids, {ch: ch});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * KickOut all sockets on the complete system with userId from default user group channel (server side).
-     * @example
-     * kickUserDefaultUserGroupCh('user20');
-     * kickUserDefaultUserGroupCh(['tom39','lara23']);
-     * kickUserDefaultUserGroupCh(['tom39','lara23'],'EXCEPT-SOCKET-SID');
-     * @param userId or more user ids in an array.
-     * @param exceptSocketSids
-     */
-    async kickUserDefaultUserGroupCh(userId: number | string | (number | string)[], exceptSocketSids: string[] | string = []): Promise<void> {
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.UserIds, WorkerChMapTaskAction.KickOut, userId, exceptSocketSids, {ch: ZationChannel.DEFAULT_USER_GROUP});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * KickOut all sockets on the complete system with token id from an custom channel (server side).
-     * @example
-     * kickTokenCustomCh('TOKEN-UUID1','publicChat');
-     * kickTokenCustomCh(['TOKEN-UUID1','TOKEN-UUID2'],'image','2');
-     * kickTokenCustomCh(['TOKEN-UUID1','TOKEN-UUID2'],'image',undefined,'EXCEPT-SOCKET-SID');
-     * @param tokenId or more tokenIds in an array.
-     * @param identifier is optional, if it is not given the sockets with tokenId will be kicked out from all custom channels.
-     * @param member only provide an member if you want to kick the socket from a specific member of a custom channel family.
-     * @param exceptSocketSids
-     */
-    async kickTokensCustomCh(tokenId: string | string[], identifier?: string, member?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildCustomChannelChName(identifier, member);
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.TokenIds, WorkerChMapTaskAction.KickOut, tokenId, exceptSocketSids, {ch});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * KickOut all sockets on the complete system with token id from all channel (server side).
-     * @example
-     * kickTokenAllCh('TOKEN-UUID1');
-     * kickTokenCustomCh(['TOKEN-UUID1','TOKEN-UUID2'],'EXCEPT-SOCKET-SID');
-     * @param tokenId or more tokenIds in an array.
-     * @param exceptSocketSids
-     */
-    async kickTokensAllCh(tokenId: string | string[], exceptSocketSids: string[] | string = []): Promise<void> {
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.TokenIds, WorkerChMapTaskAction.KickOut, tokenId, exceptSocketSids, {ch: ZationChannel.ALL});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * KickOut all sockets on the complete system with token id from auth user group channel (server side).
-     * @example
-     * kickTokenAuthUserGroupCh('TOKEN-UUID1','user');
-     * kickTokenAuthUserGroupCh(['TOKEN-UUID1','TOKEN-UUID2'],'user','EXCEPT-SOCKET-SID');
-     * @param tokenId or more tokenIds in an array.
-     * @param authUserGroup is optional, if it is not given the socket with token id will be kicked out from all auth user group channels.
-     * @param exceptSocketSids
-     */
-    async kickTokensAuthUserGroupCh(tokenId: string | string[], authUserGroup?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildAuthUserGroupChName(authUserGroup);
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.TokenIds, WorkerChMapTaskAction.KickOut, tokenId, exceptSocketSids, {ch: ch});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * KickOut all sockets on the complete system with token id from default user group channel (server side).
-     * @example
-     * kickTokenDefaultUserGroupCh('TOKEN-UUID1');
-     * kickTokenDefaultUserGroupCh(['TOKEN-UUID1','TOKEN-UUID2'],'EXCEPT-SOCKET-SID');
-     * @param tokenId or more tokenIds in an array.
-     * @param exceptSocketSids
-     */
-    async kickTokensDefaultUserGroupCh(tokenId: string | string[], exceptSocketSids: string[] | string = []): Promise<void> {
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.TokenIds, WorkerChMapTaskAction.KickOut, tokenId, exceptSocketSids, {ch: ZationChannel.DEFAULT_USER_GROUP});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Kick out all sockets on the complete system from an custom channel.
-     * @example
-     * kickOutAllSocketsCustomCh('CUSTOM-CH-NAME','ID');
-     * kickOutAllSocketsCustomCh('CUSTOM-CH-NAME');
-     * @param identifier is optional, if it is not given the sockets will be kicked out from all custom channels.
-     * @param member only provide an member if you want to kick the socket from a specific member of a custom channel family.
-     * @param exceptSocketSids
-     */
-    async kickAllSocketsCustomCh(identifier?: string, member?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildCustomChannelChName(identifier, member);
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.AllSockets, WorkerChMapTaskAction.KickOut, [], exceptSocketSids, {ch: ch});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Kick out all sockets on the complete system from all channel.
-     * @example
-     * kickOutAllSocketsAllCh();
-     * @param exceptSocketSids
-     */
-    async kickAllSocketsAllCh(exceptSocketSids: string[] | string = []): Promise<void> {
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.AllSockets, WorkerChMapTaskAction.KickOut, [], exceptSocketSids, {ch: ZationChannel.ALL});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Kick out all sockets on the complete system from auth user group channel.
-     * @example
-     * kickOutAllSocketsAuthUserGroupCh();
-     * @param authUserGroup is optional, if it is not given all sockets will be kicked out from all auth user group channels.
-     * @param exceptSocketSids
-     */
-    async kickAllSocketsAuthUserGroupCh(authUserGroup?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildAuthUserGroupChName(authUserGroup);
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.AllSockets, WorkerChMapTaskAction.KickOut, [], exceptSocketSids, {ch: ch});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Kick out all sockets on the complete system from default user group channel.
-     * @example
-     * kickOutAllSocketsDefaultUserGroupCh();
-     * @param exceptSocketSids
-     */
-    async kickAllSocketsDefaultUserGroupCh(exceptSocketSids: string[] | string = []): Promise<void> {
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.AllSockets, WorkerChMapTaskAction.KickOut, [], exceptSocketSids, {ch: ZationChannel.DEFAULT_USER_GROUP});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * KickOut all sockets on the complete system with sid from an custom channel (server side).
-     * @example
-     * kickSocketsCustomCh('SOCKET-SID','publicChat');
-     * kickSocketsCustomCh(['SOCKET-SID-1','SOCKET-SID-2'],'image','2');
-     * @param socketSid or more socketSids in an array.
-     * @param identifier is optional, if it is not given the sockets will be kicked out from all custom channels.
-     * @param member only provide an member if you want to kick the socket from a specific member of a custom channel family.
-     */
-    async kickSocketsCustomCh(socketSid: string | string[], identifier?: string, member?: string): Promise<void> {
-        const ch = ChUtils.buildCustomChannelChName(identifier, member);
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.SocketSids, WorkerChMapTaskAction.KickOut, socketSid, [], {ch});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * KickOut all sockets on the complete system with sid from all channel (server side).
-     * @example
-     * kickSocketsAllCh('SOCKET-SID');
-     * kickSocketsAllCh(['SOCKET-SID-1','SOCKET-SID-2']);
-     * @param socketSid or more socketSids in an array.
-     */
-    async kickSocketsAllCh(socketSid: string | string[]): Promise<void> {
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.SocketSids, WorkerChMapTaskAction.KickOut, socketSid, [], {ch: ZationChannel.ALL});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * KickOut all sockets on the complete system with sid from auth user group channel (server side).
-     * @example
-     * kickSocketsAuthUserGroupCh('SOCKET-SID','user');
-     * kickSocketsAuthUserGroupCh(['SOCKET-SID-1','SOCKET-SID-2'],'user');
-     * @param socketSid or more socketSids in an array.
-     * @param authUserGroup is optional, if it is not given the sockets will be kicked out from all auth user group channels.
-     */
-    async kickSocketsAuthUserGroupCh(socketSid: string | string[], authUserGroup?: string): Promise<void> {
-        const ch = ChUtils.buildAuthUserGroupChName(authUserGroup);
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.SocketSids, WorkerChMapTaskAction.KickOut, socketSid, [], {ch: ch});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * KickOut all sockets on the complete system with sid from default user group channel (server side).
-     * @example
-     * kickSocketsDefaultUserGroupCh('SOCKET-SID');
-     * kickSocketsDefaultUserGroupCh(['SOCKET-SID-1','SOCKET-SID-2']);
-     * @param socketSid or more socketSids in an array.
-     */
-    async kickSocketsDefaultUserGroupCh(socketSid: string | string[]): Promise<void> {
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.SocketSids, WorkerChMapTaskAction.KickOut, socketSid, [], {ch: ZationChannel.DEFAULT_USER_GROUP});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * KickOut all sockets on the complete system which belongs to the auth user groups from an custom channel (server side).
-     * @example
-     * kickAuthUserGroupsCustomCh('user','publicChat');
-     * kickAuthUserGroupsCustomCh(['user','admin'],'image','2');
-     * kickAuthUserGroupsCustomCh(['user','admin'],'image',undefined,'EXCEPT-SOCKET-SID');
-     * @param authUserGroup or more authUserGroups in an array
-     * or null witch stands for all auth user groups
-     * @param identifier is optional, if it is not given the sockets will be kicked out from all custom channels.
-     * @param member only provide an member if you want to kick the socket from a specific member of a custom channel family.
-     * @param exceptSocketSids
-     */
-    async kickAuthUserGroupsCustomCh(authUserGroup: string | null | (string)[], identifier?: string, member?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildCustomChannelChName(identifier, member);
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.AuthUserGroups, WorkerChMapTaskAction.KickOut,
-            authUserGroup || [], exceptSocketSids, {ch, all: authUserGroup === null});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * KickOut all sockets on the complete system which belongs to the auth user groups from all channel (server side).
-     * @example
-     * kickAuthUserGroupsAllCh('user');
-     * kickAuthUserGroupsAllCh(['user','admin'],'EXCEPT-SOCKET-SID');
-     * @param authUserGroup or more authUserGroups in an array
-     * or null witch stands for all auth user groups
-     * @param exceptSocketSids
-     */
-    async kickAuthUserGroupsAllCh(authUserGroup: string | null | (string)[], exceptSocketSids: string[] | string = []): Promise<void> {
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.AuthUserGroups, WorkerChMapTaskAction.KickOut,
-            authUserGroup || [], exceptSocketSids, {ch: ZationChannel.ALL, all: authUserGroup === null});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * KickOut all sockets on the complete system which belongs to the default user group from an custom channel (server side).
-     * @example
-     * kickDefaultUserGroupCustomCh();
-     * kickDefaultUserGroupCustomCh('publicChat');
-     * kickDefaultUserGroupCustomCh('image','2');
-     * kickDefaultUserGroupCustomCh('image',undefined,'EXCEPT-SOCKET-SID');
-     * @param name is optional, if it is not given the sockets will be kicked out from all custom channels.
-     * @param id only provide an id if you want to kick the socket from a specific member of a custom channel family.
-     * @param exceptSocketSids
-     */
-    async kickDefaultUserGroupCustomCh(name?: string, id?: string, exceptSocketSids: string[] | string = []): Promise<void> {
-        const ch = ChUtils.buildCustomChannelChName(name, id);
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.DefaultUserGroup, WorkerChMapTaskAction.KickOut, [], exceptSocketSids, {ch});
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * KickOut all sockets on the complete system which belongs to the default user group from all channel (server side).
-     * @example
-     * kickDefaultUserGroupAllCh();
-     * kickDefaultUserGroupAllCh('EXCEPT-SOCKET-SID');
-     * @param exceptSocketSids
-     */
-    async kickDefaultUserGroupAllCh(exceptSocketSids: string[] | string = []): Promise<void> {
-        await this.exchangeEngine.publishMapTaskToWorker
-        (WorkerChMapTarget.DefaultUserGroup, WorkerChMapTaskAction.KickOut, [], exceptSocketSids, {ch: ZationChannel.ALL});
     }
 
     //Part Extra Emit
@@ -2589,17 +2063,17 @@ export default class Bag {
      * This function helps to access your Databox/es.
      * You only need to call this method with the class/es of the Databox/es.
      * It returns the specific databox instance.
-     * If you want to access multiple databoxes, the method returns a
+     * If you want to access multiple Databoxes, the method returns a
      * DataboxContainer or DataboxFamilyContainer.
-     * With these containers, you can interact with multiple databoxes.
+     * With these containers, you can interact with multiple Databoxes.
      * So, for example, if you have two Databoxes with different API levels from the same type,
      * you can communicate directly with both.
      * But notice that the containers only provides a limited scope of methods.
-     * It is recommended if you use this method in a controller that you prepare
-     * the access to the databox/es in the initialize method.
+     * It is recommended if you use this method in a component that you prepare
+     * the access to the Databox/es in the initialize method.
      * If you use this method in an event function, use an initEvent to prepare the access.
      * @example
-     * databox(ProfileDataboxFamilyV1,ProfileDataboxFamilyV2);
+     * databox(ProfileDatabox_1,ProfileDatabox_2);
      * databox(PublicChatDatabox);
      */
     databox(): undefined;
@@ -2607,37 +2081,37 @@ export default class Bag {
      * This function helps to access your Databox/es.
      * You only need to call this method with the class/es of the Databox/es.
      * It returns the specific databox instance.
-     * If you want to access multiple databoxes, the method returns a
+     * If you want to access multiple Databoxes, the method returns a
      * DataboxContainer or DataboxFamilyContainer.
-     * With these containers, you can interact with multiple databoxes.
+     * With these containers, you can interact with multiple Databoxes.
      * So, for example, if you have two Databoxes with different API levels from the same type,
      * you can communicate directly with both.
      * But notice that the containers only provides a limited scope of methods.
-     * It is recommended if you use this method in a controller that you prepare
-     * the access to the databox/es in the initialize method.
+     * It is recommended if you use this method in a component that you prepare
+     * the access to the Databox/es in the initialize method.
      * If you use this method in an event function, use an initEvent to prepare the access.
      * @example
-     * databox(ProfileDataboxFamilyV1,ProfileDataboxFamilyV2);
+     * databox(ProfileDatabox_1,ProfileDatabox_2);
      * databox(PublicChatDatabox);
      * @param databox
      * The class of the Databox.
      */
-    databox<T extends DataboxClass | DataboxFamilyClass>(databox: T): T['prototype'];
+    databox<T extends AnyDataboxClass>(databox: T): T['prototype'];
     /**
      * This function helps to access your Databox/es.
      * You only need to call this method with the class/es of the Databox/es.
      * It returns the specific databox instance.
-     * If you want to access multiple databoxes, the method returns a
+     * If you want to access multiple Databoxes, the method returns a
      * DataboxContainer or DataboxFamilyContainer.
-     * With these containers, you can interact with multiple databoxes.
+     * With these containers, you can interact with multiple Databoxes.
      * So, for example, if you have two Databoxes with different API levels from the same type,
      * you can communicate directly with both.
      * But notice that the containers only provides a limited scope of methods.
-     * It is recommended if you use this method in a controller that you prepare
-     * the access to the databox/es in the initialize method.
+     * It is recommended if you use this method in a component that you prepare
+     * the access to the Databox/es in the initialize method.
      * If you use this method in an event function, use an initEvent to prepare the access.
      * @example
-     * databox(ProfileDataboxFamilyV1,ProfileDataboxFamilyV2);
+     * databox(ProfileDatabox_1,ProfileDatabox_2);
      * databox(PublicChatDatabox);
      * @param databoxes
      * The class/es of the Databox/es.
@@ -2647,17 +2121,17 @@ export default class Bag {
      * This function helps to access your Databox/es.
      * You only need to call this method with the class/es of the Databox/es.
      * It returns the specific databox instance.
-     * If you want to access multiple databoxes, the method returns a
+     * If you want to access multiple Databoxes, the method returns a
      * DataboxContainer or DataboxFamilyContainer.
-     * With these containers, you can interact with multiple databoxes.
+     * With these containers, you can interact with multiple Databoxes.
      * So, for example, if you have two Databoxes with different API levels from the same type,
      * you can communicate directly with both.
      * But notice that the containers only provides a limited scope of methods.
-     * It is recommended if you use this method in a controller that you prepare
-     * the access to the databox/es in the initialize method.
+     * It is recommended if you use this method in a component that you prepare
+     * the access to the Databox/es in the initialize method.
      * If you use this method in an event function, use an initEvent to prepare the access.
      * @example
-     * databox(ProfileDataboxFamilyV1,ProfileDataboxFamilyV2);
+     * databox(ProfileDatabox_1,ProfileDatabox_2);
      * databox(PublicChatDatabox);
      * @param databoxes
      * The class/es of the Databox/es.
@@ -2667,29 +2141,139 @@ export default class Bag {
      * This function helps to access your Databox/es.
      * You only need to call this method with the class/es of the Databox/es.
      * It returns the specific databox instance.
-     * If you want to access multiple databoxes, the method returns a
+     * If you want to access multiple Databoxes, the method returns a
      * DataboxContainer or DataboxFamilyContainer.
-     * With these containers, you can interact with multiple databoxes.
+     * With these containers, you can interact with multiple Databoxes.
      * So, for example, if you have two Databoxes with different API levels from the same type,
      * you can communicate directly with both.
      * But notice that the containers only provides a limited scope of methods.
-     * It is recommended if you use this method in a controller that you prepare
-     * the access to the databox/es in the initialize method.
+     * It is recommended if you use this method in a component that you prepare
+     * the access to the Databox/es in the initialize method.
      * If you use this method in an event function, use an initEvent to prepare the access.
      * @example
-     * databox(ProfileDataboxFamilyV1,ProfileDataboxFamilyV2);
+     * databox(ProfileDatabox_1,ProfileDatabox_2);
      * databox(PublicChatDatabox);
      * @param databoxes
      * The class/es of the Databox/es.
      */
-    databox<T extends DataboxClass | DataboxFamilyClass>(...databoxes: DataboxFamilyClass[] | DataboxClass[] | [T]): DataboxFamilyContainer | DataboxContainer | T | undefined {
+    databox<T extends AnyDataboxClass>(...databoxes: DataboxFamilyClass[] | DataboxClass[] | [T]): DataboxFamilyContainer | DataboxContainer | T['prototype'] | undefined {
         switch (databoxes.length) {
             case 0:
                 return undefined;
             case 1:
-                return DataboxUtils.getDbInstance(databoxes[0]);
+                return ComponentUtils.getInstanceSafe(databoxes[0]);
             default:
                 return DataboxUtils.getDbContainer(databoxes as DataboxFamilyClass[] | DataboxClass[]);
+        }
+    }
+
+    //Part Channels
+
+    /**
+     * This function helps to access your Channel/s.
+     * You only need to call this method with the class/es of the Channel/s.
+     * It returns the specific Channel instance.
+     * If you want to access multiple channels, the method returns a ChannelContainer
+     * or ChannelFamilyContainer.
+     * With these containers, you can interact with multiple channels.
+     * So, for example, if you have two Channels with different API levels from the same type,
+     * you can communicate directly with both.
+     * But notice that the containers only provides a limited scope of methods.
+     * It is recommended if you use this method in a component that you prepare
+     * the access to the Channel/s in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the access.
+     * @example
+     * channel(ChatChannel_1,ChatChannel_2);
+     * databox(InfoChannel);
+     */
+    channel(): undefined;
+    /**
+     * This function helps to access your Channel/s.
+     * You only need to call this method with the class/es of the Channel/s.
+     * It returns the specific Channel instance.
+     * If you want to access multiple channels, the method returns a ChannelContainer
+     * or ChannelFamilyContainer.
+     * With these containers, you can interact with multiple channels.
+     * So, for example, if you have two Channels with different API levels from the same type,
+     * you can communicate directly with both.
+     * But notice that the containers only provides a limited scope of methods.
+     * It is recommended if you use this method in a component that you prepare
+     * the access to the Channel/s in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the access.
+     * @example
+     * databox(ProfileDataboxFamilyV1,ProfileDataboxFamilyV2);
+     * databox(PublicChatDatabox);
+     * @param channel
+     * The class of the Channel.
+     */
+    channel<T extends AnyChannelClass>(channel: T): T['prototype'];
+    /**
+     * This function helps to access your Channel/s.
+     * You only need to call this method with the class/es of the Channel/s.
+     * It returns the specific Channel instance.
+     * If you want to access multiple channels, the method returns a ChannelContainer
+     * or ChannelFamilyContainer.
+     * With these containers, you can interact with multiple channels.
+     * So, for example, if you have two Channels with different API levels from the same type,
+     * you can communicate directly with both.
+     * But notice that the containers only provides a limited scope of methods.
+     * It is recommended if you use this method in a component that you prepare
+     * the access to the Channel/s in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the access.
+     * @example
+     * channel(ChatChannel_1,ChatChannel_2);
+     * databox(InfoChannel);
+     * @param channels
+     * The class/es of the Channel/s.
+     */
+    channel(...channels: ChannelFamilyClass[]): ChannelFamilyContainer;
+    /**
+     * This function helps to access your Channel/s.
+     * You only need to call this method with the class/es of the Channel/s.
+     * It returns the specific Channel instance.
+     * If you want to access multiple channels, the method returns a ChannelContainer
+     * or ChannelFamilyContainer.
+     * With these containers, you can interact with multiple channels.
+     * So, for example, if you have two Channels with different API levels from the same type,
+     * you can communicate directly with both.
+     * But notice that the containers only provides a limited scope of methods.
+     * It is recommended if you use this method in a component that you prepare
+     * the access to the Channel/s in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the access.
+     * @example
+     * channel(ChatChannel_1,ChatChannel_2);
+     * databox(InfoChannel);
+     * @param channels
+     * The class/es of the Channel/s.
+     */
+    channel(...channels: ChannelClass[]): ChannelContainer;
+    /**
+     * This function helps to access your Channel/s.
+     * You only need to call this method with the class/es of the Channel/s.
+     * It returns the specific Channel instance.
+     * If you want to access multiple channels, the method returns a ChannelContainer
+     * or ChannelFamilyContainer.
+     * With these containers, you can interact with multiple channels.
+     * So, for example, if you have two Channels with different API levels from the same type,
+     * you can communicate directly with both.
+     * But notice that the containers only provides a limited scope of methods.
+     * It is recommended if you use this method in a component that you prepare
+     * the access to the Channel/s in the initialize method.
+     * If you use this method in an event function, use an initEvent to prepare the access.
+     * @example
+     * channel(ChatChannel_1,ChatChannel_2);
+     * databox(InfoChannel);
+     * @param channels
+     * The class/es of the Channel/s.
+     */
+    channel<T extends AnyChannelClass>(...channels: ChannelFamilyClass[] | ChannelClass[] | [T]): ChannelFamilyContainer | ChannelContainer | T['prototype'] | undefined {
+        switch (channels.length) {
+            case 0:
+                return undefined;
+            case 1:
+                return ComponentUtils.getInstanceSafe(channels[0]);
+            default:
+                return ChannelUtils.getChContainer(channels as ChannelFamilyClass[] | ChannelClass[]);
         }
     }
 }

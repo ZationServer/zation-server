@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import RequestBag                                                  from "../../../../api/RequestBag";
-import {AuthAccessConfig, SystemAccessConfig, VersionAccessConfig} from "./configComponents";
+import {AuthAccessConfig, SystemAccessConfig, VersionAccessConfig} from "./accessConfigs";
 import {InputConfig}                                               from "./inputConfig";
 
 export type ControllerMiddlewareFunction = (reqBag: RequestBag) => Promise<void> | void;

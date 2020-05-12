@@ -8,20 +8,14 @@ import UpSocket, {RespondFunction} from "../../sc/socket";
 import DataboxPrepare              from "../databoxPrepare";
 import ZationConfig                from "../../config/manager/zationConfig";
 import DataboxCore                 from "../../../api/databox/DataboxCore";
-import DataboxFamily               from "../../../api/databox/DataboxFamily";
 import {
-    DataboxInfo,
     DataboxConnectReq,
     DataboxConnectRes,
-    DbRegisterResult,
-    DbToken
 } from "../dbDefinitions";
-import DataboxReqUtils             from "./databoxReqUtils";
 import {ClientErrorName}           from "../../constants/clientErrorName";
-import Databox                     from "../../../api/databox/Databox";
-import DataboxUtils                from "../databoxUtils";
-import ObjectUtils                 from "../../utils/objectUtils";
 import Logger                      from "../../log/logger";
+import {isValidDataboxConnectionRequest} from './databoxReqUtils';
+import ApiLevelUtils                     from '../../apiLevel/apiLevelUtils';
 
 export default class DataboxHandler
 {
@@ -44,39 +38,18 @@ export default class DataboxHandler
         catch (err) {respond(err);}
     }
 
-    private async _processConnectReq(input: DataboxConnectReq, socket: UpSocket): Promise<DataboxConnectRes>
+    private async _processConnectReq(request: DataboxConnectReq, socket: UpSocket): Promise<DataboxConnectRes>
     {
         //check request valid
-        if(!DataboxReqUtils.isValidReqStructure(input)) {
+        if(!isValidDataboxConnectionRequest(request)) {
             const err: any = new Error(`Not valid req structure.`);
             err.name = ClientErrorName.InvalidRequest;
             throw err;
         }
 
-        //exists?
-        const reqApiLevel = typeof input.al === 'number' ? Math.floor(input.al): undefined;
-        const apiLevel = reqApiLevel || socket.apiLevel || this.defaultApiLevel;
-
         //throws if not exists or api level is incompatible
-        const db: DataboxCore = this.dbPrepare.getDatabox((input.d as string),apiLevel);
-
-        if(this.debug){
-            Logger.log.debug(`Databox Connection Request -> `,input);
-        }
-
-        const isFamily = DataboxPrepare.isDataBoxFamily(db);
-        const memberProvided = input.m !== undefined;
-
-        if(isFamily && !memberProvided){
-            const err: any = new Error(`The family member is required to request a DataboxFamily.`);
-            err.name = ClientErrorName.MemberMissing;
-            throw err;
-        }
-        if(!isFamily && memberProvided){
-            const err: any = new Error(`Unnecessary member provided to request a Databox.`);
-            err.name = ClientErrorName.UnnecessaryMember;
-            throw err;
-        }
+        const db: DataboxCore = this.dbPrepare.get((request.d as string),
+            (ApiLevelUtils.parseRequestApiLevel(request.a) || socket.apiLevel || this.defaultApiLevel));
 
         if(socket.databoxes.length > this.socketDataboxLimit){
             const err: any = new Error(`Limit of Databoxes for this socket is reached.`);
@@ -84,61 +57,11 @@ export default class DataboxHandler
             throw err;
         }
 
-        const dbInfo: DataboxInfo = {
-            identifier: (input.d as string),
-            member: undefined
-        };
-
-        //access and id check
-        if(isFamily){
-            await (db as DataboxFamily)._isMember(input.m as string);
-            dbInfo.member = (input.m as string);
-        }
-        await db._checkAccess(socket,dbInfo);
-
-        //token check and init data
-        let dbToken: undefined | DbToken = undefined;
-        let usedToken = false;
-        let processedInitData: any;
-        try {
-            if(typeof input.t === 'string'){
-                const tmpDbToken = await db._verifyDbToken(input.t,isFamily ? input.m: undefined);
-                if(tmpDbToken){
-                    processedInitData = await db._consumeInitInput(tmpDbToken.rawInitData);
-                    usedToken = true;
-                    dbToken = tmpDbToken;
-                }
-            }
-        }
-        catch (e) {}
-        if(!dbToken){
-            dbToken = DataboxUtils.createDbToken(input.ii);
-            processedInitData = await db._consumeInitInput(input.ii);
+        if(this.debug){
+            Logger.log.debug(`Databox Connection Request -> `,request);
         }
 
-        if(typeof processedInitData === 'object'){
-            ObjectUtils.deepFreeze(processedInitData);
-        }
-
-        //register
-        let keys: DbRegisterResult;
-        let lastCudId;
-        if(isFamily){
-            keys = await (db as DataboxFamily)._registerSocket(socket,(input.m as string),dbToken,processedInitData);
-            lastCudId = (db as DataboxFamily)._getLastCudId(input.m as string);
-        }
-        else {
-            keys = await (db as Databox)._registerSocket(socket,dbToken,processedInitData);
-            lastCudId = (db as Databox)._getLastCudId();
-        }
-
-        return {
-            ut: usedToken,
-            ci: lastCudId,
-            pf: db.isParallelFetch(),
-            i: keys.inputCh,
-            o: keys.outputCh
-        };
+        return await db._processConRequest(socket,request);
     }
 
 }

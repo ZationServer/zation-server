@@ -4,20 +4,13 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ControllerReq, ControllerRequestType} from '../controllerDefinitions';
+import {ControllerBaseReq, ControllerValidationCheckReq, SpecialController} from '../controllerDefinitions';
 
-export default class ControllerReqUtils
-{
-    static isValidReqStructure(request: ControllerReq): boolean {
-        return ((typeof request.c === 'string' || typeof request.sc === 'string') ||
-                request.t === ControllerRequestType.Auth)
-    }
+export function checkValidControllerBaseRequest(request: ControllerBaseReq): boolean {
+    return typeof request === 'object' && request &&
+        (typeof request.c === 'string' || request.c === SpecialController.AuthController);
+}
 
-    static isSystemControllerReq(request: ControllerReq): boolean {
-        return typeof request.sc === 'string';
-    }
-
-    static getControllerId(request: ControllerReq, isSystemController: boolean): string {
-        return isSystemController ? request.sc as string : request.c as string;
-    }
+export function isValidationCheckRequest(request: ControllerBaseReq & any): request is ControllerValidationCheckReq {
+    return request.v;
 }

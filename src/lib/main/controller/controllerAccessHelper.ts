@@ -9,7 +9,7 @@ import AuthEngine         from "../auth/authEngine";
 import ZationTokenWrapper from "../internalApi/zationTokenWrapper";
 import Bag                from "../../api/Bag";
 import AccessUtils        from "../access/accessUtils";
-import {NormalAuthAccessCustomFunction} from "../config/definitions/parts/configComponents";
+import {NormalAuthAccessCustomFunction} from "../config/definitions/parts/accessConfigs";
 import {AccessConfigValue}              from '../access/accessOptions';
 import {getNotableValue, isNotableNot, Notable} from '../../api/Notable';
 
@@ -21,9 +21,9 @@ export default class ControllerAccessHelper
      * Returns a closure for checking the token state access to a controller.
      * @param accessValue
      * @param bag
-     * @param cName
+     * @param controller
      */
-    static createAuthAccessChecker(accessValue: Notable<AccessConfigValue<NormalAuthAccessCustomFunction>> | undefined, bag: Bag,cName: string): TokenStateAccessCheckFunction {
+    static createAuthAccessChecker(accessValue: Notable<AccessConfigValue<NormalAuthAccessCustomFunction>> | undefined, bag: Bag,controller: string): TokenStateAccessCheckFunction {
         const rawValue = getNotableValue(accessValue);
         if(rawValue !== undefined){
             return AccessUtils.createAccessChecker<TokenStateAccessCheckFunction,NormalAuthAccessCustomFunction>
@@ -32,7 +32,7 @@ export default class ControllerAccessHelper
                     const token = authEngine.socket.authToken;
                     return func(bag,token !== null ? new ZationTokenWrapper(token): null);
                 };
-            },`Controller: ${cName}`);
+            },`Controller: ${controller}`);
         }
         //access is not defined
         return async () => false;

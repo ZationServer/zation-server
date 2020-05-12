@@ -4,8 +4,6 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-// noinspection TypeScriptPreferShortImport
-import {DataboxConfig}               from "../../main/config/definitions/parts/databoxConfig";
 import Bag                           from "../Bag";
 import DataboxCore, {DbPreparedData} from "./DataboxCore";
 import UpSocket, {RespondFunction}   from "../../main/sc/socket";
@@ -40,9 +38,8 @@ import {
     DbSelector,
     DbProcessedSelector,
     PotentialUpdateOption,
-    PotentialInsertOption, IfOptionProcessed, DbClientInputSignalPackage
+    PotentialInsertOption, IfOptionProcessed, DbClientInputSignalPackage, DataboxConnectReq, DataboxConnectRes
 } from '../../main/databox/dbDefinitions';
-import DataboxAccessHelper from "../../main/databox/databoxAccessHelper";
 import {ScExchange}        from "../../main/sc/scServer";
 import DataboxUtils        from "../../main/databox/databoxUtils";
 import DbCudOperationSequence                     from "../../main/databox/dbCudOperationSequence";
@@ -50,7 +47,8 @@ import {ClientErrorName}                          from "../../main/constants/cli
 import DataboxFetchManager, {FetchManagerBuilder} from "../../main/databox/databoxFetchManager";
 import ZSocket                                    from "../../main/internalApi/zSocket";
 import CloneUtils                                 from "../../main/utils/cloneUtils";
-import {databoxInstanceSymbol}                    from "../../main/databox/databoxPrepare";
+import {removeValueFromArray}                     from '../../main/utils/arrayUtils';
+import ObjectUtils from '../../main/utils/objectUtils';
 const defaultSymbol                              = Symbol();
 
 /**
@@ -92,18 +90,19 @@ export default class Databox extends DataboxCore {
     private readonly _dbEvent: string;
     private readonly _maxSocketInputChannels: number;
 
+    private _internalRegistered: boolean = false;
+    private _unregisterTimout: NodeJS.Timeout | undefined;
+
     private readonly _buildFetchManager: FetchManagerBuilder<typeof Databox.prototype._fetch>;
     private readonly _sendCudToSockets: (dbClientCudPackage: DbClientOutputCudPackage) => Promise<void> | void;
     private readonly _hasBeforeEventsListener: boolean;
-
-    static [databoxInstanceSymbol]: Databox;
 
     constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
         super(identifier,bag,dbPreparedData,apiLevel);
         this._scExchange = bag.getWorker().scServer.exchange;
         this._workerFullId = bag.getWorker().getFullWorkerId();
         this._maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
-        this._dbEvent = `${DATABOX_START_INDICATOR}-${this.identifier}-${apiLevel !== undefined ? apiLevel: ''}`;
+        this._dbEvent = `${DATABOX_START_INDICATOR}${this.identifier}${apiLevel !== undefined ? `@${apiLevel}`: ''}`;
 
         this._buildFetchManager = DataboxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
@@ -111,8 +110,6 @@ export default class Databox extends DataboxCore {
 
         this._hasBeforeEventsListener = !this.beforeInsert[defaultSymbol] ||
             !this.beforeUpdate[defaultSymbol] || !this.beforeDelete[defaultSymbol];
-
-        this._reg();
     }
 
     /**
@@ -125,15 +122,36 @@ export default class Databox extends DataboxCore {
             !this.updateMiddleware[defaultSymbol] ||
             !this.deleteMiddleware[defaultSymbol])
         {
-            return this._sendCudToSocketsWithMiddleware;
+            return this._sendCudToSocketsWithMiddleware.bind(this);
         }
         else {
-            return this._sendToSockets;
+            return this._sendToSockets.bind(this);
         }
     }
 
     //Core
+    async _processConRequest(socket: UpSocket, request: DataboxConnectReq): Promise<DataboxConnectRes> {
+        if(request.m != undefined){
+            const err: any = new Error(`Unnecessary member provided to request a Databox.`);
+            err.name = ClientErrorName.UnnecessaryMember;
+            throw err;
+        }
+
+        await this._checkAccess(socket,{identifier: this.identifier});
+
+        const dbToken: DbToken = typeof request.t === 'string' ?
+            await this._processDbToken(request.t) : DataboxUtils.createDbToken(request.i);
+
+        const processedInitData = await this._consumeInitInput(dbToken.rawInitData);
+        if(typeof processedInitData === 'object'){ObjectUtils.deepFreeze(processedInitData);}
+
+        const keys: DbRegisterResult = await this._registerSocket(socket,dbToken,processedInitData);
+
+        return [keys.inputCh,keys.outputCh,this._getLastCudId(),this.isParallelFetch()];
+    }
+
     /**
+     * @internal
      * **Not override this method.**
      * @param socket
      * @param dbToken
@@ -150,7 +168,7 @@ export default class Databox extends DataboxCore {
         const chInputId = DataboxUtils.generateInputChId(inputChIds);
         inputChIds.add(chInputId);
 
-        const inputCh = this._dbEvent+'-'+chInputId;
+        const inputCh = this._dbEvent+'.'+chInputId;
 
         const fetchManager = this._buildFetchManager();
 
@@ -161,6 +179,12 @@ export default class Databox extends DataboxCore {
                         if(typeof (senderPackage as DbClientInputSignalPackage).s as any === 'string'){
                             this.onReceivedSignal(socket.zSocket,(senderPackage as DbClientInputSignalPackage).s,
                                 (senderPackage as DbClientInputSignalPackage).d);
+                        }
+                        else {
+                            const err: any = new Error('Invalid package');
+                            err.name = ClientErrorName.InvalidPackage;
+                            // noinspection ExceptionCaughtLocallyJS
+                            throw err;
                         }
                         break;
                     case DbClientInputAction.fetch:
@@ -195,7 +219,8 @@ export default class Databox extends DataboxCore {
                     default :
                         const err: any = new Error('Unknown action');
                         err.name = ClientErrorName.UnknownAction;
-                        respond(err);
+                        // noinspection ExceptionCaughtLocallyJS
+                        throw err;
                 }
             }
             catch (err) {respond(err);}
@@ -206,12 +231,13 @@ export default class Databox extends DataboxCore {
 
     private _disconnectSocket(socket: UpSocket,disconnectHandler: () => void) {
         socket.off('disconnect',disconnectHandler);
-        DataboxAccessHelper.rmDb(this,socket);
+        removeValueFromArray(socket.databoxes,this);
         this._rmSocket(socket);
         this.onDisconnection(socket.zSocket);
     }
 
     /**
+     * @internal
      * **Not override this method.**
      * @private
      */
@@ -253,15 +279,21 @@ export default class Databox extends DataboxCore {
     }
 
     /**
-     * Adds a socket internally in the map. (For getting updates of this family member)
+     * Adds a socket internally in the map. (For getting updates of this Databox)
      * @param socket
      * @private
      */
     private _connectSocket(socket: UpSocket): DbSocketMemory {
-
         let socketMemoryData = this._regSockets.get(socket);
         if(!socketMemoryData){
             //new socket = connect
+            if(!this._internalRegistered){
+                this._register();
+            }
+            else {
+                this._clearUnregisterTimeout();
+            }
+
             const inputChPrefix = `${this._dbEvent}-`;
             const inputChIds = new Set<string>();
 
@@ -293,7 +325,7 @@ export default class Databox extends DataboxCore {
             this._regSockets.set(socket,socketMemoryData);
 
             socket.on('disconnect',disconnectHandler);
-            DataboxAccessHelper.addDb(this,socket);
+            socket.databoxes.push(this);
             this.onConnection(socket.zSocket);
         }
         return socketMemoryData;
@@ -306,16 +338,42 @@ export default class Databox extends DataboxCore {
      */
     private _rmSocket(socket: UpSocket){
         this._regSockets.delete(socket);
+        if(this._regSockets.size === 0) {
+            this._createUnregisterTimeout();
+        }
+    }
+
+    /**
+     * Clears the timeout to unregister.
+     * @private
+     */
+    private _clearUnregisterTimeout(): void {
+        if(this._unregisterTimout !== undefined){
+            clearTimeout(this._unregisterTimout);
+            this._unregisterTimout = undefined;
+        }
+    }
+
+    /**
+     * Creates (set or renew) the timeout to unregister.
+     * @private
+     */
+    private _createUnregisterTimeout(): void {
+        if(this._unregisterTimout !== undefined){clearTimeout(this._unregisterTimout);}
+        this._unregisterTimout = setTimeout(() => {
+            this._unregister();
+            this._unregisterTimout = undefined;
+        }, 120000);
     }
 
     /**
      * Registers for listening to the Databox channel.
      * @private
      */
-    private _reg() {
+    private _register() {
         this._scExchange.subscribe(this._dbEvent)
             .watch(async (data) => {
-                if((data as DbWorkerCudPackage).w !== this._workerFullId) {
+                if((data as DbWorkerPackage).w !== this._workerFullId) {
                     switch ((data as DbWorkerPackage).a) {
                         case DbWorkerAction.cud:
                             await this._processCudOperations((data as DbWorkerCudPackage).d);
@@ -330,6 +388,17 @@ export default class Databox extends DataboxCore {
                     }
                 }
             });
+    }
+
+    /**
+     * Unregister for listening to the internal Databox channel.
+     * @private
+     */
+    private _unregister() {
+        const channel = this._scExchange.channel(this._dbEvent);
+        channel.unwatch();
+        channel.destroy();
+        this._internalRegistered = false;
     }
 
     /**
@@ -443,6 +512,7 @@ export default class Databox extends DataboxCore {
     }
 
     /**
+     * @internal
      * **Not override this method.**
      * This method is used to send the cud package to
      * all workers and execute it on the current worker.
@@ -483,6 +553,19 @@ export default class Databox extends DataboxCore {
         for(let [socket, socketMemory] of this._regSockets.entries()) {
             socket.emit(this._dbEvent,closePackage);
             socketMemory.unregisterSocket();
+        }
+    }
+
+    /**
+     * @internal
+     * @param socket
+     * @private
+     */
+    async _checkSocketHasStillAccess(socket: UpSocket): Promise<void> {
+        if(!(await this._preparedData.accessCheck(socket.authEngine,socket.zSocket,
+            {identifier: this.identifier})))
+        {
+            this.kickOut(socket);
         }
     }
 
@@ -918,12 +1001,4 @@ Databox.prototype['beforeInsert'][defaultSymbol] = true;
 Databox.prototype['beforeUpdate'][defaultSymbol] = true;
 Databox.prototype['beforeDelete'][defaultSymbol] = true;
 
-export interface DataboxClass {
-    config: DataboxConfig;
-
-    new(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined): Databox;
-
-    prototype: any;
-
-    readonly [databoxInstanceSymbol]: Databox | undefined;
-}
+export type DataboxClass = typeof Databox;

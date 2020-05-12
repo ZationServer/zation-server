@@ -42,4 +42,12 @@ export default class ApiLevelUtils
             return undefined;
         }
     }
+
+    /**
+     * Parses the request API level.
+     * @param apiLevel
+     */
+    static parseRequestApiLevel(apiLevel: any): number | undefined {
+        return typeof apiLevel === 'number' ? Math.floor(apiLevel) : undefined
+    }
 }

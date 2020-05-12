@@ -18,16 +18,6 @@ export const MainBackErrors = {
         fromZationSystem: true
     },
 
-    systemControllerNotFound: {
-        name         : 'systemControllerNotFound',
-        description  : 'The system controller is not found.',
-        type         : ErrorType.InputError,
-        sendInfo     : true,
-        //INFO
-        // controller
-        fromZationSystem: true
-    },
-
     apiLevelIncompatible: {
         name         : 'apiLevelIncompatible',
         description  : 'The API level of the client is incompatible with the request.',
@@ -121,9 +111,9 @@ export const MainBackErrors = {
         fromZationSystem: true
     },
 
-    unknownCustomCh : {
-        name         : 'unknownCustomCh',
-        description  : 'Unknown custom channel',
+    unknownChannel : {
+        name         : 'unknownChannel',
+        description  : 'Unknown channel',
         type         : ErrorType.SystemError,
         sendInfo     : false,
         private      : true,
@@ -132,14 +122,15 @@ export const MainBackErrors = {
         fromZationSystem: true
     },
 
-    databoxNotFound : {
-        name         : 'databoxNotFound',
-        description  : 'The Databox is not found.',
+    componentNotFound : {
+        name         : 'componentNotFound',
+        description  : 'The Component is not found.',
         type         : ErrorType.SystemError,
         sendInfo     : false,
         private      : true,
         //INFO
         // className
+        // componentType
         fromZationSystem: true
     },
 
@@ -275,15 +266,6 @@ export const MainBackErrors = {
         fromZationSystem: true
     },
 
-    authStartActive   : {
-        name         : 'authStartActive',
-        description  : 'Auth start is active, zation only accept auth request for a time!',
-        type         : ErrorType.TimeError,
-        private      : false,
-        sendInfo     : false,
-        fromZationSystem: true
-    },
-
     noAccessWithTokenState : {
         name         : 'noAccessWithTokenState',
         description  : 'You have no access with the token state, to this controller.',
@@ -296,18 +278,18 @@ export const MainBackErrors = {
         fromZationSystem: true
     },
 
-    wrongInputDataStructure: {
-        name         : 'wrongInputDataStructure',
-        description  : 'Wrong input data with wrong structure.',
+    invalidRequest: {
+        name         : 'invalidRequest',
+        description  : 'Invalid request.',
         type         : ErrorType.InputError,
         private      : false,
         sendInfo     : false,
         fromZationSystem: true
     },
 
-    wrongInputTypeInParamBasedInput: {
-        name         : 'wrongInputTypeInParamBasedInput',
-        description  : 'Wrong input type in param based input. The type has to be an array or object.',
+    invalidInputTypeInParamBasedInput: {
+        name         : 'invalidInputTypeInParamBasedInput',
+        description  : 'Invalid input type in param based input. The type has to be an array or object.',
         type         : ErrorType.InputError,
         //INFO
         // inputType
@@ -324,9 +306,9 @@ export const MainBackErrors = {
         fromZationSystem: true
     },
 
-    wrongValidationCheckStructure: {
-        name         : 'wrongValidationCheckStructure',
-        description  : 'Wrong validation check structure!',
+    invalidValidationCheckStructure: {
+        name         : 'invalidValidationCheckStructure',
+        description  : 'Invalid validation check structure!',
         type         : ErrorType.InputError,
         private      : false,
         sendInfo     : true,

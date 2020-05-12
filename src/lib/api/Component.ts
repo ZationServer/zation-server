@@ -8,6 +8,8 @@ import {extractComponentName} from '../main/utils/componentUtils';
 import {ControllerClass}      from './Controller';
 import {AnyDataboxClass}      from './databox/AnyDataboxClass';
 import Bag                    from './Bag';
+import {AnyChannelClass}      from './channel/AnyChannelClass';
+import {componentTypeSymbol, familyTypeSymbol} from '../main/component/componentUtils';
 
 export default class Component {
 
@@ -54,4 +56,7 @@ export default class Component {
     }
 }
 
-export type ComponentClass = ControllerClass | AnyDataboxClass;
+Component.prototype[familyTypeSymbol] = false;
+Component.prototype[componentTypeSymbol] = 'Unknown';
+
+export type ComponentClass = ControllerClass | AnyDataboxClass | AnyChannelClass;

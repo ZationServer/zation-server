@@ -7,7 +7,6 @@ Copyright(c) Luca Scaringella
 import {ConfigNames, DEFAULT_USER_GROUP_FALLBACK, ZationAccessRecord} from '../../constants/internal';
 import {AppConfig}                                    from '../definitions/main/appConfig';
 import {PanelUserConfig}                              from '../definitions/main/mainConfig';
-import {BaseCustomChannelConfig, ZationChannelConfig} from '../definitions/parts/channelsConfig';
 // noinspection TypeScriptPreferShortImport
 import {OnlyBase64Functions, OnlyDateFunctions, OnlyNumberFunctions, OnlyStringFunctions, TypeTypes} from '../../constants/validation';
 import ConfigCheckerTools                    from './configCheckerTools';
@@ -25,12 +24,13 @@ import {modelNameSymbol, modelOptionalSymbol, modelPrototypeSymbol}             
 import {AnyOfModel, ArrayModel, InputConfig, Model, ObjectModel, ParamInput, ValueModel} from '../definitions/parts/inputConfig';
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig}               from '../definitions/parts/controllerConfig';
+// noinspection ES6PreferShortImport
 import {DataboxConfig}                  from '../definitions/parts/databoxConfig';
 import DataboxFamily                    from '../../../api/databox/DataboxFamily';
 import Databox                          from '../../../api/databox/Databox';
-import {AuthAccessConfig, VersionAccessConfig} from '../definitions/parts/configComponents';
+import {AuthAccessConfig}               from '../definitions/parts/accessConfigs';
 import DbConfigUtils                           from '../../databox/dbConfigUtils';
-import {getNotableValue, isNotableNot}         from '../../../api/Notable';
+import {getNotableValue}                       from '../../../api/Notable';
 import ErrorBag                                from '../../error/errorBag';
 import {modelIdSymbol}                         from '../../models/modelId';
 import {inputConfigTranslateSymbol, isInputConfigTranslatable} from '../../../api/configTranslatable/inputConfigTranslatable';
@@ -38,6 +38,11 @@ import {isReusableModel}                                       from '../../model
 import {processAnyOfKey}                                       from '../../models/anyOfModelUtils';
 import AuthController                                          from '../../../api/AuthController';
 import {AnyDataboxClass}                                       from '../../../api/databox/AnyDataboxClass';
+import {AnyChannelClass}                                       from '../../../api/channel/AnyChannelClass';
+import {ChannelConfig}                                         from '../../../..';
+import Channel                                                 from '../../../api/channel/Channel';
+import ChannelFamily                                           from '../../../api/channel/ChannelFamily';
+import {ComponentClass}                                        from '../../../api/Component';
 
 export interface ModelCheckedMem {
     _checked: boolean
@@ -51,6 +56,8 @@ export default class ConfigChecker
     private authControllerIdentifier: string;
     private validAccessValues: any[];
     private checkedModelIds: number[] = [];
+
+    private componentes: ComponentClass[] = [];
 
     constructor(zationConfigLoader) {
         this.zcLoader = zationConfigLoader;
@@ -81,7 +88,7 @@ export default class ConfigChecker
     private prepareAllValidUserGroupsAndCheck() {
 
         let groups: any = [];
-        let extraKeys: any = [
+        const extraKeys: any = [
             nameof<ZationAccessRecord>(s => s.all),
             nameof<ZationAccessRecord>(s => s.allNotAuth),
             nameof<ZationAccessRecord>(s => s.allAuth)
@@ -126,98 +133,62 @@ export default class ConfigChecker
     private checkAppConfig() {
         this.checkAccessControllerDefaultIsSet();
         this.checkControllers();
-        this.checkDataboxConfigs();
-        this.checkCustomChannelsDefaults();
-        this.checkCustomChannels();
-        this.checkZationChannels();
+        this.checkDataboxes();
+        this.checkChannels();
     }
 
-    private checkCustomChannelsDefaults(){
-        const customChannelsDefaults = this.zcLoader.appConfig.customChannelDefaults;
-        if(typeof customChannelsDefaults === 'object'){
-            this.checkCustomChannelConfig(customChannelsDefaults, new Target('Custom channel defaults: '));
+    private checkComponentIsNotRegistered(component: ComponentClass,target: Target) {
+        if(this.componentes.includes(component)) {
+            this.ceb.addError(new ConfigError(ConfigNames.App,
+                `${target.toString()
+            } is already used in the configuration with another identifier or API level. All zation components are singletons.`));
+        }
+        else {
+            this.componentes.push(component);
         }
     }
 
-    private checkCustomChannels() {
-        const customChannels = this.zcLoader.appConfig.customChannels;
-        if(typeof customChannels === 'object'){
-            const target = new Target('Custom Channel: ');
+    private checkChannels() {
+        //check Databoxes
+        if (typeof this.zcLoader.appConfig.channels === 'object') {
+            const channels = this.zcLoader.appConfig.channels;
+            for (let identifier in channels) {
+                if (channels.hasOwnProperty(identifier)) {
+                    this.checkIdentifier(identifier,'Channel');
 
-            for(const key in customChannels){
-                if(customChannels.hasOwnProperty(key)){
-
-                    const secTarget = target.addPath(key);
-
-                    let value: any = customChannels[key];
-
-                    if(Array.isArray(value)){
-                        if(value.length > 1){
+                    Iterator.iterateCompDefinition<AnyChannelClass>(channels[identifier],(channelClass, apiLevel) =>{
+                        if(apiLevel !== undefined && isNaN(parseInt(apiLevel))) {
                             this.ceb.addError(new ConfigError(ConfigNames.App,
-                                `${secTarget.toString()} to define a custom channel family, the array should only contain one or zero elements.`));
+                                `Channel: '${identifier}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
                         }
-                        value = value[0] || {};
-                    }
-
-                    this.checkIdentifier(key,'Custom channel',target.toString() + ' ');
-                    this.checkCustomChannelConfig(value, secTarget);
+                        const chTarget = new Target(`Channel: '${identifier}' ${apiLevel ? `(API Level: ${apiLevel}) `: ''}`);
+                        this.checkChannel(channelClass,chTarget);
+                        this.checkComponentIsNotRegistered(channelClass,chTarget);
+                    });
                 }
             }
         }
-    }
-
-    private checkZationChannels() {
-        const zationChannels = this.zcLoader.appConfig.zationChannels;
-
-        if(typeof zationChannels === 'object'){
-            const target = new Target('Zation Channels: ');
-
-            for(const key in zationChannels){
-                if(zationChannels.hasOwnProperty(key)){
-                    this.checkZationChannelConfig(zationChannels[key],target.addPath(key));
-                }
-            }
+        //check defaults
+        if (typeof this.zcLoader.appConfig.channelDefaults === 'object') {
+            const channel = this.zcLoader.appConfig.channelDefaults;
+            this.checkChannelConfig(channel, new Target(nameof<AppConfig>(s => s.channelDefaults)));
         }
     }
 
-    private checkClientPubAccess(channel: ZationChannelConfig,target: Target) {
-        //check protocolAccess dependency to userGroups
-        this.checkAccessKeyDependency(getNotableValue(channel.clientPublishAccess),
-            target.addPath(nameof<ZationChannelConfig>(s => s.clientPublishAccess)));
-
-        this.warningForPublish(channel.clientPublishAccess, target);
-    }
-
-    private checkSubAccess(channel: BaseCustomChannelConfig, target: Target) {
-        //check protocolAccess dependency to userGroups
-        this.checkAccessKeyDependency(getNotableValue(channel.subscribeAccess),
-            target.addPath(nameof<BaseCustomChannelConfig>(s => s.subscribeAccess)));
-    }
-
-
-    private checkZationChannelConfig(channel: ZationChannelConfig,target: Target) {
-        if(typeof channel === 'object'){
-            this.checkClientPubAccess(channel,target);
+    private checkChannel(cCh: AnyChannelClass, target: Target) {
+        if(cCh.prototype instanceof Channel || cCh.prototype instanceof ChannelFamily) {
+            if(cCh.config)
+                this.checkChannelConfig(cCh.config,target);
+        }
+        else {
+            this.ceb.addError(new ConfigError(ConfigNames.App,
+                `${target.toString()} is not extends the main Channel or ChannelFamily class.`));
         }
     }
 
-    private checkCustomChannelConfig(channel: BaseCustomChannelConfig, target: Target): void {
-        if (typeof channel === 'object') {
-            this.checkClientPubAccess(channel,target);
-            this.checkSubAccess(channel,target);
-        }
+    private checkChannelConfig(config: ChannelConfig, target: Target) {
+        this.checkAuthAccessConfig(config, target);
     }
-
-    // noinspection JSMethodCanBeStatic
-    private warningForPublish(value: any, target: Target): void {
-        if (getNotableValue(value) === !isNotableNot(value)) {
-            Logger.consoleLogConfigWarning
-            (ConfigNames.App,
-                `${target.toString()} please notice that 'clientPubAccess' is used when a client publishes from outside in a channel! ` +
-                `That is only useful for advanced use cases otherwise its recommended to use a controller (with validation) and publish from the server side.`);
-        }
-    }
-
 
     private checkAccessControllerDefaultIsSet() {
         const accessValue = getNotableValue(ObjectPath.get(this.zcLoader.appConfig,
@@ -227,7 +198,7 @@ export default class ConfigChecker
         }
     }
 
-    private checkObject(obj: ObjectModel, target: Target, rememberCache: Model[], inheritanceCheck: boolean = true, skipTargetPathAdd: boolean = false, skipProps: string[] = []) {
+    private checkObjectModel(obj: ObjectModel, target: Target, rememberCache: Model[], inheritanceCheck: boolean = true, skipTargetPathAdd: boolean = false, skipProps: string[] = []) {
         if(!skipTargetPathAdd && typeof obj[modelNameSymbol] === 'string'){
             target = target.addPath(`(${obj[modelNameSymbol]})`);
         }
@@ -324,7 +295,7 @@ export default class ConfigChecker
 
                 //Check only new anonymous object models.
                 if(!(resModel as ModelCheckedMem)._checked){
-                    this.checkObject(resModel as ObjectModel,target,rememberCache,false,true,propsOverwritten);
+                    this.checkObjectModel(resModel as ObjectModel,target,rememberCache,false,true,propsOverwritten);
                 }
 
                 this.checkObjExtendsResolve(target,srcTarget,baseModel,resModel as ObjectModel,
@@ -353,17 +324,6 @@ export default class ConfigChecker
         this.checkPanelUserMainConfig();
         this.checkOrigins();
         this.checkDefaultClientApiLevel();
-        this.mainConfigWarnings();
-    }
-
-    private mainConfigWarnings() {
-        if(!this.zcLoader.mainConfig.useTokenStateCheck){
-            Logger.consoleLogConfigWarning
-            (
-                ConfigNames.Main,
-                `Notice that with deactivated TokenStateCheck everyone can access every component.`
-            );
-        }
     }
 
     private checkDefaultClientApiLevel()
@@ -454,6 +414,8 @@ export default class ConfigChecker
             const controller = this.zcLoader.appConfig.controllers;
             for (let identifier in controller) {
                 if (controller.hasOwnProperty(identifier)) {
+                    this.checkIdentifier(identifier,'Controller');
+
                     let count = 0;
                     let authControllerCount = 0;
                     Iterator.iterateCompDefinition<ControllerClass>(controller[identifier],(controllerClass,apiLevel) =>{
@@ -467,6 +429,7 @@ export default class ConfigChecker
                             authControllerCount++;
                         }
                         this.checkController(controllerClass,target);
+                        this.checkComponentIsNotRegistered(controllerClass,target);
                         count++;
                     });
                     if(authControllerCount > 0) {
@@ -502,18 +465,22 @@ export default class ConfigChecker
         }
     }
 
-    private checkDataboxConfigs() {
+    private checkDataboxes() {
         //check Databoxes
         if (typeof this.zcLoader.appConfig.databoxes === 'object') {
             const databoxes = this.zcLoader.appConfig.databoxes;
-            for (let cId in databoxes) {
-                if (databoxes.hasOwnProperty(cId)) {
-                    Iterator.iterateCompDefinition<AnyDataboxClass>(databoxes[cId],(databoxClass, apiLevel) =>{
+            for (let identifier in databoxes) {
+                if (databoxes.hasOwnProperty(identifier)) {
+                    this.checkIdentifier(identifier,'Databox');
+
+                    Iterator.iterateCompDefinition<AnyDataboxClass>(databoxes[identifier],(databoxClass, apiLevel) =>{
                         if(apiLevel !== undefined && isNaN(parseInt(apiLevel))) {
                             this.ceb.addError(new ConfigError(ConfigNames.App,
-                                `Databox: '${cId}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
+                                `Databox: '${identifier}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
                         }
-                        this.checkDatabox(databoxClass, new Target(`Databox: '${cId}' ${apiLevel ? `(API Level: ${apiLevel}) `: ''}`));
+                        const dbTarget = new Target(`Databox: '${identifier}' ${apiLevel ? `(API Level: ${apiLevel}) `: ''}`);
+                        this.checkDatabox(databoxClass,dbTarget);
+                        this.checkComponentIsNotRegistered(databoxClass,dbTarget);
                     });
                 }
             }
@@ -524,24 +491,13 @@ export default class ConfigChecker
             const databox = this.zcLoader.appConfig.databoxDefaults;
             this.checkDataboxConfig(databox, new Target(nameof<AppConfig>(s => s.databoxDefaults)));
         }
-
     }
 
-    // noinspection JSMethodCanBeStatic
-    private checkVersionAccessConfig(cc: VersionAccessConfig, target: Target) {
-        if (typeof cc.versionAccess === 'object' &&
-            Object.keys(cc.versionAccess).length === 0) {
-            Logger.consoleLogConfigWarning(
-                ConfigNames.App,
-                target.toString() + ' It is recommended that versionAccess has at least one system!'
-            );
-        }
-
-    }
 
     private checkController(cv: ControllerClass, target: Target) {
         if(cv.prototype instanceof Controller) {
-            this.checkControllerConfig(cv.config,target);
+            if(cv.config)
+                this.checkControllerConfig(cv.config,target);
         }
         else {
             this.ceb.addError(new ConfigError(ConfigNames.App,
@@ -552,12 +508,12 @@ export default class ConfigChecker
     private checkControllerConfig(config: ControllerConfig,target: Target) {
         this.checkAuthAccessConfig(config, target);
         this.checkInputConfig(config,target.addPath('input'));
-        this.checkVersionAccessConfig(config, target);
     }
 
     private checkDatabox(cdb: AnyDataboxClass, target: Target) {
         if(cdb.prototype instanceof DataboxFamily || cdb.prototype instanceof Databox) {
-            this.checkDataboxConfig(cdb.config,target);
+            if(cdb.config)
+                this.checkDataboxConfig(cdb.config,target);
         }
         else {
             this.ceb.addError(new ConfigError(ConfigNames.App,
@@ -578,8 +534,6 @@ export default class ConfigChecker
 
         this.checkInputConfig(DbConfigUtils.convertDbFetchInput(config),
             target.addPath('fetchInput'),'Fetch');
-
-        this.checkVersionAccessConfig(config, target);
     }
 
     // noinspection JSMethodCanBeStatic
@@ -736,7 +690,7 @@ export default class ConfigChecker
                 if (value.hasOwnProperty(nameof<ObjectModel>(s => s.properties))) {
                     //is object model
                     rememberCache.push(value);
-                    this.checkObject(value as ObjectModel, target, rememberCache);
+                    this.checkObjectModel(value as ObjectModel, target, rememberCache);
                 } else if (value.hasOwnProperty(nameof<ArrayModel>(s => s.array))) {
                     //is array model
                     rememberCache.push(value);

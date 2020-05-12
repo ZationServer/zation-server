@@ -7,7 +7,6 @@ Copyright(c) Luca Scaringella
 import 'source-map-support/register'
 
 import ScServer               from "../main/sc/scServer";
-import ChMiddlewareHelper     from '../main/channel/chMiddlewareHelper';
 import {
     WorkerChMapTaskAction,
     WorkerChSpecialTaskAction,
@@ -46,7 +45,6 @@ import ViewEngine           from "../main/views/viewEngine";
 import Logger               from "../main/log/logger";
 import PanelEngine          from "../main/panel/panelEngine";
 import SidBuilder           from "../main/utils/sidBuilder";
-import ChUtils              from "../main/channel/chUtils";
 import TokenUtils, {TokenClusterKeyCheckFunction} from "../main/token/tokenUtils";
 import SystemInfo           from "../main/utils/systemInfo";
 import BackgroundTasksWorkerSaver from "../main/background/backgroundTasksWorkerSaver";
@@ -54,20 +52,19 @@ import MiddlewareUtils      from "../main/utils/middlewareUtils";
 import ZationConfigFull     from "../main/config/manager/zationConfigFull";
 import ConfigLoader         from "../main/config/manager/configLoader";
 import SocketUpgradeEngine  from "../main/socket/socketUpgradeEngine";
-import ChannelBagEngine     from "../main/channel/channelBagEngine";
+import InternalChannelEngine, {INTERNAL_WORKER_CH} from '../main/internalChannels/internalChannelEngine';
 import {
     AuthMiddlewareReq,
     HandshakeScMiddlewareReq,
     HandshakeWsMiddlewareReq,
     PubInMiddlewareReq,
-    PubOutMiddlewareReq,
     SubMiddlewareReq
 } from "../main/sc/scMiddlewareReq";
 import {SocketAction}             from "../main/constants/socketAction";
 import {TaskFunction}             from "../main/config/definitions/parts/backgroundTask";
 import {ClientErrorName}          from "../main/constants/clientErrorName";
 import {DATABOX_START_INDICATOR}  from "../main/databox/dbDefinitions";
-import {ZationChannel}            from "../main/channel/channelDefinitions";
+import {CHANNEL_START_INDICATOR}  from '../main/channel/channelDefinitions';
 import DataboxHandler             from "../main/databox/handle/databoxHandler";
 import DataboxPrepare             from "../main/databox/databoxPrepare";
 import LicenseManager, {License}  from "../main/utils/licenseManager";
@@ -79,6 +76,9 @@ import {startModeSymbol}                from './startMode';
 import createLogFileDownloader          from '../main/log/logFileHttpEndpoint';
 import StartDebugStopwatch              from '../main/utils/startDebugStopwatch';
 import {ErrorEventSingleton}            from '../main/error/errorEventSingleton';
+import ChannelHandler                   from '../main/channel/handle/channelHandler';
+import DynamicSingleton                 from '../main/utils/dynamicSingleton';
+import PanelChannel                     from '../main/channel/systemChannels/channels/PanelChannel';
 
 const  SCWorker: any        = require('socketcluster/scworker');
 
@@ -103,16 +103,14 @@ class ZationWorker extends SCWorker
     private databoxPrepare: DataboxPrepare;
     private aePreparedPart: AEPreparedPart;
     private panelEngine: PanelEngine;
-    private chMiddlewareHelper: ChMiddlewareHelper;
-    private channelBagEngine: ChannelBagEngine;
+    private internalChannelEngine: InternalChannelEngine;
     private originCheck: OriginChecker;
     private channelPrepare: ChannelPrepare;
-    private zationCReqHandler: ControllerReqHandler;
-    private zationDbHandler: DataboxHandler;
+    private controllerReqHandler: ControllerReqHandler;
+    private databoxHandler: DataboxHandler;
+    private channelHandler: ChannelHandler;
     private socketUpdateEngine: SocketUpgradeEngine;
     private tokenClusterKeyCheck: TokenClusterKeyCheckFunction;
-
-    private authStartActive: boolean;
 
     private app: any;
 
@@ -218,45 +216,48 @@ class ZationWorker extends SCWorker
         this.aePreparedPart = new AEPreparedPart(this.zc);
         debugStopwatch.stop(`The Worker with id ${this.id} has prepared an auth engine part.`);
 
-        //ChannelPrepare (!Before ChannelBagEngine)
+        //(!Before Bag)
         debugStopwatch.start();
-        this.channelPrepare = new ChannelPrepare(this.zc);
-        debugStopwatch.stop(`The Worker with id ${this.id} has created the channel prepare engine.`);
+        this.internalChannelEngine = new InternalChannelEngine(this.scServer);
+        debugStopwatch.stop(`The Worker with id ${this.id} has initialized the channel publish helper.`);
 
         debugStopwatch.start();
-        this.channelBagEngine = new ChannelBagEngine(this,this.aePreparedPart,this.channelPrepare);
-        debugStopwatch.stop(`The Worker with id ${this.id} has initialized the channel bag engine.`);
-
-        debugStopwatch.start();
-        this.preparedBag = Bag._create(this,this.channelBagEngine);
-        //set Bag for events on channels or access check
-        this.channelBagEngine.bag = this.preparedBag;
+        this.preparedBag = Bag._create(this,this.internalChannelEngine);
         debugStopwatch.stop(`The Worker with id ${this.id} has created the bag instance.`);
 
         //Socket update engine
         debugStopwatch.start();
-        this.socketUpdateEngine = new SocketUpgradeEngine(this,this.channelPrepare);
+        this.socketUpdateEngine = new SocketUpgradeEngine(this);
         debugStopwatch.stop(`The Worker with id ${this.id} has created the socket update engine.`);
 
         debugStopwatch.start();
         this.databoxPrepare = new DataboxPrepare(this.zc,this,this.preparedBag);
-        await this.databoxPrepare.prepare();
+        this.databoxPrepare.prepare();
         debugStopwatch.stop(`The Worker with id ${this.id} has prepared the Databoxes.`);
 
-        //PrepareChannels after Bag!
+        //ChannelPrepare
         debugStopwatch.start();
-        this.channelPrepare.prepare(this.preparedBag);
-        debugStopwatch.stop(`The Worker with id ${this.id} has prepared the channels.`);
+        this.channelPrepare = new ChannelPrepare(this.zc,this,this.preparedBag);
+        this.channelPrepare.prepare();
+        await this.channelPrepare.init();
+        debugStopwatch.stop(`The Worker with id ${this.id} has prepared and initialized the Channels.`);
+
+        debugStopwatch.start();
+        await this.databoxPrepare.init();
+        debugStopwatch.stop(`The Worker with id ${this.id} has initialized the Databoxes.`);
 
         //PrepareController after Bag!
-        //After databoxes prepare (To access databoxes using the bag).
+        //After databoxes, channel prepare (To access databoxes and channels using the bag).
         debugStopwatch.start();
         this.controllerPrepare = new ControllerPrepare(this.zc,this,this.preparedBag);
-        await this.controllerPrepare.prepare();
-        debugStopwatch.stop(`The Worker with id ${this.id} has prepared the controllers.`);
+        this.controllerPrepare.prepare();
+        await this.controllerPrepare.init();
+        debugStopwatch.stop(`The Worker with id ${this.id} has prepared and initialized the controllers.`);
 
         debugStopwatch.start();
-        this.panelEngine = new PanelEngine(this,this.aePreparedPart.getAuthGroups());
+        const panelChannel = DynamicSingleton.getInstance<typeof PanelChannel,PanelChannel>(PanelChannel);
+        if(!panelChannel) throw new Error('Can not find the instance of system panel channel.');
+        this.panelEngine = new PanelEngine(this,panelChannel,this.aePreparedPart.getAuthGroups());
         if(this.zc.mainConfig.usePanel) {
             await this.initPanelUpdates();
             debugStopwatch.stop(`The Worker with id ${this.id} has created the panel engine.`);
@@ -264,10 +265,6 @@ class ZationWorker extends SCWorker
         else {
             debugStopwatch.stop(`The Worker with id ${this.id} has checked for the panel engine.`);
         }
-
-        debugStopwatch.start();
-        this.chMiddlewareHelper = new ChMiddlewareHelper(this.channelPrepare,this.preparedBag);
-        debugStopwatch.stop(`The Worker with id ${this.id} has initialized the channel middleware helper.`);
 
         debugStopwatch.start();
         this.loadUserBackgroundTasks();
@@ -282,16 +279,16 @@ class ZationWorker extends SCWorker
         debugStopwatch.stop(`The Worker with id ${this.id} has registered to the worker channel.`);
 
         debugStopwatch.start();
-        this.zationCReqHandler = new ControllerReqHandler(this);
-        debugStopwatch.stop(`The Worker with id ${this.id} has created the zation request handler.`);
+        this.controllerReqHandler = new ControllerReqHandler(this);
+        debugStopwatch.stop(`The Worker with id ${this.id} has created the Controller handler.`);
 
         debugStopwatch.start();
-        this.zationDbHandler = new DataboxHandler(this.databoxPrepare,this.zc);
-        debugStopwatch.stop(`The Worker with id ${this.id} has created the zation Databox handler.`);
+        this.databoxHandler = new DataboxHandler(this.databoxPrepare,this.zc);
+        debugStopwatch.stop(`The Worker with id ${this.id} has created the Databox handler.`);
 
         debugStopwatch.start();
-        this.checkAuthStart();
-        debugStopwatch.stop(`The Worker with id ${this.id} has checked for authStart.`);
+        this.channelHandler = new ChannelHandler(this.channelPrepare,this.zc);
+        debugStopwatch.stop(`The Worker with id ${this.id} has created the Channel handler.`);
 
         Bag._isReady();
 
@@ -368,11 +365,15 @@ class ZationWorker extends SCWorker
             Logger.log.debug(`Socket with id: ${socket.id} is connected!`);
 
             socket.on('>',(data, respond) => {
-                this.zationCReqHandler.processRequest(data,socket,respond);
+                this.controllerReqHandler.processRequest(data,socket,respond);
             });
 
             socket.on(DATABOX_START_INDICATOR,(data, respond) => {
-                this.zationDbHandler.processConnectReq(data,socket,respond);
+                this.databoxHandler.processConnectReq(data,socket,respond);
+            });
+
+            socket.on(CHANNEL_START_INDICATOR,(data, respond) => {
+                this.channelHandler.processSubRequest(data,socket,respond);
             });
 
             await initPromise;
@@ -466,280 +467,19 @@ class ZationWorker extends SCWorker
     {
         const middleware = this.zc.middleware;
 
-        const userChInfo = this.channelPrepare.getUserChInfo();
-        const authUserGroupChInfo = this.channelPrepare.getAuthUserGroupChInfo();
-        const defaultUserGroupChInfo = this.channelPrepare.getDefaultUserGroupChInfo();
-        const allChInfo = this.channelPrepare.getAllChInfo();
-
-        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_SUBSCRIBE, async (req: SubMiddlewareReq, next) => {
-            const authToken = req.socket.getAuthToken();
-            const channel = req.channel;
-
-            if (channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
-                next(await this.chMiddlewareHelper.checkAccessSubCustomCh(req.socket,channel));
-            }
-            else if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
-                if(authToken !== null){
-                    const id = authToken.userId;
-                    if(id !== undefined) {
-                        if (ZationChannel.USER_CHANNEL_PREFIX + id === channel) {
-                            Logger.log.debug(`Socket with id: ${req.socket.id} subscribes to the user channel: '${id}'.`);
-                            next();
-                        }
-                        else {
-                            const err: any = new Error(`A client can only subscribe to the user channel where his user id belongs to.`);
-                            err.name = ClientErrorName.AccessDenied;
-                            next(err); //Block!
-                        }
-                    }
-                    else {
-                        const err: any = new Error(`A client with undefined user id cannot subscribe to this user channel.`);
-                        err.name = ClientErrorName.AccessDenied;
-                        next(err); //Block!
-                    }
-                }
-                else {
-                    const err: any = new Error('An anonymous client cannot subscribe to this user channel.');
-                    err.name = ClientErrorName.AccessDenied;
-                    next(err); //Block!
-                }
-            }
-            else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
-                if(authToken !== null){
-                    const authUserGroup = authToken.authUserGroup;
-                    if(authUserGroup !== undefined) {
-                        if (ZationChannel.AUTH_USER_GROUP_PREFIX + authUserGroup === channel) {
-                            Logger.log.debug
-                            (`Socket with id: ${req.socket.id} subscribes to the auth user group channel: '${authUserGroup}'.`);
-                            next();
-                        }
-                        else {
-                            const err: any = new Error('A client can only subscribe to the auth user group channel where his auth user group belongs to.');
-                            err.name = ClientErrorName.AccessDenied;
-                            next(err); //Block!
-                        }
-                    }
-                    else {
-                        const err: any = new Error(`A client with undefined auth user group cannot subscribe to this auth user group channel.`);
-                        err.name = ClientErrorName.AccessDenied;
-                        next(err); //Block!
-                    }
-                }
-                else {
-                    const err: any = new Error('An anonymous client cannot subscribe to this auth user group channel.');
-                    err.name = ClientErrorName.AccessDenied;
-                    next(err); //Block!
-                }
-            }
-            else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
-                if(authToken !== null){
-                    const err: any = new Error('An authenticated client cannot subscribe to the default user group channel.');
-                    err.name = ClientErrorName.AccessDenied;
-                    next(err); //Block!
-                }
-                else {
-                    Logger.log.debug(`Socket with id: ${req.socket.id} subscribes to the default user group channel.`);
-                    next();
-                }
-            }
-            else if (channel === ZationChannel.PANEL_OUT) {
-                if(authToken !== null){
-                    if (typeof authToken.panelAccess === 'boolean' && authToken.panelAccess) {
-                        Logger.log.debug
-                        (`Socket with id: ${req.socket.id} subscribes to the panel out channel.`);
-                        next();
-                    }
-                    else {
-                        const err: any = new Error('A client without panel access cannot subscribe to the panel out channel!');
-                        err.name = ClientErrorName.AccessDenied;
-                        next(err); //Block!
-                    }
-                }
-                else {
-                    const err: any = new Error('An anonymous client cannot subscribe to the panel out channel.');
-                    err.name = ClientErrorName.AccessDenied;
-                    next(err); //Block!
-                }
-            }
-            else if(channel === ZationChannel.PANEL_IN) {
-                const err: any = new Error('A client cannot subscribe to the panel in channel.');
-                err.name = ClientErrorName.AccessDenied;
-                next(err); //Block!
-            }
-            else if(channel.indexOf(DATABOX_START_INDICATOR) === 0) {
-                const err: any = new Error('A client cannot subscribe to an internally Databox channel.');
-                err.name = ClientErrorName.AccessDenied;
-                next(err); //Block!
-            }
-            else if(channel === ZationChannel.ALL_WORKER) {
-                const err: any = new Error('A client cannot subscribe to the all worker channel.');
-                err.name = ClientErrorName.AccessDenied;
-                next(err); //Block!
-            }
-            else {
-                Logger.log.debug(`Socket with id: ${req.socket.id} subscribes the '${channel}' channel.`);
-                next();
-            }
+        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_SUBSCRIBE,(req: SubMiddlewareReq, next) => {
+            const err: any = new Error(`A client can not subscribe to an internal channel.`);
+            err.name = ClientErrorName.AccessDenied;
+            next(err); //Block!
         });
 
         /**
          * Middleware for client publish.
          */
-        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_PUBLISH_IN, async (req: PubInMiddlewareReq, next) =>
-        {
-            const channel = req.channel;
-            const socket = req.socket;
-
-            ChUtils.pubInRequestAddSocketSrcSid(req,socket);
-
-            if (channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
-                const userId = ChUtils.getUserIdFromCh(channel);
-                if(await (userChInfo.clientPublishAccessChecker(socket.authEngine,req.data,socket.zSocket,userId))) {
-                    userChInfo.onClientPub(
-                        this.preparedBag,
-                        req.data,
-                        socket.zSocket,
-                        userId
-                    );
-                    next();
-                }
-                else{
-                    const err: any = new Error('Publish in this user group channel denied.');
-                    err.name = ClientErrorName.AccessDenied;
-                    next(err); //Block!
-                }
-            }
-            else if (channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
-                next(await this.chMiddlewareHelper.checkAccessClientPubCustomCh(req.socket,channel,req.data));
-            }
-            else if (channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
-                const authUserGroup = ChUtils.getUserAuthGroupFromCh(channel);
-                if(await authUserGroupChInfo.clientPublishAccessChecker(socket.authEngine,req.data,socket.zSocket,authUserGroup)) {
-                    authUserGroupChInfo.onClientPub(
-                        this.preparedBag,
-                        req.data,
-                        socket.zSocket,
-                        authUserGroup
-                    );
-                    next();
-                }
-                else{
-                    const err: any = new Error('Publish in this auth user group channel denied.');
-                    err.name = ClientErrorName.AccessDenied;
-                    next(err); //Block!
-                }
-            }
-            else if (channel === ZationChannel.ALL) {
-                if(await allChInfo.clientPublishAccessChecker(socket.authEngine,req.data,socket.zSocket,undefined)) {
-                    allChInfo.onClientPub(
-                        this.preparedBag,
-                        req.data,
-                        req.socket.zSocket
-                    );
-                    next();
-                }
-                else {
-                    const err: any = new Error('Publish in the all channel denied.');
-                    err.name = ClientErrorName.AccessDenied;
-                    next(err); //Block!
-                }
-            }
-            else if (channel === ZationChannel.DEFAULT_USER_GROUP) {
-                if(await defaultUserGroupChInfo.clientPublishAccessChecker(socket.authEngine,req.data,socket.zSocket,undefined)) {
-                    defaultUserGroupChInfo.onClientPub(
-                        this.preparedBag,
-                        req.data,
-                        req.socket.zSocket
-                    );
-                    next();
-                }
-                else{
-                    const err: any = new Error('Publish in the default user group channel denied.');
-                    err.name = ClientErrorName.AccessDenied;
-                    next(err); //Block!
-                }
-            }
-            else if(channel === ZationChannel.PANEL_OUT) {
-                const err: any = new Error('A client cannot publish in the panel out channel.');
-                err.name = ClientErrorName.AccessDenied;
-                next(err); //Block!
-            }
-            else if(channel === ZationChannel.PANEL_IN) {
-                const authToken = req.socket.getAuthToken();
-                if(authToken !== null && typeof authToken[nameof<ZationToken>(s => s.panelAccess)] === 'boolean' &&
-                    authToken[nameof<ZationToken>(s => s.panelAccess)])
-                {
-                    next();
-                }
-                else {
-                    const err: any = new Error('A client without panel access cannot publish in the panel in channel.');
-                    err.name = ClientErrorName.AccessDenied;
-                    next(err); //Block!
-                }
-            }
-            else if(req.channel.indexOf(DATABOX_START_INDICATOR) === 0) {
-                const err: any = new Error('A client cannot publish in an internally Databox channel.');
-                err.name = ClientErrorName.AccessDenied;
-                next(err); //Block!
-            }
-            //Important! (Otherwise every socket can publish in worker channel and can modify the whole network.)
-            else if(req.channel === ZationChannel.ALL_WORKER) {
-                const err: any = new Error('A client cannot publish in the all worker channel.');
-                err.name = ClientErrorName.AccessDenied;
-                next(err); //Block!
-            }
-            else {
-                next();
-            }
-        });
-
-        /**
-         * Middleware before each target socket gets publish.
-         */
-        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_PUBLISH_OUT, async (req: PubOutMiddlewareReq, next) =>
-        {
-            if(req.data.sSid === req.socket.sid)
-            {
-                if
-                (
-                    (
-                        req.channel.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0 &&
-                        !userChInfo.socketGetOwnPub
-                    )
-                    ||
-                    (
-                        req.channel.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0 &&
-                        !this.channelPrepare.getCustomChPreInfo(ChUtils.getCustomChannelIdentifier(req.channel))
-                            .socketGetOwnPub
-                    )
-                    ||
-                    (
-                        req.channel.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0 &&
-                        !authUserGroupChInfo.socketGetOwnPub
-                    )
-                    ||
-                    (
-                        req.channel === ZationChannel.ALL &&
-                        !allChInfo.socketGetOwnPub
-                    )
-                    ||
-                    (
-                        req.channel === ZationChannel.DEFAULT_USER_GROUP &&
-                        !defaultUserGroupChInfo.socketGetOwnPub
-                    )
-                ) {
-                    //block for get own published message
-                    next(true);
-                }
-                else {
-                    // get own published message
-                    next();
-                }
-            }
-            else {
-                //not same src or not src sid information
-                next();
-            }
+        this.scServer.addMiddleware(this.scServer.MIDDLEWARE_PUBLISH_IN,(req: PubInMiddlewareReq, next) => {
+            const err: any = new Error(`A client can not publish to an internal channel.`);
+            err.name = ClientErrorName.AccessDenied;
+            next(err); //Block!
         });
 
         /**
@@ -828,12 +568,7 @@ class ZationWorker extends SCWorker
     /**
      * Register for sc server events.
      */
-    private initScServerEvents()
-    {
-        const userChInfo = this.channelPrepare.getUserChInfo();
-        const authUserGroupChInfo = this.channelPrepare.getAuthUserGroupChInfo();
-        const defaultUserGroupChInfo = this.channelPrepare.getDefaultUserGroupChInfo();
-        const allChInfo = this.channelPrepare.getAllChInfo();
+    private initScServerEvents() {
         const event = this.zc.event;
 
         this.scServer.on('connectionAbort', async (socket: UpSocket,code,data) => {
@@ -852,95 +587,6 @@ class ZationWorker extends SCWorker
             this.defaultUserGroupSet.remove(socket);
 
             await event.socketDisconnection(socket.zSocket,code,data);
-        });
-
-        /**
-         * Emit subscribe event.
-         */
-        this.scServer.on('subscription', async (socket: UpSocket, chName, chOptions) =>
-        {
-            if(chName.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
-                const {identifier,member} = ChUtils.getCustomChannelInfo(chName);
-
-                this.channelPrepare.getCustomChPreInfo(identifier)
-                .onSub(
-                    this.preparedBag,
-                    socket.zSocket,
-                    {member,identifier}
-                );
-            }
-            else if(chName.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
-                userChInfo.onSub(
-                    this.preparedBag,
-                    socket.zSocket,
-                    ChUtils.getUserIdFromCh(chName)
-                );
-            }
-            else if(chName.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
-                authUserGroupChInfo.onSub(
-                    this.preparedBag,
-                    socket.zSocket,
-                    ChUtils.getUserAuthGroupFromCh(chName)
-                );
-            }
-            else if(chName === ZationChannel.DEFAULT_USER_GROUP) {
-                defaultUserGroupChInfo.onSub(
-                    this.preparedBag,
-                    socket.zSocket
-                )
-            }
-            else if(chName === ZationChannel.ALL) {
-                allChInfo.onSub(
-                    this.preparedBag,
-                    socket.zSocket
-                );
-            }
-            await event.socketSubscription(socket.zSocket,chName,chOptions);
-        });
-
-        /**
-         * Emit unsubscribe event
-         */
-        this.scServer.on('unsubscription', async (socket: UpSocket,chName) =>
-        {
-            //trigger sub customCh event and update mapper
-            if(chName.indexOf(ZationChannel.CUSTOM_CHANNEL_PREFIX) === 0) {
-                const {identifier,member} = ChUtils.getCustomChannelInfo(chName);
-
-                this.channelPrepare.getCustomChPreInfo(identifier)
-                .onUnsub(
-                    this.preparedBag,
-                    socket.zSocket,
-                    {identifier,member}
-                );
-            }
-            else if(chName.indexOf(ZationChannel.USER_CHANNEL_PREFIX) === 0) {
-                userChInfo.onUnsub(
-                    this.preparedBag,
-                    socket.zSocket,
-                    ChUtils.getUserIdFromCh(chName)
-                );
-            }
-            else if(chName.indexOf(ZationChannel.AUTH_USER_GROUP_PREFIX) === 0) {
-                authUserGroupChInfo.onUnsub(
-                    this.preparedBag,
-                    socket.zSocket,
-                    ChUtils.getUserAuthGroupFromCh(chName)
-                );
-            }
-            else if(chName === ZationChannel.DEFAULT_USER_GROUP) {
-                defaultUserGroupChInfo.onUnsub(
-                    this.preparedBag,
-                    socket.zSocket
-                );
-            }
-            else if(chName === ZationChannel.ALL) {
-                allChInfo.onUnsub(
-                    this.preparedBag,
-                    socket.zSocket
-                );
-            }
-            await event.socketUnsubscription(socket.zSocket,chName);
         });
 
         this.scServer.on('authentication', async (socket: UpSocket) => {
@@ -996,7 +642,7 @@ class ZationWorker extends SCWorker
      */
     private async registerWorkerChannel()
     {
-        const channel = (this.exchange.subscribe as any)(ZationChannel.ALL_WORKER);
+        const channel = this.exchange.subscribe(INTERNAL_WORKER_CH);
         channel.watch(async (data: WorkerTaskPackage) =>
         {
             switch (data.taskType) {
@@ -1043,14 +689,6 @@ class ZationWorker extends SCWorker
 
         let socketAction: SocketAction | undefined = undefined;
         switch (task.action) {
-            case WorkerChMapTaskAction.KickOut:
-                const ch = task.data.ch;
-                if(ch !== undefined) {
-                    socketAction = (s: UpSocket) => {
-                        ChUtils.kickOutSearch(s,ch);
-                    };
-                }
-                break;
             case WorkerChMapTaskAction.Emit:
                 const data = task.data;
                 socketAction = (s: UpSocket) => {
@@ -1299,20 +937,6 @@ class ZationWorker extends SCWorker
     }
 
     /**
-     * Check for active auth start.
-     */
-    private checkAuthStart() {
-        if(this.zc.mainConfig.authStart)
-        {
-            this.authStartActive = true;
-            setTimeout(() =>
-            {
-                this.authStartActive = false;
-            },this.zc.mainConfig.authStartDuration);
-        }
-    }
-
-    /**
      * Load client js data from master.
      */
     private async loadClientJsData(): Promise<void>
@@ -1462,10 +1086,6 @@ class ZationWorker extends SCWorker
         return this.id;
     }
 
-    getIsAuthStartActive(): boolean {
-        return this.authStartActive;
-    }
-
     getWorkerStartedTime(): number {
         return this.workerStartedTimeStamp;
     }
@@ -1482,12 +1102,15 @@ class ZationWorker extends SCWorker
         return this.aePreparedPart;
     }
 
-    getChannelBagEngine(): ChannelBagEngine {
-        return this.channelBagEngine
+    getInternalChannelEngine(): InternalChannelEngine {
+        return this.internalChannelEngine
     }
 
-    getControllerPrepare(): ControllerPrepare
-    {
+    getChannelPrepare(): ChannelPrepare {
+        return this.channelPrepare;
+    }
+
+    getControllerPrepare(): ControllerPrepare {
         return this.controllerPrepare;
     }
 

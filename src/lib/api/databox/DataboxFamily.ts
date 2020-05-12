@@ -4,13 +4,11 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
-import {DataboxConfig}               from "../../main/config/definitions/parts/databoxConfig";
 import DataboxCore, {DbPreparedData} from "./DataboxCore";
 import Bag                           from "../Bag";
 import UpSocket, {RespondFunction}   from "../../main/sc/socket";
-import {IsMemberChecker}             from "../../main/member/memberCheckerUtils";
-import {ScExchange}                  from "../../main/sc/scServer";
+import MemberCheckerUtils, {IsMemberChecker}             from "../../main/member/memberCheckerUtils";
+import {ScExchange}                                      from "../../main/sc/scServer";
 import {
     CudOperation,
     DATABOX_START_INDICATOR,
@@ -42,16 +40,17 @@ import {
     DbSelector,
     DbProcessedSelector,
     PotentialUpdateOption,
-    PotentialInsertOption, IfOptionProcessed, DbClientInputSignalPackage
+    PotentialInsertOption, IfOptionProcessed, DbClientInputSignalPackage, DataboxConnectReq, DataboxConnectRes
 } from '../../main/databox/dbDefinitions';
-import DataboxAccessHelper    from "../../main/databox/databoxAccessHelper";
 import DataboxUtils           from "../../main/databox/databoxUtils";
 import DbCudOperationSequence from "../../main/databox/dbCudOperationSequence";
 import {ClientErrorName}      from "../../main/constants/clientErrorName";
 import DataboxFetchManager, {FetchManagerBuilder} from "../../main/databox/databoxFetchManager";
 import ZSocket                                    from "../../main/internalApi/zSocket";
 import CloneUtils                                 from "../../main/utils/cloneUtils";
-import {databoxInstanceSymbol}                    from "../../main/databox/databoxPrepare";
+import {removeValueFromArray}                     from '../../main/utils/arrayUtils';
+import {familyTypeSymbol}                         from '../../main/component/componentUtils';
+import ObjectUtils                                from '../../main/utils/objectUtils';
 import Timeout                                    = NodeJS.Timeout;
 const defaultSymbol                               = Symbol();
 
@@ -69,7 +68,7 @@ const defaultSymbol                               = Symbol();
  * only sends the changed data information, not the whole data again.
  *
  * The DataboxFamily class gives you the possibility to define a
- * family of Databoxes that only differ by an id (also named memberId).
+ * family of Databoxes that only differ by an id (also named: member).
  * That is useful in a lot of cases, for example,
  * if you want to have a DataboxFamily for user profiles.
  * Than the Databoxes only differ by the ids of the users.
@@ -114,15 +113,13 @@ export default class DataboxFamily extends DataboxCore {
     private readonly _sendCudToSockets: (id: string,dbClientCudPackage: DbClientOutputCudPackage) => Promise<void> | void;
     private readonly _hasBeforeEventsListener: boolean;
 
-    static [databoxInstanceSymbol]: DataboxFamily;
-
-    constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, isMemberCheck: IsMemberChecker, apiLevel: number | undefined) {
+    constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
         super(identifier,bag,dbPreparedData,apiLevel);
-        this._isMemberCheck = isMemberCheck;
+        this._isMemberCheck = MemberCheckerUtils.createIsMemberChecker(this.isMember.bind(this),this.bag);
         this._scExchange = bag.getWorker().scServer.exchange;
         this._workerFullId = bag.getWorker().getFullWorkerId();
         this._maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
-        this._dbEventPreFix = `${DATABOX_START_INDICATOR}-${this.identifier}-${apiLevel !== undefined ? apiLevel: ''}-`;
+        this._dbEventPreFix = `${DATABOX_START_INDICATOR}${this.identifier}${apiLevel !== undefined ? `@${apiLevel}`: ''}.`;
 
         this._buildFetchManager = DataboxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
@@ -142,15 +139,38 @@ export default class DataboxFamily extends DataboxCore {
             !this.updateMiddleware[defaultSymbol] ||
             !this.deleteMiddleware[defaultSymbol])
         {
-            return this._sendCudToSocketsWithMiddleware;
+            return this._sendCudToSocketsWithMiddleware.bind(this);
         }
         else {
-            return this._sendToSockets;
+            return this._sendToSockets.bind(this);
         }
     }
 
     //Core
+    async _processConRequest(socket: UpSocket, request: DataboxConnectReq): Promise<DataboxConnectRes> {
+        const member = request.m;
+        if(member == undefined){
+            const err: any = new Error(`The family member is required to request a DataboxFamily.`);
+            err.name = ClientErrorName.MemberMissing;
+            throw err;
+        }
+
+        await this._isMember(member);
+        await this._checkAccess(socket,{identifier: this.identifier,member});
+
+        const dbToken: DbToken = typeof request.t === 'string' ?
+            await this._processDbToken(request.t,member) : DataboxUtils.createDbToken(request.i);
+
+        const processedInitData = await this._consumeInitInput(dbToken.rawInitData);
+        if(typeof processedInitData === 'object'){ObjectUtils.deepFreeze(processedInitData);}
+
+        const keys: DbRegisterResult = await this._registerSocket(socket,member,dbToken,processedInitData);
+
+        return [keys.inputCh,keys.outputCh,this._getLastCudId(member),this.isParallelFetch()];
+    }
+
     /**
+     * @internal
      * **Not override this method.**
      * @param socket
      * @param member
@@ -180,6 +200,12 @@ export default class DataboxFamily extends DataboxCore {
                         if(typeof (senderPackage as DbClientInputSignalPackage).s as any === 'string'){
                             this.onReceivedSignal(member,socket.zSocket,(senderPackage as DbClientInputSignalPackage).s,
                                 (senderPackage as DbClientInputSignalPackage).d);
+                        }
+                        else {
+                            const err: any = new Error('Invalid package');
+                            err.name = ClientErrorName.InvalidPackage;
+                            // noinspection ExceptionCaughtLocallyJS
+                            throw err;
                         }
                         break;
                     case DbClientInputAction.fetch:
@@ -215,7 +241,8 @@ export default class DataboxFamily extends DataboxCore {
                     default :
                         const err: any = new Error('Unknown action');
                         err.name = ClientErrorName.UnknownAction;
-                        respond(err);
+                        // noinspection ExceptionCaughtLocallyJS
+                        throw err;
                 }
             }
             catch (err) {respond(err);}
@@ -233,12 +260,13 @@ export default class DataboxFamily extends DataboxCore {
      */
     private _disconnectSocket(socket: UpSocket,disconnectHandler: () => void,member: string) {
         socket.off('disconnect',disconnectHandler);
-        DataboxAccessHelper.rmDb(this,socket);
+        removeValueFromArray(socket.databoxes,this);
         this._rmSocket(socket,member);
         this.onDisconnection(member,socket.zSocket);
     }
 
     /**
+     * @internal
      * **Not override this method.**
      * @param member
      * @private
@@ -285,6 +313,7 @@ export default class DataboxFamily extends DataboxCore {
     }
 
     /**
+     * @internal
      * **Not override this method.**
      * Is member check is used internally.
      * @param member
@@ -362,7 +391,7 @@ export default class DataboxFamily extends DataboxCore {
             socketMemberSet.add(member);
 
             socket.on('disconnect',disconnectHandler);
-            DataboxAccessHelper.addDb(this,socket);
+            socket.databoxes.push(this);
             this.onConnection(member,socket.zSocket);
         }
         return socketMemoryData;
@@ -587,6 +616,7 @@ export default class DataboxFamily extends DataboxCore {
     }
 
     /**
+     * @internal
      * **Not override this method.**
      * This method is used to send the cud package to
      * all workers and execute it on the current worker.
@@ -632,6 +662,22 @@ export default class DataboxFamily extends DataboxCore {
             for(let [socket, socketMemory] of memberMap.entries()) {
                 socket.emit(outputCh,closePackage);
                 socketMemory.unregisterSocket();
+            }
+        }
+    }
+
+    /**
+     * @internal
+     * @param socket
+     * @private
+     */
+    async _checkSocketHasStillAccess(socket: UpSocket): Promise<void> {
+        const members = this.getSocketRegMembers(socket);
+        for(let i = 0; i < members.length; i++){
+            if(!(await this._preparedData.accessCheck(socket.authEngine,socket.zSocket,
+                {identifier: this.identifier,member: members[i]})))
+            {
+                this.kickOut(members[i],socket);
             }
         }
     }
@@ -858,10 +904,11 @@ export default class DataboxFamily extends DataboxCore {
      * @param code
      * @param data
      */
-    kickOut(member: string,socket: UpSocket,code?: number | string,data?: any): void {
-        const socketMap = this._regMember.get(member);
-        if(socketMap){
-            const socketMemory = socketMap.get(socket);
+    kickOut(member: string | number,socket: UpSocket,code?: number | string,data?: any): void {
+        member = typeof member === "string" ? member: member.toString();
+        const memberMap = this._regMember.get(member);
+        if(memberMap){
+            const socketMemory = memberMap.get(socket);
             if(socketMemory){
                 socket.emit(this._dbEventPreFix+member,
                     {a: DbClientOutputEvent.kickOut,c: code,d: data} as DbClientOutputKickOutPackage);
@@ -1122,6 +1169,8 @@ export default class DataboxFamily extends DataboxCore {
     }
 }
 
+DataboxFamily.prototype[familyTypeSymbol] = true;
+
 DataboxFamily.prototype['insertMiddleware'][defaultSymbol] = true;
 DataboxFamily.prototype['updateMiddleware'][defaultSymbol] = true;
 DataboxFamily.prototype['deleteMiddleware'][defaultSymbol] = true;
@@ -1130,12 +1179,4 @@ DataboxFamily.prototype['beforeInsert'][defaultSymbol] = true;
 DataboxFamily.prototype['beforeUpdate'][defaultSymbol] = true;
 DataboxFamily.prototype['beforeDelete'][defaultSymbol] = true;
 
-export interface DataboxFamilyClass {
-    config: DataboxConfig;
-
-    new(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, memberValidCheck: IsMemberChecker, apiLevel: number | undefined): DataboxFamily;
-
-    prototype: any;
-
-    readonly [databoxInstanceSymbol]: DataboxFamily | undefined;
-}
+export type DataboxFamilyClass = typeof DataboxFamily;

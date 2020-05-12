@@ -9,14 +9,14 @@ import {ApiLevelSwitch}       from "../../../apiLevel/apiLevelUtils";
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig}     from "../parts/controllerConfig";
 import {BackgroundTask}       from "../parts/backgroundTask";
+// noinspection ES6PreferShortImport
 import {DataboxConfig}        from "../parts/databoxConfig";
-import {
-    CustomChannelConfig, CustomCh, ZationChannelsConfig, PreCompiledCustomChannelConfig
-} from "../parts/channelsConfig";
 import {Events, PrecompiledEvents}         from '../parts/events';
 import {Middleware, PrecompiledMiddleware} from '../parts/middleware';
 import {UserGroupsConfig}                  from '../parts/userGroupsConfig';
-import {AnyDataboxClass} from '../../../../api/databox/AnyDataboxClass';
+import {AnyDataboxClass}                   from '../../../../api/databox/AnyDataboxClass';
+import {AnyChannelClass}                   from '../../../../api/channel/AnyChannelClass';
+import {ChannelConfig}                     from '../parts/channelConfig';
 
 export interface AppConfig
 {
@@ -44,7 +44,7 @@ export interface AppConfig
      *     }
      * }
      */
-    events?: Events,
+    events?: Events;
 
     /**
      * In this property, you can define some middleware functions.
@@ -57,7 +57,7 @@ export interface AppConfig
      *     }
      * }
      */
-    middleware?: Middleware,
+    middleware?: Middleware;
 
     /**
     * In this property, you can define all your controllers.
@@ -108,52 +108,30 @@ export interface AppConfig
     databoxDefaults?: DataboxConfig;
 
     /**
-     * In this property, you can configure all predefined zation channels.
+     * In this property, you can define all your Channels.
+     * The value must be an object.
+     * The key of each property is the identifier of the Channel.
+     * The value of each property is the imported Channel class or
+     * an ApiLevelSwitch of Channel classes.
      * @example
-     * zationChannels: {
-     *    userCh: {
-     *        socketGetOwnPublish: false
-     *    }
+     * channels: {
+     *     profile: ProfileChannel,
+     *     info: InfoChannel,
      * }
      */
-    zationChannels?: ZationChannelsConfig;
+    channels?: Record<string,AnyChannelClass | ApiLevelSwitch<AnyChannelClass>>;
 
     /**
-     * Define your custom channels. There are two different variants:
-     * The first variant is the usual custom channel,
-     * that is useful if you only need one instance of that channel type.
-     * The second variant is the custom channel family.
-     * You should use this variant if you need more than one channel instance
-     * of these type and they only differ by an instance of an entity.
-     * For example, I have a private user chat where more chats can exist with a specific id.
-     * By using a custom channel family I can have more channel instances from
-     * type user chat with different members (id of the chat).
-     * Look in the example below to see how you actually can define custom channels.
-     * The key of each property is the identifier of the custom channel.
+     * With this property, you can define a default Channel configuration
+     * that will be used in each Channel as a fallback.
      * @example
-     * customChannels: {
-     *     // Definition of a custom channel family.
-     *     // Notice the array brackets around the object!
-     *     privateChats: [{
-     *          subscribeAccess: 'allAuth',
-     *     }],
-     *     // Definition of a usual custom channel.
-     *     publicStream: {
-     *         subscribeAccess: 'allAuth',
+     * channelDefaults: {
+     *     subscribe: {
+     *         access: 'all'
      *     }
-     * }
+     * },
      */
-    customChannels?: Record<string,CustomChannelConfig>
-
-    /**
-     * With this property, you can define a default custom channel configuration
-     * that will be used in each custom channel as a fallback.
-     * @example
-     * customChannelDefaults: {
-     *     clientPublishAccess: false
-     * }
-     */
-    customChannelDefaults?: CustomCh
+    channelDefaults?: ChannelConfig;
 
     /**
      * In this property, you can define background tasks.
@@ -172,6 +150,5 @@ export interface AppConfig
 
 export interface PrecompiledAppConfig extends AppConfig{
     events: PrecompiledEvents,
-    middleware: PrecompiledMiddleware,
-    customChannels?: Record<string,PreCompiledCustomChannelConfig>
+    middleware: PrecompiledMiddleware
 }

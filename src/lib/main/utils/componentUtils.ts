@@ -12,7 +12,7 @@ import ConfigBuildError from '../config/manager/configBuildError';
  */
 export function parseComponentClassName(name: string): {name: string,apiLevel?: number}
 {
-    const typeIndex = Math.max(name.indexOf('Controller'),name.indexOf('Databox'));
+    const typeIndex = Math.max(name.indexOf('Controller'),name.indexOf('Databox'),name.indexOf('Channel'));
     if(typeIndex <= 0){
         throw new ConfigBuildError(`Cannot parse component class name: '${name}'. Check syntax.`);
     }
