@@ -12,7 +12,6 @@ import SystemVersionChecker from "../systemVersion/systemVersionChecker";
 import ControllerAccessHelper from "./controllerAccessHelper";
 import Controller, {ControllerClass, ControllerPreparedData} from '../../api/Controller';
 import {MainBackErrors}              from "../zationBackErrors/mainBackErrors";
-import ControllerUtils               from "./controllerUtils";
 import Bag                           from "../../api/Bag";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
 import InputClosureCreator           from "../input/inputClosureCreator";
@@ -21,7 +20,8 @@ import FuncUtils                                                                
 import {ErrorEventSingleton}                                                     from '../error/errorEventSingleton';
 import AuthController                                                            from '../../api/AuthController';
 import ComponentPrepare                                                          from '../component/componentPrepare';
-import DynamicSingleton from '../utils/dynamicSingleton';
+import DynamicSingleton                                                          from '../utils/dynamicSingleton';
+import CompHandleMiddlewareUtils                                                 from '../compHandleMiddleware/compHandleMiddlewareUtils';
 
 export default class ControllerPrepare extends ComponentPrepare<Controller>
 {
@@ -44,14 +44,14 @@ export default class ControllerPrepare extends ComponentPrepare<Controller>
     }
 
     protected createComponentNotExistsError(identifier: string): Error {
-        return new BackError(MainBackErrors.controllerNotFound, {controller: identifier});
+        return new BackError(MainBackErrors.unknownController, {identifier});
     }
 
     prepare(): void {
-        const uController = this.zc.appConfig.controllers || {};
-        for(const cIdentifier in uController) {
-            if(uController.hasOwnProperty(cIdentifier)) {
-                this.addController(cIdentifier,uController[cIdentifier])
+        const controllers = this.zc.appConfig.controllers || {};
+        for(const cIdentifier in controllers) {
+            if(controllers.hasOwnProperty(cIdentifier)) {
+                this.addController(cIdentifier,controllers[cIdentifier])
             }
         }
     }
@@ -99,7 +99,7 @@ export default class ControllerPrepare extends ComponentPrepare<Controller>
             versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
             tokenStateCheck: ControllerAccessHelper.createAuthAccessChecker(config.access,this.bag,identifier),
-            middlewareInvoke: ControllerUtils.createMiddlewareInvoker(config),
+            handleMiddlewareInvoke: CompHandleMiddlewareUtils.createInvoker(config),
             inputConsume: InputClosureCreator.createInputConsumer(config,this.bag),
             inputValidationCheck: InputClosureCreator.createValidationChecker(config,this.bag),
             finallyHandle: FuncUtils.createSafeCaller((reqBag,input) => cInstance.finallyHandle(reqBag,input),

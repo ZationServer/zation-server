@@ -82,7 +82,7 @@ export default class PanelEngine
 
     private registerPanelInEvent()
     {
-        this.zw.exchange.subscribe(INTERNAL_PANEL_CH).watch(async (firstPing) => {
+        this.zw.scServer.exchange.subscribe(INTERNAL_PANEL_CH).watch(async (firstPing) => {
             this.renewPanelInUse();
             if(firstPing){
                 await this.sendFirstPong();

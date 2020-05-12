@@ -6,6 +6,7 @@ Copyright(c) Luca Scaringella
 
 import {extractComponentName} from '../main/utils/componentUtils';
 import {ControllerClass}      from './Controller';
+import {ReceiverClass}        from './Receiver';
 import {AnyDataboxClass}      from './databox/AnyDataboxClass';
 import Bag                    from './Bag';
 import {AnyChannelClass}      from './channel/AnyChannelClass';
@@ -64,4 +65,4 @@ export default class Component {
 Component.prototype[familyTypeSymbol] = false;
 Component.prototype[componentTypeSymbol] = 'Unknown';
 
-export type ComponentClass = ControllerClass | AnyDataboxClass | AnyChannelClass;
+export type ComponentClass = ControllerClass | ReceiverClass | AnyDataboxClass | AnyChannelClass;

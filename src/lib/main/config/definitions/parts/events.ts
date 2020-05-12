@@ -114,14 +114,14 @@ export interface Events
      */
     error?: Event<ErrorFunction>;
     /**
-     * An event that gets invoked when at least one BackError is thrown on the server while processing a request.
+     * An event that gets invoked when at least one BackError is thrown in a Receiver or Controller.
      * Runs on a worker process.
      * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (backError) => {}
      */
     backErrors?: Event<BackErrorsFunction>;
     /**
-     * An event that gets invoked when a CodeError is thrown on the server while processing a request.
+     * An event that gets invoked when a CodeError is thrown in a Receiver or Controller.
      * Runs on a worker process.
      * The Bag instance can be securely accessed with the variable 'bag'.
      * @example (codeError) => {}

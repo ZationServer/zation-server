@@ -13,9 +13,10 @@ import {ComponentClass} from '../../Component';
 import Channel          from '../../channel/Channel';
 import ChannelFamily    from '../../channel/ChannelFamily';
 import {checkComponentName, parseComponentClassName} from '../../../main/utils/componentUtils';
+import Receiver                                      from '../../Receiver';
 
 /**
- * Register a component (Controller, Channel or Databox).
+ * Register a component (Controller, Receiver, Channel or Databox).
  * You only have to import the file in the app config.
  * You are able to register multiple components with the same
  * type and identifier but different API levels.
@@ -34,20 +35,24 @@ import {checkComponentName, parseComponentClassName} from '../../../main/utils/c
  * Parsed: name = blockUser, apiLevel = 4
  *
  * Example 3:
- * class ProfileDatabox_13 extends Controller {}
+ * class ProfileDatabox_13 extends DataboxFamily {}
  * Parsed: name = profile, apiLevel = 13
  *
  * Example 4:
- * class ProfileChannel_5 extends Controller {}
+ * class ProfileChannel_5 extends ChannelFamily {}
  * Parsed: name = profile, apiLevel = 5
+ *
+ * Example 5:
+ * class MoveReceiver extends Receiver {}
+ * Parsed: name = move, apiLevel = undefined
  * @param override
  * The parameter to override the parsed name and API level from the class name.
  */
 export const Register = (override: {name?: string, apiLevel?: number | null} = {}): (target: ComponentClass) => void => {
     return (target: ComponentClass) => {
-        if(target.prototype instanceof Controller || target.prototype instanceof Databox
-            || target.prototype instanceof DataboxFamily || target.prototype instanceof Channel
-            || target.prototype instanceof ChannelFamily){
+        if(target.prototype instanceof Controller || target.prototype instanceof Receiver ||
+            target.prototype instanceof Databox || target.prototype instanceof DataboxFamily ||
+            target.prototype instanceof Channel || target.prototype instanceof ChannelFamily){
 
             let {name,apiLevel} = parseComponentClassName(target.name);
             if(override.name !== undefined){
@@ -61,7 +66,7 @@ export const Register = (override: {name?: string, apiLevel?: number | null} = {
             Config.registerComponent(name,target,apiLevel);
         }
         else {
-            throw new ConfigBuildError(`The register decorator can only be used on classes that extend the Controller, Channel, ChannelFamily, Databox or DataboxFamily class.`);
+            throw new ConfigBuildError(`The register decorator can only be used on classes that extend the Controller, Receiver, Channel, ChannelFamily, Databox or DataboxFamily class.`);
         }
     };
 };

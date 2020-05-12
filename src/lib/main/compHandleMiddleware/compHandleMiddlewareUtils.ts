@@ -6,20 +6,19 @@ Copyright(c) Luca Scaringella
 
 // noinspection TypeScriptPreferShortImport
 import RequestBag                    from '../../api/RequestBag';
-// noinspection TypeScriptPreferShortImport,ES6PreferShortImport
-import {ControllerConfig}            from "../config/definitions/parts/controllerConfig";
-import Controller                    from "../../api/Controller";
+import Component                     from '../../api/Component';
+import {CompHandleMiddlewareConfig}  from '../config/definitions/parts/compHandleMiddlewareConfig';
 
-export type MiddlewareInvokeFunction = (controllerInstance: Controller, reqBag: RequestBag) => Promise<void >;
+export type CompHandleMiddlewareInvoker = (component: Component, reqBag: RequestBag) => Promise<void>;
 
-export default class ControllerUtils
+export default class CompHandleMiddlewareUtils
 {
     /**
-     * Returns a Closures for invoking the controller middleware event.
-     * @param controllerConfig
+     * Returns a Closures for invoking the component handle middleware.
+     * @param config
      */
-    static createMiddlewareInvoker(controllerConfig: ControllerConfig): MiddlewareInvokeFunction {
-        const middleware = controllerConfig.middleware;
+    static createInvoker(config: CompHandleMiddlewareConfig): CompHandleMiddlewareInvoker {
+        const middleware = config.middleware;
         if(middleware !== undefined)
         {
             if(Array.isArray(middleware)) {

@@ -59,3 +59,5 @@ export type ControllerRes = {
      */
     1?: any
 } | undefined;
+
+export const CONTROLLER_EVENT = '>';

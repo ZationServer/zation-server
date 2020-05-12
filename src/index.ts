@@ -64,6 +64,8 @@ import {ChannelConfig}              from './lib/main/config/definitions/parts/ch
 import {ChannelInfo}                from './lib/main/channel/channelDefinitions';
 import ChannelContainer             from './lib/api/channel/container/channelContainer';
 import ChannelFamilyContainer       from './lib/api/channel/container/channelFamilyContainer';
+import Receiver                     from './lib/api/Receiver';
+import {ReceiverConfig}             from './lib/main/config/definitions/parts/receiverConfig';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -111,6 +113,8 @@ export {
     AuthController,
     Controller,
     ControllerConfig,
+    Receiver,
+    ReceiverConfig,
     BackError,
     BackErrorBuilder,
     BackErrorBag,

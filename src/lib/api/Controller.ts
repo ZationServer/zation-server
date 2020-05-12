@@ -13,21 +13,25 @@ import ConfigBuildError   from '../main/config/manager/configBuildError';
 import Component, {ComponentClass}        from './Component';
 import {VersionSystemAccessCheckFunction} from '../main/systemVersion/systemVersionChecker';
 import {TokenStateAccessCheckFunction}    from '../main/controller/controllerAccessHelper';
-import {MiddlewareInvokeFunction}         from '../main/controller/controllerUtils';
 import {InputConsumeFunction, InputValidationCheckFunction} from '../main/input/inputClosureCreator';
 import {componentTypeSymbol}                                from '../main/component/componentUtils';
+import {CompHandleMiddlewareInvoker}                        from '../main/compHandleMiddleware/compHandleMiddlewareUtils';
 
 /**
- * The controller is one of the main concepts of zation.
+ * The Controller is one of the zation components.
  * It followers the request-response principle.
- * The controller can be protected with lots of possibilities,
- * also it supports input validation by using defined models.
- * Additionally it is easy to return a result or a collection of errors to the client.
- * A controller should be used for determining an action that the
- * client can make e.g., login, register, or sendMessage.
- * It is recommended if you want to get data from the server to use a Databox instead of a
- * controller because it is much easier to use and provides the
- * functionality to keep the data up to date in real time.
+ * The controller can be protected with access rules, also it
+ * supports input validation by using models. Additionally,
+ * it is easy to return a result or a collection of errors to the client.
+ * A controller should be used for determining an action that
+ * the client can make e.g., login, register, or sendMessage.
+ * If you have some actions that not return any value and the
+ * status of the processed request does not matter on the
+ * client-side you should look at Receivers.
+ * Also if you want to get data from the server it is recommended to
+ * use a Databox instead of a Controller because it is much easier to
+ * use for this case and provides the functionality to
+ * keep the data up to date in real-time.
  */
 export default class Controller extends Component {
 
@@ -124,7 +128,7 @@ export interface ControllerPreparedData {
     versionAccessCheck: VersionSystemAccessCheckFunction,
     systemAccessCheck: VersionSystemAccessCheckFunction,
     tokenStateCheck: TokenStateAccessCheckFunction,
-    middlewareInvoke: MiddlewareInvokeFunction,
+    handleMiddlewareInvoke: CompHandleMiddlewareInvoker,
     inputConsume: InputConsumeFunction,
     inputValidationCheck: InputValidationCheckFunction,
     finallyHandle: Controller['finallyHandle'];

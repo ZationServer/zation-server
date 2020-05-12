@@ -79,6 +79,10 @@ import {ErrorEventSingleton}            from '../main/error/errorEventSingleton'
 import ChannelHandler                   from '../main/channel/handle/channelHandler';
 import DynamicSingleton                 from '../main/utils/dynamicSingleton';
 import PanelChannel                     from '../main/channel/systemChannels/channels/PanelChannel';
+import ReceiverPrepare                  from '../main/receiver/receiverPrepare';
+import ReceiverHandler                  from '../main/receiver/handle/receiverHandler';
+import {RECEIVER_EVENT}                 from '../main/receiver/receiverDefinitions';
+import {CONTROLLER_EVENT}               from '../main/controller/controllerDefinitions';
 
 const  SCWorker: any        = require('socketcluster/scworker');
 
@@ -100,6 +104,7 @@ class ZationWorker extends SCWorker
     private serviceEngine: ServiceEngine;
     private preparedBag: Bag;
     private controllerPrepare: ControllerPrepare;
+    private receiverPrepare: ReceiverPrepare;
     private databoxPrepare: DataboxPrepare;
     private aePreparedPart: AEPreparedPart;
     private panelEngine: PanelEngine;
@@ -107,6 +112,7 @@ class ZationWorker extends SCWorker
     private originCheck: OriginChecker;
     private channelPrepare: ChannelPrepare;
     private controllerReqHandler: ControllerReqHandler;
+    private receiverHandler: ReceiverHandler;
     private databoxHandler: DataboxHandler;
     private channelHandler: ChannelHandler;
     private socketUpdateEngine: SocketUpgradeEngine;
@@ -246,13 +252,19 @@ class ZationWorker extends SCWorker
         await this.databoxPrepare.init();
         debugStopwatch.stop(`The Worker with id ${this.id} has initialized the Databoxes.`);
 
-        //PrepareController after Bag!
+        //After databoxes, channel prepare (To access databoxes and channels using the bag).
+        debugStopwatch.start();
+        this.receiverPrepare = new ReceiverPrepare(this.zc,this,this.preparedBag);
+        this.receiverPrepare.prepare();
+        await this.receiverPrepare.init();
+        debugStopwatch.stop(`The Worker with id ${this.id} has prepared and initialized the Receivers.`);
+
         //After databoxes, channel prepare (To access databoxes and channels using the bag).
         debugStopwatch.start();
         this.controllerPrepare = new ControllerPrepare(this.zc,this,this.preparedBag);
         this.controllerPrepare.prepare();
         await this.controllerPrepare.init();
-        debugStopwatch.stop(`The Worker with id ${this.id} has prepared and initialized the controllers.`);
+        debugStopwatch.stop(`The Worker with id ${this.id} has prepared and initialized the Controllers.`);
 
         debugStopwatch.start();
         const panelChannel = DynamicSingleton.getInstance<typeof PanelChannel,PanelChannel>(PanelChannel);
@@ -279,8 +291,12 @@ class ZationWorker extends SCWorker
         debugStopwatch.stop(`The Worker with id ${this.id} has registered to the worker channel.`);
 
         debugStopwatch.start();
-        this.controllerReqHandler = new ControllerReqHandler(this);
+        this.controllerReqHandler = new ControllerReqHandler(this.controllerPrepare,this);
         debugStopwatch.stop(`The Worker with id ${this.id} has created the Controller handler.`);
+
+        debugStopwatch.start();
+        this.receiverHandler = new ReceiverHandler(this.receiverPrepare,this);
+        debugStopwatch.stop(`The Worker with id ${this.id} has created the Receiver handler.`);
 
         debugStopwatch.start();
         this.databoxHandler = new DataboxHandler(this.databoxPrepare,this.zc);
@@ -364,8 +380,12 @@ class ZationWorker extends SCWorker
 
             Logger.log.debug(`Socket with id: ${socket.id} is connected!`);
 
-            socket.on('>',(data, respond) => {
+            socket.on(CONTROLLER_EVENT,(data, respond) => {
                 this.controllerReqHandler.processRequest(data,socket,respond);
+            });
+
+            socket.on(RECEIVER_EVENT,(data) => {
+                this.receiverHandler.processPackage(data,socket);
             });
 
             socket.on(DATABOX_START_INDICATOR,(data, respond) => {

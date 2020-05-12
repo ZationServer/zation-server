@@ -39,6 +39,10 @@ import {ChannelConfig}                                                          
 import {AnyChannelClass}                                                                       from '../../../api/channel/AnyChannelClass';
 import {systemControllers}                                                                     from '../../controller/systemControllers/systemControllers.config';
 import {systemChannels}                                                                        from '../../channel/systemChannels/systemChannels.config';
+// noinspection ES6PreferShortImport
+import {ReceiverConfig}                                                                        from '../definitions/parts/receiverConfig';
+import {systemReceivers}                                                                       from '../../receiver/systemReceivers/systemReceivers.config';
+import {ReceiverClass}                                                                         from '../../../api/Receiver';
 
 export interface ModelPreparationMem extends Processable{
     _optionalInfo: {isOptional: boolean,defaultValue: any}
@@ -51,6 +55,7 @@ export default class ConfigPrecompiler
     private readonly configs: OtherLoadedConfigSet;
 
     private readonly controllerDefaults: ControllerConfig;
+    private readonly receiverDefaults: ReceiverConfig;
     private readonly databoxDefaults: DataboxConfig;
     private readonly channelDefaults: ChannelConfig;
 
@@ -58,6 +63,7 @@ export default class ConfigPrecompiler
     {
         this.configs = configs;
         this.controllerDefaults = this.configs.appConfig.controllerDefaults || {};
+        this.receiverDefaults = this.configs.appConfig.receiverDefaults || {};
         this.databoxDefaults = this.configs.appConfig.databoxDefaults || {};
         this.channelDefaults = this.configs.appConfig.channelDefaults || {};
     }
@@ -67,6 +73,7 @@ export default class ConfigPrecompiler
         this.preCompileEvents();
         this.precompileMiddleware();
         this.precompileControllers();
+        this.precompileReceivers();
         this.precompileDataboxes();
         this.precompileChannels();
 
@@ -466,6 +473,25 @@ export default class ConfigPrecompiler
                     this.precompileInputConfig(config);
 
                     (controllerClass as any)[nameof<ControllerClass>(s => s.config)] = config;
+                });
+            }
+        }
+    }
+
+    private precompileReceivers(): void
+    {
+        const receivers = Object.assign(systemReceivers,(this.configs.appConfig.receivers || {}));
+        this.configs.appConfig.receivers = receivers;
+
+        for(const k in receivers) {
+            if(receivers.hasOwnProperty(k)) {
+                Iterator.iterateCompDefinition<ReceiverClass>(receivers[k],(receiverClass) => {
+                    const config: ReceiverConfig = receiverClass.config || {};
+                    //set the defaults
+                    ObjectUtils.mergeTwoObjects(config,this.receiverDefaults,false);
+                    this.precompileInputConfig(config);
+
+                    (receiverClass as any)[nameof<ReceiverClass>(s => s.config)] = config;
                 });
             }
         }

@@ -8,13 +8,23 @@ Copyright(c) Luca Scaringella
 import {ErrorType}        from "./../constants/errorType";
 
 export const MainBackErrors = {
-    controllerNotFound: {
-        name         : 'controllerNotFound',
+    unknownController: {
+        name         : 'unknownController',
         description  : 'The controller is not found.',
         type         : ErrorType.InputError,
         sendInfo     : true,
         //INFO
-        // controller
+        // identifier
+        fromZationSystem: true
+    },
+
+    unknownReceiver: {
+        name         : 'unknownReceiver',
+        description  : 'The receiver is not found.',
+        type         : ErrorType.InputError,
+        sendInfo     : true,
+        //INFO
+        // identifier
         fromZationSystem: true
     },
 
@@ -24,7 +34,7 @@ export const MainBackErrors = {
         type         : ErrorType.InputError,
         sendInfo     : true,
         //INFO
-        // controller
+        // identifier
         // apiLevel
         fromZationSystem: true
     },
@@ -281,6 +291,15 @@ export const MainBackErrors = {
     invalidRequest: {
         name         : 'invalidRequest',
         description  : 'Invalid request.',
+        type         : ErrorType.InputError,
+        private      : false,
+        sendInfo     : false,
+        fromZationSystem: true
+    },
+
+    invalidPackage: {
+        name         : 'invalidPackage',
+        description  : 'Invalid package.',
         type         : ErrorType.InputError,
         private      : false,
         sendInfo     : false,

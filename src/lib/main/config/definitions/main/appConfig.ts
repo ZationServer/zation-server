@@ -16,7 +16,11 @@ import {Middleware, PrecompiledMiddleware} from '../parts/middleware';
 import {UserGroupsConfig}                  from '../parts/userGroupsConfig';
 import {AnyDataboxClass}                   from '../../../../api/databox/AnyDataboxClass';
 import {AnyChannelClass}                   from '../../../../api/channel/AnyChannelClass';
+// noinspection ES6PreferShortImport
 import {ChannelConfig}                     from '../parts/channelConfig';
+// noinspection ES6PreferShortImport
+import {ReceiverConfig}                    from '../parts/receiverConfig';
+import {ReceiverClass}                     from '../../../../api/Receiver';
 
 export interface AppConfig
 {
@@ -82,6 +86,29 @@ export interface AppConfig
      * }
      */
     controllerDefaults?: ControllerConfig;
+
+    /**
+     * In this property, you can define all your receivers.
+     * The value must be an object.
+     * The key of each property is the identifier of the receiver.
+     * The value of each property is the imported Receiver class
+     * or an ApiLevelSwitch of Receiver classes.
+     * @example
+     * receivers: {
+     *    move: MoveReceiver
+     * }
+     */
+    receivers?: Record<string,ReceiverClass | ApiLevelSwitch<ReceiverClass>>;
+
+    /**
+     * With this property, you can define a default Receiver configuration
+     * that will be used in each Receiver as a fallback.
+     * @example
+     * receiverDefaults: {
+     *    access: 'all'
+     * }
+     */
+    receiverDefaults?: ReceiverConfig;
 
     /**
      * In this property, you can define all your Databoxes.

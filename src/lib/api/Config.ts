@@ -26,10 +26,12 @@ import {AnyDataboxClass}                    from './databox/AnyDataboxClass';
 import {AnyChannelClass}                    from './channel/AnyChannelClass';
 import ChannelFamily                        from './channel/ChannelFamily';
 import Channel                              from './channel/Channel';
+import Receiver, {ReceiverClass}            from './Receiver';
 
 export default class Config
 {
     private static tmpControllers: Record<string,ControllerClass | ApiLevelSwitch<ControllerClass>> = {};
+    private static tmpReceivers: Record<string,ReceiverClass | ApiLevelSwitch<ReceiverClass>> = {};
     private static tmpDataboxes: Record<string,AnyDataboxClass | ApiLevelSwitch<AnyDataboxClass>> = {};
     private static tmpChannels: Record<string,AnyChannelClass | ApiLevelSwitch<AnyChannelClass>> = {};
 
@@ -97,6 +99,11 @@ export default class Config
             pType = 'controllers';
             container = this.tmpControllers;
         }
+        else if(componentClass.prototype instanceof Receiver){
+            type = 'receiver';
+            pType = 'receivers';
+            container = this.tmpReceivers;
+        }
         else if(componentClass.prototype instanceof DataboxFamily || componentClass.prototype instanceof Databox){
             type = 'databox';
             pType = 'databoxes';
@@ -108,7 +115,7 @@ export default class Config
             container = this.tmpChannels;
         }
         else {
-            throw new ConfigBuildError(`Register component can only register classes that extend the Databox, DataboxFamily, Channel, ChannelFamily, or Controller class.`);
+            throw new ConfigBuildError(`Register component can only register classes that extend the Controller, Receiver, Databox, DataboxFamily, Channel or ChannelFamily class.`);
         }
 
         if(typeof apiLevel === 'number'){
@@ -162,10 +169,12 @@ export default class Config
     static appConfig(config: AppConfig,isPrimaryAppConfig: boolean = true): AppConfig {
         if(isPrimaryAppConfig){
             config.controllers = config.controllers || {};
+            config.receivers = config.receivers || {};
             config.databoxes = config.databoxes || {};
             config.channels = config.channels || {};
 
             Config.configAdd(Config.tmpControllers,config.controllers,'controller identifier');
+            Config.configAdd(Config.tmpReceivers,config.receivers,'receiver identifier');
             Config.configAdd(Config.tmpDataboxes,config.databoxes,'databox identifier');
             Config.configAdd(Config.tmpChannels,config.channels,'channel identifier');
         }

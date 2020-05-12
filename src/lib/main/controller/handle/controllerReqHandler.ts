@@ -9,7 +9,6 @@ import UpSocket, {RespondFunction} from '../../sc/socket';
 import BackError                   from '../../../api/BackError';
 import BackErrorBag                from '../../../api/BackErrorBag';
 import Logger                      from '../../log/logger';
-import {isCodeError}               from '../../error/codeError';
 import ZationConfigFull            from '../../config/manager/zationConfigFull';
 import {MainBackErrors}            from '../../zationBackErrors/mainBackErrors';
 import AuthEngine                  from '../../auth/authEngine';
@@ -17,6 +16,7 @@ import RequestBag                  from '../../../api/RequestBag';
 import ControllerPrepare           from '../controllerPrepare';
 import ErrorUtils                  from '../../utils/errorUtils';
 import ApiLevelUtils               from '../../apiLevel/apiLevelUtils';
+import {handleError}               from '../../error/errorHandlerUtils';
 import {ControllerBaseReq, ControllerRes, ControllerStandardReq, SpecialController} from '../controllerDefinitions';
 import {checkValidControllerBaseRequest, isValidationCheckRequest}                  from './controllerReqUtils';
 
@@ -33,10 +33,10 @@ export default class ControllerReqHandler
     private readonly sendErrDescription: boolean;
     private readonly validationCheckLimit: number;
 
-    constructor(worker: ZationWorker) {
+    constructor(controllerPrepare: ControllerPrepare,worker: ZationWorker) {
         this.zc = worker.getZationConfig();
         this.worker = worker;
-        this.controllerPrepare = this.worker.getControllerPrepare();
+        this.controllerPrepare = controllerPrepare;
 
         this.defaultApiLevel = this.zc.mainConfig.defaultClientApiLevel;
         this.debug = this.zc.isDebug();
@@ -59,11 +59,11 @@ export default class ControllerReqHandler
             response = [ErrorUtils.dehydrate(err,this.sendErrDescription)];
             respond(null,response);
 
-            await this.handleReqError(err);
+            await handleError(err,this.zc.event);
         }
 
         if(this.debug) {
-            Logger.log.debug(`Socket controller request -> `,request,
+            Logger.log.debug(`Socket Controller request -> `,request,
                 ' processed to response -> ',response !== undefined ? response : 'Successful without result');
         }
     }
@@ -106,7 +106,7 @@ export default class ControllerReqHandler
                     systemAccessCheck,
                     versionAccessCheck,
                     tokenStateCheck,
-                    middlewareInvoke,
+                    handleMiddlewareInvoke,
                     inputConsume,
                     finallyHandle,
                 } = cInstance._preparedData;
@@ -169,7 +169,7 @@ export default class ControllerReqHandler
                     //process the controller handle, before handle events and finally handle.
                     let result;
                     try {
-                        await middlewareInvoke(cInstance,reqBag);
+                        await handleMiddlewareInvoke(cInstance,reqBag);
                         result = await cInstance.handle(reqBag,input);
                     }
                     catch(e) {
@@ -194,30 +194,5 @@ export default class ControllerReqHandler
         else {
             throw new BackError(MainBackErrors.invalidRequest, {input: request});
         }
-    }
-
-    private async handleReqError(err) {
-        const promises: (Promise<void> | void)[] = [];
-
-        const backErrors = (err instanceof BackErrorBag) ? err.getBackErrors() :
-            ((err instanceof  BackError) ? [err] : undefined);
-
-        if(backErrors){
-            const length = backErrors.length;
-            let tmpBackError;
-            for(let i = 0; i < length; i++){
-                tmpBackError = backErrors[i];
-                if(isCodeError(tmpBackError)){
-                    Logger.log.error(`Code error -> ${tmpBackError.toString()}/n stack-> ${tmpBackError.stack}`);
-                    promises.push(this.zc.event.codeError(tmpBackError));
-                }
-            }
-            promises.push(this.zc.event.backErrors(backErrors));
-        }
-        else {
-            Logger.log.error('Unknown error while processing a controller request:',err);
-            promises.push(this.zc.event.error(err));
-        }
-        await Promise.all(promises);
     }
 }

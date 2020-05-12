@@ -24,6 +24,9 @@ import {ComponentClass}          from './Component';
  * // app/chat/addMember
  * chatRouter.use(AddMemberController);
  *
+ * // app/chat/messages
+ * chatRouter.use(MessagesDatabox);
+ *
  * rootRouter.register();
  */
 export default class Router {
@@ -56,7 +59,7 @@ export default class Router {
      */
     use(router: Router)
     /**
-     * Attaches a Component (Controller, Channel or Databox) to a Router.
+     * Attaches a Component (Controller, Receiver, Channel or Databox) to a Router.
      * You are able to register multiple components with the same
      * type and identifier but different API levels.
      * The identifier of the component will be created with the name of
@@ -77,12 +80,16 @@ export default class Router {
      * Parsed: name = blockUser, apiLevel = 4
      *
      * Example 3:
-     * class ProfileDatabox_13 extends Controller {}
+     * class ProfileDatabox_13 extends DataboxFamily {}
      * Parsed: name = profile, apiLevel = 13
      *
      * Example 4:
-     * class ProfileChannel_5 extends Controller {}
+     * class ProfileChannel_5 extends ChannelFamily {}
      * Parsed: name = profile, apiLevel = 5
+     *
+     * Example 5:
+     * class MoveReceiver extends Receiver {}
+     * Parsed: name = move, apiLevel = undefined
      * @param component
      * @param override
      * The parameter to override the parsed name and API level from the class name.

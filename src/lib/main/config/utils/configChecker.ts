@@ -43,6 +43,8 @@ import {ChannelConfig}                                         from '../../../..
 import Channel                                                 from '../../../api/channel/Channel';
 import ChannelFamily                                           from '../../../api/channel/ChannelFamily';
 import {ComponentClass}                                        from '../../../api/Component';
+import Receiver, {ReceiverClass}                               from '../../../api/Receiver';
+import {ReceiverConfig}                                        from '../definitions/parts/receiverConfig';
 
 export interface ModelCheckedMem {
     _checked: boolean
@@ -133,6 +135,7 @@ export default class ConfigChecker
     private checkAppConfig() {
         this.checkAccessControllerDefaultIsSet();
         this.checkControllers();
+        this.checkReceivers();
         this.checkDataboxes();
         this.checkChannels();
     }
@@ -465,6 +468,66 @@ export default class ConfigChecker
         }
     }
 
+    private checkController(cv: ControllerClass, target: Target) {
+        if(cv.prototype instanceof Controller) {
+            if(cv.config)
+                this.checkControllerConfig(cv.config,target);
+        }
+        else {
+            this.ceb.addError(new ConfigError(ConfigNames.App,
+                `${target.toString()} is not extends the main Controller class.`));
+        }
+    }
+
+    private checkControllerConfig(config: ControllerConfig,target: Target) {
+        this.checkAuthAccessConfig(config, target);
+        this.checkInputConfig(config,target.addPath('input'));
+    }
+
+    private checkReceivers() {
+        //check Receivers
+        if (typeof this.zcLoader.appConfig.receivers === 'object') {
+            const receivers = this.zcLoader.appConfig.receivers;
+            for (let identifier in receivers) {
+                if (receivers.hasOwnProperty(identifier)) {
+                    this.checkIdentifier(identifier,'Receiver');
+
+                    Iterator.iterateCompDefinition<ReceiverClass>(receivers[identifier],(receiverClass, apiLevel) =>{
+                        if(apiLevel !== undefined && isNaN(parseInt(apiLevel))) {
+                            this.ceb.addError(new ConfigError(ConfigNames.App,
+                                `Receiver: '${identifier}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
+                        }
+                        const reTarget = new Target(`Receiver: '${identifier}' ${apiLevel ? `(API Level: ${apiLevel}) `: ''}`);
+                        this.checkReceiver(receiverClass,reTarget);
+                        this.checkComponentIsNotRegistered(receiverClass,reTarget);
+                    });
+                }
+            }
+        }
+
+        //check Receiver Defaults
+        if (typeof this.zcLoader.appConfig.receiverDefaults === 'object') {
+            const receiverDefaults = this.zcLoader.appConfig.receiverDefaults;
+            this.checkReceiverConfig(receiverDefaults, new Target(nameof<AppConfig>(s => s.receiverDefaults)));
+        }
+    }
+
+    private checkReceiver(cv: ReceiverClass, target: Target) {
+        if(cv.prototype instanceof Receiver) {
+            if(cv.config)
+                this.checkReceiverConfig(cv.config,target);
+        }
+        else {
+            this.ceb.addError(new ConfigError(ConfigNames.App,
+                `${target.toString()} is not extends the main Receiver class.`));
+        }
+    }
+
+    private checkReceiverConfig(config: ReceiverConfig,target: Target) {
+        this.checkAuthAccessConfig(config, target);
+        this.checkInputConfig(config,target.addPath('input'));
+    }
+
     private checkDataboxes() {
         //check Databoxes
         if (typeof this.zcLoader.appConfig.databoxes === 'object') {
@@ -491,23 +554,6 @@ export default class ConfigChecker
             const databox = this.zcLoader.appConfig.databoxDefaults;
             this.checkDataboxConfig(databox, new Target(nameof<AppConfig>(s => s.databoxDefaults)));
         }
-    }
-
-
-    private checkController(cv: ControllerClass, target: Target) {
-        if(cv.prototype instanceof Controller) {
-            if(cv.config)
-                this.checkControllerConfig(cv.config,target);
-        }
-        else {
-            this.ceb.addError(new ConfigError(ConfigNames.App,
-                `${target.toString()} is not extends the main Controller class.`));
-        }
-    }
-
-    private checkControllerConfig(config: ControllerConfig,target: Target) {
-        this.checkAuthAccessConfig(config, target);
-        this.checkInputConfig(config,target.addPath('input'));
     }
 
     private checkDatabox(cdb: AnyDataboxClass, target: Target) {
