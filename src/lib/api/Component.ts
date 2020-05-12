@@ -9,7 +9,7 @@ import {ControllerClass}      from './Controller';
 import {AnyDataboxClass}      from './databox/AnyDataboxClass';
 import Bag                    from './Bag';
 import {AnyChannelClass}      from './channel/AnyChannelClass';
-import {componentTypeSymbol, familyTypeSymbol} from '../main/component/componentUtils';
+import ComponentUtils, {componentTypeSymbol, familyTypeSymbol} from '../main/component/componentUtils';
 
 export default class Component {
 
@@ -43,6 +43,11 @@ export default class Component {
         this.name = extractComponentName(identifier);
         this.apiLevel = apiLevel;
         this.bag = bag;
+    }
+
+    toString(): string   {
+        return `${ComponentUtils.getComponentType(Object.getPrototypeOf(this))}: '${
+            this.identifier}'${this.apiLevel !== undefined ? ` with API level: '${this.apiLevel}'` : ''}`;
     }
 
     /**
