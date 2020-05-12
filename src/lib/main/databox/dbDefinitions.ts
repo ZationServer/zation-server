@@ -324,17 +324,17 @@ export const enum DbWorkerAction {
  */
 export interface DbWorkerPackage {
     /**
+     * source workerFullId
+     */
+    0: string,
+    /**
      * action
      */
-    a: DbWorkerAction,
+    1: DbWorkerAction,
     /**
      * data
      */
-    d?: any
-    /**
-     * workerFullId
-     */
-    w: string
+    2?: any
 }
 
 /**
@@ -345,11 +345,11 @@ export interface DbWorkerCudPackage extends DbWorkerPackage{
     /**
      * action
      */
-    a: DbWorkerAction.cud,
+    1: DbWorkerAction.cud,
     /**
      * data
      */
-    d: CudPackage,
+    2: CudPackage,
 }
 
 /**
@@ -359,11 +359,11 @@ export interface DbWorkerClosePackage extends DbWorkerPackage{
     /**
      * action
      */
-    a: DbWorkerAction.close,
+    1: DbWorkerAction.close,
     /**
      * The client close package.
      */
-    d: DbClientOutputClosePackage
+    2: DbClientOutputClosePackage
 }
 
 /**
@@ -373,11 +373,11 @@ export interface DbWorkerBroadcastPackage extends DbWorkerPackage{
     /**
      * action
      */
-    a: DbWorkerAction.broadcast,
+    1: DbWorkerAction.broadcast,
     /**
      * data
      */
-    d: DbClientOutputPackage
+    2: DbClientOutputPackage
 }
 
 /**

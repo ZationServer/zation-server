@@ -459,16 +459,16 @@ export default class DataboxFamily extends DataboxCore {
         this._lastCudData.set(member,{timestamp: Date.now(),id: DataboxUtils.generateStartCudId()});
         this._scExchange.subscribe(this._dbEventPreFix+member)
             .watch(async (data) => {
-                if((data as DbWorkerCudPackage).w !== this._workerFullId) {
-                    switch ((data as DbWorkerPackage).a) {
+                if((data as DbWorkerCudPackage)[0] !== this._workerFullId) {
+                    switch ((data as DbWorkerPackage)[1]) {
                         case DbWorkerAction.cud:
-                            await this._processCudPackage(member,(data as DbWorkerCudPackage).d);
+                            await this._processCudPackage(member,(data as DbWorkerCudPackage)[2]);
                             break;
                         case DbWorkerAction.close:
-                            this._close(member,(data as DbWorkerClosePackage).d);
+                            this._close(member,(data as DbWorkerClosePackage)[2]);
                             break;
                         case DbWorkerAction.broadcast:
-                            this._sendToSockets(member,(data as DbWorkerBroadcastPackage).d);
+                            this._sendToSockets(member,(data as DbWorkerBroadcastPackage)[2]);
                             break;
                         default:
                     }
@@ -629,20 +629,12 @@ export default class DataboxFamily extends DataboxCore {
             await this._emitBeforeEvents(member,preCudPackage.o);
         }
         const cudPackage = DataboxUtils.buildCudPackage(preCudPackage,timestamp);
-        this._sendToWorker(member,{
-            a: DbWorkerAction.cud,
-            d: cudPackage,
-            w: this._workerFullId
-        } as DbWorkerCudPackage);
+        this._sendToWorker(member,[this._workerFullId,DbWorkerAction.cud,cudPackage] as DbWorkerCudPackage)
         await this._processCudPackage(member,cudPackage);
     }
 
     private _broadcastToOtherSockets(member: string,clientPackage: DbClientOutputPackage) {
-        this._sendToWorker(member,{
-            a: DbWorkerAction.broadcast,
-            d: clientPackage,
-            w: this._workerFullId
-        } as DbWorkerBroadcastPackage);
+        this._sendToWorker(member,[this._workerFullId,DbWorkerAction.broadcast,clientPackage] as DbWorkerBroadcastPackage);
     }
 
     private _sendToWorker(member: string,workerPackage: DbWorkerPackage) {
@@ -865,12 +857,7 @@ export default class DataboxFamily extends DataboxCore {
         member = typeof member === "string" ? member: member.toString();
         const clientPackage = DataboxUtils.buildClientClosePackage(code,data);
         if(forEveryWorker){
-            this._sendToWorker(member,
-                {
-                    a: DbWorkerAction.close,
-                    d: clientPackage,
-                    w: this._workerFullId
-                } as DbWorkerClosePackage);
+            this._sendToWorker(member,[this._workerFullId,DbWorkerAction.close,clientPackage] as DbWorkerClosePackage);
         }
         this._close(member,clientPackage);
     }
