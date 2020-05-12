@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import ComponentUtils, {familyTypeSymbol}  from '../component/componentUtils';
+import ComponentUtils                      from '../component/componentUtils';
 import Channel, {ChannelClass}             from '../../api/channel/Channel';
 import ChannelFamily, {ChannelFamilyClass} from '../../api/channel/ChannelFamily';
 import ChannelFamilyContainer              from '../../api/channel/container/channelFamilyContainer';
@@ -24,7 +24,7 @@ export default class ChannelUtils {
 
         for(let i = 0; i < channels.length; i++){
             const instance = ComponentUtils.getInstanceSafe(channels[i]);
-            if(instance[familyTypeSymbol]){
+            if(ComponentUtils.isFamily(instance)){
                 chFamilyInstances.push(instance as ChannelFamily);
             }
             else {

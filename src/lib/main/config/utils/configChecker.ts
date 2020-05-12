@@ -44,7 +44,9 @@ import Channel                                                 from '../../../ap
 import ChannelFamily                                           from '../../../api/channel/ChannelFamily';
 import {ComponentClass}                                        from '../../../api/Component';
 import Receiver, {ReceiverClass}                               from '../../../api/Receiver';
+// noinspection ES6PreferShortImport
 import {ReceiverConfig}                                        from '../definitions/parts/receiverConfig';
+import ComponentUtils                                          from '../../component/componentUtils';
 
 export interface ModelCheckedMem {
     _checked: boolean
@@ -157,17 +159,26 @@ export default class ConfigChecker
             const channels = this.zcLoader.appConfig.channels;
             for (let identifier in channels) {
                 if (channels.hasOwnProperty(identifier)) {
+                    let nonFamilyCount = 0;
+                    let familyCount = 0;
+
                     this.checkIdentifier(identifier,'Channel');
 
                     Iterator.iterateCompDefinition<AnyChannelClass>(channels[identifier],(channelClass, apiLevel) =>{
-                        if(apiLevel !== undefined && isNaN(parseInt(apiLevel))) {
+                        if(apiLevel !== undefined && !Number.isInteger(parseFloat(apiLevel))) {
                             this.ceb.addError(new ConfigError(ConfigNames.App,
                                 `Channel: '${identifier}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
                         }
                         const chTarget = new Target(`Channel: '${identifier}' ${apiLevel ? `(API Level: ${apiLevel}) `: ''}`);
                         this.checkChannel(channelClass,chTarget);
                         this.checkComponentIsNotRegistered(channelClass,chTarget);
+                        ComponentUtils.isFamily(channelClass) ? (familyCount++) : (nonFamilyCount++);
                     });
+
+                    if(Math.min(nonFamilyCount,familyCount) !== 0){
+                        this.ceb.addError(new ConfigError(ConfigNames.App,
+                            `Channel: '${identifier}' API levels: family components can not be mixed with non-family components.`));
+                    }
                 }
             }
         }
@@ -422,7 +433,7 @@ export default class ConfigChecker
                     let count = 0;
                     let authControllerCount = 0;
                     Iterator.iterateCompDefinition<ControllerClass>(controller[identifier],(controllerClass,apiLevel) =>{
-                        if(apiLevel !== undefined && isNaN(parseInt(apiLevel))) {
+                        if(apiLevel !== undefined && !Number.isInteger(parseFloat(apiLevel))) {
                             this.ceb.addError(new ConfigError(ConfigNames.App,
                                 `Controller: '${identifier}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
                         }
@@ -493,7 +504,7 @@ export default class ConfigChecker
                     this.checkIdentifier(identifier,'Receiver');
 
                     Iterator.iterateCompDefinition<ReceiverClass>(receivers[identifier],(receiverClass, apiLevel) =>{
-                        if(apiLevel !== undefined && isNaN(parseInt(apiLevel))) {
+                        if(apiLevel !== undefined && !Number.isInteger(parseFloat(apiLevel))) {
                             this.ceb.addError(new ConfigError(ConfigNames.App,
                                 `Receiver: '${identifier}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
                         }
@@ -534,17 +545,26 @@ export default class ConfigChecker
             const databoxes = this.zcLoader.appConfig.databoxes;
             for (let identifier in databoxes) {
                 if (databoxes.hasOwnProperty(identifier)) {
+                    let nonFamilyCount = 0;
+                    let familyCount = 0;
+
                     this.checkIdentifier(identifier,'Databox');
 
                     Iterator.iterateCompDefinition<AnyDataboxClass>(databoxes[identifier],(databoxClass, apiLevel) =>{
-                        if(apiLevel !== undefined && isNaN(parseInt(apiLevel))) {
+                        if(apiLevel !== undefined && !Number.isInteger(parseFloat(apiLevel))) {
                             this.ceb.addError(new ConfigError(ConfigNames.App,
                                 `Databox: '${identifier}' the API level must be an integer. The value ${apiLevel} is not allowed.`));
                         }
                         const dbTarget = new Target(`Databox: '${identifier}' ${apiLevel ? `(API Level: ${apiLevel}) `: ''}`);
                         this.checkDatabox(databoxClass,dbTarget);
                         this.checkComponentIsNotRegistered(databoxClass,dbTarget);
+                        ComponentUtils.isFamily(databoxClass) ? (familyCount++) : (nonFamilyCount++);
                     });
+
+                    if(Math.min(nonFamilyCount,familyCount) !== 0){
+                        this.ceb.addError(new ConfigError(ConfigNames.App,
+                            `Databox: '${identifier}' API levels: family components can not be mixed with non-family components.`));
+                    }
                 }
             }
         }

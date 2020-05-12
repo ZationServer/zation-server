@@ -245,6 +245,12 @@ export interface MainConfig
     log?: LogOptions;
 
     /**
+     * Specifies if the master should log the complete component API.
+     * @default true
+     */
+    logComponentApi?: boolean;
+
+    /**
      * Specifies if the worker leader should console log the precompiled configs.
      * @default false
      */
@@ -663,6 +669,7 @@ export interface InternalMainConfig extends MainConfig {
     workerStatusInterval: number;
     killServerOnServicesCreateError: boolean;
     log: DeepRequired<LogOptions>;
+    logComponentApi: boolean;
     showPrecompiledConfigs: boolean;
     variables: any;
 }

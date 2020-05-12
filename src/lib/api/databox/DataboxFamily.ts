@@ -1176,6 +1176,7 @@ export default class DataboxFamily extends DataboxCore {
     }
 }
 
+DataboxFamily[familyTypeSymbol] = true;
 DataboxFamily.prototype[familyTypeSymbol] = true;
 
 DataboxFamily.prototype['insertMiddleware'][defaultSymbol] = true;

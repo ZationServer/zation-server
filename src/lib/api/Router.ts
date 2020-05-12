@@ -4,9 +4,9 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {checkComponentName, parseComponentClassName} from '../main/utils/componentUtils';
 import Config                    from './Config';
 import {ComponentClass}          from './Component';
+import ComponentUtils            from '../main/component/componentUtils';
 
 /**
  * @description
@@ -76,18 +76,26 @@ export default class Router {
      * Parsed: name = sendMessage, apiLevel = undefined
      *
      * Example 2:
+     * class RemoveItem extends Controller {}
+     * Parsed: name = removeItem, apiLevel = undefined
+     *
+     * Example 3:
      * class BlockUserController_4 extends Controller {}
      * Parsed: name = blockUser, apiLevel = 4
      *
-     * Example 3:
+     * Example 4:
+     * class AddItem_4 extends Controller {}
+     * Parsed: name = addItem, apiLevel = 4
+     *
+     * Example 5:
      * class ProfileDatabox_13 extends DataboxFamily {}
      * Parsed: name = profile, apiLevel = 13
      *
-     * Example 4:
+     * Example 6:
      * class ProfileChannel_5 extends ChannelFamily {}
      * Parsed: name = profile, apiLevel = 5
      *
-     * Example 5:
+     * Example 7:
      * class MoveReceiver extends Receiver {}
      * Parsed: name = move, apiLevel = undefined
      * @param component
@@ -124,7 +132,7 @@ export default class Router {
         const comLength = this._components.length;
         for(let i = 0; i < comLength; i++) {
             const tmpComponent = this._components[i];
-            let {name,apiLevel} = parseComponentClassName(tmpComponent.component.name);
+            let {name,apiLevel} = ComponentUtils.parseClassName(tmpComponent.component.name);
             if(tmpComponent.override.name !== undefined){
                 name = tmpComponent.override.name;
             }
@@ -133,7 +141,7 @@ export default class Router {
                     undefined : parseInt(tmpComponent.override.apiLevel as any);
             }
 
-            checkComponentName(name);
+            ComponentUtils.checkName(name);
             Config.registerComponent(tmpRoute + name,tmpComponent.component,apiLevel);
         }
 

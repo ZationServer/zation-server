@@ -34,6 +34,7 @@ import fileUpload   = require('express-fileupload');
 import url          = require('url');
 
 import process          = require("process");
+import treeify          = require('treeify');
 import ControllerReqHandler from "../main/controller/handle/controllerReqHandler";
 import AEPreparedPart       from "../main/auth/aePreparedPart";
 import ZationTokenWrapper   from "../main/internalApi/zationTokenWrapper";
@@ -53,6 +54,7 @@ import ZationConfigFull     from "../main/config/manager/zationConfigFull";
 import ConfigLoader         from "../main/config/manager/configLoader";
 import SocketUpgradeEngine  from "../main/socket/socketUpgradeEngine";
 import InternalChannelEngine, {INTERNAL_WORKER_CH} from '../main/internalChannels/internalChannelEngine';
+import {MasterMessageAction, MasterMessagePackage} from '../main/constants/masterMessage';
 import {
     AuthMiddlewareReq,
     HandshakeScMiddlewareReq,
@@ -83,6 +85,7 @@ import ReceiverPrepare                  from '../main/receiver/receiverPrepare';
 import ReceiverHandler                  from '../main/receiver/handle/receiverHandler';
 import {RECEIVER_EVENT}                 from '../main/receiver/receiverDefinitions';
 import {CONTROLLER_EVENT}               from '../main/controller/controllerDefinitions';
+import ComponentUtils                   from '../main/component/componentUtils';
 
 const  SCWorker: any        = require('socketcluster/scworker');
 
@@ -94,6 +97,7 @@ class ZationWorker extends SCWorker
 
     private workerFullId: string;
     private readonly _isRespawn: boolean;
+    private preapredAllComponents: boolean = false;
 
     private workerStartedTimeStamp: number;
     private serverStartedTimeStamp: number;
@@ -265,6 +269,8 @@ class ZationWorker extends SCWorker
         this.controllerPrepare.prepare();
         await this.controllerPrepare.init();
         debugStopwatch.stop(`The Worker with id ${this.id} has prepared and initialized the Controllers.`);
+
+        this.preapredAllComponents = true;
 
         debugStopwatch.start();
         const panelChannel = DynamicSingleton.getInstance<typeof PanelChannel,PanelChannel>(PanelChannel);
@@ -920,11 +926,23 @@ class ZationWorker extends SCWorker
      */
     private registerMasterEvent()
     {
-        this.on('masterMessage',async (data,respond) => {
-            if(data['userBackgroundTask']) {
-                await this.processBackgroundTask(data['userBackgroundTask']);
+        this.on('masterMessage',async (message: MasterMessagePackage,respond) => {
+            switch (message[0]) {
+                case MasterMessageAction.backgroundTask:
+                    await this.processBackgroundTask(message[1]);
+                    respond(null);
+                    break;
+                case MasterMessageAction.componentStructure:
+                    if(this.preapredAllComponents){
+                        respond(null,treeify.asTree(ComponentUtils.buildTreeInfoStructure(false,
+                            this.controllerPrepare,this.receiverPrepare,
+                            this.databoxPrepare,this.channelPrepare),true));
+                    }
+                    else {
+                        respond(new Error('Not ready'));
+                    }
+                    break;
             }
-            respond(null);
         });
     }
 

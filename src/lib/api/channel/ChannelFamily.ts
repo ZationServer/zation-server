@@ -383,6 +383,7 @@ export default class ChannelFamily extends ChannelCore {
     }
 }
 
+ChannelFamily[familyTypeSymbol] = true;
 ChannelFamily.prototype[familyTypeSymbol] = true;
 
 export type ChannelFamilyClass = typeof ChannelFamily;

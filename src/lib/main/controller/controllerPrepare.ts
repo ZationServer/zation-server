@@ -28,7 +28,7 @@ export default class ControllerPrepare extends ComponentPrepare<Controller>
     private _authControllerIdentifier: string;
 
     constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag) {
-        super(zc,worker,bag);
+        super(zc,worker,bag,'Controller',zc.appConfig.controllers || {});
     }
 
     /**
@@ -47,21 +47,12 @@ export default class ControllerPrepare extends ComponentPrepare<Controller>
         return new BackError(MainBackErrors.unknownController, {identifier});
     }
 
-    prepare(): void {
-        const controllers = this.zc.appConfig.controllers || {};
-        for(const cIdentifier in controllers) {
-            if(controllers.hasOwnProperty(cIdentifier)) {
-                this.addController(cIdentifier,controllers[cIdentifier])
-            }
-        }
-    }
-
     /**
-     * Adds a controller.
+     * Prepare a Controller.
      * @param identifier
      * @param definition
      */
-    private addController(identifier: string,definition: ControllerClass | ApiLevelSwitch<ControllerClass>): void
+    protected _prepare(identifier: string, definition: ControllerClass | ApiLevelSwitch<ControllerClass>): void
     {
         let authController = false;
         if(typeof definition === 'function') {

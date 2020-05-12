@@ -103,6 +103,7 @@ export default class ConfigLoader {
                 logLevel: 2
             }
         },
+        logComponentApi: true,
         showPrecompiledConfigs: false,
         variables: {}
     };

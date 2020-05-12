@@ -12,8 +12,8 @@ import ConfigBuildError from "../../../main/config/manager/configBuildError";
 import {ComponentClass} from '../../Component';
 import Channel          from '../../channel/Channel';
 import ChannelFamily    from '../../channel/ChannelFamily';
-import {checkComponentName, parseComponentClassName} from '../../../main/utils/componentUtils';
-import Receiver                                      from '../../Receiver';
+import Receiver         from '../../Receiver';
+import ComponentUtils   from '../../../main/component/componentUtils';
 
 /**
  * Register a component (Controller, Receiver, Channel or Databox).
@@ -31,18 +31,26 @@ import Receiver                                      from '../../Receiver';
  * Parsed: name = sendMessage, apiLevel = undefined
  *
  * Example 2:
+ * class RemoveItem extends Controller {}
+ * Parsed: name = removeItem, apiLevel = undefined
+ *
+ * Example 3:
  * class BlockUserController_4 extends Controller {}
  * Parsed: name = blockUser, apiLevel = 4
  *
- * Example 3:
+ * Example 4:
+ * class AddItem_4 extends Controller {}
+ * Parsed: name = addItem, apiLevel = 4
+ *
+ * Example 5:
  * class ProfileDatabox_13 extends DataboxFamily {}
  * Parsed: name = profile, apiLevel = 13
  *
- * Example 4:
+ * Example 6:
  * class ProfileChannel_5 extends ChannelFamily {}
  * Parsed: name = profile, apiLevel = 5
  *
- * Example 5:
+ * Example 7:
  * class MoveReceiver extends Receiver {}
  * Parsed: name = move, apiLevel = undefined
  * @param override
@@ -54,7 +62,7 @@ export const Register = (override: {name?: string, apiLevel?: number | null} = {
             target.prototype instanceof Databox || target.prototype instanceof DataboxFamily ||
             target.prototype instanceof Channel || target.prototype instanceof ChannelFamily){
 
-            let {name,apiLevel} = parseComponentClassName(target.name);
+            let {name,apiLevel} = ComponentUtils.parseClassName(target.name);
             if(override.name !== undefined){
                 name = override.name;
             }
@@ -62,7 +70,7 @@ export const Register = (override: {name?: string, apiLevel?: number | null} = {
                 apiLevel = override.apiLevel === null ? undefined : parseInt(override.apiLevel as any);
             }
 
-            checkComponentName(name);
+            ComponentUtils.checkName(name);
             Config.registerComponent(name,target,apiLevel);
         }
         else {

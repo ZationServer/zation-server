@@ -4,7 +4,6 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {extractComponentName} from '../main/utils/componentUtils';
 import {ControllerClass}      from './Controller';
 import {ReceiverClass}        from './Receiver';
 import {AnyDataboxClass}      from './databox/AnyDataboxClass';
@@ -41,7 +40,7 @@ export default class Component {
 
     constructor(identifier: string, apiLevel: number | undefined, bag: Bag) {
         this.identifier = identifier;
-        this.name = extractComponentName(identifier);
+        this.name = ComponentUtils.extractName(identifier);
         this.apiLevel = apiLevel;
         this.bag = bag;
     }
@@ -62,6 +61,7 @@ export default class Component {
     }
 }
 
+Component[familyTypeSymbol] = false;
 Component.prototype[familyTypeSymbol] = false;
 Component.prototype[componentTypeSymbol] = 'Unknown';
 

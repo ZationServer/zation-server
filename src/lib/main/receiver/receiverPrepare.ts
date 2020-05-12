@@ -25,7 +25,7 @@ import CompHandleMiddlewareUtils                                                
 export default class ReceiverPrepare extends ComponentPrepare<Receiver>
 {
     constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag) {
-        super(zc,worker,bag);
+        super(zc,worker,bag,'Receiver',zc.appConfig.receivers || {});
     }
 
     protected createIncompatibleAPILevelError(identifier: string, apiLevel: number): Error {
@@ -37,21 +37,12 @@ export default class ReceiverPrepare extends ComponentPrepare<Receiver>
         return new BackError(MainBackErrors.unknownReceiver, {identifier});
     }
 
-    prepare(): void {
-        const receivers = this.zc.appConfig.receivers || {};
-        for(const rIdentifier in receivers) {
-            if(receivers.hasOwnProperty(rIdentifier)) {
-                this.addReceiver(rIdentifier,receivers[rIdentifier])
-            }
-        }
-    }
-
     /**
-     * Adds a receiver.
+     * Prepare a Receiver.
      * @param identifier
      * @param definition
      */
-    private addReceiver(identifier: string,definition: ReceiverClass | ApiLevelSwitch<ReceiverClass>): void
+    protected _prepare(identifier: string, definition: ReceiverClass | ApiLevelSwitch<ReceiverClass>): void
     {
         if(typeof definition === 'function') {
             const receiverInstance = this.processReceiver(definition,identifier);

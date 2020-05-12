@@ -4,34 +4,37 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import 'source-map-support/register'
-
-const  SocketCluster: any   = require('socketcluster');
-import {WorkerMessageAction}   from "../main/constants/workerMessageAction";
-import {StarterConfig}         from "../main/config/definitions/main/starterConfig";
-import StringSet               from "../main/utils/stringSet";
-import StateServerEngine       from "../main/cluster/stateServerEngine";
-import Logger                  from "../main/log/logger";
-import ConfigChecker           from "../main/config/utils/configChecker";
-import ClientPrepare           from "../main/client/clientPrepare";
-import PortChecker             from "../main/utils/portChecker";
-import BackgroundTasksSender   from "../main/background/backgroundTasksSender";
-import BackgroundTasksLoader   from "../main/background/backgroundTasksLoader";
-import ZationConfigMaster      from "../main/config/manager/zationConfigMaster";
-import ConfigPrecompiler       from '../main/config/utils/configPrecompiler';
-import LicenseManager, {License, LicenseLevel} from "../main/utils/licenseManager";
-// noinspection TypeScriptPreferShortImport
-import {StartErrorName}        from "../main/constants/startErrorName";
+import 'source-map-support/register';
+import {WorkerMessageAction}    from '../main/constants/workerMessageAction';
+import {StarterConfig}          from '../main/config/definitions/main/starterConfig';
+import StringSet                from '../main/utils/stringSet';
+import StateServerEngine        from '../main/cluster/stateServerEngine';
+import Logger                   from '../main/log/logger';
+import ConfigChecker            from '../main/config/utils/configChecker';
+import ClientPrepare            from '../main/client/clientPrepare';
+import PortChecker              from '../main/utils/portChecker';
+import BackgroundTasksSender    from '../main/background/backgroundTasksSender';
+import BackgroundTasksLoader    from '../main/background/backgroundTasksLoader';
+import ZationConfigMaster       from '../main/config/manager/zationConfigMaster';
+import ConfigPrecompiler                       from '../main/config/utils/configPrecompiler';
+import LicenseManager, {License, LicenseLevel} from '../main/utils/licenseManager';
+// noinspection ES6PreferShortImport
+import {StartErrorName}                        from '../main/constants/startErrorName';
 // noinspection TypeScriptPreferShortImport
 import {processRawStartMode, StartMode, startModeSymbol} from './startMode';
-import ConfigBuildError        from "../main/config/manager/configBuildError";
-import ConfigLoader            from "../main/config/manager/configLoader";
+import ConfigBuildError                 from '../main/config/manager/configBuildError';
+import ConfigLoader                     from '../main/config/manager/configLoader';
 import BagExtensionConflictChecker      from '../main/bagExtension/bagExtensionConflictChecker';
 import {ProcessType, processTypeSymbol} from '../main/constants/processType';
-// noinspection TypeScriptPreferShortImport
-import {Events}                         from '../main/config/definitions/parts/events';
-import StartDebugStopwatch              from '../main/utils/startDebugStopwatch';
-import {getMoment}                      from '../main/utils/timeUtils';
+// noinspection ES6PreferShortImport
+import {Events}                                    from '../main/config/definitions/parts/events';
+import StartDebugStopwatch                         from '../main/utils/startDebugStopwatch';
+import {getMoment}                                 from '../main/utils/timeUtils';
+import {MasterMessageAction, MasterMessagePackage} from '../main/constants/masterMessage';
+// noinspection ES6PreferShortImport
+import {ConsoleColor}                              from '../main/log/logCategories';
+
+const  SocketCluster: any = require('socketcluster');
 
 global[processTypeSymbol] = ProcessType.Master;
 
@@ -350,6 +353,10 @@ export default class ZationMaster {
 
             this.logStartedInformation();
 
+            if(this.zc.mainConfig.logComponentApi || this.zc.isDebug()){
+                this.logComponentApiTree();
+            }
+
             if(this.startResolve){this.startResolve();}
 
             const startedEvent = (this.zcLoader.appConfig.events || {}).started;
@@ -474,6 +481,22 @@ export default class ZationMaster {
         Logger.log.active(msg.join('\n'));
     }
 
+    private logComponentApiTree(): void {
+        this.sendToRandomWorker([MasterMessageAction.componentStructure],(err,structure) => {
+            if(err) {
+                //try again later
+                setTimeout(() => this.logComponentApiTree(),500);
+            }
+            else {
+                Logger.log.custom({
+                    color: ConsoleColor.Green,
+                    name:'Component API',
+                    level: 1
+                },'\n' + structure.split('\n').map((s) => '            ' + s).join('\n'));
+            }
+        })
+    }
+
     private getRandomWorkerId() {
         // noinspection JSUnresolvedFunction
         const array = this.workerIds.toArray();
@@ -581,14 +604,16 @@ export default class ZationMaster {
 
     /**
      * Send something to a random worker.
-     * @param obj
+     * @param message
+     * @param callback
      */
-    public sendToRandomWorker(obj)
+    public sendToRandomWorker(message: MasterMessagePackage,callback?: (err: any,result?: any) => any)
     {
         const workerId = this.getRandomWorkerId();
         if(workerId !== undefined) {
-            this.master.sendToWorker(workerId,obj)
+            this.master.sendToWorker(workerId,message,callback);
         }
+        else if(callback){callback(new Error('No worker available.'))}
     }
 
     /**

@@ -25,19 +25,7 @@ import DynamicSingleton                                         from '../utils/d
 export default class DataboxPrepare extends ComponentPrepare<DataboxCore>
 {
     constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag) {
-        super(zc,worker,bag);
-    }
-
-    /**
-     * Prepare all Databoxes.
-     */
-    prepare(): void {
-        const uDataboxes = this.zc.appConfig.databoxes || {};
-        for(const identifier in uDataboxes) {
-            if(uDataboxes.hasOwnProperty(identifier)) {
-                this.addDatabox(identifier,uDataboxes[identifier]);
-            }
-        }
+        super(zc,worker,bag,'Databox',zc.appConfig.databoxes || {});
     }
 
     protected createIncompatibleAPILevelError(): Error {
@@ -53,17 +41,15 @@ export default class DataboxPrepare extends ComponentPrepare<DataboxCore>
     }
 
     /**
-     * Add a Databox to the prepare process.
+     * Prepare a Databox.
      * @param identifier
      * @param definition
      */
-    private addDatabox(identifier: string,definition: AnyDataboxClass | ApiLevelSwitch<AnyDataboxClass>): void
+    protected _prepare(identifier: string, definition: AnyDataboxClass | ApiLevelSwitch<AnyDataboxClass>): void
     {
         if(typeof definition === 'function') {
             const databoxInstance = this.processDatabox(definition,identifier);
-            this.components[identifier] = () => {
-                return databoxInstance
-            };
+            this.components[identifier] = () => databoxInstance;
         }
         else {
             const databoxInstanceMapper: Record<any,DataboxCore> = {};

@@ -23,19 +23,7 @@ import ChannelFamily                       from '../../api/channel/ChannelFamily
 export class ChannelPrepare extends ComponentPrepare<ChannelCore>
 {
     constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag) {
-        super(zc,worker,bag);
-    }
-
-    /**
-     * Prepare all Channels.
-     */
-    prepare(): void {
-        const uChannels = this.zc.appConfig.channels || {};
-        for(const identifier in uChannels) {
-            if(uChannels.hasOwnProperty(identifier)) {
-                this.addChannel(identifier,uChannels[identifier]);
-            }
-        }
+        super(zc,worker,bag,'Channel',zc.appConfig.channels || {});
     }
 
     protected createIncompatibleAPILevelError(): Error {
@@ -51,17 +39,15 @@ export class ChannelPrepare extends ComponentPrepare<ChannelCore>
     }
 
     /**
-     * Add a Channel to the prepare process.
+     * Prepare a Channel.
      * @param identifier
      * @param definition
      */
-    private addChannel(identifier: string,definition: AnyChannelClass | ApiLevelSwitch<AnyChannelClass>): void
+    protected _prepare(identifier: string, definition: AnyChannelClass | ApiLevelSwitch<AnyChannelClass>): void
     {
         if(typeof definition === 'function') {
             const preparedChannelData = this.processChannel(definition,identifier);
-            this.components[identifier] = () => {
-                return preparedChannelData;
-            };
+            this.components[identifier] = () => preparedChannelData;
         }
         else {
             const preparedDataMapper: Record<any,ChannelCore> = {};

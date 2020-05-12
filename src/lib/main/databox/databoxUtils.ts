@@ -26,7 +26,7 @@ import DataboxFamilyContainer              from "../../api/databox/container/dat
 import Databox, {DataboxClass}             from "../../api/databox/Databox";
 import DataboxContainer                    from "../../api/databox/container/databoxContainer";
 import {ClientErrorName}                   from "../constants/clientErrorName";
-import ComponentUtils, {familyTypeSymbol}  from '../component/componentUtils';
+import ComponentUtils                      from '../component/componentUtils';
 const uniqid                             = require('uniqid');
 
 export default class DataboxUtils {
@@ -135,7 +135,7 @@ export default class DataboxUtils {
 
         for(let i = 0; i < databoxes.length; i++){
             const instance = ComponentUtils.getInstanceSafe(databoxes[i]);
-            if(instance[familyTypeSymbol]){
+            if(ComponentUtils.isFamily(instance)){
                 databoxFamilyInstances.push(instance as DataboxFamily);
             }
             else {

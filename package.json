@@ -33,6 +33,7 @@
     "@types/node-fetch": "2.1.1",
     "@types/useragent": "2.1.1",
     "source-map-support": "^0.5.19",
+    "treeify": "1.1.0",
     "body-parser": "1.19.0",
     "byte-length": "1.0.2",
     "child_process": "1.0.2",

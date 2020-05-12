@@ -6,25 +6,43 @@ Copyright(c) Luca Scaringella
 
 import ZationConfigFull                                         from "../config/manager/zationConfigFull";
 import Bag                                                      from "../../api/Bag";
-import {ApiLevelSwitchFunction}                                 from "../apiLevel/apiLevelUtils";
+import {ApiLevelSwitch, ApiLevelSwitchFunction}                 from '../apiLevel/apiLevelUtils';
 import ZationWorker                                           = require("../../core/zationWorker");
 import Component                                                from '../../api/Component';
+import ComponentUtils                                           from './componentUtils';
 
-export default abstract class ComponentPrepare<T>
+export type ComponentInfo = {apiLevels: number[] | null,family: boolean};
+
+export default abstract class ComponentPrepare<T extends Object>
 {
     protected readonly zc: ZationConfigFull;
     protected readonly worker: ZationWorker;
     protected readonly bag: Bag;
 
+    protected readonly componentType: string;
+    protected readonly config: Record<string,any | ApiLevelSwitch<any>>;
     protected readonly components: Record<string,ApiLevelSwitchFunction<T>>;
     protected readonly componentInits: ((bag: Bag) => Promise<void> | void)[] = [];
 
-    protected constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag) {
+    protected constructor(zc: ZationConfigFull,worker: ZationWorker,bag: Bag,type: string,config: Record<string,any | ApiLevelSwitch<any>>) {
         this.zc = zc;
         this.worker = worker;
         this.bag = bag;
 
+        this.componentType = type;
         this.components = {};
+        this.config = config;
+    }
+
+    /**
+     * Prepare all Components.
+     */
+    prepare(): void {
+        for(const identifier in this.config) {
+            if(this.config.hasOwnProperty(identifier)) {
+                this._prepare(identifier,this.config[identifier]);
+            }
+        }
     }
 
     /**
@@ -78,9 +96,9 @@ export default abstract class ComponentPrepare<T>
     }
 
     /**
-     * Prepare all Components.
+     * Prepare a component.
      */
-    abstract prepare(): void;
+    protected abstract _prepare(identifier: string, definition: any): void;
 
     /**
      * Adds initialize of a component.
@@ -100,5 +118,28 @@ export default abstract class ComponentPrepare<T>
             promises.push(this.componentInits[i](this.bag));
         }
         await Promise.all(promises);
+    }
+
+    getComponentType(): string {
+        return this.componentType;
+    }
+
+    getComponentsInfo(): Record<string,ComponentInfo> {
+        const componentsInfo: Record<string,ComponentInfo> = {};
+        let tmpDefinition;
+        for(const identifier in this.config) {
+            if(this.config.hasOwnProperty(identifier)) {
+                tmpDefinition = this.config[identifier];
+                if(typeof tmpDefinition === 'function') {
+                    componentsInfo[identifier] = {apiLevels: null,family: ComponentUtils.isFamily(tmpDefinition)};
+                }
+                else {
+                    const levels = Object.keys(tmpDefinition);
+                    componentsInfo[identifier] = {apiLevels: levels.map((a) => parseInt(a)),
+                        family: levels.length > 0 ? ComponentUtils.isFamily(tmpDefinition[levels[0]]) : false}
+                }
+            }
+        }
+        return componentsInfo;
     }
 }

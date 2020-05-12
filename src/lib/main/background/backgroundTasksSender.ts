@@ -4,10 +4,11 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import ZationMaster from "../../core/zationMaster";
-import ZationConfig from "../config/manager/zationConfig";
-import Logger       from "../log/logger";
-import {getMoment, processTaskTriggerTime} from '../utils/timeUtils';
+import ZationMaster from '../../core/zationMaster';
+import ZationConfig from '../config/manager/zationConfig';
+import Logger                               from '../log/logger';
+import {getMoment, processTaskTriggerTime}  from '../utils/timeUtils';
+import {MasterMessageAction}                from '../constants/masterMessage';
 
 export default class BackgroundTasksSender
 {
@@ -50,7 +51,7 @@ export default class BackgroundTasksSender
 
     private runUserBackgroundTask(name: string,clusterSafe: boolean) {
         if(!clusterSafe || (clusterSafe && this.master.isClusterLeader())){
-            this.master.sendToRandomWorker({userBackgroundTask: name});
+            this.master.sendToRandomWorker([MasterMessageAction.backgroundTask,name]);
         }
     }
 
