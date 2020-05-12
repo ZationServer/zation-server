@@ -77,13 +77,13 @@ export default class ChannelFamily extends ChannelCore {
         this._chEventPreFix = CHANNEL_START_INDICATOR + this.identifier +
             (apiLevel !== undefined ? `@${apiLevel}`: '') + CHANNEL_MEMBER_SPLIT;
 
-        const target = `Channel: '${identifier}' with API level: '${apiLevel}'`;
+        const errMessagePrefix = this.toString() + ' error was thrown in the function';
         this._onPublish = FuncUtils.createSafeCaller(this.onPublish,
-            `${target} error was thrown in the function onPublish`,ErrorEventSingleton.get());
+            `${errMessagePrefix} onPublish`,ErrorEventSingleton.get());
         this._onSubscription = FuncUtils.createSafeCaller(this.onSubscription,
-            `${target} error was thrown in the function onSubscription`,ErrorEventSingleton.get());
+            `${errMessagePrefix} onSubscription`,ErrorEventSingleton.get());
         this._onUnsubscription = FuncUtils.createSafeCaller(this.onUnsubscription,
-            `${target} error was thrown in the function onUnsubscription`,ErrorEventSingleton.get());
+            `${errMessagePrefix} onUnsubscription`,ErrorEventSingleton.get());
     }
 
     /**
@@ -170,8 +170,8 @@ export default class ChannelFamily extends ChannelCore {
         this._regMember.set(member,memberMap);
         this._scExchange.subscribe(this._chEventPreFix + member)
             .watch(async (data: ChWorkerPublishPackage) => {
-                if(data['0'] !== this._workerFullId) {
-                    this._processPublish(member,data['1']);
+                if(data[0] !== this._workerFullId) {
+                    this._processPublish(member,data[1]);
                 }
             });
         return memberMap;

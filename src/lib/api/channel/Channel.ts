@@ -62,13 +62,13 @@ export default class Channel extends ChannelCore {
         this._chEvent = CHANNEL_START_INDICATOR + this.identifier +
             (apiLevel !== undefined ? `@${apiLevel}`: '');
 
-        const target = `Channel: '${identifier}' with API level: '${apiLevel}'`;
+        const errMessagePrefix = this.toString() + ' error was thrown in the function';
         this._onPublish = FuncUtils.createSafeCaller(this.onPublish,
-            `${target} error was thrown in the function onPublish`,ErrorEventSingleton.get());
+            `${errMessagePrefix} onPublish`,ErrorEventSingleton.get());
         this._onSubscription = FuncUtils.createSafeCaller(this.onSubscription,
-            `${target} error was thrown in the function onSubscription`,ErrorEventSingleton.get());
+            `${errMessagePrefix} onSubscription`,ErrorEventSingleton.get());
         this._onUnsubscription = FuncUtils.createSafeCaller(this.onUnsubscription,
-            `${target} error was thrown in the function onUnsubscription`,ErrorEventSingleton.get());
+            `${errMessagePrefix} onUnsubscription`,ErrorEventSingleton.get());
     }
 
     /**
@@ -184,8 +184,8 @@ export default class Channel extends ChannelCore {
     private _register() {
         this._scExchange.subscribe(this._chEvent)
             .watch(async (data: ChWorkerPublishPackage) => {
-                if(data['0'] !== this._workerFullId) {
-                    this._processPublish(data['1']);
+                if(data[0] !== this._workerFullId) {
+                    this._processPublish(data[1]);
                 }
             });
         this._internalRegistered = true;
