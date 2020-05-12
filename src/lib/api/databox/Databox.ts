@@ -48,7 +48,9 @@ import DataboxFetchManager, {FetchManagerBuilder} from "../../main/databox/datab
 import ZSocket                                    from "../../main/internalApi/zSocket";
 import CloneUtils                                 from "../../main/utils/cloneUtils";
 import {removeValueFromArray}                     from '../../main/utils/arrayUtils';
-import ObjectUtils from '../../main/utils/objectUtils';
+import ObjectUtils                                from '../../main/utils/objectUtils';
+import FuncUtils                                  from '../../main/utils/funcUtils';
+import {ErrorEventSingleton}                      from '../../main/error/errorEventSingleton';
 const defaultSymbol                              = Symbol();
 
 /**
@@ -69,12 +71,12 @@ const defaultSymbol                              = Symbol();
  * - fetch
  *
  * events:
- * - beforeInsert
- * - beforeUpdate
- * - beforeDelete
  * - onConnection
  * - onDisconnection
  * - onReceivedSignal
+ * - (beforeInsert)
+ * - (beforeUpdate)
+ * - (beforeDelete)
  *
  * and the cud middleware methods:
  * - insertMiddleware
@@ -97,6 +99,10 @@ export default class Databox extends DataboxCore {
     private readonly _sendCudToSockets: (dbClientCudPackage: DbClientOutputCudPackage) => Promise<void> | void;
     private readonly _hasBeforeEventsListener: boolean;
 
+    private readonly _onConnection: (socket: ZSocket) => Promise<void> | void;
+    private readonly _onDisconnection: (socket: ZSocket) => Promise<void> | void;
+    private readonly _onReceivedSignal: (socket: ZSocket, signal: string, data: any) => Promise<void> | void;
+
     constructor(identifier: string, bag: Bag, dbPreparedData: DbPreparedData, apiLevel: number | undefined) {
         super(identifier,bag,dbPreparedData,apiLevel);
         this._scExchange = bag.getWorker().scServer.exchange;
@@ -110,6 +116,14 @@ export default class Databox extends DataboxCore {
 
         this._hasBeforeEventsListener = !this.beforeInsert[defaultSymbol] ||
             !this.beforeUpdate[defaultSymbol] || !this.beforeDelete[defaultSymbol];
+
+        const errMessagePrefix = this.toString() + ' error was thrown in the function';
+        this._onConnection = FuncUtils.createSafeCaller(this.onConnection,
+            `${errMessagePrefix} onConnection`,ErrorEventSingleton.get());
+        this._onDisconnection = FuncUtils.createSafeCaller(this.onDisconnection,
+            `${errMessagePrefix} onDisconnection`,ErrorEventSingleton.get());
+        this._onReceivedSignal = FuncUtils.createSafeCaller(this.onReceivedSignal,
+            `${errMessagePrefix} onReceivedSignal`,ErrorEventSingleton.get());
     }
 
     /**
@@ -177,7 +191,7 @@ export default class Databox extends DataboxCore {
                 switch (senderPackage.a) {
                     case DbClientInputAction.signal:
                         if(typeof (senderPackage as DbClientInputSignalPackage).s as any === 'string'){
-                            this.onReceivedSignal(socket.zSocket,(senderPackage as DbClientInputSignalPackage).s,
+                            this._onReceivedSignal(socket.zSocket,(senderPackage as DbClientInputSignalPackage).s,
                                 (senderPackage as DbClientInputSignalPackage).d);
                         }
                         else {
@@ -233,7 +247,7 @@ export default class Databox extends DataboxCore {
         socket.off('disconnect',disconnectHandler);
         removeValueFromArray(socket.databoxes,this);
         this._rmSocket(socket);
-        this.onDisconnection(socket.zSocket);
+        this._onDisconnection(socket.zSocket);
     }
 
     /**
@@ -326,7 +340,7 @@ export default class Databox extends DataboxCore {
 
             socket.on('disconnect',disconnectHandler);
             socket.databoxes.push(this);
-            this.onConnection(socket.zSocket);
+            this._onConnection(socket.zSocket);
         }
         return socketMemoryData;
     }
@@ -490,7 +504,7 @@ export default class Databox extends DataboxCore {
      * @param cudOperations
      */
     private async _emitBeforeEvents(cudOperations: CudOperation[]){
-        let promises: (Promise<void> | void)[] = [];
+        const promises: (Promise<void> | void)[] = [];
         for(let i = 0; i < cudOperations.length;i++) {
             const operation = cudOperations[i];
             switch (operation.t) {
@@ -852,6 +866,8 @@ export default class Databox extends DataboxCore {
      * **Can be overridden.**
      * A function that gets triggered before an insert into the Databox.
      * The databox will only emit before events when you overwrite at least one of them.
+     * Notice that thrown errors in this method will be thrown up to
+     * the call of the insert/update/delete or sequence edit method.
      * @param selector
      * @param value
      * @param options
@@ -864,6 +880,8 @@ export default class Databox extends DataboxCore {
      * **Can be overridden.**
      * A function that gets triggered before an update of data in the Databox.
      * The databox will only emit before events when you overwrite at least one of them.
+     * Notice that thrown errors in this method will be thrown up to
+     * the call of the insert/update/delete or sequence edit method.
      * @param selector
      * @param value
      * @param options
@@ -876,6 +894,8 @@ export default class Databox extends DataboxCore {
      * **Can be overridden.**
      * A function that gets triggered before a delete of data in the Databox.
      * The databox will only emit before events when you overwrite at least one of them.
+     * Notice that thrown errors in this method will be thrown up to
+     * the call of the insert/update/delete or sequence edit method.
      * @param selector
      * @param options
      */
