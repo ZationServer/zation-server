@@ -50,7 +50,7 @@ export default class Controller extends Component {
 
     /**
      * @description
-     * Gets invokes when the controller gets an request and input is correct.
+     * Gets invoked when the controller gets an request and input is correct.
      * This method will only be invoked when the beforeHandle method has not thrown an error.
      * @param reqBag
      * @param input
@@ -79,7 +79,7 @@ export default class Controller extends Component {
 
     /**
      * @description
-     * Gets invokes when the controller gets an request with invalid input.
+     * Gets invoked when the controller gets an request with invalid input.
      * @param reqBag
      * @param rawInput
      * Notice that you will get the raw input means only
