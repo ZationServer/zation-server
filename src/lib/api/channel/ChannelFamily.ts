@@ -272,7 +272,7 @@ export default class ChannelFamily extends ChannelCore {
      * @private
      */
     async _checkSocketHasStillAccess(socket: UpSocket): Promise<void> {
-        const members = this.getSocketRegMembers(socket);
+        const members = this.getSocketSubMembers(socket);
         for(let i = 0; i < members.length; i++){
             if(!(await this._preparedData.accessCheck(socket.authEngine,socket.zSocket,
                 {identifier: this.identifier,member: members[i]}))) {
@@ -284,11 +284,11 @@ export default class ChannelFamily extends ChannelCore {
     /**
      * **Not override this method.**
      * This method returns a string array
-     * with all members that the socket subscribed.
+     * with all members that the socket has subscribed.
      * This method is used internally.
      * @param socket
      */
-    getSocketRegMembers(socket: UpSocket): string[] {
+    getSocketSubMembers(socket: UpSocket): string[] {
         const members = this._socketMembers.get(socket);
         return members ? Array.from(members): [];
     }

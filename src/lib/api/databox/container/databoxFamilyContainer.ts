@@ -255,4 +255,18 @@ export default class DataboxFamilyContainer {
             this._databoxes[i].transmitSignal(member,signal,data,forEveryWorker);
         }
     }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * This method returns a string array with all
+     * members where the socket is registered.
+     * @param socket
+     */
+    getSocketRegMembers(socket: UpSocket): string[] {
+        const members: string[] = [];
+        for(let i = 0; i < this._count;i++) {
+            members.push(...this._databoxes[i].getSocketRegMembers(socket))
+        }
+        return members;
+    }
 }

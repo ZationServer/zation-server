@@ -51,4 +51,18 @@ export default class ChannelFamilyContainer {
             this._channels[i].kickOut(member,socket,code,data);
         }
     }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * This method returns a string array
+     * with all members that the socket has subscribed.
+     * @param socket
+     */
+    getSocketSubMembers(socket: UpSocket): string[] {
+        const members: string[] = [];
+        for(let i = 0; i < this._count;i++) {
+            members.push(...this._channels[i].getSocketSubMembers(socket))
+        }
+        return members;
+    }
 }
