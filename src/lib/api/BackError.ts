@@ -30,7 +30,7 @@ export interface DryBackError {
     /**
      * From Zation System
      */
-    z: boolean,
+    z: 0 | 1,
     /**
      * Info
      */
@@ -109,7 +109,7 @@ export default class BackError extends Error
             return {
                 n: 'BackError',
                 t: this.type,
-                z: this.fromZationSystem
+                z: this.fromZationSystem ? 1 : 0
             }
         }
         else{
@@ -117,7 +117,7 @@ export default class BackError extends Error
                 n: this.name,
                 g: this.group,
                 t: this.type,
-                z: this.fromZationSystem,
+                z: this.fromZationSystem ? 1 : 0,
                 i: this.sendInfo ? this.info: {},
                 ...(withDesc ? {d: this.description}: {})
             };
