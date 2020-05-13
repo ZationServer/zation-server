@@ -23,9 +23,9 @@ export interface ControllerBaseReq {
 
 export interface ControllerStandardReq extends ControllerBaseReq {
     /**
-     * Input
+     * Data (Input)
      */
-    i?: any
+    d?: any
 }
 
 export interface ControllerValidationCheckReq extends ControllerBaseReq {

@@ -23,6 +23,7 @@ export const MainBackErrors = {
         description  : 'The receiver is not found.',
         type         : ErrorType.InputError,
         sendInfo     : true,
+        private      : true,
         //INFO
         // identifier
         fromZationSystem: true
@@ -76,29 +77,6 @@ export const MainBackErrors = {
         //INFO
         // serviceName (name of the service)
         // instanceName  (name of the instance)
-        fromZationSystem: true
-    },
-
-    errorNotFound : {
-        name         : 'errorNotFound',
-        description  : 'Error not found.',
-        type         : ErrorType.CodeError,
-        sendInfo     : false,
-        private      : true,
-        //INFO
-        // errorName (name of the error)
-        fromZationSystem: true
-    },
-
-    methodIsIncompatible : {
-        name         : 'methodIsIncompatible',
-        description  : 'Method is incompatible with request protocol.',
-        type         : ErrorType.CodeError,
-        sendInfo     : false,
-        private      : true,
-        //INFO
-        // reqType
-        // requiredReqType
         fromZationSystem: true
     },
 
@@ -240,27 +218,27 @@ export const MainBackErrors = {
         fromZationSystem: true
     },
 
-    tokenWithoutAuthGroup  : {
+    tokenWithoutAuthGroup : {
         name         : 'tokenWithoutAuthGroup',
-        description  : 'Token without auth group!',
+        description  : 'Token without auth group.',
         type         : ErrorType.TokenError,
         private      : true,
         sendInfo     : false,
         fromZationSystem: true
     },
 
-    tokenWithAuthGroupAndOnlyPanel  : {
+    tokenWithAuthGroupAndOnlyPanel : {
         name         : 'tokenWithAuthGroupAndOnlyPanel',
-        description  : 'Token with auth group and only panel!',
+        description  : 'Token with auth group and only panel.',
         type         : ErrorType.TokenError,
         private      : true,
         sendInfo     : false,
         fromZationSystem: true
     },
 
-    wrongPanelAuthData  : {
-        name         : 'wrongPanelAuthData',
-        description  : 'Wrong panel auth data!',
+    invalidPanelAuthData : {
+        name         : 'invalidPanelAuthData',
+        description  : 'Invalid panel auth data.',
         type         : ErrorType.AuthError,
         private      : false,
         sendInfo     : false,
@@ -301,7 +279,7 @@ export const MainBackErrors = {
         name         : 'invalidPackage',
         description  : 'Invalid package.',
         type         : ErrorType.InputError,
-        private      : false,
+        private      : true,
         sendInfo     : false,
         fromZationSystem: true
     },

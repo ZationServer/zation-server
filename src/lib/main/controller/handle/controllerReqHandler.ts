@@ -126,7 +126,7 @@ export default class ControllerReqHandler
 
                     let input: object;
                     try {
-                        input = await inputConsume((request as ControllerStandardReq).i);
+                        input = await inputConsume((request as ControllerStandardReq).d);
                     }
                     catch (err) {
                         //invoke controller invalid input function
@@ -142,7 +142,7 @@ export default class ControllerReqHandler
                             }
                             err = errorBag;
 
-                            const input = (request as ControllerStandardReq).i;
+                            const input = (request as ControllerStandardReq).d;
                             const reqBag = new RequestBag(socket,this.worker,input,reqApiLevel);
                             try {
                                 await cInstance.invalidInput(reqBag,input,err);

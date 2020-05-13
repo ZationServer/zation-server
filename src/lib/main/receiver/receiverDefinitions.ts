@@ -10,9 +10,9 @@ export interface ReceiverPackage {
      */
     r: string,
     /**
-     * Input
+     * Data
      */
-    i?: any,
+    d?: any,
     /**
      * ApiLevel
      */

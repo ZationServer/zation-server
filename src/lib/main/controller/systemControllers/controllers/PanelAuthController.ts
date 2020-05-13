@@ -36,7 +36,7 @@ export default class PanelAuthController extends Controller
             await new Promise((resolve) => {setTimeout(() => resolve(),1500)});
 
             if(!(await bag.getWorker().getPanelEngine().isPanelLoginDataValid(username,password))) {
-                throw new BackError(MainBackErrors.wrongPanelAuthData);
+                throw new BackError(MainBackErrors.invalidPanelAuthData);
             }
             const token = TokenUtils.generateToken(bag.getZationConfig().internalData.tokenClusterKey);
             token[nameof<ZationToken>(s => s.panelAccess)] = true;

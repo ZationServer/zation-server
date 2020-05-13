@@ -83,7 +83,7 @@ export default class ReceiverHandler
 
                 let input: object;
                 try {
-                    input = await inputConsume(pack.i);
+                    input = await inputConsume(pack.d);
                 }
                 catch (err) {
                     //invoke controller invalid input function
@@ -99,7 +99,7 @@ export default class ReceiverHandler
                         }
                         err = errorBag;
 
-                        const input = pack.i;
+                        const input = pack.d;
                         const reqBag = new RequestBag(socket,this.worker,input,reqApiLevel);
                         try {
                             await rInstance.invalidInput(reqBag,input,err);
