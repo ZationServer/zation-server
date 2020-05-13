@@ -34,6 +34,7 @@ export interface RawSocket {
     disconnect(code?: any, data?: any): void;
     emit(event: string, data: object, callback?: RespondFunction): void;
     on(event: string, handler: OnHandlerFunction): void;
+    once(event: string, handler: OnHandlerFunction): void;
     off(event?: string, handler?: Function): void;
     send(data: any, options?: object): void;
     getAuthToken(): ZationToken | null;

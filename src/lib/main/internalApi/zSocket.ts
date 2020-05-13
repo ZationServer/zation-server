@@ -285,11 +285,7 @@ export default class ZSocket
      * parameters are the data and a response function that you can call to respond on the event back.
      */
     once(event: string,handler: OnHandlerFunction): void {
-        const tmpHandler: OnHandlerFunction = (data, response) => {
-            tmpHandler(data,response);
-            this._socket.off(event,tmpHandler);
-        };
-        this._socket.on(event,tmpHandler);
+        this._socket.once(ZATION_CUSTOM_EVENT_NAMESPACE+event,handler);
     }
 
     //Part Socket Variables
