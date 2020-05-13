@@ -72,7 +72,7 @@ export const CH_CLIENT_OUTPUT_PUBLISH = 'C>P';
 
 export interface ChClientOutputPublishPackage {
     /**
-     * Channel
+     * Channel id
      */
     0: string;
     /**
@@ -89,7 +89,7 @@ export const CH_CLIENT_OUTPUT_KICK_OUT = 'C>K';
 
 export interface ChClientOutputKickOutPackage {
     /**
-     * Channel
+     * Channel id
      */
     ch: string;
     /**
