@@ -52,7 +52,7 @@ describe('Api.BackErrorBag',() => {
             assert.equal(eb.getBackErrors()[0].name,'error1');
         });
 
-        it('toResponseErrorArray',() => {
+        it('dehydrate',() => {
             const eb = new BackErrorBag();
             eb.addNewBackError({name : 'error1'});
             const json = eb._dehydrate(true);
@@ -60,7 +60,7 @@ describe('Api.BackErrorBag',() => {
             assert.sameDeepMembers(json, [ { n: 'error1',
                 g: undefined,
                 t: 'NormalError',
-                zs: false,
+                z: false,
                 i: {},
                 d: 'No Description define in Error' } ]
             );
