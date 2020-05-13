@@ -63,6 +63,7 @@ export default class ChannelFamily extends ChannelCore {
     private readonly _unregisterMemberTimeoutMap: Map<string,Timeout> = new Map();
     private readonly _isMemberCheck: IsMemberChecker;
 
+    private readonly _chId: string;
     private readonly _chEventPreFix: string;
 
     private readonly _onPublish: (member: string,event: string, data: any) => Promise<void> | void;
@@ -74,8 +75,9 @@ export default class ChannelFamily extends ChannelCore {
         super(identifier,bag,chPreparedData,apiLevel);
         this._isMemberCheck = MemberCheckerUtils.createIsMemberChecker(this.isMember.bind(this),this.bag);
 
-        this._chEventPreFix = CHANNEL_START_INDICATOR + this.identifier +
-            (apiLevel !== undefined ? `@${apiLevel}`: '') + CHANNEL_MEMBER_SPLIT;
+        this._chId = CHANNEL_START_INDICATOR + this.identifier +
+            (apiLevel !== undefined ? `@${apiLevel}`: '');
+        this._chEventPreFix = this._chId + CHANNEL_MEMBER_SPLIT;
 
         const errMessagePrefix = this.toString() + ' error was thrown in the function';
         this._onPublish = FuncUtils.createSafeCaller(this.onPublish,
@@ -111,7 +113,7 @@ export default class ChannelFamily extends ChannelCore {
         await this._checkSubscribeAccess(socket,{identifier: this.identifier,member});
         this._addSocket(member,socket);
         this._onSubscription(member,socket.zSocket);
-        return chEvent;
+        return this._chId;
     }
 
     private _addSocket(member: string,socket: UpSocket) {
@@ -250,7 +252,7 @@ export default class ChannelFamily extends ChannelCore {
     private _processPublish(member: string,publish: PublishPackage) {
         const memberMap = this._regMember.get(member);
         if(memberMap){
-            const outputPackage = [this._chEventPreFix+member,publish.e,publish.d] as ChClientOutputPublishPackage;
+            const outputPackage = {i: this._chId,m: member,e: publish.e,d: publish.d} as ChClientOutputPublishPackage;
             if(publish.p === undefined){
                 for (const socket of memberMap.keys()){
                     socket.emit(CH_CLIENT_OUTPUT_PUBLISH,outputPackage);
@@ -330,7 +332,7 @@ export default class ChannelFamily extends ChannelCore {
         if(memberMap){
             const kickOutFunction = memberMap.get(socket);
             if(kickOutFunction){
-                socket.emit(CH_CLIENT_OUTPUT_KICK_OUT,{ch: this._chEventPreFix+member,c: code,d: data} as ChClientOutputKickOutPackage);
+                socket.emit(CH_CLIENT_OUTPUT_KICK_OUT,{i: this._chId,m: member,c: code,d: data} as ChClientOutputKickOutPackage);
                 kickOutFunction();
             }
         }

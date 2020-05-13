@@ -46,6 +46,10 @@ export default class Channel extends ChannelCore {
      * Maps the sockets to the kick out function.
      */
     private readonly _subSockets: Map<UpSocket,KickOutSocketFunction> = new Map();
+
+    /**
+     * Also the channel id.
+     */
     private readonly _chEvent: string;
 
     private _internalRegistered: boolean = false;
@@ -162,7 +166,7 @@ export default class Channel extends ChannelCore {
      * @private
      */
     private _processPublish(publish: PublishPackage) {
-        const outputPackage = [this._chEvent,publish.e,publish.d] as ChClientOutputPublishPackage;
+        const outputPackage = {i: this._chEvent,e: publish.e,d: publish.d} as ChClientOutputPublishPackage;
         if(publish.p === undefined){
             for (const socket of this._subSockets.keys()){
                 socket.emit(CH_CLIENT_OUTPUT_PUBLISH,outputPackage);
@@ -244,7 +248,7 @@ export default class Channel extends ChannelCore {
     kickOut(socket: UpSocket,code?: number | string,data?: any) {
         const kickOutFunction = this._subSockets.get(socket);
         if(kickOutFunction){
-            socket.emit(CH_CLIENT_OUTPUT_KICK_OUT,{ch: this._chEvent,c: code,d: data} as ChClientOutputKickOutPackage);
+            socket.emit(CH_CLIENT_OUTPUT_KICK_OUT,{i: this._chEvent,c: code,d: data} as ChClientOutputKickOutPackage);
             kickOutFunction();
         }
     }

@@ -74,15 +74,19 @@ export interface ChClientOutputPublishPackage {
     /**
      * Channel id
      */
-    0: string;
+    i: string;
+    /**
+     * Member
+     */
+    m?: string;
     /**
      * Event
      */
-    1: string;
+    e: string;
     /**
      * Data
      */
-    2?: any;
+    d?: any;
 }
 
 export const CH_CLIENT_OUTPUT_KICK_OUT = 'C>K';
@@ -91,15 +95,19 @@ export interface ChClientOutputKickOutPackage {
     /**
      * Channel id
      */
-    ch: string;
+    i: string;
     /**
-     * data
+     * Member
      */
-    d?: any;
+    m?: string;
     /**
      * code
      */
     c?: number | string;
+    /**
+     * data
+     */
+    d?: any;
 }
 
 export type KickOutSocketFunction = () => void;
