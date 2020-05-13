@@ -244,7 +244,7 @@ export default class Channel extends ChannelCore {
     kickOut(socket: UpSocket,code?: number | string,data?: any) {
         const kickOutFunction = this._subSockets.get(socket);
         if(kickOutFunction){
-            socket.emit(CH_CLIENT_OUTPUT_KICK_OUT,{c: code,d: data} as ChClientOutputKickOutPackage);
+            socket.emit(CH_CLIENT_OUTPUT_KICK_OUT,{ch: this._chEvent,c: code,d: data} as ChClientOutputKickOutPackage);
             kickOutFunction();
         }
     }

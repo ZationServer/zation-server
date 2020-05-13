@@ -330,7 +330,7 @@ export default class ChannelFamily extends ChannelCore {
         if(memberMap){
             const kickOutFunction = memberMap.get(socket);
             if(kickOutFunction){
-                socket.emit(CH_CLIENT_OUTPUT_KICK_OUT,{c: code,d: data} as ChClientOutputKickOutPackage);
+                socket.emit(CH_CLIENT_OUTPUT_KICK_OUT,{ch: this._chEventPreFix+member,c: code,d: data} as ChClientOutputKickOutPackage);
                 kickOutFunction();
             }
         }

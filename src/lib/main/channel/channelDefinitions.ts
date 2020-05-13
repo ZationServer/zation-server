@@ -89,6 +89,10 @@ export const CH_CLIENT_OUTPUT_KICK_OUT = 'C>K';
 
 export interface ChClientOutputKickOutPackage {
     /**
+     * Channel
+     */
+    ch: string;
+    /**
      * data
      */
     d?: any;
