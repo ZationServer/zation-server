@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 const BackErrorBuilder = require("../../../../dist/lib/main/builder/backErrorBuilder").default;
 const assert           = require("chai").assert;
 
-describe('MAIN.BackErrorBuilder',() => {
+describe('Main.BackErrorBuilder',() => {
 
     describe('Build', function () {
 
@@ -67,7 +67,6 @@ describe('MAIN.BackErrorBuilder',() => {
                 .typeTokenError()
                 .typeTimeError()
                 .typeCompatibilityError()
-                .typeProtocolError()
                 .typeSystemError()
                 .typeValidationError()
                 .typeNormalError()

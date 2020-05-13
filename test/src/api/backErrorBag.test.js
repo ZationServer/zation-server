@@ -9,7 +9,7 @@ const BackError       = require("../../../dist/lib/api/BackError").default;
 const assert          = require("chai").assert;
 const expect          = require("chai").expect;
 
-describe('API.BackErrorBag',() => {
+describe('Api.BackErrorBag',() => {
 
     describe('Constructor',() => {
 
@@ -55,7 +55,7 @@ describe('API.BackErrorBag',() => {
         it('toResponseErrorArray',() => {
             const eb = new BackErrorBag();
             eb.addNewBackError({name : 'error1'});
-            const json = eb._toResponseErrorArray(true);
+            const json = eb._dehydrate(true);
             // noinspection JSCheckFunctionSignatures
             assert.sameDeepMembers(json, [ { n: 'error1',
                 g: undefined,

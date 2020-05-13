@@ -8,37 +8,37 @@ const BackError       = require("../../../dist/lib/api/BackError").default;
 const assert          = require("chai").assert;
 const expect          = require("chai").expect;
 
-describe('API.BackError',() => {
+describe('Api.BackError',() => {
 
     describe('Constructor',() => {
 
         it('Default',() => {
-            const te = new BackError();
-            assert.equal(te.getName(),'BackError');
+            const be = new BackError();
+            assert.equal(be.getName(),'BackError');
         });
 
         it('Overloaded',() => {
-            const te = new BackError({name: 'error1'});
-            assert.equal(te.getName(),'error1');
+            const be = new BackError({name: 'error1'});
+            assert.equal(be.getName(),'error1');
         });
 
         it('Overloaded-2',() => {
-            const te = new BackError({name: 'error1',group : 'group2', type : 'type1'});
-            assert.equal(te.getName(),'error1');
-            assert.equal(te.getGroup(),'group2');
-            assert.equal(te.getType(),'type1');
+            const be = new BackError({name: 'error1',group : 'group2', type : 'type1'});
+            assert.equal(be.getName(),'error1');
+            assert.equal(be.getGroup(),'group2');
+            assert.equal(be.getType(),'type1');
         });
 
         it('Overloaded-3',() => {
-            const te = new BackError({name: 'error1'},'info2');
-            assert.equal(te.getName(),'error1');
-            assert.equal(te.getInfo().main,'info2');
+            const be = new BackError({name: 'error1'},'info2');
+            assert.equal(be.getName(),'error1');
+            assert.equal(be.getInfo().main,'info2');
         });
 
         it('Overloaded-4',() => {
-            const te = new BackError({name: 'error1'},{length : 2});
-            assert.equal(te.getName(),'error1');
-            assert.deepEqual(te.getInfo(),{length : 2})
+            const be = new BackError({name: 'error1'},{length : 2});
+            assert.equal(be.getName(),'error1');
+            assert.deepEqual(be.getInfo(),{length : 2})
         });
     });
 
@@ -47,15 +47,15 @@ describe('API.BackError',() => {
         describe('toResponseError',() => {
 
             it('normal',() => {
-                const te = new BackError({name: 'error1'});
-                assert.deepEqual(te._toResponseError(true),{ n: 'error1',
+                const be = new BackError({name: 'error1'});
+                assert.deepEqual(be._dehydrate(true),{ n: 'error1',
                     g: undefined,
                     t: 'NormalError',
                     zs: false,
                     i: {},
                     d: 'No Description define in Error' });
 
-                assert.deepEqual(te._toResponseError(),{ n: 'error1',
+                assert.deepEqual(be._dehydrate(),{ n: 'error1',
                     g: undefined,
                     t: 'NormalError',
                     zs: false,
@@ -63,65 +63,65 @@ describe('API.BackError',() => {
             });
 
             it('private',() => {
-                const te = new BackError({name: 'error1', private : true});
+                const be = new BackError({name: 'error1', private : true});
                 assert.deepEqual
-                (te._toResponseError(true),{ n: 'BackError', t: 'NormalError', zs: false });
+                (be._dehydrate(true),{ n: 'BackError', t: 'NormalError', zs: false });
             });
 
         });
 
         it('setName',() => {
-            const te = new BackError({name: 'error1'});
-            te.setName('error2');
-            assert.equal(te.getName(),'error2');
+            const be = new BackError({name: 'error1'});
+            be.setName('error2');
+            assert.equal(be.getName(),'error2');
         });
 
         it('setGroup',() => {
-            const te = new BackError({group : 'g1'});
-            te.setGroup('g2');
-            assert.equal(te.getGroup(),'g2');
+            const be = new BackError({group : 'g1'});
+            be.setGroup('g2');
+            assert.equal(be.getGroup(),'g2');
         });
 
         it('setDescription',() => {
-            const te = new BackError({description : 'desc'});
-            te.setDescription('desc2');
-            assert.equal(te.getDescription(),'desc2');
+            const be = new BackError({description : 'desc'});
+            be.setDescription('desc2');
+            assert.equal(be.getDescription(),'desc2');
         });
 
         it('setType',() => {
-            const te = new BackError({type : 't1'});
-            te.setType('t2');
-            assert.equal(te.getType(),'t2');
+            const be = new BackError({type : 't1'});
+            be.setType('t2');
+            assert.equal(be.getType(),'t2');
         });
 
         it('setPrivate',() => {
-            const te = new BackError({private: false});
-            te.setPrivate(true);
-            assert(te.isPrivate());
+            const be = new BackError({private: false});
+            be.setPrivate(true);
+            assert(be.isPrivate());
         });
 
         it('setSendInfo',() => {
-            const te = new BackError({sendInfo: false});
-            te.setSendInfo(true);
-            assert(te.isSendInfo());
+            const be = new BackError({sendInfo: false});
+            be.setSendInfo(true);
+            assert(be.isSendInfo());
         });
 
         it('setIsFromZationSystem',() => {
-            const te = new BackError({fromZationSystem : false});
-            te.setFromZationSystem(true);
-            assert(te.isFromZationSystem());
+            const be = new BackError({fromZationSystem : false});
+            be.setFromZationSystem(true);
+            assert(be.isFromZationSystem());
         });
 
         it('setInfo',() => {
-            const te = new BackError({},{length : 1});
-            te.setInfo({length : 5});
-            assert.deepEqual(te.getInfo(),{length : 5});
+            const be = new BackError({},{length : 1});
+            be.setInfo({length : 5});
+            assert.deepEqual(be.getInfo(),{length : 5});
         });
 
         it('throw',() => {
-            const te = new BackError({},{length : 1});
+            const be = new BackError({},{length : 1});
             expect(() => {
-                te.throw();
+                be.throw();
             }).to.throw();
         });
 

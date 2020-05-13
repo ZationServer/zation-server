@@ -8,7 +8,7 @@ const processTaskTriggerTime = require("../../../../dist/lib/main/utils/timeUtil
 const moment                 = require("moment");
 const assert                 = require("chai").assert;
 
-describe('MAIN.UTILS.TimeUtils',() => {
+describe('Main.Utils.TimeUtils',() => {
 
     describe('Methods',() => {
 
