@@ -6,8 +6,8 @@ Copyright(c) Luca Scaringella
 
 import {ControllerBaseReq, ControllerValidationCheckReq, SpecialController} from '../controllerDefinitions';
 
-export function checkValidControllerBaseRequest(request: ControllerBaseReq): boolean {
-    return typeof request === 'object' && request &&
+export function checkValidControllerBaseRequest(request: ControllerBaseReq | any | null | undefined | number | string): boolean {
+    return typeof request === 'object' && !!request &&
         (typeof request.c === 'string' || request.c === SpecialController.AuthController);
 }
 
