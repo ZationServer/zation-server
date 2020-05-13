@@ -104,7 +104,7 @@ export default class Channel extends ChannelCore {
         const disconnectHandler = () => this._unsubscribeSocket(socket,disconnectHandler,UnsubscribeTrigger.Disconnect);
 
         socket.on(this._chEvent,(senderPackage: ChClientInputPackage, respond) => {
-            if(senderPackage['0'] === ChClientInputAction.Unsubscribe) {
+            if(senderPackage[0] === ChClientInputAction.Unsubscribe) {
                 this._unsubscribeSocket(socket,disconnectHandler,UnsubscribeTrigger.Client);
                 respond(null);
             }
