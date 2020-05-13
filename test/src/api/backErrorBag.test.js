@@ -60,7 +60,7 @@ describe('Api.BackErrorBag',() => {
             assert.sameDeepMembers(json, [ { n: 'error1',
                 g: undefined,
                 t: 'NormalError',
-                z: false,
+                z: 0,
                 i: {},
                 d: 'No Description define in Error' } ]
             );

@@ -51,21 +51,21 @@ describe('Api.BackError',() => {
                 assert.deepEqual(be._dehydrate(true),{ n: 'error1',
                     g: undefined,
                     t: 'NormalError',
-                    z: false,
+                    z: 0,
                     i: {},
                     d: 'No Description define in Error' });
 
                 assert.deepEqual(be._dehydrate(),{ n: 'error1',
                     g: undefined,
                     t: 'NormalError',
-                    z: false,
+                    z: 0,
                     i: {}});
             });
 
             it('private',() => {
                 const be = new BackError({name: 'error1', private : true});
                 assert.deepEqual
-                (be._dehydrate(true),{ n: 'BackError', t: 'NormalError', z: false });
+                (be._dehydrate(true),{ n: 'BackError', t: 'NormalError', z: 0 });
             });
 
         });
