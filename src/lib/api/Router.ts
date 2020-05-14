@@ -38,9 +38,14 @@ export default class Router {
 
     private readonly _innerRouters: Router[] = [];
 
-    constructor(route: string = '') {
-        if(route[route.length-1] !== '/'){
-            route+='/';
+    constructor(route?: string) {
+        if(route !== undefined){
+            if(route[route.length-1] !== '/'){
+                route+='/';
+            }
+        }
+        else {
+            route = '';
         }
         this._route = route;
     }
