@@ -334,6 +334,7 @@ export default class InputProcessorCreator
 
                 if(input === undefined){
                     input = {};
+                    srcObj[srcKey] = input;
                 }
                 else if(typeof input !== "object") {
                     processInfo.errorBag.addBackError(new BackError(MainBackErrors.invalidInputTypeInParamBasedInput,{inputType: typeof input}));
