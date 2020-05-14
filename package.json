@@ -72,7 +72,7 @@
     "eosjs-ecc": "4.0.4",
     "base64url": "3.0.1",
     "utility-types": "3.10.0",
-    "zation-client": "1.1.5",
+    "zation-client": "1.1.8",
     "zation-service": "0.4.3",
     "zation-bag-extension": "1.3.5"
   },
