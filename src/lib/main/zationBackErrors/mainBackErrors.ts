@@ -256,7 +256,7 @@ export const MainBackErrors = {
 
     noAccessWithTokenState : {
         name         : 'noAccessWithTokenState',
-        description  : 'You have no access with the token state, to this controller.',
+        description  : 'You have no access with the token state, to this component.',
         type         : ErrorType.NoAccessError,
         sendInfo     : true,
         //INFO
