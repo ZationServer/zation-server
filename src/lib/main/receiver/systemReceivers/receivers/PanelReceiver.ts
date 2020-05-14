@@ -13,6 +13,7 @@ import {ZationToken}              from '../../../constants/internal';
 import Bag                        from '../../../../api/Bag';
 import {ScExchange}               from '../../../sc/scServer';
 import {INTERNAL_PANEL_CH}        from '../../../internalChannels/internalChannelEngine';
+import {$optional}                from '../../../../api/input/Optional';
 
 export default class PanelReceiver extends Receiver
 {
@@ -20,7 +21,7 @@ export default class PanelReceiver extends Receiver
         access: createTokenCheckFunction((token) =>
             token !== null && token[nameof<ZationToken>(s => s.panelAccess)] === true),
         versionAccess: 'all',
-        input: $single({type: 'boolean'})
+        input: $single($optional({type: 'boolean'},false))
     };
 
     private exchange: ScExchange;
