@@ -4,6 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
+const {performance} = require('perf_hooks');
+
 export default class Stopwatch {
 
     private currentTime: number;
