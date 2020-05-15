@@ -44,9 +44,27 @@ export default class BackError extends Error
     private type: string;
     private sendInfo: boolean;
     private info: BackErrorInfo;
-    private privateE: boolean;
+    private private: boolean;
     private fromZationSystem: boolean;
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Creates a BackError (An error that goes back to the client).
+     * The error can be thrown and will be returned to the client.
+     * You also can collect more BackErrors in a BackErrorBag.
+     * And throw them together.
+     * @example
+     * new BackError('valueNotMatchesWithMinLength',{minLength: 5, inputLength: 3}).throw();
+     * @param name
+     * Name of the back error.
+     * @param info
+     * The error info is a dynamic object which contains more detailed information.
+     * For example, with an valueNotMatchesWithMinLength error,
+     * the info object could include what the length of the input is and
+     * what the minimum length is.
+     */
+    constructor(name: string, info?: object | string)
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
@@ -64,18 +82,21 @@ export default class BackError extends Error
      * the info object could include what the length of the input is and
      * what the minimum length is.
      */
-    constructor(backErrorConstruct: BackErrorConstruct = {}, info?: object | string)
+    constructor(backErrorConstruct: BackErrorConstruct, info?: object | string)
+    constructor(value: BackErrorConstruct | string = {}, info?: object | string)
     {
         super();
-        //defaultValues
-        this.name        = backErrorConstruct.name || 'BackError';
-        this.group       = backErrorConstruct.group;
-        this.description = backErrorConstruct.description || 'No Description defined in Error';
-        this.type        = backErrorConstruct.type || ErrorType.NormalError;
-        this.sendInfo    = backErrorConstruct.sendInfo || true;
+        if(typeof value === 'string'){
+            value = {name: value} as BackErrorConstruct;
+        }
+        this.name        = value.name || 'BackError';
+        this.group       = value.group;
+        this.description = value.description || 'No Description defined in Error';
+        this.type        = value.type || ErrorType.NormalError;
+        this.sendInfo    = value.sendInfo || true;
         this.info        = {};
-        this.privateE    = backErrorConstruct.private || false;
-        this.fromZationSystem = backErrorConstruct.fromZationSystem || false;
+        this.private     = value.private || false;
+        this.fromZationSystem = value.fromZationSystem || false;
 
         if(info) {
             if (typeof info === 'string') {
@@ -92,9 +113,8 @@ export default class BackError extends Error
      * @description
      * Returns the complete information as a string.
      */
-    toString(): string
-    {
-        return `BackError  Name: ${this.name} Group: ${this.group}  Description: ${this.description}  Type: ${this.type}  Info: ${JSON.stringify(this.info)}  isPrivate:${this.privateE}  isFromZationSystem:${this.fromZationSystem}`;
+    toString(): string {
+        return `BackError  Name: ${this.name} Group: ${this.group}  Description: ${this.description}  Type: ${this.type}  Info: ${JSON.stringify(this.info)}  isPrivate:${this.private}  isFromZationSystem:${this.fromZationSystem}`;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -105,7 +125,7 @@ export default class BackError extends Error
      * @param withDesc
      */
     _dehydrate(withDesc: boolean = false): DryBackError {
-        if(this.privateE){
+        if(this.private){
             return {
                 n: 'BackError',
                 t: this.type,
@@ -233,7 +253,7 @@ export default class BackError extends Error
      */
     isPrivate(): boolean
     {
-        return this.privateE;
+        return this.private;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -246,7 +266,7 @@ export default class BackError extends Error
      */
     setPrivate(privateError: boolean): void
     {
-        this.privateE = privateError;
+        this.private = privateError;
     }
 
     // noinspection JSUnusedGlobalSymbols
