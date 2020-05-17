@@ -354,7 +354,7 @@ export default class ZationMaster {
             this.logStartedInformation();
 
             if(this.zc.mainConfig.logComponentApi || this.zc.isDebug()){
-                this.logComponentApiTree();
+                await this.logComponentApiTree();
             }
 
             if(this.startResolve){this.startResolve();}
@@ -481,20 +481,23 @@ export default class ZationMaster {
         Logger.log.active(msg.join('\n'));
     }
 
-    private logComponentApiTree(): void {
-        this.sendToRandomWorker([MasterMessageAction.componentStructure],(err,structure) => {
-            if(err) {
-                //try again later
-                setTimeout(() => this.logComponentApiTree(),500);
-            }
-            else {
-                Logger.log.custom({
-                    color: ConsoleColor.Green,
-                    name:'Component API',
-                    level: 1
-                },'\n' + structure.split('\n').map((s) => '            ' + s).join('\n'));
-            }
-        })
+    private logComponentApiTree(): Promise<void> {
+        return new Promise<void>((resolve => {
+            this.sendToRandomWorker([MasterMessageAction.componentStructure],(err,structure) => {
+                if(err) {
+                    //try again later
+                    setTimeout(() => this.logComponentApiTree().then(() => resolve()),300);
+                }
+                else {
+                    Logger.log.custom({
+                        color: ConsoleColor.Green,
+                        name:'Component API',
+                        level: 1
+                    },'\n' + structure.split('\n').map((s) => '            ' + s).join('\n'));
+                    resolve();
+                }
+            })
+        }));
     }
 
     private getRandomWorkerId() {
