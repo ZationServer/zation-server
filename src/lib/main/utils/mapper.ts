@@ -71,7 +71,7 @@ export default class Mapper<T extends UpSocket>
         }
     }
 
-    getLengthFromKey(k: string): number {
+    getLengthOfKey(k: string): number {
         if(this.data[k] instanceof SocketSet){
             // @ts-ignore
             return this.data[k].getLength();

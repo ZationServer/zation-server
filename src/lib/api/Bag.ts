@@ -4,14 +4,13 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import UpSocket                                             from "../main/sc/socket";
 import fetch, {Request, RequestInit, Response}              from 'node-fetch';
 import base64url                                            from "base64url"
 import PortChecker                                          from "../main/utils/portChecker";
 import AsymmetricKeyPairs                                   from "../main/internalApi/asymmetricKeyPairs";
 import {WorkerMessageAction}                                from "../main/constants/workerMessageAction";
 import BackErrorConstruct                                   from "../main/constants/backErrorConstruct";
-import {ZATION_CUSTOM_EVENT_NAMESPACE, ZationToken}         from "../main/constants/internal";
+import {ZATION_CUSTOM_EVENT_NAMESPACE}                      from "../main/constants/internal";
 import {InternalMainConfig}                                 from "../main/config/definitions/main/mainConfig";
 import {PrecompiledAppConfig}                               from "../main/config/definitions/main/appConfig";
 import {PrecompiledServiceConfig}                           from "../main/config/definitions/main/serviceConfig";
@@ -45,7 +44,6 @@ import ObjectPath                                           from "../main/utils/
 import Logger                                               from "../main/log/logger";
 import SidBuilder                                           from "../main/utils/sidBuilder";
 import TokenUtils                                           from "../main/token/tokenUtils";
-import ObjectPathSequenceImp                                from "../main/internalApi/objectPathSequence/objectPathSequenceImp";
 import ObjectPathTokenRemoteSequenceImp                     from "../main/internalApi/objectPathSequence/objectPathTokenRemoteSequenceImp";
 import Base64Utils                                          from "../main/utils/base64Utils";
 import ZationConfigFull                                     from "../main/config/manager/zationConfigFull";
@@ -62,13 +60,14 @@ import ScServer                                                from "../main/sc/
 import {ObjectPathSequence}                                    from "../main/internalApi/objectPathSequence/objectPathSequence";
 import {createAsyncTimeout, createIntervalAsyncIterator}       from '../main/utils/timeUtils';
 import ComponentUtils                                          from '../main/component/componentUtils';
-import {AnyChannelClass} from './channel/AnyChannelClass';
-import {AnyDataboxClass} from './databox/AnyDataboxClass';
-import {ChannelFamilyClass} from './channel/ChannelFamily';
-import ChannelFamilyContainer from './channel/container/channelFamilyContainer';
-import {ChannelClass} from './channel/Channel';
-import ChannelContainer from './channel/container/channelContainer';
-import ChannelUtils from '../main/channel/channelUtils';
+import {AnyChannelClass}                                       from './channel/AnyChannelClass';
+import {AnyDataboxClass}                                       from './databox/AnyDataboxClass';
+import {ChannelFamilyClass}                                    from './channel/ChannelFamily';
+import ChannelFamilyContainer                                  from './channel/container/channelFamilyContainer';
+import {ChannelClass}                                          from './channel/Channel';
+import ChannelContainer                                        from './channel/container/channelContainer';
+import ChannelUtils                                            from '../main/channel/channelUtils';
+import ZSocket                                                 from '../main/internalApi/zSocket';
 
 /**
  * The bag instance of this process.
@@ -395,18 +394,18 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the started time stamp of this server.
+     * Returns the started timestamp of this server.
      */
-    getServerStartedTimeStamp(): number {
+    getServerStartedTimestamp(): number {
         return this.worker.getServerStartedTime();
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the started time stamp of this worker.
+     * Returns the started timestamp of this worker.
      */
-    getWorkerStartedTimeStamp(): number {
+    getWorkerStartedTimestamp(): number {
         return this.worker.getWorkerStartedTime();
     }
 
@@ -999,6 +998,10 @@ export default class Bag {
      * Look in npm package 'node-fetch'.
      * @param url
      * @param init
+     * @example
+     * fetch('https://httpbin.org/post', { method: 'POST', body: 'a=1' })
+     *      .then(res => res.json()) // expecting a json response
+     *      .then(json => console.log(json));
      */
     async fetch(url: string | Request, init?: RequestInit): Promise<Response> {
         return fetch(url, init);
@@ -1008,7 +1011,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Emit to all sockets on complete system with user id (server side).
+     * Emit to all sockets with a specific user id (on every server).
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
      * @example
@@ -1027,7 +1030,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Emit to all sockets on complete system with token id (server side).
+     * Emit to all sockets with a specific token id (on every server).
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
      * @example
@@ -1046,7 +1049,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Emit to all sockets on complete system (server side).
+     * Emit to all sockets (on every server).
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
      * @example
@@ -1064,7 +1067,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Emit to all sockets with sid on complete system (server side).
+     * Emit to all sockets with a specific sid (on every server).
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
      * @example
@@ -1082,7 +1085,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Emit to specific auth user groups on complete system (server side).
+     * Emit to all sockets that belong to a specific auth user group (on every server).
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
      * @example
@@ -1106,7 +1109,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Emit to default user group on complete system (server side).
+     * Emit to all sockets that belong to the default user group (on every server).
      * It uses the custom zation event namespace
      * (so you cannot have name conflicts with internal event names).
      * @example
@@ -1126,7 +1129,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Disconnect all sockets on complete system with user id (server side).
+     * Disconnect all sockets with a specific user id (on every server).
      * @example
      * disconnectUser(['tim902','leonie23']);
      * disconnectUser('tim902');
@@ -1142,7 +1145,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Disconnect all sockets on complete system with token id (server side).
+     * Disconnect all sockets with a specific token id (on every server).
      * @example
      * disconnectToken(['TOKEN-UUID1','TOKEN-UUID2']);
      * disconnectToken('TOKEN-UUID1');
@@ -1158,7 +1161,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Disconnect all sockets on complete system (server side).
+     * Disconnect all sockets (on every server).
      * @example
      * disconnectAllSockets('EXCEPT-SOCKET-SID');
      * @param exceptSocketSids
@@ -1171,7 +1174,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Disconnect all sockets on complete system with sid (server side).
+     * Disconnect all sockets with a specific sid (on every server).
      * @example
      * disconnectSockets(['SOCKET-SID-1','SOCKET-SID-2']);
      * disconnectSockets('SOCKET-SID');
@@ -1185,7 +1188,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Disconnect all sockets on complete system which belongs to the auth user groups (server side).
+     * Disconnect all sockets that belong to a specific auth user group (on every server).
      * @example
      * disconnectAuthUserGroups('admin');
      * disconnectAuthUserGroups(['user','admin'],'EXCEPT-SOCKET-SID');
@@ -1201,7 +1204,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Disconnect all sockets which belongs to default user group on complete system (server side).
+     * Disconnect all sockets that belong to the default user group (on every server).
      * @example
      * disconnectDefaultUserGroup();
      * disconnectDefaultUserGroup('EXCEPT-SOCKET-SID');
@@ -1215,7 +1218,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Deauthenticate all sockets on complete system with user id/s (server side).
+     * Deauthenticate all sockets with a specific user id (on every server).
      * @example
      * deauthenticateUser(['tim902','leonie23']);
      * deauthenticateUser('tim902');
@@ -1231,7 +1234,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Deauthenticate all sockets on complete system with token id/s (server side).
+     * Deauthenticate all sockets with a specific token id (on every server).
      * @example
      * deauthenticateToken(['TOKEN-UUID1','TOKEN-UUID2']);
      * deauthenticateToken('TOKEN-UUID2');
@@ -1247,7 +1250,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Deauthenticate all sockets on complete system (server side).
+     * Deauthenticate all sockets (on every server).
      * @example
      * deauthenticateAllSockets('EXCEPT-SOCKET-SID');
      * @param exceptSocketSids
@@ -1260,7 +1263,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Deauthenticate all sockets on complete system with sid (server side).
+     * Deauthenticate all sockets with a specific sid (on every server).
      * @example
      * deauthenticateSockets(['SOCKET-SID-1','SOCKET-SID-2']);
      * deauthenticateSockets('SOCKET-SID');
@@ -1274,7 +1277,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Deauthenticate all sockets on complete system which belongs to the auth user groups (server side).
+     * Deauthenticate all sockets that belong to a specific auth user group (on every server).
      * @example
      * deauthenticateAuthUserGroups('admin');
      * deauthenticateAuthUserGroups(['user','admin'],'EXCEPT-SOCKET-SID');
@@ -1288,41 +1291,10 @@ export default class Bag {
     }
 
     //Part Socket Tools
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Returns the user id from socket.
-     * @example
-     * getUserIdFromSocket(sc);
-     * @param socket
-     * @throws AuthenticationError if socket is not authenticated.
-     */
-    getUserIdFromSocket(socket: UpSocket): string | number | undefined {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.userId), socket.authToken);
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Returns the auth user group from the socket
-     * or undefined if the socket is not authenticated.
-     * @example
-     * getUserIdFromSocket(sc);
-     * @param socket
-     */
-    getAuthUserGroupFromSocket(socket: UpSocket): string | undefined {
-        try {
-            return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.authUserGroup), socket.authToken);
-        } catch (e) {
-            return undefined;
-        }
-    }
-
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Returns the socketId from the socketSid.
+     * Returns the socketId from a socketSid.
      * @example
      * socketSidToSocketId('SOCKET-SID');
      * @param socketSid
@@ -1334,7 +1306,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Returns the server instance id from the socketSid.
+     * Returns the server instance id from a socketSid.
      * @example
      * socketSidToSeverId(SOCKET-SID');
      * @param socketSid
@@ -1346,7 +1318,7 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     /**
      * @description
-     * Returns the worker id from the socketSid.
+     * Returns the worker id from a socketSid.
      * @example
      * socketSidToWorkerId('SOCKET-SID');
      * @param socketSid
@@ -1355,187 +1327,7 @@ export default class Bag {
         return SidBuilder.socketSidToWorkerId(socketSid);
     }
 
-    //Part ServerSocketVariable
-
-    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-    /**
-     * @description
-     * Set socket variable (server side) with object path.
-     * @example
-     * setSocketVariable(socket,'email','example@gmail.com');
-     * @param socket
-     * @param path
-     * The path to the variable, you can split the keys with a dot or an string array.
-     * @param value
-     */
-    setSocketVariableWithSocket(socket: UpSocket, path: string | string[], value: any): void {
-        ObjectPath.set(socket.zationSocketVariables, path, value);
-    }
-
-    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-    /**
-     * @description
-     * Has socket variable (server side) with object path.
-     * @example
-     * hasSocketVariable(socket,'email');
-     * @param socket
-     * @param path
-     * The path to the variable, you can split the keys with a dot or an string array.
-     */
-    hasSocketVariableWithSocket(socket: UpSocket, path?: string | string[]): boolean {
-        return ObjectPath.has(socket.zationSocketVariables, path);
-    }
-
-    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-    /**
-     * @description
-     * Get socket variable (server side) with object path.
-     * @example
-     * getSocketVariable(socket,'email');
-     * @param socket
-     * @param path
-     * The path to the variable, you can split the keys with a dot or an string array.
-     */
-    getSocketVariableWithSocket<R = any>(socket: UpSocket, path?: string | string[]): R {
-        return ObjectPath.get(socket.zationSocketVariables, path);
-    }
-
-    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-    /**
-     * @description
-     * Delete socket variable (server side) with object path.
-     * @example
-     * deleteSocketVariable(socket,'email');
-     * @param socket
-     * @param path
-     * The path to the variable, you can split the keys with a dot or an string array.
-     */
-    deleteSocketVariableWithSocket(socket: UpSocket, path?: string | string[]): void {
-        if (path !== undefined) {
-            ObjectPath.del(socket.zationSocketVariables, path);
-        } else {
-            socket.zationSocketVariables = {};
-        }
-    }
-
     //token variables
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Set a token variable with object path on a socket.
-     * Every change on the token will update the authentication of the socket. (Like a new authentication on top)
-     * Notice that the token variables are separated from the main zation token variables.
-     * That means there can be no naming conflicts with zation variables.
-     * You can access this variables on client and server side.
-     * But only change, delete or set on the server.
-     * Check that the socket is authenticated (has a token).
-     * @example
-     * await setTokenVariableWithSocket(socket,'person.email','example@gmail.com');
-     * @param socket
-     * @param path
-     * The path to the variable, you can split the keys with a dot or an string array.
-     * @param value
-     * @throws AuthenticationError if the socket is not authenticated.
-     */
-    async setTokenVariableWithSocket(socket: UpSocket, path: string | string[], value: any): Promise<void> {
-        const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(socket.authToken));
-        ObjectPath.set(ctv, path, value);
-        await TokenUtils.setCustomVar(ctv, socket);
-    }
-
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    /**
-     * @description
-     * Delete a token variable with object path on a socket.
-     * Every change on the token will update the authentication of the socket. (Like a new authentication on top)
-     * Notice that the token variables are separated from the main zation token variables.
-     * You can access this variables on client and server side.
-     * But only change, delete or set on the server.
-     * Check that the socket is authenticated (has a token).
-     * @example
-     * await deleteTokenVariableWithSocket(socket,'person.email');
-     * @param socket
-     * @param path
-     * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws AuthenticationError if the socket is not authenticated.
-     */
-    async deleteTokenVariableWithSocket(socket: UpSocket, path?: string | string[]): Promise<void> {
-        if (path !== undefined) {
-            const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(socket.authToken));
-            ObjectPath.del(ctv, path);
-            await TokenUtils.setCustomVar(ctv, socket);
-        } else {
-            await TokenUtils.setCustomVar({}, socket);
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Sequence edit the token variables on a socket.
-     * Useful if you want to make several changes.
-     * This will do everything in one and saves performance.
-     * Every change on the token will update the authentication of the socket. (Like a new authentication on top)
-     * Notice that the token variables are separated from the main zation token variables.
-     * That means there can be no naming conflicts with zation variables.
-     * You can access this variables on client and server side.
-     * But only change, delete or set on the server.
-     * Check that the socket is authenticated (has a token).
-     * @example
-     * await seqEditTokenVariablesWithSocket()
-     *       .delete('person.lastName')
-     *       .set('person.name','Luca')
-     *       .set('person.email','example@gmail.com')
-     *       .commit();
-     * @throws AuthenticationError if the socket is not authenticated.
-     */
-    seqEditTokenVariablesWithSocket(socket: UpSocket): ObjectPathSequence {
-        return new ObjectPathSequenceImp(CloneUtils.deepClone(
-            TokenUtils.getTokenVariables(socket.authToken)),
-            async (obj) => {
-                await TokenUtils.setCustomVar(obj, socket);
-            });
-    }
-
-    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-    /**
-     * @description
-     * Check has a token variable with object path on a socket.
-     * Notice that the token variables are separated from the main zation token variables.
-     * You can access this variables on client and server side.
-     * But only change, delete or set on the server.
-     * Check that the socket is authenticated (has a token).
-     * @example
-     * hasTokenVariableWithSocket(socket,'person.email');
-     * @param socket
-     * @param path
-     * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws AuthenticationError if the socket is not authenticated.
-     */
-    hasTokenVariableWithSocket(socket: UpSocket, path?: string | string[]): boolean {
-        return ObjectPath.has(TokenUtils.getTokenVariables(socket.authToken), path);
-    }
-
-    // noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
-    /**
-     * @description
-     * Get a token variable with object path from a socket.
-     * Notice that the token variables are separated from the main zation token variables.
-     * You can access this variables on client and server side.
-     * But only change, delete or set on the server.
-     * Check that the socket is authenticated (has a token).
-     * @example
-     * getTokenVariableWithSocket(socket,'person.email');
-     * @param socket
-     * @param path
-     * The path to the variable, you can split the keys with a dot or an string array.
-     * @throws AuthenticationError if the socket is not authenticated.
-     */
-    getTokenVariableWithSocket<R = any>(socket: UpSocket, path?: string | string[]): R {
-        return ObjectPath.get(TokenUtils.getTokenVariables(socket.authToken), path);
-    }
-
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
@@ -1544,7 +1336,7 @@ export default class Bag {
      * Notice that the token variables are separated from the main zation token variables.
      * That means there can be no naming conflicts with zation variables.
      * You can access this variables on client and server side.
-     * But only change, delete or set on the server.
+     * But only change, delete or set on the server-side.
      * @example
      * await setTokenVariableOnUserId('USER_ID','person.email','example@gmail.com');
      * @param userId
@@ -1565,7 +1357,7 @@ export default class Bag {
      * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
      * Notice that the token variables are separated from the main zation token variables.
      * You can access this variables on client and server side.
-     * But only change, delete or set on the server.
+     * But only change, delete or set on the server-side.
      * @example
      * await deleteTokenVariableOnUserId('USER_ID','person.email');
      * @param userId
@@ -1588,7 +1380,7 @@ export default class Bag {
      * Notice that the token variables are separated from the main zation token variables.
      * That means there can be no naming conflicts with zation variables.
      * You can access this variables on client and server side.
-     * But only change, delete or set on the server.
+     * But only change, delete or set on the server-side.
      * @example
      * await seqEditTokenVariablesOnUserId('USER_ID')
      *       .delete('person.lastName')
@@ -1615,7 +1407,7 @@ export default class Bag {
      * Notice that the token variables are separated from the main zation token variables.
      * That means there can be no naming conflicts with zation variables.
      * You can access this variables on client and server side.
-     * But only change, delete or set on the server.
+     * But only change, delete or set on the server-side.
      * @example
      * await setTokenVariableOnGroup('AUTH-USER-GROUP','person.email','example@gmail.com');
      * @param authUserGroup
@@ -1636,7 +1428,7 @@ export default class Bag {
      * Every change on the token will update the authentication of each socket. (Like a new authentication on top)
      * Notice that the token variables are separated from the main zation token variables.
      * You can access this variables on client and server side.
-     * But only change, delete or set on the server.
+     * But only change, delete or set on the server-side.
      * @example
      * await deleteTokenVariableOnGroup('AUTH-USER-GROUP','person.email');
      * @param authUserGroup
@@ -1659,7 +1451,7 @@ export default class Bag {
      * Notice that the token variables are separated from the main zation token variables.
      * That means there can be no naming conflicts with zation variables.
      * You can access this variables on client and server side.
-     * But only change, delete or set on the server.
+     * But only change, delete or set on the server-side.
      * @example
      * await seqEditTokenVariablesOnGroup('AUTH-USER-GROUP')
      *       .delete('person.lastName')
@@ -1840,32 +1632,36 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socket with the socketId.
-     * You have only access to sockets they are connected to this worker.
+     * Returns the ZSocket with the corresponding socket id.
+     * Notice that you only have access to sockets they are connected to the current worker.
      * @example
      * getWorkerSocket('SOCKET-ID');
      * @param socketId
      */
-    getWorkerSocket(socketId: string): UpSocket | undefined {
-        return this.worker.scServer.clients[socketId];
+    getWorkerSocket(socketId: string): ZSocket {
+        return this.worker.scServer.clients[socketId]?.zSocket;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the clients of the worker.
-     * Key are socketIds and value are sockets.
-     * @example
-     * getWorkerClients();
+     * Returns the ZSockets of the current worker.
      */
-    getWorkerClients(): Record<string,UpSocket> {
-        return this.worker.scServer.clients;
+    getWorkerSockets(): ZSocket[] {
+        const sockets: ZSocket[] = [];
+        const clients = this.worker.scServer.clients;
+        for(let id in clients) {
+            if(clients.hasOwnProperty(id)){
+                sockets.push(clients[id].zSocket);
+            }
+        }
+        return sockets;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the sc server from worker.
+     * Returns the sc server from the current worker.
      */
     getScServer(): ScServer {
         return this.worker.scServer;
@@ -1874,11 +1670,9 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the number of connected clients to this worker.
-     * @example
-     * getWorkerConnectedClientsCount();
+     * Returns the count of connected clients to the current worker.
      */
-    getWorkerConnectedClientsCount(): number {
+    getWorkerClientsCount(): number {
         return this.worker.getStatus().clientCount;
     }
 
@@ -1903,62 +1697,41 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the socketSids from socketId.
-     * Only for ids they are found on the worker!
-     * @example
-     * convertSocketIdToSid('SOCKET-ID-1','SOCKET-ID-2');
-     * @param socketIds
-     */
-    convertSocketIdToSid(...socketIds: string[]): string[] {
-        const res: string[] = [];
-        socketIds.forEach((id) => {
-            const socket: UpSocket | undefined = this.getWorkerSocket(id);
-            if (socket) {
-                res.push(socket.sid);
-            }
-        });
-        return res;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Returns the sockets with the tokenId.
-     * You have only have access to sockets they are connected to this worker.
+     * Returns the sockets with a specific token id.
+     * Notice that you only have access to sockets they are connected to the current worker.
      * @example
      * getSocketIdsWithTokenId('TOKEN-ID');
      * @param tokenId
      */
-    getSocketsWithTokenId(tokenId: string): UpSocket[]
-    {
-        return this.worker.getTokenIdToScMapper().getValues(tokenId);
+    getSocketsWithTokenId(tokenId: string): ZSocket[] {
+        return this.worker.getTokenIdToScMapper().getValues(tokenId).map(s => s.zSocket);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns the sockets with the userId.
-     * You have only have access to sockets they are connected to this worker.
+     * Returns the sockets with a specific user id.
+     * Notice that you only have access to sockets they are connected to the current worker.
      * @example
      * getSocketIdsWithUserId('tom1554');
      * @param userId
      */
-    getSocketsWithUserId(userId: string): UpSocket[]
-    {
-        return this.worker.getUserIdToScMapper().getValues(userId);
+    getSocketsWithUserId(userId: string): ZSocket[] {
+        return this.worker.getUserIdToScMapper().getValues(userId).map(s => s.zSocket);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns object with authUserGroups as key and value with count of connected clients (only this worker).
+     * Returns an object with authUserGroups as key and the
+     * count of connected clients as a value (only of the current worker).
      */
-    getWorkerAuthUserGroupsCount(): object {
+    getWorkerAuthUserGroupsCount(): Record<string,number> {
        const res = {};
        const authGroups = this.worker.getAEPreparedPart().getAuthGroups();
        for(const group in authGroups) {
            if(authGroups.hasOwnProperty(group)) {
-               res[group] = this.worker.getAuthUserGroupToScMapper().getLengthFromKey(group);
+               res[group] = this.worker.getAuthUserGroupToScMapper().getLengthOfKey(group);
            }
        }
        return res;
@@ -1967,7 +1740,8 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns count of connected default user groups sockets (only this worker).
+     * Returns the count of the connected sockets which belongs
+     * to the default user groups (only of the current worker).
      */
     getWorkerDefaultUserGroupCount(): number {
         return this.worker.getDefaultUserGroupSet().getLength();
@@ -1976,32 +1750,35 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns count of connected only panel sockets (only this worker).
+     * Returns the count of connected only panel
+     * sockets (only of the current worker).
      */
     getWorkerOnlyPanelSocketsCount(): number {
-        return this.worker.getDefaultUserGroupSet().getLength();
+        return this.worker.getPanelUserSet().getLength();
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns count of auth user group sockets (only this worker).
+     * Returns the count of the connected sockets which belongs
+     * to a specific auth user group (only of the current worker).
      */
     getWorkerAuthUserGroupCount(authUserGroup: string): number {
-        return this.worker.getAuthUserGroupToScMapper().getLengthFromKey(authUserGroup);
+        return this.worker.getAuthUserGroupToScMapper().getLengthOfKey(authUserGroup);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns object with authUserGroups as key and value with array of sockets (only this worker).
+     * Returns an object with authUserGroups as key and the
+     * sockets of that user group as a value (only of the current worker).
      */
-    getWorkerAuthUserGroupsSockets(): object {
+    getWorkerAuthUserGroupsSockets(): Record<string,ZSocket[]> {
         const res = {};
         const authGroups = this.worker.getAEPreparedPart().getAuthGroups();
         for(const group in authGroups) {
             if(authGroups.hasOwnProperty(group)) {
-                res[group] = this.worker.getAuthUserGroupToScMapper().getValues(group);
+                res[group] = this.worker.getAuthUserGroupToScMapper().getValues(group).map(s => s.zSocket);
             }
         }
         return res;
@@ -2010,35 +1787,37 @@ export default class Bag {
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns array of default user group sockets (only this worker).
+     * Returns an array of sockets which belongs to
+     * the default user group (only of the current worker).
      */
-    getWorkerDefaultUserGroupSockets(): UpSocket[] {
-        return this.worker.getDefaultUserGroupSet().toArray();
+    getWorkerDefaultUserGroupSockets(): ZSocket[] {
+        return this.worker.getDefaultUserGroupSet().toArray().map(s => s.zSocket);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns array of only panel sockets (only this worker).
+     * Returns an array of only panel sockets (only of the current worker).
      */
-    getWorkerOnlyPanelSockets(): UpSocket[] {
-        return this.worker.getPanelUserSet().toArray();
+    getWorkerOnlyPanelSockets(): ZSocket[] {
+        return this.worker.getPanelUserSet().toArray().map(s => s.zSocket);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Returns array of auth user group sockets (only this worker).
+     * Returns an array of sockets which belongs to
+     * a specific auth user group (only of the current worker).
      */
-    getWorkerAuthUserGroupSockets(authUserGroup: string): UpSocket[] {
-        return this.worker.getAuthUserGroupToScMapper().getValues(authUserGroup);
+    getWorkerAuthUserGroupSockets(authUserGroup: string): ZSocket[] {
+        return this.worker.getAuthUserGroupToScMapper().getValues(authUserGroup).map(s => s.zSocket);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * @description
-     * Send a message to all workers on the complete system.
-     * You can react to the message with the worker message event in the event config.
+     * Send a message to all workers (on every server).
+     * You can react to the message with the worker message event (app config).
      */
     async sendWorkerMessage(data: any): Promise<void> {
         await this.exchangeEngine.publishSpecialTaskToWorker
@@ -2051,10 +1830,10 @@ export default class Bag {
     /**
      * Deep clone any value.
      * Notice that it only clones enumerable properties of an object.
-     * @param v
+     * @param value
      */
-    deepClone<T extends any = any>(v: T): T {
-        return CloneUtils.deepClone(v);
+    deepClone<T extends any = any>(value: T): T {
+        return CloneUtils.deepClone(value);
     }
 
     //Part Databoxes

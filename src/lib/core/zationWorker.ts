@@ -769,7 +769,7 @@ class ZationWorker extends SCWorker
         const promises: Promise<void>[] = [];
         map.forEach(target,(socket: UpSocket) => {
             if(!filterExceptSocketIds.includes(socket.id)) {
-                const edit = this.preparedBag.seqEditTokenVariablesWithSocket(socket);
+                const edit = socket.zSocket.seqEditTokenVariables();
                 for(let i = 0; i < operations.length; i++) {
                     switch (operations[i].t) {
                         case SyncTokenOperationType.Set :
@@ -1064,15 +1064,16 @@ class ZationWorker extends SCWorker
     //Update the panel engine with data.
     private async initPanelUpdates(): Promise<void>
     {
+        const bag = this.preparedBag;
         setInterval(async () => {
             if(this.panelEngine.isPanelInUse()) {
                 this.panelEngine.update({
                     systemInfo  : (await SystemInfo.getUpdatedInfo()),
                     clientCount : this.scServer.clientsCount,
                     user: {
-                        panelUserCount: this.getPanelUserSet().getLength(),
-                        defaultUserGroupCount: this.getPreparedBag().getWorkerDefaultUserGroupCount(),
-                        authUserGroups: this.getPreparedBag().getWorkerAuthUserGroupsCount()
+                        panelUserCount: bag.getWorkerOnlyPanelSocketsCount(),
+                        defaultUserGroupCount: bag.getWorkerDefaultUserGroupCount(),
+                        authUserGroups: bag.getWorkerAuthUserGroupsCount()
                     },
                     httpRequests: this.httpRequestCount,
                     wsRequests  : this.wsRequestCount

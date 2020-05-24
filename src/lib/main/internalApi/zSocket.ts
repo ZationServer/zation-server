@@ -30,7 +30,7 @@ export default class ZSocket
      * Returns the auth user group of the socket.
      * @throws AuthenticationError if the socket is not authenticated.
      */
-    get authUserGroup(): string | undefined {
+    get authUserGroup(): string {
         return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.authUserGroup),this._socket.authToken);
     }
 
