@@ -209,10 +209,10 @@ export default class DataboxUtils {
     {
         const selectedSession = DataboxUtils.getSession(dbSessionData,target);
         if(dbSessionData.main !== selectedSession){
-            dbSessionData.main = dbSessionData.reload;
+            dbSessionData.main = {...dbSessionData.reload};
         }
         else {
-            dbSessionData.reload = dbSessionData.main;
+            dbSessionData.reload = {...dbSessionData.main};
         }
     }
 
