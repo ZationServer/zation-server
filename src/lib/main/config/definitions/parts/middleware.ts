@@ -4,11 +4,11 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import ZationTokenWrapper from '../../../internalApi/zationTokenWrapper';
-import {HandshakeSocket}  from '../../../sc/socket';
+import ZationToken from '../../../internalApi/zationToken';
+import Socket      from '../../../../api/socket';
 
-export type MiddlewareAuthenticationFunction = (token: ZationTokenWrapper) => Promise<boolean | object | any> | boolean | object | any;
-export type MiddlewareSocketFunction = (socket: HandshakeSocket) => Promise<boolean | object | any> | boolean | object | any;
+export type MiddlewareAuthenticationFunction = (token: ZationToken) => Promise<boolean | object | any> | boolean | object | any;
+export type MiddlewareSocketFunction = (socket: Socket) => Promise<boolean | object | any> | boolean | object | any;
 export type MiddlewarePanelAuthFunction = (username: string, password: string) => Promise<boolean | void> | boolean | void;
 
 export type MiddlewareValue<T> = T[] | T;

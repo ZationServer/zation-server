@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import {ChannelSubscribeRequest}    from '../channelDefinitions';
-import UpSocket, {RespondFunction}  from '../../sc/socket';
+import {RawSocket,RespondFunction}  from '../../sc/socket';
 import {isValidChannelSubRequest}   from './channelReqUtils';
 import {ChannelPrepare}             from '../channelPrepare';
 import ApiLevelUtils                from '../../apiLevel/apiLevelUtils';
@@ -23,7 +23,7 @@ export default class ChannelHandler {
         this.defaultApiLevel = zc.mainConfig.defaultClientApiLevel;
     }
 
-    async processSubRequest(request: ChannelSubscribeRequest, socket: UpSocket, respond: RespondFunction) {
+    async processSubRequest(request: ChannelSubscribeRequest, socket: RawSocket, respond: RespondFunction) {
         try {
             respond(null,await this._processRequest(request,socket));
         }
@@ -32,7 +32,7 @@ export default class ChannelHandler {
         }
     }
 
-    private async _processRequest(request: ChannelSubscribeRequest, socket: UpSocket): Promise<any> {
+    private async _processRequest(request: ChannelSubscribeRequest, socket: RawSocket): Promise<any> {
         if (!isValidChannelSubRequest(request)) {
             const err: any = new Error(`Not valid req structure.`);
             err.name = ClientErrorName.InvalidRequest;

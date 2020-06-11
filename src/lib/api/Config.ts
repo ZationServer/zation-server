@@ -19,7 +19,7 @@ import {
 import {createTokenCheckFunction, TokenCheckFunction}     from "../main/access/accessOptions";
 import DataboxFamily                        from "./databox/DataboxFamily";
 import Databox                              from "./databox/Databox";
-import {ZationToken}                        from "../main/constants/internal";
+import {RawZationToken}                     from "../main/constants/internal";
 import {registerBagExtension,BagExtension}  from 'zation-bag-extension';
 import {ComponentClass}                     from './Component';
 import {AnyDataboxClass}                    from './databox/AnyDataboxClass';
@@ -216,7 +216,7 @@ export default class Config
      * access: Config.createTokenCheckFunction((token) => token !== null)
      * @param checkFunction
      */
-    static createTokenCheckFunction(checkFunction: (token: ZationToken | null) => boolean): TokenCheckFunction {
+    static createTokenCheckFunction(checkFunction: (token: RawZationToken | null) => boolean): TokenCheckFunction {
         return createTokenCheckFunction(checkFunction);
     }
 

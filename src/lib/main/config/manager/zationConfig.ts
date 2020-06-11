@@ -9,7 +9,7 @@ import {StarterConfig}                              from "../definitions/main/st
 import InternalData        from "../../constants/internalData";
 // noinspection TypeScriptPreferShortImport
 import {StartMode}         from "../../../core/startMode";
-import ZationInfo          from "../../internalApi/zationInfo";
+import ServerInfo          from "../../internalApi/serverInfo";
 import ZcTransport         from "./zcTransport";
 import ConfigLocations     from "./configLocations";
 import {JwtSignOptions}    from "../../constants/jwt";
@@ -28,7 +28,7 @@ export default abstract class ZationConfig {
 
     protected _startMode: number;
 
-    private readonly _preparedZationInfo: ZationInfo = new ZationInfo(this);
+    private readonly _preparedServerInfo: ServerInfo = new ServerInfo(this);
 
     inTestMode(): boolean {
         return this._startMode == StartMode.Test;
@@ -83,8 +83,8 @@ export default abstract class ZationConfig {
         return this.internalData.databoxKey;
     }
 
-    getZationInfo(): ZationInfo {
-        return this._preparedZationInfo;
+    getServerInfo(): ServerInfo {
+        return this._preparedServerInfo;
     }
 
     get mainConfig(): InternalMainConfig {

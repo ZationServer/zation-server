@@ -4,25 +4,25 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ZATION_CUSTOM_EVENT_NAMESPACE, ZationToken} from "../constants/internal";
-import UpSocket, {OnHandlerFunction}                from "../sc/socket";
-import TokenUtils       from "../token/tokenUtils";
-import ObjectPath       from "../utils/objectPath";
-import DataboxFamily    from "../../api/databox/DataboxFamily";
-import Databox          from "../../api/databox/Databox";
+import {ZATION_CUSTOM_EVENT_NAMESPACE, RawZationToken} from "../main/constants/internal";
+import {OnHandlerFunction, RawSocket}                  from "../main/sc/socket";
+import TokenUtils       from "../main/token/tokenUtils";
+import ObjectPath       from "../main/utils/objectPath";
+import DataboxFamily    from "./databox/DataboxFamily";
+import Databox          from "./databox/Databox";
 const  IP                  = require('ip');
-import CloneUtils            from "../utils/cloneUtils";
-import ObjectPathSequenceImp from "./objectPathSequence/objectPathSequenceImp";
-import {ObjectPathSequence}  from "./objectPathSequence/objectPathSequence";
-import ChannelFamily from '../../api/channel/ChannelFamily';
-import Channel from '../../api/channel/Channel';
+import CloneUtils            from "../main/utils/cloneUtils";
+import ObjectPathSequenceImp from "../main/internalApi/objectPathSequence/objectPathSequenceImp";
+import {ObjectPathSequence}  from "../main/internalApi/objectPathSequence/objectPathSequence";
+import ChannelFamily         from './channel/ChannelFamily';
+import Channel               from './channel/Channel';
 
-export default class ZSocket
+export default class Socket
 {
-    private readonly _socket: UpSocket;
+    private readonly _rawSocket: RawSocket;
 
-    constructor(socket: UpSocket) {
-        this._socket = socket;
+    constructor(rawSocket: RawSocket) {
+        this._rawSocket = rawSocket;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -31,7 +31,7 @@ export default class ZSocket
      * @throws AuthenticationError if the socket is not authenticated.
      */
     get authUserGroup(): string {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.authUserGroup),this._socket.authToken);
+        return TokenUtils.getTokenVariable(nameof<RawZationToken>(s => s.authUserGroup),this._rawSocket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -40,15 +40,15 @@ export default class ZSocket
      * @throws AuthenticationError if the socket is not authenticated.
      */
     get userId(): string | number | undefined {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.userId),this._socket.authToken);
+        return TokenUtils.getTokenVariable(nameof<RawZationToken>(s => s.userId),this._rawSocket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * Returns the raw socket.
      */
-    get rawSocket(): UpSocket {
-        return this._socket;
+    get rawSocket(): RawSocket {
+        return this._rawSocket;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -56,7 +56,7 @@ export default class ZSocket
      * Returns the socket sid.
      */
     get sid(): string {
-        return this._socket.sid;
+        return this._rawSocket.sid;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -64,7 +64,7 @@ export default class ZSocket
      * Returns the socket id.
      */
     get id(): string {
-        return this._socket.id;
+        return this._rawSocket.id;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -73,7 +73,7 @@ export default class ZSocket
      * @throws AuthenticationError if the socket is not authenticated.
      */
     get tokenId(): string | undefined {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.tid),this._socket.authToken);
+        return TokenUtils.getTokenVariable(nameof<RawZationToken>(s => s.tid),this._rawSocket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -81,7 +81,7 @@ export default class ZSocket
      * Returns if the socket is authenticated with a token.
      */
     get isAuth(): boolean {
-        return this._socket.authToken !== null;
+        return this._rawSocket.authToken !== null;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -90,7 +90,7 @@ export default class ZSocket
      * @throws AuthenticationError if the socket is not authenticated.
      */
     get tokenExpire(): number | undefined {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.exp),this._socket.authToken);
+        return TokenUtils.getTokenVariable(nameof<RawZationToken>(s => s.exp),this._rawSocket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -99,7 +99,7 @@ export default class ZSocket
      * @throws AuthenticationError if the socket is not authenticated.
      */
     get panelAccess(): boolean | undefined {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.panelAccess),this._socket.authToken);
+        return TokenUtils.getTokenVariable(nameof<RawZationToken>(s => s.panelAccess),this._rawSocket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -120,9 +120,9 @@ export default class ZSocket
      * @throws AuthenticationError if the socket is not authenticated.
      */
     async setTokenVariable(path: string | string[],value: any): Promise<void> {
-        const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this._socket.authToken));
+        const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this._rawSocket.authToken));
         ObjectPath.set(ctv,path,value);
-        await TokenUtils.setCustomVar(ctv,this._socket);
+        await TokenUtils.setCustomVar(ctv,this._rawSocket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -142,12 +142,12 @@ export default class ZSocket
      */
     async deleteTokenVariable(path?: string | string[]): Promise<void> {
         if(path !== undefined) {
-            const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this._socket.authToken));
+            const ctv = CloneUtils.deepClone(TokenUtils.getTokenVariables(this._rawSocket.authToken));
             ObjectPath.del(ctv,path);
-            await TokenUtils.setCustomVar(ctv,this._socket);
+            await TokenUtils.setCustomVar(ctv,this._rawSocket);
         }
         else {
-            await TokenUtils.setCustomVar({},this._socket);
+            await TokenUtils.setCustomVar({},this._rawSocket);
         }
     }
 
@@ -174,9 +174,9 @@ export default class ZSocket
     seqEditTokenVariables(): ObjectPathSequence
     {
         return new ObjectPathSequenceImp(CloneUtils.deepClone(
-            TokenUtils.getTokenVariables(this._socket.authToken)),
+            TokenUtils.getTokenVariables(this._rawSocket.authToken)),
             async (obj)=> {
-                await TokenUtils.setCustomVar(obj,this._socket);
+                await TokenUtils.setCustomVar(obj,this._rawSocket);
             });
     }
 
@@ -194,7 +194,7 @@ export default class ZSocket
      * @throws AuthenticationError if the socket is not authenticated.
      */
     hasTokenVariable(path?: string | string[]): boolean {
-        return ObjectPath.has(TokenUtils.getTokenVariables(this._socket.authToken),path);
+        return ObjectPath.has(TokenUtils.getTokenVariables(this._rawSocket.authToken),path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -211,7 +211,7 @@ export default class ZSocket
      * @throws AuthenticationError if the socket is not authenticated.
      */
     getTokenVariable<R = any>(path?: string | string[]): R {
-        return ObjectPath.get(TokenUtils.getTokenVariables(this._socket.authToken),path);
+        return ObjectPath.get(TokenUtils.getTokenVariables(this._rawSocket.authToken),path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -219,7 +219,7 @@ export default class ZSocket
      * Returns the Databoxes where the socket is connected to.
      */
     getDataboxes(): (DataboxFamily | Databox)[] {
-        return this._socket.databoxes;
+        return this._rawSocket.databoxes;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -227,7 +227,7 @@ export default class ZSocket
      * Returns the Channels that the socket has subscribed.
      */
     getChannels(): (ChannelFamily | Channel)[] {
-        return this._socket.channels;
+        return this._rawSocket.channels;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -251,11 +251,11 @@ export default class ZSocket
         return new Promise<object>((resolve, reject) => {
             // noinspection DuplicatedCode
             if(onlyTransmit){
-                this._socket.emit(ZATION_CUSTOM_EVENT_NAMESPACE+event,data);
+                this._rawSocket.emit(ZATION_CUSTOM_EVENT_NAMESPACE+event,data);
                 resolve();
             }
             else {
-                this._socket.emit(ZATION_CUSTOM_EVENT_NAMESPACE+event,data,(err, data) => {
+                this._rawSocket.emit(ZATION_CUSTOM_EVENT_NAMESPACE+event,data,(err, data) => {
                     err ? reject(err): resolve(data);
                 });
             }
@@ -272,7 +272,7 @@ export default class ZSocket
      * parameters are the data and a response function that you can call to respond on the event back.
      */
     on(event: string,handler: OnHandlerFunction){
-        this._socket.on(ZATION_CUSTOM_EVENT_NAMESPACE+event,handler);
+        this._rawSocket.on(ZATION_CUSTOM_EVENT_NAMESPACE+event,handler);
     }
 
     /**
@@ -285,7 +285,7 @@ export default class ZSocket
      * parameters are the data and a response function that you can call to respond on the event back.
      */
     once(event: string,handler: OnHandlerFunction): void {
-        this._socket.once(ZATION_CUSTOM_EVENT_NAMESPACE+event,handler);
+        this._rawSocket.once(ZATION_CUSTOM_EVENT_NAMESPACE+event,handler);
     }
 
     //Part Socket Variables
@@ -301,7 +301,7 @@ export default class ZSocket
      * @param value
      */
     setSocketVariable(path: string | string[],value: any): void {
-        ObjectPath.set(this._socket.zationSocketVariables,path,value);
+        ObjectPath.set(this._rawSocket.zationSocketVariables,path,value);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -314,7 +314,7 @@ export default class ZSocket
      * The path to the variable, you can split the keys with a dot or an string array.
      */
     hasSocketVariable(path?: string | string[]): boolean {
-        return ObjectPath.has(this._socket.zationSocketVariables,path);
+        return ObjectPath.has(this._rawSocket.zationSocketVariables,path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -327,7 +327,7 @@ export default class ZSocket
      * The path to the variable, you can split the keys with a dot or an string array.
      */
     getSocketVariable<R = any>(path?: string | string[]): R {
-        return ObjectPath.get(this._socket.zationSocketVariables,path);
+        return ObjectPath.get(this._rawSocket.zationSocketVariables,path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -342,10 +342,10 @@ export default class ZSocket
     deleteSocketVariable(path?: string | string[]): void
     {
         if(!!path) {
-            ObjectPath.del(this._socket.zationSocketVariables,path);
+            ObjectPath.del(this._rawSocket.zationSocketVariables,path);
         }
         else {
-            this._socket.zationSocketVariables = {};
+            this._rawSocket.zationSocketVariables = {};
         }
     }
 
@@ -361,7 +361,7 @@ export default class ZSocket
      * The path to the variable, you can split the keys with a dot or an string array.
      */
     getSocketHandshakeVariable<R = any>(path?: string | string[]): R {
-        return ObjectPath.get(this._socket.handshakeVariables,path);
+        return ObjectPath.get(this._rawSocket.handshakeVariables,path);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -374,7 +374,7 @@ export default class ZSocket
      * The path to the variable, you can split the keys with a dot or an string array.
      */
     hasSocketHandshakeVariable(path?: string | string[]): boolean {
-        return ObjectPath.has(this._socket.handshakeVariables,path);
+        return ObjectPath.has(this._rawSocket.handshakeVariables,path);
     }
 
     //Part Address
@@ -385,7 +385,7 @@ export default class ZSocket
      * Returns the remote ip address (can be a private address) from the current request.
      */
     getRemoteAddress(): string {
-        return this._socket.remoteAddress;
+        return this._rawSocket.remoteAddress;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -394,7 +394,7 @@ export default class ZSocket
      * Returns the only public remote ip address from the current request.
      */
     getPublicRemoteAddress(): string {
-        const remId = this._socket.remoteAddress;
+        const remId = this._rawSocket.remoteAddress;
         if(IP.isPrivate(remId)) {
             return IP.address();
         }

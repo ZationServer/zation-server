@@ -6,9 +6,9 @@ Copyright(c) Luca Scaringella
 
 import ChannelCore, {ChPreparedData} from './ChannelCore';
 import Bag                           from '../Bag';
-import UpSocket                      from '../../main/sc/socket';
 import {ClientErrorName}             from '../../main/constants/clientErrorName';
-import ZSocket                       from '../../main/internalApi/zSocket';
+import {RawSocket}                   from '../../main/sc/socket';
+import Socket                        from '../socket';
 import FuncUtils                     from '../../main/utils/funcUtils';
 import {ErrorEventSingleton}         from '../../main/error/errorEventSingleton';
 import {removeValueFromArray}        from '../../main/utils/arrayUtils';
@@ -55,11 +55,11 @@ export default class ChannelFamily extends ChannelCore {
     /**
      * Maps the member to the sockets and kick out function.
      */
-    private readonly _regMember: Map<string,Map<UpSocket,KickOutSocketFunction>> = new Map();
+    private readonly _regMember: Map<string,Map<RawSocket,KickOutSocketFunction>> = new Map();
     /**
      * Maps the sockets to the members.
      */
-    private readonly _socketMembers: Map<UpSocket,Set<string>> = new Map<UpSocket, Set<string>>();
+    private readonly _socketMembers: Map<RawSocket,Set<string>> = new Map<RawSocket, Set<string>>();
     private readonly _unregisterMemberTimeoutMap: Map<string,Timeout> = new Map();
     private readonly _isMemberCheck: IsMemberChecker;
 
@@ -67,8 +67,8 @@ export default class ChannelFamily extends ChannelCore {
     private readonly _chEventPreFix: string;
 
     private readonly _onPublish: (member: string,event: string, data: any) => Promise<void> | void;
-    private readonly _onSubscription: (member: string,socket: ZSocket) => Promise<void> | void;
-    private readonly _onUnsubscription: (member: string,socket: ZSocket,trigger: UnsubscribeTrigger) => Promise<void> | void;
+    private readonly _onSubscription: (member: string,socket: Socket) => Promise<void> | void;
+    private readonly _onUnsubscription: (member: string, socket: Socket, trigger: UnsubscribeTrigger) => Promise<void> | void;
 
     constructor(identifier: string, bag: Bag, chPreparedData: ChPreparedData, apiLevel: number | undefined)
     {
@@ -93,7 +93,7 @@ export default class ChannelFamily extends ChannelCore {
      * **Not override this method.**
      * Used internally.
      */
-    async _subscribeSocket(socket: UpSocket, member?: string): Promise<string>{
+    async _subscribeSocket(socket: RawSocket, member?: string): Promise<string>{
         if(member == undefined){
             const err: any = new Error('The family member is required to subscribe to a channel family.');
             err.name = ClientErrorName.MemberMissing;
@@ -112,11 +112,11 @@ export default class ChannelFamily extends ChannelCore {
         await this._isMemberCheck(member);
         await this._checkSubscribeAccess(socket,{identifier: this.identifier,member});
         this._addSocket(member,socket);
-        this._onSubscription(member,socket.zSocket);
+        this._onSubscription(member,socket.socket);
         return this._chId;
     }
 
-    private _addSocket(member: string,socket: UpSocket) {
+    private _addSocket(member: string,socket: RawSocket) {
         const memberMap = this._buildSocketFamilyMemberMap(member);
 
         const disconnectHandler = () => this._unsubscribeSocket(member,socket,disconnectHandler,UnsubscribeTrigger.Disconnect);
@@ -151,7 +151,7 @@ export default class ChannelFamily extends ChannelCore {
      * @param member
      * @private
      */
-    private _buildSocketFamilyMemberMap(member: string): Map<UpSocket,KickOutSocketFunction> {
+    private _buildSocketFamilyMemberMap(member: string): Map<RawSocket,KickOutSocketFunction> {
         let memberMap = this._regMember.get(member);
         if(!memberMap){
             memberMap = this._registerMember(member);
@@ -167,8 +167,8 @@ export default class ChannelFamily extends ChannelCore {
      * @param member
      * @private
      */
-    private _registerMember(member: string): Map<UpSocket,KickOutSocketFunction> {
-        const memberMap = new Map<UpSocket,KickOutSocketFunction>();
+    private _registerMember(member: string): Map<RawSocket,KickOutSocketFunction> {
+        const memberMap = new Map<RawSocket,KickOutSocketFunction>();
         this._regMember.set(member,memberMap);
         this._scExchange.subscribe(this._chEventPreFix + member)
             .watch(async (data: ChWorkerPublishPackage) => {
@@ -191,12 +191,12 @@ export default class ChannelFamily extends ChannelCore {
         channel.destroy();
     }
 
-    private _unsubscribeSocket(member: string,socket: UpSocket,disconnectHandler: () => void,trigger: UnsubscribeTrigger) {
+    private _unsubscribeSocket(member: string, socket: RawSocket, disconnectHandler: () => void, trigger: UnsubscribeTrigger) {
         this._rmSocket(member,socket,disconnectHandler);
-        this._onUnsubscription(member,socket.zSocket,trigger);
+        this._onUnsubscription(member,socket.socket,trigger);
     }
 
-    private _rmSocket(member: string,socket: UpSocket,disconnectHandler: () => void) {
+    private _rmSocket(member: string, socket: RawSocket, disconnectHandler: () => void) {
         //main member socket map
         const memberMap = this._regMember.get(member);
         if(memberMap){
@@ -273,10 +273,10 @@ export default class ChannelFamily extends ChannelCore {
      * @param socket
      * @private
      */
-    async _checkSocketHasStillAccess(socket: UpSocket): Promise<void> {
+    async _checkSocketHasStillAccess(socket: RawSocket): Promise<void> {
         const members = this.getSocketSubMembers(socket);
         for(let i = 0; i < members.length; i++){
-            if(!(await this._preparedData.accessCheck(socket.authEngine,socket.zSocket,
+            if(!(await this._preparedData.accessCheck(socket.authEngine,socket.socket,
                 {identifier: this.identifier,member: members[i]}))) {
                 this.kickOut(members[i],socket);
             }
@@ -290,7 +290,7 @@ export default class ChannelFamily extends ChannelCore {
      * This method is used internally.
      * @param socket
      */
-    getSocketSubMembers(socket: UpSocket): string[] {
+    getSocketSubMembers(socket: RawSocket): string[] {
         const members = this._socketMembers.get(socket);
         return members ? Array.from(members): [];
     }
@@ -326,7 +326,7 @@ export default class ChannelFamily extends ChannelCore {
      * @param code
      * @param data
      */
-    kickOut(member: string | number,socket: UpSocket,code?: number | string,data?: any) {
+    kickOut(member: string | number, socket: RawSocket, code?: number | string, data?: any) {
         member = typeof member === "string" ? member: member.toString();
         const memberMap = this._regMember.get(member);
         if(memberMap){
@@ -361,7 +361,7 @@ export default class ChannelFamily extends ChannelCore {
      * @param member
      * @param socket
      */
-    protected onSubscription(member: string,socket: ZSocket): Promise<void> | void {
+    protected onSubscription(member: string,socket: Socket): Promise<void> | void {
     }
 
     /**
@@ -371,7 +371,7 @@ export default class ChannelFamily extends ChannelCore {
      * @param socket
      * @param trigger
      */
-    protected onUnsubscription(member: string,socket: ZSocket,trigger: UnsubscribeTrigger): Promise<void> | void {
+    protected onUnsubscription(member: string, socket: Socket, trigger: UnsubscribeTrigger): Promise<void> | void {
     }
 
     /**

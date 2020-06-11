@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 // noinspection TypeScriptPreferShortImport
 import AuthEngine         from "../auth/authEngine";
-import ZationTokenWrapper from "../internalApi/zationTokenWrapper";
+import ZationToken        from "../internalApi/zationToken";
 import Bag                from "../../api/Bag";
 import AccessUtils        from "../access/accessUtils";
 import {NormalAuthAccessCustomFunction} from "../config/definitions/parts/accessConfigs";
@@ -30,7 +30,7 @@ export default class ControllerAccessHelper
             (rawValue,isNotableNot(accessValue),(func) => {
                 return async (authEngine) => {
                     const token = authEngine.socket.authToken;
-                    return func(bag,token !== null ? new ZationTokenWrapper(token): null);
+                    return func(bag,token !== null ? new ZationToken(token): null);
                 };
             },`Controller: ${controller}`);
         }

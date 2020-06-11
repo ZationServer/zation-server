@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 // noinspection TypeScriptPreferShortImport
-import {ZationToken}      from "../../../constants/internal";
+import {RawZationToken}   from "../../../constants/internal";
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig} from "../../../config/definitions/parts/controllerConfig";
 import BackError          from "../../../../api/BackError";
@@ -39,8 +39,8 @@ export default class PanelAuthController extends Controller
                 throw new BackError(MainBackErrors.invalidPanelAuthData);
             }
             const token = TokenUtils.generateToken(bag.getZationConfig().internalData.tokenClusterKey);
-            token[nameof<ZationToken>(s => s.panelAccess)] = true;
-            token[nameof<ZationToken>(s => s.onlyPanelToken)] = true;
+            token[nameof<RawZationToken>(s => s.panelAccess)] = true;
+            token[nameof<RawZationToken>(s => s.onlyPanelToken)] = true;
             bag.getRawSocket().setAuthToken(token);
 
             await bag.setTokenVariable('ZATION-PANEL-USER-NAME',username);

@@ -26,8 +26,8 @@ import {
 const crypto: any                                          = require('crypto');
 const IP: any                                              = require('ip');
 const crypto2: any                                         = require("crypto2");
-const uuidV4                                                = require('uuid/v4');
-const uniqid                                                = require('uniqid');
+const uuidV4                                               = require('uuid/v4');
+const uniqid                                               = require('uniqid');
 import ZationWorker                                         = require("../core/zationWorker");
 import {SyncTokenOperationType}                             from "../main/constants/syncTokenDefinitions";
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
@@ -67,7 +67,7 @@ import ChannelFamilyContainer                                  from './channel/c
 import {ChannelClass}                                          from './channel/Channel';
 import ChannelContainer                                        from './channel/container/channelContainer';
 import ChannelUtils                                            from '../main/channel/channelUtils';
-import ZSocket                                                 from '../main/internalApi/zSocket';
+import Socket                                                  from './socket';
 
 /**
  * The bag instance of this process.
@@ -1638,8 +1638,8 @@ export default class Bag {
      * getWorkerSocket('SOCKET-ID');
      * @param socketId
      */
-    getWorkerSocket(socketId: string): ZSocket {
-        return this.worker.scServer.clients[socketId]?.zSocket;
+    getWorkerSocket(socketId: string): Socket {
+        return this.worker.scServer.clients[socketId]?.socket;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1647,12 +1647,12 @@ export default class Bag {
      * @description
      * Returns the ZSockets of the current worker.
      */
-    getWorkerSockets(): ZSocket[] {
-        const sockets: ZSocket[] = [];
+    getWorkerSockets(): Socket[] {
+        const sockets: Socket[] = [];
         const clients = this.worker.scServer.clients;
         for(let id in clients) {
             if(clients.hasOwnProperty(id)){
-                sockets.push(clients[id].zSocket);
+                sockets.push(clients[id].socket);
             }
         }
         return sockets;
@@ -1703,8 +1703,8 @@ export default class Bag {
      * getSocketIdsWithTokenId('TOKEN-ID');
      * @param tokenId
      */
-    getSocketsWithTokenId(tokenId: string): ZSocket[] {
-        return this.worker.getTokenIdToScMapper().getValues(tokenId).map(s => s.zSocket);
+    getSocketsWithTokenId(tokenId: string): Socket[] {
+        return this.worker.getTokenIdToScMapper().getValues(tokenId).map(s => s.socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1716,8 +1716,8 @@ export default class Bag {
      * getSocketIdsWithUserId('tom1554');
      * @param userId
      */
-    getSocketsWithUserId(userId: string): ZSocket[] {
-        return this.worker.getUserIdToScMapper().getValues(userId).map(s => s.zSocket);
+    getSocketsWithUserId(userId: string): Socket[] {
+        return this.worker.getUserIdToScMapper().getValues(userId).map(s => s.socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1773,12 +1773,12 @@ export default class Bag {
      * Returns an object with authUserGroups as key and the
      * sockets of that user group as a value (only of the current worker).
      */
-    getWorkerAuthUserGroupsSockets(): Record<string,ZSocket[]> {
+    getWorkerAuthUserGroupsSockets(): Record<string,Socket[]> {
         const res = {};
         const authGroups = this.worker.getAEPreparedPart().getAuthGroups();
         for(const group in authGroups) {
             if(authGroups.hasOwnProperty(group)) {
-                res[group] = this.worker.getAuthUserGroupToScMapper().getValues(group).map(s => s.zSocket);
+                res[group] = this.worker.getAuthUserGroupToScMapper().getValues(group).map(s => s.socket);
             }
         }
         return res;
@@ -1790,8 +1790,8 @@ export default class Bag {
      * Returns an array of sockets which belongs to
      * the default user group (only of the current worker).
      */
-    getWorkerDefaultUserGroupSockets(): ZSocket[] {
-        return this.worker.getDefaultUserGroupSet().toArray().map(s => s.zSocket);
+    getWorkerDefaultUserGroupSockets(): Socket[] {
+        return this.worker.getDefaultUserGroupSet().toArray().map(s => s.socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1799,8 +1799,8 @@ export default class Bag {
      * @description
      * Returns an array of only panel sockets (only of the current worker).
      */
-    getWorkerOnlyPanelSockets(): ZSocket[] {
-        return this.worker.getPanelUserSet().toArray().map(s => s.zSocket);
+    getWorkerOnlyPanelSockets(): Socket[] {
+        return this.worker.getPanelUserSet().toArray().map(s => s.socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1809,8 +1809,8 @@ export default class Bag {
      * Returns an array of sockets which belongs to
      * a specific auth user group (only of the current worker).
      */
-    getWorkerAuthUserGroupSockets(authUserGroup: string): ZSocket[] {
-        return this.worker.getAuthUserGroupToScMapper().getValues(authUserGroup).map(s => s.zSocket);
+    getWorkerAuthUserGroupSockets(authUserGroup: string): Socket[] {
+        return this.worker.getAuthUserGroupToScMapper().getValues(authUserGroup).map(s => s.socket);
     }
 
     // noinspection JSUnusedGlobalSymbols

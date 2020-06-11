@@ -4,10 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ZationToken}        from "../constants/internal";
+import {RawZationToken}     from "../constants/internal";
 import {IncomingMessage}    from "http";
 import AuthEngine           from "../auth/authEngine";
-import ZSocket              from "../internalApi/zSocket";
+import Socket               from "../../api/socket";
 import Databox              from "../../api/databox/Databox";
 import DataboxFamily        from "../../api/databox/DataboxFamily";
 import Channel              from '../../api/channel/Channel';
@@ -18,17 +18,31 @@ export type RespondFunction = (err?: any | number, responseData?: any) => void
 
 export interface RawSocket {
     readonly id: string;
+    readonly sid: string;
+    readonly tid: string;
+
     readonly request: IncomingMessage;
     readonly remoteAddress: string;
     readonly exchange: any;
     readonly state: string;
     readonly authState: string;
-    authToken: ZationToken | null;
+    authToken: RawZationToken | null;
     readonly CONNECTING: string;
     readonly OPEN: string;
     readonly CLOSED: string;
     readonly AUTHENTICATED: string;
     readonly UNAUTHENTICATED: string;
+
+    readonly handshakeVariables: Record<string,any>;
+    readonly clientVersion: number,
+    readonly clientSystem: string,
+    readonly apiLevel: number | undefined
+
+    zationSocketVariables: Record<string,any>;
+    databoxes: (Databox | DataboxFamily)[];
+    channels: (Channel | ChannelFamily)[];
+    readonly authEngine: AuthEngine;
+    readonly socket: Socket;
 
     getState(): string;
     disconnect(code?: any, data?: any): void;
@@ -37,7 +51,7 @@ export interface RawSocket {
     once(event: string, handler: OnHandlerFunction): void;
     off(event?: string, handler?: Function): void;
     send(data: any, options?: object): void;
-    getAuthToken(): ZationToken | null;
+    getAuthToken(): RawZationToken | null;
 
     /**
      * Set the auth token of the socket.
@@ -54,29 +68,5 @@ export interface RawSocket {
     kickOut(channel?: string, message?: string, callback?: Function): void;
     subscriptions(): string[];
     isSubscribed(channelName: string): boolean;
-}
-
-/**
- * Socket after sc handshake.
- */
-export interface HandshakeSocket extends RawSocket {
-    readonly handshakeVariables: Record<string,any>;
-    readonly clientVersion: number,
-    readonly clientSystem: string,
-    readonly apiLevel: number | undefined
-}
-
-/**
- * Socket after socket upgrade.
- */
-export default interface UpSocket extends HandshakeSocket {
-    readonly sid: string;
-    readonly tid: string;
-
-    zationSocketVariables: Record<string,any>;
-    databoxes: (Databox | DataboxFamily)[];
-    channels: (Channel | ChannelFamily)[];
-    readonly authEngine: AuthEngine;
-    readonly zSocket: ZSocket;
 }
 

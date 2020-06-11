@@ -4,14 +4,14 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import UpSocket, {HandshakeSocket} from "./socket";
-import {ZationToken}               from "../constants/internal";
-import {IncomingMessage}           from 'http';
+import {RawSocket}        from "./socket";
+import {RawZationToken}   from "../constants/internal";
+import {IncomingMessage}  from 'http';
 
 export interface PubOutMiddlewareReq  {
     data: any,
     channel: string,
-    socket: UpSocket,
+    socket: RawSocket,
     authTokenExpiredError?: any
 }
 
@@ -22,27 +22,20 @@ export interface PubInMiddlewareReq extends PubOutMiddlewareReq {
 export interface SubMiddlewareReq  {
     data: Record<string,any>,
     channel: string,
-    socket: UpSocket,
+    socket: RawSocket,
     waitForAuth?: boolean,
     authTokenExpiredError?: any
 }
 
 export interface HandshakeScMiddlewareReq  {
-    socket: HandshakeSocket
+    socket: RawSocket
 }
 
 export interface HandshakeWsMiddlewareReq extends IncomingMessage, Record<string,any> {
 }
 
 export interface AuthMiddlewareReq  {
-    socket: HandshakeSocket,
-    authToken: ZationToken,
+    socket: RawSocket,
+    authToken: RawZationToken,
     signedToken: string
-}
-
-export interface EmitMiddlewareReq  {
-    socket: UpSocket,
-    event: string,
-    data: any,
-    authTokenExpiredError?: any
 }

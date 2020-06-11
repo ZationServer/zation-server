@@ -6,10 +6,10 @@ Copyright(c) Luca Scaringella
 
 import {AccessConfigValue}                                 from "../../../access/accessOptions";
 import Bag                                                 from "../../../../api/Bag";
-import ZationTokenWrapper                                  from "../../../internalApi/zationTokenWrapper";
+import ZationToken                                         from "../../../internalApi/zationToken";
 import {Notable}                                           from '../../../../api/Notable';
 
-export type NormalAuthAccessCustomFunction = (bag: Bag, token: ZationTokenWrapper | null) => Promise<boolean> | boolean;
+export type NormalAuthAccessCustomFunction = (bag: Bag, token: ZationToken | null) => Promise<boolean> | boolean;
 
 export interface AuthAccessConfig<T extends Function = NormalAuthAccessCustomFunction> {
     /**

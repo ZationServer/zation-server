@@ -4,11 +4,12 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import UpSocket              from "../sc/socket";
-import {PrepareZationToken, ZationToken} from "../constants/internal";
+import {PrepareZationToken, RawZationToken} from "../constants/internal";
 import {JwtSignFunction, JwtSignOptions, JwtVerifyFunction, JwtVerifyOptions} from "../constants/jwt";
 import AEPreparedPart      from "../auth/aePreparedPart";
 import BackError           from "../../api/BackError";
+// noinspection ES6PreferShortImport
+import {RawSocket}         from "../sc/socket";
 import AuthenticationError from "../error/authenticationError";
 import {MainBackErrors}    from "../zationBackErrors/mainBackErrors";
 import ZationConfigFull    from "../config/manager/zationConfigFull";
@@ -24,7 +25,7 @@ export default class TokenUtils
      * @param customVar
      * @param socket
      */
-    static async setCustomVar(customVar: object, socket: UpSocket): Promise<void>
+    static async setCustomVar(customVar: object, socket: RawSocket): Promise<void>
     {
         let token = socket.authToken;
         if(token !== null) {
@@ -43,7 +44,7 @@ export default class TokenUtils
      * @param data
      * @param jwtOptions
      */
-    static async setTokenAsync(socket: UpSocket, data: object, jwtOptions: JwtSignOptions = {}) {
+    static async setTokenAsync(socket: RawSocket, data: object, jwtOptions: JwtSignOptions = {}) {
         return new Promise<void>((resolve, reject) => {
             socket.setAuthToken(data,jwtOptions,(err) => {
                 if(err){
@@ -88,8 +89,8 @@ export default class TokenUtils
      * Get the token variables.
      * @param token
      */
-    static getTokenVariables(token: ZationToken | null): object {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.variables),token)
+    static getTokenVariables(token: RawZationToken | null): object {
+        return TokenUtils.getTokenVariable(nameof<RawZationToken>(s => s.variables),token)
             || {};
     }
 
@@ -98,7 +99,7 @@ export default class TokenUtils
      * @param key
      * @param token
      */
-    static getTokenVariable(key: string,token: ZationToken | null): any {
+    static getTokenVariable(key: string,token: RawZationToken | null): any {
         if(token !== null) {
             return token[key]
         }
@@ -165,7 +166,7 @@ export default class TokenUtils
      * @param token
      * @param ae
      */
-    static checkToken(token: ZationToken | null, ae: AEPreparedPart) {
+    static checkToken(token: RawZationToken | null, ae: AEPreparedPart) {
         if(token !== null)
         {
             const authUserGroup = token.authUserGroup;
@@ -210,4 +211,4 @@ export default class TokenUtils
 
 }
 
-export type TokenClusterKeyCheckFunction = (token: ZationToken) => void;
+export type TokenClusterKeyCheckFunction = (token: RawZationToken) => void;

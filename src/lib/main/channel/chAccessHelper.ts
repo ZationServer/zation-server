@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import ZSocket              from "../internalApi/zSocket";
+import Socket               from "../../api/socket";
 import Bag                  from "../../api/Bag";
 import AuthEngine           from "../auth/authEngine";
 import AccessUtils          from "../access/accessUtils";
@@ -13,7 +13,7 @@ import {AccessConfigValue}  from '../access/accessOptions';
 import {getNotableValue, isNotableNot, Notable} from '../../api/Notable';
 import {ChSubAccessFunction} from '../config/definitions/parts/channelConfig';
 
-export type ChSubAccessCheckFunction = (authEngine: AuthEngine, socket: ZSocket, info: ChannelInfo) => Promise<boolean>
+export type ChSubAccessCheckFunction = (authEngine: AuthEngine, socket: Socket, info: ChannelInfo) => Promise<boolean>
 
 /**
  * Helper class for channel access.

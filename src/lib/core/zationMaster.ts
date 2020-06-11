@@ -222,7 +222,7 @@ export default class ZationMaster {
         const masterInitEvent = (this.zcLoader.appConfig.events || {}).masterInit;
         if(masterInitEvent){
             await ConfigPrecompiler.precompileEvent(nameof<Events>(s => s.masterInit),
-                masterInitEvent || (() => {}))(this.zc.getZationInfo());
+                masterInitEvent || (() => {}))(this.zc.getServerInfo());
         }
         this.debugStopwatch.stop(`The Master invoked init event.`);
 
@@ -362,7 +362,7 @@ export default class ZationMaster {
             const startedEvent = (this.zcLoader.appConfig.events || {}).started;
             if(startedEvent){
                 await ConfigPrecompiler.precompileEvent(nameof<Events>(s => s.started),
-                    startedEvent || (() => {}))(this.zc.getZationInfo());
+                    startedEvent || (() => {}))(this.zc.getServerInfo());
             }
         });
 

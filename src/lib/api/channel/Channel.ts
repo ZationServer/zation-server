@@ -6,12 +6,12 @@ Copyright(c) Luca Scaringella
 
 import ChannelCore, {ChPreparedData} from './ChannelCore';
 import Bag                           from '../Bag';
-import UpSocket                      from '../../main/sc/socket';
 import {ClientErrorName}             from '../../main/constants/clientErrorName';
-import ZSocket                       from '../../main/internalApi/zSocket';
+import Socket                        from '../socket';
 import FuncUtils                     from '../../main/utils/funcUtils';
 import {ErrorEventSingleton}         from '../../main/error/errorEventSingleton';
 import {removeValueFromArray}        from '../../main/utils/arrayUtils';
+import {RawSocket}                   from '../../main/sc/socket';
 import {
     CH_CLIENT_OUTPUT_KICK_OUT,
     CH_CLIENT_OUTPUT_PUBLISH,
@@ -45,7 +45,7 @@ export default class Channel extends ChannelCore {
     /**
      * Maps the sockets to the kick out function.
      */
-    private readonly _subSockets: Map<UpSocket,KickOutSocketFunction> = new Map();
+    private readonly _subSockets: Map<RawSocket,KickOutSocketFunction> = new Map();
 
     /**
      * Also the channel id.
@@ -56,8 +56,8 @@ export default class Channel extends ChannelCore {
     private _unregisterTimout: NodeJS.Timeout | undefined;
 
     private readonly _onPublish: (event: string, data: any) => Promise<void> | void;
-    private readonly _onSubscription: (socket: ZSocket) => Promise<void> | void;
-    private readonly _onUnsubscription: (socket: ZSocket,trigger: UnsubscribeTrigger) => Promise<void> | void;
+    private readonly _onSubscription: (socket: Socket) => Promise<void> | void;
+    private readonly _onUnsubscription: (socket: Socket, trigger: UnsubscribeTrigger) => Promise<void> | void;
 
     constructor(identifier: string, bag: Bag, chPreparedData: ChPreparedData, apiLevel: number | undefined)
     {
@@ -80,7 +80,7 @@ export default class Channel extends ChannelCore {
      * **Not override this method.**
      * Used internally.
      */
-    async _subscribeSocket(socket: UpSocket, member?: string): Promise<string>{
+    async _subscribeSocket(socket: RawSocket, member?: string): Promise<string>{
         if(member != undefined){
             const err: any = new Error('Unnecessary member provided to subscribe to a channel.');
             err.name = ClientErrorName.UnnecessaryMember;
@@ -93,11 +93,11 @@ export default class Channel extends ChannelCore {
         //new subscription
         await this._checkSubscribeAccess(socket,{identifier: this.identifier,member});
         this._addSocket(socket);
-        this._onSubscription(socket.zSocket);
+        this._onSubscription(socket.socket);
         return this._chEvent;
     }
 
-    private _addSocket(socket: UpSocket) {
+    private _addSocket(socket: RawSocket) {
         if(!this._internalRegistered){
             this._register();
         }
@@ -123,12 +123,12 @@ export default class Channel extends ChannelCore {
         socket.channels.push(this);
     }
 
-    private _unsubscribeSocket(socket: UpSocket,disconnectHandler: () => void,trigger: UnsubscribeTrigger) {
+    private _unsubscribeSocket(socket: RawSocket, disconnectHandler: () => void, trigger: UnsubscribeTrigger) {
         this._rmSocket(socket,disconnectHandler);
-        this._onUnsubscription(socket.zSocket,trigger);
+        this._onUnsubscription(socket.socket,trigger);
     }
 
-    private _rmSocket(socket: UpSocket,disconnectHandler: () => void) {
+    private _rmSocket(socket: RawSocket, disconnectHandler: () => void) {
         this._subSockets.delete(socket);
         socket.off(this._chEvent);
         socket.off('disconnect',disconnectHandler);
@@ -211,8 +211,8 @@ export default class Channel extends ChannelCore {
      * @param socket
      * @private
      */
-    async _checkSocketHasStillAccess(socket: UpSocket): Promise<void> {
-        if(!(await this._preparedData.accessCheck(socket.authEngine,socket.zSocket,{identifier: this.identifier}))){
+    async _checkSocketHasStillAccess(socket: RawSocket): Promise<void> {
+        if(!(await this._preparedData.accessCheck(socket.authEngine,socket.socket,{identifier: this.identifier}))){
             this.kickOut(socket);
         }
     }
@@ -245,7 +245,7 @@ export default class Channel extends ChannelCore {
      * @param code
      * @param data
      */
-    kickOut(socket: UpSocket,code?: number | string,data?: any) {
+    kickOut(socket: RawSocket, code?: number | string, data?: any) {
         const kickOutFunction = this._subSockets.get(socket);
         if(kickOutFunction){
             socket.emit(CH_CLIENT_OUTPUT_KICK_OUT,{i: this._chEvent,c: code,d: data} as ChClientOutputKickOutPackage);
@@ -258,7 +258,7 @@ export default class Channel extends ChannelCore {
      * A function that gets triggered when a socket subscribes to this channel.
      * @param socket
      */
-    protected onSubscription(socket: ZSocket): Promise<void> | void {
+    protected onSubscription(socket: Socket): Promise<void> | void {
     }
 
     /**
@@ -267,7 +267,7 @@ export default class Channel extends ChannelCore {
      * @param socket
      * @param trigger
      */
-    protected onUnsubscription(socket: ZSocket,trigger: UnsubscribeTrigger): Promise<void> | void {
+    protected onUnsubscription(socket: Socket, trigger: UnsubscribeTrigger): Promise<void> | void {
     }
 
     /**

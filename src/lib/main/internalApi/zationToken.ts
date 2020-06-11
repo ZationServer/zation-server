@@ -4,14 +4,14 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ZationToken}  from "../constants/internal";
+import {RawZationToken}  from "../constants/internal";
 import ObjectPath     from "../utils/objectPath";
 
-export default class ZationTokenWrapper
+export default class ZationToken
 {
-    private readonly _token: ZationToken;
+    private readonly _token: RawZationToken;
 
-    constructor(token: ZationToken) {
+    constructor(token: RawZationToken) {
         this._token = token;
     }
 

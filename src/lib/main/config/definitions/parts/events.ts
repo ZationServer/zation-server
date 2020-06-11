@@ -8,36 +8,35 @@ import ExpressCore                   = require("express-serve-static-core");
 import Express                       = require('express');
 import ZationWorker                  = require("../../../../core/zationWorker");
 import ScServer                        from "../../../sc/scServer";
-import {RawSocket}                     from "../../../sc/socket";
-import {ZationToken}                   from "../../../constants/internal";
+import {RawZationToken}                from "../../../constants/internal";
 import BackError                       from "../../../../api/BackError";
-import ZationInfo                      from "../../../internalApi/zationInfo";
-import ZSocket                         from "../../../internalApi/zSocket";
+import ServerInfo                      from "../../../internalApi/serverInfo";
+import Socket                          from "../../../../api/socket";
 import CodeError                       from "../../../error/codeError";
 
 export type ExpressFunction = (app: ExpressCore.Express,express: typeof Express) => Promise<void> | void;
 export type SocketServerFunction = (scServer: ScServer) => Promise<void> | void;
 export type WorkerInitFunction = (leader: boolean, respawn: boolean) => Promise<void> | void;
-export type MasterInitFunction = (info: ZationInfo) => Promise<void> | void;
-export type WorkerStartedFunction = (info: ZationInfo,leader: boolean, respawn: boolean, worker: ZationWorker) => Promise<void> | void;
-export type HttpServerStartedFunction = (info: ZationInfo) => Promise<void> | void;
-export type WsServerStartedFunction = (info: ZationInfo) => Promise<void> | void;
-export type StartedFunction = (info: ZationInfo) => Promise<void> | void;
+export type MasterInitFunction = (info: ServerInfo) => Promise<void> | void;
+export type WorkerStartedFunction = (info: ServerInfo, leader: boolean, respawn: boolean, worker: ZationWorker) => Promise<void> | void;
+export type HttpServerStartedFunction = (info: ServerInfo) => Promise<void> | void;
+export type WsServerStartedFunction = (info: ServerInfo) => Promise<void> | void;
+export type StartedFunction = (info: ServerInfo) => Promise<void> | void;
 export type ErrorFunction = (error: object) => Promise<void> | void;
 export type BackErrorsFunction = (backErrors: BackError[]) => Promise<void> | void;
 export type CodeErrorFunction = (codeError: CodeError) => Promise<void> | void;
 export type WorkerMessageFunction = (data: any) => Promise<void> | void;
 
-export type SocketInitFunction = (socket: ZSocket) => Promise<void> | void;
-export type SocketConnectionFunction = (socket: ZSocket) => Promise<void> | void;
-export type SocketDisconnectionFunction = (socket: ZSocket, code: any, data: any) => Promise<void> | void;
-export type SocketAuthenticationFunction = (socket: ZSocket) => Promise<void> | void;
-export type SocketDeauthenticationFunction = (socket: ZSocket) => Promise<void> | void;
-export type SocketAuthStateChangeFunction = (socket: ZSocket, stateChangeData: {oldState: string,newState: string,signedAuthToken?: string,authToken?: ZationToken}) => Promise<void> | void;
-export type SocketErrorFunction = (socket: RawSocket, error: object) => Promise<void> | void;
-export type SocketRawFunction = (socket: RawSocket, data: any) => Promise<void> | void;
-export type SocketConnectionAbortFunction = (socket: RawSocket, code: any, data: any) => Promise<void> | void;
-export type SocketBadAuthTokenFunction = (socket: RawSocket, badAuthStatus: {authError: object,signedAuthToken: string}) => Promise<void> | void
+export type SocketInitFunction = (socket: Socket) => Promise<void> | void;
+export type SocketConnectionFunction = (socket: Socket) => Promise<void> | void;
+export type SocketDisconnectionFunction = (socket: Socket, code: any, data: any) => Promise<void> | void;
+export type SocketAuthenticationFunction = (socket: Socket) => Promise<void> | void;
+export type SocketDeauthenticationFunction = (socket: Socket) => Promise<void> | void;
+export type SocketAuthStateChangeFunction = (socket: Socket, stateChangeData: {oldState: string,newState: string,signedAuthToken?: string,authToken?: RawZationToken}) => Promise<void> | void;
+export type SocketErrorFunction = (socket: Socket, error: object) => Promise<void> | void;
+export type SocketRawFunction = (socket: Socket, data: any) => Promise<void> | void;
+export type SocketConnectionAbortFunction = (socket: Socket, code: any, data: any) => Promise<void> | void;
+export type SocketBadAuthTokenFunction = (socket: Socket, badAuthStatus: {authError: object,signedAuthToken: string}) => Promise<void> | void
 
 export type Event<T> = T | T[];
 

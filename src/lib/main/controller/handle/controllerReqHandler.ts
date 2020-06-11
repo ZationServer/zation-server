@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import ZationWorker              = require('../../../core/zationWorker');
-import UpSocket, {RespondFunction} from '../../sc/socket';
+import {RawSocket,RespondFunction} from '../../sc/socket';
 import BackError                   from '../../../api/BackError';
 import BackErrorBag                from '../../../api/BackErrorBag';
 import Logger                      from '../../log/logger';
@@ -45,7 +45,7 @@ export default class ControllerReqHandler
         this.validationCheckLimit = this.zc.mainConfig.validationCheckLimit;
     }
 
-    async processRequest(request: ControllerBaseReq, socket: UpSocket, respond: RespondFunction)
+    async processRequest(request: ControllerBaseReq, socket: RawSocket, respond: RespondFunction)
     {
         let response: ControllerRes
         try {
@@ -68,7 +68,7 @@ export default class ControllerReqHandler
         }
     }
 
-    private async _processRequest(request: ControllerBaseReq, socket: UpSocket) {
+    private async _processRequest(request: ControllerBaseReq, socket: RawSocket) {
         if(checkValidControllerBaseRequest(request)) {
             let controllerIdentifier;
             if(request.c === SpecialController.AuthController) {

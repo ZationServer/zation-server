@@ -5,7 +5,8 @@ Copyright(c) Luca Scaringella
  */
 
 import ZationWorker              = require('../../../core/zationWorker');
-import UpSocket                    from '../../sc/socket';
+// noinspection ES6PreferShortImport
+import {RawSocket}                 from '../../sc/socket';
 import BackError                   from '../../../api/BackError';
 import BackErrorBag                from '../../../api/BackErrorBag';
 import Logger                      from '../../log/logger';
@@ -38,7 +39,7 @@ export default class ReceiverHandler
         this.debug = this.zc.isDebug();
     }
 
-    async processPackage(pack: ReceiverPackage, socket: UpSocket)
+    async processPackage(pack: ReceiverPackage, socket: RawSocket)
     {
         try {
             await this._processPackage(pack,socket);
@@ -52,7 +53,7 @@ export default class ReceiverHandler
         }
     }
 
-    private async _processPackage(pack: ReceiverPackage, socket: UpSocket) {
+    private async _processPackage(pack: ReceiverPackage, socket: RawSocket) {
         if(checkValidReceiverPackage(pack)) {
 
             const reqApiLevel = ApiLevelUtils.parseRequestApiLevel(pack.a);

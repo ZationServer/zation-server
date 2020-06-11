@@ -4,18 +4,18 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ZationAccess, ZationToken} from '../constants/internal';
+import {ZationAccess, RawZationToken} from '../constants/internal';
 
 //TokenCheckFunction
 export const tokenCheckFunctionSymbol = Symbol();
-export type TokenCheckFunction = {(token: ZationToken | null): boolean,[tokenCheckFunctionSymbol]: boolean};
+export type TokenCheckFunction = {(token: RawZationToken | null): boolean,[tokenCheckFunctionSymbol]: boolean};
 
 /**
  * Creates a token check function.
  * It can be used for more advanced use cases.
  * @param checkFunction
  */
-export function createTokenCheckFunction(checkFunction: (token: ZationToken | null) => boolean): TokenCheckFunction {
+export function createTokenCheckFunction(checkFunction: (token: RawZationToken | null) => boolean): TokenCheckFunction {
     checkFunction[tokenCheckFunctionSymbol] = true;
     return checkFunction as TokenCheckFunction;
 }

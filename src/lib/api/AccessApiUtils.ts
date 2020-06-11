@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import {createTokenCheckFunction, createUserIdCheck} from "../main/access/accessOptions";
 import forint, {ForintQuery}                         from "forint";
-import {ZationToken}                                 from '../main/constants/internal';
+import {RawZationToken}                              from '../main/constants/internal';
 
 /**
  * This function can be used to check the access with the token of a client.
@@ -47,7 +47,7 @@ export function $tokenHasVariables(checkProps: Record<string,any>) {
  * @param query
  */
 export function $tokenVariablesMatch<T>(query: ForintQuery<T>) {
-    const checker = forint({[nameof<ZationToken>(s => s.variables)]: query});
+    const checker = forint({[nameof<RawZationToken>(s => s.variables)]: query});
     return createTokenCheckFunction((token) => checker(token));
 }
 

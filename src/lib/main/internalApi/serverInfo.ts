@@ -6,12 +6,11 @@ Copyright(c) Luca Scaringella
 
 import ZationConfig from "../config/manager/zationConfig";
 
-export default class ZationInfo
+export default class ServerInfo
 {
     private readonly _zationConfig: ZationConfig;
 
-    constructor(zc: ZationConfig)
-    {
+    constructor(zc: ZationConfig) {
         this._zationConfig = zc;
     }
 

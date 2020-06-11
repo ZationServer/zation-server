@@ -5,17 +5,18 @@ Copyright(c) Luca Scaringella
  */
 
 import ZationWorker        = require("../../core/zationWorker");
-import {PrepareZationToken, ZationToken} from "../constants/internal";
+import {PrepareZationToken, RawZationToken} from "../constants/internal";
 import AEPreparedPart       from "./aePreparedPart";
 import AuthenticationError  from "../error/authenticationError";
 import TokenUtils           from "../token/tokenUtils";
 import {JwtSignOptions}     from "../constants/jwt";
-import UpSocket             from '../sc/socket';
+// noinspection ES6PreferShortImport
+import {RawSocket}          from '../sc/socket';
 
 export default class AuthEngine
 {
     protected readonly aePreparedPart: AEPreparedPart;
-    public readonly socket: UpSocket;
+    public readonly socket: RawSocket;
     protected readonly worker: ZationWorker;
     protected readonly tokenClusterKey: string;
 
@@ -23,7 +24,7 @@ export default class AuthEngine
     protected currentUserGroup: string | undefined;
     protected currentUserId: string | number | undefined;
 
-    constructor(socket: UpSocket,worker: ZationWorker)
+    constructor(socket: RawSocket, worker: ZationWorker)
     {
         this.aePreparedPart = worker.getAEPreparedPart();
         this.socket         = socket;
@@ -38,7 +39,7 @@ export default class AuthEngine
     /**
      * Load the information from token in the memory of the auth engine.
      */
-    refresh(token: null | ZationToken): void {
+    refresh(token: null | RawZationToken): void {
         if(token !== null) {
             this.currentUserId = token.userId;
             this.currentUserGroup = token.authUserGroup;

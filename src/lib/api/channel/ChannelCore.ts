@@ -4,19 +4,13 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-/*
-Author: Luca Scaringella
-GitHub: LucaCode
-Copyright(c) Luca Scaringella
- */
-
 // noinspection TypeScriptPreferShortImport
 import Bag                                from "../Bag";
 import {VersionSystemAccessCheckFunction} from "../../main/systemVersion/systemVersionChecker";
-import UpSocket                           from "../../main/sc/socket";
 import {ClientErrorName}                  from "../../main/constants/clientErrorName";
 import ConfigBuildError                   from "../../main/config/manager/configBuildError";
 import Component, {ComponentClass}        from '../Component';
+import {RawSocket}                        from '../../main/sc/socket';
 import {ChSubAccessCheckFunction}         from '../../main/channel/chAccessHelper';
 // noinspection ES6PreferShortImport
 import {ChannelInfo}                                              from '../../main/channel/channelDefinitions';
@@ -54,7 +48,7 @@ export default abstract class ChannelCore extends Component {
      * @param socket
      * @param member
      */
-    abstract async _subscribeSocket(socket: UpSocket, member?: string): Promise<string>;
+    abstract async _subscribeSocket(socket: RawSocket, member?: string): Promise<string>;
 
     /**
      * @internal
@@ -63,7 +57,7 @@ export default abstract class ChannelCore extends Component {
      * Otherwise, the socket will be kicked out.
      * @private
      */
-    abstract async _checkSocketHasStillAccess(socket: UpSocket): Promise<void>;
+    abstract async _checkSocketHasStillAccess(socket: RawSocket): Promise<void>;
 
     /**
      * @internal
@@ -74,7 +68,7 @@ export default abstract class ChannelCore extends Component {
      * @param socket
      * @param chInfo
      */
-    async _checkSubscribeAccess(socket: UpSocket, chInfo: ChannelInfo){
+    async _checkSubscribeAccess(socket: RawSocket, chInfo: ChannelInfo){
         const {systemAccessCheck,versionAccessCheck,accessCheck} = this._preparedData;
 
         if(!systemAccessCheck(socket)){
@@ -89,7 +83,7 @@ export default abstract class ChannelCore extends Component {
             throw err;
         }
 
-        if(!(await accessCheck(socket.authEngine,socket.zSocket,chInfo))){
+        if(!(await accessCheck(socket.authEngine,socket.socket,chInfo))){
             const err: any = new Error('Access to this Channel denied.');
             err.name = ClientErrorName.AccessDenied;
             throw err;

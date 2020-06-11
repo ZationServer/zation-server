@@ -5,9 +5,10 @@ Copyright(c) Luca Scaringella
  */
 
 import Databox                 from "../Databox";
-import UpSocket                from "../../../main/sc/socket";
 import DbCudOperationSequence  from "../../../main/databox/dbCudOperationSequence";
 import DataboxUtils            from "../../../main/databox/databoxUtils";
+// noinspection ES6PreferShortImport
+import {RawSocket}             from '../../../main/sc/socket';
 import {
     InfoOption,
     IfOption,
@@ -217,7 +218,7 @@ export default class DataboxContainer {
      * @param code
      * @param data
      */
-    kickOut(socket: UpSocket,code?: number | string,data?: any): void {
+    kickOut(socket: RawSocket, code?: number | string, data?: any): void {
         for(let i = 0; i < this._count; i++) {
             this._databoxes[i].kickOut(socket,code,data);
         }

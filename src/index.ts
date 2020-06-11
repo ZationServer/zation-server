@@ -37,9 +37,9 @@ import {DataboxConfig}              from "./lib/main/config/definitions/parts/da
 import DataboxContainer             from "./lib/api/databox/container/databoxContainer";
 import DataboxFamilyContainer       from "./lib/api/databox/container/databoxFamilyContainer";
 import {buildKeyArray}              from "./lib/main/databox/dbKeyArrayUtils";
-import ZSocket                      from "./lib/main/internalApi/zSocket";
-import ZationTokenWrapper           from "./lib/main/internalApi/zationTokenWrapper";
-import ZationInfo                   from "./lib/main/internalApi/zationInfo";
+import Socket                       from "./lib/api/socket";
+import ZationToken                  from "./lib/main/internalApi/zationToken";
+import ServerInfo                   from "./lib/main/internalApi/serverInfo";
 import AsymmetricKeyPairs           from "./lib/main/internalApi/asymmetricKeyPairs";
 import DbCudOperationSequence       from "./lib/main/databox/dbCudOperationSequence";
 import {ObjectPathSequence}         from "./lib/main/internalApi/objectPathSequence/objectPathSequence";
@@ -66,6 +66,7 @@ import ChannelContainer             from './lib/api/channel/container/channelCon
 import ChannelFamilyContainer       from './lib/api/channel/container/channelFamilyContainer';
 import Receiver                     from './lib/api/Receiver';
 import {ReceiverConfig}             from './lib/main/config/definitions/parts/receiverConfig';
+import {RawSocket}                  from './lib/main/sc/socket';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -129,9 +130,10 @@ export {
     InputIsIncompatibleError,
     $single,
     buildKeyArray,
-    ZSocket,
-    ZationTokenWrapper,
-    ZationInfo,
+    Socket,
+    RawSocket,
+    ZationToken,
+    ServerInfo,
     ChannelInfo,
     AsymmetricKeyPairs,
     DbCudOperationSequence,

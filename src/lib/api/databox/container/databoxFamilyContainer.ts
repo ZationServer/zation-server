@@ -4,10 +4,11 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import UpSocket                from "../../../main/sc/socket";
 import DbCudOperationSequence  from "../../../main/databox/dbCudOperationSequence";
 import DataboxFamily           from "../DataboxFamily";
 import DataboxUtils            from "../../../main/databox/databoxUtils";
+// noinspection ES6PreferShortImport
+import {RawSocket}             from '../../../main/sc/socket';
 import {
     InfoOption,
     IfOption,
@@ -231,7 +232,7 @@ export default class DataboxFamilyContainer {
      * @param code
      * @param data
      */
-    kickOut(member: string | number,socket: UpSocket,code?: number | string,data?: any): void {
+    kickOut(member: string | number, socket: RawSocket, code?: number | string, data?: any): void {
         for(let i = 0; i < this._count;i++) {
             this._databoxes[i].kickOut(member,socket,code,data);
         }
@@ -261,7 +262,7 @@ export default class DataboxFamilyContainer {
      * members where the socket is registered.
      * @param socket
      */
-    getSocketRegMembers(socket: UpSocket): string[] {
+    getSocketRegMembers(socket: RawSocket): string[] {
         const members: string[] = [];
         for(let i = 0; i < this._count;i++) {
             members.push(...this._databoxes[i].getSocketRegMembers(socket))

@@ -4,10 +4,10 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import UpSocket    from "../sc/socket";
 import SocketSet   from "./socketSet";
+import {RawSocket} from '../sc/socket';
 
-export default class Mapper<T extends UpSocket>
+export default class Mapper<T extends RawSocket>
 {
     private readonly data: Record<string,undefined |SocketSet> = {};
 
@@ -18,42 +18,37 @@ export default class Mapper<T extends UpSocket>
     map(k: string,v: T): void
     {
         if(this.data[k] instanceof SocketSet) {
-            // @ts-ignore
-            this.data[k].add(v)
+            (this.data[k] as SocketSet).add(v)
         }
         else {
             this.data[k] = new SocketSet();
-            // @ts-ignore
-            this.data[k].add(v);
+            (this.data[k] as SocketSet).add(v);
         }
     }
 
-    getValues(k: string): UpSocket[]
+    getValues(k: string): RawSocket[]
     {
         if(this.data[k] instanceof SocketSet) {
-            // @ts-ignore
-            return this.data[k].toArray();
+            return (this.data[k] as SocketSet).toArray();
         }
         else {
             return [];
         }
     }
 
-    forEach(k: string,func: (socket: UpSocket) => void)
+    forEach(k: string,func: (socket: RawSocket) => void)
     {
         if(this.data[k] instanceof SocketSet) {
-            // @ts-ignore
-            this.data[k].forEach(func);
+            (this.data[k] as SocketSet).forEach(func);
         }
     }
 
-    forAllEach(func: (socket: UpSocket) => void)
+    forAllEach(func: (socket: RawSocket) => void)
     {
         for(const k in this.data){
             if(this.data.hasOwnProperty(k) &&
                 this.data[k] instanceof SocketSet) {
-                // @ts-ignore
-                this.data[k].forEach(func);
+                (this.data[k] as SocketSet).forEach(func);
             }
         }
     }
@@ -66,15 +61,13 @@ export default class Mapper<T extends UpSocket>
     unMap(k: string | undefined, v: T)
     {
         if(k !== undefined && this.data[k] instanceof SocketSet) {
-            // @ts-ignore
-            this.data[k].remove(v);
+            (this.data[k] as SocketSet).remove(v);
         }
     }
 
     getLengthOfKey(k: string): number {
         if(this.data[k] instanceof SocketSet){
-            // @ts-ignore
-            return this.data[k].getLength();
+            return (this.data[k] as SocketSet).getLength();
         }
         else{
             return 0;
@@ -86,8 +79,7 @@ export default class Mapper<T extends UpSocket>
     {
         for(const k in this.data) {
             if(this.data.hasOwnProperty(k) && this.data[k] instanceof SocketSet) {
-                // @ts-ignore
-                this.data[k].remove(v)
+                (this.data[k] as SocketSet).remove(v)
             }
         }
     }

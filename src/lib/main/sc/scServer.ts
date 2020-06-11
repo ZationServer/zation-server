@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import UpSocket from "./socket";
+import {RawSocket} from "./socket";
 
 export interface ScChannel {
     getState(): string
@@ -34,7 +34,7 @@ export interface ScExchange {
 export default interface ScServer
 {
     exchange: ScExchange;
-    clients: Record<string,UpSocket>;
+    clients: Record<string,RawSocket>;
     clientsCount: number;
     pendingClients: object;
     pendingClientsCount: number;
@@ -46,7 +46,7 @@ export default interface ScServer
     setCodecEngine: (engine: object) => void;
     close: () => void;
 
-    _subscribeSocket: (socket: UpSocket, channelOptions: {channel: string}, callback) => void;
+    _subscribeSocket: (socket: RawSocket, channelOptions: {channel: string}, callback) => void;
     addMiddleware: (type: string, middlewareFn: Function) => void;
     removeMiddleware: (type: string, middlewareFn: Function) => void;
     on: (event: string, fn: Function) => void;

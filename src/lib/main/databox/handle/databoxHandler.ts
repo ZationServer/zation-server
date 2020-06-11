@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import UpSocket, {RespondFunction} from "../../sc/socket";
+import {RawSocket,RespondFunction} from "../../sc/socket";
 import DataboxPrepare              from "../databoxPrepare";
 import ZationConfig                from "../../config/manager/zationConfig";
 import DataboxCore                 from "../../../api/databox/DataboxCore";
@@ -31,14 +31,14 @@ export default class DataboxHandler
         this.debug = zc.isDebug();
     }
 
-    async processConnectReq(input: DataboxConnectReq, socket: UpSocket,respond: RespondFunction): Promise<void> {
+    async processConnectReq(input: DataboxConnectReq, socket: RawSocket, respond: RespondFunction): Promise<void> {
         try {
             respond(null,(await this._processConnectReq(input,socket)));
         }
         catch (err) {respond(err);}
     }
 
-    private async _processConnectReq(request: DataboxConnectReq, socket: UpSocket): Promise<DataboxConnectRes>
+    private async _processConnectReq(request: DataboxConnectReq, socket: RawSocket): Promise<DataboxConnectRes>
     {
         //check request valid
         if(!isValidDataboxConnectionRequest(request)) {

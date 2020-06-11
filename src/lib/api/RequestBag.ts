@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import ZationWorker             = require("../core/zationWorker");
 import useragent                = require('useragent');
-import UpSocket, {OnHandlerFunction} from "../main/sc/socket";
+import {OnHandlerFunction, RawSocket} from "../main/sc/socket";
 import {IncomingHttpHeaders, IncomingMessage} from "http";
 import {Agent}                    from "useragent";
 import AuthEngine                 from "../main/auth/authEngine";
@@ -16,9 +16,9 @@ import ObjectPathSequenceBoxImp   from "../main/internalApi/objectPathSequence/o
 import Bag                        from "./Bag";
 import InputIsIncompatibleError   from "../main/error/inputIsIncompatibleError";
 import TokenUtils                 from "../main/token/tokenUtils";
-import {ZationToken}              from "../main/constants/internal";
+import {RawZationToken}           from "../main/constants/internal";
 import {JwtSignOptions}           from "../main/constants/jwt";
-import ZSocket                    from "../main/internalApi/zSocket";
+import Socket                     from "./socket";
 import ApiLevelUtils              from "../main/apiLevel/apiLevelUtils";
 import CloneUtils                 from "../main/utils/cloneUtils";
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
@@ -27,12 +27,12 @@ import {ObjectPathSequence}       from "../main/internalApi/objectPathSequence/o
 export default class RequestBag extends Bag
 {
     private reqVariables: object = {};
-    private readonly _socket: UpSocket;
+    private readonly _socket: RawSocket;
     private readonly authEngine: AuthEngine;
     private readonly input: any;
     private readonly reqApiLevel: number | undefined;
 
-    constructor(socket: UpSocket, worker: ZationWorker, input: object, reqApiLevel: number | undefined)
+    constructor(socket: RawSocket, worker: ZationWorker, input: object, reqApiLevel: number | undefined)
     {
         super(worker,worker.getInternalChannelEngine());
         this._socket = socket;
@@ -703,7 +703,7 @@ export default class RequestBag extends Bag
      * @throws AuthenticationError if the socket is not authenticated.
      */
     getTokenId(): string {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.tid),this._socket.authToken);
+        return TokenUtils.getTokenVariable(nameof<RawZationToken>(s => s.tid),this._socket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -713,7 +713,7 @@ export default class RequestBag extends Bag
      * @throws AuthenticationError if the socket is not authenticated.
      */
     getTokenExpire(): number {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.exp),this._socket.authToken);
+        return TokenUtils.getTokenVariable(nameof<RawZationToken>(s => s.exp),this._socket.authToken);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -723,7 +723,7 @@ export default class RequestBag extends Bag
      * @throws AuthenticationError if the socket is not authenticated.
      */
     getPanelAccess(): boolean {
-        return TokenUtils.getTokenVariable(nameof<ZationToken>(s => s.panelAccess),this._socket.authToken);
+        return TokenUtils.getTokenVariable(nameof<RawZationToken>(s => s.panelAccess),this._socket.authToken);
     }
 
     //Part Socket
@@ -751,7 +751,7 @@ export default class RequestBag extends Bag
      * @description
      * Returns the raw socket.
      */
-    getRawSocket(): UpSocket {
+    getRawSocket(): RawSocket {
         return this._socket;
     }
 
@@ -760,8 +760,8 @@ export default class RequestBag extends Bag
      * @description
      * Returns the zSocket.
      */
-    get socket(): ZSocket {
-        return this._socket.zSocket;
+    get socket(): Socket {
+        return this._socket.socket;
     }
 
     //Part Socket

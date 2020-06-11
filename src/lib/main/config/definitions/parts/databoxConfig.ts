@@ -7,10 +7,10 @@ Copyright(c) Luca Scaringella
 import {AuthAccessConfig, SystemAccessConfig, VersionAccessConfig} from "./accessConfigs";
 import Bag                                                         from "../../../../api/Bag";
 import {DataboxInfo}                                               from "../../../databox/dbDefinitions";
-import ZSocket                                                     from "../../../internalApi/zSocket";
+import Socket                                                      from "../../../../api/socket";
 import {Input}                                                     from "./inputConfig";
 
-export type DbAccessFunction = (bag: Bag, socket: ZSocket, dbInfo: DataboxInfo) => Promise<boolean> | boolean;
+export type DbAccessFunction = (bag: Bag, socket: Socket, dbInfo: DataboxInfo) => Promise<boolean> | boolean;
 
 export interface DataboxConfig extends VersionAccessConfig, SystemAccessConfig, AuthAccessConfig<DbAccessFunction>
 {

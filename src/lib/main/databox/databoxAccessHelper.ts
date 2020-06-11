@@ -8,12 +8,12 @@ import AccessUtils          from "../access/accessUtils";
 import Bag                  from "../../api/Bag";
 import {DataboxInfo}        from "./dbDefinitions";
 import {DbAccessFunction}   from "../config/definitions/parts/databoxConfig";
-import ZSocket              from "../internalApi/zSocket";
+import Socket               from "../../api/socket";
 import AuthEngine           from "../auth/authEngine";
 import {AccessConfigValue}  from '../access/accessOptions';
 import {getNotableValue, isNotableNot, Notable} from '../../api/Notable';
 
-export type DbAccessCheckFunction = (authEngine: AuthEngine, socket: ZSocket, dbInfo: DataboxInfo) => Promise<boolean>
+export type DbAccessCheckFunction = (authEngine: AuthEngine, socket: Socket, dbInfo: DataboxInfo) => Promise<boolean>
 
 /**
  * Helper class for databox access.

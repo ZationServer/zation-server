@@ -9,7 +9,6 @@ import {DataboxConfig}                    from "../../main/config/definitions/pa
 import Bag                                from "../Bag";
 import NoMoreDataAvailableError           from "../../main/databox/noMoreDataAvailable";
 import {VersionSystemAccessCheckFunction} from "../../main/systemVersion/systemVersionChecker";
-import UpSocket                           from "../../main/sc/socket";
 import {ClientErrorName}                  from "../../main/constants/clientErrorName";
 const  Jwt                              = require('jsonwebtoken');
 import {JwtSignFunction, JwtVerifyFunction, JwtVerifyOptions} from "../../main/constants/jwt";
@@ -23,6 +22,7 @@ import ConfigBuildError                   from "../../main/config/manager/config
 import Component, {ComponentClass}        from '../Component';
 import {AnyDataboxClass}                  from './AnyDataboxClass';
 import {componentTypeSymbol}              from '../../main/component/componentUtils';
+import {RawSocket}                        from '../../main/sc/socket';
 
 /**
  * If you always want to present the most recent data on the client,
@@ -130,7 +130,7 @@ export default abstract class DataboxCore extends Component {
      * @param socket
      * @param request
      */
-    abstract async _processConRequest(socket: UpSocket, request: DataboxConnectReq): Promise<DataboxConnectRes>;
+    abstract async _processConRequest(socket: RawSocket, request: DataboxConnectReq): Promise<DataboxConnectRes>;
 
     /**
      * @internal
@@ -139,7 +139,7 @@ export default abstract class DataboxCore extends Component {
      * Otherwise, the socket will be kicked out.
      * @private
      */
-    abstract async _checkSocketHasStillAccess(socket: UpSocket): Promise<void>;
+    abstract async _checkSocketHasStillAccess(socket: RawSocket): Promise<void>;
 
     /**
      * @internal
@@ -149,7 +149,7 @@ export default abstract class DataboxCore extends Component {
      * @param socket
      * @param dbInfo
      */
-    async _checkAccess(socket: UpSocket,dbInfo: DataboxInfo){
+    async _checkAccess(socket: RawSocket, dbInfo: DataboxInfo){
         const {systemAccessCheck,versionAccessCheck,accessCheck} = this._preparedData;
 
         if(!systemAccessCheck(socket)){
@@ -164,7 +164,7 @@ export default abstract class DataboxCore extends Component {
             throw err;
         }
 
-        if(!(await accessCheck(socket.authEngine,socket.zSocket,dbInfo))){
+        if(!(await accessCheck(socket.authEngine,socket.socket,dbInfo))){
             const err: any = new Error('Access to this Databox denied.');
             err.name = ClientErrorName.AccessDenied;
             throw err;
