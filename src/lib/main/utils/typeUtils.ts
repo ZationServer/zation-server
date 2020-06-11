@@ -25,10 +25,10 @@ export type Primitive =
     | symbol
     | bigint
 export type AnyFunction = (...args: any[]) => any
-interface IDRArray<T> extends ReadonlyArray<DeepReadonly<T>> {}
-type DRObject<T> = {
+export interface IDRArray<T> extends ReadonlyArray<DeepReadonly<T>> {}
+export type DRObject<T> = {
     readonly [P in keyof T]: DeepReadonly<T[P]>;
 }
-interface IDRMap<K, V> extends ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>> {}
-interface ReadonlySetDeep<ItemType>
+export interface IDRMap<K, V> extends ReadonlyMap<DeepReadonly<K>, DeepReadonly<V>> {}
+export interface ReadonlySetDeep<ItemType>
     extends ReadonlySet<DeepReadonly<ItemType>> {}
