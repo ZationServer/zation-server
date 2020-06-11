@@ -750,14 +750,13 @@ export default class Databox extends DataboxCore {
 
     /**
      * **Not override this method.**
-     * The reload function will force all clients of the Databox to reload the data.
-     * This method is used internally if it was detected that a worker had
-     * missed a cud (create, update, or delete) operation.
-     * @param forEveryWorker
+     * The reload function will force all connected
+     * clients of the Databox to reload the data.
      * @param code
      * @param data
+     * @param forEveryWorker
      */
-    doReload(forEveryWorker: boolean = false,code?: number | string,data?: any){
+    doReload(code?: number | string, data?: any, forEveryWorker: boolean = true){
         const clientPackage = DataboxUtils.buildClientReloadPackage(code,data);
         if(forEveryWorker){
             this._broadcastToOtherSockets(clientPackage);

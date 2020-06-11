@@ -198,16 +198,15 @@ export default class DataboxContainer {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * The reload function will force all clients of the Databox to reload the data.
-     * This method is used internally if it was detected that a worker had
-     * missed a cud (create, update, or delete) operation.
-     * @param forEveryWorker
+     * The reload function will force all connected
+     * clients of the Databox to reload the data.
      * @param code
      * @param data
+     * @param forEveryWorker
      */
-    doReload(forEveryWorker: boolean = false,code?: number | string,data?: any): void {
+    doReload(code?: number | string, data?: any, forEveryWorker: boolean = true): void {
         for(let i = 0; i < this._count; i++) {
-            this._databoxes[i].doReload(forEveryWorker,code,data);
+            this._databoxes[i].doReload(code,data,forEveryWorker);
         }
     }
 

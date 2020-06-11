@@ -878,16 +878,15 @@ export default class DataboxFamily extends DataboxCore {
 
     /**
      * **Not override this method.**
-     * The reload function will force all clients of the Databox member to reload the data.
-     * This method is used internally if it was detected that a worker had
-     * missed a cud (create, update, or delete) operation.
+     * The reload function will force all connected
+     * clients of the Databox member to reload the data.
      * @param member
      * Numbers will be converted to a string.
-     * @param forEveryWorker
      * @param code
      * @param data
+     * @param forEveryWorker
      */
-    doReload(member: string | number,forEveryWorker: boolean = false,code?: number | string,data?: any){
+    doReload(member: string | number, code?: number | string, data?: any, forEveryWorker: boolean = true){
         member = typeof member === "string" ? member: member.toString();
         const clientPackage = DataboxUtils.buildClientReloadPackage(code,data);
         if(forEveryWorker){
