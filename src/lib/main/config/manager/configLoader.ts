@@ -17,7 +17,6 @@ import moment            = require('moment-timezone');
 import {AppConfig}        from "../definitions/main/appConfig";
 import {ServiceConfig}    from "../definitions/main/serviceConfig";
 import {OtherLoadedConfigSet} from "./configSets";
-import ConfigBuildError       from "./configBuildError";
 import FuncUtils              from '../../utils/funcUtils';
 import { keys }               from 'ts-transformer-keys';
 
@@ -210,16 +209,19 @@ export default class ConfigLoader {
      * Function for loading other configs on the master.
      */
     async loadOtherConfigs() {
-        try {
-            this._appConfig = ConfigLoader.loadConfig(this._configLocations.appConfig);
-            this._loadedConfigs.push(nameof<StarterConfig>(s => s.appConfig));
-        }
-        catch (e) {ConfigLoader.throwErrIfConfigFail(e)}
-        try {
-            this._serviceConfig = ConfigLoader.loadConfig(this._configLocations.serviceConfig);
-            this._loadedConfigs.push(nameof<StarterConfig>(s => s.serviceConfig));
-        }
-        catch (e) {ConfigLoader.throwErrIfConfigFail(e)}
+        this._appConfig = this.loadConfigWithErrorHandling(this._configLocations.appConfig,
+            nameof<StarterConfig>(s => s.appConfig));
+        this._serviceConfig = this.loadConfigWithErrorHandling(this._configLocations.serviceConfig,
+            nameof<StarterConfig>(s => s.serviceConfig));
+    }
+
+    private loadConfigWithErrorHandling(location: string,name: string) {
+        try {require.resolve(location);}
+        catch (e) {return {};}
+
+        const res = ConfigLoader.loadConfig(location);
+        this._loadedConfigs.push(name);
+        return res;
     }
 
     /**
@@ -233,12 +235,6 @@ export default class ConfigLoader {
             return typeof value['default'] === 'object' ? value['default']: value;
         }
         throw new Error(`The configuration: ${path} does not export an object.`);
-    }
-
-    static throwErrIfConfigFail(err) {
-        if(err instanceof ConfigBuildError || err.code !== 'MODULE_NOT_FOUND'){
-            throw err;
-        }
     }
 
     getRootPath(): string {
