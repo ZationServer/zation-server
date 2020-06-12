@@ -118,9 +118,8 @@ export default class ZationMaster {
                         Logger.logStartFail(`An error was thrown by try to build a configuration -> ${e.stack}`);
                     }
                     else {
-                        Logger.logStartFail(`An error was thrown on server start -> ${e.stack}`);
+                        Logger.logStartFail(` An error was thrown by starting the server -> ${e.stack}`);
                     }
-
                 }
             })();
         }
