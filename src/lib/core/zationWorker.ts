@@ -246,12 +246,16 @@ class ZationWorker extends SCWorker
         this.databoxPrepare.prepare();
         debugStopwatch.stop(`The Worker with id ${this.id} has prepared the Databoxes.`);
 
-        //ChannelPrepare
         debugStopwatch.start();
         this.channelPrepare = new ChannelPrepare(this.zc,this,this.preparedBag);
         this.channelPrepare.prepare();
+        debugStopwatch.stop(`The Worker with id ${this.id} has prepared the Channels.`);
+
+        Bag._isReady();
+
+        debugStopwatch.start();
         await this.channelPrepare.init();
-        debugStopwatch.stop(`The Worker with id ${this.id} has prepared and initialized the Channels.`);
+        debugStopwatch.stop(`The Worker with id ${this.id} has initialized the Channels.`);
 
         debugStopwatch.start();
         await this.databoxPrepare.init();
@@ -312,8 +316,6 @@ class ZationWorker extends SCWorker
         debugStopwatch.start();
         this.channelHandler = new ChannelHandler(this.channelPrepare,this.zc);
         debugStopwatch.stop(`The Worker with id ${this.id} has created the Channel handler.`);
-
-        Bag._isReady();
 
         //After databoxes prepare (To access databoxes using the bag) and after bag ready.
         debugStopwatch.start();
