@@ -11,7 +11,6 @@ import InputProcessor, {Processable}    from "./inputProcessorCreator";
 import BackError                        from "../../api/BackError";
 import {MainBackErrors}                 from "../zationBackErrors/mainBackErrors";
 import InputUtils                       from "./inputUtils";
-import Bag                              from "../../api/Bag";
 import {ValidationCheckPair}            from "../controller/controllerDefinitions";
 
 export type InputConsumeFunction = (input: any) => Promise<any>;
@@ -29,9 +28,8 @@ export default class InputClosureCreator
     /**
      * Creates a closure to consume the input (validate and format) from a request to a component.
      * @param inputConfig
-     * @param bag
      */
-    static createInputConsumer(inputConfig: InputConfig, bag: Bag): InputConsumeFunction {
+    static createInputConsumer(inputConfig: InputConfig): InputConsumeFunction {
         if(inputConfig.allowAnyInput) {
             return (input) => input;
         }
@@ -44,7 +42,7 @@ export default class InputClosureCreator
             const backErrorBag: BackErrorBag = new BackErrorBag();
             const wrapper = {i: input};
 
-            await processable._process(bag,wrapper,'i','',{
+            await processable._process(wrapper,'i','',{
                 processTaskList: taskList,
                 errorBag: backErrorBag,
                 createProcessTaskList:  true
@@ -63,9 +61,8 @@ export default class InputClosureCreator
     /**
      * Creates a closure to only validate the input from a validation request to a component.
      * @param inputConfig
-     * @param bag
      */
-    static createValidationChecker(inputConfig: InputConfig,bag: Bag): InputValidationCheckFunction
+    static createValidationChecker(inputConfig: InputConfig): InputValidationCheckFunction
     {
         if(inputConfig.allowAnyInput) {
             return async () => {}
@@ -101,7 +98,7 @@ export default class InputClosureCreator
                             }
                         }
 
-                        await (specificConfig as Processable)._process(bag,iCheckData,'1',path,{
+                        await (specificConfig as Processable)._process(iCheckData,'1',path,{
                             errorBag: errorBag,
                             createProcessTaskList: false,
                             processTaskList: [],

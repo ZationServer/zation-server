@@ -13,7 +13,6 @@ import BackError             from "../../api/BackError";
 import {ValidatorLibrary}    from "./validatorLibrary";
 import FuncUtils             from "../utils/funcUtils";
 import {ValidatorBackErrors} from "../zationBackErrors/validatorBackErrors";
-import Bag                   from "../../api/Bag";
 
 const ValidatorFunctions   = ValidatorLibrary.Functions;
 const ValidatorTypes       = ValidatorLibrary.Types;
@@ -21,7 +20,7 @@ const ValidatorTypes       = ValidatorLibrary.Types;
 export type ValueTypeValidateFunction =
     (input: any,errorBag: BackErrorBag,preparedErrorData: PreparedErrorData) => string | undefined;
 export type ValueValidateFunction =
-    (input: any, errorBag: BackErrorBag, preparedErrorData: PreparedErrorData, bag: Bag, type: string | undefined) => Promise<any>;
+    (input: any, errorBag: BackErrorBag, preparedErrorData: PreparedErrorData, type: string | undefined) => Promise<any>;
 
 export interface PreparedErrorData {
     path: string,
@@ -29,7 +28,7 @@ export interface PreparedErrorData {
 }
 
 type PreparedFunctionValidator =
-    (input: any, backErrorBag : BackErrorBag, prepareErrorData: PreparedErrorData, preparedBag: Bag, type: string | undefined) => Promise<void> | void
+    (input: any, backErrorBag : BackErrorBag, prepareErrorData: PreparedErrorData, type: string | undefined) => Promise<void> | void
 
 export default class ValidatorEngine
 {
@@ -46,9 +45,8 @@ export default class ValidatorEngine
             if(config.hasOwnProperty(cKey)) {
                 const cValue = config[cKey];
                 if(ValidatorFunctions.hasOwnProperty(cKey)) {
-                    validatorFunctions.push((input, backErrorBag, prepareErrorData, preparedBag, type) => {
-                        return ValidatorFunctions[cKey](input,cValue,backErrorBag,prepareErrorData,preparedBag,type);
-                    });
+                    validatorFunctions.push((input, backErrorBag, prepareErrorData, type) =>
+                        ValidatorFunctions[cKey](input,cValue,backErrorBag,prepareErrorData,type));
                 }
                 else if(cKey === nameof<ValueModel>(s => s.validate)) {
                     validateFunction = FuncUtils.createFuncAsyncInvoker(cValue);
@@ -56,12 +54,12 @@ export default class ValidatorEngine
             }
         }
 
-        return async (input, errorBag, preparedErrorData, bag, type) => {
+        return async (input, errorBag, preparedErrorData, type) => {
             const promises: (Promise<void> | void)[] = [];
             for(let i = 0; i < validatorFunctions.length; i++){
-                promises.push(validatorFunctions[i](input,errorBag,preparedErrorData,bag,type));
+                promises.push(validatorFunctions[i](input,errorBag,preparedErrorData,type));
             }
-            promises.push(validateFunction(input,errorBag,preparedErrorData.path,bag,type));
+            promises.push(validateFunction(input,errorBag,preparedErrorData.path,type));
             await Promise.all(promises);
         };
     }
@@ -106,7 +104,7 @@ export default class ValidatorEngine
             }
         }
         else {
-            return () => {return undefined;}
+            return () => undefined;
         }
     }
 

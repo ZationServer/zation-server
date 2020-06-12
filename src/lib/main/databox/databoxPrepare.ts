@@ -76,8 +76,8 @@ export default class DataboxPrepare extends ComponentPrepare<DataboxCore>
             versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
             accessCheck: DataboxAccessHelper.createAccessChecker(config.access,this.bag,identifier),
-            initInputConsumer: InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbInitInput(config),this.bag),
-            fetchInputConsumer: InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbFetchInput(config),this.bag),
+            initInputConsumer: InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbInitInput(config)),
+            fetchInputConsumer: InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbFetchInput(config)),
             parallelFetch: config.parallelFetch !== undefined ? config.parallelFetch: false,
             maxBackpressure: config.maxBackpressure !== undefined ? config.maxBackpressure: 30,
             maxSocketInputChannels: config.maxSocketInputChannels !== undefined ?

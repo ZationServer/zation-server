@@ -5,7 +5,6 @@ Copyright(c) Luca Scaringella
  */
 
 import BackErrorBag from '../../../../api/BackErrorBag';
-import Bag          from '../../../../api/Bag';
 // noinspection TypeScriptPreferShortImport
 import {ValidationType}      from '../../../constants/validationType.js';
 import {ValidationFunctions} from './validationFunctions';
@@ -135,9 +134,9 @@ export interface ParamInput {
     [key: string]: Model;
 }
 
-export type ValidateFunction = (value: any, backErrorBag: BackErrorBag, path: string, bag: Bag, type: string | undefined) => Promise<void> | void;
-export type ConvertValueFunction = (value: any, bag: Bag) => Promise<any> | any;
-export type GetDateFunction = (bag: Bag) => Promise<Date> | Date;
+export type ValidateFunction = (value: any, backErrorBag: BackErrorBag, path: string, type: string | undefined) => Promise<void> | void;
+export type ConvertValueFunction = (value: any) => Promise<any> | any;
+export type GetDateFunction = () => Promise<Date> | Date;
 
 export interface ValueModel extends ValidationFunctions, ModelOptional
 {
@@ -201,8 +200,9 @@ export interface ValueModel extends ValidationFunctions, ModelOptional
      * It can be one Validation check function or more functions in an array.
      * This is useful to do advance checks; for example,
      * you want to check if the email is already registered in the database.
+     * The Bag instance can be securely accessed with the variable 'bag'.
      * @example
-     * validate: [async (value,backErrorBag,path,bag,type) => {
+     * validate: [async (value,backErrorBag,path,type) => {
      *   if(....){
      *       //error
      *       bagErrorBag.addBackError(bag.newBackError({
@@ -216,8 +216,9 @@ export interface ValueModel extends ValidationFunctions, ModelOptional
      * Convert the input value in a specific value; for example,
      * you want to add something to the end of a string.
      * The converting process will only be invoked if the value model has no validation errors.
+     * The Bag instance can be securely accessed with the variable 'bag'.
      * @example
-     * convert: async (value,bag) => {
+     * convert: async (value) => {
      *     return value+'end';
      * }
      */
@@ -249,8 +250,8 @@ export interface ModelOptional {
 }
 
 export type ObjectProperties = Record<string,Model>;
-export type ConvertObjectFunction = (obj: Record<string,any>, bag: Bag) => Promise<any> | any;
-export type ConstructObjectFunction = (this: Record<string,any>, bag: Bag) => Promise<void> | void;
+export type ConvertObjectFunction = (obj: Record<string,any>) => Promise<any> | any;
+export type ConstructObjectFunction = (this: Record<string,any>) => Promise<void> | void;
 
 export interface ObjectModel extends ModelOptional
 {
@@ -285,8 +286,9 @@ export interface ObjectModel extends ModelOptional
      * Means that only the baseConstruct function of the base sub-model
      * is called but not from the other supermodels.
      * Notice also that the baseConstruct is called before the construct functions.
+     * The Bag instance can be securely accessed with the variable 'bag'.
      * @example
-     * baseConstruct: function(bag) {
+     * baseConstruct: function() {
      *    this.fullName = `${this.firstName} ${this.lastName}`;
      * }
      */
@@ -298,8 +300,9 @@ export interface ObjectModel extends ModelOptional
      * that allows you to add properties to the object.
      * If you inherit from another object model the constructor functions will be chained.
      * Means that the super construct function is called before the sub construct function.
+     * The Bag instance can be securely accessed with the variable 'bag'.
      * @example
-     * construct: function(bag) {
+     * construct: function() {
      *    this.fullName = `${this.firstName} ${this.lastName}`;
      * }
      */
@@ -311,8 +314,9 @@ export interface ObjectModel extends ModelOptional
      * If you inherit from another object model the convert functions will be chained.
      * Means the convert function of the sub-model will be called with
      * the result of the convert function from the supermodel.
+     * The Bag instance can be securely accessed with the variable 'bag'.
      * @example
-     * convert: (obj,bag) => {
+     * convert: (obj) => {
      *    return obj['name'];
      * }
      */
@@ -335,7 +339,7 @@ export interface ArrayModel extends ArraySettings
     array: Model
 }
 
-export type ConvertArrayFunction = (array: any[], bag: Bag) => Promise<any> | any;
+export type ConvertArrayFunction = (array: any[]) => Promise<any> | any;
 
 export interface ArraySettings extends ModelOptional
 {
@@ -361,8 +365,9 @@ export interface ArraySettings extends ModelOptional
      * Convert the input array in a specific value; for example,
      * you want only to have the first item.
      * The converting process will only be invoked if the array model has no validation errors.
+     * The Bag instance can be securely accessed with the variable 'bag'.
      * @example
-     * convert: (array,bag) => {
+     * convert: (array) => {
      *    return array[0];
      * }
      */

@@ -75,7 +75,7 @@ export default class ReceiverPrepare extends ComponentPrepare<Receiver>
             systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
             tokenStateCheck: ReceiverAccessHelper.createAuthAccessChecker(config.access,this.bag,identifier),
             handleMiddlewareInvoke: CompHandleMiddlewareUtils.createInvoker(config),
-            inputConsume: InputClosureCreator.createInputConsumer(config,this.bag),
+            inputConsume: InputClosureCreator.createInputConsumer(config),
             finallyHandle: FuncUtils.createSafeCaller((reqBag,input) => rInstance.finallyHandle(reqBag,input),
                 `An error was thrown on the: 'Receiver ${identifier}', ${nameof<Receiver>(s => s.finallyHandle)}:`,
                 ErrorEventSingleton.get())

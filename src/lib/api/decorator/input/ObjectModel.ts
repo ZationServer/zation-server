@@ -11,6 +11,7 @@ import {InDecoratorMem, inDM_ConstructorMethodsSymbol, inDM_ModelsSymbol} from "
 import {createReusableModel}                                              from '../../../main/models/reusableModelCreator';
 // noinspection TypeScriptPreferShortImport
 import {$extends}                                                         from '../../input/Extends';
+import {bag}                                                              from '../../Bag';
 
 export const classObjectModelSymbol = Symbol();
 
@@ -61,10 +62,10 @@ export const ObjectModel = (name?: string) => {
 
         const objectModel: ObjectModelConfig = createReusableModel({
             properties: models,
-            baseConstruct: async function(bag) {
+            baseConstruct: async function() {
                 Object.setPrototypeOf(this,Reflect.construct(target,[bag]));
             },
-            construct: async function(bag) {
+            construct: async function() {
                 const promises: Promise<void>[] = [];
                 for(let i = 0; i < constructorMethodsLength; i++){
                     promises.push(constructorMethods[i].call(this,bag));

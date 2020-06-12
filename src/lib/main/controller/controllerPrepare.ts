@@ -91,8 +91,8 @@ export default class ControllerPrepare extends ComponentPrepare<Controller>
             systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
             tokenStateCheck: ControllerAccessHelper.createAuthAccessChecker(config.access,this.bag,identifier),
             handleMiddlewareInvoke: CompHandleMiddlewareUtils.createInvoker(config),
-            inputConsume: InputClosureCreator.createInputConsumer(config,this.bag),
-            inputValidationCheck: InputClosureCreator.createValidationChecker(config,this.bag),
+            inputConsume: InputClosureCreator.createInputConsumer(config),
+            inputValidationCheck: InputClosureCreator.createValidationChecker(config),
             finallyHandle: FuncUtils.createSafeCaller((reqBag,input) => cInstance.finallyHandle(reqBag,input),
                 `An error was thrown on the: 'Controller ${identifier}', ${nameof<Controller>(s => s.finallyHandle)}:`,
                 ErrorEventSingleton.get())
