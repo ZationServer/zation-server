@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import Bag                           from "../Bag";
-import DataboxCore, {DbPreparedData} from "./DataboxCore";
+import DataboxCore, {DbPreparedData} from './DataboxCore';
 import {RespondFunction, RawSocket}  from "../../main/sc/socket";
 import {
     CudOperation,
@@ -51,7 +51,7 @@ import {removeValueFromArray}                     from '../../main/utils/arrayUt
 import ObjectUtils                                from '../../main/utils/objectUtils';
 import FuncUtils                                  from '../../main/utils/funcUtils';
 import {ErrorEventSingleton}                      from '../../main/error/errorEventSingleton';
-const defaultSymbol                              = Symbol();
+import {isDefaultImpl, markAsDefaultImpl}         from '../../main/utils/defaultImplUtils';
 
 /**
  * If you always want to present the most recent data on the client,
@@ -114,8 +114,8 @@ export default class Databox extends DataboxCore {
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
         this._sendCudToSockets = this._getSendCudToSocketsHandler();
 
-        this._hasBeforeEventsListener = !this.beforeInsert[defaultSymbol] ||
-            !this.beforeUpdate[defaultSymbol] || !this.beforeDelete[defaultSymbol];
+        this._hasBeforeEventsListener = !isDefaultImpl(this.beforeInsert) ||
+            !isDefaultImpl(this.beforeUpdate) || !isDefaultImpl(this.beforeDelete);
 
         const errMessagePrefix = this.toString() + ' error was thrown in the function';
         this._onConnection = FuncUtils.createSafeCaller(this.onConnection,
@@ -132,9 +132,9 @@ export default class Databox extends DataboxCore {
      * if at least one of the middleware function was overwritten.
      */
     private _getSendCudToSocketsHandler(): (dbClientCudPackage: DbClientOutputCudPackage) => Promise<void> | void {
-        if(!this.insertMiddleware[defaultSymbol] ||
-            !this.updateMiddleware[defaultSymbol] ||
-            !this.deleteMiddleware[defaultSymbol])
+        if(!isDefaultImpl(this.insertMiddleware) ||
+            !isDefaultImpl(this.updateMiddleware) ||
+            !isDefaultImpl(this.deleteMiddleware))
         {
             return this._sendCudToSocketsWithMiddleware.bind(this);
         }
@@ -999,12 +999,12 @@ export default class Databox extends DataboxCore {
     }
 }
 
-Databox.prototype['insertMiddleware'][defaultSymbol] = true;
-Databox.prototype['updateMiddleware'][defaultSymbol] = true;
-Databox.prototype['deleteMiddleware'][defaultSymbol] = true;
+markAsDefaultImpl(Databox.prototype['insertMiddleware']);
+markAsDefaultImpl(Databox.prototype['updateMiddleware']);
+markAsDefaultImpl(Databox.prototype['deleteMiddleware']);
 
-Databox.prototype['beforeInsert'][defaultSymbol] = true;
-Databox.prototype['beforeUpdate'][defaultSymbol] = true;
-Databox.prototype['beforeDelete'][defaultSymbol] = true;
+markAsDefaultImpl(Databox.prototype['beforeInsert']);
+markAsDefaultImpl(Databox.prototype['beforeUpdate']);
+markAsDefaultImpl(Databox.prototype['beforeDelete']);
 
 export type DataboxClass = typeof Databox;

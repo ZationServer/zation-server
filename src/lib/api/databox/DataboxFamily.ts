@@ -53,8 +53,8 @@ import {familyTypeSymbol}                         from '../../main/component/com
 import ObjectUtils                                from '../../main/utils/objectUtils';
 import FuncUtils                                  from '../../main/utils/funcUtils';
 import {ErrorEventSingleton}                      from '../../main/error/errorEventSingleton';
+import {isDefaultImpl, markAsDefaultImpl}         from '../../main/utils/defaultImplUtils';
 import Timeout                                    = NodeJS.Timeout;
-const defaultSymbol                               = Symbol();
 
 /**
  * If you always want to present the most recent data on the client,
@@ -131,8 +131,8 @@ export default class DataboxFamily extends DataboxCore {
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
         this._sendCudToSockets = this._getSendCudToSocketsHandler();
 
-        this._hasBeforeEventsListener = !this.beforeInsert[defaultSymbol] ||
-            !this.beforeUpdate[defaultSymbol] || !this.beforeDelete[defaultSymbol];
+        this._hasBeforeEventsListener = !isDefaultImpl(this.beforeInsert) ||
+            !isDefaultImpl(this.beforeUpdate) || !isDefaultImpl(this.beforeDelete);
 
         const errMessagePrefix = this.toString() + ' error was thrown in the function';
         this._onConnection = FuncUtils.createSafeCaller(this.onConnection,
@@ -149,9 +149,9 @@ export default class DataboxFamily extends DataboxCore {
      * if at least one of the middleware function was overwritten.
      */
     private _getSendCudToSocketsHandler(): (member: string,dbClientCudPackage: DbClientOutputCudPackage) => Promise<void> | void {
-        if(!this.insertMiddleware[defaultSymbol] ||
-            !this.updateMiddleware[defaultSymbol] ||
-            !this.deleteMiddleware[defaultSymbol])
+        if(!isDefaultImpl(this.insertMiddleware) ||
+            !isDefaultImpl(this.updateMiddleware) ||
+            !isDefaultImpl(this.deleteMiddleware))
         {
             return this._sendCudToSocketsWithMiddleware.bind(this);
         }
@@ -1178,12 +1178,12 @@ export default class DataboxFamily extends DataboxCore {
 DataboxFamily[familyTypeSymbol] = true;
 DataboxFamily.prototype[familyTypeSymbol] = true;
 
-DataboxFamily.prototype['insertMiddleware'][defaultSymbol] = true;
-DataboxFamily.prototype['updateMiddleware'][defaultSymbol] = true;
-DataboxFamily.prototype['deleteMiddleware'][defaultSymbol] = true;
+markAsDefaultImpl(DataboxFamily.prototype['insertMiddleware']);
+markAsDefaultImpl(DataboxFamily.prototype['updateMiddleware']);
+markAsDefaultImpl(DataboxFamily.prototype['deleteMiddleware']);
 
-DataboxFamily.prototype['beforeInsert'][defaultSymbol] = true;
-DataboxFamily.prototype['beforeUpdate'][defaultSymbol] = true;
-DataboxFamily.prototype['beforeDelete'][defaultSymbol] = true;
+markAsDefaultImpl(DataboxFamily.prototype['beforeInsert']);
+markAsDefaultImpl(DataboxFamily.prototype['beforeUpdate']);
+markAsDefaultImpl(DataboxFamily.prototype['beforeDelete']);
 
 export type DataboxFamilyClass = typeof DataboxFamily;
