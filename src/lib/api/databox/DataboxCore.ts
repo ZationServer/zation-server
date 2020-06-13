@@ -164,7 +164,7 @@ export default abstract class DataboxCore extends Component {
             throw err;
         }
 
-        if(!(await accessCheck(socket.authEngine,socket.socket,dbInfo))){
+        if(!(await accessCheck(socket.authEngine,socket._socket,dbInfo))){
             const err: any = new Error('Access to this Databox denied.');
             err.name = ClientErrorName.AccessDenied;
             throw err;

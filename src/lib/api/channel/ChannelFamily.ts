@@ -112,7 +112,7 @@ export default class ChannelFamily extends ChannelCore {
         await this._isMemberCheck(member);
         await this._checkSubscribeAccess(socket,{identifier: this.identifier,member});
         this._addSocket(member,socket);
-        this._onSubscription(member,socket.socket);
+        this._onSubscription(member,socket._socket);
         return this._chId;
     }
 
@@ -193,7 +193,7 @@ export default class ChannelFamily extends ChannelCore {
 
     private _unsubscribeSocket(member: string, socket: RawSocket, disconnectHandler: () => void, trigger: UnsubscribeTrigger) {
         this._rmSocket(member,socket,disconnectHandler);
-        this._onUnsubscription(member,socket.socket,trigger);
+        this._onUnsubscription(member,socket._socket,trigger);
     }
 
     private _rmSocket(member: string, socket: RawSocket, disconnectHandler: () => void) {
@@ -276,7 +276,7 @@ export default class ChannelFamily extends ChannelCore {
     async _checkSocketHasStillAccess(socket: RawSocket): Promise<void> {
         const members = this.getSocketSubMembers(socket);
         for(let i = 0; i < members.length; i++){
-            if(!(await this._preparedData.accessCheck(socket.authEngine,socket.socket,
+            if(!(await this._preparedData.accessCheck(socket.authEngine,socket._socket,
                 {identifier: this.identifier,member: members[i]}))) {
                 this.kickOut(members[i],socket);
             }

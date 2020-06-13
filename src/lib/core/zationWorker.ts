@@ -404,7 +404,7 @@ class ZationWorker extends SCWorker
                 this.channelHandler.processSubRequest(data,rawSocket,respond);
             });
 
-            await this.zc.event.socketConnection(rawSocket.socket);
+            await this.zc.event.socketConnection(rawSocket._socket);
         });
         await this.zc.event.wsServerStarted(this.zc.getServerInfo());
     }
@@ -540,7 +540,7 @@ class ZationWorker extends SCWorker
                 }
 
                 this.rawSocketUpdateEngine.upgradeRawSocket(rawSocket);
-                const socket = rawSocket.socket;
+                const socket = rawSocket._socket;
 
                 this.initSocketEvents(socket);
                 await this.zc.event.socketInit(socket);
@@ -605,7 +605,7 @@ class ZationWorker extends SCWorker
         const event = this.zc.event;
 
         this.scServer.on('connectionAbort', async (rawSocket: RawSocket, code, data) => {
-            await event.socketConnectionAbort(rawSocket.socket,code,data);
+            await event.socketConnectionAbort(rawSocket._socket,code,data);
         });
 
         this.scServer.on('disconnection', async (rawSocket: RawSocket, code, data) =>
@@ -619,23 +619,23 @@ class ZationWorker extends SCWorker
             }
             this.defaultUserGroupSet.remove(rawSocket);
 
-            await event.socketDisconnection(rawSocket.socket,code,data);
+            await event.socketDisconnection(rawSocket._socket,code,data);
         });
 
         this.scServer.on('authentication', async (rawSocket: RawSocket) => {
-           await event.socketAuthentication(rawSocket.socket);
+           await event.socketAuthentication(rawSocket._socket);
         });
 
         this.scServer.on('deauthentication', async (rawSocket: RawSocket) => {
-            await event.socketDeauthentication(rawSocket.socket);
+            await event.socketDeauthentication(rawSocket._socket);
         });
 
         this.scServer.on('authenticationStateChange', async (rawSocket: RawSocket, stateChangeData: any) => {
-            await event.socketAuthStateChange(rawSocket.socket,stateChangeData);
+            await event.socketAuthStateChange(rawSocket._socket,stateChangeData);
         });
 
         this.scServer.on('badSocketAuthToken', async (rawSocket: RawSocket, badAuthStatus) => {
-            await event.socketBadAuthToken(rawSocket.socket,badAuthStatus);
+            await event.socketBadAuthToken(rawSocket._socket,badAuthStatus);
         });
     }
 
@@ -776,7 +776,7 @@ class ZationWorker extends SCWorker
         const promises: Promise<void>[] = [];
         map.forEach(target,(socket: RawSocket) => {
             if(!filterExceptSocketIds.includes(socket.id)) {
-                const edit = socket.socket.seqEditTokenVariables();
+                const edit = socket._socket.seqEditTokenVariables();
                 for(let i = 0; i < operations.length; i++) {
                     switch (operations[i].t) {
                         case SyncTokenOperationType.Set :

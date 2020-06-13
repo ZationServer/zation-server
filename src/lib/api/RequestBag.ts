@@ -761,7 +761,7 @@ export default class RequestBag extends Bag
      * Returns the zSocket.
      */
     get socket(): Socket {
-        return this._socket.socket;
+        return this._socket._socket;
     }
 
     //Part Socket

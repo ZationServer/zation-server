@@ -1639,7 +1639,7 @@ export default class Bag {
      * @param socketId
      */
     getWorkerSocket(socketId: string): Socket {
-        return this.worker.scServer.clients[socketId]?.socket;
+        return this.worker.scServer.clients[socketId]?._socket;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1652,7 +1652,7 @@ export default class Bag {
         const clients = this.worker.scServer.clients;
         for(let id in clients) {
             if(clients.hasOwnProperty(id)){
-                sockets.push(clients[id].socket);
+                sockets.push(clients[id]._socket);
             }
         }
         return sockets;
@@ -1704,7 +1704,7 @@ export default class Bag {
      * @param tokenId
      */
     getSocketsWithTokenId(tokenId: string): Socket[] {
-        return this.worker.getTokenIdToScMapper().getValues(tokenId).map(s => s.socket);
+        return this.worker.getTokenIdToScMapper().getValues(tokenId).map(s => s._socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1717,7 +1717,7 @@ export default class Bag {
      * @param userId
      */
     getSocketsWithUserId(userId: string): Socket[] {
-        return this.worker.getUserIdToScMapper().getValues(userId).map(s => s.socket);
+        return this.worker.getUserIdToScMapper().getValues(userId).map(s => s._socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1778,7 +1778,7 @@ export default class Bag {
         const authGroups = this.worker.getAEPreparedPart().getAuthGroups();
         for(const group in authGroups) {
             if(authGroups.hasOwnProperty(group)) {
-                res[group] = this.worker.getAuthUserGroupToScMapper().getValues(group).map(s => s.socket);
+                res[group] = this.worker.getAuthUserGroupToScMapper().getValues(group).map(s => s._socket);
             }
         }
         return res;
@@ -1791,7 +1791,7 @@ export default class Bag {
      * the default user group (only of the current worker).
      */
     getWorkerDefaultUserGroupSockets(): Socket[] {
-        return this.worker.getDefaultUserGroupSet().toArray().map(s => s.socket);
+        return this.worker.getDefaultUserGroupSet().toArray().map(s => s._socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1800,7 +1800,7 @@ export default class Bag {
      * Returns an array of only panel sockets (only of the current worker).
      */
     getWorkerOnlyPanelSockets(): Socket[] {
-        return this.worker.getPanelUserSet().toArray().map(s => s.socket);
+        return this.worker.getPanelUserSet().toArray().map(s => s._socket);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1810,7 +1810,7 @@ export default class Bag {
      * a specific auth user group (only of the current worker).
      */
     getWorkerAuthUserGroupSockets(authUserGroup: string): Socket[] {
-        return this.worker.getAuthUserGroupToScMapper().getValues(authUserGroup).map(s => s.socket);
+        return this.worker.getAuthUserGroupToScMapper().getValues(authUserGroup).map(s => s._socket);
     }
 
     // noinspection JSUnusedGlobalSymbols

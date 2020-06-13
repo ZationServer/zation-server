@@ -191,7 +191,7 @@ export default class Databox extends DataboxCore {
                 switch (senderPackage.a) {
                     case DbClientInputAction.signal:
                         if(typeof (senderPackage as DbClientInputSignalPackage).s as any === 'string'){
-                            this._onReceivedSignal(socket.socket,(senderPackage as DbClientInputSignalPackage).s,
+                            this._onReceivedSignal(socket._socket,(senderPackage as DbClientInputSignalPackage).s,
                                 (senderPackage as DbClientInputSignalPackage).d);
                         }
                         else {
@@ -211,10 +211,10 @@ export default class Databox extends DataboxCore {
                                     dbToken,
                                     processedFetchInput,
                                     initData,
-                                    socket.socket,
                                     senderPackage.t
                                 )
                             },DataboxUtils.isReloadTarget(senderPackage.t)
+                                socket._socket,
                         );
                         break;
                     case DbClientInputAction.resetSession:
@@ -247,7 +247,7 @@ export default class Databox extends DataboxCore {
         socket.off('disconnect',disconnectHandler);
         removeValueFromArray(socket.databoxes,this);
         this._rmSocket(socket);
-        this._onDisconnection(socket.socket);
+        this._onDisconnection(socket._socket);
     }
 
     /**
@@ -340,7 +340,7 @@ export default class Databox extends DataboxCore {
 
             socket.on('disconnect',disconnectHandler);
             socket.databoxes.push(this);
-            this._onConnection(socket.socket);
+            this._onConnection(socket._socket);
         }
         return socketMemoryData;
     }
@@ -446,7 +446,7 @@ export default class Databox extends DataboxCore {
                     case CudType.update:
                         promises.push((async () => {
                             try {
-                                await this.updateMiddleware(socket.socket,operation.s,operation.v,(value) => {
+                                await this.updateMiddleware(socket._socket,operation.s,operation.v,(value) => {
                                     operation.d = value;
                                 },operation.c,operation.d);
                                 filteredOperations.push(operation);
@@ -457,7 +457,7 @@ export default class Databox extends DataboxCore {
                     case CudType.insert:
                         promises.push((async () => {
                             try {
-                                await this.insertMiddleware(socket.socket,operation.s,operation.v,(value) => {
+                                await this.insertMiddleware(socket._socket,operation.s,operation.v,(value) => {
                                     operation.d = value;
                                 },operation.c,operation.d);
                                 filteredOperations.push(operation);
@@ -468,7 +468,7 @@ export default class Databox extends DataboxCore {
                     case CudType.delete:
                         promises.push((async () => {
                             try {
-                                await this.deleteMiddleware(socket.socket,operation.s,operation.c,operation.d);
+                                await this.deleteMiddleware(socket._socket,operation.s,operation.c,operation.d);
                                 filteredOperations.push(operation);
                             }
                             catch (e) {}
@@ -568,7 +568,7 @@ export default class Databox extends DataboxCore {
      * @private
      */
     async _checkSocketHasStillAccess(socket: RawSocket): Promise<void> {
-        if(!(await this._preparedData.accessCheck(socket.authEngine,socket.socket,
+        if(!(await this._preparedData.accessCheck(socket.authEngine,socket._socket,
             {identifier: this.identifier})))
         {
             this.kickOut(socket);

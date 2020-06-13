@@ -42,7 +42,7 @@ export interface RawSocket {
     databoxes: (Databox | DataboxFamily)[];
     channels: (Channel | ChannelFamily)[];
     readonly authEngine: AuthEngine;
-    readonly socket: Socket;
+    readonly _socket: Socket;
 
     getState(): string;
     disconnect(code?: any, data?: any): void;

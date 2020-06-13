@@ -45,7 +45,7 @@ export default class RawSocketUpgradeEngine
         socket[nameof<RawSocket>(s => s.sid)] = this.sidBuilder.buildSid(socket.id);
         socket[nameof<RawSocket>(s => s.tid)] = Date.now() + socket.id;
 
-        socket[nameof<RawSocket>(s => s.socket)] = new Socket(socket as RawSocket);
+        socket[nameof<RawSocket>(s => s._socket)] = new Socket(socket as RawSocket);
 
         //init
         socket[nameof<RawSocket>(s => s.zationSocketVariables)] = {};

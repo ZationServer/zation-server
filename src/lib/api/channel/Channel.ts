@@ -93,7 +93,7 @@ export default class Channel extends ChannelCore {
         //new subscription
         await this._checkSubscribeAccess(socket,{identifier: this.identifier,member});
         this._addSocket(socket);
-        this._onSubscription(socket.socket);
+        this._onSubscription(socket._socket);
         return this._chEvent;
     }
 
@@ -125,7 +125,7 @@ export default class Channel extends ChannelCore {
 
     private _unsubscribeSocket(socket: RawSocket, disconnectHandler: () => void, trigger: UnsubscribeTrigger) {
         this._rmSocket(socket,disconnectHandler);
-        this._onUnsubscription(socket.socket,trigger);
+        this._onUnsubscription(socket._socket,trigger);
     }
 
     private _rmSocket(socket: RawSocket, disconnectHandler: () => void) {
@@ -212,7 +212,7 @@ export default class Channel extends ChannelCore {
      * @private
      */
     async _checkSocketHasStillAccess(socket: RawSocket): Promise<void> {
-        if(!(await this._preparedData.accessCheck(socket.authEngine,socket.socket,{identifier: this.identifier}))){
+        if(!(await this._preparedData.accessCheck(socket.authEngine,socket._socket,{identifier: this.identifier}))){
             this.kickOut(socket);
         }
     }

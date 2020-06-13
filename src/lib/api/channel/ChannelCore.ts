@@ -83,7 +83,7 @@ export default abstract class ChannelCore extends Component {
             throw err;
         }
 
-        if(!(await accessCheck(socket.authEngine,socket.socket,chInfo))){
+        if(!(await accessCheck(socket.authEngine,socket._socket,chInfo))){
             const err: any = new Error('Access to this Channel denied.');
             err.name = ClientErrorName.AccessDenied;
             throw err;
