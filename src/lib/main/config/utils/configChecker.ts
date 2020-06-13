@@ -47,6 +47,7 @@ import Receiver, {ReceiverClass}                               from '../../../ap
 // noinspection ES6PreferShortImport
 import {ReceiverConfig}                                        from '../definitions/parts/receiverConfig';
 import ComponentUtils                                          from '../../component/componentUtils';
+import {isDefaultImpl}                                         from '../../utils/defaultImplUtils';
 
 export interface ModelCheckedMem {
     _checked: boolean
@@ -580,6 +581,11 @@ export default class ConfigChecker
         if(cdb.prototype instanceof DataboxFamily || cdb.prototype instanceof Databox) {
             if(cdb.config)
                 this.checkDataboxConfig(cdb.config,target);
+
+            if(!isDefaultImpl(cdb.prototype['fetch']) && !isDefaultImpl(cdb.prototype['singleFetch'])){
+                this.ceb.addError(new ConfigError(ConfigNames.App,
+                    `${target.toString()} only one of fetch and singleFetch can be overridden.`));
+            }
         }
         else {
             this.ceb.addError(new ConfigError(ConfigNames.App,

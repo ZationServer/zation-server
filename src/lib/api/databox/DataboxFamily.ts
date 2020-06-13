@@ -77,7 +77,7 @@ import Timeout                                    = NodeJS.Timeout;
  *
  * You can override these methods:
  * - initialize
- * - fetch
+ * - fetch / singleFetch
  * - isMember
  *
  * events:
@@ -111,6 +111,7 @@ export default class DataboxFamily extends DataboxCore {
     private readonly _workerFullId: string;
     private readonly _maxSocketInputChannels: number;
 
+    private readonly _fetchImpl: (member: string,counter: number, session: any, input: any, initData: any, socket: Socket) => Promise<any> | any;
     private readonly _buildFetchManager: FetchManagerBuilder<typeof DataboxFamily.prototype._fetch>;
     private readonly _sendCudToSockets: (id: string,dbClientCudPackage: DbClientOutputCudPackage) => Promise<void> | void;
     private readonly _hasBeforeEventsListener: boolean;
@@ -127,6 +128,7 @@ export default class DataboxFamily extends DataboxCore {
         this._maxSocketInputChannels = dbPreparedData.maxSocketInputChannels;
         this._dbEventPreFix = `${DATABOX_START_INDICATOR}${this.identifier}${apiLevel !== undefined ? `@${apiLevel}`: ''}.`;
 
+        this._fetchImpl = this._getFetchImpl();
         this._buildFetchManager = DataboxFetchManager.buildFetchMangerBuilder
         (dbPreparedData.parallelFetch,dbPreparedData.maxBackpressure);
         this._sendCudToSockets = this._getSendCudToSocketsHandler();
@@ -141,6 +143,20 @@ export default class DataboxFamily extends DataboxCore {
             `${errMessagePrefix} onDisconnection`,ErrorEventSingleton.get());
         this._onReceivedSignal = FuncUtils.createSafeCaller(this.onReceivedSignal,
             `${errMessagePrefix} onReceivedSignal`,ErrorEventSingleton.get());
+    }
+
+    private _getFetchImpl(): (member: string, counter: number, session: any, input: any, initData: any, socket: Socket) => Promise<any> | any {
+        if(!isDefaultImpl(this.singleFetch)) {
+            return (member, counter, session, input, initData, socket) => {
+                if(counter === 0){
+                    return this.singleFetch(member,input,initData,socket);
+                }
+                else {this.noMoreDataAvailable();}
+            };
+        }
+        else {
+            return this.fetch.bind(this);
+        }
     }
 
     /**
@@ -226,17 +242,15 @@ export default class DataboxFamily extends DataboxCore {
                         const processedFetchInput = await this._consumeFetchInput((senderPackage as DbClientInputFetchPackage).i);
                         await fetchManager(
                             respond,
-                            async () => {
-                                return await this._fetch
-                                (
-                                    member,
-                                    dbToken,
-                                    processedFetchInput,
-                                    initData,
-                                    senderPackage.t
-                                )
-                            },DataboxUtils.isReloadTarget(senderPackage.t)
+                            async () => this._fetch
+                            (
+                                member,
+                                dbToken,
+                                processedFetchInput,
+                                initData,
                                 socket._socket,
+                                senderPackage.t
+                            ),DataboxUtils.isReloadTarget(senderPackage.t)
                         );
                         break;
                     case DbClientInputAction.resetSession:
@@ -298,7 +312,7 @@ export default class DataboxFamily extends DataboxCore {
         const currentCounter = session.c;
         const clonedSessionData = CloneUtils.deepClone(session.d);
         try {
-            const data = await this.fetch(member,currentCounter,clonedSessionData,fetchInput,initData,zSocket);
+            const data = await this._fetchImpl(member,currentCounter,clonedSessionData,fetchInput,initData,zSocket);
 
             //success fetch
             session.c++;
@@ -955,6 +969,8 @@ export default class DataboxFamily extends DataboxCore {
      * **Can be overridden.**
      * This method is used to fetch data for the clients of the Databox.
      * A client can call that method multiple times to fetch more and more data.
+     * If you don't want to stream data you should look at the singleFetch method.
+     * Notice that only one method can be overridden.
      * You usually request data from your database and return it, and if no more data is available,
      * you should throw a NoMoreDataAvailableError or call the internal noMoreDataAvailable method.
      * If no data is available, for example the profile with the id ten is not found,
@@ -1011,6 +1027,56 @@ export default class DataboxFamily extends DataboxCore {
      * @param socket
      */
     protected fetch(member: string, counter: number, session: any, input: any, initData: any, socket: Socket): Promise<any> | any {
+        this.noDataAvailable();
+    }
+
+    /**
+     * **Can be overridden.**
+     * This method is used to fetch data for the clients of the Databox.
+     * A client can call that method to fetch the data of this Databox.
+     * Instead of the fetch method, this method uses the counter internally to allow
+     * the client to fetch data only one time.
+     * If you want more freedom or stream data you should look at the fetch method.
+     * Notice that only one method can be overridden.
+     * You usually request data from your database and return it.
+     * If no data is available, for example the profile with the id ten is not found,
+     * you can throw a NoDataAvailableError or call the internal noDataAvailable method.
+     * The client can send additional data when calling the fetch process (fetchInput),
+     * this data is available as the input parameter.
+     *
+     * The data that you are returning can be of any type.
+     * The client will convert some data parts into specific databox storage components.
+     * These components will allow you to access specific values with a selector.
+     * There are three of them:
+     * The Object:
+     * It is a simple component that has no sequence, and you can access the values via property keys.
+     * The client will convert each JSON object to this component.
+     *
+     * The KeyArray:
+     * This component allows you to keep data in a specific sequence,
+     * but you still able to access the values via a string key.
+     * To build a key-array, you can use the buildKeyArray function.
+     * Notice that JSON arrays will not be converted to this component type.
+     *
+     * The Array:
+     * This component is a light way and simple component for an array.
+     * Instead of the key-array, you only can access values via an array index.
+     * Also, a difference is that the sequence of the elements is connected to the key (index).
+     * That means sorting the values changes the keys.
+     * All JSON arrays will be converted to this type.
+     * If you need resorting, more specific keys, or you manipulate lots of data in the array,
+     * you should use the key-array instead.
+     *
+     * Whenever you are using the socket to filter secure data for a specific user,
+     * you also have to use the cud middleware to filter the cud events for the socket.
+     * You mostly should avoid this because if you are overwriting a cud middleware,
+     * the Databox switches to a more costly performance implementation.
+     * @param member
+     * @param input
+     * @param initData
+     * @param socket
+     */
+    protected singleFetch(member: string, input: any, initData: any, socket: Socket): Promise<any> | any {
         this.noDataAvailable();
     }
 
@@ -1185,5 +1251,8 @@ markAsDefaultImpl(DataboxFamily.prototype['deleteMiddleware']);
 markAsDefaultImpl(DataboxFamily.prototype['beforeInsert']);
 markAsDefaultImpl(DataboxFamily.prototype['beforeUpdate']);
 markAsDefaultImpl(DataboxFamily.prototype['beforeDelete']);
+
+markAsDefaultImpl(DataboxFamily.prototype['fetch']);
+markAsDefaultImpl(DataboxFamily.prototype['singleFetch']);
 
 export type DataboxFamilyClass = typeof DataboxFamily;
