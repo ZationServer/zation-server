@@ -99,6 +99,8 @@ export default class ConfigPrecompiler
             express: defaultFunc,
             socketServer: defaultFunc,
             workerInit: defaultFunc,
+            beforeComponentInit: defaultFunc,
+            afterComponentInit: defaultFunc,
             masterInit: defaultFunc,
             workerStarted: defaultFunc,
             httpServerStarted: defaultFunc,

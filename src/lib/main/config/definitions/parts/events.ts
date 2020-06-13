@@ -17,6 +17,8 @@ import CodeError                       from "../../../error/codeError";
 export type ExpressFunction = (app: ExpressCore.Express,express: typeof Express) => Promise<void> | void;
 export type SocketServerFunction = (scServer: ScServer) => Promise<void> | void;
 export type WorkerInitFunction = (leader: boolean, respawn: boolean) => Promise<void> | void;
+export type BeforeComponentInitFunction = (workerLeader: boolean) => Promise<void> | void;
+export type AfterComponentInitFunction = (workerLeader: boolean) => Promise<void> | void;
 export type MasterInitFunction = (info: ServerInfo) => Promise<void> | void;
 export type WorkerStartedFunction = (info: ServerInfo, leader: boolean, respawn: boolean, worker: ZationWorker) => Promise<void> | void;
 export type HttpServerStartedFunction = (info: ServerInfo) => Promise<void> | void;
@@ -65,6 +67,21 @@ export interface Events
      * @example async (leader,respawn) => {}
      */
     workerInit?: Event<WorkerInitFunction>;
+    /**
+     * An event that will be processed before any component has initialized.
+     * It is useful to prepare things for the initialize of the components.
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example async (leaderWorker) => {}
+     */
+    beforeComponentInit?: Event<BeforeComponentInitFunction>;
+    /**
+     * An event that will be processed after all components have initialized.
+     * Runs on a worker process.
+     * The Bag instance can be securely accessed with the variable 'bag'.
+     * @example async (leaderWorker) => {}
+     */
+    afterComponentInit?: Event<AfterComponentInitFunction>;
     /**
      * An event that can be used to do extra things in the startup of the master.
      * The master startup process will wait for the promise of this event to be resolved.
@@ -134,7 +151,6 @@ export interface Events
      * @example (data) => {}
      */
     workerMessage?: Event<WorkerMessageFunction>;
-
     /**
      * An event that can be used to do extra things in the creation process of a socket.
      * Runs on a worker process.
@@ -217,6 +233,8 @@ export interface PrecompiledEvents extends Events {
     express: ExpressFunction;
     socketServer: SocketServerFunction;
     workerInit: WorkerInitFunction;
+    beforeComponentInit: BeforeComponentInitFunction;
+    afterComponentInit: AfterComponentInitFunction;
     masterInit: MasterInitFunction;
     workerStarted: WorkerStartedFunction;
     httpServerStarted: HttpServerStartedFunction;
