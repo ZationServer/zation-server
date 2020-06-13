@@ -40,7 +40,7 @@ export default class AuthEngine
      * Load the information from token in the memory of the auth engine.
      */
     refresh(token: null | RawZationToken): void {
-        if(token !== null) {
+        if(token != null) {
             this.currentUserId = token.userId;
             this.currentUserGroup = token.authUserGroup;
             this.currentDefault = false;

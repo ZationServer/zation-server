@@ -69,7 +69,9 @@ export default class RawSocketUpgradeEngine
              * Notice that the token expire can be undefined of the new token.
              * (SC sets the token and then sign the token)
              */
-            set: (newToken: RawZationToken) => {
+            set: (newToken: RawZationToken | null) => {
+                if(newToken === undefined) newToken = null;
+
                 authEngine.refresh(newToken);
 
                 (async () => {
@@ -82,8 +84,8 @@ export default class RawSocketUpgradeEngine
                 })();
 
                 //update worker map and recheck
-                if(newToken !== null) {
-                    if(currentToken === null) {
+                if(newToken != null) {
+                    if(currentToken == null) {
                         //new authenticated remove from default and map to the other maps
                         //that requires a token.
                         this.defaultUserGroupSet.remove(socket);
@@ -135,7 +137,7 @@ export default class RawSocketUpgradeEngine
                 else {
                     //add to default group
                     this.defaultUserGroupSet.add(socket);
-                    if(currentToken !== null) {
+                    if(currentToken != null) {
                         //Deauthenticated remove from other mappings that requires a token
                         //if the old token was a token.
                         this.worker.unmapSocketToken(currentToken,socket);
