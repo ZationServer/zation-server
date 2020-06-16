@@ -358,6 +358,15 @@ export default class Socket<A extends object = any, TP extends object = any>
         return this.rawSocket.authToken;
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns the token payload of this socket.
+     */
+    get tokenPayload(): Partial<TP> | undefined {
+        if(!this._auth) return undefined;
+        return CloneUtils.deepClone(this.rawSocket.authToken!.payload!);
+    }
+
     /**
      * Returns the token payload of this socket.
      * @throws AuthenticationError if this socket is not authenticated.
