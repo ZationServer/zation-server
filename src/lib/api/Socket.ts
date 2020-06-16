@@ -27,7 +27,7 @@ import {IncomingHttpHeaders, IncomingMessage} from 'http';
 import ApiLevelUtils                          from '../main/apiLevel/apiLevelUtils';
 import {Agent}                                from 'useragent';
 
-type BeforeTokenChangeHandler = (token: null | RawZationToken, newToken: null | RawZationToken) => Promise<void> | void
+type BeforeTokenUpdateHandler = (token: null | RawZationToken, newToken: null | RawZationToken) => Promise<void> | void
 
 export default class Socket<A extends object = any, TP extends object = any>
 {
@@ -61,7 +61,7 @@ export default class Socket<A extends object = any, TP extends object = any>
     protected _auth: boolean;
     protected _userGroup: string;
     protected _userId: string | number | undefined;
-    protected _beforeTokenChangeHandler: BeforeTokenChangeHandler[] = [];
+    protected _beforeTokenUpdateHandler: BeforeTokenUpdateHandler[] = [];
 
     constructor(rawSocket: RawSocket,private authConfig: AuthConfig) {
         this._rawSocket = rawSocket;
@@ -85,8 +85,8 @@ export default class Socket<A extends object = any, TP extends object = any>
     }
 
     private _connectToRawSocket() {
-        this._connectTokenChange();
-        this._beforeTokenChangeHandler.push(this.stillAccessCheck.bind(this));
+        this._connectTokenUpdate();
+        this._beforeTokenUpdateHandler.push(this.stillAccessCheck.bind(this));
     }
 
     /**
@@ -105,7 +105,7 @@ export default class Socket<A extends object = any, TP extends object = any>
         await Promise.all(p);
     }
 
-    private _connectTokenChange() {
+    private _connectTokenUpdate() {
         let currentToken: RawZationToken | null = null;
         Object.defineProperty(this.rawSocket, 'authToken', {
             get: () => currentToken,
@@ -118,8 +118,8 @@ export default class Socket<A extends object = any, TP extends object = any>
                 this._loadNewToken(newToken);
 
                 const promises: (Promise<void> | void)[] = [];
-                for(let i = 0; i < this._beforeTokenChangeHandler.length; i++){
-                    promises[i] = this._beforeTokenChangeHandler[i](currentToken,newToken);
+                for(let i = 0; i < this._beforeTokenUpdateHandler.length; i++){
+                    promises[i] = this._beforeTokenUpdateHandler[i](currentToken,newToken);
                 }
                 Promise.all(promises).finally(() => currentToken = newToken);
             },
@@ -133,8 +133,8 @@ export default class Socket<A extends object = any, TP extends object = any>
      * @internal
      * @private
      */
-    _addBeforeTokenChangeHandler(handler: BeforeTokenChangeHandler) {
-        this._beforeTokenChangeHandler.push(handler);
+    _addBeforeTokenUpdateHandler(handler: BeforeTokenUpdateHandler) {
+        this._beforeTokenUpdateHandler.push(handler);
     }
 
     private _loadNewToken(token: RawZationToken | null) {
