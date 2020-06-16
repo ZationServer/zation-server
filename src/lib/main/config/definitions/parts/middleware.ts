@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import ZationToken from '../../../internalApi/zationToken';
-import Socket      from '../../../../api/socket';
+import Socket      from '../../../../api/Socket';
 
 export type MiddlewareAuthenticationFunction = (token: ZationToken) => Promise<boolean | object | any> | boolean | object | any;
 export type MiddlewareSocketFunction = (socket: Socket) => Promise<boolean | object | any> | boolean | object | any;

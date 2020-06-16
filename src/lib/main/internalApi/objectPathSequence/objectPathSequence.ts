@@ -12,7 +12,8 @@ export interface ObjectPathSequence {
      * @example
      * set('email','example@gmail.com');
      * @param path
-     * The path to the variable, you can split the keys with a dot or an string array.
+     * The path to the property can be a string array or a string.
+     * In case of a string, the keys are split with dots.
      * @param value
      */
     set(path: string | string[],value: any): ObjectPathSequence
@@ -23,7 +24,8 @@ export interface ObjectPathSequence {
      * @example
      * delete('email');
      * @param path
-     * The path to the variable, you can split the keys with a dot or an string array.
+     * The path to the property can be a string array or a string.
+     * In case of a string, the keys are split with dots.
      */
     delete(path?: string | string[]): ObjectPathSequence
 

@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {RawSocket,RespondFunction} from "../../sc/socket";
+import {RespondFunction}           from "../../sc/socket";
 import DataboxPrepare              from "../databoxPrepare";
 import ZationConfig                from "../../config/manager/zationConfig";
 import DataboxCore                 from "../../../api/databox/DataboxCore";
@@ -14,6 +14,7 @@ import {
 } from "../dbDefinitions";
 import {ClientErrorName}           from "../../constants/clientErrorName";
 import Logger                      from "../../log/logger";
+import Socket                      from '../../../api/Socket';
 import {isValidDataboxConnectionRequest} from './databoxReqUtils';
 import ApiLevelUtils                     from '../../apiLevel/apiLevelUtils';
 
@@ -31,14 +32,14 @@ export default class DataboxHandler
         this.debug = zc.isDebug();
     }
 
-    async processConnectReq(input: DataboxConnectReq, socket: RawSocket, respond: RespondFunction): Promise<void> {
+    async processConnectReq(input: DataboxConnectReq, socket: Socket, respond: RespondFunction): Promise<void> {
         try {
             respond(null,(await this._processConnectReq(input,socket)));
         }
         catch (err) {respond(err);}
     }
 
-    private async _processConnectReq(request: DataboxConnectReq, socket: RawSocket): Promise<DataboxConnectRes>
+    private async _processConnectReq(request: DataboxConnectReq, socket: Socket): Promise<DataboxConnectRes>
     {
         //check request valid
         if(!isValidDataboxConnectionRequest(request)) {
@@ -49,9 +50,9 @@ export default class DataboxHandler
 
         //throws if not exists or api level is incompatible
         const db: DataboxCore = this.dbPrepare.get((request.d as string),
-            (ApiLevelUtils.parseRequestApiLevel(request.a) || socket.apiLevel || this.defaultApiLevel));
+            (ApiLevelUtils.parseRequestApiLevel(request.a) || socket.connectionApiLevel || this.defaultApiLevel));
 
-        if(socket.databoxes.length > this.socketDataboxLimit){
+        if(socket.getDataboxes().length > this.socketDataboxLimit){
             const err: any = new Error(`Limit of Databoxes for this socket is reached.`);
             err.name = ClientErrorName.DataboxLimitReached;
             throw err;

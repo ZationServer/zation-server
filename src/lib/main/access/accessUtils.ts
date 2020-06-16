@@ -4,14 +4,14 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import AuthEngine                                from "../auth/authEngine";
 import {ZationAccessRecord}                      from '../constants/internal';
 import {AccessConfigValue, isTokenCheckFunction} from "./accessOptions";
 import Logger                                    from '../log/logger';
 import {ErrorEventSingleton}                     from '../error/errorEventSingleton';
+import Socket                                    from '../../api/Socket';
 
 type AccessFunctionCallCreate<T extends MinAccessChecker,F> = (func: Function) => T;
-type MinAccessChecker = (authEngine: AuthEngine,...otherArgs: any[]) => Promise<boolean>;
+type MinAccessChecker = (socket: Socket,...otherArgs: any[]) => Promise<boolean>;
 
 export default class AccessUtils
 {
@@ -81,11 +81,11 @@ export default class AccessUtils
                 case nameof<ZationAccessRecord>(s => s.all):
                     return async () => true;
                 case nameof<ZationAccessRecord>(s => s.allAuth):
-                    return async (a) => a.isAuth();
+                    return async (s) => s.isAuthenticated();
                 case nameof<ZationAccessRecord>(s => s.allNotAuth):
-                    return async (a) => a.isDefault();
+                    return async (s) => s.isNotAuthenticated();
                 default:
-                    return async (a) => a.getUserGroup() === value;
+                    return async (s) => s.userGroup === value;
             }
         }
         else if(Array.isArray(value)) {
@@ -119,7 +119,7 @@ export default class AccessUtils
         }
         else if(typeof value === 'function') {
             if(isTokenCheckFunction(value)){
-                return async (a) => value(a.socket.authToken);
+                return async (s) => value(s.rawToken);
             }
             else {
                 return accessFunctionCallCreate(value);
@@ -127,10 +127,10 @@ export default class AccessUtils
         }
         else if(typeof value === 'object') {
             if(value.strictTypeCheck){
-                return async (a) => a.getUserId() === value.id;
+                return async (s) => s.userId === value.id;
             }
             else {
-                return async (a) => a.getUserId() == value.id;
+                return async (s) => s.userId == value.id;
             }
         }
         else {

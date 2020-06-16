@@ -5,9 +5,8 @@ Copyright(c) Luca Scaringella
  */
 
 import {getGlobalRegisteredBagExtensions,BagExtension} from 'zation-bag-extension';
-import Bag from '../../api/Bag';
-import ObjectUtils from '../utils/objectUtils';
-import RequestBag from '../../api/RequestBag';
+import Bag                                             from '../../api/Bag';
+import ObjectUtils                                     from '../utils/objectUtils';
 
 export default class BagExtensionProcessor
 {
@@ -34,11 +33,8 @@ export default class BagExtensionProcessor
                     }
                     catch (e) {}
                 }
-                if(typeof extension.bag === 'object') {
-                    ObjectUtils.addPropsToClass(Bag,extension.bag,true);
-                }
-                if(typeof extension.requestBag === 'object') {
-                    ObjectUtils.addPropsToClass(RequestBag,extension.requestBag,true);
+                if(typeof extension.properties === 'object') {
+                    ObjectUtils.addPropsToClass(Bag,extension.properties,true);
                 }
                 resolve();
             }));

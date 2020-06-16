@@ -25,7 +25,7 @@ export interface PrepareZationToken {
     onlyPanelToken?: boolean,
     exp?: number,
     clusterKey?: string,
-    variables?: object
+    payload?: object
 }
 
 export const DEFAULT_USER_GROUP_FALLBACK = 'default';

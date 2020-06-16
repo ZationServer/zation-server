@@ -4,7 +4,6 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-// noinspection ES6PreferShortImport
-import {RawSocket} from "../sc/socket";
+import Socket from '../../api/Socket';
 
-export type SocketAction = (socket: RawSocket) => void;
+export type SocketAction = (socket: Socket) => void;

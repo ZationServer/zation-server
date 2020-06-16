@@ -4,7 +4,7 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import ObjectPath           from "../../utils/objectPath";
+import * as ObjectPath      from "object-path";
 import {ObjectPathSequence} from "./objectPathSequence";
 
 type CommitFunction = (object: object) => Promise<void>;
@@ -37,7 +37,7 @@ export default class ObjectPathSequenceImp implements ObjectPathSequence
         return this;
     }
 
-    async commit() {
-        await this.commitFunction(this.object);
+    commit(): Promise<void> {
+        return this.commitFunction(this.object);
     }
 }

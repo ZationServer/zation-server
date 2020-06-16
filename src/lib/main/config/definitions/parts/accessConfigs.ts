@@ -5,11 +5,10 @@ Copyright(c) Luca Scaringella
  */
 
 import {AccessConfigValue}                                 from "../../../access/accessOptions";
-import Bag                                                 from "../../../../api/Bag";
 import ZationToken                                         from "../../../internalApi/zationToken";
 import {Notable}                                           from '../../../../api/Notable';
 
-export type NormalAuthAccessCustomFunction = (bag: Bag, token: ZationToken | null) => Promise<boolean> | boolean;
+export type NormalAuthAccessCustomFunction = (token: ZationToken | null) => Promise<boolean> | boolean;
 
 export interface AuthAccessConfig<T extends Function = NormalAuthAccessCustomFunction> {
     /**
@@ -36,7 +35,7 @@ export interface AuthAccessConfig<T extends Function = NormalAuthAccessCustomFun
      * //Invert
      * $not(['user','guest',$userId(23)]) // All clients with user group: user, default user group or user id 23 are not allowed.
      * //Custom-Function
-     * (bag: Bag,token: ZationTokenInfo | null) => {} // If returns true the client is allowed, false will not allow.
+     * (token: ZationTokenInfo | null) => {} // If returns true the client is allowed, false will not allow.
      * //Or-Conditions
      * ['user','guest',$userId(23)] // Only all clients with user group: user, default user group or user id 23 are allowed.
      * //And-Conditions (Array in Or-Condition-Array)

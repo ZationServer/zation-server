@@ -13,7 +13,7 @@ import ConfigCheckerTools                    from './configCheckerTools';
 import ConfigError                           from '../../error/configError';
 import Target                                from './target';
 import Logger                                from '../../log/logger';
-import ObjectPath                            from '../../utils/objectPath';
+import * as ObjectPath                       from 'object-path';
 import Controller, {ControllerClass}         from '../../../api/Controller';
 import {ValidationTypeRecord}                from '../../constants/validationType';
 import Iterator                              from '../../utils/iterator';

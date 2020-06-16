@@ -5,9 +5,9 @@ Copyright(c) Luca Scaringella
  */
 
 import SocketSet   from "./socketSet";
-import {RawSocket} from '../sc/socket';
+import Socket      from '../../api/Socket';
 
-export default class Mapper<T extends RawSocket>
+export default class SocketMapper<T extends Socket>
 {
     private readonly data: Record<string,undefined |SocketSet> = {};
 
@@ -26,7 +26,7 @@ export default class Mapper<T extends RawSocket>
         }
     }
 
-    getValues(k: string): RawSocket[]
+    getValues(k: string): Socket[]
     {
         if(this.data[k] instanceof SocketSet) {
             return (this.data[k] as SocketSet).toArray();
@@ -36,14 +36,14 @@ export default class Mapper<T extends RawSocket>
         }
     }
 
-    forEach(k: string,func: (socket: RawSocket) => void)
+    forEach(k: string,func: (socket: Socket) => void)
     {
         if(this.data[k] instanceof SocketSet) {
             (this.data[k] as SocketSet).forEach(func);
         }
     }
 
-    forAllEach(func: (socket: RawSocket) => void)
+    forAllEach(func: (socket: Socket) => void)
     {
         for(const k in this.data){
             if(this.data.hasOwnProperty(k) &&

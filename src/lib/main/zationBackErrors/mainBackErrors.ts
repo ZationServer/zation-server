@@ -206,30 +206,30 @@ export const MainBackErrors = {
         fromZationSystem: true
     },
 
-    inTokenSavedAuthGroupIsNotFound   : {
-        name         : 'inTokenSavedAuthGroupIsNotFound',
-        description  : 'The auth group is saved in the token is not found on the zation Config.',
+    inTokenSavedAuthUserGroupIsNotFound   : {
+        name         : 'inTokenSavedAuthUserGroupIsNotFound',
+        description  : 'The saved auth user group in the token is not found on the server config.',
         type         : ErrorType.TokenError,
         private      : true,
         sendInfo     : false,
         //INFO
-        // savedAuthGroup (the saved auth group in token)
-        // authGroupsInZationConfig (auth groups in the zation config)
+        // savedAuthUserGroup (the saved auth group in token)
+        // authUserGroupsInZationConfig (auth groups in the zation config)
         fromZationSystem: true
     },
 
-    tokenWithoutAuthGroup : {
-        name         : 'tokenWithoutAuthGroup',
-        description  : 'Token without auth group.',
+    tokenWithoutAuthUserGroup : {
+        name         : 'tokenWithoutAuthUserGroup',
+        description  : 'Token without auth user group.',
         type         : ErrorType.TokenError,
         private      : true,
         sendInfo     : false,
         fromZationSystem: true
     },
 
-    tokenWithAuthGroupAndOnlyPanel : {
-        name         : 'tokenWithAuthGroupAndOnlyPanel',
-        description  : 'Token with auth group and only panel.',
+    tokenWithAuthUserGroupAndOnlyPanel : {
+        name         : 'tokenWithAuthUserGroupAndOnlyPanel',
+        description  : 'Token with auth user group and only panel.',
         type         : ErrorType.TokenError,
         private      : true,
         sendInfo     : false,

@@ -7,11 +7,10 @@ Copyright(c) Luca Scaringella
 import ChannelCore, {ChPreparedData} from './ChannelCore';
 import Bag                           from '../Bag';
 import {ClientErrorName}             from '../../main/constants/clientErrorName';
-import Socket                        from '../socket';
+import Socket                        from '../Socket';
 import FuncUtils                     from '../../main/utils/funcUtils';
 import {ErrorEventSingleton}         from '../../main/error/errorEventSingleton';
 import {removeValueFromArray}        from '../../main/utils/arrayUtils';
-import {RawSocket}                   from '../../main/sc/socket';
 import {
     CH_CLIENT_OUTPUT_KICK_OUT,
     CH_CLIENT_OUTPUT_PUBLISH,
@@ -45,7 +44,7 @@ export default class Channel extends ChannelCore {
     /**
      * Maps the sockets to the kick out function.
      */
-    private readonly _subSockets: Map<RawSocket,KickOutSocketFunction> = new Map();
+    private readonly _subSockets: Map<Socket,KickOutSocketFunction> = new Map();
 
     /**
      * Also the channel id.
@@ -80,7 +79,7 @@ export default class Channel extends ChannelCore {
      * **Not override this method.**
      * Used internally.
      */
-    async _subscribeSocket(socket: RawSocket, member?: string): Promise<string>{
+    async _subscribeSocket(socket: Socket, member?: string): Promise<string>{
         if(member != undefined){
             const err: any = new Error('Unnecessary member provided to subscribe to a channel.');
             err.name = ClientErrorName.UnnecessaryMember;
@@ -93,11 +92,11 @@ export default class Channel extends ChannelCore {
         //new subscription
         await this._checkSubscribeAccess(socket,{identifier: this.identifier,member});
         this._addSocket(socket);
-        this._onSubscription(socket._socket);
+        this._onSubscription(socket);
         return this._chEvent;
     }
 
-    private _addSocket(socket: RawSocket) {
+    private _addSocket(socket: Socket) {
         if(!this._internalRegistered){
             this._register();
         }
@@ -107,7 +106,7 @@ export default class Channel extends ChannelCore {
 
         const disconnectHandler = () => this._unsubscribeSocket(socket,disconnectHandler,UnsubscribeTrigger.Disconnect);
 
-        socket.on(this._chEvent,(senderPackage: ChClientInputPackage, respond) => {
+        socket._on(this._chEvent,(senderPackage: ChClientInputPackage, respond) => {
             if(senderPackage[0] === ChClientInputAction.Unsubscribe) {
                 this._unsubscribeSocket(socket,disconnectHandler,UnsubscribeTrigger.Client);
                 respond(null);
@@ -118,21 +117,21 @@ export default class Channel extends ChannelCore {
                 respond(err);
             }
         });
-        socket.on('disconnect',disconnectHandler);
+        socket._on('disconnect',disconnectHandler);
         this._subSockets.set(socket,() => this._unsubscribeSocket(socket,disconnectHandler,UnsubscribeTrigger.KickOut));
-        socket.channels.push(this);
+        socket.getChannels().push(this);
     }
 
-    private _unsubscribeSocket(socket: RawSocket, disconnectHandler: () => void, trigger: UnsubscribeTrigger) {
+    private _unsubscribeSocket(socket: Socket, disconnectHandler: () => void, trigger: UnsubscribeTrigger) {
         this._rmSocket(socket,disconnectHandler);
-        this._onUnsubscription(socket._socket,trigger);
+        this._onUnsubscription(socket,trigger);
     }
 
-    private _rmSocket(socket: RawSocket, disconnectHandler: () => void) {
+    private _rmSocket(socket: Socket, disconnectHandler: () => void) {
         this._subSockets.delete(socket);
-        socket.off(this._chEvent);
-        socket.off('disconnect',disconnectHandler);
-        removeValueFromArray(socket.channels,this);
+        socket._off(this._chEvent);
+        socket._off('disconnect',disconnectHandler);
+        removeValueFromArray(socket.getChannels(),this);
         if(this._subSockets.size === 0) {
             this._createUnregisterTimeout();
         }
@@ -169,14 +168,14 @@ export default class Channel extends ChannelCore {
         const outputPackage = {i: this._chEvent,e: publish.e,d: publish.d} as ChClientOutputPublishPackage;
         if(publish.p === undefined){
             for (const socket of this._subSockets.keys()){
-                socket.emit(CH_CLIENT_OUTPUT_PUBLISH,outputPackage);
+                socket._emit(CH_CLIENT_OUTPUT_PUBLISH,outputPackage);
             }
         }
         else {
             const publisherSid = publish.p;
             for (const socket of this._subSockets.keys()){
                 if(publisherSid === socket.sid) continue;
-                socket.emit(CH_CLIENT_OUTPUT_PUBLISH,outputPackage);
+                socket._emit(CH_CLIENT_OUTPUT_PUBLISH,outputPackage);
             }
         }
     }
@@ -211,8 +210,8 @@ export default class Channel extends ChannelCore {
      * @param socket
      * @private
      */
-    async _checkSocketHasStillAccess(socket: RawSocket): Promise<void> {
-        if(!(await this._preparedData.accessCheck(socket.authEngine,socket._socket,{identifier: this.identifier}))){
+    async _checkSocketHasStillAccess(socket: Socket): Promise<void> {
+        if(!(await this._preparedData.accessCheck(socket,{identifier: this.identifier}))){
             this.kickOut(socket);
         }
     }
@@ -245,10 +244,10 @@ export default class Channel extends ChannelCore {
      * @param code
      * @param data
      */
-    kickOut(socket: RawSocket, code?: number | string, data?: any) {
+    kickOut(socket: Socket, code?: number | string, data?: any) {
         const kickOutFunction = this._subSockets.get(socket);
         if(kickOutFunction){
-            socket.emit(CH_CLIENT_OUTPUT_KICK_OUT,{i: this._chEvent,c: code,d: data} as ChClientOutputKickOutPackage);
+            socket._emit(CH_CLIENT_OUTPUT_KICK_OUT,{i: this._chEvent,c: code,d: data} as ChClientOutputKickOutPackage);
             kickOutFunction();
         }
     }

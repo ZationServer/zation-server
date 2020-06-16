@@ -6,10 +6,9 @@ Copyright(c) Luca Scaringella
 
 import {PrepareZationToken, RawZationToken} from "../constants/internal";
 import {JwtSignFunction, JwtSignOptions, JwtVerifyFunction, JwtVerifyOptions} from "../constants/jwt";
-import AEPreparedPart      from "../auth/aePreparedPart";
+import AuthConfig          from "../auth/authConfig";
 import BackError           from "../../api/BackError";
 // noinspection ES6PreferShortImport
-import {RawSocket}         from "../sc/socket";
 import AuthenticationError from "../error/authenticationError";
 import {MainBackErrors}    from "../zationBackErrors/mainBackErrors";
 import ZationConfigFull    from "../config/manager/zationConfigFull";
@@ -20,64 +19,6 @@ const uniqid            = require('uniqid');
 
 export default class TokenUtils
 {
-    /**
-     * Set custom token variables on a socket.
-     * @param customVar
-     * @param socket
-     */
-    static async setCustomVar(customVar: object, socket: RawSocket): Promise<void>
-    {
-        let token = socket.authToken;
-        if(token !== null) {
-            token = {...token};
-            token.variables = customVar;
-            await TokenUtils.setTokenAsync(socket,token);
-        }
-        else {
-            throw new AuthenticationError(`Can't set token variable when socket is not authenticated.`);
-        }
-    }
-
-    /**
-     * Set the token of a socket async.
-     * @param socket
-     * @param data
-     * @param jwtOptions
-     */
-    static async setTokenAsync(socket: RawSocket, data: object, jwtOptions: JwtSignOptions = {}) {
-        return new Promise<void>((resolve, reject) => {
-            socket.setAuthToken(data,jwtOptions,(err) => {
-                if(err){
-                    reject(new AuthenticationError('Failed to set the auth token. Error => ' +
-                        err.toString()))
-                }
-                else {
-                    resolve();
-                }
-            });
-        });
-    }
-
-    /**
-     * Combine old token with new token.
-     * @param token
-     * @param newData
-     */
-    static combineTokens(token: PrepareZationToken | null,newData: PrepareZationToken): object {
-        if(token === null) {
-            return newData;
-        }
-        else {
-            const tokenClone = {...token};
-            for(const k in newData) {
-                if(newData.hasOwnProperty(k)) {
-                    tokenClone[k] = newData[k];
-                }
-            }
-            return tokenClone;
-        }
-    }
-
     static generateToken(tokenCheckKey: string): PrepareZationToken {
         return {
             tid: uniqid(),
@@ -90,7 +31,7 @@ export default class TokenUtils
      * @param token
      */
     static getTokenVariables(token: RawZationToken | null): object {
-        return TokenUtils.getTokenVariable(nameof<RawZationToken>(s => s.variables),token)
+        return TokenUtils.getTokenVariable(nameof<RawZationToken>(s => s.payload),token)
             || {};
     }
 
@@ -100,7 +41,7 @@ export default class TokenUtils
      * @param token
      */
     static getTokenVariable(key: string,token: RawZationToken | null): any {
-        if(token !== null) {
+        if(token != null) {
             return token[key]
         }
         else {
@@ -166,28 +107,25 @@ export default class TokenUtils
      * @param token
      * @param ae
      */
-    static checkToken(token: RawZationToken | null, ae: AEPreparedPart) {
-        if(token !== null)
+    static checkToken(token: RawZationToken | null, ae: AuthConfig) {
+        if(token != null)
         {
             const authUserGroup = token.authUserGroup;
             if(authUserGroup !== undefined) {
                 if(token.onlyPanelToken){
-                    throw new BackError(MainBackErrors.tokenWithAuthGroupAndOnlyPanel);
+                    throw new BackError(MainBackErrors.tokenWithAuthUserGroupAndOnlyPanel);
                 }
-                if (!ae.isAuthGroup(authUserGroup)) {
-                    //saved authGroup is in Server not define
-                    //noinspection JSUnresolvedFunction
-                    throw new BackError(MainBackErrors.inTokenSavedAuthGroupIsNotFound,
+                if (!ae.isValidAuthUserGroup(authUserGroup)) {
+                    throw new BackError(MainBackErrors.inTokenSavedAuthUserGroupIsNotFound,
                         {
-                            savedAuthGroup: authUserGroup,
-                            authGroupsInZationConfig: ae.getAuthGroups()
+                            savedAuthUserGroup: authUserGroup,
+                            authUserGroupsInZationConfig: ae.getAuthUserGroups()
                         });
                 }
             }
             else {
                 if(!(typeof token.onlyPanelToken === 'boolean' && token.onlyPanelToken)) {
-                    //token without auth group and it is not a only panel token.
-                    throw new BackError(MainBackErrors.tokenWithoutAuthGroup);
+                    throw new BackError(MainBackErrors.tokenWithoutAuthUserGroup);
                 }
             }
         }

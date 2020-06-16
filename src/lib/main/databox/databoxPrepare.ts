@@ -75,7 +75,7 @@ export default class DataboxPrepare extends ComponentPrepare<DataboxCore>
         const dbPreparedData: DbPreparedData = {
             versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
-            accessCheck: DataboxAccessHelper.createAccessChecker(config.access,this.bag,identifier),
+            accessCheck: DataboxAccessHelper.createAccessChecker(config.access,identifier),
             initInputConsumer: InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbInitInput(config)),
             fetchInputConsumer: InputClosureCreator.createInputConsumer(DbConfigUtils.convertDbFetchInput(config)),
             parallelFetch: config.parallelFetch !== undefined ? config.parallelFetch: false,

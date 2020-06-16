@@ -11,7 +11,7 @@ import ScServer                        from "../../../sc/scServer";
 import {RawZationToken}                from "../../../constants/internal";
 import BackError                       from "../../../../api/BackError";
 import ServerInfo                      from "../../../internalApi/serverInfo";
-import Socket                          from "../../../../api/socket";
+import Socket                          from "../../../../api/Socket";
 import CodeError                       from "../../../error/codeError";
 
 export type ExpressFunction = (app: ExpressCore.Express,express: typeof Express) => Promise<void> | void;

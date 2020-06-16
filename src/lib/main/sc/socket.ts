@@ -6,12 +6,7 @@ Copyright(c) Luca Scaringella
 
 import {RawZationToken}     from "../constants/internal";
 import {IncomingMessage}    from "http";
-import AuthEngine           from "../auth/authEngine";
-import Socket               from "../../api/socket";
-import Databox              from "../../api/databox/Databox";
-import DataboxFamily        from "../../api/databox/DataboxFamily";
-import Channel              from '../../api/channel/Channel';
-import ChannelFamily        from '../../api/channel/ChannelFamily';
+import Socket               from "../../api/Socket";
 
 export type OnHandlerFunction = (data: any, response: RespondFunction) => void
 export type RespondFunction = (err?: any | number, responseData?: any) => void
@@ -33,15 +28,11 @@ export interface RawSocket {
     readonly AUTHENTICATED: string;
     readonly UNAUTHENTICATED: string;
 
-    readonly handshakeVariables: Record<string,any>;
+    readonly handshakeAttachment: Record<string,any>;
     readonly clientVersion: number,
     readonly clientSystem: string,
     readonly apiLevel: number | undefined
 
-    zationSocketVariables: Record<string,any>;
-    databoxes: (Databox | DataboxFamily)[];
-    channels: (Channel | ChannelFamily)[];
-    readonly authEngine: AuthEngine;
     readonly _socket: Socket;
 
     getState(): string;

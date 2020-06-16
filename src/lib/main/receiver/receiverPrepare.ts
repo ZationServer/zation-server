@@ -12,8 +12,6 @@ import Bag                           from "../../api/Bag";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
 import InputClosureCreator           from "../input/inputClosureCreator";
 import ApiLevelUtils, {ApiLevelSwitch}                                           from "../apiLevel/apiLevelUtils";
-import FuncUtils                                                                 from '../utils/funcUtils';
-import {ErrorEventSingleton}                                                     from '../error/errorEventSingleton';
 import ComponentPrepare                                                          from '../component/componentPrepare';
 import DynamicSingleton                                                          from '../utils/dynamicSingleton';
 import Receiver, {ReceiverClass, ReceiverPreparedData}                           from '../../api/Receiver';
@@ -73,12 +71,9 @@ export default class ReceiverPrepare extends ComponentPrepare<Receiver>
             receiverConfig: config,
             versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
-            tokenStateCheck: ReceiverAccessHelper.createAuthAccessChecker(config.access,this.bag,identifier),
+            tokenStateCheck: ReceiverAccessHelper.createAuthAccessChecker(config.access,identifier),
             handleMiddlewareInvoke: CompHandleMiddlewareUtils.createInvoker(config),
-            inputConsume: InputClosureCreator.createInputConsumer(config),
-            finallyHandle: FuncUtils.createSafeCaller((reqBag,input) => rInstance.finallyHandle(reqBag,input),
-                `An error was thrown on the: 'Receiver ${identifier}', ${nameof<Receiver>(s => s.finallyHandle)}:`,
-                ErrorEventSingleton.get())
+            inputConsume: InputClosureCreator.createInputConsumer(config)
         };
 
         const rInstance: Receiver = DynamicSingleton.create<ReceiverClass,Receiver>

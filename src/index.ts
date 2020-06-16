@@ -7,7 +7,6 @@ Copyright(c) Luca Scaringella
 import BackError                    from "./lib/api/BackError";
 import BackErrorBag                 from "./lib/api/BackErrorBag";
 import Bag, {bag}                   from './lib/api/Bag';
-import RequestBag                   from './lib/api/RequestBag';
 import AuthController               from './lib/api/AuthController';
 import Controller                   from './lib/api/Controller';
 import Config                       from './lib/api/Config';
@@ -37,7 +36,7 @@ import {DataboxConfig}              from "./lib/main/config/definitions/parts/da
 import DataboxContainer             from "./lib/api/databox/container/databoxContainer";
 import DataboxFamilyContainer       from "./lib/api/databox/container/databoxFamilyContainer";
 import {buildKeyArray}              from "./lib/main/databox/dbKeyArrayUtils";
-import Socket                       from "./lib/api/socket";
+import Socket                       from "./lib/api/Socket";
 import ZationToken                  from "./lib/main/internalApi/zationToken";
 import ServerInfo                   from "./lib/main/internalApi/serverInfo";
 import AsymmetricKeyPairs           from "./lib/main/internalApi/asymmetricKeyPairs";
@@ -67,6 +66,7 @@ import ChannelFamilyContainer       from './lib/api/channel/container/channelFam
 import Receiver                     from './lib/api/Receiver';
 import {ReceiverConfig}             from './lib/main/config/definitions/parts/receiverConfig';
 import {RawSocket}                  from './lib/main/sc/socket';
+import Packet                       from './lib/api/Packet';
 
 //Refresh bag instance export
 Bag._addReadyRefresher((bag) => exports.bag = bag);
@@ -74,7 +74,6 @@ export {
     start,
     StartMode,
     StartErrorName,
-    RequestBag,
     Bag,
     bag,
     Router,
@@ -132,6 +131,7 @@ export {
     buildKeyArray,
     Socket,
     RawSocket,
+    Packet,
     ZationToken,
     ServerInfo,
     ChannelInfo,

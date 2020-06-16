@@ -21,8 +21,8 @@ export function $tokenHasVariables(checkProps: Record<string,any>) {
     const checkKeys = Object.keys(checkProps);
     const checkKeysLength = checkKeys.length;
     return createTokenCheckFunction((token) => {
-        if(token !== null && token.variables !== undefined) {
-            const tokenVariables = token.variables;
+        if(token !== null && token.payload !== undefined) {
+            const tokenVariables = token.payload;
             let tmpKey;
             for(let i = 0; i < checkKeysLength; i++){
                 tmpKey = checkKeys[i];
@@ -47,7 +47,7 @@ export function $tokenHasVariables(checkProps: Record<string,any>) {
  * @param query
  */
 export function $tokenVariablesMatch<T>(query: ForintQuery<T>) {
-    const checker = forint({[nameof<RawZationToken>(s => s.variables)]: query});
+    const checker = forint({[nameof<RawZationToken>(s => s.payload)]: query});
     return createTokenCheckFunction((token) => checker(token));
 }
 

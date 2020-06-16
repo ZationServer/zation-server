@@ -16,8 +16,6 @@ import Bag                           from "../../api/Bag";
 import ZationConfigFull              from "../config/manager/zationConfigFull";
 import InputClosureCreator           from "../input/inputClosureCreator";
 import ApiLevelUtils, {ApiLevelSwitch}                                           from "../apiLevel/apiLevelUtils";
-import FuncUtils                                                                 from '../utils/funcUtils';
-import {ErrorEventSingleton}                                                     from '../error/errorEventSingleton';
 import AuthController                                                            from '../../api/AuthController';
 import ComponentPrepare                                                          from '../component/componentPrepare';
 import DynamicSingleton                                                          from '../utils/dynamicSingleton';
@@ -89,13 +87,10 @@ export default class ControllerPrepare extends ComponentPrepare<Controller>
             controllerConfig: config,
             versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
-            tokenStateCheck: ControllerAccessHelper.createAuthAccessChecker(config.access,this.bag,identifier),
+            tokenStateCheck: ControllerAccessHelper.createAuthAccessChecker(config.access,identifier),
             handleMiddlewareInvoke: CompHandleMiddlewareUtils.createInvoker(config),
             inputConsume: InputClosureCreator.createInputConsumer(config),
-            inputValidationCheck: InputClosureCreator.createValidationChecker(config),
-            finallyHandle: FuncUtils.createSafeCaller((reqBag,input) => cInstance.finallyHandle(reqBag,input),
-                `An error was thrown on the: 'Controller ${identifier}', ${nameof<Controller>(s => s.finallyHandle)}:`,
-                ErrorEventSingleton.get())
+            inputValidationCheck: InputClosureCreator.createValidationChecker(config)
         };
 
         const cInstance: Controller = DynamicSingleton.create<ControllerClass,Controller>

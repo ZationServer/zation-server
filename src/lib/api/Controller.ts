@@ -4,7 +4,6 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import RequestBag         from './RequestBag';
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ControllerConfig} from "../main/config/definitions/parts/controllerConfig";
 import Bag                from "./Bag";
@@ -16,6 +15,8 @@ import {TokenStateAccessCheckFunction}    from '../main/controller/controllerAcc
 import {InputConsumeFunction, InputValidationCheckFunction} from '../main/input/inputClosureCreator';
 import {componentTypeSymbol}                                from '../main/component/componentUtils';
 import {CompHandleMiddlewareInvoker}                        from '../main/compHandleMiddleware/compHandleMiddlewareUtils';
+import Socket                                               from './Socket';
+import Packet                                               from './Packet';
 
 /**
  * The Controller is one of the zation components.
@@ -33,7 +34,7 @@ import {CompHandleMiddlewareInvoker}                        from '../main/compHa
  * use for this case and provides the functionality to
  * keep the data up to date in real-time.
  */
-export default class Controller extends Component {
+export default class Controller<PA extends object = any> extends Component {
 
     /**
      * **Not override this**
@@ -56,8 +57,9 @@ export default class Controller extends Component {
      * @description
      * Gets invoked when the controller gets an request and input is correct.
      * This method will only be invoked when the beforeHandle method has not thrown an error.
-     * @param reqBag
+     * @param socket
      * @param input
+     * @param packet
      * @return
      * The Return value of the function is send to the client with an success response.
      * @throws
@@ -65,29 +67,17 @@ export default class Controller extends Component {
      * Notice that only the BackError or BackErrorBag sends back to the client.
      * All other errors or objects will be converted to an unknown BackError.
      */
-    handle(reqBag: RequestBag, input: any): Promise<any> | any {
-    }
-
-    /**
-     * @description
-     * This method will be every time invoked when the handle is finished.
-     * Also if the handle method has thrown an error.
-     * Error thrown in this method will be logged but not sent back to the client.
-     * You can use this method to clean up resources or close connections.
-     * (Use the req variable storage to save the resources on the RequestBag because the RequestBag is unique for every request).
-     * @param reqBag
-     * @param input
-     */
-    finallyHandle(reqBag: RequestBag, input: any): Promise<void> | void {
+    handle(socket: Socket, input: any, packet: Packet<PA>): Promise<any> | any {
     }
 
     /**
      * @description
      * Gets invoked when the controller gets an request with invalid input.
-     * @param reqBag
+     * @param socket
      * @param rawInput
      * Notice that you will get the raw input means only
      * the data the user has sent without processed by the models.
+     * @param packet
      * @param backErrorBag
      * @throws
      * You can throw BackError or BackErrorBag
@@ -96,7 +86,7 @@ export default class Controller extends Component {
      * All other errors or objects will be converted to an
      * unknown BackError and overrides all previous BackErrors.
      */
-    invalidInput(reqBag: RequestBag, rawInput: any, backErrorBag: BackErrorBag): Promise<void> | void {
+    invalidInput(socket: Socket, rawInput: any, packet: Packet<PA>, backErrorBag: BackErrorBag): Promise<void> | void {
     }
 
     /**
@@ -130,6 +120,5 @@ export interface ControllerPreparedData {
     tokenStateCheck: TokenStateAccessCheckFunction,
     handleMiddlewareInvoke: CompHandleMiddlewareInvoker,
     inputConsume: InputConsumeFunction,
-    inputValidationCheck: InputValidationCheckFunction,
-    finallyHandle: Controller['finallyHandle'];
+    inputValidationCheck: InputValidationCheckFunction
 }

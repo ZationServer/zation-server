@@ -5,11 +5,12 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import RequestBag                    from '../../api/RequestBag';
 import Component                     from '../../api/Component';
 import {CompHandleMiddlewareConfig}  from '../config/definitions/parts/compHandleMiddlewareConfig';
+import Packet                        from '../../api/Packet';
+import Socket                        from '../../api/Socket';
 
-export type CompHandleMiddlewareInvoker = (component: Component, reqBag: RequestBag) => Promise<void>;
+export type CompHandleMiddlewareInvoker = (component: Component, socket: Socket, packet: Packet) => Promise<void>;
 
 export default class CompHandleMiddlewareUtils
 {
@@ -22,17 +23,17 @@ export default class CompHandleMiddlewareUtils
         if(middleware !== undefined)
         {
             if(Array.isArray(middleware)) {
-                return async (cInstance,bag) => {
+                return async (cInstance, socket, packet) => {
                     const promises: (Promise<void> | void)[] = [];
                     for(let i = 0; i < middleware.length; i++) {
-                        promises.push(middleware[i].apply(cInstance,[bag]));
+                        promises.push(middleware[i].apply(cInstance,[socket, packet]));
                     }
                     await Promise.all(promises);
                 };
             }
             else {
-                return async (cInstance,bag) => {
-                    await middleware.apply(cInstance,[bag]);
+                return async (cInstance, socket, packet) => {
+                    await middleware.apply(cInstance,[socket, packet]);
                 };
             }
         }

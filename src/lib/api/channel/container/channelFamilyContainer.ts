@@ -4,9 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import ChannelFamily           from '../ChannelFamily';
-// noinspection ES6PreferShortImport
-import {RawSocket}             from '../../../main/sc/socket';
+import ChannelFamily  from '../ChannelFamily';
+import Socket         from '../../Socket';
 
 export default class ChannelFamilyContainer {
 
@@ -47,7 +46,7 @@ export default class ChannelFamilyContainer {
      * @param code
      * @param data
      */
-    kickOut(member: string | number, socket: RawSocket, code?: number | string, data?: any) {
+    kickOut(member: string | number, socket: Socket, code?: number | string, data?: any) {
         for(let i = 0; i < this._count; i++) {
             this._channels[i].kickOut(member,socket,code,data);
         }
@@ -59,7 +58,7 @@ export default class ChannelFamilyContainer {
      * with all members that the socket has subscribed.
      * @param socket
      */
-    getSocketSubMembers(socket: RawSocket): string[] {
+    getSocketSubMembers(socket: Socket): string[] {
         const members: string[] = [];
         for(let i = 0; i < this._count;i++) {
             members.push(...this._channels[i].getSocketSubMembers(socket))

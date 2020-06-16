@@ -4,26 +4,24 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import ZationWorker              = require('../../../core/zationWorker');
-import {RawSocket,RespondFunction} from '../../sc/socket';
+import {RespondFunction}           from '../../sc/socket';
 import BackError                   from '../../../api/BackError';
 import BackErrorBag                from '../../../api/BackErrorBag';
 import Logger                      from '../../log/logger';
 import ZationConfigFull            from '../../config/manager/zationConfigFull';
 import {MainBackErrors}            from '../../zationBackErrors/mainBackErrors';
-import AuthEngine                  from '../../auth/authEngine';
-import RequestBag                  from '../../../api/RequestBag';
 import ControllerPrepare           from '../controllerPrepare';
 import ErrorUtils                  from '../../utils/errorUtils';
 import ApiLevelUtils               from '../../apiLevel/apiLevelUtils';
 import {handleError}               from '../../error/errorHandlerUtils';
+import Packet                      from '../../../api/Packet';
+import Socket                      from '../../../api/Socket';
 import {ControllerBaseReq, ControllerRes, ControllerStandardReq, SpecialController} from '../controllerDefinitions';
 import {checkValidControllerBaseRequest, isValidationCheckRequest}                  from './controllerReqUtils';
 
 export default class ControllerReqHandler
 {
     private readonly zc: ZationConfigFull;
-    private readonly worker: ZationWorker;
     private readonly controllerPrepare: ControllerPrepare;
 
     //tmp variables for faster access
@@ -33,9 +31,8 @@ export default class ControllerReqHandler
     private readonly sendErrDescription: boolean;
     private readonly validationCheckLimit: number;
 
-    constructor(controllerPrepare: ControllerPrepare,worker: ZationWorker) {
-        this.zc = worker.getZationConfig();
-        this.worker = worker;
+    constructor(controllerPrepare: ControllerPrepare,zc: ZationConfigFull) {
+        this.zc = zc;
         this.controllerPrepare = controllerPrepare;
 
         this.defaultApiLevel = this.zc.mainConfig.defaultClientApiLevel;
@@ -45,7 +42,7 @@ export default class ControllerReqHandler
         this.validationCheckLimit = this.zc.mainConfig.validationCheckLimit;
     }
 
-    async processRequest(request: ControllerBaseReq, socket: RawSocket, respond: RespondFunction)
+    async processRequest(request: ControllerBaseReq, socket: Socket, respond: RespondFunction)
     {
         let response: ControllerRes
         try {
@@ -68,7 +65,7 @@ export default class ControllerReqHandler
         }
     }
 
-    private async _processRequest(request: ControllerBaseReq, socket: RawSocket) {
+    private async _processRequest(request: ControllerBaseReq, socket: Socket) {
         if(checkValidControllerBaseRequest(request)) {
             let controllerIdentifier;
             if(request.c === SpecialController.AuthController) {
@@ -81,11 +78,11 @@ export default class ControllerReqHandler
                 controllerIdentifier = request.c;
             }
 
-            const reqApiLevel = ApiLevelUtils.parseRequestApiLevel(request.a);
+            request.a = ApiLevelUtils.parseRequestApiLevel(request.a);
 
             //throws if not exists or api level is incompatible
             const cInstance = this.controllerPrepare.get(controllerIdentifier,
-                (reqApiLevel || socket.apiLevel || this.defaultApiLevel));
+                (request.a || socket.connectionApiLevel || this.defaultApiLevel));
 
             if(isValidationCheckRequest(request)) {
                 const checks = Array.isArray(request.v) ? request.v : [];
@@ -108,7 +105,6 @@ export default class ControllerReqHandler
                     tokenStateCheck,
                     handleMiddlewareInvoke,
                     inputConsume,
-                    finallyHandle,
                 } = cInstance._preparedData;
 
                 if(!systemAccessCheck(socket)){
@@ -119,11 +115,9 @@ export default class ControllerReqHandler
                     throw new BackError(MainBackErrors.noAccessWithVersion,{version: socket.clientVersion});
                 }
 
-                const authEngine: AuthEngine = socket.authEngine;
-
                 //check access to controller
-                if(await tokenStateCheck(authEngine)) {
-
+                if(await tokenStateCheck(socket)) {
+                    const packet = Packet.createFromControllerRequest(request);
                     let input: object;
                     try {
                         input = await inputConsume((request as ControllerStandardReq).d);
@@ -143,9 +137,8 @@ export default class ControllerReqHandler
                             err = errorBag;
 
                             const input = (request as ControllerStandardReq).d;
-                            const reqBag = new RequestBag(socket,this.worker,input,reqApiLevel);
                             try {
-                                await cInstance.invalidInput(reqBag,input,err);
+                                await cInstance.invalidInput(socket,input,packet,err);
                             }
                             catch (innerErr) {
                                 if(innerErr instanceof BackError) {
@@ -164,29 +157,22 @@ export default class ControllerReqHandler
                         throw err;
                     }
 
-                    const reqBag = new RequestBag(socket,this.worker,input,reqApiLevel);
-
-                    //process the controller handle, before handle events and finally handle.
+                    //process the controller handle and before handle events.
                     let result;
                     try {
-                        await handleMiddlewareInvoke(cInstance,reqBag);
-                        result = await cInstance.handle(reqBag,input);
+                        await handleMiddlewareInvoke(cInstance,socket,packet);
+                        result = await cInstance.handle(socket,input,packet);
                     }
-                    catch(e) {
-                        await finallyHandle(reqBag,input);
-                        throw e;
-                    }
-
-                    await finallyHandle(reqBag,input);
+                    catch(e) {throw e;}
 
                     return result;
                 }
                 else {
                     throw new BackError(MainBackErrors.noAccessWithTokenState,
                         {
-                            authUserGroup: authEngine.getAuthUserGroup(),
-                            authIn: authEngine.isAuth(),
-                            userId: authEngine.getUserId()
+                            authUserGroup: socket.authUserGroup,
+                            authIn: socket.isAuthenticated(),
+                            userId: socket.userId
                         });
                 }
             }

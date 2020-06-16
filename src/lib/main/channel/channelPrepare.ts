@@ -73,7 +73,7 @@ export class ChannelPrepare extends ComponentPrepare<ChannelCore>
         const chPreparedData: ChPreparedData = {
             versionAccessCheck: SystemVersionChecker.createVersionChecker(config),
             systemAccessCheck: SystemVersionChecker.createSystemChecker(config),
-            accessCheck: ChAccessHelper.createSubAccessChecker(config.access,this.bag,identifier)
+            accessCheck: ChAccessHelper.createSubAccessChecker(config.access,identifier)
         };
 
         const chInstance = DynamicSingleton.create<AnyChannelClass,Channel | ChannelFamily>

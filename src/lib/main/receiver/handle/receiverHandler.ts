@@ -4,42 +4,38 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import ZationWorker              = require('../../../core/zationWorker');
 // noinspection ES6PreferShortImport
-import {RawSocket}                 from '../../sc/socket';
 import BackError                   from '../../../api/BackError';
 import BackErrorBag                from '../../../api/BackErrorBag';
 import Logger                      from '../../log/logger';
 import ZationConfigFull            from '../../config/manager/zationConfigFull';
 import {MainBackErrors}            from '../../zationBackErrors/mainBackErrors';
-import AuthEngine                  from '../../auth/authEngine';
-import RequestBag                  from '../../../api/RequestBag';
 import ApiLevelUtils               from '../../apiLevel/apiLevelUtils';
 import ReceiverPrepare             from '../receiverPrepare';
 import {ReceiverPackage}           from '../receiverDefinitions';
 import {checkValidReceiverPackage} from './receiverPackageUtils';
 import {handleError}               from '../../error/errorHandlerUtils';
+import Socket                      from '../../../api/Socket';
+import Packet                      from '../../../api/Packet';
 
 export default class ReceiverHandler
 {
     private readonly zc: ZationConfigFull;
-    private readonly worker: ZationWorker;
     private readonly receiverPrepare: ReceiverPrepare;
 
     //tmp variables for faster access
     private readonly defaultApiLevel: number;
     private readonly debug: boolean;
 
-    constructor(receiverPrepare: ReceiverPrepare,worker: ZationWorker) {
-        this.zc = worker.getZationConfig();
-        this.worker = worker;
+    constructor(receiverPrepare: ReceiverPrepare,zc: ZationConfigFull) {
+        this.zc = zc;
         this.receiverPrepare = receiverPrepare
 
         this.defaultApiLevel = this.zc.mainConfig.defaultClientApiLevel;
         this.debug = this.zc.isDebug();
     }
 
-    async processPackage(pack: ReceiverPackage, socket: RawSocket)
+    async processPackage(pack: ReceiverPackage, socket: Socket)
     {
         try {
             await this._processPackage(pack,socket);
@@ -53,21 +49,20 @@ export default class ReceiverHandler
         }
     }
 
-    private async _processPackage(pack: ReceiverPackage, socket: RawSocket) {
+    private async _processPackage(pack: ReceiverPackage, socket: Socket) {
         if(checkValidReceiverPackage(pack)) {
 
-            const reqApiLevel = ApiLevelUtils.parseRequestApiLevel(pack.a);
+            pack.a = ApiLevelUtils.parseRequestApiLevel(pack.a);
 
             //throws if not exists or api level is incompatible
-            const rInstance = this.receiverPrepare.get(pack.r, (reqApiLevel || socket.apiLevel || this.defaultApiLevel));
+            const rInstance = this.receiverPrepare.get(pack.r, (pack.a || socket.connectionApiLevel || this.defaultApiLevel));
 
             const {
                 systemAccessCheck,
                 versionAccessCheck,
                 tokenStateCheck,
                 handleMiddlewareInvoke,
-                inputConsume,
-                finallyHandle,
+                inputConsume
             } = rInstance._preparedData;
 
             if(!systemAccessCheck(socket)){
@@ -77,11 +72,9 @@ export default class ReceiverHandler
                 throw new BackError(MainBackErrors.noAccessWithVersion,{version: socket.clientVersion});
             }
 
-            const authEngine: AuthEngine = socket.authEngine;
-
             //check access to receiver
-            if(await tokenStateCheck(authEngine)) {
-
+            if(await tokenStateCheck(socket)) {
+                const packet = Packet.createFromReceiverPackage(pack);
                 let input: object;
                 try {
                     input = await inputConsume(pack.d);
@@ -101,9 +94,8 @@ export default class ReceiverHandler
                         err = errorBag;
 
                         const input = pack.d;
-                        const reqBag = new RequestBag(socket,this.worker,input,reqApiLevel);
                         try {
-                            await rInstance.invalidInput(reqBag,input,err);
+                            await rInstance.invalidInput(socket,input,packet,err);
                         }
                         catch (innerErr) {
                             if(innerErr instanceof BackError) {
@@ -122,29 +114,22 @@ export default class ReceiverHandler
                     throw err;
                 }
 
-                const reqBag = new RequestBag(socket,this.worker,input,reqApiLevel);
-
                 //process the receiver handle, before handle events and finally handle.
                 let result;
                 try {
-                    await handleMiddlewareInvoke(rInstance,reqBag);
-                    result = await rInstance.handle(reqBag,input);
+                    await handleMiddlewareInvoke(rInstance,socket,packet);
+                    result = await rInstance.handle(socket,input,packet);
                 }
-                catch(e) {
-                    await finallyHandle(reqBag,input);
-                    throw e;
-                }
-
-                await finallyHandle(reqBag,input);
+                catch(e) {throw e;}
 
                 return result;
             }
             else {
                 throw new BackError(MainBackErrors.noAccessWithTokenState,
                     {
-                        authUserGroup: authEngine.getAuthUserGroup(),
-                        authIn: authEngine.isAuth(),
-                        userId: authEngine.getUserId()
+                        authUserGroup: socket.authUserGroup,
+                        authIn: socket.isAuthenticated(),
+                        userId: socket.userId
                     });
             }
         }

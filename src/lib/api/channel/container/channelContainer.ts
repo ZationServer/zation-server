@@ -4,9 +4,8 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import Channel                 from '../Channel';
-// noinspection ES6PreferShortImport
-import {RawSocket}             from '../../../main/sc/socket';
+import Channel      from '../Channel';
+import Socket       from '../../Socket';
 
 export default class ChannelContainer {
 
@@ -45,7 +44,7 @@ export default class ChannelContainer {
      * @param code
      * @param data
      */
-    kickOut(socket: RawSocket, code?: number | string, data?: any) {
+    kickOut(socket: Socket, code?: number | string, data?: any) {
         for(let i = 0; i < this._count; i++) {
             this._channels[i].kickOut(socket,code,data);
         }

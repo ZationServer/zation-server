@@ -5,19 +5,14 @@ Copyright(c) Luca Scaringella
  */
 
 import {RawZationToken}  from "../constants/internal";
-import ObjectPath     from "../utils/objectPath";
+import CloneUtils        from '../utils/cloneUtils';
 
-export default class ZationToken
+export default class ZationToken<TP extends object = any>
 {
     private readonly _token: RawZationToken;
 
     constructor(token: RawZationToken) {
         this._token = token;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    isAuthIn(): boolean {
-        return this._token.authUserGroup !== undefined;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -46,40 +41,16 @@ export default class ZationToken
     }
 
     // noinspection JSUnusedGlobalSymbols
-    getToken(): object {
+    get rawToken(): RawZationToken {
         return this._token;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @description
-     * Has a token variable with object path.
-     * Notice that the token variables are separated from the main zation token variables.
-     * That means there can be no naming conflicts with zation variables.
-     * You can access this variables on client and server side.
-     * But only change, delete or set on the server.
-     * @example
-     * hasTokenVariable('person.email');
-     * @param path
+     * Returns the token payload.
      */
-    hasTokenVariable(path?: string | string[]): boolean {
-        return ObjectPath.has(this._token.variables || {},path);
+    getTokenPayload(): Partial<TP> {
+        return CloneUtils.deepClone(this._token.payload!);
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @description
-     * Get a token variable with object path.
-     * Notice that the token variables are separated from the main zation token variables.
-     * That means there can be no naming conflicts with zation variables.
-     * You can access this variables on client and server side.
-     * But only change, delete or set on the server.
-     * @example
-     * getTokenVariable('person.email');
-     * @param path
-     */
-    getTokenVariable<R = any>(path?: string | string[]): R {
-        return ObjectPath.get(this._token.variables || {},path);
-    }
 }
-

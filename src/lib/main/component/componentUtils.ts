@@ -8,7 +8,7 @@ import DynamicSingleton  from '../utils/dynamicSingleton';
 import ComponentNotFound from '../error/componentNotFound';
 import Component, {ComponentClass}       from '../../api/Component';
 import ComponentPrepare, {ComponentInfo} from './componentPrepare';
-import ObjectPath                        from '../utils/objectPath';
+import * as ObjectPath                   from 'object-path';
 import ConfigBuildError                  from '../config/manager/configBuildError';
 
 export const componentTypeSymbol = Symbol();

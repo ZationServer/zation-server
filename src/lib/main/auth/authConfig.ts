@@ -5,20 +5,22 @@ Copyright(c) Luca Scaringella
  */
 
 import {AuthUserGroupConfig, UserGroupsConfig} from "../config/definitions/parts/userGroupsConfig";
-import {DEFAULT_USER_GROUP_FALLBACK}              from "../constants/internal";
+import {DEFAULT_USER_GROUP_FALLBACK}           from "../constants/internal";
 import ZationConfigFull                        from "../config/manager/zationConfigFull";
 
-export default class AEPreparedPart
+export default class AuthConfig
 {
     private readonly zc: ZationConfigFull;
     private readonly groupsConfig: UserGroupsConfig = {};
     private readonly authGroups: Record<string,AuthUserGroupConfig>;
     private readonly defaultGroup: string;
+    private readonly tokenClusterKey: string;
 
     //prepares and check the config
     constructor(zc: ZationConfigFull)
     {
         this.zc = zc;
+        this.tokenClusterKey  = zc.internalData.tokenClusterKey;
 
         if(this.zc.appConfig.userGroups !== undefined) {
             this.groupsConfig = this.zc.appConfig.userGroups;
@@ -32,10 +34,14 @@ export default class AEPreparedPart
         }
     }
 
+    getTokenClusterCheckKey(): string {
+        return this.tokenClusterKey;
+    }
+
     /**
      * Returns all auth user groups.
      */
-    getAuthGroups(): Record<string,AuthUserGroupConfig> {
+    getAuthUserGroups(): Record<string,AuthUserGroupConfig> {
         return this.authGroups;
     }
 
@@ -43,8 +49,8 @@ export default class AEPreparedPart
      * Returns if the auth user group has panel access.
      * @param authUserGroup
      */
-    authUserGroupPanelAccess(authUserGroup: string): boolean {
-        const tempGroup = this.getAuthGroups()[authUserGroup];
+    hasAuthUserGroupPanelAccess(authUserGroup: string): boolean {
+        const tempGroup = this.getAuthUserGroups()[authUserGroup];
         if(tempGroup){
             return typeof tempGroup.panelAccess === 'boolean' ?
                 tempGroup.panelAccess: false;
@@ -57,7 +63,7 @@ export default class AEPreparedPart
     /**
      * Returns the name of the default user group.
      */
-    getDefaultGroup(): string {
+    getDefaultUserGroup(): string {
         return this.defaultGroup;
     }
 
@@ -65,9 +71,8 @@ export default class AEPreparedPart
      * Returns if the name is an auth user group.
      * @param authGroup
      */
-    isAuthGroup(authGroup: string): boolean {
+    isValidAuthUserGroup(authGroup: string): boolean {
         return this.authGroups.hasOwnProperty(authGroup);
     }
-
 }
 

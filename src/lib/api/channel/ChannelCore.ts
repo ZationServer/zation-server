@@ -10,7 +10,7 @@ import {VersionSystemAccessCheckFunction} from "../../main/systemVersion/systemV
 import {ClientErrorName}                  from "../../main/constants/clientErrorName";
 import ConfigBuildError                   from "../../main/config/manager/configBuildError";
 import Component, {ComponentClass}        from '../Component';
-import {RawSocket}                        from '../../main/sc/socket';
+import Socket                             from '../Socket';
 import {ChSubAccessCheckFunction}         from '../../main/channel/chAccessHelper';
 // noinspection ES6PreferShortImport
 import {ChannelInfo}                                              from '../../main/channel/channelDefinitions';
@@ -48,7 +48,7 @@ export default abstract class ChannelCore extends Component {
      * @param socket
      * @param member
      */
-    abstract async _subscribeSocket(socket: RawSocket, member?: string): Promise<string>;
+    abstract async _subscribeSocket(socket: Socket, member?: string): Promise<string>;
 
     /**
      * @internal
@@ -57,7 +57,7 @@ export default abstract class ChannelCore extends Component {
      * Otherwise, the socket will be kicked out.
      * @private
      */
-    abstract async _checkSocketHasStillAccess(socket: RawSocket): Promise<void>;
+    abstract async _checkSocketHasStillAccess(socket: Socket): Promise<void>;
 
     /**
      * @internal
@@ -68,7 +68,7 @@ export default abstract class ChannelCore extends Component {
      * @param socket
      * @param chInfo
      */
-    async _checkSubscribeAccess(socket: RawSocket, chInfo: ChannelInfo){
+    async _checkSubscribeAccess(socket: Socket, chInfo: ChannelInfo){
         const {systemAccessCheck,versionAccessCheck,accessCheck} = this._preparedData;
 
         if(!systemAccessCheck(socket)){
@@ -83,7 +83,7 @@ export default abstract class ChannelCore extends Component {
             throw err;
         }
 
-        if(!(await accessCheck(socket.authEngine,socket._socket,chInfo))){
+        if(!(await accessCheck(socket,chInfo))){
             const err: any = new Error('Access to this Channel denied.');
             err.name = ClientErrorName.AccessDenied;
             throw err;

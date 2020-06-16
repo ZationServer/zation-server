@@ -6,10 +6,9 @@ Copyright(c) Luca Scaringella
 
 // noinspection TypeScriptPreferShortImport
 import {SystemAccessConfig, VersionAccessConfig} from "../config/definitions/parts/accessConfigs";
-// noinspection ES6PreferShortImport
-import {RawSocket} from '../sc/socket';
+import Socket                                    from '../../api/Socket';
 
-export type VersionSystemAccessCheckFunction = (socket: RawSocket) => boolean;
+export type VersionSystemAccessCheckFunction = (socket: Socket) => boolean;
 
 type VersionCheckFunction = (version: number) => boolean;
 

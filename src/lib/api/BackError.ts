@@ -7,6 +7,7 @@ Copyright(c) Luca Scaringella
 import BackErrorConstruct   from "../main/constants/backErrorConstruct";
 // noinspection TypeScriptPreferShortImport,ES6PreferShortImport
 import {ErrorType}          from "../main/constants/errorType";
+import BackErrorBuilder     from '../main/builder/backErrorBuilder';
 
 type BackErrorInfo = Record<string,any> & {main ?: any};
 
@@ -46,6 +47,16 @@ export default class BackError extends Error
     private info: BackErrorInfo;
     private private: boolean;
     private fromZationSystem: boolean;
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @description
+     * Returns a BackError builder
+     * to easily create a BackError.
+     */
+    static build(): BackErrorBuilder {
+        return new BackErrorBuilder();
+    }
 
     // noinspection JSUnusedGlobalSymbols
     /**
