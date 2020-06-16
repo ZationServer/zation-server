@@ -592,7 +592,7 @@ class ZationWorker extends SCWorker
                 this.tokenClusterKeyCheck(token);
             }
             catch (e) {
-                next(e);
+                next(e,true);
             }
 
             const zationAuthMid = await MiddlewareUtils.checkMiddleware
