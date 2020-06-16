@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import {PrecompiledEvents} from '../config/definitions/parts/events';
 
-export class ErrorEventSingleton {
+export class ErrorEventHolder {
 
     private static event: PrecompiledEvents['error'];
 
@@ -15,15 +15,15 @@ export class ErrorEventSingleton {
      * @param event
      */
     static set(event: PrecompiledEvents['error']): void {
-        ErrorEventSingleton.event = event;
+        ErrorEventHolder.event = event;
     }
 
     /**
      * Returns the error event.
      */
     static get(): PrecompiledEvents['error']  {
-        if(ErrorEventSingleton.event){
-            return ErrorEventSingleton.event;
+        if(ErrorEventHolder.event){
+            return ErrorEventHolder.event;
         }
         throw new Error('Error event is unknown.');
     }

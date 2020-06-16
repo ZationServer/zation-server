@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import {ZationAccessRecord}                      from '../constants/internal';
 import {AccessConfigValue, isTokenCheckFunction} from "./accessOptions";
 import Logger                                    from '../log/logger';
-import {ErrorEventSingleton}                     from '../error/errorEventSingleton';
+import {ErrorEventHolder}                        from '../error/errorEventHolder';
 import Socket                                    from '../../api/Socket';
 
 type AccessFunctionCallCreate<T extends MinAccessChecker,F> = (func: Function) => T;
@@ -31,7 +31,7 @@ export default class AccessUtils
         target: string
         ): MinAccessChecker
     {
-        const errorEvent = ErrorEventSingleton.get();
+        const errorEvent = ErrorEventHolder.get();
         const checker = AccessUtils.createAccessCheckerCore(value,accessFunctionCallCreate,true);
         const errorLogMessage = `An error was thrown on the: '${target}', access check:`;
         if(!invertResult){

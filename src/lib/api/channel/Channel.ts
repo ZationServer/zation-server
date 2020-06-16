@@ -9,7 +9,7 @@ import Bag                           from '../Bag';
 import {ClientErrorName}             from '../../main/constants/clientErrorName';
 import Socket                        from '../Socket';
 import FuncUtils                     from '../../main/utils/funcUtils';
-import {ErrorEventSingleton}         from '../../main/error/errorEventSingleton';
+import {ErrorEventHolder}            from '../../main/error/errorEventHolder';
 import {removeValueFromArray}        from '../../main/utils/arrayUtils';
 import {
     CH_CLIENT_OUTPUT_KICK_OUT,
@@ -67,11 +67,11 @@ export default class Channel extends ChannelCore {
 
         const errMessagePrefix = this.toString() + ' error was thrown in the function';
         this._onPublish = FuncUtils.createSafeCaller(this.onPublish,
-            `${errMessagePrefix} onPublish`,ErrorEventSingleton.get());
+            `${errMessagePrefix} onPublish`,ErrorEventHolder.get());
         this._onSubscription = FuncUtils.createSafeCaller(this.onSubscription,
-            `${errMessagePrefix} onSubscription`,ErrorEventSingleton.get());
+            `${errMessagePrefix} onSubscription`,ErrorEventHolder.get());
         this._onUnsubscription = FuncUtils.createSafeCaller(this.onUnsubscription,
-            `${errMessagePrefix} onUnsubscription`,ErrorEventSingleton.get());
+            `${errMessagePrefix} onUnsubscription`,ErrorEventHolder.get());
     }
 
     /**

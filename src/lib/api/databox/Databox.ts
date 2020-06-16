@@ -50,7 +50,7 @@ import CloneUtils                                 from "../../main/utils/cloneUt
 import {removeValueFromArray}                     from '../../main/utils/arrayUtils';
 import ObjectUtils                                from '../../main/utils/objectUtils';
 import FuncUtils                                  from '../../main/utils/funcUtils';
-import {ErrorEventSingleton}                      from '../../main/error/errorEventSingleton';
+import {ErrorEventHolder}                         from '../../main/error/errorEventHolder';
 import {isDefaultImpl, markAsDefaultImpl}         from '../../main/utils/defaultImplUtils';
 
 /**
@@ -121,11 +121,11 @@ export default class Databox extends DataboxCore {
 
         const errMessagePrefix = this.toString() + ' error was thrown in the function';
         this._onConnection = FuncUtils.createSafeCaller(this.onConnection,
-            `${errMessagePrefix} onConnection`,ErrorEventSingleton.get());
+            `${errMessagePrefix} onConnection`,ErrorEventHolder.get());
         this._onDisconnection = FuncUtils.createSafeCaller(this.onDisconnection,
-            `${errMessagePrefix} onDisconnection`,ErrorEventSingleton.get());
+            `${errMessagePrefix} onDisconnection`,ErrorEventHolder.get());
         this._onReceivedSignal = FuncUtils.createSafeCaller(this.onReceivedSignal,
-            `${errMessagePrefix} onReceivedSignal`,ErrorEventSingleton.get());
+            `${errMessagePrefix} onReceivedSignal`,ErrorEventHolder.get());
     }
 
     private _getFetchImpl(): (counter: number, session: any, input: any, initData: any, socket: Socket) => Promise<any> | any {

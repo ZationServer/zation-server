@@ -37,7 +37,7 @@ import url          = require('url');
 import process          = require("process");
 import treeify          = require('treeify');
 import ControllerReqHandler from "../main/controller/handle/controllerReqHandler";
-import AuthConfig       from "../main/auth/authConfig";
+import AuthConfig           from "../main/auth/authConfig";
 import ZationToken          from "../main/internalApi/zationToken";
 import ControllerPrepare    from "../main/controller/controllerPrepare";
 import ServiceEngine        from "../main/services/serviceEngine";
@@ -78,7 +78,7 @@ import {ProcessType, processTypeSymbol} from '../main/constants/processType';
 import {startModeSymbol}                from './startMode';
 import createLogFileDownloader          from '../main/log/logFileHttpEndpoint';
 import StartDebugStopwatch              from '../main/utils/startDebugStopwatch';
-import {ErrorEventSingleton}            from '../main/error/errorEventSingleton';
+import {ErrorEventHolder}               from '../main/error/errorEventHolder';
 import ChannelHandler                   from '../main/channel/handle/channelHandler';
 import DynamicSingleton                 from '../main/utils/dynamicSingleton';
 import PanelChannel                     from '../main/channel/systemChannels/channels/PanelChannel';
@@ -200,7 +200,7 @@ class ZationWorker extends SCWorker
         debugStopwatch.stop(`The Worker with id ${this.id} has pre compiled configurations.`);
 
         //Set error event
-        ErrorEventSingleton.set(this.zc.event.error);
+        ErrorEventHolder.set(this.zc.event.error);
 
         //Origins checker
         debugStopwatch.start();
