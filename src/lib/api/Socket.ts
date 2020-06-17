@@ -348,6 +348,9 @@ export default class Socket<A extends object = any, TP extends object = any>
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /**
+     * Returns the raw plain token.
+     */
     get rawToken(): RawZationToken | null {
         return this.rawSocket.authToken;
     }
