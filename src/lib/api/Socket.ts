@@ -344,7 +344,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      * Returns if the socket has panel access.
      */
     hasPanelAccess(): boolean {
-        return this._auth && this.rawToken?.panelAccess === true;
+        return this.rawToken?.panelAccess === true;
     }
 
     // noinspection JSUnusedGlobalSymbols
