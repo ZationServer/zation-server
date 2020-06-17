@@ -89,13 +89,23 @@ export const MainBackErrors = {
         fromZationSystem: true
     },
 
-    authenticationError : {
-        name         : 'authenticationError',
-        description  : 'Authenticate error by trying to authenticate an sc.',
+    authenticationRequired : {
+        name         : 'authenticationRequired',
+        description  : 'Authentication is required.',
         type         : ErrorType.SystemError,
         sendInfo     : false,
+        private      : true,
         //INFO
         // reason
+        fromZationSystem: true
+    },
+
+    undefinedUserId : {
+        name         : 'undefinedUserId',
+        description  : 'User id is undefined.',
+        type         : ErrorType.SystemError,
+        sendInfo     : false,
+        private      : true,
         fromZationSystem: true
     },
 

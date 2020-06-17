@@ -12,7 +12,8 @@ import Controller                   from './lib/api/Controller';
 import Config                       from './lib/api/Config';
 import BackErrorBuilder             from "./lib/main/builder/backErrorBuilder";
 import ServiceNotFoundError         from './lib/main/services/serviceNotFoundError';
-import AuthenticationError          from './lib/main/error/authenticationError';
+import AuthenticationRequiredError  from './lib/main/error/authenticationRequiredError';
+import UndefinedUserIdError         from './lib/main/error/undefinedUserIdError';
 import InputIsIncompatibleError     from './lib/main/error/inputIsIncompatibleError';
 import CodeError                    from './lib/main/error/codeError';
 import {ErrorType}                  from "./lib/main/constants/errorType";
@@ -124,7 +125,8 @@ export {
     Config,
     ServiceNotFoundError,
     ValidationType,
-    AuthenticationError,
+    AuthenticationRequiredError,
+    UndefinedUserIdError,
     CodeError,
     InputIsIncompatibleError,
     $single,

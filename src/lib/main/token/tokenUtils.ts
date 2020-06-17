@@ -8,8 +8,6 @@ import {PrepareZationToken, RawZationToken} from "../constants/internal";
 import {JwtSignFunction, JwtSignOptions, JwtVerifyFunction, JwtVerifyOptions} from "../constants/jwt";
 import AuthConfig          from "../auth/authConfig";
 import BackError           from "../../api/BackError";
-// noinspection ES6PreferShortImport
-import AuthenticationError from "../error/authenticationError";
 import {MainBackErrors}    from "../zationBackErrors/mainBackErrors";
 import ZationConfigFull    from "../config/manager/zationConfigFull";
 import ObjectUtils         from "../utils/objectUtils";
@@ -24,29 +22,6 @@ export default class TokenUtils
             tid: uniqid(),
             clusterKey: tokenCheckKey
         };
-    }
-
-    /**
-     * Get the token variables.
-     * @param token
-     */
-    static getTokenVariables(token: RawZationToken | null): object {
-        return TokenUtils.getTokenVariable(nameof<RawZationToken>(s => s.payload),token)
-            || {};
-    }
-
-    /**
-     * Get a token variable with a socket.
-     * @param key
-     * @param token
-     */
-    static getTokenVariable(key: string,token: RawZationToken | null): any {
-        if(token != null) {
-            return token[key]
-        }
-        else {
-            throw new AuthenticationError('Can\'t access token variable when the token is not available.');
-        }
     }
 
     /**

@@ -18,11 +18,12 @@ import {ObjectPathSequence}  from "../main/internalApi/objectPathSequence/object
 import ChannelFamily         from './channel/ChannelFamily';
 import Channel               from './channel/Channel';
 import {JwtSignOptions}      from '../main/constants/jwt';
-import AuthenticationError   from '../main/error/authenticationError';
 import AuthConfig            from '../main/auth/authConfig';
 import ObjectPathSequenceBoxImp from '../main/internalApi/objectPathSequence/objectPathSequenceBoxImp';
 import {bag}                    from './Bag';
 import * as ObjectPath          from 'object-path';
+import AuthenticationRequiredError            from '../main/error/authenticationRequiredError';
+import UndefinedUserIdError                   from '../main/error/undefinedUserIdError';
 import {IncomingHttpHeaders, IncomingMessage} from 'http';
 import ApiLevelUtils                          from '../main/apiLevel/apiLevelUtils';
 import {Agent}                                from 'useragent';
@@ -161,7 +162,7 @@ export default class Socket<A extends object = any, TP extends object = any>
         return new Promise<void>((resolve, reject) => {
             this._rawSocket.setAuthToken(data,jwtOptions,(err) => {
                 if(err){
-                    reject(new AuthenticationError('Failed to set the auth token. Error => ' +
+                    reject(new AuthenticationRequiredError('Failed to set the auth token. Error => ' +
                         err.toString()))
                 }
                 else {resolve();}
@@ -186,11 +187,11 @@ export default class Socket<A extends object = any, TP extends object = any>
      * This optional options argument is an Object which can be used to modify the token's behavior.
      * Valid properties include any option accepted by the jsonwebtoken library's sign method.
      * For example, you can change the default expire of the token or add a time before the token gets valid.
-     * @throws AuthenticationError
+     * @throws AuthenticationRequiredError
      */
     async authenticate(authUserGroup: string, userId?: string | number,payload: Partial<TP> = {},jwtOptions: JwtSignOptions = {}): Promise<void> {
         if(!this.authConfig.isValidAuthUserGroup(authUserGroup))
-            throw new AuthenticationError(`Auth user group '${authUserGroup}' is not defined in the server config.`);
+            throw new AuthenticationRequiredError(`Auth user group '${authUserGroup}' is not defined in the server config.`);
 
         const currentToken = this.rawSocket.authToken;
         const token: PrepareZationToken = currentToken != null ? currentToken :
@@ -238,11 +239,10 @@ export default class Socket<A extends object = any, TP extends object = any>
     // noinspection JSUnusedGlobalSymbols
     /**
      * Returns the auth user group of the socket.
-     * @throws AuthenticationError if the socket is not authenticated.
+     * @throws AuthenticationRequiredError if the socket is not authenticated.
      */
     getAuthUserGroup(): string {
-        if(!this._auth)
-            throw new AuthenticationError('Can\'t access the auth user group when the socket is not authenticated.');
+        if(!this._auth) throw new AuthenticationRequiredError('To access the authUserGroup.');
         return this._userGroup;
     }
 
@@ -262,8 +262,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      */
     setUserId(userId: number | string | undefined): Promise<void> {
         let token = this.rawSocket.authToken;
-        if(token == null)
-            throw new AuthenticationError(`User id can not be updated if the socket is not authenticated.`);
+        if(token == null) throw new AuthenticationRequiredError(`To update the user id.`);
         token = {...token};
         token.userId = userId;
         return this._setToken(token);
@@ -280,15 +279,15 @@ export default class Socket<A extends object = any, TP extends object = any>
     // noinspection JSUnusedGlobalSymbols
     /**
      * Returns the user id of the socket.
-     * @throws AuthenticationError if the socket is not authenticated or has no user id.
+     * @throws AuthenticationRequiredError if the socket is not authenticated.
+     * @throws UndefinedUserIdError if no user id is defined.
      */
     getUserId(): string | number {
-        if(!this._auth)
-            throw new AuthenticationError('Can\'t access the user id when the socket is not authenticated.');
+        if(!this._auth) throw new AuthenticationRequiredError('To access the user id.');
         if(this._userId !== undefined)
             return this._userId!;
         else {
-            throw new AuthenticationError('The socket has no user id.');
+            throw new UndefinedUserIdError();
         }
     }
 
@@ -297,18 +296,16 @@ export default class Socket<A extends object = any, TP extends object = any>
      * Returns the token id of the socket.
      */
     get tokenId(): string | undefined {
-        return this._rawSocket.authToken?.tid;
+        return this.rawToken?.tid;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * Returns the token id of the socket.
-     * @throws AuthenticationError if the socket is not authenticated.
+     * @throws AuthenticationRequiredError if the socket is not authenticated.
      */
     getTokenId(): string {
-        if(!this._auth)
-            throw new AuthenticationError('Can\'t access the token id when the socket is not authenticated.');
-        return this._rawSocket.authToken!.tid;
+        return this.getRawToken().tid;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -316,18 +313,16 @@ export default class Socket<A extends object = any, TP extends object = any>
      * Returns the expire of the token.
      */
     get tokenExpire(): number | undefined {
-        return this._rawSocket.authToken?.exp;
+        return this.rawToken?.exp;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
      * Returns the expire of the token.
-     * @throws AuthenticationError if the socket is not authenticated.
+     * @throws AuthenticationRequiredError if the socket is not authenticated.
      */
     getTokenExpire(): number {
-        if(!this._auth)
-            throw new AuthenticationError('Can\'t access the token expire when the socket is not authenticated.');
-        return this._rawSocket.authToken!.exp;
+        return this.getRawToken().exp;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -338,8 +333,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      */
     setPanelAccess(access: boolean): Promise<void> {
         let token = this.rawSocket.authToken;
-        if(token == null)
-            throw new AuthenticationError(`Panel access can not be updated if the socket is not authenticated.`);
+        if(token == null) throw new AuthenticationRequiredError(`To update the panel access.`);
         token = {...token};
         token.panelAccess = access;
         return this._setToken(token);
@@ -350,7 +344,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      * Returns if the socket has panel access.
      */
     hasPanelAccess(): boolean {
-        return this._auth && this._rawSocket.authToken?.panelAccess === true;
+        return this._auth && this.rawToken?.panelAccess === true;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -360,21 +354,29 @@ export default class Socket<A extends object = any, TP extends object = any>
 
     // noinspection JSUnusedGlobalSymbols
     /**
+     * Returns the raw plain token.
+     * @throws AuthenticationRequiredError if this socket is not authenticated.
+     */
+    getRawToken(): RawZationToken {
+        if(this.rawSocket.authToken != null) return this.rawSocket.authToken;
+        throw new AuthenticationRequiredError('To access the token.');
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
      * Returns the token payload of this socket.
      */
     get tokenPayload(): Partial<TP> | undefined {
         if(!this._auth) return undefined;
-        return CloneUtils.deepClone(this.rawSocket.authToken!.payload!);
+        return CloneUtils.deepClone(this.rawToken!.payload!);
     }
 
     /**
      * Returns the token payload of this socket.
-     * @throws AuthenticationError if this socket is not authenticated.
+     * @throws AuthenticationRequiredError if this socket is not authenticated.
      */
     getTokenPayload(): Partial<TP> {
-        if(!this._auth)
-            throw new AuthenticationError('Can\'t access the token payload when the socket is not authenticated.');
-        return CloneUtils.deepClone(this.rawSocket.authToken!.payload!);
+        return CloneUtils.deepClone(this.getRawToken().payload!);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -388,12 +390,11 @@ export default class Socket<A extends object = any, TP extends object = any>
      * @example
      * await setTokenPayload({name: 'Luc'});
      * @param payload
-     * @throws AuthenticationError if the client is not authenticated.
+     * @throws AuthenticationRequiredError if the client is not authenticated.
      */
     setTokenPayload(payload: Partial<TP>): Promise<void> {
         let token = this.rawSocket.authToken;
-        if(token == null)
-            throw new AuthenticationError(`Can't set token payload when socket is not authenticated.`);
+        if(token == null) throw new AuthenticationRequiredError('To update the token payload.');
         token = {...token};
         token.payload = payload;
         return this._setToken(token);
@@ -407,7 +408,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      * You can access the token payload on the client and server-side.
      * But only change, delete or set from the server-side.
      * Notice that this socket must be authenticated.
-     * @throws AuthenticationError if the client is not authenticated.
+     * @throws AuthenticationRequiredError if the client is not authenticated.
      */
     clearTokenPayload(): Promise<void> {
         return this.setTokenPayload({});
@@ -429,7 +430,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      * The path to the property can be a string array or a string.
      * In case of a string, the keys are split with dots.
      * @param value
-     * @throws AuthenticationError if the client is not authenticated.
+     * @throws AuthenticationRequiredError if the client is not authenticated.
      */
     setTokenPayloadProp(path: string | string[], value: any): Promise<void> {
         const payload = this.getTokenPayload();
@@ -452,7 +453,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      * @param path
      * The path to the property can be a string array or a string.
      * In case of a string, the keys are split with dots.
-     * @throws AuthenticationError if the client is not authenticated.
+     * @throws AuthenticationRequiredError if the client is not authenticated.
      */
     deleteTokenPayloadProp(path: string | string[]): Promise<void> {
         const payload = this.getTokenPayload();
@@ -477,7 +478,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      *      .set('person.name','Luca')
      *      .set('person.email','example@gmail.com')
      *      .commit();
-     * @throws AuthenticationError if the client is not authenticated.
+     * @throws AuthenticationRequiredError if the client is not authenticated.
      */
     seqEditTokenPayload(): ObjectPathSequence {
         return new ObjectPathSequenceImp(this.getTokenPayload(), (payload) =>
@@ -501,7 +502,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      * The path to the property can be a string array or a string.
      * In case of a string, the keys are split with dots.
      * @param value
-     * @throws AuthenticationError if the client is not authenticated.
+     * @throws AuthenticationRequiredError if the client is not authenticated.
      */
     async setTokenPayloadPropUserIdSync(path: string | string[],value: any): Promise<void> {
         await this.setTokenPayloadProp(path,value);
@@ -525,7 +526,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      * @param path
      * The path to the property can be a string array or a string.
      * In case of a string, the keys are split with dots.
-     * @throws AuthenticationError if the client is not authenticated.
+     * @throws AuthenticationRequiredError if the client is not authenticated.
      */
     async deleteTokenPayloadPropUserIdSync(path: string | string[]): Promise<void> {
         await this.deleteTokenPayloadProp(path);
@@ -551,7 +552,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      *      .set('person.name','Luca')
      *      .set('person.email','example@gmail.com')
      *      .commit();
-     * @throws AuthenticationError if the client is not authenticated.
+     * @throws AuthenticationRequiredError if the client is not authenticated.
      */
     seqEditTokenPayloadUserIdSync(): ObjectPathSequence {
         const id = this._userId;
@@ -578,7 +579,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      * The path to the property can be a string array or a string.
      * In case of a string, the keys are split with dots.
      * @param value
-     * @throws AuthenticationError if the client is not authenticated.
+     * @throws AuthenticationRequiredError if the client is not authenticated.
      */
     async setTokenPayloadPropGroupSync(path: string | string[], value: any): Promise<void> {
         await this.setTokenPayloadProp(path,value);
@@ -602,7 +603,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      * @param path
      * The path to the property can be a string array or a string.
      * In case of a string, the keys are split with dots.
-     * @throws AuthenticationError if the client is not authenticated.
+     * @throws AuthenticationRequiredError if the client is not authenticated.
      */
     async deleteTokenPayloadPropGroupSync(path: string | string[]): Promise<void> {
         await this.deleteTokenPayloadProp(path);
@@ -628,7 +629,7 @@ export default class Socket<A extends object = any, TP extends object = any>
      *      .set('person.name','Luca')
      *      .set('person.email','example@gmail.com')
      *      .commit();
-     * @throws AuthenticationError if the client is not authenticated.
+     * @throws AuthenticationRequiredError if the client is not authenticated.
      */
     seqEditTokenPayloadGroupSync(): ObjectPathSequence {
         const group = this.authUserGroup;
