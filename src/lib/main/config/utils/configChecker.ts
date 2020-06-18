@@ -42,7 +42,7 @@ import {AnyChannelClass}                                       from '../../../ap
 import {ChannelConfig}                                         from '../../../..';
 import Channel                                                 from '../../../api/channel/Channel';
 import ChannelFamily                                           from '../../../api/channel/ChannelFamily';
-import {ComponentClass}                                        from '../../../api/Component';
+import {ComponentClass}                                        from '../../../api/component/Component';
 import Receiver, {ReceiverClass}                               from '../../../api/Receiver';
 // noinspection ES6PreferShortImport
 import {ReceiverConfig}                                        from '../definitions/parts/receiverConfig';

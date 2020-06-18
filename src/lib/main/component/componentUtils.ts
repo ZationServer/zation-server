@@ -6,7 +6,7 @@ Copyright(c) Luca Scaringella
 
 import DynamicSingleton  from '../utils/dynamicSingleton';
 import ComponentNotFound from '../error/componentNotFound';
-import Component, {ComponentClass}       from '../../api/Component';
+import Component, {ComponentClass}       from '../../api/component/Component';
 import ComponentPrepare, {ComponentInfo} from './componentPrepare';
 import * as ObjectPath                   from 'object-path';
 import ConfigBuildError                  from '../config/manager/configBuildError';

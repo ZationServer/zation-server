@@ -9,7 +9,7 @@ import Bag                                from "../Bag";
 import {VersionSystemAccessCheckFunction} from "../../main/systemVersion/systemVersionChecker";
 import {ClientErrorName}                  from "../../main/constants/clientErrorName";
 import ConfigBuildError                   from "../../main/config/manager/configBuildError";
-import Component, {ComponentClass}        from '../Component';
+import Component, {ComponentClass}        from '../component/Component';
 import Socket                             from '../Socket';
 import {ChSubAccessCheckFunction}         from '../../main/channel/chAccessHelper';
 // noinspection ES6PreferShortImport

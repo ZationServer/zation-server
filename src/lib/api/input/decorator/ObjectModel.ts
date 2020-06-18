@@ -10,7 +10,7 @@ import CloneUtils                                                 from "../../..
 import {InDecoratorMem, inDM_ConstructorMethodsSymbol, inDM_ModelsSymbol} from "./InDecoratorMem";
 import {createReusableModel}                                              from '../../../main/models/reusableModelCreator';
 // noinspection TypeScriptPreferShortImport
-import {$extends}                                                         from '../../input/Extends';
+import {$extends}                                                         from '../Extends';
 import {bag}                                                              from '../../Bag';
 
 export const classObjectModelSymbol = Symbol();

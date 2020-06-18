@@ -9,7 +9,7 @@ import Controller       from "../../Controller";
 import Databox          from "../../databox/Databox";
 import DataboxFamily    from "../../databox/DataboxFamily";
 import ConfigBuildError from "../../../main/config/manager/configBuildError";
-import {ComponentClass} from '../../Component';
+import {ComponentClass} from '../Component';
 import Channel          from '../../channel/Channel';
 import ChannelFamily    from '../../channel/ChannelFamily';
 import Receiver         from '../../Receiver';

@@ -11,7 +11,7 @@ import BackErrorBag       from "./BackErrorBag";
 import ConfigBuildError   from '../main/config/manager/configBuildError';
 import Socket             from './Socket';
 import Packet             from './Packet';
-import Component, {ComponentClass}        from './Component';
+import Component, {ComponentClass}        from './component/Component';
 import {VersionSystemAccessCheckFunction} from '../main/systemVersion/systemVersionChecker';
 import {TokenStateAccessCheckFunction}    from '../main/controller/controllerAccessHelper';
 import {InputConsumeFunction}             from '../main/input/inputClosureCreator';

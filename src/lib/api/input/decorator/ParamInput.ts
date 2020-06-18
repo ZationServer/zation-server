@@ -7,7 +7,7 @@ Copyright(c) Luca Scaringella
 import {ParamInput as ParamInputConfig}       from "../../../main/config/definitions/parts/inputConfig";
 import {InDecoratorMem, inDM_ModelsSymbol}    from "./InDecoratorMem";
 // noinspection TypeScriptPreferShortImport
-import {updateInputConfigTranslatable}        from '../../../api/configTranslatable/inputConfigTranslatable';
+import {updateInputConfigTranslatable}        from '../../configTranslatable/inputConfigTranslatable';
 
 /**
  * A class decorator that will mark the class as a param based input config.

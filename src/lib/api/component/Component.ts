@@ -4,12 +4,12 @@ GitHub: LucaCode
 Copyright(c) Luca Scaringella
  */
 
-import {ControllerClass}      from './Controller';
-import {ReceiverClass}        from './Receiver';
-import {AnyDataboxClass}      from './databox/AnyDataboxClass';
-import Bag                    from './Bag';
-import {AnyChannelClass}      from './channel/AnyChannelClass';
-import ComponentUtils, {componentTypeSymbol, familyTypeSymbol} from '../main/component/componentUtils';
+import {ControllerClass}      from '../Controller';
+import {ReceiverClass}        from '../Receiver';
+import {AnyDataboxClass}      from '../databox/AnyDataboxClass';
+import Bag                    from '../Bag';
+import {AnyChannelClass}      from '../channel/AnyChannelClass';
+import ComponentUtils, {componentTypeSymbol, familyTypeSymbol} from '../../main/component/componentUtils';
 
 export default class Component {
 

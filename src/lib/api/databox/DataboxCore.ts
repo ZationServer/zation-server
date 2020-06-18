@@ -19,7 +19,7 @@ import ErrorUtils                         from "../../main/utils/errorUtils";
 import {DbAccessCheckFunction}            from "../../main/databox/databoxAccessHelper";
 import NoDataAvailableError               from "../../main/databox/noDataAvailable";
 import ConfigBuildError                   from "../../main/config/manager/configBuildError";
-import Component, {ComponentClass}        from '../Component';
+import Component, {ComponentClass}        from '../component/Component';
 import {AnyDataboxClass}                  from './AnyDataboxClass';
 import {componentTypeSymbol}              from '../../main/component/componentUtils';
 import Socket                             from '../Socket';

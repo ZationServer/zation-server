@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 // noinspection TypeScriptPreferShortImport
-import Component                     from '../../api/Component';
+import Component                     from '../../api/component/Component';
 import {CompHandleMiddlewareConfig}  from '../config/definitions/parts/compHandleMiddlewareConfig';
 import Packet                        from '../../api/Packet';
 import Socket                        from '../../api/Socket';

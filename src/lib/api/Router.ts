@@ -5,7 +5,7 @@ Copyright(c) Luca Scaringella
  */
 
 import Config                    from './Config';
-import {ComponentClass}          from './Component';
+import {ComponentClass}          from './component/Component';
 import ComponentUtils            from '../main/component/componentUtils';
 
 /**

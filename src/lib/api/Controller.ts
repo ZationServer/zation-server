@@ -9,7 +9,7 @@ import {ControllerConfig} from "../main/config/definitions/parts/controllerConfi
 import Bag                from "./Bag";
 import BackErrorBag       from "./BackErrorBag";
 import ConfigBuildError   from '../main/config/manager/configBuildError';
-import Component, {ComponentClass}        from './Component';
+import Component, {ComponentClass}        from './component/Component';
 import {VersionSystemAccessCheckFunction} from '../main/systemVersion/systemVersionChecker';
 import {TokenStateAccessCheckFunction}    from '../main/controller/controllerAccessHelper';
 import {InputConsumeFunction, InputValidationCheckFunction} from '../main/input/inputClosureCreator';

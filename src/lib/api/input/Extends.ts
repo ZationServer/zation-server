@@ -10,7 +10,7 @@ import {modelPrototypeSymbol}    from '../../main/constants/model';
 import {resolveModelConfigTranslatable} from '../configTranslatable/modelConfigTranslatable';
 import {DeepReadonly}                   from '../../main/utils/typeUtils';
 import {updateModel}                    from '../../main/models/modelUpdater';
-import {isClassObjectModel}             from '../decorator/input/ObjectModel';
+import {isClassObjectModel}             from './decorator/ObjectModel';
 import ConfigBuildError                 from '../../main/config/manager/configBuildError';
 
 /**

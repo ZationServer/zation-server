@@ -8,7 +8,7 @@ import ZationConfigFull                                         from "../config/
 import Bag                                                      from "../../api/Bag";
 import {ApiLevelSwitch, ApiLevelSwitchFunction}                 from '../apiLevel/apiLevelUtils';
 import ZationWorker                                           = require("../../core/zationWorker");
-import Component                                                from '../../api/Component';
+import Component                                                from '../../api/component/Component';
 import ComponentUtils                                           from './componentUtils';
 
 export type ComponentInfo = {apiLevels: number[] | null,family: boolean};
