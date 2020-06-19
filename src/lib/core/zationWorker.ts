@@ -260,8 +260,8 @@ class ZationWorker extends SCWorker
         debugStopwatch.stop(`The Worker with id ${this.id} processed the injections.`);
 
         debugStopwatch.start();
-        await this.zc.event.beforeComponentInit(this.isLeader);
-        debugStopwatch.stop(`The Worker with id ${this.id} invoked beforeComponentInit event.`);
+        await this.zc.event.beforeComponentsInit(this.isLeader);
+        debugStopwatch.stop(`The Worker with id ${this.id} invoked beforeComponentsInit event.`);
 
         debugStopwatch.start();
         await this.channelPrepare.init();
@@ -288,8 +288,8 @@ class ZationWorker extends SCWorker
         this.preparedAllComponents = true;
 
         debugStopwatch.start();
-        await this.zc.event.afterComponentInit(this.isLeader);
-        debugStopwatch.stop(`The Worker with id ${this.id} invoked afterComponentInit event.`);
+        await this.zc.event.afterComponentsInit(this.isLeader);
+        debugStopwatch.stop(`The Worker with id ${this.id} invoked afterComponentsInit event.`);
 
         debugStopwatch.start();
         const panelChannel = DynamicSingleton.getInstance<typeof PanelChannel,PanelChannel>(PanelChannel);
